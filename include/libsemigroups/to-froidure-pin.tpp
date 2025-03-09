@@ -30,7 +30,7 @@ namespace libsemigroups {
       -> FroidurePin<
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
-  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
@@ -115,6 +115,19 @@ namespace libsemigroups {
       result.add_generator(KBE(kb, ""));
     }
     return result;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Konieczny
+  ////////////////////////////////////////////////////////////////////////
+
+  template <template <typename...> typename Thing,
+            typename Element,
+            typename Traits>
+  auto to(Konieczny<Element, Traits> const& k)
+      -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
+                          FroidurePin<Element>> {
+    return FroidurePin(k.cbegin_generators(), k.cend_generators());
   }
 
   ////////////////////////////////////////////////////////////////////////

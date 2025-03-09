@@ -1819,12 +1819,18 @@ namespace libsemigroups {
     mutable lambda_value_type _tmp_lambda_value2;
     mutable rho_value_type    _tmp_rho_value1;
     mutable rho_value_type    _tmp_rho_value2;
-  };
+  };  // class Konieczny
 
   template <typename Element, typename Traits>
   bool Konieczny<Element, Traits>::finished_impl() const {
     return _ranks.empty() && _run_initialised;
   }
+
+  template <typename Element>
+  Konieczny(std::vector<Element> const&) -> Konieczny<Element>;
+
+  template <typename Element>
+  Konieczny(std::initializer_list<Element> const&) -> Konieczny<Element>;
 
   //! \ingroup konieczny_group
   //!
@@ -1894,8 +1900,7 @@ namespace libsemigroups {
         Konieczny<Element, Traits>& K,
         std::initializer_list<
             typename Konieczny<Element, Traits>::const_element_type> coll) {
-      K.template add_generators<std::initializer_list<
-          typename Konieczny<Element, Traits>::const_element_type>>(coll);
+      K.add_generators(coll.begin(), coll.end());
     }
   }  // namespace konieczny
 

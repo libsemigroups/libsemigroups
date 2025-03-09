@@ -27,16 +27,16 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "027",
+                          "029",
                           "transformations",
                           "[quick][transf]") {
-    using Transf         = LeastTransf<5>;
-    auto              rg = ReportGuard(false);
-    Konieczny<Transf> S({Transf({1, 0, 2, 3, 4}),
-                         Transf({1, 2, 3, 4, 0}),
-                         Transf({0, 0, 2, 3, 4})});
+    using Transf = LeastTransf<5>;
+    auto      rg = ReportGuard(false);
+    Konieczny S({Transf({1, 0, 2, 3, 4}),
+                 Transf({1, 2, 3, 4, 0}),
+                 Transf({0, 0, 2, 3, 4})});
     S.run();
-    REQUIRE(S.size() == 3125);
+    REQUIRE(S.size() == 3'125);
 
     size_t sum = 0;
     std::for_each(
@@ -54,20 +54,20 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "028",
+                          "030",
                           "transformations - JDM favourite example",
                           "[quick][no-valgrind][transf]") {
-    using Transf         = LeastTransf<8>;
-    auto              rg = ReportGuard(false);
-    Konieczny<Transf> S({Transf({1, 7, 2, 6, 0, 4, 1, 5}),
-                         Transf({2, 4, 6, 1, 4, 5, 2, 7}),
-                         Transf({3, 0, 7, 2, 4, 6, 2, 4}),
-                         Transf({3, 2, 3, 4, 5, 3, 0, 1}),
-                         Transf({4, 3, 7, 7, 4, 5, 0, 4}),
-                         Transf({5, 6, 3, 0, 3, 0, 5, 1}),
-                         Transf({6, 0, 1, 1, 1, 6, 3, 4}),
-                         Transf({7, 7, 4, 0, 6, 4, 1, 7})});
-    REQUIRE(S.size() == 597369);
+    using Transf = LeastTransf<8>;
+    auto      rg = ReportGuard(false);
+    Konieczny S({Transf({1, 7, 2, 6, 0, 4, 1, 5}),
+                 Transf({2, 4, 6, 1, 4, 5, 2, 7}),
+                 Transf({3, 0, 7, 2, 4, 6, 2, 4}),
+                 Transf({3, 2, 3, 4, 5, 3, 0, 1}),
+                 Transf({4, 3, 7, 7, 4, 5, 0, 4}),
+                 Transf({5, 6, 3, 0, 3, 0, 5, 1}),
+                 Transf({6, 0, 1, 1, 1, 6, 3, 4}),
+                 Transf({7, 7, 4, 0, 6, 4, 1, 7})});
+    REQUIRE(S.size() == 597'369);
     size_t sum = 0;
     std::for_each(
         S.cbegin_current_D_classes(),
@@ -75,12 +75,12 @@ namespace libsemigroups {
         [&sum, &S](Konieczny<Transf>::DClass const& x) {
           sum += S.D_class_of_element(x.rep()).number_of_idempotents();
         });
-    REQUIRE(sum == 8194);
-    REQUIRE(S.number_of_idempotents() == 8194);
+    REQUIRE(sum == 8'194);
+    REQUIRE(S.number_of_idempotents() == 8'194);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "029",
+                          "031",
                           "transformations - large example",
                           "[quick][no-valgrind][transf]") {
     auto                        rg   = ReportGuard(false);
@@ -89,49 +89,50 @@ namespace libsemigroups {
                                         Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
                                         Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
                                         Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})};
-    Konieczny<Transf<>>         S(gens);
 
-    for (auto x : gens) {
+    Konieczny S(gens);
+
+    for (auto const& x : gens) {
       REQUIRE(S.contains(x));
     }
 
-    REQUIRE(S.current_size() < 15000);
-    REQUIRE(S.current_number_of_regular_elements() < 10000);
+    REQUIRE(S.current_size() < 15'000);
+    REQUIRE(S.current_number_of_regular_elements() < 10'000);
     REQUIRE(S.current_number_of_idempotents() < 500);
-    REQUIRE(S.current_number_of_D_classes() < 2000);
-    REQUIRE(S.current_number_of_L_classes() < 4000);
-    REQUIRE(S.current_number_of_R_classes() < 6500);
+    REQUIRE(S.current_number_of_D_classes() < 2'000);
+    REQUIRE(S.current_number_of_L_classes() < 4'000);
+    REQUIRE(S.current_number_of_R_classes() < 6'500);
 
-    REQUIRE(S.size() == 232511);
-    REQUIRE(S.current_number_of_D_classes() == 2122);
-    REQUIRE(S.current_number_of_L_classes() == 8450);
-    REQUIRE(S.current_number_of_R_classes() == 14706);
+    REQUIRE(S.size() == 232'511);
+    REQUIRE(S.current_number_of_D_classes() == 2'122);
+    REQUIRE(S.current_number_of_L_classes() == 8'450);
+    REQUIRE(S.current_number_of_R_classes() == 14'706);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "030",
+                          "032",
                           "transformations - large example with stop",
                           "[quick][no-valgrind][transf]") {
-    auto                rg = ReportGuard(false);
-    Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-                           Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-                           Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-                           Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-                           Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    auto      rg = ReportGuard(false);
+    Konieczny S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                 Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                 Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                 Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                 Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_for(std::chrono::milliseconds(100));
-    REQUIRE(S.size() == 232511);
+    REQUIRE(S.size() == 232'511);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "031",
+                          "033",
                           "transformations - large example with run_until",
                           "[quick][no-valgrind][transf]") {
-    auto                rg = ReportGuard(false);
-    Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-                           Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-                           Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-                           Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-                           Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    auto      rg = ReportGuard(false);
+    Konieczny S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                 Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                 Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                 Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                 Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_until([&S]() -> bool {
       return S.cend_current_D_classes() - S.cbegin_current_D_classes() > 20;
     });
@@ -142,21 +143,21 @@ namespace libsemigroups {
     S.run();
     size_t number_of_classes2
         = S.cend_current_D_classes() - S.cbegin_current_D_classes();
-    REQUIRE(S.size() == 232511);
+    REQUIRE(S.size() == 232'511);
     REQUIRE(number_of_classes1 < number_of_classes2);
-    REQUIRE(number_of_classes2 == 2122);
+    REQUIRE(number_of_classes2 == 2'122);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "032",
+                          "034",
                           "transformations - large example with stop in Action",
                           "[quick][no-valgrind][transf]") {
-    auto                rg = ReportGuard(false);
-    Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-                           Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-                           Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-                           Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-                           Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    auto      rg = ReportGuard(false);
+    Konieczny S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                 Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                 Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                 Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                 Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_for(std::chrono::milliseconds(5));
     S.run_for(std::chrono::milliseconds(5));
     S.run_for(std::chrono::milliseconds(5));
@@ -165,26 +166,22 @@ namespace libsemigroups {
     S.run();
     S.run_for(std::chrono::milliseconds(100));
     S.run_for(std::chrono::milliseconds(100));
-    REQUIRE(S.size() == 232511);
+    REQUIRE(S.size() == 232'511);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "033", "exceptions", "[quick][transf]") {
-    auto rg          = ReportGuard(false);
-    using point_type = typename Transf<>::point_type;
-    std::vector<point_type> v(65, 0);
-    std::iota(v.begin(), v.end(), 0);
-    REQUIRE_THROWS_AS(Konieczny<Transf<>>({Transf<>(v)}),
-                      LibsemigroupsException);
+  LIBSEMIGROUPS_TEST_CASE("Konieczny", "035", "exceptions", "[quick][transf]") {
+    auto rg = ReportGuard(false);
+    REQUIRE_THROWS_AS(Konieczny({Transf<>::one(65)}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "034",
+                          "036",
                           "transformations: contains",
                           "[quick][transf]") {
-    auto                rg = ReportGuard(false);
-    Konieczny<Transf<>> S({Transf<>({1, 0, 2, 3, 4}),
-                           Transf<>({1, 2, 3, 4, 0}),
-                           Transf<>({0, 0, 2, 3, 4})});
+    auto      rg = ReportGuard(false);
+    Konieczny S({Transf<>({1, 0, 2, 3, 4}),
+                 Transf<>({1, 2, 3, 4, 0}),
+                 Transf<>({0, 0, 2, 3, 4})});
     REQUIRE(S.contains(Transf<>({1, 0, 2, 3, 4})));
     REQUIRE(S.contains(Transf<>({1, 2, 3, 4, 0})));
     REQUIRE(S.contains(Transf<>({0, 0, 2, 3, 4})));
@@ -199,8 +196,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(S.D_class_of_element(Transf<>({0, 0, 2, 3, 4, 1})),
                       LibsemigroupsException);
 
-    Konieczny<Transf<>> T(
-        {Transf<>({1, 0, 3, 4, 2}), Transf<>({0, 0, 2, 3, 4})});
+    Konieczny T({Transf<>({1, 0, 3, 4, 2}), Transf<>({0, 0, 2, 3, 4})});
     REQUIRE(T.contains(Transf<>({1, 0, 2, 3, 4})));
     REQUIRE(T.contains(Transf<>({0, 0, 2, 3, 4})));
     REQUIRE(!T.contains(Transf<>({1, 2, 3, 4, 0})));
@@ -217,10 +213,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "035",
+                          "037",
                           "transformations Hall monoid 5",
                           "[extreme][transf]") {
-    auto rg      = ReportGuard();
+    auto rg      = ReportGuard(true);
     using Transf = LeastTransf<31>;
     Konieczny<Transf> K;
     K.add_generator(
@@ -253,41 +249,41 @@ namespace libsemigroups {
     K.add_generator(
         Transf({0, 0, 0, 16, 0, 8,  0, 24, 0, 0, 4, 20, 0, 8,  4, 28,
                 0, 0, 0, 16, 2, 10, 2, 26, 1, 1, 5, 21, 3, 11, 7}));
-    REQUIRE(K.size() == 23191071);
+    REQUIRE(K.size() == 23'191'071);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "036",
+                          "038",
                           "transformations - destructor coverage",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<9>;
-    Konieczny<Transf> S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-                         Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-                         Transf({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-                         Transf({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-                         Transf({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    Konieczny S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                 Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                 Transf({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                 Transf({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                 Transf({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_until(
         [&S]() -> bool { return S.current_number_of_regular_D_classes() > 2; });
 
     // if these fail, this test won't get the coverage hoped for
     REQUIRE(S.current_number_of_regular_D_classes() < 5);
     REQUIRE(S.current_number_of_D_classes() - S.number_of_regular_D_classes()
-            < 2117);
+            < 2'117);
     // now all of the destructor should run
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "037",
+                          "039",
                           "current_number_D_classes",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<9>;
-    Konieczny<Transf> S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
-                         Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
-                         Transf({1, 0, 7, 2, 1, 3, 1, 3, 7}),
-                         Transf({0, 3, 8, 1, 2, 8, 1, 7, 0}),
-                         Transf({0, 0, 0, 2, 7, 7, 5, 5, 3})});
+    Konieczny S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
+                 Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
+                 Transf({1, 0, 7, 2, 1, 3, 1, 3, 7}),
+                 Transf({0, 3, 8, 1, 2, 8, 1, 7, 0}),
+                 Transf({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     REQUIRE(S.current_number_of_regular_D_classes() == 0);
     REQUIRE(S.current_number_of_D_classes() == 0);
     S.run_until(
@@ -296,17 +292,17 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.current_number_of_regular_D_classes() == 5);
     REQUIRE(S.current_number_of_D_classes() - S.number_of_regular_D_classes()
-            == 2117);
+            == 2'117);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "038",
+                          "040",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
 
-    Konieczny<Transf> S({Transf({1, 0, 2, 3, 4})});
+    Konieczny S({Transf({1, 0, 2, 3, 4})});
     S.add_generator(Transf({1, 2, 3, 4, 0}));
     S.add_generator(Transf({0, 0, 2, 3, 4}));
 
@@ -318,7 +314,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "039",
+                          "041",
                           "add_generator, init",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
@@ -346,7 +342,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "047",
+                          "042",
                           "exceptions: keep object valid after refusing to run",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);

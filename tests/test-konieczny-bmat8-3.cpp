@@ -241,7 +241,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "028",
+                          "024",
                           "copy constructors",
                           "[quick][bmat8]") {
     auto                     rg = ReportGuard(false);
@@ -282,7 +282,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "029",
+                          "025",
                           "move constructors",
                           "[quick][bmat8]") {
     auto                     rg = ReportGuard(false);

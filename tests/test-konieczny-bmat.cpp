@@ -33,13 +33,13 @@ namespace libsemigroups {
                                    "[quick][bmat]",
                                    BMat<>,
                                    BMat<4>) {
-    auto                  rg = ReportGuard(false);
-    std::vector<TestType> gens
-        = {TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
-           TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
-           TestType({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})};
+    auto rg = ReportGuard(false);
 
-    Konieczny<TestType> S(gens);
+    Konieczny S(
+        {TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
+         TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
+         TestType({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})});
+
     REQUIRE(S.size() == 26);
   }
 
@@ -49,15 +49,14 @@ namespace libsemigroups {
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
                                    BMat<4>) {
-    auto                  rg = ReportGuard(false);
-    std::vector<TestType> gens
-        = {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-           TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
-           TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
-           TestType({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
-           TestType({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})};
+    auto rg = ReportGuard(false);
 
-    Konieczny<TestType> S(gens);
+    Konieczny S(
+        {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
+         TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
+         TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
+         TestType({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
+         TestType({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
     REQUIRE(S.size() == 415);
   }
 
@@ -78,14 +77,19 @@ namespace libsemigroups {
     REQUIRE(S.size() == 248'017);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "003", "exceptions", "[quick][bmat]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
+                                   "003",
+                                   "exceptions",
+                                   "[quick][bmat]",
+                                   BMat<>,
+                                   BMat<4>) {
     auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
-        Konieczny<BMat<>>(
-            {BMat<>({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-             BMat<>({{1, 0, 0}, {1, 0, 0}, {1, 1, 1}})}),
+        Konieczny(
+            {make<TestType>(
+                 {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
+             make<TestType>({{1, 0, 0}, {1, 0, 0}, {1, 1, 1}})}),
         LibsemigroupsException);
-    // This doesn't throw when using BMat<4>, so there's no test for that
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",

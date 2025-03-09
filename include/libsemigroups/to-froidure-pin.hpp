@@ -27,6 +27,7 @@
 #include "froidure-pin.hpp"        // for FroidurePin
 #include "kambites-class.hpp"      // for Kambites
 #include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "konieczny.hpp"           // for Konieczny
 #include "todd-coxeter-class.hpp"  // for ToddCoxeter
 
 #include "detail/kbe.hpp"  // for KBE
@@ -180,6 +181,36 @@ namespace libsemigroups {
           std::is_same_v<Thing<int>, FroidurePin<int>>,
           FroidurePin<
               detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>>;
+
+  //! \ingroup to_froidure_pin_group
+  //!
+  //! \brief Convert a \ref Konieczny object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<FroidurePin>(k);
+  //! \endcode
+  //!
+  //! where \p k is a \ref Konieczny instance. The returned FroidurePin
+  //! object is isomorphic to the semigroup or monoid represented by \p
+  //! k.
+  //!
+  //! \tparam Thing used for SFINAE should be FroidurePin.
+  //! \tparam Element the element type of the Konieczny object.
+  //! \tparam Traits the traits type of the Konieczny object.
+  //!
+  //! \param k the \ref Konieczny instance to convert.
+  //!
+  //! \returns A FroidurePin instance.
+  template <template <typename...> typename Thing,
+            typename Element,
+            typename Traits>
+  auto to(Konieczny<Element, Traits> const& k)
+      -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
+                          FroidurePin<Element>>;
 
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter
