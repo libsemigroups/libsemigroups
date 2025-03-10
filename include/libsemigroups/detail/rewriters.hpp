@@ -41,9 +41,8 @@
 
 //! \defgroup \rewriters_group Rewriters
 //!
-//! This file contains documentation for the functionality of the following
-//! classes in `libsemigroups`:
-//! * \ref libsemigroups::detail::Rule
+//! This file contains documentation for the functionality for rewriters in
+//! `libsemigroups`.
 namespace libsemigroups {
   namespace detail {
     // TODO(2) remove from libsemigroups namespace and put into relevant class
