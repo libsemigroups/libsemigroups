@@ -41,7 +41,6 @@ namespace libsemigroups {
         std::is_unsigned<Node>(),
         "the template parameter Node must be an unsigned integral type!");
 
-
     using node_type  = Node;
     using label_type = Node;
     using size_type  = std::size_t;
@@ -104,12 +103,12 @@ namespace libsemigroups {
       return _end - _start;
     }
 
-    //! \brief The true start node in the underlying graph
+    //! \brief The start node in the underlying graph
     [[nodiscard]] node_type start_node() const noexcept {
       return _start;
     }
 
-    //! \brief The true end node in the underlying graph
+    //! \brief The end node in the underlying graph
     [[nodiscard]] node_type end_node() const noexcept {
       return _end;
     }
@@ -203,7 +202,7 @@ namespace libsemigroups {
     [[nodiscard]] const_iterator_targets
     cbegin_targets_no_checks(node_type source) const noexcept {
       node_type translated = view_to_graph(source);
-      return graph_to_view(_graph->_dynamic_array_2.cbegin_row(translated));
+      return _graph->cbegin_targets_no_checks(translated);
     }
 
     //! \brief Returns a random access iterator pointing one beyond the target
@@ -251,7 +250,8 @@ namespace libsemigroups {
     //! \ref cend_targets.
     [[nodiscard]] const_iterator_targets
     cend_targets_no_checks(node_type source) const noexcept {
-      return _graph->_dynamic_array_2.cbegin_row(source) + _graph->out_degree();
+      node_type translated = view_to_graph(source);
+      return _graph->cend_targets_no_checks(translated);
     }
 
     //! \brief Returns a range object containing all nodes in a word graph.
@@ -278,7 +278,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     [[nodiscard]] auto labels() const noexcept {
-      return rx::seq<label_type>() | rx::take(out_degree());
+      return _graph->labels();
     }
 
     //! \brief Returns a range object containing all the targets of edges with
@@ -300,8 +300,8 @@ namespace libsemigroups {
     //! to \ref number_of_nodes).
     [[nodiscard]] rx::iterator_range<const_iterator_targets>
     targets_no_checks(node_type source) const noexcept {
-      return rx::iterator_range(cbegin_targets_no_checks(source),
-                                cend_targets_no_checks(source));
+      node_type translated = view_to_graph(source);
+      return _graph->targets_no_checks(translated);
     }
 
     //! \brief Returns a range object containing pairs consisting of edge
@@ -463,17 +463,21 @@ namespace libsemigroups {
     [[nodiscard]] node_type target_no_checks(node_type  source,
                                              label_type a) const;
 
-    private:
+   private:
     const WordGraph<Node>* _graph;
     size_type              _start;
     size_type              _end;
     node_type              view_to_graph(node_type n) const {
       return n + _start;
     };
-    node_type              graph_to_view(node_type n) const {
+    node_type graph_to_view(node_type n) const {
       return n - _start;
     }
-};
+
+    std::pair<node_type, label_type> graph_to_view(std::pair<node_type, label_type> const& in) const {
+      return std::pair<node_type, label_type>(in.first, graph_to_view(in.second));
+    }
+  };
 
   namespace word_graph_view {
     //! \brief Throws \c LIBSEMIGROUPS_EXCEPTION if the target node
@@ -482,7 +486,10 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
 
-    template <typename Node> void throw_if_label_out_of_bounds(WordGraphView<Node> const& wgv, typename WordGraphView<Node>::label_type a);
+    template <typename Node>
+    void
+    throw_if_label_out_of_bounds(WordGraphView<Node> const&               wgv,
+                                 typename WordGraphView<Node>::label_type a);
   }  // namespace word_graph_view
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"
