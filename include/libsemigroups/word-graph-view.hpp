@@ -35,15 +35,16 @@ namespace libsemigroups {
   template <typename Node>
   class WordGraphView {
    public:
-    using node_type  = Node;
-    using label_type = Node;
-    using size_type  = std::size_t;
-
     static_assert(std::is_integral<Node>(),
                   "the template parameter Node must be an integral type!");
     static_assert(
         std::is_unsigned<Node>(),
         "the template parameter Node must be an unsigned integral type!");
+
+
+    using node_type  = Node;
+    using label_type = Node;
+    using size_type  = std::size_t;
 
     //! The type of an iterator pointing to the nodes of the word graph view.
     using const_iterator_nodes =
@@ -60,19 +61,21 @@ namespace libsemigroups {
 
     //! \brief Construct from an existing WordGraphView
     //! \param graph underlying WordGraphView object
-    WordGraphView(const WordGraph<Node>* graph,
-                  const size_type        start,
-                  const size_type        end);
+    WordGraphView(WordGraph<Node> const& graph, size_type start, size_type end);
 
     //! \brief Copy constructor
-    WordGraphView(WordGraphView const&);
+    WordGraphView(WordGraphView<Node> const&) = default;
+
+    //! \brief Move constructor
+    WordGraphView(WordGraphView<Node>&&) = default;
 
     //! \brief Construct from WordGraph with another node type.
     //!
-    //! This function can be used to construct a WordGraph<Node> as a copy of a
-    //! WordGraph<OtherNode> so long as `sizeof(OtherNode) <= sizeof(Node)`.
+    //! This function can be used to construct a WordGraphView<Node> as a copy
+    //! of a WordGraphView<OtherNode> so long as `sizeof(OtherNode) <=
+    //! sizeof(Node)`.
     //!
-    //! \param that the word graph to copy.
+    //! \param that the word graph view to copy.
     //!
     //! \note Any edge with target \ref UNDEFINED in \p that will have target
     //! `static_cast<Node>(UNDEFINED)` in the constructed word graph.
@@ -80,7 +83,7 @@ namespace libsemigroups {
     WordGraphView(WordGraphView<OtherNode> const& that);
 
     //! \brief Construct empty object for future assignment
-    WordGraphView() : _start(0), _end(0), _nr_nodes(0) {}
+    WordGraphView();
 
     //! \brief Reshape this view over the same graph
     WordGraphView& init(const size_type start, const size_type end);
@@ -97,8 +100,18 @@ namespace libsemigroups {
     //! \brief The number of nodes that this view ranges over (_end -
     //! _start)
     //! \returns
-    [[nodiscard]] size_type inline number_of_nodes() const noexcept {
-      return _nr_nodes;
+    [[nodiscard]] size_type number_of_nodes() const noexcept {
+      return _end - _start;
+    }
+
+    //! \brief The true start node in the underlying graph
+    [[nodiscard]] node_type start_node() const noexcept {
+      return _start;
+    }
+
+    //! \brief The true end node in the underlying graph
+    [[nodiscard]] node_type end_node() const noexcept {
+      return _end;
     }
 
     //! \brief Returns the out degree
@@ -107,20 +120,6 @@ namespace libsemigroups {
     //!
     //! \returns The number of edge labels, type \c size_type
     [[nodiscard]] size_type out_degree() const noexcept;
-
-    //! \brief Returns the node at the start of the range of this
-    //! word graph
-    //! \returns The start node, type \c node_type
-    [[nodiscard]] size_type start_node() const noexcept {
-      return _start;
-    }
-
-    //! \brief Returns the node at the end of the range of this
-    //! word graph
-    //! \returns The end node, type \c node_type
-    [[nodiscard]] size_type end_node() const noexcept {
-      return _end;
-    }
 
     //! \brief Returns a random access iterator pointing at the first node of
     //! the word graph.
@@ -137,7 +136,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     const_iterator_nodes cbegin_nodes() const noexcept {
-      return detail::IntRange<node_type>(_start, _end).cbegin();
+      return detail::IntRange<node_type>(0, number_of_nodes()).cbegin();
     }
 
     //! \brief Returns a random access iterator pointing one past the last node
@@ -155,7 +154,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     [[nodiscard]] const_iterator_nodes cend_nodes() const noexcept {
-      return detail::IntRange<node_type>(_start, _end).cend();
+      return detail::IntRange<node_type>(0, number_of_nodes()).cend();
     }
 
     //! \brief Returns a random access iterator pointing at the target of
@@ -203,7 +202,8 @@ namespace libsemigroups {
     //! \ref cbegin_targets.
     [[nodiscard]] const_iterator_targets
     cbegin_targets_no_checks(node_type source) const noexcept {
-      return graph->_dynamic_array_2.cbegin_row(source);
+      node_type translated = view_to_graph(source);
+      return graph_to_view(_graph->_dynamic_array_2.cbegin_row(translated));
     }
 
     //! \brief Returns a random access iterator pointing one beyond the target
@@ -251,7 +251,7 @@ namespace libsemigroups {
     //! \ref cend_targets.
     [[nodiscard]] const_iterator_targets
     cend_targets_no_checks(node_type source) const noexcept {
-      return graph->_dynamic_array_2.cbegin_row(source) + graph->out_degree();
+      return _graph->_dynamic_array_2.cbegin_row(source) + _graph->out_degree();
     }
 
     //! \brief Returns a range object containing all nodes in a word graph.
@@ -463,15 +463,17 @@ namespace libsemigroups {
     [[nodiscard]] node_type target_no_checks(node_type  source,
                                              label_type a) const;
 
-    //! The word graph object which this word graph view abstracts over
-    //! May be null
-    const WordGraph<Node>* graph;
-
-   private:
-    size_type _start;
-    size_type _end;
-    size_type _nr_nodes;
-  };
+    private:
+    const WordGraph<Node>* _graph;
+    size_type              _start;
+    size_type              _end;
+    node_type              view_to_graph(node_type n) const {
+      return n + _start;
+    };
+    node_type              graph_to_view(node_type n) const {
+      return n - _start;
+    }
+};
 
   namespace word_graph_view {
     //! \brief Throws \c LIBSEMIGROUPS_EXCEPTION if the target node
@@ -479,6 +481,8 @@ namespace libsemigroups {
     //! that is \c n is not >= _start and <= _end
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
+
+    template <typename Node> void throw_if_label_out_of_bounds(WordGraphView<Node> const& wgv, typename WordGraphView<Node>::label_type a);
   }  // namespace word_graph_view
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"

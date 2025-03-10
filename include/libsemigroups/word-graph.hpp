@@ -91,9 +91,6 @@ namespace libsemigroups {
     template <typename N>
     friend class WordGraph;
 
-    template <typename N>
-    friend class WordGraphView;
-
    public:
     ////////////////////////////////////////////////////////////////////////
     // WordGraph - typedefs - public
