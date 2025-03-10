@@ -41,6 +41,7 @@
 
 #include "adapters.hpp"  // for Complexity, Degree, ...
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
+#include "types.hpp"     // for enable_if_is_same
 
 namespace libsemigroups {
 
@@ -794,6 +795,68 @@ namespace libsemigroups {
   };
 
   //! @}
+
+  //! \ingroup make_transf_group
+  //!
+  //! \brief Construct a HPCombi::Transf16 from universal reference and
+  //! validate.
+  //!
+  //! Constructs a HPCombi::Transf16 initialized using the container \p cont as
+  //! follows: the image of the point \c i under the transformation is the value
+  //! in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type. Must by HPCombi::Transf16.
+  //! \tparam Container type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref HPCombi::Transf16 instance.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont exceeds \c 16;
+  //! * any value in \p cont exceeds `cont.size()`.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename Container>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::Transf16>
+  make(Container&& cont) {
+    if (cont.size() > 16) {
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (container) must have size at "
+                              "most 16, but found {}",
+                              cont.size());
+    }
+    auto result = HPCombi::Transf16(cont);
+    result.validate();
+    return result;
+  }
+
+  //! \ingroup make_transf_group
+  //!
+  //! \brief Construct a HPCombi::Transf16 from universal reference and
+  //! validate.
+  //!
+  //! Constructs a HPCombi::Transf16 initialized using the container \p cont as
+  //! follows: the image of the point \c i under the transformation is the value
+  //! in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type. Must by HPCombi::Transf16.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref HPCombi::Transf16 instance.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont exceeds \c 16;
+  //! * any value in \p cont exceeds `cont.size()`.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::Transf16>
+  make(std::initializer_list<uint8_t>&& cont) {
+    return make<Return, std::initializer_list<uint8_t>>(std::move(cont));
+  }
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
