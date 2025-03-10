@@ -18,6 +18,9 @@
 
 #include <cstddef>  // for size_t
 #include <utility>  // for std::move
+#include <algorithm> // for std::equal
+
+#include <iostream> // remove when finished writing tests
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
@@ -72,14 +75,92 @@ namespace libsemigroups {
                             WordGraphView<size_t> v(g, 2, 5);
                             REQUIRE(v.target(0, 3) == 3);
                             REQUIRE(v.target(1, 4) == 3);
-                            REQUIRE(v.target(2, 3) == UNDEFINED);
                           }
-LIBSEMIGROUPS_TEST_CASE("WordGraphView", "005", "test target(s, a) throws", "[quick]") {
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "005", "test target(s, a) throws correctly", "[quick]") {
   WordGraph<size_t>     g(10, 5);
                             g.target(2, 3, 5);
                             g.target(3, 4, 5);
                             WordGraphView<size_t> v(g, 2, 5);
                             REQUIRE_THROWS_AS(v.target(5, 3), LibsemigroupsException);
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "006", "test label bounds checking throws", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  WordGraphView<size_t> v(g, 2, 5);
+                            REQUIRE_THROWS_AS(v.target(0, 7),LibsemigroupsException);
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "007", "test cbegin_targets", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  g.target(2, 0, 5);
+  WordGraphView<size_t> v(g, 2, 5);
+
+  auto targets = v.cbegin_targets(0);
+  REQUIRE(*targets == 3);
+  REQUIRE_THROWS_AS(v.cbegin_targets(7), LibsemigroupsException);
+  REQUIRE(*(v.cbegin_targets_no_checks(0)) == 3);
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "008", "test cend_targets", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  g.target(2, 4, 5);
+  WordGraphView<size_t> v(g, 2, 5);
+
+  auto targets = v.cend_targets(0);
+  REQUIRE(*(targets - 1) == 3);
+  REQUIRE_THROWS_AS(v.cend_targets(7), LibsemigroupsException);
+  REQUIRE(*(v.cend_targets_no_checks(0) - 1) == 3);
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "009", "test nodes() range", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  g.target(2, 4, 5);
+  WordGraphView<size_t> v(g, 2, 5);
+
+  auto nodes = v.nodes();
+  size_t i = 0;
+  for(const auto &elem : nodes) {
+    REQUIRE(elem == i++);
+  }
+  REQUIRE(i == 3);
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "010", "test labels is same as graph labels", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  WordGraphView<size_t> v(g, 2, 5);
+  auto v_labels = v.labels();
+
+  size_t i = 0;
+  for(const auto&elem : v_labels) {
+    REQUIRE(elem == i++);
+  }
+  REQUIRE(i == 5);
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "011", "targets_no_checks", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  g.target(2, 1, 5);
+  g.target(2, 2, 6);
+  g.target(2, 3, 4);
+  WordGraphView<size_t> v(g, 2, 5);
+  REQUIRE(false);
+  //TODO(1) work out how to handle ranges
+}
+
+LIBSEMIGROUPS_TEST_CASE("WordGraphView", "012", "next_label_and_target", "[quick]") {
+  WordGraph<size_t>     g(10, 5);
+  g.target(2, 1, 5);
+  g.target(2, 2, 6);
+  g.target(2, 3, 4);
+  WordGraphView<size_t> v(g, 2, 5);
+
+  
+  std::pair<size_t, size_t> compare_to(1, 3);
+  std::pair<size_t, size_t> compare_to_1(2, 4);
+  REQUIRE(compare_to == v.next_label_and_target(0, 1));
+  REQUIRE(compare_to_1 == v.next_label_and_target(0, 2));
+  REQUIRE_THROWS_AS(v.next_label_and_target(5, 1), LibsemigroupsException);
+  REQUIRE_THROWS_AS(v.next_label_and_target(0, 6), LibsemigroupsException);
 }
 
 }  // namespace libsemigroups

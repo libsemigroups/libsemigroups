@@ -1,3 +1,24 @@
+//
+// libsemigroups - C++ library for semigroups and monoids
+// Copyright (C) 2025 Nadim Searight
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+// This file contains an implementation of word graph views, a thin layer over
+// word graphs exposing a chosen range of nodes
+
 #include "libsemigroups/word-graph-view.hpp"
 #include <utility>
 
@@ -24,7 +45,7 @@ namespace libsemigroups {
   WordGraphView<Node>::cbegin_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->cbegin_targets_no_checks(translated));
+    return _graph->cbegin_targets_no_checks(translated);
   }
 
   template <typename Node>
@@ -32,7 +53,7 @@ namespace libsemigroups {
   WordGraphView<Node>::cend_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->cend_targets_no_checks(translated));
+    return _graph->cend_targets_no_checks(translated);
   }
 
   template <typename Node>
@@ -41,15 +62,16 @@ namespace libsemigroups {
   WordGraphView<Node>::next_label_and_target_no_checks(node_type  s,
                                                        label_type a) const {
     node_type translated = view_to_graph(s);
-    return graph_to_view(
-        _graph->next_label_and_target_no_checks(translated, a));
+    return 
+        graph_to_view(_graph->next_label_and_target_no_checks(translated, a));
   }
 
   template <typename Node>
   std::pair<typename WordGraphView<Node>::label_type,
             typename WordGraphView<Node>::node_type>
   WordGraphView<Node>::next_label_and_target(node_type s, label_type a) const {
-    word_graph_view::throw_if_node_out_of_bounds(s);
+    word_graph_view::throw_if_node_out_of_bounds(*this, s);
+    word_graph_view::throw_if_label_out_of_bounds(*this, a);
     node_type translated = view_to_graph(s);
     return graph_to_view(
         _graph->next_label_and_target_no_checks(translated, a));
@@ -97,21 +119,24 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  typename WordGraphView<Node>::node_type
-  WordGraphView<Node>::target(typename WordGraphView<Node>::node_type source, typename WordGraphView<Node>::label_type a) const {
+  typename WordGraphView<Node>::node_type WordGraphView<Node>::target(
+      typename WordGraphView<Node>::node_type  source,
+      typename WordGraphView<Node>::label_type a) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     word_graph_view::throw_if_label_out_of_bounds(*this, a);
     return target_no_checks(source, a);
   }
   template <typename Node>
-  typename WordGraphView<Node>::node_type
-  WordGraphView<Node>::target_no_checks(  typename WordGraphView<Node>::node_type source,   typename WordGraphView<Node>::label_type a) const {
+  typename WordGraphView<Node>::node_type WordGraphView<Node>::target_no_checks(
+      typename WordGraphView<Node>::node_type  source,
+      typename WordGraphView<Node>::label_type a) const {
     node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->target_no_checks(translated, a));
+    return _graph->target_no_checks(translated, a);
   }
   template <typename Node>
-  WordGraphView<Node>& WordGraphView<Node>::init(  typename WordGraphView<Node>::size_type start,
-    typename WordGraphView<Node>::size_type end) {
+  WordGraphView<Node>&
+  WordGraphView<Node>::init(typename WordGraphView<Node>::size_type start,
+                            typename WordGraphView<Node>::size_type end) {
     _start = start;
     _end   = end;
     return *this;
@@ -146,15 +171,16 @@ namespace libsemigroups {
       }
     }
 
-
-
-     template <typename Node> void word_graph_view::throw_if_label_out_of_bounds(WordGraphView<Node> const& wgv, typename WordGraphView<Node>::label_type a) {
+    template <typename Node>
+    void word_graph_view::throw_if_label_out_of_bounds(
+        WordGraphView<Node> const&               wgv,
+        typename WordGraphView<Node>::label_type a) {
       if (a >= wgv.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
                                 "the range [0, {}), got {}",
                                 wgv.out_degree(),
                                 a);
       }
-     }
+    }
   }  // namespace word_graph_view
 }  // namespace libsemigroups
