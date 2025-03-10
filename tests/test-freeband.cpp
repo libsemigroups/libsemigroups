@@ -120,6 +120,7 @@ namespace libsemigroups {
   */
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "002", "", "[freeband][quick]") {
+    using words::operator+;
     REQUIRE(freeband_equal_to({}, {}));
     REQUIRE(!freeband_equal_to(00_w, {}));
     REQUIRE(!freeband_equal_to({}, 0_w));
@@ -136,8 +137,10 @@ namespace libsemigroups {
     REQUIRE(freeband_equal_to(012101230121012_w,
                               01233221021023021321232102010203201223012_w));
     REQUIRE(freeband_equal_to(
-        0123031321003221010103133333120100121231131211030102333002033312111201131220023122322322203123012223_w,
-        0112333132112303332111003231232131213201122213110103030223223133322233020131310233321221110110301123_w));
+        012303132100322101010313333312010012123113121103010233300203331211_w
+            + 1201131220023122322322203123012223_w,
+        011233313211230333211100323123213121320112221311010303022322313332_w
+            + 2233020131310233321221110110301123_w));
 
     // Check the iterator version of the function works as intended
     std::string a = "abcdba";
