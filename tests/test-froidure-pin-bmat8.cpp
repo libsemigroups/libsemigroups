@@ -42,14 +42,13 @@ namespace libsemigroups {
                           "010",
                           "regular boolean mat monoid 4 - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    auto               rg = ReportGuard(false);
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
+    auto rg = ReportGuard(false);
 
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
 
     REQUIRE(S.current_max_word_length() == 1);
     REQUIRE(!S.finished());
@@ -237,21 +236,18 @@ namespace libsemigroups {
                           "011",
                           "exception zero generators given - BMat8",
                           "[quick][froidure-pin][bmat8]") {
-    std::vector<BMat8> gens;
-
-    REQUIRE_NOTHROW(make<FroidurePin>(gens));
+    REQUIRE_NOTHROW(make<FroidurePin>(std::vector<BMat8>()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "012",
                           "exception to_element - BMat8",
                           "[quick][froidure-pin][bmat8]") {
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
-           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
+         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})});
 
     REQUIRE(!S.contains_one());
     REQUIRE_THROWS_AS(froidure_pin::to_element(S, {}), LibsemigroupsException);
@@ -265,11 +261,10 @@ namespace libsemigroups {
                           "013",
                           "exception prefix - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})});
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.prefix(i));
@@ -281,11 +276,10 @@ namespace libsemigroups {
                           "014",
                           "exception first_letter - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})});
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.first_letter(i));
@@ -297,11 +291,10 @@ namespace libsemigroups {
                           "015",
                           "exception current_length - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})});
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.current_length(i));
@@ -313,10 +306,9 @@ namespace libsemigroups {
                           "016",
                           "exception product_by_reduction - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})});
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -338,10 +330,9 @@ namespace libsemigroups {
                           "017",
                           "exception fast_product - BMat8",
                           "[quick][froidure-pin][bmat8][024]") {
-    std::vector<BMat8> gens
-        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-           BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = make<FroidurePin>(gens);
+    auto S = make<FroidurePin>(
+        {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+         BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})});
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -383,7 +374,7 @@ namespace libsemigroups {
       nf.next();
     }
     REQUIRE((nf | rx::take(20) | rx::to_vector())
-            == std::vector<word_type>(
+            == std::vector(
                 {1102312121_w, 1102313121_w, 1103111202_w, 1103112021_w,
                  1103112120_w, 1103112123_w, 1103120120_w, 1103120121_w,
                  1103120210_w, 1103120211_w, 1103120212_w, 1103121112_w,
@@ -433,7 +424,7 @@ namespace libsemigroups {
     S.add_generator(
         BMat8({{0, 0, 0, 1}, {0, 0, 0, 1}, {0, 0, 0, 1}, {0, 0, 0, 1}}));
     REQUIRE(S.size() == 4);
-    REQUIRE(std::vector<relation_type>(S.cbegin_rules(), S.cend_rules())
+    REQUIRE(std::vector(S.cbegin_rules(), S.cend_rules())
             == std::vector<relation_type>({{00_w, 0_w},
                                            {01_w, 1_w},
                                            {02_w, 2_w},

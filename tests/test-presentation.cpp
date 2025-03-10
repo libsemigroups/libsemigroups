@@ -64,6 +64,8 @@
 
 namespace libsemigroups {
 
+  using literals::operator""_w;
+
   struct LibsemigroupsException;  // forward decl
 
   namespace {
@@ -1095,18 +1097,18 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
-    p.alphabet({0, 1, 2});
-    REQUIRE(p.alphabet() == word_type({0, 1, 2}));
-    REQUIRE_THROWS_AS(p.alphabet({0, 0}), LibsemigroupsException);
-    REQUIRE(p.alphabet() == word_type({0, 1, 2}));
-    presentation::add_rule_no_checks(p, {0, 0, 0}, {0});
+    p.alphabet(012_w);
+    REQUIRE(p.alphabet() == 012_w);
+    REQUIRE_THROWS_AS(p.alphabet(00_w), LibsemigroupsException);
+    REQUIRE(p.alphabet() == 012_w);
+    presentation::add_rule_no_checks(p, 000_w, 0_w);
     REQUIRE(std::distance(p.rules.cbegin(), p.rules.cend()) == 2);
-    REQUIRE(std::vector<word_type>(p.rules.cbegin(), p.rules.cend())
-            == std::vector<word_type>({{0, 0, 0}, {0}}));
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    REQUIRE_THROWS_AS(presentation::add_rule(p, {0, 5, 0}, {0}),
+    REQUIRE(std::vector(p.rules.cbegin(), p.rules.cend())
+            == std::vector({000_w, 0_w}));
+    presentation::add_rule(p, 000_w, 0_w);
+    REQUIRE_THROWS_AS(presentation::add_rule(p, 050_w, 0_w),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(presentation::add_rule(p, {}, {0}),
+    REQUIRE_THROWS_AS(presentation::add_rule(p, {}, 0_w),
                       LibsemigroupsException);
   }
 

@@ -257,29 +257,29 @@ namespace libsemigroups {
                           "004",
                           "orbits for regular boolean mat monoid 5",
                           "[quick][no-valgrind]") {
-    auto                     rg             = ReportGuard(false);
-    const std::vector<BMat8> reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
-                                                      {1, 0, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1}}),
-                                               BMat8({{0, 1, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1},
-                                                      {1, 0, 0, 0, 0}}),
-                                               BMat8({{1, 0, 0, 0, 0},
-                                                      {1, 1, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1}}),
-                                               BMat8({{0, 0, 0, 0, 0},
-                                                      {0, 1, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1}})};
-    row_orb_type             row_orb;
-    col_orb_type             col_orb;
+    auto              rg             = ReportGuard(false);
+    std::vector const reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
+                                               {1, 0, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1}}),
+                                        BMat8({{0, 1, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1},
+                                               {1, 0, 0, 0, 0}}),
+                                        BMat8({{1, 0, 0, 0, 0},
+                                               {1, 1, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1}}),
+                                        BMat8({{0, 0, 0, 0, 0},
+                                               {0, 1, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1}})};
+    row_orb_type      row_orb;
+    col_orb_type      col_orb;
 
     row_orb.add_seed(bmat8::one());
     col_orb.add_seed(bmat8::one());
@@ -298,32 +298,32 @@ namespace libsemigroups {
                           "005",
                           "orbits for regular boolean mat monoid 6",
                           "[extreme]") {
-    auto                     rg             = ReportGuard(true);
-    const std::vector<BMat8> reg_bmat6_gens = {BMat8({{0, 1, 0, 0, 0, 0},
-                                                      {1, 0, 0, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0, 0},
-                                                      {0, 0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 0, 1}}),
-                                               BMat8({{0, 1, 0, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0, 0},
-                                                      {0, 0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 0, 1},
-                                                      {1, 0, 0, 0, 0, 0}}),
-                                               BMat8({{1, 0, 0, 0, 0, 0},
-                                                      {0, 1, 0, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0, 0},
-                                                      {0, 0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 0, 1, 0},
-                                                      {1, 0, 0, 0, 0, 1}}),
-                                               BMat8({{1, 0, 0, 0, 0, 0},
-                                                      {0, 1, 0, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0, 0},
-                                                      {0, 0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 0, 0}})};
-    row_orb_type             row_orb;
+    auto              rg             = ReportGuard(true);
+    std::vector const reg_bmat6_gens = {BMat8({{0, 1, 0, 0, 0, 0},
+                                               {1, 0, 0, 0, 0, 0},
+                                               {0, 0, 1, 0, 0, 0},
+                                               {0, 0, 0, 1, 0, 0},
+                                               {0, 0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 0, 1}}),
+                                        BMat8({{0, 1, 0, 0, 0, 0},
+                                               {0, 0, 1, 0, 0, 0},
+                                               {0, 0, 0, 1, 0, 0},
+                                               {0, 0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 0, 1},
+                                               {1, 0, 0, 0, 0, 0}}),
+                                        BMat8({{1, 0, 0, 0, 0, 0},
+                                               {0, 1, 0, 0, 0, 0},
+                                               {0, 0, 1, 0, 0, 0},
+                                               {0, 0, 0, 1, 0, 0},
+                                               {0, 0, 0, 0, 1, 0},
+                                               {1, 0, 0, 0, 0, 1}}),
+                                        BMat8({{1, 0, 0, 0, 0, 0},
+                                               {0, 1, 0, 0, 0, 0},
+                                               {0, 0, 1, 0, 0, 0},
+                                               {0, 0, 0, 1, 0, 0},
+                                               {0, 0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 0, 0}})};
+    row_orb_type      row_orb;
 
     row_orb.add_seed(bmat8::one());  // TODO(1) change to BMat8::one for
                                      // consistency
@@ -343,20 +343,24 @@ namespace libsemigroups {
     RightAction<PPerm<8>, PPerm<8>, ImageRightAction<PPerm<8>, PPerm<8>>> o;
     o.add_seed(PPerm<8>::one(8));
     o.add_generator(
-        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
+        make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
     o.add_generator(
-        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
-    o.add_generator(PPerm<8>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
-    o.add_generator(PPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
+        make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
+    o.add_generator(
+        make<PPerm<8>>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
+    o.add_generator(
+        make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
     REQUIRE(o.size() == 256);
     o.init();  // Test init with non-trivial point_type
     o.add_seed(PPerm<8>::one(8));
     o.add_generator(
-        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
+        make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
     o.add_generator(
-        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
-    o.add_generator(PPerm<8>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
-    o.add_generator(PPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
+        make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
+    o.add_generator(
+        make<PPerm<8>>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
+    o.add_generator(
+        make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
     REQUIRE(o.size() == 256);
   }
 
@@ -368,21 +372,21 @@ namespace libsemigroups {
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+                        16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        16));
     o.add_generator(
-        PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                  16));
+        make<PPerm<16>>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                        16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        16));
     o.reserve(70'000);
     REQUIRE(o.size() == 65'536);
   }
@@ -395,21 +399,21 @@ namespace libsemigroups {
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(One<PPerm<16>>()(16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+                        16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        16));
     o.add_generator(
-        PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                  16));
+        make<PPerm<16>>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                        16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        16));
     o.reserve(70'000);
     REQUIRE(o.size() == 65'536);
     REQUIRE(o.scc().number_of_components() == 17);
@@ -423,21 +427,21 @@ namespace libsemigroups {
     LeftAction<PPerm<16>, PPerm<16>, ImageLeftAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(One<PPerm<16>>()(16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+                        16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        16));
     o.add_generator(
-        PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                  16));
+        make<PPerm<16>>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                        16));
     o.add_generator(
-        PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-                  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  16));
+        make<PPerm<16>>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+                        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+                        16));
     REQUIRE(o.size() == 65'536);
     REQUIRE(o.scc().number_of_components() == 17);
   }
@@ -562,29 +566,29 @@ namespace libsemigroups {
                           "[quick]") {
     auto rg = ReportGuard(false);
     RightAction<PPerm<3>, PPerm<3>, ImageRightAction<PPerm<3>, PPerm<3>>> o;
-    o.add_seed(PPerm<3>({0, 1, 2}, {0, 1, 2}, 3));
-    o.add_generator(PPerm<3>({0, 1, 2}, {1, 2, 0}, 3));
-    o.add_generator(PPerm<3>({0, 1, 2}, {1, 0, 2}, 3));
-    o.add_generator(PPerm<3>({1, 2}, {0, 1}, 3));
-    o.add_generator(PPerm<3>({0, 1}, {1, 2}, 3));
+    o.add_seed(make<PPerm<3>>({0, 1, 2}, {0, 1, 2}, 3));
+    o.add_generator(make<PPerm<3>>({0, 1, 2}, {1, 2, 0}, 3));
+    o.add_generator(make<PPerm<3>>({0, 1, 2}, {1, 0, 2}, 3));
+    o.add_generator(make<PPerm<3>>({1, 2}, {0, 1}, 3));
+    o.add_generator(make<PPerm<3>>({0, 1}, {1, 2}, 3));
     REQUIRE(o.size() == 8);
     REQUIRE((o.range() | rx::to_vector())
-            == std::vector<PPerm<3>>({PPerm<3>({0, 1, 2}, {0, 1, 2}, 3),
-                                      PPerm<3>({0, 1}, {0, 1}, 3),
-                                      PPerm<3>({1, 2}, {1, 2}, 3),
-                                      PPerm<3>({0}, {0}, 3),
-                                      PPerm<3>({0, 2}, {0, 2}, 3),
-                                      PPerm<3>({2}, {2}, 3),
-                                      PPerm<3>({1}, {1}, 3),
-                                      PPerm<3>({}, {}, 3)}));
+            == std::vector({make<PPerm<3>>({0, 1, 2}, {0, 1, 2}, 3),
+                            make<PPerm<3>>({0, 1}, {0, 1}, 3),
+                            make<PPerm<3>>({1, 2}, {1, 2}, 3),
+                            make<PPerm<3>>({0}, {0}, 3),
+                            make<PPerm<3>>({0, 2}, {0, 2}, 3),
+                            make<PPerm<3>>({2}, {2}, 3),
+                            make<PPerm<3>>({1}, {1}, 3),
+                            make<PPerm<3>>({}, {}, 3)}));
     REQUIRE_THROWS_AS(o.scc().component(10), LibsemigroupsException);
-    REQUIRE(o.root_of_scc(PPerm<3>({0, 2}, {0, 2}, 3))
-            == PPerm<3>({0, 2}, {0, 2}, 3));
-    REQUIRE(o.root_of_scc(PPerm<3>({0, 1}, {0, 1}, 3))
-            == PPerm<3>({0, 2}, {0, 2}, 3));
+    REQUIRE(o.root_of_scc(make<PPerm<3>>({0, 2}, {0, 2}, 3))
+            == make<PPerm<3>>({0, 2}, {0, 2}, 3));
+    REQUIRE(o.root_of_scc(make<PPerm<3>>({0, 1}, {0, 1}, 3))
+            == make<PPerm<3>>({0, 2}, {0, 2}, 3));
     REQUIRE_THROWS_AS(o.root_of_scc(make<PPerm<3>>({0, 3}, {0, 3}, 4)),
                       LibsemigroupsException);
-    REQUIRE(*o.begin() == PPerm<3>({0, 1, 2}, {0, 1, 2}, 3));
+    REQUIRE(*o.begin() == make<PPerm<3>>({0, 1, 2}, {0, 1, 2}, 3));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -609,27 +613,27 @@ namespace libsemigroups {
                           "018",
                           "orbits for regular BMat8 monoid 5 with stop/start",
                           "[quick][no-valgrind]") {
-    auto                     rg             = ReportGuard(false);
-    const std::vector<BMat8> reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
-                                                      {1, 0, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1}}),
-                                               BMat8({{0, 1, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1},
-                                                      {1, 0, 0, 0, 0}}),
-                                               BMat8({{1, 0, 0, 0, 0},
-                                                      {1, 1, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1}}),
-                                               BMat8({{0, 0, 0, 0, 0},
-                                                      {0, 1, 0, 0, 0},
-                                                      {0, 0, 1, 0, 0},
-                                                      {0, 0, 0, 1, 0},
-                                                      {0, 0, 0, 0, 1}})};
+    auto              rg             = ReportGuard(false);
+    std::vector const reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
+                                               {1, 0, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1}}),
+                                        BMat8({{0, 1, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1},
+                                               {1, 0, 0, 0, 0}}),
+                                        BMat8({{1, 0, 0, 0, 0},
+                                               {1, 1, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1}}),
+                                        BMat8({{0, 0, 0, 0, 0},
+                                               {0, 1, 0, 0, 0},
+                                               {0, 0, 1, 0, 0},
+                                               {0, 0, 0, 1, 0},
+                                               {0, 0, 0, 0, 1}})};
 
     row_orb_type row_orb;
     col_orb_type col_orb;
@@ -637,6 +641,8 @@ namespace libsemigroups {
     row_orb.add_seed(bmat8::one());
     col_orb.add_seed(bmat8::one());
     for (BMat8 g : reg_bmat5_gens) {
+      // TODO(1) helper function for adding generators to an Action from a
+      // container
       row_orb.add_generator(g);
       col_orb.add_generator(g);
     }
@@ -672,26 +678,26 @@ namespace libsemigroups {
     using boolmat_col_orb_type
         = LeftAction<TestType, static_vector, boolmat_col_action_type>;
 
-    const std::vector<TestType> reg_bmat5_gens = {TestType({{0, 1, 0, 0, 0},
-                                                            {1, 0, 0, 0, 0},
-                                                            {0, 0, 1, 0, 0},
-                                                            {0, 0, 0, 1, 0},
-                                                            {0, 0, 0, 0, 1}}),
-                                                  TestType({{0, 1, 0, 0, 0},
-                                                            {0, 0, 1, 0, 0},
-                                                            {0, 0, 0, 1, 0},
-                                                            {0, 0, 0, 0, 1},
-                                                            {1, 0, 0, 0, 0}}),
-                                                  TestType({{1, 0, 0, 0, 0},
-                                                            {1, 1, 0, 0, 0},
-                                                            {0, 0, 1, 0, 0},
-                                                            {0, 0, 0, 1, 0},
-                                                            {0, 0, 0, 0, 1}}),
-                                                  TestType({{0, 0, 0, 0, 0},
-                                                            {0, 1, 0, 0, 0},
-                                                            {0, 0, 1, 0, 0},
-                                                            {0, 0, 0, 1, 0},
-                                                            {0, 0, 0, 0, 1}})};
+    std::vector const reg_bmat5_gens = {TestType({{0, 1, 0, 0, 0},
+                                                  {1, 0, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                        TestType({{0, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1},
+                                                  {1, 0, 0, 0, 0}}),
+                                        TestType({{1, 0, 0, 0, 0},
+                                                  {1, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1}}),
+                                        TestType({{0, 0, 0, 0, 0},
+                                                  {0, 1, 0, 0, 0},
+                                                  {0, 0, 1, 0, 0},
+                                                  {0, 0, 0, 1, 0},
+                                                  {0, 0, 0, 0, 1}})};
 
     boolmat_row_orb_type row_orb;
     boolmat_col_orb_type col_orb;
@@ -706,7 +712,7 @@ namespace libsemigroups {
                       BitSet<5>(0x4),
                       BitSet<5>(0x2),
                       BitSet<5>(0x1)});
-    for (TestType const& g : reg_bmat5_gens) {
+    for (auto const& g : reg_bmat5_gens) {
       row_orb.add_generator(g);
       col_orb.add_generator(g);
     }

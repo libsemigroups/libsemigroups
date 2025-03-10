@@ -36,9 +36,9 @@ namespace libsemigroups {
                                    ProjMaxPlusMat<>) {
     auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
-    S.add_generator(TestType({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}));
-    S.add_generator(TestType({{0, 1, 1}, {1, 1, 1}, {0, 0, 0}}));
-    S.add_generator(TestType({{0, 1, 1}, {0, 0, 1}, {1, 0, 0}}));
+    S.add_generator(make<TestType>({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}));
+    S.add_generator(make<TestType>({{0, 1, 1}, {1, 1, 1}, {0, 0, 0}}));
+    S.add_generator(make<TestType>({{0, 1, 1}, {0, 0, 1}, {1, 0, 0}}));
 
     S.reserve(142);
 
@@ -51,15 +51,16 @@ namespace libsemigroups {
       pos++;
     }
 
-    froidure_pin::add_generators(S,
-                                 {TestType({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
+    froidure_pin::add_generators(
+        S, {make<TestType>({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
     REQUIRE(S.size() == 223);
-    froidure_pin::closure(S, {TestType({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
+    froidure_pin::closure(S,
+                          {make<TestType>({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
     REQUIRE(S.size() == 223);
     REQUIRE(froidure_pin::minimal_factorisation(
                 S,
-                TestType({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})
-                    * TestType({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}))
+                make<TestType>({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})
+                    * make<TestType>({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}))
             == word_type({3, 0}));
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
@@ -95,7 +96,7 @@ namespace libsemigroups {
     REQUIRE(S.position(id) == 0);
     REQUIRE(S.contains(id));
 
-    auto x = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    auto x = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.contains(x));
   }

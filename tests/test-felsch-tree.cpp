@@ -26,6 +26,7 @@
 #include "libsemigroups/detail/report.hpp"       // for ReportGuard
 
 namespace libsemigroups {
+  using literals::operator""_w;
 
   namespace detail {
     LIBSEMIGROUPS_TEST_CASE("FelschTree",
@@ -34,13 +35,13 @@ namespace libsemigroups {
                             "[quick][low-index]") {
       auto                    rg = ReportGuard(false);
       Presentation<word_type> p;
-      presentation::add_rule_no_checks(p, {1, 2, 1}, {1, 1});
-      presentation::add_rule_no_checks(p, {3, 3}, {1, 1});
-      presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1});
-      presentation::add_rule_no_checks(p, {3, 2}, {2, 3});
-      presentation::add_rule_no_checks(p, {3, 1}, {1, 1});
-      presentation::add_rule_no_checks(p, {2, 2}, {2});
-      presentation::add_rule_no_checks(p, {1, 3}, {1, 1});
+      presentation::add_rule_no_checks(p, 121_w, 11_w);
+      presentation::add_rule_no_checks(p, 33_w, 11_w);
+      presentation::add_rule_no_checks(p, 111_w, 11_w);
+      presentation::add_rule_no_checks(p, 32_w, 23_w);
+      presentation::add_rule_no_checks(p, 31_w, 11_w);
+      presentation::add_rule_no_checks(p, 22_w, 2_w);
+      presentation::add_rule_no_checks(p, 13_w, 11_w);
       p.alphabet_from_rules();
       p.validate();
 

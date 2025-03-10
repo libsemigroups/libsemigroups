@@ -22,10 +22,12 @@
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE etc
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/freeband.hpp"  // for freeband_equal_to
-#include "libsemigroups/types.hpp"     // for word_type
+#include "libsemigroups/freeband.hpp"    // for freeband_equal_to
+#include "libsemigroups/types.hpp"       // for word_type
+#include "libsemigroups/word-range.hpp"  // for literals
 
 namespace libsemigroups {
+  using literals::operator""_w;
 
   // The following contains useful test cases when checking the right, left,
   // count_sort and radix_sort functions.
@@ -119,39 +121,23 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "002", "", "[freeband][quick]") {
     REQUIRE(freeband_equal_to({}, {}));
-    REQUIRE(!freeband_equal_to({0, 0}, {}));
-    REQUIRE(!freeband_equal_to({}, {0}));
-    REQUIRE(freeband_equal_to({0, 0}, {0}));
-    REQUIRE(!freeband_equal_to({0, 1}, {0}));
-    REQUIRE(
-        freeband_equal_to({0, 1, 2, 3, 2, 1, 0}, {0, 1, 2, 3, 2, 3, 2, 1, 0}));
-    REQUIRE(!freeband_equal_to({1, 2, 3}, {0, 1, 2}));
-    REQUIRE(freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10}));
-    REQUIRE(!freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
-                               {4, 3, 2, 1, 0, 4, 3, 2, 1, 0}));
-    REQUIRE(freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2}));
-    REQUIRE(freeband_equal_to({0, 3, 2, 1, 5, 4, 3, 5, 6, 3, 2, 9},
-                              {0, 3, 2, 1, 5, 4, 3, 5, 6, 3, 2, 9,
-                               0, 3, 2, 1, 5, 4, 3, 5, 6, 3, 2, 9}));
-    REQUIRE(freeband_equal_to({0, 1, 2, 3, 0, 1},
-                              {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
-                               0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
-                               0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1}));
-    REQUIRE(freeband_equal_to({0, 1, 2, 1, 0, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2},
-                              {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
-                               0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
-                               0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1, 2}));
+    REQUIRE(!freeband_equal_to(00_w, {}));
+    REQUIRE(!freeband_equal_to({}, 0_w));
+    REQUIRE(freeband_equal_to(00_w, 0_w));
+    REQUIRE(!freeband_equal_to(01_w, 0_w));
+    REQUIRE(freeband_equal_to(0123210_w, 012323210_w));
+    REQUIRE(!freeband_equal_to(123_w, 012_w));
+    REQUIRE(freeband_equal_to(142310_w, 14142310_w));
+    REQUIRE(!freeband_equal_to(0123401234_w, 4321043210_w));
+    REQUIRE(freeband_equal_to(0121012_w, 012_w));
+    REQUIRE(freeband_equal_to("032154356329"_w, "032154356329032154356329"_w));
+    REQUIRE(freeband_equal_to(012301_w,
+                              0123322102102302132123210201020320122301_w));
+    REQUIRE(freeband_equal_to(012101230121012_w,
+                              01233221021023021321232102010203201223012_w));
     REQUIRE(freeband_equal_to(
-        {0, 1, 2, 3, 0, 3, 1, 3, 2, 1, 0, 0, 3, 2, 2, 1, 0, 1, 0, 1,
-         0, 3, 1, 3, 3, 3, 3, 3, 1, 2, 0, 1, 0, 0, 1, 2, 1, 2, 3, 1,
-         1, 3, 1, 2, 1, 1, 0, 3, 0, 1, 0, 2, 3, 3, 3, 0, 0, 2, 0, 3,
-         3, 3, 1, 2, 1, 1, 1, 2, 0, 1, 1, 3, 1, 2, 2, 0, 0, 2, 3, 1,
-         2, 2, 3, 2, 2, 3, 2, 2, 2, 0, 3, 1, 2, 3, 0, 1, 2, 2, 2, 3},
-        {0, 1, 1, 2, 3, 3, 3, 1, 3, 2, 1, 1, 2, 3, 0, 3, 3, 3, 2, 1,
-         1, 1, 0, 0, 3, 2, 3, 1, 2, 3, 2, 1, 3, 1, 2, 1, 3, 2, 0, 1,
-         1, 2, 2, 2, 1, 3, 1, 1, 0, 1, 0, 3, 0, 3, 0, 2, 2, 3, 2, 2,
-         3, 1, 3, 3, 3, 2, 2, 2, 3, 3, 0, 2, 0, 1, 3, 1, 3, 1, 0, 2,
-         3, 3, 3, 2, 1, 2, 2, 1, 1, 1, 0, 1, 1, 0, 3, 0, 1, 1, 2, 3}));
+        0123031321003221010103133333120100121231131211030102333002033312111201131220023122322322203123012223_w,
+        0112333132112303332111003231232131213201122213110103030223223133322233020131310233321221110110301123_w));
 
     // Check the iterator version of the function works as intended
     std::string a = "abcdba";
@@ -163,7 +149,7 @@ namespace libsemigroups {
     a = "adbcZ";
     b = "adadbcZ";
     REQUIRE(freeband_equal_to(a.begin(), a.end(), b.begin(), b.end()));
-    word_type w = {0, 1, 0}, x = {0, 1, 1, 0};
+    word_type w = 010_w, x = 0110_w;
     REQUIRE(freeband_equal_to(std::move(w), std::move(x)));
   }
 

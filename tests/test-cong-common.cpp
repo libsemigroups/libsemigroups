@@ -182,7 +182,7 @@ namespace libsemigroups {
                                    KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
-        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+        {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
@@ -191,8 +191,8 @@ namespace libsemigroups {
 
     congruence_common::add_generating_pair(
         cong,
-        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
+        froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3})));
 
     REQUIRE(cong.number_of_classes() == 21);
 
@@ -200,22 +200,22 @@ namespace libsemigroups {
     REQUIRE(ntc.size() == 1);
 
     REQUIRE(ntc[0].size() == 68);
-    std::vector<word_type> expect
-        = {001_w,       101_w,       0001_w,     0010_w,     0011_w,
-           0101_w,      1001_w,      1010_w,     1011_w,     00001_w,
-           00010_w,     00011_w,     00100_w,    00101_w,    00110_w,
-           01010_w,     01011_w,     10001_w,    10010_w,    10011_w,
-           10100_w,     10101_w,     10110_w,    000010_w,   000011_w,
-           000100_w,    000101_w,    000110_w,   001000_w,   001100_w,
-           010001_w,    010100_w,    010101_w,   010110_w,   100010_w,
-           100011_w,    100100_w,    100101_w,   100110_w,   101000_w,
-           101100_w,    0000100_w,   0000101_w,  0000110_w,  0001000_w,
-           0001100_w,   0010001_w,   0100010_w,  0100011_w,  0101000_w,
-           0101100_w,   1000100_w,   1000101_w,  1000110_w,  1001000_w,
-           1001100_w,   00001000_w,  00001100_w, 00100010_w, 01000100_w,
-           01000101_w,  01000110_w,  10001000_w, 10001100_w, 001000100_w,
-           001000101_w, 010001000_w, 010001100_w};
-    REQUIRE(ntc[0] == expect);
+    REQUIRE(ntc[0]
+            == std::vector(
+                {001_w,       101_w,       0001_w,     0010_w,     0011_w,
+                 0101_w,      1001_w,      1010_w,     1011_w,     00001_w,
+                 00010_w,     00011_w,     00100_w,    00101_w,    00110_w,
+                 01010_w,     01011_w,     10001_w,    10010_w,    10011_w,
+                 10100_w,     10101_w,     10110_w,    000010_w,   000011_w,
+                 000100_w,    000101_w,    000110_w,   001000_w,   001100_w,
+                 010001_w,    010100_w,    010101_w,   010110_w,   100010_w,
+                 100011_w,    100100_w,    100101_w,   100110_w,   101000_w,
+                 101100_w,    0000100_w,   0000101_w,  0000110_w,  0001000_w,
+                 0001100_w,   0010001_w,   0100010_w,  0100011_w,  0101000_w,
+                 0101100_w,   1000100_w,   1000101_w,  1000110_w,  1001000_w,
+                 1001100_w,   00001000_w,  00001100_w, 00100010_w, 01000100_w,
+                 01000101_w,  01000110_w,  10001000_w, 10001100_w, 001000100_w,
+                 001000101_w, 010001000_w, 010001100_w}));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
@@ -227,7 +227,7 @@ namespace libsemigroups {
                                    KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
-        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+        {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
@@ -235,8 +235,8 @@ namespace libsemigroups {
     TestType cong(onesided, to<Presentation<word_type>>(S));
     congruence::add_generating_pair(
         cong,
-        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
+        froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3})));
 
     REQUIRE(cong.number_of_classes() == 72);
 
