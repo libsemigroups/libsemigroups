@@ -35,7 +35,7 @@ namespace libsemigroups {
                                    BMat<4>) {
     auto rg = ReportGuard(false);
 
-    Konieczny S(
+    Konieczny S = make<Konieczny>(
         {TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
          TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
          TestType({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})});
@@ -51,7 +51,7 @@ namespace libsemigroups {
                                    BMat<4>) {
     auto rg = ReportGuard(false);
 
-    Konieczny S(
+    Konieczny S = make<Konieczny>(
         {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
          TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
          TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
@@ -85,7 +85,7 @@ namespace libsemigroups {
                                    BMat<4>) {
     auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
-        Konieczny(
+        make<Konieczny>(
             {make<TestType>(
                  {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
              make<TestType>({{1, 0, 0}, {1, 0, 0}, {1, 1, 1}})}),
@@ -120,7 +120,7 @@ namespace libsemigroups {
                                             {0, 1, 1, 1, 0},
                                             {1, 0, 0, 0, 1}})};
 
-    Konieczny<TestType> S(gens);
+    Konieczny S = make<Konieczny>(gens);
     REQUIRE(S.size() == 513);
   }
 }  // namespace libsemigroups

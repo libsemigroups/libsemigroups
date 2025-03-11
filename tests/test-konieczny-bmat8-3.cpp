@@ -65,10 +65,10 @@ namespace libsemigroups {
            BMat8({{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}}),
            BMat8({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}})};
 
-    Konieczny<BMat8> KS(gens);
+    Konieczny KS = make<Konieczny>(gens);
     KS.run();
 
-    REQUIRE(KS.size() == 10160);
+    REQUIRE(KS.size() == 10'160);
     REQUIRE(KS.number_of_D_classes() == 66);
 
     size_t count = 0;
@@ -81,7 +81,7 @@ namespace libsemigroups {
                    - KS.cbegin_current_regular_D_classes())
             == idems.size());
 
-    REQUIRE(count == 8712);
+    REQUIRE(count == 8'712);
 
     std::vector<BMat8> non_reg_reps
         = {BMat8({{1, 1, 1, 1}, {1, 1, 1, 1}, {0, 1, 1, 1}, {1, 1, 1, 0}}),
@@ -234,7 +234,7 @@ namespace libsemigroups {
                           {0, 1, 0, 1, 0},
                           {1, 0, 1, 0, 0},
                           {1, 1, 0, 0, 0}}));
-    REQUIRE(K.size() == 23191071);
+    REQUIRE(K.size() == 23'191'071);
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 #pragma GCC diagnostic pop
 #endif
@@ -254,31 +254,31 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 1, 1, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}, {0, 0, 1, 0}})};
 
-    Konieczny<BMat8> KS(gens);
-    Konieczny<BMat8> KT(KS);
+    Konieczny KS = make<Konieczny>(gens);
+    Konieczny KT = Konieczny(KS);
     KS.run();
 
     REQUIRE(KT.current_size() == 0);
-    REQUIRE(KT.size() == 10160);
+    REQUIRE(KT.size() == 10'160);
 
-    Konieczny<BMat8> KU(KT);
+    Konieczny KU = KT;
 
-    REQUIRE(KU.size() == 10160);
+    REQUIRE(KU.size() == 10'160);
     REQUIRE(KU.number_of_D_classes() == 66);
 
-    Konieczny<BMat8> KV(gens);
+    Konieczny KV = make<Konieczny>(gens);
     KV.run_until(
         [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
     size_t found_classes = KV.current_number_of_D_classes();
 
     Konieczny<BMat8> KW;
     KW = KV;
-    REQUIRE(KW.size() == 10160);
+    REQUIRE(KW.size() == 10'160);
     REQUIRE(KW.number_of_D_classes() == 66);
     REQUIRE(KV.current_number_of_D_classes() == found_classes);
 
     KV.run();
-    REQUIRE(KV.size() == 10160);
+    REQUIRE(KV.size() == 10'160);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -295,19 +295,19 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 1, 1, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}, {0, 0, 1, 0}})};
 
-    Konieczny<BMat8> KS(gens);
-    Konieczny<BMat8> KT(std::move(KS));
+    Konieczny KS = make<Konieczny>(gens);
+    Konieczny KT = std::move(KS);
 
     REQUIRE(KT.current_size() == 0);
     KT.run();
-    REQUIRE(KT.current_size() == 10160);
+    REQUIRE(KT.current_size() == 10'160);
 
-    Konieczny<BMat8> KU = std::move(KT);
+    Konieczny KU = std::move(KT);
 
-    REQUIRE(KU.size() == 10160);
+    REQUIRE(KU.size() == 10'160);
     REQUIRE(KU.number_of_D_classes() == 66);
 
-    Konieczny<BMat8> KV(gens);
+    Konieczny KV = make<Konieczny>(gens);
     KV.run_until(
         [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
     size_t found_classes = KV.current_number_of_D_classes();
@@ -318,8 +318,8 @@ namespace libsemigroups {
     REQUIRE(KW.current_number_of_D_classes() == found_classes);
     KW.run();
     LIBSEMIGROUPS_ASSERT(KW.number_of_D_classes() == 66);
-    LIBSEMIGROUPS_ASSERT(KW.size() == 10160);
+    LIBSEMIGROUPS_ASSERT(KW.size() == 10'160);
     KW.run();
-    REQUIRE(KW.size() == 10160);
+    REQUIRE(KW.size() == 10'160);
   }
 }  // namespace libsemigroups

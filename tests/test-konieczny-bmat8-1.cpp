@@ -41,7 +41,7 @@ namespace libsemigroups {
     using BMat = BMatFastest<4>;
     auto rg    = ReportGuard(false);
 
-    Konieczny KS(
+    Konieczny KS = make<Konieczny>(
         {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -82,10 +82,10 @@ namespace libsemigroups {
                           "regular D-class 01",
                           "[quick][bmat8]") {
     auto      rg = ReportGuard(false);
-    Konieczny KS({BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
-                  BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
-                  BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
-                  BMat8({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}})});
+    Konieczny KS = make<Konieczny>({BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
+                                    BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
+                                    BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
+                                    BMat8({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}})});
     REQUIRE(KS.size() == 247);
 
     BMat8 x({{1, 0, 0}, {1, 1, 0}, {1, 0, 1}});
@@ -102,7 +102,7 @@ namespace libsemigroups {
                           "[quick][bmat8][no-valgrind]") {
     auto rg = ReportGuard(false);
 
-    Konieczny KS(
+    Konieczny KS = make<Konieczny>(
         {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -122,7 +122,7 @@ namespace libsemigroups {
                           "[quick][no-valgrind][bmat8]") {
     auto rg = ReportGuard(false);
 
-    Konieczny KS(
+    Konieczny KS = make<Konieczny>(
         {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -148,10 +148,10 @@ namespace libsemigroups {
                           "[quick][bmat8]") {
     auto rg = ReportGuard(false);
 
-    Konieczny KS({BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
-                  BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
-                  BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
-                  BMat8({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}})});
+    auto KS = make<Konieczny>({BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
+                               BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
+                               BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
+                               BMat8({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}})});
     KS.run();
 
     REQUIRE(KS.number_of_regular_D_classes() == 9);
@@ -245,7 +245,7 @@ namespace libsemigroups {
                           "[quick][bmat8]") {
     auto rg = ReportGuard(false);
 
-    Konieczny KS(
+    Konieczny KS = make<Konieczny>(
         {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 1}, {1, 0, 1, 0}, {1, 0, 1, 0}, {0, 0, 1, 1}}),
@@ -265,7 +265,7 @@ namespace libsemigroups {
                           "[quick][no-valgrind][bmat8]") {
     auto rg = ReportGuard(false);
 
-    Konieczny S(
+    Konieczny S = make<Konieczny>(
         {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{1, 1, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}}),
          BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 1}}),
