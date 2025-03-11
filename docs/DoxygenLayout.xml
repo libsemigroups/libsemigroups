@@ -190,9 +190,16 @@
       <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions"/>
       <tab type="user" visible="yes" url="@ref to_knuth_bendix_group" title="to<KnuthBendix>"/>
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref konieczny_group" title="Konieczny" />
-
-
+    <tab type="usergroup" visible="yes" url="@ref konieczny_group" 
+      title="Konieczny">
+      <tab type="user" visible="yes" url="@ref libsemigroups::Konieczny" 
+        title="The Konieczny class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::KoniecznyTraits" 
+        title="The KoniecznyTraits class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::konieczny" 
+        title="Konieczny helper functions"/>
+      <tab type="user" visible="yes" url="@ref make_konieczny_group" title="make<Konieczny>"/>
+    </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
     <tab type="usergroup" visible="yes" url="@ref sims_group" title="Low Index Congruences">
