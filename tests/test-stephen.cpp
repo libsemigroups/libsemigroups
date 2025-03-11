@@ -1347,7 +1347,7 @@ namespace libsemigroups {
                           "043",
                           "inverse presentation",
                           "[stephen][standard]") {
-    using words::operator+;
+    using words::                  operator+;
     ReportGuard                    rg(false);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;

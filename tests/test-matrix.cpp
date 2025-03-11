@@ -631,7 +631,7 @@ namespace libsemigroups {
     }
 
     auto m  = make<TestType>(sr,
-                             {{2, 2, 0, 1},
+                            {{2, 2, 0, 1},
                               {0, 0, 1, 3},
                               {1, NEGATIVE_INFINITY, 0, 0},
                               {0, 1, 0, 1}});
@@ -1094,9 +1094,7 @@ namespace libsemigroups {
       BMat<>                        x(v);
       REQUIRE(x == BMat<>({{true, false}, {true, false}}));
     }
-    {
-      BMat<> x;
-    }
+    { BMat<> x; }
     {
       using Mat               = NTPMat<>;
       NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
