@@ -99,22 +99,22 @@ namespace libsemigroups {
                           "[Example][quick]") {
     auto rg = ReportGuard(false);
     REQUIRE(plactic_monoid(3).rules
-            == std::vector<word_type>({102_w,
-                                       120_w,
-                                       021_w,
-                                       201_w,
-                                       100_w,
-                                       010_w,
-                                       110_w,
-                                       101_w,
-                                       200_w,
-                                       020_w,
-                                       220_w,
-                                       202_w,
-                                       211_w,
-                                       121_w,
-                                       221_w,
-                                       212_w}));
+            == std::vector({102_w,
+                            120_w,
+                            021_w,
+                            201_w,
+                            100_w,
+                            010_w,
+                            110_w,
+                            101_w,
+                            200_w,
+                            020_w,
+                            220_w,
+                            202_w,
+                            211_w,
+                            121_w,
+                            221_w,
+                            212_w}));
     auto p = to<Presentation<std::string>>(plactic_monoid(3));
     REQUIRE(p.rules
             == std::vector<std::string>({"bac",

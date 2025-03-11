@@ -24,10 +24,12 @@
 #include <cstddef>  // for size_t
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE
-#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
-#include "libsemigroups/hpcombi.hpp"           // for PTransf16, ...
-#include "libsemigroups/transf.hpp"            // for Transf<>
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/exception.hpp"
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
+#include "libsemigroups/transf.hpp"        // for Transf<>
 
 #include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
@@ -68,14 +70,18 @@ namespace std {
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi", "000", "Transf16", "[quick][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "000",
+                          "make<Transf16>",
+                          "[quick][hpcombi]") {
     auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>({Transf16({1, 2, 0})});
+    auto S  = make<FroidurePin>({make<Transf16>({1, 2, 0})});
     REQUIRE(S.size() == 3);
     REQUIRE(S.number_of_idempotents() == 1);
-    REQUIRE(std::vector<Transf16>(S.cbegin_sorted(), S.cend_sorted())
-            == std::vector<Transf16>(
-                {Transf16({}), Transf16({1, 2, 0}), Transf16({2, 0, 1})}));
+    REQUIRE(std::vector(S.cbegin_sorted(), S.cend_sorted())
+            == std::vector({make<Transf16>({}),
+                            make<Transf16>({1, 2, 0}),
+                            make<Transf16>({2, 0, 1})}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
@@ -83,7 +89,7 @@ namespace libsemigroups {
                           "One specialisation",
                           "[quick][hpcombi]") {
     auto id = One<Transf16>()(10);
-    auto x  = Transf16({3, 2, 3, 4, 5, 3, 0, 1});
+    auto x  = make<Transf16>({3, 2, 3, 4, 5, 3, 0, 1});
     REQUIRE(x * id == x);
     REQUIRE(id * x == x);
     REQUIRE(id * id == id);
@@ -112,11 +118,11 @@ namespace libsemigroups {
                           "003",
                           "Swap specialisation",
                           "[quick][hpcombi]") {
-    auto x = Transf16({0, 0, 0, 0, 0, 0, 0, 0});
-    auto y = Transf16({1, 1, 1, 1, 1, 1, 1, 1});
+    auto x = make<Transf16>({0, 0, 0, 0, 0, 0, 0, 0});
+    auto y = make<Transf16>({1, 1, 1, 1, 1, 1, 1, 1});
     Swap<Transf16>()(x, y);
-    REQUIRE(x == Transf16({1, 1, 1, 1, 1, 1, 1, 1}));
-    REQUIRE(y == Transf16({0, 0, 0, 0, 0, 0, 0, 0}));
+    REQUIRE(x == make<Transf16>({1, 1, 1, 1, 1, 1, 1, 1}));
+    REQUIRE(y == make<Transf16>({0, 0, 0, 0, 0, 0, 0, 0}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
@@ -255,21 +261,27 @@ namespace libsemigroups {
     REQUIRE(Complexity<Renner0Element>()(id) == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi", "010", "Transf16", "[standard][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "010",
+                          "make<Transf16>",
+                          "[standard][hpcombi]") {
     auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>({Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
-                                 Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
-                                 Transf16({3, 0, 7, 2, 4, 6, 2, 4}),
-                                 Transf16({3, 2, 3, 4, 5, 3, 0, 1}),
-                                 Transf16({4, 3, 7, 7, 4, 5, 0, 4}),
-                                 Transf16({5, 6, 3, 0, 3, 0, 5, 1}),
-                                 Transf16({6, 0, 1, 1, 1, 6, 3, 4}),
-                                 Transf16({7, 7, 4, 0, 6, 4, 1, 7})});
+    auto S  = make<FroidurePin>({make<Transf16>({1, 7, 2, 6, 0, 4, 1, 5}),
+                                 make<Transf16>({2, 4, 6, 1, 4, 5, 2, 7}),
+                                 make<Transf16>({3, 0, 7, 2, 4, 6, 2, 4}),
+                                 make<Transf16>({3, 2, 3, 4, 5, 3, 0, 1}),
+                                 make<Transf16>({4, 3, 7, 7, 4, 5, 0, 4}),
+                                 make<Transf16>({5, 6, 3, 0, 3, 0, 5, 1}),
+                                 make<Transf16>({6, 0, 1, 1, 1, 6, 3, 4}),
+                                 make<Transf16>({7, 7, 4, 0, 6, 4, 1, 7})});
     S.reserve(600000);
     REQUIRE(S.size() == 597369);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi", "011", "Transf16", "[standard][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "011",
+                          "make<Transf16>",
+                          "[standard][hpcombi]") {
     auto rg = ReportGuard(false);
 
     using Transf = libsemigroups::Transf<>;
@@ -309,14 +321,17 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 158716);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi",
-                          "013",
-                          "full transformation monoid 8",
-                          "[extreme][hpcombi]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("HPCombi",
+                                   "013",
+                                   "full transformation monoid 8",
+                                   "[extreme][hpcombi]",
+                                   Transf16,
+                                   Transf<8>,
+                                   Transf<>) {
     auto rg = ReportGuard(true);
-    auto S  = make<FroidurePin>({Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
-                                 Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
-                                 Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
+    auto S  = make<FroidurePin>({make<Transf16>({1, 2, 3, 4, 5, 6, 7, 0}),
+                                 make<Transf16>({1, 0, 2, 3, 4, 5, 6, 7}),
+                                 make<Transf16>({0, 1, 2, 3, 4, 5, 6, 0})});
     // 1. including the next line makes this test run extremely slowly
     // (20/09/2019) under clang.
     // 2. Without the next line this is no faster than the next test.
@@ -328,17 +343,16 @@ namespace libsemigroups {
     REQUIRE(S.size() == 16777216);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi",
-                          "014",
-                          "full transformation monoid 8",
-                          "[extreme][hpcombi]") {
-    using Transf = libsemigroups::Transf<>;
-    auto rg      = ReportGuard(true);
-    auto S       = make<FroidurePin>({Transf({1, 2, 3, 4, 5, 6, 7, 0}),
-                                      Transf({1, 0, 2, 3, 4, 5, 6, 7}),
-                                      Transf({0, 1, 2, 3, 4, 5, 6, 0})});
-    S.reserve(std::pow(8, 8));
-    REQUIRE(S.size() == 16777216);
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "014", "exceptions", "[quick][hpcombi]") {
+    REQUIRE_THROWS_AS(
+        make<Transf16>({1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        make<Transf16>({17, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 254}),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        make<Transf16>({17, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 17}),
+        LibsemigroupsException);
   }
 }  // namespace libsemigroups
 #endif

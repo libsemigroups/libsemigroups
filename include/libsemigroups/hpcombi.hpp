@@ -26,9 +26,7 @@
 // is defined, if so specified at during configure.
 #include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED) \
-    || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
-
+#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED)
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
@@ -39,11 +37,56 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include "adapters.hpp"  // for Complexity, Degree, ...
-#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
+#include <type_traits>    // for decay_t etc
+#include <unordered_map>  // for unordered_map
+
+#include "adapters.hpp"   // for Complexity, Degree, ...
+#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "types.hpp"      // for enable_if_is_same
+#else
+#include <type_traits>    // for decay_t etc
+#include <unordered_map>  // for unordered_map
+
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#endif
 
 namespace libsemigroups {
+  namespace detail {
+    //! No doc
+    // TODO(1) to tpp
+    template <typename Iterator>
+    void validate_no_duplicates(
+        Iterator                                                    first,
+        Iterator                                                    last,
+        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen) {
+      seen.clear();
+      for (auto it = first; it != last; ++it) {
+        if (*it != UNDEFINED) {
+          auto [pos, inserted] = seen.emplace(*it, seen.size());
+          if (!inserted) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "duplicate image value, found {} in position {}, first "
+                "occurrence in position {}",
+                *it,
+                std::distance(first, it),
+                pos->second);
+          }
+        }
+      }
+    }
 
+    //! No doc
+    template <typename Iterator>
+    void validate_no_duplicates(Iterator first, Iterator last) {
+      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
+      validate_no_duplicates(first, last, seen);
+    }
+  }  // namespace detail
+
+#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED) \
+    || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
   //! \defgroup adapters_hpcombi_group Adapters for HPCombi
   //!
   //! This page contains the documentation of the functionality in
@@ -254,7 +297,8 @@ namespace libsemigroups {
   struct ImageRightAction<HPCombi::PPerm16, HPCombi::PPerm16> {
     //! \brief Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
     //!
-    //! Modifies \p res in-place to store the idempotent \f$(xy) ^ {-1}xy\f$ in
+    //! Modifies \p res in-place to store the idempotent \f$(xy) ^ {-1}xy\f$
+    //! in
     //! \p res.
     //!
     //! \exceptions
@@ -278,8 +322,8 @@ namespace libsemigroups {
   struct ImageLeftAction<HPCombi::PPerm16, HPCombi::PPerm16> {
     //! \brief Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res.
     //!
-    //! Modifies res in-place to store the idempotent \f$xy(xy) ^ {-1}\f$ in \p
-    //! res.
+    //! Modifies res in-place to store the idempotent \f$xy(xy) ^ {-1}\f$ in
+    //! \p res.
     //!
     //! \exceptions
     //! \noexcept
@@ -511,8 +555,9 @@ namespace libsemigroups {
   struct Rho<HPCombi::BMat8, HPCombi::BMat8> {
     //! \brief Store the rho value of \p x as used in the Konieczny algorithm.
     //!
-    //! Modify \p res in-place to the rho value of \p x as used in the Konieczny
-    //! algorithm; for `HPCombi::BMat8` this is the column space basis.
+    //! Modify \p res in-place to the rho value of \p x as used in the
+    //! Konieczny algorithm; for `HPCombi::BMat8` this is the column space
+    //! basis.
     void operator()(HPCombi::BMat8&       res,
                     HPCombi::BMat8 const& x) const noexcept {
       res = x.col_space_basis();
@@ -550,8 +595,8 @@ namespace libsemigroups {
   struct LambdaValue<HPCombi::PPerm16> {
     //! \brief The type of Lambda values.
     //!
-    //! The type of Lambda values for PPerm16 is also PPerm16; this provides an
-    //! efficient representation of image sets.
+    //! The type of Lambda values for PPerm16 is also PPerm16; this provides
+    //! an efficient representation of image sets.
     using type = HPCombi::PPerm16;
   };
 
@@ -717,7 +762,8 @@ namespace libsemigroups {
   struct Lambda<HPCombi::Transf16, HPCombi::PTransf16> {
     //! \brief Stores the identity function on the image of \p x.
     //!
-    //! Modifies \p res in-place to store the identity function on the image of
+    //! Modifies \p res in-place to store the identity function on the image
+    //! of
     //! \p x.
     //! \exceptions
     //! \noexcept
@@ -794,7 +840,259 @@ namespace libsemigroups {
   };
 
   //! @}
+
+  //! \ingroup make_transf_group
+  //!
+  //! \brief Construct a HPCombi::Transf16 from universal reference and
+  //! validate.
+  //!
+  //! Constructs a HPCombi::Transf16 initialized using the container \p cont
+  //! as follows: the image of the point \c i under the transformation is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type. Must by HPCombi::Transf16.
+  //! \tparam Container type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref HPCombi::Transf16 instance.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont exceeds \c 16;
+  //! * any value in \p cont exceeds `cont.size()`.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename Container>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::Transf16>
+  make(Container&& cont) {
+    if (cont.size() > 16) {
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (container) must have size at "
+                              "most 16, but found {}",
+                              cont.size());
+    }
+    auto result = HPCombi::Transf16(cont);
+    if (!result.validate()) {
+      auto it = std::find_if(std::begin(cont),
+                             std::begin(cont),
+                             [](auto const& val) { return val > 15; });
+      LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
+                              "[0, 16), found {} in position {}",
+                              *it,
+                              std::distance(std::begin(cont), it));
+    }
+    return result;
+  }
+
+  //! \ingroup make_perm_group
+  //!
+  //! \brief Construct a HPCombi::Perm16 from universal reference and
+  //! validate.
+  //!
+  //! Constructs a HPCombi::Perm16 initialized using the container \p cont as
+  //! follows: the image of the point \c i under the permutation is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type. Must by HPCombi::Perm16.
+  //! \tparam Container type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref HPCombi::Perm16 instance.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont exceeds \c 16;
+  //! * any value in \p cont exceeds `cont.size()`.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename Container>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::Perm16>
+  make(Container&& cont) {
+    if (cont.size() > 16) {
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (container) must have size at "
+                              "most 16, but found {}",
+                              cont.size());
+    }
+    auto result = HPCombi::Perm16(cont);
+    if (!result.HPCombi::Transf16::validate()) {
+      auto it = std::find_if(std::begin(cont),
+                             std::begin(cont),
+                             [](auto const& val) { return val > 15; });
+      LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
+                              "[0, 16), found {} in position {}",
+                              *it,
+                              std::distance(std::begin(cont), it));
+    }
+    if (!result.validate()) {
+      detail::validate_no_duplicates(std::begin(cont), std::end(cont));
+      // TODO(1) check if result contains UNDEFINED
+    }
+    return result;
+  }
+
+  //! \ingroup make_pperm_group
+  //!
+  //! \brief Construct a HPCombi::PPerm16 from container and validate.
+  //!
+  //! Constructs a HPCombi::PPerm16 initialized using the container \p cont as
+  //! follows: the image of the point \c i under the partial perm is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type. Must by HPCombi::PPerm16.
+  //! \tparam Container type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref HPCombi::PPerm16 instance.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont exceeds \c 16;
+  //! * any value in \p cont exceeds `cont.size()`;
+  //! * any value in \p cont is repeated.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename Container>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
+  make(Container&& cont) {
+    if (cont.size() > 16) {
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (container) must have size at "
+                              "most 16, but found {}",
+                              cont.size());
+    }
+    auto result = HPCombi::PPerm16(cont);
+    if (!result.HPCombi::PTransf16::validate()) {
+      auto it = std::find_if(
+          std::begin(cont), std::begin(cont), [](auto const& val) {
+            return val != 0xFF && val > 15;
+          });
+      LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
+                              "[0, 16) or 0xFF (= {}), found {} in position {}",
+                              0xFF,
+                              *it,
+                              std::distance(std::begin(cont), it));
+    }
+    if (!result.validate()) {
+      detail::validate_no_duplicates(std::begin(cont), std::end(cont));
+    }
+    return result;
+  }
+
+  //! \ingroup make_pperm_group
+  //!
+  //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
+  //! validate.
+  //!
+  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! ran[i]` for all \c i and which is `0xFF` on every other value
+  //! in the range \f$[0, M)\f$.
+  //!
+  //! \tparam Return the return type, must be HPCombi::PPerm16.
+  //!
+  //! \param dom the domain
+  //! \param ran the range
+  //! \param M the degree
+  //!
+  //! \throws LibsemigroupsException if any of the following fail to hold:
+  //! * the value \p M is not compatible with the template parameter \p N
+  //! * \p dom and \p ran do not have the same size
+  //! * any value in \p dom or \p ran is greater than \p M
+  //! * there are repeated entries in \p dom or \p ran.
+  //!
+  //! \complexity
+  //! Linear in the size of \p dom.
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
+  make(std::vector<uint8_t> const& dom,
+       std::vector<uint8_t> const& ran,
+       size_t                      deg = 16) {
+    if (deg > 16) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 3rd argument is not valid, expected <=16, found {}", deg);
+    } else if (dom.size() != ran.size()) {
+      LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch, domain has "
+                              "size {} but range has size {}",
+                              dom.size(),
+                              ran.size());
+    } else if (!(dom.empty()
+                 || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "domain value out of bounds, found {}, must be less than {}",
+          *std::max_element(dom.cbegin(), dom.cend()),
+          deg);
+    }
+    // TODO(1) check ran for out of bounds values too
+    std::unordered_map<uint8_t, size_t> seen;
+    detail::validate_no_duplicates(dom.cbegin(), dom.cend(), seen);
+    detail::validate_no_duplicates(ran.cbegin(), ran.cend(), seen);
+    HPCombi::PPerm16 result(dom, ran, deg);
+    LIBSEMIGROUPS_ASSERT(result.validate());
+    return result;
+  }
+
+  //! \ingroup make_pperm_group
+  //!
+  //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
+  //! validate.
+  //!
+  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! ran[i]` for all \c i and which is `0xFF` on every other value
+  //! in the range \f$[0, M)\f$.
+  //!
+  //! \tparam Return the return type, must be HPCombi::PPerm16.
+  //!
+  //! \param dom the domain
+  //! \param ran the range
+  //! \param M the degree
+  //!
+  //! \throws LibsemigroupsException if any of the following fail to hold:
+  //! * the value \p M is not compatible with the template parameter \p N
+  //! * \p dom and \p ran do not have the same size
+  //! * any value in \p dom or \p ran is greater than \p M
+  //! * there are repeated entries in \p dom or \p ran.
+  //!
+  //! \complexity
+  //! Linear in the size of \p dom.
+  template <typename Return, typename Int>
+  [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
+  make(std::initializer_list<Int> dom,
+       std::initializer_list<Int> ran,
+       size_t                     M) {
+    return make<Return>(std::vector<uint8_t>(dom.begin(), dom.end()),
+                        std::vector<uint8_t>(ran.begin(), ran.end()),
+                        M);
+  }
+
+  //! \ingroup make_transf_group
+  //!
+  //! \brief Construct a HPCombi::Transf16 from universal reference and
+  //! validate.
+  //!
+  //! Constructs a HPCombi::Transf16 initialized using the container \p cont
+  //! as follows: the image of the point \c i under the transformation is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type. Must by HPCombi::Transf16.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref HPCombi::Transf16 instance.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont exceeds \c 16;
+  //! * any value in \p cont exceeds `cont.size()`.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, Return>,
+                                 Return>
+  make(std::initializer_list<uint8_t>&& cont) {
+    return make<Return, std::initializer_list<uint8_t>>(std::move(cont));
+  }
+#endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
+
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 #endif  // LIBSEMIGROUPS_HPCOMBI_HPP_

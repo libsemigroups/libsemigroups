@@ -1065,7 +1065,7 @@ namespace libsemigroups {
 
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 27);
-    std::vector<word_type> expected
+    std::vector expected
         = {0_w,     1_w,     00_w,    01_w,    10_w,     11_w,    000_w,
            100_w,   010_w,   101_w,   011_w,   110_w,    111_w,   1000_w,
            0100_w,  1100_w,  1010_w,  0101_w,  1101_w,   1011_w,  11000_w,
@@ -1191,20 +1191,20 @@ namespace libsemigroups {
 
     auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
 
-    std::vector<word_type> expected = {1_w,
-                                       3_w,
-                                       01_w,
-                                       03_w,
-                                       10_w,
-                                       30_w,
-                                       13_w,
-                                       010_w,
-                                       030_w,
-                                       101_w,
-                                       301_w,
-                                       303_w,
-                                       130_w,
-                                       0301_w};
+    std::vector expected = {1_w,
+                            3_w,
+                            01_w,
+                            03_w,
+                            10_w,
+                            30_w,
+                            13_w,
+                            010_w,
+                            030_w,
+                            101_w,
+                            301_w,
+                            303_w,
+                            130_w,
+                            0301_w};
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == expected);

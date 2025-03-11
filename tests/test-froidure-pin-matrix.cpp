@@ -53,7 +53,7 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(1)) == 1);
     REQUIRE(S.contains(S.generator(1)));
 
-    TestType x({{-2, 2}, {-1, 0}});
+    auto x = make<TestType>({{-2, 2}, {-1, 0}});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.contains(x));
     x.product_inplace_no_checks(S.generator(1), S.generator(1));
@@ -64,7 +64,7 @@ namespace libsemigroups {
       // If TestType is a static matrix, then the next line leads to out of
       // bounds accesses, since we are constructing a too big matrix without
       // checks.
-      x = TestType({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}});
+      x = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
     }
@@ -84,10 +84,10 @@ namespace libsemigroups {
       sr = new NTPSemiring<>(0, 6);
     }
     FroidurePin<TestType> S;
-    S.add_generator(TestType(sr, {{0, 0, 1}, {0, 1, 0}, {1, 1, 0}}));
-    S.add_generator(TestType(sr, {{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}));
-    S.add_generator(TestType(sr, {{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}));
-    S.add_generator(TestType(sr, {{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}));
+    S.add_generator(make<TestType>(sr, {{0, 0, 1}, {0, 1, 0}, {1, 1, 0}}));
+    S.add_generator(make<TestType>(sr, {{0, 0, 1}, {0, 1, 0}, {2, 0, 0}}));
+    S.add_generator(make<TestType>(sr, {{0, 0, 1}, {0, 1, 1}, {1, 0, 0}}));
+    S.add_generator(make<TestType>(sr, {{0, 0, 1}, {0, 1, 0}, {3, 0, 0}}));
     S.reserve(10'077'696);
     REQUIRE(S.size() == 10'077'696);
     REQUIRE(S.number_of_idempotents() == 13'688);
@@ -114,7 +114,7 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(0)) == 0);
     REQUIRE(S.contains(S.generator(0)));
 
-    auto x = TestType({{-2, 2}, {-1, 0}});
+    auto x = make<TestType>({{-2, 2}, {-1, 0}});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.contains(x));
     x.product_inplace_no_checks(S.generator(0), S.generator(0));

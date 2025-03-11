@@ -69,5 +69,21 @@ namespace libsemigroups {
     return ad;
   }
 
+  template <typename Node = size_t>
+  void add_chain(WordGraph<Node>& wg, size_t n) {
+    size_t old_nodes = wg.number_of_nodes();
+    wg.add_nodes(n);
+    for (size_t i = old_nodes; i < wg.number_of_nodes() - 1; ++i) {
+      wg.target(i, 0, i + 1);
+    }
+  }
+
+  template <typename Node = size_t>
+  WordGraph<Node> chain(size_t n) {
+    WordGraph<Node> g(0, 1);
+    add_chain(g, n);
+    return g;
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TESTS_WORD_GRAPH_TEST_COMMON_HPP_

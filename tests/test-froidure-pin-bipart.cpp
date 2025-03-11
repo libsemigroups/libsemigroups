@@ -32,9 +32,9 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Bipartition>",
                           "000",
-                          "small example 1 .................. Bipartition",
+                          "small example 1",
                           "[quick][froidure-pin][bipartition][bipart]") {
     auto        rg = ReportGuard(false);
     FroidurePin S  = make<FroidurePin>(
@@ -92,18 +92,18 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(S.cbegin_sorted(), S.cend_sorted()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Bipartition>",
                           "001",
-                          "default constructed .............. Bipartition",
+                          "default constructed",
                           "[quick][froidure-pin][bipartition][bipart]") {
     auto rg = ReportGuard(false);
 
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}));
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 
     S.reserve(10);
@@ -117,28 +117,29 @@ namespace libsemigroups {
       pos++;
     }
 
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
 
     REQUIRE(S.size() == 21);
-    froidure_pin::closure(S, {Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                           1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
+    froidure_pin::closure(S,
+                          {make<Bipartition>({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                              1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
     REQUIRE(S.size() == 21);
     REQUIRE(froidure_pin::minimal_factorisation(
                 S,
-                Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
-                             0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                    * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                   1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
-                    * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
-                                   5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
+                make<Bipartition>({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
+                                   0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
+                    * make<Bipartition>({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                         1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
+                    * make<Bipartition>({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
+                                         5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
             == 031_w);
     REQUIRE(froidure_pin::minimal_factorisation(S, 11) == 03_w);
     REQUIRE(S.at(11)
-            == Bipartition(
+            == make<Bipartition>(
                    {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                   * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                  1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
+                   * make<Bipartition>({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                        1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1'000'000'000),
                       LibsemigroupsException);
     pos = 0;
@@ -152,17 +153,17 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Bipartition>",
                           "002",
-                          "small example 2 - Bipartition",
+                          "small example 2",
                           "[quick][froidure-pin][element]") {
     auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}));
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 
     REQUIRE(S.size() == 10);
@@ -184,7 +185,8 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(2)) == 2);
     REQUIRE(S.contains(S.generator(2)));
 
-    Bipartition y({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+    auto y = make<Bipartition>(
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     REQUIRE(S.position(y) == 2);
     REQUIRE(S.contains(y));
     y.product_inplace_no_checks(S.generator(0), S.generator(1));
@@ -195,31 +197,31 @@ namespace libsemigroups {
     REQUIRE(S.contains(y));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Bipartition>",
                           "003",
-                          "number of idempotents - Bipartition",
+                          "number of idempotents",
                           "[extreme][froidure-pin][element]") {
     auto                     rg = ReportGuard();
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition({0, 1, 2, 3, 4, 5, 5, 0, 1, 2, 3, 4}));
-    S.add_generator(Bipartition({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}));
-    S.add_generator(Bipartition({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}));
-    S.add_generator(Bipartition({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4}));
+    S.add_generator(make<Bipartition>({0, 1, 2, 3, 4, 5, 5, 0, 1, 2, 3, 4}));
+    S.add_generator(make<Bipartition>({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}));
+    S.add_generator(make<Bipartition>({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}));
+    S.add_generator(make<Bipartition>({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4}));
     S.reserve(4'213'597);
     REQUIRE(S.size() == 4'213'597);
     REQUIRE(S.number_of_idempotents() == 541'254);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Bipartition>",
                           "004",
-                          "exception: is_idempotent - Bipartition",
+                          "exception: is_idempotent",
                           "[quick][froidure-pin][element]") {
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}));
-    S.add_generator(Bipartition(
+    S.add_generator(make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 
     for (size_t i = 0; i < S.size(); ++i) {

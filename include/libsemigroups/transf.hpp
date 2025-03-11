@@ -23,6 +23,8 @@
 // * benchmarks
 // * add some tests for PTransf themselves
 // * allocator
+// * implement is_transformation(Iterator, Iterator) etc to avoid code
+// duplication with hpcombi.hpp
 
 #ifndef LIBSEMIGROUPS_TRANSF_HPP_
 #define LIBSEMIGROUPS_TRANSF_HPP_
@@ -1295,36 +1297,6 @@ namespace libsemigroups {
   };
 
   namespace detail {
-    //! No doc
-    // TODO(1) to tpp
-    template <typename Iterator>
-    void validate_no_duplicates(
-        Iterator                                                    first,
-        Iterator                                                    last,
-        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen) {
-      seen.clear();
-      for (auto it = first; it != last; ++it) {
-        if (*it != UNDEFINED) {
-          auto [pos, inserted] = seen.emplace(*it, seen.size());
-          if (!inserted) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "duplicate image value, found {} in position {}, first "
-                "occurrence in position {}",
-                *it,
-                std::distance(first, it),
-                pos->second);
-          }
-        }
-      }
-    }
-
-    //! No doc
-    template <typename Iterator>
-    void validate_no_duplicates(Iterator first, Iterator last) {
-      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
-      validate_no_duplicates(first, last, seen);
-    }
-
     template <
         size_t N        = 0,
         typename Scalar = std::
@@ -1332,13 +1304,11 @@ namespace libsemigroups {
     void validate_args(std::vector<Scalar> const& dom,
                        std::vector<Scalar> const& ran,
                        size_t                     deg = N);
-  }  // namespace detail
 
-  ////////////////////////////////////////////////////////////////////////
-  // PPerm helpers
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // PPerm helpers
+    ////////////////////////////////////////////////////////////////////////
 
-  namespace detail {
     template <typename T>
     struct IsPPermHelper : std::false_type {};
 
@@ -1352,7 +1322,6 @@ namespace libsemigroups {
     template <size_t N, typename Scalar>
     struct IsDynamicHelper<PPerm<N, Scalar>>
         : IsDynamicHelper<PTransf<N, Scalar>> {};
-
   }  // namespace detail
 
   //! \ingroup transf_group

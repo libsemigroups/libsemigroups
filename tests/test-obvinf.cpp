@@ -117,8 +117,8 @@ namespace libsemigroups {
                           "005",
                           "Matrix has non empty kernel",
                           "[quick]") {
-    IsObviouslyInfinite    ioi(2);
-    std::vector<word_type> vv = {"aa"_w, "bba"_w, "bbaa"_w, "bbbbbb"_w};
+    IsObviouslyInfinite ioi(2);
+    std::vector         vv = {"aa"_w, "bba"_w, "bbaa"_w, "bbbbbb"_w};
     ioi.add_rules_no_checks("ab"_w, vv.cbegin(), vv.cend());
 
     require_true_if_eigen_enabled(ioi);
@@ -180,10 +180,9 @@ namespace libsemigroups {
                           "010",
                           "Multiple rule additions",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(3);
-    auto                   w = 00_w;
-    std::vector<word_type> v
-        = {0010110220112_w, 0_w, 0001111000111102111_w, 11_w};
+    IsObviouslyInfinite ioi(3);
+    auto                w = 00_w;
+    std::vector         v = {0010110220112_w, 0_w, 0001111000111102111_w, 11_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
     v = {22_w, 1010101_w};
@@ -210,8 +209,8 @@ namespace libsemigroups {
                           "011",
                           "b^n does not occur on its own in any relation",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(2);
-    std::vector<word_type> v = {01_w, 0_w, 010_w, 10_w};
+    IsObviouslyInfinite ioi(2);
+    std::vector         v = {01_w, 0_w, 010_w, 10_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -220,8 +219,8 @@ namespace libsemigroups {
                           "012",
                           "Preserves occurrences of the generator 'a'",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(2);
-    std::vector<word_type> v = {010_w, 00_w, 11_w, 1_w, 0101_w, 01110_w};
+    IsObviouslyInfinite ioi(2);
+    std::vector         v = {010_w, 00_w, 11_w, 1_w, 0101_w, 01110_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -230,8 +229,8 @@ namespace libsemigroups {
                           "013",
                           "Less relations than generators",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(3);
-    std::vector<word_type> v = {010_w, 12_w, 20_w, 1_w};
+    IsObviouslyInfinite ioi(3);
+    std::vector         v = {010_w, 12_w, 20_w, 1_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -240,9 +239,8 @@ namespace libsemigroups {
                           "014",
                           "Relations preserve length",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(3);
-    std::vector<word_type> v
-        = {000_w, 112_w, 2222_w, 1210_w, 11_w, 21_w, 210_w, 112_w};
+    IsObviouslyInfinite ioi(3);
+    std::vector v = {000_w, 112_w, 2222_w, 1210_w, 11_w, 21_w, 210_w, 112_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -251,8 +249,8 @@ namespace libsemigroups {
                           "015",
                           "Matrix has non empty kernel",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(2);
-    std::vector<word_type> v = {00_w, 110_w, 1100_w, 111111_w};
+    IsObviouslyInfinite ioi(2);
+    std::vector         v = {00_w, 110_w, 1100_w, 111111_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     require_true_if_eigen_enabled(ioi);
   }
@@ -261,8 +259,8 @@ namespace libsemigroups {
                           "016",
                           "Free product of trivial semigroups",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(2);
-    std::vector<word_type> v = {0_w, 00_w, 1_w, 11_w};
+    IsObviouslyInfinite ioi(2);
+    std::vector         v = {0_w, 00_w, 1_w, 11_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
@@ -271,8 +269,8 @@ namespace libsemigroups {
                           "017",
                           "Another free product",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(5);
-    std::vector<word_type> v
+    IsObviouslyInfinite ioi(5);
+    std::vector         v
         = {0_w, 00_w, 1_w, 11_w, 014_w, 444_w, 32_w, 2_w, 22_w, 333_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
@@ -282,8 +280,8 @@ namespace libsemigroups {
                           "018",
                           "Infinite but not obviously so",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(2);
-    std::vector<word_type> v = {0_w, 011_w, 1_w, 100_w};
+    IsObviouslyInfinite ioi(2);
+    std::vector         v = {0_w, 011_w, 1_w, 100_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     // Currently the test does not pass, but the semigroup
@@ -294,9 +292,9 @@ namespace libsemigroups {
                           "019",
                           "Finite semigroup",
                           "[quick][integer-alphabet]") {
-    IsObviouslyInfinite    ioi(3);
-    std::vector<word_type> v
-        = {0_w, 00_w, 1_w, 11_w, {}, 22_w, 02_w, 21_w, 0101_w, 01_w};
+    IsObviouslyInfinite ioi(3);
+    std::vector         v
+        = {0_w, 00_w, 1_w, 11_w, ""_w, 22_w, 02_w, 21_w, 0101_w, 01_w};
     ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     // This is a presentation for a finite semigroup so
@@ -308,7 +306,7 @@ namespace libsemigroups {
                           "from presentation",
                           "[quick][integer-alphabet]") {
     Presentation<word_type> p;
-    p.alphabet({0, 2});
+    p.alphabet(02_w);
     REQUIRE(is_obviously_infinite(p));
   }
 

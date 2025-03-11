@@ -54,8 +54,8 @@ namespace libsemigroups {
                           "000",
                           "comparison operators",
                           "[quick][transf]") {
-    auto x = Transf<>({0, 1, 0});
-    auto y = Transf<>({0, 1});
+    auto x = make<Transf<>>({0, 1, 0});
+    auto y = make<Transf<>>({0, 1});
     REQUIRE(x > y);
     // Can't compare static transf of different degrees
     // REQUIRE(to_string(x, "{}") == "Transf<0, uint32_t>({0, 1, 0})");
@@ -68,17 +68,17 @@ namespace libsemigroups {
                                    Transf<>,
                                    Transf<4>) {
     static_assert(IsTransf<TestType>, "IsTransf<TestType> must be true!");
-    auto x = TestType({0, 1, 0});
-    auto y = TestType({0, 1, 0});
+    auto x = make<TestType>({0, 1, 0, 0});
+    auto y = make<TestType>({0, 1, 0, 0});
     REQUIRE(x == y);
     REQUIRE(y * y == x);
     REQUIRE((x < y) == false);
 
-    auto z = TestType({0, 1, 0, 3});
+    auto z = make<TestType>({0, 1, 0, 3});
     REQUIRE(x < z);
     REQUIRE(image(z) == std::vector<typename TestType::point_type>({0, 1, 3}));
 
-    auto expected = TestType({0, 0, 0});
+    auto expected = make<TestType>({0, 0, 0, 0});
     REQUIRE(expected < x);
 
     REQUIRE(z.degree() == 4);
@@ -86,13 +86,13 @@ namespace libsemigroups {
     REQUIRE(z.rank() == 3);
     auto id = one(z);
 
-    expected = TestType({0, 1, 2, 3});
+    expected = make<TestType>({0, 1, 2, 3});
     REQUIRE(id == expected);
 
     if (IsDynamic<TestType>) {
       x.increase_degree_by(10);
-      REQUIRE(x.degree() == 13);
-      REQUIRE(x.end() - x.begin() == 13);
+      REQUIRE(x.degree() == 14);
+      REQUIRE(x.end() - x.begin() == 14);
     } else {
       REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
     }
@@ -148,8 +148,8 @@ namespace libsemigroups {
                                    PPerm<>,
                                    PPerm<10>) {
     static_assert(IsPPerm<TestType>, "IsPPerm<TestType> must be true!");
-    auto x = TestType({4, 5, 0}, {9, 0, 1}, 10);
-    auto y = TestType({4, 5, 0}, {9, 0, 1}, 10);
+    auto x = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
+    auto y = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
     REQUIRE(x.undef() == UNDEFINED);
     REQUIRE(x == y);
     auto yy = x * x;

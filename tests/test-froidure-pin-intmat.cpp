@@ -46,14 +46,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     FroidurePin<TestType> S;
-    S.add_generator(TestType({{0, 1}, {0, -1}}));
-    S.add_generator(TestType({{0, 1}, {2, 0}}));
+    S.add_generator(make<TestType>({{0, 1}, {0, -1}}));
+    S.add_generator(make<TestType>({{0, 1}, {2, 0}}));
     REQUIRE(to_human_readable_repr(S)
             == "<partially enumerated FroidurePin with 2 generators, 2 "
                "elements, Cayley graph ⌀ 1, & 0 rules>");
 
-    REQUIRE(TestType({{0, 1}, {0, -1}}) * TestType({{0, 1}, {2, 0}})
-                * TestType({{0, 1}, {2, 0}})
+    REQUIRE(make<TestType>({{0, 1}, {0, -1}}) * make<TestType>({{0, 1}, {2, 0}})
+                * make<TestType>({{0, 1}, {2, 0}})
             == S.generator(0) * S.generator(1) * S.generator(0));
     REQUIRE(make<TestType>({{64, 0}, {-64, 0}})
             == S.generator(0) * S.generator(1) * S.generator(0) * S.generator(1)
@@ -77,13 +77,14 @@ namespace libsemigroups {
     REQUIRE(to_human_readable_repr(S)
             == "<fully enumerated FroidurePin with 2 generators, 631 "
                "elements, Cayley graph ⌀ 128, & 7 rules>");
-    REQUIRE(froidure_pin::minimal_factorisation(
-                S,
-                TestType({{0, 1}, {0, -1}}) * TestType({{0, 1}, {2, 0}})
-                    * TestType({{0, 1}, {2, 0}}))
-            == 010_w);
+    REQUIRE(
+        froidure_pin::minimal_factorisation(
+            S,
+            make<TestType>({{0, 1}, {0, -1}}) * make<TestType>({{0, 1}, {2, 0}})
+                * make<TestType>({{0, 1}, {2, 0}}))
+        == 010_w);
     REQUIRE(froidure_pin::minimal_factorisation(S, 52) == 010101010101_w);
-    REQUIRE(S.at(52) == TestType({{64, 0}, {-64, 0}}));
+    REQUIRE(S.at(52) == make<TestType>({{64, 0}, {-64, 0}}));
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1'000'000'000),
                       LibsemigroupsException);
   }
@@ -96,8 +97,8 @@ namespace libsemigroups {
                                    (IntMat<2, 2, int64_t>) ) {
     auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
-    S.add_generator(TestType({{0, 0}, {0, 1}}));
-    S.add_generator(TestType({{0, 1}, {-1, 0}}));
+    S.add_generator(make<TestType>({{0, 0}, {0, 1}}));
+    S.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
 
     REQUIRE(S.size() == 13);
     REQUIRE(S.degree() == 2);
@@ -113,7 +114,7 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(1)) == 1);
     REQUIRE(S.contains(S.generator(1)));
 
-    TestType x({{-2, 2}, {-1, 0}});
+    auto x = make<TestType>({{-2, 2}, {-1, 0}});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.contains(x));
 
@@ -129,8 +130,8 @@ namespace libsemigroups {
                                    IntMat<2>,
                                    IntMat<>) {
     FroidurePin<TestType> T;
-    T.add_generator(TestType({{0, 0}, {0, 1}}));
-    T.add_generator(TestType({{0, 1}, {-1, 0}}));
+    T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
+    T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
     REQUIRE(froidure_pin::current_position(T, {}) == UNDEFINED);
     REQUIRE_NOTHROW(froidure_pin::current_position(T, 0011_w));
     REQUIRE(froidure_pin::current_position(T, 0011_w) == UNDEFINED);
@@ -152,8 +153,8 @@ namespace libsemigroups {
                                    IntMat<2>,
                                    IntMat<>) {
     FroidurePin<TestType> T;
-    T.add_generator(TestType({{0, 0}, {0, 1}}));
-    T.add_generator(TestType({{0, 1}, {-1, 0}}));
+    T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
+    T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
 
     REQUIRE_THROWS_AS(froidure_pin::to_element(T, {}), LibsemigroupsException);
     REQUIRE_THROWS_AS(froidure_pin::to_element(T, {0, 0, 1, 2}),
@@ -172,8 +173,8 @@ namespace libsemigroups {
       IntMat<2>,
       IntMat<>) {
     FroidurePin<TestType> T;
-    T.add_generator(TestType({{0, 0}, {0, 1}}));
-    T.add_generator(TestType({{0, 1}, {-1, 0}}));
+    T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
+    T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
 
     for (size_t i = 0; i < T.size(); ++i) {
       REQUIRE_NOTHROW(T.prefix(i));

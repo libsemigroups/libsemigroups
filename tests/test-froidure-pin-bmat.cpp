@@ -39,7 +39,7 @@ namespace libsemigroups {
   // Test cases - BMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin<BMat>",
                                    "005",
                                    "small example 1",
                                    "[quick][froidure-pin][bmat]",
@@ -47,12 +47,12 @@ namespace libsemigroups {
                                    BMat<>) {
     auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
-    S.add_generator(
-        TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}));
-    S.add_generator(
-        TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}));
-    S.add_generator(
-        TestType({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}}));
+    S.add_generator(make<TestType>(
+        {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}));
+    S.add_generator(make<TestType>(
+        {{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}));
+    S.add_generator(make<TestType>(
+        {{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}}));
 
     S.reserve(26);
 
@@ -66,12 +66,14 @@ namespace libsemigroups {
 
     froidure_pin::add_generators(
         S,
-        {TestType({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})});
+        {make<TestType>(
+            {{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})});
 
     REQUIRE(S.size() == 29);
     froidure_pin::closure(
         S,
-        {TestType({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})});
+        {make<TestType>(
+            {{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})});
     REQUIRE(S.size() == 29);
     REQUIRE(
         froidure_pin::minimal_factorisation(S, S.generator(3) * S.generator(0))
@@ -98,14 +100,14 @@ namespace libsemigroups {
                                    BMat<>) {
     auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
-    S.add_generator(
-        TestType({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
-    S.add_generator(
-        TestType({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
-    S.add_generator(
-        TestType({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
-    S.add_generator(
-        TestType({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
+    S.add_generator(make<TestType>(
+        {{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+    S.add_generator(make<TestType>(
+        {{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
+    S.add_generator(make<TestType>(
+        {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
+    S.add_generator(make<TestType>(
+        {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
     REQUIRE(S.size() == 63'904);
     REQUIRE(S.number_of_idempotents() == 2'360);
   }
@@ -119,9 +121,9 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     FroidurePin<TestType> S;
-    S.add_generator(TestType({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}));
-    S.add_generator(TestType({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}));
-    S.add_generator(TestType({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}));
+    S.add_generator(make<TestType>({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}));
+    S.add_generator(make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}));
+    S.add_generator(make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}));
 
     REQUIRE(S.size() == 3);
     REQUIRE(S.degree() == 3);
@@ -141,7 +143,7 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(2)) == 1);
     REQUIRE(S.contains(S.generator(1)));
 
-    TestType y({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    auto y = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
     y.product_inplace_no_checks(S.generator(0), S.generator(0));
     REQUIRE(S.position(y) == 2);
     REQUIRE(S.contains(y));
@@ -155,11 +157,16 @@ namespace libsemigroups {
                                    BMat<4>,
                                    BMat<>) {
     auto S = make<FroidurePin>(
-        {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-         TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
-         TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
-         TestType({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
-         TestType({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
+        {make<TestType>(
+             {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
+         make<TestType>(
+             {{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
+         make<TestType>(
+             {{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
+         make<TestType>(
+             {{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
+         make<TestType>(
+             {{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
     REQUIRE(S.size() == 415);
   }
 
@@ -172,7 +179,7 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(true);
     FroidurePin<TestType> S;
     for (auto const& x : konieczny_data::clark_gens) {
-      S.add_generator(TestType(x));
+      S.add_generator(make<TestType>(x));
     }
     REQUIRE(S.generator(0).number_of_rows() == 40);
     REQUIRE(S.size() == 248'017);

@@ -39,26 +39,26 @@ namespace libsemigroups {
 
     std::vector<std::vector<int32_t>> const right
         = {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}};
-    PBR x(left, right);
+    auto x = make<PBR>(left, right);
 
-    PBR y({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
-          {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
+    auto y = make<PBR>({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
+                       {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
 
-    PBR z({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
-          {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
+    auto z = make<PBR>({{-3, -2, -1, 1}, {-3, -2, 3}, {-3, 2, 3}},
+                       {{-3, -2, -1, 3}, {-3, -2, -1, 3}, {-2, 2, 3}});
 
-    PBR xx({{3, 5},
-            {0, 1, 2, 3, 4, 5},
-            {0, 2, 3, 4, 5},
-            {0, 1, 2, 3, 5},
-            {0, 2, 5},
-            {1, 2, 3, 4, 5}});
-    PBR yy({{0, 3, 4, 5},
-            {2, 4, 5},
-            {1, 2, 5},
-            {2, 3, 4, 5},
-            {2, 3, 4, 5},
-            {1, 2, 4}});
+    auto xx = make<PBR>({{3, 5},
+                         {0, 1, 2, 3, 4, 5},
+                         {0, 2, 3, 4, 5},
+                         {0, 1, 2, 3, 5},
+                         {0, 2, 5},
+                         {1, 2, 3, 4, 5}});
+    auto yy = make<PBR>({{0, 3, 4, 5},
+                         {2, 4, 5},
+                         {1, 2, 5},
+                         {2, 3, 4, 5},
+                         {2, 3, 4, 5},
+                         {1, 2, 4}});
 
     REQUIRE(x == xx);
     REQUIRE(y == yy);
@@ -66,43 +66,43 @@ namespace libsemigroups {
 
     z.product_inplace(x, y);
 
-    PBR expected({{0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5}});
+    auto expected = make<PBR>({{0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5}});
     REQUIRE(z == expected);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "001", "universal product", "[quick][pbr]") {
-    PBR x({{3, 5},
-           {0, 1, 2, 3, 4, 5},
-           {0, 2, 3, 4, 5},
-           {0, 1, 2, 3, 5},
-           {0, 2, 5},
-           {1, 2, 3, 4, 5}});
-    PBR y({{0, 3, 4, 5},
-           {2, 4, 5},
-           {1, 2, 5},
-           {2, 3, 4, 5},
-           {2, 3, 4, 5},
-           {1, 2, 4}});
+    auto x = make<PBR>({{3, 5},
+                        {0, 1, 2, 3, 4, 5},
+                        {0, 2, 3, 4, 5},
+                        {0, 1, 2, 3, 5},
+                        {0, 2, 5},
+                        {1, 2, 3, 4, 5}});
+    auto y = make<PBR>({{0, 3, 4, 5},
+                        {2, 4, 5},
+                        {1, 2, 5},
+                        {2, 3, 4, 5},
+                        {2, 3, 4, 5},
+                        {1, 2, 4}});
 
-    PBR z({{0, 3, 4, 5},
-           {2, 4, 5},
-           {1, 2, 5},
-           {2, 3, 4, 5},
-           {2, 3, 4, 5},
-           {1, 2, 4}});
+    auto z = make<PBR>({{0, 3, 4, 5},
+                        {2, 4, 5},
+                        {1, 2, 5},
+                        {2, 3, 4, 5},
+                        {2, 3, 4, 5},
+                        {1, 2, 4}});
     z.product_inplace(x, y);
 
-    PBR expected({{0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5}});
+    auto expected = make<PBR>({{0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5}});
     REQUIRE(z == expected);
   }
 
@@ -110,31 +110,31 @@ namespace libsemigroups {
                           "002",
                           "product [bigger than previous]",
                           "[quick][pbr]") {
-    PBR x({{3, 5},
-           {0, 1, 2, 3, 4, 5},
-           {0, 2, 3, 4, 5},
-           {0, 1, 2, 3, 5},
-           {0, 2, 5},
-           {1, 2, 3, 4, 5},
-           {},
-           {}});
-    PBR y({{3, 5},
-           {0, 1, 2, 3, 4, 5},
-           {0, 2, 3, 4, 5},
-           {0, 1, 2, 3, 5},
-           {0, 2, 5},
-           {1, 2, 3, 4, 5},
-           {},
-           {6}});
+    auto x = make<PBR>({{3, 5},
+                        {0, 1, 2, 3, 4, 5},
+                        {0, 2, 3, 4, 5},
+                        {0, 1, 2, 3, 5},
+                        {0, 2, 5},
+                        {1, 2, 3, 4, 5},
+                        {},
+                        {}});
+    auto y = make<PBR>({{3, 5},
+                        {0, 1, 2, 3, 4, 5},
+                        {0, 2, 3, 4, 5},
+                        {0, 1, 2, 3, 5},
+                        {0, 2, 5},
+                        {1, 2, 3, 4, 5},
+                        {},
+                        {6}});
     x.product_inplace(y, y);
-    PBR expected({{0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {},
-                  {6}});
+    auto expected = make<PBR>({{0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {},
+                               {6}});
 
     REQUIRE(x == expected);
 
@@ -148,25 +148,25 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "003", "hash", "[quick][pbr][no-valgrind]") {
-    PBR x({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    auto x = make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     for (size_t i = 0; i < 1000000; i++) {
       x.hash_value();
     }
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "004", "delete/copy", "[quick][pbr]") {
-    PBR x = make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
-    PBR y(x);
+    PBR  x = make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    auto y = make<PBR>(x);
     REQUIRE(x == y);
-    PBR z({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    auto z = make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     REQUIRE(y == z);
-    PBR yy(y);
+    auto yy = make<PBR>(y);
     REQUIRE(yy == y);
-    PBR zz(yy);
-    PBR a({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    auto zz = make<PBR>(yy);
+    auto a  = make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     REQUIRE(z == a);
     REQUIRE(zz == a);
-    PBR tt(std::move(zz));
+    auto tt = make<PBR>(std::move(zz));
     REQUIRE(tt == a);
     tt = z;
     REQUIRE(tt == z);
@@ -211,7 +211,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "006", "product exceptions", "[quick][pbr]") {
-    PBR x(3);
+    auto x = make<PBR>(3);
     REQUIRE_THROWS(x.product_inplace(PBR(3), PBR(4)));
     REQUIRE_THROWS(x.product_inplace(PBR(4), PBR(4)));
     REQUIRE_THROWS(x.product_inplace(x, PBR(3)));
@@ -220,31 +220,31 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "007", "operators", "[quick][pbr]") {
-    PBR x({{3, 5},
-           {0, 1, 2, 3, 4, 5},
-           {0, 2, 3, 4, 5},
-           {0, 1, 2, 3, 5},
-           {0, 2, 5},
-           {1, 2, 3, 4, 5}});
+    auto x = make<PBR>({{3, 5},
+                        {0, 1, 2, 3, 4, 5},
+                        {0, 2, 3, 4, 5},
+                        {0, 1, 2, 3, 5},
+                        {0, 2, 5},
+                        {1, 2, 3, 4, 5}});
     REQUIRE(x[0] == std::vector<uint32_t>({3, 5}));
     REQUIRE(x[5] == std::vector<uint32_t>({1, 2, 3, 4, 5}));
     REQUIRE(x[0] == x.at(0));
     REQUIRE(x[5] == x.at(5));
     REQUIRE_THROWS(x.at(6));
 
-    PBR y({{0, 3, 4, 5},
-           {2, 4, 5},
-           {1, 2, 5},
-           {2, 3, 4, 5},
-           {2, 3, 4, 5},
-           {1, 2, 4}});
+    auto y = make<PBR>({{0, 3, 4, 5},
+                        {2, 4, 5},
+                        {1, 2, 5},
+                        {2, 3, 4, 5},
+                        {2, 3, 4, 5},
+                        {1, 2, 4}});
 
-    PBR expected({{0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5},
-                  {0, 1, 2, 3, 4, 5}});
+    auto expected = make<PBR>({{0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5},
+                               {0, 1, 2, 3, 4, 5}});
     REQUIRE(x * y == expected);
     REQUIRE(y * y != expected);
     REQUIRE(y * y > expected);
@@ -256,12 +256,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "008", "to_string", "[quick][pbr]") {
-    PBR x({{3, 5},
-           {0, 1, 2, 3, 4, 5},
-           {0, 2, 3, 4, 5},
-           {0, 1, 2, 3, 5},
-           {0, 2, 5},
-           {1, 2, 3, 4, 5}});
+    auto x = make<PBR>({{3, 5},
+                        {0, 1, 2, 3, 4, 5},
+                        {0, 2, 3, 4, 5},
+                        {0, 1, 2, 3, 5},
+                        {0, 2, 5},
+                        {1, 2, 3, 4, 5}});
     REQUIRE_NOTHROW(detail::to_string(x));
     x = PBR({});
     REQUIRE_NOTHROW(detail::to_string(x));
@@ -271,12 +271,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "009", "one", "[quick][pbr]") {
-    PBR x({{3, 5},
-           {0, 1, 2, 3, 4, 5},
-           {0, 2, 3, 4, 5},
-           {0, 1, 2, 3, 5},
-           {0, 2, 5},
-           {1, 2, 3, 4, 5}});
+    auto x = make<PBR>({{3, 5},
+                        {0, 1, 2, 3, 4, 5},
+                        {0, 2, 3, 4, 5},
+                        {0, 1, 2, 3, 5},
+                        {0, 2, 5},
+                        {1, 2, 3, 4, 5}});
     REQUIRE(x == x * pbr::one(x));
     REQUIRE(x == pbr::one(x) * x);
     REQUIRE(x == x * pbr::one(3));
@@ -284,12 +284,12 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "010", "adapters", "[quick][pbr]") {
-    PBR x({});
+    auto x = make<PBR>({});
     REQUIRE_NOTHROW(IncreaseDegree<PBR>()(x, 0));
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "011", "make<PBR>", "[quick][pbr]") {
-    PBR x({{-1, 1}, {2}}, {{-2, 1}, {-1, 2}});
+    auto x = make<PBR>({{-1, 1}, {2}}, {{-2, 1}, {-1, 2}});
     pbr::throw_if_invalid(x);
     REQUIRE(make<PBR>({}) == PBR({}));
     REQUIRE(make<PBR>({{1, 2}, {0, 3}, {2, 3}, {1}})

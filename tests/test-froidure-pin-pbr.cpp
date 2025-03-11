@@ -36,24 +36,24 @@ namespace libsemigroups {
                           "example 1",
                           "[quick][froidure-pin][pbr]") {
     auto             rg   = ReportGuard(false);
-    std::vector<PBR> gens = {PBR({{3, 5},
-                                  {0, 1, 2, 3, 4, 5},
-                                  {0, 2, 3, 4, 5},
-                                  {0, 1, 2, 3, 5},
-                                  {0, 2, 5},
-                                  {1, 2, 3, 4, 5}}),
-                             PBR({{0, 3, 4, 5},
-                                  {2, 4, 5},
-                                  {1, 2, 5},
-                                  {2, 3, 4, 5},
-                                  {2, 3, 4, 5},
-                                  {1, 2, 4}}),
-                             PBR({{0, 3, 4, 5},
-                                  {2, 4, 5},
-                                  {1, 2, 5},
-                                  {2, 3, 4, 5},
-                                  {2, 3, 4, 5},
-                                  {1, 2, 4}})};
+    std::vector<PBR> gens = {make<PBR>({{3, 5},
+                                        {0, 1, 2, 3, 4, 5},
+                                        {0, 2, 3, 4, 5},
+                                        {0, 1, 2, 3, 5},
+                                        {0, 2, 5},
+                                        {1, 2, 3, 4, 5}}),
+                             make<PBR>({{0, 3, 4, 5},
+                                        {2, 4, 5},
+                                        {1, 2, 5},
+                                        {2, 3, 4, 5},
+                                        {2, 3, 4, 5},
+                                        {1, 2, 4}}),
+                             make<PBR>({{0, 3, 4, 5},
+                                        {2, 4, 5},
+                                        {1, 2, 5},
+                                        {2, 3, 4, 5},
+                                        {2, 3, 4, 5},
+                                        {1, 2, 4}})};
 
     auto S = make<FroidurePin>(gens);
 
@@ -68,49 +68,49 @@ namespace libsemigroups {
       pos++;
     }
     froidure_pin::add_generators(S,
-                                 {PBR({{3, 4, 5},
-                                       {2, 4, 5},
-                                       {1, 2, 4},
-                                       {0, 3, 5},
-                                       {1, 2, 3, 5},
-                                       {1, 2, 3}})});
+                                 {make<PBR>({{3, 4, 5},
+                                             {2, 4, 5},
+                                             {1, 2, 4},
+                                             {0, 3, 5},
+                                             {1, 2, 3, 5},
+                                             {1, 2, 3}})});
     REQUIRE(S.size() == 6);
     froidure_pin::closure(S,
-                          {PBR({{3, 4, 5},
-                                {2, 4, 5},
-                                {1, 2, 4},
-                                {0, 3, 5},
-                                {1, 2, 3, 5},
-                                {1, 2, 3}})});
+                          {make<PBR>({{3, 4, 5},
+                                      {2, 4, 5},
+                                      {1, 2, 4},
+                                      {0, 3, 5},
+                                      {1, 2, 3, 5},
+                                      {1, 2, 3}})});
     REQUIRE(S.size() == 6);
     REQUIRE(froidure_pin::minimal_factorisation(S,
-                                                PBR({{3, 5},
-                                                     {0, 1, 2, 3, 4, 5},
-                                                     {0, 2, 3, 4, 5},
-                                                     {0, 1, 2, 3, 5},
-                                                     {0, 2, 5},
-                                                     {1, 2, 3, 4, 5}})
-                                                    * PBR({{3, 4, 5},
-                                                           {2, 4, 5},
-                                                           {1, 2, 4},
-                                                           {0, 3, 5},
-                                                           {1, 2, 3, 5},
-                                                           {1, 2, 3}}))
+                                                make<PBR>({{3, 5},
+                                                           {0, 1, 2, 3, 4, 5},
+                                                           {0, 2, 3, 4, 5},
+                                                           {0, 1, 2, 3, 5},
+                                                           {0, 2, 5},
+                                                           {1, 2, 3, 4, 5}})
+                                                    * make<PBR>({{3, 4, 5},
+                                                                 {2, 4, 5},
+                                                                 {1, 2, 4},
+                                                                 {0, 3, 5},
+                                                                 {1, 2, 3, 5},
+                                                                 {1, 2, 3}}))
             == word_type({0, 0}));
     REQUIRE(froidure_pin::minimal_factorisation(S, 5) == word_type({3, 3}));
     REQUIRE(S.at(5)
-            == PBR({{3, 4, 5},
-                    {2, 4, 5},
-                    {1, 2, 4},
-                    {0, 3, 5},
-                    {1, 2, 3, 5},
-                    {1, 2, 3}})
-                   * PBR({{3, 4, 5},
+            == make<PBR>({{3, 4, 5},
                           {2, 4, 5},
                           {1, 2, 4},
                           {0, 3, 5},
                           {1, 2, 3, 5},
-                          {1, 2, 3}}));
+                          {1, 2, 3}})
+                   * make<PBR>({{3, 4, 5},
+                                {2, 4, 5},
+                                {1, 2, 4},
+                                {0, 3, 5},
+                                {1, 2, 3, 5},
+                                {1, 2, 3}}));
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
@@ -131,9 +131,9 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     FroidurePin<PBR> S;
-    S.add_generator(PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
+    S.add_generator(make<PBR>({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));
     S.add_generator(
-        PBR({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}));
+        make<PBR>({{1, 2}, {0, 1}, {0, 2, 3}, {0, 1, 2}, {3}, {0, 3, 4, 5}}));
 
     REQUIRE(S.size() == 30);
     REQUIRE(S.degree() == 3);
@@ -148,7 +148,7 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(1)) == 1);
     REQUIRE(S.contains(S.generator(1)));
 
-    PBR x({{}, {}, {}, {}, {}, {}});
+    auto x = make<PBR>({{}, {}, {}, {}, {}, {}});
     REQUIRE(S.position(x) == UNDEFINED);
     REQUIRE(!S.contains(x));
     x.product_inplace_no_checks(S.generator(1), S.generator(1));

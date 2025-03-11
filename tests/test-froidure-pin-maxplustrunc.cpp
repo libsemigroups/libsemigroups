@@ -115,8 +115,8 @@ namespace libsemigroups {
     using Row = typename Mat::Row;
 
     FroidurePin<Mat> S;
-    S.add_generator(Mat({{1, 3}, {2, 1}}));
-    S.add_generator(Mat({{2, 1}, {4, 0}}));
+    S.add_generator(make<Mat>({{1, 3}, {2, 1}}));
+    S.add_generator(make<Mat>({{2, 1}, {4, 0}}));
 
     REQUIRE(S.size() == 20);
     REQUIRE(S.number_of_idempotents() == 1);
@@ -126,16 +126,16 @@ namespace libsemigroups {
       REQUIRE(S.position(*it) == pos);
       pos++;
     }
-    S.add_generator(Mat({{1, 1}, {0, 2}}));
+    S.add_generator(make<Mat>({{1, 1}, {0, 2}}));
     REQUIRE(S.size() == 73);
-    froidure_pin::closure(S, {Mat({{1, 1}, {0, 2}})});
+    froidure_pin::closure(S, {make<Mat>({{1, 1}, {0, 2}})});
     REQUIRE(S.size() == 73);
     REQUIRE(froidure_pin::minimal_factorisation(
-                S, Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
+                S, make<Mat>({{1, 1}, {0, 2}}) * make<Mat>({{2, 1}, {4, 0}}))
             == word_type({2, 1}));
     REQUIRE(froidure_pin::minimal_factorisation(S, 52)
             == word_type({0, 2, 2, 1}));
-    REQUIRE(S.at(52) == Mat({{9, 7}, {9, 5}}));
+    REQUIRE(S.at(52) == make<Mat>({{9, 7}, {9, 5}}));
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;

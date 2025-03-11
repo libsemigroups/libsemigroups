@@ -30,10 +30,11 @@
 #include <vector>         // for vector, operator==
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "libsemigroups/bipart.hpp"
+
 #include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for binary_tree
 
+#include "libsemigroups/bipart.hpp"
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
@@ -50,31 +51,13 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for hash
 
-#include "libsemigroups/ranges.hpp"  // for operator|, begin, end
-
 namespace libsemigroups {
 
   using namespace literals;
   using namespace rx;
+  using literals::operator""_w;
 
   struct LibsemigroupsException;  // forward decl
-
-  namespace {
-    // TODO(2) add to word_graph helper namespace
-    void add_chain(WordGraph<size_t>& word_graph, size_t n) {
-      size_t old_nodes = word_graph.number_of_nodes();
-      word_graph.add_nodes(n);
-      for (size_t i = old_nodes; i < word_graph.number_of_nodes() - 1; ++i) {
-        word_graph.target(i, 0, i + 1);
-      }
-    }
-
-    WordGraph<size_t> chain(size_t n) {
-      WordGraph<size_t> g(0, 1);
-      add_chain(g, n);
-      return g;
-    }
-  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "000", "100 node path", "[quick]") {
     WordGraph<size_t> wg;
@@ -135,7 +118,7 @@ namespace libsemigroups {
     Paths p(wg);
     p.order(Order::shortlex).source(2).min(3).max(4);
 
-    std::vector<word_type> expected = {{2, 1, 0}};
+    std::vector<word_type> expected = {210_w};
     REQUIRE((p | count()) == 1);
     REQUIRE(p.get() == expected[0]);
 
@@ -201,107 +184,105 @@ namespace libsemigroups {
     p.order(Order::lex).source(0).min(0).max(3);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
+            == std::vector({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
+            == std::vector({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
     p.order(Order::shortlex).source(0).min(0).max(3);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
+            == std::vector({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
     REQUIRE((p | count()) == 7);
 
     p.order(Order::shortlex);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
+            == std::vector({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
 
     p.init(wg).order(Order::lex).source(0);
     REQUIRE((p | count()) == 15);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({{},
-                                       0_w,
-                                       00_w,
-                                       000_w,
-                                       001_w,
-                                       01_w,
-                                       010_w,
-                                       011_w,
-                                       1_w,
-                                       10_w,
-                                       100_w,
-                                       101_w,
-                                       11_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({{},
+                            0_w,
+                            00_w,
+                            000_w,
+                            001_w,
+                            01_w,
+                            010_w,
+                            011_w,
+                            1_w,
+                            10_w,
+                            100_w,
+                            101_w,
+                            11_w,
+                            110_w,
+                            111_w}));
 
     p.order(Order::shortlex);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({{},
-                                       0_w,
-                                       1_w,
-                                       00_w,
-                                       01_w,
-                                       10_w,
-                                       11_w,
-                                       000_w,
-                                       001_w,
-                                       010_w,
-                                       011_w,
-                                       100_w,
-                                       101_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({{},
+                            0_w,
+                            1_w,
+                            00_w,
+                            01_w,
+                            10_w,
+                            11_w,
+                            000_w,
+                            001_w,
+                            010_w,
+                            011_w,
+                            100_w,
+                            101_w,
+                            110_w,
+                            111_w}));
 
     p.order(Order::lex).min(1);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({0_w,
-                                       00_w,
-                                       000_w,
-                                       001_w,
-                                       01_w,
-                                       010_w,
-                                       011_w,
-                                       1_w,
-                                       10_w,
-                                       100_w,
-                                       101_w,
-                                       11_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({0_w,
+                            00_w,
+                            000_w,
+                            001_w,
+                            01_w,
+                            010_w,
+                            011_w,
+                            1_w,
+                            10_w,
+                            100_w,
+                            101_w,
+                            11_w,
+                            110_w,
+                            111_w}));
 
     p.order(Order::shortlex);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({0_w,
-                                       1_w,
-                                       00_w,
-                                       01_w,
-                                       10_w,
-                                       11_w,
-                                       000_w,
-                                       001_w,
-                                       010_w,
-                                       011_w,
-                                       100_w,
-                                       101_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({0_w,
+                            1_w,
+                            00_w,
+                            01_w,
+                            10_w,
+                            11_w,
+                            000_w,
+                            001_w,
+                            010_w,
+                            011_w,
+                            100_w,
+                            101_w,
+                            110_w,
+                            111_w}));
     p.order(Order::lex).source(2).min(1);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
+            == std::vector({0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
     p.order(Order::shortlex);
     REQUIRE((p | to_vector())
-            == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
+            == std::vector({0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
 
     p.order(Order::lex).source(2).min(2).max(3);
-    REQUIRE((p | to_vector())
-            == std::vector<word_type>({00_w, 01_w, 10_w, 11_w}));
+    REQUIRE((p | to_vector()) == std::vector({00_w, 01_w, 10_w, 11_w}));
 
     p.order(Order::shortlex);
-    REQUIRE((p | to_vector())
-            == std::vector<word_type>({00_w, 01_w, 10_w, 11_w}));
+    REQUIRE((p | to_vector()) == std::vector({00_w, 01_w, 10_w, 11_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "004", "#3", "[quick]") {
@@ -309,19 +290,19 @@ namespace libsemigroups {
     auto wg = make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
 
-    std::vector<word_type> expected = {01_w,
-                                       10_w,
-                                       011_w,
-                                       110_w,
-                                       101_w,
-                                       1101_w,
-                                       1011_w,
-                                       1110_w,
-                                       0111_w,
-                                       1000_w,
-                                       0001_w,
-                                       0010_w,
-                                       0100_w};
+    std::vector expected = {01_w,
+                            10_w,
+                            011_w,
+                            110_w,
+                            101_w,
+                            1101_w,
+                            1011_w,
+                            1110_w,
+                            0111_w,
+                            1000_w,
+                            0001_w,
+                            0010_w,
+                            0100_w};
 
     std::sort(expected.begin(), expected.end(), ShortLexCompare());
 
@@ -382,7 +363,8 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_nodes() == S.size());
     wg.add_nodes(1);
     REQUIRE(wg.number_of_nodes() == S.size() + 1);
-    REQUIRE(wg.target(S.size(), 0) == static_cast<size_t>(UNDEFINED));
+    REQUIRE(wg.target(S.size(), 0)
+            == static_cast<typename decltype(wg)::node_type>(UNDEFINED));
 
     REQUIRE(wg.number_of_nodes() == 10);
     REQUIRE(wg.number_of_edges() == 18);
@@ -403,31 +385,31 @@ namespace libsemigroups {
 
     REQUIRE(tprime.size() == 9);
     REQUIRE(tprime
-            == std::vector<word_type>({0_w,
-                                       00000001_w,
-                                       00_w,
-                                       00000010_w,
-                                       000_w,
-                                       00000100_w,
-                                       0000_w,
-                                       00001000_w,
-                                       00010000_w}));
+            == std::vector({0_w,
+                            00000001_w,
+                            00_w,
+                            00000010_w,
+                            000_w,
+                            00000100_w,
+                            0000_w,
+                            00001000_w,
+                            00010000_w}));
 
-    std::vector<word_type> lprime = {00000_w,
-                                     000000010_w,
-                                     000000011_w,
-                                     000000100_w,
-                                     000000101_w,
-                                     000001000_w,
-                                     000001001_w,
-                                     00001_w,
-                                     000010000_w,
-                                     000010001_w,
-                                     0001_w,
-                                     000100000_w,
-                                     000100001_w,
-                                     001_w,
-                                     01_w};
+    std::vector lprime = {00000_w,
+                          000000010_w,
+                          000000011_w,
+                          000000100_w,
+                          000000101_w,
+                          000001000_w,
+                          000001001_w,
+                          00001_w,
+                          000010000_w,
+                          000010001_w,
+                          0001_w,
+                          000100000_w,
+                          000100001_w,
+                          001_w,
+                          01_w};
 
     REQUIRE(lprime.size() == 15);
     REQUIRE(std::is_sorted(
@@ -439,21 +421,21 @@ namespace libsemigroups {
                 | to_vector());
 
     REQUIRE(rhs
-            == std::vector<word_type>({00_w,
-                                       00000010_w,
-                                       00000001_w,
-                                       00000100_w,
-                                       00000001_w,
-                                       00001000_w,
-                                       00000001_w,
-                                       00000001_w,
-                                       00010000_w,
-                                       00000001_w,
-                                       00000001_w,
-                                       00000100_w,
-                                       00000001_w,
-                                       00000001_w,
-                                       00000001_w}));
+            == std::vector({00_w,
+                            00000010_w,
+                            00000001_w,
+                            00000100_w,
+                            00000001_w,
+                            00001000_w,
+                            00000001_w,
+                            00000001_w,
+                            00010000_w,
+                            00000001_w,
+                            00000001_w,
+                            00000100_w,
+                            00000001_w,
+                            00000001_w,
+                            00000001_w}));
     ToString to_string(kb.presentation().alphabet());
     for (size_t i = 0; i < lprime.size(); ++i) {
       REQUIRE(
@@ -470,7 +452,7 @@ namespace libsemigroups {
     REQUIRE(kb2.number_of_classes() == 9);
     auto T = to<FroidurePin>(kb2);
     T.run();
-    REQUIRE(std::vector<relation_type>(T.cbegin_rules(), T.cend_rules())
+    REQUIRE(std::vector(T.cbegin_rules(), T.cend_rules())
             == std::vector<relation_type>(
                 {{01_w, 1_w}, {11_w, 1_w}, {00000_w, 00_w}}));
   }
@@ -480,19 +462,19 @@ namespace libsemigroups {
     auto wg = make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
 
-    std::vector<word_type> expected = {01_w,
-                                       10_w,
-                                       011_w,
-                                       110_w,
-                                       101_w,
-                                       1101_w,
-                                       1011_w,
-                                       1110_w,
-                                       0111_w,
-                                       1000_w,
-                                       0001_w,
-                                       0010_w,
-                                       0100_w};
+    std::vector expected = {01_w,
+                            10_w,
+                            011_w,
+                            110_w,
+                            101_w,
+                            1101_w,
+                            1011_w,
+                            1110_w,
+                            0111_w,
+                            1000_w,
+                            0001_w,
+                            0010_w,
+                            0100_w};
 
     std::sort(expected.begin(), expected.end(), ShortLexCompare());
 
@@ -537,7 +519,7 @@ namespace libsemigroups {
     p.max(10);
     REQUIRE(
         (p | to_vector())
-        == std::vector<word_type>(
+        == std::vector(
             {{},          0_w,         1_w,         00_w,        01_w,
              02_w,        12_w,        002_w,       010_w,       011_w,
              020_w,       120_w,       0020_w,      0100_w,      0101_w,
@@ -760,7 +742,7 @@ namespace libsemigroups {
 
     size_t const N = wg.number_of_nodes();
     p.source(0).target(3).min(0).max(2);
-    REQUIRE((p | to_vector()) == std::vector<word_type>({{0}, {2}}));
+    REQUIRE((p | to_vector()) == std::vector({0_w, 2_w}));
 
     REQUIRE(number_of_paths(wg, 0, 3, 0, 2, paths::algorithm::acyclic)
             == (p | count()));
@@ -784,9 +766,9 @@ namespace libsemigroups {
                           "012",
                           "number_of_paths binary tree",
                           "[quick][no-valgrind]") {
-    using node_type      = WordGraph<size_t>::node_type;
-    size_t const      n  = 6;
-    WordGraph<size_t> wg = binary_tree(n);
+    using node_type = WordGraph<size_t>::node_type;
+    size_t const n  = 6;
+    WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(word_graph::is_acyclic(wg));
@@ -826,8 +808,8 @@ namespace libsemigroups {
                           "013",
                           "number_of_paths large binary tree",
                           "[quick][no-valgrind]") {
-    size_t const      n  = 20;
-    WordGraph<size_t> wg = binary_tree(n);
+    size_t const n  = 20;
+    WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(word_graph::is_acyclic(wg));

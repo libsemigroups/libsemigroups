@@ -768,7 +768,6 @@ EXTRA_PROGRAMS += test_konieczny
 EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_multi_string_view
 EXTRA_PROGRAMS += test_obvinf
-EXTRA_PROGRAMS += test_order
 EXTRA_PROGRAMS += test_paths
 EXTRA_PROGRAMS += test_pbr
 EXTRA_PROGRAMS += test_pool
@@ -862,7 +861,6 @@ test_all_SOURCES += tests/test-main.cpp
 test_all_SOURCES += tests/test-matrix.cpp
 test_all_SOURCES += tests/test-multi-string-view.cpp
 test_all_SOURCES += tests/test-obvinf.cpp
-test_all_SOURCES += tests/test-order.cpp
 test_all_SOURCES += tests/test-paths.cpp
 test_all_SOURCES += tests/test-pbr.cpp
 test_all_SOURCES += tests/test-pool.cpp
@@ -888,7 +886,6 @@ test_all_SOURCES += tests/test-transf.cpp
 test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
-test_all_SOURCES += tests/test-word-graph-with-sources.cpp
 test_all_SOURCES += tests/test-word-graph.cpp
 test_all_SOURCES += tests/test-word-range.cpp
 
@@ -1069,10 +1066,6 @@ test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp
 test_obvinf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
 
-test_order_SOURCES =  tests/test-order.cpp
-test_order_SOURCES += tests/test-main.cpp
-test_order_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
-
 test_paths_SOURCES =  tests/test-paths.cpp
 test_paths_SOURCES += tests/test-main.cpp
 test_paths_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
@@ -1168,7 +1161,6 @@ test_ukkonen_SOURCES += tests/test-main.cpp
 test_ukkonen_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
-test_word_graph_SOURCES +=  tests/test-word-graph-with-sources.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
 test_word_graph_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
 

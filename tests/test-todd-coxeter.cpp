@@ -73,27 +73,6 @@ namespace libsemigroups {
            << std::to_string(tc.number_of_classes()) << ");\n";
       file.close();
     }
-
-    // struct NormalForms {
-    //   template <typename Iterator>
-    //   NormalForms(ToddCoxeter& tc, Iterator first, Iterator last)
-    //       : _map(), _tc(tc) {
-    //     for (auto it = first; it != last; ++it) {
-    //       bool inserted = _map.emplace(index_of(tc, *it),
-    //       *it).second; if (!inserted) {
-    //         LIBSEMIGROUPS_EXCEPTION("shouldn't happen");
-    //       }
-    //     }
-    //   }
-
-    //   word_type const& operator()(word_type const& w) {
-    //     return _map.find(index_of(_tc, w))->second;
-    //   }
-
-    //   std::unordered_map<ToddCoxeter::node_type, word_type> _map;
-    //   ToddCoxeter&                                          _tc;
-    // };
-
   }  // namespace
 
   using TCE     = detail::TCE;
@@ -337,9 +316,9 @@ namespace libsemigroups {
     // REQUIRE(c.count() == POSITIVE_INFINITY);
 
     // REQUIRE((c.min(0).max(8) | to_vector())
-    //         == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
+    //         == std::vector({1_w, 1111_w, 1111111_w}));
     // REQUIRE((c.min(0).max(10) | to_vector())
-    //         == std::vector<word_type>({1_w, 1111_w, 1111111_w}));
+    //         == std::vector({1_w, 1111_w, 1111111_w}));
 
     // TODO(1) this no longer works
     // REQUIRE((seq() | take(tc.number_of_classes()) | all_of([&tc](size_t i) {
@@ -407,7 +386,7 @@ namespace libsemigroups {
     tc.standardize(Order::shortlex);
     REQUIRE(tc.is_standardized(Order::shortlex));
     REQUIRE((normal_forms(tc) | to_vector())
-            == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 001_w}));
+            == std::vector({0_w, 1_w, 00_w, 01_w, 001_w}));
     REQUIRE(index_of(tc, word_of(tc, 0)) == 0);
     REQUIRE(index_of(tc, word_of(tc, 1)) == 1);
     REQUIRE(index_of(tc, word_of(tc, 2)) == 2);
@@ -417,7 +396,7 @@ namespace libsemigroups {
 
     auto nf = normal_forms(tc) | to_vector();
 
-    REQUIRE(nf == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 001_w}));
+    REQUIRE(nf == std::vector({0_w, 1_w, 00_w, 01_w, 001_w}));
     REQUIRE(std::all_of(nf.begin(), nf.end(), [&tc](word_type& w) {
       return w == class_of(tc, w).get();
     }));
@@ -426,7 +405,7 @@ namespace libsemigroups {
     // for (size_t i = 2; i < 6; ++i) {
     //   for (size_t j = 2; j < 10 - i; ++j) {
     //     auto v
-    //         = std::vector<word_type>(cbegin_wislo(i, {0}, word_type(j + 1,
+    //         = std::vector(cbegin_wislo(i, {0}, word_type(j + 1,
     //         0)),
     //                                  cend_wislo(i, {0}, word_type(j + 1,
     //                                  0)));
@@ -488,7 +467,7 @@ namespace libsemigroups {
     REQUIRE(is_sorted(normal_forms(tc), RecursivePathCompare{}));
     REQUIRE(
         (normal_forms(tc) | take(10) | to_vector())
-        == std::vector<word_type>(
+        == std::vector(
             {0_w, 1_w, 2_w, 21_w, 12_w, 121_w, 22_w, 221_w, 212_w, 2121_w}));
 
     tc.standardize(Order::lex);
@@ -500,23 +479,23 @@ namespace libsemigroups {
     }
     REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare{}));
     REQUIRE((normal_forms(tc) | take(10) | to_vector())
-            == std::vector<word_type>({0_w,
-                                       01_w,
-                                       012_w,
-                                       0121_w,
-                                       01212_w,
-                                       012121_w,
-                                       0121212_w,
-                                       01212121_w,
-                                       012121212_w,
-                                       0121212121_w}));
+            == std::vector({0_w,
+                            01_w,
+                            012_w,
+                            0121_w,
+                            01212_w,
+                            012121_w,
+                            0121212_w,
+                            01212121_w,
+                            012121212_w,
+                            0121212121_w}));
     tc.standardize(Order::shortlex);
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(index_of(tc, word_of(tc, c)) == c);
     }
     REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare{}));
     REQUIRE((normal_forms(tc) | take(10) | to_vector())
-            == std::vector<word_type>(
+            == std::vector(
                 {0_w, 1_w, 2_w, 3_w, 12_w, 13_w, 21_w, 31_w, 121_w, 131_w}));
   }
 
@@ -526,7 +505,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    FroidurePin<BMat8> S = make<FroidurePin>(
+    FroidurePin S = make<FroidurePin>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -719,15 +698,16 @@ namespace libsemigroups {
       section_CR_style(tc);
       section_Cr_style(tc);
 
-      REQUIRE(
-          index_of(tc,
-                   froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-          != index_of(
-              tc, froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+      REQUIRE(index_of(tc,
+                       froidure_pin::factorisation(
+                           S, make<Transf<>>({1, 3, 1, 3, 3})))
+              != index_of(tc,
+                          froidure_pin::factorisation(
+                              S, make<Transf<>>({4, 2, 4, 4, 2}))));
 
       REQUIRE(tc.number_of_classes() == 69);
       REQUIRE(tc.number_of_classes() == 69);
-      std::vector<word_type> nf(S.cbegin_normal_forms(), S.cend_normal_forms());
+      std::vector nf(S.cbegin_normal_forms(), S.cend_normal_forms());
       for (auto& w : nf) {
         reverse(w);
       }
@@ -755,7 +735,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
-        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+        {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
@@ -765,16 +745,20 @@ namespace libsemigroups {
                      presentation::reverse(to<Presentation<word_type>>(S)));
       todd_coxeter::add_generating_pair(
           tc,
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4}))),
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3}))));
       test_case_010(tc, S);
     }
     SECTION("construction from Cayley graph") {
       auto tc = to<ToddCoxeter<word_type>>(onesided, S, S.left_cayley_graph());
       todd_coxeter::add_generating_pair(
           tc,
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4}))),
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3}))));
       test_case_010(tc, S);
     }
     SECTION("default construction + move from Cayley graph") {
@@ -782,8 +766,10 @@ namespace libsemigroups {
       tc = to<ToddCoxeter<word_type>>(onesided, S, S.left_cayley_graph());
       todd_coxeter::add_generating_pair(
           tc,
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4}))),
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3}))));
       test_case_010(tc, S);
     }
     SECTION("default construction + move from presentation") {
@@ -792,8 +778,10 @@ namespace libsemigroups {
                        presentation::reverse(to<Presentation<word_type>>(S)));
       todd_coxeter::add_generating_pair(
           tc,
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
-          reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4}))),
+          reverse(
+              froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3}))));
       test_case_010(tc, S);
     }
   }
@@ -804,18 +792,17 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
-        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+        {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
     auto tc = to<ToddCoxeter<word_type>>(onesided, S, S.right_cayley_graph());
-    // ToddCoxeter tc(onesided, to<Presentation<word_type>>(S));
 
     todd_coxeter::add_generating_pair(
         tc,
-        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
+        froidure_pin::factorisation(S, make<Transf<>>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
     section_hlt(tc);
@@ -828,22 +815,30 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 72);
 
     REQUIRE(
-        index_of(tc, froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-        != index_of(tc,
-                    froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+        index_of(
+            tc, froidure_pin::factorisation(S, make<Transf<>>({1, 3, 1, 3, 3})))
+        != index_of(
+            tc,
+            froidure_pin::factorisation(S, make<Transf<>>({4, 2, 4, 4, 2}))));
 
     REQUIRE(
-        index_of(tc, froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
-        != index_of(tc,
-                    froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+        index_of(
+            tc, froidure_pin::factorisation(S, make<Transf<>>({1, 3, 3, 3, 3})))
+        != index_of(
+            tc,
+            froidure_pin::factorisation(S, make<Transf<>>({4, 2, 4, 4, 2}))));
     REQUIRE(
-        index_of(tc, froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})))
-        == index_of(tc,
-                    froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
+        index_of(
+            tc, froidure_pin::factorisation(S, make<Transf<>>({2, 4, 2, 2, 2})))
+        == index_of(
+            tc,
+            froidure_pin::factorisation(S, make<Transf<>>({2, 3, 3, 3, 3}))));
     REQUIRE(
-        index_of(tc, froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
-        != index_of(tc,
-                    froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
+        index_of(
+            tc, froidure_pin::factorisation(S, make<Transf<>>({1, 3, 3, 3, 3})))
+        != index_of(
+            tc,
+            froidure_pin::factorisation(S, make<Transf<>>({2, 3, 3, 3, 3}))));
 
     auto ntc = non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());
@@ -856,10 +851,14 @@ namespace libsemigroups {
     std::sort(sizes.begin(), sizes.end());
     REQUIRE(sizes == std::vector<size_t>({3, 5, 5, 7}));
     word_type w3, w4, w5, w6;
-    froidure_pin::factorisation(S, w3, S.position(Transf<>({1, 3, 3, 3, 3})));
-    froidure_pin::factorisation(S, w4, S.position(Transf<>({4, 2, 4, 4, 2})));
-    froidure_pin::factorisation(S, w5, S.position(Transf<>({2, 4, 2, 2, 2})));
-    froidure_pin::factorisation(S, w6, S.position(Transf<>({2, 3, 3, 3, 3})));
+    froidure_pin::factorisation(
+        S, w3, S.position(make<Transf<>>({1, 3, 3, 3, 3})));
+    froidure_pin::factorisation(
+        S, w4, S.position(make<Transf<>>({4, 2, 4, 4, 2})));
+    froidure_pin::factorisation(
+        S, w5, S.position(make<Transf<>>({2, 4, 2, 2, 2})));
+    froidure_pin::factorisation(
+        S, w6, S.position(make<Transf<>>({2, 3, 3, 3, 3})));
     REQUIRE(index_of(tc, w3) != index_of(tc, w4));
     REQUIRE(index_of(tc, w5) == index_of(tc, w6));
   }
@@ -871,8 +870,8 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     FroidurePin<Transf<>> S;
-    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
-    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+    S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
+    S.add_generator(make<Transf<>>({3, 2, 1, 3, 3}));
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
@@ -880,10 +879,10 @@ namespace libsemigroups {
     ToddCoxeter tc
         = to<ToddCoxeter<word_type>>(twosided, S, S.right_cayley_graph());
 
-    word_type w1
-        = froidure_pin::factorisation(S, S.position(Transf<>({3, 4, 4, 4, 4})));
-    word_type w2
-        = froidure_pin::factorisation(S, S.position(Transf<>({3, 1, 3, 3, 3})));
+    word_type w1 = froidure_pin::factorisation(
+        S, S.position(make<Transf<>>({3, 4, 4, 4, 4})));
+    word_type w2 = froidure_pin::factorisation(
+        S, S.position(make<Transf<>>({3, 1, 3, 3, 3})));
 
     todd_coxeter::add_generating_pair(tc, w1, w2);
 
@@ -896,10 +895,10 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
-    word_type w3
-        = froidure_pin::factorisation(S, S.position(Transf<>({1, 3, 1, 3, 3})));
-    word_type w4
-        = froidure_pin::factorisation(S, S.position(Transf<>({4, 2, 4, 4, 2})));
+    word_type w3 = froidure_pin::factorisation(
+        S, S.position(make<Transf<>>({1, 3, 1, 3, 3})));
+    word_type w4 = froidure_pin::factorisation(
+        S, S.position(make<Transf<>>({4, 2, 4, 4, 2})));
     REQUIRE(index_of(tc, w3) == index_of(tc, w4));
   }
 
@@ -1166,16 +1165,16 @@ namespace libsemigroups {
     REQUIRE(S.size() == 34);
     using detail::TCE;
 
-    std::vector<TCE> v(S.cbegin(), S.cend());
+    std::vector v(S.cbegin(), S.cend());
     std::sort(v.begin(), v.end());
-    REQUIRE(v
-            == std::vector<TCE>(
-                {TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),  TCE(6),  TCE(7),
-                 TCE(8),  TCE(9),  TCE(10), TCE(11), TCE(12), TCE(13), TCE(14),
-                 TCE(15), TCE(16), TCE(17), TCE(18), TCE(19), TCE(20), TCE(21),
-                 TCE(22), TCE(23), TCE(24), TCE(25), TCE(26), TCE(27), TCE(28),
-                 TCE(29), TCE(30), TCE(31), TCE(32), TCE(33), TCE(34)}));
-    REQUIRE(std::vector<TCE>(S.cbegin_sorted(), S.cend_sorted())
+    REQUIRE(
+        v == std::vector({TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),  TCE(6),
+                          TCE(7),  TCE(8),  TCE(9),  TCE(10), TCE(11), TCE(12),
+                          TCE(13), TCE(14), TCE(15), TCE(16), TCE(17), TCE(18),
+                          TCE(19), TCE(20), TCE(21), TCE(22), TCE(23), TCE(24),
+                          TCE(25), TCE(26), TCE(27), TCE(28), TCE(29), TCE(30),
+                          TCE(31), TCE(32), TCE(33), TCE(34)}));
+    REQUIRE(std::vector(S.cbegin_sorted(), S.cend_sorted())
             == std::vector<TCE>(
                 {TCE(1),  TCE(2),  TCE(3),  TCE(4),  TCE(5),  TCE(6),  TCE(7),
                  TCE(8),  TCE(9),  TCE(10), TCE(11), TCE(12), TCE(13), TCE(14),
@@ -1445,10 +1444,10 @@ namespace libsemigroups {
                           "026",
                           "congruence of ToddCoxeter x 2",
                           "[todd-coxeter][quick]") {
-    auto rg      = ReportGuard(false);
-    using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S
-        = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    auto rg               = ReportGuard(false);
+    using Transf          = LeastTransf<5>;
+    FroidurePin<Transf> S = make<FroidurePin>(
+        {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
     auto tc = to<ToddCoxeter<word_type>>(
@@ -2311,7 +2310,7 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
-    REQUIRE(words::human_readable_letter<>(0) == 'a');
+    REQUIRE(words::human_readable_letter(0) == 'a');
     REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(reduce(tc, "aaaaaaaaaaaaaaaaaaa") == "a");
     auto S = to<FroidurePin>(tc);
@@ -2368,15 +2367,19 @@ namespace libsemigroups {
 
     using Transf = LeastTransf<5>;
 
-    FroidurePin<Transf> S
-        = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin S = make<FroidurePin>(
+        {make<Transf>({1, 3, 4, 2, 3}), make<Transf>({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    word_type w1 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
-    word_type w2 = froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3}));
-    word_type w3 = froidure_pin::factorisation(S, Transf({1, 3, 1, 3, 3}));
-    word_type w4 = froidure_pin::factorisation(S, Transf({4, 2, 4, 4, 2}));
+    word_type w1
+        = froidure_pin::factorisation(S, make<Transf>({3, 4, 4, 4, 4}));
+    word_type w2
+        = froidure_pin::factorisation(S, make<Transf>({3, 1, 3, 3, 3}));
+    word_type w3
+        = froidure_pin::factorisation(S, make<Transf>({1, 3, 1, 3, 3}));
+    word_type w4
+        = froidure_pin::factorisation(S, make<Transf>({4, 2, 4, 4, 2}));
 
     auto p = to<Presentation<word_type>>(S);
     {
@@ -3131,7 +3134,7 @@ namespace libsemigroups {
 
     tc.standardize(Order::shortlex);
     REQUIRE((normal_forms(tc) | skip_n(10) | take(10) | to_vector())
-            == std::vector<word_type>(
+            == std::vector(
                 {9_w, 01_w, 02_w, 03_w, 04_w, 05_w, 06_w, 12_w, 13_w, 14_w}));
     REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare()));
     tc.standardize(Order::lex);
@@ -4053,7 +4056,7 @@ namespace libsemigroups {
       REQUIRE(q.rules == std::vector<std::string>());
       // REQUIRE((normal_forms(tc) | to_vector())
       //
-      //         == std::vector<word_type>({{}, {0}, {1}, {0, 1}, {1, 0}}));
+      //         == std::vector({{}, {0}, {1}, {0, 1}, {1, 0}}));
     }
   }
 
@@ -4137,10 +4140,10 @@ namespace libsemigroups {
     REQUIRE(reduce(tc, 13042564876_w) == 13042564786_w);
     REQUIRE(reduce(tc, 13042564877_w) == 1304256487_w);
     REQUIRE(reduce(tc, 13042564878_w) == 1304256487_w);
-    // std::vector<word_type> ws = {1230_w, 2031_w, 10231_w, 12032_w,
-    // 102132_w}; std::vector<word_type> ws = {012_w, 021_w, 102_w, 120_w,
-    // 1021_w}; std::vector<word_type> ws = {1203_w, 0123_w, 0213_w, 1023_w,
-    // 10213_w}; std::vector<word_type> ws
+    // std::vector ws = {1230_w, 2031_w, 10231_w, 12032_w,
+    // 102132_w}; std::vector ws = {012_w, 021_w, 102_w, 120_w,
+    // 1021_w}; std::vector ws = {1203_w, 0123_w, 0213_w, 1023_w,
+    // 10213_w}; std::vector ws
     //     = {123043_w, 1203243_w, 203143_w, 1023143_w, 10213243_w};
 
     // auto involution = [&tc](word_type& w) {
@@ -4240,7 +4243,7 @@ namespace libsemigroups {
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == size[n]);
       //  REQUIRE(todd_coxeter::number_of_idempotents(tc) == num_idem[n]);
-      //  std::vector<word_type> possible1
+      //  std::vector possible1
       //      = {012_w,     0122_w,       0112_w,      01122_w,
       //         0012_w,    00122_w,      00112_w,     001122_w,
       //         2012_w,    220122_w,     20112_w,     2201122_w,
@@ -4263,7 +4266,7 @@ namespace libsemigroups {
       //  // REQUIRE(partition(tc, possible1.cbegin(), possible1.cend())
       //  //       == std::vector<std::vector<word_type>>());
 
-      //  std::vector<word_type> possible2 = {
+      //  std::vector possible2 = {
       //      012_w,     0122_w,     0112_w,     01122_w,    0012_w, 00122_w,
       //      00112_w,   001122_w,   2012_w,     22012_w,    20112_w,
       //      220112_w, 20012_w,   220012_w,   200112_w,   2200112_w,  1012_w,
@@ -4275,7 +4278,7 @@ namespace libsemigroups {
       //  REQUIRE(
       //      todd_coxeter::is_traversal(tc, possible2.cbegin(),
       //      possible2.cend()));
-      //  std::vector<word_type> possible3 = {
+      //  std::vector possible3 = {
       //      0123_w,         01233_w,         01223_w,         012233_w,
       //      01123_w,        011233_w,        011223_w,        0112233_w,
       //      00123_w,        001233_w,        001223_w,        0012233_w,
@@ -4413,21 +4416,21 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 15);
 
-    std::vector<word_type> nf = {""_w,
-                                 0_w,
-                                 101_w,
-                                 212012_w,
-                                 12012_w,
-                                 202_w,
-                                 01_w,
-                                 2012_w,
-                                 012_w,
-                                 02_w,
-                                 1012_w,
-                                 1_w,
-                                 212_w,
-                                 12_w,
-                                 2_w};
+    std::vector nf = {""_w,
+                      0_w,
+                      101_w,
+                      212012_w,
+                      12012_w,
+                      202_w,
+                      01_w,
+                      2012_w,
+                      012_w,
+                      02_w,
+                      1012_w,
+                      1_w,
+                      212_w,
+                      12_w,
+                      2_w};
     std::for_each(nf.begin(), nf.end(), [&tc](auto& w) { w = reduce(tc, w); });
     REQUIRE(nf == std::vector<word_type>());
     REQUIRE((normal_forms(tc) | to_vector()) == std::vector<word_type>());
@@ -4494,7 +4497,7 @@ namespace libsemigroups {
 
     presentation::balance_no_checks(p, 0123456_w, 0123456_w);
     REQUIRE(p.rules
-            == std::vector<word_type>(
+            == std::vector(
                 {00_w,      {},      11_w,         {},           22_w,
                  {},        33_w,    {},           44_w,         {},
                  55_w,      {},      66_w,         {},           101_w,
@@ -4550,9 +4553,9 @@ namespace libsemigroups {
     {
       using Transf_ = LeastTransf<8>;
       FroidurePin<Transf_> S;
-      S.add_generator(Transf_({1, 2, 3, 4, 5, 6, 7, 0}));
-      S.add_generator(Transf_({1, 0, 2, 3, 4, 5, 6, 7}));
-      S.add_generator(Transf_({0, 0, 2, 3, 4, 5, 6, 7}));
+      S.add_generator(make<Transf_>({1, 2, 3, 4, 5, 6, 7, 0}));
+      S.add_generator(make<Transf_>({1, 0, 2, 3, 4, 5, 6, 7}));
+      S.add_generator(make<Transf_>({0, 0, 2, 3, 4, 5, 6, 7}));
 
       REQUIRE(S.size() == 16'777'216);
       wg = S.left_cayley_graph();
@@ -4624,10 +4627,10 @@ namespace libsemigroups {
     auto rg     = ReportGuard(false);
     using PPerm = LeastPPerm<5>;
     FroidurePin<PPerm> S;
-    S.add_generator(PPerm({1, 3, 4}, {0, 4, 3}, 5));
-    S.add_generator(PPerm({1, 3, 4}, {2, 4, 3}, 5));
-    S.add_generator(PPerm({0, 3, 4}, {1, 4, 3}, 5));
-    S.add_generator(PPerm({2, 3, 4}, {1, 4, 3}, 5));
+    S.add_generator(make<PPerm>({1, 3, 4}, {0, 4, 3}, 5));
+    S.add_generator(make<PPerm>({1, 3, 4}, {2, 4, 3}, 5));
+    S.add_generator(make<PPerm>({0, 3, 4}, {1, 4, 3}, 5));
+    S.add_generator(make<PPerm>({2, 3, 4}, {1, 4, 3}, 5));
 
     REQUIRE(S.size() == 11);
     auto p = to<Presentation<std::string>>(S);

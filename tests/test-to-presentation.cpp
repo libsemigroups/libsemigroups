@@ -62,10 +62,10 @@ namespace libsemigroups {
                                    std::string) {
     auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
-    S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
-    S.add_generator(Bipartition({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
+    S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
+    S.add_generator(make<Bipartition>({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
 
     auto p = to<Presentation<TestType>>(S);
@@ -87,10 +87,10 @@ namespace libsemigroups {
                           "from FroidurePin and alphabet",
                           "[quick][to_presentation]") {
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
-    S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
-    S.add_generator(Bipartition({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
+    S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
+    S.add_generator(make<Bipartition>({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
 
     auto p = to<Presentation<std::string>>(S);

@@ -328,8 +328,7 @@ namespace libsemigroups {
     ukkonen::add_word(t, 2_w);
 
     REQUIRE(ukkonen::number_of_pieces(t, 012_w) == 3);
-    REQUIRE(ukkonen::pieces(t, 012_w)
-            == std::vector<word_type>({0_w, 1_w, 2_w}));
+    REQUIRE(ukkonen::pieces(t, 012_w) == std::vector({0_w, 1_w, 2_w}));
     REQUIRE(ukkonen::number_of_pieces(t, 0_w) == 1);
     REQUIRE(ukkonen::pieces(t, 0_w) == std::vector<word_type>({0_w}));
     REQUIRE(ukkonen::number_of_pieces(t, 1_w) == 1);
@@ -354,7 +353,7 @@ namespace libsemigroups {
 
     REQUIRE(ukkonen::number_of_pieces(t, "01284567"_w) == 3);
     REQUIRE(ukkonen::pieces(t, "01284567"_w)
-            == std::vector<word_type>({012_w, 845_w, 67_w}));
+            == std::vector({012_w, 845_w, 67_w}));
     REQUIRE(ukkonen::is_piece(t, 012_w));
     REQUIRE(ukkonen::is_piece(t, 845_w));
     REQUIRE(ukkonen::is_piece(t, 67_w));
@@ -369,8 +368,7 @@ namespace libsemigroups {
 
     REQUIRE(ukkonen::pieces(t, 567_w) == std::vector<word_type>({567_w}));
     REQUIRE(ukkonen::number_of_pieces(t, 12845_w) == 2);
-    REQUIRE(ukkonen::pieces(t, 12845_w)
-            == std::vector<word_type>({12_w, 845_w}));
+    REQUIRE(ukkonen::pieces(t, 12845_w) == std::vector({12_w, 845_w}));
 
     auto w = "0128456701284567"_w;
     REQUIRE(ukkonen::pieces(t, w.cbegin(), w.cend()).size() == 7);
@@ -500,7 +498,7 @@ namespace libsemigroups {
 
     REQUIRE(ukkonen::number_of_pieces(t, string_to_word("baabbaaaa")) == 3);
     REQUIRE(ukkonen::pieces(t, string_to_word("baabbaaaa"))
-            == std::vector<word_type>({100_w, 1100_w, 00_w}));
+            == std::vector({100_w, 1100_w, 00_w}));
     REQUIRE(ukkonen::is_piece(t, string_to_word("baa")));
     REQUIRE(ukkonen::is_piece(t, string_to_word("bbaa")));
     REQUIRE(ukkonen::is_piece(t, string_to_word("aa")));
@@ -514,7 +512,7 @@ namespace libsemigroups {
 
     REQUIRE(ukkonen::number_of_pieces(t, string_to_word("abababbbaa")) == 3);
     REQUIRE(ukkonen::pieces(t, string_to_word("abababbbaa"))
-            == std::vector<word_type>({0101_w, 011_w, 100_w}));
+            == std::vector({0101_w, 011_w, 100_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen",
@@ -614,7 +612,7 @@ namespace libsemigroups {
                    [&u](auto i) { return u.multiplicity(i); });
     REQUIRE(distances == std::vector<size_t>({2, 2, 1, 2}));
 
-    std::vector<word_type> v = {www, www};
+    std::vector v = {www, www};
     ukkonen::add_words_no_checks(u, v);
     ukkonen::add_words(u, v);
     ukkonen::add_words_no_checks(u, v.cbegin(), v.cend());

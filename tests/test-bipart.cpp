@@ -38,8 +38,8 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
   namespace {
-    Blocks construct_blocks(std::vector<uint32_t> blocks,
-                            std::vector<bool>     lookup) {
+    Blocks construct_blocks(std::vector<uint32_t> const& blocks,
+                            std::vector<bool> const&     lookup) {
       Blocks result(blocks.begin(), blocks.end());
       for (size_t i = 0; i < lookup.size(); ++i) {
         result.is_transverse_block(i, lookup[i]);
@@ -53,7 +53,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Blocks", "000", "empty blocks", "[quick]") {
     Blocks b1 = make<Blocks>({});
     Blocks b2 = make<Blocks>({{4, 2}, {-1, -5}, {-3, -6}});
-    REQUIRE(b2.lookup() == std::vector<bool>({true, false, true}));
+    REQUIRE(b2.lookup() == std::vector({true, false, true}));
     REQUIRE(b1 == b1);
     REQUIRE(!(b1 == b2));
     REQUIRE(b1 < b2);
@@ -75,8 +75,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(b.block(10, 0), LibsemigroupsException);
     REQUIRE(!(b < b));
     REQUIRE(b.degree() == 6);
-    REQUIRE(std::vector<bool>(b.cbegin_lookup(), b.cend_lookup())
-            == std::vector<bool>({true, false, true}));
+    REQUIRE(std::vector(b.cbegin_lookup(), b.cend_lookup())
+            == std::vector({true, false, true}));
     REQUIRE(b.number_of_blocks() == 3);
     REQUIRE(b.rank() == 2);
     REQUIRE(b.is_transverse_block(0));
@@ -84,7 +84,7 @@ namespace libsemigroups {
     REQUIRE(b.is_transverse_block(2));
     REQUIRE_THROWS_AS(b.is_transverse_block(10), LibsemigroupsException);
 
-    REQUIRE(std::vector<uint32_t>(b.cbegin(), b.cend())
+    REQUIRE(std::vector(b.cbegin(), b.cend())
             == std::vector<uint32_t>({0, 1, 2, 1, 0, 2}));
     // The validity of the 2nd argument isn't checked
     REQUIRE_NOTHROW(b.block(0, 10));
@@ -97,20 +97,20 @@ namespace libsemigroups {
                           "002",
                           "left blocks of bipartition",
                           "[quick]") {
-    Bipartition x = Bipartition(
+    auto x = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     Blocks* b = x.left_blocks();
     REQUIRE(b == b);
     REQUIRE(!(b < b));
     REQUIRE(b->degree() == 10);
-    REQUIRE(std::vector<bool>(b->cbegin_lookup(), b->cend_lookup())
-            == std::vector<bool>({true, true, true}));
+    REQUIRE(std::vector(b->cbegin_lookup(), b->cend_lookup())
+            == std::vector({true, true, true}));
     REQUIRE(b->number_of_blocks() == 3);
     REQUIRE(b->rank() == 3);
     REQUIRE(b->is_transverse_block(0));
     REQUIRE(b->is_transverse_block(1));
     REQUIRE(b->is_transverse_block(2));
-    REQUIRE(std::vector<uint32_t>(b->cbegin(), b->cend())
+    REQUIRE(std::vector(b->cbegin(), b->cend())
             == std::vector<uint32_t>({0, 1, 2, 1, 0, 2, 1, 0, 2, 2}));
     delete b;
   }
@@ -119,14 +119,14 @@ namespace libsemigroups {
                           "003",
                           "right blocks of bipartition",
                           "[quick]") {
-    Bipartition x = Bipartition(
+    auto x = make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 4, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
     Blocks* b = x.right_blocks();
     REQUIRE(b == b);
     REQUIRE(!(b < b));
     REQUIRE(b->degree() == 10);
-    REQUIRE(std::vector<bool>(b->cbegin_lookup(), b->cend_lookup())
-            == std::vector<bool>({false, true, true, true, true}));
+    REQUIRE(std::vector(b->cbegin_lookup(), b->cend_lookup())
+            == std::vector({false, true, true, true, true}));
     REQUIRE(b->number_of_blocks() == 5);
     REQUIRE(b->rank() == 4);
     REQUIRE(!b->is_transverse_block(0));
@@ -134,7 +134,7 @@ namespace libsemigroups {
     REQUIRE(b->is_transverse_block(2));
     REQUIRE(b->is_transverse_block(3));
     REQUIRE(b->is_transverse_block(4));
-    REQUIRE(std::vector<uint32_t>(b->cbegin(), b->cend())
+    REQUIRE(std::vector(b->cbegin(), b->cend())
             == std::vector<uint32_t>({0, 1, 2, 1, 3, 3, 3, 1, 4, 1}));
     delete b;
   }
@@ -162,8 +162,8 @@ namespace libsemigroups {
     Blocks c(b);
 
     REQUIRE(b.degree() == 11);
-    REQUIRE(std::vector<bool>(b.cbegin_lookup(), b.cend_lookup())
-            == std::vector<bool>({false, true, false}));
+    REQUIRE(std::vector(b.cbegin_lookup(), b.cend_lookup())
+            == std::vector({false, true, false}));
     REQUIRE(b.number_of_blocks() == 3);
     REQUIRE(b.rank() == 1);
 
@@ -181,10 +181,10 @@ namespace libsemigroups {
                                 {false, true, false});
     Blocks c = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
                                 {false, true, true});
-    REQUIRE(std::vector<bool>(b.cbegin_lookup(), b.cend_lookup())
-            == std::vector<bool>({false, true, false}));
-    REQUIRE(std::vector<bool>(c.cbegin_lookup(), c.cend_lookup())
-            == std::vector<bool>({false, true, true}));
+    REQUIRE(std::vector(b.cbegin_lookup(), b.cend_lookup())
+            == std::vector({false, true, false}));
+    REQUIRE(std::vector(c.cbegin_lookup(), c.cend_lookup())
+            == std::vector({false, true, true}));
     REQUIRE(b != c);
     REQUIRE(b.hash_value() != c.hash_value());
     b = construct_blocks({}, {});
@@ -212,20 +212,20 @@ namespace libsemigroups {
                           "008",
                           "mem fns 1",
                           "[quick][bipartition]") {
-    auto x = Bipartition(
+    auto x = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
-    auto y = Bipartition(
+    auto y = make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
     auto z = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     REQUIRE(!(y == z));
 
     z.product_inplace_no_checks(x, y, 0);
-    auto expected = Bipartition(
+    auto expected = make<Bipartition>(
         {0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1});
     REQUIRE(z == expected);
 
-    expected = Bipartition(
+    expected = make<Bipartition>(
         {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
     z.product_inplace_no_checks(y, x, 0);
     REQUIRE(z == expected);
@@ -263,7 +263,7 @@ namespace libsemigroups {
                  {10},
                  {-5, -9},
                  {-6, -7}}));
-    REQUIRE(Bipartition(bipartition::underlying_partition(x)) == x);
+    REQUIRE(make<Bipartition>(bipartition::underlying_partition(x)) == x);
     REQUIRE(to_human_readable_repr(x)
             == "<bipartition of degree 10 with 5 blocks and rank 1>");
   }
@@ -272,8 +272,9 @@ namespace libsemigroups {
                           "009",
                           "hash",
                           "[quick][bipartition]") {
-    Bipartition x({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
-    auto        expected = x.hash_value();
+    auto x = make<Bipartition>(
+        {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
+    auto expected = x.hash_value();
     for (size_t i = 0; i < 1'000'000; i++) {
       REQUIRE(x.hash_value() == expected);
     }
@@ -283,7 +284,8 @@ namespace libsemigroups {
                           "010",
                           "mem fns 2",
                           "[quick][bipartition]") {
-    Bipartition x({0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
+    auto x = make<Bipartition>(
+        {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
     REQUIRE(x.rank() == 3);
     REQUIRE(x.at(0) == 0);
@@ -301,7 +303,8 @@ namespace libsemigroups {
     REQUIRE(!x.is_transverse_block(3));
     REQUIRE(!x.is_transverse_block(4));
 
-    Bipartition y({0, 0, 1, 2, 3, 3, 0, 4, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1});
+    auto y = make<Bipartition>(
+        {0, 0, 1, 2, 3, 3, 0, 4, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1});
 
     Blocks* a = x.left_blocks();
     Blocks* b = y.right_blocks();
@@ -314,19 +317,19 @@ namespace libsemigroups {
     delete a;
     delete b;
 
-    x = Bipartition(
+    x = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
     x.set_number_of_blocks(5);
     REQUIRE(x.number_of_blocks() == 5);
 
-    x = Bipartition(
+    x = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
     x.set_number_of_left_blocks(3);
     REQUIRE(x.number_of_left_blocks() == 3);
     REQUIRE(x.number_of_right_blocks() == 5);
     REQUIRE(x.number_of_blocks() == 5);
 
-    x = Bipartition(
+    x = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
     x.set_rank(3);
     REQUIRE(x.rank() == 3);
@@ -336,10 +339,10 @@ namespace libsemigroups {
                           "011",
                           "delete/copy",
                           "[quick][bipartition]") {
-    Bipartition x({0, 0, 0, 0});
-    Bipartition y(x);
+    auto x = make<Bipartition>({0, 0, 0, 0});
+    auto y(x);
 
-    Bipartition expected({0, 0, 0, 0});
+    auto expected = make<Bipartition>({0, 0, 0, 0});
     REQUIRE(y == expected);
   }
 
@@ -347,7 +350,7 @@ namespace libsemigroups {
                           "012",
                           "degree 0",
                           "[quick][bipartition]") {
-    Bipartition x(std::vector<uint32_t>({}));
+    auto x = make<Bipartition>(std::vector<uint32_t>({}));
     REQUIRE(x.number_of_blocks() == 0);
     REQUIRE(x.number_of_left_blocks() == 0);
 
@@ -375,7 +378,7 @@ namespace libsemigroups {
                           "014",
                           "convenience constructor",
                           "[quick][bipartition]") {
-    Bipartition xx(
+    auto xx = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
     auto x = make<Bipartition>({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
@@ -421,14 +424,14 @@ namespace libsemigroups {
     REQUIRE(!x.is_transverse_block(3));
     REQUIRE(!x.is_transverse_block(4));
 
-    Bipartition yy(
+    auto yy = make<Bipartition>(
         {0, 0, 1, 2, 3, 3, 0, 4, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1});
 
-    Bipartition y({{1, 2, 7, -1, -2, -3, -4, -5, -6, -9},
-                   {3, 9, 10, -7, -10},
-                   {4, -8},
-                   {5, 6},
-                   {8}});
+    auto y = make<Bipartition>({{1, 2, 7, -1, -2, -3, -4, -5, -6, -9},
+                                {3, 9, 10, -7, -10},
+                                {4, -8},
+                                {5, 6},
+                                {8}});
 
     REQUIRE(y == yy);
 
@@ -443,35 +446,35 @@ namespace libsemigroups {
     delete a;
     delete b;
 
-    xx = Bipartition(
+    xx = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
-    x = Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
-                     {7, 10, -3, -9, -10},
-                     {8, -4},
-                     {-5, -6},
-                     {-8}});
+    x = make<Bipartition>({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                           {7, 10, -3, -9, -10},
+                           {8, -4},
+                           {-5, -6},
+                           {-8}});
     REQUIRE(x == xx);
     x.set_number_of_blocks(5);
     REQUIRE(x.number_of_blocks() == 5);
 
-    xx = Bipartition(
+    xx = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
-    x = Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
-                     {7, 10, -3, -9, -10},
-                     {8, -4},
-                     {-5, -6},
-                     {-8}});
+    x = make<Bipartition>({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                           {7, 10, -3, -9, -10},
+                           {8, -4},
+                           {-5, -6},
+                           {-8}});
     REQUIRE(x == xx);
     x.set_number_of_left_blocks(3);
     REQUIRE(x.number_of_left_blocks() == 3);
     REQUIRE(x.number_of_right_blocks() == 5);
     REQUIRE(x.number_of_blocks() == 5);
 
-    x = Bipartition({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
-                     {7, 10, -3, -9, -10},
-                     {8, -4},
-                     {-5, -6},
-                     {-8}});
+    x = make<Bipartition>({{1, 2, 3, 4, 5, 6, 9, -1, -2, -7},
+                           {7, 10, -3, -9, -10},
+                           {8, -4},
+                           {-5, -6},
+                           {-8}});
     x.set_rank(3);
     REQUIRE(x.rank() == 3);
 
@@ -534,23 +537,20 @@ namespace libsemigroups {
                           "015",
                           "force copy constructor over move constructor",
                           "[quick][bipartition]") {
-    std::vector<uint32_t> xx(
+    auto x = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
-    auto                  x = Bipartition(xx);
-    std::vector<uint32_t> yy(
+    auto y = make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
-    auto                  y = Bipartition(yy);
-    std::vector<uint32_t> zz(
+    auto z = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
-    auto z = Bipartition(zz);
     REQUIRE(!(y == z));
 
     z.product_inplace_no_checks(x, y);
-    auto expected = Bipartition(
+    auto expected = make<Bipartition>(
         {0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1});
     REQUIRE(z == expected);
 
-    expected = Bipartition(
+    expected = make<Bipartition>(
         {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
     z.product_inplace_no_checks(y, x);
     REQUIRE(z == expected);
@@ -573,19 +573,20 @@ namespace libsemigroups {
     z.product_inplace_no_checks(y, id, 0);
     REQUIRE(z == y);
 
-    Bipartition copy1 = x;
+    auto copy1 = x;
     REQUIRE(x == copy1);
-    Bipartition copy2(std::move(x));
+    auto copy2 = std::move(x);
     REQUIRE(copy1 == copy2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition", "016", "adapters", "[quick][bipart]") {
-    Bipartition x({0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
+    auto x = make<Bipartition>(
+        {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
     REQUIRE_NOTHROW(IncreaseDegree<Bipartition>()(x, 0));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition", "017", "bug", "[quick][bipart]") {
-    Bipartition x({{1, -2, -3}, {-1}, {2, 3}});
+    auto x = make<Bipartition>({{1, -2, -3}, {-1}, {2, 3}});
     REQUIRE_NOTHROW(bipartition::validate(x));
   }
 }  // namespace libsemigroups

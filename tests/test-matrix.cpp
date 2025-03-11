@@ -136,22 +136,22 @@ namespace libsemigroups {
     {
       TestType m = make<TestType>({{0, 1}, {0, 1}});
       REQUIRE_NOTHROW(matrix::throw_if_bad_entry(m));
-      REQUIRE(m == TestType({{0, 1}, {0, 1}}));
-      REQUIRE(!(m == TestType({{0, 0}, {0, 1}})));
-      REQUIRE(m == TestType({{0, 1}, {0, 1}}));
-      m.product_inplace_no_checks(TestType({{0, 0}, {0, 0}}),
-                                  TestType({{0, 0}, {0, 0}}));
-      REQUIRE(m == TestType({{0, 0}, {0, 0}}));
-      m.product_inplace_no_checks(TestType({{0, 0}, {0, 0}}),
-                                  TestType({{1, 1}, {1, 1}}));
-      REQUIRE(m == TestType({{0, 0}, {0, 0}}));
-      m.product_inplace_no_checks(TestType({{1, 1}, {1, 1}}),
-                                  TestType({{0, 0}, {0, 0}}));
-      REQUIRE(m == TestType({{0, 0}, {0, 0}}));
+      REQUIRE(m == make<TestType>({{0, 1}, {0, 1}}));
+      REQUIRE(!(m == make<TestType>({{0, 0}, {0, 1}})));
+      REQUIRE(m == make<TestType>({{0, 1}, {0, 1}}));
+      m.product_inplace_no_checks(make<TestType>({{0, 0}, {0, 0}}),
+                                  make<TestType>({{0, 0}, {0, 0}}));
+      REQUIRE(m == make<TestType>({{0, 0}, {0, 0}}));
+      m.product_inplace_no_checks(make<TestType>({{0, 0}, {0, 0}}),
+                                  make<TestType>({{1, 1}, {1, 1}}));
+      REQUIRE(m == make<TestType>({{0, 0}, {0, 0}}));
+      m.product_inplace_no_checks(make<TestType>({{1, 1}, {1, 1}}),
+                                  make<TestType>({{0, 0}, {0, 0}}));
+      REQUIRE(m == make<TestType>({{0, 0}, {0, 0}}));
 
-      m.product_inplace_no_checks(TestType({{0, 1}, {1, 0}}),
-                                  TestType({{1, 0}, {1, 0}}));
-      REQUIRE(m == TestType({{1, 0}, {1, 0}}));
+      m.product_inplace_no_checks(make<TestType>({{0, 1}, {1, 0}}),
+                                  make<TestType>({{1, 0}, {1, 0}}));
+      REQUIRE(m == make<TestType>({{1, 0}, {1, 0}}));
       size_t const M = detail::BitSetCapacity<TestType>::value;
       detail::StaticVector1<BitSet<M>, M> result;
       matrix::bitset_rows(m, result);
@@ -162,11 +162,11 @@ namespace libsemigroups {
       REQUIRE(result.size() == 1);
       REQUIRE(matrix::bitset_row_basis(m).size() == 1);
       REQUIRE(std::vector<bool>(m.cbegin(), m.cend())
-              == std::vector<bool>({true, false, true, false}));
+              == std::vector({true, false, true, false}));
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Warray-bounds"
-      REQUIRE(std::vector<bool>(m.begin(), m.end())  // ****
-              == std::vector<bool>({true, false, true, false}));
+      REQUIRE(std::vector<bool>(m.begin(), m.end())
+              == std::vector({true, false, true, false}));
 #pragma GCC diagnostic pop
     }
 
@@ -177,22 +177,22 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Warray-bounds="
 #endif
     {
-      TestType m({{1, 1}, {0, 0}});
+      auto m        = make<TestType>({{1, 1}, {0, 0}});
       using RowView = typename TestType::RowView;
       auto r        = matrix::rows(m);
       REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
-              == std::vector<bool>({true, true}));
+              == std::vector({true, true}));
       REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
-              == std::vector<bool>({false, false}));
+              == std::vector({false, false}));
       REQUIRE(r.size() == 2);
       std::sort(r.begin(), r.end(), [](RowView const& rv1, RowView const& rv2) {
         return std::lexicographical_compare(
             rv1.begin(), rv1.end(), rv2.begin(), rv2.end());
       });
       REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
-              == std::vector<bool>({false, false}));
+              == std::vector({false, false}));
       REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
-              == std::vector<bool>({true, true}));
+              == std::vector({true, true}));
     }
 #pragma GCC diagnostic pop
 
@@ -203,24 +203,24 @@ namespace libsemigroups {
       std::fill(A.begin(), A.end(), false);
       REQUIRE(A.number_of_rows() == 2);
       REQUIRE(A.number_of_cols() == 2);
-      REQUIRE(A == TestType({{false, false}, {false, false}}));
+      REQUIRE(A == make<TestType>({{false, false}, {false, false}}));
 
       A(0, 0) = true;
       A(1, 1) = true;
-      REQUIRE(A == TestType({{true, false}, {false, true}}));
+      REQUIRE(A == make<TestType>({{true, false}, {false, true}}));
 
       TestType B(2, 2);
       B(0, 1) = true;
       B(1, 0) = true;
       B(0, 0) = false;
       B(1, 1) = false;
-      REQUIRE(B == TestType({{false, true}, {true, false}}));
+      REQUIRE(B == make<TestType>({{false, true}, {true, false}}));
 
-      REQUIRE(A + B == TestType({{true, true}, {true, true}}));
+      REQUIRE(A + B == make<TestType>({{true, true}, {true, true}}));
       REQUIRE(A * B == B);
       REQUIRE(B * A == B);
       REQUIRE(B * B == A);
-      REQUIRE((A + B) * B == TestType({{true, true}, {true, true}}));
+      REQUIRE((A + B) * B == make<TestType>({{true, true}, {true, true}}));
 
       Row C({0, 1});
       REQUIRE(C.number_of_rows() == 1);
@@ -243,7 +243,7 @@ namespace libsemigroups {
       REQUIRE(Row({false, false}) < views[0]);
       REQUIRE(A.hash_value() != 0);
       A *= false;
-      REQUIRE(A == TestType({{false, false}, {false, false}}));
+      REQUIRE(A == make<TestType>({{false, false}, {false, false}}));
       auto r = Row({true, false});
       views  = matrix::rows(B);
       REQUIRE(views[0].size() == 2);
@@ -266,7 +266,7 @@ namespace libsemigroups {
       os << E;  // Also does not do anything visible
     }
     {
-      TestType m({{0, 0}, {0, 0}});
+      auto m            = make<TestType>({{0, 0}, {0, 0}});
       using scalar_type = typename TestType::scalar_type;
       auto it           = m.cbegin();
       REQUIRE(m.coords(it) == std::pair<scalar_type, scalar_type>({0, 0}));
@@ -288,9 +288,10 @@ namespace libsemigroups {
                                    BMat<>) {
     auto     rg = ReportGuard(false);
     TestType m(3, 3);
-    m.product_inplace_no_checks(TestType({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-                                TestType({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
-    REQUIRE(m == TestType({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
+    m.product_inplace_no_checks(
+        make<TestType>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+        make<TestType>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+    REQUIRE(m == make<TestType>({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
     TestType* A = new TestType();
     delete A;
     typename TestType::Row* B = new typename TestType::Row();
@@ -311,7 +312,7 @@ namespace libsemigroups {
 
     AB.product_inplace_no_checks(A, B);
     REQUIRE(AB == B);
-    REQUIRE(A.one() == TestType({{true, false}, {false, true}}));
+    REQUIRE(A.one() == make<TestType>({{true, false}, {false, true}}));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
@@ -320,9 +321,9 @@ namespace libsemigroups {
                                    "[quick]",
                                    BMat<3>,
                                    BMat<>) {
-    auto x = TestType({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
-    auto y = TestType({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-    auto z = TestType({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    auto x = make<TestType>({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
+    auto y = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    auto z = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
     REQUIRE(y == z);
     z.product_inplace_no_checks(x, y);
     REQUIRE(y == z);
@@ -350,7 +351,7 @@ namespace libsemigroups {
     x = make<TestType>({{1, 0, 0}, {1, 1, 0}, {1, 1, 1}});
     REQUIRE(matrix::row_basis(x).size() == 3);
     REQUIRE_THROWS_AS(x.row(3), LibsemigroupsException);
-    std::vector<RowView> v = {x.row(0), x.row(2)};
+    std::vector v = {x.row(0), x.row(2)};
     REQUIRE(matrix::row_basis<TestType>(v).size() == 2);
     REQUIRE(matrix::row_space_size(x) == 3);
     x = make<TestType>({{1, 0, 0}, {0, 1, 1}, {1, 1, 1}});
@@ -358,10 +359,9 @@ namespace libsemigroups {
     REQUIRE(matrix::row_space_size(x) == 3);
     x = make<TestType>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
     REQUIRE(matrix::row_space_size(x) == 7);
-    std::vector<typename TestType::RowView> views;
-    std::vector<typename TestType::RowView> result;
-    matrix::row_basis<TestType, std::vector<typename TestType::RowView>&>(
-        views, result);
+    std::vector<RowView> views;
+    std::vector<RowView> result;
+    matrix::row_basis<TestType, std::vector<RowView>&>(views, result);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -375,15 +375,15 @@ namespace libsemigroups {
                                    IntMat<3>,
                                    IntMat<>) {
     {
-      auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
       REQUIRE(x == expected);
 
-      auto y = TestType({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
       REQUIRE(!(x == y));
 
       y.product_inplace_no_checks(x, x);
-      expected = TestType({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
+      expected = make<TestType>({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
       REQUIRE(y == expected);
       REQUIRE(y.number_of_rows() == 3);
 
@@ -399,15 +399,15 @@ namespace libsemigroups {
       REQUIRE(y == x);
     }
     {
-      auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
       REQUIRE(x == expected);
 
-      auto y = TestType({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
       REQUIRE(!(x == y));
 
       y.product_inplace_no_checks(x, x);
-      expected = TestType({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
+      expected = make<TestType>({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
@@ -453,16 +453,16 @@ namespace libsemigroups {
                                    "[quick]",
                                    MaxPlusMat<>,
                                    MaxPlusMat<3>) {
-    auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-    auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     REQUIRE(x == expected);
 
-    auto y = TestType{{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}};
+    auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
     REQUIRE(!(x == y));
     REQUIRE(x != y);
 
     y.product_inplace_no_checks(x, x);
-    expected = TestType({{1, 2, 2}, {1, 1, 1}, {2, 3, 2}});
+    expected = make<TestType>({{1, 2, 2}, {1, 1, 1}, {2, 3, 2}});
     REQUIRE(y == expected);
 
     REQUIRE(x < y);
@@ -496,17 +496,17 @@ namespace libsemigroups {
                                    MinPlusMat<3>,
                                    MinPlusMat<>) {
     {
-      auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
       // Just testing the below doesn't compile
       // matrix::row_basis(x);
       REQUIRE(x == expected);
 
-      auto y = TestType({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
       REQUIRE(!(x == y));
 
       y.product_inplace_no_checks(x, x);
-      expected = TestType({{-4, -3, -2}, {-3, -3, -1}, {-4, -3, -3}});
+      expected = make<TestType>({{-4, -3, -2}, {-3, -3, -1}, {-4, -3, -3}});
       REQUIRE(y == expected);
 
       REQUIRE(!(x < y));
@@ -521,15 +521,15 @@ namespace libsemigroups {
       REQUIRE(y == x);
     }
     {
-      auto x        = TestType({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      auto expected = TestType({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      auto x        = make<TestType>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      auto expected = make<TestType>({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
       REQUIRE(x == expected);
 
-      auto y = TestType({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+      auto y = make<TestType>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
       REQUIRE(!(x == y));
 
       y.product_inplace_no_checks(x, x);
-      REQUIRE(y == TestType({{1, 21, 1}, {1, 0, 0}, {2, 22, 1}}));
+      REQUIRE(y == make<TestType>({{1, 21, 1}, {1, 0, 0}, {2, 22, 1}}));
 
       REQUIRE(x > y);
       REQUIRE(Degree<TestType>()(x) == 3);
@@ -592,20 +592,20 @@ namespace libsemigroups {
       REQUIRE(expected.size() == 1);
       REQUIRE(expected.at(0) == std::array<scalar_type, 2>({0, 0}));
 
-      TestType m(sr, {{1, 1}, {0, 0}});
-      auto     r = matrix::row_basis(m);
+      auto m = make<TestType>(sr, {{1, 1}, {0, 0}});
+      auto r = matrix::row_basis(m);
       REQUIRE(r.size() == 1);
-      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+      REQUIRE(std::vector(r[0].cbegin(), r[0].cend())
               == std::vector<scalar_type>({0, 0}));
     }
     {
-      TestType m(sr, {{1, 1}, {0, 0}});
+      auto m = make<TestType>(sr, {{1, 1}, {0, 0}});
       m      = m.one();
       auto r = matrix::row_basis(m);
       REQUIRE(r.size() == 2);
-      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+      REQUIRE(std::vector(r[0].cbegin(), r[0].cend())
               == std::vector<scalar_type>({NEGATIVE_INFINITY, 0}));
-      REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
+      REQUIRE(std::vector(r[1].cbegin(), r[1].cend())
               == std::vector<scalar_type>({0, NEGATIVE_INFINITY}));
     }
     std::vector<typename TestType::RowView> views;
@@ -681,17 +681,17 @@ namespace libsemigroups {
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
       sr = new MaxPlusTruncSemiring(33);
     }
-    auto x        = TestType(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-    auto expected = TestType(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    auto x        = make<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    auto expected = make<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
     REQUIRE(x == expected);
 
     REQUIRE_THROWS_AS(make<TestType>(sr, {{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}),
                       LibsemigroupsException);
-    auto y = TestType(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+    auto y = make<TestType>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
     REQUIRE(!(x == y));
 
     y.product_inplace_no_checks(x, x);
-    expected = TestType(sr, {{33, 33, 22}, {32, 32, 10}, {33, 33, 32}});
+    expected = make<TestType>(sr, {{33, 33, 22}, {32, 32, 10}, {33, 33, 32}});
     REQUIRE(y == expected);
 
     REQUIRE(x < y);
@@ -737,16 +737,16 @@ namespace libsemigroups {
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
       sr = new MinPlusTruncSemiring(33);
     }
-    auto x = TestType(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    auto x = make<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
 
     auto expected = make<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
     REQUIRE(x == expected);
 
-    auto y = TestType(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+    auto y = make<TestType>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
     REQUIRE(!(x == y));
 
     y.product_inplace_no_checks(x, x);
-    expected = TestType(sr, {{1, 21, 1}, {1, 0, 0}, {2, 22, 1}});
+    expected = make<TestType>(sr, {{1, 21, 1}, {1, 0, 0}, {2, 22, 1}});
     REQUIRE(y == expected);
 
     REQUIRE(!(x < y));
@@ -826,12 +826,12 @@ namespace libsemigroups {
     REQUIRE(m.number_of_rows() == 4);
     auto r = matrix::rows(m);
     REQUIRE(r.size() == 4);
-    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+    REQUIRE(std::vector(r[0].cbegin(), r[0].cend())
             == std::vector<scalar_type>({1, 1, 0, 0}));
     r[0] += r[1];
-    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+    REQUIRE(std::vector(r[0].cbegin(), r[0].cend())
             == std::vector<scalar_type>({3, 1, 2, 0}));
-    REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
+    REQUIRE(std::vector(r[1].cbegin(), r[1].cend())
             == std::vector<scalar_type>({2, 0, 2, 0}));
     REQUIRE(m
             == make<TestType>(
@@ -840,13 +840,13 @@ namespace libsemigroups {
     REQUIRE(r[0](0) == 3);
     REQUIRE(r[2](3) == 9);
     std::sort(r[0].begin(), r[0].end());
-    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+    REQUIRE(std::vector(r[0].cbegin(), r[0].cend())
             == std::vector<scalar_type>({0, 1, 2, 3}));
     REQUIRE(m
             == make<TestType>(
                 sr, {{0, 1, 2, 3}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
     r[0] += 9;
-    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+    REQUIRE(std::vector(r[0].cbegin(), r[0].cend())
             == std::vector<scalar_type>({9, 0, 1, 2}));
     REQUIRE(m
             == make<TestType>(
@@ -855,7 +855,7 @@ namespace libsemigroups {
     REQUIRE(m
             == make<TestType>(
                 sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
-    REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
+    REQUIRE(std::vector(r[1].cbegin(), r[1].cend())
             == std::vector<scalar_type>({6, 0, 6, 0}));
     REQUIRE(r[2] < r[1]);
     r[1] = r[2];
@@ -888,8 +888,9 @@ namespace libsemigroups {
       sr = new NTPSemiring<>(0, 10);
     }
 
-    auto     rg = ReportGuard(false);
-    TestType m(sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
+    auto rg = ReportGuard(false);
+    auto m  = make<TestType>(
+        sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
     REQUIRE(m.number_of_cols() == 4);
     REQUIRE(m.number_of_rows() == 4);
     auto r = matrix::rows(m);
@@ -975,7 +976,7 @@ namespace libsemigroups {
     REQUIRE(!(x == y));
 
     y.product_inplace_no_checks(x, x);
-    expected = TestType({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}});
+    expected = make<TestType>({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}});
     REQUIRE(y == expected);
 
     REQUIRE(x < y);
@@ -1015,28 +1016,29 @@ namespace libsemigroups {
     TestType tt;
     REQUIRE(tt != zz);
     REQUIRE(TestType::one(3)
-            == TestType({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                         {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                         {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}));
+            == make<TestType>({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+                               {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+                               {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}));
     REQUIRE(zz(0, 0) == -4);
     REQUIRE(zz.number_of_cols() == 3);
     zz += zz;
-    REQUIRE(zz == TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    REQUIRE(zz == make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
     zz *= 2;
-    REQUIRE(zz == TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
-    REQUIRE(zz + x == TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
-    REQUIRE(zz * x == TestType({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}}));
+    REQUIRE(zz == make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    REQUIRE(zz + x == make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    REQUIRE(zz * x
+            == make<TestType>({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}}));
     REQUIRE(std::accumulate(zz.cbegin(), zz.cend(), 0) == -20);
     REQUIRE(std::accumulate(zz.begin(), zz.end(), 0) == -20);
     x.transpose();
-    REQUIRE(x == TestType({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
+    REQUIRE(x == make<TestType>({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
     x.swap(zz);
-    REQUIRE(zz == TestType({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
+    REQUIRE(zz == make<TestType>({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
     REQUIRE(matrix::pow(x, 100)
-            == TestType({{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}));
+            == make<TestType>({{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}));
     REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
     REQUIRE(matrix::pow(x, 1)
-            == TestType({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
+            == make<TestType>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
     REQUIRE(matrix::pow(x, 0) == TestType::one(3));
   }
 

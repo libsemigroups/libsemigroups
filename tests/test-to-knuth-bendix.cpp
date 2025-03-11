@@ -19,7 +19,8 @@
 #include <type_traits>
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/word-range.hpp"
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
@@ -32,6 +33,8 @@
 #include "libsemigroups/detail/rewriters.hpp"  // for RewriteFromLeft, Rewri...
 
 namespace libsemigroups {
+
+  using literals::operator""_w;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr onesided = congruence_kind::onesided;
@@ -56,8 +59,8 @@ namespace libsemigroups {
     using Word     = typename TestType::second_type;
 
     FroidurePin<Transf<>> S;
-    S.add_generator(Transf<>({1, 0}));
-    S.add_generator(Transf<>({0, 0}));
+    S.add_generator(make<Transf<>>({1, 0}));
+    S.add_generator(make<Transf<>>({0, 0}));
 
     auto kb = to<KnuthBendix<Word, Rewriter>>(twosided, S);
     REQUIRE(S.size() == kb.number_of_classes());
@@ -80,11 +83,11 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "a", "b");
       presentation::add_rule_no_checks(p, "b", "B");
     } else if constexpr (std::is_same_v<TestType, word_type>) {
-      p.alphabet({0, 1, 2});
-      presentation::add_rule_no_checks(p, {1, 1}, {2});
-      presentation::add_rule_no_checks(p, {2, 0, 2}, {0, 1, 0});
-      presentation::add_rule_no_checks(p, {0}, {1});
-      presentation::add_rule_no_checks(p, {1}, {2});
+      p.alphabet(012_w);
+      presentation::add_rule_no_checks(p, 11_w, 2_w);
+      presentation::add_rule_no_checks(p, 202_w, 010_w);
+      presentation::add_rule_no_checks(p, 0_w, 1_w);
+      presentation::add_rule_no_checks(p, 1_w, 2_w);
     }
 
     REQUIRE(!p.contains_empty_word());
@@ -126,11 +129,11 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "a", "b");
       presentation::add_rule_no_checks(p, "b", "B");
     } else if constexpr (std::is_same_v<Word, word_type>) {
-      p.alphabet({0, 1, 2});
-      presentation::add_rule_no_checks(p, {1, 1}, {2});
-      presentation::add_rule_no_checks(p, {2, 0, 2}, {0, 1, 0});
-      presentation::add_rule_no_checks(p, {0}, {1});
-      presentation::add_rule_no_checks(p, {1}, {2});
+      p.alphabet(012_w);
+      presentation::add_rule_no_checks(p, 11_w, 2_w);
+      presentation::add_rule_no_checks(p, 202_w, 010_w);
+      presentation::add_rule_no_checks(p, 0_w, 1_w);
+      presentation::add_rule_no_checks(p, 1_w, 2_w);
     }
 
     REQUIRE(!p.contains_empty_word());

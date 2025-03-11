@@ -66,29 +66,29 @@ namespace libsemigroups {
       REQUIRE(stephen::number_of_words_accepted(s) == POSITIVE_INFINITY);
       {
         REQUIRE((stephen::words_accepted(s) | rx::take(10) | rx::to_vector())
-                == std::vector<word_type>({0_w,
-                                           01_w,
-                                           011_w,
-                                           0111_w,
-                                           01111_w,
-                                           011111_w,
-                                           0111111_w,
-                                           01111111_w,
-                                           011111111_w,
-                                           0111111111_w}));
+                == std::vector({0_w,
+                                01_w,
+                                011_w,
+                                0111_w,
+                                01111_w,
+                                011111_w,
+                                0111111_w,
+                                01111111_w,
+                                011111111_w,
+                                0111111111_w}));
       }
       {
         REQUIRE((stephen::left_factors(s) | rx::take(10) | rx::to_vector())
-                == std::vector<word_type>({""_w,
-                                           0_w,
-                                           01_w,
-                                           011_w,
-                                           0111_w,
-                                           01111_w,
-                                           011111_w,
-                                           0111111_w,
-                                           01111111_w,
-                                           011111111_w}));
+                == std::vector({""_w,
+                                0_w,
+                                01_w,
+                                011_w,
+                                0111_w,
+                                01111_w,
+                                011111_w,
+                                0111111_w,
+                                01111111_w,
+                                011111111_w}));
       }
     }
 
@@ -192,29 +192,29 @@ namespace libsemigroups {
     REQUIRE(!stephen::accepts(s, 111_w));
     {
       REQUIRE((stephen::words_accepted(s) | rx::take(10) | rx::to_vector())
-              == std::vector<word_type>({1101_w,
-                                         110001_w,
-                                         110010_w,
-                                         110100_w,
-                                         110111_w,
-                                         111101_w,
-                                         11000001_w,
-                                         11000010_w,
-                                         11000100_w,
-                                         11000111_w}));
+              == std::vector({1101_w,
+                              110001_w,
+                              110010_w,
+                              110100_w,
+                              110111_w,
+                              111101_w,
+                              11000001_w,
+                              11000010_w,
+                              11000100_w,
+                              11000111_w}));
     }
     {
       REQUIRE((stephen::left_factors(s) | rx::take(10) | rx::to_vector())
-              == std::vector<word_type>({""_w,
-                                         1_w,
-                                         11_w,
-                                         110_w,
-                                         111_w,
-                                         1100_w,
-                                         1101_w,
-                                         1111_w,
-                                         11000_w,
-                                         11001_w}));
+              == std::vector({""_w,
+                              1_w,
+                              11_w,
+                              110_w,
+                              111_w,
+                              1100_w,
+                              1101_w,
+                              1111_w,
+                              11000_w,
+                              11001_w}));
       REQUIRE(stephen::number_of_left_factors(s) == POSITIVE_INFINITY);
       REQUIRE((stephen::left_factors(s) | rx::take(10)
                | rx::all_of([&s](auto const& ww) {
@@ -404,7 +404,7 @@ namespace libsemigroups {
     REQUIRE(stephen::accepts(S, to_word("aaaeaag")));
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
+            == std::vector({01236_w, 01245_w, 0004006_w}));
 
     stephen::set_word(S, to_word("aaaeaaaeaa")).run();
 
@@ -412,13 +412,13 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE(stephen::accepts(S, to_word("aaaeabcd")));
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>({00040123_w, 01230400_w, 0004000400_w}));
+            == std::vector({00040123_w, 01230400_w, 0004000400_w}));
 
     stephen::set_word(S, to_word("aaaeaag")).run();
     REQUIRE(S.word_graph().number_of_nodes() == 11);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
+            == std::vector({01236_w, 01245_w, 0004006_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -445,16 +445,16 @@ namespace libsemigroups {
     REQUIRE(S.word_graph().number_of_nodes() == 3);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
     REQUIRE((stephen::words_accepted(S) | rx::take(10) | rx::to_vector())
-            == std::vector<word_type>({to_word("a"),
-                                       to_word("b"),
-                                       to_word("aa"),
-                                       to_word("ab"),
-                                       to_word("ac"),
-                                       to_word("ba"),
-                                       to_word("bb"),
-                                       to_word("bc"),
-                                       to_word("ca"),
-                                       to_word("cb")}));
+            == std::vector({to_word("a"),
+                            to_word("b"),
+                            to_word("aa"),
+                            to_word("ab"),
+                            to_word("ac"),
+                            to_word("ba"),
+                            to_word("bb"),
+                            to_word("bc"),
+                            to_word("ca"),
+                            to_word("cb")}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -513,14 +513,14 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S) == 8);
 
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>({to_word("dfcef"),
-                                       to_word("dfceg"),
-                                       to_word("dgcef"),
-                                       to_word("dgceg"),
-                                       to_word("dfabcdf"),
-                                       to_word("dfabcdg"),
-                                       to_word("dgabcdf"),
-                                       to_word("dgabcdg")}));
+            == std::vector({to_word("dfcef"),
+                            to_word("dfceg"),
+                            to_word("dgcef"),
+                            to_word("dgceg"),
+                            to_word("dfabcdf"),
+                            to_word("dfabcdg"),
+                            to_word("dgabcdf"),
+                            to_word("dgabcdg")}));
 
     REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
              | rx::take(1))
@@ -538,22 +538,22 @@ namespace libsemigroups {
 
     REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
              | rx::to_vector())
-            == std::vector<word_type>({to_word("abcdfabcdf"),
-                                       to_word("abcdfabcdg"),
-                                       to_word("abcdfcef"),
-                                       to_word("abcdfceg"),
-                                       to_word("abcdgabcdf"),
-                                       to_word("abcdgabcdg"),
-                                       to_word("abcdgcef"),
-                                       to_word("abcdgceg"),
-                                       to_word("cefabcdf"),
-                                       to_word("cefabcdg"),
-                                       to_word("cefcef"),
-                                       to_word("cefceg"),
-                                       to_word("cegabcdf"),
-                                       to_word("cegabcdg"),
-                                       to_word("cegcef"),
-                                       to_word("cegceg")}));
+            == std::vector({to_word("abcdfabcdf"),
+                            to_word("abcdfabcdg"),
+                            to_word("abcdfcef"),
+                            to_word("abcdfceg"),
+                            to_word("abcdgabcdf"),
+                            to_word("abcdgabcdg"),
+                            to_word("abcdgcef"),
+                            to_word("abcdgceg"),
+                            to_word("cefabcdf"),
+                            to_word("cefabcdg"),
+                            to_word("cefcef"),
+                            to_word("cefceg"),
+                            to_word("cegabcdf"),
+                            to_word("cegabcdg"),
+                            to_word("cegcef"),
+                            to_word("cegceg")}));
 
     REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
              | rx::take(1))
@@ -586,7 +586,7 @@ namespace libsemigroups {
     stephen::set_word(S, to_word("acba")).run();
 
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>({to_word("aabc"), to_word("acba")}));
+            == std::vector({to_word("aabc"), to_word("acba")}));
     verify_c4_normal_form(p, to_word("acba"), to_word("aabc"));
   }
 
@@ -1538,7 +1538,7 @@ namespace libsemigroups {
     stephen::set_word(S, 0110_w).run();
     REQUIRE(S.word_graph().number_of_nodes() == 8);
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>({0101_w, 0110_w, 1001_w}));
+            == std::vector({0101_w, 0110_w, 1001_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",

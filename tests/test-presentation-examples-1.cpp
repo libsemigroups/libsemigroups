@@ -559,11 +559,10 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    REQUIRE(p.rules
-            == std::vector<word_type>(
-                {00_w,  {},    11_w,   {},    22_w,   {},    33_w,  3_w,
-                 20_w,  02_w,  31_w,   13_w,  32_w,   23_w,  101_w, 010_w,
-                 212_w, 121_w, 0303_w, 303_w, 3030_w, 0303_w}));
+    REQUIRE(p.rules == std::vector({00_w,   {},    11_w,   {},    22_w,  {},
+                                    33_w,   3_w,   20_w,   02_w,  31_w,  13_w,
+                                    32_w,   23_w,  101_w,  010_w, 212_w, 121_w,
+                                    0303_w, 303_w, 3030_w, 0303_w}));
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 209);
@@ -782,11 +781,10 @@ namespace libsemigroups {
         presentation::sort_each_rule(p);
         presentation::sort_rules(p);
 
-        REQUIRE(p.rules
-                == std::vector<word_type>(
-                    {000_w, {},   11_w, 1_w,  22_w,   2_w,  33_w, 3_w,
-                     10_w,  02_w, 20_w, 03_w, 21_w,   12_w, 30_w, 01_w,
-                     31_w,  13_w, 32_w, 23_w, 0123_w, 123_w}));
+        REQUIRE(p.rules == std::vector({000_w, {},   11_w,   1_w,  22_w, 2_w,
+                                        33_w,  3_w,  10_w,   02_w, 20_w, 03_w,
+                                        21_w,  12_w, 30_w,   01_w, 31_w, 13_w,
+                                        32_w,  23_w, 0123_w, 123_w}));
       }
 
       ToddCoxeter tc(congruence_kind::twosided, p);

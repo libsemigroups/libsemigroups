@@ -176,8 +176,8 @@ namespace libsemigroups {
                           "[quick]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
-    S.add_generator(Transf<>({1, 0}));
-    S.add_generator(Transf<>({0, 0}));
+    S.add_generator(make<Transf<>>({1, 0}));
+    S.add_generator(make<Transf<>>({0, 0}));
 
     KnuthBendix kb(twosided, to<Presentation<word_type>>(S));
     auto        s = to<FroidurePin>(kb);
