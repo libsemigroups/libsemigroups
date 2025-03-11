@@ -38,8 +38,8 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
       auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S;
-      S.add_generator(Transf<>({1, 0}));
-      S.add_generator(Transf<>({0, 0}));
+      S.add_generator(make<Transf<>>({1, 0}));
+      S.add_generator(make<Transf<>>({0, 0}));
 
       KnuthBendix kb(congruence_kind::twosided, to<Presentation<word_type>>(S));
       // NOTE: don't do "using KBE = KBE<decltype(kb)>;" because this isn't the
@@ -60,7 +60,8 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
       auto        rg = ReportGuard(false);
-      FroidurePin S  = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
+      FroidurePin S
+          = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
@@ -89,7 +90,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
       auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
-          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to<Presentation<word_type>>(S));
       REQUIRE(kb.confluent());
@@ -102,7 +103,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
       auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
-          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to<Presentation<word_type>>(S));
       REQUIRE(kb.confluent());
@@ -122,7 +123,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
       auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
-          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to<Presentation<word_type>>(S));
       REQUIRE(kb.confluent());
@@ -140,7 +141,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
       auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
-          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to<Presentation<word_type>>(S));
       using KBE = typename decltype(to<FroidurePin>(kb))::element_type;

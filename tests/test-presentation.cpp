@@ -1488,9 +1488,9 @@ namespace libsemigroups {
                 {"bb", "a", "bcb", "a", "abcb", "a", "bbcb", "a"}));
     REQUIRE(p.alphabet() == "abc");
     presentation::normalize_alphabet(p);
-    REQUIRE(p.letter_no_checks(0) == human_readable_letter<>(0));
-    REQUIRE(p.letter_no_checks(1) == human_readable_letter<>(1));
-    REQUIRE(p.letter_no_checks(2) == human_readable_letter<>(2));
+    REQUIRE(p.letter_no_checks(0) == human_readable_letter(0));
+    REQUIRE(p.letter_no_checks(1) == human_readable_letter(1));
+    REQUIRE(p.letter_no_checks(2) == human_readable_letter(2));
     p.validate();
 
     presentation::add_rule_no_checks(p, "abcb", "ecb");
@@ -1786,8 +1786,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(human_readable_letter<std::vector<uint16_t>>(65536),
                       LibsemigroupsException);
     REQUIRE(human_readable_letter<std::vector<uint16_t>>(10) == 10);
-    REQUIRE(human_readable_letter<>(0) == 'a');
-    REQUIRE(human_readable_letter<>(10) == 'k');
+    REQUIRE(human_readable_letter(0) == 'a');
+    REQUIRE(human_readable_letter(10) == 'k');
 
     Presentation<std::string> q;
 
@@ -1835,13 +1835,13 @@ namespace libsemigroups {
         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     std::unordered_set<letter_type> set;
     for (size_t i = 0; i < letters.size(); ++i) {
-      REQUIRE(letters[i] == human_readable_letter<>(i));
+      REQUIRE(letters[i] == human_readable_letter(i));
       REQUIRE(set.insert(letters[i]).second);
     }
     for (size_t i = letters.size(); i < 256; ++i) {
-      REQUIRE(set.insert(human_readable_letter<>(i)).second);
+      REQUIRE(set.insert(human_readable_letter(i)).second);
     }
-    REQUIRE_THROWS_AS(human_readable_letter<>(256), LibsemigroupsException);
+    REQUIRE_THROWS_AS(human_readable_letter(256), LibsemigroupsException);
     p.alphabet(256);
     REQUIRE_THROWS_AS(presentation::first_unused_letter(p),
                       LibsemigroupsException);
@@ -2640,7 +2640,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
@@ -2721,7 +2721,7 @@ namespace libsemigroups {
                           "055",
                           "add_generator (std::string)",
                           "[quick][presentation]") {
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
     using literals::operator""_w;
 
     {
@@ -2997,7 +2997,7 @@ namespace libsemigroups {
                           "067",
                           "longest_subword_reducing_length #01",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 1212_w, 0_w);
@@ -3033,7 +3033,7 @@ namespace libsemigroups {
                           "070",
                           "longest_subword_reducing_length #04",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 00_w, 10_w);
@@ -3050,7 +3050,7 @@ namespace libsemigroups {
                           "071",
                           "longest_subword_reducing_length #05",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(5).contains_empty_word(true);
     presentation::add_rule(p, 00_w, 10_w);
@@ -3068,7 +3068,7 @@ namespace libsemigroups {
                           "072",
                           "longest_subword_reducing_length #06",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(6).contains_empty_word(true);
     presentation::add_rule(p, 00_w, 10_w);

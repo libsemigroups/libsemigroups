@@ -107,23 +107,23 @@ namespace libsemigroups {
                           "[wislo][quick]") {
     word_type first = 0_w;
     word_type last  = 0000_w;
-    auto      w     = std::vector<word_type>(cbegin_wislo(2, first, last),
-                                    cend_wislo(2, first, last));
+    auto      w
+        = std::vector(cbegin_wislo(2, first, last), cend_wislo(2, first, last));
     REQUIRE(w
-            == std::vector<word_type>({0_w,
-                                       1_w,
-                                       00_w,
-                                       01_w,
-                                       10_w,
-                                       11_w,
-                                       000_w,
-                                       001_w,
-                                       010_w,
-                                       011_w,
-                                       100_w,
-                                       101_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({0_w,
+                            1_w,
+                            00_w,
+                            01_w,
+                            10_w,
+                            11_w,
+                            000_w,
+                            001_w,
+                            010_w,
+                            011_w,
+                            100_w,
+                            101_w,
+                            110_w,
+                            111_w}));
     REQUIRE(w.size() == 14);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
 
@@ -140,24 +140,24 @@ namespace libsemigroups {
                           "[wislo][quick]") {
     word_type first = 0000_w;
     word_type last  = 00000_w;
-    auto      w1    = std::vector<word_type>(cbegin_wislo(2, last, first),
-                                     cend_wislo(2, last, first));
+    auto      w1
+        = std::vector(cbegin_wislo(2, last, first), cend_wislo(2, last, first));
     REQUIRE(w1.empty());
-    auto w2 = std::vector<word_type>(cbegin_wislo(2, last, last),
-                                     cend_wislo(2, last, last));
+    auto w2
+        = std::vector(cbegin_wislo(2, last, last), cend_wislo(2, last, last));
     REQUIRE(w2.empty());
 
-    auto w3 = std::vector<word_type>(cbegin_wislo(2, last, word_type(6, 0)),
-                                     cend_wislo(2, last, word_type(6, 0)));
+    auto w3 = std::vector(cbegin_wislo(2, last, word_type(6, 0)),
+                          cend_wislo(2, last, word_type(6, 0)));
     REQUIRE(w3.size() == number_of_words(2, 5, 6));
     REQUIRE(w3.size() == 32);
-    REQUIRE(w3
-            == std::vector<word_type>(
-                {00000_w, 00001_w, 00010_w, 00011_w, 00100_w, 00101_w, 00110_w,
-                 00111_w, 01000_w, 01001_w, 01010_w, 01011_w, 01100_w, 01101_w,
-                 01110_w, 01111_w, 10000_w, 10001_w, 10010_w, 10011_w, 10100_w,
-                 10101_w, 10110_w, 10111_w, 11000_w, 11001_w, 11010_w, 11011_w,
-                 11100_w, 11101_w, 11110_w, 11111_w}));
+    REQUIRE(
+        w3 == std::vector({00000_w, 00001_w, 00010_w, 00011_w, 00100_w, 00101_w,
+                           00110_w, 00111_w, 01000_w, 01001_w, 01010_w, 01011_w,
+                           01100_w, 01101_w, 01110_w, 01111_w, 10000_w, 10001_w,
+                           10010_w, 10011_w, 10100_w, 10101_w, 10110_w, 10111_w,
+                           11000_w, 11001_w, 11010_w, 11011_w, 11100_w, 11101_w,
+                           11110_w, 11111_w}));
     REQUIRE(std::is_sorted(w3.cbegin(), w3.cend(), ShortLexCompare()));
     REQUIRE(std::is_sorted(w3.cbegin(), w3.cend(), LexicographicalCompare()));
   }
@@ -168,8 +168,8 @@ namespace libsemigroups {
                           "[wislo][quick]") {
     word_type first = {};
     word_type last(10, 0);
-    auto      w = std::vector<word_type>(cbegin_wislo(3, first, last),
-                                    cend_wislo(3, first, last));
+    auto      w
+        = std::vector(cbegin_wislo(3, first, last), cend_wislo(3, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
@@ -195,8 +195,8 @@ namespace libsemigroups {
                           "[wislo][quick][no-valgrind][no-coverage]") {
     word_type first = {};
     word_type last(13, 2);
-    auto      w = std::vector<word_type>(cbegin_wilo(3, 13, first, last),
-                                    cend_wilo(3, 13, first, last));
+    auto      w = std::vector(cbegin_wilo(3, 13, first, last),
+                         cend_wilo(3, 13, first, last));
     std::sort(w.begin(), w.end(), ShortLexCompare());
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
@@ -247,24 +247,21 @@ namespace libsemigroups {
     REQUIRE(*it3 == word_type(001_w));
   }
   LIBSEMIGROUPS_TEST_CASE("WordRange", "009", "corner cases", "[wilo][quick]") {
-    word_type const u  = 0000_w;
-    word_type const v  = 1111_w;
-    auto            w1 = std::vector<word_type>(cbegin_wilo(2, 1, v, u),
-                                     cend_wilo(2, 1, v, u));
+    word_type const u = 0000_w;
+    word_type const v = 1111_w;
+    auto w1 = std::vector(cbegin_wilo(2, 1, v, u), cend_wilo(2, 1, v, u));
     REQUIRE(w1.empty());
-    auto w2 = std::vector<word_type>(cbegin_wilo(2, 1, u, u),
-                                     cend_wilo(2, 1, u, u));
+    auto w2 = std::vector(cbegin_wilo(2, 1, u, u), cend_wilo(2, 1, u, u));
     REQUIRE(w2.empty());
-    auto w3 = std::vector<word_type>(cbegin_wilo(2, 2, {}, 11_w),
-                                     cend_wilo(2, 2, {}, 11_w));
+    auto w3
+        = std::vector(cbegin_wilo(2, 2, {}, 11_w), cend_wilo(2, 2, {}, 11_w));
     REQUIRE(w3.size() == 3);
-    REQUIRE(w3 == std::vector<word_type>({{}, 0_w, 1_w}));
+    REQUIRE(w3 == std::vector({{}, 0_w, 1_w}));
     REQUIRE(word_type(0, 0) == word_type());
-    auto w4 = std::vector<word_type>(cbegin_wilo(2, 1, {}, 11_w),
-                                     cend_wilo(2, 1, {}, 11_w));
+    auto w4
+        = std::vector(cbegin_wilo(2, 1, {}, 11_w), cend_wilo(2, 1, {}, 11_w));
     REQUIRE(w4 == std::vector<word_type>({{}}));
-    w4 = std::vector<word_type>(cbegin_wilo(2, 1, {}, 0_w),
-                                cend_wilo(2, 1, {}, 0_w));
+    w4 = std::vector(cbegin_wilo(2, 1, {}, 0_w), cend_wilo(2, 1, {}, 0_w));
     REQUIRE(w4 == std::vector<word_type>({{}}));
   }
 
@@ -272,23 +269,23 @@ namespace libsemigroups {
                           "010",
                           "letters: 2, min: 1, max: 4",
                           "[wilo][quick]") {
-    auto w = std::vector<word_type>(cbegin_wilo(2, 4, 0_w, 1111_w),
-                                    cend_wilo(2, 4, 0_w, 1111_w));
+    auto w = std::vector(cbegin_wilo(2, 4, 0_w, 1111_w),
+                         cend_wilo(2, 4, 0_w, 1111_w));
     REQUIRE(w
-            == std::vector<word_type>({0_w,
-                                       00_w,
-                                       000_w,
-                                       001_w,
-                                       01_w,
-                                       010_w,
-                                       011_w,
-                                       1_w,
-                                       10_w,
-                                       100_w,
-                                       101_w,
-                                       11_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({0_w,
+                            00_w,
+                            000_w,
+                            001_w,
+                            01_w,
+                            010_w,
+                            011_w,
+                            1_w,
+                            10_w,
+                            100_w,
+                            101_w,
+                            11_w,
+                            110_w,
+                            111_w}));
     REQUIRE(w.size() == 14);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
     REQUIRE(std::is_sorted(cbegin_wilo(2, 4, 0_w, 1111_w),
@@ -302,17 +299,16 @@ namespace libsemigroups {
                           "[wilo][quick]") {
     word_type first = 0_w;
     word_type last  = 2222_w;
-    auto      w     = std::vector<word_type>(cbegin_wilo(3, 4, first, last),
-                                    cend_wilo(3, 4, first, last));
+    auto      w     = std::vector(cbegin_wilo(3, 4, first, last),
+                         cend_wilo(3, 4, first, last));
     REQUIRE(w.size() == 39);
     REQUIRE(w.size() == number_of_words(3, 1, 4));
-    REQUIRE(w
-            == std::vector<word_type>(
-                {0_w,   00_w,  000_w, 001_w, 002_w, 01_w,  010_w, 011_w,
-                 012_w, 02_w,  020_w, 021_w, 022_w, 1_w,   10_w,  100_w,
-                 101_w, 102_w, 11_w,  110_w, 111_w, 112_w, 12_w,  120_w,
-                 121_w, 122_w, 2_w,   20_w,  200_w, 201_w, 202_w, 21_w,
-                 210_w, 211_w, 212_w, 22_w,  220_w, 221_w, 222_w}));
+    REQUIRE(w == std::vector({0_w,   00_w,  000_w, 001_w, 002_w, 01_w,  010_w,
+                              011_w, 012_w, 02_w,  020_w, 021_w, 022_w, 1_w,
+                              10_w,  100_w, 101_w, 102_w, 11_w,  110_w, 111_w,
+                              112_w, 12_w,  120_w, 121_w, 122_w, 2_w,   20_w,
+                              200_w, 201_w, 202_w, 21_w,  210_w, 211_w, 212_w,
+                              22_w,  220_w, 221_w, 222_w}));
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
     REQUIRE(std::is_sorted(cbegin_wilo(3, 4, first, last),
                            cend_wilo(3, 4, first, last),
@@ -325,8 +321,8 @@ namespace libsemigroups {
                           "[wilo][quick][no-valgrind]") {
     word_type first = {};
     word_type last(10, 2);
-    auto      w = std::vector<word_type>(cbegin_wilo(3, 10, first, last),
-                                    cend_wilo(3, 10, first, last));
+    auto      w = std::vector(cbegin_wilo(3, 10, first, last),
+                         cend_wilo(3, 10, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
@@ -342,8 +338,8 @@ namespace libsemigroups {
     word_type first = {};
     word_type last(13, 2);
 
-    std::vector<word_type> w(cbegin_wilo(3, 13, first, last),
-                             cend_wilo(3, 13, first, last));
+    std::vector w(cbegin_wilo(3, 13, first, last),
+                  cend_wilo(3, 13, first, last));
     REQUIRE(w.size() == 797161);
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
@@ -377,35 +373,34 @@ namespace libsemigroups {
                           "[wilo][quick]") {
     word_type first = {};
     word_type last(10, 0);
-    auto      w = std::vector<word_type>(cbegin_wilo(1, 10, first, last),
-                                    cend_wilo(1, 10, first, last));
+    auto      w = std::vector(cbegin_wilo(1, 10, first, last),
+                         cend_wilo(1, 10, first, last));
     REQUIRE(w.size() == 10);
     REQUIRE(w
-            == std::vector<word_type>({{},
-                                       0_w,
-                                       00_w,
-                                       000_w,
-                                       0000_w,
-                                       00000_w,
-                                       000000_w,
-                                       0000000_w,
-                                       00000000_w,
-                                       000000000_w}));
-    w = std::vector<word_type>(cbegin_wilo(0, 0, first, last),
-                               cend_wilo(0, 0, first, last));
+            == std::vector({{},
+                            0_w,
+                            00_w,
+                            000_w,
+                            0000_w,
+                            00000_w,
+                            000000_w,
+                            0000000_w,
+                            00000000_w,
+                            000000000_w}));
+    w = std::vector(cbegin_wilo(0, 0, first, last),
+                    cend_wilo(0, 0, first, last));
     REQUIRE(w.size() == 0);
     REQUIRE(w.empty());
     first = 00_w;
     last  = 0000_w;
-    w     = std::vector<word_type>(cbegin_wilo(1, 4, first, last),
-                               cend_wilo(1, 4, first, last));
-    REQUIRE(w == std::vector<word_type>({00_w, 000_w}));
-    w = std::vector<word_type>(cbegin_wilo(1, 1, first, last),
-                               cend_wilo(1, 1, first, last));
+    w     = std::vector(cbegin_wilo(1, 4, first, last),
+                    cend_wilo(1, 4, first, last));
+    REQUIRE(w == std::vector({00_w, 000_w}));
+    w = std::vector(cbegin_wilo(1, 1, first, last),
+                    cend_wilo(1, 1, first, last));
     REQUIRE(w == std::vector<word_type>());
-    w = std::vector<word_type>(cbegin_wilo(1, 5, {0}, {1}),
-                               cend_wilo(1, 5, {0}, {1}));
-    REQUIRE(w == std::vector<word_type>({0_w, 00_w, 000_w, 0000_w}));
+    w = std::vector(cbegin_wilo(1, 5, {0}, {1}), cend_wilo(1, 5, {0}, {1}));
+    REQUIRE(w == std::vector({0_w, 00_w, 000_w, 0000_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -414,12 +409,12 @@ namespace libsemigroups {
                           "[wilo][quick]") {
     word_type first = {0, 1, 2, 3};
     word_type last(5, 4);
-    auto      result   = std::vector<word_type>(cbegin_wilo(4, 5, first, last),
-                                         cend_wilo(4, 5, first, last));
-    auto      expected = std::vector<word_type>(
-        std::find(
-            cbegin_wilo(4, 5, {}, last), cend_wilo(4, 5, {}, last), first),
-        cend_wilo(4, 5, {}, last));
+    auto      result   = std::vector(cbegin_wilo(4, 5, first, last),
+                              cend_wilo(4, 5, first, last));
+    auto      expected = std::vector(std::find(cbegin_wilo(4, 5, {}, last),
+                                          cend_wilo(4, 5, {}, last),
+                                          first),
+                                cend_wilo(4, 5, {}, last));
 
     REQUIRE(result.size() == expected.size());
     REQUIRE(result.size() == 303);
@@ -432,12 +427,12 @@ namespace libsemigroups {
                           "[wilo][quick]") {
     word_type first  = {0, 1};
     word_type last   = {1, 1, 1};
-    auto      result = std::vector<word_type>(cbegin_wilo(2, 3, first, last),
-                                         cend_wilo(2, 3, first, last));
-    REQUIRE(result == std::vector<word_type>({01_w, 1_w, 10_w, 11_w}));
+    auto      result = std::vector(cbegin_wilo(2, 3, first, last),
+                              cend_wilo(2, 3, first, last));
+    REQUIRE(result == std::vector({01_w, 1_w, 10_w, 11_w}));
     REQUIRE(result.size() == 4);
-    result = std::vector<word_type>(cbegin_wilo(2, 1, first, last),
-                                    cend_wilo(2, 1, first, last));
+    result = std::vector(cbegin_wilo(2, 1, first, last),
+                         cend_wilo(2, 1, first, last));
     REQUIRE(result.empty());
   }
 
@@ -506,7 +501,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
 
     WordRange copy;
-    copy.     operator=(words);
+    copy.operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -519,7 +514,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     WordRange move;
-    move.     operator=(std::move(words));
+    move.operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -632,20 +627,20 @@ namespace libsemigroups {
                                          "bbb"}));
 
     REQUIRE((strings | ToWord("ab") | to_vector())
-            == std::vector<word_type>({0_w,
-                                       00_w,
-                                       000_w,
-                                       001_w,
-                                       01_w,
-                                       010_w,
-                                       011_w,
-                                       1_w,
-                                       10_w,
-                                       100_w,
-                                       101_w,
-                                       11_w,
-                                       110_w,
-                                       111_w}));
+            == std::vector({0_w,
+                            00_w,
+                            000_w,
+                            001_w,
+                            01_w,
+                            010_w,
+                            011_w,
+                            1_w,
+                            10_w,
+                            100_w,
+                            101_w,
+                            11_w,
+                            110_w,
+                            111_w}));
     REQUIRE(is_sorted(strings, LexicographicalCompare()));
 
     strings.alphabet("ba").first("b").last("aaaaa");
@@ -903,7 +898,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 
     StringRange copy;
-    copy.       operator=(strings);
+    copy.operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -916,7 +911,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     StringRange move;
-    move.       operator=(std::move(strings));
+    move.operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -1020,8 +1015,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type    w = 01_w;
-    word_type    v = 2_w;
+    word_type w = 01_w;
+    word_type v = 2_w;
     REQUIRE((w + v) == 012_w);
     REQUIRE((w + v + w) == 01201_w);
 
@@ -1039,8 +1034,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+=;
-    word_type    w = 123_w;
-    word_type    v = 345_w;
+    word_type w = 123_w;
+    word_type v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});
@@ -1214,19 +1209,19 @@ namespace libsemigroups {
     strings.alphabet("ab").first("a").last("bbbb");
 
     REQUIRE((strings | ToWord(strings.alphabet()) | to_vector())
-            == std::vector<word_type>(
-                {0_w,    1_w,    00_w,   01_w,   10_w,   11_w,   000_w,  001_w,
-                 010_w,  011_w,  100_w,  101_w,  110_w,  111_w,  0000_w, 0001_w,
-                 0010_w, 0011_w, 0100_w, 0101_w, 0110_w, 0111_w, 1000_w, 1001_w,
-                 1010_w, 1011_w, 1100_w, 1101_w, 1110_w}));
+            == std::vector({0_w,    1_w,    00_w,   01_w,   10_w,   11_w,
+                            000_w,  001_w,  010_w,  011_w,  100_w,  101_w,
+                            110_w,  111_w,  0000_w, 0001_w, 0010_w, 0011_w,
+                            0100_w, 0101_w, 0110_w, 0111_w, 1000_w, 1001_w,
+                            1010_w, 1011_w, 1100_w, 1101_w, 1110_w}));
 
     ToWord to_words("ba");
     REQUIRE((strings | to_words | to_vector())
-            == std::vector<word_type>(
-                {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,  110_w,
-                 101_w,  100_w,  011_w,  010_w,  001_w,  000_w,  1111_w, 1110_w,
-                 1101_w, 1100_w, 1011_w, 1010_w, 1001_w, 1000_w, 0111_w, 0110_w,
-                 0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
+            == std::vector({1_w,    0_w,    11_w,   10_w,   01_w,   00_w,
+                            111_w,  110_w,  101_w,  100_w,  011_w,  010_w,
+                            001_w,  000_w,  1111_w, 1110_w, 1101_w, 1100_w,
+                            1011_w, 1010_w, 1001_w, 1000_w, 0111_w, 0110_w,
+                            0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
 
     ToWord copy(to_words);
     REQUIRE(equal(strings | to_words, strings | copy));
@@ -1242,11 +1237,11 @@ namespace libsemigroups {
     REQUIRE(equal(strings | to_words, strings | move));
 
     REQUIRE((std::move(strings) | to_words | to_vector())
-            == std::vector<word_type>(
-                {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,  110_w,
-                 101_w,  100_w,  011_w,  010_w,  001_w,  000_w,  1111_w, 1110_w,
-                 1101_w, 1100_w, 1011_w, 1010_w, 1001_w, 1000_w, 0111_w, 0110_w,
-                 0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
+            == std::vector({1_w,    0_w,    11_w,   10_w,   01_w,   00_w,
+                            111_w,  110_w,  101_w,  100_w,  011_w,  010_w,
+                            001_w,  000_w,  1111_w, 1110_w, 1101_w, 1100_w,
+                            1011_w, 1010_w, 1001_w, 1000_w, 0111_w, 0110_w,
+                            0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString", "041", "code coverage", "[quick]") {
@@ -1382,24 +1377,21 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordRange", "045", "doxygen examples", "[quick]") {
     // cbegin_wilo
     {
-      REQUIRE(std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
-                                     cend_wilo(2, 3, {0}, {1, 1, 1}))
-              == std::vector<word_type>(
-                  {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}}));
+      REQUIRE(std::vector(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
+                          cend_wilo(2, 3, {0}, {1, 1, 1}))
+              == std::vector({0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
     }
     // cbegin_wislo
     {
-      REQUIRE(std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
-                                     cend_wislo(2, {0}, {0, 0, 0}))
-              == std::vector<word_type>(
-                  {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+      REQUIRE(std::vector(cbegin_wislo(2, {0}, {0, 0, 0}),
+                          cend_wislo(2, {0}, {0, 0, 0}))
+              == std::vector({0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
     }
     // ToWord
     {
       ToWord toword("bac");
       REQUIRE(toword("bac") == word_type({0, 1, 2}));
-      REQUIRE(toword("bababbbcbc")
-              == word_type({0, 1, 0, 1, 0, 0, 0, 2, 0, 2}));
+      REQUIRE(toword("bababbbcbc") == word_type(0101000202_w));
 
       toword.init();
       REQUIRE(toword("bac") == word_type({1, 0, 2}));
@@ -1410,12 +1402,11 @@ namespace libsemigroups {
       strings.alphabet("ab").first("a").last("bbbb");
       auto words = (strings | ToWord("ba"));
       REQUIRE((words | to_vector())
-              == std::vector<word_type>({1_w,    0_w,    11_w,   10_w,   01_w,
-                                         00_w,   111_w,  110_w,  101_w,  100_w,
-                                         011_w,  010_w,  001_w,  000_w,  1111_w,
-                                         1110_w, 1101_w, 1100_w, 1011_w, 1010_w,
-                                         1001_w, 1000_w, 0111_w, 0110_w, 0101_w,
-                                         0100_w, 0011_w, 0010_w, 0001_w}));
+              == std::vector({1_w,    0_w,    11_w,   10_w,   01_w,   00_w,
+                              111_w,  110_w,  101_w,  100_w,  011_w,  010_w,
+                              001_w,  000_w,  1111_w, 1110_w, 1101_w, 1100_w,
+                              1011_w, 1010_w, 1001_w, 1000_w, 0111_w, 0110_w,
+                              0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
     }
     // ToString
     {

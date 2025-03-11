@@ -1597,12 +1597,12 @@ namespace libsemigroups {
                return knuth_bendix::reduce(kb, ww) == w;
              })
              | to_vector())
-            == std::vector<word_type>({{}, 0_w, 1_w, 10_w}));
+            == std::vector({{}, 0_w, 1_w, 10_w}));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<std::pair<word_type, word_type>>(
                 {{00_w, 0_w}, {11_w, 1_w}, {010_w, 10_w}, {101_w, 10_w}}));
     REQUIRE(kb.gilman_graph_node_labels()
-            == std::vector<word_type>({""_w, 1_w, 0_w, 10_w, 01_w}));
+            == std::vector({{}, 1_w, 0_w, 10_w, 01_w}));
     // The gilman_graph generated is isomorphic to the word_graph given, but not
     // identical. Since the normal forms are correct (see above) the below check
     // is omitted.
@@ -1751,7 +1751,7 @@ namespace libsemigroups {
     //   REQUIRE(p.rules.size() == 58);
     //   REQUIRE(
     //       p.rules
-    //       == std::vector<word_type>(
+    //       == std::vector(
     //           {00_w,      0_w,      11_w,      1_w,      22_w,      2_w,
     //            33_w,      3_w,      010_w,     01_w,     020_w,     02_w,
     //            030_w,     03_w,     121_w,     12_w,     131_w,     13_w,
@@ -1811,7 +1811,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {

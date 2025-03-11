@@ -82,7 +82,7 @@ namespace libsemigroups {
   namespace {
     template <typename Word, typename OtherWord = Word>
     void check_from_ke(Presentation<Word> const& p) {
-      using literals::    operator""_w;
+      using literals::operator""_w;
       Kambites<OtherWord> k(twosided, p);
       auto                s = to<FroidurePin>(k);
       REQUIRE(s.is_finite() == tril::FALSE);
@@ -176,8 +176,8 @@ namespace libsemigroups {
                           "[quick]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
-    S.add_generator(Transf<>({1, 0}));
-    S.add_generator(Transf<>({0, 0}));
+    S.add_generator(make<Transf<>>({1, 0}));
+    S.add_generator(make<Transf<>>({0, 0}));
 
     KnuthBendix kb(twosided, to<Presentation<word_type>>(S));
     auto        s = to<FroidurePin>(kb);
@@ -190,7 +190,7 @@ namespace libsemigroups {
                           "from Todd-Coxeter",
                           "[quick]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(4);
@@ -250,7 +250,7 @@ namespace libsemigroups {
                                    "from KnuthBendix",
                                    "[quick]",
                                    REWRITER_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
@@ -266,7 +266,7 @@ namespace libsemigroups {
                           "008",
                           "from ToddCoxeter",
                           "[quick]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 00_w, 0_w);

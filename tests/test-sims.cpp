@@ -39,7 +39,7 @@
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/bipart.hpp"        // for make<Bipartition>
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
@@ -548,8 +548,9 @@ namespace libsemigroups {
                           "full_transformation_monoid(3) left",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>(
-        {Transf<3>({1, 2, 0}), Transf<3>({1, 0, 2}), Transf<3>({0, 1, 0})});
+    auto S  = make<FroidurePin>({make<Transf<3>>({1, 2, 0}),
+                                 make<Transf<3>>({1, 0, 2}),
+                                 make<Transf<3>>({0, 1, 0})});
     REQUIRE(S.size() == 27);
     auto p = to<Presentation<word_type>>(S);
     presentation::reverse(p);
@@ -613,7 +614,8 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(2) from FroidurePin",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
-    auto S  = make<FroidurePin>({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
+    auto S  = make<FroidurePin>(
+        {make<PPerm<2>>({1, 0}), make<PPerm<2>>({0}, {0}, 2)});
     REQUIRE(S.size() == 7);
     auto p = to<Presentation<word_type>>(S);
     presentation::reverse(p);
@@ -784,7 +786,7 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
-    p.alphabet({0, 1});
+    p.alphabet(01_w);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 0101_w, 0_w);
@@ -800,7 +802,7 @@ namespace libsemigroups {
       presentation::reverse(p);
       T.presentation(p);
       sims::add_included_pair(T, 0101_w, 0_w);
-      REQUIRE(T.included_pairs() == std::vector<word_type>({0101_w, 0_w}));
+      REQUIRE(T.included_pairs() == std::vector({0101_w, 0_w}));
       REQUIRE(T.number_of_congruences(5) == 4);  // Verified with GAP
     }
     check_include(p, {0101_w, 0_w}, 5);
@@ -854,7 +856,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 11_w, 1_w);
     presentation::add_rule(p, 02_w, 00_w);
 
-    std::vector<word_type> e = {1_w, 00_w};
+    std::vector e = {1_w, 00_w};
     check_include(p, e, 11);
     presentation::reverse(p);
     check_include(p, e, 11);
@@ -893,16 +895,16 @@ namespace libsemigroups {
                           "[extreme][sims1][no-coverage]") {
     auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition({{1, 2}, {3, -1}, {4, -2}, {-3, -4}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -1}, {4, -4}, {-2, -3}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -1}, {-2, -4}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -2}, {4, -3}, {-1, -4}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -2}, {4, -4}, {-1, -3}}));
-    S.add_generator(Bipartition({{1, 3}, {2, -4}, {4, -3}, {-1, -2}}));
-    S.add_generator(Bipartition({{1, -4}, {2, 3}, {4, -3}, {-1, -2}}));
-    S.add_generator(Bipartition({{1, 4}, {2, -3}, {3, -4}, {-1, -2}}));
-    S.add_generator(Bipartition({{1, -3}, {2, 4}, {3, -4}, {-1, -2}}));
-    S.add_generator(Bipartition({{1, -3}, {2, -4}, {3, 4}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -1}, {4, -2}, {-3, -4}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -1}, {4, -4}, {-2, -3}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -3}, {4, -1}, {-2, -4}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -2}, {4, -3}, {-1, -4}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -2}, {4, -4}, {-1, -3}}));
+    S.add_generator(make<Bipartition>({{1, 3}, {2, -4}, {4, -3}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, -4}, {2, 3}, {4, -3}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, 4}, {2, -3}, {3, -4}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, -3}, {2, 4}, {3, -4}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, -3}, {2, -4}, {3, 4}, {-1, -2}}));
     REQUIRE(S.size() == 81);
 
     /// auto p  = presentation::examples::singular_brauer_monoid_MM07(4);
@@ -1042,10 +1044,10 @@ namespace libsemigroups {
                           "[extreme][sims1]") {
     auto                     rg = ReportGuard(true);
     FroidurePin<Bipartition> S;
-    S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
-    S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
-    S.add_generator(Bipartition({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
-    S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
+    S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4}}));
+    S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4}, {4, -1}}));
+    S.add_generator(make<Bipartition>({{1, -2}, {2, -1}, {3, -3}, {4, -4}}));
+    S.add_generator(make<Bipartition>({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
 
     auto p = to<Presentation<word_type>>(S);
@@ -1148,11 +1150,11 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     // FroidurePin<Bipartition> S;
-    // S.add_generator(Bipartition({{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5,
-    // -5}})); S.add_generator(Bipartition({{1, -2}, {2, -3}, {3, -4}, {4,
-    // -5}, {5, -1}})); S.add_generator(Bipartition({{1, -2}, {2, -1}, {3,
-    // -3}, {4, -4}, {5, -5}})); S.add_generator(Bipartition({{1, 2}, {3, -3},
-    // {4, -4}, {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
+    // S.add_generator(make<Bipartition>({{1, -1}, {2, -2}, {3, -3}, {4, -4},
+    // {5, -5}})); S.add_generator(make<Bipartition>({{1, -2}, {2, -3}, {3, -4},
+    // {4, -5}, {5, -1}})); S.add_generator(make<Bipartition>({{1, -2}, {2, -1},
+    // {3, -3}, {4, -4}, {5, -5}})); S.add_generator(make<Bipartition>({{1, 2},
+    // {3, -3}, {4, -4}, {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
 
     // auto p = to<Presentation<word_type>>(S);
     auto p = presentation::examples::brauer_monoid_KM07(5);
@@ -1529,9 +1531,7 @@ namespace libsemigroups {
     q.rules.insert(q.rules.end(), p.rules.begin(), p.rules.begin() + 8);
     q.validate();
     REQUIRE(q.alphabet() == 012345_w);
-    REQUIRE(
-        q.rules
-        == std::vector<word_type>({01_w, {}, 10_w, {}, 23_w, {}, 32_w, {}}));
+    REQUIRE(q.rules == std::vector({01_w, {}, 10_w, {}, 23_w, {}, 32_w, {}}));
     q.validate();
 
     std::atomic_uint64_t num = 0;
@@ -2054,9 +2054,9 @@ namespace libsemigroups {
             == make<WordGraph<uint32_t>>(
                 4, {{2, 2, 3}, {0, 1, 2}, {2, 2, 2}, {3, 3, 3}}));
     auto T = to<FroidurePin<Transf<4>>>(d);
-    REQUIRE(T.generator(0) == Transf<4>({2, 0, 2, 3}));
-    REQUIRE(T.generator(1) == Transf<4>({2, 1, 2, 3}));
-    REQUIRE(T.generator(2) == Transf<4>({3, 2, 2, 3}));
+    REQUIRE(T.generator(0) == make<Transf<4>>({2, 0, 2, 3}));
+    REQUIRE(T.generator(1) == make<Transf<4>>({2, 1, 2, 3}));
+    REQUIRE(T.generator(2) == make<Transf<4>>({3, 2, 2, 3}));
     REQUIRE(T.size() == 5);
 
     auto dd = make<WordGraph<uint8_t>>(5,
@@ -2287,10 +2287,10 @@ namespace libsemigroups {
     using Transf_ = Transf<5>;
     auto rg       = ReportGuard(true);
 
-    auto S = make<FroidurePin>({Transf_({1, 0, 2, 3, 4}),
-                                Transf_({3, 0, 1, 2, 4}),
-                                Transf_({4, 1, 2, 3, 4}),
-                                Transf_({1, 1, 2, 3, 4})});
+    auto S = make<FroidurePin>({make<Transf_>({1, 0, 2, 3, 4}),
+                                make<Transf_>({3, 0, 1, 2, 4}),
+                                make<Transf_>({4, 1, 2, 3, 4}),
+                                make<Transf_>({1, 1, 2, 3, 4})});
     REQUIRE(S.size() == 625);
     auto p = to<Presentation<word_type>>(S);
     presentation::reverse(p);
@@ -2690,8 +2690,8 @@ namespace libsemigroups {
     presentation::add_rule(q, 111_w, ""_w);
     presentation::add_rule(q, 011_w, 10_w);
 
-    std::vector<word_type> forbid = {0_w, 01_w, 00_w, ""_w};
-    SimsRefinerFaithful    pruno(forbid);
+    std::vector         forbid = {0_w, 01_w, 00_w, ""_w};
+    SimsRefinerFaithful pruno(forbid);
 
     RepOrc Ro;
     REQUIRE(Ro.presentation(q)
@@ -3359,7 +3359,8 @@ namespace libsemigroups {
                  .word_graph();
 
     // sigma_i = (i, i + 1)
-    // theta_i = Bipartition([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq i]);
+    // theta_i = make<Bipartition>([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq
+    // i]);
 
     REQUIRE(d.number_of_nodes() == 46);
   }
@@ -3382,7 +3383,7 @@ namespace libsemigroups {
                    .word_graph();
 
       // sigma_i = (i, i + 1)
-      // theta_i = Bipartition([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq
+      // theta_i = make<Bipartition>([[i, i + 1], [-i, -(i + 1)], [j, -j], j neq
       // i]);
 
       REQUIRE(d.number_of_nodes() == min_degrees[n]);
@@ -4699,8 +4700,8 @@ namespace libsemigroups {
                 to_human_readable_repr(p),
                 std::thread::hardware_concurrency()));
 
-    std::vector<word_type> forbid = {0_w, 01_w, 00_w, ""_w};
-    SimsRefinerFaithful    pruno(forbid);
+    std::vector         forbid = {0_w, 01_w, 00_w, ""_w};
+    SimsRefinerFaithful pruno(forbid);
     sims1.add_pruner(pruno);
     sims2.add_pruner(pruno);
     rep_orc.add_pruner(pruno);
@@ -4872,8 +4873,8 @@ namespace libsemigroups {
     presentation::add_rule(p, 111_w, ""_w);
     presentation::add_rule(p, 011_w, 10_w);
 
-    std::vector<word_type> forbid = {0_w, 01_w, 00_w, ""_w};
-    SimsRefinerFaithful    pruno(forbid);
+    std::vector         forbid = {0_w, 01_w, 00_w, ""_w};
+    SimsRefinerFaithful pruno(forbid);
 
     Sims1 S;
     S.presentation(p);

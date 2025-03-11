@@ -23,18 +23,25 @@
 //
 //   http://brauer.maths.qmul.ac.uk/Atlas/
 
-// TODO(1):
-// * iwyu
-// * remove raw pointers
-// * thousand separators
-
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint64_t
+#include <algorithm>         // for find_if, find, fill
+#include <array>             // for array
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint64_t, uint8_t
+#include <initializer_list>  // for begin, end
+#include <iterator>          // for distance, reverse_ite...
+#include <memory>            // for unique_ptr, make_unique
+#include <numeric>           // for iota
+#include <string>            // for operator+, operator==
+#include <type_traits>       // for remove_reference_t
+#include <utility>
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE etc
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/config.hpp"         // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
+#include "libsemigroups/hpcombi.hpp"    // for HPCombi
 #include "libsemigroups/schreier-sims.hpp"  // for SchreierSims, SchreierSims<>::ele...
 #include "libsemigroups/transf.hpp"         // for Perm
 
@@ -50,10 +57,10 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<1> S;
     using Perm = decltype(S)::element_type;
-    S.add_generator(Perm({0}));
+    S.add_generator(make<Perm>({0}));
     REQUIRE(S.size() == 1);
-    REQUIRE(S.contains(Perm({0})));
-    // REQUIRE(!S.contains(Perm({1, 0})));
+    REQUIRE(S.contains(make<Perm>({0})));
+    // REQUIRE(!S.contains(make<Perm>({1, 0})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -63,12 +70,12 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<2> S;
     using Perm = SchreierSims<2>::element_type;
-    S.add_generator(Perm({0, 1}));
+    S.add_generator(make<Perm>({0, 1}));
     REQUIRE(S.size() == 1);
-    REQUIRE(S.sift(Perm({1, 0})) == Perm({1, 0}));
-    REQUIRE(S.sift(Perm({0, 1})) == S.one());
-    REQUIRE(!S.contains(Perm({1, 0})));
-    REQUIRE(S.contains(Perm({0, 1})));
+    REQUIRE(S.sift(make<Perm>({1, 0})) == make<Perm>({1, 0}));
+    REQUIRE(S.sift(make<Perm>({0, 1})) == S.one());
+    REQUIRE(!S.contains(make<Perm>({1, 0})));
+    REQUIRE(S.contains(make<Perm>({0, 1})));
     REQUIRE(
         to_human_readable_repr(S)
         == "<partially enumerated SchreierSims with 0 generators & base ()>");
@@ -82,8 +89,8 @@ namespace libsemigroups {
     size_t constexpr N = 100;
     // We allocate using "new" to avoid allocation on the stack,
     // since 100 is too large, and causes this test to seg fault.
-    auto S     = new SchreierSims<N>();
-    using Perm = std::remove_pointer<decltype(S)>::type::element_type;
+    auto S     = std::make_unique<SchreierSims<N>>();
+    using Perm = std::remove_reference_t<decltype(*S)>::element_type;
 
     auto p = Perm::one(N);
 
@@ -100,7 +107,6 @@ namespace libsemigroups {
     std::swap(p[30], p[31]);
     std::swap(p[0], p[99]);
     REQUIRE(!S->contains(p));
-    delete S;
   }
 
 #ifndef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -117,8 +123,8 @@ namespace libsemigroups {
                                    PERM_TYPES) {
     auto                               rg = ReportGuard(false);
     SchreierSims<5, uint8_t, TestType> S;
-    S.add_generator(TestType({1, 0, 2, 3, 4}));
-    S.add_generator(TestType({1, 2, 3, 4, 0}));
+    S.add_generator(make<TestType>({1, 0, 2, 3, 4}));
+    S.add_generator(make<TestType>({1, 2, 3, 4, 0}));
     REQUIRE(S.number_of_generators() == 2);
     REQUIRE(S.size() == 120);
     REQUIRE(
@@ -134,7 +140,7 @@ namespace libsemigroups {
                                    PERM_TYPES) {
     auto                               rg = ReportGuard(false);
     SchreierSims<8, uint8_t, TestType> S;
-    S.add_generator(TestType({0, 6, 2, 3, 4, 5, 1, 7}));
+    S.add_generator(make<TestType>({0, 6, 2, 3, 4, 5, 1, 7}));
 
     auto W = S;
     REQUIRE(W.size() == 2);
@@ -143,8 +149,8 @@ namespace libsemigroups {
     REQUIRE(!S.finished());
     REQUIRE(!T.finished());
 
-    S.add_generator(TestType({1, 2, 3, 4, 5, 6, 7, 0}));
-    T.add_generator(TestType({1, 2, 3, 4, 5, 6, 7, 0}));
+    S.add_generator(make<TestType>({1, 2, 3, 4, 5, 6, 7, 0}));
+    T.add_generator(make<TestType>({1, 2, 3, 4, 5, 6, 7, 0}));
     REQUIRE(S.size() == 40'320);
     REQUIRE(T.size() == 40'320);
     REQUIRE(to_human_readable_repr(S)
@@ -163,8 +169,8 @@ namespace libsemigroups {
                                    PERM_TYPES) {
     auto                               rg = ReportGuard(false);
     SchreierSims<9, uint8_t, TestType> S;
-    S.add_generator(TestType({1, 0, 2, 3, 4, 5, 6, 7, 8}));
-    S.add_generator(TestType({1, 2, 3, 4, 5, 6, 7, 8, 0}));
+    S.add_generator(make<TestType>({1, 0, 2, 3, 4, 5, 6, 7, 8}));
+    S.add_generator(make<TestType>({1, 2, 3, 4, 5, 6, 7, 8, 0}));
     REQUIRE(S.size() == 362'880);
   }
 
@@ -176,16 +182,22 @@ namespace libsemigroups {
                                    PERM_TYPES) {
     auto                                rg = ReportGuard(false);
     SchreierSims<12, uint8_t, TestType> S;
-    S.add_generator(TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
-    S.add_generator(TestType({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
+    S.add_generator(make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
+    S.add_generator(make<TestType>({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
 
-    REQUIRE(!S.contains(TestType({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1})));
-    REQUIRE(S.contains(TestType({7, 11, 2, 3, 0, 6, 9, 10, 8, 5, 4, 1})));
+    REQUIRE(
+        !S.contains(make<TestType>({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1})));
+    REQUIRE(S.contains(make<TestType>({7, 11, 2, 3, 0, 6, 9, 10, 8, 5, 4, 1})));
     if constexpr (std::is_same_v<TestType, Perm<>>) {
-      REQUIRE(
-          !S.contains(TestType({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1, 12})));
-    }  // TODO(1) if we have a working version of make<HPCombi::Perm16>, then we
-    // can check that we get an exception from that in an else statement here.
+      REQUIRE(!S.contains(
+          make<TestType>({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1, 12})));
+    } else {
+      // Extended to 16 points to exceed the number of points in HPCombi::Perm16
+      REQUIRE_THROWS_AS(
+          make<TestType>(
+              {11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1, 12, 13, 14, 15, 16}),
+          LibsemigroupsException);
+    }
     REQUIRE(S.size() == 239'500'800);
   }
 
@@ -198,9 +210,9 @@ namespace libsemigroups {
     auto                                rg = ReportGuard(false);
     SchreierSims<16, uint8_t, TestType> S;
     S.add_generator(
-        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
+        make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
     S.add_generator(
-        TestType({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0}));
+        make<TestType>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0}));
     REQUIRE(S.size() == static_cast<uint64_t>(20'922'789'888'000));
   }
 
@@ -213,23 +225,23 @@ namespace libsemigroups {
     auto                                rg = ReportGuard(false);
     SchreierSims<15, uint8_t, TestType> S;
     S.add_generator(
-        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+        make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
     S.add_generator(
-        TestType({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
+        make<TestType>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
     REQUIRE(S.size() == static_cast<uint64_t>(653'837'184'000));
 
     REQUIRE(S.contains(
-        TestType({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6})));
+        make<TestType>({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6})));
     REQUIRE(S.contains(
-        TestType({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
+        make<TestType>({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
     REQUIRE(S.contains(
-        TestType({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
+        make<TestType>({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
     REQUIRE(!S.contains(
-        TestType({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11})));
+        make<TestType>({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11})));
     REQUIRE(!S.contains(
-        TestType({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11})));
+        make<TestType>({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11})));
     REQUIRE(!S.contains(
-        TestType({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4})));
+        make<TestType>({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4})));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("SchreierSims",
@@ -241,46 +253,46 @@ namespace libsemigroups {
     auto                                rg = ReportGuard(false);
     SchreierSims<16, uint8_t, TestType> S;
     S.add_generator(
-        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
+        make<TestType>({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
     S.add_generator(
-        TestType({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15}));
+        make<TestType>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15}));
     S.add_generator(
-        TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
+        make<TestType>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
     REQUIRE(to_human_readable_repr(S)
             == "<partially enumerated SchreierSims with 3 generators & base "
                "size 13>");
     REQUIRE(S.size() == static_cast<uint64_t>(10'461'394'944'000));
-    REQUIRE(S.contains(
-        TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
-    REQUIRE(!S.contains(
-        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
-    REQUIRE(S.contains(
-        TestType({1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+    REQUIRE(S.contains(make<TestType>(
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+    REQUIRE(!S.contains(make<TestType>(
+        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+    REQUIRE(S.contains(make<TestType>(
+        {1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
 
-    REQUIRE(S.contains(
-        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})));
+    REQUIRE(S.contains(make<TestType>(
+        {1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})));
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(S.contains(S.generator(2)));
-    REQUIRE(S.contains(
-        TestType({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6, 15})));
-    REQUIRE(S.contains(
-        TestType({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
-    REQUIRE(S.contains(
-        TestType({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
-    REQUIRE(!S.contains(
-        TestType({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
-    REQUIRE(!S.contains(
-        TestType({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
-    REQUIRE(!S.contains(
-        TestType({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4, 15})));
+    REQUIRE(S.contains(make<TestType>(
+        {0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6, 15})));
+    REQUIRE(S.contains(make<TestType>(
+        {1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
+    REQUIRE(S.contains(make<TestType>(
+        {12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
+    REQUIRE(!S.contains(make<TestType>(
+        {12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
+    REQUIRE(!S.contains(make<TestType>(
+        {1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
+    REQUIRE(!S.contains(make<TestType>(
+        {0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4, 15})));
 
-    REQUIRE(!S.contains(
-        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+    REQUIRE(!S.contains(make<TestType>(
+        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
     S.add_generator(
-        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
-    REQUIRE(S.contains(
-        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+        make<TestType>({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
+    REQUIRE(S.contains(make<TestType>(
+        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -290,8 +302,8 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<5> S;
     using Perm = decltype(S)::element_type;
-    S.add_generator(Perm({0, 4, 3, 2, 1}));
-    S.add_generator(Perm({1, 2, 3, 4, 0}));
+    S.add_generator(make<Perm>({0, 4, 3, 2, 1}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
 
     REQUIRE(S.size() == 10);
   }
@@ -303,16 +315,16 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     // At N = 4'000 or so, this starts to take an appreciable amount of time.
     constexpr size_t N = 200;
-    auto             S = new SchreierSims<N>();
-    using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
     Perm::container_type cntnr;
     std::fill(cntnr.begin(), cntnr.end(), 0);
     std::iota(cntnr.begin(), cntnr.end() - 1, 1);
-    S->add_generator(Perm(cntnr));
+    S->add_generator(make<Perm>(cntnr));
     std::iota(cntnr.rbegin(), cntnr.rend() - 1, 1);
     cntnr[0] = 0;
-    S->add_generator(Perm(cntnr));
+    S->add_generator(make<Perm>(cntnr));
     REQUIRE(S->size() == 2 * N);
 
     REQUIRE(S->contains(S->generator(0)));
@@ -323,10 +335,9 @@ namespace libsemigroups {
     for (auto it = cntnr.begin(); it < cntnr.end(); it += 2) {
       std::swap(*it, *(it + 1));
     }
-    REQUIRE(!S->contains(Perm(cntnr)));
+    REQUIRE(!S->contains(make<Perm>(cntnr)));
     std::swap(*cntnr.begin(), *(cntnr.begin() + 1));
-    REQUIRE(!S->contains(Perm(cntnr)));
-    delete S;
+    REQUIRE(!S->contains(make<Perm>(cntnr)));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -336,8 +347,8 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<12> S;
     using Perm = decltype(S)::element_type;
-    S.add_generator(Perm({1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 6}));
-    S.add_generator(Perm({6, 11, 10, 9, 8, 7, 3, 2, 1, 0, 5, 4}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 6}));
+    S.add_generator(make<Perm>({6, 11, 10, 9, 8, 7, 3, 2, 1, 0, 5, 4}));
     REQUIRE(S.size() == 12);
   }
 
@@ -348,20 +359,20 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<9> S;
     using Perm = decltype(S)::element_type;
-    S.add_generator(Perm({0, 2, 4, 6, 7, 3, 8, 1, 5}));
-    S.add_generator(Perm({0, 3, 5, 4, 8, 7, 2, 6, 1}));
-    REQUIRE(S.generator(0) == Perm({0, 2, 4, 6, 7, 3, 8, 1, 5}));
+    S.add_generator(make<Perm>({0, 2, 4, 6, 7, 3, 8, 1, 5}));
+    S.add_generator(make<Perm>({0, 3, 5, 4, 8, 7, 2, 6, 1}));
+    REQUIRE(S.generator(0) == make<Perm>({0, 2, 4, 6, 7, 3, 8, 1, 5}));
 
     REQUIRE(S.size() == 8);
     REQUIRE(S.sift(S.generator(0)) == S.one());
     REQUIRE(S.sift(S.generator(1)) == S.one());
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
-    REQUIRE(S.contains(Perm({0, 6, 3, 7, 5, 1, 4, 8, 2})));
-    REQUIRE(S.contains(Perm({0, 8, 6, 1, 3, 2, 7, 5, 4})));
-    REQUIRE(!S.contains(Perm({0, 1, 5, 4, 8, 7, 2, 6, 3})));
-    REQUIRE(!S.contains(Perm({3, 5, 4, 6, 1, 8, 2, 7, 0})));
-    REQUIRE(!S.contains(Perm({1, 3, 2, 5, 7, 8, 6, 4, 0})));
+    REQUIRE(S.contains(make<Perm>({0, 6, 3, 7, 5, 1, 4, 8, 2})));
+    REQUIRE(S.contains(make<Perm>({0, 8, 6, 1, 3, 2, 7, 5, 4})));
+    REQUIRE(!S.contains(make<Perm>({0, 1, 5, 4, 8, 7, 2, 6, 3})));
+    REQUIRE(!S.contains(make<Perm>({3, 5, 4, 6, 1, 8, 2, 7, 0})));
+    REQUIRE(!S.contains(make<Perm>({1, 3, 2, 5, 7, 8, 6, 4, 0})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -370,10 +381,10 @@ namespace libsemigroups {
                           "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 729;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
          14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
          28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
@@ -427,7 +438,7 @@ namespace libsemigroups {
          457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470,
          471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 483, 484,
          485}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   6,   3,   18,  24,  21,  9,   15,  12,  54,  60,  57,  72,  78,
          75,  63,  69,  66,  27,  33,  30,  45,  51,  48,  36,  42,  39,  162,
          168, 165, 180, 186, 183, 171, 177, 174, 216, 222, 219, 234, 240, 237,
@@ -483,7 +494,6 @@ namespace libsemigroups {
          608}));
 
     REQUIRE(S->size() == static_cast<uint64_t>(84'129'611'558'952'960));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -492,49 +502,49 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 126;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(
-        Perm({0,  1,  76,  101, 26, 51, 6,  81, 106, 31, 56, 11, 86, 111, 36,
-              61, 16, 91,  116, 41, 66, 21, 96, 121, 46, 71, 2,  77, 102, 27,
-              52, 7,  82,  107, 32, 57, 12, 87, 112, 37, 62, 17, 92, 117, 42,
-              67, 22, 97,  122, 47, 72, 3,  78, 103, 28, 53, 8,  83, 108, 33,
-              58, 13, 88,  113, 38, 63, 18, 93, 118, 43, 68, 23, 98, 123, 48,
-              73, 4,  79,  104, 29, 54, 9,  84, 109, 34, 59, 14, 89, 114, 39,
-              64, 19, 94,  119, 44, 69, 24, 99, 124, 49, 74, 5,  80, 105, 30,
-              55, 10, 85,  110, 35, 60, 15, 90, 115, 40, 65, 20, 95, 120, 45,
-              70, 25, 100, 125, 50, 75}));
-    S->add_generator(
-        Perm({0,  1,  77, 103, 29, 55, 6,  82, 108, 34, 60, 11, 87,  113, 39,
-              65, 16, 92, 118, 44, 70, 21, 97, 123, 49, 75, 2,  78,  105, 26,
-              54, 7,  83, 110, 31, 59, 12, 88, 115, 36, 64, 17, 93,  120, 41,
-              69, 22, 98, 125, 46, 74, 3,  80, 104, 27, 51, 8,  85,  109, 32,
-              56, 13, 90, 114, 37, 61, 18, 95, 119, 42, 66, 23, 100, 124, 47,
-              71, 4,  76, 102, 30, 53, 9,  81, 107, 35, 58, 14, 86,  112, 40,
-              63, 19, 91, 117, 45, 68, 24, 96, 122, 50, 73, 5,  79,  101, 28,
-              52, 10, 84, 106, 33, 57, 15, 89, 111, 38, 62, 20, 94,  116, 43,
-              67, 25, 99, 121, 48, 72}));
-    S->add_generator(
-        Perm({0,  1,  81, 111, 41, 71, 6,  86,  121, 26, 66, 11, 96, 116, 31,
-              51, 16, 76, 106, 46, 61, 21, 91,  101, 36, 56, 2,  82, 112, 42,
-              72, 7,  87, 122, 27, 67, 12, 97,  117, 32, 52, 17, 77, 107, 47,
-              62, 22, 92, 102, 37, 57, 3,  83,  113, 43, 73, 8,  88, 123, 28,
-              68, 13, 98, 118, 33, 53, 18, 78,  108, 48, 63, 23, 93, 103, 38,
-              58, 4,  84, 114, 44, 74, 9,  89,  124, 29, 69, 14, 99, 119, 34,
-              54, 19, 79, 109, 49, 64, 24, 94,  104, 39, 59, 5,  85, 115, 45,
-              75, 10, 90, 125, 30, 70, 15, 100, 120, 35, 55, 20, 80, 110, 50,
-              65, 25, 95, 105, 40, 60}));
-    S->add_generator(
-        Perm({0,  1,  76, 101, 26, 51, 7,  82,  107, 32, 57, 13, 88, 113, 38,
-              63, 19, 94, 119, 44, 69, 25, 100, 125, 50, 75, 2,  77, 102, 27,
-              52, 8,  83, 108, 33, 58, 15, 90,  115, 40, 65, 16, 91, 116, 41,
-              66, 24, 99, 124, 49, 74, 3,  78,  103, 28, 53, 10, 85, 110, 35,
-              60, 14, 89, 114, 39, 64, 17, 92,  117, 42, 67, 21, 96, 121, 46,
-              71, 4,  79, 104, 29, 54, 6,  81,  106, 31, 56, 12, 87, 112, 37,
-              62, 20, 95, 120, 45, 70, 23, 98,  123, 48, 73, 5,  80, 105, 30,
-              55, 9,  84, 109, 34, 59, 11, 86,  111, 36, 61, 18, 93, 118, 43,
-              68, 22, 97, 122, 47, 72}));
+    S->add_generator(make<Perm>(
+        {0,   1,   76,  101, 26,  51,  6,   81,  106, 31,  56,  11,  86,  111,
+         36,  61,  16,  91,  116, 41,  66,  21,  96,  121, 46,  71,  2,   77,
+         102, 27,  52,  7,   82,  107, 32,  57,  12,  87,  112, 37,  62,  17,
+         92,  117, 42,  67,  22,  97,  122, 47,  72,  3,   78,  103, 28,  53,
+         8,   83,  108, 33,  58,  13,  88,  113, 38,  63,  18,  93,  118, 43,
+         68,  23,  98,  123, 48,  73,  4,   79,  104, 29,  54,  9,   84,  109,
+         34,  59,  14,  89,  114, 39,  64,  19,  94,  119, 44,  69,  24,  99,
+         124, 49,  74,  5,   80,  105, 30,  55,  10,  85,  110, 35,  60,  15,
+         90,  115, 40,  65,  20,  95,  120, 45,  70,  25,  100, 125, 50,  75}));
+    S->add_generator(make<Perm>(
+        {0,   1,   77,  103, 29,  55,  6,   82,  108, 34,  60,  11,  87,  113,
+         39,  65,  16,  92,  118, 44,  70,  21,  97,  123, 49,  75,  2,   78,
+         105, 26,  54,  7,   83,  110, 31,  59,  12,  88,  115, 36,  64,  17,
+         93,  120, 41,  69,  22,  98,  125, 46,  74,  3,   80,  104, 27,  51,
+         8,   85,  109, 32,  56,  13,  90,  114, 37,  61,  18,  95,  119, 42,
+         66,  23,  100, 124, 47,  71,  4,   76,  102, 30,  53,  9,   81,  107,
+         35,  58,  14,  86,  112, 40,  63,  19,  91,  117, 45,  68,  24,  96,
+         122, 50,  73,  5,   79,  101, 28,  52,  10,  84,  106, 33,  57,  15,
+         89,  111, 38,  62,  20,  94,  116, 43,  67,  25,  99,  121, 48,  72}));
+    S->add_generator(make<Perm>(
+        {0,   1,   81,  111, 41,  71,  6,   86,  121, 26,  66,  11,  96,  116,
+         31,  51,  16,  76,  106, 46,  61,  21,  91,  101, 36,  56,  2,   82,
+         112, 42,  72,  7,   87,  122, 27,  67,  12,  97,  117, 32,  52,  17,
+         77,  107, 47,  62,  22,  92,  102, 37,  57,  3,   83,  113, 43,  73,
+         8,   88,  123, 28,  68,  13,  98,  118, 33,  53,  18,  78,  108, 48,
+         63,  23,  93,  103, 38,  58,  4,   84,  114, 44,  74,  9,   89,  124,
+         29,  69,  14,  99,  119, 34,  54,  19,  79,  109, 49,  64,  24,  94,
+         104, 39,  59,  5,   85,  115, 45,  75,  10,  90,  125, 30,  70,  15,
+         100, 120, 35,  55,  20,  80,  110, 50,  65,  25,  95,  105, 40,  60}));
+    S->add_generator(make<Perm>(
+        {0,   1,   76,  101, 26,  51,  7,   82,  107, 32,  57,  13,  88,  113,
+         38,  63,  19,  94,  119, 44,  69,  25,  100, 125, 50,  75,  2,   77,
+         102, 27,  52,  8,   83,  108, 33,  58,  15,  90,  115, 40,  65,  16,
+         91,  116, 41,  66,  24,  99,  124, 49,  74,  3,   78,  103, 28,  53,
+         10,  85,  110, 35,  60,  14,  89,  114, 39,  64,  17,  92,  117, 42,
+         67,  21,  96,  121, 46,  71,  4,   79,  104, 29,  54,  6,   81,  106,
+         31,  56,  12,  87,  112, 37,  62,  20,  95,  120, 45,  70,  23,  98,
+         123, 48,  73,  5,   80,  105, 30,  55,  9,   84,  109, 34,  59,  11,
+         86,  111, 36,  61,  18,  93,  118, 43,  68,  22,  97,  122, 47,  72}));
 
     REQUIRE(S->size() == 372'000);
 
@@ -542,29 +552,29 @@ namespace libsemigroups {
     REQUIRE(S->contains(S->generator(1)));
     REQUIRE(S->contains(S->generator(2)));
     REQUIRE(S->contains(S->generator(3)));
-    REQUIRE(!S->contains(
-        Perm({0,  1,  76,  101, 26, 51, 7,  82,  107, 32, 57, 13, 88, 113, 38,
-              63, 19, 94,  119, 44, 69, 25, 100, 125, 50, 75, 2,  77, 102, 27,
-              52, 8,  83,  108, 33, 58, 15, 90,  115, 40, 65, 16, 91, 116, 41,
-              66, 24, 99,  124, 49, 74, 3,  78,  103, 28, 53, 10, 85, 110, 35,
-              60, 14, 89,  114, 39, 64, 17, 92,  117, 42, 67, 21, 96, 121, 46,
-              71, 4,  79,  104, 29, 54, 6,  81,  106, 31, 56, 12, 87, 112, 37,
-              62, 20, 120, 95,  45, 70, 23, 98,  123, 48, 73, 5,  80, 105, 30,
-              55, 9,  84,  109, 34, 59, 11, 86,  111, 36, 61, 18, 93, 118, 43,
-              68, 22, 97,  122, 47, 72})));
+    REQUIRE(!S->contains(make<Perm>(
+        {0,  1,  76,  101, 26, 51, 7,  82,  107, 32, 57, 13, 88, 113, 38,
+         63, 19, 94,  119, 44, 69, 25, 100, 125, 50, 75, 2,  77, 102, 27,
+         52, 8,  83,  108, 33, 58, 15, 90,  115, 40, 65, 16, 91, 116, 41,
+         66, 24, 99,  124, 49, 74, 3,  78,  103, 28, 53, 10, 85, 110, 35,
+         60, 14, 89,  114, 39, 64, 17, 92,  117, 42, 67, 21, 96, 121, 46,
+         71, 4,  79,  104, 29, 54, 6,  81,  106, 31, 56, 12, 87, 112, 37,
+         62, 20, 120, 95,  45, 70, 23, 98,  123, 48, 73, 5,  80, 105, 30,
+         55, 9,  84,  109, 34, 59, 11, 86,  111, 36, 61, 18, 93, 118, 43,
+         68, 22, 97,  122, 47, 72})));
 
-    REQUIRE(!S->contains(
-        Perm({1,  77, 103, 109, 55, 6,  82, 108, 34,  60, 11, 87,  113, 39,  65,
-              16, 92, 118, 44,  70, 21, 97, 123, 49,  75, 2,  78,  105, 26,  54,
-              7,  83, 110, 31,  59, 12, 88, 115, 36,  64, 17, 93,  120, 41,  69,
-              22, 98, 125, 46,  74, 3,  80, 104, 27,  51, 8,  85,  29,  32,  56,
-              13, 90, 114, 37,  61, 18, 95, 119, 42,  66, 23, 100, 124, 47,  71,
-              4,  76, 0,   102, 30, 53, 9,  81,  107, 35, 58, 14,  86,  112, 40,
-              63, 19, 91,  117, 45, 68, 24, 96,  122, 50, 73, 5,   79,  101, 28,
-              52, 10, 84,  106, 33, 57, 15, 89,  111, 38, 62, 20,  94,  116, 43,
-              67, 25, 99,  121, 48, 72})));
+    REQUIRE(!S->contains(make<Perm>(
+        {1,  77, 103, 109, 55, 6,  82, 108, 34,  60, 11, 87,  113, 39,  65,
+         16, 92, 118, 44,  70, 21, 97, 123, 49,  75, 2,  78,  105, 26,  54,
+         7,  83, 110, 31,  59, 12, 88, 115, 36,  64, 17, 93,  120, 41,  69,
+         22, 98, 125, 46,  74, 3,  80, 104, 27,  51, 8,  85,  29,  32,  56,
+         13, 90, 114, 37,  61, 18, 95, 119, 42,  66, 23, 100, 124, 47,  71,
+         4,  76, 0,   102, 30, 53, 9,  81,  107, 35, 58, 14,  86,  112, 40,
+         63, 19, 91,  117, 45, 68, 24, 96,  122, 50, 73, 5,   79,  101, 28,
+         52, 10, 84,  106, 33, 57, 15, 89,  111, 38, 62, 20,  94,  116, 43,
+         67, 25, 99,  121, 48, 72})));
 
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,  1,  80, 77,  103, 109, 55, 6,  82,  108, 34, 60, 11,  87,  113,
          39, 65, 16, 92,  118, 44,  70, 21, 97,  123, 49, 75, 2,   78,  105,
          26, 54, 7,  83,  110, 31,  59, 12, 88,  115, 36, 64, 17,  93,  120,
@@ -575,19 +585,17 @@ namespace libsemigroups {
          52, 10, 84, 106, 33,  57,  15, 89, 111, 38,  62, 20, 94,  116, 43,
          67, 25, 99, 121, 48,  72})));
 
-    REQUIRE(S->contains(
-        Perm({0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,
-              13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
-              41,  42,  43,  44,  45,  26,  27,  28,  29,  30,  31,  32,  33,
-              34,  35,  46,  47,  48,  49,  50,  36,  37,  38,  39,  40,  71,
-              72,  73,  74,  75,  66,  67,  68,  69,  70,  51,  52,  53,  54,
-              55,  61,  62,  63,  64,  65,  56,  57,  58,  59,  60,  81,  82,
-              83,  84,  85,  86,  87,  88,  89,  90,  96,  97,  98,  99,  100,
-              76,  77,  78,  79,  80,  91,  92,  93,  94,  95,  111, 112, 113,
-              114, 115, 121, 122, 123, 124, 125, 116, 117, 118, 119, 120, 106,
-              107, 108, 109, 110, 101, 102, 103, 104, 105})));
-
-    delete S;
+    REQUIRE(S->contains(make<Perm>(
+        {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,
+         13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
+         41,  42,  43,  44,  45,  26,  27,  28,  29,  30,  31,  32,  33,
+         34,  35,  46,  47,  48,  49,  50,  36,  37,  38,  39,  40,  71,
+         72,  73,  74,  75,  66,  67,  68,  69,  70,  51,  52,  53,  54,
+         55,  61,  62,  63,  64,  65,  56,  57,  58,  59,  60,  81,  82,
+         83,  84,  85,  86,  87,  88,  89,  90,  96,  97,  98,  99,  100,
+         76,  77,  78,  79,  80,  91,  92,  93,  94,  95,  111, 112, 113,
+         114, 115, 121, 122, 123, 124, 125, 116, 117, 118, 119, 120, 106,
+         107, 108, 109, 110, 101, 102, 103, 104, 105})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -596,10 +604,10 @@ namespace libsemigroups {
                           "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 585;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {1,   9,   17,  25,  33,  41,  49,  57,  65,  73,  81,  89,  97,  105,
          113, 121, 129, 137, 145, 153, 161, 169, 177, 185, 193, 201, 209, 217,
          225, 233, 241, 249, 257, 265, 273, 281, 289, 297, 305, 313, 321, 329,
@@ -642,7 +650,7 @@ namespace libsemigroups {
          191, 199, 151, 159, 167, 175, 183, 207, 255, 263, 215, 223, 231, 239,
          247, 271, 319, 327, 279, 287, 295, 303, 311, 335, 383, 391, 343, 351,
          359, 367, 375, 399, 447, 455, 407, 415, 423, 431, 439}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   11,  12,  13,  14,
          15,  16,  10,  25,  27,  28,  29,  30,  31,  32,  26,  33,  35,  36,
          37,  38,  39,  40,  34,  41,  43,  44,  45,  46,  47,  48,  42,  49,
@@ -687,7 +695,6 @@ namespace libsemigroups {
          437, 438, 439, 441, 448, 442, 443, 444, 445, 446, 447}));
 
     REQUIRE(S->size() == static_cast<uint64_t>(34'558'531'338'240));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -699,17 +706,17 @@ namespace libsemigroups {
     using Perm          = Perm<0, size_t>;
     auto S              = SchreierSims<N, size_t, Perm>();
 
-    S.add_generator(Perm({0, 9, 2, 10, 6, 5, 4, 8, 7, 1, 3}));
-    S.add_generator(Perm({3, 4, 7, 2, 5, 8, 6, 0, 1, 9, 10}));
+    S.add_generator(make<Perm>({0, 9, 2, 10, 6, 5, 4, 8, 7, 1, 3}));
+    S.add_generator(make<Perm>({3, 4, 7, 2, 5, 8, 6, 0, 1, 9, 10}));
 
     REQUIRE(S.size() == 7'920);
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
-    REQUIRE(S.contains(Perm({10, 8, 5, 0, 1, 2, 4, 9, 7, 6, 3})));
-    REQUIRE(S.contains(Perm({3, 6, 0, 9, 4, 10, 7, 5, 2, 8, 1})));
-    REQUIRE(!S.contains(Perm({4, 5, 6, 7, 8, 9, 10, 0, 1, 2, 3})));
-    REQUIRE(!S.contains(Perm({6, 7, 8, 9, 10, 0, 2, 1, 3, 5, 4})));
-    REQUIRE(!S.contains(Perm({9, 10, 1, 2, 3, 4, 0, 5, 6, 7, 8})));
+    REQUIRE(S.contains(make<Perm>({10, 8, 5, 0, 1, 2, 4, 9, 7, 6, 3})));
+    REQUIRE(S.contains(make<Perm>({3, 6, 0, 9, 4, 10, 7, 5, 2, 8, 1})));
+    REQUIRE(!S.contains(make<Perm>({4, 5, 6, 7, 8, 9, 10, 0, 1, 2, 3})));
+    REQUIRE(!S.contains(make<Perm>({6, 7, 8, 9, 10, 0, 2, 1, 3, 5, 4})));
+    REQUIRE(!S.contains(make<Perm>({9, 10, 1, 2, 3, 4, 0, 5, 6, 7, 8})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -721,32 +728,36 @@ namespace libsemigroups {
     auto             S  = SchreierSims<N>();
     using Perm          = decltype(S)::element_type;
 
-    S.add_generator(Perm({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 0,  23}));
-    S.add_generator(Perm({0,  1,  16, 12, 3, 5,  8, 17, 2,  6,  11, 22,
-                          13, 18, 19, 14, 9, 10, 4, 21, 15, 20, 7,  23}));
+    S.add_generator(
+        make<Perm>({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
+                    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 0,  23}));
+    S.add_generator(make<Perm>({0,  1,  16, 12, 3, 5,  8, 17, 2,  6,  11, 22,
+                                13, 18, 19, 14, 9, 10, 4, 21, 15, 20, 7,  23}));
 
-    S.add_generator(Perm({23, 22, 11, 15, 17, 9, 19, 13, 20, 5,  16, 2,
-                          21, 7,  18, 3,  10, 4, 14, 6,  8,  12, 1,  0}));
+    S.add_generator(make<Perm>({23, 22, 11, 15, 17, 9, 19, 13, 20, 5,  16, 2,
+                                21, 7,  18, 3,  10, 4, 14, 6,  8,  12, 1,  0}));
 
     REQUIRE(S.size() == 244'823'040);
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
-    REQUIRE(S.contains(Perm({1,  16, 12, 3, 5,  8, 17, 2,  6,  11, 22, 13,
-                             18, 19, 14, 9, 10, 4, 21, 15, 20, 7,  0,  23})));
-    REQUIRE(S.contains(Perm({12, 16, 18, 10, 20, 14, 21, 6,  17, 3,  22, 8,
-                             19, 4,  11, 5,  15, 7,  9,  13, 2,  23, 0,  1})));
-    REQUIRE(S.contains(Perm({19, 9, 21, 13, 10, 22, 6, 16, 7,  8, 11, 17,
-                             12, 5, 15, 1,  14, 0,  4, 18, 20, 3, 23, 2})));
     REQUIRE(
-        !S.contains(Perm({0,  3,  2,  1,  4,  5,  6,  7,  8,  9,  10, 11,
-                          12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23})));
+        S.contains(make<Perm>({1,  16, 12, 3, 5,  8, 17, 2,  6,  11, 22, 13,
+                               18, 19, 14, 9, 10, 4, 21, 15, 20, 7,  0,  23})));
     REQUIRE(
-        !S.contains(Perm({0,  1,  3,  4,  2,  5,  6,  7,  8,  9,  10, 11,
-                          12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23})));
+        S.contains(make<Perm>({12, 16, 18, 10, 20, 14, 21, 6, 17, 3, 22, 8, 19,
+                               4,  11, 5,  15, 7,  9,  13, 2, 23, 0, 1})));
     REQUIRE(
-        !S.contains(Perm({0,  1,  3,  4,  2,  6,  5,  7,  8,  9,  10, 11,
-                          12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23})));
+        S.contains(make<Perm>({19, 9, 21, 13, 10, 22, 6, 16, 7,  8, 11, 17,
+                               12, 5, 15, 1,  14, 0,  4, 18, 20, 3, 23, 2})));
+    REQUIRE(!S.contains(
+        make<Perm>({0,  3,  2,  1,  4,  5,  6,  7,  8,  9,  10, 11,
+                    12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23})));
+    REQUIRE(!S.contains(
+        make<Perm>({0,  1,  3,  4,  2,  5,  6,  7,  8,  9,  10, 11,
+                    12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23})));
+    REQUIRE(!S.contains(
+        make<Perm>({0,  1,  3,  4,  2,  6,  5,  7,  8,  9,  10, 11,
+                    12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -755,10 +766,10 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 267;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   262, 107, 21,  213, 191, 22,  133, 234, 232, 151, 139, 176, 202,
          253, 222, 16,  195, 206, 68,  55,  3,   6,   179, 217, 216, 256, 87,
          70,  131, 44,  105, 170, 77,  104, 198, 137, 243, 56,  124, 223, 134,
@@ -779,7 +790,7 @@ namespace libsemigroups {
          86,  163, 142, 153, 83,  37,  244, 178, 218, 65,  209, 63,  49,  76,
          201, 14,  121, 132, 26,  263, 171, 215, 79,  59,  1,   257, 50,  266,
          265}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   146, 132, 3,   156, 242, 107, 125, 245, 174, 241, 264, 248, 36,
          116, 47,  178, 170, 197, 233, 121, 1,   228, 48,  201, 15,  136, 212,
          6,   175, 77,  237, 30,  226, 31,  129, 44,  161, 232, 219, 78,  139,
@@ -804,7 +815,7 @@ namespace libsemigroups {
     REQUIRE(S->size() == 175'560);
     REQUIRE(S->contains(S->generator(0)));
     REQUIRE(S->contains(S->generator(1)));
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,   174, 56,  262, 210, 214, 81,  21,  160, 230, 148, 170, 67,  91,
          126, 238, 25,  85,  260, 32,  16,  29,  181, 66,  248, 143, 167, 39,
          241, 115, 98,  139, 226, 20,  12,  73,  152, 10,  141, 165, 121, 117,
@@ -826,7 +837,7 @@ namespace libsemigroups {
          228, 62,  179, 101, 100, 229, 162, 220, 70,  232, 95,  78,  36,  46,
          207})));
 
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,   56,  118, 229, 217, 125, 79,  100, 1,   259, 190, 122, 60,  260,
          52,  206, 189, 71,  120, 23,  44,  160, 186, 148, 265, 170, 243, 195,
          204, 151, 179, 202, 254, 161, 169, 201, 235, 96,  46,  200, 37,  90,
@@ -848,7 +859,7 @@ namespace libsemigroups {
          176, 76,  168, 257, 51,  89,  135, 92,  188, 208, 82,  86,  19,  194,
          9})));
 
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,   201, 243, 31,  229, 136, 122, 223, 164, 155, 185, 45,  3,   81,
          166, 48,  14,  105, 162, 169, 228, 94,  212, 43,  167, 190, 93,  202,
          224, 55,  56,  29,  118, 116, 194, 161, 184, 39,  134, 22,  181, 66,
@@ -870,7 +881,7 @@ namespace libsemigroups {
          152, 235, 148, 215, 107, 72,  264, 234, 210, 127, 71,  104, 241, 12,
          233})));
 
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,   250, 199, 41,  146, 23,  54,  53,  254, 33,  40,  80,  184, 78,
          34,  92,  102, 263, 45,  195, 153, 106, 58,  192, 127, 93,  209, 70,
          126, 143, 152, 166, 85,  87,  112, 49,  222, 159, 42,  210, 238, 150,
@@ -892,7 +903,7 @@ namespace libsemigroups {
          48,  261, 259, 170, 216, 154, 230, 96,  15,  141, 4,   61,  25,  68,
          8})));
 
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,   89,  18,  6,   159, 73,  100, 91,  110, 216, 66,  56,  144, 22,
          62,  15,  23,  146, 188, 11,  245, 148, 86,  96,  156, 114, 221, 103,
          217, 7,   129, 26,  111, 51,  232, 12,  141, 243, 212, 167, 225, 219,
@@ -914,7 +925,7 @@ namespace libsemigroups {
          121, 98,  158, 132, 235, 10,  36,  68,  207, 155, 231, 72,  57,  186,
          229})));
 
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,   56,  118, 229, 217, 125, 79,  100, 1,   259, 190, 122, 60,  260,
          52,  206, 189, 71,  120, 23,  44,  160, 186, 148, 265, 170, 243, 195,
          204, 151, 179, 202, 254, 161, 169, 201, 235, 96,  46,  200, 37,  90,
@@ -935,7 +946,6 @@ namespace libsemigroups {
          26,  83,  219, 98,  10,  34,  263, 128, 12,  223, 35,  65,  42,  93,
          176, 76,  168, 257, 51,  89,  135, 92,  188, 208, 82,  86,  19,  194,
          9})));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -944,17 +954,17 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 101;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,  84, 20, 48, 56, 82, 67, 55, 41, 35, 40, 78, 100, 49, 37, 94, 76,
          19, 44, 17, 2,  34, 85, 92, 57, 75, 28, 64, 26, 90,  97, 38, 68, 69,
          21, 9,  53, 14, 31, 61, 10, 8,  73, 91, 18, 86, 81,  89, 3,  13, 93,
          96, 72, 36, 74, 7,  4,  24, 99, 95, 63, 39, 83, 60,  27, 70, 88, 6,
          32, 33, 65, 87, 52, 42, 54, 25, 16, 98, 11, 80, 79,  46, 5,  62, 1,
          22, 45, 71, 66, 47, 29, 43, 23, 50, 15, 59, 51, 30,  77, 58, 12}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,  80, 9,  53, 23, 51, 37, 7,  27, 11, 62, 2,   65, 64, 61, 98, 73,
          39, 5,  13, 97, 96, 1,  78, 6,  15, 93, 60, 57,  71, 69, 12, 16, 17,
          86, 28, 36, 24, 59, 33, 43, 41, 68, 91, 42, 30,  85, 10, 76, 92, 66,
@@ -965,49 +975,48 @@ namespace libsemigroups {
     REQUIRE(S->size() == 604'800);
     REQUIRE(S->contains(S->generator(0)));
     REQUIRE(S->contains(S->generator(1)));
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,  22, 11, 87, 78, 18, 24, 7,  60, 2,  47, 9,  31, 19, 52, 25,  32,
          33, 51, 64, 58, 67, 80, 4,  37, 98, 99, 8,  35, 55, 45, 65, 73,  39,
          82, 57, 36, 6,  94, 17, 91, 41, 44, 40, 68, 69, 89, 62, 90, 77,  88,
          5,  61, 3,  56, 71, 95, 28, 97, 38, 27, 14, 10, 72, 13, 12, 50,  96,
          42, 30, 75, 29, 74, 16, 63, 81, 48, 92, 23, 83, 1,  70, 86, 100, 84,
          46, 34, 53, 66, 85, 76, 43, 49, 26, 59, 54, 21, 20, 15, 93, 79})));
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,  59, 20,  76, 38, 35, 13, 73, 45, 94, 84, 82, 10, 14, 58, 39, 68,
          95, 37, 54,  52, 16, 89, 26, 51, 81, 50, 23, 18, 71, 60, 43, 7,  25,
          9,  88, 48,  97, 2,  96, 46, 92, 53, 62, 32, 66, 80, 40, 5,  28, 57,
          90, 93, 29,  70, 55, 33, 77, 6,  78, 74, 19, 31, 12, 24, 72, 99, 17,
          30, 42, 100, 3,  27, 67, 21, 98, 36, 41, 8,  15, 79, 56, 34, 75, 47,
          91, 86, 44,  69, 49, 87, 65, 85, 4,  22, 64, 63, 11, 83, 61, 1})));
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,  74, 78, 68,  70, 20, 98, 18, 21, 75, 85, 44, 43, 67, 50, 37, 42,
          31, 72, 60, 54,  3,  83, 9,  34, 47, 28, 13, 32, 36, 52, 91, 87, 46,
          24, 93, 71, 86,  99, 82, 65, 56, 53, 12, 73, 88, 62, 89, 45, 58, 14,
          7,  66, 16, 100, 55, 97, 94, 51, 35, 4,  69, 15, 80, 26, 39, 30, 27,
          2,  76, 38, 29,  49, 57, 5,  23, 48, 63, 8,  95, 84, 11, 6,  77, 22,
          10, 33, 96, 61,  17, 90, 25, 79, 59, 81, 41, 64, 92, 40, 19, 1})));
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,  2,  1,  4,  3,  5,  6,  8,  9,  10, 7,  11, 12, 13, 14, 15, 16,
          17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
          34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
          51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
          68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,
          85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100})));
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,  3,  100, 4,  8,  5,  6,  7,  1,  33, 10, 11, 12, 13, 14, 15, 16,
          17, 18, 19,  20, 21, 22, 23, 24, 25, 89, 27, 28, 29, 30, 31, 32, 2,
          34, 35, 36,  37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
          51, 52, 53,  54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
          68, 69, 70,  71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 93, 83, 84,
          85, 86, 87,  88, 82, 90, 91, 92, 26, 94, 95, 96, 97, 98, 99, 9})));
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,  5,  3,  1,  4,  100, 6,  7,  23, 9,  19, 11, 12, 13, 14, 15, 16,
          17, 18, 8,  20, 21, 22,  45, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
          34, 35, 36, 37, 38, 39,  40, 41, 42, 43, 44, 10, 46, 47, 48, 49, 50,
          51, 52, 53, 54, 55, 56,  57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
          68, 69, 70, 71, 72, 73,  74, 75, 76, 77, 78, 79, 80, 81, 82, 2,  84,
          85, 86, 87, 88, 89, 90,  91, 92, 93, 94, 95, 96, 97, 98, 99, 83})));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -1016,10 +1025,10 @@ namespace libsemigroups {
                           "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 841;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   2,   1,   5,   7,   3,   10,  4,   12,  13,  6,   16,  8,   9,
          20,  21,  11,  24,  25,  27,  14,  15,  31,  32,  17,  18,  36,  19,
          38,  39,  41,  22,  23,  45,  46,  48,  26,  51,  28,  29,  55,  30,
@@ -1081,7 +1090,7 @@ namespace libsemigroups {
          791, 792, 804, 827, 794, 828, 829, 797, 799, 800, 810, 830, 833, 811,
          834, 815, 817, 818, 823, 832, 831, 824, 826, 835, 839, 837, 840, 836,
          838}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   3,   4,   6,   8,   9,   1,   11,  2,   14,  15,  17,  18,  19,
          5,   22,  23,  7,   26,  28,  29,  30,  10,  33,  34,  35,  12,  37,
          13,  40,  42,  43,  44,  16,  47,  49,  50,  52,  53,  54,  20,  56,
@@ -1145,7 +1154,6 @@ namespace libsemigroups {
          829}));
 
     REQUIRE(S->size() == 604'800);
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -1154,10 +1162,10 @@ namespace libsemigroups {
                           "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 277;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   245, 42,  112, 15,  131, 7,   188, 75,  132, 10,  11,  187, 186,
          265, 22,  159, 256, 43,  101, 123, 134, 4,   32,  209, 238, 35,  45,
          235, 126, 5,   19,  60,  66,  80,  154, 251, 117, 206, 71,  118, 93,
@@ -1178,7 +1186,7 @@ namespace libsemigroups {
          162, 218, 138, 234, 81,  91,  89,  185, 212, 137, 48,  202, 276, 229,
          151, 176, 144, 192, 130, 244, 232, 199, 56,  108, 184, 193, 239, 213,
          3,   222, 128, 20,  28,  164, 226, 59,  179, 275, 88}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   204, 203, 33,  236, 5,   172, 77,  76,  47,  146, 133, 224, 229,
          53,  84,  16,  223, 228, 130, 131, 252, 190, 13,  263, 242, 10,  32,
          196, 199, 65,  246, 209, 40,  99,  241, 198, 269, 251, 75,  118, 176,
@@ -1204,7 +1212,7 @@ namespace libsemigroups {
     REQUIRE(S->contains(S->generator(0)));
     REQUIRE(S->contains(S->generator(1)));
 
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,   123, 14,  40,  168, 5,   188, 25,  85,  22,  50,  220, 179, 169,
          2,   148, 16,  17,  18,  104, 90,  185, 9,   229, 214, 7,   146, 209,
          67,  87,  218, 98,  61,  118, 165, 35,  161, 37,  42,  260, 3,   192,
@@ -1225,7 +1233,7 @@ namespace libsemigroups {
          162, 96,  240, 241, 77,  225, 51,  245, 213, 143, 195, 141, 187, 271,
          205, 253, 133, 255, 74,  121, 234, 106, 39,  155, 262, 81,  76,  99,
          164, 79,  268, 269, 97,  251, 237, 273, 178, 235, 201})));
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,   205, 48,  70,  190, 65,  157, 172, 276, 1,   146, 133, 162, 237,
          31,  236, 165, 104, 19,  246, 37,  177, 84,  20,  137, 46,  121, 234,
          110, 52,  90,  115, 13,  194, 222, 10,  169, 89,  106, 67,  144, 126,
@@ -1246,7 +1254,7 @@ namespace libsemigroups {
          242, 8,   151, 239, 81,  60,  154, 204, 102, 227, 69,  142, 117, 198,
          25,  86,  50,  164, 223, 36,  273, 191, 156, 238, 226, 213, 112, 53,
          30,  91,  9,   82,  233, 116, 184, 250, 6,   186, 182})));
-    REQUIRE(S->contains(Perm(
+    REQUIRE(S->contains(make<Perm>(
         {0,   205, 48,  70,  190, 65,  157, 172, 276, 1,   146, 133, 162, 237,
          31,  236, 165, 104, 19,  246, 37,  177, 84,  20,  137, 46,  121, 234,
          110, 52,  90,  115, 13,  194, 222, 10,  169, 89,  106, 67,  144, 126,
@@ -1267,7 +1275,7 @@ namespace libsemigroups {
          242, 8,   151, 239, 81,  60,  154, 204, 102, 227, 69,  142, 117, 198,
          25,  86,  50,  164, 223, 36,  273, 191, 156, 238, 226, 213, 112, 53,
          30,  91,  9,   82,  233, 116, 184, 250, 6,   186, 182})));
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,   185, 87,  266, 22,  30,  188, 6,   111, 82,  10,  13,  124, 136,
          213, 100, 99,  130, 167, 31,  269, 74,  15,  60,  67,  162, 154, 221,
          270, 129, 131, 101, 23,  210, 114, 26,  229, 161, 63,  196, 180, 170,
@@ -1288,7 +1296,7 @@ namespace libsemigroups {
          25,  264, 217, 120, 214, 90,  257, 21,  173, 227, 155, 97,  88,  4,
          77,  160, 146, 70,  36,  89,  140, 208, 156, 46,  79,  98,  218, 14,
          112, 183, 190, 123, 235, 44,  163, 147, 157, 275, 250})));
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,   123, 14,  40,  168, 2,   188, 25,  85,  22,  50,  220, 179, 169,
          1,   148, 16,  36,  18,  104, 90,  185, 9,   229, 214, 7,   146, 209,
          67,  87,  218, 98,  61,  118, 165, 35,  161, 37,  42,  260, 21,  192,
@@ -1309,7 +1317,7 @@ namespace libsemigroups {
          162, 96,  240, 241, 77,  225, 51,  245, 213, 143, 195, 141, 187, 271,
          205, 253, 133, 255, 74,  121, 234, 106, 39,  155, 262, 81,  76,  99,
          164, 79,  268, 269, 97,  251, 237, 273, 178, 235, 201})));
-    REQUIRE(!S->contains(Perm(
+    REQUIRE(!S->contains(make<Perm>(
         {0,   185, 87,  266, 22,  30,  188, 6,   111, 82,  10,  100, 124, 136,
          213, 17,  99,  130, 167, 31,  269, 74,  15,  60,  67,  162, 154, 221,
          270, 129, 131, 101, 23,  210, 114, 26,  229, 161, 63,  196, 180, 170,
@@ -1330,7 +1338,6 @@ namespace libsemigroups {
          25,  264, 217, 120, 214, 90,  257, 3,   173, 227, 155, 97,  88,  13,
          77,  160, 146, 70,  11,  89,  140, 208, 156, 46,  79,  98,  218, 14,
          112, 183, 190, 123, 235, 44,  163, 147, 157, 275, 250})));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1340,10 +1347,10 @@ namespace libsemigroups {
       "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 553;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   3,   4,   5,   6,   1,   2,   10,  12,  14,  16,  18,  20,  21,
          23,  25,  7,   27,  29,  31,  8,   34,  36,  9,   39,  41,  43,  45,
          47,  11,  50,  52,  54,  56,  13,  59,  61,  63,  64,  66,  67,  15,
@@ -1385,7 +1392,7 @@ namespace libsemigroups {
          502, 498, 369, 454, 407, 549, 389, 439, 509, 550, 410, 540, 544, 431,
          526, 551, 548, 479, 552, 527, 541}));
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,   2,   1,   4,   3,   7,   8,   9,   11,  13,  15,  17,  19,  5,
          22,  24,  26,  6,   28,  30,  32,  33,  35,  37,  38,  40,  42,  44,
          46,  48,  49,  51,  53,  55,  57,  58,  60,  62,  10,  65,  25,  68,
@@ -1428,7 +1435,6 @@ namespace libsemigroups {
          547, 551, 542, 545, 552, 522, 539}));
 
     REQUIRE(S->size() == static_cast<uint64_t>(495'766'656'000));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -1437,10 +1443,10 @@ namespace libsemigroups {
                           "[no-valgrind][quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 1'783;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,    926,  1366, 1336, 1696, 1688, 610,  1412, 1390, 374,  1774, 1572,
          1588, 1690, 1127, 616,  197,  240,  761,  935,  301,  1776, 1078, 23,
          588,  1388, 799,  69,   1318, 839,  438,  517,  1510, 33,   1241, 611,
@@ -1590,7 +1596,7 @@ namespace libsemigroups {
          271,  1323, 1472, 49,   670,  482,  1709, 498,  1381, 125,  629,  1049,
          1231, 639,  1316, 1276, 653,  135,  180,  1727, 1306, 275,  10,   175,
          21,   1199, 854,  533,  1560, 58,   1676}));
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,    28,   33,   42,   49,   51,   17,   59,   14,   70,   73,   81,
          84,   87,   22,   99,   101,  26,   15,   117,  120,  124,  8,    133,
          135,  140,  6,    145,  40,   156,  160,  72,   163,  47,   134,  179,
@@ -1742,7 +1748,6 @@ namespace libsemigroups {
          1095, 987,  1750, 1634, 1241, 1475, 1732}));
 
     REQUIRE(S->size() == static_cast<uint64_t>(448'345'497'600));
-    delete S;
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -1752,10 +1757,10 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     // Slower than GAP
     constexpr size_t N = 3'511;
-    auto             S = new SchreierSims<N>();
-    using Perm         = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S = std::make_unique<SchreierSims<N>>();
+    using Perm         = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,    524,  2,    789,  2130, 777,  491,  3059, 3096, 2636, 527,  11,
          822,  3013, 14,   872,  2392, 2504, 108,  2816, 20,   3295, 851,  23,
          2196, 1503, 2131, 2285, 1061, 1382, 174,  1063, 32,   3057, 490,  846,
@@ -2050,7 +2055,7 @@ namespace libsemigroups {
          3492, 1290, 3494, 3172, 3309, 644,  3498, 1212, 3500, 2865, 1439, 1400,
          3504, 337,  2225, 316,  3508, 2204, 3430}));
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,    556,  325,  67,   1579, 391,  2643, 1896, 2439, 2666, 3145, 820,
          2475, 3036, 1735, 2023, 1741, 3404, 1633, 363,  3334, 1163, 2404, 3217,
          230,  225,  3302, 2527, 1117, 2398, 2936, 2177, 3233, 2216, 472,  3428,
@@ -2345,20 +2350,19 @@ namespace libsemigroups {
          2717, 1395, 1687, 204,  3020, 272,  1425, 2366, 913,  1852, 80,   803,
          2618, 3447, 349,  2573, 446,  1340, 667}));
 
-    REQUIRE(S->size() == static_cast<uint64_t>(64561751654400));
-    delete S;
+    REQUIRE(S->size() == static_cast<uint64_t>(64'561'751'654'400));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "026",
-                          "perm. Held group (order 4030387200)",
+                          "perm. Held group (order 4'030'387'200)",
                           "[no-valgrind][quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 2059;
-    auto             S  = new SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    auto             S  = std::make_unique<SchreierSims<N>>();
+    using Perm          = std::remove_reference_t<decltype(*S)>::element_type;
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,    374,  708,  1312, 1036, 1151, 1366, 1307, 1571, 1402, 236,  1438,
          363,  590,  288,  1372, 38,   1886, 816,  1953, 1582, 1109, 525,  124,
          24,   1218, 26,   1795, 499,  1574, 802,  31,   1040, 117,  1643, 35,
@@ -2532,7 +2536,7 @@ namespace libsemigroups {
          2040, 360,  983,  289,  1100, 75,   635,  953,  1202, 1485, 765,  247,
          914,  1629, 1976, 1530, 80,   1114, 87}));
 
-    S->add_generator(Perm(
+    S->add_generator(make<Perm>(
         {0,    502,  1182, 1390, 34,   2015, 1815, 1118, 395,  1677, 291,  1453,
          1711, 1737, 1432, 681,  1600, 339,  1556, 1001, 651,  532,  230,  1171,
          226,  1055, 1099, 1338, 1553, 191,  1906, 643,  698,  189,  436,  727,
@@ -2706,8 +2710,7 @@ namespace libsemigroups {
          108,  1114, 473,  568,  1944, 158,  1741, 1269, 831,  584,  507,  880,
          344,  1377, 464,  1718, 1457, 1814, 759}));
 
-    REQUIRE(S->size() == static_cast<uint64_t>(4030387200));
-    delete S;
+    REQUIRE(S->size() == static_cast<uint64_t>(4'030'387'200));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -2719,9 +2722,9 @@ namespace libsemigroups {
     using Perm          = libsemigroups::Perm<0, size_t>;
     auto S              = SchreierSims<N, size_t, Perm>();
 
-    S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
-    S.add_generator(Perm({0, 1, 3, 2, 4, 5, 6, 7}));
-    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 7, 6}));
+    S.add_generator(make<Perm>({1, 0, 2, 3, 4, 5, 6, 7}));
+    S.add_generator(make<Perm>({0, 1, 3, 2, 4, 5, 6, 7}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 7, 6}));
 
     REQUIRE(S.size() == 8);
   }
@@ -2735,10 +2738,10 @@ namespace libsemigroups {
     using Perm          = Perm<>;
     auto S              = SchreierSims<N, Perm::point_type, Perm>();
 
-    S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
-    S.add_generator(Perm({0, 1, 3, 2, 4, 5, 6, 7}));
-    S.add_generator(Perm({0, 1, 2, 3, 5, 4, 6, 7}));
-    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 7, 6}));
+    S.add_generator(make<Perm>({1, 0, 2, 3, 4, 5, 6, 7}));
+    S.add_generator(make<Perm>({0, 1, 3, 2, 4, 5, 6, 7}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 5, 4, 6, 7}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 7, 6}));
 
     REQUIRE(S.size() == 16);
 
@@ -2746,63 +2749,63 @@ namespace libsemigroups {
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(S.contains(S.generator(2)));
     REQUIRE(S.contains(S.generator(3)));
-    REQUIRE(S.contains(Perm({1, 0, 2, 3, 5, 4, 6, 7})));
-    REQUIRE(S.contains(Perm({0, 1, 3, 2, 5, 4, 7, 6})));
-    REQUIRE(!S.contains(Perm({6, 7, 0, 1, 2, 3, 4, 5})));
-    REQUIRE(!S.contains(Perm({4, 1, 5, 6, 7, 0, 2, 3})));
-    REQUIRE(!S.contains(Perm({6, 4, 7, 0, 1, 2, 3, 5})));
+    REQUIRE(S.contains(make<Perm>({1, 0, 2, 3, 5, 4, 6, 7})));
+    REQUIRE(S.contains(make<Perm>({0, 1, 3, 2, 5, 4, 7, 6})));
+    REQUIRE(!S.contains(make<Perm>({6, 7, 0, 1, 2, 3, 4, 5})));
+    REQUIRE(!S.contains(make<Perm>({4, 1, 5, 6, 7, 0, 2, 3})));
+    REQUIRE(!S.contains(make<Perm>({6, 4, 7, 0, 1, 2, 3, 5})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "029",
-                          "perm. group (S5 x S5) : C2 (order 28800)",
+                          "perm. group (S5 x S5) : C2 (order 28'800)",
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 10;
     using Perm          = Perm<>;
     auto S              = SchreierSims<N, Perm::point_type, Perm>();
 
-    S.add_generator(Perm({0, 9, 2, 3, 4, 5, 6, 7, 8, 1}));
-    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
+    S.add_generator(make<Perm>({0, 9, 2, 3, 4, 5, 6, 7, 8, 1}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
 
-    REQUIRE(S.size() == 28800);
+    REQUIRE(S.size() == 28'800);
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "030",
-                          "perm. group C3 x D8 x A5 (order 1440)",
+                          "perm. group C3 x D8 x A5 (order 1'440)",
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 12;
     using Perm          = Perm<>;
     auto S              = SchreierSims<N, Perm::point_type, Perm>();
 
-    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10, 9}));
-    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 11, 10}));
-    S.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5, 8, 9, 10, 11}));
-    S.add_generator(Perm({0, 1, 3, 4, 2, 5, 6, 7, 8, 9, 10, 11}));
-    S.add_generator(Perm({0, 2, 1, 4, 3, 5, 6, 7, 8, 9, 10, 11}));
-    S.add_generator(Perm({1, 0, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10, 9}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 11, 10}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 6, 7, 5, 8, 9, 10, 11}));
+    S.add_generator(make<Perm>({0, 1, 3, 4, 2, 5, 6, 7, 8, 9, 10, 11}));
+    S.add_generator(make<Perm>({0, 2, 1, 4, 3, 5, 6, 7, 8, 9, 10, 11}));
+    S.add_generator(make<Perm>({1, 0, 2, 4, 3, 5, 6, 7, 8, 9, 10, 11}));
 
-    REQUIRE(S.size() == 1440);
+    REQUIRE(S.size() == 1'440);
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "031",
-                          "perm. group GL(4, 3) (order 24261120)",
+                          "perm. group GL(4, 3) (order 24'261'120)",
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 81;
     auto             S  = SchreierSims<N>();
-    using Perm          = std::remove_pointer<decltype(S)>::type::element_type;
+    using Perm          = decltype(S)::element_type;
 
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
          17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 54, 55, 56, 57, 58, 59, 60,
          61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
          78, 79, 80, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
          41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {0,  6,  3,  18, 24, 21, 9,  15, 12, 54, 60, 57, 72, 78, 75, 63, 69,
          66, 27, 33, 30, 45, 51, 48, 36, 42, 39, 55, 61, 58, 73, 79, 76, 64,
          70, 67, 28, 34, 31, 46, 52, 49, 37, 43, 40, 1,  7,  4,  19, 25, 22,
@@ -2812,109 +2815,108 @@ namespace libsemigroups {
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
 
-    REQUIRE(S.contains(Perm(
+    REQUIRE(S.contains(make<Perm>(
         {0,  65, 46, 7,  69, 53, 5,  67, 48, 21, 59, 40, 19, 54, 38, 26, 61,
          42, 15, 80, 34, 13, 75, 32, 11, 73, 27, 45, 2,  64, 52, 6,  71, 50,
          4,  66, 39, 23, 58, 37, 18, 56, 44, 25, 60, 33, 17, 79, 31, 12, 77,
          29, 10, 72, 63, 47, 1,  70, 51, 8,  68, 49, 3,  57, 41, 22, 55, 36,
          20, 62, 43, 24, 78, 35, 16, 76, 30, 14, 74, 28, 9})));
 
-    REQUIRE(S.contains(Perm(
+    REQUIRE(S.contains(make<Perm>(
         {0,  6,  3,  18, 24, 21, 9,  15, 12, 54, 60, 57, 72, 78, 75, 63, 69,
          66, 27, 33, 30, 45, 51, 48, 36, 42, 39, 55, 61, 58, 73, 79, 76, 64,
          70, 67, 28, 34, 31, 46, 52, 49, 37, 43, 40, 1,  7,  4,  19, 25, 22,
          10, 16, 13, 29, 35, 32, 47, 53, 50, 38, 44, 41, 2,  8,  5,  20, 26,
          23, 11, 17, 14, 56, 62, 59, 74, 80, 77, 65, 71, 68})));
 
-    REQUIRE(S.contains(Perm(
+    REQUIRE(S.contains(make<Perm>(
         {0,  13, 26, 39, 52, 29, 78, 55, 68, 65, 75, 61, 23, 6,  10, 35, 36,
          49, 46, 32, 42, 58, 71, 72, 16, 20, 3,  5,  15, 19, 44, 45, 31, 74,
          57, 70, 67, 80, 54, 25, 2,  12, 28, 41, 51, 48, 34, 38, 60, 64, 77,
          9,  22, 8,  7,  11, 21, 37, 50, 33, 76, 62, 63, 69, 73, 59, 18, 4,
          17, 30, 43, 47, 53, 27, 40, 56, 66, 79, 14, 24, 1})));
 
-    REQUIRE(!S.contains(Perm(
+    REQUIRE(!S.contains(make<Perm>(
         {0,  13, 26, 39, 52, 29, 78, 55, 68, 65, 75, 61, 23, 4,  10, 35, 36,
          49, 46, 32, 42, 58, 71, 72, 16, 7,  3,  5,  15, 19, 44, 45, 31, 74,
          57, 70, 67, 80, 54, 25, 1,  12, 28, 41, 51, 48, 34, 38, 60, 64, 77,
          9,  63, 8,  22, 11, 21, 37, 50, 33, 76, 62, 53, 69, 73, 59, 18, 6,
          17, 30, 43, 47, 20, 27, 40, 56, 66, 79, 14, 24, 2})));
 
-    REQUIRE(!S.contains(Perm(
+    REQUIRE(!S.contains(make<Perm>(
         {0,  29, 55, 35, 61, 4,  58, 3,  32, 20, 79, 24, 76, 21, 50, 18, 47,
          73, 67, 12, 41, 9,  38, 64, 44, 70, 15, 13, 39, 68, 36, 65, 10, 71,
          16, 42, 27, 56, 2,  62, 22, 33, 6,  30, 59, 80, 25, 51, 63, 48, 77,
          45, 74, 19, 26, 52, 78, 49, 75, 23, 72, 7,  46, 40, 66, 14, 53, 11,
          37, 17, 43, 69, 54, 1,  28, 8,  34, 60, 31, 57, 5})));
-    REQUIRE(!S.contains(Perm(
+    REQUIRE(!S.contains(make<Perm>(
         {0,  13, 26, 39, 52, 29, 78, 55, 68, 65, 75, 61, 23, 4,  10, 35, 36,
          49, 46, 32, 42, 58, 71, 72, 16, 63, 3,  5,  15, 19, 44, 45, 31, 74,
          57, 70, 67, 80, 54, 25, 1,  12, 28, 41, 51, 48, 34, 38, 60, 64, 77,
          9,  20, 8,  53, 11, 21, 37, 50, 33, 76, 62, 7,  69, 73, 59, 18, 6,
          17, 30, 43, 47, 22, 27, 40, 56, 66, 79, 14, 24, 2})));
-    REQUIRE(S.size() == 24261120);
+    REQUIRE(S.size() == 24'261'120);
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "032",
-                          "perm. group PSL(3, 7) (order 1876896)",
+                          "perm. group PSL(3, 7) (order 1'876'896)",
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 57;
     using Perm          = Perm<>;
-    auto S              = new SchreierSims<N, Perm::point_type, Perm>();
+    auto S = std::make_unique<SchreierSims<N, Perm::point_type, Perm>>();
 
     S->add_generator(
-        Perm({1,  8,  15, 22, 29, 36, 43, 50, 12, 19, 26, 33, 40, 47, 54,
-              10, 45, 52, 17, 24, 31, 38, 14, 35, 42, 49, 56, 21, 28, 11,
-              53, 18, 25, 32, 39, 46, 0,  5,  4,  3,  2,  7,  6,  13, 27,
-              34, 41, 48, 55, 20, 9,  37, 44, 51, 16, 23, 30}));
+        make<Perm>({1,  8,  15, 22, 29, 36, 43, 50, 12, 19, 26, 33, 40, 47, 54,
+                    10, 45, 52, 17, 24, 31, 38, 14, 35, 42, 49, 56, 21, 28, 11,
+                    53, 18, 25, 32, 39, 46, 0,  5,  4,  3,  2,  7,  6,  13, 27,
+                    34, 41, 48, 55, 20, 9,  37, 44, 51, 16, 23, 30}));
     S->add_generator(
-        Perm({0,  1,  3,  4,  5,  6,  7,  2,  8,  14, 9,  10, 11, 12, 13,
-              43, 49, 44, 45, 46, 47, 48, 50, 56, 51, 52, 53, 54, 55, 15,
-              21, 16, 17, 18, 19, 20, 22, 28, 23, 24, 25, 26, 27, 29, 35,
-              30, 31, 32, 33, 34, 36, 42, 37, 38, 39, 40, 41}));
+        make<Perm>({0,  1,  3,  4,  5,  6,  7,  2,  8,  14, 9,  10, 11, 12, 13,
+                    43, 49, 44, 45, 46, 47, 48, 50, 56, 51, 52, 53, 54, 55, 15,
+                    21, 16, 17, 18, 19, 20, 22, 28, 23, 24, 25, 26, 27, 29, 35,
+                    30, 31, 32, 33, 34, 36, 42, 37, 38, 39, 40, 41}));
 
     REQUIRE(S->contains(S->generator(0)));
     REQUIRE(S->contains(S->generator(1)));
-    REQUIRE(S->size() == 1876896);
+    REQUIRE(S->size() == 1'876'896);
 
     REQUIRE(S->contains(
-        Perm({53, 51, 0,  54, 52, 56, 50, 55, 37, 35, 8,  27, 5,  19, 45,
-              1,  39, 25, 32, 46, 11, 18, 16, 43, 41, 4,  12, 31, 28, 44,
-              2,  33, 38, 21, 22, 13, 30, 26, 17, 14, 36, 48, 7,  9,  20,
-              3,  47, 24, 42, 29, 23, 10, 49, 15, 34, 6,  40})));
+        make<Perm>({53, 51, 0,  54, 52, 56, 50, 55, 37, 35, 8,  27, 5,  19, 45,
+                    1,  39, 25, 32, 46, 11, 18, 16, 43, 41, 4,  12, 31, 28, 44,
+                    2,  33, 38, 21, 22, 13, 30, 26, 17, 14, 36, 48, 7,  9,  20,
+                    3,  47, 24, 42, 29, 23, 10, 49, 15, 34, 6,  40})));
 
     REQUIRE(S->contains(
-        Perm({12, 40, 47, 19, 26, 54, 33, 1,  2,  25, 15, 55, 45, 42, 30,
-              48, 50, 23, 35, 18, 38, 3,  24, 5,  34, 46, 51, 36, 21, 56,
-              44, 6,  17, 29, 39, 27, 16, 31, 53, 4,  28, 41, 43, 32, 20,
-              49, 22, 7,  37, 52, 8,  14, 10, 9,  13, 0,  11})));
+        make<Perm>({12, 40, 47, 19, 26, 54, 33, 1,  2,  25, 15, 55, 45, 42, 30,
+                    48, 50, 23, 35, 18, 38, 3,  24, 5,  34, 46, 51, 36, 21, 56,
+                    44, 6,  17, 29, 39, 27, 16, 31, 53, 4,  28, 41, 43, 32, 20,
+                    49, 22, 7,  37, 52, 8,  14, 10, 9,  13, 0,  11})));
 
     REQUIRE(S->contains(
-        Perm({37, 5,  45, 27, 53, 19, 35, 8,  36, 39, 41, 40, 38, 0,  42,
-              24, 33, 18, 14, 55, 6,  43, 46, 15, 56, 31, 26, 3,  13, 12,
-              52, 22, 20, 49, 7,  32, 34, 28, 47, 50, 11, 2,  17, 21, 48,
-              10, 25, 29, 4,  54, 51, 9,  30, 44, 16, 1,  23})));
+        make<Perm>({37, 5,  45, 27, 53, 19, 35, 8,  36, 39, 41, 40, 38, 0,  42,
+                    24, 33, 18, 14, 55, 6,  43, 46, 15, 56, 31, 26, 3,  13, 12,
+                    52, 22, 20, 49, 7,  32, 34, 28, 47, 50, 11, 2,  17, 21, 48,
+                    10, 25, 29, 4,  54, 51, 9,  30, 44, 16, 1,  23})));
 
     REQUIRE(!S->contains(
-        Perm({37, 1,  19, 35, 8,  45, 27, 3,  36, 38, 2,  42, 39, 41, 40,
-              29, 55, 4,  43, 33, 18, 14, 46, 53, 24, 13, 15, 56, 31, 12,
-              49, 5,  32, 52, 22, 20, 34, 11, 0,  17, 28, 47, 50, 21, 26,
-              7,  54, 48, 10, 25, 51, 16, 6,  23, 9,  30, 44})));
+        make<Perm>({37, 1,  19, 35, 8,  45, 27, 3,  36, 38, 2,  42, 39, 41, 40,
+                    29, 55, 4,  43, 33, 18, 14, 46, 53, 24, 13, 15, 56, 31, 12,
+                    49, 5,  32, 52, 22, 20, 34, 11, 0,  17, 28, 47, 50, 21, 26,
+                    7,  54, 48, 10, 25, 51, 16, 6,  23, 9,  30, 44})));
 
     REQUIRE(!S->contains(
-        Perm({8,  12, 14, 11, 0,  13, 9,  10, 40, 16, 3,  56, 32, 2,  48,
-              47, 31, 21, 39, 4,  55, 23, 19, 26, 7,  27, 37, 45, 35, 29,
-              6,  34, 44, 52, 42, 18, 54, 28, 46, 1,  20, 30, 38, 33, 41,
-              51, 17, 49, 25, 53, 5,  43, 36, 24, 22, 15, 50})));
+        make<Perm>({8,  12, 14, 11, 0,  13, 9,  10, 40, 16, 3,  56, 32, 2,  48,
+                    47, 31, 21, 39, 4,  55, 23, 19, 26, 7,  27, 37, 45, 35, 29,
+                    6,  34, 44, 52, 42, 18, 54, 28, 46, 1,  20, 30, 38, 33, 41,
+                    51, 17, 49, 25, 53, 5,  43, 36, 24, 22, 15, 50})));
 
     REQUIRE(!S->contains(
-        Perm({51, 37, 4,  16, 44, 30, 9,  23, 6,  46, 12, 21, 36, 26, 34,
-              8,  29, 49, 25, 41, 33, 17, 45, 13, 1,  53, 40, 18, 28, 27,
-              15, 32, 5,  38, 14, 47, 24, 56, 52, 54, 2,  55, 50, 19, 31,
-              22, 48, 42, 7,  11, 35, 3,  20, 10, 39, 43, 0})));
-    delete S;
+        make<Perm>({51, 37, 4,  16, 44, 30, 9,  23, 6,  46, 12, 21, 36, 26, 34,
+                    8,  29, 49, 25, 41, 33, 17, 45, 13, 1,  53, 40, 18, 28, 27,
+                    15, 32, 5,  38, 14, 47, 24, 56, 52, 54, 2,  55, 50, 19, 31,
+                    22, 48, 42, 7,  11, 35, 3,  20, 10, 39, 43, 0})));
   }
 
   // The following are comment out since the "action" struct requires the
@@ -2957,7 +2959,7 @@ namespace libsemigroups {
   //                              {0, 0, 0, 0, 0, 0, 1, 0},
   //                              {0, 0, 0, 0, 0, 0, 0, 1},
   //                              {1, 0, 0, 0, 0, 0, 0, 0}}));
-  //       REQUIRE(S.size() == 40320);
+  //       REQUIRE(S.size() == 40'320);
   //     }
   //
   //
@@ -2991,8 +2993,8 @@ namespace libsemigroups {
     auto rg    = ReportGuard(false);
     using Perm = Perm<>;
     SchreierSims<5, Perm::point_type, Perm> S;
-    S.add_generator(Perm({1, 2, 3, 4, 0}));
-    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
+    S.add_generator(make<Perm>({1, 0, 2, 3, 4}));
     REQUIRE(S.size() == static_cast<uint64_t>(120));
   }
 
@@ -3006,24 +3008,24 @@ namespace libsemigroups {
     using Perm = SchreierSims<17>::element_type;
     REQUIRE(S.size() == 1);
     S.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
+        make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
-    REQUIRE(S.size() == static_cast<uint64_t>(177843714048000));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
+    REQUIRE(S.size() == static_cast<uint64_t>(177'843'714'048'000));
     REQUIRE(S.base(0) == 0);
-    REQUIRE(S.contains(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0})));
-    REQUIRE(!S.contains(
-        Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
-    REQUIRE(S.contains(
-        Perm({1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
+    REQUIRE(S.contains(make<Perm>(
+        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0})));
+    REQUIRE(!S.contains(make<Perm>(
+        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
+    REQUIRE(S.contains(make<Perm>(
+        {1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
 
     S.init();
     REQUIRE(S.size() == 1);
     S.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
+        make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
 
     S.init();
     REQUIRE_THROWS_AS(S.base(0), LibsemigroupsException);
@@ -3031,13 +3033,13 @@ namespace libsemigroups {
     S.add_base_point(14);
     S.add_base_point(15);
     S.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
+        make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
     S.add_base_point(1);
     S.add_base_point(3);
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
     REQUIRE(S.base_size() == 4);
-    REQUIRE(S.size() == static_cast<uint64_t>(177843714048000));
+    REQUIRE(S.size() == static_cast<uint64_t>(177'843'714'048'000));
     REQUIRE(S.base(0) == 14);
     REQUIRE(S.base(1) == 15);
     REQUIRE(S.base(2) == 1);
@@ -3045,21 +3047,21 @@ namespace libsemigroups {
     REQUIRE(S.base_size() == 15);
     REQUIRE_THROWS_AS(S.add_base_point(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(S.base(15), LibsemigroupsException);
-    REQUIRE(S.contains(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0})));
-    REQUIRE(!S.contains(
-        Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
-    REQUIRE(S.contains(
-        Perm({1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
+    REQUIRE(S.contains(make<Perm>(
+        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0})));
+    REQUIRE(!S.contains(make<Perm>(
+        {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
+    REQUIRE(S.contains(make<Perm>(
+        {1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16})));
     REQUIRE_THROWS_AS(S.add_base_point(1), LibsemigroupsException);
 
     S.init();
     S.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
+        make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
     REQUIRE(S.size() == 17);
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
-    REQUIRE(S.size() == static_cast<uint64_t>(177843714048000));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
+    REQUIRE(S.size() == static_cast<uint64_t>(177'843'714'048'000));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3069,11 +3071,12 @@ namespace libsemigroups {
     auto rg    = ReportGuard(false);
     using Perm = Perm<>;
     SchreierSims<5, Perm::point_type, Perm> S;
-    S.add_generator(Perm({1, 2, 3, 4, 0}));
-    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
+    S.add_generator(make<Perm>({1, 0, 2, 3, 4}));
     REQUIRE(S.size() == static_cast<uint64_t>(120));
-    REQUIRE_THROWS_AS(S.add_generator(Perm({0, 1, 2})), LibsemigroupsException);
-    REQUIRE_THROWS_AS(S.add_generator(Perm({2, 3, 0, 1, 4, 6})),
+    REQUIRE_THROWS_AS(S.add_generator(make<Perm>({0, 1, 2})),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.add_generator(make<Perm>({2, 3, 0, 1, 4, 6})),
                       LibsemigroupsException);
 
     REQUIRE_THROWS_AS(S.generator(10), LibsemigroupsException);
@@ -3081,15 +3084,16 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(S.generator(0));
     REQUIRE_NOTHROW(S.generator(1));
 
-    REQUIRE_THROWS_AS(S.sift(Perm({2, 3, 0, 1, 4, 6})), LibsemigroupsException);
-    REQUIRE_THROWS_AS(S.sift(Perm({2, 0, 1})), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.sift(make<Perm>({2, 3, 0, 1, 4, 6})),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.sift(make<Perm>({2, 0, 1})), LibsemigroupsException);
     REQUIRE_NOTHROW(S.sift(S.generator(1)));
 
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(S.contains(S.generator(0)));
-    REQUIRE(S.contains(Perm({0, 3, 1, 4, 2})));
-    REQUIRE(!S.contains(Perm({2, 3, 0, 1, 4, 6})));
-    REQUIRE(!S.contains(Perm({2, 0, 1})));
+    REQUIRE(S.contains(make<Perm>({0, 3, 1, 4, 2})));
+    REQUIRE_THROWS_AS(make<Perm>({2, 3, 0, 1, 4, 6}), LibsemigroupsException);
+    REQUIRE(!S.contains(make<Perm>({2, 0, 1})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3099,8 +3103,8 @@ namespace libsemigroups {
     auto rg    = ReportGuard(false);
     using Perm = Perm<>;
     SchreierSims<5, Perm::point_type, Perm> S;
-    S.add_generator(Perm({1, 2, 3, 4, 0}));
-    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
+    S.add_generator(make<Perm>({1, 0, 2, 3, 4}));
     REQUIRE_THROWS_AS(S.add_base_point(0), LibsemigroupsException);
     for (size_t i = 1; i < 5; ++i) {
       REQUIRE_NOTHROW(S.add_base_point(i));
@@ -3116,8 +3120,8 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<5> S;
     using Perm = typename decltype(S)::element_type;
-    S.add_generator(Perm({1, 2, 3, 4, 0}));
-    S.add_generator(Perm({1, 0, 2, 3, 4}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 0}));
+    S.add_generator(make<Perm>({1, 0, 2, 3, 4}));
     REQUIRE_THROWS_AS(S.add_base_point(0), LibsemigroupsException);
     for (size_t i = 1; i < 5; ++i) {
       REQUIRE_NOTHROW(S.add_base_point(i));
@@ -3133,40 +3137,40 @@ namespace libsemigroups {
     SchreierSims<17> S, T;
     using Perm = SchreierSims<17>::element_type;
     S.add_generator(
-        Perm({0, 1, 2, 4, 16, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 3}));
+        make<Perm>({0, 1, 2, 4, 16, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 3}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 4}));
+        make<Perm>({0, 1, 2, 3, 5, 16, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 4}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 6, 16, 7, 8, 9, 10, 11, 12, 13, 14, 15, 5}));
+        make<Perm>({0, 1, 2, 3, 4, 6, 16, 7, 8, 9, 10, 11, 12, 13, 14, 15, 5}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 7, 16, 8, 9, 10, 11, 12, 13, 14, 15, 6}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 7, 16, 8, 9, 10, 11, 12, 13, 14, 15, 6}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 8, 16, 9, 10, 11, 12, 13, 14, 15, 7}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 8, 16, 9, 10, 11, 12, 13, 14, 15, 7}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 9, 16, 10, 11, 12, 13, 14, 15, 8}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 9, 16, 10, 11, 12, 13, 14, 15, 8}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 16, 11, 12, 13, 14, 15, 9}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 16, 11, 12, 13, 14, 15, 9}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 16, 12, 13, 14, 15, 10}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 16, 12, 13, 14, 15, 10}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 13, 14, 15, 11}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 13, 14, 15, 11}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 14, 15, 12}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 14, 15, 12}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 15, 13}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 15, 13}));
     S.add_generator(
-        Perm({0, 1, 14, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 15, 2}));
+        make<Perm>({0, 1, 14, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 15, 2}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 14, 15}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 14, 15}));
     S.add_generator(
-        Perm({0, 15, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 1}));
+        make<Perm>({0, 15, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 1}));
     S.add_generator(
-        Perm({15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 0}));
+        make<Perm>({15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 0}));
 
     T.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
+        make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0}));
     T.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
+        make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 14}));
 
     for (size_t i = 0; i < S.number_of_generators(); ++i) {
       REQUIRE(T.contains(S.generator(i)));
@@ -3175,8 +3179,8 @@ namespace libsemigroups {
       REQUIRE(S.contains(T.generator(i)));
     }
 
-    REQUIRE(T.size() == 177843714048000);
-    REQUIRE(S.size() == 177843714048000);
+    REQUIRE(T.size() == 177'843'714'048'000);
+    REQUIRE(S.size() == 177'843'714'048'000);
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3189,21 +3193,21 @@ namespace libsemigroups {
     S.add_base_point(0);
     S.add_base_point(1);
     S.add_base_point(2);
-    S.add_generator(
-        Perm({0,  2,  59, 57, 16, 18, 43, 41, 36, 38, 31, 29, 52, 54, 15, 13,
-              8,  10, 51, 49, 24, 26, 35, 33, 44, 46, 23, 21, 60, 62, 7,  5,
-              32, 34, 27, 25, 48, 50, 11, 9,  4,  6,  63, 61, 20, 22, 47, 45,
-              40, 42, 19, 17, 56, 58, 3,  1,  12, 14, 55, 53, 28, 30, 39, 37}));
-    S.add_generator(
-        Perm({0,  40, 51, 27, 1,  41, 50, 26, 2,  42, 49, 25, 3,  43, 48, 24,
-              4,  44, 55, 31, 5,  45, 54, 30, 6,  46, 53, 29, 7,  47, 52, 28,
-              16, 56, 35, 11, 17, 57, 34, 10, 18, 58, 33, 9,  19, 59, 32, 8,
-              20, 60, 39, 15, 21, 61, 38, 14, 22, 62, 37, 13, 23, 63, 36, 12}));
-    S.add_generator(
-        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
-              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
-              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
-              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    S.add_generator(make<Perm>(
+        {0,  2,  59, 57, 16, 18, 43, 41, 36, 38, 31, 29, 52, 54, 15, 13,
+         8,  10, 51, 49, 24, 26, 35, 33, 44, 46, 23, 21, 60, 62, 7,  5,
+         32, 34, 27, 25, 48, 50, 11, 9,  4,  6,  63, 61, 20, 22, 47, 45,
+         40, 42, 19, 17, 56, 58, 3,  1,  12, 14, 55, 53, 28, 30, 39, 37}));
+    S.add_generator(make<Perm>(
+        {0,  40, 51, 27, 1,  41, 50, 26, 2,  42, 49, 25, 3,  43, 48, 24,
+         4,  44, 55, 31, 5,  45, 54, 30, 6,  46, 53, 29, 7,  47, 52, 28,
+         16, 56, 35, 11, 17, 57, 34, 10, 18, 58, 33, 9,  19, 59, 32, 8,
+         20, 60, 39, 15, 21, 61, 38, 14, 22, 62, 37, 13, 23, 63, 36, 12}));
+    S.add_generator(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
     S.run();
 
     detail::Array2<bool, 64> orbits_lookup_test;
@@ -3247,21 +3251,21 @@ namespace libsemigroups {
     T.add_base_point(0);
     T.add_base_point(1);
     T.add_base_point(4);
-    T.add_generator(
-        Perm({0,  30, 5,  27, 41, 55, 44, 50, 2,  28, 7,  25, 43, 53, 46, 48,
-              4,  26, 1,  31, 45, 51, 40, 54, 6,  24, 3,  29, 47, 49, 42, 52,
-              16, 14, 21, 11, 57, 39, 60, 34, 18, 12, 23, 9,  59, 37, 62, 32,
-              20, 10, 17, 15, 61, 35, 56, 38, 22, 8,  19, 13, 63, 33, 58, 36}));
-    T.add_generator(
-        Perm({0,  10, 47, 37, 55, 61, 24, 18, 1,  11, 46, 36, 54, 60, 25, 19,
-              32, 42, 15, 5,  23, 29, 56, 50, 33, 43, 14, 4,  22, 28, 57, 51,
-              8,  2,  39, 45, 63, 53, 16, 26, 9,  3,  38, 44, 62, 52, 17, 27,
-              40, 34, 7,  13, 31, 21, 48, 58, 41, 35, 6,  12, 30, 20, 49, 59}));
-    T.add_generator(
-        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
-              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
-              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
-              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    T.add_generator(make<Perm>(
+        {0,  30, 5,  27, 41, 55, 44, 50, 2,  28, 7,  25, 43, 53, 46, 48,
+         4,  26, 1,  31, 45, 51, 40, 54, 6,  24, 3,  29, 47, 49, 42, 52,
+         16, 14, 21, 11, 57, 39, 60, 34, 18, 12, 23, 9,  59, 37, 62, 32,
+         20, 10, 17, 15, 61, 35, 56, 38, 22, 8,  19, 13, 63, 33, 58, 36}));
+    T.add_generator(make<Perm>(
+        {0,  10, 47, 37, 55, 61, 24, 18, 1,  11, 46, 36, 54, 60, 25, 19,
+         32, 42, 15, 5,  23, 29, 56, 50, 33, 43, 14, 4,  22, 28, 57, 51,
+         8,  2,  39, 45, 63, 53, 16, 26, 9,  3,  38, 44, 62, 52, 17, 27,
+         40, 34, 7,  13, 31, 21, 48, 58, 41, 35, 6,  12, 30, 20, 49, 59}));
+    T.add_generator(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
     T.run();
 
     orbits_lookup_test[2]
@@ -3300,21 +3304,21 @@ namespace libsemigroups {
     S.add_base_point(0);
     S.add_base_point(1);
     S.add_base_point(2);
-    S.add_generator(
-        Perm({0,  2,  59, 57, 16, 18, 43, 41, 36, 38, 31, 29, 52, 54, 15, 13,
-              8,  10, 51, 49, 24, 26, 35, 33, 44, 46, 23, 21, 60, 62, 7,  5,
-              32, 34, 27, 25, 48, 50, 11, 9,  4,  6,  63, 61, 20, 22, 47, 45,
-              40, 42, 19, 17, 56, 58, 3,  1,  12, 14, 55, 53, 28, 30, 39, 37}));
-    S.add_generator(
-        Perm({0,  40, 51, 27, 1,  41, 50, 26, 2,  42, 49, 25, 3,  43, 48, 24,
-              4,  44, 55, 31, 5,  45, 54, 30, 6,  46, 53, 29, 7,  47, 52, 28,
-              16, 56, 35, 11, 17, 57, 34, 10, 18, 58, 33, 9,  19, 59, 32, 8,
-              20, 60, 39, 15, 21, 61, 38, 14, 22, 62, 37, 13, 23, 63, 36, 12}));
-    S.add_generator(
-        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
-              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
-              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
-              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    S.add_generator(make<Perm>(
+        {0,  2,  59, 57, 16, 18, 43, 41, 36, 38, 31, 29, 52, 54, 15, 13,
+         8,  10, 51, 49, 24, 26, 35, 33, 44, 46, 23, 21, 60, 62, 7,  5,
+         32, 34, 27, 25, 48, 50, 11, 9,  4,  6,  63, 61, 20, 22, 47, 45,
+         40, 42, 19, 17, 56, 58, 3,  1,  12, 14, 55, 53, 28, 30, 39, 37}));
+    S.add_generator(make<Perm>(
+        {0,  40, 51, 27, 1,  41, 50, 26, 2,  42, 49, 25, 3,  43, 48, 24,
+         4,  44, 55, 31, 5,  45, 54, 30, 6,  46, 53, 29, 7,  47, 52, 28,
+         16, 56, 35, 11, 17, 57, 34, 10, 18, 58, 33, 9,  19, 59, 32, 8,
+         20, 60, 39, 15, 21, 61, 38, 14, 22, 62, 37, 13, 23, 63, 36, 12}));
+    S.add_generator(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
     S.run();
 
     REQUIRE_THROWS_AS(S.transversal_element(3, 0), LibsemigroupsException);
@@ -3352,11 +3356,11 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<1> S, T, U;
     using Perm = decltype(S)::element_type;
-    S.add_generator(Perm({0}));
-    T.add_generator(Perm({0}));
+    S.add_generator(make<Perm>({0}));
+    T.add_generator(make<Perm>({0}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 1);
-    REQUIRE(U.contains(Perm({0})));
+    REQUIRE(U.contains(make<Perm>({0})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3366,13 +3370,13 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<2> S, T, U;
     using Perm = SchreierSims<2>::element_type;
-    S.add_generator(Perm({0, 1}));
-    T.add_generator(Perm({1, 0}));
+    S.add_generator(make<Perm>({0, 1}));
+    T.add_generator(make<Perm>({1, 0}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 1);
-    REQUIRE(U.sift(Perm({1, 0})) == Perm({1, 0}));
-    REQUIRE(!U.contains(Perm({1, 0})));
-    REQUIRE(U.contains(Perm({0, 1})));
+    REQUIRE(U.sift(make<Perm>({1, 0})) == make<Perm>({1, 0}));
+    REQUIRE(!U.contains(make<Perm>({1, 0})));
+    REQUIRE(U.contains(make<Perm>({0, 1})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3385,13 +3389,14 @@ namespace libsemigroups {
     // Adapted from:
     // https://math.stackexchange.com/q/4093199/152276
     // (0, 1, 2, 3, 4)(5, 9)(6, 10)(7, 11)(8, 12)
-    S.add_generator(Perm({1, 2, 3, 4, 0, 9, 10, 11, 12, 5, 6, 7, 8}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 0, 9, 10, 11, 12, 5, 6, 7, 8}));
     // (1, 4)(2, 3)(5, 6, 7, 8, 9, 10, 11, 12)
-    T.add_generator(Perm({0, 4, 3, 2, 1, 6, 7, 8, 9, 10, 11, 12, 5}));
+    T.add_generator(make<Perm>({0, 4, 3, 2, 1, 6, 7, 8, 9, 10, 11, 12, 5}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 2);
-    REQUIRE(!U.contains(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})));
-    REQUIRE(U.contains(Perm({0, 1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8})));
+    REQUIRE(
+        !U.contains(make<Perm>({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})));
+    REQUIRE(U.contains(make<Perm>({0, 1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3402,15 +3407,15 @@ namespace libsemigroups {
     SchreierSims<12> S, T, U;
     using Perm = SchreierSims<12>::element_type;
     // (0, 2, 4, 6, 8)(1, 3, 5, 7, 9)(10, 11)
-    S.add_generator(Perm({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 11, 10}));
+    S.add_generator(make<Perm>({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 11, 10}));
     // (0, 2, 4, 6, 8)(1, 3, 5, 7, 9)
     // (0, 1)(2, 9)(3, 8)(4, 7)(5, 6)
-    T.add_generator(Perm({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 10, 11}));
-    T.add_generator(Perm({1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 10, 11}));
+    T.add_generator(make<Perm>({2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 10, 11}));
+    T.add_generator(make<Perm>({1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 10, 11}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 5);
     // (0, 6, 2, 8, 4)(1, 7, 3, 9, 5)
-    REQUIRE(U.contains(Perm({6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 10, 11})));
+    REQUIRE(U.contains(make<Perm>({6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 10, 11})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3420,15 +3425,15 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<8> S, T, U;
     using Perm = SchreierSims<8>::element_type;
-    S.add_generator(Perm({1, 3, 7, 5, 2, 0, 4, 6}));
-    S.add_generator(Perm({2, 4, 3, 6, 5, 7, 0, 1}));
-    S.add_generator(Perm({3, 5, 6, 0, 7, 1, 2, 4}));
-    T.add_generator(Perm({1, 0, 7, 5, 6, 3, 4, 2}));
-    T.add_generator(Perm({2, 4, 3, 6, 5, 7, 0, 1}));
-    T.add_generator(Perm({3, 5, 6, 0, 7, 1, 2, 4}));
+    S.add_generator(make<Perm>({1, 3, 7, 5, 2, 0, 4, 6}));
+    S.add_generator(make<Perm>({2, 4, 3, 6, 5, 7, 0, 1}));
+    S.add_generator(make<Perm>({3, 5, 6, 0, 7, 1, 2, 4}));
+    T.add_generator(make<Perm>({1, 0, 7, 5, 6, 3, 4, 2}));
+    T.add_generator(make<Perm>({2, 4, 3, 6, 5, 7, 0, 1}));
+    T.add_generator(make<Perm>({3, 5, 6, 0, 7, 1, 2, 4}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 4);
-    REQUIRE(U.contains(Perm({2, 4, 3, 6, 5, 7, 0, 1})));
+    REQUIRE(U.contains(make<Perm>({2, 4, 3, 6, 5, 7, 0, 1})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3438,14 +3443,14 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<8> S, T, U;
     using Perm = SchreierSims<8>::element_type;
-    S.add_generator(Perm({0, 2, 3, 4, 1, 5, 6, 7}));
-    S.add_generator(Perm({1, 2, 4, 0, 3, 5, 6, 7}));
-    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 0, 7}));
-    T.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5}));
+    S.add_generator(make<Perm>({0, 2, 3, 4, 1, 5, 6, 7}));
+    S.add_generator(make<Perm>({1, 2, 4, 0, 3, 5, 6, 7}));
+    T.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 0, 7}));
+    T.add_generator(make<Perm>({0, 1, 2, 3, 4, 6, 7, 5}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 10);
-    REQUIRE(U.contains(Perm({0, 3, 4, 1, 2, 5, 6, 7})));
-    REQUIRE(U.contains(Perm({1, 2, 4, 0, 3, 5, 6, 7})));
+    REQUIRE(U.contains(make<Perm>({0, 3, 4, 1, 2, 5, 6, 7})));
+    REQUIRE(U.contains(make<Perm>({1, 2, 4, 0, 3, 5, 6, 7})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3455,14 +3460,14 @@ namespace libsemigroups {
     auto            rg = ReportGuard(false);
     SchreierSims<8> S, T, U;
     using Perm = SchreierSims<8>::element_type;
-    S.add_generator(Perm({0, 2, 3, 4, 1, 5, 6, 7}));
-    S.add_generator(Perm({1, 2, 4, 0, 3, 5, 6, 7}));
-    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 0, 7}));
-    T.add_generator(Perm({0, 1, 2, 3, 4, 6, 7, 5}));
+    S.add_generator(make<Perm>({0, 2, 3, 4, 1, 5, 6, 7}));
+    S.add_generator(make<Perm>({1, 2, 4, 0, 3, 5, 6, 7}));
+    T.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 0, 7}));
+    T.add_generator(make<Perm>({0, 1, 2, 3, 4, 6, 7, 5}));
     schreier_sims::intersection(U, T, S);
     REQUIRE(U.size() == 10);
-    REQUIRE(U.contains(Perm({0, 3, 4, 1, 2, 5, 6, 7})));
-    REQUIRE(U.contains(Perm({1, 2, 4, 0, 3, 5, 6, 7})));
+    REQUIRE(U.contains(make<Perm>({0, 3, 4, 1, 2, 5, 6, 7})));
+    REQUIRE(U.contains(make<Perm>({1, 2, 4, 0, 3, 5, 6, 7})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3472,16 +3477,16 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<13> S, T, U;
     using Perm = SchreierSims<13>::element_type;
-    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
-    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 10}));
-    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
-    T.add_generator(Perm({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
-    T.add_generator(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 10}));
+    T.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
+    T.add_generator(make<Perm>({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
+    T.add_generator(make<Perm>({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 660);
-    REQUIRE(U.contains(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
-    REQUIRE(U.contains(Perm({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
-    REQUIRE(U.contains(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
+    REQUIRE(U.contains(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
+    REQUIRE(U.contains(make<Perm>({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
+    REQUIRE(U.contains(make<Perm>({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3491,16 +3496,16 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<13> S, T, U;
     using Perm = SchreierSims<13>::element_type;
-    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
-    S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 10}));
-    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
-    T.add_generator(Perm({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
-    T.add_generator(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
+    S.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0}));
+    S.add_generator(make<Perm>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 10}));
+    T.add_generator(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12}));
+    T.add_generator(make<Perm>({0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11, 12}));
+    T.add_generator(make<Perm>({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12}));
     schreier_sims::intersection(U, T, S);
     REQUIRE(U.size() == 660);
-    REQUIRE(U.contains(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
-    REQUIRE(U.contains(Perm({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
-    REQUIRE(U.contains(Perm({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
+    REQUIRE(U.contains(make<Perm>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11, 12})));
+    REQUIRE(U.contains(make<Perm>({0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12})));
+    REQUIRE(U.contains(make<Perm>({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -3511,32 +3516,32 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
-    S.add_generator(Perm({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
-                          14, 15, 16, 0,  17, 18, 19, 20, 21, 22, 23, 24, 25,
-                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                          39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
-    S.add_generator(Perm({1,  0,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                          39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
-    T.add_generator(Perm({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
-                          14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-                          27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 0,
-                          39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
-    T.add_generator(Perm({0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 36,
-                          39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
+    S.add_generator(make<Perm>(
+        {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 0,
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+         34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
+    S.add_generator(make<Perm>(
+        {1,  0,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+         34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
+    T.add_generator(make<Perm>(
+        {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17,
+         18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+         35, 36, 37, 38, 0,  39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
+    T.add_generator(make<Perm>(
+        {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+         34, 35, 37, 38, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}));
     schreier_sims::intersection(U, S, T);
-    REQUIRE(U.size() == 177843714048000);
-    REQUIRE(U.contains(Perm({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
-                             14, 15, 16, 0,  17, 18, 19, 20, 21, 22, 23, 24, 25,
-                             26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                             39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49})));
-    REQUIRE(U.contains(Perm({0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                             13, 15, 16, 14, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                             26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                             39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49})));
+    REQUIRE(U.size() == 177'843'714'048'000);
+    REQUIRE(U.contains(make<Perm>(
+        {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 0,
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+         34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49})));
+    REQUIRE(U.contains(make<Perm>(
+        {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 15, 16, 14,
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+         34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49})));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -3547,48 +3552,48 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
-    S.add_generator(Perm({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
-                          14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-                          27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-                          40, 41, 42, 43, 44, 45, 46, 47, 48, 0,  49}));
-    S.add_generator(Perm({0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                          13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                          26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-                          39, 40, 41, 42, 43, 44, 45, 46, 48, 49, 47}));
-    T.add_generator(Perm({1,  2,  3,  4,  5,  6,  0,  8,  9,  10, 11, 12, 13,
-                          7,  15, 16, 17, 18, 19, 20, 14, 22, 23, 24, 25, 26,
-                          27, 21, 29, 30, 31, 32, 33, 34, 28, 36, 37, 38, 39,
-                          40, 41, 35, 43, 44, 45, 46, 47, 48, 42, 49}));
-    T.add_generator(Perm({0,  2,  4,  6,  1,  3,  5,  14, 16, 18, 20, 15, 17,
-                          19, 28, 30, 32, 34, 29, 31, 33, 42, 44, 46, 48, 43,
-                          45, 47, 7,  9,  11, 13, 8,  10, 12, 21, 23, 25, 27,
-                          22, 24, 26, 35, 37, 39, 41, 36, 38, 40, 49}));
-    T.add_generator(Perm({0,  17, 34, 44, 12, 22, 39, 26, 36, 4,  14, 31, 48,
-                          9,  45, 13, 23, 40, 1,  18, 28, 15, 32, 42, 10, 27,
-                          37, 5,  41, 2,  19, 29, 46, 7,  24, 11, 21, 38, 6,
-                          16, 33, 43, 30, 47, 8,  25, 35, 3,  20, 49}));
-    T.add_generator(Perm({49, 6,  3,  2,  5,  4,  1,  7,  31, 22, 41, 36, 27,
-                          32, 28, 46, 19, 38, 39, 16, 45, 35, 9,  30, 43, 48,
-                          33, 12, 14, 44, 23, 8,  13, 26, 47, 21, 11, 40, 17,
-                          18, 37, 10, 42, 24, 29, 20, 15, 34, 25, 0}));
+    S.add_generator(make<Perm>(
+        {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17,
+         18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+         35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 0,  49}));
+    S.add_generator(make<Perm>(
+        {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+         34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 49, 47}));
+    T.add_generator(make<Perm>(
+        {1,  2,  3,  4,  5,  6,  0,  8,  9,  10, 11, 12, 13, 7,  15, 16, 17,
+         18, 19, 20, 14, 22, 23, 24, 25, 26, 27, 21, 29, 30, 31, 32, 33, 34,
+         28, 36, 37, 38, 39, 40, 41, 35, 43, 44, 45, 46, 47, 48, 42, 49}));
+    T.add_generator(make<Perm>(
+        {0,  2,  4,  6,  1,  3,  5,  14, 16, 18, 20, 15, 17, 19, 28, 30, 32,
+         34, 29, 31, 33, 42, 44, 46, 48, 43, 45, 47, 7,  9,  11, 13, 8,  10,
+         12, 21, 23, 25, 27, 22, 24, 26, 35, 37, 39, 41, 36, 38, 40, 49}));
+    T.add_generator(make<Perm>(
+        {0,  17, 34, 44, 12, 22, 39, 26, 36, 4,  14, 31, 48, 9,  45, 13, 23,
+         40, 1,  18, 28, 15, 32, 42, 10, 27, 37, 5,  41, 2,  19, 29, 46, 7,
+         24, 11, 21, 38, 6,  16, 33, 43, 30, 47, 8,  25, 35, 3,  20, 49}));
+    T.add_generator(make<Perm>(
+        {49, 6,  3,  2,  5,  4,  1,  7,  31, 22, 41, 36, 27, 32, 28, 46, 19,
+         38, 39, 16, 45, 35, 9,  30, 43, 48, 33, 12, 14, 44, 23, 8,  13, 26,
+         47, 21, 11, 40, 17, 18, 37, 10, 42, 24, 29, 20, 15, 34, 25, 0}));
     schreier_sims::intersection(U, S, T);
-    REQUIRE(U.size() == 58800);
-    REQUIRE(U.contains(Perm({1,  2,  3,  4,  5,  6,  0,  8,  9,  10, 11, 12, 13,
-                             7,  15, 16, 17, 18, 19, 20, 14, 22, 23, 24, 25, 26,
-                             27, 21, 29, 30, 31, 32, 33, 34, 28, 36, 37, 38, 39,
-                             40, 41, 35, 43, 44, 45, 46, 47, 48, 42, 49})));
-    REQUIRE(U.contains(Perm({0,  2,  4,  6,  1,  3,  5,  14, 16, 18, 20, 15, 17,
-                             19, 28, 30, 32, 34, 29, 31, 33, 42, 44, 46, 48, 43,
-                             45, 47, 7,  9,  11, 13, 8,  10, 12, 21, 23, 25, 27,
-                             22, 24, 26, 35, 37, 39, 41, 36, 38, 40, 49})));
-    REQUIRE(U.contains(Perm({0,  40, 24, 8,  48, 32, 16, 37, 21, 12, 45, 29, 20,
-                             4,  25, 9,  42, 33, 17, 1,  41, 13, 46, 30, 14, 5,
-                             38, 22, 43, 34, 18, 2,  35, 26, 10, 31, 15, 6,  39,
-                             23, 7,  47, 19, 3,  36, 27, 11, 44, 28, 49})));
-    REQUIRE(U.contains(Perm({49, 6,  3,  2,  5,  4,  1,  7,  31, 22, 41, 36, 27,
-                             32, 28, 46, 19, 38, 39, 16, 45, 35, 9,  30, 43, 48,
-                             33, 12, 14, 44, 23, 8,  13, 26, 47, 21, 11, 40, 17,
-                             18, 37, 10, 42, 24, 29, 20, 15, 34, 25, 0})));
+    REQUIRE(U.size() == 58'800);
+    REQUIRE(U.contains(make<Perm>(
+        {1,  2,  3,  4,  5,  6,  0,  8,  9,  10, 11, 12, 13, 7,  15, 16, 17,
+         18, 19, 20, 14, 22, 23, 24, 25, 26, 27, 21, 29, 30, 31, 32, 33, 34,
+         28, 36, 37, 38, 39, 40, 41, 35, 43, 44, 45, 46, 47, 48, 42, 49})));
+    REQUIRE(U.contains(make<Perm>(
+        {0,  2,  4,  6,  1,  3,  5,  14, 16, 18, 20, 15, 17, 19, 28, 30, 32,
+         34, 29, 31, 33, 42, 44, 46, 48, 43, 45, 47, 7,  9,  11, 13, 8,  10,
+         12, 21, 23, 25, 27, 22, 24, 26, 35, 37, 39, 41, 36, 38, 40, 49})));
+    REQUIRE(U.contains(make<Perm>(
+        {0,  40, 24, 8,  48, 32, 16, 37, 21, 12, 45, 29, 20, 4,  25, 9,  42,
+         33, 17, 1,  41, 13, 46, 30, 14, 5,  38, 22, 43, 34, 18, 2,  35, 26,
+         10, 31, 15, 6,  39, 23, 7,  47, 19, 3,  36, 27, 11, 44, 28, 49})));
+    REQUIRE(U.contains(make<Perm>(
+        {49, 6,  3,  2,  5,  4,  1,  7,  31, 22, 41, 36, 27, 32, 28, 46, 19,
+         38, 39, 16, 45, 35, 9,  30, 43, 48, 33, 12, 14, 44, 23, 8,  13, 26,
+         47, 21, 11, 40, 17, 18, 37, 10, 42, 24, 29, 20, 15, 34, 25, 0})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3598,33 +3603,35 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<27> S, T, U;
     using Perm = SchreierSims<27>::element_type;
-    S.add_generator(Perm({0,  17, 22, 1,  15, 23, 2,  16, 21, 3,  11, 25, 4, 9,
-                          26, 5,  10, 24, 6,  14, 19, 7,  12, 20, 8,  13, 18}));
     S.add_generator(
-        Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
-              12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
-    T.add_generator(Perm({0,  9, 18, 1,  10, 19, 2,  11, 20, 3,  12, 21, 4, 13,
-                          22, 5, 14, 23, 6,  15, 24, 7,  16, 25, 8,  17, 26}));
+        make<Perm>({0,  17, 22, 1,  15, 23, 2,  16, 21, 3,  11, 25, 4, 9,
+                    26, 5,  10, 24, 6,  14, 19, 7,  12, 20, 8,  13, 18}));
+    S.add_generator(
+        make<Perm>({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
+                    12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
     T.add_generator(
-        Perm({0,  2,  1,  6,  8,  7,  3,  5,  4,  9,  11, 10, 15, 17,
-              16, 12, 14, 13, 18, 20, 19, 24, 26, 25, 21, 23, 22}));
+        make<Perm>({0,  9, 18, 1,  10, 19, 2,  11, 20, 3,  12, 21, 4, 13,
+                    22, 5, 14, 23, 6,  15, 24, 7,  16, 25, 8,  17, 26}));
     T.add_generator(
-        Perm({0,  1,  2,  6,  7,  8,  3,  4,  5,  9,  10, 11, 15, 16,
-              17, 12, 13, 14, 18, 19, 20, 24, 25, 26, 21, 22, 23}));
+        make<Perm>({0,  2,  1,  6,  8,  7,  3,  5,  4,  9,  11, 10, 15, 17,
+                    16, 12, 14, 13, 18, 20, 19, 24, 26, 25, 21, 23, 22}));
     T.add_generator(
-        Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
-              12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
+        make<Perm>({0,  1,  2,  6,  7,  8,  3,  4,  5,  9,  10, 11, 15, 16,
+                    17, 12, 13, 14, 18, 19, 20, 24, 25, 26, 21, 22, 23}));
+    T.add_generator(
+        make<Perm>({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
+                    12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 27);
-    REQUIRE(
-        U.contains(Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
-                         12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24})));
-    REQUIRE(
-        U.contains(Perm({3,  4, 5,  6,  7,  8,  0,  1,  2,  12, 13, 14, 15, 16,
-                         17, 9, 10, 11, 21, 22, 23, 24, 25, 26, 18, 19, 20})));
-    REQUIRE(
-        U.contains(Perm({9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-                         23, 24, 25, 26, 0,  1,  2,  3,  4,  5,  6,  7,  8})));
+    REQUIRE(U.contains(
+        make<Perm>({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
+                    12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24})));
+    REQUIRE(U.contains(
+        make<Perm>({3,  4, 5,  6,  7,  8,  0,  1,  2,  12, 13, 14, 15, 16,
+                    17, 9, 10, 11, 21, 22, 23, 24, 25, 26, 18, 19, 20})));
+    REQUIRE(U.contains(
+        make<Perm>({9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+                    23, 24, 25, 26, 0,  1,  2,  3,  4,  5,  6,  7,  8})));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -3635,35 +3642,35 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {13, 17, 16, 19, 18, 12, 14, 10, 15, 11, 83, 87, 86, 89, 88, 82, 84,
          80, 85, 81, 63, 67, 66, 69, 68, 62, 64, 60, 65, 61, 53, 57, 56, 59,
          58, 52, 54, 50, 55, 51, 33, 37, 36, 39, 38, 32, 34, 30, 35, 31, 3,
          7,  6,  9,  8,  2,  4,  0,  5,  1,  43, 47, 46, 49, 48, 42, 44, 40,
          45, 41, 93, 97, 96, 99, 98, 92, 94, 90, 95, 91, 23, 27, 26, 29, 28,
          22, 24, 20, 25, 21, 73, 77, 76, 79, 78, 72, 74, 70, 75, 71}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {65, 25, 5,  55, 35, 95, 15, 85, 75, 45, 63, 23, 3,  53, 33, 93, 13,
          83, 73, 43, 64, 24, 4,  54, 34, 94, 14, 84, 74, 44, 68, 28, 8,  58,
          38, 98, 18, 88, 78, 48, 61, 21, 1,  51, 31, 91, 11, 81, 71, 41, 60,
          20, 0,  50, 30, 90, 10, 80, 70, 40, 69, 29, 9,  59, 39, 99, 19, 89,
          79, 49, 62, 22, 2,  52, 32, 92, 12, 82, 72, 42, 66, 26, 6,  56, 36,
          96, 16, 86, 76, 46, 67, 27, 7,  57, 37, 97, 17, 87, 77, 47}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {18, 68, 58, 98, 38, 28, 78, 88, 48, 8,  19, 69, 59, 99, 39, 29, 79,
          89, 49, 9,  16, 66, 56, 96, 36, 26, 76, 86, 46, 6,  17, 67, 57, 97,
          37, 27, 77, 87, 47, 7,  13, 63, 53, 93, 33, 23, 73, 83, 43, 3,  11,
          61, 51, 91, 31, 21, 71, 81, 41, 1,  15, 65, 55, 95, 35, 25, 75, 85,
          45, 5,  10, 60, 50, 90, 30, 20, 70, 80, 40, 0,  14, 64, 54, 94, 34,
          24, 74, 84, 44, 4,  12, 62, 52, 92, 32, 22, 72, 82, 42, 2}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {78, 76, 77, 79, 75, 74, 71, 72, 70, 73, 38, 36, 37, 39, 35, 34, 31,
          32, 30, 33, 28, 26, 27, 29, 25, 24, 21, 22, 20, 23, 88, 86, 87, 89,
          85, 84, 81, 82, 80, 83, 8,  6,  7,  9,  5,  4,  1,  2,  0,  3,  48,
          46, 47, 49, 45, 44, 41, 42, 40, 43, 68, 66, 67, 69, 65, 64, 61, 62,
          60, 63, 58, 56, 57, 59, 55, 54, 51, 52, 50, 53, 98, 96, 97, 99, 95,
          94, 91, 92, 90, 93, 18, 16, 17, 19, 15, 14, 11, 12, 10, 13}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {24, 74, 44, 64, 94, 4,  84, 34, 14, 54, 23, 73, 43, 63, 93, 3,  83,
          33, 13, 53, 28, 78, 48, 68, 98, 8,  88, 38, 18, 58, 29, 79, 49, 69,
          99, 9,  89, 39, 19, 59, 25, 75, 45, 65, 95, 5,  85, 35, 15, 55, 22,
@@ -3672,7 +3679,7 @@ namespace libsemigroups {
          6,  86, 36, 16, 56, 21, 71, 41, 61, 91, 1,  81, 31, 11, 51}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 2);
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {11, 1,  91, 81, 71, 61, 51, 41, 31, 21, 10, 0,  90, 80, 70, 60, 50,
          40, 30, 20, 19, 9,  99, 89, 79, 69, 59, 49, 39, 29, 18, 8,  98, 88,
          78, 68, 58, 48, 38, 28, 17, 7,  97, 87, 77, 67, 57, 47, 37, 27, 16,
@@ -3689,28 +3696,28 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {68, 62, 69, 67, 66, 64, 61, 65, 60, 63, 98, 92, 99, 97, 96, 94, 91,
          95, 90, 93, 38, 32, 39, 37, 36, 34, 31, 35, 30, 33, 78, 72, 79, 77,
          76, 74, 71, 75, 70, 73, 8,  2,  9,  7,  6,  4,  1,  5,  0,  3,  28,
          22, 29, 27, 26, 24, 21, 25, 20, 23, 18, 12, 19, 17, 16, 14, 11, 15,
          10, 13, 88, 82, 89, 87, 86, 84, 81, 85, 80, 83, 58, 52, 59, 57, 56,
          54, 51, 55, 50, 53, 48, 42, 49, 47, 46, 44, 41, 45, 40, 43}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {72, 92, 12, 82, 32, 62, 42, 22, 52, 2,  70, 90, 10, 80, 30, 60, 40,
          20, 50, 0,  75, 95, 15, 85, 35, 65, 45, 25, 55, 5,  76, 96, 16, 86,
          36, 66, 46, 26, 56, 6,  71, 91, 11, 81, 31, 61, 41, 21, 51, 1,  79,
          99, 19, 89, 39, 69, 49, 29, 59, 9,  78, 98, 18, 88, 38, 68, 48, 28,
          58, 8,  74, 94, 14, 84, 34, 64, 44, 24, 54, 4,  77, 97, 17, 87, 37,
          67, 47, 27, 57, 7,  73, 93, 13, 83, 33, 63, 43, 23, 53, 3}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {20, 26, 23, 28, 24, 29, 25, 22, 27, 21, 40, 46, 43, 48, 44, 49, 45,
          42, 47, 41, 60, 66, 63, 68, 64, 69, 65, 62, 67, 61, 70, 76, 73, 78,
          74, 79, 75, 72, 77, 71, 50, 56, 53, 58, 54, 59, 55, 52, 57, 51, 30,
          36, 33, 38, 34, 39, 35, 32, 37, 31, 90, 96, 93, 98, 94, 99, 95, 92,
          97, 91, 10, 16, 13, 18, 14, 19, 15, 12, 17, 11, 0,  6,  3,  8,  4,
          9,  5,  2,  7,  1,  80, 86, 83, 88, 84, 89, 85, 82, 87, 81}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {21, 11, 71, 51, 41, 91, 1,  31, 61, 81, 24, 14, 74, 54, 44, 94, 4,
          34, 64, 84, 27, 17, 77, 57, 47, 97, 7,  37, 67, 87, 28, 18, 78, 58,
          48, 98, 8,  38, 68, 88, 25, 15, 75, 55, 45, 95, 5,  35, 65, 85, 20,
@@ -3719,7 +3726,7 @@ namespace libsemigroups {
          92, 2,  32, 62, 82, 29, 19, 79, 59, 49, 99, 9,  39, 69, 89}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 4);
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {1,  11, 21, 31, 41, 51, 61, 71, 81, 91, 0,  10, 20, 30, 40, 50, 60,
          70, 80, 90, 9,  19, 29, 39, 49, 59, 69, 79, 89, 99, 8,  18, 28, 38,
          48, 58, 68, 78, 88, 98, 7,  17, 27, 37, 47, 57, 67, 77, 87, 97, 6,
@@ -3735,33 +3742,38 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<27> S, T, U;
     using Perm = SchreierSims<27>::element_type;
-    S.add_generator(Perm({0, 6,  3,  25, 22, 19, 14, 11, 17, 9,  15, 12, 7, 4,
-                          1, 23, 20, 26, 18, 24, 21, 16, 13, 10, 5,  2,  8}));
-    S.add_generator(Perm({0, 18, 9, 25, 16, 7,  14, 5,  23, 3, 21, 12, 19, 10,
-                          1, 17, 8, 26, 6,  24, 15, 22, 13, 4, 11, 2,  20}));
-    S.add_generator(Perm({0, 9,  18, 14, 23, 5,  25, 7,  16, 1, 10, 19, 12, 21,
-                          3, 26, 8,  17, 2,  11, 20, 13, 22, 4, 24, 6,  15}));
     S.add_generator(
-        Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
-              12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
-    T.add_generator(Perm({0,  26, 13, 1,  24, 14, 2, 25, 12, 9, 8,  22, 10, 6,
-                          23, 11, 7,  21, 18, 17, 4, 19, 15, 5, 20, 16, 3}));
-    T.add_generator(Perm({0,  17, 22, 1,  15, 23, 2,  16, 21, 3,  11, 25, 4, 9,
-                          26, 5,  10, 24, 6,  14, 19, 7,  12, 20, 8,  13, 18}));
+        make<Perm>({0, 6,  3,  25, 22, 19, 14, 11, 17, 9,  15, 12, 7, 4,
+                    1, 23, 20, 26, 18, 24, 21, 16, 13, 10, 5,  2,  8}));
+    S.add_generator(
+        make<Perm>({0, 18, 9, 25, 16, 7,  14, 5,  23, 3, 21, 12, 19, 10,
+                    1, 17, 8, 26, 6,  24, 15, 22, 13, 4, 11, 2,  20}));
+    S.add_generator(
+        make<Perm>({0, 9,  18, 14, 23, 5,  25, 7,  16, 1, 10, 19, 12, 21,
+                    3, 26, 8,  17, 2,  11, 20, 13, 22, 4, 24, 6,  15}));
+    S.add_generator(
+        make<Perm>({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
+                    12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
     T.add_generator(
-        Perm({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
-              12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
+        make<Perm>({0,  26, 13, 1,  24, 14, 2, 25, 12, 9, 8,  22, 10, 6,
+                    23, 11, 7,  21, 18, 17, 4, 19, 15, 5, 20, 16, 3}));
+    T.add_generator(
+        make<Perm>({0,  17, 22, 1,  15, 23, 2,  16, 21, 3,  11, 25, 4, 9,
+                    26, 5,  10, 24, 6,  14, 19, 7,  12, 20, 8,  13, 18}));
+    T.add_generator(
+        make<Perm>({1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14,
+                    12, 16, 17, 15, 19, 20, 18, 22, 23, 21, 25, 26, 24}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 648);
-    REQUIRE(
-        U.contains(Perm({0,  9, 18, 6,  15, 24, 3,  12, 21, 1,  10, 19, 7, 16,
-                         25, 4, 13, 22, 2,  11, 20, 8,  17, 26, 5,  14, 23})));
-    REQUIRE(
-        U.contains(Perm({0,  1,  2,  25, 26, 24, 14, 12, 13, 3,  4,  5, 19, 20,
-                         18, 17, 15, 16, 6,  7,  8,  22, 23, 21, 11, 9, 10})));
-    REQUIRE(
-        U.contains(Perm({1,  2,  0,  26, 24, 25, 12, 13, 14, 4,  5, 3,  20, 18,
-                         19, 15, 16, 17, 7,  8,  6,  23, 21, 22, 9, 10, 11})));
+    REQUIRE(U.contains(
+        make<Perm>({0,  9, 18, 6,  15, 24, 3,  12, 21, 1,  10, 19, 7, 16,
+                    25, 4, 13, 22, 2,  11, 20, 8,  17, 26, 5,  14, 23})));
+    REQUIRE(U.contains(
+        make<Perm>({0,  1,  2,  25, 26, 24, 14, 12, 13, 3,  4,  5, 19, 20,
+                    18, 17, 15, 16, 6,  7,  8,  22, 23, 21, 11, 9, 10})));
+    REQUIRE(U.contains(
+        make<Perm>({1,  2,  0,  26, 24, 25, 12, 13, 14, 4,  5, 3,  20, 18,
+                    19, 15, 16, 17, 7,  8,  6,  23, 21, 22, 9, 10, 11})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3771,52 +3783,52 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<49> S, T, U;
     using Perm = SchreierSims<49>::element_type;
-    S.add_generator(Perm({0,  28, 35, 42, 7,  14, 21, 1,  29, 36, 43, 8,  15,
-                          22, 2,  30, 37, 44, 9,  16, 23, 3,  31, 38, 45, 10,
-                          17, 24, 4,  32, 39, 46, 11, 18, 25, 5,  33, 40, 47,
-                          12, 19, 26, 6,  34, 41, 48, 13, 20, 27}));
-    S.add_generator(
-        Perm({0, 44, 10, 18, 26, 34, 36, 41, 22, 42, 5,  31, 16, 11, 43, 19, 30,
-              7, 6,  39, 24, 9,  32, 27, 38, 14, 1,  47, 17, 13, 40, 29, 46, 21,
-              2, 25, 3,  15, 48, 37, 12, 28, 33, 35, 4,  23, 8,  45, 20}));
-    S.add_generator(Perm({0,  3,  4,  5,  6,  1,  2,  21, 24, 25, 26, 27, 22,
-                          23, 28, 31, 32, 33, 34, 29, 30, 35, 38, 39, 40, 41,
-                          36, 37, 42, 45, 46, 47, 48, 43, 44, 7,  10, 11, 12,
-                          13, 8,  9,  14, 17, 18, 19, 20, 15, 16}));
-    S.add_generator(Perm({1,  3,  5,  2,  0,  6,  4,  8,  10, 12, 9,  7,  13,
-                          11, 15, 17, 19, 16, 14, 20, 18, 22, 24, 26, 23, 21,
-                          27, 25, 29, 31, 33, 30, 28, 34, 32, 36, 38, 40, 37,
-                          35, 41, 39, 43, 45, 47, 44, 42, 48, 46}));
-    T.add_generator(Perm({0,  32, 40, 48, 8,  16, 24, 7,  4,  47, 34, 22, 37,
-                          17, 14, 25, 5,  13, 36, 30, 45, 21, 11, 33, 6,  15,
-                          44, 38, 28, 46, 19, 41, 1,  23, 10, 35, 18, 12, 27,
-                          43, 2,  31, 42, 39, 26, 20, 29, 9,  3}));
-    T.add_generator(Perm({0,  32, 40, 48, 8,  16, 24, 1,  28, 41, 46, 10, 19,
-                          23, 2,  31, 35, 43, 12, 18, 27, 3,  29, 39, 42, 9,
-                          20, 26, 4,  34, 37, 47, 7,  17, 22, 5,  30, 36, 45,
-                          13, 14, 25, 6,  33, 38, 44, 11, 15, 21}));
-    T.add_generator(Perm({0,  4,  5,  6,  1,  2,  3,  28, 32, 33, 34, 29, 30,
-                          31, 35, 39, 40, 41, 36, 37, 38, 42, 46, 47, 48, 43,
-                          44, 45, 7,  11, 12, 13, 8,  9,  10, 14, 18, 19, 20,
-                          15, 16, 17, 21, 25, 26, 27, 22, 23, 24}));
-    T.add_generator(Perm({1,  3,  5,  2,  0,  6,  4,  8,  10, 12, 9,  7,  13,
-                          11, 15, 17, 19, 16, 14, 20, 18, 22, 24, 26, 23, 21,
-                          27, 25, 29, 31, 33, 30, 28, 34, 32, 36, 38, 40, 37,
-                          35, 41, 39, 43, 45, 47, 44, 42, 48, 46}));
+    S.add_generator(make<Perm>(
+        {0,  28, 35, 42, 7,  14, 21, 1,  29, 36, 43, 8,  15, 22, 2,  30, 37,
+         44, 9,  16, 23, 3,  31, 38, 45, 10, 17, 24, 4,  32, 39, 46, 11, 18,
+         25, 5,  33, 40, 47, 12, 19, 26, 6,  34, 41, 48, 13, 20, 27}));
+    S.add_generator(make<Perm>(
+        {0, 44, 10, 18, 26, 34, 36, 41, 22, 42, 5,  31, 16, 11, 43, 19, 30,
+         7, 6,  39, 24, 9,  32, 27, 38, 14, 1,  47, 17, 13, 40, 29, 46, 21,
+         2, 25, 3,  15, 48, 37, 12, 28, 33, 35, 4,  23, 8,  45, 20}));
+    S.add_generator(make<Perm>(
+        {0,  3,  4,  5,  6,  1,  2,  21, 24, 25, 26, 27, 22, 23, 28, 31, 32,
+         33, 34, 29, 30, 35, 38, 39, 40, 41, 36, 37, 42, 45, 46, 47, 48, 43,
+         44, 7,  10, 11, 12, 13, 8,  9,  14, 17, 18, 19, 20, 15, 16}));
+    S.add_generator(make<Perm>(
+        {1,  3,  5,  2,  0,  6,  4,  8,  10, 12, 9,  7,  13, 11, 15, 17, 19,
+         16, 14, 20, 18, 22, 24, 26, 23, 21, 27, 25, 29, 31, 33, 30, 28, 34,
+         32, 36, 38, 40, 37, 35, 41, 39, 43, 45, 47, 44, 42, 48, 46}));
+    T.add_generator(make<Perm>(
+        {0,  32, 40, 48, 8,  16, 24, 7,  4,  47, 34, 22, 37, 17, 14, 25, 5,
+         13, 36, 30, 45, 21, 11, 33, 6,  15, 44, 38, 28, 46, 19, 41, 1,  23,
+         10, 35, 18, 12, 27, 43, 2,  31, 42, 39, 26, 20, 29, 9,  3}));
+    T.add_generator(make<Perm>(
+        {0,  32, 40, 48, 8,  16, 24, 1,  28, 41, 46, 10, 19, 23, 2,  31, 35,
+         43, 12, 18, 27, 3,  29, 39, 42, 9,  20, 26, 4,  34, 37, 47, 7,  17,
+         22, 5,  30, 36, 45, 13, 14, 25, 6,  33, 38, 44, 11, 15, 21}));
+    T.add_generator(make<Perm>(
+        {0,  4,  5,  6,  1,  2,  3,  28, 32, 33, 34, 29, 30, 31, 35, 39, 40,
+         41, 36, 37, 38, 42, 46, 47, 48, 43, 44, 45, 7,  11, 12, 13, 8,  9,
+         10, 14, 18, 19, 20, 15, 16, 17, 21, 25, 26, 27, 22, 23, 24}));
+    T.add_generator(make<Perm>(
+        {1,  3,  5,  2,  0,  6,  4,  8,  10, 12, 9,  7,  13, 11, 15, 17, 19,
+         16, 14, 20, 18, 22, 24, 26, 23, 21, 27, 25, 29, 31, 33, 30, 28, 34,
+         32, 36, 38, 40, 37, 35, 41, 39, 43, 45, 47, 44, 42, 48, 46}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 98);
-    REQUIRE(U.contains(Perm({0,  4,  5,  6,  1,  2,  3,  28, 32, 33, 34, 29, 30,
-                             31, 35, 39, 40, 41, 36, 37, 38, 42, 46, 47, 48, 43,
-                             44, 45, 7,  11, 12, 13, 8,  9,  10, 14, 18, 19, 20,
-                             15, 16, 17, 21, 25, 26, 27, 22, 23, 24})));
-    REQUIRE(U.contains(Perm({1,  0,  6,  4,  3,  5,  2,  29, 28, 34, 32, 31, 33,
-                             30, 36, 35, 41, 39, 38, 40, 37, 43, 42, 48, 46, 45,
-                             47, 44, 8,  7,  13, 11, 10, 12, 9,  15, 14, 20, 18,
-                             17, 19, 16, 22, 21, 27, 25, 24, 26, 23})));
-    REQUIRE(U.contains(Perm({7,  11, 12, 13, 8,  9,  10, 0,  4,  5,  6,  1,  2,
-                             3,  42, 46, 47, 48, 43, 44, 45, 28, 32, 33, 34, 29,
-                             30, 31, 21, 25, 26, 27, 22, 23, 24, 35, 39, 40, 41,
-                             36, 37, 38, 14, 18, 19, 20, 15, 16, 17})));
+    REQUIRE(U.contains(make<Perm>(
+        {0,  4,  5,  6,  1,  2,  3,  28, 32, 33, 34, 29, 30, 31, 35, 39, 40,
+         41, 36, 37, 38, 42, 46, 47, 48, 43, 44, 45, 7,  11, 12, 13, 8,  9,
+         10, 14, 18, 19, 20, 15, 16, 17, 21, 25, 26, 27, 22, 23, 24})));
+    REQUIRE(U.contains(make<Perm>(
+        {1,  0,  6,  4,  3,  5,  2,  29, 28, 34, 32, 31, 33, 30, 36, 35, 41,
+         39, 38, 40, 37, 43, 42, 48, 46, 45, 47, 44, 8,  7,  13, 11, 10, 12,
+         9,  15, 14, 20, 18, 17, 19, 16, 22, 21, 27, 25, 24, 26, 23})));
+    REQUIRE(U.contains(make<Perm>(
+        {7,  11, 12, 13, 8,  9,  10, 0,  4,  5,  6,  1,  2,  3,  42, 46, 47,
+         48, 43, 44, 45, 28, 32, 33, 34, 29, 30, 31, 21, 25, 26, 27, 22, 23,
+         24, 35, 39, 40, 41, 36, 37, 38, 14, 18, 19, 20, 15, 16, 17})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -3826,25 +3838,25 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<53> S, T, U;
     using Perm = SchreierSims<53>::element_type;
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {0,  27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
          44, 45, 46, 47, 48, 49, 50, 51, 52, 1,  2,  3,  4,  5,  6,  7,  8,  9,
          10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {1,  2,  18, 48, 35, 11, 24, 20, 40, 30, 37, 36, 10, 5,  34, 4,  13, 47,
          3,  15, 25, 43, 29, 9,  12, 16, 52, 0,  27, 44, 41, 39, 8,  23, 6,  49,
          38, 31, 50, 42, 21, 45, 51, 26, 28, 22, 33, 14, 19, 7,  32, 46, 17}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {0,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
          22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
          40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 1,  2,  3,  4}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {1,  2,  18, 48, 35, 11, 24, 20, 40, 30, 37, 36, 10, 5,  34, 4,  13, 47,
          3,  15, 25, 43, 29, 9,  12, 16, 52, 0,  27, 44, 41, 39, 8,  23, 6,  49,
          38, 31, 50, 42, 21, 45, 51, 26, 28, 22, 33, 14, 19, 7,  32, 46, 17}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 53);
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {1,  2,  18, 48, 35, 11, 24, 20, 40, 30, 37, 36, 10, 5,  34, 4,  13, 47,
          3,  15, 25, 43, 29, 9,  12, 16, 52, 0,  27, 44, 41, 39, 8,  23, 6,  49,
          38, 31, 50, 42, 21, 45, 51, 26, 28, 22, 33, 14, 19, 7,  32, 46, 17})));
@@ -3857,52 +3869,52 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<64> S, T, U;
     using Perm = SchreierSims<64>::element_type;
-    S.add_generator(
-        Perm({0,  32, 5,  37, 2,  34, 7,  39, 20, 52, 17, 49, 22, 54, 19, 51,
-              8,  40, 13, 45, 10, 42, 15, 47, 28, 60, 25, 57, 30, 62, 27, 59,
-              16, 48, 21, 53, 18, 50, 23, 55, 4,  36, 1,  33, 6,  38, 3,  35,
-              24, 56, 29, 61, 26, 58, 31, 63, 12, 44, 9,  41, 14, 46, 11, 43}));
-    S.add_generator(
-        Perm({0,  17, 2,  19, 1,  16, 3,  18, 8,  25, 10, 27, 9,  24, 11, 26,
-              4,  21, 6,  23, 5,  20, 7,  22, 12, 29, 14, 31, 13, 28, 15, 30,
-              32, 49, 34, 51, 33, 48, 35, 50, 40, 57, 42, 59, 41, 56, 43, 58,
-              36, 53, 38, 55, 37, 52, 39, 54, 44, 61, 46, 63, 45, 60, 47, 62}));
-    S.add_generator(
-        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
-              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
-              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
-              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
-    T.add_generator(
-        Perm({10, 34, 58, 42, 50, 2, 18, 26, 9,  33, 57, 41, 49, 1, 17, 25,
-              15, 39, 63, 47, 55, 7, 23, 31, 13, 37, 61, 45, 53, 5, 21, 29,
-              12, 36, 60, 44, 52, 4, 20, 28, 14, 38, 62, 46, 54, 6, 22, 30,
-              11, 35, 59, 43, 51, 3, 19, 27, 8,  32, 56, 40, 48, 0, 16, 24}));
-    T.add_generator(
-        Perm({39, 23, 63, 55, 31, 15, 47, 7, 37, 21, 61, 53, 29, 13, 45, 5,
-              32, 16, 56, 48, 24, 8,  40, 0, 35, 19, 59, 51, 27, 11, 43, 3,
-              33, 17, 57, 49, 25, 9,  41, 1, 34, 18, 58, 50, 26, 10, 42, 2,
-              36, 20, 60, 52, 28, 12, 44, 4, 38, 22, 62, 54, 30, 14, 46, 6}));
+    S.add_generator(make<Perm>(
+        {0,  32, 5,  37, 2,  34, 7,  39, 20, 52, 17, 49, 22, 54, 19, 51,
+         8,  40, 13, 45, 10, 42, 15, 47, 28, 60, 25, 57, 30, 62, 27, 59,
+         16, 48, 21, 53, 18, 50, 23, 55, 4,  36, 1,  33, 6,  38, 3,  35,
+         24, 56, 29, 61, 26, 58, 31, 63, 12, 44, 9,  41, 14, 46, 11, 43}));
+    S.add_generator(make<Perm>(
+        {0,  17, 2,  19, 1,  16, 3,  18, 8,  25, 10, 27, 9,  24, 11, 26,
+         4,  21, 6,  23, 5,  20, 7,  22, 12, 29, 14, 31, 13, 28, 15, 30,
+         32, 49, 34, 51, 33, 48, 35, 50, 40, 57, 42, 59, 41, 56, 43, 58,
+         36, 53, 38, 55, 37, 52, 39, 54, 44, 61, 46, 63, 45, 60, 47, 62}));
+    S.add_generator(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    T.add_generator(make<Perm>(
+        {10, 34, 58, 42, 50, 2, 18, 26, 9,  33, 57, 41, 49, 1, 17, 25,
+         15, 39, 63, 47, 55, 7, 23, 31, 13, 37, 61, 45, 53, 5, 21, 29,
+         12, 36, 60, 44, 52, 4, 20, 28, 14, 38, 62, 46, 54, 6, 22, 30,
+         11, 35, 59, 43, 51, 3, 19, 27, 8,  32, 56, 40, 48, 0, 16, 24}));
+    T.add_generator(make<Perm>(
+        {39, 23, 63, 55, 31, 15, 47, 7, 37, 21, 61, 53, 29, 13, 45, 5,
+         32, 16, 56, 48, 24, 8,  40, 0, 35, 19, 59, 51, 27, 11, 43, 3,
+         33, 17, 57, 49, 25, 9,  41, 1, 34, 18, 58, 50, 26, 10, 42, 2,
+         36, 20, 60, 52, 28, 12, 44, 4, 38, 22, 62, 54, 30, 14, 46, 6}));
     schreier_sims::intersection(U, S, T);
-    REQUIRE(U.contains(Perm({3,  2,  1,  0,  7,  6,  5,  4,  11, 10, 9,  8,  15,
-                             14, 13, 12, 19, 18, 17, 16, 23, 22, 21, 20, 27, 26,
-                             25, 24, 31, 30, 29, 28, 35, 34, 33, 32, 39, 38, 37,
-                             36, 43, 42, 41, 40, 47, 46, 45, 44, 51, 50, 49, 48,
-                             55, 54, 53, 52, 59, 58, 57, 56, 63, 62, 61, 60})));
-    REQUIRE(U.contains(Perm({4,  5,  6,  7,  0,  1,  2,  3,  12, 13, 14, 15, 8,
-                             9,  10, 11, 20, 21, 22, 23, 16, 17, 18, 19, 28, 29,
-                             30, 31, 24, 25, 26, 27, 36, 37, 38, 39, 32, 33, 34,
-                             35, 44, 45, 46, 47, 40, 41, 42, 43, 52, 53, 54, 55,
-                             48, 49, 50, 51, 60, 61, 62, 63, 56, 57, 58, 59})));
-    REQUIRE(U.contains(Perm({24, 25, 26, 27, 28, 29, 30, 31, 16, 17, 18, 19, 20,
-                             21, 22, 23, 8,  9,  10, 11, 12, 13, 14, 15, 0,  1,
-                             2,  3,  4,  5,  6,  7,  56, 57, 58, 59, 60, 61, 62,
-                             63, 48, 49, 50, 51, 52, 53, 54, 55, 40, 41, 42, 43,
-                             44, 45, 46, 47, 32, 33, 34, 35, 36, 37, 38, 39})));
-    REQUIRE(U.contains(Perm({32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
-                             45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-                             58, 59, 60, 61, 62, 63, 0,  1,  2,  3,  4,  5,  6,
-                             7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-                             20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31})));
+    REQUIRE(U.contains(make<Perm>(
+        {3,  2,  1,  0,  7,  6,  5,  4,  11, 10, 9,  8,  15, 14, 13, 12,
+         19, 18, 17, 16, 23, 22, 21, 20, 27, 26, 25, 24, 31, 30, 29, 28,
+         35, 34, 33, 32, 39, 38, 37, 36, 43, 42, 41, 40, 47, 46, 45, 44,
+         51, 50, 49, 48, 55, 54, 53, 52, 59, 58, 57, 56, 63, 62, 61, 60})));
+    REQUIRE(U.contains(make<Perm>(
+        {4,  5,  6,  7,  0,  1,  2,  3,  12, 13, 14, 15, 8,  9,  10, 11,
+         20, 21, 22, 23, 16, 17, 18, 19, 28, 29, 30, 31, 24, 25, 26, 27,
+         36, 37, 38, 39, 32, 33, 34, 35, 44, 45, 46, 47, 40, 41, 42, 43,
+         52, 53, 54, 55, 48, 49, 50, 51, 60, 61, 62, 63, 56, 57, 58, 59})));
+    REQUIRE(U.contains(make<Perm>(
+        {24, 25, 26, 27, 28, 29, 30, 31, 16, 17, 18, 19, 20, 21, 22, 23,
+         8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,  4,  5,  6,  7,
+         56, 57, 58, 59, 60, 61, 62, 63, 48, 49, 50, 51, 52, 53, 54, 55,
+         40, 41, 42, 43, 44, 45, 46, 47, 32, 33, 34, 35, 36, 37, 38, 39})));
+    REQUIRE(U.contains(make<Perm>(
+        {32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+         48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+         0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
+         16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31})));
     REQUIRE(U.size() == 16);
   }
 
@@ -3913,68 +3925,68 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<64> S, T, U;
     using Perm = SchreierSims<64>::element_type;
-    S.add_generator(
-        Perm({0,  45, 9,  36, 31, 50, 22, 59, 2,  47, 11, 38, 29, 48, 20, 57,
-              8,  37, 1,  44, 23, 58, 30, 51, 10, 39, 3,  46, 21, 56, 28, 49,
-              16, 61, 25, 52, 15, 34, 6,  43, 18, 63, 27, 54, 13, 32, 4,  41,
-              24, 53, 17, 60, 7,  42, 14, 35, 26, 55, 19, 62, 5,  40, 12, 33}));
-    S.add_generator(
-        Perm({0,  9,  49, 56, 2,  11, 51, 58, 1,  8,  48, 57, 3,  10, 50, 59,
-              4,  13, 53, 60, 6,  15, 55, 62, 5,  12, 52, 61, 7,  14, 54, 63,
-              32, 41, 17, 24, 34, 43, 19, 26, 33, 40, 16, 25, 35, 42, 18, 27,
-              36, 45, 21, 28, 38, 47, 23, 30, 37, 44, 20, 29, 39, 46, 22, 31}));
-    S.add_generator(
-        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
-              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
-              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
-              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
-    T.add_generator(
-        Perm({0,  45, 58, 23, 28, 49, 38, 11, 2,  47, 56, 21, 30, 51, 36, 9,
-              8,  37, 50, 31, 20, 57, 46, 3,  10, 39, 48, 29, 22, 59, 44, 1,
-              32, 13, 26, 55, 60, 17, 6,  43, 34, 15, 24, 53, 62, 19, 4,  41,
-              40, 5,  18, 63, 52, 25, 14, 35, 42, 7,  16, 61, 54, 27, 12, 33}));
-    T.add_generator(
-        Perm({0,  30, 53, 43, 38, 56, 19, 13, 1,  31, 52, 42, 39, 57, 18, 12,
-              4,  26, 49, 47, 34, 60, 23, 9,  5,  27, 48, 46, 35, 61, 22, 8,
-              16, 14, 37, 59, 54, 40, 3,  29, 17, 15, 36, 58, 55, 41, 2,  28,
-              20, 10, 33, 63, 50, 44, 7,  25, 21, 11, 32, 62, 51, 45, 6,  24}));
-    T.add_generator(
-        Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
-              17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
-              33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
-              49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    S.add_generator(make<Perm>(
+        {0,  45, 9,  36, 31, 50, 22, 59, 2,  47, 11, 38, 29, 48, 20, 57,
+         8,  37, 1,  44, 23, 58, 30, 51, 10, 39, 3,  46, 21, 56, 28, 49,
+         16, 61, 25, 52, 15, 34, 6,  43, 18, 63, 27, 54, 13, 32, 4,  41,
+         24, 53, 17, 60, 7,  42, 14, 35, 26, 55, 19, 62, 5,  40, 12, 33}));
+    S.add_generator(make<Perm>(
+        {0,  9,  49, 56, 2,  11, 51, 58, 1,  8,  48, 57, 3,  10, 50, 59,
+         4,  13, 53, 60, 6,  15, 55, 62, 5,  12, 52, 61, 7,  14, 54, 63,
+         32, 41, 17, 24, 34, 43, 19, 26, 33, 40, 16, 25, 35, 42, 18, 27,
+         36, 45, 21, 28, 38, 47, 23, 30, 37, 44, 20, 29, 39, 46, 22, 31}));
+    S.add_generator(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
+    T.add_generator(make<Perm>(
+        {0,  45, 58, 23, 28, 49, 38, 11, 2,  47, 56, 21, 30, 51, 36, 9,
+         8,  37, 50, 31, 20, 57, 46, 3,  10, 39, 48, 29, 22, 59, 44, 1,
+         32, 13, 26, 55, 60, 17, 6,  43, 34, 15, 24, 53, 62, 19, 4,  41,
+         40, 5,  18, 63, 52, 25, 14, 35, 42, 7,  16, 61, 54, 27, 12, 33}));
+    T.add_generator(make<Perm>(
+        {0,  30, 53, 43, 38, 56, 19, 13, 1,  31, 52, 42, 39, 57, 18, 12,
+         4,  26, 49, 47, 34, 60, 23, 9,  5,  27, 48, 46, 35, 61, 22, 8,
+         16, 14, 37, 59, 54, 40, 3,  29, 17, 15, 36, 58, 55, 41, 2,  28,
+         20, 10, 33, 63, 50, 44, 7,  25, 21, 11, 32, 62, 51, 45, 6,  24}));
+    T.add_generator(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 64);
-    REQUIRE(U.contains(Perm({1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13,
-                             12, 15, 14, 17, 16, 19, 18, 21, 20, 23, 22, 25, 24,
-                             27, 26, 29, 28, 31, 30, 33, 32, 35, 34, 37, 36, 39,
-                             38, 41, 40, 43, 42, 45, 44, 47, 46, 49, 48, 51, 50,
-                             53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62})));
-    REQUIRE(U.contains(Perm({2,  3,  0,  1,  6,  7,  4,  5,  10, 11, 8,  9,  14,
-                             15, 12, 13, 18, 19, 16, 17, 22, 23, 20, 21, 26, 27,
-                             24, 25, 30, 31, 28, 29, 34, 35, 32, 33, 38, 39, 36,
-                             37, 42, 43, 40, 41, 46, 47, 44, 45, 50, 51, 48, 49,
-                             54, 55, 52, 53, 58, 59, 56, 57, 62, 63, 60, 61})));
-    REQUIRE(U.contains(Perm({4,  5,  6,  7,  0,  1,  2,  3,  12, 13, 14, 15, 8,
-                             9,  10, 11, 20, 21, 22, 23, 16, 17, 18, 19, 28, 29,
-                             30, 31, 24, 25, 26, 27, 36, 37, 38, 39, 32, 33, 34,
-                             35, 44, 45, 46, 47, 40, 41, 42, 43, 52, 53, 54, 55,
-                             48, 49, 50, 51, 60, 61, 62, 63, 56, 57, 58, 59})));
-    REQUIRE(U.contains(Perm({8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,  4,
-                             5,  6,  7,  24, 25, 26, 27, 28, 29, 30, 31, 16, 17,
-                             18, 19, 20, 21, 22, 23, 40, 41, 42, 43, 44, 45, 46,
-                             47, 32, 33, 34, 35, 36, 37, 38, 39, 56, 57, 58, 59,
-                             60, 61, 62, 63, 48, 49, 50, 51, 52, 53, 54, 55})));
-    REQUIRE(U.contains(Perm({16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-                             29, 30, 31, 0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-                             10, 11, 12, 13, 14, 15, 48, 49, 50, 51, 52, 53, 54,
-                             55, 56, 57, 58, 59, 60, 61, 62, 63, 32, 33, 34, 35,
-                             36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47})));
-    REQUIRE(U.contains(Perm({32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
-                             45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-                             58, 59, 60, 61, 62, 63, 0,  1,  2,  3,  4,  5,  6,
-                             7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-                             20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31})));
+    REQUIRE(U.contains(make<Perm>(
+        {1,  0,  3,  2,  5,  4,  7,  6,  9,  8,  11, 10, 13, 12, 15, 14,
+         17, 16, 19, 18, 21, 20, 23, 22, 25, 24, 27, 26, 29, 28, 31, 30,
+         33, 32, 35, 34, 37, 36, 39, 38, 41, 40, 43, 42, 45, 44, 47, 46,
+         49, 48, 51, 50, 53, 52, 55, 54, 57, 56, 59, 58, 61, 60, 63, 62})));
+    REQUIRE(U.contains(make<Perm>(
+        {2,  3,  0,  1,  6,  7,  4,  5,  10, 11, 8,  9,  14, 15, 12, 13,
+         18, 19, 16, 17, 22, 23, 20, 21, 26, 27, 24, 25, 30, 31, 28, 29,
+         34, 35, 32, 33, 38, 39, 36, 37, 42, 43, 40, 41, 46, 47, 44, 45,
+         50, 51, 48, 49, 54, 55, 52, 53, 58, 59, 56, 57, 62, 63, 60, 61})));
+    REQUIRE(U.contains(make<Perm>(
+        {4,  5,  6,  7,  0,  1,  2,  3,  12, 13, 14, 15, 8,  9,  10, 11,
+         20, 21, 22, 23, 16, 17, 18, 19, 28, 29, 30, 31, 24, 25, 26, 27,
+         36, 37, 38, 39, 32, 33, 34, 35, 44, 45, 46, 47, 40, 41, 42, 43,
+         52, 53, 54, 55, 48, 49, 50, 51, 60, 61, 62, 63, 56, 57, 58, 59})));
+    REQUIRE(U.contains(make<Perm>(
+        {8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,  4,  5,  6,  7,
+         24, 25, 26, 27, 28, 29, 30, 31, 16, 17, 18, 19, 20, 21, 22, 23,
+         40, 41, 42, 43, 44, 45, 46, 47, 32, 33, 34, 35, 36, 37, 38, 39,
+         56, 57, 58, 59, 60, 61, 62, 63, 48, 49, 50, 51, 52, 53, 54, 55})));
+    REQUIRE(U.contains(make<Perm>(
+        {16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+         0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
+         48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+         32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47})));
+    REQUIRE(U.contains(make<Perm>(
+        {32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+         48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+         0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
+         16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31})));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -3985,51 +3997,51 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;
-    S.add_generator(
-        Perm({0,   34,  31,  61,  1,   35,  30,  60,  96,  66, 127, 93,  97,
-              67,  126, 92,  4,   38,  27,  57,  5,   39,  26, 56,  100, 70,
-              123, 89,  101, 71,  122, 88,  16,  50,  15,  45, 17,  51,  14,
-              44,  112, 82,  111, 77,  113, 83,  110, 76,  20, 54,  11,  41,
-              21,  55,  10,  40,  116, 86,  107, 73,  117, 87, 106, 72,  32,
-              2,   63,  29,  33,  3,   62,  28,  64,  98,  95, 125, 65,  99,
-              94,  124, 36,  6,   59,  25,  37,  7,   58,  24, 68,  102, 91,
-              121, 69,  103, 90,  120, 48,  18,  47,  13,  49, 19,  46,  12,
-              80,  114, 79,  109, 81,  115, 78,  108, 52,  22, 43,  9,   53,
-              23,  42,  8,   84,  118, 75,  105, 85,  119, 74, 104}));
-    S.add_generator(
-        Perm({0,   49,  78,  127, 13,  60,  67,  114, 2,   51,  76,  125, 15,
-              62,  65,  112, 20,  37,  90,  107, 25,  40,  87,  102, 22,  39,
-              88,  105, 27,  42,  85,  100, 8,   57,  70,  119, 5,   52,  75,
-              122, 10,  59,  68,  117, 7,   54,  73,  120, 28,  45,  82,  99,
-              17,  32,  95,  110, 30,  47,  80,  97,  19,  34,  93,  108, 64,
-              113, 14,  63,  77,  124, 3,   50,  66,  115, 12,  61,  79,  126,
-              1,   48,  84,  101, 26,  43,  89,  104, 23,  38,  86,  103, 24,
-              41,  91,  106, 21,  36,  72,  121, 6,   55,  69,  116, 11,  58,
-              74,  123, 4,   53,  71,  118, 9,   56,  92,  109, 18,  35,  81,
-              96,  31,  46,  94,  111, 16,  33,  83,  98,  29,  44}));
-    S.add_generator(
-        Perm({1,   0,   3,   2,   5,   4,   7,   6,   9,   8,   11,  10,  13,
-              12,  15,  14,  17,  16,  19,  18,  21,  20,  23,  22,  25,  24,
-              27,  26,  29,  28,  31,  30,  33,  32,  35,  34,  37,  36,  39,
-              38,  41,  40,  43,  42,  45,  44,  47,  46,  49,  48,  51,  50,
-              53,  52,  55,  54,  57,  56,  59,  58,  61,  60,  63,  62,  65,
-              64,  67,  66,  69,  68,  71,  70,  73,  72,  75,  74,  77,  76,
-              79,  78,  81,  80,  83,  82,  85,  84,  87,  86,  89,  88,  91,
-              90,  93,  92,  95,  94,  97,  96,  99,  98,  101, 100, 103, 102,
-              105, 104, 107, 106, 109, 108, 111, 110, 113, 112, 115, 114, 117,
-              116, 119, 118, 121, 120, 123, 122, 125, 124, 127, 126}));
-    T.add_generator(
-        Perm({0,   1,   8,   65,  42,  52,  11,  63,  35,  77,  38,  54,  70,
-              31,  73,  45,  97,  56,  66,  43,  100, 107, 108, 88,  84,  33,
-              12,  76,  61,  109, 21,  62,  113, 5,   68,  80,  93,  48,  39,
-              22,  27,  106, 9,   18,  37,  105, 78,  67,  19,  94,  57,  83,
-              120, 102, 4,   50,  115, 59,  23,  117, 17,  95,  82,  111, 126,
-              53,  122, 98,  101, 16,  72,  34,  79,  112, 44,  118, 64,  124,
-              29,  74,  36,  92,  7,   10,  114, 55,  110, 125, 26,  13,  91,
-              119, 85,  49,  121, 58,  104, 6,   116, 25,  51,  14,  89,  41,
-              30,  3,   71,  90,  99,  2,   81,  86,  69,  60,  15,  28,  40,
-              103, 123, 46,  87,  127, 47,  32,  96,  75,  24,  20}));
-    T.add_generator(Perm(
+    S.add_generator(make<Perm>(
+        {0,   34,  31,  61,  1,   35,  30,  60,  96,  66, 127, 93,  97,
+         67,  126, 92,  4,   38,  27,  57,  5,   39,  26, 56,  100, 70,
+         123, 89,  101, 71,  122, 88,  16,  50,  15,  45, 17,  51,  14,
+         44,  112, 82,  111, 77,  113, 83,  110, 76,  20, 54,  11,  41,
+         21,  55,  10,  40,  116, 86,  107, 73,  117, 87, 106, 72,  32,
+         2,   63,  29,  33,  3,   62,  28,  64,  98,  95, 125, 65,  99,
+         94,  124, 36,  6,   59,  25,  37,  7,   58,  24, 68,  102, 91,
+         121, 69,  103, 90,  120, 48,  18,  47,  13,  49, 19,  46,  12,
+         80,  114, 79,  109, 81,  115, 78,  108, 52,  22, 43,  9,   53,
+         23,  42,  8,   84,  118, 75,  105, 85,  119, 74, 104}));
+    S.add_generator(make<Perm>(
+        {0,   49,  78,  127, 13,  60,  67,  114, 2,   51,  76,  125, 15,
+         62,  65,  112, 20,  37,  90,  107, 25,  40,  87,  102, 22,  39,
+         88,  105, 27,  42,  85,  100, 8,   57,  70,  119, 5,   52,  75,
+         122, 10,  59,  68,  117, 7,   54,  73,  120, 28,  45,  82,  99,
+         17,  32,  95,  110, 30,  47,  80,  97,  19,  34,  93,  108, 64,
+         113, 14,  63,  77,  124, 3,   50,  66,  115, 12,  61,  79,  126,
+         1,   48,  84,  101, 26,  43,  89,  104, 23,  38,  86,  103, 24,
+         41,  91,  106, 21,  36,  72,  121, 6,   55,  69,  116, 11,  58,
+         74,  123, 4,   53,  71,  118, 9,   56,  92,  109, 18,  35,  81,
+         96,  31,  46,  94,  111, 16,  33,  83,  98,  29,  44}));
+    S.add_generator(make<Perm>(
+        {1,   0,   3,   2,   5,   4,   7,   6,   9,   8,   11,  10,  13,
+         12,  15,  14,  17,  16,  19,  18,  21,  20,  23,  22,  25,  24,
+         27,  26,  29,  28,  31,  30,  33,  32,  35,  34,  37,  36,  39,
+         38,  41,  40,  43,  42,  45,  44,  47,  46,  49,  48,  51,  50,
+         53,  52,  55,  54,  57,  56,  59,  58,  61,  60,  63,  62,  65,
+         64,  67,  66,  69,  68,  71,  70,  73,  72,  75,  74,  77,  76,
+         79,  78,  81,  80,  83,  82,  85,  84,  87,  86,  89,  88,  91,
+         90,  93,  92,  95,  94,  97,  96,  99,  98,  101, 100, 103, 102,
+         105, 104, 107, 106, 109, 108, 111, 110, 113, 112, 115, 114, 117,
+         116, 119, 118, 121, 120, 123, 122, 125, 124, 127, 126}));
+    T.add_generator(make<Perm>(
+        {0,   1,   8,   65,  42,  52,  11,  63,  35,  77,  38,  54,  70,
+         31,  73,  45,  97,  56,  66,  43,  100, 107, 108, 88,  84,  33,
+         12,  76,  61,  109, 21,  62,  113, 5,   68,  80,  93,  48,  39,
+         22,  27,  106, 9,   18,  37,  105, 78,  67,  19,  94,  57,  83,
+         120, 102, 4,   50,  115, 59,  23,  117, 17,  95,  82,  111, 126,
+         53,  122, 98,  101, 16,  72,  34,  79,  112, 44,  118, 64,  124,
+         29,  74,  36,  92,  7,   10,  114, 55,  110, 125, 26,  13,  91,
+         119, 85,  49,  121, 58,  104, 6,   116, 25,  51,  14,  89,  41,
+         30,  3,   71,  90,  99,  2,   81,  86,  69,  60,  15,  28,  40,
+         103, 123, 46,  87,  127, 47,  32,  96,  75,  24,  20}));
+    T.add_generator(make<Perm>(
         {82,  0,   72,  58,  33,  107, 21,  120, 46, 115, 77,  28,  16, 47,  14,
          61,  75,  48,  25,  8,   29,  31,  71,  20, 49,  73,  13,  22, 113, 23,
          112, 6,   40,  70,  76,  102, 78,  96,  34, 87,  110, 90,  79, 63,  10,
@@ -4041,28 +4053,28 @@ namespace libsemigroups {
          105, 62,  125, 124, 60,  103, 3,   84}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 8);
-    REQUIRE(U.contains(
-        Perm({31,  30,  29,  28,  27,  26,  25,  24,  23,  22,  21,  20,  19,
-              18,  17,  16,  15,  14,  13,  12,  11,  10,  9,   8,   7,   6,
-              5,   4,   3,   2,   1,   0,   127, 126, 125, 124, 123, 122, 121,
-              120, 119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108,
-              107, 106, 105, 104, 103, 102, 101, 100, 99,  98,  97,  96,  95,
-              94,  93,  92,  91,  90,  89,  88,  87,  86,  85,  84,  83,  82,
-              81,  80,  79,  78,  77,  76,  75,  74,  73,  72,  71,  70,  69,
-              68,  67,  66,  65,  64,  63,  62,  61,  60,  59,  58,  57,  56,
-              55,  54,  53,  52,  51,  50,  49,  48,  47,  46,  45,  44,  43,
-              42,  41,  40,  39,  38,  37,  36,  35,  34,  33,  32})));
-    REQUIRE(U.contains(
-        Perm({32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,
-              45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,  56,  57,
-              58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,  70,
-              71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
-              84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,
-              97,  98,  99,  100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
-              110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
-              123, 124, 125, 126, 127, 0,   1,   2,   3,   4,   5,   6,   7,
-              8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,
-              21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31})));
+    REQUIRE(U.contains(make<Perm>(
+        {31,  30,  29,  28,  27,  26,  25,  24,  23,  22,  21,  20,  19,
+         18,  17,  16,  15,  14,  13,  12,  11,  10,  9,   8,   7,   6,
+         5,   4,   3,   2,   1,   0,   127, 126, 125, 124, 123, 122, 121,
+         120, 119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108,
+         107, 106, 105, 104, 103, 102, 101, 100, 99,  98,  97,  96,  95,
+         94,  93,  92,  91,  90,  89,  88,  87,  86,  85,  84,  83,  82,
+         81,  80,  79,  78,  77,  76,  75,  74,  73,  72,  71,  70,  69,
+         68,  67,  66,  65,  64,  63,  62,  61,  60,  59,  58,  57,  56,
+         55,  54,  53,  52,  51,  50,  49,  48,  47,  46,  45,  44,  43,
+         42,  41,  40,  39,  38,  37,  36,  35,  34,  33,  32})));
+    REQUIRE(U.contains(make<Perm>(
+        {32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,
+         45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,  56,  57,
+         58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,  70,
+         71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
+         84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,
+         97,  98,  99,  100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+         110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+         123, 124, 125, 126, 127, 0,   1,   2,   3,   4,   5,   6,   7,
+         8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,
+         21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -4072,7 +4084,7 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {0,   1,   35,  53,  9,   120, 54,  111, 80, 124, 39, 4,  72,  62,  112,
          105, 6,   115, 122, 18,  51,  90,  99,  26, 114, 5,  70, 64,  95,  2,
          107, 82,  60,  52,  101, 36,  49,  19,  22, 108, 76, 71, 77,  66,  48,
@@ -4082,7 +4094,7 @@ namespace libsemigroups {
          119, 46,  55,  94,  127, 23,  30,  11,  40, 33,  83, 73, 13,  106, 21,
          65,  34,  91,  25,  8,   92,  110, 16,  17, 45,  61, 27, 41,  32,  78,
          125, 20,  67,  113, 104, 118, 84,  100}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {82,  0,   72,  58,  33,  107, 21,  120, 46, 115, 77,  28,  16, 47,  14,
          61,  75,  48,  25,  8,   29,  31,  71,  20, 49,  73,  13,  22, 113, 23,
          112, 6,   40,  70,  76,  102, 78,  96,  34, 87,  110, 90,  79, 63,  10,
@@ -4092,18 +4104,18 @@ namespace libsemigroups {
          85,  106, 89,  66,  39,  53,  100, 67,  98, 86,  37,  127, 68, 122, 93,
          7,   81,  56,  42,  114, 32,  30,  111, 11, 54,  118, 117, 52, 9,   57,
          105, 62,  125, 124, 60,  103, 3,   84}));
-    T.add_generator(
-        Perm({0,   34,  54,  20,  1,   35,  55,  21,  100, 70,  82, 112, 101,
-              71,  83,  113, 4,   38,  50,  16,  5,   39,  51,  17, 96,  66,
-              86,  116, 97,  67,  87,  117, 8,   42,  62,  28,  9,  43,  63,
-              29,  108, 78,  90,  120, 109, 79,  91,  121, 12,  46, 58,  24,
-              13,  47,  59,  25,  104, 74,  94,  124, 105, 75,  95, 125, 32,
-              2,   22,  52,  33,  3,   23,  53,  68,  102, 114, 80, 69,  103,
-              115, 81,  36,  6,   18,  48,  37,  7,   19,  49,  64, 98,  118,
-              84,  65,  99,  119, 85,  40,  10,  30,  60,  41,  11, 31,  61,
-              76,  110, 122, 88,  77,  111, 123, 89,  44,  14,  26, 56,  45,
-              15,  27,  57,  72,  106, 126, 92,  73,  107, 127, 93}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
+        {0,   34,  54,  20,  1,   35,  55,  21,  100, 70,  82, 112, 101,
+         71,  83,  113, 4,   38,  50,  16,  5,   39,  51,  17, 96,  66,
+         86,  116, 97,  67,  87,  117, 8,   42,  62,  28,  9,  43,  63,
+         29,  108, 78,  90,  120, 109, 79,  91,  121, 12,  46, 58,  24,
+         13,  47,  59,  25,  104, 74,  94,  124, 105, 75,  95, 125, 32,
+         2,   22,  52,  33,  3,   23,  53,  68,  102, 114, 80, 69,  103,
+         115, 81,  36,  6,   18,  48,  37,  7,   19,  49,  64, 98,  118,
+         84,  65,  99,  119, 85,  40,  10,  30,  60,  41,  11, 31,  61,
+         76,  110, 122, 88,  77,  111, 123, 89,  44,  14,  26, 56,  45,
+         15,  27,  57,  72,  106, 126, 92,  73,  107, 127, 93}));
+    T.add_generator(make<Perm>(
         {0,  59, 120, 67, 54, 13, 78, 117, 1,  58, 121, 66, 55, 12, 79, 116,
          2,  57, 122, 65, 52, 15, 76, 119, 3,  56, 123, 64, 53, 14, 77, 118,
          4,  63, 124, 71, 50, 9,  74, 113, 5,  62, 125, 70, 51, 8,  75, 112,
@@ -4112,41 +4124,41 @@ namespace libsemigroups {
          18, 41, 106, 81, 36, 31, 92, 103, 19, 40, 107, 80, 37, 30, 93, 102,
          20, 47, 108, 87, 34, 25, 90, 97,  21, 46, 109, 86, 35, 24, 91, 96,
          22, 45, 110, 85, 32, 27, 88, 99,  23, 44, 111, 84, 33, 26, 89, 98}));
-    T.add_generator(
-        Perm({1,   0,   3,   2,   5,   4,   7,   6,   9,   8,   11,  10,  13,
-              12,  15,  14,  17,  16,  19,  18,  21,  20,  23,  22,  25,  24,
-              27,  26,  29,  28,  31,  30,  33,  32,  35,  34,  37,  36,  39,
-              38,  41,  40,  43,  42,  45,  44,  47,  46,  49,  48,  51,  50,
-              53,  52,  55,  54,  57,  56,  59,  58,  61,  60,  63,  62,  65,
-              64,  67,  66,  69,  68,  71,  70,  73,  72,  75,  74,  77,  76,
-              79,  78,  81,  80,  83,  82,  85,  84,  87,  86,  89,  88,  91,
-              90,  93,  92,  95,  94,  97,  96,  99,  98,  101, 100, 103, 102,
-              105, 104, 107, 106, 109, 108, 111, 110, 113, 112, 115, 114, 117,
-              116, 119, 118, 121, 120, 123, 122, 125, 124, 127, 126}));
+    T.add_generator(make<Perm>(
+        {1,   0,   3,   2,   5,   4,   7,   6,   9,   8,   11,  10,  13,
+         12,  15,  14,  17,  16,  19,  18,  21,  20,  23,  22,  25,  24,
+         27,  26,  29,  28,  31,  30,  33,  32,  35,  34,  37,  36,  39,
+         38,  41,  40,  43,  42,  45,  44,  47,  46,  49,  48,  51,  50,
+         53,  52,  55,  54,  57,  56,  59,  58,  61,  60,  63,  62,  65,
+         64,  67,  66,  69,  68,  71,  70,  73,  72,  75,  74,  77,  76,
+         79,  78,  81,  80,  83,  82,  85,  84,  87,  86,  89,  88,  91,
+         90,  93,  92,  95,  94,  97,  96,  99,  98,  101, 100, 103, 102,
+         105, 104, 107, 106, 109, 108, 111, 110, 113, 112, 115, 114, 117,
+         116, 119, 118, 121, 120, 123, 122, 125, 124, 127, 126}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 4);
-    REQUIRE(U.contains(
-        Perm({63,  62,  61,  60,  59,  58,  57,  56,  55,  54,  53,  52,  51,
-              50,  49,  48,  47,  46,  45,  44,  43,  42,  41,  40,  39,  38,
-              37,  36,  35,  34,  33,  32,  31,  30,  29,  28,  27,  26,  25,
-              24,  23,  22,  21,  20,  19,  18,  17,  16,  15,  14,  13,  12,
-              11,  10,  9,   8,   7,   6,   5,   4,   3,   2,   1,   0,   127,
-              126, 125, 124, 123, 122, 121, 120, 119, 118, 117, 116, 115, 114,
-              113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101,
-              100, 99,  98,  97,  96,  95,  94,  93,  92,  91,  90,  89,  88,
-              87,  86,  85,  84,  83,  82,  81,  80,  79,  78,  77,  76,  75,
-              74,  73,  72,  71,  70,  69,  68,  67,  66,  65,  64})));
-    REQUIRE(U.contains(
-        Perm({64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,
-              77,  78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,
-              90,  91,  92,  93,  94,  95,  96,  97,  98,  99,  100, 101, 102,
-              103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
-              116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 0,
-              1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
-              14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,
-              27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,
-              40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,
-              53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63})));
+    REQUIRE(U.contains(make<Perm>(
+        {63,  62,  61,  60,  59,  58,  57,  56,  55,  54,  53,  52,  51,
+         50,  49,  48,  47,  46,  45,  44,  43,  42,  41,  40,  39,  38,
+         37,  36,  35,  34,  33,  32,  31,  30,  29,  28,  27,  26,  25,
+         24,  23,  22,  21,  20,  19,  18,  17,  16,  15,  14,  13,  12,
+         11,  10,  9,   8,   7,   6,   5,   4,   3,   2,   1,   0,   127,
+         126, 125, 124, 123, 122, 121, 120, 119, 118, 117, 116, 115, 114,
+         113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101,
+         100, 99,  98,  97,  96,  95,  94,  93,  92,  91,  90,  89,  88,
+         87,  86,  85,  84,  83,  82,  81,  80,  79,  78,  77,  76,  75,
+         74,  73,  72,  71,  70,  69,  68,  67,  66,  65,  64})));
+    REQUIRE(U.contains(make<Perm>(
+        {64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,
+         77,  78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,
+         90,  91,  92,  93,  94,  95,  96,  97,  98,  99,  100, 101, 102,
+         103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
+         116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 0,
+         1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
+         14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,
+         27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,
+         40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,
+         53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63})));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -4157,7 +4169,7 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     SchreierSims<120> S, T, U;
     using Perm = SchreierSims<120>::element_type;
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {35,  1,   66,  63,  98,  53,  117, 55,  20,  118, 56, 73,  93,  57,
          112, 15,  32,  119, 42,  19,  8,   25,  23,  22,  24, 21,  72,  75,
          64,  97,  38,  96,  16,  33,  88,  0,   52,  87,  30, 109, 108, 94,
@@ -4167,27 +4179,27 @@ namespace libsemigroups {
          84,  60,  86,  37,  34,  46,  90,  99,  79,  12,  41, 81,  31,  29,
          4,   91,  45,  65,  105, 103, 67,  102, 71,  78,  40, 39,  74,  111,
          14,  69,  114, 115, 49,  6,   9,   17}));
-    S.add_generator(
-        Perm({20,  95,  91,  53, 40,  21, 32,  118, 109, 2,   41,  74,  72, 102,
-              115, 65,  3,   66, 43,  92, 7,   84,  1,   82,  104, 101, 24, 77,
-              97,  57,  71,  35, 50,  56, 60,  42,  80,  85,  58,  22,  34, 88,
-              117, 90,  49,  47, 112, 73, 10,  17,  111, 83,  33,  78,  61, 13,
-              70,  28,  38,  94, 4,   69, 99,  87,  9,   14,  44,  54,  5,  67,
-              52,  62,  116, 96, 51,  79, 105, 27,  16,  107, 108, 26,  19, 11,
-              68,  103, 12,  63, 48,  18, 89,  64,  23,  55,  76,  39,  45, 29,
-              37,  30,  113, 8,  93,  98, 81,  59,  36,  110, 106, 25,  75, 6,
-              46,  114, 119, 15, 86,  31, 0,   100}));
-    T.add_generator(
-        Perm({22,  119, 110, 87, 4,   12,  16,  102, 98,  39, 113, 90,  5,  62,
-              104, 116, 6,   93, 103, 48,  112, 38,  0,   28, 53,  94,  30, 51,
-              23,  74,  26,  45, 118, 47,  115, 66,  101, 59, 21,  9,   49, 41,
-              114, 96,  85,  31, 75,  33,  19,  40,  99,  27, 97,  24,  54, 57,
-              56,  55,  89,  37, 108, 79,  13,  73,  65,  64, 35,  67,  69, 68,
-              107, 88,  72,  63, 29,  46,  77,  76,  100, 61, 81,  80,  91, 86,
-              105, 44,  83,  3,  71,  58,  11,  82,  106, 17, 25,  95,  43, 52,
-              8,   50,  78,  36, 7,   18,  14,  84,  92,  70, 60,  109, 2,  111,
-              20,  10,  42,  34, 15,  117, 32,  1}));
-    T.add_generator(Perm(
+    S.add_generator(make<Perm>(
+        {20,  95,  91,  53, 40,  21, 32,  118, 109, 2,   41,  74,  72, 102,
+         115, 65,  3,   66, 43,  92, 7,   84,  1,   82,  104, 101, 24, 77,
+         97,  57,  71,  35, 50,  56, 60,  42,  80,  85,  58,  22,  34, 88,
+         117, 90,  49,  47, 112, 73, 10,  17,  111, 83,  33,  78,  61, 13,
+         70,  28,  38,  94, 4,   69, 99,  87,  9,   14,  44,  54,  5,  67,
+         52,  62,  116, 96, 51,  79, 105, 27,  16,  107, 108, 26,  19, 11,
+         68,  103, 12,  63, 48,  18, 89,  64,  23,  55,  76,  39,  45, 29,
+         37,  30,  113, 8,  93,  98, 81,  59,  36,  110, 106, 25,  75, 6,
+         46,  114, 119, 15, 86,  31, 0,   100}));
+    T.add_generator(make<Perm>(
+        {22,  119, 110, 87, 4,   12,  16,  102, 98,  39, 113, 90,  5,  62,
+         104, 116, 6,   93, 103, 48,  112, 38,  0,   28, 53,  94,  30, 51,
+         23,  74,  26,  45, 118, 47,  115, 66,  101, 59, 21,  9,   49, 41,
+         114, 96,  85,  31, 75,  33,  19,  40,  99,  27, 97,  24,  54, 57,
+         56,  55,  89,  37, 108, 79,  13,  73,  65,  64, 35,  67,  69, 68,
+         107, 88,  72,  63, 29,  46,  77,  76,  100, 61, 81,  80,  91, 86,
+         105, 44,  83,  3,  71,  58,  11,  82,  106, 17, 25,  95,  43, 52,
+         8,   50,  78,  36, 7,   18,  14,  84,  92,  70, 60,  109, 2,  111,
+         20,  10,  42,  34, 15,  117, 32,  1}));
+    T.add_generator(make<Perm>(
         {109, 40,  7,   74,  81,  3,   83,  113, 31, 53,  112, 10, 52,  19,
          32,  94,  107, 20,  13,  111, 88,  0,   9,  16,  41,  97, 80,  99,
          51,  17,  101, 77,  79,  26,  35,  117, 5,  1,   28,  33, 82,  4,
@@ -4198,8 +4210,8 @@ namespace libsemigroups {
          98,  27,  115, 64,  75,  54,  12,  102, 45, 110, 50,  47, 23,  18,
          118, 78,  85,  114, 70,  48,  11,  68}));
     schreier_sims::intersection(U, S, T);
-    REQUIRE(U.size() == 20160);
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.size() == 20'160);
+    REQUIRE(U.contains(make<Perm>(
         {0,   115, 24,  104, 82,  16, 88,  86,  106, 9,   39,  118, 40,  70,
          91,  77,  5,   111, 28,  57, 53,  87,  74,  58,  2,   112, 109, 72,
          18,  41,  44,  93,  71,  66, 64,  49,  46,  99,  54,  10,  12,  29,
@@ -4209,27 +4221,27 @@ namespace libsemigroups {
          113, 101, 7,   21,  6,   98, 55,  14,  79,  31,  94,  76,  102, 97,
          89,  37,  100, 85,  96,  62, 3,   108, 8,   59,  105, 26,  81,  17,
          25,  84,  69,  1,   116, 42, 11,  51})));
-    REQUIRE(U.contains(
-        Perm({0,   15,  83,  22, 70,  30, 48,  105, 54,  9,   81,  49,  69,  4,
-              26,  115, 44,  64, 61,  46, 78,  75,  104, 27,  52,  60,  91,  58,
-              50,  68,  16,  55, 107, 98, 17,  11,  19,  65,  8,   110, 114, 45,
-              119, 20,  5,   29, 57,  6,  88,  118, 18,  42,  2,   43,  106, 93,
-              21,  36,  72,  32, 112, 28, 79,  25,  111, 99,  89,  37,  41,  40,
-              82,  59,  23,  73, 3,   87, 101, 1,   53,  103, 100, 39,  13,  24,
-              102, 76,  108, 56, 47,  33, 31,  109, 62,  90,  97,  85,  84,  94,
-              66,  67,  80,  95, 113, 92, 74,  86,  38,  71,  7,   14,  10,  34,
-              63,  96,  12,  77, 116, 51, 35,  117})));
-    REQUIRE(U.contains(
-        Perm({0,   62,  33,  48,  82,  44,  22,  72, 38,  73,  55, 29, 25,  13,
-              117, 92,  30,  56,  76,  19,  107, 34, 6,   108, 66, 12, 119, 86,
-              95,  11,  16,  81,  78,  2,   21,  68, 46,  96,  8,  90, 112, 118,
-              91,  71,  5,   49,  36,  104, 3,   45, 101, 109, 98, 59, 106, 10,
-              17,  57,  105, 53,  114, 85,  1,   69, 87,  113, 24, 84, 35,  63,
-              70,  43,  7,   9,   88,  111, 18,  79, 32,  77,  80, 31, 4,   89,
-              67,  61,  27,  64,  74,  83,  39,  42, 15,  110, 97, 28, 37,  94,
-              52,  102, 100, 50,  99,  115, 47,  58, 54,  20,  23, 51, 93,  75,
-              40,  65,  60,  103, 116, 14,  41,  26})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
+        {0,   15,  83,  22, 70,  30, 48,  105, 54,  9,   81,  49,  69,  4,
+         26,  115, 44,  64, 61,  46, 78,  75,  104, 27,  52,  60,  91,  58,
+         50,  68,  16,  55, 107, 98, 17,  11,  19,  65,  8,   110, 114, 45,
+         119, 20,  5,   29, 57,  6,  88,  118, 18,  42,  2,   43,  106, 93,
+         21,  36,  72,  32, 112, 28, 79,  25,  111, 99,  89,  37,  41,  40,
+         82,  59,  23,  73, 3,   87, 101, 1,   53,  103, 100, 39,  13,  24,
+         102, 76,  108, 56, 47,  33, 31,  109, 62,  90,  97,  85,  84,  94,
+         66,  67,  80,  95, 113, 92, 74,  86,  38,  71,  7,   14,  10,  34,
+         63,  96,  12,  77, 116, 51, 35,  117})));
+    REQUIRE(U.contains(make<Perm>(
+        {0,   62,  33,  48,  82,  44,  22,  72, 38,  73,  55, 29, 25,  13,
+         117, 92,  30,  56,  76,  19,  107, 34, 6,   108, 66, 12, 119, 86,
+         95,  11,  16,  81,  78,  2,   21,  68, 46,  96,  8,  90, 112, 118,
+         91,  71,  5,   49,  36,  104, 3,   45, 101, 109, 98, 59, 106, 10,
+         17,  57,  105, 53,  114, 85,  1,   69, 87,  113, 24, 84, 35,  63,
+         70,  43,  7,   9,   88,  111, 18,  79, 32,  77,  80, 31, 4,   89,
+         67,  61,  27,  64,  74,  83,  39,  42, 15,  110, 97, 28, 37,  94,
+         52,  102, 100, 50,  99,  115, 47,  58, 54,  20,  23, 51, 93,  75,
+         40,  65,  60,  103, 116, 14,  41,  26})));
+    REQUIRE(U.contains(make<Perm>(
         {0,   96,  62,  16,  21,  97,  48,  43,  31,  119, 117, 66,  60,  63,
          87,  68,  44,  73,  24,  46,  79,  8,   104, 11,  113, 69,  56,  41,
          89,  115, 22,  111, 18,  2,   112, 27,  5,   33,  75,  12,  82,  85,
@@ -4239,7 +4251,7 @@ namespace libsemigroups {
          86,  95,  92,  91,  80,  65,  54,  13,  83,  25,  30,  45,  103, 6,
          49,  35,  47,  76,  52,  108, 57,  102, 10,  118, 77,  106, 38,  34,
          4,   15,  110, 7,   3,   51,  67,  81})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {1,   50,  80, 62,  114, 92,  57,  97,  6,   112, 7,   12,  58,  95,
          119, 54,  32, 106, 109, 56,  78,  15,  72,  44,  113, 25,  23,  29,
          75,  59,  13, 17,  88,  67,  87,  104, 103, 34,  76,  110, 117, 93,
@@ -4258,41 +4270,41 @@ namespace libsemigroups {
     auto              rg = ReportGuard(false);
     SchreierSims<105> S, T, U;
     using Perm = SchreierSims<105>::element_type;
-    S.add_generator(
-        Perm({0,   32, 24, 16, 34,  10,  46, 43, 44, 33,  5,  93, 49, 13, 101,
-              71,  3,  28, 20, 21,  18,  19, 67, 52, 2,   89, 42, 41, 17, 53,
-              30,  36, 1,  9,  4,   63,  31, 77, 38, 76,  47, 27, 26, 7,  8,
-              66,  6,  40, 72, 12,  59,  73, 23, 29, 90,  97, 78, 74, 82, 50,
-              84,  85, 81, 35, 83,  69,  45, 22, 86, 65,  98, 15, 48, 51, 57,
-              100, 39, 37, 56, 104, 103, 62, 58, 64, 60,  61, 68, 87, 91, 25,
-              54,  88, 96, 11, 95,  94,  92, 55, 70, 102, 75, 14, 99, 80, 79}));
-    S.add_generator(
-        Perm({54, 18, 98, 67, 42,  22,  24, 35, 55, 8,  5,  104, 16,  15, 103,
-              79, 99, 71, 63, 100, 34,  97, 10, 81, 94, 95, 32,  39,  65, 77,
-              92, 90, 49, 31, 45,  58,  40, 2,  28, 48, 64, 30,  101, 3,  0,
-              20, 78, 14, 27, 26,  102, 75, 73, 59, 44, 9,  52,  70,  7,  76,
-              72, 91, 17, 1,  36,  38,  19, 43, 46, 89, 82, 62,  87,  56, 23,
-              84, 53, 93, 68, 13,  11,  74, 57, 69, 51, 21, 50,  60,  25, 83,
-              33, 96, 41, 29, 6,   88,  61, 85, 37, 12, 66, 4,   86,  47, 80}));
-    T.add_generator(
-        Perm({56, 87,  10, 6,  59, 95,  20, 2,  96, 17, 80,  85, 47,  22, 104,
-              4,  99,  90, 18, 84, 61,  34, 79, 28, 25, 50,  97, 49,  83, 78,
-              1,  48,  76, 69, 26, 58,  3,  63, 62, 27, 86,  44, 77,  40, 82,
-              29, 73,  41, 94, 51, 102, 65, 11, 52, 81, 19,  67, 55,  33, 12,
-              57, 30,  88, 98, 68, 13,  9,  21, 37, 14, 0,   91, 53,  89, 45,
-              31, 35,  54, 75, 39, 66,  42, 15, 64, 46, 43,  72, 36,  71, 60,
-              7,  103, 93, 24, 74, 8,   5,  70, 23, 38, 101, 92, 100, 16, 32}));
-    T.add_generator(
-        Perm({31, 49, 50,  8,  45, 99, 51,  5,  40,  54, 22,  75, 85, 66, 19,
-              87, 21, 89,  84, 9,  44, 42,  38, 59,  24, 73,  63, 30, 71, 25,
-              28, 14, 100, 3,  64, 16, 58,  90, 79,  56, 7,   12, 69, 47, 101,
-              46, 98, 18,  29, 72, 11, 91,  13, 37,  86, 68,  88, 36, 65, 53,
-              77, 34, 20,  6,  35, 95, 103, 43, 81,  61, 78,  27, 92, 62, 2,
-              70, 74, 15,  76, 1,  32, 23,  0,  104, 80, 102, 82, 52, 41, 57,
-              55, 83, 10,  17, 26, 93, 39,  33, 4,   97, 67,  48, 96, 60, 94}));
+    S.add_generator(make<Perm>(
+        {0,   32, 24, 16, 34,  10,  46, 43, 44, 33,  5,  93, 49, 13, 101,
+         71,  3,  28, 20, 21,  18,  19, 67, 52, 2,   89, 42, 41, 17, 53,
+         30,  36, 1,  9,  4,   63,  31, 77, 38, 76,  47, 27, 26, 7,  8,
+         66,  6,  40, 72, 12,  59,  73, 23, 29, 90,  97, 78, 74, 82, 50,
+         84,  85, 81, 35, 83,  69,  45, 22, 86, 65,  98, 15, 48, 51, 57,
+         100, 39, 37, 56, 104, 103, 62, 58, 64, 60,  61, 68, 87, 91, 25,
+         54,  88, 96, 11, 95,  94,  92, 55, 70, 102, 75, 14, 99, 80, 79}));
+    S.add_generator(make<Perm>(
+        {54, 18, 98, 67, 42,  22,  24, 35, 55, 8,  5,  104, 16,  15, 103,
+         79, 99, 71, 63, 100, 34,  97, 10, 81, 94, 95, 32,  39,  65, 77,
+         92, 90, 49, 31, 45,  58,  40, 2,  28, 48, 64, 30,  101, 3,  0,
+         20, 78, 14, 27, 26,  102, 75, 73, 59, 44, 9,  52,  70,  7,  76,
+         72, 91, 17, 1,  36,  38,  19, 43, 46, 89, 82, 62,  87,  56, 23,
+         84, 53, 93, 68, 13,  11,  74, 57, 69, 51, 21, 50,  60,  25, 83,
+         33, 96, 41, 29, 6,   88,  61, 85, 37, 12, 66, 4,   86,  47, 80}));
+    T.add_generator(make<Perm>(
+        {56, 87,  10, 6,  59, 95,  20, 2,  96, 17, 80,  85, 47,  22, 104,
+         4,  99,  90, 18, 84, 61,  34, 79, 28, 25, 50,  97, 49,  83, 78,
+         1,  48,  76, 69, 26, 58,  3,  63, 62, 27, 86,  44, 77,  40, 82,
+         29, 73,  41, 94, 51, 102, 65, 11, 52, 81, 19,  67, 55,  33, 12,
+         57, 30,  88, 98, 68, 13,  9,  21, 37, 14, 0,   91, 53,  89, 45,
+         31, 35,  54, 75, 39, 66,  42, 15, 64, 46, 43,  72, 36,  71, 60,
+         7,  103, 93, 24, 74, 8,   5,  70, 23, 38, 101, 92, 100, 16, 32}));
+    T.add_generator(make<Perm>(
+        {31, 49, 50,  8,  45, 99, 51,  5,  40,  54, 22,  75, 85, 66, 19,
+         87, 21, 89,  84, 9,  44, 42,  38, 59,  24, 73,  63, 30, 71, 25,
+         28, 14, 100, 3,  64, 16, 58,  90, 79,  56, 7,   12, 69, 47, 101,
+         46, 98, 18,  29, 72, 11, 91,  13, 37,  86, 68,  88, 36, 65, 53,
+         77, 34, 20,  6,  35, 95, 103, 43, 81,  61, 78,  27, 92, 62, 2,
+         70, 74, 15,  76, 1,  32, 23,  0,  104, 80, 102, 82, 52, 41, 57,
+         55, 83, 10,  17, 26, 93, 39,  33, 4,   97, 67,  48, 96, 60, 94}));
     schreier_sims::intersection(U, S, T);
-    REQUIRE(U.size() == 20160);
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.size() == 20'160);
+    REQUIRE(U.contains(make<Perm>(
         {0,  1,   17, 47, 4,  5,  41, 21,  18,  9,   10, 51, 76, 38, 77,
          59, 40,  2,  8,  43, 44, 7,  94,  25,  28,  23, 90, 46, 24, 91,
          87, 65,  32, 33, 34, 81, 69, 101, 13,  49,  16, 6,  54, 19, 20,
@@ -4300,7 +4312,7 @@ namespace libsemigroups {
          64, 104, 63, 62, 60, 31, 56, 95,  100, 36,  80, 50, 74, 93, 72,
          86, 12,  14, 45, 85, 70, 35, 58,  84,  83,  79, 75, 30, 53, 52,
          26, 29,  55, 73, 22, 67, 97, 96,  103, 102, 68, 37, 99, 98, 61})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {0,   1,  6,  7,  4,  5,   2,   3,  54, 9,  10, 73, 63, 87,  45,
          48,  43, 41, 42, 40, 26,  47,  67, 29, 46, 91, 20, 28, 27,  23,
          38,  97, 32, 33, 34, 49,  55,  56, 30, 81, 19, 17, 18, 16,  90,
@@ -4308,7 +4320,7 @@ namespace libsemigroups {
          104, 64, 76, 12, 61, 96,  101, 22, 70, 92, 68, 72, 71, 11,  50,
          103, 62, 78, 77, 84, 100, 39,  99, 85, 79, 83, 98, 13, 89,  88,
          44,  25, 69, 51, 95, 94,  65,  31, 86, 82, 80, 66, 58, 75,  60})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {0,  1,  42, 7,  4,  34,  18, 3,   41, 9,  10, 85,  92,  14, 13,
          39, 53, 54, 6,  89, 90,  47, 56,  23, 28, 25, 44,  46,  24, 29,
          78, 80, 33, 32, 5,  57,  62, 67,  77, 15, 88, 8,   2,   52, 26,
@@ -4316,7 +4328,7 @@ namespace libsemigroups {
          58, 99, 36, 69, 82, 70,  94, 37,  96, 63, 65, 103, 75,  83, 86,
          72, 55, 38, 30, 51, 31,  48, 64,  73, 93, 11, 74,  45,  40, 19,
          20, 91, 12, 84, 66, 101, 68, 100, 50, 61, 97, 95,  104, 71, 102})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {0,   1,   88, 47, 4,  33,  89, 21, 43, 9,  10, 57, 101, 71, 103,
          93,  54,  53, 19, 18, 26,  7,  36, 23, 27, 25, 20, 24,  46, 29,
          74,  102, 34, 5,  32, 85,  22, 76, 50, 84, 42, 52, 40,  8,  90,
@@ -4324,7 +4336,7 @@ namespace libsemigroups {
          100, 70,  56, 66, 68, 99,  63, 55, 64, 94, 61, 13, 87,  59, 30,
          45,  37,  98, 86, 81, 104, 79, 96, 49, 39, 35, 78, 72,  2,  6,
          44,  91,  95, 15, 69, 92,  82, 58, 77, 65, 60, 12, 31,  14, 80})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {0,  9,  54,  20, 4,  33,  18,  90, 16, 10,  1,  60, 73, 78,  75,
          31, 17, 8,   43, 2,  23,  44,  79, 3,  24,  7,  91, 28, 46,  21,
          45, 92, 32,  34, 5,  102, 59,  39, 77, 99,  41, 42, 40, 6,   29,
@@ -4332,7 +4344,7 @@ namespace libsemigroups {
          76, 12, 93,  51, 62, 69,  49,  83, 95, 57,  22, 71, 74, 61,  50,
          87, 11, 103, 86, 70, 67,  58,  66, 80, 100, 68, 13, 14, 89,  53,
          25, 47, 15,  64, 84, 85,  55,  36, 30, 37,  94, 81, 56, 38,  63})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {0,  4,   54,  26, 1,  34, 8,   20,  41, 10, 9,  75, 99, 81,  57,
          45, 89,  42,  6,  53, 21, 44,  80,  24, 25, 28, 47, 29, 23,  46,
          49, 56,  33,  32, 5,  13, 64,  96,  35, 30, 52, 18, 2,  88,  7,
@@ -4340,7 +4352,7 @@ namespace libsemigroups {
          36, 92,  58,  82, 69, 66, 31,  100, 67, 60, 22, 83, 85, 103, 79,
          51, 102, 48,  15, 72, 94, 38,  62,  50, 71, 74, 11, 39, 19,  40,
          3,  27,  104, 98, 70, 68, 101, 37,  73, 76, 95, 97, 12, 93,  55})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {1,   4,  15,  7,  0,  25, 84,  47,  83, 9,  10, 13, 67, 88,  16,
          30,  51, 39,  73, 48, 44, 21,  56,  24, 34, 28, 20, 32, 5,   46,
          2,   80, 91,  29, 23, 75, 12,  63,  40, 45, 79, 93, 49, 81,  26,
@@ -4348,7 +4360,7 @@ namespace libsemigroups {
          100, 60, 55,  76, 97, 31, 66,  36,  99, 92, 70, 41, 43, 103, 52,
          89,  37, 53,  54, 38, 65, 72,  68,  50, 98, 77, 19, 42, 11,  35,
          90,  27, 101, 71, 22, 62, 104, 102, 6,  82, 61, 69, 64, 18,  58})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {2,   17,  84, 37, 6,  70,  93,  57, 58, 41,  34, 28, 19, 65, 55,
          69,  36,  23, 21, 67, 5,   100, 53, 56, 38,  59, 0,  68, 48, 80,
          86,  62,  30, 66, 15, 103, 16,  42, 63, 95,  90, 39, 96, 12, 32,
@@ -4365,49 +4377,49 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     SchreierSims<81> S, T, U;
     using Perm = SchreierSims<81>::element_type;
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {0,  9,  18, 80, 62, 71, 40, 49, 31, 3,  12, 21, 74, 56, 65, 43, 52,
          34, 6,  15, 24, 77, 59, 68, 37, 46, 28, 27, 36, 45, 26, 8,  17, 67,
          76, 58, 30, 39, 48, 20, 2,  11, 70, 79, 61, 33, 42, 51, 23, 5,  14,
          64, 73, 55, 54, 63, 72, 53, 35, 44, 13, 22, 4,  57, 66, 75, 47, 29,
          38, 16, 25, 7,  60, 69, 78, 50, 32, 41, 10, 19, 1}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {0,  3,  6,  80, 74, 77, 40, 43, 37, 1,  4,  7,  78, 72, 75, 41, 44,
          38, 2,  5,  8,  79, 73, 76, 39, 42, 36, 9,  12, 15, 62, 56, 59, 49,
          52, 46, 10, 13, 16, 60, 54, 57, 50, 53, 47, 11, 14, 17, 61, 55, 58,
          48, 51, 45, 18, 21, 24, 71, 65, 68, 31, 34, 28, 19, 22, 25, 69, 63,
          66, 32, 35, 29, 20, 23, 26, 70, 64, 67, 30, 33, 27}));
-    S.add_generator(Perm(
+    S.add_generator(make<Perm>(
         {1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14, 12, 16, 17,
          15, 19, 20, 18, 22, 23, 21, 25, 26, 24, 28, 29, 27, 31, 32, 30, 34,
          35, 33, 37, 38, 36, 40, 41, 39, 43, 44, 42, 46, 47, 45, 49, 50, 48,
          52, 53, 51, 55, 56, 54, 58, 59, 57, 61, 62, 60, 64, 65, 63, 67, 68,
          66, 70, 71, 69, 73, 74, 72, 76, 77, 75, 79, 80, 78}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {0,  6,  3,  5,  2,  8,  7,  4,  1,  36, 42, 39, 41, 38, 44, 43, 40,
          37, 72, 78, 75, 77, 74, 80, 79, 76, 73, 9,  15, 12, 14, 11, 17, 16,
          13, 10, 45, 51, 48, 50, 47, 53, 52, 49, 46, 54, 60, 57, 59, 56, 62,
          61, 58, 55, 18, 24, 21, 23, 20, 26, 25, 22, 19, 27, 33, 30, 32, 29,
          35, 34, 31, 28, 63, 69, 66, 68, 65, 71, 70, 67, 64}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {0,  2,  1,  6,  8,  7,  3,  5,  4,  9,  11, 10, 15, 17, 16, 12, 14,
          13, 18, 20, 19, 24, 26, 25, 21, 23, 22, 27, 29, 28, 33, 35, 34, 30,
          32, 31, 36, 38, 37, 42, 44, 43, 39, 41, 40, 45, 47, 46, 51, 53, 52,
          48, 50, 49, 54, 56, 55, 60, 62, 61, 57, 59, 58, 63, 65, 64, 69, 71,
          70, 66, 68, 67, 72, 74, 73, 78, 80, 79, 75, 77, 76}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {0,  9,  18, 27, 36, 45, 54, 63, 72, 1,  10, 19, 28, 37, 46, 55, 64,
          73, 2,  11, 20, 29, 38, 47, 56, 65, 74, 3,  12, 21, 30, 39, 48, 57,
          66, 75, 4,  13, 22, 31, 40, 49, 58, 67, 76, 5,  14, 23, 32, 41, 50,
          59, 68, 77, 6,  15, 24, 33, 42, 51, 60, 69, 78, 7,  16, 25, 34, 43,
          52, 61, 70, 79, 8,  17, 26, 35, 44, 53, 62, 71, 80}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {0,  2,  1,  4,  3,  5,  8,  7,  6,  45, 47, 46, 49, 48, 50, 53, 52,
          51, 63, 65, 64, 67, 66, 68, 71, 70, 69, 27, 29, 28, 31, 30, 32, 35,
          34, 33, 72, 74, 73, 76, 75, 77, 80, 79, 78, 9,  11, 10, 13, 12, 14,
          17, 16, 15, 54, 56, 55, 58, 57, 59, 62, 61, 60, 18, 20, 19, 22, 21,
          23, 26, 25, 24, 36, 38, 37, 40, 39, 41, 44, 43, 42}));
-    T.add_generator(Perm(
+    T.add_generator(make<Perm>(
         {1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14, 12, 16, 17,
          15, 19, 20, 18, 22, 23, 21, 25, 26, 24, 28, 29, 27, 31, 32, 30, 34,
          35, 33, 37, 38, 36, 40, 41, 39, 43, 44, 42, 46, 47, 45, 49, 50, 48,
@@ -4415,19 +4427,19 @@ namespace libsemigroups {
          66, 70, 71, 69, 73, 74, 72, 76, 77, 75, 79, 80, 78}));
     schreier_sims::intersection(U, S, T);
     REQUIRE(U.size() == 162);
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {0,  9,  18, 27, 36, 45, 54, 63, 72, 1,  10, 19, 28, 37, 46, 55, 64,
          73, 2,  11, 20, 29, 38, 47, 56, 65, 74, 3,  12, 21, 30, 39, 48, 57,
          66, 75, 4,  13, 22, 31, 40, 49, 58, 67, 76, 5,  14, 23, 32, 41, 50,
          59, 68, 77, 6,  15, 24, 33, 42, 51, 60, 69, 78, 7,  16, 25, 34, 43,
          52, 61, 70, 79, 8,  17, 26, 35, 44, 53, 62, 71, 80})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {1,  2,  0,  4,  5,  3,  7,  8,  6,  10, 11, 9,  13, 14, 12, 16, 17,
          15, 19, 20, 18, 22, 23, 21, 25, 26, 24, 28, 29, 27, 31, 32, 30, 34,
          35, 33, 37, 38, 36, 40, 41, 39, 43, 44, 42, 46, 47, 45, 49, 50, 48,
          52, 53, 51, 55, 56, 54, 58, 59, 57, 61, 62, 60, 64, 65, 63, 67, 68,
          66, 70, 71, 69, 73, 74, 72, 76, 77, 75, 79, 80, 78})));
-    REQUIRE(U.contains(Perm(
+    REQUIRE(U.contains(make<Perm>(
         {3,  4,  5,  6,  7,  8,  0,  1,  2,  12, 13, 14, 15, 16, 17, 9,  10,
          11, 21, 22, 23, 24, 25, 26, 18, 19, 20, 30, 31, 32, 33, 34, 35, 27,
          28, 29, 39, 40, 41, 42, 43, 44, 36, 37, 38, 48, 49, 50, 51, 52, 53,
@@ -4441,9 +4453,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims][copy constructor]") {
     auto rg    = ReportGuard(false);
     using Perm = Perm<0, uint8_t>;
-    SchreierSims<255, uint8_t, Perm>* S1
-        = new SchreierSims<255, uint8_t, Perm>();
-    S1->add_generator(Perm(
+    auto S1    = std::make_unique<SchreierSims<255, uint8_t, Perm>>();
+    S1->add_generator(make<Perm>(
         {1,   0,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
          14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
          28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
@@ -4463,7 +4474,7 @@ namespace libsemigroups {
          224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
          238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
          252, 253, 254}));
-    S1->add_generator(Perm(
+    S1->add_generator(make<Perm>(
         {1,   2,   3,   4,   0,   5,   6,   7,   8,   9,   10,  11,  12,  13,
          14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
          28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
@@ -4484,17 +4495,13 @@ namespace libsemigroups {
          238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
          252, 253, 254}));
 
-    SchreierSims<255, uint8_t, Perm>* S2
-        = new SchreierSims<255, uint8_t, Perm>(std::move(*S1));
+    auto S2
+        = std::make_unique<SchreierSims<255, uint8_t, Perm>>(std::move(*S1));
     REQUIRE(S2->size() == 120);
 
-    SchreierSims<255, uint8_t, Perm>* S3
-        = new SchreierSims<255, uint8_t, Perm>();
-    *S3 = std::move(*S2);
+    auto S3 = std::make_unique<SchreierSims<255, uint8_t, Perm>>();
+    *S3     = std::move(*S2);
     REQUIRE(S3->size() == 120);
-    delete S1;
-    delete S2;
-    delete S3;
   }
 
 }  // namespace libsemigroups

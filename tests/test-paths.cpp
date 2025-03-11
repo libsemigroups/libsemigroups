@@ -30,10 +30,11 @@
 #include <vector>         // for vector, operator==
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "libsemigroups/bipart.hpp"
+
 #include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for binary_tree
 
+#include "libsemigroups/bipart.hpp"
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
 #include "libsemigroups/constants.hpp"          // for operator!=, operator==
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
@@ -50,8 +51,6 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for hash
 
-#include "libsemigroups/ranges.hpp"  // for operator|, begin, end
-
 namespace libsemigroups {
 
   using namespace literals;
@@ -59,23 +58,6 @@ namespace libsemigroups {
   using literals::operator""_w;
 
   struct LibsemigroupsException;  // forward decl
-
-  namespace {
-    // TODO(2) add to word_graph helper namespace
-    void add_chain(WordGraph<size_t>& word_graph, size_t n) {
-      size_t old_nodes = word_graph.number_of_nodes();
-      word_graph.add_nodes(n);
-      for (size_t i = old_nodes; i < word_graph.number_of_nodes() - 1; ++i) {
-        word_graph.target(i, 0, i + 1);
-      }
-    }
-
-    WordGraph<size_t> chain(size_t n) {
-      WordGraph<size_t> g(0, 1);
-      add_chain(g, n);
-      return g;
-    }
-  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "000", "100 node path", "[quick]") {
     WordGraph<size_t> wg;
@@ -381,7 +363,8 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_nodes() == S.size());
     wg.add_nodes(1);
     REQUIRE(wg.number_of_nodes() == S.size() + 1);
-    REQUIRE(wg.target(S.size(), 0) == static_cast<size_t>(UNDEFINED));
+    REQUIRE(wg.target(S.size(), 0)
+            == static_cast<typename decltype(wg)::node_type>(UNDEFINED));
 
     REQUIRE(wg.number_of_nodes() == 10);
     REQUIRE(wg.number_of_edges() == 18);
@@ -469,7 +452,7 @@ namespace libsemigroups {
     REQUIRE(kb2.number_of_classes() == 9);
     auto T = to<FroidurePin>(kb2);
     T.run();
-    REQUIRE(std::vector<relation_type>(T.cbegin_rules(), T.cend_rules())
+    REQUIRE(std::vector(T.cbegin_rules(), T.cend_rules())
             == std::vector<relation_type>(
                 {{01_w, 1_w}, {11_w, 1_w}, {00000_w, 00_w}}));
   }
@@ -783,9 +766,9 @@ namespace libsemigroups {
                           "012",
                           "number_of_paths binary tree",
                           "[quick][no-valgrind]") {
-    using node_type      = WordGraph<size_t>::node_type;
-    size_t const      n  = 6;
-    WordGraph<size_t> wg = binary_tree(n);
+    using node_type = WordGraph<size_t>::node_type;
+    size_t const n  = 6;
+    WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(word_graph::is_acyclic(wg));
@@ -825,8 +808,8 @@ namespace libsemigroups {
                           "013",
                           "number_of_paths large binary tree",
                           "[quick][no-valgrind]") {
-    size_t const      n  = 20;
-    WordGraph<size_t> wg = binary_tree(n);
+    size_t const n  = 20;
+    WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(word_graph::is_acyclic(wg));
