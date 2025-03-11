@@ -49,6 +49,7 @@ namespace libsemigroups {
         _tmp_lambda_value2(),
         _tmp_rho_value1(),
         _tmp_rho_value2() {
+    report_prefix("Konieczny");
     _lambda_orb.cache_scc_multipliers(true);
     _rho_orb.cache_scc_multipliers(true);
   }
@@ -678,11 +679,13 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::compute_orbs() {
+    using detail::group_digits;
+    using detail::string_time;
     if (_lambda_orb.finished() && _rho_orb.finished()) {
       return;
     }
-    report_default("Computing orbits...\n");
-    detail::Timer t;
+
+    report_default("Konieczny: Computing \u03BB- and \u03C1-actions . . .\n");
     if (!_lambda_orb.started()) {
       _lambda_orb.add_seed(OneParamLambda()(this->to_external_const(_one)));
       for (auto const& g : _gens) {
@@ -697,10 +700,12 @@ namespace libsemigroups {
     }
     _lambda_orb.run_until([this]() { return stopped(); });
     _rho_orb.run_until([this]() { return stopped(); });
-    report_default("found {} lambda-values and {} rho-values in {}\n",
-                   _lambda_orb.current_size(),
-                   _rho_orb.current_size(),
-                   t.string());
+    auto const time = string_time(delta(start_time()));
+    report_default("Konieczny: . . . found {} \u03BB-values and {} "
+                   "\u03C1-values in {}\n",
+                   group_digits(_lambda_orb.current_size()),
+                   group_digits(_rho_orb.current_size()),
+                   time);
   }
 
   // This is a traits class for ConstIteratorStateless in detail/iterator.hpp
@@ -757,52 +762,39 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::run_report() {
-    if (!report()) {
+    if (!reporting_enabled()) {
       return;
     }
 
     using detail::group_digits;
     using detail::string_time;
 
-    size_t number_of_reps_remaining = 0;
-    std::for_each(_ranks.cbegin(),
-                  _ranks.cend(),
-                  [this, &number_of_reps_remaining](rank_type x) {
-                    number_of_reps_remaining
-                        += _regular_reps[x].size() + _nonregular_reps[x].size();
-                  });
+    size_t todo = 0;
+    std::for_each(_ranks.cbegin(), _ranks.cend(), [this, &todo](rank_type x) {
+      todo += _regular_reps[x].size() + _nonregular_reps[x].size();
+    });
 
-    auto const size = fmt::format("{:<11}", group_digits(current_size()));
-    auto const Dcs
-        = fmt::format("{:<9}", group_digits(current_number_of_D_classes()));
-    auto const Rcs
-        = fmt::format("{:<9}", group_digits(current_number_of_R_classes()));
-    auto const Lcs
-        = fmt::format("{:<9}", group_digits(current_number_of_L_classes()));
-    auto const reps_string
-        = fmt::format("{:<9}", group_digits(number_of_reps_remaining));
-    auto const repinfo_string = fmt::format("{} (reps todo, ranks {}-{})",
-                                            reps_string,
-                                            group_digits(*_ranks.cbegin()),
-                                            group_digits(max_rank()));
+    auto const ranks = fmt::format("[{},{})",
+                                   group_digits(*_ranks.cbegin()),
+                                   group_digits(max_rank() + 1));
+    auto const total = string_time(delta(start_time()));
 
-    auto const run_time_string
-        = fmt::format("{:<7}", detail::string_time(delta(start_time())));
-
-    // TODO(later) add layers to report
-    report_default("Konieczny: {} (size) | {} (D-classes) | {} (L-classes) | "
-                   "{} (R-classes) | {:<36} | {}\n",
-                   size,
-                   Dcs,
-                   Lcs,
-                   Rcs,
-                   repinfo_string,
-                   run_time_string);
+    report_default("Konieczny: {:<5} (D-classes) | {:<11} (elements) | {:<7} "
+                   "(todo) | {:<7} (ranks) | {:<7} (total)\n",
+                   group_digits(current_number_of_D_classes()),
+                   group_digits(current_size()),
+                   group_digits(todo),
+                   ranks,
+                   total);
   }
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::run_impl() {
-    detail::Timer t;
+    if (!running_until() && !running_for() && !finished()) {
+      report_default(
+          "Konieczny: running until all D-classes are found . . .\n");
+    }
+    reset_start_time();
     // initialise the required data
     init_run();
     // if we haven't initialised, it should be because we stopped() during
@@ -816,6 +808,7 @@ namespace libsemigroups {
     std::vector<RepInfo> tmp_next;
 
     while (!stopped() && !_ranks.empty()) {
+      run_report();
       LIBSEMIGROUPS_ASSERT(next_reps.empty());
       bool         reps_are_reg = false;
       size_t const mx_rank      = max_rank();
@@ -842,7 +835,6 @@ namespace libsemigroups {
       std::swap(next_reps, tmp_next);
 
       while (!next_reps.empty()) {
-        run_report();
         auto& rep_info = next_reps.back();
         if (reps_are_reg) {
           add_D_class(new RegularDClass(this, rep_info._elt));
@@ -884,8 +876,10 @@ namespace libsemigroups {
       }
     }
 
-    // report_elapsed_time("Konieczny: ", t);
     report_why_we_stopped();
+    if (finished()) {
+      report_default("Konieczny: FINISHED!\n");
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////

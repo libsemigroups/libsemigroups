@@ -1920,6 +1920,7 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if any of the following hold:
   //! * \p gens is empty
   //! * Degree`{}(x)` != Degree`{}(y)` for some \c x, \c y in \p gens.
+  // TODO(1) to tpp
   template <template <typename...> typename Thing,
             typename Container,
             typename Traits = KoniecznyTraits<typename Container::value_type>>

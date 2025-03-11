@@ -150,9 +150,12 @@ namespace libsemigroups {
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
       if (val != FOREVER) {
-        report_default("running for approx. {}\n", detail::string_time(val));
+        report_default("{}: running for approx. {}\n",
+                       report_prefix(),
+                       detail::string_time(val));
       } else {
-        report_default("running until finished, with no time limit\n");
+        report_default("{}: running until finished, with no time limit\n",
+                       report_prefix());
         run();
         return;
       }
@@ -178,17 +181,17 @@ namespace libsemigroups {
     } else {
       // This line is definitely tested, but not showing up in code coverage for
       // JDM
-      report_default("already finished, not running\n");
+      report_default("{}: already finished, not running\n", report_prefix());
     }
   }
 
   void Runner::report_why_we_stopped() const {
     if (dead()) {
-      report_default("killed!\n");
+      report_default("{}: killed!\n", report_prefix());
     } else if (timed_out()) {
-      report_default("timed out!\n");
+      report_default("{}: timed out!\n", report_prefix());
     } else if (stopped_by_predicate()) {
-      report_default("stopped by predicate!\n");
+      report_default("{}: stopped by predicate!\n", report_prefix());
     }
     // Checking finished can be expensive, so we don't
   }
