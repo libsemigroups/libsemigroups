@@ -43,8 +43,8 @@ namespace libsemigroups {
                           "022",
                           "non-regular D-classes 02",
                           "[quick][bmat8][no-valgrind]") {
-    auto                     rg = ReportGuard(false);
-    std::vector<BMat8> const gens
+    auto              rg = ReportGuard(false);
+    std::vector const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
            BMat8({{1, 1, 0, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 1}}),
@@ -53,7 +53,7 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 1, 1, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}, {0, 0, 1, 0}})};
 
-    std::vector<BMat8> const idems
+    std::vector const idems
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 1, 1}, {0, 1, 0, 0}, {0, 1, 1, 0}, {0, 1, 0, 1}}),
            BMat8({{1, 1, 0, 1}, {0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 0, 0}}),
@@ -73,17 +73,15 @@ namespace libsemigroups {
 
     size_t count = 0;
     for (BMat8 id : idems) {
-      Konieczny<BMat8>::DClass& D = KS.D_class_of_element(id);
-      count += D.size();
+      count += KS.D_class_of_element(id).size();
     }
+    REQUIRE(count == 8'712);
 
     REQUIRE(size_t(KS.cend_current_regular_D_classes()
                    - KS.cbegin_current_regular_D_classes())
             == idems.size());
 
-    REQUIRE(count == 8'712);
-
-    std::vector<BMat8> non_reg_reps
+    std::vector non_reg_reps
         = {BMat8({{1, 1, 1, 1}, {1, 1, 1, 1}, {0, 1, 1, 1}, {1, 1, 1, 0}}),
            BMat8({{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 1}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 1, 0, 0}}),
@@ -244,8 +242,8 @@ namespace libsemigroups {
                           "024",
                           "copy constructors",
                           "[quick][bmat8]") {
-    auto                     rg = ReportGuard(false);
-    std::vector<BMat8> const gens
+    auto              rg = ReportGuard(false);
+    std::vector const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
            BMat8({{1, 1, 0, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 1}}),
@@ -285,8 +283,8 @@ namespace libsemigroups {
                           "025",
                           "move constructors",
                           "[quick][bmat8]") {
-    auto                     rg = ReportGuard(false);
-    std::vector<BMat8> const gens
+    auto              rg = ReportGuard(false);
+    std::vector const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
            BMat8({{1, 1, 0, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 1}}),

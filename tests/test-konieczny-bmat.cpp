@@ -36,9 +36,12 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Konieczny S = make<Konieczny>(
-        {TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
-         TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
-         TestType({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})});
+        {make<TestType>(
+             {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
+         make<TestType>(
+             {{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
+         make<TestType>(
+             {{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})});
 
     REQUIRE(S.size() == 26);
   }
@@ -52,11 +55,16 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     Konieczny S = make<Konieczny>(
-        {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-         TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
-         TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
-         TestType({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
-         TestType({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
+        {make<TestType>(
+             {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
+         make<TestType>(
+             {{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
+         make<TestType>(
+             {{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
+         make<TestType>(
+             {{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
+         make<TestType>(
+             {{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
     REQUIRE(S.size() == 415);
   }
 
@@ -70,7 +78,7 @@ namespace libsemigroups {
     auto                rg = ReportGuard(true);
     Konieczny<TestType> S;
     for (auto const& v : konieczny_data::clark_gens) {
-      S.add_generator(TestType(v));
+      S.add_generator(make<TestType>(v));
     }
     REQUIRE(S.generator(0).number_of_rows() == 40);
     S.run();
@@ -98,29 +106,28 @@ namespace libsemigroups {
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
                                    BMat<5>) {
-    auto                  rg   = ReportGuard(false);
-    std::vector<TestType> gens = {TestType({{0, 1, 1, 1, 0},
-                                            {0, 0, 1, 0, 0},
-                                            {1, 0, 0, 1, 0},
-                                            {1, 1, 1, 0, 0},
-                                            {0, 1, 1, 1, 1}}),
-                                  TestType({{0, 0, 0, 1, 0},
-                                            {0, 0, 1, 0, 0},
-                                            {1, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0},
-                                            {0, 1, 0, 1, 1}}),
-                                  TestType({{0, 0, 0, 1, 0},
-                                            {1, 1, 0, 0, 0},
-                                            {0, 0, 1, 1, 1},
-                                            {1, 1, 0, 0, 1},
-                                            {0, 0, 1, 1, 0}}),
-                                  TestType({{0, 1, 0, 0, 1},
-                                            {0, 0, 1, 0, 1},
-                                            {1, 0, 1, 0, 0},
-                                            {0, 1, 1, 1, 0},
-                                            {1, 0, 0, 0, 1}})};
+    auto rg = ReportGuard(false);
 
-    Konieczny S = make<Konieczny>(gens);
+    Konieczny S = make<Konieczny>({make<TestType>({{0, 1, 1, 1, 0},
+                                                   {0, 0, 1, 0, 0},
+                                                   {1, 0, 0, 1, 0},
+                                                   {1, 1, 1, 0, 0},
+                                                   {0, 1, 1, 1, 1}}),
+                                   make<TestType>({{0, 0, 0, 1, 0},
+                                                   {0, 0, 1, 0, 0},
+                                                   {1, 0, 0, 0, 0},
+                                                   {0, 0, 0, 0, 0},
+                                                   {0, 1, 0, 1, 1}}),
+                                   make<TestType>({{0, 0, 0, 1, 0},
+                                                   {1, 1, 0, 0, 0},
+                                                   {0, 0, 1, 1, 1},
+                                                   {1, 1, 0, 0, 1},
+                                                   {0, 0, 1, 1, 0}}),
+                                   make<TestType>({{0, 1, 0, 0, 1},
+                                                   {0, 0, 1, 0, 1},
+                                                   {1, 0, 1, 0, 0},
+                                                   {0, 1, 1, 1, 0},
+                                                   {1, 0, 0, 0, 1}})});
     REQUIRE(S.size() == 513);
   }
 }  // namespace libsemigroups

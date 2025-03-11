@@ -709,7 +709,6 @@ namespace libsemigroups {
       // element of the semigroup, then the behaviour is undefined.
       // This member function involved computing most of the frame for
       // \c this, if it is not already known.
-      // TODO rename
       bool contains_no_checks(internal_const_reference x);
 
       // Returns whether the element \p x belongs to this
