@@ -32,12 +32,6 @@ namespace libsemigroups {
                           "005",
                           "regular elements and idempotents",
                           "[quick][no-valgrind][bmat8]") {
-    // TODO(0) is this ifdef still required?
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Winline"
-#endif
     using BMat = BMatFastest<4>;
     auto rg    = ReportGuard(false);
 
@@ -72,9 +66,6 @@ namespace libsemigroups {
     }
     REQUIRE(count == 40'408);
     REQUIRE(KS.number_of_regular_elements() == 40'408);
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic pop
-#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",

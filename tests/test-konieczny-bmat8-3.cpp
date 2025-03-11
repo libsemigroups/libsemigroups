@@ -164,11 +164,6 @@ namespace libsemigroups {
                           "023",
                           "Hall monoid 5",
                           "[extreme][bmat8]") {
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Winline"
-#endif
     auto rg    = ReportGuard();
     using BMat = BMatFastest<5>;
     Konieczny<BMat> K;
@@ -233,9 +228,6 @@ namespace libsemigroups {
                           {1, 0, 1, 0, 0},
                           {1, 1, 0, 0, 0}}));
     REQUIRE(K.size() == 23'191'071);
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic pop
-#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",

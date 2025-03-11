@@ -37,12 +37,6 @@ namespace libsemigroups {
                           "012",
                           "full bmat monoid 5",
                           "[extreme][bmat8]") {
-    // TODO(0) ifdef's required?
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Winline"
-#endif
     using BMat = BMatFastest<5>;
     auto rg    = ReportGuard(true);
 
@@ -117,10 +111,6 @@ namespace libsemigroups {
                                          {0, 1, 0, 0, 1},
                                          {0, 0, 1, 1, 1}})});
     REQUIRE(T.size() == 33'554'432);
-
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic pop
-#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -173,11 +163,6 @@ namespace libsemigroups {
                           "014",
                           "regular generated bmat monoid 5",
                           "[extreme][bmat8]") {
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Winline"
-#endif
     using BMat = BMatFastest<5>;
     auto rg    = ReportGuard(true);
 
@@ -224,9 +209,6 @@ namespace libsemigroups {
         });
     REQUIRE(sum == 73'023);
     REQUIRE(T.number_of_idempotents() == 73'023);
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic pop
-#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -306,12 +288,6 @@ namespace libsemigroups {
                           "016",
                           "another large example",
                           "[quick][no-valgrind][bmat8]") {
-    // TODO(0) required
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Winline"
-#endif
     using BMat = BMatFastest<8>;
     auto rg    = ReportGuard(false);
 
@@ -380,9 +356,6 @@ namespace libsemigroups {
                                          {0, 0, 0, 0, 1, 0, 0, 0},
                                          {0, 0, 1, 0, 0, 0, 0, 0}})});
     REQUIRE(S.size() == 201'750);
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic pop
-#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -462,11 +435,6 @@ namespace libsemigroups {
                           "018",
                           "full bmat monoid 5 with stop in Action",
                           "[extreme][bmat8]") {
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Winline"
-#endif
     using BMat = BMatFastest<5>;
     auto rg    = ReportGuard(true);
 
@@ -549,9 +517,6 @@ namespace libsemigroups {
     T.run_for(std::chrono::milliseconds(100));
     T.run_for(std::chrono::milliseconds(100));
     REQUIRE(T.size() == 33'554'432);
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-#pragma GCC diagnostic pop
-#endif
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
