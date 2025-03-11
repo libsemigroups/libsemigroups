@@ -26,9 +26,7 @@
 // is defined, if so specified at during configure.
 #include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED) \
-    || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
-
+#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED)
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
@@ -39,11 +37,20 @@
 #pragma GCC diagnostic pop
 #endif
 
+#include <type_traits>    // for decay_t etc
+#include <unordered_map>  // for unordered_map
+
 #include "adapters.hpp"   // for Complexity, Degree, ...
 #include "constants.hpp"  // for UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for enable_if_is_same
+#else
+#include <type_traits>    // for decay_t etc
+#include <unordered_map>  // for unordered_map
+
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#endif
 
 namespace libsemigroups {
   namespace detail {
@@ -78,6 +85,8 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+#if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED) \
+    || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
   //! \defgroup adapters_hpcombi_group Adapters for HPCombi
   //!
   //! This page contains the documentation of the functionality in
@@ -1082,8 +1091,8 @@ namespace libsemigroups {
   make(std::initializer_list<uint8_t>&& cont) {
     return make<Return, std::initializer_list<uint8_t>>(std::move(cont));
   }
+#endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 }  // namespace libsemigroups
 
-#endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 #endif  // LIBSEMIGROUPS_HPCOMBI_HPP_
