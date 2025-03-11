@@ -62,7 +62,10 @@ namespace libsemigroups {
           make<LeastPPerm<8>>(
              {0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8),
           make<LeastPPerm<8>>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8),
-          make<LeastPPerm<8>>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8)});
+          // clang-format off
+          make<LeastPPerm<8>>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8)
+        });
+    // clang-format on
     REQUIRE(S.size() == 1'441'729);
     REQUIRE(
         std::distance(S.cbegin_current_D_classes(), S.cend_current_D_classes())
