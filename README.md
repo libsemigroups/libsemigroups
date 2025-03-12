@@ -249,5 +249,5 @@ We thank:
 [transformations, partial permutations, permutations]: https://libsemigroups.github.io/libsemigroups/group__transf__group.html
 [`libsemigroups::ReportGuard`]: https://libsemigroups.github.io/libsemigroups/structlibsemigroups_1_1_report_guard.html
 [`libsemigroups::Dot`]: https://libsemigroups.github.io/libsemigroups/classlibsemigroups_1_1_dot.html
-[`libsemigroups::Runner::run_for`]: file:///Users/jdm/libsemigroups/docs/html/classlibsemigroups_1_1_runner.html
-[`libsemigroups::Runner::run_until`]: file:///Users/jdm/libsemigroups/docs/html/classlibsemigroups_1_1_runner.html
+[`libsemigroups::Runner::run_for`]: https://libsemigroups.github.io/libsemigroups/classlibsemigroups_1_1_runner.html
+[`libsemigroups::Runner::run_until`]: https://libsemigroups.github.io/libsemigroups/classlibsemigroups_1_1_runner.html
