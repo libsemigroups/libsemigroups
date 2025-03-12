@@ -184,6 +184,8 @@ tracker](https://github.com/libsemigroups/libsemigroups/issues).
     contributed some bugfixes.
 -   [Julius Jonušas][] contributed to the implementation of the Froidure-Pin
     algorithm.
+-   [Samuel Lelièvre][] (<samuel.lelievre@gmail.com>) contributed a number of
+    fixes to the docs.
 -   Alex Levine (<A.Levine@uea.ac.uk>) contributed to the Schreier-Sims
     implementation.
 -   [Dima Pasechnik](http://users.ox.ac.uk/~coml0531)
@@ -235,6 +237,7 @@ We thank:
 [Finn Smith]: https://flsmith.github.io
 [Maria Tsalakou]: https://mariatsalakou.github.io/
 [Michael Young]: https://mtorpey.github.io/
+[Samuel Lelièvre]: https://lelievre.perso.math.cnrs.fr/index-en.html
 
 [Carnegie Trust for the Universities of Scotland]: https://www.carnegie-trust.org/
 [School of Mathematics and Statistics, University of St Andrews]: https://www.st-andrews.ac.uk/mathematics-statistics/
