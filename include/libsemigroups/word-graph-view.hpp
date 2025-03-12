@@ -511,6 +511,9 @@ namespace libsemigroups {
     throw_if_label_out_of_bounds(WordGraphView<Node> const&               wgv,
                                  typename WordGraphView<Node>::label_type a);
 
+    //! \brief Creates a word graph from a corresponding view, copying only the
+    //! nodes contained within the view. Will throw \c LibsemigroupsException if
+    //! the underlying graph had edges which crossed the boundaries of the view
     template <typename Node>
     WordGraph<Node> create_graph_from_view(WordGraph<Node> const& view);
   }  // namespace word_graph_view
