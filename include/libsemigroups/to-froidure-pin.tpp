@@ -118,6 +118,19 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // Konieczny
+  ////////////////////////////////////////////////////////////////////////
+
+  template <template <typename...> typename Thing,
+            typename Element,
+            typename Traits>
+  auto to(Konieczny<Element, Traits> const& k)
+      -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
+                          FroidurePin<Element>> {
+    return FroidurePin(k.cbegin_generators(), k.cend_generators());
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter
   ////////////////////////////////////////////////////////////////////////
 

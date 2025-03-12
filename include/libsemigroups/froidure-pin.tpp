@@ -40,6 +40,7 @@ namespace libsemigroups {
         _sorted(),
         _state(),
         _tmp_product() {
+    report_prefix("FroidurePin");
     init();
   }
 
@@ -55,6 +56,7 @@ namespace libsemigroups {
     _sorted.clear();
     _state       = nullptr;
     _nr_products = 0;
+    report_prefix("FroidurePin");
     return *this;
   }
 
@@ -109,6 +111,7 @@ namespace libsemigroups {
       copy_generators_from_elements(S.number_of_generators());
       init_degree(this->to_external_const(_gens[0]));
     }
+    report_prefix("FroidurePin");
     return *this;
   }
 
@@ -229,7 +232,7 @@ namespace libsemigroups {
 
     auto* state_ptr = _state.get();
     for (auto it = first; it != last; ++it) {
-      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
+      LIBSEMIGROUPS_ASSERT(static_cast<size_t>(*it) < number_of_generators());
       Swap()(this->to_external(_tmp_product), prod);
       internal_product(prod,
                        this->to_external_const(_tmp_product),
@@ -620,7 +623,6 @@ namespace libsemigroups {
         = fmt::format("{}", detail::group_digits(_nr_products));
 
     auto const poss_prods = fmt::format(
-
         "{}", detail::group_digits(current_size() * number_of_generators()));
 
     auto const percent_prods
@@ -1037,10 +1039,11 @@ namespace libsemigroups {
   // Check if an element is the identity, x should be in the position pos
   // of _elements.
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::
-      is_one(internal_const_element_type x, element_index_type pos) noexcept(
-          std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-              std::declval<InternalEqualTo>()(x, x))) {
+  void FroidurePin<Element, Traits>::is_one(
+      internal_const_element_type x,
+      element_index_type
+          pos) noexcept(std::is_nothrow_default_constructible_v<InternalEqualTo>
+                        && noexcept(std::declval<InternalEqualTo>()(x, x))) {
     if (!_found_one && InternalEqualTo()(x, _id)) {
       _pos_one   = pos;
       _found_one = true;

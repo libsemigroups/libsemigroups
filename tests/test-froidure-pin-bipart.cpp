@@ -208,6 +208,7 @@ namespace libsemigroups {
     S.add_generator(make<Bipartition>({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}));
     S.add_generator(make<Bipartition>({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4}));
     S.reserve(4'213'597);
+    S.run_for(std::chrono::seconds(1));
     REQUIRE(S.size() == 4'213'597);
     REQUIRE(S.number_of_idempotents() == 541'254);
   }

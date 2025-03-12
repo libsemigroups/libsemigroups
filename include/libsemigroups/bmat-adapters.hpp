@@ -374,7 +374,7 @@ namespace libsemigroups {
     RankState() = delete;
 
     //! Deleted.
-    RankState(RankState const&) = delete;
+    RankState(RankState const&) = default;
 
     //! Deleted.
     RankState(RankState&&) = delete;

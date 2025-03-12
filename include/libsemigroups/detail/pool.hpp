@@ -58,14 +58,14 @@ namespace libsemigroups {
                     "Pool<T> requires T to be default-constructible");
 
      public:
-      Pool()  = default;
-      ~Pool() = default;
+      Pool()                  = default;
+      Pool(Pool&&)            = default;
+      Pool& operator=(Pool&&) = default;
+      ~Pool()                 = default;
 
       // Deleted other constructors to avoid unintentional copying
       Pool(Pool const&)            = delete;
-      Pool(Pool&&)                 = delete;
       Pool& operator=(Pool const&) = delete;
-      Pool& operator=(Pool&&)      = delete;
 
       T acquire() {
         return T();
@@ -90,11 +90,20 @@ namespace libsemigroups {
         }
       }
 
+      Pool(Pool&& that) {
+        *this = std::move(that);
+      }
+
+      Pool& operator=(Pool&& that) {
+        std::swap(_acquirable, that._acquirable);
+        std::swap(_acquired, that._acquired);
+        std::swap(_map, that._map);
+        return *this;
+      }
+
       // Deleted other constructors to avoid unintentional copying
       Pool(Pool const&)            = delete;
-      Pool(Pool&&)                 = delete;
       Pool& operator=(Pool const&) = delete;
-      Pool& operator=(Pool&&)      = delete;
 
       // Not noexcept because it can throw
       T acquire() {

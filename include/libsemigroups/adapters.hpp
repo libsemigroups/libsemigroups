@@ -885,7 +885,7 @@ namespace libsemigroups {
 
     // Other constructors are deleted.
     //! Deleted.
-    RankState(RankState const&) = delete;
+    RankState(RankState const&) = default;
     //! Deleted.
     RankState(RankState&&) = delete;
     //! Deleted.
