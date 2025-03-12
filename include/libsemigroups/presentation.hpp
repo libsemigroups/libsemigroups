@@ -634,6 +634,22 @@ namespace libsemigroups {
   //! they are declared as free functions instead.
   namespace presentation {
 
+    //! \brief Throws if the presentation isn't normalized.
+    //!
+    //! This function throws a LibsemigroupsException if the
+    //! \ref Presentation::alphabet of \p p is not `0` to
+    //! `p.alphabet().size() - 1`.
+    //!
+    //! The second parameter \p arg is used in the formatting of the exception
+    //! message to specify which parameter the presentation \p p corresponds to
+    //! in the calling function.
+    //!
+    //! \param p the presentation to check.
+    //! \param arg the position of \p p in calling function's argument list
+    //! (defaults to "1st").
+    //!
+    //! \throws LibsemigroupsException if the alphabet of \p p is not `0` to
+    //! `p.alphabet.size()`.
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg = "1st") {
