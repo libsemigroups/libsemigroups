@@ -30,8 +30,14 @@ namespace libsemigroups {
   template <typename Subclass, typename OtherContainer>
   Subclass PTransfBase<Point, Container>::make(OtherContainer&& cont) {
     validate_args(cont);
+
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
     // TODO(1) use move iterator in next line
-    Subclass result(cont.begin(), cont.end());
+    Subclass result(std::begin(cont), std::end(cont));
+#pragma GCC diagnostic pop
     validate(result);
     return result;
   }
