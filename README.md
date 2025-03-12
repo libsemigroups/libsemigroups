@@ -118,28 +118,13 @@ or [`libsemigroups::Stephen`][].
   concurrently (see [`libsemigroups::Congruence`][]); there are
   `_no_checks` versions of most functions if performance is critical.
 
-## Thanks
-
-`libsemigroups` uses: 
-
--  [Catch2](https://github.com/catchorg/Catch2) for tests and benchmarks; 
--  [eigen](http://eigen.tuxfamily.org/) for some linear algebra computations;
--  [fmt](https://github.com/fmtlib/fmt) for string formatting;
--  [HPCombi](https://github.com/libsemigroups/HPCombi) which uses the SSE and AVX
-   instruction sets for very fast manipulation of transformations, partial
-   permutations, permutations, and boolean matrices of small size; 
--  [backward-cpp](https://github.com/bombela/backward-cpp) for beautiful
-   backtraces;
--  [magic_enum](https://github.com/Neargye/magic_enum) for static reflection for
-   enums;
--  [rx-ranges](https://github.com/simonask/rx-ranges) the minimalist ranges
-   library for C++17.
-
-We'd like to thank the authors and contributors to these excellent projects!
-
 ## How to use libsemigroups
 
 See the documentation <https://libsemigroups.github.io/libsemigroups/>.
+
+## Installation
+
+See [the installation page](install.md) for more info.
 
 ## Issues
 
@@ -147,11 +132,30 @@ If you find any problems with `libsemigroups`, or have any suggestions
 for features that you'd like to see, please use the [issue
 tracker](https://github.com/libsemigroups/libsemigroups/issues).
 
+## Dependencies
+
+`libsemigroups` uses:
+
+- [Catch2](https://github.com/catchorg/Catch2) for tests and benchmarks;
+- [eigen](http://eigen.tuxfamily.org/) for some linear algebra computations;
+- [fmt](https://github.com/fmtlib/fmt) for string formatting;
+- [HPCombi](https://github.com/libsemigroups/HPCombi) which uses the SSE and AVX
+  instruction sets for very fast manipulation of transformations, partial
+  permutations, permutations, and boolean matrices of small size;
+- [backward-cpp](https://github.com/bombela/backward-cpp) for beautiful
+  backtraces;
+- [magic_enum](https://github.com/Neargye/magic_enum) for static reflection for
+  enums;
+- [rx-ranges](https://github.com/simonask/rx-ranges) the minimalist ranges
+  library for C++17.
+
+We'd like to thank the authors and contributors to these excellent projects!
+
 ## Authors
 
-[Reinis Cirpons][] (<rc234@st-andrews.ac.uk>)
-[Joseph Edwards][] (<jde1@st-andrews.ac.uk>) 
-[James Mitchell](https://jdbm.me) (<jdm3@st-andrews.ac.uk>)
+- [Reinis Cirpons][] (<rc234@st-andrews.ac.uk>)
+- [Joseph Edwards][] (<jde1@st-andrews.ac.uk>)
+- [James Mitchell](https://jdbm.me) (<jdm3@st-andrews.ac.uk>)
 
 ## Contributors
 
@@ -197,10 +201,6 @@ tracker](https://github.com/libsemigroups/libsemigroups/issues).
     number of bugs.
 -   [Michael Young][] (<mct25@st-andrews.ac.uk>) contributed to the congruences
     code in the v0.0.1 to v0.6.7.
-
-## Installation
-
-See [installation page](install.md) for more info.
 
 ## Acknowledgements
 
