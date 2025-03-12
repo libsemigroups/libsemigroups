@@ -5,7 +5,7 @@ The full license is in the file LICENSE, distributed with this
 software.
 -->
 
-# libsemigroups 
+# libsemigroups
 
 [![image](https://img.shields.io/conda/dn/conda-forge/libsemigroups)](https://github.com/conda-forge/libsemigroups-feedstock)
 [![image](https://zenodo.org/badge/DOI/10.5281/zenodo.1437752.svg)](https://doi.org/10.5281/zenodo.1437752)
@@ -23,39 +23,39 @@ monoids. The main algorithms implemented in `libsemigroups` are:
   by a generating set consisting of elements whose multiplication and equality is
   decidable (such as [transformations, partial permutations, permutations][],
   [bipartitions][], and [matrices over a semiring][]) in the
-  [`libsemigroups::FroidurePin`][] class template; 
+  [`libsemigroups::FroidurePin`][] class template;
 - Kambites' algorithm for solving the word problem in small overlap monoids
   from ["Small overlap monoids I: The word problem"][], and the algorithm from
   ["An explicit algorithm for normal forms in small overlap monoids"][] in the
   class template [`libsemigroups::Kambites`][];
-- the [Knuth-Bendix algorithm] for finitely presented semigroups and monoids 
+- the [Knuth-Bendix algorithm] for finitely presented semigroups and monoids
   in the class template [`libsemigroups::KnuthBendix`][];
 - a version of Sims' low index subgroup algorithm for computing congruences of a
-  semigroup or monoid from 
-  ["Computing finite index congruences of finitely presented semigroups and monoids"][] 
+  semigroup or monoid from
+  ["Computing finite index congruences of finitely presented semigroups and monoids"][]
   in the classes [`libsemigroups::Sims1`][] and [`libsemigroups::Sims2`][];
-- a generalized version of the algorithms described in 
-  ["Green's equivalences in finite semigroups of binary relations"][] by 
-  Konieczny, and 
-  ["On the determination of Green's relations in finite transformation semigroups"][] 
+- a generalized version of the algorithms described in
+  ["Green's equivalences in finite semigroups of binary relations"][] by
+  Konieczny, and
+  ["On the determination of Green's relations in finite transformation semigroups"][]
   by Lallement and Mcfadden for computing finite semigroups and monoids
   admitting a pair of actions with particular properties, in the class template
   [`libsemigroups::Konieczny`][];
-- the algorithm from ["Efficient Testing of Equivalence of Words in a Free Idempotent Semigroup"][] 
+- the algorithm from ["Efficient Testing of Equivalence of Words in a Free Idempotent Semigroup"][]
   by Radoszewski and Rytter in the function [`libsemigroups::freeband_equal_to`][];
 - a non-random version of the [Schreier-Sims algorithm][]
   for permutation groups in the class template [`libsemigroups::SchreierSims`][];
-- a version of Stephen's procedure from 
+- a version of Stephen's procedure from
   ["Applications of automata theory to presentations of monoids and inverse monoids"][]
   for finitely presented inverse semigroups and monoids (for a given word \\(w\\) this
   procedure is for determining words equivalent to \\(w\\) or that are
   left divisors of \\(w\\)) in the class template [`libsemigroups::Stephen`][];
-- the [Todd-Coxeter algorithm][] for finitely presented semigroups and monoids; 
-  in the class template [`libsemigroups::ToddCoxeter`][]; see also 
+- the [Todd-Coxeter algorithm][] for finitely presented semigroups and monoids;
+  in the class template [`libsemigroups::ToddCoxeter`][]; see also
   ["The Todd–Coxeter algorithm for semigroups and monoids"][].
 
-`libsemigroups` is partly based on 
-[Algorithms for computing finite semigroups][Froidure-Pin algorithm], 
+`libsemigroups` is partly based on
+[Algorithms for computing finite semigroups][Froidure-Pin algorithm],
 [Expository Slides][], and [Semigroupe 2.01][] by [Jean-Eric Pin][].
 
 [Froidure-Pin algorithm]: https://www.irif.fr/~jep/PDF/Rio.pdf
@@ -93,27 +93,27 @@ or [`libsemigroups::Stephen`][].
 
 `libsemigroups` is a modern open source C++ library designed to be:
 
--  **state of the art**: the mathematical underpinnings of several of the
-   algorithms in `libsemigroups` originate from the authors and contributors; and the
-   other algorithms are adapted from the literature (see above for details);
--  **extensible**: [`libsemigroups::FroidurePin`][], [`libsemigroups::Konieczny`][], and
-   [`libsemigroups::SchreierSims`][] are generic and can be adapted to user-defined
-   types;
--  **adaptable**: the behaviour of many algorithms implementing in `libsemigroups` 
-   can be fine-tuned via many settings, and used interactively via the functions
+- **state of the art**: the mathematical underpinnings of several of the
+  algorithms in `libsemigroups` originate from the authors and contributors; and the
+  other algorithms are adapted from the literature (see above for details);
+- **extensible**: [`libsemigroups::FroidurePin`][], [`libsemigroups::Konieczny`][], and
+  [`libsemigroups::SchreierSims`][] are generic and can be adapted to user-defined
+  types;
+- **adaptable**: the behaviour of many algorithms implementing in `libsemigroups`
+  can be fine-tuned via many settings, and used interactively via the functions
   [`libsemigroups::Runner::run_for`][] and [`libsemigroups::Runner::run_until`][];
--  **easy to use**: converting between different types of `libsemigroups`
-   objects (see [the `to` function][]) is easy; there are many
-   helper functions to streamline common tasks; high quality exception messages
-   are implemented throughout the code base (although you don't have to use these
-   if you don't want to); long running algorithms can provide detailed feedback on
-   their progress (see [`libsemigroups::ReportGuard`][]); many data structures can be
-   visualised using graphviz (see [`libsemigroups::Dot`][] and
-   [Visualisation][]);
-   and there are hundreds of examples in the [tests][] directory.
--  **fast**: `libsemigroups` is designed with performance in mind; several
+- **easy to use**: converting between different types of `libsemigroups`
+  objects (see [the `to` function][]) is easy; there are many
+  helper functions to streamline common tasks; high quality exception messages
+  are implemented throughout the code base (although you don't have to use these
+  if you don't want to); long running algorithms can provide detailed feedback on
+  their progress (see [`libsemigroups::ReportGuard`][]); many data structures can be
+  visualised using graphviz (see [`libsemigroups::Dot`][] and
+  [Visualisation][]);
+  and there are hundreds of examples in the [tests][] directory.
+- **fast**: `libsemigroups` is designed with performance in mind; several
   classes implement parallel algorithms ([`libsemigroups::Sims1`][],
-  [`libsemigroups::Sims2`][], [`libsemigroups::Congruence`][]); 
+  [`libsemigroups::Sims2`][], [`libsemigroups::Congruence`][]);
   we provide some "winner takes all" mechanisms for running algorithms
   concurrently (see [`libsemigroups::Congruence`][]); there are
   `_no_checks` versions of most functions if performance is critical.
@@ -159,64 +159,64 @@ We'd like to thank the authors and contributors to these excellent projects!
 
 ## Contributors
 
--   [Luna Elliott](https://le27.github.io/L-Elliott/) 
-    (<luna.elliott142857@gmail.com>)
-    contributed to the Schreier-Sims implementation.
--   Jan Engelhardt (<jengelh@inai.de>) contributed some bug fixes to the
-    build system, and a number of helpful issues.
--   Ilya Finkelshteyn (<ilyaf@appveyor.com>) contributed to the
-    continuous integration in AppVeyor.
--   Isuru Fernando (<isuruf@gmail.com>) contributed to the build system.
--   [Florent Hivert](https://www.lri.fr/~hivert/)
-    (<Florent.Hivert@lri.fr>) contributed many helpful ideas to
-    `libsemigroups`, and `HPCombi`.
--   [Max Horn](https://math.rptu.de/en/wgs/agag/people/head/prof-dr-max-horn)
-    (<max@quendi.de>) contributed some fixes.
--   [Jerry James](http://www.jamezone.org/) (<loganjerry@gmail.com>)
-    contributed some bugfixes.
--   [Julius Jonušas][] contributed to the implementation of the Froidure-Pin
-    algorithm.
--   [Samuel Lelièvre][] (<samuel.lelievre@gmail.com>) contributed a number of
-    fixes to the docs.
--   Alex Levine (<A.Levine@uea.ac.uk>) contributed to the Schreier-Sims
-    implementation.
--   [Dima Pasechnik](http://users.ox.ac.uk/~coml0531)
-    (<dimpase@gmail.com>) contributed to the build system.
--   Chris Russell contributed some tests for finitely presented
-    semigroups.
--   [Finn Smith][] (<fls3@st-andrews.ac.uk>)
-    contributed the implementation of the Konieczny and
-    Lallement-McFadden algorithm, to the Todd-Coxeter implementation,
-    and to BMat8s.
--   [Nicolas Thiéry](http://nicolas.thiery.name/)
-    (<nthiery@users.sf.net>) contributed to the build system, packaging
-    `libsemigroups` via conda, the python bindings and many helpful
-    conversations and suggestions.
--   [Maria Tsalakou][] (<mt200@st-andrews.ac.uk>) contributed to the Knuth-Bendix
-    implementation, related algorithms for the class `WordGraph`,
-    and to the implementation of the `Ukkonen` and `Kambites` classes.
--   [Wilf Wilson](https://wilf.me) (<wilf@wilf-wilson.net>) contributed some fixes.
--   Murray Whyte (<mw231@st-andrews.ac.uk>) contributed many examples of
-    finitely presented semigroups and monoids, to the documentation and reported a
-    number of bugs.
--   [Michael Young][] (<mct25@st-andrews.ac.uk>) contributed to the congruences
-    code in the v0.0.1 to v0.6.7.
+- [Luna Elliott](https://le27.github.io/L-Elliott/)
+  (<luna.elliott142857@gmail.com>)
+  contributed to the Schreier-Sims implementation.
+- Jan Engelhardt (<jengelh@inai.de>) contributed some bug fixes to the
+  build system, and a number of helpful issues.
+- Ilya Finkelshteyn (<ilyaf@appveyor.com>) contributed to the
+  continuous integration in AppVeyor.
+- Isuru Fernando (<isuruf@gmail.com>) contributed to the build system.
+- [Florent Hivert](https://www.lri.fr/~hivert/)
+  (<Florent.Hivert@lri.fr>) contributed many helpful ideas to
+  `libsemigroups`, and `HPCombi`.
+- [Max Horn](https://math.rptu.de/en/wgs/agag/people/head/prof-dr-max-horn)
+  (<max@quendi.de>) contributed some fixes.
+- [Jerry James](http://www.jamezone.org/) (<loganjerry@gmail.com>)
+  contributed some bugfixes.
+- [Julius Jonušas][] contributed to the implementation of the Froidure-Pin
+  algorithm.
+- [Samuel Lelièvre][] (<samuel.lelievre@gmail.com>) contributed a number of
+  fixes to the docs.
+- Alex Levine (<A.Levine@uea.ac.uk>) contributed to the Schreier-Sims
+  implementation.
+- [Dima Pasechnik](http://users.ox.ac.uk/~coml0531)
+  (<dimpase@gmail.com>) contributed to the build system.
+- Chris Russell contributed some tests for finitely presented
+  semigroups.
+- [Finn Smith][] (<fls3@st-andrews.ac.uk>)
+  contributed the implementation of the Konieczny and
+  Lallement-McFadden algorithm, to the Todd-Coxeter implementation,
+  and to BMat8s.
+- [Nicolas Thiéry](http://nicolas.thiery.name/)
+  (<nthiery@users.sf.net>) contributed to the build system, packaging
+  `libsemigroups` via conda, the python bindings and many helpful
+  conversations and suggestions.
+- [Maria Tsalakou][] (<mt200@st-andrews.ac.uk>) contributed to the Knuth-Bendix
+  implementation, related algorithms for the class `WordGraph`,
+  and to the implementation of the `Ukkonen` and `Kambites` classes.
+- [Wilf Wilson](https://wilf.me) (<wilf@wilf-wilson.net>) contributed some fixes.
+- Murray Whyte (<mw231@st-andrews.ac.uk>) contributed many examples of
+  finitely presented semigroups and monoids, to the documentation and reported a
+  number of bugs.
+- [Michael Young][] (<mct25@st-andrews.ac.uk>) contributed to the congruences
+  code in the v0.0.1 to v0.6.7.
 
 ## Acknowledgements
 
 We thank:
 
-* [OpenDreamKit](https://opendreamkit.org/) Horizon 2020 European Research
+- [OpenDreamKit](https://opendreamkit.org/) Horizon 2020 European Research
   Infrastructures project (#676541);
-* the [Carnegie Trust for the Universities of Scotland][] for funding the PhD scholarship of
+- the [Carnegie Trust for the Universities of Scotland][] for funding the PhD scholarship of
   [Julius Jonušas][];
-* the [EPSRC](https://epsrc.ukri.org/) for funding the PhD scholarships of
+- the [EPSRC](https://epsrc.ukri.org/) for funding the PhD scholarships of
   [Michael Young][], [Finn Smith][], and [Reinis Cirpons][] (EP/M506631/1,
   EP/N509759/1 and EP/V520123/1);
-* the [School of Mathematics and Statistics, University of St Andrews][] for
+- the [School of Mathematics and Statistics, University of St Andrews][] for
   funding the PhD scholarships of [Maria Tsalakou][], [Joseph Edwards][], and
   Murray Whyte;
-* the Cyprus State Scholarship Foundation for their financial support for
+- the Cyprus State Scholarship Foundation for their financial support for
   [Maria Tsalakou][].
 
 [Finn Smith]: https://flsmith.github.io
@@ -232,7 +232,7 @@ We thank:
 
 [Visualisation]: https://libsemigroups.github.io/libsemigroups/group__dot__group.html
 [`libsemigroups::Congruence`]: https://libsemigroups.github.io/libsemigroups/group__congruence__class__group.html
-[`libsemigroups::FroidurePin`]: https://libsemigroups.github.io/libsemigroups/classlibsemigroups_1_1_froidure_pin.html 
+[`libsemigroups::FroidurePin`]: https://libsemigroups.github.io/libsemigroups/classlibsemigroups_1_1_froidure_pin.html
 [`libsemigroups::Kambites`]: https://libsemigroups.github.io/libsemigroups/group__kambites__class__group.html
 [`libsemigroups::KnuthBendix`]: https://libsemigroups.github.io/libsemigroups/group__knuth__bendix__class__group.html
 [`libsemigroups::Konieczny`]: https://libsemigroups.github.io/libsemigroups/group__konieczny__group.html
