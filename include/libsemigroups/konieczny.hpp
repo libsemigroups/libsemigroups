@@ -65,14 +65,13 @@ namespace libsemigroups {
   //!
   //! \code
   //!  using namespace libsemigroups;
-  //!  const std::vector<BMat8> reg_bmat4_gens
-  //!      = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-  //!         BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
-  //!         BMat8({{1, 0, 0, 0}, {1, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
-  //!         BMat8({{0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})};
-  //!  Konieczny<BMat8> S(reg_bmat4_gens);
-  //!  S.size();   // returns 63904
-  //!  S.number_of_idempotents();   //returns 2360
+  //!  auto S = make<Konieczny>({
+  //!     BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+  //!     BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
+  //!     BMat8({{1, 0, 0, 0}, {1, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
+  //!     BMat8({{0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}})});
+  //!  S.size();   // returns 63'904
+  //!  S.number_of_idempotents();   //returns 2'360
   //! \endcode
 
   //! \ingroup konieczny_group
