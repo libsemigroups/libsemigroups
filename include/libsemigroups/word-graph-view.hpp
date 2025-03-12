@@ -204,7 +204,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds isn't
-    [[nodiscard]] const_iterator_targets cbegin_targets(node_type source) const;
+    [[nodiscard]] auto cbegin_targets(node_type source) const;
 
     //! \brief Returns a random access iterator pointing at the target of
     //! the edge with label \p 0 incident to a given node.
@@ -229,10 +229,9 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref cbegin_targets.
-    [[nodiscard]] const_iterator_targets
+    [[nodiscard]] auto
     cbegin_targets_no_checks(node_type source) const noexcept {
-      node_type translated = view_to_graph(source);
-      return _graph->cbegin_targets_no_checks(translated);
+      return rx::begin(targets_no_checks(source));
     }
 
     //! \brief Returns a random access iterator pointing one beyond the target
@@ -253,7 +252,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds isn't
-    [[nodiscard]] const_iterator_targets cend_targets(node_type source) const;
+    [[nodiscard]] auto cend_targets(node_type source) const;
 
     //! \brief Returns a random access iterator pointing one beyond the target
     //! of the edge with label `out_degree() - 1` incident to a given node.
@@ -278,10 +277,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref cend_targets.
-    [[nodiscard]] const_iterator_targets
-    cend_targets_no_checks(node_type source) const noexcept {
-      node_type translated = view_to_graph(source);
-      return _graph->cend_targets_no_checks(translated);
+    [[nodiscard]] auto cend_targets_no_checks(node_type source) const noexcept {
+      return rx::end(targets_no_checks(source));
     }
 
     //! \brief Returns a range object containing all nodes in a word graph.
@@ -399,8 +396,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
     //! greater than or equal to \ref number_of_nodes)
-    [[nodiscard]] rx::iterator_range<const_iterator_targets>
-    targets(node_type source) const;
+    [[nodiscard]] auto targets(node_type source) const;
 
     //! \brief Returns a range object containing pairs consisting of edge
     //! labels and target nodes.
