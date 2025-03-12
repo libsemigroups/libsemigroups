@@ -24,7 +24,7 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"         // for BMat8, operator<<, col_sp...

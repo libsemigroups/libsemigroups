@@ -18,7 +18,7 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
 
 #include "libsemigroups/bitset.hpp"         // for BitSet
 #include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters

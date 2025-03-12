@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/to-todd-coxeter.hpp"  // for to<ToddCoxeter>

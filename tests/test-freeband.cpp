@@ -19,7 +19,7 @@
 #include <string>   // for tests with strings
 #include <utility>  // for std::move
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE etc
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE etc
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/freeband.hpp"    // for freeband_equal_to

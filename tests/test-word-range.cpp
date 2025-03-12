@@ -22,7 +22,7 @@
 #include <utility>                             // for swap
 #include <vector>                              // for vector
                                                //
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE etc
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE etc
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 

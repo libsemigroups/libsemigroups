@@ -4,7 +4,7 @@
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for magic_enum
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.7.1
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.8.0
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
@@ -172,8 +172,8 @@ detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 
-catch2includedir = $(includedir)/libsemigroups/Catch2-3.7.1/
-catch2include_HEADERS = third_party/Catch2-3.7.1/catch_amalgamated.hpp
+catch2includedir = $(includedir)/libsemigroups/Catch2-3.8.0/
+catch2include_HEADERS = third_party/Catch2-3.8.0/catch_amalgamated.hpp
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
 magicenuminclude_HEADERS = third_party/magic_enum/magic_enum.hpp
@@ -765,8 +765,8 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += third_party/HPCombi/HPCOMBI_VERSION
-EXTRA_DIST += third_party/Catch2-3.7.1/catch_amalgamated.cpp
-EXTRA_DIST += third_party/Catch2-3.7.1/catch_amalgamated.hpp
+EXTRA_DIST += third_party/Catch2-3.8.0/catch_amalgamated.cpp
+EXTRA_DIST += third_party/Catch2-3.8.0/catch_amalgamated.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
@@ -865,7 +865,7 @@ LDADD = libsemigroups.la
 ## takes a serious amount of time.
 
 test_all_SOURCES =  tests/bmat-data.cpp
-test_all_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 test_all_SOURCES += tests/test-action.cpp
 test_all_SOURCES += tests/test-aho-corasick.cpp
 test_all_SOURCES += tests/test-bipart.cpp
@@ -940,23 +940,23 @@ test_all_SOURCES += tests/test-word-range.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
-test_action_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_action_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_aho_corasick_SOURCES =  tests/test-aho-corasick.cpp
 test_aho_corasick_SOURCES += tests/test-main.cpp
-test_aho_corasick_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_aho_corasick_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_bipart_SOURCES =  tests/test-bipart.cpp
 test_bipart_SOURCES += tests/test-main.cpp
-test_bipart_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_bipart_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_bitset_SOURCES =  tests/test-bitset.cpp
 test_bitset_SOURCES += tests/test-main.cpp
-test_bitset_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_bitset_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
-test_bmat8_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_bmat8_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_cong_all_SOURCES =  tests/test-cong-common.cpp
 test_cong_all_SOURCES += tests/test-cong.cpp
@@ -969,84 +969,84 @@ test_cong_all_SOURCES += tests/test-knuth-bendix-5.cpp
 test_cong_all_SOURCES += tests/test-knuth-bendix-6.cpp
 test_cong_all_SOURCES += tests/test-todd-coxeter.cpp
 test_cong_all_SOURCES += tests/test-main.cpp
-test_cong_all_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_cong_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_cong_common_SOURCES =  tests/test-cong-common.cpp
 test_cong_common_SOURCES += tests/test-main.cpp
-test_cong_common_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_cong_common_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_cong_SOURCES =  tests/test-cong.cpp
 test_cong_SOURCES += tests/test-main.cpp
-test_cong_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_cong_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_constants_SOURCES =  tests/test-constants.cpp
 test_constants_SOURCES += tests/test-main.cpp
-test_constants_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_constants_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
-test_containers_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_containers_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
-test_forest_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_forest_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_felsch_tree_SOURCES =  tests/test-felsch-tree.cpp
 test_felsch_tree_SOURCES += tests/test-main.cpp
-test_felsch_tree_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_felsch_tree_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_freeband_SOURCES =  tests/test-freeband.cpp
 test_freeband_SOURCES += tests/test-main.cpp
-test_freeband_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_freeband_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_bipart_SOURCES =  tests/test-froidure-pin-bipart.cpp
 test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
-test_froidure_pin_bipart_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_bipart_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_bmat8_SOURCES =  tests/test-froidure-pin-bmat8.cpp
 test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
-test_froidure_pin_bmat8_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_bmat8_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_bmat_SOURCES =  tests/test-froidure-pin-bmat.cpp
 test_froidure_pin_bmat_SOURCES += tests/bmat-data.cpp
 test_froidure_pin_bmat_SOURCES += tests/test-main.cpp
-test_froidure_pin_bmat_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_bmat_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_integers_SOURCES =  tests/test-froidure-pin-integers.cpp
 test_froidure_pin_integers_SOURCES += tests/test-main.cpp
-test_froidure_pin_integers_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_integers_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_intmat_SOURCES =  tests/test-froidure-pin-intmat.cpp
 test_froidure_pin_intmat_SOURCES += tests/test-main.cpp
-test_froidure_pin_intmat_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_intmat_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_intpairs_SOURCES =  tests/test-froidure-pin-intpairs.cpp
 test_froidure_pin_intpairs_SOURCES += tests/test-main.cpp
-test_froidure_pin_intpairs_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_intpairs_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_matrix_SOURCES =  tests/test-froidure-pin-matrix.cpp
 test_froidure_pin_matrix_SOURCES += tests/test-main.cpp
-test_froidure_pin_matrix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_matrix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_pbr_SOURCES =  tests/test-froidure-pin-pbr.cpp
 test_froidure_pin_pbr_SOURCES += tests/test-main.cpp
-test_froidure_pin_pbr_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_pbr_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_pperm_SOURCES =  tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_pperm_SOURCES += tests/test-main.cpp
-test_froidure_pin_pperm_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_pperm_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_projmaxplus_SOURCES =  tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_projmaxplus_SOURCES += tests/test-main.cpp
-test_froidure_pin_projmaxplus_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_projmaxplus_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_transf_SOURCES =  tests/test-froidure-pin-transf.cpp
 test_froidure_pin_transf_SOURCES += tests/test-main.cpp
-test_froidure_pin_transf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_transf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_maxplustrunc_SOURCES =  tests/test-froidure-pin-maxplustrunc.cpp
 test_froidure_pin_maxplustrunc_SOURCES += tests/test-main.cpp
-test_froidure_pin_maxplustrunc_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_maxplustrunc_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_SOURCES =  tests/test-main.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-bipart.cpp
@@ -1062,27 +1062,27 @@ test_froidure_pin_SOURCES += tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-transf.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-maxplustrunc.cpp
-test_froidure_pin_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_gabow_SOURCES =  tests/test-gabow.cpp
 test_gabow_SOURCES += tests/test-main.cpp
-test_gabow_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_gabow_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
-test_hpcombi_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_hpcombi_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_iterator_SOURCES =  tests/test-iterator.cpp
 test_iterator_SOURCES += tests/test-main.cpp
-test_iterator_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_iterator_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_kambites_SOURCES =  tests/test-kambites.cpp
 test_kambites_SOURCES += tests/test-main.cpp
-test_kambites_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_kambites_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_kbe_SOURCES =  tests/test-main.cpp
 test_kbe_SOURCES += tests/test-kbe.cpp
-test_kbe_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_kbe_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-2.cpp
@@ -1091,7 +1091,7 @@ test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
-test_knuth_bendix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_knuth_bendix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_konieczny_SOURCES =  tests/test-konieczny-bmat8-1.cpp
 test_konieczny_SOURCES += tests/test-konieczny-bmat8-2.cpp
@@ -1101,121 +1101,121 @@ test_konieczny_SOURCES += tests/test-konieczny-bmat.cpp
 test_konieczny_SOURCES += tests/test-konieczny-pperm.cpp
 test_konieczny_SOURCES += tests/bmat-data.cpp
 test_konieczny_SOURCES += tests/test-main.cpp
-test_konieczny_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_konieczny_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_matrix_SOURCES =  tests/test-matrix.cpp
 test_matrix_SOURCES += tests/test-main.cpp
-test_matrix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_matrix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_multi_string_view_SOURCES =  tests/test-multi-string-view.cpp
 test_multi_string_view_SOURCES += tests/test-main.cpp
-test_multi_string_view_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_multi_string_view_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp
-test_obvinf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_obvinf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_paths_SOURCES =  tests/test-paths.cpp
 test_paths_SOURCES += tests/test-main.cpp
-test_paths_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_paths_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_pbr_SOURCES =  tests/test-pbr.cpp
 test_pbr_SOURCES += tests/test-main.cpp
-test_pbr_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_pbr_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_pool_SOURCES =  tests/test-pool.cpp
 test_pool_SOURCES += tests/test-main.cpp
-test_pool_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_pool_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_presentation_SOURCES =  tests/test-presentation.cpp
 test_presentation_SOURCES += tests/test-main.cpp
-test_presentation_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_presentation_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_presentation_examples_SOURCES =  tests/test-presentation-examples-1.cpp
 test_presentation_examples_SOURCES += tests/test-presentation-examples-2.cpp
 test_presentation_examples_SOURCES += tests/test-presentation-examples-3.cpp
 test_presentation_examples_SOURCES += tests/test-main.cpp
-test_presentation_examples_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_presentation_examples_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
-test_race_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_race_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_ranges_SOURCES =  tests/test-ranges.cpp
 test_ranges_SOURCES += tests/test-main.cpp
-test_ranges_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_ranges_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_rewriters_SOURCES = tests/test-rewriters.cpp
 test_rewriters_SOURCES += tests/test-main.cpp
-test_rewriters_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_rewriters_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp
-test_runner_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_runner_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
-test_schreier_sims_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_schreier_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_sims_SOURCES =  tests/test-sims.cpp
 test_sims_SOURCES += tests/test-main.cpp
-test_sims_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_stephen_SOURCES =  tests/test-stephen.cpp
 test_stephen_SOURCES += tests/test-main.cpp
-test_stephen_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_stephen_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_string_SOURCES =  tests/test-string.cpp
 test_string_SOURCES += tests/test-main.cpp
-test_string_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_string_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
-test_timer_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_timer_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
 test_to_froidure_pin_SOURCES += tests/test-main.cpp
-test_to_froidure_pin_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_froidure_pin_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_knuth_bendix_SOURCES =  tests/test-to-knuth-bendix.cpp
 test_to_knuth_bendix_SOURCES += tests/test-main.cpp
-test_to_knuth_bendix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_knuth_bendix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
 test_to_presentation_SOURCES += tests/test-main.cpp
-test_to_presentation_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_presentation_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_todd_coxeter_SOURCES =  tests/test-to-todd-coxeter.cpp
 test_to_todd_coxeter_SOURCES += tests/test-main.cpp
-test_to_todd_coxeter_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_todd_coxeter_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
-test_todd_coxeter_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_todd_coxeter_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_transf_SOURCES =  tests/test-transf.cpp
 test_transf_SOURCES += tests/test-main.cpp
-test_transf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_transf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_types_SOURCES =  tests/test-types.cpp
 test_types_SOURCES += tests/test-main.cpp
-test_types_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_types_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
-test_uf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_uf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
-test_ukkonen_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_ukkonen_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
-test_word_graph_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_word_graph_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
-test_word_range_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_word_range_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_all_SOURCES  = benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
@@ -1232,48 +1232,48 @@ bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/bench-word-graph.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
-bench_all_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
-bench_action_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_action_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
-bench_bmat_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_bmat_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
-bench_freeband_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_freeband_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
-bench_kambites_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_kambites_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
-bench_konieczny_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_konieczny_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_sims_SOURCES =  benchmarks/bench-sims1.cpp
-bench_sims_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_string_range_SOURCES =  benchmarks/bench-string-range.cpp
-bench_string_range_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_string_range_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
-bench_multi_string_view_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_multi_string_view_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
-bench_todd_coxeter_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_todd_coxeter_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
 bench_uf_SOURCES += benchmarks/uf-old.cpp
-bench_uf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_uf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_wilo_SOURCES =  benchmarks/bench-wilo.cpp
-bench_wilo_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_wilo_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
-bench_wislo_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_wislo_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_word_graph_SOURCES =  benchmarks/bench-word-graph.cpp
-bench_word_graph_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_word_graph_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 ## Make targets
 

@@ -38,7 +38,7 @@
 #include <utility>  // for move
 #include <vector>   // for vector, operator==
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for operator""_catch_sr
 #include "test-main.hpp"  // for  LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for operator==, PositiveIn...

@@ -20,7 +20,7 @@
 #include <cstdint>      // for uint8_t
 #include <type_traits>  // for enable_if, is_integral
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/adapters.hpp"          // for complexity etc
 #include "libsemigroups/debug.hpp"             // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_i...

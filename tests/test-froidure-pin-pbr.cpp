@@ -19,7 +19,7 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, AssertionHandler, REQUIRE_THROWS_AS
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, AssertionHandler, REQUIRE_THROWS_AS
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
