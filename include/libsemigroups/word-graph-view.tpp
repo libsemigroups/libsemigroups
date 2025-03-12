@@ -53,7 +53,7 @@ namespace libsemigroups {
   WordGraphView<Node>::cend_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     node_type translated = view_to_graph(source);
-    return _graph->cend_targets_no_checks(translated);
+    return graph_to_view(_graph->cend_targets_no_checks(translated));
   }
 
   template <typename Node>
@@ -62,8 +62,8 @@ namespace libsemigroups {
   WordGraphView<Node>::next_label_and_target_no_checks(node_type  s,
                                                        label_type a) const {
     node_type translated = view_to_graph(s);
-    return 
-        graph_to_view(_graph->next_label_and_target_no_checks(translated, a));
+    return graph_to_view(
+        _graph->next_label_and_target_no_checks(translated, a));
   }
 
   template <typename Node>
@@ -147,7 +147,7 @@ namespace libsemigroups {
   WordGraphView<OtherNode>&
   WordGraphView<Node>::init(WordGraph<OtherNode> const& that) {
     static_assert(sizeof(OtherNode) <= sizeof(Node));
-    this->graph = that;
+    this->_graph = that;
     return this;
   }
 
