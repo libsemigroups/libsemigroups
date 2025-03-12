@@ -242,19 +242,20 @@ endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 ## uninstall-hook
 fmtincludedir = $(includedir)/libsemigroups/fmt
 if LIBSEMIGROUPS_WITH_INTERNAL_FMT
-fmtinclude_HEADERS =  third_party/fmt-10.1.1/include/fmt/args.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/chrono.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/color.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/compile.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/core.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/format-inl.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/format.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/os.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/ostream.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/printf.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/ranges.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/std.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/xchar.h
+fmtinclude_HEADERS =  third_party/fmt-11.1.4/include/fmt/args.h
+fmtinclude_HEADERS =  third_party/fmt-11.1.4/include/fmt/base.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/chrono.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/color.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/compile.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/core.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/format.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/format-inl.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/os.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/ostream.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/printf.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/ranges.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/std.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/xchar.h
 endif
 
 ## Define eigenincludedir outside the conditional
