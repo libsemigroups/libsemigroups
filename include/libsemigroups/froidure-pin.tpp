@@ -232,7 +232,7 @@ namespace libsemigroups {
 
     auto* state_ptr = _state.get();
     for (auto it = first; it != last; ++it) {
-      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
+      LIBSEMIGROUPS_ASSERT(static_cast<size_t>(*it) < number_of_generators());
       Swap()(this->to_external(_tmp_product), prod);
       internal_product(prod,
                        this->to_external_const(_tmp_product),
