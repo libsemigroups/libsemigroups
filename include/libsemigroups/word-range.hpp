@@ -976,6 +976,21 @@ namespace libsemigroups {
       return output;
     }
 
+    //! \brief Convert a `char` to a \ref letter_type.
+    //!
+    //! This function converts its argument \p input into a letter_type. It is
+    //! converted using the alphabet used to construct the object or set via
+    //! init(), or with \ref words::human_readable_index if \ref empty returns
+    //! `true`.
+    //!
+    //! \param input the character to convert.
+    //!
+    //! \throw LibsemigroupsException if the alphabet used to define an instance
+    //! of ToWord is not empty and \p input does not correspond to a letter of
+    //! the alphabet.
+    //!
+    //! \sa
+    //! * \ref literals
     [[nodiscard]] letter_type operator()(char input) const {
       // TODO improve this
       // FIXME(1) it also doesn't work for example to_word('a') returns 63 for
@@ -986,6 +1001,22 @@ namespace libsemigroups {
       return output[0];
     }
 
+    //! \brief Convert a `char` to a \ref letter_type.
+    //!
+    //! This function converts its argument \p input into a letter_type. It is
+    //! converted using the alphabet used to construct the object or set via
+    //! init(), or with \ref words::human_readable_index if \ref empty returns
+    //! `true`.
+    //!
+    //! \param input the character to convert.
+    //!
+    //! \warning This functions performs no checks on its arguments. In
+    //! particular, if the alphabet used to define an instance of ToWord is not
+    //! empty, and \p input does not correspond to a letter of the alphabet,
+    //! then bad things will happen.
+    //!
+    //! \sa
+    //! * \ref literals
     [[nodiscard]] letter_type call_no_checks(char input) const {
       return _alphabet_map.find(input)->second;
     }
@@ -1310,7 +1341,22 @@ namespace libsemigroups {
       return output;
     }
 
-    // TODO(1) doc
+    //! \brief Convert a std::initializer_list to a std::string.
+    //!
+    //! This function converts its argument \p input into a std::string, by
+    //! first converting it to a \ref word_type. The characters of \p input are
+    //! converted using the alphabet used to construct the object or set via
+    //! init(), or with \ref words::human_readable_letter if \ref empty returns
+    //! `true`.
+    //!
+    //! \param input the initializer list to convert.
+    //!
+    //! \throw LibsemigroupsException if the alphabet used to define an instance
+    //! of ToString is not empty and \p input contains letters that do not
+    //! correspond to letters of the alphabet.
+    //!
+    //! \sa
+    //! * \ref literals
     template <typename Int>
     [[nodiscard]] std::string
     operator()(std::initializer_list<Int> input) const {
