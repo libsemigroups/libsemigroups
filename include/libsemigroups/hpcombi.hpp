@@ -855,7 +855,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::Transf16 instance.
+  //! \returns A `HPCombi::Transf16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
@@ -898,7 +898,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::Perm16 instance.
+  //! \returns A `HPCombi::Perm16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
@@ -944,7 +944,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::PPerm16 instance.
+  //! \returns A `HPCombi::PPerm16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
@@ -1077,7 +1077,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::Transf16 instance.
+  //! \returns A `HPCombi::Transf16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
