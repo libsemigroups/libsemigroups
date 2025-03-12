@@ -53,7 +53,7 @@ namespace libsemigroups {
   WordGraphView<Node>::cend_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->cend_targets_no_checks(translated));
+    return _graph->cend_targets_no_checks(translated);
   }
 
   template <typename Node>
@@ -73,8 +73,9 @@ namespace libsemigroups {
     word_graph_view::throw_if_node_out_of_bounds(*this, s);
     word_graph_view::throw_if_label_out_of_bounds(*this, a);
     node_type translated = view_to_graph(s);
-    return graph_to_view(
-        _graph->next_label_and_target_no_checks(translated, a));
+    auto result = _graph->next_label_and_target_no_checks(translated, a);
+    graph_to_view(result);
+    return result;
   }
 
   template <typename Node>
@@ -82,15 +83,13 @@ namespace libsemigroups {
   WordGraphView<Node>::targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     node_type translated = view_to_graph(source);
-    return targets_no_checks(source, translated);
+    return graph_to_view(_graph->targets_no_checks(source, translated));
   }
 
   template <typename Node>
   auto WordGraphView<Node>::labels_and_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
-    node_type translated = view_to_graph(source);
-    // needs more thought
-    return rx::enumerate(targets_no_checks(translated));
+    return rx::enumerate(targets_no_checks(source));
   }
 
   template <typename Node>
@@ -131,7 +130,7 @@ namespace libsemigroups {
       typename WordGraphView<Node>::node_type  source,
       typename WordGraphView<Node>::label_type a) const {
     node_type translated = view_to_graph(source);
-    return _graph->target_no_checks(translated, a);
+    return graph_to_view(_graph->target_no_checks(translated, a));
   }
   template <typename Node>
   WordGraphView<Node>&

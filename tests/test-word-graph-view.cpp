@@ -23,6 +23,7 @@
 #include <iostream>  // remove when finished writing tests
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "rx/ranges.hpp"
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/word-graph-view.hpp"
@@ -164,8 +165,25 @@ namespace libsemigroups {
     g.target(2, 2, 6);
     g.target(2, 3, 4);
     WordGraphView<size_t> v(g, 2, 5);
-    REQUIRE(false);
-    // TODO(1) work out how to handle ranges
+    size_t i = 0;
+    for(auto target : v.targets_no_checks(0)) {
+      if(i == 0) {
+        REQUIRE(target == UNDEFINED);
+      }
+      if(i == 1) {
+        REQUIRE(target == 3);
+      }
+      if(i == 2) {
+        REQUIRE(target == 4);
+      }
+      if(i == 3) {
+        REQUIRE(target == 2);
+      }
+      if(i == 4) {
+        REQUIRE(target == UNDEFINED);
+      }
+      i++;
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
