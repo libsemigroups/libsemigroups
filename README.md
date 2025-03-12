@@ -137,7 +137,7 @@ or [`libsemigroups::Stephen`][].
 
 We'd like to thank the authors and contributors to these excellent projects!
 
-## How to use it
+## How to use libsemigroups
 
 See the documentation <https://libsemigroups.github.io/libsemigroups/>.
 
