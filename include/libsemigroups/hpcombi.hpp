@@ -984,7 +984,7 @@ namespace libsemigroups {
   //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
   //! validate.
   //!
-  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! Constructs a partial perm of degree \p deg such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is `0xFF` on every other value
   //! in the range \f$[0, M)\f$.
   //!
@@ -992,7 +992,7 @@ namespace libsemigroups {
   //!
   //! \param dom the domain
   //! \param ran the range
-  //! \param M the degree
+  //! \param deg the degree
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N

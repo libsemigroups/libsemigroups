@@ -571,6 +571,21 @@ namespace libsemigroups {
       return it->second;
     }
 
+    //! \brief Return a node from the represented graph.
+    //!
+    //! This function returns a refernce to a node with name obtained from
+    //! \p thing by converting it to a std::string (unless they are std::string,
+    //! std::string_view, or `char const*` already) using std::to_string.
+    //!
+    //! \tparam Thing the type of the argument.
+    //!
+    //! \param thing the object to use as the name of a node.
+    //!
+    //! \returns A reference to the Node object with \ref name obtained from
+    //! \p thing.
+    //!
+    //! \throws LibsemigroupsException if there is no node with name
+    //! `std::to_string(thing)`.
     template <typename Thing>
     Node& node(Thing&& thing) {
       auto name_str = detail::dot_to_string(std::forward<Thing>(thing));
