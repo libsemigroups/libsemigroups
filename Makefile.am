@@ -3,11 +3,12 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for magic_enum
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.8.0
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
 AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
@@ -176,7 +177,15 @@ catch2includedir = $(includedir)/libsemigroups/Catch2-3.8.0/
 catch2include_HEADERS = third_party/Catch2-3.8.0/catch_amalgamated.hpp
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
-magicenuminclude_HEADERS = third_party/magic_enum/magic_enum.hpp
+magicenuminclude_HEADERS = third_party/magic_enum-0.9.7/include/magic_enum/magic_enum.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_all.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_containers.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_flags.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_format.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_fuse.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_iostream.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_switch.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_utility.hpp
 
 rxrangesincludedir = $(includedir)/libsemigroups/rx
 rxrangesinclude_HEADERS = third_party/rx-ranges/include/rx/ranges.hpp
@@ -243,7 +252,7 @@ endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 fmtincludedir = $(includedir)/libsemigroups/fmt
 if LIBSEMIGROUPS_WITH_INTERNAL_FMT
 fmtinclude_HEADERS =  third_party/fmt-11.1.4/include/fmt/args.h
-fmtinclude_HEADERS =  third_party/fmt-11.1.4/include/fmt/base.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/base.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/chrono.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/color.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/compile.h
