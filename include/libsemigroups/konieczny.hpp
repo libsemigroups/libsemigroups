@@ -1756,13 +1756,15 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - Runner methods - private
     ////////////////////////////////////////////////////////////////////////
+
     bool finished_impl() const override;
     void run_impl() override;
-    void run_report();
+    void report_progress();
 
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - data - private
     ////////////////////////////////////////////////////////////////////////
+
     bool                                         _adjoined_identity_contained;
     bool                                         _can_accept_generators;
     std::vector<DClass*>                         _D_classes;

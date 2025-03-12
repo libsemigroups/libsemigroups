@@ -761,7 +761,7 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  void Konieczny<Element, Traits>::run_report() {
+  void Konieczny<Element, Traits>::report_progress() {
     if (!reporting_enabled()) {
       return;
     }
@@ -808,7 +808,7 @@ namespace libsemigroups {
     std::vector<RepInfo> tmp_next;
 
     while (!stopped() && !_ranks.empty()) {
-      run_report();
+      report_progress();
       LIBSEMIGROUPS_ASSERT(next_reps.empty());
       bool         reps_are_reg = false;
       size_t const mx_rank      = max_rank();
