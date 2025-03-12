@@ -212,7 +212,7 @@ We thank:
   [Julius Jonušas][];
 * the [EPSRC](https://epsrc.ukri.org/) for funding the PhD scholarships of
   [Michael Young][], [Finn Smith][], and [Reinis Cirpons][] (EP/M506631/1,
-  EP/N509759/1);
+  EP/N509759/1 and EP/V520123/1);
 * the [School of Mathematics and Statistics, University of St Andrews][] for
   funding the PhD scholarships of [Maria Tsalakou][], [Joseph Edwards][], and
   Murray Whyte;
