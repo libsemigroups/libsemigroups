@@ -272,7 +272,7 @@ namespace libsemigroups {
     //! This function adds the rules described by the iterators \p first and
     //! \p last.
     //!
-    //! \param lphbt unused (for consistency of interface only)
+    //! \param lphbt unused (for consistency of interface only).
     //! \param first iterator pointing at the left-hand-side of the first rule
     //! to add.
     //! \param last iterator pointing one beyond the right-hand-side of the last

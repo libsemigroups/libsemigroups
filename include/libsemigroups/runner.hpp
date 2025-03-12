@@ -57,7 +57,7 @@ namespace libsemigroups {
   //!
   //! The time between a given point and now.
   //!
-  //! \param t the time point
+  //! \param t the time point.
   //!
   //! \returns The nanoseconds between the time point \p t and now.
   // Not noexcept because std::chrono::duration_cast isn't
@@ -414,7 +414,7 @@ namespace libsemigroups {
     //! \param other the Runner to copy.
     Runner(Runner const& other);
 
-    //! \brief Move constructor
+    //! \brief Move constructor.
     //!
     //! Returns a runner that is initialised from \p other. The state of the
     //! new runner is the same as \p copy, except that the function passed as
@@ -476,7 +476,7 @@ namespace libsemigroups {
     //! timed_out() returns \c true, and to stop if it is, in the
     //! run() member function of any derived class of Runner.
     //!
-    //! \tparam Time unit of time
+    //! \tparam Time unit of time.
     //!
     //! \param t the time to run for (in \c Time).
     //!
@@ -501,7 +501,7 @@ namespace libsemigroups {
 
     //! \brief Run until a nullary predicate returns \p true or \ref finished.
     //!
-    //! \tparam Func the type of the argument
+    //! \tparam Func the type of the argument.
     //! \param func a callable type that will exist for at
     //! least until this function returns, or a function pointer.
     // At the end of this either finished, dead, or stopped_by_predicate.

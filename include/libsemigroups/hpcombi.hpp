@@ -395,13 +395,13 @@ namespace libsemigroups {
   //! \sa One.
   template <>
   struct One<HPCombi::BMat8> {
-    //! \brief Returns \p x.one()
+    //! \brief Returns \p x.one().
     //!
     //! Returns \p x.one()
     inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
       return x.one();
     }
-    //! \brief Returns `HPCombi::BMat8::one`
+    //! \brief Returns `HPCombi::BMat8::one`.
     //!
     //! Returns `HPCombi::BMat8::one`
     inline HPCombi::BMat8 operator()(size_t = 0) const noexcept {
@@ -418,7 +418,7 @@ namespace libsemigroups {
   //! \sa Product.
   template <>
   struct Product<HPCombi::BMat8> {
-    //! \brief Changes \p xy in-place to hold the product of \p x and \p y
+    //! \brief Changes \p xy in-place to hold the product of \p x and \p y.
     //!
     //! Changes \p xy in-place to hold the product of \p x and \p y
     inline void operator()(HPCombi::BMat8&       xy,
@@ -990,9 +990,9 @@ namespace libsemigroups {
   //!
   //! \tparam Return the return type, must be HPCombi::PPerm16.
   //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param deg the degree
+  //! \param dom the domain.
+  //! \param ran the range.
+  //! \param deg the degree.
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N
@@ -1042,9 +1042,9 @@ namespace libsemigroups {
   //!
   //! \tparam Return the return type, must be HPCombi::PPerm16.
   //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param M the degree
+  //! \param dom the domain.
+  //! \param ran the range.
+  //! \param M the degree.
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N

@@ -476,7 +476,7 @@ namespace libsemigroups {
   [[nodiscard]] std::string to_human_readable_repr(Forest const& f);
 
   //! \ingroup word_graph_group
-  //! \brief Helper functions for the Forest class
+  //! \brief Helper functions for the Forest class.
   //!
   //! This page contains the documentation of some helper functions for the
   //! Forest class.

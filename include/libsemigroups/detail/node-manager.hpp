@@ -250,9 +250,6 @@ namespace libsemigroups {
 
       //! The current value of the growth factor setting.
       //!
-      //! \parameters
-      //! (None)
-      //!
       //! \returns A value of type \c float.
       //!
       //! \exceptions

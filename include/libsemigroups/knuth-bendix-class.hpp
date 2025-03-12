@@ -147,7 +147,7 @@ namespace libsemigroups {
 
     //! \ingroup knuth_bendix_class_init_group
     //!
-    //! \brief Remove the presentation and rewriter data
+    //! \brief Remove the presentation and rewriter data.
     //!
     //! This function clears the rewriter, presentation, settings and stats
     //! from the \ref_knuth_bendix object, putting it back into the state it
@@ -544,7 +544,7 @@ namespace libsemigroups {
     // TODO(1) should be const
     auto active_rules();
 
-    //! \brief Return the node labels of the Gilman \ref WordGraph
+    //! \brief Return the node labels of the Gilman \ref WordGraph.
     //!
     //! This function returns the node labels of the Gilman \ref WordGraph,
     //! corresponding to the unique prefixes of the left-hand sides of the

@@ -69,7 +69,7 @@ namespace libsemigroups {
 
     //! \ingroup rewriters_group
     //!
-    //! \brief For a rewriting rule
+    //! \brief For a rewriting rule.
     //!
     //! Defined in `rewriters.hpp`.
     //!

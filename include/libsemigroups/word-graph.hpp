@@ -1686,7 +1686,7 @@ namespace libsemigroups {
     //! leads to the same node as the path labelled by the other side of the
     //! relation.
     //!
-    //! \tparam Node  the type of the nodes of the WordGraph
+    //! \tparam Node  the type of the nodes of the WordGraph.
     //! \p wg.
     //!
     //! \tparam Iterator1 the type of \p first_node.
@@ -2457,7 +2457,7 @@ namespace libsemigroups {
     //!
     //! \param wg the word graph to check.
     //! \param val the order to use for standardization check (defaults to
-    //! Order::shortlex)
+    //! Order::shortlex).
     //!
     //! \throws LibsemigroupsException if \p val is not one of: Order::none,
     //! Order::shortlex, Order::lex or Order::recursive.

@@ -42,7 +42,7 @@ namespace libsemigroups {
   //! \defgroup to_todd_coxeter_group to<ToddCoxeter>
   //! \ingroup todd_coxeter_group
   //!
-  //! \brief Convert to \ref_todd_coxeter instance
+  //! \brief Convert to \ref_todd_coxeter instance.
   //!
   //! This page contains documentation related to converting `libsemigroups`
   //! objects into \ref_todd_coxeter instances.

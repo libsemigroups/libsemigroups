@@ -412,7 +412,7 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
   struct EqualTo {
-    //! \brief Compare \p x and \p y with std::equal_to
+    //! \brief Compare \p x and \p y with std::equal_to.
     //!
     //! This call operator compares \p x and \p y using std::equal_to with
     //! template parameter \c Value.
@@ -444,12 +444,12 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
   struct Hash {
-    //! \brief Hash \p x using std::hash
+    //! \brief Hash \p x using std::hash.
     //!
     //! This call operator hashes \p x using std::hash with template parameter
     //! \c Value.
     //!
-    //! \param x the value to hash
+    //! \param x the value to hash.
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
     size_t operator()(Value const& x) const {
@@ -474,7 +474,7 @@ namespace libsemigroups {
   //! \par Used by KoniecznyTraits.
   template <typename T>
   struct Hash<std::vector<T>> {
-    //! \brief Hashes \p vec
+    //! \brief Hashes \p vec.
     //!
     //! This call operator hashes \p vec.
     //!
@@ -504,11 +504,11 @@ namespace libsemigroups {
   // TODO(later) What uses this?
   template <typename T, typename Hasher>
   struct Hash<std::vector<T>, Hasher> {
-    //! \brief Hashes \p vec
+    //! \brief Hashes \p vec.
     //!
     //! This call operator hashes \p vec.
     //!
-    //! \param vec the value to hash
+    //! \param vec the value to hash.
     //!
     //! \returns A hash value for \p vec, a value of type `size_t`.
     size_t operator()(std::vector<T> const& vec) const {
@@ -534,7 +534,7 @@ namespace libsemigroups {
   // TODO(later) What uses this?
   template <typename T, size_t N>
   struct Hash<std::array<T, N>> {
-    //! \brief Hashes \p ar
+    //! \brief Hashes \p ar.
     //!
     //! This call operator hashes \p ar.
     //!
@@ -565,7 +565,7 @@ namespace libsemigroups {
   // TODO(later) What uses this?
   template <typename S, typename T>
   struct Hash<std::pair<S, T>> {
-    //! \brief Hashes \p x
+    //! \brief Hashes \p x.
     //!
     //! This call operator hashes \p x.
     //!
@@ -595,7 +595,7 @@ namespace libsemigroups {
     //!
     //! This call operator hashes \p x.
     //!
-    //! \param x the value to hash
+    //! \param x the value to hash.
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
     size_t operator()(std::pair<size_t, size_t> const& x) const noexcept {
@@ -658,7 +658,7 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
   struct Swap {
-    //! \brief Swap \p x and \p y
+    //! \brief Swap \p x and \p y.
     //!
     //! This call operator swaps \p x and \p y using std::swap.
     //!
@@ -677,9 +677,9 @@ namespace libsemigroups {
   //! This struct applies `ImageRightAction<Element, Point>` to every value in a
   //! container of type `Container`.
   //!
-  //! \tparam Element the type of the elements of the semigroup
-  //! \tparam Point the type of the points acted on
-  //! \tparam Container a container of Point
+  //! \tparam Element the type of the elements of the semigroup.
+  //! \tparam Point the type of the points acted on.
+  //! \tparam Container a container of Point.
   template <typename Element,
             typename Point,
             typename Container = std::vector<Point>>
@@ -722,8 +722,8 @@ namespace libsemigroups {
   //! This struct applies `OnTuples<Element, Point,
   //! Container>` to  a container of `Container` and then sorts it.
   //!
-  //! \tparam Element the type of elements
-  //! \tparam Point the type of the points acted on
+  //! \tparam Element the type of elements.
+  //! \tparam Point the type of the points acted on.
   //! \tparam Container a container of \p Point (defaults to std::vector with
   //! template parameter \c Point).
   // TODO(2) add a template param for sorting
@@ -745,8 +745,8 @@ namespace libsemigroups {
     //!
     //! \param res a container of \c Point (such as std::vector or std::array)
     //! to hold the result.
-    //! \param pt  a container of \c Point
-    //! \param p an element of type \c Element
+    //! \param pt  a container of \c Point.
+    //! \param p an element of type \c Element.
     //!
     //! \complexity
     //! `pt.size()` times the complexity of `ImageRightAction<Element,

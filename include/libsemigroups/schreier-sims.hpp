@@ -200,14 +200,14 @@ namespace libsemigroups {
     //! also removed.
     using element_type = typename detail::BruidhinnTraits<Element>::value_type;
 
-    //! \brief Type of a const reference to the elements
+    //! \brief Type of a const reference to the elements.
     //!
     //! The type of a const reference to the elements of a SchreierSims
     //! instance.
     using const_element_reference =
         typename detail::BruidhinnTraits<Element>::const_reference;
 
-    //! \brief Type of a reference to the elements
+    //! \brief Type of a reference to the elements.
     //!
     //! The type of a reference to the elements of a SchreierSims instance.
     using element_reference =
@@ -309,7 +309,7 @@ namespace libsemigroups {
     // TODO fix in the same way as the move constructor above
     SchreierSims& operator=(SchreierSims&&);
 
-    //! \brief Default copy assignment
+    //! \brief Default copy assignment.
     //!
     //! Default copy assignment
     // TODO this requires more tests

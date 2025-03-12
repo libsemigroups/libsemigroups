@@ -111,7 +111,7 @@ namespace libsemigroups {
 
     ~Gabow();
 
-    //! \brief Construct from WordGraph
+    //! \brief Construct from WordGraph.
     //!
     //! This function constructs a Gabow object from the WordGraph \p wg.
     //!
@@ -476,7 +476,7 @@ namespace libsemigroups {
   //!
   //! Return a human readable representation of a Gabow object.
   //!
-  //! \tparam Node the type of the nodes in the underlying WordGraph
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
   //! \param g the Gabow object.
   //!

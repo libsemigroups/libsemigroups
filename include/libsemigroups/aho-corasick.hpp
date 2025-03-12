@@ -59,7 +59,7 @@ namespace libsemigroups {
 
   //! \ingroup aho_corasick_group
   //!
-  //! \brief For an implementation of the Aho-Corasick algorithm
+  //! \brief For an implementation of the Aho-Corasick algorithm.
   //!
   //! Defined in `aho-corasick.hpp`.
   //!
@@ -386,7 +386,7 @@ namespace libsemigroups {
     //! If \f$W\f$ does not correspond to a terminal node, then calling this
     //! function does nothing.
     //!
-    //! \tparam Iterator the type of the 1st and 2nd parameters
+    //! \tparam Iterator the type of the 1st and 2nd parameters.
     //! \param first iterator pointing to the first letter of the word to add.
     //! \param last one beyond the last letter of the word to add.
     //!
@@ -486,7 +486,7 @@ namespace libsemigroups {
       return w;
     }
 
-    //! \brief Find the signature of a node (in-place)
+    //! \brief Find the signature of a node (in-place).
     //!
     //! After validating \p i, this function performs the same as
     //! `signature_no_checks(w, i)`.
@@ -680,7 +680,7 @@ namespace libsemigroups {
     //! Constant.
     void validate_node_index(index_type i) const;
 
-    //! \brief Check if an index corresponds to a node currently in the trie
+    //! \brief Check if an index corresponds to a node currently in the trie.
     //!
     //! This function validates whether the given index \p i corresponds to an
     //! active node.

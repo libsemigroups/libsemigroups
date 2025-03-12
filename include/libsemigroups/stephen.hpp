@@ -156,7 +156,7 @@ namespace libsemigroups {
     //! Construct an instance from the presentation \p p. This constructor
     //! copies \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase.
     //!
     //! \param p the presentation.
     // Not noexcept because allocated memory
@@ -169,7 +169,7 @@ namespace libsemigroups {
     //! Construct an instance from the presentation \p p. This constructor
     //! moves \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase.
     //!
     //! \param p the presentation.
     explicit Stephen(PresentationType&& p) : Stephen() {
@@ -181,7 +181,7 @@ namespace libsemigroups {
     //! Construct an instance from the shared pointer \p ptr to a shared
     //! presentation object. This constructor copies \p ptr.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase.
     //!
     //! \param ptr a shared pointer to a presentation.
     explicit Stephen(std::shared_ptr<PresentationType> const& ptr) : Stephen() {
@@ -208,7 +208,7 @@ namespace libsemigroups {
     //! had been newly constructed from the presentation \p p. This initializer
     //! copies \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase.
     //!
     //! \param p the presentation.
     //!
@@ -223,7 +223,7 @@ namespace libsemigroups {
     //! had been newly constructed from the presentation \p p. This initializer
     //! moves \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase.
     //!
     //! \param p the presentation.
     //!
@@ -238,7 +238,7 @@ namespace libsemigroups {
     //! had been newly constructed from the shared pointer to a presentation
     //! \p ptr. This initializer copies \p ptr.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase.
     //!
     //! \param ptr a shared pointer to a presentation.
     //!
@@ -296,7 +296,7 @@ namespace libsemigroups {
     template <typename Iterator1, typename Iterator2>
     Stephen& set_word_no_checks(Iterator1 first, Iterator2 last);
 
-    //! \brief Check if the initial word is set
+    //! \brief Check if the initial word is set.
     //!
     //! Returns true if a word has been set with \ref set_word since the last
     //! presentation change and false otherwise.
@@ -570,7 +570,7 @@ namespace libsemigroups {
     //! \tparam PresentationType the type of presentation defining the Stephen
     //! instance, must be derived from \ref PresentationBase.
     //!
-    //! \param s the Stephen instance
+    //! \param s the Stephen instance.
     //! \param w a const reference to the input word.
     //!
     //! \returns A \c bool.
@@ -601,7 +601,7 @@ namespace libsemigroups {
     //! \tparam PresentationType the type of presentation defining the Stephen
     //! instance, must be derived from \ref PresentationBase.
     //!
-    //! \param s the Stephen instance
+    //! \param s the Stephen instance.
     //! \param w a const reference to the input word.
     //!
     //! \returns A \c bool.
@@ -624,7 +624,7 @@ namespace libsemigroups {
     //! \tparam PresentationType the type of presentation defining the Stephen
     //! instance, must be derived from \ref PresentationBase.
     //!
-    //! \param s the Stephen instance
+    //! \param s the Stephen instance.
     //!
     //! \returns A range object containing all words accepted by \p s
     //! in short-lex order.
@@ -658,7 +658,7 @@ namespace libsemigroups {
     //! \tparam PresentationType the type of presentation defining the Stephen
     //! instance, must be derived from \ref PresentationBase.
     //!
-    //! \param s the Stephen instance
+    //! \param s the Stephen instance.
     //!
     //! \returns A range object containing all the words (in short-lex
     //! order) that are left factors of Stephen::word.
@@ -822,8 +822,8 @@ namespace libsemigroups {
   //! if it hasn't been run already, and then checks that \c x.word() equals
   //! \c y.word() in the underlying semigroup.
   //!
-  //! \param x a Stephen instance
-  //! \param y a Stephen instance
+  //! \param x a Stephen instance.
+  //! \param y a Stephen instance.
   //!
   //! \returns A \c const_iterator_left_factors.
   //!
@@ -852,8 +852,8 @@ namespace libsemigroups {
   //! if it hasn't been run already, and then checks that \c x.word() equals
   //! \c y.word() in the underlying semigroup.
   //!
-  //! \param x a Stephen instance
-  //! \param y a Stephen instance
+  //! \param x a Stephen instance.
+  //! \param y a Stephen instance.
   //!
   //! \returns A \c const_iterator_left_factors.
   //!

@@ -1210,7 +1210,7 @@ namespace libsemigroups {
                                                     char const*    w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
-    //! Iterator) const
+    //! Iterator) const.
     //!
     //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const.

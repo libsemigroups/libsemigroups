@@ -627,8 +627,8 @@ namespace libsemigroups {
     //! \tparam Thing1 the type of the 1st argument.
     //! \tparam Thing2 the type of the 2nd argument.
     //!
-    //! \param head the head of the edge
-    //! \param tail the tail of the edge
+    //! \param head the head of the edge.
+    //! \param tail the tail of the edge.
     //!
     //! \returns A reference to the Edge object from \p head to \p tail.
     //!
@@ -654,8 +654,8 @@ namespace libsemigroups {
     //! \tparam Thing1 the type of the 1st argument.
     //! \tparam Thing2 the type of the 2nd argument.
     //!
-    //! \param head the head of the edge
-    //! \param tail the tail of the edge
+    //! \param head the head of the edge.
+    //! \param tail the tail of the edge.
     //!
     //! \returns A reference to the Edge object from \p head to \p tail.
     //!

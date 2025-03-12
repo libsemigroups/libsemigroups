@@ -93,7 +93,7 @@ namespace libsemigroups {
   //! isomorphic to the quotient of the underlying semigroup or monoid of
   //! \p cong by the congruence represented by \p cong.
   //!
-  //! \tparam Thing used for SFINAE should be FroidurePin
+  //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Word the type of the words in relations in \p cong.
   //! \param cong the Congruence instance to convert.
   //!
@@ -124,7 +124,7 @@ namespace libsemigroups {
   //! where \p k is a Kambites instance. The returned FroidurePin object is
   //! isomorphic to the quotient semigroup or monoid represented by \p k.
   //!
-  //! \tparam Thing used for SFINAE should be FroidurePin
+  //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Word the type of the words in relations in \p k.
   //!
   //! \param k the Kambites instance to convert.

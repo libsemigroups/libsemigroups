@@ -986,7 +986,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<std::vector<typename Thing::native_word_type>>
     partition(Thing& thing, Range r);
 
-    //! \brief Partition a range of words (via iterators)
+    //! \brief Partition a range of words (via iterators).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!

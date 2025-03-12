@@ -1478,22 +1478,22 @@ namespace libsemigroups {
   //!
   //! \tparam PlusOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! addition of the semiring
+  //! addition of the semiring.
   //!
   //! \tparam ProdOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! multiplication of the semiring
+  //! multiplication of the semiring.
   //!
   //! \tparam ZeroOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the zero of the semiring (the
-  //! additive identity element)
+  //! additive identity element).
   //!
   //! \tparam OneOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the one of the semiring (the
-  //! multiplicative identity element)
+  //! multiplicative identity element).
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \warning
   //! If the underlying matrix is destroyed, then any row views for that
@@ -1800,7 +1800,7 @@ namespace libsemigroups {
   // StaticMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  //! \brief Static matrix class
+  //! \brief Static matrix class.
   //!
   //! Defined in `matrix.hpp`.
   //!
@@ -1828,7 +1828,7 @@ namespace libsemigroups {
   //! \tparam C  the number of columns of the matrix.
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \note Certain member functions only work for square matrices and some
   //! only
@@ -2727,22 +2727,22 @@ namespace libsemigroups {
   //!
   //! \tparam PlusOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! addition of the semiring
+  //! addition of the semiring.
   //!
   //! \tparam ProdOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! multiplication of the semiring
+  //! multiplication of the semiring.
   //!
   //! \tparam ZeroOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the zero of the semiring (the
-  //! additive identity element)
+  //! additive identity element).
   //!
   //! \tparam OneOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the one of the semiring (the
-  //! multiplicative identity element)
+  //! multiplicative identity element).
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \note
   //! Certain member functions only work for square matrices and some only
@@ -3158,7 +3158,7 @@ namespace libsemigroups {
   //! semiring arithmetic (see requirements below).
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \note
   //! Certain member functions only work for square matrices and some only
@@ -8217,7 +8217,7 @@ namespace libsemigroups {
   //! the string stream \p os.
   //!
   //! \tparam Mat the type of the argument \p x, must satisfy
-  //! \ref IsMatrix<Mat>
+  //! \ref IsMatrix<Mat>.
   //!
   //! \param os the string stream.
   //!
@@ -8390,7 +8390,7 @@ namespace libsemigroups {
   //! \tparam  Mat the type of matrices.
   template <typename Mat>
   struct Degree<Mat, std::enable_if_t<IsMatrix<Mat>>> {
-    //! \brief Call operator
+    //! \brief Call operator.
     //!
     //! This function returns `x.number_of_rows()`.
     //!
@@ -8419,7 +8419,7 @@ namespace libsemigroups {
   //! \tparam  Mat the type of matrices.
   template <typename Mat>
   struct Hash<Mat, std::enable_if_t<IsMatrix<Mat>>> {
-    //! \brief Call operator
+    //! \brief Call operator.
     //!
     //! This function returns `x.hash_value()`.
     //!

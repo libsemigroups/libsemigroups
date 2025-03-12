@@ -82,7 +82,7 @@ namespace libsemigroups {
   //! \defgroup todd_coxeter_class_mem_types_group Member types
   //! \ingroup todd_coxeter_class_group
   //!
-  //! \brief Public member types
+  //! \brief Public member types.
   //!
   //! This page contains the documentation of the public member types of a
   //! \ref_todd_coxeter instance.

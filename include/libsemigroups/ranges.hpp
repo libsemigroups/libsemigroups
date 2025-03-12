@@ -282,7 +282,7 @@ namespace libsemigroups {
 
   //! \ingroup ranges_group
   //!
-  //! \brief Chain objects (const references)
+  //! \brief Chain objects (const references).
   //!
   //! Defined in `ranges.hpp`.
   //!
@@ -306,7 +306,7 @@ namespace libsemigroups {
 
   //! \ingroup ranges_group
   //!
-  //! \brief Enumerate an object (by const reference)
+  //! \brief Enumerate an object (by const reference).
   //!
   //! Defined in `ranges.hpp`.
   //!
@@ -341,8 +341,8 @@ namespace libsemigroups {
   //! \tparam Range the type of the range (must satisfy
   //! `rx::is_input_or_sink_v<Range>`).
   //!
-  //! \param os the output stream
-  //! \param r the range object
+  //! \param os the output stream.
+  //! \param r the range object.
   //!
   //! \returns A reference to the first parameter \p os.
   template <typename Range,

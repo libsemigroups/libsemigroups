@@ -359,7 +359,7 @@ namespace libsemigroups {
 
   //! \ingroup to_inverse_presentation_group
   //!
-  //! \brief Make an inverse presentation from a presentation
+  //! \brief Make an inverse presentation from a presentation.
   //!
   //! Defined in `to-presentation.hpp`.
   //!

@@ -65,7 +65,7 @@ namespace libsemigroups {
   //!
   //! \ingroup congruence_class_group
   //!
-  //! \brief Public member types
+  //! \brief Public member types.
   //!
   //! This page contains the documentation of the public member types of a
   //! \ref_congruence instance.

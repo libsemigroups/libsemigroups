@@ -69,7 +69,7 @@ namespace libsemigroups {
     //! \defgroup knuth_bendix_class_mem_types_group Member types
     //! \ingroup knuth_bendix_class_group
     //!
-    //! \brief Public member types
+    //! \brief Public member types.
     //!
     //! This page contains the documentation of the public member types of a
     //! \ref_knuth_bendix instance.
@@ -779,7 +779,7 @@ namespace libsemigroups {
 
       //! \ingroup knuth_bendix_class_accessors_group
       //!
-      //! \brief Return the number of rules that \ref_knuth_bendix has created
+      //! \brief Return the number of rules that \ref_knuth_bendix has created.
       //!
       //! This function returns the total number of Rule instances that have
       //! been created whilst whilst the Knuth-Bendix algorithm has been
@@ -962,7 +962,7 @@ namespace libsemigroups {
 
   //! \ingroup knuth_bendix_group
   //!
-  //! \brief Return a string representation of a \ref_knuth_bendix instance
+  //! \brief Return a string representation of a \ref_knuth_bendix instance.
   //!
   //! Defined in \c knuth-bendix.hpp.
   //!

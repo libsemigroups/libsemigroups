@@ -92,7 +92,7 @@ namespace libsemigroups {
   //! \brief Check if two words represent the same element of a free
   //! band (non-`word_type`).
   //!
-  //! \tparam T any type that can be converted to `word_type`
+  //! \tparam T any type that can be converted to `word_type`.
   //!
   //! \param x the first word to compare in the free band.
   //! \param y the second word to compare in the free band.
@@ -119,7 +119,7 @@ namespace libsemigroups {
   //! \brief Check if two words represent the same element of a free
   //! band (iterators).
   //!
-  //! \tparam T any type that can be converted to `word_type`
+  //! \tparam T any type that can be converted to `word_type`.
   //!
   //! \param first1 iterator to start of the first word.
   //! \param last1 iterator to end of the first word.

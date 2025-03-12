@@ -1991,7 +1991,7 @@ namespace libsemigroups {
     // See TODO(1) for more details about range objects.
     //
     // \tparam Element the type of the elements in the represented
-    // semigroup
+    // semigroup.
     //
     // \tparam Traits a traits class holding various adapters used by the
     // implementation (defaults to FroidurePinTraits).

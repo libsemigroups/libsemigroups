@@ -32,7 +32,7 @@ namespace libsemigroups {
   //! \defgroup to_cong_group to<Congruence>
   //! \ingroup congruence_group
   //!
-  //! \brief Convert to Congruence instance
+  //! \brief Convert to Congruence instance.
   //!
   //! This page contains documentation related to converting a `libsemigroups`
   //! objects into a Congruence instances.

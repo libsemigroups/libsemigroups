@@ -594,7 +594,7 @@ namespace libsemigroups {
       //! This function triggers the computation of most of the frame
       //! for \c this, if it is not already known.
       //!
-      //! \param x the element
+      //! \param x the element.
       //!
       //! \returns
       //! A value of type \c bool.
@@ -1030,7 +1030,7 @@ namespace libsemigroups {
       return current_number_of_regular_D_classes();
     }
 
-    //! \brief Returns the current number of regular \f$\mathscr{D}\f$-classes
+    //! \brief Returns the current number of regular \f$\mathscr{D}\f$-classes.
     //!
     //! \returns
     //! A value of type \c size_t.

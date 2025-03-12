@@ -244,7 +244,7 @@ namespace libsemigroups {
     //! \sa ImageRightAction, ImageLeftAction
     using action_type = Func;
 
-    //! \brief Insertion operator
+    //! \brief Insertion operator.
     //!
     //! This member function allows Action objects to be inserted into an
     //! std::ostringstream.
@@ -257,7 +257,7 @@ namespace libsemigroups {
     operator<<(std::ostringstream&                                 os,
                Action<Elment, Pint, Fnc, Trits, LftOrRight> const& action);
 
-    //! \brief Insertion operator
+    //! \brief Insertion operator.
     //!
     //! This member function allows Action objects to be inserted into a
     //! std::ostream.

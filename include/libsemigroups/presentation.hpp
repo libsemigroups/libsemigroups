@@ -1995,7 +1995,7 @@ namespace libsemigroups {
       add_commutes_rules_no_checks(p, letters, letters);
     }
 
-    //! \brief Add rules so specific letters commute with specific words
+    //! \brief Add rules so specific letters commute with specific words.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
     //! \p letters and \f$v\f$ in \p words.

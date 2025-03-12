@@ -60,7 +60,7 @@ namespace libsemigroups {
   //! This function just calls `std::reverse(w.begin(), w.end())`
   //! and is for convenience.
   //!
-  //! \tparam Word
+  //! \tparam Word.
   //!
   //! \param w the word to reverse.
   //!

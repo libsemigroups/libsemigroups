@@ -1099,7 +1099,7 @@ namespace libsemigroups {
   //!
   //! Return a human readable representation of a Paths object.
   //!
-  //! \tparam Node the type of the nodes in the underlying WordGraph
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
   //! \param p the Paths object.
   //!

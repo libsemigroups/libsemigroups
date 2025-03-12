@@ -28,7 +28,7 @@ namespace libsemigroups {
   //! \defgroup to_knuth_bendix_group to<KnuthBendix>
   //! \ingroup knuth_bendix_group
   //!
-  //! \brief Convert to \ref_knuth_bendix instance
+  //! \brief Convert to \ref_knuth_bendix instance.
   //!
   //! This page contains documentation related to converting `libsemigroups`
   //! objects into \ref_knuth_bendix instances.
