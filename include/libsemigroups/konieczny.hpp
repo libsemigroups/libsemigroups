@@ -939,7 +939,7 @@ namespace libsemigroups {
 
     //! \brief Returns the number of generators.
     //!
-    //! Thisfunction returns the number of generators given to \c this.
+    //! This function returns the number of generators given to \c this.
     //! Note that there may be duplicate generators, and so \c this may have
     //! more generators than unique generators.
     //!
