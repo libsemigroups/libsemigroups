@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['make_20bipartition_0',['make&lt;Bipartition&gt;',['../group__make__bipart__group.html',1,'']]],
+  ['make_20blocks_1',['make&lt;Blocks&gt;',['../group__make__blocks__group.html',1,'']]],
+  ['make_20forest_2',['make&lt;Forest&gt;',['../group__make__forest__group.html',1,'']]],
+  ['make_20froidurepin_3',['make&lt;FroidurePin&gt;',['../group__make__froidure__pin__group.html',1,'']]],
+  ['make_20function_4',['The `make` function',['../group__make__group.html',1,'']]],
+  ['make_20matrix_5',['make&lt;Matrix&gt;',['../group__make__matrix__group.html',1,'']]],
+  ['make_20pbr_6',['make&lt;PBR&gt;',['../group__make__pbr__group.html',1,'']]],
+  ['make_20perm_7',['make&lt;Perm&gt;',['../group__make__perm__group.html',1,'']]],
+  ['make_20pperm_8',['make&lt;PPerm&gt;',['../group__make__pperm__group.html',1,'']]],
+  ['make_20transf_9',['make&lt;Transf&gt;',['../group__make__transf__group.html',1,'']]],
+  ['make_20wordgraph_10',['make&lt;WordGraph&gt;',['../group__make__word__graph__group.html',1,'']]],
+  ['matrices_11',['Matrices',['../group__matrix__group.html',1,'']]],
+  ['matrices_12',['matrices',['../group__adapters__matrix__group.html',1,'Adapters for other matrices'],['../group__bmat__index__group.html',1,'Boolean matrices'],['../group__intmat__group.html',1,'Integer matrices'],['../group__maxplusmat__group.html',1,'Max-plus matrices'],['../group__minplusmat__group.html',1,'Min-plus matrices'],['../group__projmaxplus__group.html',1,'Projective max-plus matrices'],['../group__maxplustruncmat__group.html',1,'Truncated max-plus matrices'],['../group__minplustruncmat__group.html',1,'Truncated min-plus matrices']]],
+  ['matrices_20over_20the_20natural_20numbers_20mod_20t_20t_20p_13',['Matrices over the natural numbers mod (t = t + p)',['../group__ntpmat__group.html',1,'']]],
+  ['matrix_14',['make&lt;Matrix&gt;',['../group__make__matrix__group.html',1,'']]],
+  ['max_20plus_20matrices_15',['Max-plus matrices',['../group__maxplusmat__group.html',1,'']]],
+  ['max_20plus_20matrices_16',['max plus matrices',['../group__projmaxplus__group.html',1,'Projective max-plus matrices'],['../group__maxplustruncmat__group.html',1,'Truncated max-plus matrices']]],
+  ['member_20functions_17',['member functions',['../group__congruence__class__intf__group.html',1,'Common member functions'],['../group__knuth__bendix__class__intf__group.html',1,'Common member functions'],['../group__todd__coxeter__class__intf__group.html',1,'Common member functions'],['../group__kambites__class__intf__group.html',1,'Common member functions']]],
+  ['member_20types_18',['Member Types',['../group__congruence__class__mem__types__group.html',1,'Member Types'],['../group__kambites__class__mem__types__group.html',1,'Member Types']]],
+  ['member_20types_19',['Member types',['../group__knuth__bendix__class__mem__types__group.html',1,'Member types'],['../group__todd__coxeter__class__mem__types__group.html',1,'Member types']]],
+  ['min_20plus_20matrices_20',['Min-plus matrices',['../group__minplusmat__group.html',1,'']]],
+  ['min_20plus_20matrices_21',['Truncated min-plus matrices',['../group__minplustruncmat__group.html',1,'']]],
+  ['miscellaneous_22',['Miscellaneous',['../group__misc__group.html',1,'']]],
+  ['mod_20t_20t_20p_23',['Matrices over the natural numbers mod (t = t + p)',['../group__ntpmat__group.html',1,'']]],
+  ['modifiers_24',['Modifiers',['../group__todd__coxeter__class__mod__group.html',1,'']]]
+];

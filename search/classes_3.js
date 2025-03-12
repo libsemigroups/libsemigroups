@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['dclass_0',['DClass',['../classlibsemigroups_1_1_konieczny_1_1_d_class.html',1,'libsemigroups::Konieczny']]],
+  ['deca_1',['deca',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
+  ['decay_2',['decay',['http://en.cppreference.com/w/cpp/types/decay.html',1,'std']]],
+  ['deci_3',['deci',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
+  ['default_5fdelete_4',['default_delete',['http://en.cppreference.com/w/cpp/memory/default_delete.html',1,'std']]],
+  ['default_5frandom_5fengine_5',['default_random_engine',['http://en.cppreference.com/w/cpp/numeric/random.html',1,'std']]],
+  ['defer_5flock_5ft_6',['defer_lock_t',['http://en.cppreference.com/w/cpp/thread/lock_tag_t.html',1,'std']]],
+  ['degree_7',['Degree',['../structlibsemigroups_1_1_degree.html',1,'libsemigroups']]],
+  ['degree_3c_20bmat8_20_3e_8',['Degree&lt; BMat8 &gt;',['../structlibsemigroups_1_1_degree_3_01_b_mat8_01_4.html',1,'libsemigroups']]],
+  ['degree_3c_20element_5ftype_20_3e_9',['Degree&lt; element_type &gt;',['../structlibsemigroups_1_1_degree.html',1,'libsemigroups']]],
+  ['degree_3c_20hpcombi_3a_3abmat8_20_3e_10',['Degree&lt; HPCombi::BMat8 &gt;',['../structlibsemigroups_1_1_degree_3_01_h_p_combi_1_1_b_mat8_01_4.html',1,'libsemigroups']]],
+  ['degree_3c_20mat_2c_20std_3a_3aenable_5fif_5ft_3c_20ismatrix_3c_20mat_20_3e_20_3e_20_3e_11',['Degree&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;',['../structlibsemigroups_1_1_degree_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html',1,'libsemigroups']]],
+  ['degree_3c_20pbr_20_3e_12',['Degree&lt; PBR &gt;',['../structlibsemigroups_1_1_degree_3_01_p_b_r_01_4.html',1,'libsemigroups']]],
+  ['degree_3c_20tptransf16subclass_2c_20std_3a_3aenable_5fif_5ft_3c_20std_3a_3ais_5fbase_5fof_5fv_3c_20hpcombi_3a_3aptransf16_2c_20tptransf16subclass_20_3e_20_3e_20_3e_13',['Degree&lt; TPTransf16Subclass, std::enable_if_t&lt; std::is_base_of_v&lt; HPCombi::PTransf16, TPTransf16Subclass &gt; &gt; &gt;',['../structlibsemigroups_1_1_degree_3_01_t_p_transf16_subclass_00_01std_1_1enable__if__t_3_01std_1_1ie14a4836fcaa250902df94f278d1ee3e.html',1,'libsemigroups']]],
+  ['deque_14',['deque',['http://en.cppreference.com/w/cpp/container/deque.html',1,'std']]],
+  ['discard_5fblock_5fengine_15',['discard_block_engine',['http://en.cppreference.com/w/cpp/numeric/random/discard_block_engine.html',1,'std']]],
+  ['discrete_5fdistribution_16',['discrete_distribution',['http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution.html',1,'std']]],
+  ['divides_17',['divides',['http://en.cppreference.com/w/cpp/utility/functional/divides.html',1,'std']]],
+  ['domain_5ferror_18',['domain_error',['http://en.cppreference.com/w/cpp/error/domain_error.html',1,'std']]],
+  ['dot_19',['Dot',['../classlibsemigroups_1_1_dot.html',1,'libsemigroups']]],
+  ['duration_20',['duration',['http://en.cppreference.com/w/cpp/chrono/duration.html',1,'std::chrono']]],
+  ['duration_5fvalues_21',['duration_values',['http://en.cppreference.com/w/cpp/chrono/duration_values.html',1,'std::chrono']]],
+  ['dynamicptransf_22',['DynamicPTransf',['../classlibsemigroups_1_1_dynamic_p_transf.html',1,'libsemigroups']]],
+  ['dynarray_23',['dynarray',['http://en.cppreference.com/w/cpp/container/dynarray.html',1,'std']]]
+];
