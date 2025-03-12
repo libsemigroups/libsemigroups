@@ -2448,8 +2448,25 @@ namespace libsemigroups {
     template <typename Graph>
     std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::shortlex);
 
+    //! \brief Check if a word graph is standardized.
+    //!
+    //! This function checks if the word graph \p wg is standardized according
+    //! to the reduction order specified by \p val.
+    //!
+    //! \tparam Node the type of the node in \p wg.
+    //!
+    //! \param wg the word graph to check.
+    //! \param val the order to use for standardization check (defaults to
+    //! Order::shortlex)
+    //!
+    //! \throws LibsemigroupsException if \p val is not one of: Order::none,
+    //! Order::shortlex, Order::lex or Order::recursive.
+    //!
+    //! \sa
+    //! \ref standardize.
     template <typename Node>
-    bool is_standardized(WordGraph<Node> const&, Order val = Order::shortlex);
+    bool is_standardized(WordGraph<Node> const& wg,
+                         Order                  val = Order::shortlex);
 
     //! \brief Throws if the target of any edge is out of bounds.
     //!
