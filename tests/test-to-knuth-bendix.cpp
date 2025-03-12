@@ -18,7 +18,7 @@
 
 #include <type_traits>
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "libsemigroups/word-range.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 

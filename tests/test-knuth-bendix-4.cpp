@@ -43,7 +43,7 @@
 #include <utility>        // for move, operator==, pair
 #include <vector>         // for vector, operator==
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for AssertionHandler, oper...
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for operator==, operator!=

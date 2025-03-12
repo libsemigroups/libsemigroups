@@ -3,11 +3,12 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for magic_enum
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.7.1
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.8.0
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
 AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
@@ -172,11 +173,19 @@ detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 
-catch2includedir = $(includedir)/libsemigroups/Catch2-3.7.1/
-catch2include_HEADERS = third_party/Catch2-3.7.1/catch_amalgamated.hpp
+catch2includedir = $(includedir)/libsemigroups/Catch2-3.8.0/
+catch2include_HEADERS = third_party/Catch2-3.8.0/catch_amalgamated.hpp
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
-magicenuminclude_HEADERS = third_party/magic_enum/magic_enum.hpp
+magicenuminclude_HEADERS = third_party/magic_enum-0.9.7/include/magic_enum/magic_enum.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_all.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_containers.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_flags.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_format.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_fuse.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_iostream.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_switch.hpp
+magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_utility.hpp
 
 rxrangesincludedir = $(includedir)/libsemigroups/rx
 rxrangesinclude_HEADERS = third_party/rx-ranges/include/rx/ranges.hpp
@@ -242,19 +251,20 @@ endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 ## uninstall-hook
 fmtincludedir = $(includedir)/libsemigroups/fmt
 if LIBSEMIGROUPS_WITH_INTERNAL_FMT
-fmtinclude_HEADERS =  third_party/fmt-10.1.1/include/fmt/args.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/chrono.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/color.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/compile.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/core.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/format-inl.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/format.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/os.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/ostream.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/printf.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/ranges.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/std.h
-fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/xchar.h
+fmtinclude_HEADERS =  third_party/fmt-11.1.4/include/fmt/args.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/base.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/chrono.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/color.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/compile.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/core.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/format.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/format-inl.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/os.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/ostream.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/printf.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/ranges.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/std.h
+fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/xchar.h
 endif
 
 ## Define eigenincludedir outside the conditional
@@ -262,400 +272,448 @@ endif
 ## uninstall-hook
 eigenincludedir = $(includedir)/libsemigroups/Eigen
 if LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
-eigeninclude_HEADERS =  third_party/eigen-3.3.9/Eigen/StdList
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Jacobi
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/OrderingMethods
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/CholmodSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SparseCore
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Cholesky
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SparseLU
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SuperLUSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Dense
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SPQRSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/LU
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Eigenvalues
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/PaStiXSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/CMakeLists.txt
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Eigen
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SVD
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SparseQR
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/MetisSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/IterativeLinearSolvers
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Geometry
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/StdDeque
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/QR
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/QtAlignedMalloc
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/StdVector
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Core
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/PardisoSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/SparseCholesky
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/UmfPackSupport
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Sparse
-eigeninclude_HEADERS += third_party/eigen-3.3.9/Eigen/Householder
+eigeninclude_HEADERS = third_party/eigen-3.4.0/Eigen/Cholesky
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/CholmodSupport
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Core
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Dense
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Eigen
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Eigenvalues
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Geometry
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Householder
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/IterativeLinearSolvers
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Jacobi
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/LU
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/MetisSupport
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/OrderingMethods
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/PardisoSupport
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/PaStiXSupport
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/QR
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/QtAlignedMalloc
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Sparse
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SparseCholesky
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SparseCore
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SparseLU
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SparseQR
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SPQRSupport
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/StdDeque
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/StdList
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/StdVector
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SuperLUSupport
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SVD
+eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/UmfPackSupport
 
 unsupportedincludedir = $(includedir)/libsemigroups/unsupported
 eigenunsupportedincludedir = $(unsupportedincludedir)/Eigen
-eigenunsupportedinclude_HEADERS =  third_party/eigen-3.3.9/unsupported/Eigen/MatrixFunctions
+eigenunsupportedinclude_HEADERS =  third_party/eigen-3.4.0/unsupported/Eigen/MatrixFunctions
 
 eigenunsupportedsrcincludedir = $(includedir)/libsemigroups/unsupported/Eigen/src/MatrixFunctions
-eigenunsupportedsrcinclude_HEADERS = third_party/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixExponential.h
-eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixLogarithm.h
-eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixSquareRoot.h
-eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixFunction.h
-eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/MatrixPower.h
-eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.3.9/unsupported/Eigen/src/MatrixFunctions/StemFunction.h
+eigenunsupportedsrcinclude_HEADERS = third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixExponential.h
+eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixFunction.h
+eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixLogarithm.h
+eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixPower.h
+eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixSquareRoot.h
+eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/StemFunction.h
 
 eigensrcincludedir = $(includedir)/libsemigroups/Eigen/src
 
-eigensrcjacobiincludedir = $(includedir)/libsemigroups/Eigen/src/Jacobi
-eigensrcjacobiinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Jacobi/Jacobi.h
-
-eigensrcorderingmethodsincludedir = $(includedir)/libsemigroups/Eigen/src/OrderingMethods
-eigensrcorderingmethodsinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/OrderingMethods/Eigen_Colamd.h
-eigensrcorderingmethodsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/OrderingMethods/Ordering.h
-eigensrcorderingmethodsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/OrderingMethods/Amd.h
+eigensrccholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/Cholesky
+eigensrccholeskyinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Cholesky/LDLT.h
+eigensrccholeskyinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Cholesky/LLT.h
+eigensrccholeskyinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Cholesky/LLT_LAPACKE.h
 
 eigensrccholmodsupportincludedir = $(includedir)/libsemigroups/Eigen/src/CholmodSupport
-eigensrccholmodsupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/CholmodSupport/CholmodSupport.h
-
-eigensrcsparsecoreincludedir = $(includedir)/libsemigroups/Eigen/src/SparseCore
-eigensrcsparsecoreinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SparseCore/ConservativeSparseSparseProduct.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseSparseProductWithPruning.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseRedux.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseDiagonalProduct.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseMatrix.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseFuzzy.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseSelfAdjointView.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseCwiseBinaryOp.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseProduct.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/CompressedStorage.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseCompressedBase.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseCwiseUnaryOp.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseMap.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseDenseProduct.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/MappedSparseMatrix.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseUtil.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseBlock.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseVector.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseView.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseAssign.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseTranspose.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseDot.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseRef.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseColEtree.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparsePermutation.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/AmbiVector.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseSolverBase.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseTriangularView.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/TriangularSolver.h
-eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCore/SparseMatrixBase.h
-
-eigensrccholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/Cholesky
-eigensrccholeskyinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Cholesky/LLT_LAPACKE.h
-eigensrccholeskyinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Cholesky/LLT.h
-eigensrccholeskyinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Cholesky/LDLT.h
-
-eigensrcsparseluincludedir = $(includedir)/libsemigroups/Eigen/src/SparseLU
-eigensrcsparseluinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_kernel_bmod.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_relax_snode.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_panel_dfs.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_column_dfs.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_gemm_kernel.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_Utils.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_Memory.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLUImpl.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_pruneL.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_column_bmod.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_panel_bmod.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_pivotL.h
-eigensrcsparseluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseLU/SparseLU_Structs.h
-
-eigensrcsuperlusupportincludedir = $(includedir)/libsemigroups/Eigen/src/SuperLUSupport
-eigensrcsuperlusupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SuperLUSupport/SuperLUSupport.h
-
-eigensrcspqrsupportincludedir = $(includedir)/libsemigroups/Eigen/src/SPQRSupport
-eigensrcspqrsupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SPQRSupport/SuiteSparseQRSupport.h
-
-eigensrcluincludedir = $(includedir)/libsemigroups/Eigen/src/LU
-eigensrcluinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/LU/FullPivLU.h
-eigensrcluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/LU/Determinant.h
-eigensrcluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/LU/InverseImpl.h
-eigensrcluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/LU/PartialPivLU.h
-eigensrcluinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/LU/PartialPivLU_LAPACKE.h
-
-eigensrcluarchincludedir = $(includedir)/libsemigroups/Eigen/src/LU/arch
-eigensrcluarchinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/LU/arch/Inverse_SSE.h
-
-eigensrceigenvaluesincludedir = $(includedir)/libsemigroups/Eigen/src/Eigenvalues
-eigensrceigenvaluesinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Eigenvalues/ComplexEigenSolver.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/RealQZ.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/Tridiagonalization.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/EigenSolver.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/ComplexSchur.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/HessenbergDecomposition.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/RealSchur_LAPACKE.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/RealSchur.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/ComplexSchur_LAPACKE.h
-eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Eigenvalues/SelfAdjointEigenSolver_LAPACKE.h
-
-eigensrcpastixsupportincludedir = $(includedir)/libsemigroups/Eigen/src/PaStiXSupport
-eigensrcpastixsupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/PaStiXSupport/PaStiXSupport.h
-
-eigensrcsvdincludedir = $(includedir)/libsemigroups/Eigen/src/SVD
-eigensrcsvdinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SVD/JacobiSVD_LAPACKE.h
-eigensrcsvdinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SVD/UpperBidiagonalization.h
-eigensrcsvdinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SVD/JacobiSVD.h
-eigensrcsvdinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SVD/BDCSVD.h
-eigensrcsvdinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SVD/SVDBase.h
-
-eigensrcsparseqrincludedir = $(includedir)/libsemigroups/Eigen/src/SparseQR
-eigensrcsparseqrinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SparseQR/SparseQR.h
-
-eigensrcmetissupportincludedir = $(includedir)/libsemigroups/Eigen/src/MetisSupport
-eigensrcmetissupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/MetisSupport/MetisSupport.h
-
-eigensrciterativelinearsolversincludedir = $(includedir)/libsemigroups/Eigen/src/IterativeLinearSolvers
-eigensrciterativelinearsolversinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/BiCGSTAB.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/BasicPreconditioners.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/IncompleteCholesky.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/LeastSquareConjugateGradient.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/SolveWithGuess.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/IterativeSolverBase.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/IncompleteLUT.h
-eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/IterativeLinearSolvers/ConjugateGradient.h
-
-eigensrcgeometryincludedir = $(includedir)/libsemigroups/Eigen/src/Geometry
-eigensrcgeometryinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Geometry/Umeyama.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/OrthoMethods.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/RotationBase.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/EulerAngles.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/AngleAxis.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Hyperplane.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/AlignedBox.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/ParametrizedLine.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Translation.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Transform.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Quaternion.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Scaling.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Rotation2D.h
-eigensrcgeometryinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Geometry/Homogeneous.h
-
-eigensrcgeometryarchincludedir = $(includedir)/libsemigroups/Eigen/src/Geometry/arch
-eigensrcgeometryarchinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Geometry/arch/Geometry_SSE.h
-
-eigensrcqrincludedir = $(includedir)/libsemigroups/Eigen/src/QR
-eigensrcqrinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/QR/ColPivHouseholderQR_LAPACKE.h
-eigensrcqrinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/QR/FullPivHouseholderQR.h
-eigensrcqrinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/QR/HouseholderQR.h
-eigensrcqrinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/QR/HouseholderQR_LAPACKE.h
-eigensrcqrinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/QR/CompleteOrthogonalDecomposition.h
-eigensrcqrinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/QR/ColPivHouseholderQR.h
-
-eigensrcstlsupportincludedir = $(includedir)/libsemigroups/Eigen/src/StlSupport
-eigensrcstlsupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/StlSupport/details.h
-eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/StlSupport/StdDeque.h
-eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/StlSupport/StdList.h
-eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/StlSupport/StdVector.h
+eigensrccholmodsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/CholmodSupport/CholmodSupport.h
 
 eigensrccoreincludedir = $(includedir)/libsemigroups/Eigen/src/Core
-eigensrccoreinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/NestByValue.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/GlobalFunctions.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Array.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/SelfCwiseBinaryOp.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CwiseBinaryOp.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/VectorBlock.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Dot.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Assign.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/ProductEvaluators.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/BandMatrix.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Inverse.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/MatrixBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/GenericPacketMath.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Transpose.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/ArrayBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CwiseTernaryOp.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Ref.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Visitor.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/StableNorm.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Replicate.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Transpositions.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/SelfAdjointView.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/PlainObjectBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/DenseStorage.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/ConditionEstimator.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/NumTraits.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CwiseUnaryView.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/DiagonalProduct.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/MathFunctions.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/VectorwiseOp.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Solve.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Reverse.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/ReturnByValue.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Product.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/DenseBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/BooleanRedux.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/NoAlias.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/ArrayWrapper.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Random.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/MapBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Block.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/DiagonalMatrix.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Diagonal.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Map.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CoreIterators.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CommaInitializer.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Select.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/GeneralProduct.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/EigenBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Fuzzy.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/SolverBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/ForceAlignedAccess.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Matrix.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Redux.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/TriangularMatrix.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Stride.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CoreEvaluators.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Assign_MKL.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/IO.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CwiseUnaryOp.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/AssignEvaluator.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/CwiseNullaryOp.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/PermutationMatrix.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/Swap.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/SolveTriangular.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/DenseCoeffsBase.h
-eigensrccoreinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/MathFunctionsImpl.h
-
-eigensrccorefunctorsincludedir = $(includedir)/libsemigroups/Eigen/src/Core/functors
-eigensrccorefunctorsinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/functors/BinaryFunctors.h
-eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/functors/AssignmentFunctors.h
-eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/functors/UnaryFunctors.h
-eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/functors/StlFunctors.h
-eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/functors/TernaryFunctors.h
-eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/functors/NullaryFunctors.h
-
-eigensrccoreproductsincludedir = $(includedir)/libsemigroups/Eigen/src/Core/products
-eigensrccoreproductsinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularSolverMatrix_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralMatrixVector_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularSolverVector.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralBlockPanelKernel.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularMatrixVector.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularMatrixMatrix_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/Parallelizer.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularMatrixVector_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/SelfadjointProduct.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/SelfadjointMatrixVector_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/SelfadjointMatrixVector.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularSolverMatrix.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralMatrixMatrix_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/SelfadjointMatrixMatrix_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/SelfadjointRank2Update.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralMatrixVector.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/SelfadjointMatrixMatrix.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralMatrixMatrixTriangular_BLAS.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/TriangularMatrixMatrix.h
-eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/products/GeneralMatrixMatrix.h
+eigensrccoreinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/ArithmeticSequence.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Array.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ArrayBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ArrayWrapper.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Assign.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/AssignEvaluator.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Assign_MKL.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/BandMatrix.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Block.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/BooleanRedux.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CommaInitializer.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ConditionEstimator.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CoreEvaluators.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CoreIterators.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CwiseBinaryOp.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CwiseNullaryOp.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CwiseTernaryOp.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CwiseUnaryOp.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/CwiseUnaryView.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/DenseBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/DenseCoeffsBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/DenseStorage.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Diagonal.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/DiagonalMatrix.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/DiagonalProduct.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Dot.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/EigenBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ForceAlignedAccess.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Fuzzy.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/GeneralProduct.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/GenericPacketMath.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/GlobalFunctions.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/IO.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/IndexedView.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Inverse.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Map.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/MapBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/MathFunctions.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/MathFunctionsImpl.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Matrix.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/MatrixBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/NestByValue.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/NoAlias.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/NumTraits.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/PartialReduxEvaluator.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/PermutationMatrix.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/PlainObjectBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Product.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ProductEvaluators.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Random.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Redux.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Ref.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Replicate.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Reshaped.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ReturnByValue.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Reverse.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Select.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/SelfAdjointView.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/SelfCwiseBinaryOp.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Solve.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/SolveTriangular.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/SolverBase.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/StableNorm.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/StlIterators.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Stride.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Swap.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Transpose.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Transpositions.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/TriangularMatrix.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/VectorBlock.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/VectorwiseOp.h
+eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Visitor.h
 
 eigensrccorearchincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch
 
-eigensrccorearchaltivecincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AltiVec
-eigensrccorearchaltivecinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/AltiVec/MathFunctions.h
-eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/AltiVec/Complex.h
-eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/AltiVec/PacketMath.h
+eigensrccorearchavxincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AVX
+eigensrccorearchavxinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/Complex.h
+eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/MathFunctions.h
+eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/PacketMath.h
+eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/TypeCasting.h
 
 eigensrccorearchavx512includedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AVX512
-eigensrccorearchavx512include_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/AVX512/MathFunctions.h
-eigensrccorearchavx512include_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/AVX512/PacketMath.h
+eigensrccorearchavx512include_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/Complex.h
+eigensrccorearchavx512include_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/MathFunctions.h
+eigensrccorearchavx512include_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/PacketMath.h
+eigensrccorearchavx512include_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/TypeCasting.h
 
-eigensrccorearchneonincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/NEON
-eigensrccorearchneoninclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/NEON/MathFunctions.h
-eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/NEON/Complex.h
-eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/NEON/PacketMath.h
-
-eigensrccorearchdefaultincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/Default
-eigensrccorearchdefaultinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/Default/ConjHelper.h
-eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/Default/Settings.h
-
-eigensrccorearchavxincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AVX
-eigensrccorearchavxinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/AVX/MathFunctions.h
-eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/AVX/TypeCasting.h
-eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/AVX/Complex.h
-eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/AVX/PacketMath.h
-
-eigensrccorearchzvectorincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/ZVector
-eigensrccorearchzvectorinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/ZVector/MathFunctions.h
-eigensrccorearchzvectorinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/ZVector/Complex.h
-eigensrccorearchzvectorinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/ZVector/PacketMath.h
-
-eigensrccorearchsseincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SSE
-eigensrccorearchsseinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/SSE/MathFunctions.h
-eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/SSE/TypeCasting.h
-eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/SSE/Complex.h
-eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/SSE/PacketMath.h
+eigensrccorearchaltivecincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AltiVec
+eigensrccorearchaltivecinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/Complex.h
+eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MathFunctions.h
+eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MatrixProduct.h
+eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MatrixProductCommon.h
+eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MatrixProductMMA.h
+eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/PacketMath.h
 
 eigensrccorearchcudaincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/CUDA
-eigensrccorearchcudainclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/arch/CUDA/MathFunctions.h
-eigensrccorearchcudainclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/CUDA/Half.h
-eigensrccorearchcudainclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/CUDA/PacketMathHalf.h
-eigensrccorearchcudainclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/CUDA/TypeCasting.h
-eigensrccorearchcudainclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/CUDA/Complex.h
-eigensrccorearchcudainclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/arch/CUDA/PacketMath.h
+eigensrccorearchcudainclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/CUDA/Complex.h
+
+eigensrccorearchdefaultincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/Default
+eigensrccorearchdefaultinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/BFloat16.h
+eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/ConjHelper.h
+eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/GenericPacketMathFunctions.h
+eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/GenericPacketMathFunctionsFwd.h
+eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/Half.h
+eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/Settings.h
+eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/TypeCasting.h
+
+eigensrccorearchgpuincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/GPU
+eigensrccorearchgpuinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU/MathFunctions.h
+eigensrccorearchgpuinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU/PacketMath.h
+eigensrccorearchgpuinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU/TypeCasting.h
+
+eigensrccorearchhipincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/HIP
+
+eigensrccorearchhiphccincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/HIP/hcc
+eigensrccorearchhiphccinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/HIP/hcc/math_constants.h
+
+eigensrccorearchmsaincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/MSA
+eigensrccorearchmsainclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA/Complex.h
+eigensrccorearchmsainclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA/MathFunctions.h
+eigensrccorearchmsainclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA/PacketMath.h
+
+eigensrccorearchneonincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/NEON
+eigensrccorearchneoninclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/Complex.h
+eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/GeneralBlockPanelKernel.h
+eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/MathFunctions.h
+eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/PacketMath.h
+eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/TypeCasting.h
+
+eigensrccorearchsseincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SSE
+eigensrccorearchsseinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/Complex.h
+eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/MathFunctions.h
+eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/PacketMath.h
+eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/TypeCasting.h
+
+eigensrccorearchsveincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SVE
+eigensrccorearchsveinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE/MathFunctions.h
+eigensrccorearchsveinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE/PacketMath.h
+eigensrccorearchsveinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE/TypeCasting.h
+
+eigensrccorearchsyclincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SYCL
+eigensrccorearchsyclinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/InteropHeaders.h
+eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/MathFunctions.h
+eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/PacketMath.h
+eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/SyclMemoryModel.h
+eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/TypeCasting.h
+
+eigensrccorearchzvectorincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/ZVector
+eigensrccorearchzvectorinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector/Complex.h
+eigensrccorearchzvectorinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector/MathFunctions.h
+eigensrccorearchzvectorinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector/PacketMath.h
+
+eigensrccorefunctorsincludedir = $(includedir)/libsemigroups/Eigen/src/Core/functors
+eigensrccorefunctorsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/functors/AssignmentFunctors.h
+eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/BinaryFunctors.h
+eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/NullaryFunctors.h
+eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/StlFunctors.h
+eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/TernaryFunctors.h
+eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/UnaryFunctors.h
+
+eigensrccoreproductsincludedir = $(includedir)/libsemigroups/Eigen/src/Core/products
+eigensrccoreproductsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralBlockPanelKernel.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixMatrix.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixMatrixTriangular_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixMatrix_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixVector.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixVector_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/Parallelizer.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/SelfadjointMatrixMatrix.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/SelfadjointMatrixMatrix_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/SelfadjointMatrixVector.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/SelfadjointMatrixVector_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/SelfadjointProduct.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/SelfadjointRank2Update.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularMatrixMatrix.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularMatrixMatrix_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularMatrixVector.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularMatrixVector_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularSolverMatrix.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularSolverMatrix_BLAS.h
+eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularSolverVector.h
 
 eigensrccoreutilincludedir = $(includedir)/libsemigroups/Eigen/src/Core/util
-eigensrccoreutilinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Core/util/Macros.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/DisableStupidWarnings.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/Constants.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/NonMPL2.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/XprHelper.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/MKL_support.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/ForwardDeclarations.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/BlasUtil.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/Memory.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/StaticAssert.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/ReenableStupidWarnings.h
-eigensrccoreutilinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Core/util/Meta.h
+eigensrccoreutilinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/util/BlasUtil.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/ConfigureVectorization.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/Constants.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/DisableStupidWarnings.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/ForwardDeclarations.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/IndexedViewHelper.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/IntegralConstant.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/MKL_support.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/Macros.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/Memory.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/Meta.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/NonMPL2.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/ReenableStupidWarnings.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/ReshapedHelper.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/StaticAssert.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/SymbolicIndex.h
+eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/XprHelper.h
 
-eigensrcmiscincludedir = $(includedir)/libsemigroups/Eigen/src/misc
-eigensrcmiscinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/misc/Image.h
-eigensrcmiscinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/misc/Kernel.h
-eigensrcmiscinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/misc/RealSvd2x2.h
-eigensrcmiscinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/misc/lapack.h
-eigensrcmiscinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/misc/lapacke_mangling.h
-eigensrcmiscinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/misc/blas.h
-eigensrcmiscinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/misc/lapacke.h
+eigensrceigenvaluesincludedir = $(includedir)/libsemigroups/Eigen/src/Eigenvalues
+eigensrceigenvaluesinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Eigenvalues/ComplexEigenSolver.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/ComplexSchur.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/ComplexSchur_LAPACKE.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/EigenSolver.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/HessenbergDecomposition.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/RealQZ.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/RealSchur.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/RealSchur_LAPACKE.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/SelfAdjointEigenSolver_LAPACKE.h
+eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/Tridiagonalization.h
 
-eigensrcpardisosupportincludedir = $(includedir)/libsemigroups/Eigen/src/PardisoSupport
-eigensrcpardisosupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/PardisoSupport/PardisoSupport.h
+eigensrcgeometryincludedir = $(includedir)/libsemigroups/Eigen/src/Geometry
+eigensrcgeometryinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Geometry/AlignedBox.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/AngleAxis.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/EulerAngles.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Homogeneous.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Hyperplane.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/OrthoMethods.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/ParametrizedLine.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Quaternion.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Rotation2D.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/RotationBase.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Scaling.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Transform.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Translation.h
+eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Umeyama.h
 
-eigensrcsparsecholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/SparseCholesky
-eigensrcsparsecholeskyinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/SparseCholesky/SimplicialCholesky.h
-eigensrcsparsecholeskyinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/SparseCholesky/SimplicialCholesky_impl.h
-
-eigensrcumfpacksupportincludedir = $(includedir)/libsemigroups/Eigen/src/UmfPackSupport
-eigensrcumfpacksupportinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/UmfPackSupport/UmfPackSupport.h
-
-eigensrcpluginsincludedir = $(includedir)/libsemigroups/Eigen/src/plugins
-eigensrcpluginsinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/plugins/CommonCwiseBinaryOps.h
-eigensrcpluginsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/plugins/MatrixCwiseBinaryOps.h
-eigensrcpluginsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/plugins/ArrayCwiseUnaryOps.h
-eigensrcpluginsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/plugins/MatrixCwiseUnaryOps.h
-eigensrcpluginsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/plugins/BlockMethods.h
-eigensrcpluginsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/plugins/CommonCwiseUnaryOps.h
-eigensrcpluginsinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/plugins/ArrayCwiseBinaryOps.h
+eigensrcgeometryarchincludedir = $(includedir)/libsemigroups/Eigen/src/Geometry/arch
+eigensrcgeometryarchinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Geometry/arch/Geometry_SIMD.h
 
 eigensrchouseholderincludedir = $(includedir)/libsemigroups/Eigen/src/Householder
-eigensrchouseholderinclude_HEADERS =  third_party/eigen-3.3.9/Eigen/src/Householder/BlockHouseholder.h
-eigensrchouseholderinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Householder/HouseholderSequence.h
-eigensrchouseholderinclude_HEADERS += third_party/eigen-3.3.9/Eigen/src/Householder/Householder.h
+eigensrchouseholderinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Householder/BlockHouseholder.h
+eigensrchouseholderinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Householder/Householder.h
+eigensrchouseholderinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Householder/HouseholderSequence.h
+
+eigensrciterativelinearsolversincludedir = $(includedir)/libsemigroups/Eigen/src/IterativeLinearSolvers
+eigensrciterativelinearsolversinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/BasicPreconditioners.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/BiCGSTAB.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/ConjugateGradient.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/IncompleteCholesky.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/IncompleteLUT.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/IterativeSolverBase.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/LeastSquareConjugateGradient.h
+eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/SolveWithGuess.h
+
+eigensrcjacobiincludedir = $(includedir)/libsemigroups/Eigen/src/Jacobi
+eigensrcjacobiinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Jacobi/Jacobi.h
+
+eigensrcklusupportincludedir = $(includedir)/libsemigroups/Eigen/src/KLUSupport
+eigensrcklusupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/KLUSupport/KLUSupport.h
+
+eigensrcluincludedir = $(includedir)/libsemigroups/Eigen/src/LU
+eigensrcluinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/LU/Determinant.h
+eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/FullPivLU.h
+eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/InverseImpl.h
+eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/PartialPivLU.h
+eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/PartialPivLU_LAPACKE.h
+
+eigensrcluarchincludedir = $(includedir)/libsemigroups/Eigen/src/LU/arch
+eigensrcluarchinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/LU/arch/InverseSize4.h
+
+eigensrcmetissupportincludedir = $(includedir)/libsemigroups/Eigen/src/MetisSupport
+eigensrcmetissupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/MetisSupport/MetisSupport.h
+
+eigensrcorderingmethodsincludedir = $(includedir)/libsemigroups/Eigen/src/OrderingMethods
+eigensrcorderingmethodsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/OrderingMethods/Amd.h
+eigensrcorderingmethodsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/OrderingMethods/Eigen_Colamd.h
+eigensrcorderingmethodsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/OrderingMethods/Ordering.h
+
+eigensrcpastixsupportincludedir = $(includedir)/libsemigroups/Eigen/src/PaStiXSupport
+eigensrcpastixsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/PaStiXSupport/PaStiXSupport.h
+
+eigensrcpardisosupportincludedir = $(includedir)/libsemigroups/Eigen/src/PardisoSupport
+eigensrcpardisosupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/PardisoSupport/PardisoSupport.h
+
+eigensrcqrincludedir = $(includedir)/libsemigroups/Eigen/src/QR
+eigensrcqrinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/QR/ColPivHouseholderQR.h
+eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/ColPivHouseholderQR_LAPACKE.h
+eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/CompleteOrthogonalDecomposition.h
+eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/FullPivHouseholderQR.h
+eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/HouseholderQR.h
+eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/HouseholderQR_LAPACKE.h
+
+eigensrcspqrsupportincludedir = $(includedir)/libsemigroups/Eigen/src/SPQRSupport
+eigensrcspqrsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SPQRSupport/SuiteSparseQRSupport.h
+
+eigensrcsvdincludedir = $(includedir)/libsemigroups/Eigen/src/SVD
+eigensrcsvdinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SVD/BDCSVD.h
+eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/JacobiSVD.h
+eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/JacobiSVD_LAPACKE.h
+eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/SVDBase.h
+eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/UpperBidiagonalization.h
+
+eigensrcsparsecholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/SparseCholesky
+eigensrcsparsecholeskyinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseCholesky/SimplicialCholesky.h
+eigensrcsparsecholeskyinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCholesky/SimplicialCholesky_impl.h
+
+eigensrcsparsecoreincludedir = $(includedir)/libsemigroups/Eigen/src/SparseCore
+eigensrcsparsecoreinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseCore/AmbiVector.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/CompressedStorage.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/ConservativeSparseSparseProduct.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/MappedSparseMatrix.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseAssign.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseBlock.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseColEtree.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseCompressedBase.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseCwiseBinaryOp.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseCwiseUnaryOp.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseDenseProduct.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseDiagonalProduct.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseDot.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseFuzzy.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseMap.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseMatrix.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseMatrixBase.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparsePermutation.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseProduct.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseRedux.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseRef.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseSelfAdjointView.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseSolverBase.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseSparseProductWithPruning.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseTranspose.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseTriangularView.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseUtil.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseVector.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseView.h
+eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/TriangularSolver.h
+
+eigensrcsparseluincludedir = $(includedir)/libsemigroups/Eigen/src/SparseLU
+eigensrcsparseluinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLUImpl.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_Memory.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_Structs.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_Utils.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_column_bmod.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_column_dfs.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_gemm_kernel.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_kernel_bmod.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_panel_bmod.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_panel_dfs.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_pivotL.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_pruneL.h
+eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_relax_snode.h
+
+eigensrcsparseqrincludedir = $(includedir)/libsemigroups/Eigen/src/SparseQR
+eigensrcsparseqrinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseQR/SparseQR.h
+
+eigensrcstlsupportincludedir = $(includedir)/libsemigroups/Eigen/src/StlSupport
+eigensrcstlsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/StlSupport/StdDeque.h
+eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/StlSupport/StdList.h
+eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/StlSupport/StdVector.h
+eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/StlSupport/details.h
+
+eigensrcsuperlusupportincludedir = $(includedir)/libsemigroups/Eigen/src/SuperLUSupport
+eigensrcsuperlusupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SuperLUSupport/SuperLUSupport.h
+
+eigensrcumfpacksupportincludedir = $(includedir)/libsemigroups/Eigen/src/UmfPackSupport
+eigensrcumfpacksupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/UmfPackSupport/UmfPackSupport.h
+
+eigensrcmiscincludedir = $(includedir)/libsemigroups/Eigen/src/misc
+eigensrcmiscinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/misc/Image.h
+eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/Kernel.h
+eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/RealSvd2x2.h
+eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/blas.h
+eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/lapack.h
+eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/lapacke.h
+eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/lapacke_mangling.h
+
+eigensrcpluginsincludedir = $(includedir)/libsemigroups/Eigen/src/plugins
+eigensrcpluginsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/plugins/ArrayCwiseBinaryOps.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/ArrayCwiseUnaryOps.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/BlockMethods.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/CommonCwiseBinaryOps.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/CommonCwiseUnaryOps.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/IndexedViewMethods.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/MatrixCwiseBinaryOps.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/MatrixCwiseUnaryOps.h
+eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/ReshapedMethods.h
 endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 
 lib_LTLIBRARIES = libsemigroups.la
@@ -716,8 +774,8 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += third_party/HPCombi/HPCOMBI_VERSION
-EXTRA_DIST += third_party/Catch2-3.7.1/catch_amalgamated.cpp
-EXTRA_DIST += third_party/Catch2-3.7.1/catch_amalgamated.hpp
+EXTRA_DIST += third_party/Catch2-3.8.0/catch_amalgamated.cpp
+EXTRA_DIST += third_party/Catch2-3.8.0/catch_amalgamated.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
@@ -816,7 +874,7 @@ LDADD = libsemigroups.la
 ## takes a serious amount of time.
 
 test_all_SOURCES =  tests/bmat-data.cpp
-test_all_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 test_all_SOURCES += tests/test-action.cpp
 test_all_SOURCES += tests/test-aho-corasick.cpp
 test_all_SOURCES += tests/test-bipart.cpp
@@ -891,23 +949,23 @@ test_all_SOURCES += tests/test-word-range.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
-test_action_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_action_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_aho_corasick_SOURCES =  tests/test-aho-corasick.cpp
 test_aho_corasick_SOURCES += tests/test-main.cpp
-test_aho_corasick_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_aho_corasick_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_bipart_SOURCES =  tests/test-bipart.cpp
 test_bipart_SOURCES += tests/test-main.cpp
-test_bipart_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_bipart_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_bitset_SOURCES =  tests/test-bitset.cpp
 test_bitset_SOURCES += tests/test-main.cpp
-test_bitset_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_bitset_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
-test_bmat8_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_bmat8_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_cong_all_SOURCES =  tests/test-cong-common.cpp
 test_cong_all_SOURCES += tests/test-cong.cpp
@@ -920,84 +978,84 @@ test_cong_all_SOURCES += tests/test-knuth-bendix-5.cpp
 test_cong_all_SOURCES += tests/test-knuth-bendix-6.cpp
 test_cong_all_SOURCES += tests/test-todd-coxeter.cpp
 test_cong_all_SOURCES += tests/test-main.cpp
-test_cong_all_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_cong_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_cong_common_SOURCES =  tests/test-cong-common.cpp
 test_cong_common_SOURCES += tests/test-main.cpp
-test_cong_common_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_cong_common_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_cong_SOURCES =  tests/test-cong.cpp
 test_cong_SOURCES += tests/test-main.cpp
-test_cong_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_cong_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_constants_SOURCES =  tests/test-constants.cpp
 test_constants_SOURCES += tests/test-main.cpp
-test_constants_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_constants_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
-test_containers_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_containers_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
-test_forest_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_forest_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_felsch_tree_SOURCES =  tests/test-felsch-tree.cpp
 test_felsch_tree_SOURCES += tests/test-main.cpp
-test_felsch_tree_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_felsch_tree_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_freeband_SOURCES =  tests/test-freeband.cpp
 test_freeband_SOURCES += tests/test-main.cpp
-test_freeband_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_freeband_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_bipart_SOURCES =  tests/test-froidure-pin-bipart.cpp
 test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
-test_froidure_pin_bipart_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_bipart_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_bmat8_SOURCES =  tests/test-froidure-pin-bmat8.cpp
 test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
-test_froidure_pin_bmat8_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_bmat8_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_bmat_SOURCES =  tests/test-froidure-pin-bmat.cpp
 test_froidure_pin_bmat_SOURCES += tests/bmat-data.cpp
 test_froidure_pin_bmat_SOURCES += tests/test-main.cpp
-test_froidure_pin_bmat_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_bmat_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_integers_SOURCES =  tests/test-froidure-pin-integers.cpp
 test_froidure_pin_integers_SOURCES += tests/test-main.cpp
-test_froidure_pin_integers_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_integers_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_intmat_SOURCES =  tests/test-froidure-pin-intmat.cpp
 test_froidure_pin_intmat_SOURCES += tests/test-main.cpp
-test_froidure_pin_intmat_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_intmat_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_intpairs_SOURCES =  tests/test-froidure-pin-intpairs.cpp
 test_froidure_pin_intpairs_SOURCES += tests/test-main.cpp
-test_froidure_pin_intpairs_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_intpairs_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_matrix_SOURCES =  tests/test-froidure-pin-matrix.cpp
 test_froidure_pin_matrix_SOURCES += tests/test-main.cpp
-test_froidure_pin_matrix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_matrix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_pbr_SOURCES =  tests/test-froidure-pin-pbr.cpp
 test_froidure_pin_pbr_SOURCES += tests/test-main.cpp
-test_froidure_pin_pbr_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_pbr_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_pperm_SOURCES =  tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_pperm_SOURCES += tests/test-main.cpp
-test_froidure_pin_pperm_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_pperm_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_projmaxplus_SOURCES =  tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_projmaxplus_SOURCES += tests/test-main.cpp
-test_froidure_pin_projmaxplus_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_projmaxplus_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_transf_SOURCES =  tests/test-froidure-pin-transf.cpp
 test_froidure_pin_transf_SOURCES += tests/test-main.cpp
-test_froidure_pin_transf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_transf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_maxplustrunc_SOURCES =  tests/test-froidure-pin-maxplustrunc.cpp
 test_froidure_pin_maxplustrunc_SOURCES += tests/test-main.cpp
-test_froidure_pin_maxplustrunc_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_maxplustrunc_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_froidure_pin_SOURCES =  tests/test-main.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-bipart.cpp
@@ -1013,27 +1071,27 @@ test_froidure_pin_SOURCES += tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-transf.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-maxplustrunc.cpp
-test_froidure_pin_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_froidure_pin_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_gabow_SOURCES =  tests/test-gabow.cpp
 test_gabow_SOURCES += tests/test-main.cpp
-test_gabow_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_gabow_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
-test_hpcombi_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_hpcombi_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_iterator_SOURCES =  tests/test-iterator.cpp
 test_iterator_SOURCES += tests/test-main.cpp
-test_iterator_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_iterator_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_kambites_SOURCES =  tests/test-kambites.cpp
 test_kambites_SOURCES += tests/test-main.cpp
-test_kambites_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_kambites_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_kbe_SOURCES =  tests/test-main.cpp
 test_kbe_SOURCES += tests/test-kbe.cpp
-test_kbe_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_kbe_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-2.cpp
@@ -1042,7 +1100,7 @@ test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
-test_knuth_bendix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_knuth_bendix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_konieczny_SOURCES =  tests/test-konieczny-bmat8-1.cpp
 test_konieczny_SOURCES += tests/test-konieczny-bmat8-2.cpp
@@ -1052,121 +1110,121 @@ test_konieczny_SOURCES += tests/test-konieczny-bmat.cpp
 test_konieczny_SOURCES += tests/test-konieczny-pperm.cpp
 test_konieczny_SOURCES += tests/bmat-data.cpp
 test_konieczny_SOURCES += tests/test-main.cpp
-test_konieczny_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_konieczny_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_matrix_SOURCES =  tests/test-matrix.cpp
 test_matrix_SOURCES += tests/test-main.cpp
-test_matrix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_matrix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_multi_string_view_SOURCES =  tests/test-multi-string-view.cpp
 test_multi_string_view_SOURCES += tests/test-main.cpp
-test_multi_string_view_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_multi_string_view_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp
-test_obvinf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_obvinf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_paths_SOURCES =  tests/test-paths.cpp
 test_paths_SOURCES += tests/test-main.cpp
-test_paths_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_paths_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_pbr_SOURCES =  tests/test-pbr.cpp
 test_pbr_SOURCES += tests/test-main.cpp
-test_pbr_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_pbr_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_pool_SOURCES =  tests/test-pool.cpp
 test_pool_SOURCES += tests/test-main.cpp
-test_pool_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_pool_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_presentation_SOURCES =  tests/test-presentation.cpp
 test_presentation_SOURCES += tests/test-main.cpp
-test_presentation_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_presentation_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_presentation_examples_SOURCES =  tests/test-presentation-examples-1.cpp
 test_presentation_examples_SOURCES += tests/test-presentation-examples-2.cpp
 test_presentation_examples_SOURCES += tests/test-presentation-examples-3.cpp
 test_presentation_examples_SOURCES += tests/test-main.cpp
-test_presentation_examples_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_presentation_examples_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
-test_race_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_race_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_ranges_SOURCES =  tests/test-ranges.cpp
 test_ranges_SOURCES += tests/test-main.cpp
-test_ranges_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_ranges_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_rewriters_SOURCES = tests/test-rewriters.cpp
 test_rewriters_SOURCES += tests/test-main.cpp
-test_rewriters_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_rewriters_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp
-test_runner_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_runner_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
-test_schreier_sims_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_schreier_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_sims_SOURCES =  tests/test-sims.cpp
 test_sims_SOURCES += tests/test-main.cpp
-test_sims_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_stephen_SOURCES =  tests/test-stephen.cpp
 test_stephen_SOURCES += tests/test-main.cpp
-test_stephen_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_stephen_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_string_SOURCES =  tests/test-string.cpp
 test_string_SOURCES += tests/test-main.cpp
-test_string_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_string_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
-test_timer_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_timer_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
 test_to_froidure_pin_SOURCES += tests/test-main.cpp
-test_to_froidure_pin_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_froidure_pin_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_knuth_bendix_SOURCES =  tests/test-to-knuth-bendix.cpp
 test_to_knuth_bendix_SOURCES += tests/test-main.cpp
-test_to_knuth_bendix_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_knuth_bendix_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
 test_to_presentation_SOURCES += tests/test-main.cpp
-test_to_presentation_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_presentation_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_todd_coxeter_SOURCES =  tests/test-to-todd-coxeter.cpp
 test_to_todd_coxeter_SOURCES += tests/test-main.cpp
-test_to_todd_coxeter_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_to_todd_coxeter_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
-test_todd_coxeter_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_todd_coxeter_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_transf_SOURCES =  tests/test-transf.cpp
 test_transf_SOURCES += tests/test-main.cpp
-test_transf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_transf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_types_SOURCES =  tests/test-types.cpp
 test_types_SOURCES += tests/test-main.cpp
-test_types_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_types_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
-test_uf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_uf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
-test_ukkonen_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_ukkonen_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
-test_word_graph_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_word_graph_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
-test_word_range_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+test_word_range_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_all_SOURCES  = benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
@@ -1183,48 +1241,48 @@ bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/bench-word-graph.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
-bench_all_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
-bench_action_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_action_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
-bench_bmat_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_bmat_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
-bench_freeband_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_freeband_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
-bench_kambites_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_kambites_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
-bench_konieczny_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_konieczny_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_sims_SOURCES =  benchmarks/bench-sims1.cpp
-bench_sims_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_string_range_SOURCES =  benchmarks/bench-string-range.cpp
-bench_string_range_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_string_range_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
-bench_multi_string_view_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_multi_string_view_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
-bench_todd_coxeter_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_todd_coxeter_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
 bench_uf_SOURCES += benchmarks/uf-old.cpp
-bench_uf_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_uf_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_wilo_SOURCES =  benchmarks/bench-wilo.cpp
-bench_wilo_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_wilo_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
-bench_wislo_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_wislo_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_word_graph_SOURCES =  benchmarks/bench-word-graph.cpp
-bench_word_graph_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
+bench_word_graph_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 ## Make targets
 

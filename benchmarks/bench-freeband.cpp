@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/freeband.hpp"  // for freeband_equal_to
 #include "libsemigroups/types.hpp"     // for word_type
