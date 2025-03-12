@@ -21,7 +21,6 @@
 
 #include "libsemigroups/word-graph-view.hpp"
 #include "libsemigroups/word-graph.hpp"
-#include "rx/ranges.hpp"
 #include <utility>
 
 namespace libsemigroups {
