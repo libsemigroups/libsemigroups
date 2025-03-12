@@ -24,7 +24,7 @@
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "rx/ranges.hpp"
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/word-graph-view.hpp"
 
@@ -101,6 +101,7 @@ namespace libsemigroups {
                           "007",
                           "test cbegin_targets",
                           "[quick]") {
+    // TODO() Implement graph_to_view for const_iterator_targets
     WordGraph<size_t> g(10, 5);
     g.target(2, 0, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -115,11 +116,11 @@ namespace libsemigroups {
                           "008",
                           "test cend_targets",
                           "[quick]") {
+    // TODO() Implement graph_to_view for const_iterator_targets
     WordGraph<size_t> g(10, 5);
     g.target(2, 4, 5);
     WordGraphView<size_t> v(g, 2, 5);
-
-    auto targets = v.cend_targets(0);
+    auto                  targets = v.cend_targets(0);
     REQUIRE(*(targets - 1) == 3);
     REQUIRE_THROWS_AS(v.cend_targets(7), LibsemigroupsException);
     REQUIRE(*(v.cend_targets_no_checks(0) - 1) == 3);
@@ -165,21 +166,21 @@ namespace libsemigroups {
     g.target(2, 2, 6);
     g.target(2, 3, 4);
     WordGraphView<size_t> v(g, 2, 5);
-    size_t i = 0;
-    for(auto target : v.targets_no_checks(0)) {
-      if(i == 0) {
+    size_t                i = 0;
+    for (auto target : v.targets_no_checks(0)) {
+      if (i == 0) {
         REQUIRE(target == UNDEFINED);
       }
-      if(i == 1) {
+      if (i == 1) {
         REQUIRE(target == 3);
       }
-      if(i == 2) {
+      if (i == 2) {
         REQUIRE(target == 4);
       }
-      if(i == 3) {
+      if (i == 3) {
         REQUIRE(target == 2);
       }
-      if(i == 4) {
+      if (i == 4) {
         REQUIRE(target == UNDEFINED);
       }
       i++;
@@ -202,6 +203,21 @@ namespace libsemigroups {
     REQUIRE(compare_to_1 == v.next_label_and_target(0, 2));
     REQUIRE_THROWS_AS(v.next_label_and_target(5, 1), LibsemigroupsException);
     REQUIRE_THROWS_AS(v.next_label_and_target(0, 6), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "013",
+                          "graph from view",
+                          "[quick]") {
+    WordGraph<size_t> g(10, 5);
+    g.target(2, 1, 5);
+    g.target(2, 2, 6);
+    g.target(2, 3, 4);
+    WordGraphView<size_t> v(g, 2, 8);
+    WordGraph<size_t> from_view = word_graph_view::create_graph_from_view(v);
+    WordGraphView<size_t> from_graph
+        = WordGraphView<size_t>(from_view, 0, from_view.number_of_nodes());
+    REQUIRE(from_graph == v);
   }
 
 }  // namespace libsemigroups
