@@ -24,7 +24,9 @@
 
 #include <type_traits>  // for is_integral
 #include <utility>      // for pair
+#include <vector>
 
+#include "detail/containers.hpp"
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "ranges.hpp"      // for rx::ranges without compile warnings
 #include "word-graph.hpp"  // for word_graph pointer
@@ -464,7 +466,7 @@ namespace libsemigroups {
                                              label_type a) const;
 
    private:
-    const WordGraph<Node>* _graph;
+    WordGraph<Node> const* _graph;
     size_type              _start;
     size_type              _end;
     node_type              view_to_graph(node_type n) const {
@@ -474,8 +476,9 @@ namespace libsemigroups {
       return n - _start;
     }
 
-    std::pair<node_type, label_type> graph_to_view(std::pair<node_type, label_type> const& in) const {
-      return std::pair<node_type, label_type>(in.first, graph_to_view(in.second));
+    void graph_to_view(std::pair<node_type, label_type>& in) const {
+      in.first  = graph_to_view(in.first);
+      in.second = graph_to_view(in.second);
     }
   };
 
