@@ -297,13 +297,17 @@ namespace libsemigroups {
     REQUIRE(KU.size() == 10'160);
     REQUIRE(KU.number_of_D_classes() == 66);
 
-    Konieczny KV = make<Konieczny>(gens);
-    KV.run_until(
-        [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
-    size_t found_classes = KV.current_number_of_D_classes();
-
     Konieczny<BMat8> KW;
-    KW = std::move(KV);
+    size_t           found_classes = 0;
+    {
+      Konieczny KV = make<Konieczny>(gens);
+      KV.run_until(
+          [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
+      found_classes = KV.current_number_of_D_classes();
+
+      KW = std::move(KV);
+    }
+
     REQUIRE(KW.current_number_of_D_classes() == found_classes);
     KW.run();
     LIBSEMIGROUPS_ASSERT(KW.number_of_D_classes() == 66);
