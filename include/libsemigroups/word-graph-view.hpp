@@ -27,8 +27,9 @@
 #include <vector>
 
 #include "detail/containers.hpp"
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"      // for rx::ranges without compile warnings
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"     // for rx::ranges without compile warnings
+#include "rx/ranges.hpp"
 #include "word-graph.hpp"  // for word_graph pointer
 
 #include "detail/int-range.hpp"  // for IntRange
@@ -60,6 +61,37 @@ namespace libsemigroups {
     using const_iterator_targets =
         typename detail::DynamicArray2<Node>::const_iterator;
 
+   private:
+   private:
+    WordGraph<Node> const* _graph;
+    node_type              _start;
+    node_type              _end;
+    constexpr node_type    view_to_graph(node_type n) const {
+      if (n == UNDEFINED) {
+        return UNDEFINED;
+      }
+      return n + _start;
+    };
+    constexpr node_type graph_to_view(node_type n) const {
+      if (n == UNDEFINED) {
+        return UNDEFINED;
+      }
+      return n - _start;
+    }
+
+    constexpr auto
+    graph_to_view(rx::iterator_range<const_iterator_targets> it) const {
+      return it
+             | rx::transform([this](auto elem) { return graph_to_view(elem); });
+    }
+
+    void graph_to_view(std::pair<node_type, label_type>& in) const {
+      // this is designed to operate on pairs of <label, node>
+      // so does not modify the first element
+      in.second = graph_to_view(in.second);
+    }
+
+   public:
     //! \brief Construct from an existing WordGraphView
     //! \param graph underlying WordGraphView object
     WordGraphView(WordGraph<Node> const& graph, size_type start, size_type end);
@@ -300,10 +332,9 @@ namespace libsemigroups {
     //! This function performs no checks whatsoever and assumes that \p source
     //! is a valid node of the word graph (i.e. it is not greater than or equal
     //! to \ref number_of_nodes).
-    [[nodiscard]] rx::iterator_range<const_iterator_targets>
-    targets_no_checks(node_type source) const noexcept {
+    [[nodiscard]] auto targets_no_checks(node_type source) const noexcept {
       node_type translated = view_to_graph(source);
-      return _graph->targets_no_checks(translated);
+      return graph_to_view(_graph->targets_no_checks(translated));
     }
 
     //! \brief Returns a range object containing pairs consisting of edge
@@ -464,22 +495,6 @@ namespace libsemigroups {
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target_no_checks(node_type  source,
                                              label_type a) const;
-
-   private:
-    WordGraph<Node> const* _graph;
-    size_type              _start;
-    size_type              _end;
-    node_type              view_to_graph(node_type n) const {
-      return n + _start;
-    };
-    node_type graph_to_view(node_type n) const {
-      return n - _start;
-    }
-
-    void graph_to_view(std::pair<node_type, label_type>& in) const {
-      in.first  = graph_to_view(in.first);
-      in.second = graph_to_view(in.second);
-    }
   };
 
   namespace word_graph_view {
