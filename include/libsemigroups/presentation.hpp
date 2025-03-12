@@ -73,7 +73,7 @@ namespace libsemigroups {
   //! `libsemigroups` objects, see the documentation for the `to<Presentation>`
   //! functions \ref to_presentation_group "here".
 
-  //! No doc
+  //! \brief Empty base for presentation-like classes.
   struct PresentationBase {};
 
   //! \ingroup presentations_group

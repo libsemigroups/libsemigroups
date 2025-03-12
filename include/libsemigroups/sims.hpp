@@ -1600,7 +1600,6 @@ namespace libsemigroups {
     //! Default move assignment operator.
     Sims1& operator=(Sims1&&) = default;
 
-    //! No doc
     ~Sims1() = default;
 
     //! \brief Reinitialize an existing Sims1 object.
@@ -1949,7 +1948,6 @@ namespace libsemigroups {
 
       // Try to make the definition represented by PendingDef, returns false if
       // it wasn't possible, and true if it was.
-      //! No doc
       [[nodiscard]] bool try_define(PendingDef const&);
 
       iterator_base(Sims2 const* s, size_type n);
@@ -2553,7 +2551,8 @@ namespace libsemigroups {
     bool is_right_congruence(Presentation<word_type> const& p,
                              WordGraph<Node> const&         wg);
 
-    //! No doc
+    //! \brief Throw if a word graph does not define a right congruence on a
+    //! f.p. semigroup or monoid.
     template <typename Node>
     void throw_if_not_right_congruence(Presentation<word_type> const& p,
                                        WordGraph<Node> const&         wg);
@@ -2602,7 +2601,8 @@ namespace libsemigroups {
     bool is_two_sided_congruence(Presentation<word_type> const& p,
                                  WordGraph<Node> const&         wg);
 
-    //! No doc
+    //! \brief Throw if a word graph does not define a two sided congruence on a
+    //! f.p. semigroup or monoid.
     template <typename Node>
     void throw_if_not_two_sided_congruence(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg);

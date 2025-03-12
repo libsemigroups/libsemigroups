@@ -317,7 +317,7 @@ namespace libsemigroups {
   struct ImageRightAction<Mat, BitSet<N>>
 #endif
   {
-    //! No doc
+    //! \brief The type of result.
     using result_type = BitSet<N>;
 
     //! \brief Store the image of \p pt under the right action of \p x.
