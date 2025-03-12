@@ -314,17 +314,17 @@ eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/
 eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixSquareRoot.h
 eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/StemFunction.h
 
-eigensrcincludedir = third_party/eigen-3.4.0/Eigen/src
+eigensrcincludedir = $(includedir)/libsemigroups/Eigen/src
 
-eigensrccholeskyincludedir = third_party/eigen-3.4.0/Eigen/src/Cholesky
+eigensrccholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/Cholesky
 eigensrccholeskyinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Cholesky/LDLT.h
 eigensrccholeskyinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Cholesky/LLT.h
 eigensrccholeskyinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Cholesky/LLT_LAPACKE.h
 
-eigensrccholmodsupportincludedir = third_party/eigen-3.4.0/Eigen/src/CholmodSupport
+eigensrccholmodsupportincludedir = $(includedir)/libsemigroups/Eigen/src/CholmodSupport
 eigensrccholmodsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/CholmodSupport/CholmodSupport.h
 
-eigensrccoreincludedir = third_party/eigen-3.4.0/Eigen/src/Core
+eigensrccoreincludedir = $(includedir)/libsemigroups/Eigen/src/Core
 eigensrccoreinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/ArithmeticSequence.h
 eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Array.h
 eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/ArrayBase.h
@@ -398,21 +398,21 @@ eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/VectorBloc
 eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/VectorwiseOp.h
 eigensrccoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/Visitor.h
 
-eigensrccorearchincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch
+eigensrccorearchincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch
 
-eigensrccorearchavxincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX
+eigensrccorearchavxincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AVX
 eigensrccorearchavxinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/Complex.h
 eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/MathFunctions.h
 eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/PacketMath.h
 eigensrccorearchavxinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX/TypeCasting.h
 
-eigensrccorearchavx512includedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512
+eigensrccorearchavx512includedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AVX512
 eigensrccorearchavx512include_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/Complex.h
 eigensrccorearchavx512include_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/MathFunctions.h
 eigensrccorearchavx512include_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/PacketMath.h
 eigensrccorearchavx512include_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AVX512/TypeCasting.h
 
-eigensrccorearchaltivecincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec
+eigensrccorearchaltivecincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/AltiVec
 eigensrccorearchaltivecinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/Complex.h
 eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MathFunctions.h
 eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MatrixProduct.h
@@ -420,10 +420,10 @@ eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core
 eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/MatrixProductMMA.h
 eigensrccorearchaltivecinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/AltiVec/PacketMath.h
 
-eigensrccorearchcudaincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/CUDA
+eigensrccorearchcudaincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/CUDA
 eigensrccorearchcudainclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/CUDA/Complex.h
 
-eigensrccorearchdefaultincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/Default
+eigensrccorearchdefaultincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/Default
 eigensrccorearchdefaultinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/BFloat16.h
 eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/ConjHelper.h
 eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/GenericPacketMathFunctions.h
@@ -432,52 +432,52 @@ eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core
 eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/Settings.h
 eigensrccorearchdefaultinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/Default/TypeCasting.h
 
-eigensrccorearchgpuincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU
+eigensrccorearchgpuincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/GPU
 eigensrccorearchgpuinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU/MathFunctions.h
 eigensrccorearchgpuinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU/PacketMath.h
 eigensrccorearchgpuinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/GPU/TypeCasting.h
 
-eigensrccorearchhipincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/HIP
+eigensrccorearchhipincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/HIP
 
-eigensrccorearchhiphccincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/HIP/hcc
+eigensrccorearchhiphccincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/HIP/hcc
 eigensrccorearchhiphccinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/HIP/hcc/math_constants.h
 
-eigensrccorearchmsaincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA
+eigensrccorearchmsaincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/MSA
 eigensrccorearchmsainclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA/Complex.h
 eigensrccorearchmsainclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA/MathFunctions.h
 eigensrccorearchmsainclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/MSA/PacketMath.h
 
-eigensrccorearchneonincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON
+eigensrccorearchneonincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/NEON
 eigensrccorearchneoninclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/Complex.h
 eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/GeneralBlockPanelKernel.h
 eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/MathFunctions.h
 eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/PacketMath.h
 eigensrccorearchneoninclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/NEON/TypeCasting.h
 
-eigensrccorearchsseincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE
+eigensrccorearchsseincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SSE
 eigensrccorearchsseinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/Complex.h
 eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/MathFunctions.h
 eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/PacketMath.h
 eigensrccorearchsseinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SSE/TypeCasting.h
 
-eigensrccorearchsveincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE
+eigensrccorearchsveincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SVE
 eigensrccorearchsveinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE/MathFunctions.h
 eigensrccorearchsveinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE/PacketMath.h
 eigensrccorearchsveinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SVE/TypeCasting.h
 
-eigensrccorearchsyclincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL
+eigensrccorearchsyclincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/SYCL
 eigensrccorearchsyclinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/InteropHeaders.h
 eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/MathFunctions.h
 eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/PacketMath.h
 eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/SyclMemoryModel.h
 eigensrccorearchsyclinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/SYCL/TypeCasting.h
 
-eigensrccorearchzvectorincludedir = third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector
+eigensrccorearchzvectorincludedir = $(includedir)/libsemigroups/Eigen/src/Core/arch/ZVector
 eigensrccorearchzvectorinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector/Complex.h
 eigensrccorearchzvectorinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector/MathFunctions.h
 eigensrccorearchzvectorinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/arch/ZVector/PacketMath.h
 
-eigensrccorefunctorsincludedir = third_party/eigen-3.4.0/Eigen/src/Core/functors
+eigensrccorefunctorsincludedir = $(includedir)/libsemigroups/Eigen/src/Core/functors
 eigensrccorefunctorsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/functors/AssignmentFunctors.h
 eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/BinaryFunctors.h
 eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/NullaryFunctors.h
@@ -485,7 +485,7 @@ eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/fu
 eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/TernaryFunctors.h
 eigensrccorefunctorsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/functors/UnaryFunctors.h
 
-eigensrccoreproductsincludedir = third_party/eigen-3.4.0/Eigen/src/Core/products
+eigensrccoreproductsincludedir = $(includedir)/libsemigroups/Eigen/src/Core/products
 eigensrccoreproductsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralBlockPanelKernel.h
 eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixMatrix.h
 eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
@@ -508,7 +508,7 @@ eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/pr
 eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularSolverMatrix_BLAS.h
 eigensrccoreproductsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/products/TriangularSolverVector.h
 
-eigensrccoreutilincludedir = third_party/eigen-3.4.0/Eigen/src/Core/util
+eigensrccoreutilincludedir = $(includedir)/libsemigroups/Eigen/src/Core/util
 eigensrccoreutilinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Core/util/BlasUtil.h
 eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/ConfigureVectorization.h
 eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/Constants.h
@@ -527,7 +527,7 @@ eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/S
 eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/SymbolicIndex.h
 eigensrccoreutilinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Core/util/XprHelper.h
 
-eigensrceigenvaluesincludedir = third_party/eigen-3.4.0/Eigen/src/Eigenvalues
+eigensrceigenvaluesincludedir = $(includedir)/libsemigroups/Eigen/src/Eigenvalues
 eigensrceigenvaluesinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Eigenvalues/ComplexEigenSolver.h
 eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/ComplexSchur.h
 eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/ComplexSchur_LAPACKE.h
@@ -543,7 +543,7 @@ eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenval
 eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/SelfAdjointEigenSolver_LAPACKE.h
 eigensrceigenvaluesinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Eigenvalues/Tridiagonalization.h
 
-eigensrcgeometryincludedir = third_party/eigen-3.4.0/Eigen/src/Geometry
+eigensrcgeometryincludedir = $(includedir)/libsemigroups/Eigen/src/Geometry
 eigensrcgeometryinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Geometry/AlignedBox.h
 eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/AngleAxis.h
 eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/EulerAngles.h
@@ -559,15 +559,15 @@ eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Tr
 eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Translation.h
 eigensrcgeometryinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Geometry/Umeyama.h
 
-eigensrcgeometryarchincludedir = third_party/eigen-3.4.0/Eigen/src/Geometry/arch
+eigensrcgeometryarchincludedir = $(includedir)/libsemigroups/Eigen/src/Geometry/arch
 eigensrcgeometryarchinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Geometry/arch/Geometry_SIMD.h
 
-eigensrchouseholderincludedir = third_party/eigen-3.4.0/Eigen/src/Householder
+eigensrchouseholderincludedir = $(includedir)/libsemigroups/Eigen/src/Householder
 eigensrchouseholderinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Householder/BlockHouseholder.h
 eigensrchouseholderinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Householder/Householder.h
 eigensrchouseholderinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/Householder/HouseholderSequence.h
 
-eigensrciterativelinearsolversincludedir = third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers
+eigensrciterativelinearsolversincludedir = $(includedir)/libsemigroups/Eigen/src/IterativeLinearSolvers
 eigensrciterativelinearsolversinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/BasicPreconditioners.h
 eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/BiCGSTAB.h
 eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/ConjugateGradient.h
@@ -577,37 +577,37 @@ eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/s
 eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/LeastSquareConjugateGradient.h
 eigensrciterativelinearsolversinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/IterativeLinearSolvers/SolveWithGuess.h
 
-eigensrcjacobiincludedir = third_party/eigen-3.4.0/Eigen/src/Jacobi
+eigensrcjacobiincludedir = $(includedir)/libsemigroups/Eigen/src/Jacobi
 eigensrcjacobiinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Jacobi/Jacobi.h
 
-eigensrcklusupportincludedir = third_party/eigen-3.4.0/Eigen/src/KLUSupport
+eigensrcklusupportincludedir = $(includedir)/libsemigroups/Eigen/src/KLUSupport
 eigensrcklusupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/KLUSupport/KLUSupport.h
 
-eigensrcluincludedir = third_party/eigen-3.4.0/Eigen/src/LU
+eigensrcluincludedir = $(includedir)/libsemigroups/Eigen/src/LU
 eigensrcluinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/LU/Determinant.h
 eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/FullPivLU.h
 eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/InverseImpl.h
 eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/PartialPivLU.h
 eigensrcluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/LU/PartialPivLU_LAPACKE.h
 
-eigensrcluarchincludedir = third_party/eigen-3.4.0/Eigen/src/LU/arch
+eigensrcluarchincludedir = $(includedir)/libsemigroups/Eigen/src/LU/arch
 eigensrcluarchinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/LU/arch/InverseSize4.h
 
-eigensrcmetissupportincludedir = third_party/eigen-3.4.0/Eigen/src/MetisSupport
+eigensrcmetissupportincludedir = $(includedir)/libsemigroups/Eigen/src/MetisSupport
 eigensrcmetissupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/MetisSupport/MetisSupport.h
 
-eigensrcorderingmethodsincludedir = third_party/eigen-3.4.0/Eigen/src/OrderingMethods
+eigensrcorderingmethodsincludedir = $(includedir)/libsemigroups/Eigen/src/OrderingMethods
 eigensrcorderingmethodsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/OrderingMethods/Amd.h
 eigensrcorderingmethodsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/OrderingMethods/Eigen_Colamd.h
 eigensrcorderingmethodsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/OrderingMethods/Ordering.h
 
-eigensrcpastixsupportincludedir = third_party/eigen-3.4.0/Eigen/src/PaStiXSupport
+eigensrcpastixsupportincludedir = $(includedir)/libsemigroups/Eigen/src/PaStiXSupport
 eigensrcpastixsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/PaStiXSupport/PaStiXSupport.h
 
-eigensrcpardisosupportincludedir = third_party/eigen-3.4.0/Eigen/src/PardisoSupport
+eigensrcpardisosupportincludedir = $(includedir)/libsemigroups/Eigen/src/PardisoSupport
 eigensrcpardisosupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/PardisoSupport/PardisoSupport.h
 
-eigensrcqrincludedir = third_party/eigen-3.4.0/Eigen/src/QR
+eigensrcqrincludedir = $(includedir)/libsemigroups/Eigen/src/QR
 eigensrcqrinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/QR/ColPivHouseholderQR.h
 eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/ColPivHouseholderQR_LAPACKE.h
 eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/CompleteOrthogonalDecomposition.h
@@ -615,21 +615,21 @@ eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/FullPivHouseho
 eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/HouseholderQR.h
 eigensrcqrinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/QR/HouseholderQR_LAPACKE.h
 
-eigensrcspqrsupportincludedir = third_party/eigen-3.4.0/Eigen/src/SPQRSupport
+eigensrcspqrsupportincludedir = $(includedir)/libsemigroups/Eigen/src/SPQRSupport
 eigensrcspqrsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SPQRSupport/SuiteSparseQRSupport.h
 
-eigensrcsvdincludedir = third_party/eigen-3.4.0/Eigen/src/SVD
+eigensrcsvdincludedir = $(includedir)/libsemigroups/Eigen/src/SVD
 eigensrcsvdinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SVD/BDCSVD.h
 eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/JacobiSVD.h
 eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/JacobiSVD_LAPACKE.h
 eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/SVDBase.h
 eigensrcsvdinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SVD/UpperBidiagonalization.h
 
-eigensrcsparsecholeskyincludedir = third_party/eigen-3.4.0/Eigen/src/SparseCholesky
+eigensrcsparsecholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/SparseCholesky
 eigensrcsparsecholeskyinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseCholesky/SimplicialCholesky.h
 eigensrcsparsecholeskyinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCholesky/SimplicialCholesky_impl.h
 
-eigensrcsparsecoreincludedir = third_party/eigen-3.4.0/Eigen/src/SparseCore
+eigensrcsparsecoreincludedir = $(includedir)/libsemigroups/Eigen/src/SparseCore
 eigensrcsparsecoreinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseCore/AmbiVector.h
 eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/CompressedStorage.h
 eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/ConservativeSparseSparseProduct.h
@@ -661,7 +661,7 @@ eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCor
 eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/SparseView.h
 eigensrcsparsecoreinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseCore/TriangularSolver.h
 
-eigensrcsparseluincludedir = third_party/eigen-3.4.0/Eigen/src/SparseLU
+eigensrcsparseluincludedir = $(includedir)/libsemigroups/Eigen/src/SparseLU
 eigensrcsparseluinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU.h
 eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLUImpl.h
 eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_Memory.h
@@ -680,22 +680,22 @@ eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/Sp
 eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_pruneL.h
 eigensrcsparseluinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/SparseLU/SparseLU_relax_snode.h
 
-eigensrcsparseqrincludedir = third_party/eigen-3.4.0/Eigen/src/SparseQR
+eigensrcsparseqrincludedir = $(includedir)/libsemigroups/Eigen/src/SparseQR
 eigensrcsparseqrinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SparseQR/SparseQR.h
 
-eigensrcstlsupportincludedir = third_party/eigen-3.4.0/Eigen/src/StlSupport
+eigensrcstlsupportincludedir = $(includedir)/libsemigroups/Eigen/src/StlSupport
 eigensrcstlsupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/StlSupport/StdDeque.h
 eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/StlSupport/StdList.h
 eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/StlSupport/StdVector.h
 eigensrcstlsupportinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/StlSupport/details.h
 
-eigensrcsuperlusupportincludedir = third_party/eigen-3.4.0/Eigen/src/SuperLUSupport
+eigensrcsuperlusupportincludedir = $(includedir)/libsemigroups/Eigen/src/SuperLUSupport
 eigensrcsuperlusupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/SuperLUSupport/SuperLUSupport.h
 
-eigensrcumfpacksupportincludedir = third_party/eigen-3.4.0/Eigen/src/UmfPackSupport
+eigensrcumfpacksupportincludedir = $(includedir)/libsemigroups/Eigen/src/UmfPackSupport
 eigensrcumfpacksupportinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/UmfPackSupport/UmfPackSupport.h
 
-eigensrcmiscincludedir = third_party/eigen-3.4.0/Eigen/src/misc
+eigensrcmiscincludedir = $(includedir)/libsemigroups/Eigen/src/misc
 eigensrcmiscinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/misc/Image.h
 eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/Kernel.h
 eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/RealSvd2x2.h
@@ -704,7 +704,7 @@ eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/lapack.h
 eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/lapacke.h
 eigensrcmiscinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/misc/lapacke_mangling.h
 
-eigensrcpluginsincludedir = third_party/eigen-3.4.0/Eigen/src/plugins
+eigensrcpluginsincludedir = $(includedir)/libsemigroups/Eigen/src/plugins
 eigensrcpluginsinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/plugins/ArrayCwiseBinaryOps.h
 eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/ArrayCwiseUnaryOps.h
 eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/BlockMethods.h
