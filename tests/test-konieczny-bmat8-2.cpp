@@ -572,10 +572,10 @@ namespace libsemigroups {
     REQUIRE(KS.number_of_regular_D_classes() == 9);
 
     REQUIRE_THROWS_AS(
-        konieczny::add_generators(
-            KS, std::vector(KS.cbegin_generators(), KS.cend_generators())),
+        KS.add_generators(KS.cbegin_generators(), KS.cend_generators()),
         LibsemigroupsException);
-    REQUIRE_THROWS_AS(KS.add_generator(S.generator(0)), LibsemigroupsException);
+    REQUIRE_THROWS_AS(KS.add_generator(KS.generator(0)),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
