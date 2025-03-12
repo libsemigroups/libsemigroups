@@ -24,12 +24,8 @@
 
 #include <type_traits>  // for is_integral
 #include <utility>      // for pair
-#include <vector>
 
 #include "detail/containers.hpp"
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"     // for rx::ranges without compile warnings
-#include "rx/ranges.hpp"
 #include "word-graph.hpp"  // for word_graph pointer
 
 #include "detail/int-range.hpp"  // for IntRange
