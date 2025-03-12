@@ -20,7 +20,8 @@
 #include <utility>  // for std::move
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "rx/ranges.hpp"
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/word-graph-view.hpp"
 
@@ -112,14 +113,24 @@ namespace libsemigroups {
                           "008",
                           "test cend_targets",
                           "[quick]") {
-    // TODO() Implement graph_to_view for const_iterator_targets
     WordGraph<size_t> g(10, 5);
     g.target(2, 4, 5);
     WordGraphView<size_t> v(g, 2, 5);
-    auto                  targets = v.cend_targets(0);
-    REQUIRE(*(targets - 1) == 3);
+    auto                  end   = v.cend_targets(0);
+    auto                  begin = v.cbegin_targets(0);
     REQUIRE_THROWS_AS(v.cend_targets(7), LibsemigroupsException);
-    REQUIRE(*(v.cend_targets_no_checks(0) - 1) == 3);
+    auto target = begin;
+    size_t i = 0;
+    while (target != end) {
+      if(i == 4) {
+        REQUIRE(*target == 3);
+      }
+      else {
+        REQUIRE(*target == UNDEFINED);
+      }
+      ++target;
+      i++;
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",

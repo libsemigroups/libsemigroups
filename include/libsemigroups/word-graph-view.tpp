@@ -42,19 +42,16 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  typename WordGraphView<Node>::const_iterator_targets
+  auto
   WordGraphView<Node>::cbegin_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
-    node_type translated = view_to_graph(source);
-    return _graph->cbegin_targets_no_checks(translated);
+    return rx::begin(targets_no_checks(source));
   }
 
   template <typename Node>
-  typename WordGraphView<Node>::const_iterator_targets
-  WordGraphView<Node>::cend_targets(node_type source) const {
+  auto WordGraphView<Node>::cend_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
-    node_type translated = view_to_graph(source);
-    return _graph->cend_targets_no_checks(translated);
+    return rx::end(targets_no_checks(source));
   }
 
   template <typename Node>
@@ -80,11 +77,10 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  rx::iterator_range<typename WordGraphView<Node>::const_iterator_targets>
-  WordGraphView<Node>::targets(node_type source) const {
+  auto WordGraphView<Node>::targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->targets_no_checks(source, translated));
+    return graph_to_view(_graph->targets_no_checks(translated));
   }
 
   template <typename Node>
