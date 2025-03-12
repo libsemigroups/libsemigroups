@@ -66,13 +66,13 @@ namespace libsemigroups {
     WordGraph<Node> const* _graph;
     node_type              _start;
     node_type              _end;
-    constexpr node_type    view_to_graph(node_type n) const {
+    constexpr node_type    view_to_graph(node_type n) const noexcept {
       if (n == UNDEFINED) {
         return UNDEFINED;
       }
       return n + _start;
     };
-    constexpr node_type graph_to_view(node_type n) const {
+    constexpr node_type graph_to_view(node_type n) const noexcept {
       if (n == UNDEFINED) {
         return UNDEFINED;
       }
@@ -119,7 +119,7 @@ namespace libsemigroups {
     WordGraphView();
 
     //! \brief Reshape this view over the same graph
-    WordGraphView& init(const size_type start, const size_type end);
+    WordGraphView& init(size_type start, size_type end);
 
     //! \brief Reassign this view to a different graph, keeping the same
     //! dimensions
