@@ -142,11 +142,20 @@ namespace libsemigroups {
       explicit Node(Thing&& thing)
           : attrs(), name(detail::dot_to_string(std::forward<Thing>(thing))) {}
 
-      Node()                       = default;
-      Node(Node const&)            = default;
-      Node(Node&&)                 = default;
+      //! \brief Default constructor.
+      Node() = default;
+
+      //! \brief Default copy constructor.
+      Node(Node const&) = default;
+
+      //! \brief Default move constructor.
+      Node(Node&&) = default;
+
+      //! \brief Default copy assignment.
       Node& operator=(Node const&) = default;
-      Node& operator=(Node&&)      = default;
+
+      //! \brief Default move assignment.
+      Node& operator=(Node&&) = default;
 
       ~Node();
 
@@ -189,10 +198,10 @@ namespace libsemigroups {
     struct Edge {
       //! \brief Construct from head and tail.
       //!
-      //! This constructor creates a new Edge object with head \p
-      //! h (converted to a std::string using std::to_string if \p
-      //! thing is not already a std::string, std::string_view, or `char
-      //! const*`) and tail \p t (similarly converted to a std::string).
+      //! This constructor creates a new Edge object with head \p h (converted
+      //! to a std::string using std::to_string if \p thing is not already a
+      //! std::string, std::string_view, or `char const*`) and tail \p t
+      //! (similarly converted to a std::string).
       //!
       //! The newly constructed Edge has no attributes set.
       //!
@@ -236,18 +245,30 @@ namespace libsemigroups {
         return *this;
       }
 
-      Edge()                       = default;
-      Edge(Edge const&)            = default;
-      Edge(Edge&&)                 = default;
+      //! \brief Default constructor.
+      Edge() = default;
+
+      //! \brief Default copy constructor.
+      Edge(Edge const&) = default;
+
+      //! \brief Default move constructor.
+      Edge(Edge&&) = default;
+
+      //! \brief Default copy assignment.
       Edge& operator=(Edge const&) = default;
-      Edge& operator=(Edge&&)      = default;
+
+      //! \brief Default move assignment.
+      Edge& operator=(Edge&&) = default;
+
       ~Edge();
 
-      //! No doc
+      //! \brief Map of attributes.
       std::map<std::string, std::string> attrs;
-      //! No doc
+
+      //! \brief Name of the head of the edge.
       std::string head;
-      //! No doc
+
+      //! \brief Name of the tail of the edge.
       std::string tail;
     };
 
