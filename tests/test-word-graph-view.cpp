@@ -16,14 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>  // for std::equal
 #include <cstddef>    // for size_t
 #include <utility>    // for std::move
 
-#include <iostream>  // remove when finished writing tests
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "rx/ranges.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/word-graph-view.hpp"

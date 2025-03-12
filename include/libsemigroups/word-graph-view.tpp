@@ -22,7 +22,6 @@
 #include "libsemigroups/word-graph-view.hpp"
 #include "libsemigroups/word-graph.hpp"
 #include "rx/ranges.hpp"
-#include <iostream>
 #include <utility>
 
 namespace libsemigroups {
@@ -186,7 +185,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    WordGraph<Node> create_graph_from_view(const WordGraphView<Node>& view) {
+    WordGraph<Node> create_graph_from_view(WordGraphView<Node> const& view) {
       WordGraph<Node> result
           = WordGraph<Node>(view.number_of_nodes(), view.out_degree());
       for (auto node : rx::iterator_range(view.nodes())) {
