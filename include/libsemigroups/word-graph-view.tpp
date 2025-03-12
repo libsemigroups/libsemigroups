@@ -20,6 +20,9 @@
 // word graphs exposing a chosen range of nodes
 
 #include "libsemigroups/word-graph-view.hpp"
+#include "libsemigroups/word-graph.hpp"
+#include "rx/ranges.hpp"
+#include <iostream>
 #include <utility>
 
 namespace libsemigroups {
@@ -73,7 +76,7 @@ namespace libsemigroups {
     word_graph_view::throw_if_node_out_of_bounds(*this, s);
     word_graph_view::throw_if_label_out_of_bounds(*this, a);
     node_type translated = view_to_graph(s);
-    auto result = _graph->next_label_and_target_no_checks(translated, a);
+    auto      result = _graph->next_label_and_target_no_checks(translated, a);
     graph_to_view(result);
     return result;
   }
@@ -105,8 +108,8 @@ namespace libsemigroups {
       auto that_node = that.cbegin_nodes();
       while (this_node < this->cend_nodes()) {
         for (label_type a = 0; a < this->out_degree(); ++a) {
-          if (_graph->target_no_checks(*this_node, a)
-              != that._graph->target_no_checks(*that_node, a)) {
+          if (target_no_checks(*this_node, a)
+              != that.target_no_checks(*that_node, a)) {
             return false;
           }
         }
@@ -180,6 +183,23 @@ namespace libsemigroups {
                                 wgv.out_degree(),
                                 a);
       }
+    }
+
+    template <typename Node>
+    WordGraph<Node> create_graph_from_view(const WordGraphView<Node>& view) {
+      WordGraph<Node> result
+          = WordGraph<Node>(view.number_of_nodes(), view.out_degree());
+      for (auto node : rx::iterator_range(view.nodes())) {
+        for (auto label_target : view.labels_and_targets(node)) {
+          auto target = std::get<1>(label_target);
+          if (target == UNDEFINED) {
+            continue;
+          }
+          result.target(
+              node, std::get<0>(label_target), std::get<1>(label_target));
+        }
+      }
+      return result;
     }
   }  // namespace word_graph_view
 }  // namespace libsemigroups

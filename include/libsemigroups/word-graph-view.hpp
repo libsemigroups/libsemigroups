@@ -504,10 +504,15 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
 
+    //! \brief Throws \c LIBSEMIGROUPS_EXCEPTION if the target label is greater
+    //! than or equal to the out_degree of the underlying graph
     template <typename Node>
     void
     throw_if_label_out_of_bounds(WordGraphView<Node> const&               wgv,
                                  typename WordGraphView<Node>::label_type a);
+
+    template <typename Node>
+    WordGraph<Node> create_graph_from_view(WordGraph<Node> const& view);
   }  // namespace word_graph_view
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"
