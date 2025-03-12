@@ -36,8 +36,32 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::RankState" title="RankState" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Swap" title="Swap" />
       </tab>
-      <tab type="user" visible="yes" url="@ref adapters_bmat_group" title="Adapters for BMat" />
-      <tab type="user" visible="yes" url="@ref adapters_bmat8_group" title="Adapters for BMat8" />
+      <tab type="usergroup" visible="yes" url="@ref adapters_bmat_group" title="Adapters for BMat" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageLeftAction<Mat, Container>" title="ImageLeftAction"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<Mat,BitSet< N>>" title="ImageRightAction (BitSet)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<Mat,Container>" title="ImageRightAction (Container)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Lambda<Mat,Container>" title="Lambda" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::LambdaValue<Mat>" title="LambdaValue" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rank<Mat,RankState<Mat>>" title="Rank" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RankState<Mat>" title="RankState" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rho<Mat,Container>" title="Rho" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue<Mat>" title="RhoValue" />
+      </tab>
+      <tab type="usergroup" visible="yes" url="@ref adapters_bmat8_group" title="Adapters for BMat8" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Complexity<BMat8>" title="Complexity" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Degree<BMat8>" title="Degree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageLeftAction<BMat8,BMat8>" title="ImageLeftAction" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<BMat8,BMat8>" title="ImageRightAction" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::IncreaseDegree<BMat8>" title="IncreaseDegree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Inverse<BMat8>" title="Inverse" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Lambda<BMat8,BMat8>" title="Lambda" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::LambdaValue<BMat8>" title="LambdaValue" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::One<BMat8>" title="One" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Product<BMat8>" title="Product" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rank<BMat8>" title="Rank" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rho<BMat8,BMat8>" title="Rho" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue<BMat8>" title="RhoValue" />
+      </tab>
       <tab type="user" visible="yes" url="@ref adapters_matrix_group"
         title="Adapters for other matrices" />
       <tab type="user" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" />
