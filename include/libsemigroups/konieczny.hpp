@@ -950,8 +950,7 @@ namespace libsemigroups {
     //!
     //! \sa add_generator and add_generators
     size_t number_of_generators() const noexcept {
-      LIBSEMIGROUPS_ASSERT(!_gens.empty());
-      return _gens.size() - 1;
+      return _gens.empty() ? 0 : _gens.size() - 1;
     }
 
     //! \brief Returns a const reference to the generator given by an index.
