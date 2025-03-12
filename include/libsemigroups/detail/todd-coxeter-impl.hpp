@@ -1273,9 +1273,9 @@ namespace libsemigroups {
       //! \brief Get the spanning tree of the underlying word graph.
       //!
       //! This function returns a const reference to a spanning tree (a
-      //! \ref Forest) for the underlying WordGraph (returned by \ref
-      //! word_graph) with the nodes appearing in short-lex order. This function
-      //! triggers a full congruence enumeration.
+      //! \ref Forest) for the underlying WordGraph (returned by
+      //! \ref word_graph) with the nodes appearing in short-lex order. This
+      //! function triggers a full congruence enumeration.
       //!
       //! \returns A const reference to a spanning tree of the underlying
       //! \ref WordGraph.
@@ -1592,8 +1592,8 @@ namespace libsemigroups {
       //! standardized.
       //!
       //! The word appended to \p d_first is obtained by following a path in
-      //! \ref current_spanning_tree from the node corresponding to index \c
-      //! i back to the root of that tree.
+      //! \ref current_spanning_tree from the node corresponding to index
+      //! \c i back to the root of that tree.
       //!
       //! \tparam OutputIterator the type of the first argument.
       //!
@@ -1625,8 +1625,8 @@ namespace libsemigroups {
       //! standardized.
       //!
       //! The word appended to \p d_first is obtained by following a path in
-      //! \ref current_spanning_tree from the node corresponding to index \c
-      //! i back to the root of that tree.
+      //! \ref current_spanning_tree from the node corresponding to index
+      //! \c i back to the root of that tree.
       //!
       //! \tparam OutputIterator the type of the first argument.
       //!
@@ -1652,8 +1652,8 @@ namespace libsemigroups {
       //! is standardized.
       //!
       //! The word appended to \p d_first is obtained by following a path in
-      //! \ref current_spanning_tree from the node corresponding to index \c
-      //! i back to the root of that tree.
+      //! \ref current_spanning_tree from the node corresponding to index
+      //! \c i back to the root of that tree.
       //!
       //! \tparam OutputIterator the type of the first argument.
       //!
@@ -1682,8 +1682,8 @@ namespace libsemigroups {
       //! is standardized.
       //!
       //! The word appended to \p d_first is obtained by following a path in
-      //! \ref current_spanning_tree from the node corresponding to index \c
-      //! i back to the root of that tree.
+      //! \ref current_spanning_tree from the node corresponding to index
+      //! \c i back to the root of that tree.
       //!
       //! \tparam OutputIterator the type of the first argument.
       //!

@@ -227,8 +227,8 @@ namespace libsemigroups {
     //! \param thread_id the index of the calling thread (defaults to \c 0).
     //!
     //! \throws LibsemigroupsException if:
-    //!   * the \ref degree() of \p x is not the same as the \ref degree() of \p
-    //!   y;
+    //!   * the \ref degree() of \p x is not the same as the \ref degree() of
+    //!   \p y;
     //!   * the \ref degree() of `*this` is not the same as the \ref degree() of
     //!   \p x;
     //!   * one if the addresses `&x` and `&y` is the same as that of `this`; or

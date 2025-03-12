@@ -282,8 +282,8 @@ namespace libsemigroups {
   struct Rho<Mat, Container>
 #endif
   {
-    //! \brief Modifies \p res in-place to contain the column space basis of \p
-    //! x.
+    //! \brief Modifies \p res in-place to contain the column space basis of
+    //! \p x.
     //!
     //! Modifies \p res in-place to contain the column space basis of \p x.
     void operator()(Container& res, Mat const& x) const noexcept {

@@ -224,8 +224,8 @@ namespace libsemigroups {
   //! to the next least short-lex word after \p w over an \p n letter alphabet.
   //! Iterators of the type returned by this function are equal whenever they
   //! are obtained by advancing the return value of any call to \c cbegin_wislo
-  //! by the same amount, or they are both obtained by any call to \c
-  //! cend_wislo.
+  //! by the same amount, or they are both obtained by any call to
+  //! \c cend_wislo.
   //!
   //! \param n the number of letters in the alphabet.
   //! \param first the starting point for the iteration.
@@ -714,8 +714,8 @@ namespace libsemigroups {
     //! * \ref upper_bound(size_type)
     //!
     //! This function returns \c true if none of the above settings have been
-    //! changed since the last time \ref next or \ref get is called, and \c
-    //! false otherwise.
+    //! changed since the last time \ref next or \ref get is called, and
+    //! \c false otherwise.
     //!
     //! \returns A value of type `bool`.
     // Required so StringRange can accurately set _current_valid
@@ -731,8 +731,8 @@ namespace libsemigroups {
   //! Return a human readable representation of a WordRange object.
   //!
   //! \param wr the WordRange object.
-  //! \param max_width the maximum width of the returned string (default: \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (default:
+  //! \c 72).
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -847,8 +847,8 @@ namespace libsemigroups {
 
     //! \brief Check if the alphabet is defined.
     //!
-    //! This function returns \c true if no alphabet has been defined, and \c
-    //! false otherwise.
+    //! This function returns \c true if no alphabet has been defined, and
+    //! \c false otherwise.
     //!
     //! \returns A value of type \c bool.
     //!
@@ -893,10 +893,10 @@ namespace libsemigroups {
     //! \brief Convert a string to a word_type.
     //!
     //! This function converts its second argument \p input into a word_type and
-    //! stores the result in the first argument \p output. The characters of \p
-    //! input are converted using the alphabet used to construct the object or
-    //! set via init(), or with \ref words::human_readable_index if \ref empty
-    //! returns `true`.
+    //! stores the result in the first argument \p output. The characters of
+    //! \p input are converted using the alphabet used to construct the object
+    //! or set via init(), or with \ref words::human_readable_index if
+    //! \ref empty returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -937,10 +937,10 @@ namespace libsemigroups {
     //! \brief Convert a string to a word_type.
     //!
     //! This function converts its second argument \p input into a word_type and
-    //! stores the result in the first argument \p output. The characters of \p
-    //! input are converted using the alphabet used to construct the object or
-    //! set via init(), or with \ref words::human_readable_index if \ref empty
-    //! returns `true`.
+    //! stores the result in the first argument \p output. The characters of
+    //! \p input are converted using the alphabet used to construct the object
+    //! or set via init(), or with \ref words::human_readable_index if
+    //! \ref empty returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -1212,8 +1212,8 @@ namespace libsemigroups {
 
     //! \brief Check if the alphabet is defined.
     //!
-    //! This function return \c true if no alphabet has been defined, and \c
-    //! false otherwise.
+    //! This function return \c true if no alphabet has been defined, and
+    //! \c false otherwise.
     //!
     //! \returns A value of type \c bool.
     //!
@@ -1960,8 +1960,8 @@ namespace libsemigroups {
   //! Return a human readable representation of a StringRange object.
   //!
   //! \param sr the StringRange object.
-  //! \param max_width the maximum width of the returned string (default: \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (default:
+  //! \c 72).
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -2091,11 +2091,11 @@ namespace libsemigroups {
     //! \brief Returns a character by index in human readable order.
     //!
     //! This function exists to map the numbers \c 0 to \c 255 to the possible
-    //! values of a \c char, in such a way that the first characters are \c
-    //! a-zA-Z0-9. The ascii ranges for these characters are: \f$[97, 123)\f$,
-    //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
-    //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
-    //! \f$[91, 97)\f$, \f$[123, 255]\f$.
+    //! values of a \c char, in such a way that the first characters are
+    //! \c a-zA-Z0-9. The ascii ranges for these characters are: \f$[97,
+    //! 123)\f$, \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars
+    //! that are appended to the end after these chars are \f$[0,48)\f$, \f$[58,
+    //! 65)\f$, \f$[91, 97)\f$, \f$[123, 255]\f$.
     //!
     //! This function is the inverse of \ref words::human_readable_index.
     //!

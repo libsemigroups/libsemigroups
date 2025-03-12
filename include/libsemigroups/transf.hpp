@@ -893,8 +893,8 @@ namespace libsemigroups {
   //! the template parameters \p N and \p Scalar.
   //!
   //! If \p N is \c 0 (the default), then \c PTransf is
-  //! \ref DynamicPTransf. In this case the default value of \p Scalar is \c
-  //! uint32_t. If \p N is not \c 0, then \c PTransf is \ref StaticPTransf,
+  //! \ref DynamicPTransf. In this case the default value of \p Scalar is
+  //! \c uint32_t. If \p N is not \c 0, then \c PTransf is \ref StaticPTransf,
   //! and the default value of \p Scalar is the smallest integer type able to
   //! hold \c N. See also SmallestInteger.
   //!
@@ -1102,8 +1102,8 @@ namespace libsemigroups {
   //!
   //! \param f the transformation.
   //!
-  //! \throw LibsemigroupsException if the image of any point exceeds \c
-  //! f.degree() or is equal to \ref UNDEFINED.
+  //! \throw LibsemigroupsException if the image of any point exceeds
+  //! \c f.degree() or is equal to \ref UNDEFINED.
   //!
   //! \complexity
   //! Linear in \c f.degree().

@@ -1319,11 +1319,10 @@ namespace libsemigroups {
     //! or \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)". //NOLINT()
     // clang-format on
     //!
-    //! \param that \ref Row, \ref StaticRowView, \ref
-    //! DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)",
-    //! or
-    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
-    //! object for comparison.
+    //! \param that \ref Row, \ref StaticRowView,
+    //! \ref DynamicRowViewStaticArith "DynamicRowView (compile-time
+    //! arithmetic)", or \ref DynamicRowViewDynamicArith "DynamicRowView
+    //! (run-time arithmetic)" object for comparison.
     //!
     //! \returns
     //! Returns \c true if `*this` is lex less than that `that` and
@@ -2494,8 +2493,8 @@ namespace libsemigroups {
 
     //! \brief Swaps the contents of `*this` with the contents of \p that.
     //!
-    //! This function swaps the contents of `*this` with the contents of \p
-    //! that.
+    //! This function swaps the contents of `*this` with the contents of
+    //! \p that.
     //!
     //! \param that  the matrix to swap contents with.
     //!
@@ -2572,8 +2571,8 @@ namespace libsemigroups {
     //! \tparam U the type of the argument \p that.
     //! \param that the matrix or row view for comparison.
     //!
-    //! \returns \c true if `*this` is less than or equal to \p that  and \c
-    //! false if it is not.
+    //! \returns \c true if `*this` is less than or equal to \p that  and
+    //! \c false if it is not.
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
@@ -3900,8 +3899,8 @@ namespace libsemigroups {
   //! value) indicates that the dimensions will be set at run time.
   //!
   //! \tparam C the number of columns of the matrix. A value of \c 0 indicates
-  //! that the dimensions will be set at run time (the default value is `\c
-  //! R`).
+  //! that the dimensions will be set at run time (the default value is `
+  //! \c R`).
   // FLS + JDM considered adding BMat8 and decided it wasn't a good idea.
   template <size_t R = 0, size_t C = R>
   using BMat
@@ -4008,8 +4007,8 @@ namespace libsemigroups {
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
     //!
-    //! \tparam Mat the type of the 1st argument, must satisfy \ref
-    //! IsBMat<Mat>.
+    //! \tparam Mat the type of the 1st argument, must satisfy
+    //! \ref IsBMat<Mat>.
     //!
     //! \param val the entry to validate.
     //!
@@ -4571,8 +4570,8 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     //!
-    //! \throws LibsemigroupsException if \p x contains \ref
-    //! POSITIVE_INFINITY.
+    //! \throws LibsemigroupsException if \p x contains
+    //! \ref POSITIVE_INFINITY.
     template <typename Mat>
     auto throw_if_bad_entry(Mat const& x)
         -> std::enable_if_t<IsMaxPlusMat<Mat>> {
@@ -4603,8 +4602,8 @@ namespace libsemigroups {
     //! This function can be used to validate that an entry in a matrix
     //! belongs to the underlying semiring.
     //!
-    //! \tparam Mat the type of the matrix, must satisfy \ref
-    //! IsMaxPlusMat<Mat>.
+    //! \tparam Mat the type of the matrix, must satisfy
+    //! \ref IsMaxPlusMat<Mat>.
     //!
     //! \param val the entry to check.
     //!
@@ -4879,8 +4878,8 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     //!
-    //! \throws LibsemigroupsException if \p x contains \ref
-    //! NEGATIVE_INFINITY.
+    //! \throws LibsemigroupsException if \p x contains
+    //! \ref NEGATIVE_INFINITY.
     template <typename Mat>
     std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x) {
       using scalar_type = typename Mat::scalar_type;
@@ -4910,8 +4909,8 @@ namespace libsemigroups {
     //! This function can be used to validate that an entry in a matrix
     //! belongs to the underlying semiring.
     //!
-    //! \tparam Mat the type of the matrix, must satisfy \ref
-    //! IsMinPlusMat<Mat>.
+    //! \tparam Mat the type of the matrix, must satisfy
+    //! \ref IsMinPlusMat<Mat>.
     //!
     //! \param val the entry to check.
     //!
@@ -5438,8 +5437,8 @@ namespace libsemigroups {
   //! All three of these types can be accessed via the alias template
   //! \ref MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then the
   //! threshold can be set at run time, and if \c R or \c C is \c 0, then the
-  //! dimension can be set at run time. The default value of \c T is \c 0, \c
-  //! R is \c 0, and of \c C is \c R.
+  //! dimension can be set at run time. The default value of \c T is \c 0,
+  //! \c R is \c 0, and of \c C is \c R.
   //!
   //! The alias \ref MinPlusTruncMat is either StaticMatrix,
   //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
@@ -5923,9 +5922,9 @@ namespace libsemigroups {
   //!
   //! All three of these types can be accessed via the alias template
   //! \ref NTPMat<T, P, R, C, Scalar> if \c T and \c P have value \c 0, then the
-  //! threshold and period can be set at run time, and if \c R or \c C is \c
-  //! 0, then the dimension can be set at run time.  The default values of \c
-  //! T, \c P, and \c R are \c 0, and the default value of \c C is \c R.
+  //! threshold and period can be set at run time, and if \c R or \c C is
+  //! \c 0, then the dimension can be set at run time.  The default values of
+  //! \c T, \c P, and \c R are \c 0, and the default value of \c C is \c R.
   //!
   //! The alias \ref NTPMat is one of StaticMatrix,
   //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
@@ -6889,8 +6888,8 @@ namespace libsemigroups {
   //! There are two types of such matrices those whose dimension is known at
   //! compile-time, and those where it is not.  Both types can be accessed via
   //! the alias template \ref ProjMaxPlusMat : if \c R or \c C has value
-  //! \c 0, then the dimensions can be set at run time, otherwise \c R and \c
-  //! C are the dimensions.  The default value of \c R is \c 0, \c C is \c R,
+  //! \c 0, then the dimensions can be set at run time, otherwise \c R and
+  //! \c C are the dimensions.  The default value of \c R is \c 0, \c C is \c R,
   //! and `Scalar` is `int`.
   //!
   //! Matrices in both these classes are modified when constructed to be in a

@@ -288,8 +288,8 @@ namespace libsemigroups {
   //!
   //! This function is just a wrapper for \c rx::chain but taking objects by
   //! reference rather than using iterators for convenience, and it returns a
-  //! range objects where the items in \p x come before any of the items in \p
-  //! y.
+  //! range objects where the items in \p x come before any of the items in
+  //! \p y.
   //!
   //! \tparam S the type of the first argument.
   //! \tparam T the type of the second argument.

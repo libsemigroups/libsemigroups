@@ -90,8 +90,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p cong is a Congruence object. The returned FroidurePin object is
-  //! isomorphic to the quotient of the underlying semigroup or monoid of \p
-  //! cong by the congruence represented by \p cong.
+  //! isomorphic to the quotient of the underlying semigroup or monoid of
+  //! \p cong by the congruence represented by \p cong.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin
   //! \tparam Word the type of the words in relations in \p cong.
@@ -160,8 +160,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p kb is a \ref_knuth_bendix instance. The returned FroidurePin
-  //! object is isomorphic to the quotient semigroup or monoid represented by \p
-  //! kb.
+  //! object is isomorphic to the quotient semigroup or monoid represented by
+  //! \p kb.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
@@ -195,8 +195,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p k is a \ref Konieczny instance. The returned FroidurePin
-  //! object is isomorphic to the semigroup or monoid represented by \p
-  //! k.
+  //! object is isomorphic to the semigroup or monoid represented by
+  //! \p k.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Element the element type of the Konieczny object.
@@ -228,8 +228,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p kb is a \ref_todd_coxeter instance. The returned FroidurePin
-  //! object is isomorphic to the quotient semigroup or monoid represented by \p
-  //! kb.
+  //! object is isomorphic to the quotient semigroup or monoid represented by
+  //! \p kb.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
   //!
@@ -273,9 +273,9 @@ namespace libsemigroups {
   //! output FroidurePin such that `f[s] = t` whenever there is an edge from `s`
   //! to `t` in \p wg labelled `n`.
   //!
-  //! More precisely, if \f$a\f$ and \f$b\f$ are the parameters \p first and \p
-  //! last, respectively, \f$m\f$ is the number of nodes in the WordGraph \p wg,
-  //! \f$0 \leq a,  b< m\f$, and \f$n\f$ is an edge label, then we define
+  //! More precisely, if \f$a\f$ and \f$b\f$ are the parameters \p first and
+  //! \p last, respectively, \f$m\f$ is the number of nodes in the WordGraph
+  //! \p wg, \f$0 \leq a,  b< m\f$, and \f$n\f$ is an edge label, then we define
   //! \f$f: \{a, \ldots, b - 1\} \to \{0, \ldots, m - 1\}\f$ so that \f$(x)f\f$
   //! equals the target of the edge starting at node \f$x\f$ with label \f$n\f$.
   //! In this way, every edge label in a WordGraph corresponds to a

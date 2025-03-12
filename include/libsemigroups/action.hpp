@@ -392,8 +392,8 @@ namespace libsemigroups {
     // Action - modifiers - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Increase the capacity to a value that is greater or equal to \p
-    //! val.
+    //! \brief Increase the capacity to a value that is greater or equal to
+    //! \p val.
     //!
     //! Increase the capacity to a value that is greater or equal to \p val.
     //!
@@ -530,8 +530,8 @@ namespace libsemigroups {
     //! \param pos the index of a point.
     //!
     //! \returns
-    //! A \ref const_reference_point_type to the point in position \p
-    //! pos of the currently enumerated points.
+    //! A \ref const_reference_point_type to the point in position
+    //! \p pos of the currently enumerated points.
     //!
     //! \throws
     //! std::out_of_range if `!(pos < current_size())`.

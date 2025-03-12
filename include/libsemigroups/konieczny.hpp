@@ -956,8 +956,8 @@ namespace libsemigroups {
 
     //! \brief Returns a const reference to the generator given by an index.
     //!
-    //! This function returns a const reference to the \p pos generators of \c
-    //! this.
+    //! This function returns a const reference to the \p pos generators of
+    //! \c this.
     //!
     //! \param pos the index of the generator.
     //!
@@ -1389,8 +1389,8 @@ namespace libsemigroups {
 
     //! \brief  \brief Add collection of generators from iterators.
     //!
-    //! Add copies of the generators in the range \p first to \p last to \c
-    //! this.  See \ref add_generator for a detailed description.
+    //! Add copies of the generators in the range \p first to \p last to
+    //! \c this.  See \ref add_generator for a detailed description.
     //!
     //! \tparam the type of an iterator pointing to an \ref element_type.
     //!
@@ -1465,8 +1465,8 @@ namespace libsemigroups {
     template <typename T>
     struct DClassIteratorTraits;
 
-    //! \brief  Return type of \ref cbegin_current_D_classes and \ref
-    //! cend_current_D_classes.
+    //! \brief  Return type of \ref cbegin_current_D_classes and
+    //! \ref cend_current_D_classes.
     //!
     //! Type for const random access iterators through the
     //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.

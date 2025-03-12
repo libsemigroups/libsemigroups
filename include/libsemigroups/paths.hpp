@@ -238,8 +238,8 @@ namespace libsemigroups {
   //! \returns
   //! An iterator \c it of type \c detail::const_pstilo_iterator pointing to a
   //! \ref word_type consisting of the edge labels of the first
-  //! path (in lexicographical order) from the node \p source to the node \p
-  //! target with length in the range \f$[min, max)\f$ (if any).
+  //! path (in lexicographical order) from the node \p source to the node
+  //! \p target with length in the range \f$[min, max)\f$ (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node
   //! in the word graph.

@@ -394,8 +394,8 @@ namespace libsemigroups {
 
     //! \brief Set whether or not the block containing a point is transverse.
     //!
-    //! This function can be used to set whether or not the block containing \p
-    //! i is transverse.
+    //! This function can be used to set whether or not the block containing
+    //! \p i is transverse.
     //!
     //! \param i the point.
     //! \param val whether or not the block containing \p i is transverse.
@@ -416,8 +416,8 @@ namespace libsemigroups {
 
     //! \brief Set whether or not the block containing a point is transverse.
     //!
-    //! This function can be used to set whether or not the block containing \p
-    //! i is transverse.
+    //! This function can be used to set whether or not the block containing
+    //! \p i is transverse.
     //!
     //! \param i the point.
     //! \param val whether or not the block containing \p i is transverse.
@@ -820,8 +820,8 @@ namespace libsemigroups {
   //!
   //! \param x the Blocks object.
   //! \param braces the braces to use in the returned string (default: `"{}"`).
-  //! \param max_width the maximum width of the returned string (default: \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (default:
+  //! \c 72).
   //!
   //! \returns A std::string representation of \p x.
   //!
@@ -1341,8 +1341,8 @@ namespace libsemigroups {
     //!
     //! \returns Whether or not the given block is transverse.
     //!
-    //! \throws LibsemigroupsException if \p index is not in the range from \c
-    //! 0 to \ref number_of_left_blocks.
+    //! \throws LibsemigroupsException if \p index is not in the range from
+    //! \c 0 to \ref number_of_left_blocks.
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ is the degree().
@@ -1569,8 +1569,8 @@ namespace libsemigroups {
   //!
   //! \param x the Bipartition object.
   //! \param braces the braces to use in the returned string (default: `"{}"`).
-  //! \param max_width the maximum width of the returned string (default: \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (default:
+  //! \c 72).
   //!
   //! \returns A std::string representation of \p x.
   //!

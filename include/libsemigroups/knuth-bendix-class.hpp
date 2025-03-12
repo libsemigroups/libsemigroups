@@ -258,8 +258,8 @@ namespace libsemigroups {
     //! \param last iterator pointing one beyond the last letter of the
     //! word.
     //!
-    //! \throw LibsemigroupsException if any letter in the range from \p
-    //! first to \p last is out of bounds.
+    //! \throw LibsemigroupsException if any letter in the range from
+    //! \p first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
@@ -469,10 +469,10 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. This function triggers no enumeration. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
-    //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence defined
+    //! by a \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
     //! \ref finished, then the output word is a normal form for the input word.
     //! If the \ref_knuth_bendix instance is not \ref finished, then it might be
     //! that equivalent input words produce different output words.

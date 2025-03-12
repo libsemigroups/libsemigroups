@@ -130,9 +130,9 @@ namespace libsemigroups {
   //! and/or `constexpr` also).
   //!
   //! The return value of the call operator ought to indicate the degree of a
-  //! `Element` instance which may or may not depend on the parameter \p
-  //! x. The degree of a permutation, for instance, would be the the number of
-  //! points it acts on, the degree of a matrix is its dimension, and so on.
+  //! `Element` instance which may or may not depend on the parameter
+  //! \p x. The degree of a permutation, for instance, would be the the number
+  //! of points it acts on, the degree of a matrix is its dimension, and so on.
   //! This is used, for example, by SchreierSimsTraits in some member functions
   //! to determine whether it is known *a priori* that a permutation does not
   //! belong to the object, because it acts on too many points.

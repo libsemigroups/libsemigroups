@@ -265,8 +265,8 @@ namespace libsemigroups {
                           std::enable_if_t<std::is_integral_v<TIntType>>> {
     //! \brief Stores the image of \p pt under \p p.
     //!
-    //! Modifies \p res in-place to store the image of \p pt under \p p in \p
-    //! res.
+    //! Modifies \p res in-place to store the image of \p pt under \p p in
+    //! \p res.
     //!
     //! \exceptions
     //! \noexcept

@@ -80,9 +80,9 @@ namespace libsemigroups {
   //!
   //! \tparam PresentationType a type derived from \ref PresentationBase. This
   //! is the type of the underlying presentation used in the Stephen algorithm.
-  //! Common choices include \ref Presentation<word_type>, \ref
-  //! Presentation<std::string>, \ref InversePresentation<word_type> and \ref
-  //! InversePresentation<std::string>. If an \ref InversePresentation is
+  //! Common choices include \ref Presentation<word_type>,
+  //! \ref Presentation<std::string>, \ref InversePresentation<word_type> and
+  //! \ref InversePresentation<std::string>. If an \ref InversePresentation is
   //! supplied, then the \ref Stephen class will use the Stephen procedure for
   //! inverse semigroups when run. Otherwise the Stephen procedure for general
   //! semigroups is used instead.
@@ -235,8 +235,8 @@ namespace libsemigroups {
     //! \brief Initialize from a shared pointer to presentation (copy).
     //!
     //! This function puts a Stephen instance back into the same state as if it
-    //! had been newly constructed from the shared pointer to a presentation \p
-    //! ptr. This initializer copies \p ptr.
+    //! had been newly constructed from the shared pointer to a presentation
+    //! \p ptr. This initializer copies \p ptr.
     //!
     //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
@@ -372,8 +372,8 @@ namespace libsemigroups {
     //!
     //! This function appends the Stephen instance \p that to \c this.
     //! This modifies the current Stephen instance in-place. The result is a
-    //! Stephen instance with underlying word equal to the concatenation of \c
-    //! this.word() and \c that.word().
+    //! Stephen instance with underlying word equal to the concatenation of
+    //! \c this.word() and \c that.word().
     //!
     //! The advantage of this is that if either \c this or \p that have already
     //! been (partially) run, then we can reuse the underlying word graphs
@@ -385,16 +385,16 @@ namespace libsemigroups {
     //! the construction of \c this or \p that or with Stephen::init or if no
     //! word was set with Stephen::set_word .
     //!
-    //! \throws LibsemigroupsException if the presentations for \c this and \p
-    //! that differ.
+    //! \throws LibsemigroupsException if the presentations for \c this and
+    //! \p that differ.
     void operator*=(Stephen<PresentationType>& that);
 
     //! \brief Append a Stephen instance (no checks).
     //!
     //! This function appends the Stephen instance \p that to \c this.
     //! This modifies the current Stephen instance in-place. The result is a
-    //! Stephen instance with underlying word equal to the concatenation of \c
-    //! this.word() and \c that.word().
+    //! Stephen instance with underlying word equal to the concatenation of
+    //! \c this.word() and \c that.word().
     //!
     //! The advantage of this is that if either \c this or \p that have already
     //! been (partially) run, then we can reuse the underlying word graphs
@@ -546,8 +546,8 @@ namespace libsemigroups {
   //!
   //! Defined in \c stephen.hpp.
   //!
-  //! This page contains documentation for some helper functions for the \ref
-  //! Stephen class. The helpers documented on this page all belong to the
+  //! This page contains documentation for some helper functions for the
+  //! \ref Stephen class. The helpers documented on this page all belong to the
   //! namespace `stephen`.
   namespace stephen {
 
@@ -595,8 +595,8 @@ namespace libsemigroups {
     //!
     //! A word \p w labels such a path if and only if \p w is a left factor of
     //! Stephen::word in the semigroup defined by Stephen::presentation. Note
-    //! that this is true for both \c Stephen<Presentation> and \c
-    //! Stephen<InversePresentation> instances.
+    //! that this is true for both \c Stephen<Presentation> and
+    //! \c Stephen<InversePresentation> instances.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
     //! instance, must be derived from \ref PresentationBase.
@@ -730,8 +730,8 @@ namespace libsemigroups {
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already) and then returns the the number of left
-    //! factors of the Stephen::word in the instance \p s with length between \p
-    //! min and \p max. This is the same as the number of paths in
+    //! factors of the Stephen::word in the instance \p s with length between
+    //! \p min and \p max. This is the same as the number of paths in
     //! Stephen::word_graph with source \c 0 and length in the range \p min to
     //! \p max.
     //!

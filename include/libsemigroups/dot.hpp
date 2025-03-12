@@ -128,9 +128,9 @@ namespace libsemigroups {
 
       //! \brief Construct from anything.
       //!
-      //! This constructor creates a new Node object from the parameter \p
-      //! thing, which is converted to a string (using std::to_string if \p
-      //! thing is not already a std::string) by the constructor.
+      //! This constructor creates a new Node object from the parameter
+      //! \p thing, which is converted to a string (using std::to_string if
+      //! \p thing is not already a std::string) by the constructor.
       //!
       //! The newly constructed Node has no attributes set.
       //!
@@ -462,8 +462,8 @@ namespace libsemigroups {
     //! This function adds the Dot object \p subgraph as a subgraph of \c this.
     //! The following transformations are performed:
     //!
-    //! * the \c label attribute of the added subgraph is the \ref name of \p
-    //! subgraph;
+    //! * the \c label attribute of the added subgraph is the \ref name of
+    //! \p subgraph;
     //! * the \ref name of the added subgraph has the prefix `"cluster_"`
     //! prepended;
     //! * every node in the added subgraph has the prefix `"name_"` prepended
@@ -577,8 +577,8 @@ namespace libsemigroups {
     //!
     //! \param thing the object to use as the name of a node.
     //!
-    //! \returns A reference to the Node object with \ref name obtained from \p
-    //! thing.
+    //! \returns A reference to the Node object with \ref name obtained from
+    //! \p thing.
     //!
     //! \throws LibsemigroupsException if there is already a node with
     //! name `std::to_string(thing)`.
@@ -646,8 +646,8 @@ namespace libsemigroups {
 
     //! \brief Returns the first edge with given head and tail.
     //!
-    //! This function returns the first edge with head and tail obtained from \p
-    //! head and \p tail by converting \p head and \p tail to std::string
+    //! This function returns the first edge with head and tail obtained from
+    //! \p head and \p tail by converting \p head and \p tail to std::string
     //! objects (unless they are std::string, std::string_view, or `char const*`
     //! already) using std::to_string.
     //!
@@ -662,8 +662,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p head or \p tail does not represent
     //! a node in the graph.
     //!
-    //! \throws LibsemigroupsException if there's no edge from \p head to \p
-    //! tail.
+    //! \throws LibsemigroupsException if there's no edge from \p head to
+    //! \p tail.
     template <typename Thing1, typename Thing2>
     Edge& edge(Thing1&& head, Thing2&& tail) {
       auto head_str = detail::dot_to_string(std::forward<Thing1>(head));

@@ -484,11 +484,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no computation or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is a normal form for the input word. If the \ref_congruence
-    //! instance is not \ref finished, then it might be that equivalent input
-    //! words produce different output words.
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. If \ref finished returns \c true, then the word output by
+    //! this function is a normal form for the input word. If the
+    //! \ref_congruence instance is not \ref finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!
@@ -506,11 +506,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no computation.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is a normal form for the input word. If the \ref_congruence
-    //! instance is not \ref finished, then it might be that equivalent input
-    //! words produce different output words.
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. If \ref finished returns \c true, then the word output by
+    //! this function is a normal form for the input word. If the
+    //! \ref_congruence instance is not \ref finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!

@@ -1003,8 +1003,8 @@ namespace libsemigroups {
 
     //! \brief Helper for adding an included pair of words.
     //!
-    //! This function can be used to add an included pair to \p
-    //! sims using the objects themselves rather than
+    //! This function can be used to add an included pair to
+    //! \p sims using the objects themselves rather than
     //! using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -1142,8 +1142,8 @@ namespace libsemigroups {
 
     //! \brief Helper for adding an excluded pair of words.
     //!
-    //! This function can be used to add an excluded pair to \p
-    //! sims using the objects themselves rather than
+    //! This function can be used to add an excluded pair to
+    //! \p sims using the objects themselves rather than
     //! using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -1691,8 +1691,8 @@ namespace libsemigroups {
     //! \brief Apply a unary predicate to one-sided congruences with at  most a
     //! given number of classes, until it returns \c true.
     //!
-    //! Apply the function \p pred to every one-sided congruence with at most \p
-    //! n classes, until it returns \c true.
+    //! Apply the function \p pred to every one-sided congruence with at most
+    //! \p n classes, until it returns \c true.
     //!
     //! This function is similar to `std::find_if(begin(n),
     //! end(n), pred)` and exists to:
@@ -1806,8 +1806,8 @@ namespace libsemigroups {
   //! \ref cend, \ref for_each, and \ref find_if which permit iterating through
   //! the two-sided congruences of a semigroup or monoid defined by a
   //! presentation containing, or not containing, (possibly empty) sets of pairs
-  //! and with at most a given number of classes. An iterator returned by \ref
-  //! cbegin points at an WordGraph instance containing the action of the
+  //! and with at most a given number of classes. An iterator returned by
+  //! \ref cbegin points at an WordGraph instance containing the action of the
   //! semigroup or monoid on the classes of a congruence.
   //!
   //! \sa Sims1 for equivalent functionality for 1-sided congruences.

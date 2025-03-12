@@ -416,8 +416,8 @@ namespace libsemigroups {
     //! \param depth the depth.
     //!
     //! \returns
-    //! The number of strong generators, a value of \c size_t, at depth \p
-    //! depth of the stabiliser chain.
+    //! The number of strong generators, a value of \c size_t, at depth
+    //! \p depth of the stabiliser chain.
     //!
     //! \throws LibsemigroupsException if the \p depth is out of bounds.
     //!
@@ -435,8 +435,8 @@ namespace libsemigroups {
     //! \param depth the depth.
     //!
     //! \returns
-    //! The number of strong generators, a value of \c size_t, at depth \p
-    //! depth of the stabiliser chain.
+    //! The number of strong generators, a value of \c size_t, at depth
+    //! \p depth of the stabiliser chain.
     //!
     //! \exceptions
     //! \no_libsemigroups_except

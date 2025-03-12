@@ -216,8 +216,8 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if there are duplicate letters in \p
-    //! lphbt.
+    //! \throws LibsemigroupsException if there are duplicate letters in
+    //! \p lphbt.
     //!
     //! \warning
     //! This function does not verify that the rules in the presentation (if
@@ -236,8 +236,8 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if there are duplicate letters in \p
-    //! lphbt.
+    //! \throws LibsemigroupsException if there are duplicate letters in
+    //! \p lphbt.
     //!
     //! \warning
     //! This function does not verify that the rules in the presentation (if
@@ -399,9 +399,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any letter does not belong to the
     //! alphabet.
-    //! \throws LibsemigroupsException if \ref contains_empty_word returns \c
-    //! false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals \p
-    //! rhs_end.
+    //! \throws LibsemigroupsException if \ref contains_empty_word returns
+    //! \c false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals
+    //! \p rhs_end.
     //!
     //! \sa
     //! * \ref add_rule_no_checks
@@ -1552,8 +1552,8 @@ namespace libsemigroups {
     //! \param p the presentation.
     //! \param new_alphabet the replacement alphabet.
     //!
-    //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
-    //! new_alphabet do not agree.
+    //! \throws LibsemigroupsException if the size of `p.alphabet()` and
+    //! \p new_alphabet do not agree.
     template <typename Word>
     void change_alphabet(Presentation<Word>& p, Word const& new_alphabet);
 
@@ -1566,8 +1566,8 @@ namespace libsemigroups {
     //! \param p the presentation.
     //! \param new_alphabet the replacement alphabet.
     //!
-    //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
-    //! new_alphabet do not agree.
+    //! \throws LibsemigroupsException if the size of `p.alphabet()` and
+    //! \p new_alphabet do not agree.
     inline void change_alphabet(Presentation<std::string>& p,
                                 char const*                new_alphabet) {
       change_alphabet(p, std::string(new_alphabet));
@@ -1588,8 +1588,8 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Iterator`.
     //!
-    //! \throws LibsemigroupsException if the distance between \p first and \p
-    //! last is odd.
+    //! \throws LibsemigroupsException if the distance between \p first and
+    //! \p last is odd.
     template <typename Iterator>
     Iterator longest_rule(Iterator first, Iterator last);
 
@@ -1629,8 +1629,8 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Iterator`.
     //!
-    //! \throws LibsemigroupsException if the distance between \p first and \p
-    //! last is odd.
+    //! \throws LibsemigroupsException if the distance between \p first and
+    //! \p last is odd.
     template <typename Iterator>
     Iterator shortest_rule(Iterator first, Iterator last);
 
@@ -2050,8 +2050,8 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for \ref
-    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, for example, std::initializer_list to be used for the
     //! parameters \p letters and \p inverses.
     template <typename Word>
@@ -2063,8 +2063,8 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for \ref
-    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, string literals to be used for the parameters \p letters and
     //! \p inverses.
     inline void balance_no_checks(Presentation<std::string>& p,
@@ -2076,8 +2076,8 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for \ref
-    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, std::string_view to be used for the parameters \p letters and
     //! \p inverses.
     inline void balance_no_checks(Presentation<std::string>& p,

@@ -951,8 +951,8 @@ namespace libsemigroups {
     //! \param first iterator pointing to the first letter of the word.
     //! \param last one beyond the last letter of the word.
     //!
-    //! \throws LibsemigroupsException if `is_unique_letter(*it)` returns \c
-    //! true for any `it` in `[first, last)`.
+    //! \throws LibsemigroupsException if `is_unique_letter(*it)` returns
+    //! \c true for any `it` in `[first, last)`.
     //!
     //! \complexity
     //! Linear in the distance from \p first to \p last.
@@ -2086,8 +2086,8 @@ namespace libsemigroups {
     //! \brief Find the number of pieces in a decomposition of a word (if any).
     //!
     //! Returns minimum number of pieces whose product equals the word
-    //! corresponding to \p first and \p last if such a product exists, and \c
-    //! 0 if no such product exists. Recall that a *piece* is a word that
+    //! corresponding to \p first and \p last if such a product exists, and
+    //! \c 0 if no such product exists. Recall that a *piece* is a word that
     //! occurs in two distinct positions (possibly overlapping) of the words in
     //! the suffix tree \p u.
     //!

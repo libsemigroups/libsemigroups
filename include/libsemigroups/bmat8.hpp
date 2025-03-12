@@ -312,8 +312,8 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \warning
-    //! No checks on the parameters \p r and \p c are performed, if \p r or \p
-    //! c is greater than 7, then bad things will happen.
+    //! No checks on the parameters \p r and \p c are performed, if \p r or
+    //! \p c is greater than 7, then bad things will happen.
     //!
     //! \sa
     //! \ref at
@@ -325,8 +325,8 @@ namespace libsemigroups {
 
     //! \brief Access a row of a BMat8 (no bound checks).
     //!
-    //! Returns the row with index \p r in the matrix represented as a \c
-    //! uint8_t.
+    //! Returns the row with index \p r in the matrix represented as a
+    //! \c uint8_t.
     //!
     //! \param r the index of the row.
     //!
@@ -355,8 +355,8 @@ namespace libsemigroups {
 
     //! \brief Access a row of a BMat8 (with bound checks).
     //!
-    //! Returns the row with index \p r in the matrix represented as a \c
-    //! uint8_t.
+    //! Returns the row with index \p r in the matrix represented as a
+    //! \c uint8_t.
     //!
     //! \param r the index of the row.
     //!
@@ -400,8 +400,8 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \warning
-    //! No checks on the parameters \p r and \p c are performed, if \p r or \p
-    //! c is greater than 7, then bad things will happen.
+    //! No checks on the parameters \p r and \p c are performed, if \p r or
+    //! \p c is greater than 7, then bad things will happen.
     //!
     //! \sa
     //! \ref at
@@ -645,8 +645,8 @@ namespace libsemigroups {
     //! \brief Returns the identity BMat8 of a given dimension.
     //!
     //! This function returns the BMat8 with the first \c dim entries
-    //! in the main diagonal equal to \c 1 and every other value equal to \c
-    //! 0.
+    //! in the main diagonal equal to \c 1 and every other value equal to
+    //! \c 0.
     //!
     //! \param dim the dimension of the identity (default: 8).
     //!

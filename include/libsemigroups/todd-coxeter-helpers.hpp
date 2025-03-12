@@ -47,8 +47,8 @@
 
 namespace libsemigroups {
   //! This page contains documentation for everything in the namespace
-  //! \ref todd_coxeter. This includes everything from \ref
-  //! cong_common_helpers_group and \ref todd_coxeter_helpers_group.
+  //! \ref todd_coxeter. This includes everything from
+  //! \ref cong_common_helpers_group and \ref todd_coxeter_helpers_group.
   namespace todd_coxeter {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter<Word> helpers
@@ -532,8 +532,8 @@ namespace libsemigroups {
     //! This function returns a range object containing every word in belonging
     //! to the same class as the word (contained in the range from \p first to
     //! \p last) in the congruence represented by the  \ref_todd_coxeter
-    //! instance \p tc. Calls to this function trigger a full enumeration of \p
-    //! tc.
+    //! instance \p tc. Calls to this function trigger a full enumeration of
+    //! \p tc.
     //!
     //! \tparam Iterator1 the type of the 2nd argument \p first.
     //! \tparam Iterator2 the type of the 3rd argument \p last.
@@ -563,8 +563,8 @@ namespace libsemigroups {
     //! This function returns a range object containing every word in belonging
     //! to the same class as the word (contained in the range from \p first to
     //! \p last) in the congruence represented by the  \ref_todd_coxeter
-    //! instance \p tc. Calls to this function trigger a full enumeration of \p
-    //! tc.
+    //! instance \p tc. Calls to this function trigger a full enumeration of
+    //! \p tc.
     //!
     //! \tparam Iterator1 the type of the 2nd argument \p first.
     //! \tparam Iterator2 the type of the 3rd argument \p last.
@@ -790,8 +790,8 @@ namespace libsemigroups {
     //!
     //! If at the end of this process, the  \ref_todd_coxeter instance is
     //! non-trivial, then the original  \ref_todd_coxeter is also non-trivial.
-    //! Otherwise, the entire process is repeated again up to a total of \p
-    //! tries times.
+    //! Otherwise, the entire process is repeated again up to a total of
+    //! \p tries times.
     //!
     //! \param tc the  \ref_todd_coxeter instance.
     //! \param tries the number of attempts to find non-trivial
@@ -940,8 +940,8 @@ namespace libsemigroups {
     //!
     //! \returns The partition of the input range.
     //!
-    //! \throws LibsemigroupsException if the number of classes in \p tc1 or \p
-    //! tc2 is infinite.
+    //! \throws LibsemigroupsException if the number of classes in \p tc1 or
+    //! \p tc2 is infinite.
     //!
     //! \cong_common_warn_undecidable{Todd-Coxeter}.
     template <typename Word>

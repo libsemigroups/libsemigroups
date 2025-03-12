@@ -302,10 +302,11 @@ namespace libsemigroups {
       //! \cong_common_warn_undecidable{Knuth-Bendix}
       //!
       //! \note If \c this has been run until finished, then this function can
-      //! determine the number of classes of the congruence represented by \c
-      //! this even if it is infinite. Moreover, the complexity of this function
-      //! is at worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
-      //! alphabet, and \f$n\f$ is the number of nodes in the \ref gilman_graph.
+      //! determine the number of classes of the congruence represented by
+      //! \c this even if it is infinite. Moreover, the complexity of this
+      //! function is at worst \f$O(mn)\f$ where \f$m\f$ is the number of
+      //! letters in the alphabet, and \f$n\f$ is the number of nodes in the
+      //! \ref gilman_graph.
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
