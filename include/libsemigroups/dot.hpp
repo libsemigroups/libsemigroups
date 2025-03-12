@@ -594,7 +594,7 @@ namespace libsemigroups {
 
     //! \brief Return a node from the represented graph.
     //!
-    //! This function returns a refernce to a node with name obtained from
+    //! This function returns a reference to a node with name obtained from
     //! \p thing by converting it to a std::string (unless they are std::string,
     //! std::string_view, or `char const*` already) using std::to_string.
     //!
