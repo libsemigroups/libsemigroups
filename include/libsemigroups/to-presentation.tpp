@@ -89,9 +89,9 @@ namespace libsemigroups {
         std::is_invocable_v<std::decay_t<Func>,
                             typename Presentation<Word>::letter_type>);
 
-    // Must call p.validate otherwise f(val) may segfault if val is not in the
-    // alphabet
-    p.validate();
+    // Must call p.throw_if_bad_alphabet_or_rules otherwise f(val) may segfault
+    // if val is not in the alphabet
+    p.throw_if_bad_alphabet_or_rules();
 
     Result result;
     result.contains_empty_word(p.contains_empty_word());
@@ -124,7 +124,8 @@ namespace libsemigroups {
                             typename Presentation<Word>::letter_type>);
     using WordOutput = typename Result::word_type;
 
-    ip.validate_word(ip.inverses().begin(), ip.inverses().end());
+    ip.throw_if_letter_not_in_alphabet(ip.inverses().begin(),
+                                       ip.inverses().end());
     InversePresentation<WordOutput> result(
         std::move(to<Presentation<WordOutput>>(ip, f)));
 
@@ -167,7 +168,8 @@ namespace libsemigroups {
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>> {
     InversePresentation<Word> result(p);
-    presentation::normalize_alphabet(result);  // calls p.validate
+    presentation::normalize_alphabet(
+        result);  // calls p.throw_if_bad_alphabet_or_rules
     result.alphabet(2 * result.alphabet().size());
     auto invs = result.alphabet();
 

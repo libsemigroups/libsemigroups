@@ -245,7 +245,7 @@ namespace libsemigroups {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = presentation::examples::full_transformation_monoid_II74(n);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     Stephen s(std::move(p));
     stephen::set_word(s, 010111020120_w).run();
@@ -1300,14 +1300,14 @@ namespace libsemigroups {
       auto p = symmetric_inverse_monoid(4);
       REQUIRE(p.contains_empty_word());
       REQUIRE(p.alphabet().size() == 4);
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       tc.init(congruence_kind::twosided, p);
     }
 
     {
       InversePresentation<word_type> p(symmetric_inverse_monoid(4));
       p.inverses_no_checks(0123_w);
-      p.validate();
+      p.throw_if_bad_alphabet_rules_or_inverses();
 
       Stephen S(p);
       auto    w = 0120112010222201_w;

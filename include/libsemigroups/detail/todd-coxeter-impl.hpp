@@ -363,10 +363,11 @@ namespace libsemigroups {
                             WordGraph<Node> const&         wg);
 #endif
 
+      // TODO(0) remove?
       template <typename Iterator1, typename Iterator2>
       void throw_if_letter_out_of_bounds(Iterator1 first,
                                          Iterator2 last) const {
-        internal_presentation().validate_word(first, last);
+        internal_presentation().throw_if_letter_not_in_alphabet(first, last);
       }
 
       ////////////////////////////////////////////////////////////////////////

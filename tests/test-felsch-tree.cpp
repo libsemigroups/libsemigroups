@@ -43,7 +43,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, 22_w, 2_w);
       presentation::add_rule_no_checks(p, 13_w, 11_w);
       p.alphabet_from_rules();
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
 
       FelschTree ft(4);
       ft.add_relations(p.rules.cbegin(), p.rules.cend());

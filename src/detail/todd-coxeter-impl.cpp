@@ -418,7 +418,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind           knd,
                                            Presentation<word_type>&& p) {
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p);
       init();
       detail::CongruenceCommon::init(knd);

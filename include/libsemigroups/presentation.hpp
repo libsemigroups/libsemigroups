@@ -126,7 +126,8 @@ namespace libsemigroups {
     //! \brief Data member holding the rules of the presentation.
     //!
     //! The rules can be altered using the member functions of `std::vector`,
-    //! and the presentation can be checked for validity using \ref validate.
+    //! and the presentation can be checked for validity using \ref
+    //! throw_if_bad_alphabet_or_rules.
     std::vector<word_type> rules;
 
     //! \brief Default constructor.
@@ -202,9 +203,9 @@ namespace libsemigroups {
     //! any) consist of letters belonging to the alphabet.
     //!
     //! \sa
-    //! * \ref validate_alphabet
-    //! * \ref validate_rules
-    //! * \ref validate
+    //! * \ref throw_if_alphabet_not_duplicate_free
+    //! * \ref throw_if_bad_rules
+    //! * \ref throw_if_bad_alphabet_or_rules
     // TODO(1) Rename alphabet_size
     Presentation& alphabet(size_type n);
 
@@ -224,8 +225,8 @@ namespace libsemigroups {
     //! any) consist of letters belonging to the alphabet.
     //!
     //! \sa
-    //! * \ref validate_rules
-    //! * \ref validate
+    //! * \ref throw_if_bad_rules
+    //! * \ref throw_if_bad_alphabet_or_rules
     Presentation& alphabet(word_type const& lphbt);
 
     //! \brief Set the alphabet from rvalue reference.
@@ -244,8 +245,8 @@ namespace libsemigroups {
     //! any) consist of letters belonging to the alphabet.
     //!
     //! \sa
-    //! * \ref validate_rules
-    //! * \ref validate
+    //! * \ref throw_if_bad_rules
+    //! * \ref throw_if_bad_alphabet_or_rules
     Presentation& alphabet(word_type&& lphbt);
 
     //! \brief Set the alphabet to be the letters in the rules.
@@ -262,8 +263,8 @@ namespace libsemigroups {
     //! the length of the longest rule.
     //!
     //! \sa
-    //! * \ref validate_rules
-    //! * \ref validate
+    //! * \ref throw_if_bad_rules
+    //! * \ref throw_if_bad_alphabet_or_rules
     Presentation& alphabet_from_rules();
 
     //! \brief Return a letter in the alphabet by index.
@@ -410,8 +411,8 @@ namespace libsemigroups {
                            Iterator1 lhs_end,
                            Iterator2 rhs_begin,
                            Iterator2 rhs_end) {
-      validate_word(lhs_begin, lhs_end);
-      validate_word(rhs_begin, rhs_end);
+      throw_if_letter_not_in_alphabet(lhs_begin, lhs_end);
+      throw_if_letter_not_in_alphabet(rhs_begin, rhs_end);
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
     }
 
@@ -530,9 +531,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the length of the alphabet.
-    void validate_alphabet() const {
+    void throw_if_alphabet_not_duplicate_free() const {
       decltype(_alphabet_map) alphabet_map;
-      validate_alphabet(alphabet_map);
+      throw_if_alphabet_not_duplicate_free(alphabet_map);
     }
 
     //! \brief Check if a letter belongs to the alphabet or not.
@@ -545,7 +546,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant on average, worst case linear in the size of the alphabet.
-    void validate_letter(letter_type c) const;
+    void throw_if_letter_not_in_alphabet(letter_type c) const;
 
     //! \brief Check if every letter in a range belongs to the alphabet.
     //!
@@ -562,42 +563,48 @@ namespace libsemigroups {
     //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of the longest
     //! word, and \f$n\f$ is the size of the alphabet.
     template <typename Iterator1, typename Iterator2>
-    void validate_word(Iterator1 first, Iterator2 last) const;
+    void throw_if_letter_not_in_alphabet(Iterator1 first, Iterator2 last) const;
 
-    //! \brief Check if every rule consists only of letters belonging to the
-    //! alphabet.
+    //! \brief Check if every word in every rule consists only of letters
+    //! belonging to the alphabet.
     //!
-    //! Check if every rule consists only of letters belonging to the alphabet.
+    //! Check if every word in every rule consists only of letters belonging to
+    //! the alphabet, and that there are an even number of words in
+    //! `this->rules`.
     //!
     //! \throws LibsemigroupsException if any word contains a letter not in
     //! the alphabet.
+    //! \throws LibsemigroupsException if the number of words in `this->rules`
+    //! is odd.
     //!
     //! \complexity
     //! Worst case \f$O(mnt)\f$ where \f$m\f$ is the length of the longest
     //! word, \f$n\f$ is the size of the alphabet and \f$t\f$ is the number of
     //! rules.
-    void validate_rules() const;
+    void throw_if_bad_rules() const;
 
     //! \brief Check if the alphabet and rules are valid.
     //!
     //! Check if the alphabet and rules are valid.
     //!
-    //! \throws LibsemigroupsException if \ref validate_alphabet or
-    //! \ref validate_rules does.
+    //! \throws LibsemigroupsException if \ref
+    //! throw_if_alphabet_not_duplicate_free or
+    //! \ref throw_if_bad_rules does.
     //!
     //! \complexity
     //! Worst case \f$O(mnp)\f$ where \f$m\f$ is the length of length of the
     //! word, \f$n\f$ is the size of the alphabet and \f$p\f$ is the number of
     //! rules.
-    void validate() const {
-      validate_alphabet();
-      validate_rules();
+    void throw_if_bad_alphabet_or_rules() const {
+      throw_if_alphabet_not_duplicate_free();
+      throw_if_bad_rules();
     }
 
    private:
     void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                           word_type&               old_alphabet);
-    void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
+    void throw_if_alphabet_not_duplicate_free(
+        decltype(_alphabet_map)& alphabet_map) const;
   };  // class Presentation
 
   //! \ingroup presentations_group
@@ -633,6 +640,43 @@ namespace libsemigroups {
   //! but they only use public member functions of \ref Presentation, and so
   //! they are declared as free functions instead.
   namespace presentation {
+
+    //! \brief Throw if the distance between iterators is not even.
+    //!
+    //! This function throws an exception if the distance between \p first and
+    //! \p last is not an even number.
+    //!
+    //! \tparam Iterator the type of the arguments.
+    //!
+    //! \param first iterator pointing at the first words.
+    //! \param last iterator pointing one beyond the last word.
+    //!
+    //! \throws LibsemigroupsException if the distance from \p first to \p last
+    //! is not even.
+    template <typename Iterator>
+    void throw_if_odd_number_of_rules(Iterator first, Iterator last) {
+      if ((std::distance(first, last) % 2) == 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected even number of words in \"rules\", found {}",
+            std::distance(first, last));
+      }
+    }
+
+    //! \brief Throw if the number of words in a presentation is odd.
+    //!
+    //! This function throws an exception if number of words in `p.rules` is
+    //! odd.
+    //!
+    //! \tparam Word the type of the words in the Presentation \p p.
+    //!
+    //! \param p the presentation to check.
+    //!
+    //! \throws LibsemigroupsException if the number of words in `p.rules`
+    //! is not even.
+    template <typename Word>
+    void throw_if_odd_number_of_rules(Presentation<Word> const& p) {
+      throw_if_odd_number_of_rules(p.rules.cbegin(), p.rules.cend());
+    }
 
     //! \brief Throws if the presentation isn't normalized.
     //!
@@ -671,14 +715,15 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Validate rules against the alphabet of \p p.
+    //! \brief throw_if_bad_alphabet_or_rules rules against the alphabet of \p
+    //! p.
     //!
     //! Check if every rule of in `[first, last)` consists of letters belonging
     //! to the alphabet of \p p.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \tparam Iterator the type of the second and third arguments.
-    //! \param p the presentation whose alphabet is being validated against.
+    //! \param p the presentation whose alphabet is being checked against.
     //! \param first iterator pointing at the first rule to check.
     //! \param last iterator pointing one beyond the last rule to check.
     //!
@@ -690,15 +735,17 @@ namespace libsemigroups {
     //! word, \f$n\f$ is the size of the \p p 's alphabet and \f$t\f$ is the
     //! distance between \p first and \p last.
     template <typename Word, typename Iterator>
-    void validate_rules(Presentation<Word> const& p,
-                        Iterator                  first,
-                        Iterator                  last) {
+    void throw_if_bad_rules(Presentation<Word> const& p,
+                            Iterator                  first,
+                            Iterator                  last) {
+      // TODO(0) check if there are an odd number of rules
       for (auto it = first; it != last; ++it) {
-        p.validate_word(it->cbegin(), it->cend());
+        p.throw_if_letter_not_in_alphabet(it->cbegin(), it->cend());
       }
     }
 
-    //! \brief Validate if \p vals act as semigroup inverses in \p p.
+    //! \brief throw_if_bad_alphabet_or_rules if \p vals act as semigroup
+    //! inverses in \p p.
     //!
     //! Check if the values in \p vals act as semigroup inverses for the letters
     //! of the alphabet of \p p. Specifically, it checks that the \f$i\f$th
@@ -716,12 +763,11 @@ namespace libsemigroups {
     //!
     //! \throws Libsemigroups_Exception if any of the following apply:
     //! * the length of \p vals is not the same as the length of `p.alphabet()`
-    //! * `p.validate_word(vals)` throws
+    //! * `p.throw_if_letter_not_in_alphabet(vals)` throws
     //! * \p vals contains duplicate letters
     //! * the values in \p vals do not serve as semigroup inverses.
     template <typename Word>
-    void validate_semigroup_inverses(Presentation<Word> const& p,
-                                     Word const&               vals);
+    void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals);
 
     //! \brief Add a rule to the presentation by reference.
     //!
@@ -919,7 +965,7 @@ namespace libsemigroups {
     //! This function adds the rules stored in the range `[first, last)` to
     //! \p p.
     //!
-    //! Before it is added, each rule is validated to check it contains
+    //! Before it is added, each rule is checked to check it contains
     //! only letters of the alphabet of \p p. If the \f$n\f$th rule causes this
     //! function to throw, the first \f$n-1\f$ rules will still be added to
     //! \p p.
@@ -991,7 +1037,7 @@ namespace libsemigroups {
     //! Adds all the rules of the second argument \p q to the first argument
     //! \p p which is modified in-place.
     //!
-    //! Before it is added, each rule is validated to check it contains
+    //! Before it is added, each rule is checked to check it contains
     //! only letters of the alphabet of \p p. If the \f$n\f$th rule causes this
     //! function to throw, the first \f$n-1\f$ rules will still be added to
     //! \p p.
@@ -1536,8 +1582,8 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if \ref validate throws on the initial
-    //! presentation.
+    //! \throws LibsemigroupsException if \ref throw_if_bad_alphabet_or_rules
+    //! throws on the initial presentation.
     template <typename Word>
     void normalize_alphabet(Presentation<Word>& p);
 
@@ -2219,15 +2265,16 @@ namespace libsemigroups {
     //!
     //! \note
     //! Whilst the alphabet is not specified as an argument to this function, it
-    //! is necessary to validate the alphabet here; a specification of inverses
-    //! cannot make sense if the alphabet contains duplicate letters.
+    //! is necessary to throw_if_bad_alphabet_or_rules the alphabet here; a
+    //! specification of inverses cannot make sense if the alphabet contains
+    //! duplicate letters.
     //!
     //! \sa
-    //! * \ref Presentation<Word>::validate_alphabet
-    //! * \ref presentation::validate_semigroup_inverses
+    //! * \ref Presentation<Word>::throw_if_alphabet_not_duplicate_free
+    //! * \ref presentation::throw_if_bad_inverses
     InversePresentation& inverses(word_type const& w) {
-      Presentation<Word>::validate_alphabet();
-      presentation::validate_semigroup_inverses(*this, w);
+      Presentation<Word>::throw_if_alphabet_not_duplicate_free();
+      presentation::throw_if_bad_inverses(*this, w);
       return inverses_no_checks(w);
     }
 
@@ -2268,11 +2315,12 @@ namespace libsemigroups {
     //! * the inverses do not act as semigroup inverses
     //!
     //! \sa
-    //! * \ref Presentation<Word>::validate
-    //! * \ref presentation::validate_semigroup_inverses
-    void validate() const {
-      Presentation<Word>::validate();
-      presentation::validate_semigroup_inverses(*this, inverses());
+    //! * \ref Presentation<Word>::throw_if_bad_alphabet_or_rules
+    //! * \ref presentation::throw_if_bad_inverses
+    void throw_if_bad_alphabet_rules_or_inverses() const {
+      // TODO(0) check if this is used appropriately after rename
+      Presentation<Word>::throw_if_bad_alphabet_or_rules();
+      presentation::throw_if_bad_inverses(*this, inverses());
     }
   };
 

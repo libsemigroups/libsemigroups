@@ -1898,7 +1898,7 @@ namespace libsemigroups {
     // REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == "013"_w);
     REQUIRE(!is_obviously_infinite(p));
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 10);
@@ -4837,7 +4837,7 @@ namespace libsemigroups {
                14321512341_w,
                05_w};
     p.alphabet_from_rules();
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     presentation::change_alphabet(p, 501234_w);
 
     ToddCoxeter tc(twosided, p);

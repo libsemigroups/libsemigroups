@@ -786,7 +786,7 @@ namespace libsemigroups {
     //! \p first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      _presentation.validate_word(first, last);
+      _presentation.throw_if_letter_not_in_alphabet(first, last);
     }
 
     //! \ingroup kambites_class_init_group

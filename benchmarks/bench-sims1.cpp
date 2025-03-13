@@ -834,7 +834,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 81);
 
     auto p = to<Presentation<word_type>>(S);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.alphabet().size() == 10);
     REQUIRE(presentation::length(p) == 719);
 

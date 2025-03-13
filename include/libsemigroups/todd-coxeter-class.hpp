@@ -607,9 +607,10 @@ namespace libsemigroups {
     //!
     //! \throw LibsemigroupsException if any letter in the range from
     //! \p first to \p last is out of bounds.
+    // TODO(0) remove this
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      presentation().validate_word(first, last);
+      presentation().throw_if_letter_not_in_alphabet(first, last);
     }
 
     //! \ingroup todd_coxeter_class_intf_group

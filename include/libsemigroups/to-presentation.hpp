@@ -171,7 +171,8 @@ namespace libsemigroups {
   //!
   //! \returns A value of type `Result`.
   //!
-  //! \throws LibsemigroupsException if `p.validate()` throws.
+  //! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
+  //! throws.
   //!
   //! \note \c Func must be a function type that is invocable with values of
   //! `Presentation<Word>::letter_type`. If this is not true, then template
@@ -216,7 +217,8 @@ namespace libsemigroups {
   //!
   //! \returns A value of type `InversePresentation<WordOutput>`.
   //!
-  //! \throws LibsemigroupsException if `p.validate()` throws.
+  //! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
+  //! throws.
   //!
   //! \note \c Func must be a function type that is invocable with values of
   //! `Presentation<Word>::letter_type`. If this is not true, then template
@@ -268,7 +270,7 @@ namespace libsemigroups {
   //! \returns A value of type `Result`.
   //!
   //! \throws LibsemigroupsException if `typename Result::word_type` and `Word`
-  //! are not the same and `p.validate()` throws. If
+  //! are not the same and `p.throw_if_bad_alphabet_or_rules()` throws. If
   //! `typename Result::word_type` and `Word` are the same, then this function
   //! is `noexcept`.
   template <typename Result, typename Word>
@@ -330,7 +332,7 @@ namespace libsemigroups {
   //! \returns A value of type `InversePresentation<WordOutput>`.
   //!
   //! \throws LibsemigroupsException if `typename Result::word_type` and `Word`
-  //! are not the same and `p.validate()` throws. If
+  //! are not the same and `p.throw_if_bad_alphabet_or_rules()` throws. If
   //! `typename Result::word_type` and `Word` are the same, then this function
   //! is `noexcept`.
   template <typename Result, typename Word>
@@ -382,7 +384,8 @@ namespace libsemigroups {
   //!
   //! \returns A value of type `InversePresentation<Word>`.
   //!
-  //! \throws LibsemigroupsException if `p.validate()` throws.
+  //! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
+  //! throws.
   // \note The parameter \p p must not be an `InversePresentation`, otherwise
   // a compilation error is thrown.
   // NOTE: not sure this is true anymore so just leaving it out

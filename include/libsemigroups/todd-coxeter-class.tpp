@@ -39,7 +39,7 @@ namespace libsemigroups {
       ToddCoxeterImpl::init(knd, to<Presentation<word_type>>(p));
       _presentation = std::move(p);
     } else {
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       _presentation = p;  // copy p in to _presentation
       presentation::normalize_alphabet(p);
       ToddCoxeterImpl::init(knd, std::move(p));
@@ -68,7 +68,7 @@ namespace libsemigroups {
       ToddCoxeterImpl::init(knd, to<Presentation<word_type>>(p), wg);
       _presentation = p;
     } else {
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       _presentation = p;  // copy p in to _presentation
       auto copy     = p;
       presentation::normalize_alphabet(copy);

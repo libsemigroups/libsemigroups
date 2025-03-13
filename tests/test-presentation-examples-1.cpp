@@ -345,7 +345,7 @@ namespace libsemigroups {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = order_preserving_monoid(n);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 126);
@@ -372,7 +372,7 @@ namespace libsemigroups {
                           "[pres-examples][quick]") {
     auto rg = ReportGuard(false);
     auto p  = monogenic_semigroup(4, 9);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 12);
   }
@@ -384,7 +384,7 @@ namespace libsemigroups {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = dual_symmetric_inverse_monoid(n);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 6'721);
   }
@@ -396,7 +396,7 @@ namespace libsemigroups {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = uniform_block_bijection_monoid(n);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 1'496);
   }

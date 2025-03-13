@@ -180,7 +180,7 @@ namespace libsemigroups {
       return;
     }
     LIBSEMIGROUPS_EXCEPTION(
-        "No presentation has been set, so cannot validate the word!");
+        "No presentation has been set, so cannot check the word!");
   }
 
   template <typename Word>
