@@ -57,7 +57,7 @@ namespace libsemigroups {
     //! No doc
     // TODO(1) to tpp
     template <typename Iterator>
-    void validate_no_duplicates(
+    void throw_if_duplicates(
         Iterator                                                    first,
         Iterator                                                    last,
         std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen) {
@@ -67,7 +67,7 @@ namespace libsemigroups {
           auto [pos, inserted] = seen.emplace(*it, seen.size());
           if (!inserted) {
             LIBSEMIGROUPS_EXCEPTION(
-                "duplicate image value, found {} in position {}, first "
+                "duplicate value, found {} in position {}, first "
                 "occurrence in position {}",
                 *it,
                 std::distance(first, it),
@@ -79,9 +79,9 @@ namespace libsemigroups {
 
     //! No doc
     template <typename Iterator>
-    void validate_no_duplicates(Iterator first, Iterator last) {
+    void throw_if_duplicates(Iterator first, Iterator last) {
       std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
-      validate_no_duplicates(first, last, seen);
+      throw_if_duplicates(first, last, seen);
     }
   }  // namespace detail
 
@@ -844,7 +844,7 @@ namespace libsemigroups {
   //! \ingroup make_transf_group
   //!
   //! \brief Construct a HPCombi::Transf16 from universal reference and
-  //! validate.
+  //! check.
   //!
   //! Constructs a HPCombi::Transf16 initialized using the container \p cont
   //! as follows: the image of the point \c i under the transformation is the
@@ -887,7 +887,7 @@ namespace libsemigroups {
   //! \ingroup make_perm_group
   //!
   //! \brief Construct a HPCombi::Perm16 from universal reference and
-  //! validate.
+  //! check.
   //!
   //! Constructs a HPCombi::Perm16 initialized using the container \p cont as
   //! follows: the image of the point \c i under the permutation is the
@@ -925,7 +925,7 @@ namespace libsemigroups {
                               std::distance(std::begin(cont), it));
     }
     if (!result.validate()) {
-      detail::validate_no_duplicates(std::begin(cont), std::end(cont));
+      detail::throw_if_duplicates(std::begin(cont), std::end(cont));
       // TODO(1) check if result contains UNDEFINED
     }
     return result;
@@ -933,7 +933,7 @@ namespace libsemigroups {
 
   //! \ingroup make_pperm_group
   //!
-  //! \brief Construct a HPCombi::PPerm16 from container and validate.
+  //! \brief Construct a HPCombi::PPerm16 from container and check.
   //!
   //! Constructs a HPCombi::PPerm16 initialized using the container \p cont as
   //! follows: the image of the point \c i under the partial perm is the
@@ -974,7 +974,7 @@ namespace libsemigroups {
                               std::distance(std::begin(cont), it));
     }
     if (!result.validate()) {
-      detail::validate_no_duplicates(std::begin(cont), std::end(cont));
+      detail::throw_if_duplicates(std::begin(cont), std::end(cont));
     }
     return result;
   }
@@ -982,7 +982,7 @@ namespace libsemigroups {
   //! \ingroup make_pperm_group
   //!
   //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
-  //! validate.
+  //! check.
   //!
   //! Constructs a partial perm of degree \p deg such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is `0xFF` on every other value
@@ -1024,8 +1024,8 @@ namespace libsemigroups {
     }
     // TODO(1) check ran for out of bounds values too
     std::unordered_map<uint8_t, size_t> seen;
-    detail::validate_no_duplicates(dom.cbegin(), dom.cend(), seen);
-    detail::validate_no_duplicates(ran.cbegin(), ran.cend(), seen);
+    detail::throw_if_duplicates(dom.cbegin(), dom.cend(), seen);
+    detail::throw_if_duplicates(ran.cbegin(), ran.cend(), seen);
     HPCombi::PPerm16 result(dom, ran, deg);
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
@@ -1034,7 +1034,7 @@ namespace libsemigroups {
   //! \ingroup make_pperm_group
   //!
   //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
-  //! validate.
+  //! check.
   //!
   //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is `0xFF` on every other value
@@ -1067,7 +1067,7 @@ namespace libsemigroups {
   //! \ingroup make_transf_group
   //!
   //! \brief Construct a HPCombi::Transf16 from universal reference and
-  //! validate.
+  //! check.
   //!
   //! Constructs a HPCombi::Transf16 initialized using the container \p cont
   //! as follows: the image of the point \c i under the transformation is the

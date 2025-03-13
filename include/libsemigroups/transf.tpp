@@ -196,8 +196,8 @@ namespace libsemigroups {
           deg);
     }
     std::unordered_map<Scalar, size_t> seen;
-    detail::validate_no_duplicates(dom.cbegin(), dom.cend(), seen);
-    detail::validate_no_duplicates(ran.cbegin(), ran.cend(), seen);
+    detail::throw_if_duplicates(dom.cbegin(), dom.cend(), seen);
+    detail::throw_if_duplicates(ran.cbegin(), ran.cend(), seen);
   }
 
   template <typename Return>

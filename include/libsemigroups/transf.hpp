@@ -1356,7 +1356,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   void throw_if_not_pperm(PPerm<N, Scalar> const& f) {
     throw_if_image_value_out_of_range(f);
-    detail::validate_no_duplicates(f.begin(), f.end());
+    detail::throw_if_duplicates(f.begin(), f.end());
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1593,7 +1593,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   auto throw_if_not_perm(Perm<N, Scalar> const& f) {
     throw_if_image_value_out_of_range(f);
-    detail::validate_no_duplicates(f.begin(), f.end());
+    detail::throw_if_duplicates(f.begin(), f.end());
   }
 
   ////////////////////////////////////////////////////////////////////////
