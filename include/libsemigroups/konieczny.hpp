@@ -1742,7 +1742,7 @@ namespace libsemigroups {
     // Konieczny - validation member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    void validate_element(const_reference x) const {
+    void throw_if_bad_degree(const_reference x) const {
       size_t const n = Degree()(x);
       if (degree() != UNDEFINED && n != degree()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -1751,7 +1751,7 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    void validate_element_collection(Iterator first, Iterator last) const;
+    void throw_if_bad_degree(Iterator first, Iterator last) const;
 
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - Runner methods - private

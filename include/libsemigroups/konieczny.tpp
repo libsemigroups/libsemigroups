@@ -247,7 +247,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add generators after the algorithm has begun!");
     }
-    validate_element_collection(first, last);
+    throw_if_bad_degree(first, last);
     // If the _one has already been pushed back into _gens
     // (i.e. if data has been initialised), then we should shuffle it to
     // the back of the new generators.
@@ -270,9 +270,8 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   template <typename Iterator>
-  void
-  Konieczny<Element, Traits>::validate_element_collection(Iterator first,
-                                                          Iterator last) const {
+  void Konieczny<Element, Traits>::throw_if_bad_degree(Iterator first,
+                                                       Iterator last) const {
     if (degree() == UNDEFINED && std::distance(first, last) != 0) {
       auto const n = Degree()(*first);
       for (auto it = first + 1; it < last; ++it) {
@@ -284,7 +283,7 @@ namespace libsemigroups {
       }
     } else {
       for (auto it = first; it < last; ++it) {
-        validate_element(*it);
+        throw_if_bad_degree(*it);
       }
     }
   }
