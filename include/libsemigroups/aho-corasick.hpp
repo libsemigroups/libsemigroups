@@ -430,12 +430,12 @@ namespace libsemigroups {
     //! After validating \p current, this function performs the same as
     //! `traverse_no_checks(current, a)`.
     //!
-    //! \throws LibsemigroupsException if `validate_active_node_index(current)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `throw_if_node_index_not_active(current)` throws.
     //!
-    //! \sa \ref traverse_no_checks, \ref validate_active_node_index.
+    //! \sa \ref traverse_no_checks, \ref throw_if_node_index_not_active.
     [[nodiscard]] index_type traverse(index_type current, letter_type a) const {
-      validate_active_node_index(current);
+      throw_if_node_index_not_active(current);
       return traverse_no_checks(current, a);
     }
 
@@ -491,12 +491,12 @@ namespace libsemigroups {
     //! After validating \p i, this function performs the same as
     //! `signature_no_checks(w, i)`.
     //!
-    //! \throws LibsemigroupsException if `validate_active_node_index(i)`
+    //! \throws LibsemigroupsException if `throw_if_node_index_not_active(i)`
     //! throws.
     //!
-    //! \sa \ref signature_no_checks, \ref validate_active_node_index.
+    //! \sa \ref signature_no_checks, \ref throw_if_node_index_not_active.
     void signature(word_type& w, index_type i) const {
-      validate_active_node_index(i);
+      throw_if_node_index_not_active(i);
       signature_no_checks(w, i);
     }
 
@@ -505,12 +505,12 @@ namespace libsemigroups {
     //! After validating \p i, this function performs the same as
     //! `signature_no_checks(i)`.
     //!
-    //! \throws LibsemigroupsException if `validate_active_node_index(i)`
+    //! \throws LibsemigroupsException if `throw_if_node_index_not_active(i)`
     //! throws.
     //!
-    //! \sa \ref signature_no_checks, \ref validate_active_node_index.
+    //! \sa \ref signature_no_checks, \ref throw_if_node_index_not_active.
     word_type signature(index_type i) const {
-      validate_active_node_index(i);
+      throw_if_node_index_not_active(i);
       return signature_no_checks(i);
     }
 
@@ -539,12 +539,12 @@ namespace libsemigroups {
     //! After validating \p i, this function performs the same as
     //! `height_no_checks(i)`.
     //!
-    //! \throws LibsemigroupsException if `validate_active_node_index(i)`
+    //! \throws LibsemigroupsException if `throw_if_node_index_not_active(i)`
     //! throws.
     //!
-    //! \sa \ref height_no_checks, \ref validate_active_node_index.
+    //! \sa \ref height_no_checks, \ref throw_if_node_index_not_active.
     [[nodiscard]] size_t height(index_type i) const {
-      validate_active_node_index(i);
+      throw_if_node_index_not_active(i);
       return height_no_checks(i);
     }
 
@@ -575,12 +575,12 @@ namespace libsemigroups {
     //! After validating \p current, this function performs the same as
     //! `suffix_link_no_checks(current)`.
     //!
-    //! \throws LibsemigroupsException if `validate_active_node_index(current)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `throw_if_node_index_not_active(current)` throws.
     //!
-    //! \sa \ref suffix_link_no_checks, \ref validate_active_node_index.
+    //! \sa \ref suffix_link_no_checks, \ref throw_if_node_index_not_active.
     [[nodiscard]] index_type suffix_link(index_type current) const {
-      validate_active_node_index(current);
+      throw_if_node_index_not_active(current);
       return suffix_link_no_checks(current);
     }
 
@@ -600,7 +600,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \note The node returned by this function may not represent a node
-    //! presently stored in the trie. See \ref validate_active_node_index.
+    //! presently stored in the trie. See \ref throw_if_node_index_not_active.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
@@ -615,11 +615,12 @@ namespace libsemigroups {
     //! After validating \p i, this function performs the same as
     //! `node_no_checks(i)`.
     //!
-    //! \throws LibsemigroupsException if `validate_node_index(i)` throws.
+    //! \throws LibsemigroupsException if `throw_if_node_index_out_of_range(i)`
+    //! throws.
     //!
-    //! \sa \ref node_no_checks, \ref validate_node_index.
+    //! \sa \ref node_no_checks, \ref throw_if_node_index_out_of_range.
     [[nodiscard]] Node const& node(index_type i) const {
-      validate_node_index(i);
+      throw_if_node_index_out_of_range(i);
       return node_no_checks(i);
     }
 
@@ -655,13 +656,13 @@ namespace libsemigroups {
     //! After validating \p parent, this function performs the same as
     //! `child_no_checks(parent, letter)`.
     //!
-    //! \throws LibsemigroupsException if `validate_active_node_index(parent)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `throw_if_node_index_not_active(parent)` throws.
     //!
-    //! \sa \ref child_no_checks, \ref validate_active_node_index.
+    //! \sa \ref child_no_checks, \ref throw_if_node_index_not_active.
     [[nodiscard]] index_type child(index_type  parent,
                                    letter_type letter) const {
-      validate_active_node_index(parent);
+      throw_if_node_index_not_active(parent);
       return _all_nodes[parent].child(letter);
     }
 
@@ -670,7 +671,7 @@ namespace libsemigroups {
     //! This function checks if the given index \p i corresponds to the index of
     //! a node; either active or inactive.
     //!
-    //! \param i the index to validate.
+    //! \param i the index to check.
     //!
     //! \throws LibsemigroupsException if \p i does not correspond to the index
     //! of a node; that is, if \p i is larger than the size of the container
@@ -678,37 +679,38 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    void validate_node_index(index_type i) const;
+    void throw_if_node_index_out_of_range(index_type i) const;
 
     //! \brief Check if an index corresponds to a node currently in the trie.
     //!
-    //! This function validates whether the given index \p i corresponds to an
+    //! This function checks whether the given index \p i corresponds to an
     //! active node.
     //!
-    //! \param i the index to validate.
+    //! \param i the index to check.
     //!
-    //! \throws LibsemigroupsException if `validate_node_index(i)` throws, or if
+    //! \throws LibsemigroupsException if `throw_if_node_index_out_of_range(i)`
+    //! throws, or if
     //! \p i is not an active node.
     //!
     //! \complexity
     //! Constant.
     //!
-    //! \sa \ref validate_node_index.
-    void validate_active_node_index(index_type i) const;
+    //! \sa \ref throw_if_node_index_out_of_range.
+    void throw_if_node_index_not_active(index_type i) const;
 
    private:
     [[nodiscard]] index_type new_active_node_no_checks(index_type  parent,
                                                        letter_type a);
 
     [[nodiscard]] index_type new_active_node(index_type parent, letter_type a) {
-      validate_active_node_index(parent);
+      throw_if_node_index_not_active(parent);
       return new_active_node_no_checks(parent, a);
     }
 
     void deactivate_node_no_checks(index_type i);
 
     void deactivate_node(index_type i) {
-      validate_active_node_index(i);
+      throw_if_node_index_not_active(i);
       deactivate_node_no_checks(i);
     }
 
@@ -887,18 +889,18 @@ namespace libsemigroups {
     //! After validating \p start with respect to \p ac, this function performs
     //! the same as `traverse_word_no_checks(ac, start, first, last)`.
     //!
-    //! \throws LibsemigroupsException if `ac.validate_active_node_index(start)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `ac.throw_if_node_index_not_active(start)` throws.
     //!
     //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
     //! start, Iterator first, Iterator last),
-    //! \ref AhoCorasick::validate_active_node_index.
+    //! \ref AhoCorasick::throw_if_node_index_not_active.
     template <typename Iterator>
     [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
                                            index_type         start,
                                            Iterator           first,
                                            Iterator           last) {
-      ac.validate_active_node_index(start);
+      ac.throw_if_node_index_not_active(start);
       return traverse_word_no_checks(ac, start, first, last);
     }
 

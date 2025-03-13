@@ -176,7 +176,7 @@ namespace libsemigroups {
     }
   }
 
-  void AhoCorasick::validate_node_index(index_type i) const {
+  void AhoCorasick::throw_if_node_index_out_of_range(index_type i) const {
     if (i >= _all_nodes.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "invalid index, expected value in range [0, {}), found {}",
@@ -185,8 +185,8 @@ namespace libsemigroups {
     }
   }
 
-  void AhoCorasick::validate_active_node_index(index_type i) const {
-    validate_node_index(i);
+  void AhoCorasick::throw_if_node_index_not_active(index_type i) const {
+    throw_if_node_index_out_of_range(i);
     if (_active_nodes_index.count(i) != 1) {
       LIBSEMIGROUPS_EXCEPTION(
           "invalid index, expected an index of an active node, found {}", i);
