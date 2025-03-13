@@ -832,8 +832,8 @@ namespace libsemigroups {
                                     Forest const&    f,
                                     index_type       pos);
 
-    void validate_index(index_type i) const;
-    void validate_gens() const;
+    void throw_if_index_out_of_range(index_type i) const;
+    void throw_if_no_generators() const;
   };
 
   //! \ingroup action_group

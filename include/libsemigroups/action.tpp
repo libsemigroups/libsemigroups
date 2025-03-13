@@ -333,8 +333,8 @@ namespace libsemigroups {
       MultiplierCache& mults,
       Forest const&    f,
       index_type       pos) {
-    validate_gens();
-    validate_index(pos);
+    throw_if_no_generators();
+    throw_if_index_out_of_range(pos);
 
     if (cache_scc_multipliers()) {
       if (mults.defined(pos)) {
@@ -389,8 +389,8 @@ namespace libsemigroups {
             typename Func,
             typename Traits,
             side LeftOrRight>
-  void Action<Element, Point, Func, Traits, LeftOrRight>::validate_index(
-      index_type i) const {
+  void Action<Element, Point, Func, Traits, LeftOrRight>::
+      throw_if_index_out_of_range(index_type i) const {
     if (i > _orb.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "index out of range, expected value in [0, {}) but found {}",
@@ -405,7 +405,8 @@ namespace libsemigroups {
             typename Traits,
             side LeftOrRight>
   void
-  Action<Element, Point, Func, Traits, LeftOrRight>::validate_gens() const {
+  Action<Element, Point, Func, Traits, LeftOrRight>::throw_if_no_generators()
+      const {
     if (_gens.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no generators defined, this function cannot "
                               "be used until at least one generator is added")
