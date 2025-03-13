@@ -44,7 +44,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < lookup.size(); ++i) {
         result.is_transverse_block(i, lookup[i]);
       }
-      blocks::validate(result);
+      blocks::throw_if_invalid(result);
       return result;
     }
 
@@ -88,9 +88,9 @@ namespace libsemigroups {
             == std::vector<uint32_t>({0, 1, 2, 1, 0, 2}));
     // The validity of the 2nd argument isn't checked
     REQUIRE_NOTHROW(b.block(0, 10));
-    REQUIRE_THROWS_AS(blocks::validate(b), LibsemigroupsException);
+    REQUIRE_THROWS_AS(blocks::throw_if_invalid(b), LibsemigroupsException);
     REQUIRE_NOTHROW(b.block(0, 0));
-    REQUIRE_THROWS_AS(blocks::validate(b), LibsemigroupsException);
+    REQUIRE_THROWS_AS(blocks::throw_if_invalid(b), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Blocks",
@@ -479,7 +479,7 @@ namespace libsemigroups {
     REQUIRE(x.rank() == 3);
 
     Bipartition xxx;
-    REQUIRE_NOTHROW(bipartition::validate(xxx));
+    REQUIRE_NOTHROW(bipartition::throw_if_invalid(xxx));
     REQUIRE(x != xxx);
     REQUIRE(xx != xxx);
     REQUIRE(xx > xxx);
@@ -587,6 +587,6 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition", "017", "bug", "[quick][bipart]") {
     auto x = make<Bipartition>({{1, -2, -3}, {-1}, {2, 3}});
-    REQUIRE_NOTHROW(bipartition::validate(x));
+    REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
   }
 }  // namespace libsemigroups
