@@ -149,8 +149,8 @@ namespace libsemigroups {
   //!
   //! \sa \ref cong_common_helpers_group
 
-  //! This page contains documentation for everything in the namespace \ref
-  //! knuth_bendix. This includes everything from
+  //! This page contains documentation for everything in the namespace
+  //! \ref knuth_bendix. This includes everything from
   //! \ref cong_common_helpers_group and \ref knuth_bendix_helpers_group.
   namespace knuth_bendix {
 
@@ -167,12 +167,12 @@ namespace libsemigroups {
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a \ref_knuth_bendix instance by considering all
-    //! overlaps of a given length \f$n\f$ (according to the \ref
-    //! KnuthBendix::options::overlap) before those overlaps of length \f$n
+    //! overlaps of a given length \f$n\f$ (according to the
+    //! \ref KnuthBendix::options::overlap) before those overlaps of length \f$n
     //! + 1\f$.
     //!
-    //! \tparam Word the type of the words in the \ref
-    //! KnuthBendix::presentation.
+    //! \tparam Word the type of the words in the
+    //! \ref KnuthBendix::presentation.
     //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.
@@ -195,8 +195,8 @@ namespace libsemigroups {
     //!
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
-    //! \tparam Word the type of the words in the \ref
-    //! KnuthBendix::presentation.
+    //! \tparam Word the type of the words in the
+    //! \ref KnuthBendix::presentation.
     //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.

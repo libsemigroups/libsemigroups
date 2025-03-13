@@ -77,7 +77,7 @@ namespace libsemigroups {
   //!
   //! \ingroup kambites_class_group
   //!
-  //! \brief Public member types
+  //! \brief Public member types.
   //!
   //! This page contains the documentation of the public member types of a
   //! \ref_kambites instance.
@@ -141,9 +141,9 @@ namespace libsemigroups {
   //!
   //! Note that a \ref_kambites instance represents a congruence on the free
   //! monoid or semigroup containing the rules of a presentation used to
-  //! construct the instance, and the \ref generating_pairs. As such generating
-  //! pairs or rules are interchangeable in the context of \ref_kambites
-  //! objects.
+  //! construct the instance, and the \ref Kambites::generating_pairs. As such
+  //! generating pairs or rules are interchangeable in the context of
+  //! \ref_kambites objects.
   //!
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
@@ -271,15 +271,15 @@ namespace libsemigroups {
     //! \ref_kambites instances can only be used to compute two-sided
     //! congruences, and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
-    //! uniformity of interface between with \ref_knuth_bendix, \ref
+    //! uniformity of interface between with \ref_knuth_bendix,
     //! \ref_kambites, and \ref_congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
-    //! \throws LibsemigroupsException if \p knd is not \ref
-    //! congruence_kind::twosided.
+    //! \throws LibsemigroupsException if \p knd is not
+    //! \ref congruence_kind::twosided.
     Kambites(congruence_kind knd, Presentation<native_word_type> const& p)
         // call the rval ref constructor
         : Kambites(knd, Presentation<native_word_type>(p)) {}
@@ -295,7 +295,7 @@ namespace libsemigroups {
     //! \ref_kambites instances can only be used to compute two-sided
     //! congruences, and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
-    //! uniformity of interface between with \ref_knuth_bendix, \ref
+    //! uniformity of interface between with \ref_knuth_bendix,
     //! \ref_kambites, and \ref_congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
@@ -304,8 +304,8 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
-    //! \throws LibsemigroupsException if \p knd is not \ref
-    //! congruence_kind::twosided.
+    //! \throws LibsemigroupsException if \p knd is not
+    //! \ref congruence_kind::twosided.
     Kambites& init(congruence_kind                       knd,
                    Presentation<native_word_type> const& p) {
       // call the rval ref init
@@ -420,9 +420,9 @@ namespace libsemigroups {
     //! \brief Compute the number of classes in the congruence.
     //!
     //! This function computes the number of classes in the congruence
-    //! represented by a \ref_kambites instance if the \ref
-    //! small_overlap_class is at least \f$4\f$. \ref_kambites instances can
-    //! only compute the number of classes if the condition of the previous
+    //! represented by a \ref_kambites instance if the
+    //! \ref small_overlap_class is at least \f$4\f$. \ref_kambites instances
+    //! can only compute the number of classes if the condition of the previous
     //! sentence is fulfilled, and in this case the number of classes is
     //! always \ref POSITIVE_INFINITY. Otherwise an exception is thrown.
     //!
@@ -459,9 +459,9 @@ namespace libsemigroups {
     //! and \ref tril::unknown otherwise.
     //!
     //! If any of the iterators point at words that do not belong to the
-    //! `presentation().alphabet()`, then \ref tril::FALSE or \ref
-    //! tril::unknown is returned (depending on whether \ref finished returns \c
-    //! true or \c false, respectively).
+    //! `presentation().alphabet()`, then \ref tril::FALSE or
+    //! \ref tril::unknown is returned (depending on whether \ref finished
+    //! returns \c true or \c false, respectively).
     //!
     //! \cong_common_params_contains
     //!
@@ -526,8 +526,8 @@ namespace libsemigroups {
     //!
     //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed but not checked that the \ref
-    //! small_overlap_class is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the
+    //! \ref small_overlap_class is at least \f$4\f$.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -594,8 +594,8 @@ namespace libsemigroups {
     //!
     //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed but not checked that the \ref
-    //! small_overlap_class is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the
+    //! \ref small_overlap_class is at least \f$4\f$.
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
@@ -650,8 +650,8 @@ namespace libsemigroups {
     //!
     //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed but not checked that the \ref
-    //! small_overlap_class is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the
+    //! \ref small_overlap_class is at least \f$4\f$.
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -782,8 +782,8 @@ namespace libsemigroups {
     //! \param last iterator pointing one beyond the last letter of the
     //! word.
     //!
-    //! \throw LibsemigroupsException if any letter in the range from \p
-    //! first to \p last is out of bounds.
+    //! \throw LibsemigroupsException if any letter in the range from
+    //! \p first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       _presentation.validate_word(first, last);
@@ -817,10 +817,10 @@ namespace libsemigroups {
     //! \brief Check if the small overlap class has been computed and is at
     //! least 4.
     //!
-    //! This function calls \ref finished and checks whether or not the \ref
-    //! small_overlap_class is at least \f$4\f$. This function can be used to
-    //! check whether or not the functions \ref reduce and \ref contains can be
-    //! used.
+    //! This function calls \ref finished and checks whether or not the
+    //! \ref small_overlap_class is at least \f$4\f$. This function can be used
+    //! to check whether or not the functions \ref reduce and \ref contains can
+    //! be used.
     //!
     //! \returns Whether or not the small overlap class is known and that it is
     //! at least \f$4\f$.

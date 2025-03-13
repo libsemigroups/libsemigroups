@@ -93,9 +93,9 @@ namespace libsemigroups {
   //! `libsemigroups` that adapts the types in `HPCombi` for use with the
   //! algorithms in libsemigroups. The functionality in this section is only
   //! available if libsemigroups is compiled with `HPCombi` support enabled;
-  //! this is only possible on certain computer architectures. See the \ref
-  //! install.md "installation instructions" and the HPCombi documentation for
-  //! further details.
+  //! this is only possible on certain computer architectures. See the
+  //! \ref install.md "installation instructions" and the HPCombi documentation
+  //! for further details.
   //!
   //! @{
 
@@ -265,8 +265,8 @@ namespace libsemigroups {
                           std::enable_if_t<std::is_integral_v<TIntType>>> {
     //! \brief Stores the image of \p pt under \p p.
     //!
-    //! Modifies \p res in-place to store the image of \p pt under \p p in \p
-    //! res.
+    //! Modifies \p res in-place to store the image of \p pt under \p p in
+    //! \p res.
     //!
     //! \exceptions
     //! \noexcept
@@ -395,13 +395,13 @@ namespace libsemigroups {
   //! \sa One.
   template <>
   struct One<HPCombi::BMat8> {
-    //! \brief Returns \p x.one()
+    //! \brief Returns \p x.one().
     //!
     //! Returns \p x.one()
     inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
       return x.one();
     }
-    //! \brief Returns `HPCombi::BMat8::one`
+    //! \brief Returns `HPCombi::BMat8::one`.
     //!
     //! Returns `HPCombi::BMat8::one`
     inline HPCombi::BMat8 operator()(size_t = 0) const noexcept {
@@ -418,7 +418,7 @@ namespace libsemigroups {
   //! \sa Product.
   template <>
   struct Product<HPCombi::BMat8> {
-    //! \brief Changes \p xy in-place to hold the product of \p x and \p y
+    //! \brief Changes \p xy in-place to hold the product of \p x and \p y.
     //!
     //! Changes \p xy in-place to hold the product of \p x and \p y
     inline void operator()(HPCombi::BMat8&       xy,
@@ -855,7 +855,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::Transf16 instance.
+  //! \returns A `HPCombi::Transf16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
@@ -898,7 +898,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::Perm16 instance.
+  //! \returns A `HPCombi::Perm16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
@@ -944,7 +944,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::PPerm16 instance.
+  //! \returns A `HPCombi::PPerm16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;
@@ -984,15 +984,15 @@ namespace libsemigroups {
   //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
   //! validate.
   //!
-  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! Constructs a partial perm of degree \p deg such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is `0xFF` on every other value
   //! in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type, must be HPCombi::PPerm16.
   //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param M the degree
+  //! \param dom the domain.
+  //! \param ran the range.
+  //! \param deg the degree.
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N
@@ -1042,9 +1042,9 @@ namespace libsemigroups {
   //!
   //! \tparam Return the return type, must be HPCombi::PPerm16.
   //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param M the degree
+  //! \param dom the domain.
+  //! \param ran the range.
+  //! \param M the degree.
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N
@@ -1077,7 +1077,7 @@ namespace libsemigroups {
   //!
   //! \param cont the container.
   //!
-  //! \returns A \ref HPCombi::Transf16 instance.
+  //! \returns A `HPCombi::Transf16` instance.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont exceeds \c 16;

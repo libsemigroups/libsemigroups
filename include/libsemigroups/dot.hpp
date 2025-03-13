@@ -36,6 +36,7 @@
 
 namespace libsemigroups {
 
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   namespace detail {
 
     inline std::string const& dot_to_string(std::string const& x) {
@@ -65,6 +66,8 @@ namespace libsemigroups {
 
   }  // namespace detail
 
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+
   //! \defgroup dot_group Visualisation
   //!
   //! This page contains links to the various classes and functions in
@@ -75,11 +78,13 @@ namespace libsemigroups {
   //! descriptions in the [DOT][] language of the [Graphviz][] graph drawing
   //! software.
   //!
-  //! The function \ref dot can be used to produce initial Dot objects for
+  //! The function \c dot can be used to produce initial Dot objects for
   //! various of the data structures and algorithms in `libsemigroups`:
   //!
-  //! * \ref dot(AhoCorasick&)
-  //! * \ref word_graph::dot(WordGraph<Node> const& wg)
+  //! * \ref aho_corasick::dot(AhoCorasick&)
+  //! * \ref stephen::dot(Stephen<PresentationType>&)
+  //! * \ref ukkonen::dot(Ukkonen const&)
+  //! * \ref word_graph::dot(WordGraph<Node> const&)
   //!
   //! [DOT]: https://www.graphviz.org/doc/info/lang.html
   //! [Graphviz]: https://www.graphviz.org
@@ -123,9 +128,9 @@ namespace libsemigroups {
 
       //! \brief Construct from anything.
       //!
-      //! This constructor creates a new Node object from the parameter \p
-      //! thing, which is converted to a string (using std::to_string if \p
-      //! thing is not already a std::string) by the constructor.
+      //! This constructor creates a new Node object from the parameter
+      //! \p thing, which is converted to a string (using std::to_string if
+      //! \p thing is not already a std::string) by the constructor.
       //!
       //! The newly constructed Node has no attributes set.
       //!
@@ -137,11 +142,20 @@ namespace libsemigroups {
       explicit Node(Thing&& thing)
           : attrs(), name(detail::dot_to_string(std::forward<Thing>(thing))) {}
 
-      Node()                       = default;
-      Node(Node const&)            = default;
-      Node(Node&&)                 = default;
+      //! \brief Default constructor.
+      Node() = default;
+
+      //! \brief Default copy constructor.
+      Node(Node const&) = default;
+
+      //! \brief Default move constructor.
+      Node(Node&&) = default;
+
+      //! \brief Default copy assignment.
       Node& operator=(Node const&) = default;
-      Node& operator=(Node&&)      = default;
+
+      //! \brief Default move assignment.
+      Node& operator=(Node&&) = default;
 
       ~Node();
 
@@ -184,10 +198,10 @@ namespace libsemigroups {
     struct Edge {
       //! \brief Construct from head and tail.
       //!
-      //! This constructor creates a new Edge object with head \p
-      //! h (converted to a std::string using std::to_string if \p
-      //! thing is not already a std::string, std::string_view, or `char
-      //! const*`) and tail \p t (similarly converted to a std::string).
+      //! This constructor creates a new Edge object with head \p h (converted
+      //! to a std::string using std::to_string if \p thing is not already a
+      //! std::string, std::string_view, or `char const*`) and tail \p t
+      //! (similarly converted to a std::string).
       //!
       //! The newly constructed Edge has no attributes set.
       //!
@@ -231,18 +245,30 @@ namespace libsemigroups {
         return *this;
       }
 
-      Edge()                       = default;
-      Edge(Edge const&)            = default;
-      Edge(Edge&&)                 = default;
+      //! \brief Default constructor.
+      Edge() = default;
+
+      //! \brief Default copy constructor.
+      Edge(Edge const&) = default;
+
+      //! \brief Default move constructor.
+      Edge(Edge&&) = default;
+
+      //! \brief Default copy assignment.
       Edge& operator=(Edge const&) = default;
-      Edge& operator=(Edge&&)      = default;
+
+      //! \brief Default move assignment.
+      Edge& operator=(Edge&&) = default;
+
       ~Edge();
 
-      //! No doc
+      //! \brief Map of attributes.
       std::map<std::string, std::string> attrs;
-      //! No doc
+
+      //! \brief Name of the head of the edge.
       std::string head;
-      //! No doc
+
+      //! \brief Name of the tail of the edge.
       std::string tail;
     };
 
@@ -436,8 +462,8 @@ namespace libsemigroups {
     //! This function adds the Dot object \p subgraph as a subgraph of \c this.
     //! The following transformations are performed:
     //!
-    //! * the \c label attribute of the added subgraph is the \ref name of \p
-    //! subgraph;
+    //! * the \c label attribute of the added subgraph is the \ref name of
+    //! \p subgraph;
     //! * the \ref name of the added subgraph has the prefix `"cluster_"`
     //! prepended;
     //! * every node in the added subgraph has the prefix `"name_"` prepended
@@ -551,8 +577,8 @@ namespace libsemigroups {
     //!
     //! \param thing the object to use as the name of a node.
     //!
-    //! \returns A reference to the Node object with \ref name obtained from \p
-    //! thing.
+    //! \returns A reference to the Node object with \ref name obtained from
+    //! \p thing.
     //!
     //! \throws LibsemigroupsException if there is already a node with
     //! name `std::to_string(thing)`.
@@ -566,6 +592,21 @@ namespace libsemigroups {
       return it->second;
     }
 
+    //! \brief Return a node from the represented graph.
+    //!
+    //! This function returns a reference to a node with name obtained from
+    //! \p thing by converting it to a std::string (unless they are std::string,
+    //! std::string_view, or `char const*` already) using std::to_string.
+    //!
+    //! \tparam Thing the type of the argument.
+    //!
+    //! \param thing the object to use as the name of a node.
+    //!
+    //! \returns A reference to the Node object with \ref name obtained from
+    //! \p thing.
+    //!
+    //! \throws LibsemigroupsException if there is no node with name
+    //! `std::to_string(thing)`.
     template <typename Thing>
     Node& node(Thing&& thing) {
       auto name_str = detail::dot_to_string(std::forward<Thing>(thing));
@@ -586,8 +627,8 @@ namespace libsemigroups {
     //! \tparam Thing1 the type of the 1st argument.
     //! \tparam Thing2 the type of the 2nd argument.
     //!
-    //! \param head the head of the edge
-    //! \param tail the tail of the edge
+    //! \param head the head of the edge.
+    //! \param tail the tail of the edge.
     //!
     //! \returns A reference to the Edge object from \p head to \p tail.
     //!
@@ -605,24 +646,24 @@ namespace libsemigroups {
 
     //! \brief Returns the first edge with given head and tail.
     //!
-    //! This function returns the first edge with head and tail obtained from \p
-    //! head and \p tail by converting \p head and \p tail to std::string
+    //! This function returns the first edge with head and tail obtained from
+    //! \p head and \p tail by converting \p head and \p tail to std::string
     //! objects (unless they are std::string, std::string_view, or `char const*`
     //! already) using std::to_string.
     //!
     //! \tparam Thing1 the type of the 1st argument.
     //! \tparam Thing2 the type of the 2nd argument.
     //!
-    //! \param head the head of the edge
-    //! \param tail the tail of the edge
+    //! \param head the head of the edge.
+    //! \param tail the tail of the edge.
     //!
     //! \returns A reference to the Edge object from \p head to \p tail.
     //!
     //! \throws LibsemigroupsException if \p head or \p tail does not represent
     //! a node in the graph.
     //!
-    //! \throws LibsemigroupsException if there's no edge from \p head to \p
-    //! tail.
+    //! \throws LibsemigroupsException if there's no edge from \p head to
+    //! \p tail.
     template <typename Thing1, typename Thing2>
     Edge& edge(Thing1&& head, Thing2&& tail) {
       auto head_str = detail::dot_to_string(std::forward<Thing1>(head));

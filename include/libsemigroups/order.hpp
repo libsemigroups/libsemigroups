@@ -288,7 +288,7 @@ namespace libsemigroups {
   //! and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref shortlex_compare(T const&, T const&, S const&, S const&).
+  //! See \ref shortlex_compare(T const&, T const&, T const&, T const&).
   //!
   //! \complexity
   //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of \p x and
@@ -301,7 +301,7 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \sa
-  //! \ref shortlex_compare(T const&, T const&, S const&, S const&).
+  //! \ref shortlex_compare(T const&, T const&, T const&, T const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool shortlex_compare(T const& x, T const& y) {
     return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
@@ -322,7 +322,7 @@ namespace libsemigroups {
   //! than the word pointed to by \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref shortlex_compare(T const&, T const&, S const&, S const&).
+  //! See \ref shortlex_compare(T const&, T const&, T const&, T const&).
   //!
   //! \complexity
   //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of the word
@@ -335,14 +335,14 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \sa
-  //! \ref shortlex_compare(T const&, T const&, S const&, S const&).
+  //! \ref shortlex_compare(T const&, T const&, T const&, T const&).
   template <typename T>
   bool shortlex_compare(T* const x, T* const y) {
     return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
-  //! \brief A stateless struct with binary call operator using \ref
-  //! shortlex_compare.
+  //! \brief A stateless struct with binary call operator using
+  //! \ref shortlex_compare.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -444,8 +444,8 @@ namespace libsemigroups {
     }
   }
 
-  //! \brief Compare two objects of the same type using \ref
-  //! recursive_path_compare.
+  //! \brief Compare two objects of the same type using
+  //! \ref recursive_path_compare.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -469,7 +469,7 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \sa
-  //! \ref recursive_path_compare(T const&, T, S const&, S)
+  //! \ref recursive_path_compare(T const&, T, T const&, T)
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool recursive_path_compare(T const& x, T const& y) noexcept {
     return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
@@ -501,7 +501,7 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \sa
-  //! \ref recursive_path_compare(T const&, T, S const&, S)
+  //! \ref recursive_path_compare(T const&, T, T const&, T)
   template <typename T>
   bool recursive_path_compare(T* const x, T* const y) noexcept {
     return recursive_path_compare(
@@ -513,14 +513,14 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! A stateless struct with binary call operator using \ref
-  //! recursive_path_compare.
+  //! A stateless struct with binary call operator using
+  //! \ref recursive_path_compare.
   //!
   //! This only exists to be used as a template parameter, and has no
   //! advantages over using \ref recursive_path_compare otherwise.
   //!
   //! \sa
-  //! \ref recursive_path_compare(T const&, T, S const&, S).
+  //! \ref recursive_path_compare(T const&, T, T const&, T).
   struct RecursivePathCompare {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref recursive_path_compare.

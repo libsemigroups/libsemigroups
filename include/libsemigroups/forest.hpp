@@ -129,8 +129,8 @@ namespace libsemigroups {
 
     //! \brief Check if there are any nodes in the forest.
     //!
-    //! This function returns \c true if there are 0 nodes in the forest, and \c
-    //! false otherwise.
+    //! This function returns \c true if there are 0 nodes in the forest, and
+    //! \c false otherwise.
     //!
     //! \returns
     //! A value of type `bool`.
@@ -163,8 +163,8 @@ namespace libsemigroups {
     //! never checked.
     //!
     //! \warning No checks are performed on the arguments of this function. In
-    //! particular, if \p node or \p parent is greater than or equal to \ref
-    //! number_of_nodes, then bad things may happen.
+    //! particular, if \p node or \p parent is greater than or equal to
+    //! \ref number_of_nodes, then bad things may happen.
     Forest& set_parent_and_label_no_checks(node_type  node,
                                            node_type  parent,
                                            label_type gen) {
@@ -334,8 +334,8 @@ namespace libsemigroups {
       return _edge_label;
     }
 
-    //! \brief Store the labels of the edges on the path to a root node from \p
-    //! i.
+    //! \brief Store the labels of the edges on the path to a root node from
+    //! \p i.
     //!
     //! This function writes labels of the edges on the path to a root node from
     //! node \p i to the iterator \p d_first.
@@ -476,7 +476,7 @@ namespace libsemigroups {
   [[nodiscard]] std::string to_human_readable_repr(Forest const& f);
 
   //! \ingroup word_graph_group
-  //! \brief Helper functions for the Forest class
+  //! \brief Helper functions for the Forest class.
   //!
   //! This page contains the documentation of some helper functions for the
   //! Forest class.
@@ -521,8 +521,8 @@ namespace libsemigroups {
     //! \param w value to contain the result.
     //! \param i the node.
     //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! Forest::number_of_nodes.
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! \ref Forest::number_of_nodes.
     void path_to_root(Forest const& f, word_type& w, Forest::node_type i);
 
     //! \brief Returns a word containing the labels of the edges on the path
@@ -536,8 +536,8 @@ namespace libsemigroups {
     //!
     //! \returns The word labelling the path from a root node to \p i.
     //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! Forest::number_of_nodes.
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! \ref Forest::number_of_nodes.
     [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i);
 
   }  // namespace forest
@@ -564,5 +564,4 @@ struct fmt::formatter<libsemigroups::Forest> : fmt::formatter<std::string> {
         fmt::format("{{{}, {}}}", f.parents(), f.labels()), ctx);
   }
 };
-
 #endif  // LIBSEMIGROUPS_FOREST_HPP_

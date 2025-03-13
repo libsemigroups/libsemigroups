@@ -41,14 +41,8 @@
 
 //! \defgroup \rewriters_group Rewriters
 //!
-//! This file contains documentation for the functionality of the following
-//! classes in `libsemigroups`:
-//! * \ref libsemigroups::Rule "Rule"
-//! * \ref RuleLookup
-//! * \ref Rules
-//! * \ref RewriterBase
-//! * \ref RewriteFromLeft
-//! * \ref RewriteTrie
+//! This file contains documentation for the functionality for rewriters in
+//! `libsemigroups`.
 namespace libsemigroups {
   namespace detail {
     // TODO(2) remove from libsemigroups namespace and put into relevant class
@@ -75,7 +69,7 @@ namespace libsemigroups {
 
     //! \ingroup rewriters_group
     //!
-    //! \brief For a rewriting rule
+    //! \brief For a rewriting rule.
     //!
     //! Defined in `rewriters.hpp`.
     //!
@@ -120,7 +114,7 @@ namespace libsemigroups {
       //!
       //! Return the left-hand side of the rule. If this rule was create by a
       //! \ref_knuth_bendix, this is guaranteed to be greater than its
-      //! right-hand side according to the reduction ordering of that \ref
+      //! right-hand side according to the reduction ordering of that
       //! \ref_knuth_bendix.
       //!
       //! \returns A pointer to the left-hand side.
@@ -184,10 +178,6 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      //!
-      //! \sa
-      //! \ref RewriterBase::active_rules()
-      // TODO(1) check the above ref points to something sensible
       [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);

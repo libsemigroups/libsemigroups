@@ -118,9 +118,9 @@ namespace libsemigroups {
   //!
   //! \brief Value for something undefined.
   //!
-  //! This variable is used to indicate that a value is undefined. \ref
-  //! UNDEFINED is comparable with any integral value (signed or unsigned) or
-  //! constant via `==` and `!=` but not via `<` or `>`.
+  //! This variable is used to indicate that a value is undefined.
+  //! \ref UNDEFINED is comparable with any integral value (signed or unsigned)
+  //! or constant via `==` and `!=` but not via `<` or `>`.
   extern Undefined const UNDEFINED;
 
   //! \ingroup constants_group
@@ -159,6 +159,8 @@ namespace libsemigroups {
 
   // Note that for some reason Catch requires that the comparison functions are
   // in the namespace detail.
+
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   namespace detail {
 
     // operator==
@@ -290,6 +292,7 @@ namespace libsemigroups {
         -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
       return lhs - rhs.operator T();
     }
-  }  // namespace detail
+  }     // namespace detail
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONSTANTS_HPP_

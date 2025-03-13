@@ -205,8 +205,8 @@ namespace libsemigroups {
     //! The values pointed at by iterators of type Iterator must be convertible
     //! to point_type or equal to \ref UNDEFINED.
     //!
-    //! \param first iterator pointing at the first image point
-    //! \param last iterator pointing one beyond the last image point
+    //! \param first iterator pointing at the first image point.
+    //! \param last iterator pointing one beyond the last image point.
     //!
     //! \complexity
     //! Linear in the size of the container \p cont.
@@ -256,8 +256,8 @@ namespace libsemigroups {
     //! \param cont the container.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref
-    //! PTransfBase::container_type.
+    //! * the size of \p cont is incompatible with
+    //! \ref PTransfBase::container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   UNDEFINED.
     //!
@@ -266,7 +266,7 @@ namespace libsemigroups {
     template <typename Subclass, typename OtherContainer = Container>
     [[nodiscard]] static Subclass make(OtherContainer&& cont);
 
-    //! \brief Construct from std::initializer_list and validate
+    //! \brief Construct from std::initializer_list and validate.
     //!
     //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
@@ -279,8 +279,8 @@ namespace libsemigroups {
     //! \param cont the initializer list.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref
-    //! PTransfBase::container_type.
+    //! * the size of \p cont is incompatible with
+    //! \ref PTransfBase::container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   UNDEFINED.
     //!
@@ -289,12 +289,12 @@ namespace libsemigroups {
     template <typename Subclass, typename OtherScalar>
     [[nodiscard]] static Subclass make(std::initializer_list<OtherScalar> cont);
 
-    //! \brief Default copy constructor
+    //! \brief Default copy constructor.
     //!
     //! Default copy constructor
     PTransfBase(PTransfBase const&) = default;
 
-    //! \brief Default move constructor
+    //! \brief Default move constructor.
     //!
     //! Default move constructor
     PTransfBase(PTransfBase&&) = default;
@@ -775,7 +775,7 @@ namespace libsemigroups {
     //! Constructs a partial transformation of degree \p n with the image of
     //! every point set to \ref UNDEFINED.
     //!
-    //! \param n the degree
+    //! \param n the degree.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -892,14 +892,14 @@ namespace libsemigroups {
   //! This alias equals either DynamicPTransf or StaticPTransf depending on
   //! the template parameters \p N and \p Scalar.
   //!
-  //! If \p N is \c 0 (the default), then \c PTransf is \ref
-  //! DynamicPTransf. In this case the default value of \p Scalar is \c
-  //! uint32_t. If \p N is not \c 0, then \c PTransf is \ref StaticPTransf,
+  //! If \p N is \c 0 (the default), then \c PTransf is
+  //! \ref DynamicPTransf. In this case the default value of \p Scalar is
+  //! \c uint32_t. If \p N is not \c 0, then \c PTransf is \ref StaticPTransf,
   //! and the default value of \p Scalar is the smallest integer type able to
   //! hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
   template <
       size_t N = 0,
       typename Scalar
@@ -941,15 +941,15 @@ namespace libsemigroups {
   //! \ingroup transf_group
   //! \brief Validate a partial transformation.
   //!
-  //! \tparam N the degree
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam N the degree.
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
   //! \param f the partial transformation to validate.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont is incompatible with `T::container_type`.
-  //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
-  //!   UNDEFINED.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //! \ref UNDEFINED.
   //!
   //! \complexity
   //! Linear in degree().
@@ -994,8 +994,8 @@ namespace libsemigroups {
   //! \p N is not \c 0, then the default value of \p Scalar is the smallest
   //! integer type able to hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
   //! This class inherits from either StaticPTransf or DynamicPTransf, see the
   //! documentation of these classes for more details of the available member
@@ -1097,13 +1097,13 @@ namespace libsemigroups {
   //! \ingroup transf_group
   //! \brief Validate a transformation.
   //!
-  //! \tparam N the number of points
-  //! \tparam Scalar the type of the points
+  //! \tparam N the number of points.
+  //! \tparam Scalar the type of the points.
   //!
   //! \param f the transformation.
   //!
-  //! \throw LibsemigroupsException if the image of any point exceeds \c
-  //! f.degree() or is equal to \ref UNDEFINED.
+  //! \throw LibsemigroupsException if the image of any point exceeds
+  //! \c f.degree() or is equal to \ref UNDEFINED.
   //!
   //! \complexity
   //! Linear in \c f.degree().
@@ -1206,9 +1206,9 @@ namespace libsemigroups {
   //! \p N is not \c 0, then the default value of \p Scalar is the smallest
   //! integer type able to hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N the degree (default: \c 0)
+  //! \tparam N the degree (default: \c 0).
   //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //! (default: \c uint32_t)
+  //! (default: \c uint32_t).
   //!
   //! This class inherits from either StaticPTransf or DynamicPTransf, see the
   //! documentation of these classes for more details of the available member
@@ -1242,9 +1242,9 @@ namespace libsemigroups {
     //! in the range \f$[0, M)\f$.
     //!
     //! \tparam OtherScalar the type of the points in \p dom and \p img.
-    //! \param dom the domain
-    //! \param img the range
-    //! \param M the degree
+    //! \param dom the domain.
+    //! \param img the range.
+    //! \param M the degree.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1441,9 +1441,9 @@ namespace libsemigroups {
   //!
   //! \tparam Return the return type. Must satisfy \ref IsPPerm<Return>.
   //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param M the degree
+  //! \param dom the domain.
+  //! \param ran the range.
+  //! \param M the degree.
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N
@@ -1470,9 +1470,9 @@ namespace libsemigroups {
   //!
   //! \tparam Return the return type. Must satisfy \ref IsPPerm<Return>.
   //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param M the degree
+  //! \param dom the domain.
+  //! \param ran the range.
+  //! \param M the degree.
   //!
   //! \throws LibsemigroupsException if any of the following fail to hold:
   //! * the value \p M is not compatible with the template parameter \p N
@@ -1516,8 +1516,8 @@ namespace libsemigroups {
   //! \p N is not \c 0, then the default value of \p Scalar is the smallest
   //! integer type able to hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
   //! This class inherits from either StaticPTransf or DynamicPTransf, see the
   //! documentation of these classes for more details of the available member
@@ -1683,7 +1683,7 @@ namespace libsemigroups {
   //! * `f[i] != UNDEFINED`.
   //!
   //! \tparam T the type of the 1st argument (Transf, libsemigroups::PTransf,
-  //! PPerm, or Perm)
+  //! PPerm, or Perm).
   //! \tparam Scalar the type of the values in the 2nd argument
   //! (typically T::point_type where \c T is the 1st template parameter.
   //!
@@ -1710,7 +1710,7 @@ namespace libsemigroups {
   //! * `f[i] != UNDEFINED`.
   //!
   //! \tparam T the type of the 1st argument (Transf, libsemigroups::PTransf,
-  //! PPerm, or Perm)
+  //! PPerm, or Perm).
   //!
   //! \param f the partial transformation whose image is sought.
   //!
@@ -1736,9 +1736,9 @@ namespace libsemigroups {
   //! * `f[i] != UNDEFINED`.
   //!
   //! \tparam T the type of the 1st argument (Transf, libsemigroups::PTransf,
-  //! PPerm, or Perm)
+  //! PPerm, or Perm).
   //! \tparam Scalar the type of the values in the 2nd argument
-  //! (typically T::point_type where \c T is the 1st template parameter.
+  //! (typically T::point_type where \c T is the 1st template parameter).
   //!
   //! \param f the partial transformation whose image is sought.
   //! \param dom vector to store the result.
@@ -1764,7 +1764,7 @@ namespace libsemigroups {
   //! * `f[i] != UNDEFINED`.
   //!
   //! \tparam T the type of the 1st argument (Transf, libsemigroups::PTransf,
-  //! PPerm, or Perm)
+  //! PPerm, or Perm).
   //! \param f the partial transformation whose image is sought.
   //!
   //! \exceptions
@@ -1808,7 +1808,7 @@ namespace libsemigroups {
   //! to \p N that fixes every value in the image of the argument \p f, and is
   //! \ref UNDEFINED on any other values.
   //!
-  //! \param f the partial perm
+  //! \param f the partial perm.
   //!
   //! \returns
   //! A value of type PPerm<N, Scalar>.
@@ -1826,10 +1826,10 @@ namespace libsemigroups {
   //! \brief Returns the left one of a partial perm.
   //!
   //! This function returns a newly constructed partial perm with degree equal
-  //! to \p N that fixes every value in the domain of \p f, and is \ref
-  //! UNDEFINED on any other values.
+  //! to \p N that fixes every value in the domain of \p f, and is
+  //! \ref UNDEFINED on any other values.
   //!
-  //! \param f the partial perm
+  //! \param f the partial perm.
   //!
   //! \returns
   //! A value of type PPerm<N, Scalar>.
@@ -1869,8 +1869,8 @@ namespace libsemigroups {
   //! of a partial permutation \f$f\f$ is the partial perm \f$g\f$ such that
   //! \f$fgf = f\f$ and \f$gfg = g\f$.
   //!
-  //! \tparam N the degree of \p f
-  //! \tparam Scalar the type of points
+  //! \tparam N the degree of \p f.
+  //! \tparam Scalar the type of points.
   //!
   //! \param f the partial perm to invert.
   //!
@@ -1898,8 +1898,8 @@ namespace libsemigroups {
   //! \f$f\f$ is the permutation \f$g\f$ such that \f$fg = gf\f$ is the identity
   //! permutation of degree \f$n\f$.
   //!
-  //! \tparam N the degree of \p f
-  //! \tparam Scalar the type of points of \p f
+  //! \tparam N the degree of \p f.
+  //! \tparam Scalar the type of points of \p f.
   //!
   //! \param from the permutation to invert.
   //! \param to the permutation to hold the inverse of \p from.
@@ -1919,8 +1919,8 @@ namespace libsemigroups {
   //! of a permutation \f$f\f$ is the permutation \f$g\f$ such that \f$fg =
   //! gf\f$ is the identity permutation of degree \f$N\f$.
   //!
-  //! \tparam N the degree of \p f
-  //! \tparam Scalar the type of points of \p f
+  //! \tparam N the degree of \p f.
+  //! \tparam Scalar the type of points of \p f.
   //!
   //! \param f the permutation to invert.
   //!

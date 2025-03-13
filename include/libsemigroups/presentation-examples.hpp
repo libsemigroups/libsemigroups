@@ -91,8 +91,8 @@ namespace libsemigroups {
     //! for any semigroup or monoid.
     //!
     //! For each semigroup or monoid, there is a corresponding default
-    //! function that is documented in the \ref
-    //! default_presentations_member_group "Default presentations" section.
+    //! function that is documented in the
+    //! \ref default_presentations_member_group "Default presentations" section.
     //!
     ///@{
 
@@ -495,8 +495,8 @@ namespace libsemigroups {
 
     //! \brief A presentation for a rectangular band.
     //!
-    //! This function returns a semigroup presentation defining the \p m by \p
-    //! n rectangular band, as given in Proposition 4.2 of \cite Ayik2000aa.
+    //! This function returns a semigroup presentation defining the \p m by
+    //! \p n rectangular band, as given in Proposition 4.2 of \cite Ayik2000aa.
     //!
     //! \param m the number of rows.
     //! \param n the number of columns.

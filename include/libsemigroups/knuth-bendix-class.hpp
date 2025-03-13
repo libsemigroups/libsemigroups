@@ -147,7 +147,7 @@ namespace libsemigroups {
 
     //! \ingroup knuth_bendix_class_init_group
     //!
-    //! \brief Remove the presentation and rewriter data
+    //! \brief Remove the presentation and rewriter data.
     //!
     //! This function clears the rewriter, presentation, settings and stats
     //! from the \ref_knuth_bendix object, putting it back into the state it
@@ -258,8 +258,8 @@ namespace libsemigroups {
     //! \param last iterator pointing one beyond the last letter of the
     //! word.
     //!
-    //! \throw LibsemigroupsException if any letter in the range from \p
-    //! first to \p last is out of bounds.
+    //! \throw LibsemigroupsException if any letter in the range from
+    //! \p first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
@@ -469,12 +469,12 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. This function triggers no enumeration. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
-    //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is \ref
-    //! finished, then the output word is a normal form for the input word. If
-    //! the \ref_knuth_bendix instance is not \ref finished, then it might be
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence defined
+    //! by a \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
+    //! \ref finished, then the output word is a normal form for the input word.
+    //! If the \ref_knuth_bendix instance is not \ref finished, then it might be
     //! that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
@@ -544,7 +544,7 @@ namespace libsemigroups {
     // TODO(1) should be const
     auto active_rules();
 
-    //! \brief Return the node labels of the Gilman \ref WordGraph
+    //! \brief Return the node labels of the Gilman \ref WordGraph.
     //!
     //! This function returns the node labels of the Gilman \ref WordGraph,
     //! corresponding to the unique prefixes of the left-hand sides of the

@@ -576,7 +576,6 @@ namespace libsemigroups {
     SimsBase<Sims1or2>::IteratorBase::try_define(PendingDef const& current) {
       // Try to make the definition represented by PendingDef, returns false
       // if it wasn't possible, and true if it was.
-      //! No doc
       LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
       LIBSEMIGROUPS_ASSERT(current.num_nodes <= _max_num_classes);
       std::lock_guard<std::mutex> lock(_mtx);

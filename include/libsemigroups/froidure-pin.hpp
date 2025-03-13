@@ -119,8 +119,8 @@ namespace libsemigroups {
   //! Jean-Eric Pin. A FroidurePin instance is defined by a generating set, and
   //! the main function is \ref run, which implements the Froidure-Pin
   //! Algorithm. If \ref run is invoked and \ref finished returns \c true, then
-  //! the size \ref size, the left and right Cayley graphs \ref
-  //! left_cayley_graph and \ref right_cayley_graph are determined, and a
+  //! the size \ref size, the left and right Cayley graphs
+  //! \ref left_cayley_graph and \ref right_cayley_graph are determined, and a
   //! confluent terminating presentation \ref froidure_pin::rules for the
   //! semigroup is known.
   //!
@@ -462,8 +462,8 @@ namespace libsemigroups {
     //! given by iterators.
     //!
     //! This function re-initializes a FroidurePin object so that it is in
-    //! the same state as if it had just been constructed from \p first and \p
-    //! last.
+    //! the same state as if it had just been constructed from \p first and
+    //! \p last.
     //!
     //! \tparam Iterator1 the type of the first parameter.
     //! \tparam Iterator2 the type of the second parameter.
@@ -511,8 +511,8 @@ namespace libsemigroups {
     //! \brief Convert a word in the generators to an element.
     //!
     //! This function returns a const reference to the element obtained by
-    //! taking the product of the generators with indices in the range from \p
-    //! first to \p last. The returned reference may only be valid until the
+    //! taking the product of the generators with indices in the range from
+    //! \p first to \p last. The returned reference may only be valid until the
     //! next function that triggers an enumeration is called, or another call to
     //! this function is made.
     //!
@@ -543,8 +543,8 @@ namespace libsemigroups {
     //! \brief Convert a word in the generators to an element.
     //!
     //! This function returns a const reference to the element obtained by
-    //! taking the product of the generators with indices in the range from \p
-    //! first to \p last. The returned reference may only be valid until the
+    //! taking the product of the generators with indices in the range from
+    //! \p first to \p last. The returned reference may only be valid until the
     //! next function that triggers an enumeration is called, or another call to
     //! this function is made.
     //!
@@ -595,8 +595,8 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that every value in the ranges from \p first1 to \p last1 and
-    //! from \p first2 to \p last2 is strictly less than \ref
-    //! number_of_generators.
+    //! from \p first2 to \p last2 is strictly less than
+    //! \ref number_of_generators.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -657,17 +657,17 @@ namespace libsemigroups {
     //! \brief Returns the generator with specified index.
     //!
     //! This function returns the generator with index \p i, where the order is
-    //! that in which the generators were added at construction, or via \ref
-    //! init, \ref add_generator, \ref add_generators, \ref closure, \ref
-    //! copy_closure, or \ref copy_add_generators.
+    //! that in which the generators were added at construction, or via
+    //! \ref init, \ref add_generator, \ref add_generators, \ref closure,
+    //! \ref copy_closure, or \ref copy_add_generators.
     //!
     //! \param i the index of a generator.
     //!
     //! \returns
     //! The generator with given index.
     //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! number_of_generators().
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! \ref number_of_generators().
     //!
     //! \note
     //! Note that `generator(j)` is in general not in position \p j.
@@ -679,9 +679,9 @@ namespace libsemigroups {
     //! \brief Returns the generator with specified index.
     //!
     //! This function returns the generator with index \p i, where the order is
-    //! that in which the generators were added at construction, or via \ref
-    //! init, \ref add_generator, \ref add_generators, \ref closure, \ref
-    //! copy_closure, or \ref copy_add_generators.
+    //! that in which the generators were added at construction, or via
+    //! \ref init, \ref add_generator, \ref add_generators, \ref closure,
+    //! \ref copy_closure, or \ref copy_add_generators.
     //!
     //! \param i the index of a generator.
     //!
@@ -741,8 +741,8 @@ namespace libsemigroups {
     //! the output of the call operator of the \ref Complexity adapter and the
     //! \ref current_length of \p i and \p j.
     //!
-    //! For example, if the complexity of the multiplication is linear and \c
-    //! this is a semigroup of transformations of degree 20, and the shortest
+    //! For example, if the complexity of the multiplication is linear and
+    //! \c this is a semigroup of transformations of degree 20, and the shortest
     //! paths in the left and right Cayley graphs from \p i to \p j are of
     //! length 100 and 1131, then it is better to just multiply the
     //! transformations together.
@@ -842,8 +842,8 @@ namespace libsemigroups {
     //! The parameter \p val is also used to initialise certain data members.
     //! If you know a good upper bound for the size of your semigroup, then it
     //! might be a good idea to call this  function with that upper bound as an
-    //! argument; this can significantly improve the performance of the \ref
-    //! run  function, and consequently every other function too.
+    //! argument; this can significantly improve the performance of the
+    //! \ref run  function, and consequently every other function too.
     //!
     //! \param val the number of elements to reserve space for.
     //!
@@ -1157,8 +1157,8 @@ namespace libsemigroups {
     //! \param last iterator pointing one beyond the last generator to add.
     //!
     //! \returns A new FroidurePin instance by value generated by the
-    //! generators of \c this and the elements in the range from \p first to \p
-    //! last.
+    //! generators of \c this and the elements in the range from \p first to
+    //! \p last.
     //!
     //! \note
     //! This function does not trigger any enumeration of the object it is
@@ -1181,12 +1181,12 @@ namespace libsemigroups {
     //! \returns A new FroidurePin instance by value generated by the
     //! generators of \c this and \p coll.
     //!
-    //! \throws LibsemigroupsException if any of the elements pointed to by \p
-    //! first and \p last do not have degree compatible with any existing
+    //! \throws LibsemigroupsException if any of the elements pointed to by
+    //! \p first and \p last do not have degree compatible with any existing
     //! elements of the FroidurePin instance.
     //!
-    //! \throws LibsemigroupsException if the elements pointed to by \p
-    //! first and \p last do not all have the same degree.
+    //! \throws LibsemigroupsException if the elements pointed to by
+    //! \p first and \p last do not all have the same degree.
     //!
     //! \note
     //! This function does not trigger any enumeration of the object it is
@@ -1248,12 +1248,12 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \throws LibsemigroupsException if any of the elements pointed to by \p
-    //! first and \p last do not have degree compatible with any existing
+    //! \throws LibsemigroupsException if any of the elements pointed to by
+    //! \p first and \p last do not have degree compatible with any existing
     //! elements of the FroidurePin instance.
     //!
-    //! \throws LibsemigroupsException if the elements pointed to by \p
-    //! first and \p last do not all have the same degree.
+    //! \throws LibsemigroupsException if the elements pointed to by
+    //! \p first and \p last do not all have the same degree.
     //!
     //! \note
     //! This function triggers at least a partial enumeration of the
@@ -1313,12 +1313,12 @@ namespace libsemigroups {
     //! generators of \c this and the non-redundant generators in the range from
     //! \p first to \p last.
     //!
-    //! \throws LibsemigroupsException if any of the elements pointed to by \p
-    //! first and \p last do not have degree compatible with any existing
+    //! \throws LibsemigroupsException if any of the elements pointed to by
+    //! \p first and \p last do not have degree compatible with any existing
     //! elements of the FroidurePin instance.
     //!
-    //! \throws LibsemigroupsException if the elements pointed to by \p
-    //! first and \p last do not all have the same degree.
+    //! \throws LibsemigroupsException if the elements pointed to by
+    //! \p first and \p last do not all have the same degree.
     //!
     //! \note
     //! This function may trigger an enumeration of the FroidurePin instance on
@@ -1445,8 +1445,8 @@ namespace libsemigroups {
     //! according to Less.
     using const_iterator_sorted = const_iterator_pair_first;
 
-    //! \brief Return type of \ref cbegin_idempotents and \ref
-    //! cend_idempotents.
+    //! \brief Return type of \ref cbegin_idempotents and
+    //! \ref cend_idempotents.
     //!
     //! A type for const random access iterators through the idempotents, in
     //! order of generation (short-lex order).
@@ -1746,8 +1746,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \p
-    //! fp and \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \p fp and \p coll.
     //!
     //! \throws LibsemigroupsException if the degree of any element in \p coll
     //! is incompatible with the existing degree of \p fp (if any).
@@ -1769,8 +1769,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \p
-    //! fp and \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \p fp and \p coll.
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p coll all have the same degree.
@@ -1792,8 +1792,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \p
-    //! fp and \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \p fp and \p coll.
     //!
     //! \throws LibsemigroupsException if the degree of any element in \p coll
     //! is incompatible with the existing degree of \p fp (if any).
@@ -1814,8 +1814,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \p
-    //! fp and \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \p fp and \p coll.
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p gens all have the same degree.
@@ -1903,8 +1903,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \c
-    //! this and the non-redundant generators from \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \c this and the non-redundant generators from \p coll.
     //!
     //! \throws LibsemigroupsException if the degree of any element in \p coll
     //! is incompatible with the existing degree of \p fp (if any).
@@ -1924,8 +1924,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \c
-    //! this and the non-redundant generators from \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \c this and the non-redundant generators from \p coll.
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p coll all have the same degree.
@@ -1946,8 +1946,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \c
-    //! this and the non-redundant generators from \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \c this and the non-redundant generators from \p coll.
     //!
     //! \throws LibsemigroupsException if the degree of any element in \p coll
     //! is incompatible with the existing degree of \p fp (if any).
@@ -1968,8 +1968,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A new FroidurePin instance generated by the generators of \c
-    //! this and the non-redundant generators from \p coll.
+    //! \returns A new FroidurePin instance generated by the generators of
+    //! \c this and the non-redundant generators from \p coll.
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p coll all have the same degree.
@@ -1991,7 +1991,7 @@ namespace libsemigroups {
     // See TODO(1) for more details about range objects.
     //
     // \tparam Element the type of the elements in the represented
-    // semigroup
+    // semigroup.
     //
     // \tparam Traits a traits class holding various adapters used by the
     // implementation (defaults to FroidurePinTraits).
@@ -2418,8 +2418,8 @@ namespace libsemigroups {
   //!
   //! This function can be used to construct a FroidurePin instance from a
   //! std::initializer_list of generators after first verifying that the
-  //! proposed generators all have equal degree. See \ref
-  //! FroidurePin::add_generator for more details.
+  //! proposed generators all have equal degree. See
+  //! \ref FroidurePin::add_generator for more details.
   //!
   //! \tparam Element the type of the elements in the FroidurePin instance.
   //!

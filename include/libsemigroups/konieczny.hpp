@@ -92,8 +92,8 @@ namespace libsemigroups {
     using const_element_type =
         typename detail::BruidhinnTraits<Element>::const_value_type;
 
-    //! Alias for \ref LambdaValue with template parameter \ref
-    //! element_type.
+    //! Alias for \ref LambdaValue with template parameter
+    //! \ref element_type.
     using lambda_value_type =
         typename ::libsemigroups::LambdaValue<element_type>::type;
 
@@ -156,9 +156,9 @@ namespace libsemigroups {
   //! The class template Konieczny implements %Konieczny's algorithm as
   //! described in the article 'Green's equivalences in finite semigroups of
   //! binary relations' by Janusz %Konieczny \cite Konieczny1994aa.
-  //! This algorithm is similar to that of Lallement and McFadden; see \cite
-  //! Lallement1990aa. It differs in being applicable to subsemigroups of a
-  //! non-regular semigroup, though is essentially the same algorithm for
+  //! This algorithm is similar to that of Lallement and McFadden; see
+  //! \cite Lallement1990aa. It differs in being applicable to subsemigroups of
+  //! a non-regular semigroup, though is essentially the same algorithm for
   //! elements which happen to be regular.
   //!
   //! A Konieczny instance is defined by a generating set, and the main
@@ -438,7 +438,7 @@ namespace libsemigroups {
     //!
     //! The nested abstract class Konieczny::DClass represents a
     //! \f$\mathscr{D}\f$-class via a frame as described in
-    //! \cite Konieczny1990aa.
+    //! \cite Konieczny1994aa.
     //!
     //! As an abstract class, DClass cannot be directly constructed; instead you
     //! should obtain a \f$\mathscr{D}\f$-class by calling
@@ -594,7 +594,7 @@ namespace libsemigroups {
       //! This function triggers the computation of most of the frame
       //! for \c this, if it is not already known.
       //!
-      //! \param x the element
+      //! \param x the element.
       //!
       //! \returns
       //! A value of type \c bool.
@@ -956,8 +956,8 @@ namespace libsemigroups {
 
     //! \brief Returns a const reference to the generator given by an index.
     //!
-    //! This function returns a const reference to the \p pos generators of \c
-    //! this.
+    //! This function returns a const reference to the \p pos generators of
+    //! \c this.
     //!
     //! \param pos the index of the generator.
     //!
@@ -1030,7 +1030,7 @@ namespace libsemigroups {
       return current_number_of_regular_D_classes();
     }
 
-    //! \brief Returns the current number of regular \f$\mathscr{D}\f$-classes
+    //! \brief Returns the current number of regular \f$\mathscr{D}\f$-classes.
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -1389,8 +1389,8 @@ namespace libsemigroups {
 
     //! \brief  \brief Add collection of generators from iterators.
     //!
-    //! Add copies of the generators in the range \p first to \p last to \c
-    //! this.  See \ref add_generator for a detailed description.
+    //! Add copies of the generators in the range \p first to \p last to
+    //! \c this.  See \ref add_generator for a detailed description.
     //!
     //! \tparam the type of an iterator pointing to an \ref element_type.
     //!
@@ -1411,8 +1411,8 @@ namespace libsemigroups {
     //! \param gen the generator to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with \c K.degree()
-    //! * \ref \c K.started() returns \c true
+    //! * the degree of \p x is incompatible with \c K.degree();
+    //! * \c K.started() returns \c true.
     void add_generator(const_reference gen) {
       add_generators(&gen, &gen + 1);
     }
@@ -1465,8 +1465,8 @@ namespace libsemigroups {
     template <typename T>
     struct DClassIteratorTraits;
 
-    //! \brief  Return type of \ref cbegin_current_D_classes and \ref
-    //! cend_current_D_classes.
+    //! \brief  Return type of \ref cbegin_current_D_classes and
+    //! \ref cend_current_D_classes.
     //!
     //! Type for const random access iterators through the
     //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.
@@ -1538,8 +1538,8 @@ namespace libsemigroups {
       return cend_current_D_classes();
     }
 
-    //! \brief  Return type of \ref cbegin_current_regular_D_classes and \ref
-    //! cend_current_regular_D_classes.
+    //! \brief  Return type of \ref cbegin_current_regular_D_classes and
+    //! \ref cend_current_regular_D_classes.
     //!
     //! A type for const random access iterators through the regular
     //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.
@@ -1806,9 +1806,25 @@ namespace libsemigroups {
     return _ranks.empty() && _run_initialised;
   }
 
+  //! \ingroup konieczny_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `konieczny.hpp`.
+  //!
+  //! Deduction guide to construct a `Konieczny<Element>` from a
+  //! `std::vector<Element> const&`.
   template <typename Element>
   Konieczny(std::vector<Element> const&) -> Konieczny<Element>;
 
+  //! \ingroup konieczny_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `konieczny.hpp`.
+  //!
+  //! Deduction guide to construct a `Konieczny<Element>` from a
+  //! `std::initializer_list<Element> const&`.
   template <typename Element>
   Konieczny(std::initializer_list<Element> const&) -> Konieczny<Element>;
 
@@ -1849,16 +1865,17 @@ namespace libsemigroups {
 
     //! \brief  Add collection of generators from container.
     //!
-    //! See \ref add_generator for a detailed description.
+    //! See \ref Konieczny::add_generator for a detailed description.
     //!
     //! \tparam T the type of the container for generators to add (must be a
     //! non-pointer type).
     //!
+    //! \param K reference to the Konieczny instance to add generators to.
     //! \param coll the collection of generators to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
-    //! * \ref started returns \c true
+    //! * \ref Konieczny::started returns \c true
     template <typename Element, typename Traits, typename T>
     void add_generators(Konieczny<Element, Traits> K, T const& coll) {
       static_assert(!std::is_pointer_v<T>,
@@ -1868,13 +1885,14 @@ namespace libsemigroups {
 
     //! \brief  Add collection of generators from initializer list.
     //!
-    //! See \ref add_generator for a detailed description.
+    //! See \ref Konieczny::add_generator for a detailed description.
     //!
+    //! \param K reference to the Konieczny instance to add generators to.
     //! \param coll the collection of generators to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
-    //! * \ref started returns \c true
+    //! * \ref Konieczny::started returns \c true
     template <typename Element, typename Traits>
     void add_generators(
         Konieczny<Element, Traits>& K,

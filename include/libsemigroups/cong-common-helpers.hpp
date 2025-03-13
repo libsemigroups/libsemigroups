@@ -70,8 +70,8 @@ namespace libsemigroups {
     //! \ref_congruence, \ref_kambites, \ref_knuth_bendix, and
     //! \ref_todd_coxeter. The functions documented on this page belong to all
     //! of the namespaces \ref cong_common_helpers_group "congruence_common",
-    //! \ref_congruence, \ref_kambites, \ref knuth_bendix, and \ref
-    //! todd_coxeter.
+    //! \ref_congruence, \ref_kambites, \ref knuth_bendix, and
+    //! \ref_todd_coxeter.
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -678,10 +678,10 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This page contains the documentation of the functions \ref
-    //! reduce_no_run_no_checks; \ref reduce_no_run; \ref reduce_no_checks; and
-    //! \ref reduce which can be invoked with a variety of different argument
-    //! types.
+    //! This page contains the documentation of the functions
+    //! \ref reduce_no_run_no_checks; \ref reduce_no_run; \ref reduce_no_checks;
+    //! and \ref reduce which can be invoked with a variety of different
+    //! argument types.
     //!
     //! These helper functions can be applied to objects of the types:
     //! * \ref_congruence
@@ -703,10 +703,10 @@ namespace libsemigroups {
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by \p thing. This function triggers no
     //! enumeration of \p thing. The word output by this function is equivalent
-    //! to the input word in the congruence. If \p thing is \ref
-    //! Runner::finished, then the output word is a normal form for the input
-    //! word. If \p thing is not \ref Runner::finished, then it might be that
-    //! equivalent input words produce different output words.
+    //! to the input word in the congruence. If \p thing is
+    //! \ref Runner::finished, then the output word is a normal form for the
+    //! input word. If \p thing is not \ref Runner::finished, then it might be
+    //! that equivalent input words produce different output words.
     //!
     //! \tparam Thing the type of the first parameter must be one of
     //! \ref_kambites, \ref_knuth_bendix, \ref_todd_coxeter, or \ref_congruence.
@@ -764,10 +764,10 @@ namespace libsemigroups {
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by \p thing. This function triggers no
     //! enumeration of \p thing. The word output by this function is equivalent
-    //! to the input word in the congruence. If \p thing is \ref
-    //! Runner::finished, then the output word is a normal form for the input
-    //! word. If \p thing is not \ref Runner::finished, then it might be that
-    //! equivalent input words produce different output words.
+    //! to the input word in the congruence. If \p thing is
+    //! \ref Runner::finished, then the output word is a normal form for the
+    //! input word. If \p thing is not \ref Runner::finished, then it might be
+    //! that equivalent input words produce different output words.
     //!
     //! \tparam Thing the type of the first parameter must be one of
     //! \ref_kambites, \ref_knuth_bendix, \ref_todd_coxeter, or \ref_congruence.
@@ -937,9 +937,9 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This page contains the documentation of the functions \ref
-    //! partition(Thing&, Range) and \ref non_trivial_classes for partitioning a
-    //! range of words by a congruence.
+    //! This page contains the documentation of the functions
+    //! \ref partition(Thing&, Range) and \ref non_trivial_classes for
+    //! partitioning a range of words by a congruence.
     //!
     //! @{
 
@@ -986,7 +986,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<std::vector<typename Thing::native_word_type>>
     partition(Thing& thing, Range r);
 
-    //! \brief Partition a range of words (via iterators)
+    //! \brief Partition a range of words (via iterators).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!

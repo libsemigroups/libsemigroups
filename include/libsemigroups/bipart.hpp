@@ -141,7 +141,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the degree().
     [[nodiscard]] std::vector<std::vector<int32_t>>
-    underlying_partition(Bipartition const&);
+    underlying_partition(Bipartition const& x);
 
     //! \brief Validates a bipartition.
     //!
@@ -394,8 +394,8 @@ namespace libsemigroups {
 
     //! \brief Set whether or not the block containing a point is transverse.
     //!
-    //! This function can be used to set whether or not the block containing \p
-    //! i is transverse.
+    //! This function can be used to set whether or not the block containing
+    //! \p i is transverse.
     //!
     //! \param i the point.
     //! \param val whether or not the block containing \p i is transverse.
@@ -416,8 +416,8 @@ namespace libsemigroups {
 
     //! \brief Set whether or not the block containing a point is transverse.
     //!
-    //! This function can be used to set whether or not the block containing \p
-    //! i is transverse.
+    //! This function can be used to set whether or not the block containing
+    //! \p i is transverse.
     //!
     //! \param i the point.
     //! \param val whether or not the block containing \p i is transverse.
@@ -820,8 +820,8 @@ namespace libsemigroups {
   //!
   //! \param x the Blocks object.
   //! \param braces the braces to use in the returned string (default: `"{}"`).
-  //! \param max_width the maximum width of the returned string (default: \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (default:
+  //! \c 72).
   //!
   //! \returns A std::string representation of \p x.
   //!
@@ -1025,7 +1025,7 @@ namespace libsemigroups {
     //! Returns the index of the block containing a value.
     //! No bound checks are performed on the parameter \p i.
     //!
-    //! \param i an integer
+    //! \param i an integer.
     //!
     //! \returns A reference to the index of the block containing \p i.
     //!
@@ -1044,7 +1044,7 @@ namespace libsemigroups {
     //!
     //! No bound checks are performed on the parameter \p i.
     //!
-    //! \param i an integer
+    //! \param i an integer.
     //!
     //! \returns A const reference to the index of the block containing \p i.
     //!
@@ -1061,7 +1061,7 @@ namespace libsemigroups {
     //!
     //! Returns a reference to the index of the block containing a value.
     //!
-    //! \param i an integer
+    //! \param i an integer.
     //!
     //! \returns A reference to the index of the block containing \p i.
     //!
@@ -1082,7 +1082,7 @@ namespace libsemigroups {
     //! Returns a const reference to the index of the block containing a
     //! value.
     //!
-    //! \param i an integer
+    //! \param i an integer.
     //!
     //! \returns A const reference to the index of the block containing \p i.
     //!
@@ -1233,9 +1233,9 @@ namespace libsemigroups {
     //! The parameter \p thread_id can be used some temporary storage is
     //! required to find the product of \p x and \p y.
     //!
-    //! \param x the first bipartition to multiply
-    //! \param y the second bipartition to multiply
-    //! \param thread_id the index of the calling thread (defaults to \c 0)
+    //! \param x the first bipartition to multiply.
+    //! \param y the second bipartition to multiply.
+    //! \param thread_id the index of the calling thread (defaults to \c 0).
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1319,7 +1319,7 @@ namespace libsemigroups {
     //! A block of a biparition is *transverse* if it contains integers less
     //! than and greater than \f$n\f$, which is the degree of the bipartition.
     //!
-    //! \param index the index of a block
+    //! \param index the index of a block.
     //!
     //! \returns Whether or not the given block is transverse.
     //!
@@ -1341,8 +1341,8 @@ namespace libsemigroups {
     //!
     //! \returns Whether or not the given block is transverse.
     //!
-    //! \throws LibsemigroupsException if \p index is not in the range from \c
-    //! 0 to \ref number_of_left_blocks.
+    //! \throws LibsemigroupsException if \p index is not in the range from
+    //! \c 0 to \ref number_of_left_blocks.
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ is the degree().
@@ -1569,8 +1569,8 @@ namespace libsemigroups {
   //!
   //! \param x the Bipartition object.
   //! \param braces the braces to use in the returned string (default: `"{}"`).
-  //! \param max_width the maximum width of the returned string (default: \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (default:
+  //! \c 72).
   //!
   //! \returns A std::string representation of \p x.
   //!
@@ -1587,8 +1587,8 @@ namespace libsemigroups {
   //! Returns a newly constructed bipartition equal to the product of \p x and
   //! \p y.
   //!
-  //! \param x a bipartition
-  //! \param y a bipartition
+  //! \param x a bipartition.
+  //! \param y a bipartition.
   //!
   //! \returns
   //! A value of type \c Bipartition
@@ -1608,8 +1608,8 @@ namespace libsemigroups {
   //!
   //! \brief Check bipartitions for inequality.
   //!
-  //! \param x a bipartition
-  //! \param y a bipartition
+  //! \param x a bipartition.
+  //! \param y a bipartition.
   //!
   //! \returns
   //! A value of type \c bool.

@@ -282,8 +282,8 @@ namespace libsemigroups {
   struct Rho<Mat, Container>
 #endif
   {
-    //! \brief Modifies \p res in-place to contain the column space basis of \p
-    //! x.
+    //! \brief Modifies \p res in-place to contain the column space basis of
+    //! \p x.
     //!
     //! Modifies \p res in-place to contain the column space basis of \p x.
     void operator()(Container& res, Mat const& x) const noexcept {
@@ -317,7 +317,7 @@ namespace libsemigroups {
   struct ImageRightAction<Mat, BitSet<N>>
 #endif
   {
-    //! No doc
+    //! \brief The type of result.
     using result_type = BitSet<N>;
 
     //! \brief Store the image of \p pt under the right action of \p x.

@@ -282,14 +282,14 @@ namespace libsemigroups {
 
   //! \ingroup ranges_group
   //!
-  //! \brief Chain objects (const references)
+  //! \brief Chain objects (const references).
   //!
   //! Defined in `ranges.hpp`.
   //!
   //! This function is just a wrapper for \c rx::chain but taking objects by
   //! reference rather than using iterators for convenience, and it returns a
-  //! range objects where the items in \p x come before any of the items in \p
-  //! y.
+  //! range objects where the items in \p x come before any of the items in
+  //! \p y.
   //!
   //! \tparam S the type of the first argument.
   //! \tparam T the type of the second argument.
@@ -306,7 +306,7 @@ namespace libsemigroups {
 
   //! \ingroup ranges_group
   //!
-  //! \brief Enumerate an object (by const reference)
+  //! \brief Enumerate an object (by const reference).
   //!
   //! Defined in `ranges.hpp`.
   //!
@@ -341,8 +341,8 @@ namespace libsemigroups {
   //! \tparam Range the type of the range (must satisfy
   //! `rx::is_input_or_sink_v<Range>`).
   //!
-  //! \param os the output stream
-  //! \param r the range object
+  //! \param os the output stream.
+  //! \param r the range object.
   //!
   //! \returns A reference to the first parameter \p os.
   template <typename Range,

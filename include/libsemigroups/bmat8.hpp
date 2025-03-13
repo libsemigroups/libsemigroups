@@ -68,7 +68,7 @@ namespace libsemigroups {
   //!
   //! Defined in `bmat8.hpp`.
   //!
-  //! \brief Fast boolean matrices of dimension up to 8 x 8
+  //! \brief Fast boolean matrices of dimension up to 8 x 8.
   //!
   //! This class represents 8 x 8 matrices over the boolean semiring.
   //! The functions for these small matrices over the boolean semiring
@@ -312,8 +312,8 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \warning
-    //! No checks on the parameters \p r and \p c are performed, if \p r or \p
-    //! c is greater than 7, then bad things will happen.
+    //! No checks on the parameters \p r and \p c are performed, if \p r or
+    //! \p c is greater than 7, then bad things will happen.
     //!
     //! \sa
     //! \ref at
@@ -325,8 +325,8 @@ namespace libsemigroups {
 
     //! \brief Access a row of a BMat8 (no bound checks).
     //!
-    //! Returns the row with index \p r in the matrix represented as a \c
-    //! uint8_t.
+    //! Returns the row with index \p r in the matrix represented as a
+    //! \c uint8_t.
     //!
     //! \param r the index of the row.
     //!
@@ -355,8 +355,8 @@ namespace libsemigroups {
 
     //! \brief Access a row of a BMat8 (with bound checks).
     //!
-    //! Returns the row with index \p r in the matrix represented as a \c
-    //! uint8_t.
+    //! Returns the row with index \p r in the matrix represented as a
+    //! \c uint8_t.
     //!
     //! \param r the index of the row.
     //!
@@ -374,8 +374,8 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \sa
-    //! \ref BMat8::operator()(size_t r) \ref bmat8::rows, and \ref
-    //! bmat8::to_vector.
+    //! \ref BMat8::operator()(size_t) const \ref bmat8::rows, and
+    //! \ref bmat8::to_vector.
     [[nodiscard]] uint8_t at(size_t r) const;
 
     //! \brief Access entries in a matrix (no bound checks).
@@ -400,8 +400,8 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \warning
-    //! No checks on the parameters \p r and \p c are performed, if \p r or \p
-    //! c is greater than 7, then bad things will happen.
+    //! No checks on the parameters \p r and \p c are performed, if \p r or
+    //! \p c is greater than 7, then bad things will happen.
     //!
     //! \sa
     //! \ref at
@@ -413,8 +413,8 @@ namespace libsemigroups {
     //!
     //! Returns the value of the entry in the row \p r and column \p c.
     //!
-    //! \param r the row
-    //! \param c the column
+    //! \param r the row.
+    //! \param c the column.
     //!
     //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     //!
@@ -429,8 +429,8 @@ namespace libsemigroups {
     //!
     //! Returns a reference to the entry in the row \p r and column \p c.
     //!
-    //! \param r the row
-    //! \param c the column
+    //! \param r the row.
+    //! \param c the column.
     //!
     //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     //!
@@ -460,7 +460,7 @@ namespace libsemigroups {
       return _data;
     }
 
-    //! \brief Returns the matrix product of \c this and \p that
+    //! \brief Returns the matrix product of \c this and \p that.
     //!
     //! This function returns the standard matrix product (over the
     //! boolean semiring) of two BMat8 objects.
@@ -501,7 +501,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Multiply a BMat8 by a scalar (in-place)
+    //! \brief Multiply a BMat8 by a scalar (in-place).
     //!
     //! This function returns the product of a BMat8 object and the boolean
     //! scalar value \p scalar.
@@ -645,10 +645,10 @@ namespace libsemigroups {
     //! \brief Returns the identity BMat8 of a given dimension.
     //!
     //! This function returns the BMat8 with the first \c dim entries
-    //! in the main diagonal equal to \c 1 and every other value equal to \c
-    //! 0.
+    //! in the main diagonal equal to \c 1 and every other value equal to
+    //! \c 0.
     //!
-    //! \param dim the dimension of the identity (default: 8)
+    //! \param dim the dimension of the identity (default: 8).
     //!
     //! \returns
     //! A BMat8.
@@ -845,8 +845,8 @@ namespace libsemigroups {
     //! \brief Returns the minimum dimension of a BMat8.
     //!
     //! This function returns the maximal \c n such that row \c n or
-    //! column \c n contains a \c 1. Equivalent to the maximum of \ref
-    //! number_of_rows and \ref number_of_cols.
+    //! column \c n contains a \c 1. Equivalent to the maximum of
+    //! \ref number_of_rows and \ref number_of_cols.
     //!
     //! \param x the matrix.
     //!
@@ -938,14 +938,14 @@ namespace libsemigroups {
   }  // namespace bmat8
 
   //! \ingroup bmat8_group
-  //! \brief Insertion operator
+  //! \brief Insertion operator.
   //!
   //! This function allows BMat8 objects to be inserted into an
   //! std::ostringstream.
   std::ostringstream& operator<<(std::ostringstream& os, BMat8 const& x);
 
   //! \ingroup bmat8_group
-  //! \brief Insertion operator
+  //! \brief Insertion operator.
   //!
   //! This function allows BMat8 objects to be inserted into a
   //! std::ostream.
@@ -954,7 +954,7 @@ namespace libsemigroups {
   //! \ingroup bmat8_group
   //! \brief Returns a string representation.
   //!
-  //! \param x the matrix
+  //! \param x the matrix.
   //! \param braces the type of braces to use in the returned string (default:
   //! `"{}"`).
   //!
@@ -962,6 +962,15 @@ namespace libsemigroups {
   std::string to_human_readable_repr(BMat8 const&       x,
                                      std::string const& braces = "{}");
 
+  //! \ingroup bmat8_group
+  //! \brief Multiplication operator.
+  //!
+  //! This function allows BMat8 objects to be multiplied by scalars.
+  //!
+  //! \param scalar a boolean scalar.
+  //! \param x the matrix.
+  //!
+  //! \returns The product `scalar * x`.
   [[nodiscard]] constexpr BMat8 operator*(bool         scalar,
                                           BMat8 const& x) noexcept {
     if (scalar) {

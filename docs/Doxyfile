@@ -1112,7 +1112,23 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which Doxygen is
 # run.
 
-# EXCLUDE                = ../include/libsemigroups/detail/
+EXCLUDE                = ../include/libsemigroups/detail/bruidhinn-traits.hpp \
+                         ../include/libsemigroups/detail/citow.hpp \
+                         ../include/libsemigroups/detail/containers.hpp \
+                         ../include/libsemigroups/detail/felsch-graph.hpp \
+                         ../include/libsemigroups/detail/formatters.hpp \
+                         ../include/libsemigroups/detail/int-range.hpp \
+                         ../include/libsemigroups/detail/iterator.hpp \
+                         ../include/libsemigroups/detail/kambites-nf.hpp \
+                         ../include/libsemigroups/detail/multi-string-view.hpp \
+                         ../include/libsemigroups/detail/path-iterators.hpp \
+                         ../include/libsemigroups/detail/pool.hpp \
+                         ../include/libsemigroups/detail/report.hpp \
+                         ../include/libsemigroups/detail/stl.hpp \ 
+                         ../include/libsemigroups/detail/string.hpp \
+                         ../include/libsemigroups/detail/timer.hpp \
+                         ../include/libsemigroups/detail/uf.hpp \
+                         ../include/libsemigroups/detail/word-iterators.hpp
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

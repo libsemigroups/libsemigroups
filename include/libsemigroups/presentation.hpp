@@ -73,7 +73,7 @@ namespace libsemigroups {
   //! `libsemigroups` objects, see the documentation for the `to<Presentation>`
   //! functions \ref to_presentation_group "here".
 
-  //! No doc
+  //! \brief Empty base for presentation-like classes.
   struct PresentationBase {};
 
   //! \ingroup presentations_group
@@ -216,8 +216,8 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if there are duplicate letters in \p
-    //! lphbt.
+    //! \throws LibsemigroupsException if there are duplicate letters in
+    //! \p lphbt.
     //!
     //! \warning
     //! This function does not verify that the rules in the presentation (if
@@ -236,8 +236,8 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if there are duplicate letters in \p
-    //! lphbt.
+    //! \throws LibsemigroupsException if there are duplicate letters in
+    //! \p lphbt.
     //!
     //! \warning
     //! This function does not verify that the rules in the presentation (if
@@ -399,9 +399,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any letter does not belong to the
     //! alphabet.
-    //! \throws LibsemigroupsException if \ref contains_empty_word returns \c
-    //! false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals \p
-    //! rhs_end.
+    //! \throws LibsemigroupsException if \ref contains_empty_word returns
+    //! \c false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals
+    //! \p rhs_end.
     //!
     //! \sa
     //! * \ref add_rule_no_checks
@@ -582,8 +582,8 @@ namespace libsemigroups {
     //!
     //! Check if the alphabet and rules are valid.
     //!
-    //! \throws LibsemigroupsException if \ref validate_alphabet or \ref
-    //! validate_rules does.
+    //! \throws LibsemigroupsException if \ref validate_alphabet or
+    //! \ref validate_rules does.
     //!
     //! \complexity
     //! Worst case \f$O(mnp)\f$ where \f$m\f$ is the length of length of the
@@ -600,9 +600,25 @@ namespace libsemigroups {
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
   };  // class Presentation
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `presentation.hpp`
+  //!
+  //! Deduction guide to construct a `Presentation<Word>` from a
+  //! `Presentation<Word> const&`.
   template <typename Word>
   Presentation(Presentation<Word> const&) -> Presentation<Word>;
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `presentation.hpp`
+  //!
+  //! Deduction guide to construct a `Presentation<Word>` from a
+  //! `Presentation<Word>&&`.
   template <typename Word>
   Presentation(Presentation<Word>&&) -> Presentation<Word>;
 
@@ -618,6 +634,22 @@ namespace libsemigroups {
   //! they are declared as free functions instead.
   namespace presentation {
 
+    //! \brief Throws if the presentation isn't normalized.
+    //!
+    //! This function throws a LibsemigroupsException if the
+    //! \ref Presentation::alphabet of \p p is not `0` to
+    //! `p.alphabet().size() - 1`.
+    //!
+    //! The second parameter \p arg is used in the formatting of the exception
+    //! message to specify which parameter the presentation \p p corresponds to
+    //! in the calling function.
+    //!
+    //! \param p the presentation to check.
+    //! \param arg the position of \p p in calling function's argument list
+    //! (defaults to "1st").
+    //!
+    //! \throws LibsemigroupsException if the alphabet of \p p is not `0` to
+    //! `p.alphabet.size()`.
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg = "1st") {
@@ -1520,8 +1552,8 @@ namespace libsemigroups {
     //! \param p the presentation.
     //! \param new_alphabet the replacement alphabet.
     //!
-    //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
-    //! new_alphabet do not agree.
+    //! \throws LibsemigroupsException if the size of `p.alphabet()` and
+    //! \p new_alphabet do not agree.
     template <typename Word>
     void change_alphabet(Presentation<Word>& p, Word const& new_alphabet);
 
@@ -1534,8 +1566,8 @@ namespace libsemigroups {
     //! \param p the presentation.
     //! \param new_alphabet the replacement alphabet.
     //!
-    //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
-    //! new_alphabet do not agree.
+    //! \throws LibsemigroupsException if the size of `p.alphabet()` and
+    //! \p new_alphabet do not agree.
     inline void change_alphabet(Presentation<std::string>& p,
                                 char const*                new_alphabet) {
       change_alphabet(p, std::string(new_alphabet));
@@ -1556,8 +1588,8 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Iterator`.
     //!
-    //! \throws LibsemigroupsException if the distance between \p first and \p
-    //! last is odd.
+    //! \throws LibsemigroupsException if the distance between \p first and
+    //! \p last is odd.
     template <typename Iterator>
     Iterator longest_rule(Iterator first, Iterator last);
 
@@ -1597,8 +1629,8 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Iterator`.
     //!
-    //! \throws LibsemigroupsException if the distance between \p first and \p
-    //! last is odd.
+    //! \throws LibsemigroupsException if the distance between \p first and
+    //! \p last is odd.
     template <typename Iterator>
     Iterator shortest_rule(Iterator first, Iterator last);
 
@@ -1963,7 +1995,7 @@ namespace libsemigroups {
       add_commutes_rules_no_checks(p, letters, letters);
     }
 
-    //! \brief Add rules so specific letters commute with specific words
+    //! \brief Add rules so specific letters commute with specific words.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
     //! \p letters and \f$v\f$ in \p words.
@@ -2018,8 +2050,8 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for \ref
-    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, for example, std::initializer_list to be used for the
     //! parameters \p letters and \p inverses.
     template <typename Word>
@@ -2031,8 +2063,8 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for \ref
-    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, string literals to be used for the parameters \p letters and
     //! \p inverses.
     inline void balance_no_checks(Presentation<std::string>& p,
@@ -2044,8 +2076,8 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for \ref
-    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, std::string_view to be used for the parameters \p letters and
     //! \p inverses.
     inline void balance_no_checks(Presentation<std::string>& p,
@@ -2103,8 +2135,8 @@ namespace libsemigroups {
   //!
   //! This class template can be used to construction inverse presentations for
   //! semigroups or monoids and is intended to be used as the input to other
-  //! algorithms in `libsemigroups`. This class inherits from \ref
-  //! Presentation<Word>.
+  //! algorithms in `libsemigroups`. This class inherits from
+  //! \ref Presentation<Word>.
   //!
   //! \tparam Word the type of the underlying words.
   template <typename Word>

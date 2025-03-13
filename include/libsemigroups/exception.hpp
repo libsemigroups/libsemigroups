@@ -47,7 +47,7 @@ namespace libsemigroups {
   //! All exceptions thrown by `libsemigroups` are LibsemigroupsException
   //! instances.
   struct LibsemigroupsException : public std::runtime_error {
-    //! \brief Create an exception
+    //! \brief Create an exception.
     //!
     //! Create an exception with filename, line number, function name, and
     //! message.

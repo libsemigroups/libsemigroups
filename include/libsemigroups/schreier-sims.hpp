@@ -200,14 +200,14 @@ namespace libsemigroups {
     //! also removed.
     using element_type = typename detail::BruidhinnTraits<Element>::value_type;
 
-    //! \brief Type of a const reference to the elements
+    //! \brief Type of a const reference to the elements.
     //!
     //! The type of a const reference to the elements of a SchreierSims
     //! instance.
     using const_element_reference =
         typename detail::BruidhinnTraits<Element>::const_reference;
 
-    //! \brief Type of a reference to the elements
+    //! \brief Type of a reference to the elements.
     //!
     //! The type of a reference to the elements of a SchreierSims instance.
     using element_reference =
@@ -309,7 +309,7 @@ namespace libsemigroups {
     // TODO fix in the same way as the move constructor above
     SchreierSims& operator=(SchreierSims&&);
 
-    //! \brief Default copy assignment
+    //! \brief Default copy assignment.
     //!
     //! Default copy assignment
     // TODO this requires more tests
@@ -416,8 +416,8 @@ namespace libsemigroups {
     //! \param depth the depth.
     //!
     //! \returns
-    //! The number of strong generators, a value of \c size_t, at depth \p
-    //! depth of the stabiliser chain.
+    //! The number of strong generators, a value of \c size_t, at depth
+    //! \p depth of the stabiliser chain.
     //!
     //! \throws LibsemigroupsException if the \p depth is out of bounds.
     //!
@@ -435,8 +435,8 @@ namespace libsemigroups {
     //! \param depth the depth.
     //!
     //! \returns
-    //! The number of strong generators, a value of \c size_t, at depth \p
-    //! depth of the stabiliser chain.
+    //! The number of strong generators, a value of \c size_t, at depth
+    //! \p depth of the stabiliser chain.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -989,7 +989,7 @@ namespace libsemigroups {
     // 2. Make the Screier-Sims object during runtime, since we compute the
     //    stabilizers of the intersection already.
     // 3. Refactor for more generality (i.e. so the template parameters N don't
-    //    all have to be the same
+    //    all have to be the same.
     //
     // TODO (from JDM):
     // * use the no_checks mem fns of SchreierSims now that they exist
@@ -1010,7 +1010,6 @@ namespace libsemigroups {
   //! permutation groups.
   //!
   //! \param S the SchreierSims object.
-  //! \param braces the braces to use to delineate rows (default: `"{}"`).
   //! \param max_width the maximum width of the returned representation
   //! (default: \c 72).
   template <size_t N, typename Point, typename Element, typename Traits>

@@ -238,8 +238,8 @@ namespace libsemigroups {
   //! \returns
   //! An iterator \c it of type \c detail::const_pstilo_iterator pointing to a
   //! \ref word_type consisting of the edge labels of the first
-  //! path (in lexicographical order) from the node \p source to the node \p
-  //! target with length in the range \f$[min, max)\f$ (if any).
+  //! path (in lexicographical order) from the node \p source to the node
+  //! \p target with length in the range \f$[min, max)\f$ (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node
   //! in the word graph.
@@ -571,8 +571,8 @@ namespace libsemigroups {
   //! Defined in `paths.hpp`.
   //!
   //! This class represents a range object that facilitates iterating through
-  //! the paths in a WordGraph from a given \ref source node (possible to a \ref
-  //! target node) in a particular \ref order.
+  //! the paths in a WordGraph from a given \ref source node (possible to a
+  //! \ref target node) in a particular \ref order.
   //!
   //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
@@ -748,8 +748,8 @@ namespace libsemigroups {
 
     //! \brief Advance to the next path in the range.
     //!
-    //! Advance to the current path in the range. If \ref at_end returns \c
-    //! true, then this function does nothing.
+    //! Advance to the current path in the range. If \ref Paths::at_end returns
+    //! \c true, then this function does nothing.
     //!
     //! \warning It is the responsibility of the caller to ensure that
     //! `source() != UNDEFINED` before calling this function.
@@ -779,8 +779,8 @@ namespace libsemigroups {
     //! \brief Get the size of the range.
     //!
     //! This function returns the number of paths in the range. The output is
-    //! identical to that of \ref count, and is included for compatibility with
-    //! [rx::ranges][].
+    //! identical to that of \ref Paths::count, and is included for
+    //! compatibility with [rx::ranges][].
     //!
     //! [rx::ranges]: https://github.com/simonask/rx-ranges
     //!
@@ -793,8 +793,8 @@ namespace libsemigroups {
     //! \brief Get the size of the range.
     //!
     //! This function returns the number of paths in the range. The output is
-    //! identical to that of \ref size_hint, and is included for compatibility
-    //! with [rx::ranges][].
+    //! identical to that of \ref Paths::size_hint, and is included for
+    //! compatibility with [rx::ranges][].
     //!
     //! [rx::ranges]: https://github.com/simonask/rx-ranges
     //!
@@ -933,8 +933,8 @@ namespace libsemigroups {
       return _target;
     }
 
-    //! \brief Get the current target node of the path labelled by \ref
-    //! get.
+    //! \brief Get the current target node of the path labelled by
+    //! \ref get.
     //!
     //! This function returns the current target node of the path labelled by
     //! \ref get. If there is no such path (because, for example, the source
@@ -1099,7 +1099,7 @@ namespace libsemigroups {
   //!
   //! Return a human readable representation of a Paths object.
   //!
-  //! \tparam Node the type of the nodes in the underlying WordGraph
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
   //! \param p the Paths object.
   //!

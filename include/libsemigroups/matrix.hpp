@@ -66,8 +66,8 @@ namespace libsemigroups {
   //! 1. those whose dimension and arithmetic operations can be defined at
   //!    compile time: \ref StaticMatrix;
   //! 2. those whose arithmetic operation can be defined at compile time but
-  //!    whose dimensions can be set at run time: \ref
-  //!    DynamicMatrixStaticArith
+  //!    whose dimensions can be set at run time:
+  //!    \ref DynamicMatrixStaticArith
   //!    "DynamicMatrix (with compile-time arithmetic)";
   //! 3. those whose arithmetic operations and dimensions can be set at run
   //!    time: \ref DynamicMatrixDynamicArith
@@ -1269,12 +1269,12 @@ namespace libsemigroups {
     //!
     //! \tparam U  either \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //! \param that  \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //! object for comparison.
     //!
     //! \returns
@@ -1292,12 +1292,12 @@ namespace libsemigroups {
     //!
     //! \tparam U  either \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //! \param that  \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //! object for comparison.
     //!
     //! \returns
@@ -1313,17 +1313,16 @@ namespace libsemigroups {
     //!
     //! Lexicographical comparison of rows.
     //!
-    //! \tparam U  either \ref Row, \ref StaticRowView, \ref
-    //! DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)",
-    //! or
-    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time
-    //! arithmetic)".
+    //! \tparam U  either \ref Row, \ref StaticRowView,
+    // clang-format off
+    //! \ref DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)", //NOLINT()
+    //! or \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)". //NOLINT()
+    // clang-format on
     //!
-    //! \param that \ref Row, \ref StaticRowView, \ref
-    //! DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)",
-    //! or
-    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
-    //! object for comparison.
+    //! \param that \ref Row, \ref StaticRowView,
+    //! \ref DynamicRowViewStaticArith "DynamicRowView (compile-time
+    //! arithmetic)", or \ref DynamicRowViewDynamicArith "DynamicRowView
+    //! (run-time arithmetic)" object for comparison.
     //!
     //! \returns
     //! Returns \c true if `*this` is lex less than that `that` and
@@ -1340,13 +1339,13 @@ namespace libsemigroups {
     //!
     //! \tparam U  either \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //!
     //! \param
     //! that \ref Row, \ref StaticRowView, \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //! object for comparison.
     //!
     //! \returns
@@ -1479,22 +1478,22 @@ namespace libsemigroups {
   //!
   //! \tparam PlusOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! addition of the semiring
+  //! addition of the semiring.
   //!
   //! \tparam ProdOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! multiplication of the semiring
+  //! multiplication of the semiring.
   //!
   //! \tparam ZeroOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the zero of the semiring (the
-  //! additive identity element)
+  //! additive identity element).
   //!
   //! \tparam OneOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the one of the semiring (the
-  //! multiplicative identity element)
+  //! multiplicative identity element).
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \warning
   //! If the underlying matrix is destroyed, then any row views for that
@@ -1645,8 +1644,8 @@ namespace libsemigroups {
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! This class is the type of row views into a \ref
-  //! DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)".
+  //! This class is the type of row views into a
+  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)".
   //!
   //! \tparam Semiring the type of a semiring object which defines the
   //! semiring arithmetic (see requirements in \ref DynamicMatrixDynamicArith
@@ -1801,7 +1800,7 @@ namespace libsemigroups {
   // StaticMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  //! \brief Static matrix class
+  //! \brief Static matrix class.
   //!
   //! Defined in `matrix.hpp`.
   //!
@@ -1829,7 +1828,7 @@ namespace libsemigroups {
   //! \tparam C  the number of columns of the matrix.
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \note Certain member functions only work for square matrices and some
   //! only
@@ -2370,8 +2369,8 @@ namespace libsemigroups {
     //! \param that  the matrix or row view to add.
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
-    //! number_of_cols
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols
     //!
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
@@ -2390,8 +2389,8 @@ namespace libsemigroups {
     //! \param a the \ref scalar_type to add to a \ref StaticMatrix.
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
-    //! number_of_cols
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols
     //!
     //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(scalar_type a);
@@ -2405,8 +2404,8 @@ namespace libsemigroups {
     //! \returns The product of the two matrices.
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
-    //! number_of_cols.
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols.
     //!
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
@@ -2438,8 +2437,8 @@ namespace libsemigroups {
     //! \param y  the second matrix to multiply.
     //!
     //! \complexity
-    //! \f$O(n ^ 3)\f$ where \f$n\f$ is \ref number_of_rows or \ref
-    //! number_of_cols.
+    //! \f$O(n ^ 3)\f$ where \f$n\f$ is \ref number_of_rows or
+    //! \ref number_of_cols.
     //!
     //! \warning
     //! This function only applies to matrices with the same number of rows
@@ -2494,8 +2493,8 @@ namespace libsemigroups {
 
     //! \brief Swaps the contents of `*this` with the contents of \p that.
     //!
-    //! This function swaps the contents of `*this` with the contents of \p
-    //! that.
+    //! This function swaps the contents of `*this` with the contents of
+    //! \p that.
     //!
     //! \param that  the matrix to swap contents with.
     //!
@@ -2572,8 +2571,8 @@ namespace libsemigroups {
     //! \tparam U the type of the argument \p that.
     //! \param that the matrix or row view for comparison.
     //!
-    //! \returns \c true if `*this` is less than or equal to \p that  and \c
-    //! false if it is not.
+    //! \returns \c true if `*this` is less than or equal to \p that  and
+    //! \c false if it is not.
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
@@ -2623,8 +2622,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning This function does not detect overflows in \ref
-    //! scalar_type.
+    //! \warning This function does not detect overflows in
+    //! \ref scalar_type.
     StaticMatrix operator+(scalar_type a);
 
     //! Returns the additive identity of the underlying semiring.
@@ -2632,8 +2631,8 @@ namespace libsemigroups {
     //! This function returns the additive identity of the underlying
     //! semiring of a matrix.
     //!
-    //! \returns The additive identity of the semiring, a \ref
-    //! scalar_type.
+    //! \returns The additive identity of the semiring, a
+    //! \ref scalar_type.
     //!
     //! \exceptions
     //! \noexcept
@@ -2644,8 +2643,8 @@ namespace libsemigroups {
     //! This function returns the multiplicative identity of the underlying
     //! semiring of a matrix.
     //!
-    //! \returns The multiplicative identity of the semiring, a \ref
-    //! scalar_type.
+    //! \returns The multiplicative identity of the semiring, a
+    //! \ref scalar_type.
     //!
     //! \exceptions
     //! \noexcept
@@ -2728,22 +2727,22 @@ namespace libsemigroups {
   //!
   //! \tparam PlusOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! addition of the semiring
+  //! addition of the semiring.
   //!
   //! \tparam ProdOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
-  //! multiplication of the semiring
+  //! multiplication of the semiring.
   //!
   //! \tparam ZeroOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the zero of the semiring (the
-  //! additive identity element)
+  //! additive identity element).
   //!
   //! \tparam OneOp a stateless type with a call operator of signature
   //! `scalar_type operator()()` returning the one of the semiring (the
-  //! multiplicative identity element)
+  //! multiplicative identity element).
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \note
   //! Certain member functions only work for square matrices and some only
@@ -3159,7 +3158,7 @@ namespace libsemigroups {
   //! semiring arithmetic (see requirements below).
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
-  //! elements in the underlying semiring)
+  //! elements in the underlying semiring).
   //!
   //! \note
   //! Certain member functions only work for square matrices and some only
@@ -3263,8 +3262,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is \ref
-    //! number_of_cols.
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is
+    //! \ref number_of_cols.
     explicit DynamicMatrix(
         Semiring const*                                                  sr,
         std::initializer_list<std::initializer_list<scalar_type>> const& rws)
@@ -3285,8 +3284,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is \ref
-    //! number_of_cols.
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is
+    //! \ref number_of_cols.
     explicit DynamicMatrix(Semiring const*                              sr,
                            std::vector<std::vector<scalar_type>> const& rws)
         : MatrixDynamicDim(rws.size(), (rws.empty() ? 0 : rws.begin()->size())),
@@ -3731,9 +3730,9 @@ namespace libsemigroups {
   //! dimensions are \c R and \c C. The default value of \c R is \c 0 and of
   //! \c C is \c R.
   //!
-  //! The alias `BMat<R, C>` is either StaticMatrix, \ref
-  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
-  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! The alias `BMat<R, C>` is either StaticMatrix,
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
+  //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static
   //! and dynamic is that the former can be default constructed and the
@@ -3900,8 +3899,8 @@ namespace libsemigroups {
   //! value) indicates that the dimensions will be set at run time.
   //!
   //! \tparam C the number of columns of the matrix. A value of \c 0 indicates
-  //! that the dimensions will be set at run time (the default value is `\c
-  //! R`).
+  //! that the dimensions will be set at run time (the default value is `
+  //! \c R`).
   // FLS + JDM considered adding BMat8 and decided it wasn't a good idea.
   template <size_t R = 0, size_t C = R>
   using BMat
@@ -4008,8 +4007,8 @@ namespace libsemigroups {
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
     //!
-    //! \tparam Mat the type of the 1st argument, must satisfy \ref
-    //! IsBMat<Mat>.
+    //! \tparam Mat the type of the 1st argument, must satisfy
+    //! \ref IsBMat<Mat>.
     //!
     //! \param val the entry to validate.
     //!
@@ -4042,9 +4041,9 @@ namespace libsemigroups {
   //! can be set at run time, otherwise \c R and \c C are the dimension. The
   //! default value of \c R is \c 0, and of \c C is \c R.
   //!
-  //! The alias \ref IntMat is either StaticMatrix, \ref
-  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
-  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! The alias \ref IntMat is either StaticMatrix,
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
+  //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static
   //! and dynamic is that the former can be default constructed and the
@@ -4264,11 +4263,11 @@ namespace libsemigroups {
     //! Defined in `matrix.hpp`.
     //!
     //! This function throws an exception if the entries of an integer matrix
-    //! are not valid, which is if and only if any of the entries equal \ref
-    //! POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
+    //! are not valid, which is if and only if any of the entries equal
+    //! \ref POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
     //!
-    //! \tparam Mat the type of the argument \p x, must satisfy \ref
-    //! IsMatrix<Mat>.
+    //! \tparam Mat the type of the argument \p x, must satisfy
+    //! \ref IsMatrix<Mat>.
     //!
     //! \param x the matrix to check.
     template <typename Mat>
@@ -4300,8 +4299,8 @@ namespace libsemigroups {
     //!
     //! The 1st argument is used for overload resolution.
     //!
-    //! \tparam Mat the type of the 1st argument, must satisfy \ref
-    //! IsMatrix<Mat>.
+    //! \tparam Mat the type of the 1st argument, must satisfy
+    //! \ref IsMatrix<Mat>.
     //!
     //! \param val the entry to check.
     template <typename Mat>
@@ -4332,9 +4331,9 @@ namespace libsemigroups {
   //! at run time, otherwise \c N is the dimension. The default value of \c N
   //! is \c 0.
   //!
-  //! The alias \ref MaxPlusMat is either StaticMatrix, \ref
-  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
-  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! The alias \ref MaxPlusMat is either StaticMatrix,
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
+  //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static
   //! and dynamic matrices is that the former can be default constructed and
@@ -4571,8 +4570,8 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     //!
-    //! \throws LibsemigroupsException if \p x contains \ref
-    //! POSITIVE_INFINITY.
+    //! \throws LibsemigroupsException if \p x contains
+    //! \ref POSITIVE_INFINITY.
     template <typename Mat>
     auto throw_if_bad_entry(Mat const& x)
         -> std::enable_if_t<IsMaxPlusMat<Mat>> {
@@ -4603,8 +4602,8 @@ namespace libsemigroups {
     //! This function can be used to validate that an entry in a matrix
     //! belongs to the underlying semiring.
     //!
-    //! \tparam Mat the type of the matrix, must satisfy \ref
-    //! IsMaxPlusMat<Mat>.
+    //! \tparam Mat the type of the matrix, must satisfy
+    //! \ref IsMaxPlusMat<Mat>.
     //!
     //! \param val the entry to check.
     //!
@@ -4879,8 +4878,8 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     //!
-    //! \throws LibsemigroupsException if \p x contains \ref
-    //! NEGATIVE_INFINITY.
+    //! \throws LibsemigroupsException if \p x contains
+    //! \ref NEGATIVE_INFINITY.
     template <typename Mat>
     std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x) {
       using scalar_type = typename Mat::scalar_type;
@@ -4910,8 +4909,8 @@ namespace libsemigroups {
     //! This function can be used to validate that an entry in a matrix
     //! belongs to the underlying semiring.
     //!
-    //! \tparam Mat the type of the matrix, must satisfy \ref
-    //! IsMinPlusMat<Mat>.
+    //! \tparam Mat the type of the matrix, must satisfy
+    //! \ref IsMinPlusMat<Mat>.
     //!
     //! \param val the entry to check.
     //!
@@ -5201,8 +5200,8 @@ namespace libsemigroups {
 
     //! \brief Get the threshold.
     //!
-    //! Returns the threshold value used to construct \ref
-    //! MaxPlusTruncSemiring instance.
+    //! Returns the threshold value used to construct
+    //! \ref MaxPlusTruncSemiring instance.
     //!
     //! \returns A value of type `Scalar`.
     //!
@@ -5342,8 +5341,8 @@ namespace libsemigroups {
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
     //!
-    //! \tparam Mat the type of \p m, must satisfy \ref
-    //! IsMaxPlusTruncMat<Mat>.
+    //! \tparam Mat the type of \p m, must satisfy
+    //! \ref IsMaxPlusTruncMat<Mat>.
     //!
     //! \param m the matrix to validate.
     //!
@@ -5384,8 +5383,8 @@ namespace libsemigroups {
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
     //!
-    //! \tparam Mat the type the 1st argument, must satisfy \ref
-    //! IsMaxPlusTruncMat<Mat>.
+    //! \tparam Mat the type the 1st argument, must satisfy
+    //! \ref IsMaxPlusTruncMat<Mat>.
     //!
     //! \param m the matrix.
     //! \param val the entry to validate.
@@ -5435,15 +5434,15 @@ namespace libsemigroups {
   //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$) are
   //!    to be defined a run time.
   //!
-  //! All three of these types can be accessed via the alias template \ref
-  //! MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then the
+  //! All three of these types can be accessed via the alias template
+  //! \ref MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then the
   //! threshold can be set at run time, and if \c R or \c C is \c 0, then the
-  //! dimension can be set at run time. The default value of \c T is \c 0, \c
-  //! R is \c 0, and of \c C is \c R.
+  //! dimension can be set at run time. The default value of \c T is \c 0,
+  //! \c R is \c 0, and of \c C is \c R.
   //!
-  //! The alias \ref MinPlusTruncMat is either StaticMatrix, \ref
-  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
-  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! The alias \ref MinPlusTruncMat is either StaticMatrix,
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
+  //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static
   //! and dynamic matrices is that the former can be default constructed and
@@ -5677,8 +5676,8 @@ namespace libsemigroups {
 
     //! \brief Get the threshold.
     //!
-    //! Returns the threshold value used to construct \ref
-    //! MinPlusTruncSemiring instance.
+    //! Returns the threshold value used to construct
+    //! \ref MinPlusTruncSemiring instance.
     //!
     //! \returns A value of type `Scalar`.
     //!
@@ -5864,8 +5863,8 @@ namespace libsemigroups {
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
     //!
-    //! \tparam Mat the type the 1st argument, must satisfy \ref
-    //! IsMinPlusTruncMat<Mat>.
+    //! \tparam Mat the type the 1st argument, must satisfy
+    //! \ref IsMinPlusTruncMat<Mat>.
     //!
     //! \param m the matrix.
     //! \param val the entry to validate.
@@ -5921,15 +5920,15 @@ namespace libsemigroups {
   //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$ and
   //!    \f$p\f$) are to be defined a run time.
   //!
-  //! All three of these types can be accessed via the alias template \ref
-  //! NTPMat<T, P, R, C, Scalar> if \c T and \c P have value \c 0, then the
-  //! threshold and period can be set at run time, and if \c R or \c C is \c
-  //! 0, then the dimension can be set at run time.  The default values of \c
-  //! T, \c P, and \c R are \c 0, and the default value of \c C is \c R.
+  //! All three of these types can be accessed via the alias template
+  //! \ref NTPMat<T, P, R, C, Scalar> if \c T and \c P have value \c 0, then the
+  //! threshold and period can be set at run time, and if \c R or \c C is
+  //! \c 0, then the dimension can be set at run time.  The default values of
+  //! \c T, \c P, and \c R are \c 0, and the default value of \c C is \c R.
   //!
-  //! The alias \ref NTPMat is one of StaticMatrix, \ref
-  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
-  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)";
+  //! The alias \ref NTPMat is one of StaticMatrix,
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
+  //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)";
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static and
   //! dynamic matrices is that the former can be default constructed and the
@@ -6889,8 +6888,8 @@ namespace libsemigroups {
   //! There are two types of such matrices those whose dimension is known at
   //! compile-time, and those where it is not.  Both types can be accessed via
   //! the alias template \ref ProjMaxPlusMat : if \c R or \c C has value
-  //! \c 0, then the dimensions can be set at run time, otherwise \c R and \c
-  //! C are the dimensions.  The default value of \c R is \c 0, \c C is \c R,
+  //! \c 0, then the dimensions can be set at run time, otherwise \c R and
+  //! \c C are the dimensions.  The default value of \c R is \c 0, \c C is \c R,
   //! and `Scalar` is `int`.
   //!
   //! Matrices in both these classes are modified when constructed to be in a
@@ -7011,8 +7010,8 @@ namespace libsemigroups {
     //! This function can be used to validate that the matrix \p x contains
     //! values in the underlying semiring, by checking the underlying matrix.
     //!
-    //! \tparam Mat the type of the parameter (must satisfy \ref
-    //! IsProjMaxPlusMat<Mat>).
+    //! \tparam Mat the type of the parameter (must satisfy
+    //! \ref IsProjMaxPlusMat<Mat>).
     //!
     //! \param x the matrix to check.
     //!
@@ -7033,8 +7032,8 @@ namespace libsemigroups {
     //! This function can be used to validate that the matrix \p x contains
     //! values in the underlying semiring, using the underlying matrix.
     //!
-    //! \tparam Mat the type of the parameter (must satisfy \ref
-    //! IsProjMaxPlusMat<Mat>).
+    //! \tparam Mat the type of the parameter (must satisfy
+    //! \ref IsProjMaxPlusMat<Mat>).
     //!
     //! \param x the matrix.
     //! \param val the entry.
@@ -7059,8 +7058,8 @@ namespace libsemigroups {
     //! If \p e is \c 0, then the identity matrix is returned; if
     //! \p e is \c 1, then a copy of the parameter \p x is returned.
     //!
-    //! \tparam Mat the type of the matrix \p x, must satisfy \ref
-    //! IsMatrix<Mat>.
+    //! \tparam Mat the type of the matrix \p x, must satisfy
+    //! \ref IsMatrix<Mat>.
     //!
     //! \param x  the matrix  (must have equal number of rows and columns).
     //!
@@ -7864,8 +7863,8 @@ namespace libsemigroups {
   //! This function returns the sum of the matrix \p x and the scalar
   //! \p a.
   //!
-  //! \tparam Mat the type of the 2nd argument, must satisfy \ref
-  //! IsMatrix<Mat>.
+  //! \tparam Mat the type of the 2nd argument, must satisfy
+  //! \ref IsMatrix<Mat>.
   //!
   //! \param a the scalar to add.
   //! \param x the matrix.
@@ -7889,8 +7888,8 @@ namespace libsemigroups {
   //! This function returns the product of the matrix \p x and the scalar
   //! \p a.
   //!
-  //! \tparam Mat the type of the 2nd argument, must satisfy \ref
-  //! IsMatrix<Mat>.
+  //! \tparam Mat the type of the 2nd argument, must satisfy
+  //! \ref IsMatrix<Mat>.
   //!
   //! \param a the scalar to multiply.
   //! \param x the matrix.
@@ -8217,8 +8216,8 @@ namespace libsemigroups {
   //! This function inserts a human readable representation of a matrix into
   //! the string stream \p os.
   //!
-  //! \tparam Mat the type of the argument \p x, must satisfy \ref
-  //! IsMatrix<Mat>
+  //! \tparam Mat the type of the argument \p x, must satisfy
+  //! \ref IsMatrix<Mat>.
   //!
   //! \param os the string stream.
   //!
@@ -8345,9 +8344,9 @@ namespace libsemigroups {
   //! `libsemigroups` that adapts  objects satisfying \ref IsMatrix for
   //! use with the main algorithms in `libsemigroups`.
   //!
-  //! Other adapters specifically for \ref BMat objects are available \ref
-  //! adapters_bmat_group "here" and for \ref BMat8 objects \ref
-  //! adapters_bmat8_group "here".
+  //! Other adapters specifically for \ref BMat objects are available
+  //! \ref adapters_bmat_group "here" and for \ref BMat8 objects
+  //! \ref adapters_bmat8_group "here".
 
   //! \ingroup adapters_matrix_group
   //!
@@ -8391,7 +8390,7 @@ namespace libsemigroups {
   //! \tparam  Mat the type of matrices.
   template <typename Mat>
   struct Degree<Mat, std::enable_if_t<IsMatrix<Mat>>> {
-    //! \brief Call operator
+    //! \brief Call operator.
     //!
     //! This function returns `x.number_of_rows()`.
     //!
@@ -8420,7 +8419,7 @@ namespace libsemigroups {
   //! \tparam  Mat the type of matrices.
   template <typename Mat>
   struct Hash<Mat, std::enable_if_t<IsMatrix<Mat>>> {
-    //! \brief Call operator
+    //! \brief Call operator.
     //!
     //! This function returns `x.hash_value()`.
     //!

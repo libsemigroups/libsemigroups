@@ -90,17 +90,17 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p cong is a Congruence object. The returned FroidurePin object is
-  //! isomorphic to the quotient of the underlying semigroup or monoid of \p
-  //! cong by the congruence represented by \p cong.
+  //! isomorphic to the quotient of the underlying semigroup or monoid of
+  //! \p cong by the congruence represented by \p cong.
   //!
-  //! \tparam Thing used for SFINAE should be FroidurePin
+  //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Word the type of the words in relations in \p cong.
   //! \param cong the Congruence instance to convert.
   //!
   //! \returns A FroidurePin instance.
   //!
-  //! \throws LibsemigroupsException if `cong.kind()` is not \ref
-  //! congruence_kind.twosided.
+  //! \throws LibsemigroupsException if `cong.kind()` is not
+  //! \ref congruence_kind.twosided.
   template <template <typename...> typename Thing, typename Word>
   auto to(Congruence<Word>& cong)
       -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
@@ -124,7 +124,7 @@ namespace libsemigroups {
   //! where \p k is a Kambites instance. The returned FroidurePin object is
   //! isomorphic to the quotient semigroup or monoid represented by \p k.
   //!
-  //! \tparam Thing used for SFINAE should be FroidurePin
+  //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Word the type of the words in relations in \p k.
   //!
   //! \param k the Kambites instance to convert.
@@ -160,8 +160,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p kb is a \ref_knuth_bendix instance. The returned FroidurePin
-  //! object is isomorphic to the quotient semigroup or monoid represented by \p
-  //! kb.
+  //! object is isomorphic to the quotient semigroup or monoid represented by
+  //! \p kb.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
@@ -171,8 +171,8 @@ namespace libsemigroups {
   //!
   //! \returns A FroidurePin instance.
   //!
-  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
-  //! congruence_kind.twosided.
+  //! \throws LibsemigroupsException if `kb.kind()` is not
+  //! \ref congruence_kind.twosided.
   template <template <typename...> typename Thing,
             typename Rewriter,
             typename ReductionOrder>
@@ -195,8 +195,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p k is a \ref Konieczny instance. The returned FroidurePin
-  //! object is isomorphic to the semigroup or monoid represented by \p
-  //! k.
+  //! object is isomorphic to the semigroup or monoid represented by
+  //! \p k.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
   //! \tparam Element the element type of the Konieczny object.
@@ -228,8 +228,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! where \p kb is a \ref_todd_coxeter instance. The returned FroidurePin
-  //! object is isomorphic to the quotient semigroup or monoid represented by \p
-  //! kb.
+  //! object is isomorphic to the quotient semigroup or monoid represented by
+  //! \p kb.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
   //!
@@ -237,8 +237,8 @@ namespace libsemigroups {
   //!
   //! \returns A FroidurePin instance.
   //!
-  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
-  //! congruence_kind.twosided.
+  //! \throws LibsemigroupsException if `kb.kind()` is not
+  //! \ref congruence_kind.twosided.
   //!
   //! \warning The returned FroidurePin instance is always infinite, and so any
   //! calls to any member functions that that trigger a full enumeration will
@@ -273,9 +273,9 @@ namespace libsemigroups {
   //! output FroidurePin such that `f[s] = t` whenever there is an edge from `s`
   //! to `t` in \p wg labelled `n`.
   //!
-  //! More precisely, if \f$a\f$ and \f$b\f$ are the parameters \p first and \p
-  //! last, respectively, \f$m\f$ is the number of nodes in the WordGraph \p wg,
-  //! \f$0 \leq a,  b< m\f$, and \f$n\f$ is an edge label, then we define
+  //! More precisely, if \f$a\f$ and \f$b\f$ are the parameters \p first and
+  //! \p last, respectively, \f$m\f$ is the number of nodes in the WordGraph
+  //! \p wg, \f$0 \leq a,  b< m\f$, and \f$n\f$ is an edge label, then we define
   //! \f$f: \{a, \ldots, b - 1\} \to \{0, \ldots, m - 1\}\f$ so that \f$(x)f\f$
   //! equals the target of the edge starting at node \f$x\f$ with label \f$n\f$.
   //! In this way, every edge label in a WordGraph corresponds to a
@@ -299,8 +299,8 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if \p first > \p last.
   //!
-  //! \throws LibsemigroupsException if \p first or \p last exceeds \ref
-  //! WordGraph::number_of_nodes.
+  //! \throws LibsemigroupsException if \p first or \p last exceeds
+  //! \ref WordGraph::number_of_nodes.
   //!
   //! \throws LibsemigroupsException if
   //! \ref validate(Transf<N, Scalar> const&) throws for any of the

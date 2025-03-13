@@ -125,7 +125,7 @@ namespace libsemigroups {
     //!
     //! Construct empty PBR of given \ref degree.
     //!
-    //! \param n the degree
+    //! \param n the degree.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -146,7 +146,7 @@ namespace libsemigroups {
     //! of \p right is the list of points adjacent to \f$n + i\f$ in the PBR.
     //! A negative value \f$i\f$ corresponds to \f$n - i\f$.
     //!
-    //! \param left container of adjacencies of \c 1 to \c n
+    //! \param left container of adjacencies of \c 1 to \c n.
     //! \param right container of adjacencies of \c n + 1 to \c 2n.
     //!
     //! \exceptions
@@ -227,8 +227,8 @@ namespace libsemigroups {
     //! \param thread_id the index of the calling thread (defaults to \c 0).
     //!
     //! \throws LibsemigroupsException if:
-    //!   * the \ref degree() of \p x is not the same as the \ref degree() of \p
-    //!   y;
+    //!   * the \ref degree() of \p x is not the same as the \ref degree() of
+    //!   \p y;
     //!   * the \ref degree() of `*this` is not the same as the \ref degree() of
     //!   \p x;
     //!   * one if the addresses `&x` and `&y` is the same as that of `this`; or
@@ -256,7 +256,7 @@ namespace libsemigroups {
       return _vector == that._vector;
     }
 
-    //! \brief Compare for less
+    //! \brief Compare for less.
     //!
     //! Compare for less.
     //!
@@ -361,13 +361,13 @@ namespace libsemigroups {
       return Hash<std::vector<std::vector<uint32_t>>>()(_vector);
     }
 
-    //! \brief Insertion operator
+    //! \brief Insertion operator.
     //!
     //! This member function allows PBR objects to be inserted into a
     //! std::ostringstream.
     friend std::ostringstream& operator<<(std::ostringstream&, PBR const&);
 
-    //! \brief Insertion operator
+    //! \brief Insertion operator.
     //!
     //! This member function allows PBR objects to be inserted into a
     //! std::ostream.

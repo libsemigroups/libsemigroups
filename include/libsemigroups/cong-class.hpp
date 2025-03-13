@@ -56,16 +56,16 @@ namespace libsemigroups {
   //! \ref_congruence.
   //!
   //! Helper functions for the class template \ref_congruence can be found in
-  //! the namespaces \ref cong_common_helpers_group "congruence_common" and \ref
-  //! congruence. At present the helper functions in these two namespaces are
-  //! identical, because there are no helper functions that only apply to the
-  //! \ref_congruence class template.
+  //! the namespaces \ref cong_common_helpers_group "congruence_common" and
+  //! \ref congruence. At present the helper functions in these two namespaces
+  //! are identical, because there are no helper functions that only apply to
+  //! the \ref_congruence class template.
 
   //! \defgroup congruence_class_mem_types_group Member Types
   //!
   //! \ingroup congruence_class_group
   //!
-  //! \brief Public member types
+  //! \brief Public member types.
   //!
   //! This page contains the documentation of the public member types of a
   //! \ref_congruence instance.
@@ -139,8 +139,8 @@ namespace libsemigroups {
   //! the classes implementing individual algorithms, such as \ref_kambites,
   //! \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
-  //! \tparam Word the type of the words used in the \ref
-  //! Congruence::presentation and \ref Congruence::generating_pairs.
+  //! \tparam Word the type of the words used in the
+  //! \ref Congruence::presentation and \ref Congruence::generating_pairs.
   //!
   //! \sa \ref cong_common_helpers_group for information about helper functions
   //! for the \ref_congruence class template.
@@ -484,11 +484,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no computation or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is a normal form for the input word. If the \ref_congruence
-    //! instance is not \ref finished, then it might be that equivalent input
-    //! words produce different output words.
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. If \ref finished returns \c true, then the word output by
+    //! this function is a normal form for the input word. If the
+    //! \ref_congruence instance is not \ref finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!
@@ -506,11 +506,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no computation.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is a normal form for the input word. If the \ref_congruence
-    //! instance is not \ref finished, then it might be that equivalent input
-    //! words produce different output words.
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. If \ref finished returns \c true, then the word output by
+    //! this function is a normal form for the input word. If the
+    //! \ref_congruence instance is not \ref finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!

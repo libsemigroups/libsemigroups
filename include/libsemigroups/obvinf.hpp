@@ -161,8 +161,8 @@ namespace libsemigroups {
     //! Re-initialize the object as if it had just been constructed.
     //!
     //! Calling this function puts it into the same state that it would have
-    //! been in if it had just been newly constructed with the same parameter \p
-    //! n.
+    //! been in if it had just been newly constructed with the same parameter
+    //! \p n.
     //!
     //! This function exists to allow reuse of the memory allocated within the
     //! object.
@@ -190,8 +190,8 @@ namespace libsemigroups {
     //! Re-initialize the object as if it had just been constructed.
     //!
     //! Calling this function puts it into the same state that it would have
-    //! been in if it had just been newly constructed with the same parameter \p
-    //! n.
+    //! been in if it had just been newly constructed with the same parameter
+    //! \p n.
     //!
     //! This function exists to allow reuse of the memory allocated within the
     //! object.
@@ -222,8 +222,8 @@ namespace libsemigroups {
 
     //! \brief Add rules from iterators to \ref word_type.
     //!
-    //! This function adds the rules described by the iterators \p first and \p
-    //! last.
+    //! This function adds the rules described by the iterators \p first and
+    //! \p last.
     //!
     //! \param first iterator pointing at the left-hand-side of the first rule
     //! to add.
@@ -244,8 +244,8 @@ namespace libsemigroups {
 
     //! \brief Add rules from iterators to std::string.
     //!
-    //! This function adds the rules described by the iterators \p first and \p
-    //! last. The rules are translated to \ref word_type objects using the
+    //! This function adds the rules described by the iterators \p first and
+    //! \p last. The rules are translated to \ref word_type objects using the
     //! position of each character in the 1st argument \p lphbt.
     //!
     //! \param lphbt the alphabet to use.
@@ -269,10 +269,10 @@ namespace libsemigroups {
 
     //! \brief Add rules from iterators to \ref word_type.
     //!
-    //! This function adds the rules described by the iterators \p first and \p
-    //! last.
+    //! This function adds the rules described by the iterators \p first and
+    //! \p last.
     //!
-    //! \param lphbt unused (for consistency of interface only)
+    //! \param lphbt unused (for consistency of interface only).
     //! \param first iterator pointing at the left-hand-side of the first rule
     //! to add.
     //! \param last iterator pointing one beyond the right-hand-side of the last
@@ -291,8 +291,8 @@ namespace libsemigroups {
 
     //! \brief Add rules from iterators to std::pair of std::string.
     //!
-    //! This function adds the rules described by the iterators \p first and \p
-    //! last. The rules are translated to \ref word_type objects using the
+    //! This function adds the rules described by the iterators \p first and
+    //! \p last. The rules are translated to \ref word_type objects using the
     //! position of each character in the 1st argument \p lphbt.
     //!
     //! \param lphbt the alphabet to use.

@@ -82,8 +82,8 @@ namespace libsemigroups {
   //! * the \ref kambites namespace.
 
   //! This page contains documentation for everything in the namespace
-  //! \ref_kambites. This includes everything from \ref
-  //! cong_common_helpers_group, at present there are no helper functions,
+  //! \ref_kambites. This includes everything from
+  //! \ref cong_common_helpers_group, at present there are no helper functions,
   //! beyond those in \ref cong_common_helpers_group, for the \ref_kambites
   //! class template.
   namespace kambites {
