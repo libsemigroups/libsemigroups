@@ -242,7 +242,7 @@ namespace libsemigroups {
     PTransfBase(std::initializer_list<Scalar> cont)
         : PTransfBase(cont.begin(), cont.end()) {}
 
-    //! \brief Construct from universal reference container and validate.
+    //! \brief Construct from universal reference container and check.
     //!
     //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
@@ -266,7 +266,7 @@ namespace libsemigroups {
     template <typename Subclass, typename OtherContainer = Container>
     [[nodiscard]] static Subclass make(OtherContainer&& cont);
 
-    //! \brief Construct from std::initializer_list and validate.
+    //! \brief Construct from std::initializer_list and check.
     //!
     //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
@@ -696,7 +696,7 @@ namespace libsemigroups {
 
    private:
     template <typename T>
-    static void validate_args(T const& cont);
+    static void throw_if_bad_args(T const& cont);
 
     Container _container;
   };
@@ -939,12 +939,12 @@ namespace libsemigroups {
   static constexpr bool IsPTransf = detail::IsPTransfHelper<T>::value;
 
   //! \ingroup transf_group
-  //! \brief Validate a partial transformation.
+  //! \brief Check a partial transformation.
   //!
   //! \tparam N the degree.
   //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
-  //! \param f the partial transformation to validate.
+  //! \param f the partial transformation to check.
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont is incompatible with `T::container_type`.
@@ -954,8 +954,9 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in degree().
   // TODO(1) to tpp
-  template <typename T>
-  auto validate(T const& f) -> std::enable_if_t<IsPTransf<T>> {
+  template <typename Scalar, typename Container>
+  void
+  throw_if_image_value_out_of_range(PTransfBase<Scalar, Container> const& f) {
     size_t const M = f.degree();
     for (auto const& val : f) {
       // the type of "val" is an unsigned int, and so we don't check for val
@@ -1091,11 +1092,11 @@ namespace libsemigroups {
   static constexpr bool IsTransf = detail::IsTransfHelper<T>::value;
 
   ////////////////////////////////////////////////////////////////////////
-  // Transf validate
+  // Transf throw_if_image_value_out_of_range
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup transf_group
-  //! \brief Validate a transformation.
+  //! \brief Check a transformation.
   //!
   //! \tparam N the number of points.
   //! \tparam Scalar the type of the points.
@@ -1108,7 +1109,7 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
-  void validate(Transf<N, Scalar> const& f);
+  void throw_if_image_value_out_of_range(Transf<N, Scalar> const& f);
 
   ////////////////////////////////////////////////////////////////////////
   // make<Transf>
@@ -1128,7 +1129,7 @@ namespace libsemigroups {
   //! \ingroup make_transf_group
   //!
   //! \brief Construct a \ref Transf from universal reference container and
-  //! validate.
+  //! check.
   //!
   //! Constructs a \ref Transf initialized using the container \p cont as
   //! follows: the image of the point \c i under the transformation is the value
@@ -1155,7 +1156,7 @@ namespace libsemigroups {
 
   //! \ingroup make_transf_group
   //!
-  //! \brief Construct a \ref Transf from initializer list and validate.
+  //! \brief Construct a \ref Transf from initializer list and check.
   //!
   //! Constructs a \ref Transf initialized using the initializer list \p cont as
   //! follows: the image of the point \c i under the transformation is the value
@@ -1301,9 +1302,9 @@ namespace libsemigroups {
         size_t N        = 0,
         typename Scalar = std::
             conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-    void validate_args(std::vector<Scalar> const& dom,
-                       std::vector<Scalar> const& ran,
-                       size_t                     deg = N);
+    void throw_if_bad_args(std::vector<Scalar> const& dom,
+                           std::vector<Scalar> const& ran,
+                           size_t                     deg = N);
 
     ////////////////////////////////////////////////////////////////////////
     // PPerm helpers
@@ -1335,13 +1336,13 @@ namespace libsemigroups {
   static constexpr bool IsPPerm = detail::IsPPermHelper<T>::value;
 
   ////////////////////////////////////////////////////////////////////////
-  // PPerm validate
+  // PPerm check
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup transf_group
-  //! \brief Validate a partial perm.
+  //! \brief Check a partial perm.
   //!
-  //! \tparam T the type of the partial perm to validate.
+  //! \tparam T the type of the partial perm to check.
   //!
   //! \param f the partial perm.
   //!
@@ -1353,8 +1354,8 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
-  void validate(PPerm<N, Scalar> const& f) {
-    validate(static_cast<PTransf<N, Scalar> const&>(f));
+  void throw_if_not_pperm(PPerm<N, Scalar> const& f) {
+    throw_if_image_value_out_of_range(f);
     detail::validate_no_duplicates(f.begin(), f.end());
   }
 
@@ -1376,7 +1377,7 @@ namespace libsemigroups {
   //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from universal reference container and
-  //! validate.
+  //! check.
   //!
   //! Constructs a \ref PPerm initialized using the container \p cont as
   //! follows: the image of the point \c i under the partial permutation is the
@@ -1404,7 +1405,7 @@ namespace libsemigroups {
 
   //! \ingroup make_pperm_group
   //!
-  //! \brief Construct a \ref PPerm from initializer list and validate.
+  //! \brief Construct a \ref PPerm from initializer list and check.
   //!
   //! Constructs a \ref PPerm initialized using the container \p cont as
   //! follows: the image of the point \c i under the partial permutation is the
@@ -1433,7 +1434,7 @@ namespace libsemigroups {
   //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from domain, range, and degree, and
-  //! validate.
+  //! check.
   //!
   //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
@@ -1462,7 +1463,7 @@ namespace libsemigroups {
   //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from domain, range, and degree, and
-  //! validate.
+  //! check.
   //!
   //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
@@ -1572,13 +1573,14 @@ namespace libsemigroups {
   static constexpr bool IsPerm = detail::IsPermHelper<T>::value;
 
   ////////////////////////////////////////////////////////////////////////
-  // Perm validate
+  // Perm throw_if_not_perm
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup transf_group
-  //! \brief Validate a permutation.
+  //! \brief Check a permutation.
   //!
-  //! \tparam T the type of the permutation to validate.
+  //! \tparam N the first template parameter of \ref Perm.
+  //! \tparam Scalar the second template parameter of \ref Perm.
   //!
   //! \param f the permutation.
   //!
@@ -1589,8 +1591,8 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
-  auto validate(Perm<N, Scalar> const& f) {
-    validate(static_cast<Transf<N, Scalar> const&>(f));
+  auto throw_if_not_perm(Perm<N, Scalar> const& f) {
+    throw_if_image_value_out_of_range(f);
     detail::validate_no_duplicates(f.begin(), f.end());
   }
 
@@ -1611,7 +1613,7 @@ namespace libsemigroups {
 
   //! \ingroup make_perm_group
   //!
-  //! \brief Construct from universal reference container and validate.
+  //! \brief Construct from universal reference container and check.
   //!
   //! Constructs a \ref Perm initialized using the container \p cont as
   //! follows: the image of the point \c i under the permutation is the value in
@@ -1640,7 +1642,7 @@ namespace libsemigroups {
 
   //! \ingroup make_perm_group
   //!
-  //! \brief Construct from universal reference container and validate.
+  //! \brief Construct from universal reference container and check.
   //!
   //! Constructs a \ref Perm initialized using the container \p cont as
   //! follows: the image of the point \c i under the permutation is the value in
