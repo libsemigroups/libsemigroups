@@ -3973,12 +3973,12 @@ namespace libsemigroups {
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of \p m, must satisfy \ref IsBMat<Mat>.
     //!
-    //! \param m the boolean matrix to validate.
+    //! \param m the boolean matrix to check.
     //!
     //! \throws LibsemigroupsException if any of the entries in the matrix are
     //! not \c 0 or \c 1. The values in a boolean matrix are of type \c int,
@@ -4004,13 +4004,13 @@ namespace libsemigroups {
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of the 1st argument, must satisfy
     //! \ref IsBMat<Mat>.
     //!
-    //! \param val the entry to validate.
+    //! \param val the entry to check.
     //!
     //! \throws LibsemigroupsException if \p val is not \c 0 or \c 1. The
     //! values in a boolean matrix are of type \c int, but a matrix shouldn't
@@ -4258,7 +4258,7 @@ namespace libsemigroups {
   namespace matrix {
     //! \ingroup intmat_group
     //!
-    //! \brief Validate that an integer matrix is valid.
+    //! \brief Check that an integer matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
@@ -4289,7 +4289,7 @@ namespace libsemigroups {
 
     //! \ingroup intmat_group
     //!
-    //! \brief Validate that an entry in an integer matrix is valid.
+    //! \brief Check that an entry in an integer matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
@@ -4559,11 +4559,11 @@ namespace libsemigroups {
   namespace matrix {
     //! \ingroup maxplusmat_group
     //!
-    //! \brief Validate that a max-plus matrix is valid.
+    //! \brief Check that a max-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of the matrix, must satisfy \ref IsMaxPlusMat.
@@ -4595,11 +4595,11 @@ namespace libsemigroups {
 
     //! \ingroup maxplusmat_group
     //!
-    //! \brief Validate that an entry in a max-plus matrix is valid.
+    //! \brief Check that an entry in a max-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that an entry in a matrix
+    //! This function can be used to check that an entry in a matrix
     //! belongs to the underlying semiring.
     //!
     //! \tparam Mat the type of the matrix, must satisfy
@@ -4867,11 +4867,11 @@ namespace libsemigroups {
   namespace matrix {
     //! \ingroup minplusmat_group
     //!
-    //! \brief Validate that a min-plus matrix is valid.
+    //! \brief Check that a min-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of the matrix, must satisfy \ref IsMinPlusMat.
@@ -4902,11 +4902,11 @@ namespace libsemigroups {
 
     //! \ingroup minplusmat_group
     //!
-    //! \brief Validate that an entry in a min-plus matrix is valid.
+    //! \brief Check that an entry in a min-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that an entry in a matrix
+    //! This function can be used to check that an entry in a matrix
     //! belongs to the underlying semiring.
     //!
     //! \tparam Mat the type of the matrix, must satisfy
@@ -5334,17 +5334,17 @@ namespace libsemigroups {
   namespace matrix {
     //! \ingroup maxplustruncmat_group
     //!
-    //! \brief Validate that a truncated max-plus matrix is valid.
+    //! \brief Check that a truncated max-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of \p m, must satisfy
     //! \ref IsMaxPlusTruncMat<Mat>.
     //!
-    //! \param m the matrix to validate.
+    //! \param m the matrix to check.
     //!
     //! \throws LibsemigroupsException if any entry in the matrix is not in
     //! the set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the
@@ -5376,18 +5376,18 @@ namespace libsemigroups {
 
     //! \ingroup maxplustruncmat_group
     //!
-    //! \brief Validate that an entry in a truncated max-plus matrix is valid.
+    //! \brief Check that an entry in a truncated max-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type the 1st argument, must satisfy
     //! \ref IsMaxPlusTruncMat<Mat>.
     //!
     //! \param m the matrix.
-    //! \param val the entry to validate.
+    //! \param val the entry to check.
     //!
     //! \throws LibsemigroupsException if the entry \p val is not in
     //! the set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the
@@ -5811,17 +5811,17 @@ namespace libsemigroups {
   namespace matrix {
     //! \ingroup minplustruncmat_group
     //!
-    //! \brief Validate that a truncated min-plus matrix is valid.
+    //! \brief Check that a truncated min-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of the matrix \p m (must satisfy
     //! \ref IsMinPlusTruncMat<Mat>).
     //!
-    //! \param m the matrix to validate.
+    //! \param m the matrix to check.
     //!
     //! \throws LibsemigroupsException if any entry in the matrix is not in
     //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
@@ -5856,18 +5856,18 @@ namespace libsemigroups {
 
     //! \ingroup minplustruncmat_group
     //!
-    //! \brief Validate that an entry in a truncated min-plus matrix is valid.
+    //! \brief Check that an entry in a truncated min-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type the 1st argument, must satisfy
     //! \ref IsMinPlusTruncMat<Mat>.
     //!
     //! \param m the matrix.
-    //! \param val the entry to validate.
+    //! \param val the entry to check.
     //!
     //! \throws LibsemigroupsException if the entry \p val is not in
     //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
@@ -6472,7 +6472,7 @@ namespace libsemigroups {
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of the matrix \p m (must satisfy
@@ -6516,7 +6516,7 @@ namespace libsemigroups {
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that a matrix contains values in
+    //! This function can be used to check that a matrix contains values in
     //! the underlying semiring.
     //!
     //! \tparam Mat the type of the 1st argument (must satisfy
@@ -7007,7 +7007,7 @@ namespace libsemigroups {
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that the matrix \p x contains
+    //! This function can be used to check that the matrix \p x contains
     //! values in the underlying semiring, by checking the underlying matrix.
     //!
     //! \tparam Mat the type of the parameter (must satisfy
@@ -7029,7 +7029,7 @@ namespace libsemigroups {
     //!
     //! Defined in `matrix.hpp`.
     //!
-    //! This function can be used to validate that the matrix \p x contains
+    //! This function can be used to check that the matrix \p x contains
     //! values in the underlying semiring, using the underlying matrix.
     //!
     //! \tparam Mat the type of the parameter (must satisfy
@@ -7919,11 +7919,11 @@ namespace libsemigroups {
 
   //! \ingroup make_matrix_group
   //!
-  //! \brief Validates the arguments, constructs a matrix, and validates it.
+  //! \brief Checks the arguments, constructs a matrix, and checks it.
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! Validates the arguments, constructs a matrix, and validates it.
+  //! Checks the arguments, constructs a matrix, and checks it.
   //!
   //! \tparam Mat the type of matrix being constructed, must satisfy
   //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
@@ -7955,11 +7955,11 @@ namespace libsemigroups {
 
   //! \ingroup make_matrix_group
   //!
-  //! \brief Validates the arguments, constructs a matrix, and validates it.
+  //! \brief Checks the arguments, constructs a matrix, and checks it.
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! Validates the arguments, constructs a matrix, and validates it.
+  //! Checks the arguments, constructs a matrix, and checks it.
   //!
   //! \tparam Mat the type of matrix being constructed, must satisfy
   //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
@@ -7988,12 +7988,12 @@ namespace libsemigroups {
 
   //! \ingroup make_matrix_group
   //!
-  //! \brief Constructs a row and validates it.
+  //! \brief Constructs a row and checks it.
   //!
   //! Defined in `matrix.hpp`.
   //!
   //! This function constructs a row from a std::initializer_list and then
-  //! calls \ref validate.
+  //! calls \ref matrix::throw_if_bad_entry.
   //!
   //! \tparam Mat the type of matrix being constructed, must satisfy
   //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
@@ -8025,12 +8025,12 @@ namespace libsemigroups {
 
   //! \ingroup make_matrix_group
   //!
-  //! \brief Constructs a matrix (from std::initializer_list) and validates
+  //! \brief Constructs a matrix (from std::initializer_list) and checks
   //! it.
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! Validates the arguments, constructs a matrix and validates it.
+  //! Checks the arguments, constructs a matrix and checks it.
   //!
   //! \tparam Mat the type of the matrix being constructed (must satisfy
   //! \ref IsMatrix<Mat>).
@@ -8072,11 +8072,11 @@ namespace libsemigroups {
   //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a matrix (from std::vector of std::vector) and
-  //! validates it.
+  //! checks it.
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! Validates the arguments, constructs a matrix, and validates it.
+  //! Checks the arguments, constructs a matrix, and checks it.
   //!
   //! \tparam Mat the type of the matrix being constructed (must satisfy
   //! \ref IsMatrix).
@@ -8114,11 +8114,11 @@ namespace libsemigroups {
 
   //! \ingroup make_matrix_group
   //!
-  //! \brief Constructs a row and validates it.
+  //! \brief Constructs a row and checks it.
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! This function constructs a row and validates it.
+  //! This function constructs a row and checks it.
   //!
   //! \tparam Semiring the type of the semiring where arithmetic is performed.
   //!
@@ -8148,11 +8148,11 @@ namespace libsemigroups {
   //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a projective max-plus matrix (from
-  //! std::initializer_list) and validates it.
+  //! std::initializer_list) and checks it.
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! Validates the arguments, constructs a matrix, and validates it.
+  //! Checks the arguments, constructs a matrix, and checks it.
   //!
   //! \tparam Mat the type of the matrix being constructed (must satisfy
   //! \ref IsProjMaxPlusMat<Mat>).
