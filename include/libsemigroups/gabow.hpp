@@ -180,10 +180,10 @@ namespace libsemigroups {
     //!
     //! \note This function triggers the computation of the strongly connected
     //! components (if they are not already known).
-    // Not noexcept because validate_node isn't
+    // Not noexcept because throw_if_node_out_of_range isn't
     [[nodiscard]] size_type id(node_type n) const {
       run();
-      validate_node(n);
+      throw_if_node_out_of_range(n);
       return id_no_checks(n);
     }
 
@@ -228,7 +228,7 @@ namespace libsemigroups {
     //! \sa \ref component_of to obtain the component of a node.
     [[nodiscard]] std::vector<node_type> const& component(size_type i) const {
       run();
-      validate_scc_index(i);
+      throw_if_scc_index_out_of_range(i);
       return _comps[i];
     }
 
@@ -365,7 +365,7 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<node_type> const&
     component_of(node_type n) const {
       run();
-      validate_node(n);
+      throw_if_node_out_of_range(n);
       return _comps[_id[n]];
     }
 
@@ -460,8 +460,8 @@ namespace libsemigroups {
    private:
     void reset() const noexcept;
     void run() const;
-    void validate_node(node_type n) const;
-    void validate_scc_index(size_t i) const;
+    void throw_if_node_out_of_range(node_type n) const;
+    void throw_if_scc_index_out_of_range(size_t i) const;
   };
 
   //! \ingroup gabow_group
