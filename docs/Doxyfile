@@ -1013,7 +1013,10 @@ WARN_LOGFILE           =
 INPUT                  = "../include/libsemigroups" \
                          "../include/libsemigroups/detail" \
                          "../README.md" \
-                         "install.md"
+                         "install.md" \
+                         "changelog-v1.md" \
+                         "changelog-v2.md" \
+                         "changelog-v3.md" 
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses
