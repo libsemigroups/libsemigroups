@@ -45,20 +45,26 @@ foot = """
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
 """
 
-include_dir = "include/libsemigroups"
+include_dirs = ["include/libsemigroups", "include/libsemigroups/detail"]
 
 output = head
-files = [file for file in os.listdir(include_dir) if file.endswith(".hpp")]
-files.sort()
-
-for file in files:
-    if file != "libsemigroups.hpp":
-        output += f'#include "{file}"\n'
+for dir in include_dirs:
+    files = [file for file in os.listdir(dir) if file.endswith(".hpp")]
+    files.sort()
+    for file in files:
+        if file != "libsemigroups.hpp":
+            if dir.endswith("detail"):
+                output += f'#include "detail/{file}"\n'
+            else:
+                output += f'#include "{file}"\n'
+    output += "\n"
 
 output += foot
 
-with open(os.path.join(include_dir, "libsemigroups.hpp"), "w", encoding="utf-8") as f:
-    print(f"Writing {include_dir}/libsemigroups.hpp . . .")
+with open(
+    os.path.join(include_dirs[0], "libsemigroups.hpp"), "w", encoding="utf-8"
+) as f:
+    print(f"Writing {include_dirs[0]}/libsemigroups.hpp . . .")
     f.write(output)
 
 sys.exit(0)
