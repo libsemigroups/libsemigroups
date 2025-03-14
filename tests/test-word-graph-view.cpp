@@ -20,8 +20,7 @@
 #include <utility>  // for std::move
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "rx/ranges.hpp"
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/word-graph-view.hpp"
 
@@ -119,13 +118,12 @@ namespace libsemigroups {
     auto                  end   = v.cend_targets(0);
     auto                  begin = v.cbegin_targets(0);
     REQUIRE_THROWS_AS(v.cend_targets(7), LibsemigroupsException);
-    auto target = begin;
-    size_t i = 0;
+    auto   target = begin;
+    size_t i      = 0;
     while (target != end) {
-      if(i == 4) {
+      if (i == 4) {
         REQUIRE(*target == 3);
-      }
-      else {
+      } else {
         REQUIRE(*target == UNDEFINED);
       }
       ++target;

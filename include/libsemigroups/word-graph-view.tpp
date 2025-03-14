@@ -42,8 +42,7 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  auto
-  WordGraphView<Node>::cbegin_targets(node_type source) const {
+  auto WordGraphView<Node>::cbegin_targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
     return rx::begin(targets_no_checks(source));
   }
