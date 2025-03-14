@@ -59,6 +59,9 @@ namespace libsemigroups {
       if (empty()) {
         LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_for");
       }
+      report_default("{}: running for approx. {}\n",
+                     report_prefix(),
+                     detail::string_time(x));
       run_func([&x](std::shared_ptr<Runner> r) -> void { r->run_for(x); });
     }
 

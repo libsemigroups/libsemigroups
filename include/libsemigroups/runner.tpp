@@ -25,10 +25,17 @@ namespace libsemigroups {
   // Runner
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename T>
-  void Runner::run_until(T&& func) {
+  template <typename Func>
+  void Runner::run_until(Func&& func) {
+    static_assert(
+        std::is_same_v<std::invoke_result_t<Func>, bool>,
+        "the result type of calling an object of type Func (the template "
+        "parameter) must be bool!");
     if (!finished() && !dead()) {
-      _stopper = std::forward<T>(func);
+      report_default("{}: running until predicate returns true or finished\n",
+                     report_prefix());
+
+      _stopper = std::forward<Func>(func);
       if (!_stopper()) {
         set_state(state::running_until);
         run_impl();
