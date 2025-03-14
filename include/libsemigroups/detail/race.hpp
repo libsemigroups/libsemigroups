@@ -46,7 +46,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    class Race {
+    class Race : public Reporter {
       size_t                               _max_threads;
       std::mutex                           _mtx;
       std::vector<std::shared_ptr<Runner>> _runners;
@@ -137,7 +137,7 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] bool finished() const noexcept {
-        return _winner != nullptr;
+        return _winner != nullptr && _winner->finished();
       }
 
       // Adds a Runner to the race, throws if the race is already over.
@@ -188,23 +188,26 @@ namespace libsemigroups {
       // callable object with 0 parameters and that returns a bool.
       // This is definitely tested but doesn't show up in the code coverage for
       // some reason.
-      template <typename TCallable>
-      void run_until(TCallable const&         func,
-                     std::chrono::nanoseconds check_interval
-                     = std::chrono::milliseconds(2)) {
-        static_assert(detail::IsCallable<TCallable>::value,
-                      "the template parameter TCallable must be callable");
+      template <typename Func>
+      void run_until(Func&& func) {
         static_assert(
-            std::is_same<std::invoke_result_t<TCallable>, bool>::value,
-            "the template parameter TCallable must return a bool");
+            std::is_same_v<std::invoke_result_t<Func>, bool>,
+            "the result type of calling an object of type Func (the template "
+            "parameter) must be bool!");
         if (empty()) {
           LIBSEMIGROUPS_EXCEPTION("no runners given, cannot run_until");
         }
-        while (!func() && _winner == nullptr) {
-          // if _winner != nullptr, then the race is over.
-          run_for(check_interval);
-          check_interval *= 2;
-        }
+        // while (!func() && _winner == nullptr) {
+        //   // if _winner != nullptr, then the race is over.
+        //   run_for(check_interval);
+        //   check_interval *= 2;
+        // }
+        // return;
+        report_default("{}: running until predicate returns true or finished\n",
+                       report_prefix());
+        run_func([&func](std::shared_ptr<Runner> r) -> void {
+          r->run_until(std::forward<Func>(func));
+        });
       }
 
       template <typename T>
@@ -253,33 +256,40 @@ namespace libsemigroups {
       }
 
       // Runs the callable object \p func on every Runner in parallel.
-      template <typename TCallable>
-      void run_func(TCallable const& func) {
+      template <typename Func>
+      void run_func(Func&& func) {
         static_assert(
-            std::is_same<
-                std::invoke_result_t<TCallable, std::shared_ptr<Runner>>,
-                void>::value,
-            "the result of calling the template parameter TCallable "
-            "must be void");
+            std::is_same_v<std::invoke_result_t<Func, std::shared_ptr<Runner>>,
+                           void>,
+            "the result type of calling an object of type Func (the template "
+            "parameter) must be void!");
+        using libsemigroups::detail::string_time;
         LIBSEMIGROUPS_ASSERT(!empty());
+        reset_start_time();
         if (_winner == nullptr) {
           size_t nr_threads = std::min(_runners.size(), _max_threads);
           if (nr_threads == 1) {
-            report_default("using 0 additional threads\n");
-            detail::Timer tmr;
+            report_default("{}: using 0 additional threads\n", report_prefix());
             func(_runners.at(0));
-            _winner       = _runners.at(0);
-            _winner_index = 0;
-            report_elapsed_time("Race: ", tmr);
-            clear_runners_after_race();
+            if (_runners.at(0)->success()) {
+              _winner       = _runners.at(0);
+              _winner_index = 0;
+              clear_runners_after_race();
+            }
+            report_default("{}: elapsed time {}\n",
+                           report_prefix(),
+                           string_time(delta(start_time())));
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
             if (_runners[i]->success()) {
-              report_default("using 0 additional threads\n");
+              report_default("{}: using 0 additional threads\n",
+                             report_prefix());
               _winner       = _runners[i];
               _winner_index = i;
-              report_default("#{} already finished successfully!\n", i);
+              report_default("{}: #{} already finished successfully!\n",
+                             report_prefix(),
+                             i);
               // delete the other runners?
               clear_runners_after_race();
               return;
@@ -289,7 +299,8 @@ namespace libsemigroups {
           std::vector<std::thread::id> tids(_runners.size(),
                                             std::this_thread::get_id());
 
-          report_default("using {} / {} additional threads\n",
+          report_default("{}: using {} / {} additional threads\n",
+                         report_prefix(),
                          nr_threads,
                          std::thread::hardware_concurrency());
           detail::Timer tmr;
@@ -301,7 +312,10 @@ namespace libsemigroups {
               func(_runners.at(pos));
             } catch (std::exception const& e) {
               size_t tid = thread_id(tids[pos]);
-              report_default("exception thrown by #{}:\n{}\n", tid, e.what());
+              report_default("{}: exception thrown by #{}:\n{}\n",
+                             report_prefix(),
+                             tid,
+                             e.what());
               return;
             }
             // Stop two Runner* objects from killing each other
@@ -328,8 +342,9 @@ namespace libsemigroups {
           for (size_t i = 0; i < nr_threads; ++i) {
             t.at(i).join();
           }
-          report_elapsed_time("Race: ", tmr);
-          report_no_prefix("\n");
+          report_default("{}: elapsed time {}\n",
+                         report_prefix(),
+                         string_time(delta(start_time())));
           for (auto method = _runners.begin(); method < _runners.end();
                ++method) {
             if ((*method)->success()) {
@@ -337,7 +352,7 @@ namespace libsemigroups {
               _winner       = *method;
               _winner_index = method - _runners.begin();
               size_t tid    = thread_id(tids.at(method - _runners.begin()));
-              report_default("#{} is the winner!\n", tid);
+              report_default("{}: #{} is the winner!\n", report_prefix(), tid);
               break;
             }
           }

@@ -82,7 +82,7 @@ namespace libsemigroups {
       rc.add_runner(std::make_shared<TestRunner1>());
       size_t nr  = 0;
       auto   foo = [&nr]() -> bool { return ++nr == 2; };
-      rc.run_until(foo, std::chrono::milliseconds(10));
+      rc.run_until(foo);
       REQUIRE(rc.winner() != nullptr);
     }
 
