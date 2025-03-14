@@ -301,37 +301,12 @@ namespace libsemigroups {
     template <typename Node>
     void const_pstilo_iterator<Node>::init_can_reach_target() {
       if (_can_reach_target.empty()) {
-        std::vector<std::vector<node_type>> in_neighbours(
-            _word_graph->number_of_nodes(), std::vector<node_type>({}));
-        for (auto n = _word_graph->cbegin_nodes();
-             n != _word_graph->cend_nodes();
-             ++n) {
-          for (auto e = _word_graph->cbegin_targets(*n);
-               e != _word_graph->cend_targets(*n);
-               ++e) {
-            if (*e != UNDEFINED) {
-              in_neighbours[*e].push_back(*n);
-            }
-          }
-        }
-
         _can_reach_target.resize(_word_graph->number_of_nodes(), false);
-        _can_reach_target[_target]   = true;
-        std::vector<node_type>& todo = in_neighbours[_target];
-        std::vector<node_type>  next;
-
-        while (!todo.empty()) {
-          for (auto& m : todo) {
-            if (_can_reach_target[m] == 0) {
-              _can_reach_target[m] = true;
-              next.insert(next.end(),
-                          in_neighbours[m].cbegin(),
-                          in_neighbours[m].cend());
-            }
-          }
-          std::swap(next, todo);
-          next.clear();
-        }
+        auto ancestors
+            = word_graph::ancestors_of_no_checks(*_word_graph, _target);
+        std::for_each(ancestors.begin(), ancestors.end(), [this](auto n) {
+          _can_reach_target[n] = true;
+        });
       }
     }
 

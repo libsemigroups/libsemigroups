@@ -230,6 +230,8 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
      private:
+      // TODO(1) maybe try replacing _can_reach_target with std::unordered_set,
+      // then we can use the output of ancestors_of directly
       std::vector<bool>      _can_reach_target;
       value_type             _edges;
       WordGraph<Node> const* _word_graph;
