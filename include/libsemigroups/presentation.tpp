@@ -201,7 +201,7 @@ namespace libsemigroups {
   template <typename Word>
   void Presentation<Word>::remove_generator(
       typename Presentation<Word>::letter_type x) {
-    throw_if_alphabet_not_duplicate_free();
+    throw_if_alphabet_has_duplicates();
     if (in_alphabet(x)) {
       remove_generator_no_checks(x);
     } else {
@@ -253,7 +253,7 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  void Presentation<Word>::throw_if_alphabet_not_duplicate_free(
+  void Presentation<Word>::throw_if_alphabet_has_duplicates(
       decltype(_alphabet_map)& alphabet_map) const {
     LIBSEMIGROUPS_ASSERT(alphabet_map.empty());
     size_type index = 0;
@@ -272,7 +272,7 @@ namespace libsemigroups {
   Presentation<Word>::try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                                        word_type&               old_alphabet) {
     try {
-      throw_if_alphabet_not_duplicate_free(alphabet_map);
+      throw_if_alphabet_has_duplicates(alphabet_map);
       _alphabet_map = std::move(alphabet_map);
     } catch (LibsemigroupsException& e) {
       _alphabet = std::move(old_alphabet);

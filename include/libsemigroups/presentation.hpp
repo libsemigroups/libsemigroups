@@ -203,7 +203,7 @@ namespace libsemigroups {
     //! any) consist of letters belonging to the alphabet.
     //!
     //! \sa
-    //! * \ref throw_if_alphabet_not_duplicate_free
+    //! * \ref throw_if_alphabet_has_duplicates
     //! * \ref throw_if_bad_rules
     //! * \ref throw_if_bad_alphabet_or_rules
     // TODO(1) Rename alphabet_size
@@ -531,9 +531,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the length of the alphabet.
-    void throw_if_alphabet_not_duplicate_free() const {
+    void throw_if_alphabet_has_duplicates() const {
       decltype(_alphabet_map) alphabet_map;
-      throw_if_alphabet_not_duplicate_free(alphabet_map);
+      throw_if_alphabet_has_duplicates(alphabet_map);
     }
 
     //! \brief Check if a letter belongs to the alphabet or not.
@@ -588,7 +588,7 @@ namespace libsemigroups {
     //! Check if the alphabet and rules are valid.
     //!
     //! \throws LibsemigroupsException if \ref
-    //! throw_if_alphabet_not_duplicate_free or
+    //! throw_if_alphabet_has_duplicates or
     //! \ref throw_if_bad_rules does.
     //!
     //! \complexity
@@ -596,14 +596,14 @@ namespace libsemigroups {
     //! word, \f$n\f$ is the size of the alphabet and \f$p\f$ is the number of
     //! rules.
     void throw_if_bad_alphabet_or_rules() const {
-      throw_if_alphabet_not_duplicate_free();
+      throw_if_alphabet_has_duplicates();
       throw_if_bad_rules();
     }
 
    private:
     void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                           word_type&               old_alphabet);
-    void throw_if_alphabet_not_duplicate_free(
+    void throw_if_alphabet_has_duplicates(
         decltype(_alphabet_map)& alphabet_map) const;
   };  // class Presentation
 
@@ -1581,8 +1581,9 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if \ref throw_if_bad_alphabet_or_rules
-    //! throws on the initial presentation.
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws on the initial
+    //! presentation.
     template <typename Word>
     void normalize_alphabet(Presentation<Word>& p);
 
@@ -2269,10 +2270,10 @@ namespace libsemigroups {
     //! duplicate letters.
     //!
     //! \sa
-    //! * \ref Presentation<Word>::throw_if_alphabet_not_duplicate_free
+    //! * \ref Presentation<Word>::throw_if_alphabet_has_duplicates
     //! * \ref presentation::throw_if_bad_inverses
     InversePresentation& inverses(word_type const& w) {
-      Presentation<Word>::throw_if_alphabet_not_duplicate_free();
+      Presentation<Word>::throw_if_alphabet_has_duplicates();
       presentation::throw_if_bad_inverses(*this, w);
       return inverses_no_checks(w);
     }
