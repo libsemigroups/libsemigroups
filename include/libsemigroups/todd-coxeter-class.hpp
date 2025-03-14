@@ -607,9 +607,9 @@ namespace libsemigroups {
     //!
     //! \throw LibsemigroupsException if any letter in the range from
     //! \p first to \p last is out of bounds.
-    // TODO(0) remove this
     template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+    void throw_if_letter_not_in_alphabet(Iterator1 first,
+                                         Iterator2 last) const {
       presentation().throw_if_letter_not_in_alphabet(first, last);
     }
 
@@ -1053,7 +1053,7 @@ namespace libsemigroups {
     //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1, typename Iterator2>
     index_type current_index_of(Iterator1 first, Iterator2 last) const {
-      throw_if_letter_out_of_bounds(first, last);
+      throw_if_letter_not_in_alphabet(first, last);
       return current_index_of_no_checks(first, last);
     }
 
@@ -1113,7 +1113,7 @@ namespace libsemigroups {
     //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1, typename Iterator2>
     index_type index_of(Iterator1 first, Iterator2 last) {
-      throw_if_letter_out_of_bounds(first, last);
+      throw_if_letter_not_in_alphabet(first, last);
       return index_of_no_checks(first, last);
     }
 

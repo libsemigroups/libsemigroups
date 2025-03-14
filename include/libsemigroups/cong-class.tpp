@@ -161,21 +161,21 @@ namespace libsemigroups {
 
   template <typename Word>
   template <typename Iterator1, typename Iterator2>
-  void Congruence<Word>::throw_if_letter_out_of_bounds(Iterator1 first,
-                                                       Iterator2 last) const {
+  void Congruence<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
+                                                         Iterator2 last) const {
     if (!_race.empty()) {
       size_t index = (finished() ? _race.winner_index() : 0);
 
       if (_runner_kinds[index] == RunnerKind::TC) {
         std::static_pointer_cast<ToddCoxeter<Word>>(*_race.begin())
-            ->throw_if_letter_out_of_bounds(first, last);
+            ->throw_if_letter_not_in_alphabet(first, last);
       } else if (_runner_kinds[index] == RunnerKind::KB) {
         std::static_pointer_cast<KnuthBendix<Word>>(*_race.begin())
-            ->throw_if_letter_out_of_bounds(first, last);
+            ->throw_if_letter_not_in_alphabet(first, last);
       } else {
         LIBSEMIGROUPS_ASSERT(_runner_kinds[index] == RunnerKind::K);
         std::static_pointer_cast<Kambites<Word>>(*_race.begin())
-            ->throw_if_letter_out_of_bounds(first, last);
+            ->throw_if_letter_not_in_alphabet(first, last);
       }
       return;
     }

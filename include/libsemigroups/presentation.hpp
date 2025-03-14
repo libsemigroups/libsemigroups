@@ -715,8 +715,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief throw_if_bad_alphabet_or_rules rules against the alphabet of \p
-    //! p.
+    //! \brief Check rules against the alphabet of \p p.
     //!
     //! Check if every rule of in `[first, last)` consists of letters belonging
     //! to the alphabet of \p p.

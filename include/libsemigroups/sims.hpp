@@ -881,7 +881,8 @@ namespace libsemigroups {
     //! to \p last is out of bounds.
     // TODO(1) rm
     template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+    void throw_if_letter_not_in_alphabet(Iterator1 first,
+                                         Iterator2 last) const {
       presentation().throw_if_letter_not_in_alphabet(first, last);
     }
 
@@ -916,8 +917,8 @@ namespace libsemigroups {
                               Iterator3               first2,
                               Iterator4               last2,
                               std::vector<word_type>& include_or_exclude) {
-      throw_if_letter_out_of_bounds(first1, last1);
-      throw_if_letter_out_of_bounds(first2, last2);
+      throw_if_letter_not_in_alphabet(first1, last1);
+      throw_if_letter_not_in_alphabet(first2, last2);
       return static_cast<Subclass&>(*this).include_exclude_no_checks(
           first1, last1, first2, last2, include_or_exclude);
     }
