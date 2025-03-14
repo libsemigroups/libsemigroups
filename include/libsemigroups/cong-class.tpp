@@ -27,6 +27,7 @@ namespace libsemigroups {
         _race(),
         _runners_initted(),
         _runner_kinds() {
+    _race.report_prefix("Congruence");
     init();
   }
 

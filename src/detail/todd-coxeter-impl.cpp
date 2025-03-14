@@ -353,6 +353,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl& ToddCoxeterImpl::init() {
       detail::CongruenceCommon::init();
+      report_prefix("ToddCoxeter");
       _finished = false;
       _forest.init();
       if (_settings_stack.empty()) {
@@ -872,6 +873,7 @@ namespace libsemigroups {
           _finished = true;
         }
       }
+      report_why_we_stopped();
     }
 
     void ToddCoxeterImpl::felsch() {
