@@ -22,6 +22,7 @@
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
 #include "libsemigroups/constants.hpp"
+#include "libsemigroups/word-graph.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"
@@ -928,6 +929,16 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 6);
     REQUIRE(index_of(tc, {1}) == index_of(tc, {2}));
+    REQUIRE(tc.word_graph().number_of_nodes() == 7);
+    REQUIRE(tc.word_graph().target(0, 0) == 1);
+    auto        pred = word_graph::ancestors_of_no_checks(tc.word_graph(), 1);
+    std::vector result(pred.begin(), pred.end());
+    std::sort(result.begin(), result.end());
+    REQUIRE(result == std::vector<uint32_t>({0, 1, 2, 3, 4, 5, 6}));
+    auto desc = word_graph::nodes_reachable_from(tc.word_graph(), 1);
+    result.assign(desc.begin(), desc.end());
+    std::sort(result.begin(), result.end());
+    REQUIRE(result == std::vector<uint32_t>({1, 2, 3, 4, 5, 6}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -3190,6 +3201,11 @@ namespace libsemigroups {
     H.lookahead_next(1'000'000);
 
     REQUIRE(H.number_of_classes() == 16'384);
+
+    REQUIRE(word_graph::is_reachable(H.word_graph(), 0, 0));
+    REQUIRE(word_graph::ancestors_of_no_checks(H.word_graph(), 0).size()
+            == 16'384);
+    REQUIRE(!word_graph::is_acyclic(H.word_graph(), 0, 0));
 
     // The following no longer works
     // REQUIRE(class_of(H, "").size_hint() == POSITIVE_INFINITY);

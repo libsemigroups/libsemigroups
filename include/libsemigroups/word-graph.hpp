@@ -2200,6 +2200,10 @@ namespace libsemigroups {
     [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source);
 
+    template <typename Node1, typename Node2>
+    [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of(WordGraph<Node1> const& wg, Node2 source);
+
     //! \brief Returns the std::unordered_set of nodes reachable from a given
     //! node in a word graph.
     //!
@@ -2224,6 +2228,10 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source);
+
+    template <typename Node1, typename Node2>
+    [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 source);
 
     //! \brief Returns the number of nodes reachable from a given node in a
     //! word graph.

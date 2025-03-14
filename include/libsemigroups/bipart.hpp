@@ -368,6 +368,7 @@ namespace libsemigroups {
     //! valid.
     //!
     //! \complexity Linear in the sum of the sizes of the vectors in \p blocks.
+    // TODO(0) this should be a make function not a constructor
     explicit Blocks(std::vector<std::vector<int32_t>> const& blocks);
 
     //! \brief Default copy assignment operator.

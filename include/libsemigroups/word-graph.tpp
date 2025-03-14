@@ -774,9 +774,10 @@ namespace libsemigroups {
       Node1              next_preorder_num = 0;
       std::vector<Node1> postorder(N, N);
       Node1              next_postorder_num = 0;
-      // TODO(1) there should be a better way of doing this
+
+      auto ancestors = ancestors_of_no_checks(wg, target);
       for (auto n : wg.nodes()) {
-        if (!is_reachable(wg, n, static_cast<Node1>(target))) {
+        if (ancestors.count(n) == 0) {
           preorder[n] = N + 1;
         }
       }
@@ -873,6 +874,55 @@ namespace libsemigroups {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       return nodes_reachable_from_no_checks(wg, source);
+    }
+
+    template <typename Node1, typename Node2>
+    std::unordered_set<Node1> ancestors_of_no_checks(WordGraph<Node1> const& wg,
+                                                     Node2 target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      using label_type = typename WordGraph<Node1>::label_type;
+
+      size_t const N = wg.number_of_nodes();
+      size_t const M = wg.out_degree();
+
+      // Reverse the WordGraph and then just find the nodes reachable from
+      // target in the reversed graph. Since the reverse of a WordGraph is no
+      // longer a WordGraph we use a vector of vectors here. Alternatively, we
+      // could use the technique used in WordGraphWithSources (the sources are
+      // essentially the reversed graph) to create the reversed graph (or just
+      // use it if we know it already, like in ToddCoxeter).
+      std::vector<std::vector<Node1>> in_neighbours(N, std::vector<Node1>({}));
+      for (Node1 s = 0; s < N; ++s) {
+        for (label_type a = 0; a < M; ++a) {
+          auto t = wg.target_no_checks(s, a);
+          if (t != UNDEFINED) {
+            in_neighbours[t].push_back(s);
+          }
+        }
+      }
+
+      std::unordered_set<Node1> seen;
+      std::stack<Node1>         stack;
+      stack.push(target);
+
+      while (!stack.empty()) {
+        Node1 s = stack.top();
+        stack.pop();
+        if (seen.insert(s).second) {
+          for (auto t : in_neighbours[s]) {
+            stack.push(t);
+          }
+        }
+      }
+      return seen;
+    }
+
+    template <typename Node1, typename Node2>
+    std::unordered_set<Node1> ancestors_of(WordGraph<Node1> const& wg,
+                                           Node2                   target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
+      return ancestors_of_no_checks(wg, target);
     }
 
     template <typename Node1, typename Node2, typename Iterator>
@@ -1552,8 +1602,8 @@ namespace libsemigroups {
     _uf.init(xnum_nodes_reachable_from_root + ynum_nodes_reachable_from_root);
     _uf.unite(xroot, yroot + xnum_nodes_reachable_from_root);
 
-    // The stack can't be empty if this function runs to the end so no need to
-    // do anything.
+    // The stack can't be empty if this function runs to the end so no need
+    // to do anything.
     LIBSEMIGROUPS_ASSERT(_stck.empty());
     // 0 .. x.number_of_nodes() - 1, x.number_of_nodes()  ..
     //   x.number_of_nodes() + y.number_of_nodes() -1
@@ -1599,9 +1649,9 @@ namespace libsemigroups {
         ynum_nodes_reachable_from_root,
         yroot);
     _uf.normalize();
-    // It can be that _uf is equivalent to [0, 0, 2] at this point (and there's
-    // no way for it to not be like this, because 2 doesn't belong to the class
-    // of 0), and so we require the following lookup.
+    // It can be that _uf is equivalent to [0, 0, 2] at this point (and
+    // there's no way for it to not be like this, because 2 doesn't belong
+    // to the class of 0), and so we require the following lookup.
     _lookup.resize(xnum_nodes_reachable_from_root);
     LIBSEMIGROUPS_ASSERT(_lookup.size() == xnum_nodes_reachable_from_root);
     std::fill(_lookup.begin(), _lookup.end(), static_cast<Node>(UNDEFINED));
