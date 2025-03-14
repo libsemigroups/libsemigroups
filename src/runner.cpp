@@ -32,7 +32,8 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   Reporter::Reporter()
-      : _prefix(),
+      : _divider(),
+        _prefix(),
         _report_time_interval(),
         // mutable
         _last_report(time_point()),
@@ -42,6 +43,7 @@ namespace libsemigroups {
   }
 
   Reporter& Reporter::init() {
+    _divider              = "";
     _prefix               = "";
     _report_time_interval = nanoseconds(std::chrono::seconds(1));
     reset_start_time();
@@ -49,18 +51,21 @@ namespace libsemigroups {
   }
 
   Reporter::Reporter(Reporter const& that)
-      : _prefix(that._prefix),
+      : _divider(that._divider),
+        _prefix(that._prefix),
         _report_time_interval(that._report_time_interval),
         _last_report(that._last_report.load()),
         _start_time(that._start_time) {}
 
   Reporter::Reporter(Reporter&& that)
-      : _prefix(std::move(that._prefix)),
+      : _divider(std::move(that._divider)),
+        _prefix(std::move(that._prefix)),
         _report_time_interval(std::move(that._report_time_interval)),
         _last_report(that._last_report.load()),
         _start_time(std::move(that._start_time)) {}
 
   Reporter& Reporter::operator=(Reporter const& that) {
+    _divider              = that._divider;
     _prefix               = that._prefix;
     _report_time_interval = that._report_time_interval;
     _last_report          = that._last_report.load();
@@ -69,6 +74,7 @@ namespace libsemigroups {
   }
 
   Reporter& Reporter::operator=(Reporter&& that) {
+    _divider              = std::move(that._divider);
     _prefix               = std::move(that._prefix);
     _report_time_interval = std::move(that._report_time_interval);
     _last_report          = that._last_report.load();
@@ -149,13 +155,16 @@ namespace libsemigroups {
 
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
+      emit_divider();
       if (val != FOREVER) {
         report_default("{}: running for approx. {}\n",
                        report_prefix(),
                        detail::string_time(val));
+        emit_divider();
       } else {
         report_default("{}: running until finished, with no time limit\n",
                        report_prefix());
+        emit_divider();
         run();
         return;
       }
@@ -181,11 +190,14 @@ namespace libsemigroups {
     } else {
       // This line is definitely tested, but not showing up in code coverage for
       // JDM
+      // NOTE: no dividers here
       report_default("{}: already finished, not running\n", report_prefix());
     }
   }
 
   void Runner::report_why_we_stopped() const {
+    // NOTE: Also no dividers here because we can call emit_divider in any code
+    // calling this function
     if (dead()) {
       report_default("{}: killed!\n", report_prefix());
     } else if (timed_out()) {
