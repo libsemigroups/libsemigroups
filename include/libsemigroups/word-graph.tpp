@@ -21,10 +21,6 @@
 
 // TODO(1) re-order to be in alphabetical order
 
-#include "libsemigroups/exception.hpp"
-#include "libsemigroups/matrix.hpp"
-#include "libsemigroups/word-graph.hpp"
-
 namespace libsemigroups {
 
   //////////////////////////////////////////////////////////////////////////////

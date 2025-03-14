@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/exception.hpp"
 namespace libsemigroups {
   template <typename Result, typename Node>
   auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)

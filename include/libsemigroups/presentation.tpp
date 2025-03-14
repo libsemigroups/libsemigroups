@@ -19,7 +19,6 @@
 // This file contains the implementation of a class template for semigroup or
 // monoid presentations.
 
-#include "libsemigroups/exception.hpp"
 namespace libsemigroups {
   namespace detail {
     template <typename Word>

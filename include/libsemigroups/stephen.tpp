@@ -18,7 +18,6 @@
 
 // This file contains the implementation of the Stephen class template.
 
-#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   template <typename PresentationType>
