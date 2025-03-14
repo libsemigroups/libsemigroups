@@ -58,7 +58,6 @@ namespace libsemigroups {
         typename detail::DynamicArray2<Node>::const_iterator;
 
    private:
-   private:
     WordGraph<Node> const* _graph;
     node_type              _start;
     node_type              _end;
@@ -512,4 +511,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"
 
-#endif
+#endif  // LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_

@@ -97,7 +97,6 @@ namespace libsemigroups {
                           "007",
                           "test cbegin_targets",
                           "[quick]") {
-    // TODO() Implement graph_to_view for const_iterator_targets
     WordGraph<size_t> g(10, 5);
     g.target(2, 0, 5);
     WordGraphView<size_t> v(g, 2, 5);
