@@ -68,7 +68,18 @@ namespace libsemigroups {
     //! \brief Check a Blocks object.
     //!
     //! This function checks a Blocks object, and throws an exception if the
-    //! object is not valid.
+    //! object does not:
+    //!
+    //! * consist of non-negative integers; and
+    //! * have the property that if \f$i\f$, \f$i > 0\f$ occurs in \p x,
+    //!   then \f$i - 1\f$ occurs earlier in \p x.
+    //!
+    //! The value of `x[i]` should represent the index of the block
+    //! containing \c i.
+    //!
+    //! For example, if \p x is `{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}`,
+    //! then the above conditions are satisfied, but if \p x is `{1, 0, 1,
+    //! 10}` then they are not.
     //!
     //! \param x the blocks object to check.
     //!
