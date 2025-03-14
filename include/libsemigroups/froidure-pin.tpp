@@ -19,9 +19,6 @@
 // This file contains implementations of the member functions for the
 // FroidurePin class.
 
-#include "libsemigroups/detail/fmt.hpp"
-#include "libsemigroups/detail/report.hpp"
-
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
