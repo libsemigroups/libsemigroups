@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,10 @@ namespace libsemigroups {
         _tmp_rho_value1(),
         _tmp_rho_value2() {
     report_prefix("Konieczny");
+    report_divider("{:+<110}\n");
+    _lambda_orb.report_prefix("Konieczny");
     _lambda_orb.cache_scc_multipliers(true);
+    _rho_orb.report_prefix("Konieczny");
     _rho_orb.cache_scc_multipliers(true);
   }
 
@@ -685,27 +689,52 @@ namespace libsemigroups {
       return;
     }
 
-    report_default("Konieczny: Computing \u03BB- and \u03C1-actions . . .\n");
-    if (!_lambda_orb.started()) {
-      _lambda_orb.add_seed(OneParamLambda()(this->to_external_const(_one)));
-      for (auto const& g : _gens) {
-        _lambda_orb.add_generator(this->to_external_const(g));
+    if (!_lambda_orb.finished()) {
+      report_default("Konieczny: computing \u03BB-action . . .\n");
+      if (!_lambda_orb.started()) {
+        _lambda_orb.add_seed(OneParamLambda()(this->to_external_const(_one)));
+        for (auto const& g : _gens) {
+          _lambda_orb.add_generator(this->to_external_const(g));
+        }
+      }
+      auto prev = _lambda_orb.current_size();
+      _lambda_orb.run_until([this]() { return stopped(); });
+      auto time = string_time(delta(start_time()));
+      report_default("Konieczny: found {} \u03BB-values in {}\n",
+                     group_digits(_lambda_orb.current_size() - prev),
+                     time);
+      if (_lambda_orb.finished()) {
+        if (prev != _lambda_orb.size()) {
+          report_default("Konieczny: \u03BB-action finished with {} values\n",
+                         group_digits(_lambda_orb.size()));
+        }
+      } else {
+        report_default("Konieczny: \u03BB-action not yet finished!\n");
+        return;
       }
     }
+
+    report_default("Konieczny: computing \u03C1-action . . .\n");
     if (!_rho_orb.started()) {
       _rho_orb.add_seed(OneParamRho()(this->to_external_const(_one)));
       for (auto const& g : _gens) {
         _rho_orb.add_generator(this->to_external_const(g));
       }
     }
-    _lambda_orb.run_until([this]() { return stopped(); });
+    auto prev = _rho_orb.current_size();
     _rho_orb.run_until([this]() { return stopped(); });
-    auto const time = string_time(delta(start_time()));
-    report_default("Konieczny: . . . found {} \u03BB-values and {} "
-                   "\u03C1-values in {}\n",
-                   group_digits(_lambda_orb.current_size()),
-                   group_digits(_rho_orb.current_size()),
+    auto time = string_time(delta(start_time()));
+    report_default("Konieczny: found {} \u03C1-values in {}\n",
+                   group_digits(_rho_orb.current_size() - prev),
                    time);
+    if (_rho_orb.finished()) {
+      if (prev != _rho_orb.size()) {
+        report_default("Konieczny: \u03C1-action finished with {} values\n",
+                       group_digits(_rho_orb.size()));
+      }
+    } else {
+      report_default("Konieczny: \u03C1-action not yet finished!\n");
+    }
   }
 
   // This is a traits class for ConstIteratorStateless in detail/iterator.hpp
@@ -789,18 +818,65 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  void Konieczny<Element, Traits>::run_impl() {
-    if (!running_until() && !running_for() && !finished()) {
+  void Konieczny<Element, Traits>::report_after_run() {
+    if (!reporting_enabled()) {
+      return;
+    }
+    emit_divider();
+    report_why_we_stopped();
+    if (finished()) {
+      using detail::group_digits;
+      report_default("Konieczny: FINISHED!\n");
+      emit_divider();
+      report_default("{:<42} | {:>11}\n",
+                     "Konieczny: number of regular D-classes",
+                     group_digits(number_of_regular_D_classes()));
       report_default(
-          "Konieczny: running until all D-classes are found . . .\n");
+          "{:<42} | {:>11}\n",
+          "Konieczny: number of non-regular D-classes",
+          group_digits(number_of_D_classes() - number_of_regular_D_classes()));
+      report_default("{:<42} | {:>11}\n",
+                     "Konieczny: number of L-classes",
+                     group_digits(number_of_L_classes()));
+      report_default("{:<42} | {:>11}\n",
+                     "Konieczny: number of R-classes",
+                     group_digits(number_of_R_classes()));
+      report_default("{:<42} | {:>11}\n",
+                     "Konieczny: number of elements",
+                     group_digits(size()));
+    }
+    emit_divider();
+  }
+
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::report_before_run() {
+    if (!reporting_enabled()) {
+      return;
+    }
+    report_default("Konieczny: there are {} generators with degree {}\n",
+                   number_of_generators(),
+                   _degree);
+  }
+
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::run_impl() {
+    if (reporting_enabled()) {
+      if (!running_until() && !running_for() && !finished()) {
+        emit_divider();
+        report_default(
+            "Konieczny: running until all D-classes are found . . .\n");
+        emit_divider();
+      }
     }
     reset_start_time();
+    report_before_run();
     // initialise the required data
     init_run();
     // if we haven't initialised, it should be because we stopped() during
     // init(), and hence we should not continue
     if (!_run_initialised) {
       LIBSEMIGROUPS_ASSERT(stopped());
+      report_after_run();
       return;
     }
 
@@ -875,11 +951,7 @@ namespace libsemigroups {
         _ranks.erase(mx_rank);
       }
     }
-
-    report_why_we_stopped();
-    if (finished()) {
-      report_default("Konieczny: FINISHED!\n");
-    }
+    report_after_run();
   }
 
   /////////////////////////////////////////////////////////////////////////////

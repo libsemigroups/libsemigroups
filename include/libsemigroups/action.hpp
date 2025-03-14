@@ -138,7 +138,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! using namespace libsemigroups;
-  //! auto rg = ReportGuard(REPORT);
+  //! auto rg = ReportGuard(true);
   //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
   //! o;
   //! o.add_seed(PPerm<16>::identity(16));

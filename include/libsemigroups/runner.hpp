@@ -97,6 +97,7 @@ namespace libsemigroups {
     using nanoseconds = std::chrono::nanoseconds;
 
    private:
+    std::string _divider;
     std::string _prefix;
     nanoseconds _report_time_interval;
 
@@ -318,6 +319,21 @@ namespace libsemigroups {
     //! \note This function is thread-safe.
     [[nodiscard]] std::string const& report_prefix() const noexcept {
       return _prefix;
+    }
+
+    Reporter& report_divider(std::string const& val) {
+      _divider = val;
+      return *this;
+    }
+
+    [[nodiscard]] std::string const& report_divider() const noexcept {
+      return _divider;
+    }
+
+    void emit_divider() {
+      if (!_divider.empty()) {
+        report_no_prefix(_divider, "");
+      }
     }
   };
 

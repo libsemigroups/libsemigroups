@@ -1759,7 +1759,9 @@ namespace libsemigroups {
 
     bool finished_impl() const override;
     void run_impl() override;
+    void report_before_run();
     void report_progress();
+    void report_after_run();
 
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - data - private
