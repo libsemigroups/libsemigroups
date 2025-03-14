@@ -2266,10 +2266,11 @@ namespace libsemigroups {
     }
   }
 
+  // Not terminated after 5 hours on JDE's PC
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "053",
                           "partial_transformation_monoid(3)",
-                          "[extreme][low-index]") {
+                          "[fail][low-index]") {
     auto  rg = ReportGuard(true);
     auto  p  = presentation::examples::partial_transformation_monoid_MW24(3);
     Sims1 S;
@@ -3390,10 +3391,12 @@ namespace libsemigroups {
     }
   }
 
+  // This took 4h31min21s to run on JDE's PC. 4h2min42s of which were spent
+  // computing the 7-classes.
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "089",
                           "possible full transf. monoid 8",
-                          "[extreme][sims1]") {
+                          "[fail][sims1]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = std::vector<word_type>(

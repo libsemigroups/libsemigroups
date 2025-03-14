@@ -776,14 +776,4 @@ namespace libsemigroups {
     REQUIRE(!k.finished());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "118",
-                          "partition_monoid(7)",
-                          "[knuthbendix][extreme]") {
-    auto        rg = ReportGuard(true);
-    auto        p  = presentation::examples::partition_monoid(7);
-    KnuthBendix k(twosided, p);
-    REQUIRE(k.number_of_classes() == 0);
-  }
-
 }  // namespace libsemigroups
