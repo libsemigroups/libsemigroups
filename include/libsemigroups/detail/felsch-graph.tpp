@@ -331,7 +331,7 @@ namespace libsemigroups {
     FelschGraph<Word, Node, Definitions>&
     FelschGraph<Word, Node, Definitions>::private_init_from_presentation() {
 #ifdef LIBSEMIGROUPS_DEBUG
-      _presentation.validate();
+      _presentation.throw_if_bad_alphabet_or_rules();
 #endif
       size_t r = (_presentation.contains_empty_word() ? 0 : 1);
       size_t c = _presentation.alphabet().size();

@@ -197,7 +197,7 @@ namespace libsemigroups {
 
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       if (p.alphabet().size() > 49) {
         LIBSEMIGROUPS_EXCEPTION("expected at most 49 generators, found {}!",
                                 p.alphabet().size());

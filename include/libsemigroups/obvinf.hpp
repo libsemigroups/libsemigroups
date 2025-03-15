@@ -409,7 +409,7 @@ namespace libsemigroups {
   //! semigroup or monoid defined by \p p is infinite.
   template <typename Word>
   bool is_obviously_infinite(Presentation<Word> const& p) {
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     if (p.alphabet().empty()) {
       return false;
     }

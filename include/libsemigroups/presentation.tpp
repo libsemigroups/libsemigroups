@@ -21,22 +21,6 @@
 
 namespace libsemigroups {
   namespace detail {
-    template <typename Word>
-    void validate_rules_length(Presentation<Word> const& p) {
-      if ((p.rules.size() % 2) == 1) {
-        LIBSEMIGROUPS_EXCEPTION("expected even length, found {}",
-                                p.rules.size());
-      }
-    }
-
-    template <typename Iterator>
-    void validate_iterator_distance(Iterator first, Iterator last) {
-      if ((std::distance(first, last) % 2) == 1) {
-        LIBSEMIGROUPS_EXCEPTION("expected iterators at even distance, found {}",
-                                std::distance(first, last));
-      }
-    }
-
     std::string to_printable(char c);
     bool        isprint(std::string const& alphabet);
     std::string to_printable(std::string const& alphabet);
@@ -164,7 +148,7 @@ namespace libsemigroups {
   template <typename Word>
   typename Presentation<Word>::size_type
   Presentation<Word>::index(letter_type val) const {
-    validate_letter(val);
+    throw_if_letter_not_in_alphabet(val);
     return _alphabet_map.find(val)->second;
   }
 
@@ -217,7 +201,7 @@ namespace libsemigroups {
   template <typename Word>
   void Presentation<Word>::remove_generator(
       typename Presentation<Word>::letter_type x) {
-    validate_alphabet();
+    throw_if_alphabet_has_duplicates();
     if (in_alphabet(x)) {
       remove_generator_no_checks(x);
     } else {
@@ -229,7 +213,7 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  void Presentation<Word>::validate_letter(
+  void Presentation<Word>::throw_if_letter_not_in_alphabet(
       typename Presentation<Word>::letter_type c) const {
     if (_alphabet.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
@@ -250,25 +234,26 @@ namespace libsemigroups {
 
   template <typename Word>
   template <typename Iterator1, typename Iterator2>
-  void Presentation<Word>::validate_word(Iterator1 first,
-                                         Iterator2 last) const {
+  void
+  Presentation<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
+                                                      Iterator2 last) const {
     if (!_contains_empty_word && first == last) {
       LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty, did you mean to "
                               "call contains_empty_word(true) first?");
     }
     for (auto it = first; it != last; ++it) {
-      validate_letter(*it);
+      throw_if_letter_not_in_alphabet(*it);
     }
   }
 
   template <typename Word>
-  void Presentation<Word>::validate_rules() const {
-    detail::validate_rules_length(*this);
-    presentation::validate_rules(*this, rules.cbegin(), rules.cend());
+  void Presentation<Word>::throw_if_bad_rules() const {
+    presentation::throw_if_odd_number_of_rules(*this);
+    presentation::throw_if_bad_rules(*this, rules.cbegin(), rules.cend());
   }
 
   template <typename Word>
-  void Presentation<Word>::validate_alphabet(
+  void Presentation<Word>::throw_if_alphabet_has_duplicates(
       decltype(_alphabet_map)& alphabet_map) const {
     LIBSEMIGROUPS_ASSERT(alphabet_map.empty());
     size_type index = 0;
@@ -287,7 +272,7 @@ namespace libsemigroups {
   Presentation<Word>::try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                                        word_type&               old_alphabet) {
     try {
-      validate_alphabet(alphabet_map);
+      throw_if_alphabet_has_duplicates(alphabet_map);
       _alphabet_map = std::move(alphabet_map);
     } catch (LibsemigroupsException& e) {
       _alphabet = std::move(old_alphabet);
@@ -298,17 +283,16 @@ namespace libsemigroups {
   namespace presentation {
 
     template <typename Word>
-    void validate_semigroup_inverses(Presentation<Word> const& p,
-                                     Word const&               vals) {
+    void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals) {
       if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid number of inverses, expected {} but found {}",
             p.alphabet().size(),
             vals.size());
       }
-      // Validate word after checking the size so that we get a more
-      // meaningful exception message
-      p.validate_word(vals.begin(), vals.end());
+      // throw_if_bad_alphabet_or_rules word after checking the size so that we
+      // get a more meaningful exception message
+      p.throw_if_letter_not_in_alphabet(vals.begin(), vals.end());
 
       Word cpy = vals;
       std::sort(cpy.begin(), cpy.end());
@@ -354,7 +338,7 @@ namespace libsemigroups {
     template <typename Word>
     void add_identity_rules(Presentation<Word>&                      p,
                             typename Presentation<Word>::letter_type id) {
-      p.validate_letter(id);
+      p.throw_if_letter_not_in_alphabet(id);
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
         Word       lhs = {*it, id};
         Word const rhs = {*it};
@@ -369,7 +353,7 @@ namespace libsemigroups {
     template <typename Word>
     void add_zero_rules(Presentation<Word>&                      p,
                         typename Presentation<Word>::letter_type z) {
-      p.validate_letter(z);
+      p.throw_if_letter_not_in_alphabet(z);
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
         Word       lhs = {*it, z};
         Word const rhs = {z};
@@ -385,7 +369,7 @@ namespace libsemigroups {
     void add_inverse_rules(Presentation<Word>&                      p,
                            Word const&                              vals,
                            typename Presentation<Word>::letter_type id) {
-      validate_semigroup_inverses(p, vals);
+      throw_if_bad_inverses(p, vals);
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
         if (p.letter_no_checks(i) == id && vals[i] != id) {
           LIBSEMIGROUPS_EXCEPTION(
@@ -407,7 +391,7 @@ namespace libsemigroups {
 
     template <typename Word>
     void remove_duplicate_rules(Presentation<Word>& p) {
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
 
       std::unordered_set<std::pair<Word, Word>, Hash<std::pair<Word, Word>>>
           relations_set;
@@ -427,7 +411,7 @@ namespace libsemigroups {
 
     template <typename Word>
     void remove_trivial_rules(Presentation<Word>& p) {
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
 
       for (size_t i = 0; i < p.rules.size();) {
         if (p.rules[i] == p.rules[i + 1]) {
@@ -443,7 +427,7 @@ namespace libsemigroups {
     template <typename Word>
     void reduce_complements(Presentation<Word>& p) {
       // the first loop below depends on p.rules being of even length
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
 
       libsemigroups::detail::Duf<> duf;
       duf.resize(p.rules.size());
@@ -496,7 +480,7 @@ namespace libsemigroups {
     template <typename Word, typename Compare>
     bool sort_each_rule(Presentation<Word>& p, Compare cmp) {
       bool result = false;
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
       // Sort each relation so that the lhs is greater than the rhs
       // according to func.
       for (auto it = p.rules.begin(); it < p.rules.end(); it += 2) {
@@ -520,7 +504,7 @@ namespace libsemigroups {
       using rx::sort;
       using rx::take;
       using rx::to_vector;
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
 
       auto&        rules = p.rules;
       size_t const n     = rules.size() / 2;
@@ -552,7 +536,7 @@ namespace libsemigroups {
     template <typename Word, typename Compare>
     bool are_rules_sorted(Presentation<Word> const& p, Compare cmp) {
       using namespace rx;  // NOLINT(build/namespaces)
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
       auto const&  rules = p.rules;
       size_t const n     = rules.size() / 2;
       return is_sorted((seq<size_t>() | take(n)),
@@ -656,7 +640,7 @@ namespace libsemigroups {
     void normalize_alphabet(Presentation<Word>& p) {
       using letter_type = typename Presentation<Word>::letter_type;
 
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
 
       for (auto& rule : p.rules) {
         std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
@@ -682,7 +666,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
       p.alphabet(std::move(A));
 #ifdef LIBSEMIGROUPS_DEBUG
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
 #endif
     }
 
@@ -690,7 +674,7 @@ namespace libsemigroups {
     void change_alphabet(Presentation<Word>& p, Word const& new_alphabet) {
       using letter_type = typename Presentation<Word>::letter_type;
 
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
 
       if (new_alphabet.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION("expected an alphabet of size {}, found {}",
@@ -712,13 +696,13 @@ namespace libsemigroups {
         });
       }
 #ifdef LIBSEMIGROUPS_DEBUG
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
 #endif
     }
 
     template <typename Iterator>
     Iterator longest_rule(Iterator first, Iterator last) {
-      detail::validate_iterator_distance(first, last);
+      throw_if_odd_number_of_rules(first, last);
 
       auto   result = last;
       size_t max    = 0;
@@ -745,7 +729,7 @@ namespace libsemigroups {
 
     template <typename Iterator>
     Iterator shortest_rule(Iterator first, Iterator last) {
-      detail::validate_iterator_distance(first, last);
+      throw_if_odd_number_of_rules(first, last);
 
       auto   result = last;
       size_t min    = POSITIVE_INFINITY;
@@ -773,7 +757,7 @@ namespace libsemigroups {
     template <typename Word>
     void remove_redundant_generators(Presentation<Word>& p) {
       using letter_type_ = typename Presentation<Word>::letter_type;
-      detail::validate_rules_length(p);
+      throw_if_odd_number_of_rules(p);
 
       remove_trivial_rules(p);
       for (size_t i = 0; i != p.rules.size(); i += 2) {
@@ -1064,8 +1048,8 @@ namespace libsemigroups {
     // void add_cyclic_conjugates(Presentation<Word>& p,
     //                            Word const&         lhs,
     //                            Word const&         rhs) {
-    //   p.validate_word(lhs.cbegin(), lhs.cend());
-    //   p.validate_word(rhs.cbegin(), rhs.cend());
+    //   p.throw_if_letter_not_in_alphabet(lhs.cbegin(), lhs.cend());
+    //   p.throw_if_letter_not_in_alphabet(rhs.cbegin(), rhs.cend());
     //   for (size_t i = 0; i < lhs.size(); ++i) {
     //     std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
     //     lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
@@ -1117,8 +1101,9 @@ namespace libsemigroups {
   template <typename Word>
   InversePresentation<Word>&
   InversePresentation<Word>::inverses_no_checks(word_type const& w) {
-    // TODO(later) maybe don't validate here but only in the validate function
-    // to be written. Set the alphabet to include the inverses
+    // TODO(later) maybe don't throw_if_bad_alphabet_or_rules here but only in
+    // the throw_if_bad_alphabet_or_rules function to be written. Set the
+    // alphabet to include the inverses
     _inverses = w;
     return *this;
   }

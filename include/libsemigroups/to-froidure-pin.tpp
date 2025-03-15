@@ -220,7 +220,7 @@ namespace libsemigroups {
       for (size_t s = last - first; s < x.degree(); ++s) {
         x[s] = s;
       }
-      validate(x);
+      throw_if_image_value_out_of_range(x);
       result.add_generator(x);
     }
     return result;

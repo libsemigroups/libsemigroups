@@ -62,7 +62,7 @@ namespace libsemigroups {
     redundant_rule(Presentation<Word> const& p, Time t) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
 
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       Presentation<Word> q;
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());

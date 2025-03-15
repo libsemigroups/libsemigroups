@@ -241,7 +241,7 @@ namespace libsemigroups {
     redundant_rule(Presentation<Word> const& p, Time t) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
 
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       Presentation<Word> q;
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());
@@ -302,7 +302,7 @@ namespace libsemigroups {
     //   constexpr static congruence_kind twosided =
     //   congruence_kind::twosided;
 
-    //   // TODO(1) validate lhs and rhs
+    //   // TODO(1) throw_if_bad_alphabet_or_rules lhs and rhs
     //   KnuthBendixImpl         kb(twosided, p);
     //   std::string         lphbt = p.alphabet();
     //   std::vector<size_t> perm(lphbt.size(), 0);
@@ -312,7 +312,7 @@ namespace libsemigroups {
     //     detail::apply_permutation(lphbt, perm);
 
     //     p.alphabet(lphbt);
-    //     p.validate();
+    //     p.throw_if_bad_alphabet_or_rules();
 
     //     kb.init(twosided, p);
     //     // TODO(1) no checks

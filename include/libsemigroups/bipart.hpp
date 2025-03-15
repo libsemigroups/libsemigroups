@@ -65,15 +65,26 @@ namespace libsemigroups {
   //!
   //! This namespace contains helper functions for the Blocks class.
   namespace blocks {
-    //! \brief Validate a Blocks object.
+    //! \brief Check a Blocks object.
     //!
-    //! This function validates a Blocks object, and throws an exception if the
-    //! object is not valid.
+    //! This function checks a Blocks object, and throws an exception if the
+    //! object does not:
     //!
-    //! \param x the blocks object to validate.
+    //! * consist of non-negative integers; and
+    //! * have the property that if \f$i\f$, \f$i > 0\f$ occurs in \p x,
+    //!   then \f$i - 1\f$ occurs earlier in \p x.
+    //!
+    //! The value of `x[i]` should represent the index of the block
+    //! containing \c i.
+    //!
+    //! For example, if \p x is `{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}`,
+    //! then the above conditions are satisfied, but if \p x is `{1, 0, 1,
+    //! 10}` then they are not.
+    //!
+    //! \param x the blocks object to check.
     //!
     //! \throws LibsemigroupsException if \p x is invalid.
-    void validate(Blocks const& x);
+    void throw_if_invalid(Blocks const& x);
 
     //! \brief Return the underlying partition of a Blocks object.
     //!
@@ -128,7 +139,7 @@ namespace libsemigroups {
     //! n\}\f$ such that:
     //! * \f$\{|x|\mid x\in P\} = \{1, \ldots, n\}\f$;
     //! * a block of the partition consists of negative numbers if and only if
-    //! the corresponding block of \c x is a transverse block.
+    //!   the corresponding block of \c x is a transverse block.
     //!
     //! \param x the bipartition.
     //!
@@ -143,15 +154,15 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<std::vector<int32_t>>
     underlying_partition(Bipartition const& x);
 
-    //! \brief Validates a bipartition.
+    //! \brief Checks a bipartition.
     //!
-    //! This function validates a Bipartition object, and throws an exception if
+    //! This function checks a Bipartition object, and throws an exception if
     //! the object is not valid.
     //!
     //! \param x the bipartition.
     //!
     //! \throws LibsemigroupsException if \p x is invalid.
-    void validate(Bipartition const& x);
+    void throw_if_invalid(Bipartition const& x);
 
   }  // namespace bipartition
 
@@ -180,7 +191,8 @@ namespace libsemigroups {
 
     //! No doc
     template <typename BipartitionOrBlocks, typename Scalar>
-    static void validate_args(std::vector<std::vector<Scalar>> const& blocks) {
+    static void
+    throw_if_bad_args(std::vector<std::vector<Scalar>> const& blocks) {
       static_assert(std::is_same_v<BipartitionOrBlocks, Bipartition>
                     || std::is_same_v<BipartitionOrBlocks, Blocks>);
       static_assert(std::is_signed<Scalar>::value,
@@ -250,22 +262,22 @@ namespace libsemigroups {
 
     //! No doc
     template <typename BipartitionOrBlocks, typename Scalar>
-    static void
-    validate_args(std::initializer_list<std::vector<Scalar>> const& blocks) {
+    static void throw_if_bad_args(
+        std::initializer_list<std::vector<Scalar>> const& blocks) {
       std::vector<std::vector<Scalar>> arg(blocks);
-      validate_args<BipartitionOrBlocks>(arg);
+      throw_if_bad_args<BipartitionOrBlocks>(arg);
     }
 
     //! No doc
     template <typename BipartitionOrBlocks, typename Scalar>
-    static void validate_args(std::vector<Scalar> const&) {
-      // checks for this argument type are done in validate
+    static void throw_if_bad_args(std::vector<Scalar> const&) {
+      // checks for this argument type are done in throw_if_invalid
     }
 
     //! No doc
     template <typename BipartitionOrBlocks, typename Scalar>
-    static void validate_args(std::initializer_list<Scalar> const&) {
-      // checks for this argument type are done in validate
+    static void throw_if_bad_args(std::initializer_list<Scalar> const&) {
+      // checks for this argument type are done in throw_if_invalid
     }
   }  // namespace detail
 
@@ -335,7 +347,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks are made on the validity of the arguments to this function.
     //!
-    //! \sa validate(Blocks const&)
+    //! \sa throw_if_invalid(Blocks const&)
     Blocks(const_iterator first, const_iterator last);
 
     //! \brief Constructs a blocks object of given degree.
@@ -767,7 +779,7 @@ namespace libsemigroups {
 
   //! \ingroup make_blocks_group
   //!
-  //! \brief Validate the arguments, construct a Blocks object, and validate
+  //! \brief Check the arguments, construct a Blocks object, and check
   //! it.
   //!
   //! \tparam Container the type of the parameter \p cont.
@@ -783,15 +795,15 @@ namespace libsemigroups {
   //! valid.
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, Blocks> make(Container const& cont) {
-    detail::validate_args<Blocks>(cont);
+    detail::throw_if_bad_args<Blocks>(cont);
     Blocks result(cont);
-    blocks::validate(result);
+    blocks::throw_if_invalid(result);
     return result;
   }
 
   //! \ingroup make_blocks_group
   //!
-  //! \brief Validate the arguments, construct a Blocks object, and validate
+  //! \brief Check the arguments, construct a Blocks object, and check
   //! it.
   //!
   //! \tparam Return the return type. Must satisfy
@@ -846,7 +858,7 @@ namespace libsemigroups {
   //! used in the GAP package [Semigroups package for
   //! GAP](https://semigroups.github.io/Semigroups/).
   //!
-  //! \sa bipartition::validate(Bipartition const&).
+  //! \sa bipartition::throw_if_invalid(Bipartition const&).
   // TODO(2) add more explanation to the doc here
   class Bipartition {
    private:
@@ -906,7 +918,7 @@ namespace libsemigroups {
     //! \param blocks a lookup for the blocks of the bipartition being
     //! constructed.
     //!
-    //! \sa libsemigroups::validate(Bipartition const&).
+    //! \sa bipartition::throw_if_invalid(Bipartition const&).
     explicit Bipartition(std::vector<uint32_t> const& blocks);
 
     //! \brief Construct a bipartition from an rvalue reference to blocks
@@ -916,7 +928,7 @@ namespace libsemigroups {
     //! constructed.
     //!
     //! \sa Bipartition(std::vector<uint32_t> const&)
-    //!  and libsemigroups::validate(Bipartition const&).
+    //!  and bipartition::throw_if_invalid(Bipartition const&).
     explicit Bipartition(std::vector<uint32_t>&& blocks);
 
     //! \brief Construct a bipartition from an initializer list blocks lookup.
@@ -925,7 +937,7 @@ namespace libsemigroups {
     //! constructed.
     //!
     //! \sa Bipartition(std::vector<uint32_t> const&)
-    //!  and libsemigroups::validate(Bipartition const&).
+    //!  and bipartition::throw_if_invalid(Bipartition const&).
     Bipartition(std::initializer_list<uint32_t> const& blocks);
 
     //! \brief Construct a bipartition from a partition.
@@ -940,7 +952,7 @@ namespace libsemigroups {
     //!
     //! \warning None of these conditions is checked by the constructor.
     //!
-    //! \sa libsemigroups::validate(Bipartition const&).
+    //! \sa bipartition::throw_if_invalid(Bipartition const&).
     Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks);
 
     //! \copydoc Bipartition(std::initializer_list<std::vector<int32_t>>
@@ -1514,7 +1526,7 @@ namespace libsemigroups {
 
   //! \ingroup make_bipart_group
   //!
-  //! \brief Validate the arguments, construct a bipartition, and validate it.
+  //! \brief Check the arguments, construct a bipartition, and check it.
   //!
   //! \tparam Container the type of the parameter \p cont.
   //! \tparam Return the return type. Must satisfy
@@ -1531,15 +1543,15 @@ namespace libsemigroups {
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
   make(Container const& cont) {
-    detail::validate_args<Bipartition>(cont);
+    detail::throw_if_bad_args<Bipartition>(cont);
     Bipartition result(cont);
-    bipartition::validate(result);
+    bipartition::throw_if_invalid(result);
     return result;
   }
 
   //! \ingroup make_bipart_group
   //!
-  //! \brief Validate the arguments, construct a bipartition, and validate it.
+  //! \brief Check the arguments, construct a bipartition, and check it.
   //!
   //! \copydoc make(Container const&)
   template <typename Return>

@@ -252,7 +252,7 @@ namespace libsemigroups {
     KnuthBendixImpl<Rewriter, ReductionOrder>::init(
         congruence_kind             knd,
         Presentation<std::string>&& p) {
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
       init();
       CongruenceCommon::init(knd);
       _presentation = std::move(p);

@@ -303,11 +303,11 @@ namespace libsemigroups {
   //! \ref WordGraph::number_of_nodes.
   //!
   //! \throws LibsemigroupsException if
-  //! \ref validate(Transf<N, Scalar> const&) throws for any of the
-  //! constructed generators. This can happen if, for example, the WordGraph is
-  //! not complete (i.e. there exists an edge label and node for which there is
-  //! no edge with the given label and given source) or if there is an edge
-  //! label such that
+  //! \ref throw_if_image_value_out_of_range(Transf<N, Scalar> const&) throws
+  //! for any of the constructed generators. This can happen if, for example,
+  //! the WordGraph is not complete (i.e. there exists an edge label and node
+  //! for which there is no edge with the given label and given source) or if
+  //! there is an edge label such that
   //! \f$\{a, \ldots, b - 1\}f \not\subseteq \{a, \ldots, b - 1\}\f$ for the
   //! corresponding \f$f\f$.
   template <typename Result, typename Node>

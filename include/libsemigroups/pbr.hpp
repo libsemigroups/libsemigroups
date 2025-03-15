@@ -426,7 +426,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if the argument \p x does
     //! not describe a binary relation on an even number of points.
     //!
-    //! \param x the PBR to validate.
+    //! \param x the PBR to check.
     //!
     //! \throws LibsemigroupsException \p x does not describe a binary relation
     //! on an even number of points.
@@ -441,7 +441,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if the argument \p x has a
     //! point related to a point that is greater than \ref PBR::degree().
     //!
-    //! \param x the PBR to validate.
+    //! \param x the PBR to check.
     //!
     //! \throws LibsemigroupsException if \p x has a point related to a point
     //! that is greater than degree().
@@ -456,7 +456,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if the argument \p x has a
     //! list of points related to a point that is not sorted.
     //!
-    //! \param x the PBR to validate.
+    //! \param x the PBR to check.
     //!
     //! \throws LibsemigroupsException if \p x has a list of points related to a
     //! point that is not sorted.
@@ -470,7 +470,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if the argument \p x is
     //! not a valid PBR.
     //!
-    //! \param x the PBR to validate.
+    //! \param x the PBR to check.
     //!
     //! \throws LibsemigroupsException if any of the following occur:
     //! * \p x does not describe a binary relation on an even number of points;
@@ -503,9 +503,9 @@ namespace libsemigroups {
 
   //! \relates PBR
   //!
-  //! \brief Construct and validate a \ref PBR.
+  //! \brief Construct and check a \ref PBR.
   //!
-  //! Construct and validate a \ref PBR.
+  //! Construct and check a \ref PBR.
   //!
   //! \tparam Return the return type. Must satisfy `std::is_same<Return, PBR>`.
   //! \tparam T the types of the arguments.
@@ -513,7 +513,7 @@ namespace libsemigroups {
   //! \param args the arguments to forward to the \ref PBR constructor.
   //!
   //! \returns
-  //! A PBR constructed from \p args and validated.
+  //! A PBR constructed from \p args and checked.
   //!
   //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
   //! const&) throws when called with the constructed PBR.
@@ -526,7 +526,7 @@ namespace libsemigroups {
   //! #PBR.
   template <typename Return, typename... T>
   [[nodiscard]] enable_if_is_same<Return, PBR> make(T... args) {
-    // TODO(later) validate_args
+    // TODO(later) throw_if_bad_args
     PBR result(std::forward<T>(args)...);
     pbr::throw_if_invalid(result);
     return result;
@@ -545,16 +545,16 @@ namespace libsemigroups {
 
   //! \ingroup make_pbr_group
   //!
-  //! \brief Construct and validate a \ref PBR.
+  //! \brief Construct and check a \ref PBR.
   //!
-  //! Construct and validate a \ref PBR.
+  //! Construct and check a \ref PBR.
   //!
   //! \tparam Return the return type. Must satisfy `std::is_same<Return, PBR>`.
   //!
   //! \param args the arguments to forward to the constructor.
   //!
   //! \returns
-  //! A PBR constructed from \p args and validated.
+  //! A PBR constructed from \p args and checked.
   //!
   //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
   //! const&) throws when called with the constructed PBR.
@@ -583,9 +583,9 @@ namespace libsemigroups {
 
   //! \ingroup make_pbr_group
   //!
-  //! \brief Construct and validate a \ref PBR.
+  //! \brief Construct and check a \ref PBR.
   //!
-  //! Construct and validate a \ref PBR.
+  //! Construct and check a \ref PBR.
   //!
   //! \tparam Return the return type. Must satisfy `std::is_same<Return, PBR>`.
   //!
@@ -593,7 +593,7 @@ namespace libsemigroups {
   //! \param right the 2nd argument to forward to the constructor.
   //!
   //! \returns
-  //! A PBR constructed from \p args and validated.
+  //! A PBR constructed from \p args and checked.
   //!
   //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
   //! const&) throws when called with the constructed PBR.

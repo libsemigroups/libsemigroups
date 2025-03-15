@@ -79,9 +79,9 @@ namespace libsemigroups {
 
     presentation::throw_if_not_normalized(p);
     try {
-      presentation::validate_rules(
+      presentation::throw_if_bad_rules(
           p, included_pairs().cbegin(), included_pairs().cend());
-      presentation::validate_rules(
+      presentation::throw_if_bad_rules(
           p, excluded_pairs().cbegin(), excluded_pairs().cend());
     } catch (LibsemigroupsException const& e) {
       LIBSEMIGROUPS_EXCEPTION(

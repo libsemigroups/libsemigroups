@@ -112,7 +112,7 @@ namespace libsemigroups {
 
   namespace blocks {
 
-    void validate(Blocks const& x) {
+    void throw_if_invalid(Blocks const& x) {
       size_t const n = x.degree();
       size_t const m = std::distance(x.cbegin_lookup(), x.cend_lookup());
       if (n == 0) {
@@ -305,7 +305,7 @@ namespace libsemigroups {
       return Bipartition::one(f.degree());
     }
     // TODO(2) check other things like _nr_blocks is correct etc...
-    void validate(Bipartition const& x) {
+    void throw_if_invalid(Bipartition const& x) {
       size_t const n = static_cast<size_t>(std::distance(x.cbegin(), x.cend()));
       if (2 * x.degree() != n) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -549,7 +549,7 @@ namespace libsemigroups {
           number_of_blocks(),
           index);
     }
-    bipartition::validate(*this);
+    bipartition::throw_if_invalid(*this);
     return is_transverse_block_no_checks(index);
   }
 
@@ -582,7 +582,7 @@ namespace libsemigroups {
   }
 
   Blocks* Bipartition::left_blocks() const {
-    bipartition::validate(*this);
+    bipartition::throw_if_invalid(*this);
     return left_blocks_no_checks();
   }
 
@@ -597,7 +597,7 @@ namespace libsemigroups {
   }
 
   Blocks* Bipartition::right_blocks() const {
-    bipartition::validate(*this);
+    bipartition::throw_if_invalid(*this);
     return right_blocks_no_checks();
   }
 

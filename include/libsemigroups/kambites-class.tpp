@@ -143,7 +143,7 @@ namespace libsemigroups {
   Kambites<Word>& Kambites<Word>::init(congruence_kind                  knd,
                                        Presentation<native_word_type>&& p) {
     throw_if_1_sided(knd);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     init();
     _presentation = std::move(p);
     ukkonen::add_words_no_checks(
@@ -184,7 +184,7 @@ namespace libsemigroups {
     if (success()) {
       _tmp_value1.assign(first1, last1);
       _tmp_value2.assign(first2, last2);
-      // Words aren't validated, the below returns false if they contain
+      // Words aren't checked, the below returns false if they contain
       // letters not in the alphabet.
       // The Kambites class requires that input to contains to be actual
       // objects not iterators. This is different from KnuthBendixImpl and

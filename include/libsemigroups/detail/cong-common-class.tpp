@@ -35,8 +35,8 @@ namespace libsemigroups {
                                               Iterator2 last1,
                                               Iterator3 first2,
                                               Iterator4 last2) const {
-      throw_if_letter_out_of_bounds<Subclass>(first1, last1);
-      throw_if_letter_out_of_bounds<Subclass>(first2, last2);
+      throw_if_letter_not_in_alphabet<Subclass>(first1, last1);
+      throw_if_letter_not_in_alphabet<Subclass>(first2, last2);
       return static_cast<Subclass const&>(*this).currently_contains_no_checks(
           first1, last1, first2, last2);
     }
@@ -87,8 +87,8 @@ namespace libsemigroups {
                                                     Iterator3 first2,
                                                     Iterator4 last2) {
       throw_if_started();
-      throw_if_letter_out_of_bounds<Subclass>(first1, last1);
-      throw_if_letter_out_of_bounds<Subclass>(first2, last2);
+      throw_if_letter_not_in_alphabet<Subclass>(first1, last1);
+      throw_if_letter_not_in_alphabet<Subclass>(first2, last2);
       return static_cast<Subclass&>(*this).add_generating_pair_no_checks(
           first1, last1, first2, last2);
     }
@@ -100,7 +100,7 @@ namespace libsemigroups {
     OutputIterator CongruenceCommon::reduce_no_run(OutputIterator d_first,
                                                    Iterator1      first,
                                                    Iterator2      last) const {
-      throw_if_letter_out_of_bounds<Subclass>(first, last);
+      throw_if_letter_not_in_alphabet<Subclass>(first, last);
       if (finished() && !success()) {  // for Kambites
         LIBSEMIGROUPS_EXCEPTION(
             "cannot reduce words, the algorithm failed to finish successfully!")
@@ -116,7 +116,7 @@ namespace libsemigroups {
     OutputIterator CongruenceCommon::reduce(OutputIterator d_first,
                                             InputIterator1 first,
                                             InputIterator2 last) {
-      throw_if_letter_out_of_bounds<Subclass>(first, last);
+      throw_if_letter_not_in_alphabet<Subclass>(first, last);
       run();
       if (!success()) {  // for Kambites
         LIBSEMIGROUPS_EXCEPTION(

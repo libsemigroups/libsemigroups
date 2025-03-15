@@ -21,6 +21,29 @@
 
 namespace libsemigroups {
 
+  namespace detail {
+
+    template <typename Scalar, typename Container>
+    void validate(PTransfBase<Scalar, Container> const& f) {
+      throw_if_image_value_out_of_range(f);
+    }
+
+    template <size_t N, typename Scalar>
+    void validate(Transf<N, Scalar> const& f) {
+      throw_if_image_value_out_of_range(f);
+    }
+
+    template <size_t N, typename Scalar>
+    void validate(PPerm<N, Scalar> const& f) {
+      throw_if_not_pperm(f);
+    }
+
+    template <size_t N, typename Scalar>
+    void validate(Perm<N, Scalar> const& f) {
+      throw_if_not_perm(f);
+    }
+  }  // namespace detail
+
   ////////////////////////////////////////////////////////////////////////
   // PTransfBase
   ////////////////////////////////////////////////////////////////////////
@@ -29,7 +52,7 @@ namespace libsemigroups {
   template <typename Point, typename Container>
   template <typename Subclass, typename OtherContainer>
   Subclass PTransfBase<Point, Container>::make(OtherContainer&& cont) {
-    validate_args(cont);
+    throw_if_bad_args(cont);
 
 #pragma GCC diagnostic push
 #if defined(__GNUC__) && !defined(__clang__)
@@ -38,7 +61,7 @@ namespace libsemigroups {
     // TODO(1) use move iterator in next line
     Subclass result(std::begin(cont), std::end(cont));
 #pragma GCC diagnostic pop
-    validate(result);
+    detail::validate(result);
     return result;
   }
 
@@ -64,7 +87,7 @@ namespace libsemigroups {
   // STATIC
   template <typename Point, typename Container>
   template <typename T>
-  void PTransfBase<Point, Container>::validate_args(T const& cont) {
+  void PTransfBase<Point, Container>::throw_if_bad_args(T const& cont) {
     if constexpr (detail::is_array_v<container_type>) {
       if (cont.size() != std::tuple_size_v<container_type>) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -105,7 +128,7 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Scalar>
-  void validate(Transf<N, Scalar> const& x) {
+  void throw_if_image_value_out_of_range(Transf<N, Scalar> const& x) {
     size_t const M = x.degree();
     for (auto const& val : x) {
       if (val >= M) {
@@ -149,9 +172,9 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Scalar>
-  void detail::validate_args(std::vector<Scalar> const& dom,
-                             std::vector<Scalar> const& ran,
-                             size_t                     deg) {
+  void detail::throw_if_bad_args(std::vector<Scalar> const& dom,
+                                 std::vector<Scalar> const& ran,
+                                 size_t                     deg) {
     if (N != 0 && deg != N) {
       // Sanity check that the final argument is compatible with the
       // template param N, if we have a dynamic pperm
@@ -173,8 +196,8 @@ namespace libsemigroups {
           deg);
     }
     std::unordered_map<Scalar, size_t> seen;
-    detail::validate_no_duplicates(dom.cbegin(), dom.cend(), seen);
-    detail::validate_no_duplicates(ran.cbegin(), ran.cend(), seen);
+    detail::throw_if_duplicates(dom.cbegin(), dom.cend(), seen);
+    detail::throw_if_duplicates(ran.cbegin(), ran.cend(), seen);
   }
 
   template <typename Return>
@@ -182,9 +205,9 @@ namespace libsemigroups {
   make(std::vector<typename Return::point_type> const& dom,
        std::vector<typename Return::point_type> const& ran,
        size_t const                                    M) {
-    detail::validate_args(dom, ran, M);
+    detail::throw_if_bad_args(dom, ran, M);
     Return result(dom, ran, M);
-    validate(result);
+    throw_if_not_pperm(result);
     return result;
   }
 

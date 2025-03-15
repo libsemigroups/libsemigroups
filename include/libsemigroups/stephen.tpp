@@ -143,7 +143,7 @@ namespace libsemigroups {
       std::shared_ptr<PresentationType> const& ptr) {
     // TODO(1): move the commented out lines to the
     // make<Stephen<PresentationType>> function, once we have it
-    // ptr->validate();
+    // ptr->throw_if_bad_alphabet_or_rules();
     // throw_if_presentation_empty(*ptr);
     _presentation = ptr;
     _accept_state = UNDEFINED;

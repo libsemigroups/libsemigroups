@@ -909,7 +909,7 @@ namespace libsemigroups {
 
     /// auto p  = presentation::examples::singular_brauer_monoid_MM07(4);
     auto p = to<Presentation<word_type>>(S);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.alphabet().size() == 10);
     REQUIRE(presentation::length(p) == 719);
 
@@ -1317,7 +1317,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 31_w, 11_w);
     presentation::add_rule_no_checks(p, 22_w, 2_w);
     presentation::add_rule_no_checks(p, 13_w, 11_w);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(2) == 67);
@@ -1338,7 +1338,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 22_w, 2_w);
     presentation::add_rule_no_checks(p, 13_w, 11_w);
     p.alphabet_from_rules();
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     Sims1 C;
     REQUIRE_THROWS_AS(C.presentation(p), LibsemigroupsException);
@@ -1529,10 +1529,10 @@ namespace libsemigroups {
     Presentation<word_type> q;
     q.contains_empty_word(p.contains_empty_word()).alphabet(p.alphabet());
     q.rules.insert(q.rules.end(), p.rules.begin(), p.rules.begin() + 8);
-    q.validate();
+    q.throw_if_bad_alphabet_or_rules();
     REQUIRE(q.alphabet() == 012345_w);
     REQUIRE(q.rules == std::vector({01_w, {}, 10_w, {}, 23_w, {}, 32_w, {}}));
-    q.validate();
+    q.throw_if_bad_alphabet_or_rules();
 
     std::atomic_uint64_t num = 0;
     Sims1                T;
@@ -2157,7 +2157,7 @@ namespace libsemigroups {
     auto   p  = presentation::examples::zero_rook_monoid(n);
     auto   q  = presentation::examples::stellar_monoid(n);
     p.rules.insert(p.rules.end(), q.rules.cbegin(), q.rules.cend());
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.alphabet().size() == n);
     presentation::reverse(p);
     Sims1 S;
@@ -2966,7 +2966,7 @@ namespace libsemigroups {
     // Minimum rep. o.r.c. 6
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     MinimalRepOrc orc;
     auto          d = orc.presentation(to<Presentation<word_type>>(p))
@@ -2998,7 +2998,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aaabaab", "baaba");
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     // Minimum rep. o.r.c. 8
     d = orc.presentation(to<Presentation<word_type>>(p))
             .target_size(96)
@@ -3047,7 +3047,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbca", "aaab");
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     // min. rep. o.r.c. is 7
     d = orc.presentation(to<Presentation<word_type>>(p))
             .target_size(96)

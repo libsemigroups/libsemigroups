@@ -148,7 +148,7 @@ namespace libsemigroups {
     // TODO(2): Implement make<Stephen> function which checks args
     // Should presentation::throw_if_not_normalized (until we separate the
     // implementation and external interface later on).
-    // Should also throw if `p.validate()` throws.
+    // Should also throw if `p.throw_if_bad_alphabet_or_rules()` throws.
     // Should also throw if if `p.alphabet().size()` is `0`.
 
     //! \brief Construct from a presentation (copy).
@@ -274,7 +274,7 @@ namespace libsemigroups {
     //! \sa stephen::set_word
     template <typename Iterator1, typename Iterator2>
     Stephen& set_word(Iterator1 first, Iterator2 last) {
-      presentation().validate_word(first, last);
+      presentation().throw_if_letter_not_in_alphabet(first, last);
       return set_word_no_checks(first, last);
     }
 

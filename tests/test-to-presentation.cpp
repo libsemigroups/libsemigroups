@@ -79,7 +79,7 @@ namespace libsemigroups {
                              })
                 ->size()
             == 8);
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
@@ -150,7 +150,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 1, 2}, {});
     }
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     Presentation<W2> q = to<Presentation<W2>>(p);
     REQUIRE(q.contains_empty_word());
@@ -162,7 +162,7 @@ namespace libsemigroups {
       REQUIRE(q.alphabet() == W2({0, 1, 2}));
       REQUIRE(q.rules == std::vector<W2>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
     }
-    q.validate();
+    q.throw_if_bad_alphabet_or_rules();
 
     // Check p hasn't been destroyed
     REQUIRE(p.contains_empty_word());
@@ -173,7 +173,7 @@ namespace libsemigroups {
       REQUIRE(p.alphabet() == W1({0, 1, 2}));
       REQUIRE(p.rules == std::vector<W1>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
     }
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     // Check two conversions gets you back to where you started
     REQUIRE(p == to<Presentation<W1>>(q));
@@ -217,7 +217,7 @@ namespace libsemigroups {
       REQUIRE(q.alphabet() == W2({7, 8, 9}));
       REQUIRE(q.rules == std::vector<W2>({{7, 8, 9}, {7, 8}, {7, 8, 9}, {}}));
     }
-    q.validate();
+    q.throw_if_bad_alphabet_or_rules();
 
     auto             f2 = [&p](auto val) { return p.index(val); };
     Presentation<W2> r  = to<Presentation<W2>>(p, f2);
@@ -225,7 +225,7 @@ namespace libsemigroups {
     REQUIRE(r.alphabet() == W2({0, 1, 2}));
     REQUIRE(r.rules == std::vector<W2>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
 
-    r.validate();
+    r.throw_if_bad_alphabet_or_rules();
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
@@ -238,19 +238,20 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
     presentation::add_rule_no_checks(p, {0, 1, 2}, {});
     // intentionally bad
-    REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(p.throw_if_bad_alphabet_or_rules(),
+                      LibsemigroupsException);
     REQUIRE_THROWS_AS(to<Presentation<std::string>>(p), LibsemigroupsException);
 
     p.alphabet_from_rules();
     REQUIRE(p.alphabet() == word_type({0, 1, 2}));
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.contains_empty_word());
     auto q = to<Presentation<std::string>>(p);
     presentation::change_alphabet(q, "abc");
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
     REQUIRE(q.rules == std::vector<std::string>({"abc", "ab", "abc", ""}));
-    q.validate();
+    q.throw_if_bad_alphabet_or_rules();
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
@@ -298,7 +299,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(ip, {0, 1, 2}, {});
       ip.inverses_no_checks({2, 1, 0});
     }
-    ip.validate();
+    ip.throw_if_bad_alphabet_or_rules();
 
     auto iq = to<InversePresentation<W2>>(ip);
     REQUIRE(iq.contains_empty_word());
@@ -312,7 +313,7 @@ namespace libsemigroups {
       REQUIRE(iq.rules == std::vector<W2>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
       REQUIRE(iq.inverses() == W2({2, 1, 0}));
     }
-    iq.validate();
+    iq.throw_if_bad_alphabet_or_rules();
 
     // Check p hasn't been destroyed
     REQUIRE(ip.contains_empty_word());
@@ -325,7 +326,7 @@ namespace libsemigroups {
       REQUIRE(ip.rules == std::vector<W1>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
       REQUIRE(ip.inverses() == W1({2, 1, 0}));
     }
-    ip.validate();
+    ip.throw_if_bad_alphabet_or_rules();
 
     // Check two conversions gets you back to where you
     // started
@@ -338,7 +339,7 @@ namespace libsemigroups {
     REQUIRE(ir.rules == std::vector<W2>({{3, 4, 5}, {3, 4}, {3, 4, 5}, {}}));
     REQUIRE(ir.inverses() == W2({5, 4, 3}));
 
-    ir.validate();
+    ir.throw_if_bad_alphabet_or_rules();
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<InversePresentation>",
@@ -357,7 +358,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, {0, 1, 2}, {0, 1});
       presentation::add_rule_no_checks(p, {0, 2, 1}, {2});
     }
-    p.validate();
+    p.throw_if_bad_alphabet_or_rules();
 
     InversePresentation<TestType> ip = to<InversePresentation>(p);
     REQUIRE(!ip.contains_empty_word());
