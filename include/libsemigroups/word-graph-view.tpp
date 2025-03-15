@@ -167,9 +167,9 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    void word_graph_view::throw_if_label_out_of_bounds(
-        WordGraphView<Node> const&               wgv,
-        typename WordGraphView<Node>::label_type a) {
+    void
+    throw_if_label_out_of_bounds(WordGraphView<Node> const&               wgv,
+                                 typename WordGraphView<Node>::label_type a) {
       if (a >= wgv.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
                                 "the range [0, {}), got {}",

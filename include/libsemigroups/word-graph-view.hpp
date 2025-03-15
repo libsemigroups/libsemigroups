@@ -76,8 +76,9 @@ namespace libsemigroups {
 
     constexpr auto
     graph_to_view(rx::iterator_range<const_iterator_targets> it) const {
-      return it
-             | rx::transform([this](auto elem) { return graph_to_view(elem); });
+      return it | rx::transform([this](auto elem) {
+               return this->graph_to_view(elem);
+             });
     }
 
     void graph_to_view(std::pair<node_type, label_type>& in) const {
