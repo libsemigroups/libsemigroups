@@ -1719,11 +1719,11 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "038",
                           "partition_monoid(3) - minimal o.r.c. rep",
-                          "[extreme][sims1]") {
+                          "[standard][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = presentation::examples::partition_monoid(3);
-    REQUIRE(!p.contains_empty_word());
-    REQUIRE(p.alphabet() == 01234_w);
+    auto p  = presentation::examples::partition_monoid_HR05(3);
+    REQUIRE(p.contains_empty_word());
+    REQUIRE(p.alphabet() == 0123456_w);
 
     auto d = RepOrc()
                  .presentation(p)
@@ -1760,7 +1760,7 @@ namespace libsemigroups {
     std::vector<WordGraph<uint32_t>> all;
 
     auto hook = [&](WordGraph<uint32_t> const& x) {
-      auto first = 1;
+      auto first = 0;
       auto SS    = to<FroidurePin<Transf<0, node_type>>>(
           x, first, x.number_of_active_nodes());
       SuppressReportFor supp("FroidurePin");
@@ -3061,11 +3061,12 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "078",
                           "order_preserving_monoid(5)",
-                          "[extreme][sims1]") {
+                          "[standard][sims1]") {
     auto rg = ReportGuard(true);
     auto p  = presentation::examples::order_preserving_monoid(5);
 
     REQUIRE(p.rules.size() == 50);
+    presentation::normalize_alphabet(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     presentation::remove_duplicate_rules(p);
