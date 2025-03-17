@@ -45,7 +45,7 @@ namespace libsemigroups {
 
   //! \ingroup bmat_index_group
   //!
-  //! Type of the fastest type of boolean matrix of given dimension.
+  //! \brief  Type of the fastest type of boolean matrix of given dimension.
   //!
   //! Defined in `bmat-fastest.hpp`.
   //!

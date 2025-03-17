@@ -78,7 +78,18 @@
       </tab>
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices">
         <tab type="usergroup" visible="yes" url="[none]" title="Over specific semirings">
-          <tab type="user" visible="yes" url="@ref bmat_index_group" title="Boolean matrices" />
+          <tab type="usergroup" visible="yes" url="@ref bmat_index_group" title="Boolean matrices">
+            <tab type="usergroup" visible="yes" url="@ref bmat8_group" title="BMat8">
+              <tab type="user" visible="yes" url="@ref libsemigroups::BMat8" title="The BMat8 Class"/>
+              <tab type="user" visible="yes" url="@ref libsemigroups::bmat8" title="BMat8 helper functions"/>
+            </tab>
+            <tab type="usergroup" visible="yes" url="@ref bmat_group" title="BMat">
+              <tab type="user" visible="yes" url="@ref libsemigroups::BooleanOne" title="BooleanOne"/>
+              <tab type="user" visible="yes" url="@ref libsemigroups::BooleanPlus" title="BooleanPlus"/>
+              <tab type="user" visible="yes" url="@ref libsemigroups::BooleanProd" title="BooleanProd"/>
+              <tab type="user" visible="yes" url="@ref libsemigroups::BooleanZero" title="BooleanZero"/>
+            </tab>
+          </tab>
           <tab type="user" visible="yes" url="@ref intmat_group" title="Integer matrices" />
           <tab type="user" visible="yes" url="@ref maxplusmat_group" title="Max-plus matrices" />
           <tab type="user" visible="yes" url="@ref minplusmat_group" title="Min-plus matrices" />

@@ -3721,6 +3721,10 @@ namespace libsemigroups {
 
   //! \defgroup bmat_group BMat
   //!
+  //! \ingroup bmat_index_group
+  //!
+  //! \brief For boolean matrices of arbitrary degree.
+  //!
   //! This page describes the functionality for \f$m \times n\f$ boolean
   //! matrices for arbitrary dimensions \f$m\f$ and \f$n\f$. There are two
   //! types of such boolean matrices those whose dimension is known at
