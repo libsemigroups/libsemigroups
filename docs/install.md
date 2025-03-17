@@ -2,12 +2,11 @@
 
 ## Installing with conda
 
-This installation method assumes that you have anaconda or miniconda
-installed. See the [getting started](http://bit.ly/33B0Vfs) and
-[miniconda download page](https://conda.io/miniconda.html) on the
-[conda](https://conda.io/) website.
+This installation method assumes that you have a working version of `conda`.
+See the [getting started](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html)
+on the [conda](https://conda.io/) website.
 
-Activate the [conda-forge](https://conda-forge.github.io/) package
+Activate the [conda-forge](https://conda-forge.org/) package
 repository:
 
     conda config --add channels conda-forge
@@ -19,9 +18,9 @@ Install `libsemigroups`:
 ## From the sources
 
 Building `libsemigroups` from the source files requires a C++ compiler
-supporting the C++14 standard, `autoconf`, and `automake`. Building the
+supporting the C++17 standard, `autoconf`, and `automake`. Building the
 documentation from source has some additional requirements that are
-detailed [here](Building%20the%20documentation%20from%20source).
+detailed in the section [Building the documentation](index.md#building-the-documentation).
 
 ### From the github repo
 
@@ -35,51 +34,43 @@ To build `libsemigroups` from the github repository:
 
 To build `libsemigroups` from a release archive:
 
-::: parsed-literal
-curl -L -O
-<https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-%7Clibsemigroups-version>libsemigroups-versionlibsemigroups-versionlibsemigroups-version\|
-./configure && make -j8 && sudo make install
-:::
+    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.0.0.tar.gz
+    tar -xf libsemigroups-3.0.0.tar.gz
+    rm -f libsemigroups-3.0.0.tar.gz
+    cd libsemigroups-3.0.0
+    ./configure && make -j8 && sudo make install
 
 ### Docker
 
-If you have [Docker](https://www.docker.com) installed, you can download
-an [x86 docker
-image](https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker)
+If you have [Docker](https://www.docker.com) installed, you can download an
+[x86 docker image](https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker)
 for `libsemigroups` as follows:
 
-::: parsed-literal
-docker pull libsemigroups/libsemigroups-docker
-:::
+    docker pull libsemigroups/libsemigroups-docker
 
-or an [arm docker
-image](https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker-arm)
+or an [arm docker image](https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker-arm)
 as follows
 
-::: parsed-literal
-docker pull libsemigroups/libsemigroups-docker-arm
-:::
+    docker pull libsemigroups/libsemigroups-docker-arm
 
 and run it by doing
 
-::: parsed-literal
-docker run \--rm -it libsemigroups/libsemigroups-docker docker run \--rm
--it libsemigroups/libsemigroups-docker-arm
-:::
+    docker run --rm -it libsemigroups/libsemigroups-docker
 
-If you want to use a specific version of `libsemigroups`, then use:
+or
 
-::: parsed-literal
-docker pull libsemigroups/libsemigroups-docker:version-1.0.9 docker run
-\--rm -it libsemigroups/libsemigroups-docker:version-1.0.9
-:::
+    docker run --rm -it libsemigroups/libsemigroups-docker-arm
+
+If you want to use a specific version of `libsemigroups`, such as 1.0.9, then
+use:
+
+    docker pull libsemigroups/libsemigroups-docker:version-1.0.9
+    docker run --rm -it libsemigroups/libsemigroups-docker:version-1.0.9
 
 or, for the latest version, use:
 
-::: parsed-literal
-docker pull libsemigroups/libsemigroups-docker:latest docker run \--rm
--it libsemigroups/libsemigroups-docker:latest
-:::
+    docker pull libsemigroups/libsemigroups-docker:latest
+    docker run --rm -it libsemigroups/libsemigroups-docker:latest
 
 ## Configuration options
 
@@ -96,13 +87,12 @@ configuration options are available for `libsemigroups`:
 | \--with-external-fmt       | do not use the included copy of fmt (default=no)   |
 | \--with-external-eigen     | do not use the included copy of eigen (default=no) |
 | \--disable-popcnt          | do not use \_\_builtin_popcountl (default=yes)     |
-| \--disable-clzll           | do not use \_\_builtin_ctzll (default=yes)         |
+| \--disable-clzll           | do not use \_\_builtin_clzll (default=yes)         |
 
-Debug mode and verbose mode significantly degrade the performance of
-`libsemigroups`. Compiling with `fmt` enabled increases build times
-significantly. Note that the flags `--enable-fmt` and
-`--with-external-fmt` are independent of each other, and so both flags
-should be included to enable `fmt` and use an external `fmt`.
+Debug mode significantly degrades the performance of `libsemigroups`. Note that
+the flags `--enable-eigen` and `--with-external-eigen` are independent of each
+other, and so both flags should be included to enable `eigen` and use an
+external `eigen`.
 
 ## Make install
 
@@ -128,28 +118,19 @@ above then
     PKG_CONFIG_PATH=/foo/bar/lib/pkgconfig pkg-config --modversion libsemigroups
 
 will print the version of the installed `libsemigroups`. (As usual,
-`PKG_CONFIG_PATH` may be exported, added to shell configuration, etc.)
+`PKG_CONFIG_PATH` may be exported, added to shell configuration, etc.).
 
 ## Building the documentation
 
-The following are required to be able to build the documentation:
+To build the documentation, a version of `doxygen` is required. Instructions on
+how to do this can be found on Doxygen's
+[Installation page](https://www.doxygen.nl/manual/install.html).
 
-1.  `python3`
-2.  `doxygen`
-3.  the python packages:
-    `sphinx bs4 lxml breathe pyyaml sphinx_rtd_theme sphinx_copybutton sphinxcontrib-bibtex`
-
-Assuming you already have `python3` install, on Mac OSX you can install
-all of the above by doing:
-
-    brew install doxygen sphinx
-    pip3 install -r docs/requirements.txt
-
-Then it ought to be possible to just run `make doc` in the
-`libsemigroups` directory.
+Then, it ought to be possible to just run `make doc` in the
+`libsemigroups` directory, and the documentation will be generated.
 
 ## Issues
 
 If you find any problems with `libsemigroups`, or have any suggestions
-for features that you'd like to see, please use the [issue
-tracker](https://github.com/libsemigroups/libsemigroups/issues).
+for features that you'd like to see, please use the
+[issue tracker](https://github.com/libsemigroups/libsemigroups/issues).

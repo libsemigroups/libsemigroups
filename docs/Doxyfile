@@ -398,7 +398,7 @@ TOC_INCLUDE_HEADINGS   = 5
 # The default value is: DOXYGEN.
 # This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
 
-MARKDOWN_ID_STYLE      = DOXYGEN
+MARKDOWN_ID_STYLE      = GITHUB
 
 # When enabled Doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
@@ -531,7 +531,7 @@ LOOKUP_CACHE_SIZE      = 0
 # DOT_NUM_THREADS setting.
 # Minimum value: 0, maximum value: 32, default value: 1.
 
-NUM_PROC_THREADS       = 8
+NUM_PROC_THREADS       = 0
 
 # If the TIMESTAMP tag is set different from NO then each generated page will
 # contain the date or date and time when the page was generated. Setting this to
@@ -1123,7 +1123,6 @@ EXCLUDE                = ../include/libsemigroups/detail/bruidhinn-traits.hpp \
                          ../include/libsemigroups/detail/multi-string-view.hpp \
                          ../include/libsemigroups/detail/path-iterators.hpp \
                          ../include/libsemigroups/detail/pool.hpp \
-                         ../include/libsemigroups/detail/report.hpp \
                          ../include/libsemigroups/detail/stl.hpp \ 
                          ../include/libsemigroups/detail/string.hpp \
                          ../include/libsemigroups/detail/timer.hpp \

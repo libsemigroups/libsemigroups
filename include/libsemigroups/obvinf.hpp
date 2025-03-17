@@ -135,11 +135,11 @@ namespace libsemigroups {
     using const_iterator_word_type =
         typename std::vector<word_type>::const_iterator;
 
-    //! \brief Alias for `std::vector< std::pair<std::string,
-    //! std::string>>::const_iterator`.
+    //! \brief Alias for
+    //! `std::vector< std::pair<std::string, std::string>>::const_iterator`.
     //!
-    //! Alias for `std::vector< std::pair<std::string,
-    //! std::string>>::const_iterator`.
+    //! Alias for
+    //! `std::vector< std::pair<std::string, std::string>>::const_iterator`.
     using const_iterator_pair_string = typename std::vector<
         std::pair<std::string, std::string>>::const_iterator;
 

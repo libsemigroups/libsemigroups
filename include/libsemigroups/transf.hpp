@@ -1238,9 +1238,9 @@ namespace libsemigroups {
 
     //! \brief Construct from domain, range, and degree.
     //!
-    //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
-    //! img[i]` for all \c i and which is \ref UNDEFINED on every other value
-    //! in the range \f$[0, M)\f$.
+    //! Constructs a partial perm of degree \p M such that
+    //! `f[dom[i]] = img[i]` for all \c i and which is \ref UNDEFINED on every
+    //! other value in the range \f$[0, M)\f$.
     //!
     //! \tparam OtherScalar the type of the points in \p dom and \p img.
     //! \param dom the domain.
@@ -1436,9 +1436,9 @@ namespace libsemigroups {
   //! \brief Construct a \ref PPerm from domain, range, and degree, and
   //! check.
   //!
-  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
-  //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
-  //! in the range \f$[0, M)\f$.
+  //! Constructs a partial perm of degree \p M such that
+  //! `f[dom[i]] = ran[i]` for all \c i and which is \ref UNDEFINED on every
+  //! other value in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type. Must satisfy \ref IsPPerm<Return>.
   //!
@@ -1465,9 +1465,9 @@ namespace libsemigroups {
   //! \brief Construct a \ref PPerm from domain, range, and degree, and
   //! check.
   //!
-  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
-  //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
-  //! in the range \f$[0, M)\f$.
+  //! Constructs a partial perm of degree \p M such that
+  //! `f[dom[i]] = ran[i]` for all \c i and which is \ref UNDEFINED on every
+  //! other value in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type. Must satisfy \ref IsPPerm<Return>.
   //!

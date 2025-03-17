@@ -3721,6 +3721,10 @@ namespace libsemigroups {
 
   //! \defgroup bmat_group BMat
   //!
+  //! \ingroup bmat_index_group
+  //!
+  //! \brief For boolean matrices of arbitrary degree.
+  //!
   //! This page describes the functionality for \f$m \times n\f$ boolean
   //! matrices for arbitrary dimensions \f$m\f$ and \f$n\f$. There are two
   //! types of such boolean matrices those whose dimension is known at
@@ -3899,8 +3903,7 @@ namespace libsemigroups {
   //! value) indicates that the dimensions will be set at run time.
   //!
   //! \tparam C the number of columns of the matrix. A value of \c 0 indicates
-  //! that the dimensions will be set at run time (the default value is `
-  //! \c R`).
+  //! that the dimensions will be set at run time (the default value is \c R).
   // FLS + JDM considered adding BMat8 and decided it wasn't a good idea.
   template <size_t R = 0, size_t C = R>
   using BMat
@@ -7267,8 +7270,8 @@ namespace libsemigroups {
     //!
     //! \param views  a container of `Mat::RowView` or `std::vector<bool>`.
     //!
-    //! \returns  A value of type `detail::StaticVector1<BitSet<C>,
-    //! R>`.
+    //! \returns  A value of type
+    //! `detail::StaticVector1<BitSet<C>, R>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except

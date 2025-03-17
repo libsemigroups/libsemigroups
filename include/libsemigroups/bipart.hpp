@@ -78,8 +78,8 @@ namespace libsemigroups {
     //! containing \c i.
     //!
     //! For example, if \p x is `{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}`,
-    //! then the above conditions are satisfied, but if \p x is `{1, 0, 1,
-    //! 10}` then they are not.
+    //! then the above conditions are satisfied, but if \p x is
+    //! `{1, 0, 1, 10}` then they are not.
     //!
     //! \param x the blocks object to check.
     //!
@@ -912,8 +912,8 @@ namespace libsemigroups {
     //! None of these conditions are verified.
     //!
     //! For example, if \p blocks is `{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}`,
-    //! then the above conditions are satisfied, but if \p blocks is `{1, 0, 1,
-    //! 10}` then they are not.
+    //! then the above conditions are satisfied, but if \p blocks is
+    //! `{1, 0, 1, 10}` then they are not.
     //!
     //! \param blocks a lookup for the blocks of the bipartition being
     //! constructed.

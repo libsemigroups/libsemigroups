@@ -91,8 +91,8 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with a call operator of signature `size_t
-  //! operator()(Element const& x) const` (possibly `noexcept`, `inline`
+  //! constructible with a call operator of signature
+  //! `size_t operator()(Element const& x) const` (possibly `noexcept`, `inline`
   //! and/or `constexpr` also).
   //!
   //! The return value of the call operator ought to indicate the approximate
@@ -125,8 +125,8 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with a call operator of signature `size_t
-  //! operator()(Element const& x) const` (possibly `noexcept`, `inline`
+  //! constructible with a call operator of signature
+  //! `size_t operator()(Element const& x) const` (possibly `noexcept`, `inline`
   //! and/or `constexpr` also).
   //!
   //! The return value of the call operator ought to indicate the degree of a
@@ -163,12 +163,12 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with a call operator of signature `void
-  //! operator()(Element& x, size_t n) const` (possibly `noexcept`,
+  //! constructible with a call operator of signature
+  //! `void operator()(Element& x, size_t n) const` (possibly `noexcept`,
   //! `inline` and/or `constexpr` also).
   //!
-  //! The call operator should change the first argument in-place so that if `m
-  //! = Degree<Element>()(x)`, then after the call to
+  //! The call operator should change the first argument in-place so that if
+  //! `m = Degree<Element>()(x)`, then after the call to
   //! `IncreaseDegree<Element>()(x, n)`, `Degree<Element>()(x)`
   //! returns `m + n`. This only makes sense for certain types of elements,
   //! such as permutations, transformations, or matrices, and not for other
@@ -251,9 +251,8 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature
-  //! `void  operator()(Element& xy, Element const& x, Element
-  //! const& y, size_t = 0)` (possibly `noexcept`, `inline` and/or `constexpr`
-  //! also).
+  //! `void  operator()(Element&, Element const&, Element const&, size_t = 0)`
+  //! (possibly `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! The call operator should change \p xy in-place to be the product of \p x
   //! and \p y. The 4th parameter is optional and it can be used as an index
@@ -289,8 +288,8 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with a call operator of signature `Point
-  //! operator()(Element const& x) const` (possibly
+  //! constructible with a call operator of signature
+  //! `Point operator()(Element const& x) const` (possibly
   //! `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! The call operator should return the inverse of the element \p x under the
@@ -324,9 +323,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with a call operator of signature `void
-  //! operator()(Point& res, Element const& x, Point const& pt)
-  //! const` (possibly `noexcept`, `inline` and/or `constexpr` also).
+  //! constructible with a call operator of signature
+  //! `void operator()(Point& res, Element const& x, Point const& pt) const`
+  //! (possibly `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! The call operator should change \p res in-place to contain the image of
   //! the point \p pt under the left action of the element \p x. The purpose of
@@ -356,12 +355,11 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature:
-  //! 1. `void operator()(Point& res, Element const& x, Point
-  //!    const& pt) const` (possibly `noexcept`, `inline` and/or `constexpr`
+  //! 1. `void operator()(Point&, Element const&, Point const&) const`
+  //! (possibly `noexcept`, `inline` and/or `constexpr`
   //!    also); or
-  //! 2. `Point operator()(Element const& x, Point
-  //!    const& pt) const` (possibly `noexcept`, `inline` and/or `constexpr`
-  //!    also).
+  //! 2. `Point operator()(Element const&, Point const&) const` (possibly
+  //! `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! In form (1): the call operator should change \p res in-place to
   //! contain the image of the point \p pt under the right action of the
@@ -398,9 +396,10 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible with a
-  //! call operator of signature `bool operator()(Value const&, Value
-  //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) for use
-  //! with, for example, std::unordered_map.
+  //! call operator of signature
+  //! `bool operator()(Value const&, Value const&)` (possibly `noexcept`,
+  //! `inline` and/or `constexpr` also) for use with, for example,
+  //! std::unordered_map.
   //!
   //! \tparam Value the type of objects to compare.
   //!
@@ -431,8 +430,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible
-  //! with a call operator of signature `size_t operator()(Value
-  //! const&)` for use with, for example, std::unordered_map.
+  //! with a call operator of signature
+  //! `size_t operator()(Value const&)` for use with, for example,
+  //! std::unordered_map.
   //!
   //! \tparam Value the type of objects to compare.
   //!
@@ -466,8 +466,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
-  //! and has a call operator of signature `size_t operator()(std::vector<T>
-  //! const&)` for use with, for example, std::unordered_map.
+  //! and has a call operator of signature
+  //! `size_t operator()(std::vector<T> const&)` for use with, for example,
+  //! std::unordered_map.
   //!
   //! \tparam T the type of objects to compare in the vector.
   //!
@@ -495,8 +496,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
-  //! and has a call operator of signature `size_t operator()(std::vector<T>
-  //! const&)` for use with, for example, std::unordered_map.
+  //! and has a call operator of signature
+  //! `size_t operator()(std::vector<T> const&)` for use with, for example,
+  //! std::unordered_map.
   //!
   //! \tparam T the type of objects to compare in the vector.
   //! \tparam Hasher the type of the hasher.
@@ -525,8 +527,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
-  //! and has a call operator of signature `size_t operator()(std::array<T, N>
-  //! const&)` for use with, for example, std::unordered_map.
+  //! and has a call operator of signature
+  //! `size_t operator()(std::array<T, N> const&)` for use with, for example,
+  //! std::unordered_map.
   //!
   //! \tparam T the type of objects to compare in the array.
   //!
@@ -555,8 +558,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
-  //! and has a call operator of signature `size_t operator()(std::pair<S, T>
-  //! const&)` for use with, for example, std::unordered_map.
+  //! and has a call operator of signature
+  //! `size_t operator()(std::pair<S, T> const&)` for use with, for example,
+  //! std::unordered_map.
   //!
   //! \tparam S the type of first object in the pair.
   //! \tparam T the type of second object in the pair.
@@ -585,8 +589,9 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
-  //! and has a call operator of signature `size_t operator()(std::vector<T>
-  //! const&)` for use with, for example, std::unordered_map.
+  //! and has a call operator of signature
+  //! `size_t operator()(std::vector<T> const&)` for use with, for example,
+  //! std::unordered_map.
   //!
   //! \par Used by Konieczny.
   template <>
@@ -614,9 +619,10 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible with a
-  //! call operator of signature `bool operator()(Value const&, Value
-  //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) which
-  //! defines a linear order on the objects of type Value.
+  //! call operator of signature
+  //! `bool operator()(Value const&, Value const&)` (possibly `noexcept`,
+  //! `inline` and/or `constexpr` also) which defines a linear order on the
+  //! objects of type Value.
   //!
   //! \tparam Value the type of objects to compare.
   //!
@@ -701,8 +707,8 @@ namespace libsemigroups {
     //! \param x   an element of type \c Element.
     //!
     //! \complexity
-    //! `pt.size()` times the complexity of `ImageRightAction<Element,
-    //! Point>`.
+    //! `pt.size()` times the complexity of
+    //! `ImageRightAction<Element, Point>`.
     //!
     //! \sa OnSets and ImageRightAction.
     void operator()(Container&       res,
@@ -719,8 +725,9 @@ namespace libsemigroups {
   //!
   //! Defined in `adapters.hpp`.
   //!
-  //! This struct applies `OnTuples<Element, Point,
-  //! Container>` to  a container of `Container` and then sorts it.
+  //! This struct applies
+  //! `OnTuples<Element, Point, Container>` to  a container of `Container` and
+  //! then sorts it.
   //!
   //! \tparam Element the type of elements.
   //! \tparam Point the type of the points acted on.
@@ -749,8 +756,9 @@ namespace libsemigroups {
     //! \param p an element of type \c Element.
     //!
     //! \complexity
-    //! `pt.size()` times the complexity of `ImageRightAction<Element,
-    //! Point>` and the cost plus the complexity of sorting \p res.
+    //! `pt.size()` times the complexity of
+    //! `ImageRightAction<Element, Point>` and the cost plus the complexity of
+    //! sorting \p res.
     //!
     //! \sa OnTuples and ImageRightAction.
     void operator()(Container&       res,
@@ -808,8 +816,8 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible
-  //! with an operator of signature `void
-  //! operator()(Point&, Element const&)`, which should modify the
+  //! with an operator of signature
+  //! `void operator()(Point&, Element const&)`, which should modify the
   //! first argument in-place to contain the lambda value of the second
   //! argument. The kernel of the lambda function should be Green's
   //! \f$\mathscr{L}\f$-relation on the semigroup in question.
@@ -829,8 +837,8 @@ namespace libsemigroups {
   //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible
-  //! with an operator of signature `void
-  //! operator()(Point&, Element const&)`, which  should modify the
+  //! with an operator of signature
+  //! `void operator()(Point&, Element const&)`, which  should modify the
   //! first argument in-place to contain the rho value of the second argument.
   //! The kernel of the rho function should be Green's
   //! \f$\mathscr{R}\f$-relation on the semigroup in question.
@@ -896,8 +904,8 @@ namespace libsemigroups {
   //!
   //! This type should be default constructible and a call operator of signature
   //! `size_t operator()(Element const&)` if no additional data is required
-  //! to compute the rank, or a call operator of signature `size_t
-  //! operator()(State<Element> const&, Element const&)` if
+  //! to compute the rank, or a call operator of signature
+  //! `size_t operator()(State<Element> const&, Element const&)` if
   //! additional data is required.
   //!
   //! The call operator should return the rank of the element given as

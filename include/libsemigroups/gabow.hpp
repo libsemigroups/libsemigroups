@@ -38,18 +38,15 @@
 
 namespace libsemigroups {
 
-  //! \defgroup gabow_group Gabow
-  //!
-  //! This page contains information about the implementation in
-  //! `libsemigroups` of Gabow's algorithm \cite Gab00 for computing the
-  //! strongly connected components of a WordGraph.
-
-  //! \ingroup gabow_group
+  //! \ingroup word_graph_group
   //!
   //! \brief Class implementing Gabow's algorithm for computing strongly
   //! connected components of a WordGraph.
   //!
   //! Defined in `gabow.hpp`.
+  //!
+  //! This page contains class implements Gabow's algorithm \cite Gab00 for
+  //! computing the strongly connected components of a WordGraph.
   //!
   //! Instances of this class can be used to compute, and provide information
   //! about, the strongly connected components of the WordGraph used to
@@ -464,13 +461,13 @@ namespace libsemigroups {
     void throw_if_scc_index_out_of_range(size_t i) const;
   };
 
-  //! \ingroup gabow_group
+  //! \relates Gabow
   //!
   //! \brief Deduction guide for Gabow objects.
   template <typename Node>
   Gabow(WordGraph<Node> const&) -> Gabow<Node>;
 
-  //! \ingroup gabow_group
+  //! \relates Gabow
   //!
   //! \brief Return a human readable representation of a Gabow object.
   //!

@@ -299,9 +299,9 @@ namespace libsemigroups {
       //! Logarithmic in the size of `children.size()`.
       node_index_type child(letter_type c) const;
 
-      //! \brief Returns \c true` if the node is a leaf and \c false if not.
+      //! \brief Returns \c true if the node is a leaf and \c false if not.
       //!
-      //! Returns \c true` if the node is a leaf and \c false if not.
+      //! Returns \c true if the node is a leaf and \c false if not.
       //!
       //! \returns A value of type `bool`.
       //!
@@ -1083,8 +1083,8 @@ namespace libsemigroups {
     //!
     //! See \ref Ukkonen::add_word_no_checks.
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     void add_word(Ukkonen& u, char const* w);
@@ -1202,8 +1202,8 @@ namespace libsemigroups {
     //!
     //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     std::pair<Ukkonen::State, char const*> traverse(Ukkonen const& u,
@@ -1274,8 +1274,8 @@ namespace libsemigroups {
     //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const.
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     char const* traverse(Ukkonen::State& st, Ukkonen const& u, char const* w);
@@ -1361,8 +1361,8 @@ namespace libsemigroups {
     //!
     //! See \ref is_subword_no_checks(Ukkonen const&, Iterator, Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     bool is_subword(Ukkonen const& u, char const* w);
@@ -1474,8 +1474,8 @@ namespace libsemigroups {
     //!
     //! See \ref is_suffix_no_checks(Ukkonen const&, Iterator, Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     bool is_suffix(Ukkonen const& u, char const* w);
@@ -1597,8 +1597,8 @@ namespace libsemigroups {
     //! See \ref maximal_piece_prefix_no_checks(Ukkonen const&, Iterator,
     //! Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     inline char const* maximal_piece_prefix(Ukkonen const& u, char const* w) {
@@ -1722,8 +1722,8 @@ namespace libsemigroups {
     //! See \ref length_maximal_piece_prefix_no_checks(Ukkonen const&, Iterator,
     //! Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     inline size_t length_maximal_piece_prefix(Ukkonen const& u, char const* w) {
@@ -1823,8 +1823,8 @@ namespace libsemigroups {
     //!
     //! See \ref is_piece_no_checks(Ukkonen const&, Iterator, Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     inline bool is_piece(Ukkonen const& u, char const* w) {
@@ -1950,8 +1950,8 @@ namespace libsemigroups {
     //! See \ref maximal_piece_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     inline char const* maximal_piece_suffix(Ukkonen const& u, char const* w) {
@@ -2075,8 +2075,8 @@ namespace libsemigroups {
     //! See \ref length_maximal_piece_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     inline size_t length_maximal_piece_suffix(Ukkonen const& u, char const* w) {
@@ -2193,8 +2193,8 @@ namespace libsemigroups {
     //! See \ref number_of_pieces_no_checks(Ukkonen const&, Iterator,
     //! Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     inline size_t number_of_pieces(Ukkonen const& u, char const* w) {
@@ -2314,8 +2314,8 @@ namespace libsemigroups {
     //!
     //! See \ref pieces_no_checks(Ukkonen const&, Iterator, Iterator).
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w,
-    //! w + std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_contains_unique_letter(w, w + std::strlen(w))` throws.
     inline std::vector<std::string> pieces(Ukkonen const& u, char const* w) {
       u.throw_if_contains_unique_letter(w, w + std::strlen(w));
       return pieces_no_checks(u, w);
