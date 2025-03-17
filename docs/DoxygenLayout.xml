@@ -239,7 +239,13 @@
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges">
     <tab type="user" visible="yes" url="@ref libsemigroups::Random" title="Random"/>
     </tab>
-    <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
+    <tab type="usergroup" visible="yes" url="@ref ukkonen_group" title="Suffix trees">
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::Ukkonen" title="The Ukkonen Class">
+        <tab type="user" visible="yes" url="@ref libsemigroups::Ukkonen::Node" title="The Node class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::Ukkonen::State" title="The State class"/>
+      </tab>
+      <tab type="user" visible="yes" url="@ref libsemigroups::ukkonen" title="Ukkonen helper functions"/>
+    </tab>
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
     <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
