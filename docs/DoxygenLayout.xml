@@ -127,7 +127,7 @@
         <tab type="usergroup" visible="yes" url="[none]" title="Over specific semirings">
           <tab type="usergroup" visible="yes" url="@ref bmat_index_group" title="Boolean matrices">
             <tab type="usergroup" visible="yes" url="@ref bmat8_group" title="BMat8">
-              <tab type="user" visible="yes" url="@ref libsemigroups::BMat8" title="The BMat8 Class"/>
+              <tab type="user" visible="yes" url="@ref libsemigroups::BMat8" title="The BMat8 class"/>
               <tab type="user" visible="yes" url="@ref libsemigroups::bmat8" title="BMat8 helper functions"/>
             </tab>
             <tab type="usergroup" visible="yes" url="@ref bmat_group" title="BMat">
@@ -240,14 +240,14 @@
     <tab type="user" visible="yes" url="@ref libsemigroups::Random" title="Random"/>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref ukkonen_group" title="Suffix trees">
-      <tab type="usergroup" visible="yes" url="@ref libsemigroups::Ukkonen" title="The Ukkonen Class">
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::Ukkonen" title="The Ukkonen class">
         <tab type="user" visible="yes" url="@ref libsemigroups::Ukkonen::Node" title="The Node class"/>
         <tab type="user" visible="yes" url="@ref libsemigroups::Ukkonen::State" title="The State class"/>
       </tab>
       <tab type="user" visible="yes" url="@ref libsemigroups::ukkonen" title="Ukkonen helper functions"/>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref aho_corasick_group" title="Tries" >
-      <tab type="user" visible="yes" url="@ref libsemigroups::AhoCorasick" title="The AhoCorasick Class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::AhoCorasick" title="The AhoCorasick class"/>
       <tab type="user" visible="yes" url="@ref libsemigroups::aho_corasick" title="AhoCorasick helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
@@ -263,8 +263,8 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Gabow" title="The Gabow class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Joiner" title="The Joiner class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="The Meeter class" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Paths" title="The Paths Class" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="The WordGraph Class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Paths" title="The Paths class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="The WordGraph class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::forest" title="Forest helper functions" />
       <tab type="user" visible="yes" url="@ref libsemigroups::paths" title="Paths helper functions" />
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helper functions" />
@@ -272,10 +272,10 @@
       <tab type="user" visible="yes" url="@ref make_word_graph_group" title="make<WordGraph>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
-      <tab type="user" visible="yes" url="@ref libsemigroups::WordRange" title="WordRange" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::StringRange" title="StringRange" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::ToWord" title="ToWord" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::ToString" title="ToString" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::StringRange" title="The StringRange class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WordRange" title="The WordRange class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ToString" title="The ToString class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ToWord" title="The ToWord class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::words"
         title="Functions for words and strings" />
       <tab type="user" visible="yes" url="@ref libsemigroups::literals" title="Literals" />
