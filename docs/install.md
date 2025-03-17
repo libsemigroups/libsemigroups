@@ -124,7 +124,7 @@ will print the version of the installed `libsemigroups`. (As usual,
 
 To build the documentation, a version of `doxygen` is required. Instructions on
 how to do this can be found on Doxygen's
-[Instalation page](https://www.doxygen.nl/manual/install.html).
+[Installation page](https://www.doxygen.nl/manual/install.html).
 
 Then, it ought to be possible to just run `make doc` in the
 `libsemigroups` directory, and the documentation will be generated.
