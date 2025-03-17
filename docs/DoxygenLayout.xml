@@ -259,14 +259,16 @@
       </tab>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
-      <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
-      <tab type="user" visible="yes" url="@ref make_forest_group" title="make<Forest>" />
-      <tab type="user" visible="yes" url="@ref gabow_group" title="Gabow" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Joiner" title="Joiner" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="Meeter" />
-      <tab type="user" visible="yes" url="@ref paths_group" title="Paths" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="The Forest class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Gabow" title="The Gabow class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Joiner" title="The Joiner class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="The Meeter class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Paths" title="The Paths Class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="The WordGraph Class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::forest" title="Forest helper functions" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::paths" title="Paths helper functions" />
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helper functions" />
+      <tab type="user" visible="yes" url="@ref make_forest_group" title="make<Forest>" />
       <tab type="user" visible="yes" url="@ref make_word_graph_group" title="make<WordGraph>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">

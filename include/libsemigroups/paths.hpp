@@ -48,16 +48,12 @@
 #include "detail/path-iterators.hpp"  // for default_postfix_increment
 
 namespace libsemigroups {
-
-  //! \defgroup paths_group Paths
+  //! \ingroup word_graph_group
   //!
-  //! This page contains links to the documentation for the functionality in
-  //! `libsemigroups` for finding and counting paths in WordGraph objects.
-
-  //! Helper namespace.
+  //! \brief Namespace containing helper functions for the Paths class.
+  //!
+  //! This namespace contains helper functions for the Paths class.
   namespace paths {
-    //! \ingroup paths_group
-    //!
     //! An enum for specifying the algorithm to the functions number_of_paths().
     enum class algorithm {
       //! Use a depth-first-search.
@@ -74,8 +70,9 @@ namespace libsemigroups {
     };
   }  // namespace paths
 
-  //! \ingroup paths_group
-  //! Returns an iterator for pilo (Path And Node In Lex Order).
+  //! \relates Paths
+  //!
+  //! \brief Returns an iterator for pilo (Path And Node In Lex Order).
   //!
   //! Returns a forward iterator pointing to a pair consisting of the edge
   //! labels of the first path (in lexicographical order) starting at
@@ -128,7 +125,7 @@ namespace libsemigroups {
     return detail::const_pilo_iterator<Node1>(&wg, source, min, max);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns an iterator for pilo (Path And Node In Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
@@ -144,7 +141,7 @@ namespace libsemigroups {
     return detail::const_pilo_iterator<Node>(&wg, 0, 0, 0);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
@@ -200,7 +197,7 @@ namespace libsemigroups {
     return detail::const_pislo_iterator<Node1>(&wg, source, min, max);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
@@ -216,7 +213,7 @@ namespace libsemigroups {
     return detail::const_pislo_iterator<Node>(&wg, UNDEFINED, 0, 0);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
   //!
   //! Returns a forward iterator pointing to the edge labels of the first
@@ -270,7 +267,7 @@ namespace libsemigroups {
     return detail::const_pstilo_iterator<Node1>(&wg, source, target, min, max);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
@@ -286,7 +283,7 @@ namespace libsemigroups {
     return detail::const_pstilo_iterator<Node>(&wg, 0, 0, 0, 0);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Returns an iterator for PSTISLO (Path Source Target In Short Lex
   //! Order).
@@ -342,7 +339,7 @@ namespace libsemigroups {
     return detail::const_pstislo_iterator<Node1>(&wg, source, target, min, max);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Returns an iterator for PSTISLO (Path Source Target In Short Lex
   //! Order).
@@ -361,7 +358,7 @@ namespace libsemigroups {
         &wg, UNDEFINED, UNDEFINED, 0, 0);
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns the paths::algorithm used by number_of_paths().
   //!
   //! \param wg the WordGraph.
@@ -382,7 +379,7 @@ namespace libsemigroups {
     return paths::algorithm::acyclic;
   }
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns the number of paths from a source node.
   //!
   //! \param wg the WordGraph.
@@ -403,7 +400,7 @@ namespace libsemigroups {
   [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
                                          Node2                   source);
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns the paths::algorithm used by number_of_paths().
   //!
   //! Returns the algorithm used by number_of_paths() to compute the number
@@ -431,7 +428,7 @@ namespace libsemigroups {
                             size_t                  min,
                             size_t                  max);
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //! Returns the number of paths starting at a given node with length in a
   //! given range.
   //!
@@ -483,7 +480,7 @@ namespace libsemigroups {
                                          paths::algorithm        lgrthm
                                          = paths::algorithm::automatic);
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Returns the \ref paths::algorithm used by number_of_paths().
   //!
@@ -514,7 +511,7 @@ namespace libsemigroups {
                             size_t                  min,
                             size_t                  max);
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Returns the number of paths between a pair of nodes with length in a
   //! given range.
@@ -564,7 +561,7 @@ namespace libsemigroups {
                                          paths::algorithm        lgrthm
                                          = paths::algorithm::automatic);
 
-  //! \ingroup paths_group
+  //! \ingroup word_graph_group
   //!
   //! \brief Range for iterating through paths in a WordGraph.
   //!
@@ -1079,21 +1076,21 @@ namespace libsemigroups {
     Subclass& order(Subclass* obj, Order val);
   };  // class Paths
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Deduction guide to construct a Paths<Node> from a WordGraph<Node> const
   //! reference.
   template <typename Node>
   Paths(WordGraph<Node> const&) -> Paths<Node>;
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! Deduction guide to construct a Paths<Node> from a WordGraph<Node> rvalue
   //! reference.
   template <typename Node>
   Paths(WordGraph<Node>&&) -> Paths<Node>;
 
-  //! \ingroup paths_group
+  //! \relates Paths
   //!
   //! \brief Return a human readable representation of a Paths object.
   //!
