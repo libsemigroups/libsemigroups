@@ -131,14 +131,17 @@ namespace libsemigroups {
     };  // ReportCell
   }     // namespace detail
 
+  //! No doc
   bool reporting_enabled() noexcept;
 
+  //! No doc
   template <typename... Args>
   std::string fmt_default(std::string_view sv, Args&&... args) {
     std::string prefix = fmt::format("#{}: ", detail::this_threads_id());
     return prefix + fmt::format(sv, std::forward<Args>(args)...);
   }
 
+  //! No doc
   template <typename... Args>
   void report_no_prefix(std::string_view sv, Args&&... args) {
     static std::mutex mtx;
@@ -149,6 +152,7 @@ namespace libsemigroups {
     }
   }
 
+  //! No doc
   template <typename... Args>
   void report_default(std::string_view sv, Args&&... args) {
     if (reporting_enabled()) {
@@ -164,17 +168,25 @@ namespace libsemigroups {
     }
   }
 
+  //! No doc
   static inline void
   report_elapsed_time(std::string_view                    prefix,
                       libsemigroups::detail::Timer const& tmr) {
     report_default("{} elapsed time {}", prefix, tmr);
   }
 
+  //! \ingroup misc_group
+  //!
+  //! \brief Struct for specifying whether or not to report about an algorithm's
+  //! performance.
+  //!
   //! This struct can be used to enable printing of some information during
-  //! various of the computation in `libsemigroups`. Reporting is enable (or
-  //! not) at construction time, and disable when the ReportGuard goes out of
+  //! various of the computation in `libsemigroups`. Reporting is enabled (or
+  //! not) at construction time, and disabled when the ReportGuard goes out of
   //! scope.
   struct ReportGuard {
+    //! \brief Constructs a ReportGuard with reporting enabled by default.
+    //!
     //! Constructs a ReportGuard with reporting enabled by default.
     //!
     //! \param val whether to report or not (default: \c true).

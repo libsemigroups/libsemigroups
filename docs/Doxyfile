@@ -1123,7 +1123,6 @@ EXCLUDE                = ../include/libsemigroups/detail/bruidhinn-traits.hpp \
                          ../include/libsemigroups/detail/multi-string-view.hpp \
                          ../include/libsemigroups/detail/path-iterators.hpp \
                          ../include/libsemigroups/detail/pool.hpp \
-                         ../include/libsemigroups/detail/report.hpp \
                          ../include/libsemigroups/detail/stl.hpp \ 
                          ../include/libsemigroups/detail/string.hpp \
                          ../include/libsemigroups/detail/timer.hpp \

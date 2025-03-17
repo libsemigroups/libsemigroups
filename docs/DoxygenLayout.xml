@@ -116,11 +116,12 @@
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
-      <tab type="user" visible="yes" url="@ref obvinf_group" title="IsObviouslyInfinite" />
-      <tab type="user" visible="yes" url="@ref exception_group" title="LibsemigroupsException" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
+      <tab type="user" visible="yes" url="@ref exception_group" title="Exceptions" />
+      <tab type="user" visible="yes" url="@ref obvinf_group" title="Obviously infinite" />
       <tab type="usergroup" visible="yes" url="@ref types_group" title="Types" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ReportGuard" title="ReportGuard" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
     </tab>
     <tab type="user" visible="yes" url="@ref orders_group" title="Orders" />
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
@@ -243,7 +244,7 @@
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_init_group" title="Constructors + Initializers"/>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_settings_group" title="Settings"/>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_intf_group" title="Common functions"/>
-        <!-- TODO need a better name than "Common functions" -->
+        <!-- TODO(!) need a better name than "Common functions" -->
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_accessors_group" title="Accessors"/>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_mod_group" title="Modifiers"/>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_word_index_group" title="Word -> index"/>
