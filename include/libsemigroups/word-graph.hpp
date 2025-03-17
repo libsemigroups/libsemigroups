@@ -63,8 +63,6 @@ namespace libsemigroups {
   //!
   //! This page collects various classes and functions related to word graphs
   //! in `libsemigroups`.
-  //!
-  //! \sa \ref gabow_group, \ref paths_group
 
   //! \ingroup word_graph_group
   //!

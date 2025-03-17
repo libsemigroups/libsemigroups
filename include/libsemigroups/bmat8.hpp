@@ -689,8 +689,7 @@ namespace libsemigroups {
     //! \brief Returns the transpose of a BMat8.
     //!
     //! This function returns the transpose of its argument \p x, which is
-    //! computed using the technique found in
-    //! [Knu09](../biblio.html#knuth2009aa).
+    //! computed using the technique found in \cite Knuth2009aa.
     //!
     //! \param x the matrix to transpose.
     //!
