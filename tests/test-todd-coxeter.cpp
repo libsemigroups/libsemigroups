@@ -2747,7 +2747,7 @@ namespace libsemigroups {
   }
 
   // This test seems to segfault, including on debug mode, and it causes JDE's
-  // terminal to crash making it tought to figure out what's going wrong.
+  // terminal to crash making it tough to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "068",
                           "Walker 5",
@@ -2793,7 +2793,7 @@ namespace libsemigroups {
   }
 
   // This test seems to segfault, including on debug mode, and it causes JDE's
-  // terminal to crash making it tought to figure out what's going wrong.
+  // terminal to crash making it tough to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "069",
                           "not Walker 6",
@@ -3774,7 +3774,7 @@ namespace libsemigroups {
   }
 
   // This test seems to segfault, including on debug mode, and it causes JDE's
-  // terminal to crash making it tought to figure out what's going wrong.
+  // terminal to crash making it tough to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "096",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22",
@@ -3843,7 +3843,7 @@ namespace libsemigroups {
   }
 
   // This test seems to segfault, including on debug mode, and it causes JDE's
-  // terminal to crash making it tought to figure out what's going wrong.
+  // terminal to crash making it tough to figure out what's going wrong.
   // Takes about 3 minutes (with HLT)
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "098",
@@ -4581,7 +4581,7 @@ namespace libsemigroups {
   }
 
   // This test seems to segfault, including on debug mode, and it causes JDE's
-  // terminal to crash making it tought to figure out what's going wrong.
+  // terminal to crash making it tough to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "113",
                           "Whyte's 2-generator 4-relation full transf monoid 8",
