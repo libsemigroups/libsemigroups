@@ -283,9 +283,8 @@
     <tab type="examples" visible="yes" title="" intro="" />
     <tab type="user" visible="yes" url="_HEADING_" title="Main Algorithms" />
     <tab type="usergroup" visible="yes" url="@ref action_group" title="Actions">
-      <tab type="user" visible="yes" url="@ref libsemigroups::side" title="side" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ActionTraits" title="ActionTraits" />
       </tab>
       <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helper function">
         <tab type="user" visible="yes" url="@ref cong_common_helpers_add_pair_group" title="Add generating pairs"/>
