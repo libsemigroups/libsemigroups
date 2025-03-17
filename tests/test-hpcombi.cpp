@@ -298,7 +298,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "012", "Renner0", "[standard][hpcombi]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
         {Renner0Element({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}),
           Renner0Element(

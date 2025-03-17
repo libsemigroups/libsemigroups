@@ -36,9 +36,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "012",
                           "full bmat monoid 5",
-                          "[extreme][bmat8]") {
+                          "[standard][bmat8]") {
     using BMat = BMatFastest<5>;
-    auto rg    = ReportGuard(true);
+    auto rg    = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat({{1, 0, 0, 0, 0},
                                          {0, 1, 0, 0, 0},
@@ -162,9 +162,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "014",
                           "regular generated bmat monoid 5",
-                          "[extreme][bmat8]") {
+                          "[standard][bmat8]") {
     using BMat = BMatFastest<5>;
-    auto rg    = ReportGuard(true);
+    auto rg    = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat({{0, 1, 0, 0, 0},
                                          {1, 0, 0, 0, 0},
@@ -434,9 +434,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "018",
                           "full bmat monoid 5 with stop in Action",
-                          "[extreme][bmat8]") {
+                          "[standard][bmat8]") {
     using BMat = BMatFastest<5>;
-    auto rg    = ReportGuard(true);
+    auto rg    = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat({{1, 0, 0, 0, 0},
                                          {0, 1, 0, 0, 0},
@@ -522,8 +522,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "019",
                           "regular generated bmat monoid 5 with stops",
-                          "[extreme][bmat8]") {
-    auto rg = ReportGuard(true);
+                          "[standard][bmat8]") {
+    auto rg = ReportGuard(false);
 
     Konieczny T = make<Konieczny>({BMat8({{0, 1, 0, 0, 0},
                                           {1, 0, 0, 0, 0},

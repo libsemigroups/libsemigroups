@@ -192,7 +192,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordRange",
                           "007",
                           "lex + sort",
-                          "[wislo][quick][no-valgrind][no-coverage]") {
+                          "[wislo][standard][no-coverage]") {
     word_type first = {};
     word_type last(13, 2);
     auto      w = std::vector(cbegin_wilo(3, 13, first, last),

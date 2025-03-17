@@ -892,11 +892,10 @@ namespace libsemigroups {
     REQUIRE(nr == S.number_of_idempotents());
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "FroidurePin<Transf>",
-      "073",
-      "cbegin_idempotents/cend, is_idempotent",
-      "[standard][froidure-pin][transf][multithread][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
+                          "073",
+                          "cbegin_idempotents/cend, is_idempotent",
+                          "[standard][froidure-pin][transf][multithread]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 2, 3, 4, 5, 6, 0}));

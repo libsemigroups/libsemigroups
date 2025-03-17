@@ -432,8 +432,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "002",
                           "Example 6.6 in Sims (see also KnuthBendix 013)",
-                          "[todd-coxeter][standard]") {
-    auto rg = ReportGuard(false);
+                          "[todd-coxeter][extreme]") {
+    auto rg = ReportGuard(true);
 
     Presentation<word_type> p;
     p.alphabet(4);
@@ -503,7 +503,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "003",
                           "constructed from FroidurePin",
-                          "[no-valgrind][todd-coxeter][quick][no-coverage]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto rg = ReportGuard(false);
 
     FroidurePin S = make<FroidurePin>(
@@ -1589,11 +1589,10 @@ namespace libsemigroups {
     REQUIRE(tc.current_word_graph() == copy.current_word_graph());
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "ToddCoxeter",
-      "029",
-      "stylic_monoid",
-      "[todd-coxeter][standard][no-coverage][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "029",
+                          "stylic_monoid",
+                          "[todd-coxeter][extreme][no-coverage]") {
     auto rg = ReportGuard(false);
 
     auto p = presentation::examples::stylic_monoid(9);
@@ -1727,8 +1726,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "032",
                           "symmetric_group(9) Moore_b",
-                          "[todd-coxeter][extreme]") {
-    auto rg = ReportGuard(true);
+                          "[todd-coxeter][standard]") {
+    auto rg = ReportGuard(false);
 
     auto p = presentation::examples::symmetric_group_Moo97_b(9);
     presentation::reduce_complements(p);
@@ -1784,7 +1783,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "034",
                           "symmetric_group(7) Burnside",
-                          "[todd-coxeter][quick][no-valgrind]") {
+                          "[todd-coxeter][standard]") {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
@@ -1804,7 +1803,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "035",
                           "Easdown-East-FitzGerald DualSymInv(5)",
-                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto       rg = ReportGuard(false);
     auto const n  = 5;
     auto p = presentation::examples::dual_symmetric_inverse_monoid_EEF07(n);
@@ -1845,7 +1844,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "037",
                           "stellar_monoid(7) (Gay-Hivert)",
-                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 7;
     auto         p  = presentation::examples::stellar_monoid_GH19(n);
@@ -1949,7 +1948,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "042",
                           "temperley_lieb_monoid(10) (East)",
-                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 10;
     auto         p  = presentation::examples::temperley_lieb_monoid_Eas21(n);
@@ -2529,7 +2528,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "064",
                           "Walker 1",
-                          "[todd-coxeter][standard][no-valgrind]") {
+                          "[todd-coxeter][standard]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABCDEFGHIXYZ");
@@ -2608,7 +2607,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "065",
                           "Walker 2",
-                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -2699,8 +2698,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "067",
                           "Walker 4",
-                          "[todd-coxeter][extreme]") {
-    auto                      rg = ReportGuard();
+                          "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
@@ -2893,8 +2892,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "071",
                           "Walker 7",
-                          "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(false);
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "aaa", "a");
@@ -2936,8 +2935,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "072",
                           "Walker 8",
-                          "[todd-coxeter][standard]") {
-    auto rg = ReportGuard(false);
+                          "[todd-coxeter][extreme]") {
+    auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -2978,7 +2977,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "073",
                           "KnuthBendix 098",
-                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDyYfFgGe");
@@ -3008,7 +3007,7 @@ namespace libsemigroups {
                           "074",
                           "Holt 2 - SL(2, p)",
                           "[todd-coxeter][extreme]") {
-    auto                        rg     = ReportGuard();
+    auto                        rg     = ReportGuard(true);
     std::array<size_t, 4> const sizes  = {24, 120, 336, 1'320};
     std::array<size_t, 4> const primes = {3, 5, 7, 11};
 
@@ -3127,7 +3126,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "078",
                           "Renner monoid type D4 (Gay-Hivert), q = 1",
-                          "[no-valgrind][quick][todd-coxeter][no-coverage]") {
+                          "[standard][todd-coxeter][no-coverage]") {
     auto rg = ReportGuard(false);
     auto p  = presentation::examples::renner_type_D_monoid(4, 1);
     presentation::normalize_alphabet(p);
@@ -3318,8 +3317,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "084",
                           "ACE --- SL219 - HLT",
-                          "[todd-coxeter][standard][ace]") {
-    auto                      rg = ReportGuard(false);
+                          "[todd-coxeter][extreme][ace]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abAB");
     p.contains_empty_word(true);
@@ -3418,8 +3417,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "086",
                           "ACE --- M12",
-                          "[todd-coxeter][standard][ace]") {
-    auto                      rg = ReportGuard(false);
+                          "[todd-coxeter][extreme][ace]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abcABC");
     p.contains_empty_word(true);
@@ -3708,7 +3707,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "094",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/M11/",
-                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
@@ -3750,8 +3749,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "095",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/M12/",
-                          "[todd-coxeter][standard]") {
-    auto                      rg = ReportGuard(false);
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -3806,6 +3805,7 @@ namespace libsemigroups {
                           "097",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/M23",
                           "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -3887,11 +3887,12 @@ namespace libsemigroups {
   }
 
   // Approx. 32 minutes (2021 - MacBook Air M1 - 8GB RAM)
+  // Approx. 17.5 minutes (2025 - intel i7-13700H - 64GB RAM)
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "099",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/HS",
                           "[todd-coxeter][extreme]") {
-    auto rg = ReportGuard();
+    auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
     p.alphabet("xyXY");
@@ -3950,7 +3951,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "101",
                           "http://brauer.maths.qmul.ac.uk/Atlas/lin/L34/",
-                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
+                          "[todd-coxeter][standard][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("xyXY");
@@ -3981,6 +3982,7 @@ namespace libsemigroups {
                           "102",
                           "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62 x 2",
                           "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -4087,13 +4089,12 @@ namespace libsemigroups {
            {1, 4, 12, 16, 13, 4, 1},
            {1, 5, 20, 40, 55, 41, 20, 5, 1},
            {1, 6, 30, 80, 155, 186, 156, 80, 30, 6, 1}};
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     for (size_t n = 2; n < 11; ++n) {
       auto p = presentation::examples::chinese_monoid(n);
       p.contains_empty_word(true);
       presentation::add_idempotent_rules_no_checks(
           p, (seq<size_t>() | take(n) | to_vector()));
-      // REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
       auto  fp = to<FroidurePin>(tc);
@@ -4218,7 +4219,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "108",
                           "plactic (n, 1)-id monoid",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][quick]") {
     // auto                          r = 3, s = 2;
     // std::array<uint64_t, 7> const size = {1, 3, 14, 95, 885, 10'858,
     // 170'209};
@@ -4668,6 +4669,7 @@ namespace libsemigroups {
                           "115",
                           "https://brauer.maths.qmul.ac.uk/Atlas/exc/TF42",
                           "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true).alphabet("xyXY");
     presentation::add_inverse_rules(p, "XYxy");
@@ -4745,8 +4747,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "118",
                           "alternating group 8",
-                          "[todd-coxeter][extreme]") {
-    auto                      rg = ReportGuard(true);
+                          "[todd-coxeter][standard]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABC").contains_empty_word(true);
     presentation::add_inverse_rules(p, "ABCabc");
@@ -4848,7 +4850,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "120",
                           "check full enum not triggered",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][standard]") {
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "aa", "a");
