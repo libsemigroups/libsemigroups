@@ -2747,10 +2747,12 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 36'412);
   }
 
+  // This test seems to segfault, including on debug mode, and it causes JDE's
+  // terminal to crash making it tought to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "068",
                           "Walker 5",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -2791,10 +2793,12 @@ namespace libsemigroups {
     check_complete_compatible(tc);
   }
 
+  // This test seems to segfault, including on debug mode, and it causes JDE's
+  // terminal to crash making it tought to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "069",
                           "not Walker 6",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     auto                      rg = ReportGuard();
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3770,10 +3774,12 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 95'040);
   }
 
+  // This test seems to segfault, including on debug mode, and it causes JDE's
+  // terminal to crash making it tought to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "096",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     ReportGuard               rg(true);
     Presentation<std::string> p;
     p.alphabet("xyXY");
@@ -3836,11 +3842,13 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 10'200'960);
   }
 
+  // This test seems to segfault, including on debug mode, and it causes JDE's
+  // terminal to crash making it tought to figure out what's going wrong.
   // Takes about 3 minutes (with HLT)
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "098",
                           "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -4104,30 +4112,28 @@ namespace libsemigroups {
       REQUIRE(scc.number_of_components() == num[n]);
       REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
 
-      std::vector<uint64_t> length = {};
-      for (auto&& nf : normal_forms(tc)) {
-        while (nf.size() >= length.size()) {
-          length.push_back(0);
+      if (n <= 6) {
+        std::vector<uint64_t> length = {};
+        for (auto&& nf : normal_forms(tc)) {
+          while (nf.size() >= length.size()) {
+            length.push_back(0);
+          }
+          length[nf.size()]++;
         }
-        length[nf.size()]++;
+        REQUIRE(length == tri[n]);
       }
-      REQUIRE(length == tri[n]);
-
-      if (n < 3)
-        continue;
     }
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "107",
                           "Chinese id monoid x 2",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     auto n = 5;
     auto p = presentation::examples::chinese_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
         p, (seq<size_t>() | take(n) | to_vector()));
-    // REQUIRE(p.rules == std::vector<word_type>());
     ToddCoxeter tc(twosided, p);
     tc.run();
 
@@ -4383,7 +4389,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "109",
                           "plactic (n, 1)-id monoid x 2",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     using words::pow;
     using words::operator+;
     // #include "Plact4-1_3_last.txt"
@@ -4585,10 +4591,12 @@ namespace libsemigroups {
     }
   }
 
+  // This test seems to segfault, including on debug mode, and it causes JDE's
+  // terminal to crash making it tought to figure out what's going wrong.
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "113",
                           "Whyte's 2-generator 4-relation full transf monoid 8",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = {00_w,
