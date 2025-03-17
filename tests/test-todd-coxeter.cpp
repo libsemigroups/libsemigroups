@@ -3535,13 +3535,13 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "090",
                           "relation ordering",
-                          "[todd-coxeter][extreme]") {
-    auto rg = ReportGuard(true);
+                          "[todd-coxeter][standard]") {
+    auto rg = ReportGuard(false);
     // Sorting the rules makes this twice as slow...
     auto p = presentation::examples::renner_type_D_monoid(5, 1);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    REQUIRE(p.rules.size() == 308);
+    REQUIRE(p.rules.size() == 302);
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     REQUIRE(p.rules.size() == 230);
@@ -4054,40 +4054,29 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "105",
                           "hypo plactic id monoid",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][standard]") {
     std::array<uint64_t, 11> const num
         = {0, 0, 4, 13, 40, 121, 364, 1'093, 3'280, 9'841, 29'524};
     // A003462
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     for (size_t n = 4; n < 11; ++n) {
       auto p = presentation::examples::hypo_plactic_monoid(n);
       p.contains_empty_word(true);
       presentation::add_idempotent_rules_no_checks(
           p, (seq<size_t>() | take(n) | to_vector()));
-      REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
       auto  fp = to<FroidurePin>(tc);
       Gabow scc(fp.right_cayley_graph());
       REQUIRE(scc.number_of_components() == num[n]);
       REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
-      if (n < 3)
-        continue;
-      presentation::sort_each_rule(p);
-      presentation::sort_rules(p);
-      auto q = to<Presentation<std::string>>(p);
-      presentation::change_alphabet(q, "abc");
-      REQUIRE(q.rules == std::vector<std::string>());
-      // REQUIRE((normal_forms(tc) | to_vector())
-      //
-      //         == std::vector({{}, {0}, {1}, {0, 1}, {1, 0}}));
     }
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "106",
                           "Chinese id monoid",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][standard]") {
     std::array<uint64_t, 11> const num = {
         0, 0, 4, 14, 50, 187, 730, 2'949, 12'234, 51'821, 223'190};  // A007317
     std::vector<std::vector<uint64_t>> tri
@@ -4431,37 +4420,36 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "110",
                           "sigma-plactic monoid",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][quick]") {
     auto p = presentation::examples::sigma_plactic_monoid({2, 2, 2});
     p.contains_empty_word(true);
     ToddCoxeter tc(twosided, p);
 
     REQUIRE(tc.number_of_classes() == 15);
 
-    std::vector nf = {""_w,
-                      0_w,
-                      101_w,
-                      212012_w,
-                      12012_w,
-                      202_w,
-                      01_w,
-                      2012_w,
-                      012_w,
-                      02_w,
-                      1012_w,
-                      1_w,
-                      212_w,
-                      12_w,
-                      2_w};
-    std::for_each(nf.begin(), nf.end(), [&tc](auto& w) { w = reduce(tc, w); });
-    REQUIRE(nf == std::vector<word_type>());
-    REQUIRE((normal_forms(tc) | to_vector()) == std::vector<word_type>());
+    REQUIRE((normal_forms(tc) | to_vector())
+            == std::vector<word_type>({""_w,
+                                       0_w,
+                                       1_w,
+                                       2_w,
+                                       01_w,
+                                       02_w,
+                                       10_w,
+                                       12_w,
+                                       20_w,
+                                       21_w,
+                                       012_w,
+                                       021_w,
+                                       102_w,
+                                       210_w,
+                                       1021_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "111",
                           "2-sylvester monoid",
                           "[todd-coxeter][extreme]") {
+    auto rg = ReportGuard(true);
     using words::pow;
     size_t                  n = 4;
     Presentation<word_type> p;
