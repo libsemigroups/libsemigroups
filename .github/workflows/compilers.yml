@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir -p m4
           ./autogen.sh 
-          ./configure CXX="$CXX" --disable-hpcombi
+          ./configure CXX="$CXX"
       - name: Build libsemigroups . . .
         run: make -j4
       - name: Build test_all . . .
