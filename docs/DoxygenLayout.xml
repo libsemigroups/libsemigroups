@@ -191,7 +191,17 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::pbr" title="PBR helper functions" />
         <tab type="user" visible="yes" url="@ref make_pbr_group" title="make<PBR>" />
       </tab>
-      <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
+      <tab type="usergroup" visible="yes" url="@ref transf_group" title="Transformations">
+        <tab type="user" visible="yes" url="@ref libsemigroups::DynamicPTransf<Scalar>" title="DynamicPTransf" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Perm<N,Scalar>" title="Perm" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::PPerm<N,Scalar>" title="PPerm" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::PTransfBase<Scalar,Container>" title="PTransfBase" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::StaticPTransf<N,Scalar>" title="StaticPTransf" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Transf<Scalar>" title="Transf" />
+        <tab type="user" visible="yes" url="@ref make_transf_group" title="make<Transf>" />
+        <tab type="user" visible="yes" url="@ref make_pperm_group" title="make<PPerm>" />
+        <tab type="user" visible="yes" url="@ref make_perm_group" title="make<Perm>" />
+      </tab>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
