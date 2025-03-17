@@ -204,10 +204,16 @@
       </tab>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
-      <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
-      <tab type="user" visible="yes" url="@ref exception_group" title="Exceptions" />
-      <tab type="user" visible="yes" url="@ref obvinf_group" title="Obviously infinite" />
-      <tab type="usergroup" visible="yes" url="@ref types_group" title="Types" />
+      <tab type="user" visible="yes" url="@ref constants_group" title="Constants" />
+      <tab type="usergroup" visible="yes" url="@ref exception_group" title="Exceptions">
+        <tab type="user" visible="yes" url="@ref libsemigroups::LibsemigroupsException" title="LibsemigroupsException" />
+      </tab>
+      <tab type="usergroup" visible="yes" url="@ref obvinf_group" title="Obviously infinite">
+        <tab type="user" visible="yes" url="@ref libsemigroups::IsObviouslyInfinite" title="IsObviouslyInfinite" />
+      </tab>
+      <tab type="usergroup" visible="yes" url="@ref types_group" title="Types">
+        <tab type="user" visible="yes" url="@ref libsemigroups::SmallestInteger<N>" title="SmallestInteger" />
+      </tab>
       <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
       <tab type="user" visible="yes" url="@ref libsemigroups::ReportGuard" title="ReportGuard" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
