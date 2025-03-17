@@ -246,7 +246,10 @@
       </tab>
       <tab type="user" visible="yes" url="@ref libsemigroups::ukkonen" title="Ukkonen helper functions"/>
     </tab>
-    <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
+    <tab type="usergroup" visible="yes" url="@ref aho_corasick_group" title="Tries" >
+      <tab type="user" visible="yes" url="@ref libsemigroups::AhoCorasick" title="The AhoCorasick Class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::aho_corasick" title="AhoCorasick helper functions"/>
+    </tab>
     <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
