@@ -236,7 +236,9 @@
       <tab type="usergroup" visible="yes" url="@ref to_inverse_presentation_group"
        title="to<InversePresentation>" />
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
+    <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges">
+    <tab type="user" visible="yes" url="@ref libsemigroups::Random" title="Random"/>
+    </tab>
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
     <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
