@@ -252,7 +252,12 @@
     </tab>
     <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
-    <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
+    <tab type="usergroup" visible="yes" url="@ref dot_group" title="Visualisation">
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::Dot" title="The Dot class">
+        <tab type="user" visible="yes" url="@ref libsemigroups::Dot::Edge" title="The Edge class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::Dot::Node" title="The Node class"/>
+      </tab>
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
       <tab type="user" visible="yes" url="@ref make_forest_group" title="make<Forest>" />
