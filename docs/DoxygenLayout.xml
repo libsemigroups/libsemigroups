@@ -283,8 +283,8 @@
     <tab type="examples" visible="yes" title="" intro="" />
     <tab type="user" visible="yes" url="_HEADING_" title="Main Algorithms" />
     <tab type="usergroup" visible="yes" url="@ref action_group" title="Actions">
-      <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::ActionTraits" title="ActionTraits" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="The Action class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ActionTraits" title="The ActionTraits class" />
       </tab>
       <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helper function">
         <tab type="user" visible="yes" url="@ref cong_common_helpers_add_pair_group" title="Add generating pairs"/>
@@ -331,6 +331,13 @@
       <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions"/>
       <tab type="user" visible="yes" url="@ref to_knuth_bendix_group" title="to<KnuthBendix>"/>
     </tab>
+    <tab type="usergroup" visible="yes" url="@ref konieczny_group" title="Konieczny">
+      <tab type="user" visible="yes" url="@ref libsemigroups::Konieczny" title="The Konieczny class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::KoniecznyTraits" title="The KoniecznyTraits class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::Konieczny::DClass" title="The DClass class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::konieczny" title="Konieczny helper functions"/>
+      <tab type="user" visible="yes" url="@ref make_konieczny_group" title="make<Konieczny>"/>
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref sims_group" title="Low Index Congruences">
       <tab type="usergroup" visible="yes" url="group__sims__group.html#nested-classes"
         title="Classes">
@@ -347,7 +354,11 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::sims" title="Helper functions" />
     </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
-    <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
+    <tab type="usergroup" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims">
+      <tab type="user" visible="yes" url="@ref libsemigroups::SchreierSims" title="The SchreierSims class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::SchreierSimsTraits" title="The SchreierSims Traits class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::schreier_sims" title="SchreierSims helper functions" />
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref stephen_group" title="Stephen">
       <tab type="user" visible="yes" url="@ref libsemigroups::Stephen" title="The Stephen class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::stephen" title="Stephen helper functions" />
