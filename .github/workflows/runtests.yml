@@ -34,7 +34,14 @@ jobs:
       - name: Build test_all . . .
         run: make test_all -j4
       - name: Run the quick and standard tests . . .
-        run: ./test_all "[quick],[standard]"
+        run: ./test_all --reporter junit::out=junit.xml "[quick],[standard]"
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() && matrix.compiler == 'g++' }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
   benchmarks:
     name: Benchmarks compile
     timeout-minutes: 10
