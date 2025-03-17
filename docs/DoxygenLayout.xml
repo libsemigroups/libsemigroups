@@ -137,14 +137,35 @@
               <tab type="user" visible="yes" url="@ref libsemigroups::BooleanZero" title="BooleanZero"/>
             </tab>
           </tab>
-          <tab type="user" visible="yes" url="@ref intmat_group" title="Integer matrices" />
-          <tab type="user" visible="yes" url="@ref maxplusmat_group" title="Max-plus matrices" />
-          <tab type="user" visible="yes" url="@ref minplusmat_group" title="Min-plus matrices" />
-          <tab type="user" visible="yes" url="@ref maxplustruncmat_group"
-            title="Truncated max-plus matrices" />
-          <tab type="user" visible="yes" url="@ref minplustruncmat_group"
-            title="Truncated min-plus matrices" />
-          <tab type="user" visible="yes" url="@ref ntpmat_group" title="Matrices over ℕ/(t = t + p)" />
+          <tab type="usergroup" visible="yes" url="@ref intmat_group" title="Integer matrices" >
+            <tab type="user" visible="yes" url="@ref libsemigroups::IntegerOne<Scalar>" title="IntegerOne"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::IntegerPlus<Scalar>" title="IntegerPlus"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::IntegerProd<Scalar>" title="IntegerProd"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::IntegerZero<Scalar>" title="IntegerZero"/>
+          </tab>
+          <tab type="usergroup" visible="yes" url="@ref maxplusmat_group" title="Max-plus matrices">
+            <tab type="user" visible="yes" url="@ref libsemigroups::MaxPlusPlus<Scalar>" title="MaxPlusPlus"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::MaxPlusProd<Scalar>" title="MaxPlusProd"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::MaxPlusZero<Scalar>" title="MaxPlusZero"/>
+          </tab>
+          <tab type="usergroup" visible="yes" url="@ref minplusmat_group" title="Min-plus matrices" >
+            <tab type="user" visible="yes" url="@ref libsemigroups::MinPlusPlus<Scalar>" title="MinPlusPlus"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::MinPlusProd<Scalar>" title="MinPlusProd"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::MinPlusZero<Scalar>" title="MinPlusZero"/>
+          </tab>
+          <tab type="usergroup" visible="yes" url="@ref maxplustruncmat_group" title="Truncated max-plus matrices" >
+            <tab type="user" visible="yes" url="@ref libsemigroups::MaxPlusTruncProd<T,Scalar>" title="MaxPlusTruncProd"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::MaxPlusTruncSemiring<T,Scalar>" title="MaxPlusTruncSemiring"/>
+          </tab>
+          <tab type="usergroup" visible="yes" url="@ref minplustruncmat_group" title="Truncated min-plus matrices">
+            <tab type="user" visible="yes" url="@ref libsemigroups::MinPlusTruncProd<T,Scalar>" title="MinPlusTruncProd"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::MinPlusTruncSemiring<T,Scalar>" title="MinPlusTruncSemiring"/>
+          </tab>
+          <tab type="usergroup" visible="yes" url="@ref ntpmat_group" title="Matrices over ℕ/(t = t + p)" >
+            <tab type="user" visible="yes" url="@ref libsemigroups::NTPPlus<T,Scalar>" title="NTPPlus"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::NTPProd<T,Scalar>" title="NTPProd"/>
+            <tab type="user" visible="yes" url="@ref libsemigroups::NTPSemiring<T,Scalar>" title="NTPSemiring"/>
+          </tab>
           <tab type="user" visible="yes" url="@ref projmaxplus_group"
             title="Projective max-plus matrices" />
         </tab>
