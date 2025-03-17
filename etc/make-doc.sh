@@ -2,7 +2,7 @@
 set -e
 
 echo "Checking whether to build the to-table . . ."
-if command -v pdflatex && command -v ghostscript 2>&1 >/dev/null; then
+if command -v pdflatex && command -v inkscape 2>&1 >/dev/null; then
     cd docs/pictures
     echo "Building to-table . . ."
     pdflatex -shell-escape to-table.tex
@@ -12,6 +12,8 @@ else
 fi
 echo "Checking doc order . . ."
 ./etc/check_doc_order.py
+echo "Checking doxygen linebreaks . . ."
+./etc/check_doxygen_line_breaks.py
 mkdir -p docs/build
 cd docs/
 echo "doxygen --version"

@@ -126,8 +126,8 @@ namespace libsemigroups {
     //! \brief Data member holding the rules of the presentation.
     //!
     //! The rules can be altered using the member functions of `std::vector`,
-    //! and the presentation can be checked for validity using \ref
-    //! throw_if_bad_alphabet_or_rules.
+    //! and the presentation can be checked for validity using
+    //! \ref throw_if_bad_alphabet_or_rules.
     std::vector<word_type> rules;
 
     //! \brief Default constructor.
@@ -587,9 +587,8 @@ namespace libsemigroups {
     //!
     //! Check if the alphabet and rules are valid.
     //!
-    //! \throws LibsemigroupsException if \ref
-    //! throw_if_alphabet_has_duplicates or
-    //! \ref throw_if_bad_rules does.
+    //! \throws LibsemigroupsException if \ref throw_if_alphabet_has_duplicates
+    //! or \ref throw_if_bad_rules does.
     //!
     //! \complexity
     //! Worst case \f$O(mnp)\f$ where \f$m\f$ is the length of length of the
