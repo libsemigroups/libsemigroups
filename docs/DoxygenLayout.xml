@@ -62,10 +62,57 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::Rho<BMat8,BMat8>" title="Rho" />
         <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue<BMat8>" title="RhoValue" />
       </tab>
-      <tab type="user" visible="yes" url="@ref adapters_matrix_group"
-        title="Adapters for other matrices" />
-      <tab type="user" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" />
-      <tab type="user" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" />
+      <tab type="usergroup" visible="yes" url="@ref adapters_matrix_group" title="Adapters for other matrices" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Complexity<Mat,std::enable_if_t<IsMatrix<Mat>>>" title="Complexity" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Degree<Mat,std::enable_if_t<IsMatrix<Mat>>>" title="Degree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Hash<Mat,std::enable_if_t<IsMatrix<Mat>>>" title="Hash" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::IncreaseDegree<Mat,std::enable_if_t<IsMatrix<Mat>>>" title="IncreaseDegree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::One<Mat,std::enable_if_t<IsMatrix<Mat>>>" title="One" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Product<Mat,std::enable_if_t<IsMatrix<Mat>>>" title="Product" />
+      </tab>
+      <tab type="usergroup" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Complexity<HPCombi::BMat8>" title="Complexity (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Complexity<TPTransf16Subclass,std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,TPTransf16Subclass>>>" title="Complexity (PTransf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Degree<HPCombi::BMat8>" title="Degree (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Degree<TPTransf16Subclass,std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,TPTransf16Subclass>>>" title="Degree (PTransf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageLeftAction<HPCombi::BMat8,HPCombi::BMat8>" title="ImageLeftAction (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageLeftAction<HPCombi::PPerm16,HPCombi::PPerm16>" title="ImageLeftAction (PPerm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageLeftAction<HPCombi::Transf16,HPCombi::Vect16>" title="ImageLeftAction (Transf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<HPCombi::BMat8,HPCombi::BMat8>" title="ImageRightAction (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<HPCombi::Perm16,TIntType,std::enable_if_t<std::is_integral_v<TIntType>>>" title="ImageRightAction (Perm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<HPCombi::PPerm16,HPCombi::PPerm16>" title="ImageRightAction (PPerm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction<HPCombi::Transf16,HPCombi::PTransf16>" title="ImageRightAction (Transf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::IncreaseDegree<HPCombi::BMat8>" title="IncreaseDegree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Inverse<HPCombi::BMat8>" title="Inverse (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Inverse<HPCombi::Perm16>" title="Inverse (Perm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Lambda<HPCombi::BMat8,HPCombi::BMat8>" title="Lambda (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Lambda<HPCombi::PPerm16,HPCombi::PPerm16>" title="Lambda (PPerm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Lambda<HPCombi::Transf16,HPCombi::PTransf16>" title="Lambda (Transf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::LambdaValue<HPCombi::BMat8>" title="LambdaValue (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::LambdaValue<HPCombi::PPerm16>" title="LambdaValue (PPerm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::LambdaValue<HPCombi::Transf16>" title="LambdaValue (Transf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::One<HPCombi::BMat8>" title="One (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::One<TPTransf16Subclass,std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,TPTransf16Subclass>>>" title="One (PTransf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Product<HPCombi::BMat8>" title="Product (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Product<TPTransf16Subclass,std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,TPTransf16Subclass>>>" title="Product (PTransf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rank<HPCombi::BMat8>" title="Rank (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rank<T,std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,T>,RankState<T>>>" title="Rank (PTransf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rho<HPCombi::BMat8,HPCombi::BMat8>" title="Rho (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rho<HPCombi::PPerm16,HPCombi::PPerm16>" title="Rho (PPerm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rho<HPCombi::Transf16,HPCombi::Vect16>" title="Rho (Transf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue<HPCombi::BMat8>" title="RhoValue (BMat8)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue<HPCombi::PPerm16>" title="RhoValue (PPerm16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue<HPCombi::Transf16>" title="RhoValue (Transf16)" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Swap<TPTransf16Subclass,std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,TPTransf16Subclass>>>" title="Swap" />
+      </tab>
+      <tab type="usergroup" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Complexity<PBR>" title="Complexity" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Degree<PBR>" title="Degree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Hash<PBR>" title="Hash" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::IncreaseDegree<PBR>" title="IncreaseDegree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::One<PBR>" title="One" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Product<PBR>" title="Product" />
+      </tab>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
       <tab type="usergroup" visible="yes" url="@ref bipart_group" title="Bipartitions" >
