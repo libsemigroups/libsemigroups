@@ -22,7 +22,6 @@
 #include <cctype>         // for isupper
 #include <cstddef>        // for size_t
 #include <cstdint>        // for uint32_t
-#include <iostream>       // for operator<<
 #include <memory>         // for make_shared
 #include <string>         // for basic_st...
 #include <tuple>          // for tie
@@ -1346,9 +1345,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "043",
                           "inverse presentation",
-                          "[stephen][standard]") {
+                          "[stephen][extreme]") {
     using words::                  operator+;
-    ReportGuard                    rg(false);
+    ReportGuard                    rg(true);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1418,8 +1417,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "046",
                           "Whyte's 4-relation full transf monoid 8",
-                          "[stephen][standard]") {
-    auto                    rg = ReportGuard(false);
+                          "[stephen][extreme]") {
+    auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = {00_w,       ""_w,       11_w,         ""_w,         22_w,
                ""_w,       33_w,       ""_w,         44_w,         ""_w,
@@ -1635,8 +1634,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "051",
                           "shared_ptr memory check",
-                          "[stephen][extreme][no-valgrind]") {
-    ReportGuard                    rg(true);
+                          "[stephen][standard]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1651,9 +1650,7 @@ namespace libsemigroups {
     size_t                                               n = 12;
     std::vector<Stephen<InversePresentation<word_type>>> stephens(n);
     // Uses no extra memory with shared pointer
-    std::cout << "Shared pointer - no extra memory\n";
     for (size_t i = 0; i < n; ++i) {
-      std::cout << i << "\n";
       stephens[i].init(ptr);
       if (i % 2 == 0) {
         stephen::set_word(stephens[i], to_word("a"));
@@ -1671,9 +1668,7 @@ namespace libsemigroups {
 
     std::vector<Stephen<InversePresentation<word_type>>> bad_stephens(n);
     // Uses 6GB extra memory without shared pointer
-    std::cout << "No shared pointer - about 6GB peak memory usage\n";
     for (size_t i = 0; i < n; ++i) {
-      std::cout << i << "\n";
       bad_stephens[i].init(p);
       if (i % 2 == 0) {
         stephen::set_word(bad_stephens[i], to_word("a"));

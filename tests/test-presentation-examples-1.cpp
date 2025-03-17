@@ -653,7 +653,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "043",
                           "partial_transformation_monoid(5) Shutov",
-                          "[pres-examples][quick][no-valgrind]") {
+                          "[pres-examples][standard]") {
     auto        rg = ReportGuard(false);
     size_t      n  = 5;
     ToddCoxeter tc(congruence_kind::twosided,
@@ -1021,8 +1021,8 @@ namespace libsemigroups {
       "Example",
       "073",
       "renner_type_B_monoid(5, 1) (Gay-Hivert presentation)",
-      "[extreme][pres-examples][hivert]") {
-    auto        rg = ReportGuard(true);
+      "[standard][pres-examples][hivert]") {
+    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(5, 1));
     REQUIRE(tc.presentation().rules.size() == 272);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1047,8 +1047,8 @@ namespace libsemigroups {
       "Example",
       "074",
       "renner_type_B_monoid(5, 0) (Gay-Hivert presentation)",
-      "[extreme][pres-examples][hivert]") {
-    auto        rg = ReportGuard(true);
+      "[standard][pres-examples][hivert]") {
+    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(5, 0));
     tc.strategy(decltype(tc)::options::strategy::felsch);
 
@@ -1142,8 +1142,8 @@ namespace libsemigroups {
       "Example",
       "081",
       "renner_type_D_monoid(5, 1) (Gay-Hivert presentation)",
-      "[extreme][pres-examples][hivert]") {
-    auto        rg = ReportGuard(true);
+      "[standard][pres-examples][hivert]") {
+    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(5, 1));
     tc.strategy(decltype(tc)::options::strategy::felsch);
 
@@ -1157,8 +1157,8 @@ namespace libsemigroups {
       "Example",
       "082",
       "renner_type_D_monoid(5, 0) (Gay-Hivert presentation)",
-      "[extreme][pres-examples][hivert]") {
-    auto        rg = ReportGuard(true);
+      "[standard][pres-examples][hivert]") {
+    auto        rg = ReportGuard(false);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(5, 0));
     tc.strategy(decltype(tc)::options::strategy::felsch);
 

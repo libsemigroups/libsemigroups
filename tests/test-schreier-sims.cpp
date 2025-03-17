@@ -3508,11 +3508,10 @@ namespace libsemigroups {
     REQUIRE(U.contains(make<Perm>({11, 10, 5, 7, 8, 2, 9, 3, 4, 6, 1, 0, 12})));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "SchreierSims",
-      "050",
-      "S17 and A39 intersection",
-      "[standard][schreier-sims][no-valgrind][intersection]") {
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "050",
+                          "S17 and A39 intersection",
+                          "[quick][schreier-sims][no-valgrind][intersection]") {
     auto             rg = ReportGuard(false);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
@@ -3544,11 +3543,10 @@ namespace libsemigroups {
          34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49})));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "SchreierSims",
-      "051",
-      "A50 and PGL(2, 49) intersection",
-      "[extreme][schreier-sims][no-valgrind][intersection]") {
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "051",
+                          "A50 and PGL(2, 49) intersection",
+                          "[standard][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
     SchreierSims<50> S, T, U;
     using Perm = SchreierSims<50>::element_type;
@@ -3638,7 +3636,7 @@ namespace libsemigroups {
       "SchreierSims",
       "053",
       "PGamma(2, 9) wreath Sym(2) and Alt(6)^2.D_8 intersection",
-      "[standard][schreier-sims][no-valgrind][intersection]") {
+      "[quick][schreier-sims][no-valgrind][intersection]") {
     auto              rg = ReportGuard(false);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
@@ -3688,11 +3686,10 @@ namespace libsemigroups {
          63, 53, 43, 33, 23, 12, 2,  92, 82, 72, 62, 52, 42, 32, 22})));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "SchreierSims",
-      "054",
-      "Alt(6)^2.2^2:4 and Alt(6)^2.4 intersection",
-      "[standard][schreier-sims][no-valgrind][intersection]") {
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "054",
+                          "Alt(6)^2.2^2:4 and Alt(6)^2.4 intersection",
+                          "[quick][schreier-sims][no-valgrind][intersection]") {
     auto              rg = ReportGuard(false);
     SchreierSims<100> S, T, U;
     using Perm = SchreierSims<100>::element_type;
@@ -3989,11 +3986,10 @@ namespace libsemigroups {
          16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31})));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "SchreierSims",
-      "060",
-      "AGL(7, 2) and PGL(2, 127) intersection",
-      "[extreme][schreier-sims][no-valgrind][intersection]") {
+  LIBSEMIGROUPS_TEST_CASE("SchreierSims",
+                          "060",
+                          "AGL(7, 2) and PGL(2, 127) intersection",
+                          "[standard][schreier-sims][intersection]") {
     auto              rg = ReportGuard(false);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;
