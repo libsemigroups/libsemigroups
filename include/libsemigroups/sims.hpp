@@ -1696,8 +1696,8 @@ namespace libsemigroups {
     //! Apply the function \p pred to every one-sided congruence with at most
     //! \p n classes, until it returns \c true.
     //!
-    //! This function is similar to `std::find_if(begin(n),
-    //! end(n), pred)` and exists to:
+    //! This function is similar to
+    //! `std::find_if(begin(n), end(n), pred)` and exists to:
     //! * provide some feedback on the progress of the computation if it runs
     //!   for more than 1 second.
     //! * allow for the computation of `std::find_if(begin(n), end(n), pred)`
@@ -2971,11 +2971,11 @@ namespace libsemigroups {
     //! defined by word graphs.
     //!
     //! This function computes a boolean matrix whose `(i, j)`-th entry is 1 if
-    //! and only if the congruence defined by the `i`-th word graph in `[first,
-    //! last)` is a subrelation of the congruence defined by the `j`-th word
-    //! graph in `[first, last)`. If `[first, last)` is the collection of all
-    //! congruences of a given semigroup or monoid, then this is equivalent to
-    //! computing the congruence lattice of the semigroup or monoid.
+    //! and only if the congruence defined by the `i`-th word graph in
+    //! `[first, last)` is a subrelation of the congruence defined by the `j`-th
+    //! word graph in `[first, last)`. If `[first, last)` is the collection of
+    //! all congruences of a given semigroup or monoid, then this is equivalent
+    //! to computing the congruence lattice of the semigroup or monoid.
     //!
     //! \returns a \ref BMat object.
     //!

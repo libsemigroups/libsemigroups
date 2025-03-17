@@ -724,8 +724,8 @@ namespace libsemigroups {
   //!
   //! \brief Return a string representation.
   //!
-  //! Return a string representation of \p ac. This has the form `<AhoCorasick
-  //! with [ac.number_of_nodes] node(s)>`.
+  //! Return a string representation of \p ac. This has the form
+  //! `<AhoCorasick with [ac.number_of_nodes] node(s)>`.
   //!
   //! \returns A string containing a representation of \p ac.
   //!
@@ -749,8 +749,8 @@ namespace libsemigroups {
 
     //! \brief Add a word to the trie of \p ac.
     //!
-    //! This function performs the same as `ac.add_word_no_checks(w.begin(),
-    //! w.end())`.
+    //! This function performs the same as
+    //! `ac.add_word_no_checks(w.begin(), w.end())`.
     //!
     //! \tparam Word the type of the 2nd parameter \p w.
     //! \param ac AhoCorasick object to add the word to.
@@ -773,8 +773,8 @@ namespace libsemigroups {
 
     //! \brief Remove a word from the trie of \p ac.
     //!
-    //! This function performs the same as `ac.rm_word_no_checks(w.begin(),
-    //! w.end())`.
+    //! This function performs the same as
+    //! `ac.rm_word_no_checks(w.begin(), w.end())`.
     //!
     //! \tparam Word the type of the 2nd parameter \p w.
     //! \param ac AhoCorasick object to remove the word from.
@@ -872,8 +872,8 @@ namespace libsemigroups {
 
     //! \brief Traverse the trie of \p ac using suffix links where necessary.
     //!
-    //! This function performs the same as `traverse_word_no_checks(ac, start,
-    //! w.cbegin(), w.cend())`.
+    //! This function performs the same as
+    //! `traverse_word_no_checks(ac, start, w.cbegin(), w.cend())`.
     //!
     //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
     //! start, Iterator first, Iterator last).
@@ -906,8 +906,8 @@ namespace libsemigroups {
 
     //! \brief Traverse the trie of \p ac using suffix links where necessary.
     //!
-    //! This function performs the same as `traverse_word(ac, start, w.cbegin(),
-    //! w.cend())`.
+    //! This function performs the same as
+    //! `traverse_word(ac, start, w.cbegin(), w.cend())`.
     //!
     //! \sa \ref traverse_word(AhoCorasick const& ac, index_type start, Iterator
     //! first, Iterator last).
@@ -921,8 +921,8 @@ namespace libsemigroups {
     //! \brief Traverse the trie of \p ac from the root using suffix links where
     //! necessary.
     //!
-    //! This function performs the same as `traverse_word_no_checks(ac,
-    //! AhoCorasick::root, first, last)`.
+    //! This function performs the same as
+    //! `traverse_word_no_checks(ac, AhoCorasick::root, first, last)`.
     //!
     //! \note
     //! There is no `_no_checks` suffix here as AhoCorasick::root is always a
@@ -940,8 +940,8 @@ namespace libsemigroups {
     //! \brief Traverse the trie of \p ac from the root using suffix links where
     //! necessary.
     //!
-    //! This function performs the same as `traverse_word_no_checks(ac,
-    //! AhoCorasick::root, w.cbegin(), w.end())`.
+    //! This function performs the same as
+    //! `traverse_word_no_checks(ac, AhoCorasick::root, w.cbegin(), w.end())`.
     //!
     //! \note
     //! There is no `_no_checks` suffix here as AhoCorasick::root is always a

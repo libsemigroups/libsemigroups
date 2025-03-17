@@ -317,8 +317,8 @@ namespace libsemigroups {
 
     //! \brief Add an edge from one node to another with a given label.
     //!
-    //! If \p s and \p t are nodes in \c this, and \p a is in the range `[0,
-    //! out_degree())`, then this function adds an edge from \p a to \p b
+    //! If \p s and \p t are nodes in \c this, and \p a is in the range
+    //! `[0, out_degree())`, then this function adds an edge from \p a to \p b
     //! labelled \p a.
     //!
     //! \param s the source node.
@@ -1379,8 +1379,8 @@ namespace libsemigroups {
     //! \tparam Node1  the type of the nodes of the WordGraph
     //! \p wg.
     //!
-    //! \tparam Node2 the type of the node \p from (must satisfy `sizeof(Node2)
-    //! <= sizeof(Node1)`).
+    //! \tparam Node2 the type of the node \p from (must satisfy
+    //! `sizeof(Node2) <= sizeof(Node1)`).
     //!
     //! \tparam Iterator the type of \p first and \p last.
     //!
@@ -1416,8 +1416,8 @@ namespace libsemigroups {
     //! \tparam Node1  the type of the nodes of the WordGraph
     //! \p wg.
     //!
-    //! \tparam Node2 the type of the node \p from (must satisfy `sizeof(Node2)
-    //! <= sizeof(Node1)`).
+    //! \tparam Node2 the type of the node \p from (must satisfy
+    //! `sizeof(Node2) <= sizeof(Node1)`).
     //!
     //! \param wg a word graph.
     //! \param from the starting node.
@@ -1450,8 +1450,8 @@ namespace libsemigroups {
     //!
     //! \tparam Node1 the type of the nodes of the WordGraph \p wg.
     //!
-    //! \tparam Node2 the type of the node \p from (must satisfy `sizeof(Node2)
-    //! <= sizeof(Node1)`).
+    //! \tparam Node2 the type of the node \p from (must satisfy
+    //! `sizeof(Node2) <= sizeof(Node1)`).
     //!
     //! \param wg a word graph.
     //! \param from the source node.
@@ -1483,8 +1483,8 @@ namespace libsemigroups {
     //! \tparam Node1  the type of the nodes of the WordGraph
     //! \p wg.
     //!
-    //! \tparam Node2 the type of the node \p from (must satisfy `sizeof(Node2)
-    //! <= sizeof(Node1)`).
+    //! \tparam Node2 the type of the node \p from (must satisfy
+    //! `sizeof(Node2) <= sizeof(Node1)`).
     //!
     //! \param wg a word graph.
     //! \param from the source node.
@@ -3073,8 +3073,8 @@ namespace libsemigroups {
     //! This function returns a word graph  containing the join/meet of the word
     //! graphs \p x and \p y. If \c n is the number of arguments, then this
     //! function constructs a word graph to contain the result, forwards this
-    //! and the other arguments to the overload of `call_no_checks` with `n +
-    //! 1` parameters, then returns the word graph containing the result.
+    //! and the other arguments to the overload of `call_no_checks` with
+    //! `n + 1` parameters, then returns the word graph containing the result.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
@@ -3397,8 +3397,8 @@ namespace libsemigroups {
     //! This function returns a word graph containing the join/meet of the word
     //! graphs \p x and \p y. If \c n is the number of arguments, then this
     //! function constructs a word graph to contain the result, forwards this
-    //! and the other arguments to the overload of `call_no_checks` with `n +
-    //! 1` parameters, then returns the word graph containing the result.
+    //! and the other arguments to the overload of `call_no_checks` with
+    //! `n + 1` parameters, then returns the word graph containing the result.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.

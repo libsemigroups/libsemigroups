@@ -395,8 +395,7 @@ namespace libsemigroups {
     //!
     //! After checking that the left-hand side and right-hand side only contain
     //! letters in \ref alphabet, this function performs the same as
-    //! `add_rule_no_checks(Iterator1 lhs_begin, Iterator1 lhs_end, Iterator2
-    //! rhs_begin, Iterator2 rhs_end)`.
+    //! `add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end)`.
     //!
     //! \throws LibsemigroupsException if any letter does not belong to the
     //! alphabet.
@@ -842,8 +841,8 @@ namespace libsemigroups {
                   char const*                lhop,
                   char const*                rhop);
 
-    //! \brief Add a rule to the presentation by `string const &` and `char
-    //! const*`.
+    //! \brief Add a rule to the presentation by `string const &` and
+    //! `char const*`.
     //!
     //! Adds the rule with left-hand side \p lhop and right-hand side \p rhop
     //! to the rules.
@@ -858,8 +857,8 @@ namespace libsemigroups {
                   std::string const&         lhop,
                   char const*                rhop);
 
-    //! \brief Add a rule to the presentation by `char const*` and `string const
-    //! &`.
+    //! \brief Add a rule to the presentation by `char const*` and
+    //! `string const &`.
     //!
     //! Adds the rule with left-hand side \p lhop and right-hand side \p rhop
     //! to the rules.
@@ -874,8 +873,8 @@ namespace libsemigroups {
                   char const*                lhop,
                   std::string const&         rhop);
 
-    //! \brief Add a rule to the presentation by `string const&` and `char
-    //! const*`.
+    //! \brief Add a rule to the presentation by `string const&` and
+    //! `char const*`.
     //!
     //! Adds the rule with left-hand side \p lhop and right-hand side \p rhop
     //! to the rules.
@@ -894,8 +893,8 @@ namespace libsemigroups {
                             std::string const&         lhop,
                             char const*                rhop);
 
-    //! \brief Add a rule to the presentation by `char const*` and `string
-    //! const&`.
+    //! \brief Add a rule to the presentation by `char const*` and
+    //! `string const&`.
     //!
     //! Adds the rule with left-hand side \p lhop and right-hand side \p rhop
     //! to the rules.
@@ -1425,9 +1424,10 @@ namespace libsemigroups {
 
     //! \brief Replace non-overlapping instances of a subword by another word.
     //!
-    //! Replaces every non-overlapping instance of `[first_existing,
-    //! last_existing)` in every rule by `[first_replacement,
-    //! last_replacement)`. The presentation \p p  is changed in-place
+    //! Replaces every non-overlapping instance of
+    //! `[first_existing, last_existing)` in every rule by
+    //! `[first_replacement, last_replacement)`. The presentation \p p  is
+    //! changed in-place
     //!
     //! \tparam Iterator1 the type of the first two parameters (iterators, or
     //! pointers).
@@ -1495,11 +1495,11 @@ namespace libsemigroups {
                       Word const&         existing,
                       Word const&         replacement);
 
-    //! \brief Return the sum of the lengths of all values in the range `[first,
-    //! last)`.
+    //! \brief Return the sum of the lengths of all values in the range
+    //! `[first, last)`.
     //!
-    //! Return the sum of the lengths of all values in the range `[first,
-    //! last)`.
+    //! Return the sum of the lengths of all values in the range
+    //! `[first, last)`.
     //!
     //! \tparam Iterator the type of the first and second arguments (iterators).
     //! \param first iterator pointing at the first value to calculate the

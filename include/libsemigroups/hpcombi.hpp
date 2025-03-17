@@ -984,8 +984,8 @@ namespace libsemigroups {
   //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
   //! check.
   //!
-  //! Constructs a partial perm of degree \p deg such that `f[dom[i]] =
-  //! ran[i]` for all \c i and which is `0xFF` on every other value
+  //! Constructs a partial perm of degree \p deg such that
+  //! `f[dom[i]] = ran[i]` for all \c i and which is `0xFF` on every other value
   //! in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type, must be HPCombi::PPerm16.
@@ -1036,8 +1036,8 @@ namespace libsemigroups {
   //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
   //! check.
   //!
-  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
-  //! ran[i]` for all \c i and which is `0xFF` on every other value
+  //! Constructs a partial perm of degree \p M such that
+  //! `f[dom[i]] = ran[i]` for all \c i and which is `0xFF` on every other value
   //! in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type, must be HPCombi::PPerm16.

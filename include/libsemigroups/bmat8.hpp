@@ -910,8 +910,8 @@ namespace libsemigroups {
     //! \param x the matrix.
     //!
     //! \returns
-    //! A \c true if there exists a boolean matrix \c y such that `x * y * x =
-    //! x` where \c x, and \c false otherwise.
+    //! A \c true if there exists a boolean matrix \c y such that
+    //! `x * y * x = x` where \c x, and \c false otherwise.
     //!
     //! \exceptions
     //! \noexcept

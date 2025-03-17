@@ -591,11 +591,11 @@ namespace libsemigroups {
   //! For a Paths object to be valid it must have its source node defined
   //! (using \ref source), both the source (set using \ref source) and target
   //! (set using \ref target) nodes must belong to the underlying WordGraph
-  //! (\ref word_graph). This can be verified by checking `source() !=
-  //! UNDEFINED`. The functions listed above (\ref get, \ref next, \ref at_end,
-  //! \ref size_hint, \ref count) should only be called if `source() !=
-  //! UNDEFINED`, and it is the responsibility of the caller to ensure that this
-  //! is the case.
+  //! (\ref word_graph). This can be verified by checking
+  //! `source() != UNDEFINED`. The functions listed above (\ref get, \ref next,
+  //! \ref at_end, \ref size_hint, \ref count) should only be called if
+  //! `source() != UNDEFINED`, and it is the responsibility of the caller to
+  //! ensure that this is the case.
   //!
   //! Changing the value of \ref source, \ref target, \ref min, \ref max, or
   //! \ref order resets the Paths object to point at the first word in the
