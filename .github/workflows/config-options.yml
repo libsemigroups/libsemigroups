@@ -1,5 +1,5 @@
 name: Config options
-on: [pull_request]
+on: pull_request
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
