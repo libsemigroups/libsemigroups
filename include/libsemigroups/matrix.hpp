@@ -2956,7 +2956,7 @@ namespace libsemigroups {
     }
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
-    ~DynamicMatrix();
+    ~DynamicMatrix() = default;
 
     //! \brief Construct the \f$n \times n\f$ identity matrix.
     //!
@@ -3133,14 +3133,6 @@ namespace libsemigroups {
    private:
     using MatrixCommon::resize;
   };
-
-  template <typename PlusOp,
-            typename ProdOp,
-            typename ZeroOp,
-            typename OneOp,
-            typename Scalar>
-  DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>::~DynamicMatrix()
-      = default;
 
   ////////////////////////////////////////////////////////////////////////
   // DynamicMatrix with runtime semiring arithmetic
@@ -3351,7 +3343,7 @@ namespace libsemigroups {
       return x;
     }
 
-    ~DynamicMatrix();
+    ~DynamicMatrix() = default;
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
@@ -3533,9 +3525,6 @@ namespace libsemigroups {
 
     Semiring const* _semiring;
   };
-
-  template <typename Semiring, typename Scalar>
-  DynamicMatrix<Semiring, Scalar>::~DynamicMatrix() = default;
 
   ////////////////////////////////////////////////////////////////////////
   // Helper structs to check if matrix is static, or has a pointer to a
