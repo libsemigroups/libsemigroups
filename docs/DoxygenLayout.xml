@@ -267,9 +267,10 @@
             title="Projective max-plus matrices" />
         </tab>
         <tab type="usergroup" visible="yes" url="[none]" title="Over arbitrary semirings">
-          <tab type="user" visible="yes" url="@ref DynamicMatrixStaticArith"
+          <tab type="user" visible="yes"
+            url="@ref libsemigroups::DynamicMatrix<PlusOp,ProdOp,ZeroOp,OneOp,Scalar>"
             title="DynamicMatrix (compile-time)" />
-          <tab type="user" visible="yes" url="@ref DynamicMatrixDynamicArith"
+          <tab type="user" visible="yes" url="@ref libsemigroups::DynamicMatrix<Semiring,Scalar>"
             title="DynamicMatrix (run-time)" />
           <tab type="user" visible="yes" url="@ref libsemigroups::StaticMatrix" title="StaticMatrix" />
         </tab>
