@@ -1030,6 +1030,8 @@ namespace libsemigroups {
   // StaticRowViews - static arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Class for views into a row of a matrix over a semiring.
+  //!
   //! Defined in `matrix.hpp`.
   //!
   //! This is a class for views into a row of a matrix over a semiring. An
@@ -1087,26 +1089,28 @@ namespace libsemigroups {
         StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>;
 
    public:
-    //! \copydoc StaticMatrix::const_iterator
+    //! \copybrief StaticMatrix::const_iterator
     using const_iterator = typename RowViewCommon::const_iterator;
 
-    //! \copydoc StaticMatrix::const_iterator
+    //! \copybrief StaticMatrix::const_iterator
     using iterator = typename RowViewCommon::iterator;
 
-    //! \copydoc StaticMatrix::scalar_type
+    //! \copybrief StaticMatrix::scalar_type
     using scalar_type = Scalar;
 
-    //! \copydoc StaticMatrix::scalar_reference
+    //! \copybrief StaticMatrix::scalar_reference
     using scalar_reference = typename RowViewCommon::scalar_reference;
 
-    //! \copydoc StaticMatrix::scalar_const_reference
-    using scalar_const_reference =
-        typename RowViewCommon::scalar_const_reference;
+    //! \copybrief StaticMatrix::scalar_const_reference
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    using scalar_const_reference = typename RowViewCommon::scalar_const_reference;
+    // clang-format on
 
-    //! Alias for the type of the underlying matrix.
+    //! \brief Alias for the type of the underlying matrix.
     using matrix_type = typename RowViewCommon::matrix_type;
 
-    //! Alias for the type of a row in the underlying matrix.
+    //! \brief Alias for the type of a row in the underlying matrix.
     using Row = typename matrix_type::Row;
 
     //! \copydoc StaticMatrix::StaticMatrix()
@@ -1519,26 +1523,28 @@ namespace libsemigroups {
     friend RowViewCommon;
 
    public:
-    //! \copydoc StaticMatrix::const_iterator
+    //! \copybrief StaticMatrix::const_iterator
     using const_iterator = typename RowViewCommon::const_iterator;
 
-    //! \copydoc StaticMatrix::const_iterator
+    //! \copybrief StaticMatrix::const_iterator
     using iterator = typename RowViewCommon::iterator;
 
-    //! \copydoc StaticMatrix::scalar_type
+    //! \copybrief StaticMatrix::scalar_type
     using scalar_type = Scalar;
 
-    //! \copydoc StaticMatrix::scalar_reference
+    //! \copybrief StaticMatrix::scalar_reference
     using scalar_reference = typename RowViewCommon::scalar_reference;
 
-    //! \copydoc StaticMatrix::scalar_const_reference
-    using scalar_const_reference =
-        typename RowViewCommon::scalar_const_reference;
+    //! \copybrief StaticMatrix::scalar_const_reference
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    using scalar_const_reference = typename RowViewCommon::scalar_const_reference;
+    // clang-format on
 
-    //! Alias for the type of the underlying matrix.
+    //! \brief Alias for the type of the underlying matrix.
     using matrix_type = typename RowViewCommon::matrix_type;
 
-    //! Alias for the type of a row in the underlying matrix.
+    //! \brief Alias for the type of a row in the underlying matrix.
     using Row = typename matrix_type::Row;
 
     //! \copydoc StaticMatrix::StaticMatrix()
@@ -1672,26 +1678,28 @@ namespace libsemigroups {
     friend RowViewCommon;
 
    public:
-    //! \copydoc StaticMatrix::const_iterator
+    //! \copybrief StaticMatrix::const_iterator
     using const_iterator = typename RowViewCommon::const_iterator;
 
-    //! \copydoc StaticMatrix::const_iterator
+    //! \copybrief StaticMatrix::const_iterator
     using iterator = typename RowViewCommon::iterator;
 
-    //! \copydoc StaticMatrix::scalar_type
+    //! \copybrief StaticMatrix::scalar_type
     using scalar_type = Scalar;
 
-    //! \copydoc StaticMatrix::scalar_reference
+    //! \copybrief StaticMatrix::scalar_reference
     using scalar_reference = typename RowViewCommon::scalar_reference;
 
-    //! \copydoc StaticMatrix::scalar_const_reference
-    using scalar_const_reference =
-        typename RowViewCommon::scalar_const_reference;
+    //! \copybrief StaticMatrix::scalar_const_reference
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    using scalar_const_reference = typename RowViewCommon::scalar_const_reference;
+    // clang-format on
 
-    //! Alias for the type of the underlying matrix.
+    //! \brief Alias for the type of the underlying matrix.
     using matrix_type = typename RowViewCommon::matrix_type;
 
-    //! Alias for the type of a row in the underlying matrix.
+    //! \brief Alias for the type of a row in the underlying matrix.
     using Row = typename matrix_type::Row;
 
     //! \copydoc StaticMatrix::StaticMatrix()
@@ -1864,38 +1872,40 @@ namespace libsemigroups {
     // StaticMatrix - Aliases - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Alias for the template parameter \p Scalar.
+    //! \brief Alias for the template parameter \p Scalar.
     using scalar_type = typename MatrixCommon::scalar_type;
 
-    //! Alias for references to the template parameter \p Scalar.
+    //! \brief Alias for references to the template parameter \p Scalar.
     using scalar_reference = typename MatrixCommon::scalar_reference;
 
-    //! Alias for const references to the template parameter \p Scalar.
-    using scalar_const_reference =
-        typename MatrixCommon::scalar_const_reference;
+    //! \brief Alias for const references to the template parameter \p Scalar.
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    using scalar_const_reference = typename MatrixCommon::scalar_const_reference;
+    // clang-format on
 
-    //! Alias for the type of the rows of a StaticMatrix.
+    //! \brief Alias for the type of the rows of a StaticMatrix.
     using Row = StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, 1, C, Scalar>;
 
-    //! Alias for the type of row views of a StaticMatrix.
+    //! \brief Alias for the type of row views of a StaticMatrix.
     using RowView = StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>;
 
-    //! Alias for the template parameter \p PlusOp.
+    //! \brief Alias for the template parameter \p PlusOp.
     using Plus = PlusOp;
 
-    //! Alias for the template parameter \p ProdOp.
+    //! \brief Alias for the template parameter \p ProdOp.
     using Prod = ProdOp;
 
-    //! Alias for the template parameter \p ZeroOp.
+    //! \brief Alias for the template parameter \p ZeroOp.
     using Zero = ZeroOp;
 
-    //! Alias for the template parameter \p OneOp.
+    //! \brief Alias for the template parameter \p OneOp.
     using One = OneOp;
 
-    //! Alias for iterators pointing at entries of a matrix.
+    //! \brief Alias for iterators pointing at entries of a matrix.
     using iterator = typename MatrixCommon::iterator;
 
-    //! Alias for const iterators pointing at entries of a matrix.
+    //! \brief Alias for const iterators pointing at entries of a matrix.
     using const_iterator = typename MatrixCommon::const_iterator;
 
     static constexpr size_t nr_rows = R;
@@ -2628,7 +2638,7 @@ namespace libsemigroups {
     //! \ref scalar_type.
     StaticMatrix operator+(scalar_type a);
 
-    //! Returns the additive identity of the underlying semiring.
+    //! \brief Returns the additive identity of the underlying semiring.
     //!
     //! This function returns the additive identity of the underlying
     //! semiring of a matrix.
@@ -2640,7 +2650,7 @@ namespace libsemigroups {
     //! \noexcept
     scalar_type scalar_zero() const noexcept;
 
-    //! Returns the multiplicative identity of the underlying semiring.
+    //! \brief Returns the multiplicative identity of the underlying semiring.
     //!
     //! This function returns the multiplicative identity of the underlying
     //! semiring of a matrix.
@@ -2676,17 +2686,17 @@ namespace libsemigroups {
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
+    using MatrixCommon::operator!=;
     using MatrixCommon::operator();
-    using MatrixCommon::operator==;
+    using MatrixCommon::operator*;
+    using MatrixCommon::operator*=;
+    using MatrixCommon::operator+;
+    using MatrixCommon::operator+=;
     using MatrixCommon::operator<;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator<=;
+    using MatrixCommon::operator==;
     using MatrixCommon::operator>;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator>=;
-    using MatrixCommon::operator!=;
-    using MatrixCommon::operator*=;
-    using MatrixCommon::operator+=;
-    using MatrixCommon::operator*;
-    using MatrixCommon::operator+;
     using MatrixCommon::product_inplace_no_checks;
     using MatrixCommon::row;
     using MatrixCommon::row_no_checks;
@@ -2710,7 +2720,7 @@ namespace libsemigroups {
     static constexpr size_t number_of_cols_impl() noexcept {
       return C;
     }
-  };  // namespace libsemigroups
+  };
 
   ////////////////////////////////////////////////////////////////////////
   // DynamicMatrix with compile time semiring arithmetic
@@ -2773,29 +2783,31 @@ namespace libsemigroups {
     //! The type of the entries in the matrix.
     using scalar_type = typename MatrixCommon::scalar_type;
 
-    //! The type of references to the entries in the matrix.
+    //! \brief The type of references to the entries in the matrix.
     using scalar_reference = typename MatrixCommon::scalar_reference;
 
-    //! The type of const references to the entries in the matrix.
-    using scalar_const_reference =
-        typename MatrixCommon::scalar_const_reference;
+    //! \brief The type of const references to the entries in the matrix.
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    using scalar_const_reference = typename MatrixCommon::scalar_const_reference;
+    // clang-format on
 
-    //! The type of a row of a DynamicMatrix.
+    //! \brief The type of a row of a DynamicMatrix.
     using Row = DynamicMatrix;
 
-    //! The type of a row view into a DynamicMatrix.
+    //! \brief The type of a row view into a DynamicMatrix.
     using RowView = DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
 
-    //! Alias for the template parameter \p PlusOp.
+    //! \brief Alias for the template parameter \p PlusOp.
     using Plus = PlusOp;
 
-    //! Alias for the template parameter \p ProdOp.
+    //! \brief Alias for the template parameter \p ProdOp.
     using Prod = ProdOp;
 
-    //! Alias for the template parameter \p ZeroOp.
+    //! \brief Alias for the template parameter \p ZeroOp.
     using Zero = ZeroOp;
 
-    //! Alias for the template parameter \p OneOp.
+    //! \brief Alias for the template parameter \p OneOp.
     using One = OneOp;
 
     //! \brief Alias for the semiring type (`void`).
@@ -2980,17 +2992,14 @@ namespace libsemigroups {
     }
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    //! \copydoc StaticMatrix::operator()(size_t, size_t)
-    scalar_reference operator()(size_t r, size_t c);
+    //! \copydoc StaticMatrix::at(size_t, size_t)
+    scalar_reference at(size_t r, size_t c);
 
-    //! \copydoc StaticMatrix::operator()(size_t, size_t) const
-    scalar_const_reference operator()(size_t r, size_t c) const;
+    //! \copydoc StaticMatrix::at(size_t, size_t) const
+    scalar_reference at(size_t r, size_t c) const;
 
     //! \copydoc StaticMatrix::begin()
     iterator begin() noexcept;
-
-    //! \copydoc StaticMatrix::end()
-    iterator end() noexcept;
 
     //! \copydoc StaticMatrix::cbegin()
     const_iterator cbegin() noexcept;
@@ -2998,11 +3007,20 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::cend()
     const_iterator cend() noexcept;
 
-    //! \copydoc StaticMatrix::operator==
-    bool operator==(DynamicMatrix const& that) const;
+    //! \copydoc StaticMatrix::coords
+    std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
 
-    //! \copydoc StaticMatrix::operator==
-    bool operator==(RowView const& that) const;
+    //! \copydoc StaticMatrix::end()
+    iterator end() noexcept;
+
+    //! \copydoc StaticMatrix::hash_value
+    size_t hash_value() const;
+
+    //! \copydoc StaticMatrix::number_of_cols
+    size_t number_of_cols() const noexcept;
+
+    //! \copydoc StaticMatrix::number_of_rows
+    size_t number_of_rows() const noexcept;
 
     //! \copydoc StaticMatrix::operator!=
     bool operator!=(DynamicMatrix const& that) const;
@@ -3010,23 +3028,29 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::operator!=
     bool operator!=(RowView const& that) const;
 
-    //! \copydoc StaticMatrix::operator<
-    bool operator<(DynamicMatrix const& that) const;
+    //! \copydoc StaticMatrix::operator()(size_t, size_t)
+    scalar_reference operator()(size_t r, size_t c);
 
-    //! \copydoc StaticMatrix::operator<
-    bool operator<(RowView const& that) const;
+    //! \copydoc StaticMatrix::operator()(size_t, size_t) const
+    scalar_const_reference operator()(size_t r, size_t c) const;
+    //! \brief Multiplies every entry of a matrix by a scalar in-place.
+    //!
+    //! This function multiplies every entry of a matrix by a scalar in-place.
+    //!
+    //! \param a the scalar to multiply every entry by.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$m\f$ is \ref number_of_cols.
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
+    DynamicMatrix operator*(scalar_type a);
 
-    //! \copydoc StaticMatrix::operator>
-    bool operator>(DynamicMatrix const& that) const;
+    //! \copydoc StaticMatrix::operator*
+    DynamicMatrix operator*(DynamicMatrix const& that);
 
-    //! \copydoc StaticMatrix::coords
-    std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
-
-    //! \copydoc StaticMatrix::number_of_rows
-    size_t number_of_rows() const noexcept;
-
-    //! \copydoc StaticMatrix::number_of_cols
-    size_t number_of_cols() const noexcept;
+    //! \copydoc StaticMatrix::operator*=
+    void operator*=(scalar_type a);
 
     //! \copydoc StaticMatrix::operator+
     DynamicMatrix operator+(DynamicMatrix const& that);
@@ -3037,58 +3061,70 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::operator+=
     void operator+=(RowView const& that);
 
-    //! \copydoc StaticMatrix::operator+=(scalar_type)
+    //! \brief Adds a scalar to every entry of the matrix in-place.
+    //!
+    //! This function adds a scalar to every entry of the matrix in-place.
+    //!
+    //! \param a the \ref scalar_type to add to a \ref DynamicMatrix.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(scalar_type a);
 
-    //! \copydoc StaticMatrix::operator*
-    DynamicMatrix operator*(DynamicMatrix const& that);
+    //! \copydoc StaticMatrix::operator<
+    bool operator<(DynamicMatrix const& that) const;
 
-    //! \copydoc StaticMatrix::operator*=
-    void operator*=(scalar_type a);
+    //! \copydoc StaticMatrix::operator<
+    bool operator<(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator<=
+    template <typename T>
+    bool operator<=(T const& that) const;
+
+    //! \copydoc StaticMatrix::operator==
+    bool operator==(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator==
+    bool operator==(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator>
+    bool operator>(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator>=
+    template <typename T>
+    bool operator>=(T const& that) const;
 
     //! \copydoc StaticMatrix::product_inplace_no_checks
     void product_inplace_no_checks(DynamicMatrix const& x,
                                    DynamicMatrix const& y);
 
-    //! \copydoc StaticMatrix::row_no_checks
-    RowView row_no_checks(size_t i) const;
-
     //! \copydoc StaticMatrix::row
     RowView row(size_t i) const;
+
+    //! \copydoc StaticMatrix::row_no_checks
+    RowView row_no_checks(size_t i) const;
 
     //! \copydoc StaticMatrix::rows
     template <typename T>
     void rows(T& x) const;
 
-    //! \copydoc StaticMatrix::transpose_no_checks
-    void transpose_no_checks();
-
-    //! \copydoc StaticMatrix::transpose
-    void transpose();
-
-    //! \copydoc StaticMatrix::hash_value
-    size_t hash_value() const;
-
-    //! \copydoc StaticMatrix::operator<=
-    bool operator<=(T const& that) const;
-
-    //! \copydoc StaticMatrix::operator>=
-    bool operator>=(T const& that) const;
-
-    //! \copydoc StaticMatrix::operator*(scalar_type)
-    StaticMatrix operator*(scalar_type a);
-
-    //! \copydoc StaticMatrix::operator+(scalar_type)
-    StaticMatrix operator+(scalar_type a);
+    //! \copydoc StaticMatrix::scalar_one
+    scalar_type scalar_one() const noexcept;
 
     //! \copydoc StaticMatrix::scalar_zero
     scalar_type scalar_zero() const noexcept;
 
-    //! \copydoc StaticMatrix::scalar_one
-    scalar_type scalar_one() const noexcept;
-
     //! \copydoc StaticMatrix::semiring
     semiring_type const* semiring() const noexcept;
+
+    //! \copydoc StaticMatrix::transpose
+    void transpose();
+
+    //! \copydoc StaticMatrix::transpose_no_checks
+    void transpose_no_checks();
 #else
     using MatrixCommon::at;
     using MatrixCommon::begin;
@@ -3100,17 +3136,17 @@ namespace libsemigroups {
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
+    using MatrixCommon::operator!=;
     using MatrixCommon::operator();
-    using MatrixCommon::operator==;
+    using MatrixCommon::operator*;
+    using MatrixCommon::operator*=;
+    using MatrixCommon::operator+;
+    using MatrixCommon::operator+=;
     using MatrixCommon::operator<;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator<=;
+    using MatrixCommon::operator==;
     using MatrixCommon::operator>;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator>=;
-    using MatrixCommon::operator!=;
-    using MatrixCommon::operator*=;
-    using MatrixCommon::operator+=;
-    using MatrixCommon::operator*;
-    using MatrixCommon::operator+;
     using MatrixCommon::product_inplace_no_checks;
     using MatrixCommon::row;
     using MatrixCommon::row_no_checks;
@@ -3118,7 +3154,7 @@ namespace libsemigroups {
     using MatrixCommon::scalar_one;
     using MatrixCommon::scalar_zero;
     using MatrixCommon::semiring;
-    // using MatrixCommon::swap; don't want this, see below
+    // using MatrixCommon::swap; // Don't want this use the one below.
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -3187,19 +3223,24 @@ namespace libsemigroups {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
 
    public:
-    //! \copydoc StaticMatrix::scalar_type
+    //! \copybrief StaticMatrix::scalar_type
     using scalar_type = typename MatrixCommon::scalar_type;
-    //! \copydoc StaticMatrix::scalar_reference
-    using scalar_reference = typename MatrixCommon::scalar_reference;
-    //! \copydoc StaticMatrix::scalar_const_reference
-    using scalar_const_reference =
-        typename MatrixCommon::scalar_const_reference;
 
-    //! \copydoc StaticMatrix::Row
+    //! \copybrief StaticMatrix::scalar_reference
+    using scalar_reference = typename MatrixCommon::scalar_reference;
+
+    //! \copybrief StaticMatrix::scalar_const_reference
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    using scalar_const_reference = typename MatrixCommon::scalar_const_reference;
+    // clang-format on
+
+    //! \brief 	Alias for the type of the rows of a DynamicMatrix
     using Row = DynamicMatrix;
 
-    //! \copydoc StaticMatrix::RowView
+    //! \brief Alias for the type of row views of a DynamicMatrix
     using RowView = DynamicRowView<Semiring, Scalar>;
+
     friend RowView;
 
     //! \brief Alias for the template parameter Semiring.
@@ -3238,8 +3279,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant
-    DynamicMatrix(Semiring const* sr, size_t r, size_t c)
-        : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(sr) {
+    DynamicMatrix(Semiring const* semiring, size_t r, size_t c)
+        : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(semiring) {
       resize(number_of_rows(), number_of_cols());
     }
 
@@ -3259,11 +3300,11 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is
     //! \ref number_of_cols.
     explicit DynamicMatrix(
-        Semiring const*                                                  sr,
-        std::initializer_list<std::initializer_list<scalar_type>> const& rws)
-        : MatrixDynamicDim(rws.size(), rws.begin()->size()),
-          MatrixCommon(rws),
-          _semiring(sr) {}
+        Semiring const* semiring,
+        std::initializer_list<std::initializer_list<scalar_type>> const& rows)
+        : MatrixDynamicDim(rows.size(), rows.begin()->size()),
+          MatrixCommon(rows),
+          _semiring(semiring) {}
 
     //! \brief Construct a matrix over a given semiring (std::vector
     //! of std::vector).
@@ -3280,11 +3321,12 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is
     //! \ref number_of_cols.
-    explicit DynamicMatrix(Semiring const*                              sr,
-                           std::vector<std::vector<scalar_type>> const& rws)
-        : MatrixDynamicDim(rws.size(), (rws.empty() ? 0 : rws.begin()->size())),
-          MatrixCommon(rws),
-          _semiring(sr) {}
+    explicit DynamicMatrix(Semiring const* semiring,
+                           std::vector<std::vector<scalar_type>> const& rows)
+        : MatrixDynamicDim(rows.size(),
+                           (rows.empty() ? 0 : rows.begin()->size())),
+          MatrixCommon(rows),
+          _semiring(semiring) {}
 
     //! \brief Construct a row over a given semiring (std::initializer_list).
     //!
@@ -3299,9 +3341,11 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_cols.
-    explicit DynamicMatrix(Semiring const*                           sr,
-                           std::initializer_list<scalar_type> const& rw)
-        : MatrixDynamicDim(1, rw.size()), MatrixCommon(rw), _semiring(sr) {}
+    explicit DynamicMatrix(Semiring const*                           semiring,
+                           std::initializer_list<scalar_type> const& row)
+        : MatrixDynamicDim(1, row.size()),
+          MatrixCommon(row),
+          _semiring(semiring) {}
 
     //! \brief Construct a row over a given semiring (\ref RowView).
     //!
@@ -3346,18 +3390,14 @@ namespace libsemigroups {
     ~DynamicMatrix() = default;
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+    //! \copydoc StaticMatrix::at(size_t, size_t)
+    scalar_reference at(size_t r, size_t c);
 
-    //! \copydoc StaticMatrix::operator()(size_t, size_t)
-    scalar_reference operator()(size_t r, size_t c);
-
-    //! \copydoc StaticMatrix::operator()(size_t, size_t) const
-    scalar_const_reference operator()(size_t r, size_t c) const;
+    //! \copydoc StaticMatrix::at(size_t, size_t) const
+    scalar_reference at(size_t r, size_t c) const;
 
     //! \copydoc StaticMatrix::begin()
     iterator begin() noexcept;
-
-    //! \copydoc StaticMatrix::end()
-    iterator end() noexcept;
 
     //! \copydoc StaticMatrix::cbegin()
     const_iterator cbegin() noexcept;
@@ -3365,11 +3405,20 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::cend()
     const_iterator cend() noexcept;
 
-    //! \copydoc StaticMatrix::operator==
-    bool operator==(DynamicMatrix const& that) const;
+    //! \copydoc StaticMatrix::coords
+    std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
 
-    //! \copydoc StaticMatrix::operator==
-    bool operator==(RowView const& that) const;
+    //! \copydoc StaticMatrix::end()
+    iterator end() noexcept;
+
+    //! \copydoc StaticMatrix::hash_value
+    size_t hash_value() const;
+
+    //! \copydoc StaticMatrix::number_of_cols
+    size_t number_of_cols() const noexcept;
+
+    //! \copydoc StaticMatrix::number_of_rows
+    size_t number_of_rows() const noexcept;
 
     //! \copydoc StaticMatrix::operator!=
     bool operator!=(DynamicMatrix const& that) const;
@@ -3377,23 +3426,29 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::operator!=
     bool operator!=(RowView const& that) const;
 
-    //! \copydoc StaticMatrix::operator<
-    bool operator<(DynamicMatrix const& that) const;
+    //! \copydoc StaticMatrix::operator()(size_t, size_t)
+    scalar_reference operator()(size_t r, size_t c);
 
-    //! \copydoc StaticMatrix::operator<
-    bool operator<(RowView const& that) const;
+    //! \copydoc StaticMatrix::operator()(size_t, size_t) const
+    scalar_const_reference operator()(size_t r, size_t c) const;
+    //! \brief Multiplies every entry of a matrix by a scalar in-place.
+    //!
+    //! This function multiplies every entry of a matrix by a scalar in-place.
+    //!
+    //! \param a the scalar to multiply every entry by.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$m\f$ is \ref number_of_cols.
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
+    DynamicMatrix operator*(scalar_type a);
 
-    //! \copydoc StaticMatrix::operator>
-    bool operator>(DynamicMatrix const& that) const;
+    //! \copydoc StaticMatrix::operator*
+    DynamicMatrix operator*(DynamicMatrix const& that);
 
-    //! \copydoc StaticMatrix::coords
-    std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
-
-    //! \copydoc StaticMatrix::number_of_rows
-    size_t number_of_rows() const noexcept;
-
-    //! \copydoc StaticMatrix::number_of_cols
-    size_t number_of_cols() const noexcept;
+    //! \copydoc StaticMatrix::operator*=
+    void operator*=(scalar_type a);
 
     //! \copydoc StaticMatrix::operator+
     DynamicMatrix operator+(DynamicMatrix const& that);
@@ -3404,58 +3459,70 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::operator+=
     void operator+=(RowView const& that);
 
-    //! \copydoc StaticMatrix::operator+=(scalar_type)
+    //! \brief Adds a scalar to every entry of the matrix in-place.
+    //!
+    //! This function adds a scalar to every entry of the matrix in-place.
+    //!
+    //! \param a the \ref scalar_type to add to a \ref DynamicMatrix.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(scalar_type a);
 
-    //! \copydoc StaticMatrix::operator*
-    DynamicMatrix operator*(DynamicMatrix const& that);
+    //! \copydoc StaticMatrix::operator<
+    bool operator<(DynamicMatrix const& that) const;
 
-    //! \copydoc StaticMatrix::operator*=
-    void operator*=(scalar_type a);
+    //! \copydoc StaticMatrix::operator<
+    bool operator<(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator<=
+    template <typename T>
+    bool operator<=(T const& that) const;
+
+    //! \copydoc StaticMatrix::operator==
+    bool operator==(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator==
+    bool operator==(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator>
+    bool operator>(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator>=
+    template <typename T>
+    bool operator>=(T const& that) const;
 
     //! \copydoc StaticMatrix::product_inplace_no_checks
     void product_inplace_no_checks(DynamicMatrix const& x,
                                    DynamicMatrix const& y);
 
-    //! \copydoc StaticMatrix::row_no_checks
-    RowView row_no_checks(size_t i) const;
-
     //! \copydoc StaticMatrix::row
     RowView row(size_t i) const;
+
+    //! \copydoc StaticMatrix::row_no_checks
+    RowView row_no_checks(size_t i) const;
 
     //! \copydoc StaticMatrix::rows
     template <typename T>
     void rows(T& x) const;
 
-    //! \copydoc StaticMatrix::transpose_no_checks
-    void transpose_no_checks();
-
-    //! \copydoc StaticMatrix::transpose
-    void transpose();
-
-    //! \copydoc StaticMatrix::hash_value
-    size_t hash_value() const;
-
-    //! \copydoc StaticMatrix::operator<=
-    bool operator<=(T const& that) const;
-
-    //! \copydoc StaticMatrix::operator>=
-    bool operator>=(T const& that) const;
-
-    //! \copydoc StaticMatrix::operator*(scalar_type)
-    StaticMatrix operator*(scalar_type a);
-
-    //! \copydoc StaticMatrix::operator+(scalar_type)
-    StaticMatrix operator+(scalar_type a);
+    //! \copydoc StaticMatrix::scalar_one
+    scalar_type scalar_one() const noexcept;
 
     //! \copydoc StaticMatrix::scalar_zero
     scalar_type scalar_zero() const noexcept;
 
-    //! \copydoc StaticMatrix::scalar_one
-    scalar_type scalar_one() const noexcept;
-
     //! \copydoc StaticMatrix::semiring
     semiring_type const* semiring() const noexcept;
+
+    //! \copydoc StaticMatrix::transpose
+    void transpose();
+
+    //! \copydoc StaticMatrix::transpose_no_checks
+    void transpose_no_checks();
 #else
     using MatrixCommon::at;
     using MatrixCommon::begin;
@@ -3467,17 +3534,17 @@ namespace libsemigroups {
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
+    using MatrixCommon::operator!=;
     using MatrixCommon::operator();
-    using MatrixCommon::operator==;
+    using MatrixCommon::operator*;
+    using MatrixCommon::operator*=;
+    using MatrixCommon::operator+;
+    using MatrixCommon::operator+=;
     using MatrixCommon::operator<;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator<=;
+    using MatrixCommon::operator==;
     using MatrixCommon::operator>;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator>=;
-    using MatrixCommon::operator!=;
-    using MatrixCommon::operator*=;
-    using MatrixCommon::operator+=;
-    using MatrixCommon::operator*;
-    using MatrixCommon::operator+;
     using MatrixCommon::product_inplace_no_checks;
     using MatrixCommon::row;
     using MatrixCommon::row_no_checks;
