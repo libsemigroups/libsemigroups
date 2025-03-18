@@ -1880,8 +1880,8 @@ namespace libsemigroups {
     //! letter. In other words, if the alphabet of the presentation \p p is
     //! \f$A\f$ and the relation words are of the form \f$aub = avb\f$ where
     //! \f$a, b\in A\f$ (possibly \f$ a = b\f$) and \f$u, v\in A ^ *\f$, then
-    //! \p p is strongly compressible. See [Section
-    //! 3.2](https://doi.org/10.1007/s00233-021-10216-8) for details.
+    //! \p p is strongly compressible. See section 3.2 of
+    //! \cite NybergBrodda2021aa for details.
     //!
     //! \tparam Word the type of the words in the presentation.
     //!
