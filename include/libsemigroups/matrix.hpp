@@ -997,6 +997,7 @@ namespace libsemigroups {
   // Matrix forward declarations
   ////////////////////////////////////////////////////////////////////////
 
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -1018,6 +1019,7 @@ namespace libsemigroups {
 
   template <typename Semiring, typename Scalar>
   class DynamicMatrix<Semiring, Scalar>;
+#endif
 
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
