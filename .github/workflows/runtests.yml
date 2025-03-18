@@ -1,5 +1,5 @@
 name: Quick tests
-on: [pull_request]
+on: [pull_request, push]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -43,6 +43,7 @@ jobs:
           fail_ci_if_error: true
           verbose: true
   benchmarks:
+    if: ${{ github.event == 'pull_request' }}
     name: Benchmarks compile
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -67,6 +68,7 @@ jobs:
         run: |
           make bench_all -j4
   distcheck:
+    if: ${{ github.event == 'pull_request' }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
@@ -87,6 +89,7 @@ jobs:
       - name: make distcheck . . .
         run: make distcheck -j4
   doc:
+    if: ${{ github.event == 'pull_request' }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
