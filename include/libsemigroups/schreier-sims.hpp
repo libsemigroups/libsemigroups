@@ -71,7 +71,7 @@ namespace libsemigroups {
   //! \cite Holt2005aa and as implemented in the kernel module of the Digraphs
   //! package \cite DeBeule2024aa for GAP in C:
   //!
-  //! https://github.com/digraphs/Digraphs/blob/master/src/schreier-sims.c
+  //! https://github.com/digraphs/Digraphs/blob/main/src/schreier-sims.c
   //!
   //! by Wilf A. Wilson.
   //!
