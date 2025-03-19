@@ -295,8 +295,9 @@ namespace libsemigroups {
   //! this class.
   //!
   //! The Blocks class is not currently used widely in `libsemigroups`
-  //! but are used extensively in the GAP package
-  //! [Semigroups package for GAP](https://semigroups.github.io/Semigroups/).
+  //! but is used extensively in the
+  //! [Semigroups package for GAP](https://semigroups.github.io/Semigroups/)
+  //! (see \cite Mitchell2025aa).
   class Blocks {
    private:
     std::vector<uint32_t> _blocks;
@@ -855,8 +856,9 @@ namespace libsemigroups {
   //! documentation](https://semigroups.github.io/Semigroups/doc/chap3_mj.html)
   //! for more details.  The Bipartition class is more complex (i.e. has more
   //! member functions) than are used in `libsemigroups` because they are
-  //! used in the GAP package [Semigroups package for
-  //! GAP](https://semigroups.github.io/Semigroups/).
+  //! used in the
+  //! [Semigroups package for GAP](https://semigroups.github.io/Semigroups/)
+  //! (see \cite Mitchell2025aa).
   //!
   //! \sa bipartition::throw_if_invalid(Bipartition const&).
   // TODO(2) add more explanation to the doc here

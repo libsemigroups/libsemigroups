@@ -91,8 +91,7 @@ namespace libsemigroups {
   //!        \ref POSITIVE_INFINITY).
   //!
   //! \returns
-  //! An iterator \c it of type \c const_pilo_iterator pointing to a
-  //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
+  //! An iterator \c it of type \c const_pilo_iterator pointing to a `std::pair`
   //! where:
   //! * \c it->first is a \ref word_type consisting of the edge
   //! labels of the first path (in lexicographical order) from \p source of
@@ -163,8 +162,7 @@ namespace libsemigroups {
   //!
   //! \returns
   //! An iterator \c it of type \c detail::const_pislo_iterator pointing to a
-  //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
-  //! where:
+  //! `std::pair` where:
   //! * \c it->first is a \ref word_type consisting of the edge
   //! labels of the first path (in short-lex order) from \p source of
   //! length in the range \f$[min, max)\f$; and
