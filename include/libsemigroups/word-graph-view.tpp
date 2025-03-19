@@ -58,9 +58,8 @@ namespace libsemigroups {
             typename WordGraphView<Node>::node_type>
   WordGraphView<Node>::next_label_and_target_no_checks(node_type  s,
                                                        label_type a) const {
-    node_type translated = view_to_graph(s);
-    return graph_to_view(
-        _graph->next_label_and_target_no_checks(translated, a));
+    node_type translated = to_graph(s);
+    return to_view(_graph->next_label_and_target_no_checks(translated, a));
   }
 
   template <typename Node>
@@ -69,17 +68,17 @@ namespace libsemigroups {
   WordGraphView<Node>::next_label_and_target(node_type s, label_type a) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, s);
     word_graph_view::throw_if_label_out_of_bounds(*this, a);
-    node_type translated = view_to_graph(s);
+    node_type translated = to_graph(s);
     auto      result = _graph->next_label_and_target_no_checks(translated, a);
-    graph_to_view(result);
+    to_view(result);
     return result;
   }
 
   template <typename Node>
   auto WordGraphView<Node>::targets(node_type source) const {
     word_graph_view::throw_if_node_out_of_bounds(*this, source);
-    node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->targets_no_checks(translated));
+    node_type translated = to_graph(source);
+    return to_view(_graph->targets_no_checks(translated));
   }
 
   template <typename Node>
@@ -125,8 +124,8 @@ namespace libsemigroups {
   typename WordGraphView<Node>::node_type WordGraphView<Node>::target_no_checks(
       typename WordGraphView<Node>::node_type  source,
       typename WordGraphView<Node>::label_type a) const {
-    node_type translated = view_to_graph(source);
-    return graph_to_view(_graph->target_no_checks(translated, a));
+    node_type translated = to_graph(source);
+    return to_view(_graph->target_no_checks(translated, a));
   }
   template <typename Node>
   WordGraphView<Node>&
@@ -179,7 +178,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    WordGraph<Node> create_graph_from_view(WordGraphView<Node> const& view) {
+    WordGraph<Node> graph_from_view(WordGraphView<Node> const& view) {
       WordGraph<Node> result
           = WordGraph<Node>(view.number_of_nodes(), view.out_degree());
       for (auto node : rx::iterator_range(view.nodes())) {
@@ -192,6 +191,8 @@ namespace libsemigroups {
               node, std::get<0>(label_target), std::get<1>(label_target));
         }
       }
+      // LCOV identifies the blank line after this as not being covered for some
+      // reason
       return result;
     }
   }  // namespace word_graph_view

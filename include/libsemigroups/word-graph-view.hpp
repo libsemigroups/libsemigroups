@@ -61,13 +61,15 @@ namespace libsemigroups {
     WordGraph<Node> const* _graph;
     node_type              _start;
     node_type              _end;
-    constexpr node_type    view_to_graph(node_type n) const noexcept {
+    constexpr node_type    to_graph(node_type n) const noexcept {
       if (n == UNDEFINED) {
+        // LCOV does not recognise this as being called,
+        // but it is definitely called in test-word-graph-view.cpp[015]
         return UNDEFINED;
       }
       return n + _start;
     };
-    constexpr node_type graph_to_view(node_type n) const noexcept {
+    constexpr node_type to_view(node_type n) const noexcept {
       if (n == UNDEFINED) {
         return UNDEFINED;
       }
@@ -75,16 +77,15 @@ namespace libsemigroups {
     }
 
     constexpr auto
-    graph_to_view(rx::iterator_range<const_iterator_targets> it) const {
-      return it | rx::transform([this](auto elem) {
-               return this->graph_to_view(elem);
-             });
+    to_view(rx::iterator_range<const_iterator_targets> it) const {
+      return it
+             | rx::transform([this](auto elem) { return this->to_view(elem); });
     }
 
-    void graph_to_view(std::pair<node_type, label_type>& in) const {
+    void to_view(std::pair<node_type, label_type>& in) const {
       // this is designed to operate on pairs of <label, node>
       // so does not modify the first element
-      in.second = graph_to_view(in.second);
+      in.second = to_view(in.second);
     }
 
    public:
@@ -326,8 +327,8 @@ namespace libsemigroups {
     //! is a valid node of the word graph (i.e. it is not greater than or equal
     //! to \ref number_of_nodes).
     [[nodiscard]] auto targets_no_checks(node_type source) const noexcept {
-      node_type translated = view_to_graph(source);
-      return graph_to_view(_graph->targets_no_checks(translated));
+      node_type translated = to_graph(source);
+      return to_view(_graph->targets_no_checks(translated));
     }
 
     //! \brief Returns a range object containing pairs consisting of edge
@@ -507,7 +508,7 @@ namespace libsemigroups {
     //! nodes contained within the view. Will throw \c LibsemigroupsException if
     //! the underlying graph had edges which crossed the boundaries of the view
     template <typename Node>
-    WordGraph<Node> create_graph_from_view(WordGraph<Node> const& view);
+    WordGraph<Node> graph_from_view(WordGraph<Node> const& view);
   }  // namespace word_graph_view
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"
