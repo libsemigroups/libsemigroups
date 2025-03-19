@@ -3235,7 +3235,7 @@ namespace libsemigroups {
     using scalar_const_reference = typename MatrixCommon::scalar_const_reference;
     // clang-format on
 
-    //! \brief 	Alias for the type of the rows of a DynamicMatrix
+    //! \brief Alias for the type of the rows of a DynamicMatrix
     using Row = DynamicMatrix;
 
     //! \brief Alias for the type of row views of a DynamicMatrix
