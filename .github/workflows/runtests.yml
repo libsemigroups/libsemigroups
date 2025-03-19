@@ -19,6 +19,10 @@ jobs:
         compiler: [clang++, g++]
     steps:
       - uses: actions/checkout@v4
+      - name: test
+        run: |
+          echo ${{ github.event_name }}
+          echo ${{ github.event_name == 'pull_request' }}
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -43,7 +47,7 @@ jobs:
           fail_ci_if_error: true
           verbose: true
   benchmarks:
-    if: ${{ github.event == 'pull_request' }}
+    if: ${{ github.event != 'pull_request' }}
     name: Benchmarks compile
     timeout-minutes: 10
     runs-on: ubuntu-latest
