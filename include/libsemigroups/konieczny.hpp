@@ -1808,28 +1808,6 @@ namespace libsemigroups {
 
   //! \ingroup konieczny_group
   //!
-  //! \brief Deduction guide.
-  //!
-  //! Defined in `konieczny.hpp`.
-  //!
-  //! Deduction guide to construct a `Konieczny<Element>` from a
-  //! `std::vector<Element> const&`.
-  template <typename Element>
-  Konieczny(std::vector<Element> const&) -> Konieczny<Element>;
-
-  //! \ingroup konieczny_group
-  //!
-  //! \brief Deduction guide.
-  //!
-  //! Defined in `konieczny.hpp`.
-  //!
-  //! Deduction guide to construct a `Konieczny<Element>` from a
-  //! `std::initializer_list<Element> const&`.
-  template <typename Element>
-  Konieczny(std::initializer_list<Element> const&) -> Konieczny<Element>;
-
-  //! \ingroup konieczny_group
-  //!
   //! \brief Return a human readable representation of a Konieczny object.
   //!
   //! Return a human readable representation of a Konieczny object.
