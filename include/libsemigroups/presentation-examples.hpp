@@ -693,6 +693,9 @@ namespace libsemigroups {
     // generators. TODO(1) ask Florent again if this reference is correct Maybe
     // should be Solomon:
     // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
+    // Florent says that the correct attribution is to Solomon's equation 1.7
+    // with q = 1. TODO(0) rename this function and/or include the presentation
+    // from Joel's thesis (Example 7.1.2).
     [[nodiscard]] Presentation<word_type>
     symmetric_inverse_monoid_Gay18(size_t n);
 
