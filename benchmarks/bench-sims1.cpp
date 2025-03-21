@@ -169,7 +169,7 @@ namespace libsemigroups {
             "[talk][symmetric_inverse_monoid2]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p
-        = presentation::examples::symmetric_inverse_monoid_Gay18(2);
+        = presentation::examples::symmetric_inverse_monoid_Sol04(2);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -185,7 +185,7 @@ namespace libsemigroups {
             "[talk][symmetric_inverse_monoid3]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p
-        = presentation::examples::symmetric_inverse_monoid_Gay18(3);
+        = presentation::examples::symmetric_inverse_monoid_Sol04(3);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -201,7 +201,7 @@ namespace libsemigroups {
             "[talk][symmetric_inverse_monoid4]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p
-        = presentation::examples::symmetric_inverse_monoid_Gay18(4);
+        = presentation::examples::symmetric_inverse_monoid_Sol04(4);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

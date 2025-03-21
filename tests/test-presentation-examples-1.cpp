@@ -104,7 +104,7 @@ namespace libsemigroups {
     REQUIRE(symmetric_group_Car56(5).contains_empty_word());
     REQUIRE(symmetric_group_Moo97_a(5).contains_empty_word());
     REQUIRE(symmetric_group_Moo97_b(5).contains_empty_word());
-    REQUIRE(symmetric_inverse_monoid_Gay18(5).contains_empty_word());
+    REQUIRE(symmetric_inverse_monoid_Sol04(5).contains_empty_word());
     REQUIRE(symmetric_inverse_monoid_MW24(5).contains_empty_word());
     REQUIRE(symmetric_inverse_monoid_Shu60(5).contains_empty_word());
     REQUIRE(temperley_lieb_monoid_Eas21(5).contains_empty_word());
@@ -554,7 +554,7 @@ namespace libsemigroups {
                           "symmetric inverse monoid Gay presentation",
                           "[pres-examples][quick]") {
     auto rg = ReportGuard(false);
-    auto p  = symmetric_inverse_monoid_Gay18(4);
+    auto p  = symmetric_inverse_monoid_Sol04(4);
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

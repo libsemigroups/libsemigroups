@@ -677,34 +677,24 @@ namespace libsemigroups {
     //! \brief A presentation for the symmetric inverse monoid.
     //!
     //! This function returns a monoid presentation defining the symmetric
-    //! inverse monoid of degree \p n, as in Example 7.1.2 of \cite Gay2018aa.
-    //!
+    //! inverse monoid of degree \p n, as in Equation 1.7 with q = 1 in
+    //! \cite Solomon2004aa.
     //!
     //! \param n the degree of the symmetric inverse monoid.
     //!
     //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    // This is just a presentation for the symmetric inverse monoid, a
-    // slightly modified version from Solomon (so that contains the
-    // Coxeter+Moser presentation for the symmetric group), Example 7.1.2 in
-    // Joel gay's thesis (JDM the presentation in Example 7.1.2 seems to have
-    // 2n - 1 generators whereas this function returns a monoid on n
-    // generators. TODO(1) ask Florent again if this reference is correct Maybe
-    // should be Solomon:
-    // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
-    // Florent says that the correct attribution is to Solomon's equation 1.7
-    // with q = 1. TODO(0) rename this function and/or include the presentation
+    // TODO(1) rename this function and/or include the presentation
     // from Joel's thesis (Example 7.1.2).
     [[nodiscard]] Presentation<word_type>
-    symmetric_inverse_monoid_Gay18(size_t n);
+    symmetric_inverse_monoid_Sol04(size_t n);
 
     //! \brief A presentation for the symmetric inverse monoid.
     //!
     //! This function returns a monoid presentation defining the partial
     //! transformation monoid of degree \p n, as in Theorem 1.4 of
     //! \cite Mitchell2024aa.
-    //!
     //!
     //! \param n the degree of the symmetric inverse monoid.
     //!
@@ -1304,7 +1294,7 @@ namespace libsemigroups {
     //! \sa
     //! For a specific %presentation of the full transformation monoid, see
     //! %one of the following functions:
-    //! * `symmetric_inverse_monoid_Gay18`;
+    //! * `symmetric_inverse_monoid_Sol04`;
     //! * `symmetric_inverse_monoid_Shu60`;
     //! * `symmetric_inverse_monoid_MW24`.
     [[nodiscard]] inline Presentation<word_type>
