@@ -1,92 +1,60 @@
-name: "Downstream"
-on:
-  workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      - "main"
-      - "stable-*.*"
+name: Downstream
+on: [pull_request, workflow_dispatch]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  GAP:
-      env:
-        GAP_VERSION: "4.12.2"
-        GAP_SEMIGROUPS_REPO: "semigroups"
-        GAP_SEMIGROUPS_BRANCH: "stable-5.3"
-        GAP: "gap -A -T --quitonbreak"
-      name: GAP 4.12.2 / Semigroups / stable-5.3 / ubuntu / 64-bit
-      runs-on: ubuntu-latest
-      container:
-          image: jamesdbmitchell/gap-docker-minimal:version-4.12.2
-          options: --user root
-          volumes:
-            - ${{ github.workspace }}:/home/libsemigroups
-      steps:
-          - name: "Checkout libsemigroups"
-            uses: actions/checkout@v4
-          - name: "Install git + autotools"
-            run: |
-              sudo apt-get --yes update
-              sudo apt-get install git --yes
-              sudo apt-get install pkg-config m4 libtool automake autoconf --yes
-              sudo apt-get install libtool-bin --yes
-          - name: "Setup ccache"
-            uses: Chocobo1/setup-ccache-action@v1
-            with:
-              update_packager_index: false
-              override_cache_key: ${{ runner.os }}-v4.12.2-64-${{ github.ref }}
-              override_cache_key_fallback: ${{ runner.os }}-v4.12.2-64
-          - name: "Clone the Semigroups GAP package"
-            run: | 
-              rm -rf /home/gap/inst/gap-$GAP_VERSION/pkg/semigroups-*.*.*
-              cd /home/gap/inst/gap-$GAP_VERSION/pkg
-              git clone -b $GAP_SEMIGROUPS_BRANCH --depth=1 https://github.com/$GAP_SEMIGROUPS_REPO/Semigroups.git Semigroups
-              cp -r /home/libsemigroups Semigroups
-          - name: "Build the Semigroups GAP package"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
-              cp .LIBSEMIGROUPS_VERSION libsemigroups/.VERSION # FIXME
-              ./autogen.sh
-              ./configure --disable-hpcombi
-              make -j4
-          - name: "Install Semigroups GAP package dependencies"
-            run: |
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"autodoc\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"datastructures\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"digraphs\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"genss\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"images\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"orb\", false) and CompilePackage(\"orb\"));" | $GAP
-          - name: "Run Semigroups GAP package workspace tests"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
-              $GAP tst/workspaces/save.g
-              $GAP -L tst/workspaces/test-output.w tst/workspaces/load.g
-          - name: "Run Semigroups GAP package standard tests"
-            run: |
-              cd /home/gap/inst/gap-4.12.2/pkg/Semigroups
-              $GAP tst/teststandard.g
-          - name: "Run GAP testinstall"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
-              $GAP ci/run-gap-testinstall.g
-          - name: "Run GAP teststandard"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/
-              rm -f tst/teststandard/ctblsymm.tst
-              cd pkg/Semigroups
-              $GAP ci/run-gap-teststandard.g
-          - name: "Run GAP testbugfix"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/
-              rm -f tst/testbugfix/2005-05-03-t00061.tst
-              rm -f tst/testbugfix/2016-03-03-t00332.tst
-              rm -f tst/testbugfix/2018-05-24-IntermediateSubgroups.tst
-              rm -f tst/testbugfix/2018-09-13-MTC.tst
-              rm -f tst/testbugfix/2018-12-06-GroupWithGenerators.tst
-              cd pkg/Semigroups
-              $GAP ci/run-gap-testbugfix.g
+  python:
+    env:
+      CC: ccache gcc
+      CXX: ccache g++
+      # The CXXFLAGS below must be set to -O0 because o/w this CI job fails
+      # with a library loading issue (related to fmt). The flag -O3 is set
+      # in libsemigroups/Makefile.am, and removing that also resolves this
+      # issue. JDM also tried with -O1/2 and this didn't work either.
+      CXXFLAGS: -fdiagnostics-color -O0
+      CONFIG_FLAGS: --disable-hpcombi --disable-popcnt --disable-clzll
+      URL: https://github.com/libsemigroups/libsemigroups_pybind11.git
+      LD_LIBRARY_PATH: /usr/local/lib/
+    name: libsemigroups_pybind11 / v1 branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout libsemigroups
+        uses: actions/checkout@v4
+      - name: Install git + autotools
+        run: |
+          sudo apt-get --yes update
+          sudo apt-get install git --yes
+          sudo apt-get install pkg-config m4 libtool automake autoconf --yes
+          sudo apt-get install libtool-bin --yes
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Configure libsemigroups . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" $CONFIG_FLAGS
+      - name: Build libsemigroups . . .
+        run: sudo make install -j4
+      - name: Clone libsemigroups_pybind11 . . .
+        run: git clone "$URL" --depth 1 --branch v1
+      - name: Install prerequisites for libsemigroups_pybind11 . . .
+        run: |
+          cd libsemigroups_pybind11
+          sudo apt-get --yes update
+          sudo apt-get install python3 --yes
+          sudo apt-get install python3-pip --yes
+          pip3 install -r requirements.txt
+      - name: Building libsemigroups_pybind11 . . .
+        run: |
+          cd libsemigroups_pybind11
+          sudo -H pip3 install .
+      - name: Running libsemigroups_pybind11 tests. . .
+        run: |
+          cd libsemigroups_pybind11
+          make check

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,16 +18,15 @@
 
 #include <cstddef>  // for size_t
 
-#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/action.hpp"  // for LeftAction
-#include "libsemigroups/bitset.hpp"  // for BitSet
-#include "libsemigroups/bmat.hpp"    // for Lambda
-#include "libsemigroups/bmat8.hpp"   // for BMat8
-#include "libsemigroups/matrix.hpp"  // for BMat<>
-#include "libsemigroups/report.hpp"  // for ReportGuard
-#include "libsemigroups/transf.hpp"  // for Transf, PPerm
+#include "libsemigroups/action.hpp"         // for LeftAction
+#include "libsemigroups/bitset.hpp"         // for BitSet
+#include "libsemigroups/bmat-adapters.hpp"  // for Lambda
+#include "libsemigroups/bmat8.hpp"          // for BMat8
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/matrix.hpp"         // for BMat<>
+#include "libsemigroups/transf.hpp"         // for Transf, PPerm
 
 #define FOR_SET_BITS(__bit_int, __nr_bits, __variable) \
   uint_fast32_t block = __bit_int;                     \
@@ -110,7 +109,7 @@ namespace libsemigroups {
         res.push_back(std::move(cup));
       }
       std::vector<std::vector<bool>> tmp;
-      matrix_helpers::row_basis<Mat>(res, tmp);
+      matrix::row_basis<Mat>(res, tmp);
       std::swap(tmp, res);
     }
   };
@@ -145,16 +144,14 @@ namespace libsemigroups {
         PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
                   {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
                   17));
-    o.add_generator(
+    o.add_generator(inverse(
         PPerm<17>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
                   {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-                  17)
-            .inverse());
-    o.add_generator(
+                  17)));
+    o.add_generator(inverse(
         PPerm<17>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-                  17)
-            .inverse());
+                  17)));
   }
 
   template <typename T>

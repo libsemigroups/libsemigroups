@@ -1,0 +1,37 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: libsemigroups
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Reinis
+    family-names: Cirpons
+    email: rc234@st-andrews.ac.uk
+    affiliation: University of St Andrews
+    orcid: "https://orcid.org/0000-0001-7238-1576"
+  - given-names: Joseph
+    family-names: Edwards
+    email: jde1@st-andrews.ac.uk
+    affiliation: University of St Andrews
+    orcid: "https://orcid.org/0009-0005-3803-2758"
+  - given-names: James
+    family-names: Mitchell
+    email: jdm3@st-andrews.ac.uk
+    affiliation: University of St Andrews
+    orcid: "https://orcid.org/0000-0002-5489-1617"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10534404
+repository-code: "https://github.com/libsemigroups/libsemigroups"
+url: "https://libsemigroups.github.io/libsemigroups/"
+abstract: >-
+  A C++17 library containing implementations of several
+  algorithms for computing finite, and finitely presented,
+  semigroups and monoids.
+license: GPL-3.0
+version: 3.0.0
+date-released: "2025-03-21"

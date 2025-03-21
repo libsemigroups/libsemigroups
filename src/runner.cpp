@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,35 +21,157 @@
 
 #include "libsemigroups/runner.hpp"
 
-#include "libsemigroups/report.hpp"  // for REPORT_DEFAULT
-#include "libsemigroups/timer.hpp"   // for Timer::string
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
+
+#include "libsemigroups/detail/report.hpp"  // for report_default
+#include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
-  Runner::Runner()
-      : _last_report(std::chrono::high_resolution_clock::now()),
+  ////////////////////////////////////////////////////////////////////////
+  // Reporter - constructors + initializers - public
+  ////////////////////////////////////////////////////////////////////////
+
+  Reporter::Reporter()
+      : _divider(),
+        _prefix(),
         _report_time_interval(),
-        _run_for(FOREVER),
-        _start_time(),
-        _state(state::never_run),
+        // mutable
+        _last_report(time_point()),
+        _start_time() {
+    // All values set in init
+    init();
+  }
+
+  Reporter& Reporter::init() {
+    _divider              = "";
+    _prefix               = "";
+    _report_time_interval = nanoseconds(std::chrono::seconds(1));
+    reset_start_time();
+    return *this;
+  }
+
+  Reporter::Reporter(Reporter const& that)
+      : _divider(that._divider),
+        _prefix(that._prefix),
+        _report_time_interval(that._report_time_interval),
+        _last_report(that._last_report.load()),
+        _start_time(that._start_time) {}
+
+  Reporter::Reporter(Reporter&& that)
+      : _divider(std::move(that._divider)),
+        _prefix(std::move(that._prefix)),
+        _report_time_interval(std::move(that._report_time_interval)),
+        _last_report(that._last_report.load()),
+        _start_time(std::move(that._start_time)) {}
+
+  Reporter& Reporter::operator=(Reporter const& that) {
+    _divider              = that._divider;
+    _prefix               = that._prefix;
+    _report_time_interval = that._report_time_interval;
+    _last_report          = that._last_report.load();
+    _start_time           = that._start_time;
+    return *this;
+  }
+
+  Reporter& Reporter::operator=(Reporter&& that) {
+    _divider              = std::move(that._divider);
+    _prefix               = std::move(that._prefix);
+    _report_time_interval = std::move(that._report_time_interval);
+    _last_report          = that._last_report.load();
+    _start_time           = std::move(that._start_time);
+    return *this;
+  }
+
+  bool Reporter::report() const {
+    auto t       = std::chrono::high_resolution_clock::now();
+    auto elapsed = t - _last_report.load();
+
+    if (elapsed > _report_time_interval) {
+      _last_report = t;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Runner - constructors - public
+  ////////////////////////////////////////////////////////////////////////
+
+  Runner::Runner()
+      : Reporter(), _run_for(FOREVER), _state(state::never_run), _stopper() {}
+
+  Runner& Runner::init() {
+    Reporter::init();
+    _run_for = FOREVER;
+    _state   = state::never_run;
+    _stopper = decltype(_stopper)();
+    return *this;
+  }
+
+  Runner::Runner(Runner const& other)
+      : Reporter(other), _run_for(other._run_for), _state(), _stopper() {
+    _state = other._state.load();
+  }
+
+  Runner::Runner(Runner&& other)
+      : Reporter(std::move(other)),
+        _run_for(std::move(other._run_for)),
+        _state(),
         _stopper() {
-    report_every(std::chrono::seconds(1));
+    _state = other._state.load();
+  }
+
+  Runner& Runner::operator=(Runner const& other) {
+    Reporter::operator=(other);
+    _run_for = other._run_for;
+    _state   = other._state.load();
+    return *this;
+  }
+
+  Runner& Runner::operator=(Runner&& other) {
+    Reporter::operator=(std::move(other));
+    _run_for = std::move(other._run_for);
+    _state   = other._state.load();
+    return *this;
+  }
+
+  void Runner::run() {
+    if (!finished() && !dead()) {
+      set_state(state::running_to_finish);
+      try {
+        run_impl();
+      } catch (LibsemigroupsException const& e) {
+        if (!dead()) {
+          set_state(state::not_running);
+        }
+        throw;
+      }
+      if (!dead()) {
+        set_state(state::not_running);
+      }
+    }
   }
 
   void Runner::run_for(std::chrono::nanoseconds val) {
     if (!finished() && !dead()) {
+      emit_divider();
       if (val != FOREVER) {
-        REPORT_DEFAULT("running for approx. %s\n",
-                       detail::Timer::string(val).c_str());
+        report_default("{}: running for approx. {}\n",
+                       report_prefix(),
+                       detail::string_time(val));
+        emit_divider();
       } else {
-        REPORT_DEFAULT("running until finished, with no time limit\n");
+        report_default("{}: running until finished, with no time limit\n",
+                       report_prefix());
+        emit_divider();
         run();
         return;
       }
-      before_run();
-      auto previous_state = get_state();
+      auto previous_state = current_state();
       set_state(state::running_for);
-      _start_time = std::chrono::high_resolution_clock::now();
-      _run_for    = val;
+      reset_start_time();
+      _run_for = val;
       // run_impl should depend on the method timed_out!
 
       try {
@@ -66,22 +188,35 @@ namespace libsemigroups {
         set_state(state::not_running);
       }
     } else {
-      REPORT_DEFAULT("already finished, not running\n");
+      // This line is definitely tested, but not showing up in code coverage for
+      // JDM
+      // NOTE: no dividers here
+      report_default("{}: already finished, not running\n", report_prefix());
     }
-  }
-
-  void Runner::report_every(std::chrono::nanoseconds val) {
-    _last_report          = std::chrono::high_resolution_clock::now();
-    _report_time_interval = val;
   }
 
   void Runner::report_why_we_stopped() const {
+    // NOTE: Also no dividers here because we can call emit_divider in any code
+    // calling this function
     if (dead()) {
-      REPORT_DEFAULT("killed!\n");
+      report_default("{}: killed!\n", report_prefix());
     } else if (timed_out()) {
-      REPORT_DEFAULT("timed out!\n");
+      report_default("{}: timed out!\n", report_prefix());
+    } else if (stopped_by_predicate()) {
+      report_default("{}: stopped by predicate!\n", report_prefix());
     }
     // Checking finished can be expensive, so we don't
+  }
+
+  [[nodiscard]] bool Runner::finished() const {
+    if (started() && !dead() && finished_impl()) {
+      _state = state::not_running;
+      return true;
+    } else {
+      return false;
+    }
+    // since kill() may leave the object in an invalid state we only return
+    // true here if we are not dead and the object thinks it is finished.
   }
 
 }  // namespace libsemigroups

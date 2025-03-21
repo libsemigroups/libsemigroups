@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector, vector<>::const_iterator, allocator
 
-#include "catch.hpp"                   // for REQUIRE
-#include "libsemigroups/iterator.hpp"  // for ConstIteratorStateless, ConstIteratorTraits
-#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/detail/iterator.hpp"  // for ConstIteratorStateless, ConstIteratorTraits
 
 namespace libsemigroups {
 
@@ -39,7 +40,7 @@ namespace libsemigroups {
     using EqualTo = TestEqualTo;
   };
 
-  LIBSEMIGROUPS_TEST_CASE("ConstIteratorStateless", "001", "?", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ConstIteratorStateless", "000", "?", "[quick]") {
     std::vector<size_t> vec(10, 0);
 
     auto it1
@@ -54,7 +55,7 @@ namespace libsemigroups {
     REQUIRE(it3 != it2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ConstIteratorStateless", "002", "?", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ConstIteratorStateless", "001", "?", "[quick]") {
     std::vector<size_t> vec(10, 0);
 
     auto it1 = detail::ConstIteratorStateless<IteratorTraitsCustomTypes1>(

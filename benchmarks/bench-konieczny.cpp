@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,15 +18,14 @@
 
 #include <cstddef>  // for size_t
 
-#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
 
-#include "libsemigroups/bitset.hpp"        // for BitSet
-#include "libsemigroups/bmat.hpp"          // for BMat adapters
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/matrix.hpp"        // for BMat
-#include "libsemigroups/report.hpp"        // for ReportGuard
-#include "libsemigroups/transf.hpp"        // for Transformation
+#include "libsemigroups/bitset.hpp"         // for BitSet
+#include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
+#include "libsemigroups/matrix.hpp"         // for BMat
+#include "libsemigroups/transf.hpp"         // for Transformation
 
 namespace libsemigroups {
 
@@ -101,7 +100,7 @@ namespace libsemigroups {
   template <typename Mat>
   struct Rank<Mat, void> {
     size_t operator()(Mat const& x, size_t = 0) {
-      return matrix_helpers::row_space_size(x);
+      return matrix::row_space_size(x);
     }
   };
 

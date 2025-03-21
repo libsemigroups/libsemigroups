@@ -1,26 +1,26 @@
 name: clang-format
-on: [push, pull_request]
+on: pull_request
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.job }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   formatting-check:
-    name: Formatting check
+    name: ${{ matrix.path }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         path:
-          - 'include/libsemigroups'
-          - 'src'
-          - 'tests'
-          - 'benchmarks'
-          - 'benchmarks/examples/'
+          - include/libsemigroups
+          - src
+          - tests
+          - benchmarks
     steps:
-    - uses: actions/checkout@v4
-    - name: Run clang-format style check for C/C++/Protobuf programs.
-      uses: jidicula/clang-format-action@v4.13.0
-      with:
-        clang-format-version: '15'
-        exclude-regex: '(tests\/catch.hpp|benchmarks\/catch.hpp)'
-        check-path: ${{ matrix.path }}
+      - uses: actions/checkout@v4
+      - name: Run clang-format style check for C/C++/Protobuf programs.
+        uses: jidicula/clang-format-action@v4.14.0
+        with:
+          clang-format-version: 15
+          exclude-regex: '(tests\/catch_*.*pp|benchmarks\/catch_*.*pp)'
+          check-path: ${{ matrix.path }}

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,15 +25,15 @@
 #include <utility>           // for swap
 #include <vector>            // for vector
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/containers.hpp"  // for DynamicArray2, DynamicArray...
+#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2, DynamicArray...
 
 namespace libsemigroups {
   namespace detail {
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "001",
+                            "000",
                             "default constructor with 3 default args",
                             "[containers][quick]") {
       DynamicArray2<bool> rv = DynamicArray2<bool>();
@@ -43,7 +43,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "002",
+                            "001",
                             "default constructor with 2 default args",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(5);
@@ -53,7 +53,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "003",
+                            "002",
                             "default constructor with 1 default args",
                             "[containers][quick]") {
       DynamicArray2<bool> rv = DynamicArray2<bool>(5, 5);
@@ -65,7 +65,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "004",
+                            "003",
                             "default constructor with 0 default args",
                             "[containers][quick]") {
       DynamicArray2<bool> rv = DynamicArray2<bool>(2, 7, true);
@@ -77,7 +77,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "005",
+                            "004",
                             "copy constructor with 1 default args",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv   = DynamicArray2<size_t>(3, 7, 666);
@@ -90,7 +90,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "006",
+                            "005",
                             "copy constructor with 0 default args",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv   = DynamicArray2<size_t>(3, 7, 666);
@@ -112,7 +112,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "007",
+                            "006",
                             "add_rows",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 7, 666);
@@ -137,7 +137,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "008",
+                            "007",
                             "add_rows",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 7, 666);
@@ -156,7 +156,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "009",
+                            "008",
                             "add_cols",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2, 666);
@@ -175,7 +175,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "010",
+                            "009",
                             "set/get",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 50, 666);
@@ -206,7 +206,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "011",
+                            "010",
                             "append 1/2",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 50, 555);
@@ -241,7 +241,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "012",
+                            "011",
                             "append 2/2",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 555);
@@ -287,7 +287,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "013",
+                            "012",
                             "count",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
@@ -313,7 +313,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "014",
+                            "013",
                             "clear",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
@@ -327,7 +327,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "015",
+                            "014",
                             "begin_row and end_row",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);
@@ -345,7 +345,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "016",
+                            "015",
                             "cbegin_row and cend_row",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 66);
@@ -357,7 +357,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "017",
+                            "016",
                             "iterator operator++ (postfix)",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 2);  // cols, rows
@@ -418,7 +418,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "018",
+                            "017",
                             "iterator operator++ (prefix)",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 2);  // cols, rows
@@ -529,7 +529,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "019",
+                            "018",
                             "iterator operator-- (postfix)",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);  // cols, rows
@@ -568,7 +568,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "020",
+                            "019",
                             "iterator operator-- (prefix)",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 2);  // cols, rows
@@ -607,7 +607,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "021",
+                            "020",
                             "operator=",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
@@ -636,7 +636,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "022",
+                            "021",
                             "operator== and operator!=",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
@@ -721,7 +721,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "023",
+                            "022",
                             "empty and clear",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10);
@@ -754,7 +754,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "024",
+                            "023",
                             "max_size",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10);
@@ -765,7 +765,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "025",
+                            "024",
                             "swap",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
@@ -839,7 +839,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "026",
+                            "025",
                             "iterator arithmetic",
                             "[containers][quick]") {
       {
@@ -1022,7 +1022,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "027",
+                            "026",
                             "iterator comparison",
                             "[containers][quick]") {
       {
@@ -1052,7 +1052,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "028",
+                            "027",
                             "iterator operator=",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10, 1000);
@@ -1075,7 +1075,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "029",
+                            "028",
                             "iterator operator[]",
                             "[containers][quick]") {
       {
@@ -1131,9 +1131,9 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "030",
+                            "029",
                             "iterator operator->",
-                            "[containers][quick][30") {
+                            "[containers][quick][30]") {
       DynamicArray2<DynamicArray2<bool>> rv
           = DynamicArray2<DynamicArray2<bool>>(13, 13, DynamicArray2<bool>());
       {
@@ -1147,7 +1147,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "031",
+                            "030",
                             "const_iterator operator++/--",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(100, 2);  // cols, rows
@@ -1210,7 +1210,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "032",
+                            "031",
                             "const_iterator operator++/--",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(1, 1, 6);  // cols, rows
@@ -1223,7 +1223,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "033",
+                            "032",
                             "column iterators",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 3);
@@ -1288,7 +1288,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "034",
+                            "033",
                             "column iterator arithmetic",
                             "[containers][quick][no-valgrind]") {
       {
@@ -1383,7 +1383,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "035",
+                            "034",
                             "iterator assignment constructor",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 100);
@@ -1411,7 +1411,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "036",
+                            "035",
                             "reserve method",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(100, 100);
@@ -1421,7 +1421,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "037",
+                            "036",
                             "erase column",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(10, 10);
@@ -1440,7 +1440,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "038",
+                            "037",
                             "swap_rows",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 10);
@@ -1462,7 +1462,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "039",
+                            "038",
                             "apply_row_permutation",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 10);
@@ -1482,7 +1482,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "040",
+                            "039",
                             "swap",
                             "[containers][quick]") {
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
@@ -1498,7 +1498,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "041",
+                            "040",
                             "shrink_rows_to",
                             "[containers][quick]") {
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
@@ -1530,7 +1530,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
-                            "042",
+                            "041",
                             "shrink_rows_to - for range",
                             "[containers][quick]") {
       DynamicArray2<size_t> da = DynamicArray2<size_t>({{0, 1}, {2, 3}});
@@ -1540,7 +1540,7 @@ namespace libsemigroups {
       REQUIRE(da.number_of_rows() == 2);
       REQUIRE(da.number_of_cols() == 2);
       REQUIRE(da == DynamicArray2<size_t>({{0, 1}, {2, 3}}));
-      da.shrink_rows_to(1, 2);
+      da.shrink_rows_to_no_checks(1, 2);
       REQUIRE(da.number_of_rows() == 1);
       REQUIRE(da.number_of_cols() == 2);
       REQUIRE(da == DynamicArray2<size_t>({{2, 3}}));
@@ -1553,7 +1553,7 @@ namespace libsemigroups {
       REQUIRE(da
               == DynamicArray2<size_t>(
                   {{2, 3, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));
-      da.shrink_rows_to(1, 4);
+      da.shrink_rows_to_no_checks(1, 4);
       REQUIRE(
           da
           == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));
@@ -1561,12 +1561,12 @@ namespace libsemigroups {
       REQUIRE(
           da
           == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 0}}));
-      da.shrink_rows_to(1, 3);
+      da.shrink_rows_to_no_checks(1, 3);
       REQUIRE(da == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 3, 0, 0}}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("StaticVector2",
-                            "043",
+                            "042",
                             "all",
                             "[containers][quick]") {
       StaticVector2<size_t, 3> sv;
@@ -1612,7 +1612,7 @@ namespace libsemigroups {
               == std::vector<size_t>({5}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Array2", "044", "all", "[containers][quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Array2", "043", "all", "[containers][quick]") {
       Array2<size_t, 3> rry;
       rry.fill(10);
       REQUIRE(std::vector<size_t>(rry.cbegin(0), rry.cend(0))
@@ -1647,7 +1647,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("StaticTriVector2",
-                            "045",
+                            "044",
                             "all",
                             "[containers][quick]") {
       StaticTriVector2<size_t, 3> stv;

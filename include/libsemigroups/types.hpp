@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,14 +19,39 @@
 #ifndef LIBSEMIGROUPS_TYPES_HPP_
 #define LIBSEMIGROUPS_TYPES_HPP_
 
-#include <cstddef>  // for size_t
-
+#include <cstddef>      // for size_t
 #include <cstdint>      // for uint8_t, uint16_t, uint32_t, uint64_t
+#include <string_view>  // for string_view
 #include <type_traits>  // for conditional
 #include <utility>      // for pair
 #include <vector>       // for vector
 
+#include "detail/fmt.hpp"
+#include <magic_enum/magic_enum.hpp>
+
 namespace libsemigroups {
+  //! \defgroup types_group Types
+  //!
+  //! \ingroup misc_group
+  //!
+  //! \brief Documentation for types and aliases.
+  //!
+  //! This file contains functionality for various types used in
+  //! `libsemigroups`.
+  //!
+  //! @{
+
+  //! \brief Alias equal to the second template parameter if both template
+  //! parameters are equal.
+  //!
+  //! Alias equal to the second template parameter if both template
+  //! parameters are equal.
+  template <typename Given, typename Expected>
+  using enable_if_is_same
+      = std::enable_if_t<std::is_same_v<Given, Expected>, Expected>;
+
+  //! \brief Enum to indicate true, false or not currently knowable.
+  //!
   //! The values in this enum can be used to indicate a result is true, false,
   //! or not currently knowable.
   enum class tril {
@@ -38,10 +63,20 @@ namespace libsemigroups {
     unknown = 2
   };
 
+  //! \brief Enum to indicate the sided-ness of a congruence.
+  //!
   //! The values in this enum can be used to indicate that a congruence should
   //! be 2-sided, left, or right.
-  enum class congruence_kind { left = 0, right = 1, twosided = 2 };
+  enum class congruence_kind {
+    //! Value representing a one-sided congruence.
+    onesided = 1,
+    //! Value representing a two-sided congruence.
+    twosided = 2
+  };
 
+  //! \brief Type giving the smallest unsigned integer type that can represent a
+  //! template.
+  //!
   //! Provides a type giving the smallest unsigned integer type capable of
   //! representing the template \c N.
   //!
@@ -60,14 +95,16 @@ namespace libsemigroups {
                            std::conditional_t<N >= 0x100, uint16_t, uint8_t>>>;
   };
 
-  //! Type for the index of a generator of a semigroup.
+  //! \brief Type for the index of a generator of a semigroup.
   using letter_type = size_t;
 
-  //! Type for a word over the generators of a semigroup.
+  //! \brief Type for a word over the generators of a semigroup.
   using word_type = std::vector<letter_type>;
 
-  //! Type for a pair of word_type (a *relation*) of a semigroup.
+  //! \brief Type for a pair of \ref word_type (a *relation*) of a semigroup.
   using relation_type = std::pair<word_type, word_type>;
+
+  //! @}
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_TYPES_HPP_
