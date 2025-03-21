@@ -1470,7 +1470,7 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> symmetric_inverse_monoid_Gay18(size_t n) {
+    Presentation<word_type> symmetric_inverse_monoid_Sol04(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 2, found {}",
                                 n);

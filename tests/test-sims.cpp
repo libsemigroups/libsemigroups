@@ -605,7 +605,7 @@ namespace libsemigroups {
                           "[quick][low-index]") {
     auto  rg = ReportGuard(false);
     Sims1 C;
-    C.presentation(presentation::examples::symmetric_inverse_monoid_Gay18(2));
+    C.presentation(presentation::examples::symmetric_inverse_monoid_Sol04(2));
     REQUIRE(C.number_of_congruences(7) == 10);  // Should be 10
   }
 
@@ -629,7 +629,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(3)",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto p  = presentation::examples::symmetric_inverse_monoid_Gay18(3);
+    auto p  = presentation::examples::symmetric_inverse_monoid_Sol04(3);
     presentation::reverse(p);
     Sims1 C(p);
     REQUIRE(C.number_of_congruences(34) == 274);
@@ -639,7 +639,7 @@ namespace libsemigroups {
                           "012",
                           "symmetric_inverse_monoid(4)",
                           "[extreme][low-index]") {
-    auto p = presentation::examples::symmetric_inverse_monoid_Gay18(4);
+    auto p = presentation::examples::symmetric_inverse_monoid_Sol04(4);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -676,7 +676,7 @@ namespace libsemigroups {
                           "[fail][low-index]") {
     // This might take an extremely long time to terminate
     auto rg = ReportGuard(true);
-    auto p  = presentation::examples::symmetric_inverse_monoid_Gay18(5);
+    auto p  = presentation::examples::symmetric_inverse_monoid_Sol04(5);
     presentation::reverse(p);
     Sims1 C(p);
     // NOTE: Never ran to completion, there should be a non-zero number of
@@ -3989,7 +3989,7 @@ namespace libsemigroups {
                           "symmetric inverse monoid (Gay)",
                           "[standard][sims2]") {
     auto rg = ReportGuard(false);
-    auto p  = presentation::examples::symmetric_inverse_monoid_Gay18(5);
+    auto p  = presentation::examples::symmetric_inverse_monoid_Sol04(5);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -4823,7 +4823,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
-    auto p  = presentation::examples::symmetric_inverse_monoid_Gay18(3);
+    auto p  = presentation::examples::symmetric_inverse_monoid_Sol04(3);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
