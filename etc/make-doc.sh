@@ -12,8 +12,10 @@ else
 fi
 echo "Checking doc order . . ."
 ./etc/check_doc_order.py
-echo "Checking doxygen linebreaks . . ."
-./etc/check_doxygen_line_breaks.py
+# echo "Checking doxygen linebreaks . . ."
+# ./etc/check_doxygen_line_breaks.py
+# TODO this script currently spits out:
+# TypeError: iglob() got an unexpected keyword argument 'include_hidden'
 mkdir -p docs/build
 cd docs/
 echo "doxygen --version"
