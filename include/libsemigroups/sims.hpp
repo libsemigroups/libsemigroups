@@ -1502,11 +1502,10 @@ namespace libsemigroups {
   //! On this page we describe the functionality relating to the small index
   //! congruence algorithm for 1-sided congruences. The algorithm implemented by
   //! this class is essentially the low index subgroup algorithm for
-  //! finitely presented groups described in Section 5.6 of [Computation with
-  //! Finitely Presented Groups](https://doi.org/10.1017/CBO9780511574702) by C.
-  //! Sims. The low index subgroups algorithm was adapted for semigroups and
-  //! monoids by R. Cirpons, J. D. Mitchell, and M. Tsalakou; see
-  //! \cite Anagnostopoulou-Merkouri2023aa
+  //! finitely presented groups described in Section 5.6 of Computation with
+  //! Finitely Presented Groups by C. Sims; see \cite Sims1994aa. The low index
+  //! subgroups algorithm was adapted for semigroups and monoids by R. Cirpons,
+  //! J. D. Mitchell, and M. Tsalakou; see \cite Anagnostopoulou-Merkouri2023aa
   //!
   //! The purpose of this class is to provide the functions \ref cbegin,
   //! \ref cend, \ref for_each, and \ref find_if which permit iterating through

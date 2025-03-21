@@ -1,5 +1,11 @@
 name: Quick tests
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - v3
+      - main
+      - stable-*.*
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,6 +25,10 @@ jobs:
         compiler: [clang++, g++]
     steps:
       - uses: actions/checkout@v4
+      - name: test
+        run: |
+          echo ${{ github.event_name }}
+          echo ${{ github.event_name == 'pull_request' }}
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -46,6 +56,7 @@ jobs:
     name: Benchmarks compile
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
@@ -69,6 +80,7 @@ jobs:
   distcheck:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
@@ -89,6 +101,7 @@ jobs:
   doc:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

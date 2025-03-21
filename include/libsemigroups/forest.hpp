@@ -543,25 +543,34 @@ namespace libsemigroups {
   }  // namespace forest
 }  // namespace libsemigroups
 
-//! \ingroup word_graph_group
-//!
-//! \brief Custom formatter for libsemigroup::Forest objects.
-//!
-//! This is a custom formatter for [fmt](https://fmt.dev/11.1/) and the
-//! libsemigroups::Forest class.
-//!
-//! The intention is to provide a string representation that could be used to
-//! reconstruct the libsemigroups::Forest object. For a more human readable
-//! representation see
-//! \ref libsemigroups::to_human_readable_repr(libsemigroups::Forest const&)
-//! "to_human_readable_repr".
-template <>
-struct fmt::formatter<libsemigroups::Forest> : fmt::formatter<std::string> {
-  //! The formatter call operator.
-  template <typename FormatContext>
-  auto format(libsemigroups::Forest const& f, FormatContext& ctx) const {
-    return formatter<string_view>::format(
-        fmt::format("{{{}, {}}}", f.parents(), f.labels()), ctx);
-  }
-};
+namespace fmt {
+  template <>
+  struct formatter<libsemigroups::Forest> : formatter<std::string> {
+    //! \ingroup word_graph_group
+    //!
+    //! \brief Custom formatter for Forest objects.
+    //!
+    //! This is the format function of a custom formatter for
+    //! [fmt](https://fmt.dev/11.1/) and the libsemigroups::Forest class.
+    //!
+    //! The intention is to provide a string representation that could be
+    //! used to reconstruct the libsemigroups::Forest object. For a more
+    //! human readable representation see
+    //! \ref libsemigroups::to_human_readable_repr(libsemigroups::Forest const&)
+    //! "to_human_readable_repr".
+    //!
+    //! \tparam FormatContext the type of the context provided in the second
+    //! argument.
+    //!
+    //! \param f the forest to format.
+    //! \param ctx the format context.
+    //!
+    //! \returns The formatted string representation of \p f.
+    template <typename FormatContext>
+    auto format(libsemigroups::Forest const& f, FormatContext& ctx) const {
+      return formatter<string_view>::format(
+          fmt::format("{{{}, {}}}", f.parents(), f.labels()), ctx);
+    }
+  };
+}  // namespace fmt
 #endif  // LIBSEMIGROUPS_FOREST_HPP_

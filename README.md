@@ -75,8 +75,8 @@ monoids. The main algorithms implemented in `libsemigroups` are:
 [Jean-Eric Pin]: https://www.irif.fr/~jep/
 
 `libsemigroups` is used in the [Semigroups package for
-GAP](https://semigroups.github.io/Semigroups), and it is possible to use
-`libsemigroups` directly in Python 3 via the package
+GAP](https://semigroups.github.io/Semigroups) (see \cite Mitchell2025aa), and it
+is possible to use `libsemigroups` directly in Python 3 via the package
 [libsemigroups_pybind11](https://libsemigroups.github.io/libsemigroups_pybind11/).
 The development version of `libsemigroups` is available on
 [github](https://github.com/libsemigroups/libsemigroups), and some
@@ -137,7 +137,7 @@ tracker](https://github.com/libsemigroups/libsemigroups/issues).
 `libsemigroups` uses:
 
 - [Catch2](https://github.com/catchorg/Catch2) for tests and benchmarks;
-- [eigen](http://eigen.tuxfamily.org/) for some linear algebra computations;
+- [eigen](http://eigen.tuxfamily.org/) for some linear algebra computations \cite Guennebaud2010aa;
 - [fmt](https://github.com/fmtlib/fmt) for string formatting;
 - [HPCombi](https://github.com/libsemigroups/HPCombi) which uses the SSE and AVX
   instruction sets for very fast manipulation of transformations, partial
@@ -226,10 +226,8 @@ We thank:
 [Michael Young]: https://mtorpey.github.io/
 [Reinis Cirpons]: https://reinisc.id.lv
 [Samuel Lelièvre]: https://lelievre.perso.math.cnrs.fr/index-en.html
-
 [Carnegie Trust for the Universities of Scotland]: https://www.carnegie-trust.org/
 [School of Mathematics and Statistics, University of St Andrews]: https://www.st-andrews.ac.uk/mathematics-statistics/
-
 [Visualisation]: https://libsemigroups.github.io/libsemigroups/group__dot__group.html
 [`libsemigroups::Congruence`]: https://libsemigroups.github.io/libsemigroups/group__congruence__class__group.html
 [`libsemigroups::FroidurePin`]: https://libsemigroups.github.io/libsemigroups/classlibsemigroups_1_1_froidure_pin.html

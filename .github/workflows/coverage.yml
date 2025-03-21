@@ -1,5 +1,11 @@
 name: Coverage
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - v3
+      - main
+      - stable-*.*
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

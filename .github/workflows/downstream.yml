@@ -1,11 +1,5 @@
 name: Downstream
-on:
-  workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      - main
-      - stable-*.*
+on: [pull_request, workflow_dispatch]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
