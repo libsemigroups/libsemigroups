@@ -2142,8 +2142,10 @@ namespace libsemigroups {
       return number_of_pieces_no_checks(u, w, w + std::strlen(w));
     }
 
-    //! \brief \copybrief number_of_pieces_no_checks(Ukkonen const&, Iterator,
-    //! Iterator)
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \brief \copybrief number_of_pieces_no_checks(Ukkonen const&, Iterator, Iterator)
+    // clang-format on
     //!
     //! See \ref number_of_pieces_no_checks(Ukkonen const&, Iterator,
     //! Iterator).

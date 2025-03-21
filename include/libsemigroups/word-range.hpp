@@ -1993,19 +1993,19 @@ namespace libsemigroups {
     //! This operator provides a convenient brief means of constructing a
     //! \ref word_type from an sequence of literal integer digits or a string.
     //! For example, \c 0123_w produces the same output as
-    //! `word_type({0, 1, 2, 3})` and so too does \c "abcd"_w.
+    //! `word_type({0, 1, 2, 3})` and so too does `"abcd"_w`.
     //!
     //! There are some gotchas and this operator should be used with some care:
     //!
-    //! * the parameter \p w must consist of the integers \f$\{0, \ldots,
-    //! 9\}\f$ or the characters in `a-zA-Z` but not both.
+    //! * the parameter \p w must consist of the integers
+    //!   \f$\{0, \ldots, 9\}\f$ or the characters in `a-zA-Z` but not both.
     //! * if \p w starts with \c 0 and is follows by a value greater than \c 7,
-    //! then it is necessary to enclose \p w in quotes. For example, \c 08_w
-    //! will not compile because it is interpreted as an invalid octal. However
-    //! `"08"_w` behaves as expected.
+    //!   then it is necessary to enclose \p w in quotes. For example, \c 08_w
+    //!   will not compile because it is interpreted as an invalid octal.
+    //!   However `"08"_w` behaves as expected.
     //! * if \p w consists of characters in `a-zA-Z`, then the output is
-    //! the same as that of `ToWord::operator()(w)`, see
-    //! \ref ToWord::operator()()
+    //!   the same as that of `ToWord::operator()(w)`, see
+    //!   \ref ToWord::operator()()
     //!
     //! \param w the letters of the word.
     //! \param n the length of \p w (defaults to the length of \p w).
