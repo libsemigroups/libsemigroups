@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -186,7 +190,7 @@ $(function(){initNavTree('structlibsemigroups_1_1_product_3_01_b_mat8_01_4.html'
 <a name="details" id="details"></a>
 <div class="textblock"><p>Adapter for the product of two elements.   </p>
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp; xy, Element const&amp; x, Element ! const&amp; y, size_t = 0)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp;, Element const&amp;, Element const&amp;, size_t = 0)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The call operator should change <code class="param">xy</code> in-place to be the product of <code class="param">x</code> and <code class="param">y</code>. The 4th parameter is optional and it can be used as an index for static thread local storage, that might be required for forming the product of <code class="param">x</code> and <code class="param">y</code>. The purpose of the 1st parameter is to avoid repeated allocations of memory to hold temporary products that are discarded soon after they are created.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -208,8 +212,8 @@ $(function(){initNavTree('structlibsemigroups_1_1_product_3_01_b_mat8_01_4.html'
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="astructlibsemigroups_1_1_product_3_01_b_mat8_01_4_html_ad8eaa4dc6f22c74ecd48a4d6e63393b7"><div class="ttname"><a href="#ad8eaa4dc6f22c74ecd48a4d6e63393b7">libsemigroups::Product&lt; BMat8 &gt;::operator()</a></div><div class="ttdeci">void operator()(BMat8 &amp;xy, BMat8 const &amp;x, BMat8 const &amp;y, size_t=0) const noexcept</div><div class="ttdoc">Changes xy in place to hold the product of x and y.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:1058</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_product_html"><div class="ttname"><a href="structlibsemigroups_1_1_product.html">libsemigroups::Product</a></div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> adapters.hpp:285</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_product_3_01_b_mat8_01_4_html_ad8eaa4dc6f22c74ecd48a4d6e63393b7"><div class="ttname"><a href="#ad8eaa4dc6f22c74ecd48a4d6e63393b7">libsemigroups::Product&lt; BMat8 &gt;::operator()</a></div><div class="ttdeci">void operator()(BMat8 &amp;xy, BMat8 const &amp;x, BMat8 const &amp;y, size_t=0) const noexcept</div><div class="ttdoc">Changes xy in place to hold the product of x and y.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:1061</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_product_html"><div class="ttname"><a href="structlibsemigroups_1_1_product.html">libsemigroups::Product</a></div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> adapters.hpp:284</div></div>
 </div><!-- fragment -->    </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>

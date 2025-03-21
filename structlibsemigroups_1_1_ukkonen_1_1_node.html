@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -204,7 +208,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aff4ac4203144a31427c7c8bcc55e088c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The index of the child node corresponding to a letter (if any).  <br /></td></tr>
 <tr class="separator:aff4ac4203144a31427c7c8bcc55e088c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5453265515e1ae2d98934841c89f73b" id="r_af5453265515e1ae2d98934841c89f73b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5453265515e1ae2d98934841c89f73b">is_leaf</a> () const noexcept</td></tr>
-<tr class="memdesc:af5453265515e1ae2d98934841c89f73b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true`</code> if the node is a leaf and <code>false</code> if not. ! ! Returns <code>true`</code> if the node is a leaf and <code>false</code> if not.  <br /></td></tr>
+<tr class="memdesc:af5453265515e1ae2d98934841c89f73b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the node is a leaf and <code>false</code> if not.  <br /></td></tr>
 <tr class="separator:af5453265515e1ae2d98934841c89f73b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0659440be80904e1fa780df5f983a623" id="r_a0659440be80904e1fa780df5f983a623"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0659440be80904e1fa780df5f983a623">is_root</a> () const noexcept</td></tr>
 <tr class="memdesc:a0659440be80904e1fa780df5f983a623"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the node is the root and <code>false</code> if not.  <br /></td></tr>
@@ -393,14 +397,11 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">      \returns A value of type `bool`.
+<p>Returns <code>true</code> if the node is a leaf and <code>false</code> if not.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code>bool</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
 
-      \par Exceptions
-      This function is `noexcept` and is guaranteed never to throw.
-
-      \par Complexity
-      Constant. 
-</pre> 
 </div>
 </div>
 <a id="a0659440be80904e1fa780df5f983a623" name="a0659440be80904e1fa780df5f983a623"></a>

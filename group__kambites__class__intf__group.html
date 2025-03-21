@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -306,7 +310,7 @@ template&lt;typename Iterator1, typename Iterator2, typename Iterator3, typename
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws. </td></tr>
   </table>
   </dd>
 </dl>
@@ -431,7 +435,7 @@ template&lt;typename Iterator1, typename Iterator2, typename Iterator3, typename
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the pair belongs to the congruence.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws.</td></tr>
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">small_overlap_class</a> is not at least \(4\). </td></tr>
   </table>
   </dd>
@@ -573,7 +577,7 @@ template&lt;typename Iterator1, typename Iterator2, typename Iterator3, typename
 </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws. </td></tr>
   </table>
   </dd>
 </dl>
@@ -863,7 +867,7 @@ template&lt;typename OutputIterator, typename InputIterator1, typename InputIter
 <dl class="section return"><dt>Returns</dt><dd>An <code class="param">OutputIterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws.</td></tr>
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">small_overlap_class</a> is not at least \(4\). </td></tr>
   </table>
   </dd>
@@ -985,7 +989,7 @@ template&lt;typename OutputIterator, typename Iterator1, typename Iterator2&gt; 
 <dl class="section return"><dt>Returns</dt><dd>An <code class="param">OutputIterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="#ga8c3df1e9e22a0c058b92ac9eb074e3b7" title="Get the presentation used to define a Kambites instance (if any).">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws.</td></tr>
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the <a class="el" href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">small_overlap_class</a> is known and is not at least \(4\). </td></tr>
   </table>
   </dd>

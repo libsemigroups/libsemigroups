@@ -30,12 +30,11 @@ var searchData=
   ['list_27',['list',['http://en.cppreference.com/w/cpp/container/list.html',1,'std']]],
   ['list_3c_20libsemigroups_3a_3adetail_3a_3arule_20_2a_20_3e_28',['list&lt; libsemigroups::detail::Rule * &gt;',['http://en.cppreference.com/w/cpp/container/list.html',1,'std']]],
   ['list_3c_20libsemigroups_3a_3adetail_3a_3arule_20const_20_2a_20_3e_29',['list&lt; libsemigroups::detail::Rule const * &gt;',['http://en.cppreference.com/w/cpp/container/list.html',1,'std']]],
-  ['list_3c_20t_20_3e_30',['list&lt; T &gt;',['http://en.cppreference.com/w/cpp/container/list.html',1,'std']]],
-  ['locale_31',['locale',['http://en.cppreference.com/w/cpp/locale/locale.html',1,'std']]],
-  ['lock_5fguard_32',['lock_guard',['http://en.cppreference.com/w/cpp/thread/lock_guard.html',1,'std']]],
-  ['logic_5ferror_33',['logic_error',['http://en.cppreference.com/w/cpp/error/logic_error.html',1,'std']]],
-  ['logical_5fand_34',['logical_and',['http://en.cppreference.com/w/cpp/utility/functional/logical_and.html',1,'std']]],
-  ['logical_5fnot_35',['logical_not',['http://en.cppreference.com/w/cpp/utility/functional/logical_not.html',1,'std']]],
-  ['logical_5for_36',['logical_or',['http://en.cppreference.com/w/cpp/utility/functional/logical_or.html',1,'std']]],
-  ['lognormal_5fdistribution_37',['lognormal_distribution',['http://en.cppreference.com/w/cpp/numeric/random/lognormal_distribution.html',1,'std']]]
+  ['locale_30',['locale',['http://en.cppreference.com/w/cpp/locale/locale.html',1,'std']]],
+  ['lock_5fguard_31',['lock_guard',['http://en.cppreference.com/w/cpp/thread/lock_guard.html',1,'std']]],
+  ['logic_5ferror_32',['logic_error',['http://en.cppreference.com/w/cpp/error/logic_error.html',1,'std']]],
+  ['logical_5fand_33',['logical_and',['http://en.cppreference.com/w/cpp/utility/functional/logical_and.html',1,'std']]],
+  ['logical_5fnot_34',['logical_not',['http://en.cppreference.com/w/cpp/utility/functional/logical_not.html',1,'std']]],
+  ['logical_5for_35',['logical_or',['http://en.cppreference.com/w/cpp/utility/functional/logical_or.html',1,'std']]],
+  ['lognormal_5fdistribution_36',['lognormal_distribution',['http://en.cppreference.com/w/cpp/numeric/random/lognormal_distribution.html',1,'std']]]
 ];

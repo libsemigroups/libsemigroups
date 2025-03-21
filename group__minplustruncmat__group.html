@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -205,7 +209,7 @@ $(function(){initNavTree('group__minplustruncmat__group.html',''); initResizable
 <div class="line"><span class="comment">// construct an uninitialized 5 x 5 dynamic matrix with threshold 11</span></div>
 <div class="line"><span class="comment">// (defined at run time)</span></div>
 <div class="line"><a class="code hl_typedef" href="#gae57ab4b6cf47cf6a008c0747216bd4da">MinPlusTruncMat&lt;&gt;</a>  m(sr, 5, 5);</div>
-<div class="ttc" id="agroup__minplustruncmat__group_html_gae57ab4b6cf47cf6a008c0747216bd4da"><div class="ttname"><a href="#gae57ab4b6cf47cf6a008c0747216bd4da">libsemigroups::MinPlusTruncMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, std::conditional_t&lt; T==0, DynamicMatrix&lt; MinPlusTruncSemiring&lt; Scalar &gt;, Scalar &gt;, DynamicMinPlusTruncMat&lt; T, Scalar &gt; &gt;, StaticMinPlusTruncMat&lt; T, R, C, Scalar &gt; &gt; MinPlusTruncMat</div><div class="ttdoc">Alias template for truncated min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5756</div></div>
+<div class="ttc" id="agroup__minplustruncmat__group_html_gae57ab4b6cf47cf6a008c0747216bd4da"><div class="ttname"><a href="#gae57ab4b6cf47cf6a008c0747216bd4da">libsemigroups::MinPlusTruncMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, std::conditional_t&lt; T==0, DynamicMatrix&lt; MinPlusTruncSemiring&lt; Scalar &gt;, Scalar &gt;, DynamicMinPlusTruncMat&lt; T, Scalar &gt; &gt;, StaticMinPlusTruncMat&lt; T, R, C, Scalar &gt; &gt; MinPlusTruncMat</div><div class="ttdoc">Alias template for truncated min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5813</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -236,11 +240,11 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:gab4d71961ac9a85f0eed4a89170c3c07c" id="r_gab4d71961ac9a85f0eed4a89170c3c07c"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="#gad68b64357d34ca77c2a224e26752dfc0">IsMinPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gab4d71961ac9a85f0eed4a89170c3c07c">throw_if_bad_entry</a> (Mat const &amp;m)</td></tr>
-<tr class="memdesc:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a truncated min-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that a truncated min-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1b71f4186951b03b0a955b397dbea5b9" id="r_ga1b71f4186951b03b0a955b397dbea5b9"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:ga1b71f4186951b03b0a955b397dbea5b9"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="#gad68b64357d34ca77c2a224e26752dfc0">IsMinPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga1b71f4186951b03b0a955b397dbea5b9">throw_if_bad_entry</a> (Mat const &amp;m, typename Mat::scalar_type val)</td></tr>
-<tr class="memdesc:ga1b71f4186951b03b0a955b397dbea5b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an entry in a truncated min-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:ga1b71f4186951b03b0a955b397dbea5b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an entry in a truncated min-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:ga1b71f4186951b03b0a955b397dbea5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -269,9 +273,9 @@ template&lt;size_t T, typename Scalar&gt; </div>
 <div class="line">                                               <a class="code hl_struct" href="structlibsemigroups_1_1_min_plus_zero.html">MinPlusZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                               <a class="code hl_struct" href="structlibsemigroups_1_1_integer_zero.html">IntegerZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                               Scalar&gt;</div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4131</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_min_plus_trunc_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_trunc_prod.html">libsemigroups::MinPlusTruncProd</a></div><div class="ttdoc">Function object for multiplication in min-plus truncated semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5488</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_min_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_zero.html">libsemigroups::MinPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the min-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4766</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4188</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_min_plus_trunc_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_trunc_prod.html">libsemigroups::MinPlusTruncProd</a></div><div class="ttdoc">Function object for multiplication in min-plus truncated semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5545</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_min_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_zero.html">libsemigroups::MinPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the min-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4823</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of dynamic truncated min-plus matrices where the dimension is defined at run time, but the threshold is defined at compile-time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -303,8 +307,8 @@ template&lt;size_t T = 0, size_t R = 0, size_t C = R, typename Scalar = int&gt; 
 <div class="line">                         DynamicMatrix&lt;MinPlusTruncSemiring&lt;Scalar&gt;, Scalar&gt;,</div>
 <div class="line">                         <a class="code hl_typedef" href="#ga478b8460b61e2d4860e96f0b1e19d9a9">DynamicMinPlusTruncMat&lt;T, Scalar&gt;</a>&gt;,</div>
 <div class="line">      <a class="code hl_typedef" href="#gaa25b63e51930edafc87ac2214b4f2c8e">StaticMinPlusTruncMat&lt;T, R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__minplustruncmat__group_html_ga478b8460b61e2d4860e96f0b1e19d9a9"><div class="ttname"><a href="#ga478b8460b61e2d4860e96f0b1e19d9a9">libsemigroups::DynamicMinPlusTruncMat</a></div><div class="ttdeci">DynamicMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusTruncProd&lt; T, Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMinPlusTruncMat</div><div class="ttdoc">Alias for dynamic truncated min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5709</div></div>
-<div class="ttc" id="agroup__minplustruncmat__group_html_gaa25b63e51930edafc87ac2214b4f2c8e"><div class="ttname"><a href="#gaa25b63e51930edafc87ac2214b4f2c8e">libsemigroups::StaticMinPlusTruncMat</a></div><div class="ttdeci">StaticMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusTruncProd&lt; T, Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMinPlusTruncMat</div><div class="ttdoc">Alias for static truncated min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5729</div></div>
+<div class="ttc" id="agroup__minplustruncmat__group_html_ga478b8460b61e2d4860e96f0b1e19d9a9"><div class="ttname"><a href="#ga478b8460b61e2d4860e96f0b1e19d9a9">libsemigroups::DynamicMinPlusTruncMat</a></div><div class="ttdeci">DynamicMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusTruncProd&lt; T, Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMinPlusTruncMat</div><div class="ttdoc">Alias for dynamic truncated min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5766</div></div>
+<div class="ttc" id="agroup__minplustruncmat__group_html_gaa25b63e51930edafc87ac2214b4f2c8e"><div class="ttname"><a href="#gaa25b63e51930edafc87ac2214b4f2c8e">libsemigroups::StaticMinPlusTruncMat</a></div><div class="ttdeci">StaticMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusTruncProd&lt; T, Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMinPlusTruncMat</div><div class="ttdoc">Alias for static truncated min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5786</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for truncated min-plus matrices.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -339,7 +343,7 @@ template&lt;size_t T, size_t R, size_t C, typename Scalar&gt; </div>
 <div class="line">                                             R,</div>
 <div class="line">                                             C,</div>
 <div class="line">                                             Scalar&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1850</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1859</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for static truncated min-plus matrices where the threshold and dimensions are defined at compile-time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -372,7 +376,7 @@ template&lt;typename Mat&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function can be used to validate that a matrix contains values in the underlying semiring.</p>
+<p>This function can be used to check that a matrix contains values in the underlying semiring.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the matrix <code class="param">m</code> (must satisfy <a class="el" href="#gad68b64357d34ca77c2a224e26752dfc0">IsMinPlusTruncMat&lt;Mat&gt;</a>).</td></tr>
@@ -381,7 +385,7 @@ template&lt;typename Mat&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">m</td><td>the matrix to validate.</td></tr>
+    <tr><td class="paramname">m</td><td>the matrix to check.</td></tr>
   </table>
   </dd>
 </dl>
@@ -415,7 +419,7 @@ template&lt;typename Mat&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function can be used to validate that a matrix contains values in the underlying semiring.</p>
+<p>This function can be used to check that a matrix contains values in the underlying semiring.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type the 1st argument, must satisfy <a class="el" href="#gad68b64357d34ca77c2a224e26752dfc0">IsMinPlusTruncMat&lt;Mat&gt;</a>.</td></tr>
@@ -425,7 +429,7 @@ template&lt;typename Mat&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">m</td><td>the matrix. </td></tr>
-    <tr><td class="paramname">val</td><td>the entry to validate.</td></tr>
+    <tr><td class="paramname">val</td><td>the entry to check.</td></tr>
   </table>
   </dd>
 </dl>

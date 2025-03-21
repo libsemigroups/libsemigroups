@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -180,7 +184,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_b_mat8.html',''); initResizable
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classlibsemigroups_1_1_b_mat8-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">BMat8<div class="ingroups"><a class="el" href="group__bmat8__group.html">BMat8</a></div></div></div>
+  <div class="headertitle"><div class="title">BMat8<div class="ingroups"><a class="el" href="group__bmat__index__group.html">Boolean matrices</a> &raquo; <a class="el" href="group__bmat8__group.html">BMat8</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
@@ -235,7 +239,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a2afc79d0918f54affe329b1ad82227e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiply <code>this</code> by <code class="param">that</code> in-place.  <br /></td></tr>
 <tr class="separator:a2afc79d0918f54affe329b1ad82227e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76a51f4b524bb17aaf018cd7b15a7aba" id="r_a76a51f4b524bb17aaf018cd7b15a7aba"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76a51f4b524bb17aaf018cd7b15a7aba">operator*=</a> (bool scalar) noexcept</td></tr>
-<tr class="memdesc:a76a51f4b524bb17aaf018cd7b15a7aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiply a <a class="el" href="classlibsemigroups_1_1_b_mat8.html" title="Fast boolean matrices of dimension up to 8 x 8.">BMat8</a> by a scalar (in-place)  <br /></td></tr>
+<tr class="memdesc:a76a51f4b524bb17aaf018cd7b15a7aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiply a <a class="el" href="classlibsemigroups_1_1_b_mat8.html" title="Fast boolean matrices of dimension up to 8 x 8.">BMat8</a> by a scalar (in-place).  <br /></td></tr>
 <tr class="separator:a76a51f4b524bb17aaf018cd7b15a7aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b9c8c8284e9db23880fa80cc4faded9" id="r_a5b9c8c8284e9db23880fa80cc4faded9"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b9c8c8284e9db23880fa80cc4faded9">operator+</a> (<a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> const &amp;that) const noexcept</td></tr>
 <tr class="memdesc:a5b9c8c8284e9db23880fa80cc4faded9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum <a class="el" href="classlibsemigroups_1_1_b_mat8.html" title="Fast boolean matrices of dimension up to 8 x 8.">BMat8</a> objects.  <br /></td></tr>
@@ -469,7 +473,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Note that since all matrices are internally represented as 8 x 8, it is possible to access entries that you might not believe exist.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>BMat8::operator()(size_t r) <a class="el" href="namespacelibsemigroups_1_1bmat8.html#a79f23e499200edfb48c5ca78cf840e4d">rows</a>, and <a class="el" href="namespacelibsemigroups_1_1bmat8.html#a0efa99eacda2682cb8a65262692ee1de">to_vector</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7967c62110d17d623cd09c7691b87675">operator()(size_t) const</a> <a class="el" href="namespacelibsemigroups_1_1bmat8.html#a79f23e499200edfb48c5ca78cf840e4d">rows</a>, and <a class="el" href="namespacelibsemigroups_1_1bmat8.html#a0efa99eacda2682cb8a65262692ee1de">to_vector</a>. </dd></dl>
 
 </div>
 </div>
@@ -502,8 +506,8 @@ Public Member Functions</h2></td></tr>
 <p>Returns a reference to the entry in the row <code class="param">r</code> and column <code class="param">c</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">r</td><td>the row </td></tr>
-    <tr><td class="paramname">c</td><td>the column</td></tr>
+    <tr><td class="paramname">r</td><td>the row. </td></tr>
+    <tr><td class="paramname">c</td><td>the column.</td></tr>
   </table>
   </dd>
 </dl>
@@ -547,8 +551,8 @@ Public Member Functions</h2></td></tr>
 <p>Returns the value of the entry in the row <code class="param">r</code> and column <code class="param">c</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">r</td><td>the row </td></tr>
-    <tr><td class="paramname">c</td><td>the column</td></tr>
+    <tr><td class="paramname">r</td><td>the row. </td></tr>
+    <tr><td class="paramname">c</td><td>the column.</td></tr>
   </table>
   </dd>
 </dl>

@@ -22,6 +22,8 @@ var searchData=
   ['dot_19',['Dot',['../classlibsemigroups_1_1_dot.html',1,'libsemigroups']]],
   ['duration_20',['duration',['http://en.cppreference.com/w/cpp/chrono/duration.html',1,'std::chrono']]],
   ['duration_5fvalues_21',['duration_values',['http://en.cppreference.com/w/cpp/chrono/duration_values.html',1,'std::chrono']]],
-  ['dynamicptransf_22',['DynamicPTransf',['../classlibsemigroups_1_1_dynamic_p_transf.html',1,'libsemigroups']]],
-  ['dynarray_23',['dynarray',['http://en.cppreference.com/w/cpp/container/dynarray.html',1,'std']]]
+  ['dynamicmatrix_3c_20plusop_2c_20prodop_2c_20zeroop_2c_20oneop_2c_20scalar_20_3e_22',['DynamicMatrix&lt; PlusOp, ProdOp, ZeroOp, OneOp, Scalar &gt;',['../classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html',1,'libsemigroups']]],
+  ['dynamicmatrix_3c_20semiring_2c_20scalar_20_3e_23',['DynamicMatrix&lt; Semiring, Scalar &gt;',['../classlibsemigroups_1_1_dynamic_matrix_3_01_semiring_00_01_scalar_01_4.html',1,'libsemigroups']]],
+  ['dynamicptransf_24',['DynamicPTransf',['../classlibsemigroups_1_1_dynamic_p_transf.html',1,'libsemigroups']]],
+  ['dynarray_25',['dynarray',['http://en.cppreference.com/w/cpp/container/dynarray.html',1,'std']]]
 ];

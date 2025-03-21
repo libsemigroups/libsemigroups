@@ -1,5 +1,5 @@
 <map id="Konieczny&lt; Element, Traits &gt;" name="Konieczny&lt; Element, Traits &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,153,152,193"/>
+<area shape="rect" id="Node000001" title="Class implementing Konieczny&#39;s algorithm." alt="" coords="5,153,152,193"/>
 <area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="47,79,110,105"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,120,81,152,76,152,76,120"/>
 <area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting." alt="" coords="43,5,114,31"/>

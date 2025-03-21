@@ -16,11 +16,10 @@ var searchData=
   ['toword_13',['ToWord',['../classlibsemigroups_1_1_to_word.html',1,'libsemigroups']]],
   ['transf_14',['Transf',['../classlibsemigroups_1_1_transf.html',1,'libsemigroups']]],
   ['transf_3c_200_2c_20std_3a_3aconditional_5ft_3c_200_3d_3d0_2c_20uint32_5ft_2c_20typename_20smallestinteger_3c_200_20_3e_3a_3atype_20_3e_20_3e_15',['Transf&lt; 0, std::conditional_t&lt; 0==0, uint32_t, typename SmallestInteger&lt; 0 &gt;::type &gt; &gt;',['../classlibsemigroups_1_1_transf.html',1,'libsemigroups']]],
-  ['transf_3c_20n_20_3e_16',['Transf&lt; N &gt;',['../classlibsemigroups_1_1_transf.html',1,'libsemigroups']]],
-  ['treat_5fas_5ffloating_5fpoint_17',['treat_as_floating_point',['http://en.cppreference.com/w/cpp/chrono/treat_as_floating_point.html',1,'std::chrono']]],
-  ['true_5ftype_18',['true_type',['http://en.cppreference.com/w/cpp/types/integral_constant.html',1,'std']]],
-  ['try_5fto_5flock_5ft_19',['try_to_lock_t',['http://en.cppreference.com/w/cpp/thread/lock_tag_t.html',1,'std']]],
-  ['tuple_20',['tuple',['http://en.cppreference.com/w/cpp/utility/tuple.html',1,'std']]],
-  ['type_5findex_21',['type_index',['http://en.cppreference.com/w/cpp/types/type_index.html',1,'std']]],
-  ['type_5finfo_22',['type_info',['http://en.cppreference.com/w/cpp/types/type_info.html',1,'std']]]
+  ['treat_5fas_5ffloating_5fpoint_16',['treat_as_floating_point',['http://en.cppreference.com/w/cpp/chrono/treat_as_floating_point.html',1,'std::chrono']]],
+  ['true_5ftype_17',['true_type',['http://en.cppreference.com/w/cpp/types/integral_constant.html',1,'std']]],
+  ['try_5fto_5flock_5ft_18',['try_to_lock_t',['http://en.cppreference.com/w/cpp/thread/lock_tag_t.html',1,'std']]],
+  ['tuple_19',['tuple',['http://en.cppreference.com/w/cpp/utility/tuple.html',1,'std']]],
+  ['type_5findex_20',['type_index',['http://en.cppreference.com/w/cpp/types/type_index.html',1,'std']]],
+  ['type_5finfo_21',['type_info',['http://en.cppreference.com/w/cpp/types/type_info.html',1,'std']]]
 ];

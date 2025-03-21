@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,7 +186,7 @@ $(function(){initNavTree('report_8hpp_source.html',''); initResizable(true); });
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// libsemigroups - C++ library for semigroups and monoids</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019 James D. Mitchell</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019-2025 James D. Mitchell</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// it under the terms of the GNU General Public License as published by</span></div>
@@ -312,70 +316,85 @@ $(function(){initNavTree('report_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>      <span class="keywordtype">void</span> emit();</div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    };  <span class="comment">// ReportCell</span></div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>  }     <span class="comment">// namespace detail</span></div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>  <span class="keywordtype">bool</span> reporting_enabled() noexcept;</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>  template &lt;typename... Args&gt;</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>  std::<span class="keywordtype">string</span> fmt_default(std::string_view sv, Args&amp;&amp;... args) {</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    std::string prefix = fmt::format(<span class="stringliteral">&quot;#{}: &quot;</span>, detail::this_threads_id());</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="keywordflow">return</span> prefix + fmt::format(sv, <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward&lt;Args&gt;</a>(args)...);</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  }</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>  <span class="keywordtype">void</span> report_no_prefix(std::string_view sv, Args&amp;&amp;... args) {</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="keyword">static</span> std::mutex mtx;</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordflow">if</span> (reporting_enabled()) {</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>      std::lock_guard&lt;std::mutex&gt; lg(mtx);</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>      fmt::print(sv, <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward&lt;Args&gt;</a>(args)...);</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    }</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>  }</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>  <span class="keywordtype">void</span> report_default(std::string_view sv, Args&amp;&amp;... args) {</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <span class="keywordflow">if</span> (reporting_enabled()) {</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>      std::string_view prefix(sv);</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>      <span class="keyword">auto</span>             pos = prefix.<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/string/basic_string/find.html">find</a>(<span class="stringliteral">&quot;:&quot;</span>);</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>      <span class="keywordflow">if</span> (pos != std::string::npos) {</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        prefix.remove_suffix(prefix.<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/string/basic_string/size.html">size</a>() - prefix.<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/string/basic_string/find.html">find</a>(<span class="stringliteral">&quot;:&quot;</span>));</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keywordflow">if</span> (detail::is_report_suppressed_for((prefix))) {</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>          <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        }</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>      }</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>      report_no_prefix(fmt_default(sv, <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward&lt;Args&gt;</a>(args)...));</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    }</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>  }</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span> </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>  <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span></div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>  report_elapsed_time(std::string_view                    prefix,</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>                      libsemigroups::detail::Timer <span class="keyword">const</span>&amp; tmr) {</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    report_default(<span class="stringliteral">&quot;{} elapsed time {}&quot;</span>, prefix, tmr);</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>  }</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span></div>
-<div class="foldopen" id="foldopen00177" data-start="{" data-end="};">
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_report_guard.html">  177</a></span>  <span class="keyword">struct </span><a class="code hl_function" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">ReportGuard</a> {</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">  181</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">ReportGuard</a>(<span class="keywordtype">bool</span> val = <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    <a class="code hl_function" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">~ReportGuard</a>();</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>  };</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span></div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="namespacelibsemigroups.html#a10e917f85ce579edf4c9adc88c7c36fa">  135</a></span>  <span class="keywordtype">bool</span> <a class="code hl_function" href="namespacelibsemigroups.html#a10e917f85ce579edf4c9adc88c7c36fa">reporting_enabled</a>() noexcept;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span></div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>  template &lt;typename... Args&gt;</div>
+<div class="foldopen" id="foldopen00139" data-start="{" data-end="}">
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno"><a class="line" href="namespacelibsemigroups.html#a492daa692f98e9f26ece5fd0d762ab15">  139</a></span>  <a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a>::<span class="keywordtype">string</span> <a class="code hl_function" href="namespacelibsemigroups.html#a492daa692f98e9f26ece5fd0d762ab15">fmt_default</a>(<a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a>::string_view sv, Args&amp;&amp;... args) {</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> prefix = fmt::format(<span class="stringliteral">&quot;#{}: &quot;</span>, detail::this_threads_id());</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    <span class="keywordflow">return</span> prefix + fmt::format(sv, <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward&lt;Args&gt;</a>(args)...);</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>  }</div>
 </div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>  <span class="keyword">class </span>SuppressReportFor {</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    std::string_view _prefix;</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>   <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <span class="keyword">explicit</span> SuppressReportFor(std::string_view);</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    ~SuppressReportFor();</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>  };</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">#include &quot;report.tpp&quot;</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_REPORT_HPP_</span></div>
-<div class="ttc" id="afind_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/find.html">std::string::find</a></div><div class="ttdeci">T find(T... args)</div></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span></div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="foldopen" id="foldopen00146" data-start="{" data-end="}">
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno"><a class="line" href="namespacelibsemigroups.html#ab87fe0105a66cb92cdf1283037ce1910">  146</a></span>  <span class="keywordtype">void</span> <a class="code hl_function" href="namespacelibsemigroups.html#ab87fe0105a66cb92cdf1283037ce1910">report_no_prefix</a>(std::string_view sv, Args&amp;&amp;... args) {</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keyword">static</span> <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/thread/mutex.html">std::mutex</a> mtx;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="namespacelibsemigroups.html#a10e917f85ce579edf4c9adc88c7c36fa">reporting_enabled</a>()) {</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>      <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/thread/lock_guard.html">std::lock_guard&lt;std::mutex&gt;</a> lg(mtx);</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>      fmt::print(sv, <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward&lt;Args&gt;</a>(args)...);</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    }</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>  }</div>
+</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span></div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="foldopen" id="foldopen00157" data-start="{" data-end="}">
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno"><a class="line" href="namespacelibsemigroups.html#a3ad68607810e16a29cee56c8416f918f">  157</a></span>  <span class="keywordtype">void</span> <a class="code hl_function" href="namespacelibsemigroups.html#a3ad68607810e16a29cee56c8416f918f">report_default</a>(std::string_view sv, Args&amp;&amp;... args) {</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="namespacelibsemigroups.html#a10e917f85ce579edf4c9adc88c7c36fa">reporting_enabled</a>()) {</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>      std::string_view prefix(sv);</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>      <span class="keyword">auto</span>             pos = prefix.find(<span class="stringliteral">&quot;:&quot;</span>);</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>      <span class="keywordflow">if</span> (pos != std::string::npos) {</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        prefix.remove_suffix(prefix.size() - prefix.find(<span class="stringliteral">&quot;:&quot;</span>));</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        <span class="keywordflow">if</span> (detail::is_report_suppressed_for((prefix))) {</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>          <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        }</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>      }</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>      <a class="code hl_function" href="namespacelibsemigroups.html#ab87fe0105a66cb92cdf1283037ce1910">report_no_prefix</a>(<a class="code hl_function" href="namespacelibsemigroups.html#a492daa692f98e9f26ece5fd0d762ab15">fmt_default</a>(sv, <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward&lt;Args&gt;</a>(args)...));</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    }</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>  }</div>
+</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>  <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span></div>
+<div class="foldopen" id="foldopen00173" data-start="{" data-end="}">
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno"><a class="line" href="namespacelibsemigroups.html#a4734226746c162ed6027131cb362a82c">  173</a></span>  <a class="code hl_function" href="namespacelibsemigroups.html#a4734226746c162ed6027131cb362a82c">report_elapsed_time</a>(std::string_view                    prefix,</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>                      libsemigroups::detail::Timer <span class="keyword">const</span>&amp; tmr) {</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <a class="code hl_function" href="namespacelibsemigroups.html#a3ad68607810e16a29cee56c8416f918f">report_default</a>(<span class="stringliteral">&quot;{} elapsed time {}&quot;</span>, prefix, tmr);</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>  }</div>
+</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span></div>
+<div class="foldopen" id="foldopen00187" data-start="{" data-end="};">
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_report_guard.html">  187</a></span>  <span class="keyword">struct </span><a class="code hl_function" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">ReportGuard</a> {</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">  193</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">ReportGuard</a>(<span class="keywordtype">bool</span> val = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <a class="code hl_function" href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">~ReportGuard</a>();</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>  };</div>
+</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>  <span class="keyword">class </span>SuppressReportFor {</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    std::string_view _prefix;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>   <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="keyword">explicit</span> SuppressReportFor(std::string_view);</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    ~SuppressReportFor();</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>  };</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="preprocessor">#include &quot;report.tpp&quot;</span></div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_REPORT_HPP_</span></div>
+<div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
 <div class="ttc" id="aforward_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward</a></div><div class="ttdeci">T forward(T... args)</div></div>
+<div class="ttc" id="alock_guard_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/thread/lock_guard.html">std::lock_guard</a></div></div>
+<div class="ttc" id="amutex_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/thread/mutex.html">std::mutex</a></div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
-<div class="ttc" id="asize_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/size.html">std::string::size</a></div><div class="ttdeci">T size(T... args)</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_report_guard_html_a549f2ec2a8d73ed23af1b93d514879f0"><div class="ttname"><a href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">libsemigroups::ReportGuard::ReportGuard</a></div><div class="ttdeci">ReportGuard(bool val=true)</div></div>
+<div class="ttc" id="anamespacelibsemigroups_html_a10e917f85ce579edf4c9adc88c7c36fa"><div class="ttname"><a href="namespacelibsemigroups.html#a10e917f85ce579edf4c9adc88c7c36fa">libsemigroups::reporting_enabled</a></div><div class="ttdeci">bool reporting_enabled() noexcept</div><div class="ttdoc">No doc.</div></div>
+<div class="ttc" id="anamespacelibsemigroups_html_a3ad68607810e16a29cee56c8416f918f"><div class="ttname"><a href="namespacelibsemigroups.html#a3ad68607810e16a29cee56c8416f918f">libsemigroups::report_default</a></div><div class="ttdeci">void report_default(std::string_view sv, Args &amp;&amp;... args)</div><div class="ttdoc">No doc.</div><div class="ttdef"><b>Definition</b> report.hpp:157</div></div>
+<div class="ttc" id="anamespacelibsemigroups_html_a4734226746c162ed6027131cb362a82c"><div class="ttname"><a href="namespacelibsemigroups.html#a4734226746c162ed6027131cb362a82c">libsemigroups::report_elapsed_time</a></div><div class="ttdeci">static void report_elapsed_time(std::string_view prefix, libsemigroups::detail::Timer const &amp;tmr)</div><div class="ttdoc">No doc.</div><div class="ttdef"><b>Definition</b> report.hpp:173</div></div>
+<div class="ttc" id="anamespacelibsemigroups_html_a492daa692f98e9f26ece5fd0d762ab15"><div class="ttname"><a href="namespacelibsemigroups.html#a492daa692f98e9f26ece5fd0d762ab15">libsemigroups::fmt_default</a></div><div class="ttdeci">std::string fmt_default(std::string_view sv, Args &amp;&amp;... args)</div><div class="ttdoc">No doc.</div><div class="ttdef"><b>Definition</b> report.hpp:139</div></div>
+<div class="ttc" id="anamespacelibsemigroups_html_ab87fe0105a66cb92cdf1283037ce1910"><div class="ttname"><a href="namespacelibsemigroups.html#ab87fe0105a66cb92cdf1283037ce1910">libsemigroups::report_no_prefix</a></div><div class="ttdeci">void report_no_prefix(std::string_view sv, Args &amp;&amp;... args)</div><div class="ttdoc">No doc.</div><div class="ttdef"><b>Definition</b> report.hpp:146</div></div>
+<div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_report_guard_html_a549f2ec2a8d73ed23af1b93d514879f0"><div class="ttname"><a href="structlibsemigroups_1_1_report_guard.html#a549f2ec2a8d73ed23af1b93d514879f0">libsemigroups::ReportGuard::ReportGuard</a></div><div class="ttdeci">ReportGuard(bool val=true)</div><div class="ttdoc">Constructs a ReportGuard with reporting enabled by default.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

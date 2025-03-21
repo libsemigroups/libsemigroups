@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -183,7 +187,7 @@ $(function(){initNavTree('structlibsemigroups_1_1_inverse.html',''); initResizab
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename = void&gt;<br />
 struct libsemigroups::Inverse&lt; Element, typename &gt;</div><p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>Point ! operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>Point operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The call operator should return the inverse of the element <code class="param">x</code> under the assumption that <code class="param">x</code> has an inverse (in the sense of groups). For example, if <code class="param">x</code> is a permutation, then this would return its inverse. If <code class="param">x</code> is a permutation matrix of type <a class="el" href="classlibsemigroups_1_1_b_mat8.html" title="Fast boolean matrices of dimension up to 8 x 8.">BMat8</a>, then this operator would return its transpose.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -203,8 +207,8 @@ struct libsemigroups::Inverse&lt; Element, typename &gt;</div><p>Defined in <cod
 <div class="line">    <span class="keywordflow">return</span> x.transpose();</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:79</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_inverse_html"><div class="ttname"><a href="structlibsemigroups_1_1_inverse.html">libsemigroups::Inverse</a></div><div class="ttdoc">Adapter for the inverse of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:320</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_inverse_html"><div class="ttname"><a href="structlibsemigroups_1_1_inverse.html">libsemigroups::Inverse</a></div><div class="ttdoc">Adapter for the inverse of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:319</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/Users/jdm/libsemigroups/include/libsemigroups/<a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></li>

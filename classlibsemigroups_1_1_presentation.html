@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -303,22 +307,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad8ddd03c17256fe807bc8e0b4145f1da" id="r_ad8ddd03c17256fe807bc8e0b4145f1da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8ddd03c17256fe807bc8e0b4145f1da">remove_generator_no_checks</a> (<a class="el" href="#ac99d2bdd0870fd2ca0e546d5117e83c0">letter_type</a> x)</td></tr>
 <tr class="memdesc:ad8ddd03c17256fe807bc8e0b4145f1da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove <code class="param">x</code> as a generator.  <br /></td></tr>
 <tr class="separator:ad8ddd03c17256fe807bc8e0b4145f1da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3a68a01a1c7c22bfbd9f3f6d20e7d5a" id="r_ab3a68a01a1c7c22bfbd9f3f6d20e7d5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">validate</a> () const</td></tr>
-<tr class="memdesc:ab3a68a01a1c7c22bfbd9f3f6d20e7d5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the alphabet and rules are valid.  <br /></td></tr>
-<tr class="separator:ab3a68a01a1c7c22bfbd9f3f6d20e7d5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85885d8a4c1acbb575dad4aa0a8d9d59" id="r_a85885d8a4c1acbb575dad4aa0a8d9d59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a85885d8a4c1acbb575dad4aa0a8d9d59">validate_alphabet</a> () const</td></tr>
-<tr class="memdesc:a85885d8a4c1acbb575dad4aa0a8d9d59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the alphabet is valid.  <br /></td></tr>
-<tr class="separator:a85885d8a4c1acbb575dad4aa0a8d9d59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bb4217863b66992b475a981b801bab5" id="r_a3bb4217863b66992b475a981b801bab5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3bb4217863b66992b475a981b801bab5">validate_letter</a> (<a class="el" href="#ac99d2bdd0870fd2ca0e546d5117e83c0">letter_type</a> c) const</td></tr>
-<tr class="memdesc:a3bb4217863b66992b475a981b801bab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a letter belongs to the alphabet or not.  <br /></td></tr>
-<tr class="separator:a3bb4217863b66992b475a981b801bab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaebf90ae878d5d3b6142c8dc34c231c9" id="r_aaebf90ae878d5d3b6142c8dc34c231c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaebf90ae878d5d3b6142c8dc34c231c9">validate_rules</a> () const</td></tr>
-<tr class="memdesc:aaebf90ae878d5d3b6142c8dc34c231c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if every rule consists only of letters belonging to the alphabet.  <br /></td></tr>
-<tr class="separator:aaebf90ae878d5d3b6142c8dc34c231c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16828821733416651369b4c1a1628b61" id="r_a16828821733416651369b4c1a1628b61"><td class="memTemplParams" colspan="2">template&lt;typename Iterator1, typename Iterator2&gt; </td></tr>
-<tr class="memitem:a16828821733416651369b4c1a1628b61"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a16828821733416651369b4c1a1628b61">validate_word</a> (Iterator1 first, Iterator2 last) const</td></tr>
-<tr class="memdesc:a16828821733416651369b4c1a1628b61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if every letter in a range belongs to the alphabet.  <br /></td></tr>
-<tr class="separator:a16828821733416651369b4c1a1628b61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7cd0736f09fd36f760386f069673788b" id="r_a7cd0736f09fd36f760386f069673788b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7cd0736f09fd36f760386f069673788b">throw_if_alphabet_has_duplicates</a> () const</td></tr>
+<tr class="memdesc:a7cd0736f09fd36f760386f069673788b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the alphabet is valid.  <br /></td></tr>
+<tr class="separator:a7cd0736f09fd36f760386f069673788b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a198d5db68cd73451d94cb58d8f7603e6" id="r_a198d5db68cd73451d94cb58d8f7603e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a> () const</td></tr>
+<tr class="memdesc:a198d5db68cd73451d94cb58d8f7603e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the alphabet and rules are valid.  <br /></td></tr>
+<tr class="separator:a198d5db68cd73451d94cb58d8f7603e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20b73042d713771d89a37ffa43e14ccb" id="r_a20b73042d713771d89a37ffa43e14ccb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20b73042d713771d89a37ffa43e14ccb">throw_if_bad_rules</a> () const</td></tr>
+<tr class="memdesc:a20b73042d713771d89a37ffa43e14ccb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if every word in every rule consists only of letters belonging to the alphabet.  <br /></td></tr>
+<tr class="separator:a20b73042d713771d89a37ffa43e14ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a941b2edf99311a7d8250aa8bf9fbac54" id="r_a941b2edf99311a7d8250aa8bf9fbac54"><td class="memTemplParams" colspan="2">template&lt;typename Iterator1, typename Iterator2&gt; </td></tr>
+<tr class="memitem:a941b2edf99311a7d8250aa8bf9fbac54"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a941b2edf99311a7d8250aa8bf9fbac54">throw_if_letter_not_in_alphabet</a> (Iterator1 first, Iterator2 last) const</td></tr>
+<tr class="memdesc:a941b2edf99311a7d8250aa8bf9fbac54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if every letter in a range belongs to the alphabet.  <br /></td></tr>
+<tr class="separator:a941b2edf99311a7d8250aa8bf9fbac54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a2a11b2e41d52cdc86029b075a6d2f9" id="r_a3a2a11b2e41d52cdc86029b075a6d2f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a2a11b2e41d52cdc86029b075a6d2f9">throw_if_letter_not_in_alphabet</a> (<a class="el" href="#ac99d2bdd0870fd2ca0e546d5117e83c0">letter_type</a> c) const</td></tr>
+<tr class="memdesc:a3a2a11b2e41d52cdc86029b075a6d2f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a letter belongs to the alphabet or not.  <br /></td></tr>
+<tr class="separator:a3a2a11b2e41d52cdc86029b075a6d2f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="adcef49e92e37aa5782c994a74103baf4" name="adcef49e92e37aa5782c994a74103baf4"></a>
@@ -508,15 +512,19 @@ template&lt;typename Iterator1, typename Iterator2&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>After checking that the left-hand side and right-hand side only contain letters in <a class="el" href="#ac21a91e92a664a0ac48d99643f62fd6a">alphabet</a>, this function performs the same as <code>add_rule_no_checks(Iterator1 lhs_begin, Iterator1 lhs_end, Iterator2 ! rhs_begin, Iterator2 rhs_end)</code>. </p><pre class="fragment">    \throws LibsemigroupsException if any letter does not belong to the
-    alphabet.
-    \throws LibsemigroupsException if \ref contains_empty_word returns \c
-    false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals \p
-    rhs_end.
+<p>After checking that the left-hand side and right-hand side only contain letters in <a class="el" href="#ac21a91e92a664a0ac48d99643f62fd6a">alphabet</a>, this function performs the same as <code>add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end)</code>.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter does not belong to the alphabet. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="#ab206e03bcd28bba4d8cdbaffba18b5bc">contains_empty_word</a> returns <code>false</code> and <code class="param">lhs_begin</code> equals <code class="param">lhs_end</code> or <code class="param">rhs_begin</code> equals <code class="param">rhs_end</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><ul>
+<li><a class="el" href="#a63eaff93e845ba38b8d8c7b7f02b5de1">add_rule_no_checks</a> </li>
+</ul>
+</dd></dl>
 
-    \sa
-    * \ref add_rule_no_checks 
-</pre> 
 </div>
 </div>
 <a id="a63eaff93e845ba38b8d8c7b7f02b5de1" name="a63eaff93e845ba38b8d8c7b7f02b5de1"></a>
@@ -650,9 +658,9 @@ template&lt;typename Word&gt; </div>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does not verify that the rules in the presentation (if any) consist of letters belonging to the alphabet.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><ul>
-<li><a class="el" href="#a85885d8a4c1acbb575dad4aa0a8d9d59">validate_alphabet</a></li>
-<li><a class="el" href="#aaebf90ae878d5d3b6142c8dc34c231c9">validate_rules</a></li>
-<li><a class="el" href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">validate</a> </li>
+<li><a class="el" href="#a7cd0736f09fd36f760386f069673788b">throw_if_alphabet_has_duplicates</a></li>
+<li><a class="el" href="#a20b73042d713771d89a37ffa43e14ccb">throw_if_bad_rules</a></li>
+<li><a class="el" href="#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a> </li>
 </ul>
 </dd></dl>
 
@@ -690,8 +698,8 @@ template&lt;typename Word&gt; </div>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does not verify that the rules in the presentation (if any) consist of letters belonging to the alphabet.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><ul>
-<li><a class="el" href="#aaebf90ae878d5d3b6142c8dc34c231c9">validate_rules</a></li>
-<li><a class="el" href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">validate</a> </li>
+<li><a class="el" href="#a20b73042d713771d89a37ffa43e14ccb">throw_if_bad_rules</a></li>
+<li><a class="el" href="#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a> </li>
 </ul>
 </dd></dl>
 
@@ -729,8 +737,8 @@ template&lt;typename Word&gt; </div>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does not verify that the rules in the presentation (if any) consist of letters belonging to the alphabet.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><ul>
-<li><a class="el" href="#aaebf90ae878d5d3b6142c8dc34c231c9">validate_rules</a></li>
-<li><a class="el" href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">validate</a> </li>
+<li><a class="el" href="#a20b73042d713771d89a37ffa43e14ccb">throw_if_bad_rules</a></li>
+<li><a class="el" href="#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a> </li>
 </ul>
 </dd></dl>
 
@@ -757,8 +765,8 @@ template&lt;typename Word&gt; </div>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At most \(O(mn)\) where \(m\) is the number of rules, and \(n\) is the length of the longest rule.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><ul>
-<li><a class="el" href="#aaebf90ae878d5d3b6142c8dc34c231c9">validate_rules</a></li>
-<li><a class="el" href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">validate</a> </li>
+<li><a class="el" href="#a20b73042d713771d89a37ffa43e14ccb">throw_if_bad_rules</a></li>
+<li><a class="el" href="#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a> </li>
 </ul>
 </dd></dl>
 
@@ -1146,8 +1154,8 @@ template&lt;typename Word&gt; </div>
 
 </div>
 </div>
-<a id="ab3a68a01a1c7c22bfbd9f3f6d20e7d5a" name="ab3a68a01a1c7c22bfbd9f3f6d20e7d5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">&#9670;&#160;</a></span>validate()</h2>
+<a id="a7cd0736f09fd36f760386f069673788b" name="a7cd0736f09fd36f760386f069673788b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7cd0736f09fd36f760386f069673788b">&#9670;&#160;</a></span>throw_if_alphabet_has_duplicates()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1158,42 +1166,7 @@ template&lt;typename Word&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void validate </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Check if the alphabet and rules are valid.</p>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="#a85885d8a4c1acbb575dad4aa0a8d9d59">validate_alphabet</a> or <a class="el" href="#aaebf90ae878d5d3b6142c8dc34c231c9">validate_rules</a> does.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Worst case \(O(mnp)\) where \(m\) is the length of length of the word, \(n\) is the size of the alphabet and \(p\) is the number of rules. </dd></dl>
-
-</div>
-</div>
-<a id="a85885d8a4c1acbb575dad4aa0a8d9d59" name="a85885d8a4c1acbb575dad4aa0a8d9d59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85885d8a4c1acbb575dad4aa0a8d9d59">&#9670;&#160;</a></span>validate_alphabet()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Word&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void validate_alphabet </td>
+          <td class="memname">void throw_if_alphabet_has_duplicates </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -1216,41 +1189,43 @@ template&lt;typename Word&gt; </div>
 
 </div>
 </div>
-<a id="a3bb4217863b66992b475a981b801bab5" name="a3bb4217863b66992b475a981b801bab5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3bb4217863b66992b475a981b801bab5">&#9670;&#160;</a></span>validate_letter()</h2>
+<a id="a198d5db68cd73451d94cb58d8f7603e6" name="a198d5db68cd73451d94cb58d8f7603e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a198d5db68cd73451d94cb58d8f7603e6">&#9670;&#160;</a></span>throw_if_bad_alphabet_or_rules()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Word&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void validate_letter </td>
+          <td class="memname">void throw_if_bad_alphabet_or_rules </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="#ac99d2bdd0870fd2ca0e546d5117e83c0">letter_type</a></td>          <td class="paramname"><span class="paramname"><em>c</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Check if a letter belongs to the alphabet or not.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">c</td><td>the letter to check.</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Check if the alphabet and rules are valid.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">c</code> does not belong to the alphabet.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="#a7cd0736f09fd36f760386f069673788b">throw_if_alphabet_has_duplicates</a> or <a class="el" href="#a20b73042d713771d89a37ffa43e14ccb">throw_if_bad_rules</a> does.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Complexity</dt><dd>Constant on average, worst case linear in the size of the alphabet. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Worst case \(O(mnp)\) where \(m\) is the length of length of the word, \(n\) is the size of the alphabet and \(p\) is the number of rules. </dd></dl>
 
 </div>
 </div>
-<a id="aaebf90ae878d5d3b6142c8dc34c231c9" name="aaebf90ae878d5d3b6142c8dc34c231c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaebf90ae878d5d3b6142c8dc34c231c9">&#9670;&#160;</a></span>validate_rules()</h2>
+<a id="a20b73042d713771d89a37ffa43e14ccb" name="a20b73042d713771d89a37ffa43e14ccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20b73042d713771d89a37ffa43e14ccb">&#9670;&#160;</a></span>throw_if_bad_rules()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1258,17 +1233,18 @@ template&lt;typename Word&gt; </div>
 template&lt;typename Word&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void validate_rules </td>
+          <td class="memname">void throw_if_bad_rules </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Check if every rule consists only of letters belonging to the alphabet.</p>
+<p>Check if every word in every rule consists only of letters belonging to the alphabet, and that there are an even number of words in <code>this-&gt;rules</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any word contains a letter not in the alphabet.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any word contains a letter not in the alphabet. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the number of words in <code>this-&gt;rules</code> is odd.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1276,8 +1252,8 @@ template&lt;typename Word&gt; </div>
 
 </div>
 </div>
-<a id="a16828821733416651369b4c1a1628b61" name="a16828821733416651369b4c1a1628b61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a16828821733416651369b4c1a1628b61">&#9670;&#160;</a></span>validate_word()</h2>
+<a id="a941b2edf99311a7d8250aa8bf9fbac54" name="a941b2edf99311a7d8250aa8bf9fbac54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a941b2edf99311a7d8250aa8bf9fbac54">&#9670;&#160;</a></span>throw_if_letter_not_in_alphabet() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1287,7 +1263,7 @@ template&lt;typename Word&gt; </div>
 template&lt;typename Iterator1, typename Iterator2&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void validate_word </td>
+          <td class="memname">void throw_if_letter_not_in_alphabet </td>
           <td>(</td>
           <td class="paramtype">Iterator1</td>          <td class="paramname"><span class="paramname"><em>first</em></span>, </td>
         </tr>
@@ -1322,6 +1298,39 @@ template&lt;typename Iterator1, typename Iterator2&gt; </div>
 
 </div>
 </div>
+<a id="a3a2a11b2e41d52cdc86029b075a6d2f9" name="a3a2a11b2e41d52cdc86029b075a6d2f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a2a11b2e41d52cdc86029b075a6d2f9">&#9670;&#160;</a></span>throw_if_letter_not_in_alphabet() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_letter_not_in_alphabet </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ac99d2bdd0870fd2ca0e546d5117e83c0">letter_type</a></td>          <td class="paramname"><span class="paramname"><em>c</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Check if a letter belongs to the alphabet or not.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>the letter to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">c</code> does not belong to the alphabet.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant on average, worst case linear in the size of the alphabet. </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="aa2e0dc1c8b76f66456509b229cb263f1" name="aa2e0dc1c8b76f66456509b229cb263f1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa2e0dc1c8b76f66456509b229cb263f1">&#9670;&#160;</a></span>rules</h2>
@@ -1336,7 +1345,7 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The rules can be altered using the member functions of <code><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></code>, and the presentation can be checked for validity using <a class="el" href="#ab3a68a01a1c7c22bfbd9f3f6d20e7d5a">validate</a>. </p>
+<p>The rules can be altered using the member functions of <code><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></code>, and the presentation can be checked for validity using <a class="el" href="#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a>. </p>
 
 </div>
 </div>

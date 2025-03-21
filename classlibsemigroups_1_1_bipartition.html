@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -187,8 +191,8 @@ $(function(){initNavTree('classlibsemigroups_1_1_bipartition.html',''); initResi
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><p>Defined in <code><a class="el" href="bipart_8hpp_source.html">bipart.hpp</a></code>.</p>
-<p>A <em>bipartition</em> is a partition of the set \(\{0, ..., 2n - 1\}\) for some non-negative integer \(n\); see the <a href="https://semigroups.github.io/Semigroups/doc/chap3_mj.html">Semigroups package for GAP documentation</a> for more details. The <a class="el" href="classlibsemigroups_1_1_bipartition.html" title="Class for representing bipartitions.">Bipartition</a> class is more complex (i.e. has more member functions) than are used in <code>libsemigroups</code> because they are used in the GAP package <a href="https://semigroups.github.io/Semigroups/">Semigroups package for GAP</a>.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelibsemigroups_1_1bipartition.html#a04fb3bdd5b176e7f868b17f550ca1139" title="Validates a bipartition.">bipartition::validate(Bipartition const&amp;)</a>. </dd></dl>
+<p>A <em>bipartition</em> is a partition of the set \(\{0, ..., 2n - 1\}\) for some non-negative integer \(n\); see the <a href="https://semigroups.github.io/Semigroups/doc/chap3_mj.html">Semigroups package for GAP documentation</a> for more details. The <a class="el" href="classlibsemigroups_1_1_bipartition.html" title="Class for representing bipartitions.">Bipartition</a> class is more complex (i.e. has more member functions) than are used in <code>libsemigroups</code> because they are used in the <a href="https://semigroups.github.io/Semigroups/">Semigroups package for GAP</a> (see <a class="el" href="citelist.html#CITEREF_mitchell2025aa">[45]</a>).</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelibsemigroups_1_1bipartition.html#ac8168e95759333ba5471e2e3a175d2b4" title="Checks a bipartition.">bipartition::throw_if_invalid(Bipartition const&amp;)</a>. </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -463,11 +467,15 @@ Static Public Member Functions</h2></td></tr>
 <li>have the property that if \(i\), \(i &gt; 0\) occurs in <code class="param">blocks</code>, then \(i - 1\) occurs earlier in <code class="param">blocks</code>. The value of <code>blocks[i]</code> should represent the index of the block containing <code>i</code>.</li>
 </ul>
 <p>None of these conditions are verified.</p>
-<p>For example, if <code class="param">blocks</code> is <code>{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}</code>, then the above conditions are satisfied, but if <code class="param">blocks</code> is <code>{1, 0, 1, ! 10}</code> then they are not. </p><pre class="fragment">    \param blocks a lookup for the blocks of the bipartition being
-    constructed.
+<p>For example, if <code class="param">blocks</code> is <code>{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}</code>, then the above conditions are satisfied, but if <code class="param">blocks</code> is <code>{1, 0, 1, 10}</code> then they are not.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">blocks</td><td>a lookup for the blocks of the bipartition being constructed.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelibsemigroups_1_1bipartition.html#ac8168e95759333ba5471e2e3a175d2b4" title="Checks a bipartition.">bipartition::throw_if_invalid(Bipartition const&amp;)</a>. </dd></dl>
 
-    \sa libsemigroups::validate(Bipartition const&amp;). 
-</pre> 
 </div>
 </div>
 <a id="ad8bb8125331b72bda383105eb408dbfe" name="ad8bb8125331b72bda383105eb408dbfe"></a>
@@ -498,7 +506,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a337e4fe313f51157cdaef3299eee676f" title="Construct a bipartition from a const reference to blocks lookup.">Bipartition(std::vector&lt;uint32_t&gt; const&amp;)</a> and libsemigroups::validate(Bipartition const&amp;). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a337e4fe313f51157cdaef3299eee676f" title="Construct a bipartition from a const reference to blocks lookup.">Bipartition(std::vector&lt;uint32_t&gt; const&amp;)</a> and <a class="el" href="namespacelibsemigroups_1_1bipartition.html#ac8168e95759333ba5471e2e3a175d2b4" title="Checks a bipartition.">bipartition::throw_if_invalid(Bipartition const&amp;)</a>. </dd></dl>
 
 </div>
 </div>
@@ -522,7 +530,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a337e4fe313f51157cdaef3299eee676f" title="Construct a bipartition from a const reference to blocks lookup.">Bipartition(std::vector&lt;uint32_t&gt; const&amp;)</a> and libsemigroups::validate(Bipartition const&amp;). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a337e4fe313f51157cdaef3299eee676f" title="Construct a bipartition from a const reference to blocks lookup.">Bipartition(std::vector&lt;uint32_t&gt; const&amp;)</a> and <a class="el" href="namespacelibsemigroups_1_1bipartition.html#ac8168e95759333ba5471e2e3a175d2b4" title="Checks a bipartition.">bipartition::throw_if_invalid(Bipartition const&amp;)</a>. </dd></dl>
 
 </div>
 </div>
@@ -552,7 +560,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>None of these conditions is checked by the constructor.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>libsemigroups::validate(Bipartition const&amp;). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelibsemigroups_1_1bipartition.html#ac8168e95759333ba5471e2e3a175d2b4" title="Checks a bipartition.">bipartition::throw_if_invalid(Bipartition const&amp;)</a>. </dd></dl>
 
 </div>
 </div>
@@ -590,7 +598,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>None of these conditions is checked by the constructor.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>libsemigroups::validate(Bipartition const&amp;).    </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelibsemigroups_1_1bipartition.html#ac8168e95759333ba5471e2e3a175d2b4" title="Checks a bipartition.">bipartition::throw_if_invalid(Bipartition const&amp;)</a>.    </dd></dl>
 
 </div>
 </div>
@@ -656,7 +664,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns a reference to the index of the block containing a value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i</td><td>an integer</td></tr>
+    <tr><td class="paramname">i</td><td>an integer.</td></tr>
   </table>
   </dd>
 </dl>
@@ -697,7 +705,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns a const reference to the index of the block containing a value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i</td><td>an integer</td></tr>
+    <tr><td class="paramname">i</td><td>an integer.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1065,7 +1073,7 @@ Static Public Member Functions</h2></td></tr>
 <p>A block of a biparition is <em>transverse</em> if it contains integers less than and greater than \(n\), which is the degree of the bipartition.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">index</td><td>the index of a block</td></tr>
+    <tr><td class="paramname">index</td><td>the index of a block.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1420,7 +1428,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns the index of the block containing a value. No bound checks are performed on the parameter <code class="param">i</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i</td><td>an integer</td></tr>
+    <tr><td class="paramname">i</td><td>an integer.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1456,7 +1464,7 @@ Static Public Member Functions</h2></td></tr>
 <p>No bound checks are performed on the parameter <code class="param">i</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i</td><td>an integer</td></tr>
+    <tr><td class="paramname">i</td><td>an integer.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1492,9 +1500,9 @@ Static Public Member Functions</h2></td></tr>
 <p>The parameter <code class="param">thread_id</code> can be used some temporary storage is required to find the product of <code class="param">x</code> and <code class="param">y</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>the first bipartition to multiply </td></tr>
-    <tr><td class="paramname">y</td><td>the second bipartition to multiply </td></tr>
-    <tr><td class="paramname">thread_id</td><td>the index of the calling thread (defaults to <code>0</code>)</td></tr>
+    <tr><td class="paramname">x</td><td>the first bipartition to multiply. </td></tr>
+    <tr><td class="paramname">y</td><td>the second bipartition to multiply. </td></tr>
+    <tr><td class="paramname">thread_id</td><td>the index of the calling thread (defaults to <code>0</code>).</td></tr>
   </table>
   </dd>
 </dl>

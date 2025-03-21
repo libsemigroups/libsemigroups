@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -204,6 +208,10 @@ Functions</h2></td></tr>
 <tr class="memitem:gad6324051450cbfb3d711117608524fe3"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gad6324051450cbfb3d711117608524fe3">to</a> (Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; detail::KE&lt; Word &gt; &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; detail::KE&lt; Word &gt; &gt; &gt;</td></tr>
 <tr class="memdesc:gad6324051450cbfb3d711117608524fe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a Kambites object to a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object.  <br /></td></tr>
 <tr class="separator:gad6324051450cbfb3d711117608524fe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5e9a5bad9c2ab174cc8a05ceb11407c4" id="r_ga5e9a5bad9c2ab174cc8a05ceb11407c4"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Thing, typename Element, typename Traits&gt; </td></tr>
+<tr class="memitem:ga5e9a5bad9c2ab174cc8a05ceb11407c4"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga5e9a5bad9c2ab174cc8a05ceb11407c4">to</a> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt; const &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; int &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; int &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; Element &gt; &gt;</td></tr>
+<tr class="memdesc:ga5e9a5bad9c2ab174cc8a05ceb11407c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> object to a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object.  <br /></td></tr>
+<tr class="separator:ga5e9a5bad9c2ab174cc8a05ceb11407c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8f5b48660708a57be5a1f27784d71d0d" id="r_ga8f5b48660708a57be5a1f27784d71d0d"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Node&gt; </td></tr>
 <tr class="memitem:ga8f5b48660708a57be5a1f27784d71d0d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga8f5b48660708a57be5a1f27784d71d0d">to</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; typename Result::element_type &gt;, Result &gt;, Result &gt;</td></tr>
 <tr class="memdesc:ga8f5b48660708a57be5a1f27784d71d0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object to a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object.  <br /></td></tr>
@@ -215,7 +223,7 @@ Functions</h2></td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gaae5bba6fe18ca0a7cfa515f01e2e1d3a" name="gaae5bba6fe18ca0a7cfa515f01e2e1d3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaae5bba6fe18ca0a7cfa515f01e2e1d3a">&#9670;&#160;</a></span>to() <span class="overload">[1/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gaae5bba6fe18ca0a7cfa515f01e2e1d3a">&#9670;&#160;</a></span>to() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -232,12 +240,12 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="#gad6324051450cbfb3d711117608524fe3">to&lt;FroidurePin&gt;</a>(cong);</div>
-<div class="ttc" id="agroup__to__froidure__pin__group_html_gad6324051450cbfb3d711117608524fe3"><div class="ttname"><a href="#gad6324051450cbfb3d711117608524fe3">libsemigroups::to</a></div><div class="ttdeci">auto to(Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;</div><div class="ttdoc">Convert a Kambites object to a FroidurePin object.</div></div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&gt;</a>(cong);</div>
+<div class="ttc" id="agroup__to__froidure__pin__group_html_gae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="#gae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
 </div><!-- fragment --><p>where <code class="param">cong</code> is a Congruence object. The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object is isomorphic to the quotient of the underlying semigroup or monoid of <code class="param">cong</code> by the congruence represented by <code class="param">cong</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Thing</td><td>used for SFINAE should be <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> </td></tr>
+    <tr><td class="paramname">Thing</td><td>used for SFINAE should be <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a>. </td></tr>
     <tr><td class="paramname">Word</td><td>the type of the words in relations in <code class="param">cong</code>. </td></tr>
   </table>
   </dd>
@@ -259,7 +267,7 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
 </div>
 </div>
 <a id="gae2b8ad3fa013a7e70bceed05e2e95486" name="gae2b8ad3fa013a7e70bceed05e2e95486"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae2b8ad3fa013a7e70bceed05e2e95486">&#9670;&#160;</a></span>to() <span class="overload">[2/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gae2b8ad3fa013a7e70bceed05e2e95486">&#9670;&#160;</a></span>to() <span class="overload">[2/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -277,7 +285,7 @@ template&lt;typename Result, typename Rewriter, typename ReductionOrder&gt; </di
 <p>Convert a <a class="el" href="group__knuth__bendix__class__group.html">KnuthBendix</a> object to a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object.</p>
 <p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="#gad6324051450cbfb3d711117608524fe3">to&lt;FroidurePin&gt;</a>(kb);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&gt;</a>(kb);</div>
 </div><!-- fragment --><p>where <code class="param">kb</code> is a <a class="el" href="group__knuth__bendix__class__group.html">KnuthBendix</a> instance. The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object is isomorphic to the quotient semigroup or monoid represented by <code class="param">kb</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -304,7 +312,7 @@ template&lt;typename Result, typename Rewriter, typename ReductionOrder&gt; </di
 </div>
 </div>
 <a id="ga93e9bfe91367fd5b76791df39848cd43" name="ga93e9bfe91367fd5b76791df39848cd43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga93e9bfe91367fd5b76791df39848cd43">&#9670;&#160;</a></span>to() <span class="overload">[3/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga93e9bfe91367fd5b76791df39848cd43">&#9670;&#160;</a></span>to() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -321,7 +329,7 @@ template&lt;template&lt; typename... &gt; typename Thing&gt; </div>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="#gad6324051450cbfb3d711117608524fe3">to&lt;FroidurePin&gt;</a>(kb);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&gt;</a>(kb);</div>
 </div><!-- fragment --><p>where <code class="param">kb</code> is a <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> instance. The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object is isomorphic to the quotient semigroup or monoid represented by <code class="param">kb</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -347,7 +355,7 @@ template&lt;template&lt; typename... &gt; typename Thing&gt; </div>
 </div>
 </div>
 <a id="gad6324051450cbfb3d711117608524fe3" name="gad6324051450cbfb3d711117608524fe3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad6324051450cbfb3d711117608524fe3">&#9670;&#160;</a></span>to() <span class="overload">[4/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gad6324051450cbfb3d711117608524fe3">&#9670;&#160;</a></span>to() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,11 +372,11 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="#gad6324051450cbfb3d711117608524fe3">to&lt;FroidurePin&gt;</a>(k);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&gt;</a>(k);</div>
 </div><!-- fragment --><p>where <code class="param">k</code> is a Kambites instance. The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object is isomorphic to the quotient semigroup or monoid represented by <code class="param">k</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Thing</td><td>used for SFINAE should be <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> </td></tr>
+    <tr><td class="paramname">Thing</td><td>used for SFINAE should be <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a>. </td></tr>
     <tr><td class="paramname">Word</td><td>the type of the words in relations in <code class="param">k</code>.</td></tr>
   </table>
   </dd>
@@ -390,8 +398,46 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
 
 </div>
 </div>
+<a id="ga5e9a5bad9c2ab174cc8a05ceb11407c4" name="ga5e9a5bad9c2ab174cc8a05ceb11407c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5e9a5bad9c2ab174cc8a05ceb11407c4">&#9670;&#160;</a></span>to() <span class="overload">[5/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename Thing, typename Element, typename Traits&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto to </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>k</em></span></td><td>)</td>
+          <td> -&gt;  std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; int &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; int &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; Element &gt; &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&gt;</a>(k);</div>
+</div><!-- fragment --><p>where <code class="param">k</code> is a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance. The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object is isomorphic to the semigroup or monoid represented by <code class="param">k</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>used for SFINAE should be <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a>. </td></tr>
+    <tr><td class="paramname">Element</td><td>the element type of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object. </td></tr>
+    <tr><td class="paramname">Traits</td><td>the traits type of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">k</td><td>the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance to convert.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> instance. </dd></dl>
+
+</div>
+</div>
 <a id="ga8f5b48660708a57be5a1f27784d71d0d" name="ga8f5b48660708a57be5a1f27784d71d0d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga8f5b48660708a57be5a1f27784d71d0d">&#9670;&#160;</a></span>to() <span class="overload">[5/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8f5b48660708a57be5a1f27784d71d0d">&#9670;&#160;</a></span>to() <span class="overload">[6/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -415,7 +461,7 @@ template&lt;typename Result, typename Node&gt; </div>
 </div>
 </div>
 <a id="gab1bb5284d0346b70ff0ef24f88cdfae1" name="gab1bb5284d0346b70ff0ef24f88cdfae1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab1bb5284d0346b70ff0ef24f88cdfae1">&#9670;&#160;</a></span>to() <span class="overload">[6/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gab1bb5284d0346b70ff0ef24f88cdfae1">&#9670;&#160;</a></span>to() <span class="overload">[7/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -442,7 +488,7 @@ template&lt;typename Result, typename Node&gt; </div>
 <p><a class="anchor" id="to_froidure_pin"></a> </p>
 <p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
 <p>This function converts a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object to a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object. Unlike the other functions on this page, this function should be invoked as follows (for example):</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="#gad6324051450cbfb3d711117608524fe3">to&lt;FroidurePin&lt;Transf&lt;&gt;</a>&gt;(wg, 0, 10);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&lt;Transf&lt;&gt;</a>&gt;(wg, 0, 10);</div>
 </div><!-- fragment --><p>In other words, the type of the elements of the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object should be explicitly specified. This type must implement <code>operator[]</code> and each label <code>n</code> in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> will correspond to a generator <code>f</code> in the output <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> such that <code>f[s] = t</code> whenever there is an edge from <code>s</code> to <code>t</code> in <code class="param">wg</code> labelled <code>n</code>.</p>
 <p>More precisely, if \(a\) and \(b\) are the parameters <code class="param">first</code> and <code class="param">last</code>, respectively, \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code>, \(0 \leq a,  b&lt; m\), and \(n\) is an edge label, then we define \(f: \{a, \ldots, b - 1\} \to \{0, \ldots, m - 1\}\) so that \((x)f\) equals the target of the edge starting at node \(x\) with label \(n\). In this way, every edge label in a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> corresponds to a transformation of the nodes of the digraph. If \(\{a, \ldots, b - 1\}f \subseteq \{a, \ldots, b - 1\}\), then \(f\) is a transformation in the sense of <a class="el" href="classlibsemigroups_1_1_transf.html" title="Transformations with static or dynamic degree.">Transf</a>. Assuming that for every edge label of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> the corresponding \(f\) satisfies \(\{a, \ldots, b - 1\}f \subseteq \{a, \ldots, b - 1\}\), then this function returns the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object corresponding to the semigroup or monoid generated by the set of all such transformations.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -465,7 +511,7 @@ template&lt;typename Result, typename Node&gt; </div>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">first</code> &gt; <code class="param">last</code>.</td></tr>
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">first</code> or <code class="param">last</code> exceeds <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3">number_of_nodes</a>.</td></tr>
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="group__transf__group.html#ga165dadbfb7f1c29dea22ae37617976cd">validate(Transf&lt;N, Scalar&gt; const&amp;)</a> throws for any of the constructed generators. This can happen if, for example, the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> is not complete (i.e. there exists an edge label and node for which there is no edge with the given label and given source) or if there is an edge label such that \(\{a, \ldots, b - 1\}f \not\subseteq \{a, \ldots, b - 1\}\) for the corresponding \(f\). </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="group__transf__group.html#gaf5dfd1f9bbcd432e693cc99a75e34e60">throw_if_image_value_out_of_range(Transf&lt;N, Scalar&gt; const&amp;)</a> throws for any of the constructed generators. This can happen if, for example, the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> is not complete (i.e. there exists an edge label and node for which there is no edge with the given label and given source) or if there is an edge label such that \(\{a, \ldots, b - 1\}f \not\subseteq \{a, \ldots, b - 1\}\) for the corresponding \(f\). </td></tr>
   </table>
   </dd>
 </dl>

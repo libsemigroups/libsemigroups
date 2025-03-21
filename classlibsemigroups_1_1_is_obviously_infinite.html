@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -200,7 +204,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_is_obviously_infinite.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a0b87c81bc8d329502f37a7298a9f00cd" id="r_a0b87c81bc8d329502f37a7298a9f00cd"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b87c81bc8d329502f37a7298a9f00cd">const_iterator_pair_string</a></td></tr>
-<tr class="memdesc:a0b87c81bc8d329502f37a7298a9f00cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <code><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt;<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>, ! <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&gt;&gt;::const_iterator</code>.  <br /></td></tr>
+<tr class="memdesc:a0b87c81bc8d329502f37a7298a9f00cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <code><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt;<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&gt;&gt;::const_iterator</code>.  <br /></td></tr>
 <tr class="separator:a0b87c81bc8d329502f37a7298a9f00cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac527d9d4a5abcc7940a1bb5b33acfd06" id="r_ac527d9d4a5abcc7940a1bb5b33acfd06"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac527d9d4a5abcc7940a1bb5b33acfd06">const_iterator_string</a></td></tr>
 <tr class="memdesc:ac527d9d4a5abcc7940a1bb5b33acfd06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <code><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt;<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&gt;::const_iterator</code>.  <br /></td></tr>
@@ -269,8 +273,7 @@ Public Member Functions</h2></td></tr>
 <div class="line">        <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair&lt;std::string, std::string&gt;</a>&gt;::const_iterator</div>
 <div class="ttc" id="apair_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a></div></div>
 <div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div></div>
-</div><!-- fragment --><pre class="fragment">    Alias for `std::vector&lt; std::pair&lt;std::string,
-</pre><p> ! <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&gt;&gt;::const_iterator`. </p>
+</div><!-- fragment --><p>Alias for <code><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>&lt;<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&gt;&gt;::const_iterator</code>. </p>
 
 </div>
 </div>
@@ -476,7 +479,7 @@ Public Member Functions</h2></td></tr>
 <p>This function adds the rules described by the iterators <code class="param">first</code> and <code class="param">last</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">lphbt</td><td>unused (for consistency of interface only) </td></tr>
+    <tr><td class="paramname">lphbt</td><td>unused (for consistency of interface only). </td></tr>
     <tr><td class="paramname">first</td><td>iterator pointing at the left-hand-side of the first rule to add. </td></tr>
     <tr><td class="paramname">last</td><td>iterator pointing one beyond the right-hand-side of the last rule to add.</td></tr>
   </table>

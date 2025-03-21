@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -278,7 +282,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a0bc1fabcc59aa96007def02d30c89460"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the signature of a node (out-of-place).  <br /></td></tr>
 <tr class="separator:a0bc1fabcc59aa96007def02d30c89460"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fe892368da6f5d4fe2721449fddb2b5" id="r_a1fe892368da6f5d4fe2721449fddb2b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fe892368da6f5d4fe2721449fddb2b5">signature</a> (<a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> &amp;w, <a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> i) const</td></tr>
-<tr class="memdesc:a1fe892368da6f5d4fe2721449fddb2b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the signature of a node (in-place)  <br /></td></tr>
+<tr class="memdesc:a1fe892368da6f5d4fe2721449fddb2b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the signature of a node (in-place).  <br /></td></tr>
 <tr class="separator:a1fe892368da6f5d4fe2721449fddb2b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef675bf766d1d1b5f0852598a74dd8b0" id="r_aef675bf766d1d1b5f0852598a74dd8b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef675bf766d1d1b5f0852598a74dd8b0">signature_no_checks</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> i) const</td></tr>
 <tr class="memdesc:aef675bf766d1d1b5f0852598a74dd8b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the signature of a node (out-of-place).  <br /></td></tr>
@@ -292,18 +296,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a09069f979752beaf0641b52ea50ed05d" id="r_a09069f979752beaf0641b52ea50ed05d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09069f979752beaf0641b52ea50ed05d">suffix_link_no_checks</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> current) const</td></tr>
 <tr class="memdesc:a09069f979752beaf0641b52ea50ed05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the index of the suffix link of a node.  <br /></td></tr>
 <tr class="separator:a09069f979752beaf0641b52ea50ed05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a854078bb6f310a5fe9ffb4c9624a35df" id="r_a854078bb6f310a5fe9ffb4c9624a35df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> i) const</td></tr>
+<tr class="memdesc:a854078bb6f310a5fe9ffb4c9624a35df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an index corresponds to a node currently in the trie.  <br /></td></tr>
+<tr class="separator:a854078bb6f310a5fe9ffb4c9624a35df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66f5ead79909d98f19eeaa5655ebe057" id="r_a66f5ead79909d98f19eeaa5655ebe057"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66f5ead79909d98f19eeaa5655ebe057">throw_if_node_index_out_of_range</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> i) const</td></tr>
+<tr class="memdesc:a66f5ead79909d98f19eeaa5655ebe057"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an index corresponds to a node.  <br /></td></tr>
+<tr class="separator:a66f5ead79909d98f19eeaa5655ebe057"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9959b4e6e761dd109b00edf4a642648a" id="r_a9959b4e6e761dd109b00edf4a642648a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9959b4e6e761dd109b00edf4a642648a">traverse</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> current, <a class="el" href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1">letter_type</a> a) const</td></tr>
 <tr class="memdesc:a9959b4e6e761dd109b00edf4a642648a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverse the trie using suffix links where necessary.  <br /></td></tr>
 <tr class="separator:a9959b4e6e761dd109b00edf4a642648a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9101aa7277b035c6538b3388db9a4eeb" id="r_a9101aa7277b035c6538b3388db9a4eeb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9101aa7277b035c6538b3388db9a4eeb">traverse_no_checks</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> current, <a class="el" href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1">letter_type</a> a) const</td></tr>
 <tr class="memdesc:a9101aa7277b035c6538b3388db9a4eeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverse the trie using suffix links where necessary.  <br /></td></tr>
 <tr class="separator:a9101aa7277b035c6538b3388db9a4eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0c024b0b267a446740fee6ec494dcef" id="r_ab0c024b0b267a446740fee6ec494dcef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> i) const</td></tr>
-<tr class="memdesc:ab0c024b0b267a446740fee6ec494dcef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an index corresponds to a node currently in the trie.  <br /></td></tr>
-<tr class="separator:ab0c024b0b267a446740fee6ec494dcef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0587a21a4c12958c310fea28c748f990" id="r_a0587a21a4c12958c310fea28c748f990"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0587a21a4c12958c310fea28c748f990">validate_node_index</a> (<a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a> i) const</td></tr>
-<tr class="memdesc:a0587a21a4c12958c310fea28c748f990"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an index corresponds to a node.  <br /></td></tr>
-<tr class="separator:a0587a21a4c12958c310fea28c748f990"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a595c50b81e98beee8a888dce6371b92a" name="a595c50b81e98beee8a888dce6371b92a"></a>
@@ -594,11 +598,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">parent</code>, this function performs the same as <code>child_no_checks(parent, letter)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_active_node_index(parent)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_not_active(parent)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#af6d2a4b0d35ec90e66beba14670b4eed">child_no_checks</a>, <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#af6d2a4b0d35ec90e66beba14670b4eed">child_no_checks</a>, <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -697,11 +701,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">i</code>, this function performs the same as <code>height_no_checks(i)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_active_node_index(i)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_not_active(i)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7a5f8610693febd6f8ac60126f9bd452">height_no_checks</a>, <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a7a5f8610693febd6f8ac60126f9bd452">height_no_checks</a>, <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -787,11 +791,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">i</code>, this function performs the same as <code>node_no_checks(i)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_node_index(i)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_out_of_range(i)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a2bcd61476e0efd5ab03771f4c8e4b0bb">node_no_checks</a>, <a class="el" href="#a0587a21a4c12958c310fea28c748f990">validate_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a2bcd61476e0efd5ab03771f4c8e4b0bb">node_no_checks</a>, <a class="el" href="#a66f5ead79909d98f19eeaa5655ebe057">throw_if_node_index_out_of_range</a>. </dd></dl>
 
 </div>
 </div>
@@ -827,7 +831,7 @@ template&lt;typename Iterator&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>Node</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The node returned by this function may not represent a node presently stored in the trie. See <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The node returned by this function may not represent a node presently stored in the trie. See <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does no checks on its arguments whatsoever. In particular, if the index <code class="param">i</code> is greater than the number of nodes that have ever been created, then bad things will happen. </dd></dl>
 
 </div>
@@ -970,7 +974,7 @@ template&lt;typename Iterator&gt; </div>
 <p>If \(W\) does not correspond to a terminal node, then calling this function does nothing.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Iterator</td><td>the type of the 1st and 2nd parameters </td></tr>
+    <tr><td class="paramname">Iterator</td><td>the type of the 1st and 2nd parameters. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1013,11 +1017,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">i</code>, this function performs the same as <code>signature_no_checks(i)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_active_node_index(i)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_not_active(i)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a222608df96250a6c3c91c3851f0b79f3">signature_no_checks</a>, <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a222608df96250a6c3c91c3851f0b79f3">signature_no_checks</a>, <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -1050,11 +1054,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">i</code>, this function performs the same as <code>signature_no_checks(w, i)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_active_node_index(i)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_not_active(i)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a222608df96250a6c3c91c3851f0b79f3">signature_no_checks</a>, <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a222608df96250a6c3c91c3851f0b79f3">signature_no_checks</a>, <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -1151,11 +1155,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">current</code>, this function performs the same as <code>suffix_link_no_checks(current)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_active_node_index(current)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_not_active(current)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a09069f979752beaf0641b52ea50ed05d">suffix_link_no_checks</a>, <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a09069f979752beaf0641b52ea50ed05d">suffix_link_no_checks</a>, <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -1195,6 +1199,69 @@ template&lt;typename Iterator&gt; </div>
 
 </div>
 </div>
+<a id="a854078bb6f310a5fe9ffb4c9624a35df" name="a854078bb6f310a5fe9ffb4c9624a35df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a854078bb6f310a5fe9ffb4c9624a35df">&#9670;&#160;</a></span>throw_if_node_index_not_active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_node_index_not_active </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a></td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function checks whether the given index <code class="param">i</code> corresponds to an active node.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>the index to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_out_of_range(i)</code> throws, or if <code class="param">i</code> is not an active node.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a66f5ead79909d98f19eeaa5655ebe057">throw_if_node_index_out_of_range</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a66f5ead79909d98f19eeaa5655ebe057" name="a66f5ead79909d98f19eeaa5655ebe057"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66f5ead79909d98f19eeaa5655ebe057">&#9670;&#160;</a></span>throw_if_node_index_out_of_range()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_node_index_out_of_range </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a></td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function checks if the given index <code class="param">i</code> corresponds to the index of a node; either active or inactive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>the index to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">i</code> does not correspond to the index of a node; that is, if <code class="param">i</code> is larger than the size of the container storing the indices of nodes.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
+
+</div>
+</div>
 <a id="a9959b4e6e761dd109b00edf4a642648a" name="a9959b4e6e761dd109b00edf4a642648a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9959b4e6e761dd109b00edf4a642648a">&#9670;&#160;</a></span>traverse()</h2>
 
@@ -1224,11 +1291,11 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">current</code>, this function performs the same as <code>traverse_no_checks(current, a)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_active_node_index(current)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>throw_if_node_index_not_active(current)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a9101aa7277b035c6538b3388db9a4eeb">traverse_no_checks</a>, <a class="el" href="#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a9101aa7277b035c6538b3388db9a4eeb">traverse_no_checks</a>, <a class="el" href="#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -1269,69 +1336,6 @@ template&lt;typename Iterator&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An value of type <code><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b" title="Alias for the index of a node in the trie.">index_type</a></code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
-
-</div>
-</div>
-<a id="ab0c024b0b267a446740fee6ec494dcef" name="ab0c024b0b267a446740fee6ec494dcef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0c024b0b267a446740fee6ec494dcef">&#9670;&#160;</a></span>validate_active_node_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void validate_active_node_index </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a></td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>This function validates whether the given index <code class="param">i</code> corresponds to an active node.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">i</td><td>the index to validate.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>validate_node_index(i)</code> throws, or if <code class="param">i</code> is not an active node.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a0587a21a4c12958c310fea28c748f990">validate_node_index</a>. </dd></dl>
-
-</div>
-</div>
-<a id="a0587a21a4c12958c310fea28c748f990" name="a0587a21a4c12958c310fea28c748f990"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0587a21a4c12958c310fea28c748f990">&#9670;&#160;</a></span>validate_node_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void validate_node_index </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="#a6d69e986ccdd55cd7237189487b2f25b">index_type</a></td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>This function checks if the given index <code class="param">i</code> corresponds to the index of a node; either active or inactive.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">i</td><td>the index to validate.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">i</code> does not correspond to the index of a node; that is, if <code class="param">i</code> is larger than the size of the container storing the indices of nodes.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
 
 </div>
 </div>

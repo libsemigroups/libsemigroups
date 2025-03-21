@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -303,26 +307,28 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p><a class="anchor" id="literal_operator_w"></a> </p>
-<p>This operator provides a convenient brief means of constructing a <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> from an sequence of literal integer digits or a string. For example, <code>0123_w</code> produces the same output as <code><a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991" title="Type for a word over the generators of a semigroup.">word_type</a>({0, 1, 2, ! 3})</code> and so too does <code>"abcd"_w</code>. </p><pre class="fragment">    There are some gotchas and this operator should be used with some care:
+<p>This operator provides a convenient brief means of constructing a <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> from an sequence of literal integer digits or a string. For example, <code>0123_w</code> produces the same output as <code><a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991" title="Type for a word over the generators of a semigroup.">word_type</a>({0, 1, 2, 3})</code> and so too does <code>"abcd"_w</code>.</p>
+<p>There are some gotchas and this operator should be used with some care:</p>
+<ul>
+<li>the parameter <code class="param">w</code> must consist of the integers \(\{0, \ldots, 9\}\) or the characters in <code>a-zA-Z</code> but not both.</li>
+<li>if <code class="param">w</code> starts with <code>0</code> and is follows by a value greater than <code>7</code>, then it is necessary to enclose <code class="param">w</code> in quotes. For example, <code>08_w</code> will not compile because it is interpreted as an invalid octal. However <code>"08"_w</code> behaves as expected.</li>
+<li>if <code class="param">w</code> consists of characters in <code>a-zA-Z</code>, then the output is the same as that of <code>ToWord::operator()(w)</code>, see <a class="el" href="classlibsemigroups_1_1_to_word.html#a38b35a7a7d6662d7d50a03adbbad096d">operator()()</a></li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">w</td><td>the letters of the word. </td></tr>
+    <tr><td class="paramname">n</td><td>the length of <code class="param">w</code> (defaults to the length of <code class="param">w</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the input contains a mixture of integers and non-integers. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-    * the parameter \p w must consist of the integers \f$\{0, \ldots,
-    9\}\f$ or the characters in `a-zA-Z` but not both.
-    * if \p w starts with \c 0 and is follows by a value greater than \c 7,
-    then it is necessary to enclose \p w in quotes. For example, \c 08_w
-    will not compile because it is interpreted as an invalid octal. However
-    `"08"_w` behaves as expected.
-    * if \p w consists of characters in `a-zA-Z`, then the output is
-    the same as that of `ToWord::operator()(w)`, see \ref
-    ToWord::operator()()
-
-    \param w the letters of the word.
-    \param n the length of \p w (defaults to the length of \p w).
-
-    \returns A value of type \ref word_type.
-
-    \throws LibsemigroupsException if the input contains a mixture of
-    integers and non-integers. 
-</pre> 
 </div>
 </div>
 </div><!-- contents -->

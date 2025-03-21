@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -230,10 +234,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:ab47828c9c3a9a232a6e2716903f2202b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>char const*</code>.  <br /></td></tr>
 <tr class="separator:ab47828c9c3a9a232a6e2716903f2202b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a443507ef9ef8ffb631493b3a034db200" id="r_a443507ef9ef8ffb631493b3a034db200"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a443507ef9ef8ffb631493b3a034db200">add_rule</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; &amp;p, char const *lhop, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;rhop)</td></tr>
-<tr class="memdesc:a443507ef9ef8ffb631493b3a034db200"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>char const*</code> and <code>string const ! &amp;</code>.  <br /></td></tr>
+<tr class="memdesc:a443507ef9ef8ffb631493b3a034db200"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>char const*</code> and <code>string const &amp;</code>.  <br /></td></tr>
 <tr class="separator:a443507ef9ef8ffb631493b3a034db200"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78a321dd3335d2239b8e9b49efd83f18" id="r_a78a321dd3335d2239b8e9b49efd83f18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78a321dd3335d2239b8e9b49efd83f18">add_rule</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; &amp;p, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;lhop, char const *rhop)</td></tr>
-<tr class="memdesc:a78a321dd3335d2239b8e9b49efd83f18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>string const &amp;</code> and <code>char ! const*</code>.  <br /></td></tr>
+<tr class="memdesc:a78a321dd3335d2239b8e9b49efd83f18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>string const &amp;</code> and <code>char const*</code>.  <br /></td></tr>
 <tr class="separator:a78a321dd3335d2239b8e9b49efd83f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec13b8a8bd3e87b579d949f56900f356" id="r_aec13b8a8bd3e87b579d949f56900f356"><td class="memTemplParams" colspan="2">template&lt;typename Word, typename Letter&gt; </td></tr>
 <tr class="memitem:aec13b8a8bd3e87b579d949f56900f356"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aec13b8a8bd3e87b579d949f56900f356">add_rule</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; &amp;p, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Letter &gt; lhop, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Letter &gt; rhop)</td></tr>
@@ -247,10 +251,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a11a95e25c9bd84f930b71a116861a8ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>char const*</code>.  <br /></td></tr>
 <tr class="separator:a11a95e25c9bd84f930b71a116861a8ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4e7525ceaf1c1f72f323716c69e405a" id="r_ac4e7525ceaf1c1f72f323716c69e405a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4e7525ceaf1c1f72f323716c69e405a">add_rule_no_checks</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; &amp;p, char const *lhop, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;rhop)</td></tr>
-<tr class="memdesc:ac4e7525ceaf1c1f72f323716c69e405a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>char const*</code> and <code>string ! const&amp;</code>.  <br /></td></tr>
+<tr class="memdesc:ac4e7525ceaf1c1f72f323716c69e405a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>char const*</code> and <code>string const&amp;</code>.  <br /></td></tr>
 <tr class="separator:ac4e7525ceaf1c1f72f323716c69e405a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a237fa07d38a2a86ee30ccb661fd29d8c" id="r_a237fa07d38a2a86ee30ccb661fd29d8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a237fa07d38a2a86ee30ccb661fd29d8c">add_rule_no_checks</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; &amp;p, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;lhop, char const *rhop)</td></tr>
-<tr class="memdesc:a237fa07d38a2a86ee30ccb661fd29d8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>string const&amp;</code> and <code>char ! const*</code>.  <br /></td></tr>
+<tr class="memdesc:a237fa07d38a2a86ee30ccb661fd29d8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a rule to the presentation by <code>string const&amp;</code> and <code>char const*</code>.  <br /></td></tr>
 <tr class="separator:a237fa07d38a2a86ee30ccb661fd29d8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54b810cd98d27ace7d93fb9571431b5d" id="r_a54b810cd98d27ace7d93fb9571431b5d"><td class="memTemplParams" colspan="2">template&lt;typename Word, typename Letter&gt; </td></tr>
 <tr class="memitem:a54b810cd98d27ace7d93fb9571431b5d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a54b810cd98d27ace7d93fb9571431b5d">add_rule_no_checks</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; &amp;p, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Letter &gt; lhop, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Letter &gt; rhop)</td></tr>
@@ -331,7 +335,7 @@ Functions</h2></td></tr>
 <tr class="separator:ad503a8cc1838501f3b2b26bbb3fe78ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc4f0c313d39e8062e1efd4c23be2c48" id="r_adc4f0c313d39e8062e1efd4c23be2c48"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
 <tr class="memitem:adc4f0c313d39e8062e1efd4c23be2c48"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#adc4f0c313d39e8062e1efd4c23be2c48">length</a> (Iterator first, Iterator last)</td></tr>
-<tr class="memdesc:adc4f0c313d39e8062e1efd4c23be2c48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the sum of the lengths of all values in the range <code>[first, ! last)</code>.  <br /></td></tr>
+<tr class="memdesc:adc4f0c313d39e8062e1efd4c23be2c48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the sum of the lengths of all values in the range <code>[first, last)</code>.  <br /></td></tr>
 <tr class="separator:adc4f0c313d39e8062e1efd4c23be2c48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab497e1912b31da8d098193daff8d05c7" id="r_ab497e1912b31da8d098193daff8d05c7"><td class="memTemplParams" colspan="2">template&lt;typename Word&gt; </td></tr>
 <tr class="memitem:ab497e1912b31da8d098193daff8d05c7"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ab497e1912b31da8d098193daff8d05c7">length</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p)</td></tr>
@@ -456,24 +460,32 @@ Functions</h2></td></tr>
 <tr class="memitem:aafe7deda5b5f239dfca3054c32de9da3"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aafe7deda5b5f239dfca3054c32de9da3">strongly_compress</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; &amp;p)</td></tr>
 <tr class="memdesc:aafe7deda5b5f239dfca3054c32de9da3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Strongly compress a \(1\)-relation presentation.  <br /></td></tr>
 <tr class="separator:aafe7deda5b5f239dfca3054c32de9da3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec9bdbe4253a0acb561e92260d733b43" id="r_aec9bdbe4253a0acb561e92260d733b43"><td class="memTemplParams" colspan="2"><a id="aec9bdbe4253a0acb561e92260d733b43" name="aec9bdbe4253a0acb561e92260d733b43"></a>
-template&lt;typename Word&gt; </td></tr>
-<tr class="memitem:aec9bdbe4253a0acb561e92260d733b43"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>throw_if_not_normalized</b> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, std::string_view arg=&quot;1st&quot;)</td></tr>
+<tr class="memitem:a2171c7674240cec128e3e4fef3ff6821" id="r_a2171c7674240cec128e3e4fef3ff6821"><td class="memTemplParams" colspan="2">template&lt;typename Word&gt; </td></tr>
+<tr class="memitem:a2171c7674240cec128e3e4fef3ff6821"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a2171c7674240cec128e3e4fef3ff6821">throw_if_bad_inverses</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, Word const &amp;vals)</td></tr>
+<tr class="memdesc:a2171c7674240cec128e3e4fef3ff6821"><td class="mdescLeft">&#160;</td><td class="mdescRight">throw_if_bad_alphabet_or_rules if <code class="param">vals</code> act as semigroup inverses in <code class="param">p</code>.  <br /></td></tr>
+<tr class="separator:a2171c7674240cec128e3e4fef3ff6821"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8be80ecb20d06625ecc638dc103bd5dd" id="r_a8be80ecb20d06625ecc638dc103bd5dd"><td class="memTemplParams" colspan="2">template&lt;typename Word, typename Iterator&gt; </td></tr>
+<tr class="memitem:a8be80ecb20d06625ecc638dc103bd5dd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a8be80ecb20d06625ecc638dc103bd5dd">throw_if_bad_rules</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, Iterator first, Iterator last)</td></tr>
+<tr class="memdesc:a8be80ecb20d06625ecc638dc103bd5dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check rules against the alphabet of <code class="param">p</code>.  <br /></td></tr>
+<tr class="separator:a8be80ecb20d06625ecc638dc103bd5dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec9bdbe4253a0acb561e92260d733b43" id="r_aec9bdbe4253a0acb561e92260d733b43"><td class="memTemplParams" colspan="2">template&lt;typename Word&gt; </td></tr>
+<tr class="memitem:aec9bdbe4253a0acb561e92260d733b43"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aec9bdbe4253a0acb561e92260d733b43">throw_if_not_normalized</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, std::string_view arg=&quot;1st&quot;)</td></tr>
+<tr class="memdesc:aec9bdbe4253a0acb561e92260d733b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throws if the presentation isn't normalized.  <br /></td></tr>
 <tr class="separator:aec9bdbe4253a0acb561e92260d733b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a371053f8f212083c6af099cabdf33b68" id="r_a371053f8f212083c6af099cabdf33b68"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
+<tr class="memitem:a371053f8f212083c6af099cabdf33b68"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a371053f8f212083c6af099cabdf33b68">throw_if_odd_number_of_rules</a> (Iterator first, Iterator last)</td></tr>
+<tr class="memdesc:a371053f8f212083c6af099cabdf33b68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw if the distance between iterators is not even.  <br /></td></tr>
+<tr class="separator:a371053f8f212083c6af099cabdf33b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a191d5ec2c8a3d1e819818e273149151f" id="r_a191d5ec2c8a3d1e819818e273149151f"><td class="memTemplParams" colspan="2">template&lt;typename Word&gt; </td></tr>
+<tr class="memitem:a191d5ec2c8a3d1e819818e273149151f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a191d5ec2c8a3d1e819818e273149151f">throw_if_odd_number_of_rules</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p)</td></tr>
+<tr class="memdesc:a191d5ec2c8a3d1e819818e273149151f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw if the number of words in a presentation is odd.  <br /></td></tr>
+<tr class="separator:a191d5ec2c8a3d1e819818e273149151f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1569bd727eb77cb388ea564b0da00a84" id="r_a1569bd727eb77cb388ea564b0da00a84"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1569bd727eb77cb388ea564b0da00a84">to_gap_string</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; const &amp;p, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;var_name)</td></tr>
 <tr class="memdesc:a1569bd727eb77cb388ea564b0da00a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the code that would create <code class="param">p</code> in GAP.  <br /></td></tr>
 <tr class="separator:a1569bd727eb77cb388ea564b0da00a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa78f3583eccd084393f466b5615a7e" id="r_afaa78f3583eccd084393f466b5615a7e"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afaa78f3583eccd084393f466b5615a7e">to_gap_string</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> &gt; const &amp;p, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;var_name)</td></tr>
 <tr class="memdesc:afaa78f3583eccd084393f466b5615a7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the code that would create <code class="param">p</code> in GAP.  <br /></td></tr>
 <tr class="separator:afaa78f3583eccd084393f466b5615a7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5b4b6eb283afeb6c9d546c7c5988bd4" id="r_ae5b4b6eb283afeb6c9d546c7c5988bd4"><td class="memTemplParams" colspan="2">template&lt;typename Word, typename Iterator&gt; </td></tr>
-<tr class="memitem:ae5b4b6eb283afeb6c9d546c7c5988bd4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ae5b4b6eb283afeb6c9d546c7c5988bd4">validate_rules</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, Iterator first, Iterator last)</td></tr>
-<tr class="memdesc:ae5b4b6eb283afeb6c9d546c7c5988bd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate rules against the alphabet of <code class="param">p</code>.  <br /></td></tr>
-<tr class="separator:ae5b4b6eb283afeb6c9d546c7c5988bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a756f5721e810bac90aca39df8f87c080" id="r_a756f5721e810bac90aca39df8f87c080"><td class="memTemplParams" colspan="2">template&lt;typename Word&gt; </td></tr>
-<tr class="memitem:a756f5721e810bac90aca39df8f87c080"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a756f5721e810bac90aca39df8f87c080">validate_semigroup_inverses</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, Word const &amp;vals)</td></tr>
-<tr class="memdesc:a756f5721e810bac90aca39df8f87c080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate if <code class="param">vals</code> act as semigroup inverses in <code class="param">p</code>.  <br /></td></tr>
-<tr class="separator:a756f5721e810bac90aca39df8f87c080"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aba4fd25074207d63e51e2c74b18ec05d" name="aba4fd25074207d63e51e2c74b18ec05d"></a>
@@ -903,16 +915,22 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">    Adds the rule with left-hand side \p lhop and right-hand side \p rhop
-    to the rules.
+<p>Adds the rule with left-hand side <code class="param">lhop</code> and right-hand side <code class="param">rhop</code> to the rules.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
+    <tr><td class="paramname">lhop</td><td>the left-hand side of the rule. </td></tr>
+    <tr><td class="paramname">rhop</td><td>the right-hand side of the rule.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">lhop</code> or <code class="param">rhop</code> contains any letters not belonging to <code>p.alphabet()</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-    \param p the presentation.
-    \param lhop the left-hand side of the rule.
-    \param rhop the right-hand side of the rule.
-
-    \throws LibsemigroupsException if \p lhop or \p rhop contains any
-    letters not belonging to `p.alphabet()`. 
-</pre> 
 </div>
 </div>
 <a id="a78a321dd3335d2239b8e9b49efd83f18" name="a78a321dd3335d2239b8e9b49efd83f18"></a>
@@ -938,16 +956,22 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">    Adds the rule with left-hand side \p lhop and right-hand side \p rhop
-    to the rules.
+<p>Adds the rule with left-hand side <code class="param">lhop</code> and right-hand side <code class="param">rhop</code> to the rules.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
+    <tr><td class="paramname">lhop</td><td>the left-hand side of the rule. </td></tr>
+    <tr><td class="paramname">rhop</td><td>the right-hand side of the rule.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">lhop</code> or <code class="param">rhop</code> contains any letters not belonging to <code>p.alphabet()</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-    \param p the presentation.
-    \param lhop the left-hand side of the rule.
-    \param rhop the right-hand side of the rule.
-
-    \throws LibsemigroupsException if \p lhop or \p rhop contains any
-    letters not belonging to `p.alphabet()`. 
-</pre> 
 </div>
 </div>
 <a id="aec13b8a8bd3e87b579d949f56900f356" name="aec13b8a8bd3e87b579d949f56900f356"></a>
@@ -1109,20 +1133,18 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">    Adds the rule with left-hand side \p lhop and right-hand side \p rhop
-    to the rules.
+<p>Adds the rule with left-hand side <code class="param">lhop</code> and right-hand side <code class="param">rhop</code> to the rules.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
+    <tr><td class="paramname">lhop</td><td>the left-hand side of the rule. </td></tr>
+    <tr><td class="paramname">rhop</td><td>the right-hand side of the rule.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks that the arguments describe words over the alphabet of the presentation are performed. </dd></dl>
 
-    \param p the presentation.
-    \param lhop the left-hand side of the rule.
-    \param rhop the right-hand side of the rule.
-
-    \par Exceptions
-    This function guarantees not to throw a \ref LibsemigroupsException.
-
-    \warning
-    No checks that the arguments describe words over the alphabet of the
-    presentation are performed. 
-</pre> 
 </div>
 </div>
 <a id="a237fa07d38a2a86ee30ccb661fd29d8c" name="a237fa07d38a2a86ee30ccb661fd29d8c"></a>
@@ -1148,20 +1170,18 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">    Adds the rule with left-hand side \p lhop and right-hand side \p rhop
-    to the rules.
+<p>Adds the rule with left-hand side <code class="param">lhop</code> and right-hand side <code class="param">rhop</code> to the rules.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
+    <tr><td class="paramname">lhop</td><td>the left-hand side of the rule. </td></tr>
+    <tr><td class="paramname">rhop</td><td>the right-hand side of the rule.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks that the arguments describe words over the alphabet of the presentation are performed. </dd></dl>
 
-    \param p the presentation.
-    \param lhop the left-hand side of the rule.
-    \param rhop the right-hand side of the rule.
-
-    \par Exceptions
-    This function guarantees not to throw a \ref LibsemigroupsException.
-
-    \warning
-    No checks that the arguments describe words over the alphabet of the
-    presentation are performed. 
-</pre> 
 </div>
 </div>
 <a id="a54b810cd98d27ace7d93fb9571431b5d" name="a54b810cd98d27ace7d93fb9571431b5d"></a>
@@ -1281,7 +1301,7 @@ template&lt;typename Word, typename Iterator&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>This function adds the rules stored in the range <code>[first, last)</code> to <code class="param">p</code>.</p>
-<p>Before it is added, each rule is validated to check it contains only letters of the alphabet of <code class="param">p</code>. If the \(n\)th rule causes this function to throw, the first \(n-1\) rules will still be added to <code class="param">p</code>.</p>
+<p>Before it is added, each rule is checked to check it contains only letters of the alphabet of <code class="param">p</code>. If the \(n\)th rule causes this function to throw, the first \(n-1\) rules will still be added to <code class="param">p</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
@@ -1327,7 +1347,7 @@ template&lt;typename Word&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Adds all the rules of the second argument <code class="param">q</code> to the first argument <code class="param">p</code> which is modified in-place.</p>
-<p>Before it is added, each rule is validated to check it contains only letters of the alphabet of <code class="param">p</code>. If the \(n\)th rule causes this function to throw, the first \(n-1\) rules will still be added to <code class="param">p</code>.</p>
+<p>Before it is added, each rule is checked to check it contains only letters of the alphabet of <code class="param">p</code>. If the \(n\)th rule causes this function to throw, the first \(n-1\) rules will still be added to <code class="param">p</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
@@ -1988,7 +2008,7 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A \(1\)-relation presentation is <em>strongly compressible</em> if both relation words start with the same letter and end with the same letter. In other words, if the alphabet of the presentation <code class="param">p</code> is \(A\) and the relation words are of the form \(aub = avb\) where \(a, b\in A\) (possibly \( a = b\)) and \(u, v\in A ^ *\), then <code class="param">p</code> is strongly compressible. See <a href="https://doi.org/10.1007/s00233-021-10216-8">Section 3.2</a> for details.</p>
+<p>A \(1\)-relation presentation is <em>strongly compressible</em> if both relation words start with the same letter and end with the same letter. In other words, if the alphabet of the presentation <code class="param">p</code> is \(A\) and the relation words are of the form \(aub = avb\) where \(a, b\in A\) (possibly \( a = b\)) and \(u, v\in A ^ *\), then <code class="param">p</code> is strongly compressible. See section 3.2 of <a class="el" href="citelist.html#CITEREF_nybergbrodda2021aa">[49]</a> for details.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Word</td><td>the type of the words in the presentation.</td></tr>
@@ -2030,18 +2050,23 @@ template&lt;typename Iterator&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">    Return the sum of the lengths of all values in the range `[first,
-</pre><p> ! last)`. </p><pre class="fragment">    \tparam Iterator the type of the first and second arguments (iterators).
-    \param first iterator pointing at the first value to calculate the
-    length of.
-    \param last iterator pointing one beyond the last value to
-    calculate the length of.
+<p>Return the sum of the lengths of all values in the range <code>[first, last)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of the first and second arguments (iterators). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>iterator pointing at the first value to calculate the length of. </td></tr>
+    <tr><td class="paramname">last</td><td>iterator pointing one beyond the last value to calculate the length of.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
-    \returns A value of type `size_t`.
-
-    \par Exceptions
-    This function guarantees not to throw a \ref LibsemigroupsException. 
-</pre> 
 </div>
 </div>
 <a id="ab497e1912b31da8d098193daff8d05c7" name="ab497e1912b31da8d098193daff8d05c7"></a>
@@ -2265,7 +2290,7 @@ template&lt;typename Word&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>If it is possible to find a subword \(w\) of the rules  \(u_1 = v_1,
-\ldots, u_n = v_n\) such that the introduction of a new generator \(z\) and the relation \(z = w\) reduces the <code><a class="el" href="#adc4f0c313d39e8062e1efd4c23be2c48" title="Return the sum of the lengths of all values in the range [first, ! last).">presentation::length</a></code> of the presentation, then this function returns the longest such word \(w\). If no such word can be found, then a word of length \(0\) is returned.</p>
+\ldots, u_n = v_n\) such that the introduction of a new generator \(z\) and the relation \(z = w\) reduces the <code><a class="el" href="#adc4f0c313d39e8062e1efd4c23be2c48" title="Return the sum of the lengths of all values in the range [first, last).">presentation::length</a></code> of the presentation, then this function returns the longest such word \(w\). If no such word can be found, then a word of length \(0\) is returned.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
@@ -2355,7 +2380,7 @@ n - 1\}\) (or equivalent) and rewrites the rules to use this alphabet.</p>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="group__transf__group.html#gaec19a0378e74f34554609c932f1ea3a9">validate</a> throws on the initial presentation. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="classlibsemigroups_1_1_presentation.html#a198d5db68cd73451d94cb58d8f7603e6">throw_if_bad_alphabet_or_rules</a> throws on the initial presentation. </td></tr>
   </table>
   </dd>
 </dl>
@@ -2655,23 +2680,31 @@ template&lt;typename Word, typename Iterator1, typename Iterator2&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Replaces every non-overlapping instance of <code>[first_existing, ! last_existing)</code> in every rule by <code>[first_replacement, ! last_replacement)</code>. The presentation <code class="param">p</code> is changed in-place </p><pre class="fragment">    \tparam Iterator1 the type of the first two parameters (iterators, or
-    pointers).
-    \tparam Iterator2 the type of the second two parameters (iterators,
-    or pointers).
+<p>Replaces every non-overlapping instance of <code>[first_existing, last_existing)</code> in every rule by <code>[first_replacement, last_replacement)</code>. The presentation <code class="param">p</code> is changed in-place</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator1</td><td>the type of the first two parameters (iterators, or pointers). </td></tr>
+    <tr><td class="paramname">Iterator2</td><td>the type of the second two parameters (iterators, or pointers).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
+    <tr><td class="paramname">first_existing</td><td>an iterator pointing to the first letter of the existing subword to be replaced. </td></tr>
+    <tr><td class="paramname">last_existing</td><td>an iterator pointing one past the last letter of the existing subword to be replaced. </td></tr>
+    <tr><td class="paramname">first_replacement</td><td>an iterator pointing to the first letter of the replacement word. </td></tr>
+    <tr><td class="paramname">last_replacement</td><td>an iterator pointing one past the last letter of the replacement word.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>first_existing == last_existing</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-    \param p the presentation.
-    \param first_existing an iterator pointing to the first letter of the
-    existing subword to be replaced.
-    \param last_existing an iterator pointing one past the last letter of
-    the existing subword to be replaced.
-    \param first_replacement an iterator pointing to the first letter of
-    the replacement word.
-    \param last_replacement an iterator pointing one past the last letter
-    of the replacement word.
-
-    \throws LibsemigroupsException if `first_existing == last_existing`. 
-</pre> 
 </div>
 </div>
 <a id="a92bd68d064a46c7b477e11bc4c1f8667" name="a92bd68d064a46c7b477e11bc4c1f8667"></a>
@@ -3339,6 +3372,226 @@ template&lt;typename Word&gt; </div>
 
 </div>
 </div>
+<a id="a2171c7674240cec128e3e4fef3ff6821" name="a2171c7674240cec128e3e4fef3ff6821"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2171c7674240cec128e3e4fef3ff6821">&#9670;&#160;</a></span>throw_if_bad_inverses()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_bad_inverses </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Word const &amp;</td>          <td class="paramname"><span class="paramname"><em>vals</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Check if the values in <code class="param">vals</code> act as semigroup inverses for the letters of the alphabet of <code class="param">p</code>. Specifically, it checks that the \(i\)th value in <code class="param">vals</code> acts as an inverse for the \(i\)th value in <code>p.alphabet()</code>.</p>
+<p>Let \(x_i\) be the \(i\)th letter in <code>p.alphabet()</code>, and suppose that \(x_i=v_j\) is in the \(j\)th position of <code class="param">vals</code>. This function checks that \(v_i = x_j\), and therefore that \((x_i^{-1})^{-1} = x\).</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
+    <tr><td class="paramname">vals</td><td>the values to check if the act as inverses.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Libsemigroups_Exception</td><td>if any of the following apply:<ul>
+<li>the length of <code class="param">vals</code> is not the same as the length of <code>p.alphabet()</code></li>
+<li><code>p.throw_if_letter_not_in_alphabet(vals)</code> throws</li>
+<li><code class="param">vals</code> contains duplicate letters</li>
+<li>the values in <code class="param">vals</code> do not serve as semigroup inverses. </li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8be80ecb20d06625ecc638dc103bd5dd" name="a8be80ecb20d06625ecc638dc103bd5dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8be80ecb20d06625ecc638dc103bd5dd">&#9670;&#160;</a></span>throw_if_bad_rules()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Word, typename Iterator&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_bad_rules </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Check if every rule of in <code>[first, last)</code> consists of letters belonging to the alphabet of <code class="param">p</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
+    <tr><td class="paramname">Iterator</td><td>the type of the second and third arguments. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation whose alphabet is being checked against. </td></tr>
+    <tr><td class="paramname">first</td><td>iterator pointing at the first rule to check. </td></tr>
+    <tr><td class="paramname">last</td><td>iterator pointing one beyond the last rule to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any word contains a letter not in <code>p.alphabet()</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>Worst case \(O(mnt)\) where \(m\) is the length of the longest word, \(n\) is the size of the <code class="param">p</code> 's alphabet and \(t\) is the distance between <code class="param">first</code> and <code class="param">last</code>. </dd></dl>
+
+</div>
+</div>
+<a id="aec9bdbe4253a0acb561e92260d733b43" name="aec9bdbe4253a0acb561e92260d733b43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec9bdbe4253a0acb561e92260d733b43">&#9670;&#160;</a></span>throw_if_not_normalized()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_not_normalized </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view</td>          <td class="paramname"><span class="paramname"><em>arg</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;1st&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function throws a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a> if the <a class="el" href="classlibsemigroups_1_1_presentation.html#ac21a91e92a664a0ac48d99643f62fd6a">alphabet</a> of <code class="param">p</code> is not <code>0</code> to <code>p.alphabet().size() - 1</code>.</p>
+<p>The second parameter <code class="param">arg</code> is used in the formatting of the exception message to specify which parameter the presentation <code class="param">p</code> corresponds to in the calling function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation to check. </td></tr>
+    <tr><td class="paramname">arg</td><td>the position of <code class="param">p</code> in calling function's argument list (defaults to "1st").</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the alphabet of <code class="param">p</code> is not <code>0</code> to <code>p.alphabet.size()</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a371053f8f212083c6af099cabdf33b68" name="a371053f8f212083c6af099cabdf33b68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a371053f8f212083c6af099cabdf33b68">&#9670;&#160;</a></span>throw_if_odd_number_of_rules() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_odd_number_of_rules </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function throws an exception if the distance between <code class="param">first</code> and <code class="param">last</code> is not an even number.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of the arguments.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>iterator pointing at the first words. </td></tr>
+    <tr><td class="paramname">last</td><td>iterator pointing one beyond the last word.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the distance from <code class="param">first</code> to <code class="param">last</code> is not even. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a191d5ec2c8a3d1e819818e273149151f" name="a191d5ec2c8a3d1e819818e273149151f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a191d5ec2c8a3d1e819818e273149151f">&#9670;&#160;</a></span>throw_if_odd_number_of_rules() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_odd_number_of_rules </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function throws an exception if number of words in <code>p.rules</code> is odd.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Word</td><td>the type of the words in the <a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a> <code class="param">p</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the presentation to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the number of words in <code>p.rules</code> is not even. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a1569bd727eb77cb388ea564b0da00a84" name="a1569bd727eb77cb388ea564b0da00a84"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1569bd727eb77cb388ea564b0da00a84">&#9670;&#160;</a></span>to_gap_string() <span class="overload">[1/2]</span></h2>
 
@@ -3403,107 +3656,6 @@ template&lt;typename Word&gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">has</code> more than 49 generators. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ae5b4b6eb283afeb6c9d546c7c5988bd4" name="ae5b4b6eb283afeb6c9d546c7c5988bd4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5b4b6eb283afeb6c9d546c7c5988bd4">&#9670;&#160;</a></span>validate_rules()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Word, typename Iterator&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void validate_rules </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Check if every rule of in <code>[first, last)</code> consists of letters belonging to the alphabet of <code class="param">p</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
-    <tr><td class="paramname">Iterator</td><td>the type of the second and third arguments. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">p</td><td>the presentation whose alphabet is being validated against. </td></tr>
-    <tr><td class="paramname">first</td><td>iterator pointing at the first rule to check. </td></tr>
-    <tr><td class="paramname">last</td><td>iterator pointing one beyond the last rule to check.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any word contains a letter not in <code>p.alphabet()</code>.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Worst case \(O(mnt)\) where \(m\) is the length of the longest word, \(n\) is the size of the <code class="param">p</code> 's alphabet and \(t\) is the distance between <code class="param">first</code> and <code class="param">last</code>. </dd></dl>
-
-</div>
-</div>
-<a id="a756f5721e810bac90aca39df8f87c080" name="a756f5721e810bac90aca39df8f87c080"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a756f5721e810bac90aca39df8f87c080">&#9670;&#160;</a></span>validate_semigroup_inverses()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Word&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void validate_semigroup_inverses </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>p</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Word const &amp;</td>          <td class="paramname"><span class="paramname"><em>vals</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Check if the values in <code class="param">vals</code> act as semigroup inverses for the letters of the alphabet of <code class="param">p</code>. Specifically, it checks that the \(i\)th value in <code class="param">vals</code> acts as an inverse for the \(i\)th value in <code>p.alphabet()</code>.</p>
-<p>Let \(x_i\) be the \(i\)th letter in <code>p.alphabet()</code>, and suppose that \(x_i=v_j\) is in the \(j\)th position of <code class="param">vals</code>. This function checks that \(v_i = x_j\), and therefore that \((x_i^{-1})^{-1} = x\).</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Word</td><td>the type of the words in the presentation. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">p</td><td>the presentation. </td></tr>
-    <tr><td class="paramname">vals</td><td>the values to check if the act as inverses.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">Libsemigroups_Exception</td><td>if any of the following apply:<ul>
-<li>the length of <code class="param">vals</code> is not the same as the length of <code>p.alphabet()</code></li>
-<li><code>p.validate_word(vals)</code> throws</li>
-<li><code class="param">vals</code> contains duplicate letters</li>
-<li>the values in <code class="param">vals</code> do not serve as semigroup inverses. </li>
-</ul>
-</td></tr>
   </table>
   </dd>
 </dl>

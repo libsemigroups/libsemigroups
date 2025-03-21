@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -224,8 +228,8 @@ template&lt;typename Result&gt; </div>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;Presentation&lt;Word&gt;</a>&gt;(fp);</div>
-<div class="ttc" id="agroup__to__froidure__pin__group_html_gad6324051450cbfb3d711117608524fe3"><div class="ttname"><a href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">libsemigroups::to</a></div><div class="ttdeci">auto to(Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;</div><div class="ttdoc">Convert a Kambites object to a FroidurePin object.</div></div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(fp);</div>
+<div class="ttc" id="agroup__to__froidure__pin__group_html_gae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
 </div><!-- fragment --><p>This function constructs and returns a <a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a> object using the rules of a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object, accessed via <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a229ee34403288cf24cb81677d6e083e7" title="Returns a forward iterator pointing to the first rule (if any).">FroidurePin::cbegin_rules</a> and <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a07edf8e2ad3c41ba152f7c4b32199235" title="Returns a forward iterator pointing one past the last rule (if any).">FroidurePin::cend_rules</a>.</p>
 <p>No enumeration of the argument <code class="param">fp</code> is performed, so it might be the case that the resulting presentation does not define the same semigroup as <code class="param">fp</code>. To ensure that the resulting presentation defines the same semigroup as <code class="param">fp</code>, run <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">FroidurePin::run</a> (or any other function that fully enumerates <code class="param">fp</code>) prior to calling this function.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -264,7 +268,7 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word, typenam
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;Presentation&gt;</a>(kb);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&gt;</a>(kb);</div>
 </div><!-- fragment --><p>This function constructs and returns a <a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a> object using the currently active rules of <code class="param">kb</code>.</p>
 <p>No enumeration of the argument <code class="param">kb</code> is performed, so it might be the case that the resulting presentation does not define the same semigroup/monoid as <code class="param">kb</code>. To ensure that the resulting presentation defines the same semigroup as <code class="param">kb</code>, run <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a> (or any other function that fully enumerates <code class="param">kb</code>) prior to calling this function.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -316,7 +320,7 @@ template&lt;typename Result, typename Word&gt; </div>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;Presentation&lt;Word&gt;</a>&gt;(p, func);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(p, func);</div>
 </div><!-- fragment --><p>There are 2 versions of this function:</p>
 <ol type="1">
 <li>When <code>typename Result::word_type</code> and <code>Word</code> are not the same, this function returns a presentation equivalent to the input presentation but of a different type (for example, can be used to convert from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code> to <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>).</li>
@@ -339,7 +343,7 @@ template&lt;typename Result, typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>Result</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>typename Result::word_type</code> and <code>Word</code> are not the same and <code>p.validate()</code> throws. If <code>typename Result::word_type</code> and <code>Word</code> are the same, then this function is <code>noexcept</code>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>typename Result::word_type</code> and <code>Word</code> are not the same and <code>p.throw_if_bad_alphabet_or_rules()</code> throws. If <code>typename Result::word_type</code> and <code>Word</code> are the same, then this function is <code>noexcept</code>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -368,7 +372,7 @@ template&lt;typename Result, typename Word, typename Func&gt; </div>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;Presentation&lt;Word&gt;</a>&gt;(p, func);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(p, func);</div>
 </div><!-- fragment --><p>This function returns a presentation equivalent to the input presentation but of a different type (for example, can be used to convert from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code> to <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>). The second parameter specifies how to map the letters of one presentation to the other.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -388,7 +392,7 @@ template&lt;typename Result, typename Word, typename Func&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>Result</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>p.validate()</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>p.throw_if_bad_alphabet_or_rules()</code> throws.</td></tr>
   </table>
   </dd>
 </dl>

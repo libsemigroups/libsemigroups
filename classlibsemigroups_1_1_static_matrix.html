@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -197,7 +201,7 @@ class libsemigroups::StaticMatrix&lt; PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scala
     <tr><td class="paramname">OneOp</td><td>a stateless type with a call operator of signature <code><a class="el" href="#ae73d9d732fb227051b7c3a1baf46f906" title="Alias for the template parameter Scalar.">scalar_type</a> <a class="el" href="#a49b8c894b0f418a7781c90863b6b9989" title="Returns a reference to the specified entry of the matrix.">operator()()</a></code> returning the one of the semiring (the multiplicative identity element).</td></tr>
     <tr><td class="paramname">R</td><td>the number of rows of the matrix. </td></tr>
     <tr><td class="paramname">C</td><td>the number of columns of the matrix.</td></tr>
-    <tr><td class="paramname">Scalar</td><td>the type of the entries in the matrices (the type of elements in the underlying semiring)</td></tr>
+    <tr><td class="paramname">Scalar</td><td>the type of the entries in the matrices (the type of elements in the underlying semiring).</td></tr>
   </table>
   </dd>
 </dl>
@@ -233,9 +237,10 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>Row</b> = <a class="
 using&#160;</td><td class="memItemRight" valign="bottom"><b>RowView</b> = <a class="el" href="classlibsemigroups_1_1_static_row_view.html">StaticRowView</a>&lt;PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar&gt;</td></tr>
 <tr class="memdesc:a85575cc833d62eb33da1dd56570baeb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the type of row views of a <a class="el" href="classlibsemigroups_1_1_static_matrix.html" title="Static matrix class.">StaticMatrix</a>. <br /></td></tr>
 <tr class="separator:a85575cc833d62eb33da1dd56570baeb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ddc4890c4600146ca71a936344f93dc" id="r_a1ddc4890c4600146ca71a936344f93dc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a></td></tr>
-<tr class="memdesc:a1ddc4890c4600146ca71a936344f93dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const references to the template parameter <code class="param">Scalar</code>.  <br /></td></tr>
-<tr class="separator:a1ddc4890c4600146ca71a936344f93dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a364dcc28d2315f9e0af8b22ec626e307" id="r_a364dcc28d2315f9e0af8b22ec626e307"><td class="memItemLeft" align="right" valign="top"><a id="a364dcc28d2315f9e0af8b22ec626e307" name="a364dcc28d2315f9e0af8b22ec626e307"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>scalar_const_reference</b> = typename MatrixCommon::scalar_const_reference</td></tr>
+<tr class="memdesc:a364dcc28d2315f9e0af8b22ec626e307"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const references to the template parameter <code class="param">Scalar</code>. <br /></td></tr>
+<tr class="separator:a364dcc28d2315f9e0af8b22ec626e307"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad07ed787e52e9d196e570a76441837e3" id="r_ad07ed787e52e9d196e570a76441837e3"><td class="memItemLeft" align="right" valign="top"><a id="ad07ed787e52e9d196e570a76441837e3" name="ad07ed787e52e9d196e570a76441837e3"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>scalar_reference</b> = typename MatrixCommon::scalar_reference</td></tr>
 <tr class="memdesc:ad07ed787e52e9d196e570a76441837e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for references to the template parameter <code class="param">Scalar</code>. <br /></td></tr>
@@ -275,7 +280,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1b7a37a5ac89d32be8735bcc0621a5fa" id="r_a1b7a37a5ac89d32be8735bcc0621a5fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ad07ed787e52e9d196e570a76441837e3">scalar_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b7a37a5ac89d32be8735bcc0621a5fa">at</a> (size_t r, size_t c)</td></tr>
 <tr class="memdesc:a1b7a37a5ac89d32be8735bcc0621a5fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference to the specified entry of the matrix.  <br /></td></tr>
 <tr class="separator:a1b7a37a5ac89d32be8735bcc0621a5fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16f284901c963098eedc1f00a0f0a73c" id="r_a16f284901c963098eedc1f00a0f0a73c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16f284901c963098eedc1f00a0f0a73c">at</a> (size_t r, size_t c) const</td></tr>
+<tr class="memitem:a16f284901c963098eedc1f00a0f0a73c" id="r_a16f284901c963098eedc1f00a0f0a73c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a364dcc28d2315f9e0af8b22ec626e307">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16f284901c963098eedc1f00a0f0a73c">at</a> (size_t r, size_t c) const</td></tr>
 <tr class="memdesc:a16f284901c963098eedc1f00a0f0a73c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the specified entry of the matrix.  <br /></td></tr>
 <tr class="separator:a16f284901c963098eedc1f00a0f0a73c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a979556eb331ec35eb33472a90a160f99" id="r_a979556eb331ec35eb33472a90a160f99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a0aefcae3598e9cd5741748ea2963d165">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a979556eb331ec35eb33472a90a160f99">begin</a> () noexcept</td></tr>
@@ -311,7 +316,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a49b8c894b0f418a7781c90863b6b9989" id="r_a49b8c894b0f418a7781c90863b6b9989"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ad07ed787e52e9d196e570a76441837e3">scalar_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a49b8c894b0f418a7781c90863b6b9989">operator()</a> (size_t r, size_t c)</td></tr>
 <tr class="memdesc:a49b8c894b0f418a7781c90863b6b9989"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference to the specified entry of the matrix.  <br /></td></tr>
 <tr class="separator:a49b8c894b0f418a7781c90863b6b9989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8d5904cecff319555ecd40cd33a5e5b" id="r_ae8d5904cecff319555ecd40cd33a5e5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8d5904cecff319555ecd40cd33a5e5b">operator()</a> (size_t r, size_t c) const</td></tr>
+<tr class="memitem:ae8d5904cecff319555ecd40cd33a5e5b" id="r_ae8d5904cecff319555ecd40cd33a5e5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a364dcc28d2315f9e0af8b22ec626e307">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8d5904cecff319555ecd40cd33a5e5b">operator()</a> (size_t r, size_t c) const</td></tr>
 <tr class="memdesc:ae8d5904cecff319555ecd40cd33a5e5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the specified entry of the matrix.  <br /></td></tr>
 <tr class="separator:ae8d5904cecff319555ecd40cd33a5e5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b7b9df6da156c673811ad72589585f2" id="r_a2b7b9df6da156c673811ad72589585f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_static_matrix.html">StaticMatrix</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2b7b9df6da156c673811ad72589585f2">operator*</a> (<a class="el" href="#ae73d9d732fb227051b7c3a1baf46f906">scalar_type</a> a)</td></tr>
@@ -381,8 +386,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a2d8928f6e117b0bef11ad85b9419aabb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add row views for every row in the matrix to a container.  <br /></td></tr>
 <tr class="separator:a2d8928f6e117b0bef11ad85b9419aabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a304b63fbfb40e6637b7799794b149e0f" id="r_a304b63fbfb40e6637b7799794b149e0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae73d9d732fb227051b7c3a1baf46f906">scalar_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a304b63fbfb40e6637b7799794b149e0f">scalar_one</a> () const noexcept</td></tr>
+<tr class="memdesc:a304b63fbfb40e6637b7799794b149e0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the multiplicative identity of the underlying semiring.  <br /></td></tr>
 <tr class="separator:a304b63fbfb40e6637b7799794b149e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6941d68ed0c8cd9ef9848cadaddbd8e2" id="r_a6941d68ed0c8cd9ef9848cadaddbd8e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae73d9d732fb227051b7c3a1baf46f906">scalar_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6941d68ed0c8cd9ef9848cadaddbd8e2">scalar_zero</a> () const noexcept</td></tr>
+<tr class="memdesc:a6941d68ed0c8cd9ef9848cadaddbd8e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the additive identity of the underlying semiring.  <br /></td></tr>
 <tr class="separator:a6941d68ed0c8cd9ef9848cadaddbd8e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a736010186c06d706d829c602b0b975c5" id="r_a736010186c06d706d829c602b0b975c5"><td class="memItemLeft" align="right" valign="top">semiring_type const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a736010186c06d706d829c602b0b975c5">semiring</a> () const noexcept</td></tr>
 <tr class="memdesc:a736010186c06d706d829c602b0b975c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the underlying semiring.  <br /></td></tr>
@@ -403,25 +410,6 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a88ab3d65aa9e78ba8d4a3dec6d463c4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an identity matrix.  <br /></td></tr>
 <tr class="separator:a88ab3d65aa9e78ba8d4a3dec6d463c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a1ddc4890c4600146ca71a936344f93dc" name="a1ddc4890c4600146ca71a936344f93dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ddc4890c4600146ca71a936344f93dc">&#9670;&#160;</a></span>scalar_const_reference</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t R, size_t C, typename Scalar&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line"> </div>
-<div class="line">        <span class="keyword">typename</span> MatrixCommon::scalar_const_reference</div>
-</div><!-- fragment -->
-</div>
-</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0b896d0ad139bddc473b1ac30c15bef4" name="a0b896d0ad139bddc473b1ac30c15bef4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0b896d0ad139bddc473b1ac30c15bef4">&#9670;&#160;</a></span>StaticMatrix() <span class="overload">[1/7]</span></h2>
@@ -704,7 +692,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
 template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t R, size_t C, typename Scalar&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a> at </td>
+          <td class="memname"><a class="el" href="#a364dcc28d2315f9e0af8b22ec626e307">scalar_const_reference</a> at </td>
           <td>(</td>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>r</em></span>, </td>
         </tr>
@@ -723,7 +711,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a364dcc28d2315f9e0af8b22ec626e307">scalar_const_reference</a>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">r</code> or <code class="param">c</code> is out of bounds.</td></tr>
@@ -1090,7 +1078,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
 template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t R, size_t C, typename Scalar&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a> operator() </td>
+          <td class="memname"><a class="el" href="#a364dcc28d2315f9e0af8b22ec626e307">scalar_const_reference</a> operator() </td>
           <td>(</td>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>r</em></span>, </td>
         </tr>
@@ -1109,7 +1097,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a1ddc4890c4600146ca71a936344f93dc">scalar_const_reference</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a364dcc28d2315f9e0af8b22ec626e307">scalar_const_reference</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks on the validity of the parameters <code>r</code> and <code>c</code> are performed. </dd></dl>
@@ -1776,7 +1764,6 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the multiplicative identity of the underlying semiring.</p>
 <p>This function returns the multiplicative identity of the underlying semiring of a matrix.</p>
 <dl class="section return"><dt>Returns</dt><dd>The multiplicative identity of the semiring, a <a class="el" href="#ae73d9d732fb227051b7c3a1baf46f906">scalar_type</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
@@ -1807,7 +1794,6 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the additive identity of the underlying semiring.</p>
 <p>This function returns the additive identity of the underlying semiring of a matrix.</p>
 <dl class="section return"><dt>Returns</dt><dd>The additive identity of the semiring, a <a class="el" href="#ae73d9d732fb227051b7c3a1baf46f906">scalar_type</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>

@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,7 +186,7 @@ $(function(){initNavTree('to-presentation_8hpp_source.html',''); initResizable(t
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// libsemigroups - C++ library for semigroups and monoids</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2023-2024 James D. Mitchell</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2023-2025 James D. Mitchell</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// it under the terms of the GNU General Public License as published by</span></div>
@@ -221,7 +225,7 @@ $(function(){initNavTree('to-presentation_8hpp_source.html',''); initResizable(t
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  <span class="comment">// FroidurePin -&gt; Presentation</span></div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span></div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result&gt;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#ga1e93abc105543c80499d53280e4ce5e0">   89</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a>&amp; fp) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#ga1e93abc105543c80499d53280e4ce5e0">   89</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a>&amp; fp) -&gt; std::enable_if_t&lt;</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;,</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>      Result&gt;;</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span></div>
@@ -232,99 +236,99 @@ $(function(){initNavTree('to-presentation_8hpp_source.html',''); initResizable(t
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            <span class="keyword">typename</span> Rewriter,</div>
 <div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            <span class="keyword">typename</span> ReductionOrder&gt;</div>
 <div class="foldopen" id="foldopen00136" data-start="{" data-end="}">
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#gaf2fcf0ce62d9d7bd55a74783f3316f3c">  136</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(KnuthBendix&lt;Word, Rewriter, ReductionOrder&gt;&amp; kb)</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#gaf2fcf0ce62d9d7bd55a74783f3316f3c">  136</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(KnuthBendix&lt;Word, Rewriter, ReductionOrder&gt;&amp; kb)</div>
 <div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;Thing&lt;Word&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a>&gt;,</div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>                          <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a>&gt; {</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;Presentation&lt;Word&gt;</a>&gt;(kb);</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(kb);</div>
 <div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  }</div>
 </div>
 <div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span></div>
 <div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>  <span class="comment">// Presentation + function -&gt; Presentation</span></div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span></div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word, <span class="keyword">typename</span> Func&gt;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#ga15e06776b837cffe48141b28f41e62aa">  180</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p, Func&amp;&amp; f) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;,</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>      Result&gt;;</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>  <span class="comment">// InversePresentation + function -&gt; InversePresentation</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word, <span class="keyword">typename</span> Func&gt;</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#ga2e6022efeec48d692e98831a5a129d33">  225</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; ip, Func&amp;&amp; f) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>      std::is_same_v&lt;InversePresentation&lt;typename Result::word_type&gt;, Result&gt;,</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>      Result&gt;;</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span></div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>  <span class="comment">// Presentation -&gt; Presentation</span></div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span></div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>          &amp;&amp; !std::is_same_v&lt;typename Result::word_type, Word&gt;,</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>      Result&gt;;</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>  <span class="comment">// This function is documented above because Doxygen conflates these two</span></div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>  <span class="comment">// functions.</span></div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
-<div class="foldopen" id="foldopen00283" data-start="{" data-end="}">
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#gaf9d6cc3283fbc617d886cf0a089c1f82">  283</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;Presentation&lt;Word&gt;, Result&gt;,</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>                          Result <span class="keyword">const</span>&amp;&gt; {</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <span class="keywordflow">return</span> p;</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>  }</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word, <span class="keyword">typename</span> Func&gt;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#ga15e06776b837cffe48141b28f41e62aa">  181</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p, Func&amp;&amp; f) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;,</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>      Result&gt;;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>  <span class="comment">// InversePresentation + function -&gt; InversePresentation</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span></div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word, <span class="keyword">typename</span> Func&gt;</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#ga2e6022efeec48d692e98831a5a129d33">  227</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; ip, Func&amp;&amp; f) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>      std::is_same_v&lt;InversePresentation&lt;typename Result::word_type&gt;, Result&gt;,</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>      Result&gt;;</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>  <span class="comment">// Presentation -&gt; Presentation</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>          &amp;&amp; !std::is_same_v&lt;typename Result::word_type, Word&gt;,</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>      Result&gt;;</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>  <span class="comment">// This function is documented above because Doxygen conflates these two</span></div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>  <span class="comment">// functions.</span></div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
+<div class="foldopen" id="foldopen00285" data-start="{" data-end="}">
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="group__to__presentation__group.html#gaf9d6cc3283fbc617d886cf0a089c1f82">  285</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;Presentation&lt;Word&gt;, Result&gt;,</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>                          Result <span class="keyword">const</span>&amp;&gt; {</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    <span class="keywordflow">return</span> p;</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>  }</div>
 </div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span></div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>  <span class="comment">// InversePresentation -&gt; InversePresentation</span></div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span></div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
-<div class="foldopen" id="foldopen00337" data-start="{" data-end="}">
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#ga13b464b3f8b528ac7fa69c7f5f211cd4">  337</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; ip) <span class="keyword">noexcept</span> -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>      std::is_same_v&lt;InversePresentation&lt;typename Result::word_type&gt;, Result&gt;</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>          &amp;&amp; !std::is_same_v&lt;Word, typename Result::word_type&gt;,</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>      Result&gt; {</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="keyword">using </span>WordOutput = <span class="keyword">typename</span> Result::word_type;</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;InversePresentation&lt;WordOutput&gt;</a>&gt;(ip, [&amp;ip](<span class="keyword">auto</span> val) {</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>      <span class="keywordflow">return</span> <a class="code hl_function" href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">words::human_readable_letter&lt;WordOutput&gt;</a>(ip.index(val));</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    });</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>  }</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>  <span class="comment">// InversePresentation -&gt; InversePresentation</span></div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span></div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
+<div class="foldopen" id="foldopen00339" data-start="{" data-end="}">
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#ga13b464b3f8b528ac7fa69c7f5f211cd4">  339</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; ip) <span class="keyword">noexcept</span> -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>      std::is_same_v&lt;InversePresentation&lt;typename Result::word_type&gt;, Result&gt;</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>          &amp;&amp; !std::is_same_v&lt;Word, typename Result::word_type&gt;,</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>      Result&gt; {</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>    <span class="keyword">using </span>WordOutput = <span class="keyword">typename</span> Result::word_type;</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;InversePresentation&lt;WordOutput&gt;</a>&gt;(ip, [&amp;ip](<span class="keyword">auto</span> val) {</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>      <span class="keywordflow">return</span> <a class="code hl_function" href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">words::human_readable_letter&lt;WordOutput&gt;</a>(ip.index(val));</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>    });</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>  }</div>
 </div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>  <span class="comment">// This function is documented above because Doxygen conflates these two</span></div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>  <span class="comment">// functions.</span></div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(InversePresentation&lt;Word&gt; <span class="keyword">const</span>&amp; ip) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;InversePresentation&lt;Word&gt;, Result&gt;,</div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>                          Result <span class="keyword">const</span>&amp;&gt; {</div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>    <span class="keywordflow">return</span> ip;</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>  }</div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span></div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>  <span class="comment">// Presentation -&gt; InversePresentation</span></div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span></div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>  <span class="comment">// \note The parameter \p p must not be an `InversePresentation`, otherwise</span></div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>  <span class="comment">// a compilation error is thrown.</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>  <span class="comment">// NOTE: not sure this is true anymore so just leaving it out</span></div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>  <span class="comment">// FIXME(1) this is the same hack as elsewhere because Doxygen conflates</span></div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>  <span class="comment">// functions with trailing return type but the same name and signature.</span></div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#gac3659298d7b525dbf2b7140ce6773ab2">  393</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> cont&amp; p) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>      std::is_same_v&lt;InversePresentation&lt;Word&gt;, Thing&lt;Word&gt;&gt;,</div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>      <a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a>&gt;;</div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>      std::is_same_v&lt;InversePresentation&lt;Word&gt;, Thing&lt;Word&gt;&gt;,</div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>      <a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a>&gt;;</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span> </div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span> </div>
-<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span><span class="preprocessor">#include &quot;to-presentation.tpp&quot;</span></div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span> </div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_PRESENTATION_HPP_</span></div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>  <span class="comment">// This function is documented above because Doxygen conflates these two</span></div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>  <span class="comment">// functions.</span></div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(InversePresentation&lt;Word&gt; <span class="keyword">const</span>&amp; ip) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;InversePresentation&lt;Word&gt;, Result&gt;,</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>                          Result <span class="keyword">const</span>&amp;&gt; {</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    <span class="keywordflow">return</span> ip;</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>  }</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span></div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>  <span class="comment">// Presentation -&gt; InversePresentation</span></div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span></div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>  <span class="comment">// \note The parameter \p p must not be an `InversePresentation`, otherwise</span></div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>  <span class="comment">// a compilation error is thrown.</span></div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>  <span class="comment">// NOTE: not sure this is true anymore so just leaving it out</span></div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>  <span class="comment">// FIXME(1) this is the same hack as elsewhere because Doxygen conflates</span></div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>  <span class="comment">// functions with trailing return type but the same name and signature.</span></div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#gac3659298d7b525dbf2b7140ce6773ab2">  396</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> cont&amp; p) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>      std::is_same_v&lt;InversePresentation&lt;Word&gt;, Thing&lt;Word&gt;&gt;,</div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>      <a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a>&gt;;</div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>      std::is_same_v&lt;InversePresentation&lt;Word&gt;, Thing&lt;Word&gt;&gt;,</div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>      <a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a>&gt;;</div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span> </div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span> </div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span><span class="preprocessor">#include &quot;to-presentation.tpp&quot;</span></div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span> </div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_PRESENTATION_HPP_</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin_base.html">libsemigroups::FroidurePinBase</a></div><div class="ttdoc">Base class for FroidurePin containing non-element specific data and member functions.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:66</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_inverse_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_inverse_presentation.html">libsemigroups::InversePresentation</a></div><div class="ttdoc">For an implementation of inverse presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:2111</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_inverse_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_inverse_presentation.html">libsemigroups::InversePresentation</a></div><div class="ttdoc">For an implementation of inverse presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:2188</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:102</div></div>
-<div class="ttc" id="agroup__to__froidure__pin__group_html_gad6324051450cbfb3d711117608524fe3"><div class="ttname"><a href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">libsemigroups::to</a></div><div class="ttdeci">auto to(Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;</div><div class="ttdoc">Convert a Kambites object to a FroidurePin object.</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1words_html_a7a783c2cd32ccb72e625974bb952181b"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">libsemigroups::words::human_readable_letter</a></div><div class="ttdeci">Word::value_type human_readable_letter(size_t i)</div><div class="ttdoc">Returns a character by index in human readable order.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2058</div></div>
+<div class="ttc" id="agroup__to__froidure__pin__group_html_gae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1words_html_a7a783c2cd32ccb72e625974bb952181b"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">libsemigroups::words::human_readable_letter</a></div><div class="ttdeci">Word::value_type human_readable_letter(size_t i)</div><div class="ttdoc">Returns a character by index in human readable order.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2108</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -190,31 +194,31 @@ $(function(){initNavTree('group__make__matrix__group.html',''); initResizable(tr
 Functions</h2></td></tr>
 <tr class="memitem:gab5db4c36f8ab53759417fd0e6c18a4c1" id="r_gab5db4c36f8ab53759417fd0e6c18a4c1"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename Semiring, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:gab5db4c36f8ab53759417fd0e6c18a4c1"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gab5db4c36f8ab53759417fd0e6c18a4c1">make</a> (Semiring const *semiring, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Mat::scalar_type &gt; &gt; const &amp;rows)</td></tr>
-<tr class="memdesc:gab5db4c36f8ab53759417fd0e6c18a4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>) and validates it.  <br /></td></tr>
+<tr class="memdesc:gab5db4c36f8ab53759417fd0e6c18a4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>) and checks it.  <br /></td></tr>
 <tr class="separator:gab5db4c36f8ab53759417fd0e6c18a4c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gade7dba1f6fd08fea0413cb6952bb4ecc" id="r_gade7dba1f6fd08fea0413cb6952bb4ecc"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename Semiring, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:gade7dba1f6fd08fea0413cb6952bb4ecc"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gade7dba1f6fd08fea0413cb6952bb4ecc">make</a> (Semiring const *semiring, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Mat::scalar_type &gt; const &amp;row)</td></tr>
-<tr class="memdesc:gade7dba1f6fd08fea0413cb6952bb4ecc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a row and validates it.  <br /></td></tr>
+<tr class="memdesc:gade7dba1f6fd08fea0413cb6952bb4ecc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a row and checks it.  <br /></td></tr>
 <tr class="separator:gade7dba1f6fd08fea0413cb6952bb4ecc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5e42ccac41446ee739aa138fc74fe207" id="r_ga5e42ccac41446ee739aa138fc74fe207"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename Semiring, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:ga5e42ccac41446ee739aa138fc74fe207"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga5e42ccac41446ee739aa138fc74fe207">make</a> (Semiring const *semiring, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Mat::scalar_type &gt; &gt; const &amp;rows)</td></tr>
-<tr class="memdesc:ga5e42ccac41446ee739aa138fc74fe207"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a> of <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>) and validates it.  <br /></td></tr>
+<tr class="memdesc:ga5e42ccac41446ee739aa138fc74fe207"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a> of <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>) and checks it.  <br /></td></tr>
 <tr class="separator:ga5e42ccac41446ee739aa138fc74fe207"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga88b2d0f5447a40dae55412c0e289a46d" id="r_ga88b2d0f5447a40dae55412c0e289a46d"><td class="memTemplParams" colspan="2">template&lt;size_t R, size_t C, typename Scalar&gt; </td></tr>
 <tr class="memitem:ga88b2d0f5447a40dae55412c0e289a46d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__projmaxplus__group.html#ga0b57f171a348bc0895fbb25bb39c1b4e">ProjMaxPlusMat</a>&lt; R, C, Scalar &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga88b2d0f5447a40dae55412c0e289a46d">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Scalar &gt; &gt; const &amp;rows)</td></tr>
-<tr class="memdesc:ga88b2d0f5447a40dae55412c0e289a46d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a projective max-plus matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>) and validates it.  <br /></td></tr>
+<tr class="memdesc:ga88b2d0f5447a40dae55412c0e289a46d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a projective max-plus matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>) and checks it.  <br /></td></tr>
 <tr class="separator:ga88b2d0f5447a40dae55412c0e289a46d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa6337e55a3710fd2f2c22e1a97c28cc1" id="r_gaa6337e55a3710fd2f2c22e1a97c28cc1"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt; &amp;&amp; !IsMatWithSemiring&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:gaa6337e55a3710fd2f2c22e1a97c28cc1"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa6337e55a3710fd2f2c22e1a97c28cc1">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Mat::scalar_type &gt; &gt; const &amp;rows)</td></tr>
-<tr class="memdesc:gaa6337e55a3710fd2f2c22e1a97c28cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates the arguments, constructs a matrix, and validates it.  <br /></td></tr>
+<tr class="memdesc:gaa6337e55a3710fd2f2c22e1a97c28cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the arguments, constructs a matrix, and checks it.  <br /></td></tr>
 <tr class="separator:gaa6337e55a3710fd2f2c22e1a97c28cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaafac035206c89f3dcd889e79c41d1af9" id="r_gaafac035206c89f3dcd889e79c41d1af9"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt; &amp;&amp; !IsMatWithSemiring&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:gaafac035206c89f3dcd889e79c41d1af9"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaafac035206c89f3dcd889e79c41d1af9">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Mat::scalar_type &gt; const &amp;row)</td></tr>
-<tr class="memdesc:gaafac035206c89f3dcd889e79c41d1af9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a row and validates it.  <br /></td></tr>
+<tr class="memdesc:gaafac035206c89f3dcd889e79c41d1af9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a row and checks it.  <br /></td></tr>
 <tr class="separator:gaafac035206c89f3dcd889e79c41d1af9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6734ae7bae79baade991d86f91b1a14d" id="r_ga6734ae7bae79baade991d86f91b1a14d"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt; &amp;&amp; !IsMatWithSemiring&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:ga6734ae7bae79baade991d86f91b1a14d"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga6734ae7bae79baade991d86f91b1a14d">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Mat::scalar_type &gt; &gt; const &amp;rows)</td></tr>
-<tr class="memdesc:ga6734ae7bae79baade991d86f91b1a14d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates the arguments, constructs a matrix, and validates it.  <br /></td></tr>
+<tr class="memdesc:ga6734ae7bae79baade991d86f91b1a14d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the arguments, constructs a matrix, and checks it.  <br /></td></tr>
 <tr class="separator:ga6734ae7bae79baade991d86f91b1a14d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -239,7 +243,7 @@ template&lt;typename Mat, typename Semiring, typename = std::enable_if_t&lt;IsMa
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>Validates the arguments, constructs a matrix and validates it.</p>
+<p>Checks the arguments, constructs a matrix and checks it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the matrix being constructed (must satisfy <a class="el" href="group__matrix__group.html#gad5ab08f2bdaa822ecae152fcd6f5e4fa">IsMatrix&lt;Mat&gt;</a>).</td></tr>
@@ -287,7 +291,7 @@ template&lt;typename Mat, typename Semiring, typename = std::enable_if_t&lt;IsMa
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function constructs a row and validates it.</p>
+<p>This function constructs a row and checks it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Semiring</td><td>the type of the semiring where arithmetic is performed.</td></tr>
@@ -333,7 +337,7 @@ template&lt;typename Mat, typename Semiring, typename = std::enable_if_t&lt;IsMa
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>Validates the arguments, constructs a matrix, and validates it.</p>
+<p>Checks the arguments, constructs a matrix, and checks it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the matrix being constructed (must satisfy <a class="el" href="group__matrix__group.html#gad5ab08f2bdaa822ecae152fcd6f5e4fa">IsMatrix</a>).</td></tr>
@@ -377,7 +381,7 @@ template&lt;size_t R, size_t C, typename Scalar&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>Validates the arguments, constructs a matrix, and validates it.</p>
+<p>Checks the arguments, constructs a matrix, and checks it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the matrix being constructed (must satisfy <a class="el" href="group__projmaxplus__group.html#ga7d92eec48adeb7d5b1f1611d8583be87">IsProjMaxPlusMat&lt;Mat&gt;</a>).</td></tr>
@@ -419,7 +423,7 @@ template&lt;typename Mat, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt; &am
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>Validates the arguments, constructs a matrix, and validates it.</p>
+<p>Checks the arguments, constructs a matrix, and checks it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of matrix being constructed, must satisfy <a class="el" href="group__matrix__group.html#gad5ab08f2bdaa822ecae152fcd6f5e4fa">IsMatrix&lt;Mat&gt;</a> and not <a class="el" href="group__matrix__group.html#gab89b1bb1535e5277396d1695e81426ee">IsMatWithSemiring&lt;Mat&gt;</a>.</td></tr>
@@ -461,7 +465,7 @@ template&lt;typename Mat, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt; &am
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function constructs a row from a <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a> and then calls <a class="el" href="group__transf__group.html#gaec19a0378e74f34554609c932f1ea3a9">validate</a>.</p>
+<p>This function constructs a row from a <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a> and then calls <a class="el" href="group__bmat__group.html#ga8edec42863a5e81d4e649d46ee92526a">throw_if_bad_entry</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of matrix being constructed, must satisfy <a class="el" href="group__matrix__group.html#gad5ab08f2bdaa822ecae152fcd6f5e4fa">IsMatrix&lt;Mat&gt;</a> and not <a class="el" href="group__matrix__group.html#gab89b1bb1535e5277396d1695e81426ee">IsMatWithSemiring&lt;Mat&gt;</a>.</td></tr>
@@ -503,7 +507,7 @@ template&lt;typename Mat, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt; &am
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>Validates the arguments, constructs a matrix, and validates it.</p>
+<p>Checks the arguments, constructs a matrix, and checks it.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of matrix being constructed, must satisfy <a class="el" href="group__matrix__group.html#gad5ab08f2bdaa822ecae152fcd6f5e4fa">IsMatrix&lt;Mat&gt;</a> and not <a class="el" href="group__matrix__group.html#gab89b1bb1535e5277396d1695e81426ee">IsMatWithSemiring&lt;Mat&gt;</a>.</td></tr>

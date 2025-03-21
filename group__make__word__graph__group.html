@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -184,7 +188,7 @@ $(function(){initNavTree('group__make__word__graph__group.html',''); initResizab
 <div class="contents">
 <a name="details" id="details"></a>
 <p>This page contains documentation related to safely constructing a <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> instance.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__make__group.html">The `make` function</a> for an overview of possible uses of the <code><a class="el" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77" title="Validate the arguments, construct a Blocks object, and validate it.">make</a></code> function. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__make__group.html">The `make` function</a> for an overview of possible uses of the <code><a class="el" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77" title="Check the arguments, construct a Blocks object, and check it.">make</a></code> function. </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -194,7 +198,7 @@ Functions</h2></td></tr>
 <tr class="separator:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae96fe4e79d0f089e8e9f1507d2e4ae2e" id="r_gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gae96fe4e79d0f089e8e9f1507d2e4ae2e">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; const &amp;targets)</td></tr>
-<tr class="memdesc:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate the arguments, construct a <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object, and validate it.     <br /></td></tr>
+<tr class="memdesc:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.    //NOLINT()  <br /></td></tr>
 <tr class="separator:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -250,7 +254,7 @@ template&lt;typename Return&gt; </div>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where \(m\) is the length of <code class="param">targets</code> and \(n\) is the parameter <code class="param">num_nodes</code>.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Construct a word graph with 5 nodes and 10 edges (7 specified)</span></div>
 <div class="line"><a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;WordGraph&lt;uint8_t&gt;</a>&gt;(5, {{0, 0}, {1, 1}, {2}, {3, 3}});</div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Validate the arguments, construct a Blocks object, and validate it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:783</div></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:798</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
@@ -283,26 +287,31 @@ template&lt;typename Return&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>This function constructs a word graph from its arguments whose out-degree is specified by the length of the first item in the 2nd parameter.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Container</td><td>the type of the parameter <code class="param">cont</code>. </td></tr>
-    <tr><td class="paramname">Return</td><td>the return type. Must satisfy <code><a class="elRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same</a>&lt;Return, <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a>&gt;</code>.</td></tr>
+    <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph&lt;Return&gt;</a>.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">cont</td><td>container containing a lookup for the blocks.</td></tr>
+    <tr><td class="paramname">num_nodes</td><td>the number of nodes in the word graph. </td></tr>
+    <tr><td class="paramname">targets</td><td>the targets of the word graph.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the arguments do not describe a signed partition.</td></tr>
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the constructed <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object is not valid.    </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <a class="el" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b" title="Add an edge from one node to another with a given label.">WordGraph&lt;Node&gt;::target</a> throws when adding edges from <code class="param">targets</code>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where \(m\) is the length of <code class="param">targets</code> and \(n\) is the parameter <code class="param">num_nodes</code>.</dd></dl>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Construct a word graph with 5 nodes and 10 edges (7 specified)</span></div>
+<div class="line"><a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;WordGraph&lt;uint8_t&gt;</a>&gt;(5, {{0, 0}, {1, 1}, {2}, {3, 3}});</div>
+</div><!-- fragment -->    //NOLINT() </dd></dl>
 
 </div>
 </div>

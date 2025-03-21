@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -179,23 +183,61 @@ $(function(){initNavTree('namespacelibsemigroups_1_1paths.html',''); initResizab
 <div class="header">
   <div class="summary">
 <a href="#enum-members">Enumerations</a>  </div>
-  <div class="headertitle"><div class="title">libsemigroups::paths Namespace Reference</div></div>
+  <div class="headertitle"><div class="title">libsemigroups::paths Namespace Reference<div class="ingroups"><a class="el" href="group__word__graph__group.html">Word graphs and related functionality</a></div></div></div>
 </div><!--header-->
 <div class="contents">
-<table class="memberdecls">
+<a name="details" id="details"></a>
+<div class="textblock"><p>This namespace contains helper functions for the <a class="el" href="classlibsemigroups_1_1_paths.html" title="Range for iterating through paths in a WordGraph.">Paths</a> class. </p>
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ga8a0fd7a8363e41d8c12a90716f4f500f" id="r_ga8a0fd7a8363e41d8c12a90716f4f500f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__paths__group.html#ga8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a> { <br />
-&#160;&#160;<a class="el" href="group__paths__group.html#gga8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6">dfs</a> = 0
-, <a class="el" href="group__paths__group.html#gga8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6">matrix</a>
-, <a class="el" href="group__paths__group.html#gga8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab">acyclic</a>
-, <a class="el" href="group__paths__group.html#gga8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03">trivial</a>
+<tr class="memitem:a8a0fd7a8363e41d8c12a90716f4f500f" id="r_a8a0fd7a8363e41d8c12a90716f4f500f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a> { <br />
+&#160;&#160;<a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6">dfs</a> = 0
+, <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6">matrix</a>
+, <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab">acyclic</a>
+, <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03">trivial</a>
 , <br />
-&#160;&#160;<a class="el" href="group__paths__group.html#gga8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">automatic</a>
+&#160;&#160;<a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">automatic</a>
 <br />
  }</td></tr>
-<tr class="separator:ga8a0fd7a8363e41d8c12a90716f4f500f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:a8a0fd7a8363e41d8c12a90716f4f500f"><td class="mdescLeft">&#160;</td><td class="mdescRight">An enum for specifying the algorithm to the functions number_of_paths().  <a href="#a8a0fd7a8363e41d8c12a90716f4f500f">More...</a><br /></td></tr>
+<tr class="separator:a8a0fd7a8363e41d8c12a90716f4f500f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a8a0fd7a8363e41d8c12a90716f4f500f" name="a8a0fd7a8363e41d8c12a90716f4f500f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a0fd7a8363e41d8c12a90716f4f500f">&#9670;&#160;</a></span>algorithm</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6" name="a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6"></a>dfs&#160;</td><td class="fielddoc"><p>Use a depth-first-search. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6" name="a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6"></a>matrix&#160;</td><td class="fielddoc"><p>Use the adjacency matrix and matrix multiplication. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab" name="a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab"></a>acyclic&#160;</td><td class="fielddoc"><p>Use a dynamic programming approach for acyclic word graphs. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03" name="a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03"></a>trivial&#160;</td><td class="fielddoc"><p>Try to utilise some corner cases. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8" name="a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8"></a>automatic&#160;</td><td class="fielddoc"><p>The function <a class="el" href="classlibsemigroups_1_1_paths.html#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a> tries to decide which algorithm is best. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

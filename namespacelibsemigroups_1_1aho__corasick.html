@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -306,21 +310,25 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This function performs the same as <code>ac.add_word_no_checks(w.begin(), ! w.end())</code>. </p><pre class="fragment">    \tparam Word the type of the 2nd parameter \p w.
-    \param ac AhoCorasick object to add the word to.
-    \param w the word to add.
+<p>This function performs the same as <code>ac.add_word_no_checks(w.begin(), w.end())</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Word</td><td>the type of the 2nd parameter <code class="param">w</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ac</td><td><a class="el" href="classlibsemigroups_1_1_aho_corasick.html" title="For an implementation of the Aho-Corasick algorithm.">AhoCorasick</a> object to add the word to. </td></tr>
+    <tr><td class="paramname">w</td><td>the word to add.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An <a class="el" href="#a1df9ed5924e3e5f8a9b051795c1d20eb">index_type</a> corresponding to the final node added to the <code class="param">ac</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the length of <code class="param">w</code>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_aho_corasick.html#a6362645816a10c82c9ea6f43ac1d71b2">add_word_no_checks</a>. </dd></dl>
 
-    \returns An \ref index_type corresponding to the final node added to the
-    \p ac.
-
-    \par Exceptions
-    This function guarantees not to throw a \ref LibsemigroupsException.
-
-    \par Complexity
-    Linear in the length of \p w.
-
-    \sa \ref AhoCorasick::add_word_no_checks. 
-</pre> 
 </div>
 </div>
 <a id="ac7e4a8a9d2bb0683d46eaaabc7945de5" name="ac7e4a8a9d2bb0683d46eaaabc7945de5"></a>
@@ -415,21 +423,25 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This function performs the same as <code>ac.rm_word_no_checks(w.begin(), ! w.end())</code>. </p><pre class="fragment">    \tparam Word the type of the 2nd parameter \p w.
-    \param ac AhoCorasick object to remove the word from.
-    \param w the word to remove.
+<p>This function performs the same as <code>ac.rm_word_no_checks(w.begin(), w.end())</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Word</td><td>the type of the 2nd parameter <code class="param">w</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ac</td><td><a class="el" href="classlibsemigroups_1_1_aho_corasick.html" title="For an implementation of the Aho-Corasick algorithm.">AhoCorasick</a> object to remove the word from. </td></tr>
+    <tr><td class="paramname">w</td><td>the word to remove.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An <a class="el" href="#a1df9ed5924e3e5f8a9b051795c1d20eb">index_type</a> corresponding to the node with signature equal to <code class="param">w</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the length of <code class="param">w</code>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_aho_corasick.html#aa74b5744e9c08aa1280aa4b7946cffdf">rm_word_no_checks</a>. </dd></dl>
 
-    \returns An \ref index_type corresponding to the node with signature
-    equal to \p w.
-
-    \par Exceptions
-    This function guarantees not to throw a \ref LibsemigroupsException.
-
-    \par Complexity
-    Linear in the length of \p w.
-
-    \sa \ref AhoCorasick::rm_word_no_checks. 
-</pre> 
 </div>
 </div>
 <a id="accba909f4ab977483bcd91231015183f" name="accba909f4ab977483bcd91231015183f"></a>
@@ -473,12 +485,12 @@ template&lt;typename Iterator&gt; </div>
 <p>After validating <code class="param">start</code> with respect to <code class="param">ac</code>, this function performs the same as <code>traverse_word_no_checks(ac, start, first, last)</code>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>ac.validate_active_node_index(start)</code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>ac.throw_if_node_index_not_active(start)</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a6e513e2604f3e6b37cad82deeb529d09">traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
-start, Iterator first, Iterator last)</a>, <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#ab0c024b0b267a446740fee6ec494dcef">validate_active_node_index</a>. </dd></dl>
+start, Iterator first, Iterator last)</a>, <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#a854078bb6f310a5fe9ffb4c9624a35df">throw_if_node_index_not_active</a>. </dd></dl>
 
 </div>
 </div>
@@ -515,9 +527,10 @@ template&lt;typename Word&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function performs the same as <code>traverse_word(ac, start, w.cbegin(), ! w.cend())</code>. </p><pre class="fragment">    \sa \ref traverse_word(AhoCorasick const&amp; ac, index_type start, Iterator
-    first, Iterator last). 
-</pre> 
+<p>This function performs the same as <code>traverse_word(ac, start, w.cbegin(), w.cend())</code>.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#accba909f4ab977483bcd91231015183f">traverse_word(AhoCorasick const&amp; ac, index_type start, Iterator
+first, Iterator last)</a>. </dd></dl>
+
 </div>
 </div>
 <a id="a8694ec953da37ac19082855b6cb287c2" name="a8694ec953da37ac19082855b6cb287c2"></a>
@@ -553,13 +566,11 @@ template&lt;typename Iterator&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function performs the same as <code>traverse_word_no_checks(ac, ! <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#abf1ff08c2d764bcb777cd6dbd9109446" title="Constant for the root of the trie.">AhoCorasick::root</a>, first, last)</code>. </p><pre class="fragment">    \note
-    There is no `_no_checks` suffix here as AhoCorasick::root is always a
-    valid node of a trie, and therefore no checks are needed.
+<p>This function performs the same as <code>traverse_word_no_checks(ac, AhoCorasick::root, first, last)</code>.</p>
+<dl class="section note"><dt>Note</dt><dd>There is no <code>_no_checks</code> suffix here as <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#abf1ff08c2d764bcb777cd6dbd9109446" title="Constant for the root of the trie.">AhoCorasick::root</a> is always a valid node of a trie, and therefore no checks are needed.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a6e513e2604f3e6b37cad82deeb529d09">traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
+start, Iterator first, Iterator last)</a>. </dd></dl>
 
-    \sa \ref traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
-    start, Iterator first, Iterator last). 
-</pre> 
 </div>
 </div>
 <a id="a89a5df8d15dfe38d46edaaee53dfb7b3" name="a89a5df8d15dfe38d46edaaee53dfb7b3"></a>
@@ -590,13 +601,11 @@ template&lt;typename Word&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function performs the same as <code>traverse_word_no_checks(ac, ! <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#abf1ff08c2d764bcb777cd6dbd9109446" title="Constant for the root of the trie.">AhoCorasick::root</a>, w.cbegin(), w.end())</code>. </p><pre class="fragment">    \note
-    There is no `_no_checks` suffix here as AhoCorasick::root is always a
-    valid node of a trie, and therefore no checks are needed.
+<p>This function performs the same as <code>traverse_word_no_checks(ac, <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#abf1ff08c2d764bcb777cd6dbd9109446" title="Constant for the root of the trie.">AhoCorasick::root</a>, w.cbegin(), w.end())</code>.</p>
+<dl class="section note"><dt>Note</dt><dd>There is no <code>_no_checks</code> suffix here as <a class="el" href="classlibsemigroups_1_1_aho_corasick.html#abf1ff08c2d764bcb777cd6dbd9109446" title="Constant for the root of the trie.">AhoCorasick::root</a> is always a valid node of a trie, and therefore no checks are needed.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a6e513e2604f3e6b37cad82deeb529d09">traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
+start, Iterator first, Iterator last)</a>. </dd></dl>
 
-    \sa \ref traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
-    start, Iterator first, Iterator last). 
-</pre> 
 </div>
 </div>
 <a id="a6e513e2604f3e6b37cad82deeb529d09" name="a6e513e2604f3e6b37cad82deeb529d09"></a>
@@ -691,9 +700,10 @@ template&lt;typename Iterator&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function performs the same as <code>traverse_word_no_checks(ac, start, ! w.cbegin(), w.cend())</code>. </p><pre class="fragment">    \sa \ref traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
-    start, Iterator first, Iterator last). 
-</pre> 
+<p>This function performs the same as <code>traverse_word_no_checks(ac, start, w.cbegin(), w.cend())</code>.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a6e513e2604f3e6b37cad82deeb529d09">traverse_word_no_checks(AhoCorasick const&amp; ac, index_type
+start, Iterator first, Iterator last)</a>. </dd></dl>
+
 </div>
 </div>
 </div><!-- contents -->

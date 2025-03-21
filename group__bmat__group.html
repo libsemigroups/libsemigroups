@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,7 +186,7 @@ $(function(){initNavTree('group__bmat__group.html',''); initResizable(true); });
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">BMat</div></div>
+  <div class="headertitle"><div class="title">BMat<div class="ingroups"><a class="el" href="group__bmat__index__group.html">Boolean matrices</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
@@ -193,7 +197,7 @@ $(function(){initNavTree('group__bmat__group.html',''); initResizable(true); });
 <div class="line"><a class="code hl_typedef" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat&lt;3&gt;</a> m;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix</span></div>
 <div class="line"><a class="code hl_typedef" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat&lt;&gt;</a> m(4, 4);</div>
-<div class="ttc" id="agroup__bmat__group_html_gaba976bb482d4da5aa454b2b185a7241a"><div class="ttname"><a href="#gaba976bb482d4da5aa454b2b185a7241a">libsemigroups::BMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicBMat, StaticBMat&lt; R, C &gt; &gt; BMat</div><div class="ttdoc">Alias template for boolean matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3906</div></div>
+<div class="ttc" id="agroup__bmat__group_html_gaba976bb482d4da5aa454b2b185a7241a"><div class="ttname"><a href="#gaba976bb482d4da5aa454b2b185a7241a">libsemigroups::BMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicBMat, StaticBMat&lt; R, C &gt; &gt; BMat</div><div class="ttdoc">Alias template for boolean matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3963</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -262,7 +266,7 @@ template&lt;size_t R = 0, size_t C = R&gt; </div>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">R</td><td>the number of rows of the matrix. A value of <code>0</code> (the default value) indicates that the dimensions will be set at run time.</td></tr>
-    <tr><td class="paramname">C</td><td>the number of columns of the matrix. A value of <code>0</code> indicates that the dimensions will be set at run time (the default value is <code>\c ! R</code>). </td></tr>
+    <tr><td class="paramname">C</td><td>the number of columns of the matrix. A value of <code>0</code> indicates that the dimensions will be set at run time (the default value is <code>R</code>). </td></tr>
   </table>
   </dd>
 </dl>
@@ -305,11 +309,11 @@ template&lt;size_t R, size_t C&gt; </div>
 <div class="line">                                  R,</div>
 <div class="line">                                  C,</div>
 <div class="line">                                  <span class="keywordtype">int</span>&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1850</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_one.html">libsemigroups::BooleanOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3816</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_plus_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_plus.html">libsemigroups::BooleanPlus</a></div><div class="ttdoc">Function object for addition in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3762</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_prod.html">libsemigroups::BooleanProd</a></div><div class="ttdoc">Function object for multiplication in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3789</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_zero.html">libsemigroups::BooleanZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3841</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1859</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_one.html">libsemigroups::BooleanOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3874</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_plus_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_plus.html">libsemigroups::BooleanPlus</a></div><div class="ttdoc">Function object for addition in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3820</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_prod.html">libsemigroups::BooleanProd</a></div><div class="ttdoc">Function object for multiplication in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3847</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_zero.html">libsemigroups::BooleanZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3899</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of static boolean matrices where the dimensions of the matrices are defined at compile time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -344,7 +348,7 @@ template&lt;typename Mat&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function can be used to validate that a matrix contains values in the underlying semiring.</p>
+<p>This function can be used to check that a matrix contains values in the underlying semiring.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the 1st argument, must satisfy <a class="el" href="#ga4f23569fc5350a77a406bfa416a369f4">IsBMat&lt;Mat&gt;</a>.</td></tr>
@@ -353,7 +357,7 @@ template&lt;typename Mat&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">val</td><td>the entry to validate.</td></tr>
+    <tr><td class="paramname">val</td><td>the entry to check.</td></tr>
   </table>
   </dd>
 </dl>
@@ -383,7 +387,7 @@ template&lt;typename Mat&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function can be used to validate that a matrix contains values in the underlying semiring.</p>
+<p>This function can be used to check that a matrix contains values in the underlying semiring.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of <code class="param">m</code>, must satisfy <a class="el" href="#ga4f23569fc5350a77a406bfa416a369f4">IsBMat&lt;Mat&gt;</a>.</td></tr>
@@ -392,7 +396,7 @@ template&lt;typename Mat&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">m</td><td>the boolean matrix to validate.</td></tr>
+    <tr><td class="paramname">m</td><td>the boolean matrix to check.</td></tr>
   </table>
   </dd>
 </dl>

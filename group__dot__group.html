@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -185,10 +189,12 @@ $(function(){initNavTree('group__dot__group.html',''); initResizable(true); });
 <a name="details" id="details"></a>
 <p>This page contains links to the various classes and functions in <code>libsemigroups</code> for visualising instances of some of the other objects implemented in <code>libsemigroups</code>.</p>
 <p>The class <a class="el" href="classlibsemigroups_1_1_dot.html" title="A representation of a graph in the DOT language of Graphviz.">Dot</a> facilitates the creation and rendering of graph descriptions in the <a href="https://www.graphviz.org/doc/info/lang.html">DOT</a> language of the <a href="https://www.graphviz.org">Graphviz</a> graph drawing software.</p>
-<p>The function dot can be used to produce initial <a class="el" href="classlibsemigroups_1_1_dot.html" title="A representation of a graph in the DOT language of Graphviz.">Dot</a> objects for various of the data structures and algorithms in <code>libsemigroups</code>:</p>
+<p>The function <code>dot</code> can be used to produce initial <a class="el" href="classlibsemigroups_1_1_dot.html" title="A representation of a graph in the DOT language of Graphviz.">Dot</a> objects for various of the data structures and algorithms in <code>libsemigroups</code>:</p>
 <ul>
-<li>dot(AhoCorasick&amp;)</li>
-<li><a class="el" href="namespacelibsemigroups_1_1word__graph.html#af31eecd044f68e0003863a304855451c">dot(WordGraph&lt;Node&gt; const&amp; wg)</a> </li>
+<li><a class="el" href="namespacelibsemigroups_1_1aho__corasick.html#ac7e4a8a9d2bb0683d46eaaabc7945de5">dot(AhoCorasick&amp;)</a></li>
+<li><a class="el" href="namespacelibsemigroups_1_1stephen.html#a02a2fc226e886f5cf114fed4a96dd0c3">dot(Stephen&lt;PresentationType&gt;&amp;)</a></li>
+<li><a class="el" href="namespacelibsemigroups_1_1ukkonen.html#a9cb29bc3442dc8de158ed08441303a99">dot(Ukkonen const&amp;)</a></li>
+<li><a class="el" href="namespacelibsemigroups_1_1word__graph.html#af31eecd044f68e0003863a304855451c">dot(WordGraph&lt;Node&gt; const&amp;)</a> </li>
 </ul>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>

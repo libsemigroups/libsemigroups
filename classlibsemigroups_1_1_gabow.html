@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -180,13 +184,15 @@ $(function(){initNavTree('classlibsemigroups_1_1_gabow.html',''); initResizable(
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#related">Related Symbols</a> &#124;
 <a href="classlibsemigroups_1_1_gabow-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">Gabow&lt; Node &gt;<div class="ingroups"><a class="el" href="group__gabow__group.html">Gabow</a></div></div></div>
+  <div class="headertitle"><div class="title">Gabow&lt; Node &gt;<div class="ingroups"><a class="el" href="group__word__graph__group.html">Word graphs and related functionality</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Node&gt;<br />
 class libsemigroups::Gabow&lt; Node &gt;</div><p>Defined in <code><a class="el" href="gabow_8hpp_source.html">gabow.hpp</a></code>.</p>
+<p>This page contains class implements <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a>'s algorithm <a class="el" href="citelist.html#CITEREF_gab00">[23]</a> for computing the strongly connected components of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</p>
 <p>Instances of this class can be used to compute, and provide information about, the strongly connected components of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> used to construct the instance. The strongly connected components are lazily evaluated when triggered by a relevant member function. The complexity of <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a>'s algorithm is at most \(O(mn)\) where <code>m</code> is <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes()</a> and <code>n</code> is <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb">out_degree()</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -278,6 +284,20 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1d2590c0a7ec8a5b5c8c49fceb98a14b" id="r_a1d2590c0a7ec8a5b5c8c49fceb98a14b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d2590c0a7ec8a5b5c8c49fceb98a14b">word_graph</a> () const noexcept</td></tr>
 <tr class="memdesc:a1d2590c0a7ec8a5b5c8c49fceb98a14b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the underlying word graph.  <br /></td></tr>
 <tr class="separator:a1d2590c0a7ec8a5b5c8c49fceb98a14b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="related" name="related"></a>
+Related Symbols</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p>(Note that these are not member symbols.) </p>
+</td></tr>
+<tr class="memitem:a4b50e2776bd7d4709a68e0e913af6c1f" id="r_a4b50e2776bd7d4709a68e0e913af6c1f"><td class="memTemplParams" colspan="2"><a id="a4b50e2776bd7d4709a68e0e913af6c1f" name="a4b50e2776bd7d4709a68e0e913af6c1f"></a>
+template&lt;typename Node&gt; </td></tr>
+<tr class="memitem:a4b50e2776bd7d4709a68e0e913af6c1f"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Gabow</b> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;) -&gt; <a class="el" href="classlibsemigroups_1_1_gabow.html">Gabow</a>&lt; Node &gt;</td></tr>
+<tr class="memdesc:a4b50e2776bd7d4709a68e0e913af6c1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deduction guide for <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a> objects. <br /></td></tr>
+<tr class="separator:a4b50e2776bd7d4709a68e0e913af6c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48b3f5d71bf2792bbc22b5013e1b7a1b" id="r_a48b3f5d71bf2792bbc22b5013e1b7a1b"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
+<tr class="memitem:a48b3f5d71bf2792bbc22b5013e1b7a1b"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a48b3f5d71bf2792bbc22b5013e1b7a1b">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_gabow.html">Gabow</a>&lt; Node &gt; const &amp;g)</td></tr>
+<tr class="memdesc:a48b3f5d71bf2792bbc22b5013e1b7a1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a> object.  <br /></td></tr>
+<tr class="separator:a48b3f5d71bf2792bbc22b5013e1b7a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9ab0e81d6291378726560d9a802eb4a7" name="a9ab0e81d6291378726560d9a802eb4a7"></a>
@@ -434,7 +454,7 @@ template&lt;typename Node&gt; </div>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers the computation of the strongly connected components (if they are not already known).</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a3dfbc247c5d8231e5a9fedc05d3263f6">component_of</a> <a class="el" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3" title="Convert a Kambites object to a FroidurePin object.">to</a> obtain the <a class="el" href="#a48f68ec6da19f63da7434d4d8a8e850f" title="Returns a const reference to a vector containing the strongly connected component with given index.">component</a> of a node. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a3dfbc247c5d8231e5a9fedc05d3263f6">component_of</a> <a class="el" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486" title="No doc.">to</a> obtain the <a class="el" href="#a48f68ec6da19f63da7434d4d8a8e850f" title="Returns a const reference to a vector containing the strongly connected component with given index.">component</a> of a node. </dd></dl>
 
 </div>
 </div>
@@ -473,7 +493,7 @@ template&lt;typename Node&gt; </div>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers the computation of the strongly connected components (if they are not already known).</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does not check that its argument <code class="param">i</code>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aaf651a3a2ee80b3992eae9535bd60a3c">component_of_no_checks</a> <a class="el" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3" title="Convert a Kambites object to a FroidurePin object.">to</a> obtain the strongly connected <a class="el" href="#a48f68ec6da19f63da7434d4d8a8e850f" title="Returns a const reference to a vector containing the strongly connected component with given index.">component</a> of a node. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aaf651a3a2ee80b3992eae9535bd60a3c">component_of_no_checks</a> <a class="el" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486" title="No doc.">to</a> obtain the strongly connected <a class="el" href="#a48f68ec6da19f63da7434d4d8a8e850f" title="Returns a const reference to a vector containing the strongly connected component with given index.">component</a> of a node. </dd></dl>
 
 </div>
 </div>
@@ -994,6 +1014,49 @@ template&lt;typename Node&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A const reference to a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph&lt;Node&gt;</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function does not trigger the computation of the strongly connected components. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Symbol Documentation</h2>
+<a id="a48b3f5d71bf2792bbc22b5013e1b7a1b" name="a48b3f5d71bf2792bbc22b5013e1b7a1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48b3f5d71bf2792bbc22b5013e1b7a1b">&#9670;&#160;</a></span>to_human_readable_repr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> to_human_readable_repr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_gabow.html">Gabow</a>&lt; Node &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>g</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel related">related</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a> object.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">g</td><td>the <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a> object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string containing a human readable representation of <code class="param">g</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
 </div>
 </div>

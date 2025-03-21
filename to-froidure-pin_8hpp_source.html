@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,7 +186,7 @@ $(function(){initNavTree('to-froidure-pin_8hpp_source.html',''); initResizable(t
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// libsemigroups - C++ library for semigroups and monoids</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2022 James D. Mitchell</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2022-2025 James D. Mitchell</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// it under the terms of the GNU General Public License as published by</span></div>
@@ -209,71 +213,80 @@ $(function(){initNavTree('to-froidure-pin_8hpp_source.html',''); initResizable(t
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;froidure-pin.hpp&quot;</span>        <span class="comment">// for FroidurePin</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;kambites-class.hpp&quot;</span>      <span class="comment">// for Kambites</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;knuth-bendix-class.hpp&quot;</span>  <span class="comment">// for KnuthBendix</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;todd-coxeter-class.hpp&quot;</span>  <span class="comment">// for ToddCoxeter</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &quot;detail/kbe.hpp&quot;</span>  <span class="comment">// for KBE</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;detail/ke.hpp&quot;</span>   <span class="comment">// for KE</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#include &quot;detail/tce.hpp&quot;</span>  <span class="comment">// for TCE</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a> {</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>  <span class="comment">// Congruence</span></div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span></div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#gaae5bba6fe18ca0a7cfa515f01e2e1d3a">  104</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(Congruence&lt;Word&gt;&amp; cong)</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;Thing&lt;int&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;int&gt;</a>&gt;,</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                          <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr&lt;FroidurePinBase&gt;</a>&gt;;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>  <span class="comment">// Kambites</span></div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span></div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(Kambites&lt;Word&gt;&amp; k) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>      std::is_same_v&lt;Thing&lt;detail::KE&lt;Word&gt;&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::KE&lt;Word&gt;</a>&gt;&gt;,</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>      <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::KE&lt;Word&gt;</a>&gt;&gt;;</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span></div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>  <span class="comment">// KnuthBendix</span></div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing,</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keyword">typename</span> Rewriter,</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            <span class="keyword">typename</span> ReductionOrder&gt;</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&amp; kb)</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>      -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>          std::is_same_v&lt;Thing&lt;int&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;int&gt;</a>&gt;,</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>          <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>              detail::KBE&lt;detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&gt;&gt;&gt;;</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>  <span class="comment">// ToddCoxeter</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span></div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing&gt;</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#ga93e9bfe91367fd5b76791df39848cd43">  217</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(detail::ToddCoxeterImpl&amp; tc) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>      std::is_same_v&lt;Thing&lt;detail::TCE&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::TCE&gt;</a>&gt;,</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>      <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::TCE&gt;</a>&gt;;</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>  <span class="comment">// WordGraph</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span></div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Node&gt;</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#gab1bb5284d0346b70ff0ef24f88cdfae1">  283</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;Node&gt;</a> <span class="keyword">const</span>&amp; wg, <span class="keywordtype">size_t</span> first, <span class="keywordtype">size_t</span> last)</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>      -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>          std::is_same_v&lt;FroidurePin&lt;typename Result::element_type&gt;, Result&gt;,</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>          Result&gt;;</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span></div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Node&gt;</div>
-<div class="foldopen" id="foldopen00297" data-start="{" data-end="}">
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#ga8f5b48660708a57be5a1f27784d71d0d">  297</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;Node&gt;</a> <span class="keyword">const</span>&amp; wg) -&gt; std::enable_if_t&lt;</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>      std::is_same_v&lt;FroidurePin&lt;typename Result::element_type&gt;, Result&gt;,</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>      Result&gt; {</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;Result&gt;</a>(wg, 0, wg.number_of_nodes());</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>  }</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;konieczny.hpp&quot;</span>           <span class="comment">// for Konieczny</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;todd-coxeter-class.hpp&quot;</span>  <span class="comment">// for ToddCoxeter</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;detail/kbe.hpp&quot;</span>  <span class="comment">// for KBE</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#include &quot;detail/ke.hpp&quot;</span>   <span class="comment">// for KE</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#include &quot;detail/tce.hpp&quot;</span>  <span class="comment">// for TCE</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a> {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>  <span class="comment">// Congruence</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#gaae5bba6fe18ca0a7cfa515f01e2e1d3a">  105</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(Congruence&lt;Word&gt;&amp; cong)</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;Thing&lt;int&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;int&gt;</a>&gt;,</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                          <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr&lt;FroidurePinBase&gt;</a>&gt;;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>  <span class="comment">// Kambites</span></div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span></div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">  142</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(Kambites&lt;Word&gt;&amp; k) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>      std::is_same_v&lt;Thing&lt;detail::KE&lt;Word&gt;&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::KE&lt;Word&gt;</a>&gt;&gt;,</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>      <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::KE&lt;Word&gt;</a>&gt;&gt;;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span></div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>  <span class="comment">// KnuthBendix</span></div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing,</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            <span class="keyword">typename</span> Rewriter,</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            <span class="keyword">typename</span> ReductionOrder&gt;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&amp; kb)</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>      -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>          std::is_same_v&lt;Thing&lt;int&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;int&gt;</a>&gt;,</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>          <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>              detail::KBE&lt;detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&gt;&gt;&gt;;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing,</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="keyword">typename</span> Element,</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>            <span class="keyword">typename</span> Traits&gt;</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#ga5e9a5bad9c2ab174cc8a05ceb11407c4">  211</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_konieczny.html">Konieczny&lt;Element, Traits&gt;</a> <span class="keyword">const</span>&amp; k)</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>      -&gt; std::enable_if_t&lt;std::is_same_v&lt;Thing&lt;int&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;int&gt;</a>&gt;,</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>                          <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;Element&gt;</a>&gt;;</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>  <span class="comment">// ToddCoxeter</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing&gt;</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#ga93e9bfe91367fd5b76791df39848cd43">  248</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(detail::ToddCoxeterImpl&amp; tc) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>      std::is_same_v&lt;Thing&lt;detail::TCE&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::TCE&gt;</a>&gt;,</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>      <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;detail::TCE&gt;</a>&gt;;</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>  <span class="comment">// WordGraph</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span></div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Node&gt;</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#gab1bb5284d0346b70ff0ef24f88cdfae1">  314</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;Node&gt;</a> <span class="keyword">const</span>&amp; wg, <span class="keywordtype">size_t</span> first, <span class="keywordtype">size_t</span> last)</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>      -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>          std::is_same_v&lt;FroidurePin&lt;typename Result::element_type&gt;, Result&gt;,</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>          Result&gt;;</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Node&gt;</div>
+<div class="foldopen" id="foldopen00328" data-start="{" data-end="}">
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#ga8f5b48660708a57be5a1f27784d71d0d">  328</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;Node&gt;</a> <span class="keyword">const</span>&amp; wg) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>      std::is_same_v&lt;FroidurePin&lt;typename Result::element_type&gt;, Result&gt;,</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>      Result&gt; {</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Result&gt;</a>(wg, 0, wg.number_of_nodes());</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>  }</div>
 </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span><span class="preprocessor">#include &quot;to-froidure-pin.tpp&quot;</span></div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_</span></div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span> </div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="preprocessor">#include &quot;to-froidure-pin.tpp&quot;</span></div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a></div><div class="ttdoc">Class implementing the Froidure-Pin algorithm.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:188</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:85</div></div>
-<div class="ttc" id="agroup__to__froidure__pin__group_html_gad6324051450cbfb3d711117608524fe3"><div class="ttname"><a href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">libsemigroups::to</a></div><div class="ttdeci">auto to(Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;</div><div class="ttdoc">Convert a Kambites object to a FroidurePin object.</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html"><div class="ttname"><a href="classlibsemigroups_1_1_konieczny.html">libsemigroups::Konieczny</a></div><div class="ttdoc">Class implementing Konieczny&#39;s algorithm.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:179</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:82</div></div>
+<div class="ttc" id="agroup__to__froidure__pin__group_html_gae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 <div class="ttc" id="aunique_ptr_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -505,17 +509,23 @@ template&lt;typename Node, typename... Args&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function returns a word graph containing the join/meet of the word graphs <code class="param">x</code> and <code class="param">y</code>. If <code>n</code> is the number of arguments, then this function constructs a word graph to contain the result, forwards this and the other arguments to the overload of <code>call_no_checks</code> with <code>n + ! 1</code> parameters, then returns the word graph containing the result. </p><pre class="fragment">    \tparam Node the type of the nodes in the word graphs which are
-    parameters to this function.
+<p>This function returns a word graph containing the join/meet of the word graphs <code class="param">x</code> and <code class="param">y</code>. If <code>n</code> is the number of arguments, then this function constructs a word graph to contain the result, forwards this and the other arguments to the overload of <code>call_no_checks</code> with <code>n + 1</code> parameters, then returns the word graph containing the result.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in the word graphs which are parameters to this function.</td></tr>
+    <tr><td class="paramname">Args</td><td>parameter pack for the remaining arguments.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the first word graph to join/meet. </td></tr>
+    <tr><td class="paramname">args</td><td>the remaining parameters.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks whatsoever on the validity of the arguments are performed. </dd></dl>
 
-    \tparam Args parameter pack for the remaining arguments.
-
-    \param x the first word graph to join/meet.
-    \param args the remaining parameters.
-
-    \warning
-    No checks whatsoever on the validity of the arguments are performed. 
-</pre> 
 </div>
 </div>
 <a id="ab164a704474a159c17567e8ed8b0f2eb" name="ab164a704474a159c17567e8ed8b0f2eb"></a>

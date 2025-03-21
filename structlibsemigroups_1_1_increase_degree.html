@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -183,8 +187,8 @@ $(function(){initNavTree('structlibsemigroups_1_1_increase_degree.html',''); ini
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename = void&gt;<br />
 struct libsemigroups::IncreaseDegree&lt; Element, typename &gt;</div><p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void ! operator()(Element&amp; x, size_t n) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
-<p>The call operator should change the first argument in-place so that if <code>m ! = <a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code>, then after the call to <code><a class="el" href="structlibsemigroups_1_1_increase_degree.html" title="Adapter for increasing the degree of an element.">IncreaseDegree</a>&lt;Element&gt;()(x, n)</code>, <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> returns <code>m + n</code>. This only makes sense for certain types of elements, such as permutations, transformations, or matrices, and not for other types of object. In the latter case, the call operator should simply do nothing. This is used, for example, in the member function <a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a4ace07171b27131a2aae8f22ec34882a" title="Add non-redundant generators in collection.">FroidurePin::closure</a>, when one of the generators being added has degree larger than the existing generators.</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp; x, size_t n) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>The call operator should change the first argument in-place so that if <code>m = <a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code>, then after the call to <code><a class="el" href="structlibsemigroups_1_1_increase_degree.html" title="Adapter for increasing the degree of an element.">IncreaseDegree</a>&lt;Element&gt;()(x, n)</code>, <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> returns <code>m + n</code>. This only makes sense for certain types of elements, such as permutations, transformations, or matrices, and not for other types of object. In the latter case, the call operator should simply do nothing. This is used, for example, in the member function <a class="el" href="classlibsemigroups_1_1_froidure_pin.html#a4ace07171b27131a2aae8f22ec34882a" title="Add non-redundant generators in collection.">FroidurePin::closure</a>, when one of the generators being added has degree larger than the existing generators.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of the elements of a semigroup.</td></tr>

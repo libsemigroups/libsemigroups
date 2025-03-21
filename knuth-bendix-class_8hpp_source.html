@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -227,7 +231,7 @@ $(function(){initNavTree('knuth-bendix-class_8hpp_source.html',''); initResizabl
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keyword">using </span>KnuthBendixImpl_ = detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;;</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    std::vector&lt;Word&gt;  _generating_pairs;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    Presentation&lt;Word&gt; _presentation;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;Word&gt;</a> _presentation;</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>   <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
@@ -289,164 +293,167 @@ $(function(){initNavTree('knuth-bendix-class_8hpp_source.html',''); initResizabl
 <div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    }</div>
 </div>
 <div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1, <span class="keyword">typename</span> Iterator2&gt;</div>
-<div class="foldopen" id="foldopen00264" data-start="{" data-end="}">
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__init__group.html#gaac1c87b232daeb32568ec12e4870bbd9">  264</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="group__knuth__bendix__class__init__group.html#gaac1c87b232daeb32568ec12e4870bbd9">throw_if_letter_out_of_bounds</a>(Iterator1 first, Iterator2 last)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>      <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">presentation</a>().validate_word(first, last);</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    }</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="comment">// TODO(0) remove this</span></div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1, <span class="keyword">typename</span> Iterator2&gt;</div>
+<div class="foldopen" id="foldopen00265" data-start="{" data-end="}">
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__init__group.html#ga941b2edf99311a7d8250aa8bf9fbac54">  265</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="group__knuth__bendix__class__init__group.html#ga941b2edf99311a7d8250aa8bf9fbac54">throw_if_letter_not_in_alphabet</a>(Iterator1 first,</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                                         Iterator2 last)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>      <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">presentation</a>().throw_if_letter_not_in_alphabet(first, last);</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
 </div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#gab3335c2c1796f0e2ee55896f63eff9d8">  283</a></span>    [[nodiscard]] <a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gab3335c2c1796f0e2ee55896f63eff9d8">kind</a>() const noexcept;</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span></div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga54f0890c793c04cb36b682bc38fe55b2">  300</a></span>    [[nodiscard]] <span class="keywordtype">size_t</span> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga54f0890c793c04cb36b682bc38fe55b2">number_of_generating_pairs</a>() const noexcept;</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span></div>
-<div class="foldopen" id="foldopen00314" data-start="{" data-end="}">
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">  314</a></span>    [[nodiscard]] <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Word&gt;</a> <span class="keyword">const</span>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">generating_pairs</a>() const noexcept {</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>      <span class="keywordflow">return</span> _generating_pairs;</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>    }</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#gab3335c2c1796f0e2ee55896f63eff9d8">  285</a></span>    [[nodiscard]] <a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gab3335c2c1796f0e2ee55896f63eff9d8">kind</a>() const noexcept;</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span></div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga54f0890c793c04cb36b682bc38fe55b2">  302</a></span>    [[nodiscard]] <span class="keywordtype">size_t</span> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga54f0890c793c04cb36b682bc38fe55b2">number_of_generating_pairs</a>() const noexcept;</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span></div>
+<div class="foldopen" id="foldopen00316" data-start="{" data-end="}">
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">  316</a></span>    [[nodiscard]] <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Word&gt;</a> <span class="keyword">const</span>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">generating_pairs</a>() const noexcept {</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>      <span class="keywordflow">return</span> _generating_pairs;</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    }</div>
 </div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span></div>
-<div class="foldopen" id="foldopen00334" data-start="{" data-end="}">
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">  334</a></span>    [[nodiscard]] <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">presentation</a>() const noexcept {</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>      <span class="keywordflow">return</span> _presentation;</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    }</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span></div>
+<div class="foldopen" id="foldopen00336" data-start="{" data-end="}">
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">  336</a></span>    [[nodiscard]] <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">presentation</a>() const noexcept {</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>      <span class="keywordflow">return</span> _presentation;</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    }</div>
 </div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span></div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>    <span class="comment">// KnuthBendix - interface requirements - add_generating_pair</span></div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span></div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>              <span class="keyword">typename</span> Iterator2,</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>              <span class="keyword">typename</span> Iterator3,</div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga0d0147971c7428cdc83bb9a5240cd6e8">  362</a></span>    <a class="code hl_function" href="group__knuth__bendix__class__init__group.html#gab32f1d808c8f4e3734dd7435a89b5504">KnuthBendix</a>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga0d0147971c7428cdc83bb9a5240cd6e8">add_generating_pair_no_checks</a>(Iterator1 first1,</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>                                               Iterator2 last1,</div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>                                               Iterator3 first2,</div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                                               Iterator4 last2);</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span></div>
-<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>              <span class="keyword">typename</span> Iterator2,</div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>              <span class="keyword">typename</span> Iterator3,</div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
-<div class="foldopen" id="foldopen00385" data-start="{" data-end="}">
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga233970fad63b96122c0b4378bc18326e">  385</a></span>    <a class="code hl_function" href="group__knuth__bendix__class__init__group.html#gab32f1d808c8f4e3734dd7435a89b5504">KnuthBendix</a>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga233970fad63b96122c0b4378bc18326e">add_generating_pair</a>(Iterator1 first1,</div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>                                     Iterator2 last1,</div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>                                     Iterator3 first2,</div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>                                     Iterator4 last2) {</div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>      <span class="comment">// Call detail::CongruenceCommon version so that we perform bound checks</span></div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl</span></div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::add_generating_pair&lt;KnuthBendix&gt;(</div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>          first1, last1, first2, last2);</div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>    }</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span></div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="comment">// KnuthBendix - interface requirements - add_generating_pair</span></div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span></div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>              <span class="keyword">typename</span> Iterator2,</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>              <span class="keyword">typename</span> Iterator3,</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga0d0147971c7428cdc83bb9a5240cd6e8">  364</a></span>    <a class="code hl_function" href="group__knuth__bendix__class__init__group.html#gab32f1d808c8f4e3734dd7435a89b5504">KnuthBendix</a>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga0d0147971c7428cdc83bb9a5240cd6e8">add_generating_pair_no_checks</a>(Iterator1 first1,</div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                                               Iterator2 last1,</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>                                               Iterator3 first2,</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>                                               Iterator4 last2);</div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span></div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>              <span class="keyword">typename</span> Iterator2,</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>              <span class="keyword">typename</span> Iterator3,</div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
+<div class="foldopen" id="foldopen00387" data-start="{" data-end="}">
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga233970fad63b96122c0b4378bc18326e">  387</a></span>    <a class="code hl_function" href="group__knuth__bendix__class__init__group.html#gab32f1d808c8f4e3734dd7435a89b5504">KnuthBendix</a>&amp; <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga233970fad63b96122c0b4378bc18326e">add_generating_pair</a>(Iterator1 first1,</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>                                     Iterator2 last1,</div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>                                     Iterator3 first2,</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>                                     Iterator4 last2) {</div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>      <span class="comment">// Call detail::CongruenceCommon version so that we perform bound checks</span></div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl</span></div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::add_generating_pair&lt;KnuthBendix&gt;(</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>          first1, last1, first2, last2);</div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>    }</div>
 </div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span></div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>    <span class="comment">// KnuthBendix - interface requirements - contains</span></div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span> </div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    <span class="comment">// NOTE: contains_no_checks and currently_contains_no_checks are implemented</span></div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>    <span class="comment">// and documented in KnuthBendixImpl</span></div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span></div>
-<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
-<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>              <span class="keyword">typename</span> Iterator2,</div>
-<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>              <span class="keyword">typename</span> Iterator3,</div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
-<div class="foldopen" id="foldopen00424" data-start="{" data-end="}">
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga3c453173afdc300163e6fd0e7590f2d2">  424</a></span>    <a class="code hl_enumeration" href="group__types__group.html#gae214dc6594738d449fb4483859d58932">tril</a> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga3c453173afdc300163e6fd0e7590f2d2">currently_contains</a>(Iterator1 first1,</div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>                            Iterator2 last1,</div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>                            Iterator3 first2,</div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>                            Iterator4 last2)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>      <span class="comment">// Call CongruenceCommon version so that we perform bound checks</span></div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl_</span></div>
-<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::currently_contains&lt;KnuthBendix&gt;(</div>
-<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>          first1, last1, first2, last2);</div>
-<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>    }</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span></div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>    <span class="comment">// KnuthBendix - interface requirements - contains</span></div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span> </div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>    <span class="comment">// NOTE: contains_no_checks and currently_contains_no_checks are implemented</span></div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>    <span class="comment">// and documented in KnuthBendixImpl</span></div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span></div>
+<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>              <span class="keyword">typename</span> Iterator2,</div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>              <span class="keyword">typename</span> Iterator3,</div>
+<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
+<div class="foldopen" id="foldopen00426" data-start="{" data-end="}">
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga3c453173afdc300163e6fd0e7590f2d2">  426</a></span>    <a class="code hl_enumeration" href="group__types__group.html#gae214dc6594738d449fb4483859d58932">tril</a> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga3c453173afdc300163e6fd0e7590f2d2">currently_contains</a>(Iterator1 first1,</div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>                            Iterator2 last1,</div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>                            Iterator3 first2,</div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>                            Iterator4 last2)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>      <span class="comment">// Call CongruenceCommon version so that we perform bound checks</span></div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl_</span></div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::currently_contains&lt;KnuthBendix&gt;(</div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span>          first1, last1, first2, last2);</div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>    }</div>
 </div>
-<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span></div>
-<div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
-<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>              <span class="keyword">typename</span> Iterator2,</div>
-<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span>              <span class="keyword">typename</span> Iterator3,</div>
-<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
-<div class="line"><a id="l00455" name="l00455"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga8c899f0eec7b44d0bd592b3490617a12">  455</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga8c899f0eec7b44d0bd592b3490617a12">contains</a>(Iterator1 first1,</div>
-<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>                  Iterator2 last1,</div>
-<div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span>                  Iterator3 first2,</div>
-<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span>                  Iterator4 last2);</div>
-<div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span></div>
-<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span>    <span class="comment">// KnuthBendix - interface requirements - reduce</span></div>
-<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span> </div>
-<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>    <span class="comment">// NOTE: reduce_no_checks and reduce_no_run_no_checks are implemented and</span></div>
-<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>    <span class="comment">// documented in KnuthBendixImpl</span></div>
-<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span></div>
-<div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> OutputIterator,</div>
-<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span>              <span class="keyword">typename</span> InputIterator1,</div>
-<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>              <span class="keyword">typename</span> InputIterator2&gt;</div>
-<div class="foldopen" id="foldopen00489" data-start="{" data-end="}">
-<div class="line"><a id="l00489" name="l00489"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#gade33a659d3c45b573c5e88b53f32e1ab">  489</a></span>    OutputIterator <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gade33a659d3c45b573c5e88b53f32e1ab">reduce_no_run</a>(OutputIterator d_first,</div>
-<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>                                 InputIterator1 first,</div>
-<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span>                                 InputIterator2 last)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>      <span class="comment">// Call CongruenceCommon version so that we perform bound checks</span></div>
-<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl_</span></div>
-<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::reduce_no_run&lt;KnuthBendix&gt;(</div>
-<div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span>          d_first, first, last);</div>
-<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span>    }</div>
+<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span></div>
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator1,</div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>              <span class="keyword">typename</span> Iterator2,</div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span>              <span class="keyword">typename</span> Iterator3,</div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>              <span class="keyword">typename</span> Iterator4&gt;</div>
+<div class="line"><a id="l00457" name="l00457"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga8c899f0eec7b44d0bd592b3490617a12">  457</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga8c899f0eec7b44d0bd592b3490617a12">contains</a>(Iterator1 first1,</div>
+<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span>                  Iterator2 last1,</div>
+<div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span>                  Iterator3 first2,</div>
+<div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span>                  Iterator4 last2);</div>
+<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span></div>
+<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span>    <span class="comment">// KnuthBendix - interface requirements - reduce</span></div>
+<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span> </div>
+<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span>    <span class="comment">// NOTE: reduce_no_checks and reduce_no_run_no_checks are implemented and</span></div>
+<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span>    <span class="comment">// documented in KnuthBendixImpl</span></div>
+<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span></div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> OutputIterator,</div>
+<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span>              <span class="keyword">typename</span> InputIterator1,</div>
+<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>              <span class="keyword">typename</span> InputIterator2&gt;</div>
+<div class="foldopen" id="foldopen00491" data-start="{" data-end="}">
+<div class="line"><a id="l00491" name="l00491"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#gade33a659d3c45b573c5e88b53f32e1ab">  491</a></span>    OutputIterator <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#gade33a659d3c45b573c5e88b53f32e1ab">reduce_no_run</a>(OutputIterator d_first,</div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>                                 InputIterator1 first,</div>
+<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span>                                 InputIterator2 last)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span>      <span class="comment">// Call CongruenceCommon version so that we perform bound checks</span></div>
+<div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl_</span></div>
+<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::reduce_no_run&lt;KnuthBendix&gt;(</div>
+<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span>          d_first, first, last);</div>
+<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span>    }</div>
 </div>
-<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span></div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> OutputIterator,</div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>              <span class="keyword">typename</span> InputIterator1,</div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>              <span class="keyword">typename</span> InputIterator2&gt;</div>
-<div class="foldopen" id="foldopen00521" data-start="{" data-end="}">
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga4c56acf8a3921fabeadb62f3cf2becee">  521</a></span>    OutputIterator <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga4c56acf8a3921fabeadb62f3cf2becee">reduce</a>(OutputIterator d_first,</div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>                          InputIterator1 first,</div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>                          InputIterator2 last) {</div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>      <span class="comment">// Call CongruenceCommon version so that we perform bound checks</span></div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl_</span></div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::reduce&lt;KnuthBendix&gt;(</div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>          d_first, first, last);</div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>    }</div>
+<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span></div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> OutputIterator,</div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>              <span class="keyword">typename</span> InputIterator1,</div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>              <span class="keyword">typename</span> InputIterator2&gt;</div>
+<div class="foldopen" id="foldopen00523" data-start="{" data-end="}">
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__intf__group.html#ga4c56acf8a3921fabeadb62f3cf2becee">  523</a></span>    OutputIterator <a class="code hl_function" href="group__knuth__bendix__class__intf__group.html#ga4c56acf8a3921fabeadb62f3cf2becee">reduce</a>(OutputIterator d_first,</div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>                          InputIterator1 first,</div>
+<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span>                          InputIterator2 last) {</div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>      <span class="comment">// Call CongruenceCommon version so that we perform bound checks</span></div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>      <span class="comment">// in KnuthBendix and not KnuthBendixImpl_</span></div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>      <span class="keywordflow">return</span> detail::CongruenceCommon::reduce&lt;KnuthBendix&gt;(</div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>          d_first, first, last);</div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>    }</div>
 </div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span></div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>    <span class="comment">// KnuthBendix specific stuff</span></div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span></div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>    <span class="comment">// TODO(1) should be const</span></div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__accessors__group.html#ga9f921825e61a707af84afb811ed405b7">  545</a></span>    <span class="keyword">auto</span> <a class="code hl_function" href="group__knuth__bendix__class__accessors__group.html#ga9f921825e61a707af84afb811ed405b7">active_rules</a>();</div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span></div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>    <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Word&gt;</a> gilman_graph_node_labels();</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>  };  <span class="comment">// class KnuthBendix</span></div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span></div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">  569</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span></div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#gadeed6b143dbfd5ca6b0c337635973518">  581</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a>&amp;&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#gacbfd0ada538950b748a58e6b1eec86c9">  592</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(KnuthBendix&lt;Word&gt; <span class="keyword">const</span>&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span></div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#ga185beaf9c595e099d9353bdc7cdd03cb">  603</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(KnuthBendix&lt;Word&gt;&amp;&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span> </div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span></div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>    <span class="comment">// KnuthBendix specific stuff</span></div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span></div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>    <span class="comment">// TODO(1) should be const</span></div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__accessors__group.html#ga9f921825e61a707af84afb811ed405b7">  547</a></span>    <span class="keyword">auto</span> <a class="code hl_function" href="group__knuth__bendix__class__accessors__group.html#ga9f921825e61a707af84afb811ed405b7">active_rules</a>();</div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span></div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>    <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Word&gt;</a> gilman_graph_node_labels();</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>  };  <span class="comment">// class KnuthBendix</span></div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span></div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">  571</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span></div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#gadeed6b143dbfd5ca6b0c337635973518">  583</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a>&amp;&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span></div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#gacbfd0ada538950b748a58e6b1eec86c9">  594</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(KnuthBendix&lt;Word&gt; <span class="keyword">const</span>&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span></div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno"><a class="line" href="group__knuth__bendix__class__group.html#ga185beaf9c595e099d9353bdc7cdd03cb">  605</a></span>  <a class="code hl_function" href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a>(KnuthBendix&lt;Word&gt;&amp;&amp;) -&gt; KnuthBendix&lt;Word&gt;;</div>
 <div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span> </div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="preprocessor">#include &quot;knuth-bendix-class.tpp&quot;</span></div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_</span></div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span> </div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span><span class="preprocessor">#include &quot;knuth-bendix-class.tpp&quot;</span></div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:102</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__accessors__group_html_ga9f921825e61a707af84afb811ed405b7"><div class="ttname"><a href="group__knuth__bendix__class__accessors__group.html#ga9f921825e61a707af84afb811ed405b7">libsemigroups::KnuthBendix::active_rules</a></div><div class="ttdeci">auto active_rules()</div><div class="ttdoc">Return a range object containing the active rules.</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__group_html_ga53918be05b2da9fe4637a180dd329497"><div class="ttname"><a href="group__knuth__bendix__class__group.html#ga53918be05b2da9fe4637a180dd329497">libsemigroups::KnuthBendix</a></div><div class="ttdeci">KnuthBendix(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; KnuthBendix&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__init__group_html_ga80d27d76eae61db06f1a6bf13ea7a19e"><div class="ttname"><a href="group__knuth__bendix__class__init__group.html#ga80d27d76eae61db06f1a6bf13ea7a19e">libsemigroups::KnuthBendix::operator=</a></div><div class="ttdeci">KnuthBendix &amp; operator=(KnuthBendix const &amp;)</div><div class="ttdoc">Copy assignment operator.</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__init__group_html_ga8d6a5d0d02e1bec395cee2da0bfc9f9d"><div class="ttname"><a href="group__knuth__bendix__class__init__group.html#ga8d6a5d0d02e1bec395cee2da0bfc9f9d">libsemigroups::KnuthBendix::init</a></div><div class="ttdeci">KnuthBendix &amp; init()</div><div class="ttdoc">Remove the presentation and rewriter data.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:159</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__init__group_html_gaac1c87b232daeb32568ec12e4870bbd9"><div class="ttname"><a href="group__knuth__bendix__class__init__group.html#gaac1c87b232daeb32568ec12e4870bbd9">libsemigroups::KnuthBendix::throw_if_letter_out_of_bounds</a></div><div class="ttdeci">void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const</div><div class="ttdoc">Throws if any letter in a range is out of bounds.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:264</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__init__group_html_ga941b2edf99311a7d8250aa8bf9fbac54"><div class="ttname"><a href="group__knuth__bendix__class__init__group.html#ga941b2edf99311a7d8250aa8bf9fbac54">libsemigroups::KnuthBendix::throw_if_letter_not_in_alphabet</a></div><div class="ttdeci">void throw_if_letter_not_in_alphabet(Iterator1 first, Iterator2 last) const</div><div class="ttdoc">Throws if any letter in a range is out of bounds.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:265</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__init__group_html_gab32f1d808c8f4e3734dd7435a89b5504"><div class="ttname"><a href="group__knuth__bendix__class__init__group.html#gab32f1d808c8f4e3734dd7435a89b5504">libsemigroups::KnuthBendix::KnuthBendix</a></div><div class="ttdeci">KnuthBendix()</div><div class="ttdoc">Default constructor.</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga0d0147971c7428cdc83bb9a5240cd6e8"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga0d0147971c7428cdc83bb9a5240cd6e8">libsemigroups::KnuthBendix::add_generating_pair_no_checks</a></div><div class="ttdeci">KnuthBendix &amp; add_generating_pair_no_checks(Iterator1 first1, Iterator2 last1, Iterator3 first2, Iterator4 last2)</div><div class="ttdoc">Add generating pair via iterators.</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga233970fad63b96122c0b4378bc18326e"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga233970fad63b96122c0b4378bc18326e">libsemigroups::KnuthBendix::add_generating_pair</a></div><div class="ttdeci">KnuthBendix &amp; add_generating_pair(Iterator1 first1, Iterator2 last1, Iterator3 first2, Iterator4 last2)</div><div class="ttdoc">Add generating pair via iterators.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:385</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga3c453173afdc300163e6fd0e7590f2d2"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga3c453173afdc300163e6fd0e7590f2d2">libsemigroups::KnuthBendix::currently_contains</a></div><div class="ttdeci">tril currently_contains(Iterator1 first1, Iterator2 last1, Iterator3 first2, Iterator4 last2) const</div><div class="ttdoc">Check containment of a pair of words via iterators.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:424</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga4c56acf8a3921fabeadb62f3cf2becee"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga4c56acf8a3921fabeadb62f3cf2becee">libsemigroups::KnuthBendix::reduce</a></div><div class="ttdeci">OutputIterator reduce(OutputIterator d_first, InputIterator1 first, InputIterator2 last)</div><div class="ttdoc">Reduce a word.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:521</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga233970fad63b96122c0b4378bc18326e"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga233970fad63b96122c0b4378bc18326e">libsemigroups::KnuthBendix::add_generating_pair</a></div><div class="ttdeci">KnuthBendix &amp; add_generating_pair(Iterator1 first1, Iterator2 last1, Iterator3 first2, Iterator4 last2)</div><div class="ttdoc">Add generating pair via iterators.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:387</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga3c453173afdc300163e6fd0e7590f2d2"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga3c453173afdc300163e6fd0e7590f2d2">libsemigroups::KnuthBendix::currently_contains</a></div><div class="ttdeci">tril currently_contains(Iterator1 first1, Iterator2 last1, Iterator3 first2, Iterator4 last2) const</div><div class="ttdoc">Check containment of a pair of words via iterators.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:426</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga4c56acf8a3921fabeadb62f3cf2becee"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga4c56acf8a3921fabeadb62f3cf2becee">libsemigroups::KnuthBendix::reduce</a></div><div class="ttdeci">OutputIterator reduce(OutputIterator d_first, InputIterator1 first, InputIterator2 last)</div><div class="ttdoc">Reduce a word.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:523</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga54f0890c793c04cb36b682bc38fe55b2"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga54f0890c793c04cb36b682bc38fe55b2">libsemigroups::KnuthBendix&lt; word_type &gt;::number_of_generating_pairs</a></div><div class="ttdeci">size_t number_of_generating_pairs() const noexcept</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga6e00c073b6a6ca21099ec31d1d036fd9"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">libsemigroups::KnuthBendix::generating_pairs</a></div><div class="ttdeci">std::vector&lt; Word &gt; const &amp; generating_pairs() const noexcept</div><div class="ttdoc">Get the generating pairs of the congruence (if any).</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:314</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga6e00c073b6a6ca21099ec31d1d036fd9"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">libsemigroups::KnuthBendix::generating_pairs</a></div><div class="ttdeci">std::vector&lt; Word &gt; const &amp; generating_pairs() const noexcept</div><div class="ttdoc">Get the generating pairs of the congruence (if any).</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:316</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_ga8c899f0eec7b44d0bd592b3490617a12"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#ga8c899f0eec7b44d0bd592b3490617a12">libsemigroups::KnuthBendix::contains</a></div><div class="ttdeci">bool contains(Iterator1 first1, Iterator2 last1, Iterator3 first2, Iterator4 last2)</div><div class="ttdoc">Check containment of a pair of words via iterators.</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_gab3335c2c1796f0e2ee55896f63eff9d8"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#gab3335c2c1796f0e2ee55896f63eff9d8">libsemigroups::KnuthBendix::kind</a></div><div class="ttdeci">congruence_kind kind() const noexcept</div><div class="ttdoc">The kind of the congruence (1- or 2-sided).</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_gac10ef7a5522cfb2916a13b3958f004f7"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">libsemigroups::KnuthBendix::presentation</a></div><div class="ttdeci">Presentation&lt; Word &gt; const &amp; presentation() const noexcept</div><div class="ttdoc">Return the presentation used to construct or initialize a KnuthBendix object.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:334</div></div>
-<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_gade33a659d3c45b573c5e88b53f32e1ab"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#gade33a659d3c45b573c5e88b53f32e1ab">libsemigroups::KnuthBendix::reduce_no_run</a></div><div class="ttdeci">OutputIterator reduce_no_run(OutputIterator d_first, InputIterator1 first, InputIterator2 last) const</div><div class="ttdoc">Reduce a word with no enumeration.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:489</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_gac10ef7a5522cfb2916a13b3958f004f7"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7">libsemigroups::KnuthBendix::presentation</a></div><div class="ttdeci">Presentation&lt; Word &gt; const &amp; presentation() const noexcept</div><div class="ttdoc">Return the presentation used to construct or initialize a KnuthBendix object.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:336</div></div>
+<div class="ttc" id="agroup__knuth__bendix__class__intf__group_html_gade33a659d3c45b573c5e88b53f32e1ab"><div class="ttname"><a href="group__knuth__bendix__class__intf__group.html#gade33a659d3c45b573c5e88b53f32e1ab">libsemigroups::KnuthBendix::reduce_no_run</a></div><div class="ttdeci">OutputIterator reduce_no_run(OutputIterator d_first, InputIterator1 first, InputIterator2 last) const</div><div class="ttdoc">Reduce a word with no enumeration.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:491</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__mem__types__group_html_gaacd4c008fd119ed0f2d032970a8e1e4e"><div class="ttname"><a href="group__knuth__bendix__class__mem__types__group.html#gaacd4c008fd119ed0f2d032970a8e1e4e">libsemigroups::KnuthBendix::rule_type</a></div><div class="ttdeci">std::pair&lt; Word, Word &gt; rule_type</div><div class="ttdoc">Type of the rules in the system.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:138</div></div>
 <div class="ttc" id="agroup__knuth__bendix__class__mem__types__group_html_gaeaae6f61bbdbe7cdb55877f9d93ceee2"><div class="ttname"><a href="group__knuth__bendix__class__mem__types__group.html#gaeaae6f61bbdbe7cdb55877f9d93ceee2">libsemigroups::KnuthBendix::native_word_type</a></div><div class="ttdeci">Word native_word_type</div><div class="ttdoc">Type of the letters in the relations of the presentation stored in a KnuthBendix instance.</div><div class="ttdef"><b>Definition</b> knuth-bendix-class.hpp:131</div></div>
+<div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_gae214dc6594738d449fb4483859d58932"><div class="ttname"><a href="group__types__group.html#gae214dc6594738d449fb4483859d58932">libsemigroups::tril</a></div><div class="ttdeci">tril</div><div class="ttdoc">Enum to indicate true, false or not currently knowable.</div><div class="ttdef"><b>Definition</b> types.hpp:56</div></div>
 <div class="ttc" id="agroup__types__group_html_gaefc0b002795e4a0b5db2a5c04078aa42"><div class="ttname"><a href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">libsemigroups::congruence_kind</a></div><div class="ttdeci">congruence_kind</div><div class="ttdoc">Enum to indicate the sided-ness of a congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:69</div></div>
 <div class="ttc" id="amove_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a></div><div class="ttdeci">T move(T... args)</div></div>

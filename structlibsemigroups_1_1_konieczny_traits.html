@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -180,32 +184,30 @@ $(function(){initNavTree('structlibsemigroups_1_1_konieczny_traits.html',''); in
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="structlibsemigroups_1_1_konieczny_traits-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">KoniecznyTraits&lt; Element &gt;</div></div>
+  <div class="headertitle"><div class="title">KoniecznyTraits&lt; Element &gt;<div class="ingroups"><a class="el" href="group__konieczny__group.html">Konieczny</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element&gt;<br />
-struct libsemigroups::KoniecznyTraits&lt; Element &gt;</div><p>Defined in <code><a class="el" href="konieczny_8hpp_source.html">konieczny.hpp</a></code>.</p>
-<p>This is a traits class for use with <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
+struct libsemigroups::KoniecznyTraits&lt; Element &gt;</div><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of the elements.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:abf9e3561e38b120d077e110656ca759c" id="r_abf9e3561e38b120d077e110656ca759c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf9e3561e38b120d077e110656ca759c">const_element_type</a></td></tr>
-<tr class="memdesc:abf9e3561e38b120d077e110656ca759c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of const elements of a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance.  <br /></td></tr>
+<tr class="memdesc:abf9e3561e38b120d077e110656ca759c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of const elements of a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> instance.  <br /></td></tr>
 <tr class="separator:abf9e3561e38b120d077e110656ca759c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a034471325d79ac9531236b5ea0d4572d" id="r_a034471325d79ac9531236b5ea0d4572d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a034471325d79ac9531236b5ea0d4572d">Degree</a> = <a class="el" href="structlibsemigroups_1_1_degree.html">::libsemigroups::Degree</a>&lt;<a class="el" href="#a5991027408ae4f685f2910d843af9183">element_type</a>&gt;</td></tr>
 <tr class="memdesc:a034471325d79ac9531236b5ea0d4572d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adapter for the degree of an element.     <br /></td></tr>
 <tr class="separator:a034471325d79ac9531236b5ea0d4572d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5991027408ae4f685f2910d843af9183" id="r_a5991027408ae4f685f2910d843af9183"><td class="memItemLeft" align="right" valign="top"><a id="a5991027408ae4f685f2910d843af9183" name="a5991027408ae4f685f2910d843af9183"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>element_type</b> = typename detail::BruidhinnTraits&lt;Element&gt;::value_type</td></tr>
-<tr class="memdesc:a5991027408ae4f685f2910d843af9183"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the elements of a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance with const removed. <br /></td></tr>
+<tr class="memdesc:a5991027408ae4f685f2910d843af9183"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the elements of a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> instance with const removed. <br /></td></tr>
 <tr class="separator:a5991027408ae4f685f2910d843af9183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93cb67e6f1bf9e8e7a5ae395681f9480" id="r_a93cb67e6f1bf9e8e7a5ae395681f9480"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93cb67e6f1bf9e8e7a5ae395681f9480">ElementHash</a> = <a class="el" href="structlibsemigroups_1_1_hash.html">::libsemigroups::Hash</a>&lt;<a class="el" href="#a5991027408ae4f685f2910d843af9183">element_type</a>&gt;</td></tr>
 <tr class="memdesc:a93cb67e6f1bf9e8e7a5ae395681f9480"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adapter for hashing.     <br /></td></tr>
@@ -281,7 +283,7 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>size_t ! operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>size_t operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The return value of the call operator ought to indicate the degree of a <code>Element</code> instance which may or may not depend on the parameter <code class="param">x</code>. The degree of a permutation, for instance, would be the the number of points it acts on, the degree of a matrix is its dimension, and so on. This is used, for example, by <a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a> in some member functions to determine whether it is known <em>a priori</em> that a permutation does not belong to the object, because it acts on too many points.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -292,7 +294,7 @@ template&lt;typename Element&gt; </div>
 <p>The second template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
 <li><a class="el" href="structlibsemigroups_1_1_froidure_pin_traits.html" title="Traits class for FroidurePin.">FroidurePinTraits</a></li>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a></li>
 </ul>
 </dd></dl>
@@ -302,8 +304,8 @@ template&lt;typename Element&gt; </div>
 <div class="line">    <span class="keywordflow">return</span> 8;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:79</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a034471325d79ac9531236b5ea0d4572d"><div class="ttname"><a href="#a034471325d79ac9531236b5ea0d4572d">libsemigroups::KoniecznyTraits::Degree</a></div><div class="ttdeci">::libsemigroups::Degree&lt; element_type &gt; Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:122</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a034471325d79ac9531236b5ea0d4572d"><div class="ttname"><a href="#a034471325d79ac9531236b5ea0d4572d">libsemigroups::KoniecznyTraits::Degree</a></div><div class="ttdeci">::libsemigroups::Degree&lt; element_type &gt; Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:147</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -322,15 +324,21 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with a call operator of signature <code>size_t operator()(Value ! const&amp;)</code> for use with, for example, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>. </p><pre class="fragment">  \tparam Value the type of objects to compare.
+<p>This type should be a stateless trivially default constructible with a call operator of signature <code>size_t operator()(Value const&amp;)</code> for use with, for example, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Value</td><td>the type of objects to compare.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The second template parameter exists for SFINAE.</p>
+<dl class="section user"><dt>Used by:</dt><dd><ul>
+<li><a class="el" href="structlibsemigroups_1_1_action_traits.html">ActionTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_froidure_pin_traits.html" title="Traits class for FroidurePin.">FroidurePinTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a>    </li>
+</ul>
+</dd></dl>
 
-  The second template parameter exists for SFINAE.
-
-  \par Used by:
-  * ActionTraits
-  * FroidurePinTraits
-  * SchreierSimsTraits 
-</pre>    
 </div>
 </div>
 <a id="abeafd1c3b55ac93e7121a261a55d3903" name="abeafd1c3b55ac93e7121a261a55d3903"></a>
@@ -347,7 +355,7 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value ! const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) for use with, for example, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>.</p>
+<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) for use with, for example, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Value</td><td>the type of objects to compare.</td></tr>
@@ -378,7 +386,7 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with an operator of signature <code>void ! operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the lambda value of the second argument. The kernel of the lambda function should be Green's \(\mathscr{L}\)-relation on the semigroup in question.</p>
+<p>This type should be a stateless trivially default constructible with an operator of signature <code>void operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the lambda value of the second argument. The kernel of the lambda function should be Green's \(\mathscr{L}\)-relation on the semigroup in question.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of elements. </td></tr>
@@ -388,7 +396,7 @@ template&lt;typename Element&gt; </div>
 </dl>
 <p>The third template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.    </li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.    </li>
 </ul>
 </dd></dl>
 
@@ -410,10 +418,10 @@ template&lt;typename Element&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> <a class="code hl_typedef" href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">RightAction</a>&lt;<a class="code hl_typedef" href="#a5991027408ae4f685f2910d843af9183">element_type</a>,</div>
 <div class="line">                      <a class="code hl_typedef" href="#afb6a7cc79d98d2e5ab1e98b225733919">lambda_value_type</a>,</div>
 <div class="line">                      <a class="code hl_struct" href="structlibsemigroups_1_1_image_right_action.html">ImageRightAction&lt;element_type, lambda_value_type&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__action__group_html_ga1288ede08d1b9494336b874ad4da177e"><div class="ttname"><a href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">libsemigroups::RightAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::right &gt; RightAction</div><div class="ttdef"><b>Definition</b> action.hpp:869</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_image_right_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_right_action.html">libsemigroups::ImageRightAction</a></div><div class="ttdoc">Adapter for the value of a right action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:394</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::KoniecznyTraits::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">The type of the elements of a Konieczny instance with const removed.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:64</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_afb6a7cc79d98d2e5ab1e98b225733919"><div class="ttname"><a href="#afb6a7cc79d98d2e5ab1e98b225733919">libsemigroups::KoniecznyTraits::lambda_value_type</a></div><div class="ttdeci">typename ::libsemigroups::LambdaValue&lt; element_type &gt;::type lambda_value_type</div><div class="ttdef"><b>Definition</b> konieczny.hpp:72</div></div>
+<div class="ttc" id="agroup__action__group_html_ga1288ede08d1b9494336b874ad4da177e"><div class="ttname"><a href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">libsemigroups::RightAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::right &gt; RightAction</div><div class="ttdef"><b>Definition</b> action.hpp:870</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_image_right_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_right_action.html">libsemigroups::ImageRightAction</a></div><div class="ttdoc">Adapter for the value of a right action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:392</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::KoniecznyTraits::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">The type of the elements of a Konieczny instance with const removed.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:89</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_afb6a7cc79d98d2e5ab1e98b225733919"><div class="ttname"><a href="#afb6a7cc79d98d2e5ab1e98b225733919">libsemigroups::KoniecznyTraits::lambda_value_type</a></div><div class="ttdeci">typename ::libsemigroups::LambdaValue&lt; element_type &gt;::type lambda_value_type</div><div class="ttdef"><b>Definition</b> konieczny.hpp:97</div></div>
 </div><!-- fragment --><p>The type of the orbit of the lambda values under <a class="el" href="structlibsemigroups_1_1_image_right_action.html" title="Adapter for the value of a right action.">ImageRightAction</a>. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_image_right_action.html" title="Adapter for the value of a right action.">ImageRightAction</a> and <a class="el" href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">RightAction</a> </dd></dl>
 
 </div>
@@ -451,7 +459,7 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value ! const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) which defines a linear order on the objects of type Value.</p>
+<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) which defines a linear order on the objects of type Value.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Value</td><td>the type of objects to compare.</td></tr>
@@ -513,7 +521,7 @@ template&lt;typename Element&gt; </div>
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_ad76f1a1683f85f7c152ac2d9544efa4e"><div class="ttname"><a href="#ad76f1a1683f85f7c152ac2d9544efa4e">libsemigroups::KoniecznyTraits::One</a></div><div class="ttdeci">::libsemigroups::One&lt; element_type &gt; One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:107</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_ad76f1a1683f85f7c152ac2d9544efa4e"><div class="ttname"><a href="#ad76f1a1683f85f7c152ac2d9544efa4e">libsemigroups::KoniecznyTraits::One</a></div><div class="ttdeci">::libsemigroups::One&lt; element_type &gt; One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:132</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -532,7 +540,7 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp; xy, Element const&amp; x, Element ! const&amp; y, size_t = 0)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp;, Element const&amp;, Element const&amp;, size_t = 0)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The call operator should change <code class="param">xy</code> in-place to be the product of <code class="param">x</code> and <code class="param">y</code>. The 4th parameter is optional and it can be used as an index for static thread local storage, that might be required for forming the product of <code class="param">x</code> and <code class="param">y</code>. The purpose of the 1st parameter is to avoid repeated allocations of memory to hold temporary products that are discarded soon after they are created.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -554,7 +562,7 @@ template&lt;typename Element&gt; </div>
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a1e49464ff67417d6ed59d360c499c9ca"><div class="ttname"><a href="#a1e49464ff67417d6ed59d360c499c9ca">libsemigroups::KoniecznyTraits::Product</a></div><div class="ttdeci">::libsemigroups::Product&lt; element_type &gt; Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:101</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a1e49464ff67417d6ed59d360c499c9ca"><div class="ttname"><a href="#a1e49464ff67417d6ed59d360c499c9ca">libsemigroups::KoniecznyTraits::Product</a></div><div class="ttdeci">::libsemigroups::Product&lt; element_type &gt; Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:126</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -573,11 +581,11 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be default constructible and a call operator of signature <code>size_t operator()(Element const&amp;)</code> if no additional data is required to compute the rank, or a call operator of signature <code>size_t ! operator()(State&lt;Element&gt; const&amp;, Element const&amp;)</code> if additional data is required.</p>
+<p>This type should be default constructible and a call operator of signature <code>size_t operator()(Element const&amp;)</code> if no additional data is required to compute the rank, or a call operator of signature <code>size_t operator()(State&lt;Element&gt; const&amp;, Element const&amp;)</code> if additional data is required.</p>
 <p>The call operator should return the rank of the element given as argument. This must satisfy the following properties:</p><ul>
 <li>\(\operatorname{rank}\) should agree with the \(D\)-order on the semigroup; that is, if \(D_x \leq D_y\), then \(\operatorname{rank}(x) \leq \operatorname{rank}(y)\),</li>
 <li>if \(D_x \leq D_y\) and  \(\operatorname{rank}(x) =
-        \operatorname{rank}(y)\), then \(D_x = D_y\).</li>
+  \operatorname{rank}(y)\), then \(D_x = D_y\).</li>
 </ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -588,7 +596,7 @@ template&lt;typename Element&gt; </div>
 </dl>
 <p>The third template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.    </li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.    </li>
 </ul>
 </dd></dl>
 
@@ -608,7 +616,7 @@ template&lt;typename Element&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with an operator of signature <code>void ! operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the rho value of the second argument. The kernel of the rho function should be Green's \(\mathscr{R}\)-relation on the semigroup in question.</p>
+<p>This type should be a stateless trivially default constructible with an operator of signature <code>void operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the rho value of the second argument. The kernel of the rho function should be Green's \(\mathscr{R}\)-relation on the semigroup in question.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of elements. </td></tr>
@@ -618,7 +626,7 @@ template&lt;typename Element&gt; </div>
 </dl>
 <p>The third template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.    </li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.    </li>
 </ul>
 </dd></dl>
 
@@ -640,9 +648,9 @@ template&lt;typename Element&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> <a class="code hl_typedef" href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">LeftAction</a>&lt;<a class="code hl_typedef" href="#a5991027408ae4f685f2910d843af9183">element_type</a>,</div>
 <div class="line">                     <a class="code hl_typedef" href="#a189bd3908835d85f1248d598199f7f33">rho_value_type</a>,</div>
 <div class="line">                     <a class="code hl_struct" href="structlibsemigroups_1_1_image_left_action.html">ImageLeftAction&lt;element_type, rho_value_type&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__action__group_html_gae30bbc0cb349827de1e1af8f7a1c1b62"><div class="ttname"><a href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">libsemigroups::LeftAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::left &gt; LeftAction</div><div class="ttdef"><b>Definition</b> action.hpp:879</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_image_left_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_left_action.html">libsemigroups::ImageLeftAction</a></div><div class="ttdoc">Adapter for the value of a left action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:351</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a189bd3908835d85f1248d598199f7f33"><div class="ttname"><a href="#a189bd3908835d85f1248d598199f7f33">libsemigroups::KoniecznyTraits::rho_value_type</a></div><div class="ttdeci">typename ::libsemigroups::RhoValue&lt; element_type &gt;::type rho_value_type</div><div class="ttdoc">Alias for RhoValue with template parameter element_type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:76</div></div>
+<div class="ttc" id="agroup__action__group_html_gae30bbc0cb349827de1e1af8f7a1c1b62"><div class="ttname"><a href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">libsemigroups::LeftAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::left &gt; LeftAction</div><div class="ttdef"><b>Definition</b> action.hpp:880</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_image_left_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_left_action.html">libsemigroups::ImageLeftAction</a></div><div class="ttdoc">Adapter for the value of a left action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:350</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a189bd3908835d85f1248d598199f7f33"><div class="ttname"><a href="#a189bd3908835d85f1248d598199f7f33">libsemigroups::KoniecznyTraits::rho_value_type</a></div><div class="ttdeci">typename ::libsemigroups::RhoValue&lt; element_type &gt;::type rho_value_type</div><div class="ttdoc">Alias for RhoValue with template parameter element_type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:101</div></div>
 </div><!-- fragment --><p>The type of the orbit of the rho values under <a class="el" href="structlibsemigroups_1_1_image_left_action.html" title="Adapter for the value of a left action.">ImageLeftAction</a> </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_image_left_action.html" title="Adapter for the value of a left action.">ImageLeftAction</a> and <a class="el" href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">LeftAction</a> </dd></dl>
 
 </div>

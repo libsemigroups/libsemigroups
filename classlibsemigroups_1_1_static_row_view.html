@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -205,11 +209,13 @@ class libsemigroups::StaticRowView&lt; PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar 
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ab85f956c6009fb50833524c9131cf9c6" id="r_ab85f956c6009fb50833524c9131cf9c6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab85f956c6009fb50833524c9131cf9c6">const_iterator</a> = typename RowViewCommon::const_iterator</td></tr>
-<tr class="memdesc:ab85f956c6009fb50833524c9131cf9c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const iterators pointing at entries of a matrix.     <br /></td></tr>
+<tr class="memitem:ab85f956c6009fb50833524c9131cf9c6" id="r_ab85f956c6009fb50833524c9131cf9c6"><td class="memItemLeft" align="right" valign="top"><a id="ab85f956c6009fb50833524c9131cf9c6" name="ab85f956c6009fb50833524c9131cf9c6"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>const_iterator</b> = typename RowViewCommon::const_iterator</td></tr>
+<tr class="memdesc:ab85f956c6009fb50833524c9131cf9c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const iterators pointing at entries of a matrix.    <br /></td></tr>
 <tr class="separator:ab85f956c6009fb50833524c9131cf9c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7436fc9c9fd0970a206a9983300ec027" id="r_a7436fc9c9fd0970a206a9983300ec027"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7436fc9c9fd0970a206a9983300ec027">iterator</a> = typename RowViewCommon::iterator</td></tr>
-<tr class="memdesc:a7436fc9c9fd0970a206a9983300ec027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const iterators pointing at entries of a matrix.     <br /></td></tr>
+<tr class="memitem:a7436fc9c9fd0970a206a9983300ec027" id="r_a7436fc9c9fd0970a206a9983300ec027"><td class="memItemLeft" align="right" valign="top"><a id="a7436fc9c9fd0970a206a9983300ec027" name="a7436fc9c9fd0970a206a9983300ec027"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>iterator</b> = typename RowViewCommon::iterator</td></tr>
+<tr class="memdesc:a7436fc9c9fd0970a206a9983300ec027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const iterators pointing at entries of a matrix.    <br /></td></tr>
 <tr class="separator:a7436fc9c9fd0970a206a9983300ec027"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeff5547c8ab5c93bb9d144a207559d29" id="r_aeff5547c8ab5c93bb9d144a207559d29"><td class="memItemLeft" align="right" valign="top"><a id="aeff5547c8ab5c93bb9d144a207559d29" name="aeff5547c8ab5c93bb9d144a207559d29"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>matrix_type</b> = typename <a class="el" href="classlibsemigroups_1_1_static_matrix.html">RowViewCommon::matrix_type</a></td></tr>
@@ -219,14 +225,17 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>matrix_type</b> = ty
 using&#160;</td><td class="memItemRight" valign="bottom"><b>Row</b> = typename matrix_type::Row</td></tr>
 <tr class="memdesc:aaf6bdf817a40b57138c6217590b2bd3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the type of a row in the underlying matrix. <br /></td></tr>
 <tr class="separator:aaf6bdf817a40b57138c6217590b2bd3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adafa433da1a90a0a89b48832a77e4026" id="r_adafa433da1a90a0a89b48832a77e4026"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a></td></tr>
-<tr class="memdesc:adafa433da1a90a0a89b48832a77e4026"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const references to the template parameter <code class="param">Scalar</code>.     <br /></td></tr>
-<tr class="separator:adafa433da1a90a0a89b48832a77e4026"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96d9da0fa1e5151380fb814639210c97" id="r_a96d9da0fa1e5151380fb814639210c97"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96d9da0fa1e5151380fb814639210c97">scalar_reference</a> = typename RowViewCommon::scalar_reference</td></tr>
-<tr class="memdesc:a96d9da0fa1e5151380fb814639210c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for references to the template parameter <code class="param">Scalar</code>.     <br /></td></tr>
+<tr class="memitem:a8f71f80ed150d56b7038ad8badced014" id="r_a8f71f80ed150d56b7038ad8badced014"><td class="memItemLeft" align="right" valign="top"><a id="a8f71f80ed150d56b7038ad8badced014" name="a8f71f80ed150d56b7038ad8badced014"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>scalar_const_reference</b> = typename RowViewCommon::scalar_const_reference</td></tr>
+<tr class="memdesc:a8f71f80ed150d56b7038ad8badced014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const references to the template parameter <code class="param">Scalar</code>.    <br /></td></tr>
+<tr class="separator:a8f71f80ed150d56b7038ad8badced014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96d9da0fa1e5151380fb814639210c97" id="r_a96d9da0fa1e5151380fb814639210c97"><td class="memItemLeft" align="right" valign="top"><a id="a96d9da0fa1e5151380fb814639210c97" name="a96d9da0fa1e5151380fb814639210c97"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>scalar_reference</b> = typename RowViewCommon::scalar_reference</td></tr>
+<tr class="memdesc:a96d9da0fa1e5151380fb814639210c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for references to the template parameter <code class="param">Scalar</code>.    <br /></td></tr>
 <tr class="separator:a96d9da0fa1e5151380fb814639210c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf4abd2f8fbd1e0d91fa1e7d2f7725a3" id="r_acf4abd2f8fbd1e0d91fa1e7d2f7725a3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf4abd2f8fbd1e0d91fa1e7d2f7725a3">scalar_type</a> = Scalar</td></tr>
-<tr class="memdesc:acf4abd2f8fbd1e0d91fa1e7d2f7725a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the template parameter <code class="param">Scalar</code>.     <br /></td></tr>
+<tr class="memitem:acf4abd2f8fbd1e0d91fa1e7d2f7725a3" id="r_acf4abd2f8fbd1e0d91fa1e7d2f7725a3"><td class="memItemLeft" align="right" valign="top"><a id="acf4abd2f8fbd1e0d91fa1e7d2f7725a3" name="acf4abd2f8fbd1e0d91fa1e7d2f7725a3"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>scalar_type</b> = Scalar</td></tr>
+<tr class="memdesc:acf4abd2f8fbd1e0d91fa1e7d2f7725a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the template parameter <code class="param">Scalar</code>.    <br /></td></tr>
 <tr class="separator:acf4abd2f8fbd1e0d91fa1e7d2f7725a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -262,7 +271,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6ae2545acba1b3762c04a9a298004476" id="r_a6ae2545acba1b3762c04a9a298004476"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a96d9da0fa1e5151380fb814639210c97">scalar_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ae2545acba1b3762c04a9a298004476">operator()</a> (size_t i)</td></tr>
 <tr class="memdesc:a6ae2545acba1b3762c04a9a298004476"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference to the specified entry of the row.  <br /></td></tr>
 <tr class="separator:a6ae2545acba1b3762c04a9a298004476"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4190a9d03f75b4783c6e7a41c8b146b1" id="r_a4190a9d03f75b4783c6e7a41c8b146b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4190a9d03f75b4783c6e7a41c8b146b1">operator()</a> (size_t i) const</td></tr>
+<tr class="memitem:a4190a9d03f75b4783c6e7a41c8b146b1" id="r_a4190a9d03f75b4783c6e7a41c8b146b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a8f71f80ed150d56b7038ad8badced014">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4190a9d03f75b4783c6e7a41c8b146b1">operator()</a> (size_t i) const</td></tr>
 <tr class="memdesc:a4190a9d03f75b4783c6e7a41c8b146b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the specified entry of the row.  <br /></td></tr>
 <tr class="separator:a4190a9d03f75b4783c6e7a41c8b146b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8612827a09e4ecd31206803813106faf" id="r_a8612827a09e4ecd31206803813106faf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#aaf6bdf817a40b57138c6217590b2bd3f">Row</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8612827a09e4ecd31206803813106faf">operator*</a> (<a class="el" href="#acf4abd2f8fbd1e0d91fa1e7d2f7725a3">scalar_type</a> a) const</td></tr>
@@ -301,7 +310,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a285e64de591f3ac4dcf89a3592f9d894" id="r_a285e64de591f3ac4dcf89a3592f9d894"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a96d9da0fa1e5151380fb814639210c97">scalar_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a285e64de591f3ac4dcf89a3592f9d894">operator[]</a> (size_t i)</td></tr>
 <tr class="memdesc:a285e64de591f3ac4dcf89a3592f9d894"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference to the specified entry of the row.     <br /></td></tr>
 <tr class="separator:a285e64de591f3ac4dcf89a3592f9d894"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ea40c0a4c040e510e3a638b3c1ba1ed" id="r_a8ea40c0a4c040e510e3a638b3c1ba1ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ea40c0a4c040e510e3a638b3c1ba1ed">operator[]</a> (size_t i) const</td></tr>
+<tr class="memitem:a8ea40c0a4c040e510e3a638b3c1ba1ed" id="r_a8ea40c0a4c040e510e3a638b3c1ba1ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a8f71f80ed150d56b7038ad8badced014">scalar_const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ea40c0a4c040e510e3a638b3c1ba1ed">operator[]</a> (size_t i) const</td></tr>
 <tr class="memdesc:a8ea40c0a4c040e510e3a638b3c1ba1ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the specified entry of the row.     <br /></td></tr>
 <tr class="separator:a8ea40c0a4c040e510e3a638b3c1ba1ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -311,89 +320,6 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:af22338e892c2da004aada43067a2dda2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the row.  <br /></td></tr>
 <tr class="separator:af22338e892c2da004aada43067a2dda2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="ab85f956c6009fb50833524c9131cf9c6" name="ab85f956c6009fb50833524c9131cf9c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab85f956c6009fb50833524c9131cf9c6">&#9670;&#160;</a></span>const_iterator</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="#ab85f956c6009fb50833524c9131cf9c6">const_iterator</a> = typename RowViewCommon::const_iterator</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7436fc9c9fd0970a206a9983300ec027" name="a7436fc9c9fd0970a206a9983300ec027"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7436fc9c9fd0970a206a9983300ec027">&#9670;&#160;</a></span>iterator</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="#a7436fc9c9fd0970a206a9983300ec027">iterator</a> = typename RowViewCommon::iterator</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adafa433da1a90a0a89b48832a77e4026" name="adafa433da1a90a0a89b48832a77e4026"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adafa433da1a90a0a89b48832a77e4026">&#9670;&#160;</a></span>scalar_const_reference</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line"> </div>
-<div class="line">        <span class="keyword">typename</span> RowViewCommon::scalar_const_reference</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a96d9da0fa1e5151380fb814639210c97" name="a96d9da0fa1e5151380fb814639210c97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96d9da0fa1e5151380fb814639210c97">&#9670;&#160;</a></span>scalar_reference</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="#a96d9da0fa1e5151380fb814639210c97">scalar_reference</a> = typename RowViewCommon::scalar_reference</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acf4abd2f8fbd1e0d91fa1e7d2f7725a3" name="acf4abd2f8fbd1e0d91fa1e7d2f7725a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf4abd2f8fbd1e0d91fa1e7d2f7725a3">&#9670;&#160;</a></span>scalar_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="#acf4abd2f8fbd1e0d91fa1e7d2f7725a3">scalar_type</a> = Scalar</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aac0685a21ae57b42788e30b2d1fe664e" name="aac0685a21ae57b42788e30b2d1fe664e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac0685a21ae57b42788e30b2d1fe664e">&#9670;&#160;</a></span>StaticRowView() <span class="overload">[1/4]</span></h2>
@@ -699,7 +625,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
 template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a> operator() </td>
+          <td class="memname"><a class="el" href="#a8f71f80ed150d56b7038ad8badced014">scalar_const_reference</a> operator() </td>
           <td>(</td>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
           <td> const</td>
@@ -713,7 +639,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a8f71f80ed150d56b7038ad8badced014">scalar_const_reference</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks on the validity of the parameter <code class="param">i</code> is performed. </dd></dl>
@@ -892,12 +818,13 @@ template&lt;typename U&gt; </div>
 <p>Lexicographical comparison of rows.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">U</td><td>either <a class="el" href="#aaf6bdf817a40b57138c6217590b2bd3f">Row</a>, <a class="el" href="classlibsemigroups_1_1_static_row_view.html">StaticRowView</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicRowViewStaticArith">DynamicRowView (compile-time arithmetic)</a>, or <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html#DynamicRowViewDynamicArith">DynamicRowView (run-time</a>arithmetic)".
-
-@param that \ref Row, \ref StaticRowView, \ref
-DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)",
-or
-\ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)" object for comparison.</td></tr>
+    <tr><td class="paramname">U</td><td>either <a class="el" href="#aaf6bdf817a40b57138c6217590b2bd3f">Row</a>, <a class="el" href="classlibsemigroups_1_1_static_row_view.html">StaticRowView</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicRowViewStaticArith">DynamicRowView (compile-time arithmetic)</a>, //NOLINT() or <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html#DynamicRowViewDynamicArith">DynamicRowView (run-time arithmetic)</a>. //NOLINT() </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">that</td><td><a class="el" href="#aaf6bdf817a40b57138c6217590b2bd3f">Row</a>, <a class="el" href="classlibsemigroups_1_1_static_row_view.html">StaticRowView</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicRowViewStaticArith">DynamicRowView (compile-time</a>arithmetic)", or \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)" object for comparison.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1073,7 +1000,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
 template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, size_t C, typename Scalar&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a> operator[] </td>
+          <td class="memname"><a class="el" href="#a8f71f80ed150d56b7038ad8badced014">scalar_const_reference</a> operator[] </td>
           <td>(</td>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
           <td> const</td>
@@ -1087,7 +1014,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#adafa433da1a90a0a89b48832a77e4026">scalar_const_reference</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a8f71f80ed150d56b7038ad8badced014">scalar_const_reference</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks on the validity of the parameter <code class="param">i</code> is performed.    </dd></dl>

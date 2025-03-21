@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -340,12 +344,12 @@ Functions</h2></td></tr>
 <tr class="memitem:af788f23167eced4134734c88ec76a483" id="r_af788f23167eced4134734c88ec76a483"><td class="memTemplParams" colspan="2"><a id="af788f23167eced4134734c88ec76a483" name="af788f23167eced4134734c88ec76a483"></a>
 template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:af788f23167eced4134734c88ec76a483"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>throw_if_not_right_congruence</b> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> &gt; const &amp;p, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
-<tr class="memdesc:af788f23167eced4134734c88ec76a483"><td class="mdescLeft">&#160;</td><td class="mdescRight">No doc. <br /></td></tr>
+<tr class="memdesc:af788f23167eced4134734c88ec76a483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw if a word graph does not define a right congruence on a f.p. semigroup or monoid. <br /></td></tr>
 <tr class="separator:af788f23167eced4134734c88ec76a483"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25af294038ee529812b9cd2f5832435e" id="r_a25af294038ee529812b9cd2f5832435e"><td class="memTemplParams" colspan="2"><a id="a25af294038ee529812b9cd2f5832435e" name="a25af294038ee529812b9cd2f5832435e"></a>
 template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:a25af294038ee529812b9cd2f5832435e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>throw_if_not_two_sided_congruence</b> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> &gt; const &amp;p, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
-<tr class="memdesc:a25af294038ee529812b9cd2f5832435e"><td class="mdescLeft">&#160;</td><td class="mdescRight">No doc. <br /></td></tr>
+<tr class="memdesc:a25af294038ee529812b9cd2f5832435e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw if a word graph does not define a two sided congruence on a f.p. semigroup or monoid. <br /></td></tr>
 <tr class="separator:a25af294038ee529812b9cd2f5832435e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f0c2bbd63cf5a3e019e890b931859c7" id="r_a5f0c2bbd63cf5a3e019e890b931859c7"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:a5f0c2bbd63cf5a3e019e890b931859c7"><td class="memTemplItemLeft" align="right" valign="top">rx::iterator_range&lt; <a class="el" href="classlibsemigroups_1_1sims_1_1const__cgp__iterator.html">const_cgp_iterator</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a5f0c2bbd63cf5a3e019e890b931859c7">two_sided_generating_pairs</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> &gt; const  &amp;p, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const  &amp;wg)</td></tr>
@@ -390,8 +394,8 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#abd1ce14eef90198ac31fcc14082d683a">add_excluded_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word const&amp;,
-Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#abd1ce14eef90198ac31fcc14082d683a">add_excluded_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word
+const&amp;, Word const&amp;)</a> for details. </p>
 
 </div>
 </div>
@@ -420,8 +424,8 @@ template&lt;typename Subclass, typename Int&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#abd1ce14eef90198ac31fcc14082d683a">add_excluded_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word const&amp;,
-Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#abd1ce14eef90198ac31fcc14082d683a">add_excluded_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word
+const&amp;, Word const&amp;)</a> for details. </p>
 
 </div>
 </div>
@@ -450,8 +454,8 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#abd1ce14eef90198ac31fcc14082d683a">add_excluded_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word const&amp;,
-Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#abd1ce14eef90198ac31fcc14082d683a">add_excluded_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word
+const&amp;, Word const&amp;)</a> for details. </p>
 
 </div>
 </div>
@@ -499,7 +503,7 @@ template&lt;typename Subclass, typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code class="param">sims</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="namespacelibsemigroups_1_1presentation.html" title="Namespace for Presentation helper functions.">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="namespacelibsemigroups_1_1presentation.html" title="Namespace for Presentation helper functions.">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
@@ -532,8 +536,7 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#ac43a729f114aa612b11b6c691c350c04">add_excluded_pair_no_checks&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;,
-Word const&amp;, Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#ac43a729f114aa612b11b6c691c350c04">add_excluded_pair_no_checks</a>&lt;Subclass, Word&gt;(<a class="el" href="classlibsemigroups_1_1_sims_settings.html" title="For setting the presentation and various runtime parameters of the Sims low index algorithm.">SimsSettings&lt;Subclass&gt;</a>&amp;, Word const&amp;, Word const&amp;) for details. </p>
 
 </div>
 </div>
@@ -562,8 +565,7 @@ template&lt;typename Subclass, typename Int&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#ac43a729f114aa612b11b6c691c350c04">add_excluded_pair_no_checks&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;,
-Word const&amp;, Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#ac43a729f114aa612b11b6c691c350c04">add_excluded_pair_no_checks</a>&lt;Subclass, Word&gt;(<a class="el" href="classlibsemigroups_1_1_sims_settings.html" title="For setting the presentation and various runtime parameters of the Sims low index algorithm.">SimsSettings&lt;Subclass&gt;</a>&amp;, Word const&amp;, Word const&amp;) for details. </p>
 
 </div>
 </div>
@@ -592,8 +594,7 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#ac43a729f114aa612b11b6c691c350c04">add_excluded_pair_no_checks&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;,
-Word const&amp;, Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#ac43a729f114aa612b11b6c691c350c04">add_excluded_pair_no_checks</a>&lt;Subclass, Word&gt;(<a class="el" href="classlibsemigroups_1_1_sims_settings.html" title="For setting the presentation and various runtime parameters of the Sims low index algorithm.">SimsSettings&lt;Subclass&gt;</a>&amp;, Word const&amp;, Word const&amp;) for details. </p>
 
 </div>
 </div>
@@ -669,8 +670,8 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#a92f28d159d4d62bc00d647cd3fef13d0">add_included_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word const&amp;,
-Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#a92f28d159d4d62bc00d647cd3fef13d0">add_included_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word
+const&amp;, Word const&amp;)</a> for details. </p>
 
 </div>
 </div>
@@ -699,8 +700,8 @@ template&lt;typename Subclass, typename Int&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#a92f28d159d4d62bc00d647cd3fef13d0">add_included_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word const&amp;,
-Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#a92f28d159d4d62bc00d647cd3fef13d0">add_included_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word
+const&amp;, Word const&amp;)</a> for details. </p>
 
 </div>
 </div>
@@ -729,8 +730,8 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#a92f28d159d4d62bc00d647cd3fef13d0">add_included_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word const&amp;,
-Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#a92f28d159d4d62bc00d647cd3fef13d0">add_included_pair&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;, Word
+const&amp;, Word const&amp;)</a> for details. </p>
 
 </div>
 </div>
@@ -778,7 +779,7 @@ template&lt;typename Subclass, typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code class="param">sims</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="namespacelibsemigroups_1_1presentation.html" title="Namespace for Presentation helper functions.">presentation()</a>.alphabet()</code> and <code><a class="el" href="classlibsemigroups_1_1_presentation.html#a16828821733416651369b4c1a1628b61" title="Check if every letter in a range belongs to the alphabet.">Presentation::validate_word</a></code> throws.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the values pointed at by the iterators is out of range, i.e. they do not belong to <code><a class="el" href="namespacelibsemigroups_1_1presentation.html" title="Namespace for Presentation helper functions.">presentation()</a>.alphabet()</code> and <code>Presentation::validate_word</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
@@ -811,8 +812,7 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#af94ab9deef5b0d50e6fbba389b89b766">add_included_pair_no_checks&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;,
-Word const&amp;, Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#af94ab9deef5b0d50e6fbba389b89b766">add_included_pair_no_checks</a>&lt;Subclass, Word&gt;(<a class="el" href="classlibsemigroups_1_1_sims_settings.html" title="For setting the presentation and various runtime parameters of the Sims low index algorithm.">SimsSettings&lt;Subclass&gt;</a>&amp;, Word const&amp;, Word const&amp;) for details. </p>
 
 </div>
 </div>
@@ -841,8 +841,7 @@ template&lt;typename Subclass, typename Int&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#af94ab9deef5b0d50e6fbba389b89b766">add_included_pair_no_checks&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;,
-Word const&amp;, Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#af94ab9deef5b0d50e6fbba389b89b766">add_included_pair_no_checks</a>&lt;Subclass, Word&gt;(<a class="el" href="classlibsemigroups_1_1_sims_settings.html" title="For setting the presentation and various runtime parameters of the Sims low index algorithm.">SimsSettings&lt;Subclass&gt;</a>&amp;, Word const&amp;, Word const&amp;) for details. </p>
 
 </div>
 </div>
@@ -871,8 +870,7 @@ template&lt;typename Subclass&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>See <a class="el" href="#af94ab9deef5b0d50e6fbba389b89b766">add_included_pair_no_checks&lt;Subclass, Word&gt;(SimsSettings&lt;Subclass&gt;&amp;,
-Word const&amp;, Word const&amp;)</a> for details. </p>
+<p>See <a class="el" href="#af94ab9deef5b0d50e6fbba389b89b766">add_included_pair_no_checks</a>&lt;Subclass, Word&gt;(<a class="el" href="classlibsemigroups_1_1_sims_settings.html" title="For setting the presentation and various runtime parameters of the Sims low index algorithm.">SimsSettings&lt;Subclass&gt;</a>&amp;, Word const&amp;, Word const&amp;) for details. </p>
 
 </div>
 </div>
@@ -1313,7 +1311,7 @@ template&lt;typename Iterator&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This function computes a boolean matrix whose <code>(i, j)</code>-th entry is 1 if and only if the congruence defined by the <code>i</code>-th word graph in <code>[first, ! last)</code> is a subrelation of the congruence defined by the <code>j</code>-th word graph in <code>[first, last)</code>. If <code>[first, last)</code> is the collection of all congruences of a given semigroup or monoid, then this is equivalent to computing the congruence lattice of the semigroup or monoid.</p>
+<p>This function computes a boolean matrix whose <code>(i, j)</code>-th entry is 1 if and only if the congruence defined by the <code>i</code>-th word graph in <code>[first, last)</code> is a subrelation of the congruence defined by the <code>j</code>-th word graph in <code>[first, last)</code>. If <code>[first, last)</code> is the collection of all congruences of a given semigroup or monoid, then this is equivalent to computing the congruence lattice of the semigroup or monoid.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="group__bmat__group.html#gaba976bb482d4da5aa454b2b185a7241a">BMat</a> object.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does no checks on its arguments whatsoever and assumes that every element in the range <code>[first, last)</code> is a complete word graph. If this is not the case, then bad things may happen. </dd></dl>
 

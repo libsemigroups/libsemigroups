@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -201,11 +205,11 @@ $(function(){initNavTree('classlibsemigroups_1_1_string_range.html',''); initRes
 <div class="line">       .<a class="code hl_function" href="#a5578aa55182e03865fb58f11c2d1d28e">alphabet</a>(<span class="stringliteral">&quot;ab&quot;</span>)         <span class="comment">// on 2 letters</span></div>
 <div class="line">       .<a class="code hl_function" href="#a0b05543c438534af9e3c8f3d90022f22">min</a>(1)                 <span class="comment">// of length in the range from 1</span></div>
 <div class="line">       .<a class="code hl_function" href="#a39b9a710d7599958a2a71b41b9a7d25d">max</a>(5);                <span class="comment">// to 5</span></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a0b05543c438534af9e3c8f3d90022f22"><div class="ttname"><a href="#a0b05543c438534af9e3c8f3d90022f22">libsemigroups::StringRange::min</a></div><div class="ttdeci">StringRange &amp; min(size_type val)</div><div class="ttdoc">Set the first string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1838</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a39b9a710d7599958a2a71b41b9a7d25d"><div class="ttname"><a href="#a39b9a710d7599958a2a71b41b9a7d25d">libsemigroups::StringRange::max</a></div><div class="ttdeci">StringRange &amp; max(size_type val)</div><div class="ttdoc">Set one past the last string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1861</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a0b05543c438534af9e3c8f3d90022f22"><div class="ttname"><a href="#a0b05543c438534af9e3c8f3d90022f22">libsemigroups::StringRange::min</a></div><div class="ttdeci">StringRange &amp; min(size_type val)</div><div class="ttdoc">Set the first string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1886</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a39b9a710d7599958a2a71b41b9a7d25d"><div class="ttname"><a href="#a39b9a710d7599958a2a71b41b9a7d25d">libsemigroups::StringRange::max</a></div><div class="ttdeci">StringRange &amp; max(size_type val)</div><div class="ttdoc">Set one past the last string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1909</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a5578aa55182e03865fb58f11c2d1d28e"><div class="ttname"><a href="#a5578aa55182e03865fb58f11c2d1d28e">libsemigroups::StringRange::alphabet</a></div><div class="ttdeci">StringRange &amp; alphabet(std::string const &amp;x)</div><div class="ttdoc">Set the alphabet.</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a610f627a2f1536c0449454874abebd09"><div class="ttname"><a href="#a610f627a2f1536c0449454874abebd09">libsemigroups::StringRange::order</a></div><div class="ttdeci">StringRange &amp; order(Order val)</div><div class="ttdoc">Set the order of the strings in the range.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1779</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a7249acb1f62156e30a68c51a4fdfdc86"><div class="ttname"><a href="#a7249acb1f62156e30a68c51a4fdfdc86">libsemigroups::StringRange::StringRange</a></div><div class="ttdeci">StringRange()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1648</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a610f627a2f1536c0449454874abebd09"><div class="ttname"><a href="#a610f627a2f1536c0449454874abebd09">libsemigroups::StringRange::order</a></div><div class="ttdeci">StringRange &amp; order(Order val)</div><div class="ttdoc">Set the order of the strings in the range.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1827</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a7249acb1f62156e30a68c51a4fdfdc86"><div class="ttname"><a href="#a7249acb1f62156e30a68c51a4fdfdc86">libsemigroups::StringRange::StringRange</a></div><div class="ttdeci">StringRange()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1696</div></div>
 <div class="ttc" id="agroup__orders__group_html_ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458"><div class="ttname"><a href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">libsemigroups::Order::shortlex</a></div><div class="ttdeci">@ shortlex</div><div class="ttdef"><b>Definition</b> order.hpp:54</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_range.html" title="Class for generating words in a given range and in a particular order.">WordRange</a> </dd></dl>

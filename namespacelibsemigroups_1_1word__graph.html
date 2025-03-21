@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -200,6 +204,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a04898ce87a54779545d072c73242805a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a04898ce87a54779545d072c73242805a">adjacency_matrix</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
 <tr class="memdesc:a04898ce87a54779545d072c73242805a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the adjacency matrix of a word graph.  <br /></td></tr>
 <tr class="separator:a04898ce87a54779545d072c73242805a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a565312313d35f4c74209511e52a4a1ed" id="r_a565312313d35f4c74209511e52a4a1ed"><td class="memTemplParams" colspan="2"><a id="a565312313d35f4c74209511e52a4a1ed" name="a565312313d35f4c74209511e52a4a1ed"></a>
+template&lt;typename Node1, typename Node2&gt; </td></tr>
+<tr class="memitem:a565312313d35f4c74209511e52a4a1ed"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_set.html">std::unordered_set</a>&lt; Node1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ancestors_of</b> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 source)</td></tr>
+<tr class="separator:a565312313d35f4c74209511e52a4a1ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff7545094177526a9f06c0aad00c2bd8" id="r_aff7545094177526a9f06c0aad00c2bd8"><td class="memTemplParams" colspan="2"><a id="aff7545094177526a9f06c0aad00c2bd8" name="aff7545094177526a9f06c0aad00c2bd8"></a>
+template&lt;typename Node1, typename Node2&gt; </td></tr>
+<tr class="memitem:aff7545094177526a9f06c0aad00c2bd8"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_set.html">std::unordered_set</a>&lt; Node1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ancestors_of_no_checks</b> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 source)</td></tr>
+<tr class="separator:aff7545094177526a9f06c0aad00c2bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af31eecd044f68e0003863a304855451c" id="r_af31eecd044f68e0003863a304855451c"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:af31eecd044f68e0003863a304855451c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#af31eecd044f68e0003863a304855451c">dot</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
 <tr class="memdesc:af31eecd044f68e0003863a304855451c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object representing a word graph.  <br /></td></tr>
@@ -280,10 +292,10 @@ Functions</h2></td></tr>
 <tr class="memitem:abd990a75c79a7759fcd28a26ce7374f0"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#abd990a75c79a7759fcd28a26ce7374f0">is_reachable_no_checks</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 source, Node2 target)</td></tr>
 <tr class="memdesc:abd990a75c79a7759fcd28a26ce7374f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if there is a path from one node to another.  <br /></td></tr>
 <tr class="separator:abd990a75c79a7759fcd28a26ce7374f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81efa8856ab3f0cef3d7daddd98fb371" id="r_a81efa8856ab3f0cef3d7daddd98fb371"><td class="memTemplParams" colspan="2"><a id="a81efa8856ab3f0cef3d7daddd98fb371" name="a81efa8856ab3f0cef3d7daddd98fb371"></a>
-template&lt;typename Node&gt; </td></tr>
-<tr class="memitem:a81efa8856ab3f0cef3d7daddd98fb371"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>is_standardized</b> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;, <a class="el" href="group__orders__group.html#gabdaf879e32abd3c9d7ae16e794b8f405">Order</a> val=<a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">Order::shortlex</a>)</td></tr>
-<tr class="separator:a81efa8856ab3f0cef3d7daddd98fb371"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad79fc4526a2cebe90c36eed5c827ccc4" id="r_ad79fc4526a2cebe90c36eed5c827ccc4"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
+<tr class="memitem:ad79fc4526a2cebe90c36eed5c827ccc4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad79fc4526a2cebe90c36eed5c827ccc4">is_standardized</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg, <a class="el" href="group__orders__group.html#gabdaf879e32abd3c9d7ae16e794b8f405">Order</a> val=<a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">Order::shortlex</a>)</td></tr>
+<tr class="memdesc:ad79fc4526a2cebe90c36eed5c827ccc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a word graph is standardized.  <br /></td></tr>
+<tr class="separator:ad79fc4526a2cebe90c36eed5c827ccc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cfcd615198613c9deb7db192e997515" id="r_a2cfcd615198613c9deb7db192e997515"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:a2cfcd615198613c9deb7db192e997515"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a2cfcd615198613c9deb7db192e997515">is_strictly_cyclic</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
 <tr class="memdesc:a2cfcd615198613c9deb7db192e997515"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if every node is reachable from some node.  <br /></td></tr>
@@ -722,23 +734,26 @@ template&lt;typename Node1, typename Node2&gt; </div>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Node1</td><td>the type of the nodes of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code>.</td></tr>
-    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) ! &lt;= sizeof(Node1)</code>). <pre class="fragment">    \param wg a word graph.
-    \param from the starting node.
-    \param path the path to follow.
-
-    \returns
-    A value of type \p Node1. If one or more edges in \p path are not
-    defined, then \ref UNDEFINED is returned.
-
-    \throw LibsemigroupsException if \p from is not a node in the word
-    graph or \p path contains a value that is not an edge-label.
-
-    \par Complexity
-    Linear in the length of \p path. 
-</pre> </td></tr>
+    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) &lt;= sizeof(Node1)</code>).</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>a word graph. </td></tr>
+    <tr><td class="paramname">from</td><td>the starting node. </td></tr>
+    <tr><td class="paramname">path</td><td>the path to follow.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code class="param">Node1</code>. If one or more edges in <code class="param">path</code> are not defined, then <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> is returned.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">from</code> is not a node in the word graph or <code class="param">path</code> contains a value that is not an edge-label.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the length of <code class="param">path</code>. </dd></dl>
 
 </div>
 </div>
@@ -784,27 +799,28 @@ template&lt;typename Node1, typename Node2, typename Iterator&gt; </div>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Node1</td><td>the type of the nodes of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code>.</td></tr>
-    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) ! &lt;= sizeof(Node1)</code>). <pre class="fragment">    \tparam Iterator the type of \p first and \p last.
-
-    \param wg a word graph.
-    \param source the starting node.
-    \param first an iterator point at the start of the word.
-    \param last an iterator point one beyond the last letter of the word.
-
-    \returns
-    A value of type \p Node1. If one or more edges in \p path are not
-    defined, then \ref UNDEFINED is returned.
-
-    \throw LibsemigroupsException if \p from is not a node in the word
-    graph or the word defined by \p first and \p last contains a value that
-    is not an edge-label.
-
-    \par Complexity
-    Linear in the distance between \p first and \p last. 
-</pre> </td></tr>
+    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) &lt;= sizeof(Node1)</code>).</td></tr>
+    <tr><td class="paramname">Iterator</td><td>the type of <code class="param">first</code> and <code class="param">last</code>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>a word graph. </td></tr>
+    <tr><td class="paramname">source</td><td>the starting node. </td></tr>
+    <tr><td class="paramname">first</td><td>an iterator point at the start of the word. </td></tr>
+    <tr><td class="paramname">last</td><td>an iterator point one beyond the last letter of the word.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code class="param">Node1</code>. If one or more edges in <code class="param">path</code> are not defined, then <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> is returned.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">from</code> is not a node in the word graph or the word defined by <code class="param">first</code> and <code class="param">last</code> contains a value that is not an edge-label.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the distance between <code class="param">first</code> and <code class="param">last</code>. </dd></dl>
 
 </div>
 </div>
@@ -850,25 +866,23 @@ template&lt;typename Node1, typename Node2, typename Iterator&gt; </div>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Node1</td><td>the type of the nodes of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code>.</td></tr>
-    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) ! &lt;= sizeof(Node1)</code>). <pre class="fragment">    \param wg a word graph.
-    \param from the source node.
-    \param first iterator into a word.
-    \param last iterator into a word.
-
-    \returns A value of type \p Node1.
-
-    \par Exceptions
-    This function is `noexcept` and is guaranteed never to throw.
-
-    \par Complexity
-    At worst the distance from \p first to \p last.
-
-    \warning
-    No checks on the arguments of this function are performed. 
-</pre> </td></tr>
+    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) &lt;= sizeof(Node1)</code>).</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>a word graph. </td></tr>
+    <tr><td class="paramname">from</td><td>the source node. </td></tr>
+    <tr><td class="paramname">first</td><td>iterator into a word. </td></tr>
+    <tr><td class="paramname">last</td><td>iterator into a word.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code class="param">Node1</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At worst the distance from <code class="param">first</code> to <code class="param">last</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed. </dd></dl>
 
 </div>
 </div>
@@ -909,24 +923,22 @@ template&lt;typename Node1, typename Node2&gt; </div>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Node1</td><td>the type of the nodes of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code>.</td></tr>
-    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) ! &lt;= sizeof(Node1)</code>). <pre class="fragment">    \param wg a word graph.
-    \param from the source node.
-    \param path the word.
-
-    \returns A value of type \p Node1.
-
-    \par Exceptions
-    This function is `noexcept` and is guaranteed never to throw.
-
-    \par Complexity
-    At worst the length of \p path.
-
-    \warning
-    No checks on the arguments of this function are performed. 
-</pre> </td></tr>
+    <tr><td class="paramname">Node2</td><td>the type of the node <code class="param">from</code> (must satisfy <code>sizeof(Node2) &lt;= sizeof(Node1)</code>).</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>a word graph. </td></tr>
+    <tr><td class="paramname">from</td><td>the source node. </td></tr>
+    <tr><td class="paramname">path</td><td>the word.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code class="param">Node1</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At worst the length of <code class="param">path</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed. </dd></dl>
 
 </div>
 </div>
@@ -976,7 +988,7 @@ template&lt;typename Node&gt; </div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(0, 0, 1);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(1, 0, 0);</div>
 <div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg); <span class="comment">// returns false</span></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:85</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:82</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html_ab4e724c989a931dd69959954c413cd5b"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">libsemigroups::WordGraph::target</a></div><div class="ttdeci">WordGraph &amp; target(node_type s, label_type a, node_type t)</div><div class="ttdoc">Add an edge from one node to another with a given label.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html_ab63d0e739cdf51ef0bce2316ef228b62"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html#ab63d0e739cdf51ef0bce2316ef228b62">libsemigroups::WordGraph::add_nodes</a></div><div class="ttdeci">WordGraph &amp; add_nodes(size_type nr)</div><div class="ttdoc">Add a number of new nodes.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html_ace5a7a89a4451ecb0597bc26c9dce496"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html#ace5a7a89a4451ecb0597bc26c9dce496">libsemigroups::WordGraph::add_to_out_degree</a></div><div class="ttdeci">WordGraph &amp; add_to_out_degree(size_type nr)</div><div class="ttdoc">Add to the out-degree of every node.</div></div>
@@ -1147,7 +1159,7 @@ template&lt;typename Node, typename Iterator1, typename Iterator2, typename Iter
 <p>This function returns <code>true</code> if the word graph <code class="param">wg</code> is compatible with the relations in the range <code class="param">first_rule</code> to <code class="param">last_rule</code> at every node in the range from <code class="param">first_node</code> to <code class="param">last_node</code>. This means that the paths with given sources that are labelled by one side of a relation leads to the same node as the path labelled by the other side of the relation.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Node</td><td>the type of the nodes of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code>.</td></tr>
+    <tr><td class="paramname">Node</td><td>the type of the nodes of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>. <code class="param">wg</code>.</td></tr>
     <tr><td class="paramname">Iterator1</td><td>the type of <code class="param">first_node</code>.</td></tr>
     <tr><td class="paramname">Iterator2</td><td>the type of <code class="param">last_node</code>.</td></tr>
     <tr><td class="paramname">Iterator3</td><td>the type of <code class="param">first_rule</code> and <code class="param">last_rule</code>.</td></tr>
@@ -1710,6 +1722,50 @@ This function ignores out of bound targets in <code class="param">wg</code> (if 
 
 </div>
 </div>
+<a id="ad79fc4526a2cebe90c36eed5c827ccc4" name="ad79fc4526a2cebe90c36eed5c827ccc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad79fc4526a2cebe90c36eed5c827ccc4">&#9670;&#160;</a></span>is_standardized()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_standardized </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orders__group.html#gabdaf879e32abd3c9d7ae16e794b8f405">Order</a></td>          <td class="paramname"><span class="paramname"><em>val</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">Order::shortlex</a></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function checks if the word graph <code class="param">wg</code> is standardized according to the reduction order specified by <code class="param">val</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the node in <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the word graph to check. </td></tr>
+    <tr><td class="paramname">val</td><td>the order to use for standardization check (defaults to <a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">Order::shortlex</a>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">val</code> is not one of: <a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a334c4a4c42fdb79d7ebc3e73b517e6f8" title="No ordering.">Order::none</a>, <a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">Order::shortlex</a>, <a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4">Order::lex</a> or <a class="el" href="group__orders__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4">Order::recursive</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ac10246a1e153539515a5eb8a5b53f255">standardize</a>. </dd></dl>
+
+</div>
+</div>
 <a id="a2cfcd615198613c9deb7db192e997515" name="a2cfcd615198613c9deb7db192e997515"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2cfcd615198613c9deb7db192e997515">&#9670;&#160;</a></span>is_strictly_cyclic()</h2>
 
@@ -1758,7 +1814,7 @@ template&lt;typename Node&gt; </div>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">auto</span> wg = <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;WordGraph&lt;uint8_t&gt;</a>&gt;(</div>
 <div class="line">    5, {{0, 0}, {1, 1}, {2}, {3, 3}});</div>
 <div class="line"><a class="code hl_function" href="#a2cfcd615198613c9deb7db192e997515">word_graph::is_strictly_cyclic</a>(wg);  <span class="comment">// returns false</span></div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Validate the arguments, construct a Blocks object, and validate it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:783</div></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:798</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1word__graph_html_a2cfcd615198613c9deb7db192e997515"><div class="ttname"><a href="#a2cfcd615198613c9deb7db192e997515">libsemigroups::word_graph::is_strictly_cyclic</a></div><div class="ttdeci">bool is_strictly_cyclic(WordGraph&lt; Node &gt; const &amp;wg)</div><div class="ttdoc">Check if every node is reachable from some node.</div></div>
 </div><!-- fragment --> </dd></dl>
 

@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,7 +186,7 @@ $(function(){initNavTree('constants_8hpp_source.html',''); initResizable(true); 
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// libsemigroups - C++ library for semigroups and monoids</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019 James D. Mitchell</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019-2025 James D. Mitchell</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// it under the terms of the GNU General Public License as published by</span></div>
@@ -282,140 +286,143 @@ $(function(){initNavTree('constants_8hpp_source.html',''); initResizable(true); 
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>  <span class="comment">// Note that for some reason Catch requires that the comparison functions are</span></div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>  <span class="comment">// in the namespace detail.</span></div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>  <span class="keyword">namespace </span>detail {</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="comment">// operator==</span></div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="comment">// No SFINAE required, since the functions delegated to don&#39;t exist.</span></div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">operator==</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; lhs,</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>                              T <span class="keyword">const</span>&amp;              rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>      <span class="keywordflow">return</span> lhs.operator T() == rhs;</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    }</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">operator==</a>(T <span class="keyword">const</span>&amp;              lhs,</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>                              Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>      <span class="keywordflow">return</span> rhs.operator T() == lhs;</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    }</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R1, <span class="keyword">typename</span> S1, <span class="keywordtype">int</span>64_t R2, <span class="keyword">typename</span> S2&gt;</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">operator==</a>(Constant&lt;R1, S1&gt; <span class="keyword">const</span>&amp;,</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                              Constant&lt;R2, S2&gt; <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>      <span class="keywordflow">return</span> std::is_same_v&lt;S1, S2&gt; &amp;&amp; R1 == R2;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    }</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    <span class="comment">// operator!=</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    <span class="comment">// No SFINAE required, since the functions delegated to don&#39;t exist.</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">operator!=</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; lhs,</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                              T <span class="keyword">const</span>&amp;              rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>      <span class="keywordflow">return</span> !(lhs == rhs);</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    }</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">operator!=</a>(T <span class="keyword">const</span>&amp;              lhs,</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                              Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>      <span class="keywordflow">return</span> !(lhs == rhs);</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    }</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R1, <span class="keyword">typename</span> S1, <span class="keywordtype">int</span>64_t R2, <span class="keyword">typename</span> S2&gt;</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">operator!=</a>(Constant&lt;R1, S1&gt; <span class="keyword">const</span>&amp; lhs,</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                              Constant&lt;R2, S2&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>      <span class="keywordflow">return</span> !(lhs == rhs);</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    }</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    <span class="comment">// operator&gt;</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    <span class="comment">// No SFINAE required, since the functions delegated to don&#39;t exist.</span></div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">operator&gt;</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; lhs, T <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>      <span class="keywordflow">return</span> rhs &lt; lhs;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    }</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">operator&gt;</a>(T <span class="keyword">const</span>&amp; lhs, Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>      <span class="keywordflow">return</span> rhs &lt; lhs;</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    }</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">operator&gt;</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;,</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                             Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    }</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> operator&lt;(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;,</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                             Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    }</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="comment">// No further operator&lt; for Constant and Constant unless given explicitly</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span></div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    <span class="comment">// Operators for specific constants</span></div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <span class="comment">// PositiveInfinity is not less than any integral value, or</span></div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    <span class="comment">// NegativeInfinity.</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(<a class="code hl_typedef" href="group__constants__group.html#ga0d920ad4d233f91cc780bcc2e5bf3d62">PositiveInfinity</a> <span class="keyword">const</span>&amp;, T <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                                || std::is_same_v&lt;NegativeInfinity, T&gt;,</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                            SFINAE&gt; {</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    }</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    <span class="comment">// Every integral value, and negative infinity, is less than</span></div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    <span class="comment">// PositiveInfinity.</span></div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(T <span class="keyword">const</span>&amp;, <a class="code hl_typedef" href="group__constants__group.html#ga0d920ad4d233f91cc780bcc2e5bf3d62">PositiveInfinity</a> <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>                                || std::is_same_v&lt;NegativeInfinity, T&gt;,</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>                            SFINAE&gt; {</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    }</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    <span class="comment">// NegativeInfinity is less than every integral value.</span></div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(<a class="code hl_typedef" href="group__constants__group.html#ga9260314f9ac86ceedd2a545c17c06269">NegativeInfinity</a> <span class="keyword">const</span>&amp;, T <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    }</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="comment">// No integral value is less than NegativeInfinity.</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(T <span class="keyword">const</span>&amp;, <a class="code hl_typedef" href="group__constants__group.html#ga9260314f9ac86ceedd2a545c17c06269">NegativeInfinity</a> <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    }</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="comment">// LimitMax is compared by implicit conversion with any integral value.</span></div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(<a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; lhs, T <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>      <span class="keywordflow">return</span> lhs.operator T() &lt; rhs;</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    }</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="comment">// LimitMax is compared by implicit conversion with any integral value.</span></div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(T <span class="keyword">const</span>&amp; lhs, <a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>      <span class="keywordflow">return</span> lhs &lt; rhs.operator T();</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    }</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = T&gt;</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator-(<a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; lhs, T <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>      <span class="keywordflow">return</span> lhs.operator T() - rhs;</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    }</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = T&gt;</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator-(T <span class="keyword">const</span>&amp; lhs, <a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>      <span class="keywordflow">return</span> lhs - rhs.operator T();</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    }</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>  }  <span class="comment">// namespace detail</span></div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_CONSTANTS_HPP_</span></div>
-<div class="ttc" id="agroup__bipart__group_html_ga76a85ebe8ed3cd59fb632de99a443eb3"><div class="ttname"><a href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">libsemigroups::operator&gt;</a></div><div class="ttdeci">bool operator&gt;(Bipartition const &amp;x, Bipartition const &amp;y)</div><div class="ttdoc">Compare bipartitions.</div><div class="ttdef"><b>Definition</b> bipart.hpp:1642</div></div>
-<div class="ttc" id="agroup__bipart__group_html_gaf750819dbb81752f8221c26eba6fb30a"><div class="ttname"><a href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">libsemigroups::operator!=</a></div><div class="ttdeci">bool operator!=(Bipartition const &amp;x, Bipartition const &amp;y)</div><div class="ttdoc">Check bipartitions for inequality.</div><div class="ttdef"><b>Definition</b> bipart.hpp:1621</div></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="preprocessor">#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>  <span class="keyword">namespace </span>detail {</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="comment">// operator==</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    <span class="comment">// No SFINAE required, since the functions delegated to don&#39;t exist.</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">operator==</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; lhs,</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>                              T <span class="keyword">const</span>&amp;              rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>      <span class="keywordflow">return</span> lhs.operator T() == rhs;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    }</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">operator==</a>(T <span class="keyword">const</span>&amp;              lhs,</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>                              Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>      <span class="keywordflow">return</span> rhs.operator T() == lhs;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    }</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R1, <span class="keyword">typename</span> S1, <span class="keywordtype">int</span>64_t R2, <span class="keyword">typename</span> S2&gt;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">operator==</a>(Constant&lt;R1, S1&gt; <span class="keyword">const</span>&amp;,</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                              Constant&lt;R2, S2&gt; <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>      <span class="keywordflow">return</span> std::is_same_v&lt;S1, S2&gt; &amp;&amp; R1 == R2;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    }</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="comment">// operator!=</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="comment">// No SFINAE required, since the functions delegated to don&#39;t exist.</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">operator!=</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; lhs,</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                              T <span class="keyword">const</span>&amp;              rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>      <span class="keywordflow">return</span> !(lhs == rhs);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    }</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">operator!=</a>(T <span class="keyword">const</span>&amp;              lhs,</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                              Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>      <span class="keywordflow">return</span> !(lhs == rhs);</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    }</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R1, <span class="keyword">typename</span> S1, <span class="keywordtype">int</span>64_t R2, <span class="keyword">typename</span> S2&gt;</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">operator!=</a>(Constant&lt;R1, S1&gt; <span class="keyword">const</span>&amp; lhs,</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                              Constant&lt;R2, S2&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>      <span class="keywordflow">return</span> !(lhs == rhs);</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    }</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="comment">// operator&gt;</span></div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="comment">// No SFINAE required, since the functions delegated to don&#39;t exist.</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">operator&gt;</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; lhs, T <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>      <span class="keywordflow">return</span> rhs &lt; lhs;</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    }</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">operator&gt;</a>(T <span class="keyword">const</span>&amp; lhs, Constant&lt;R, S&gt; <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>      <span class="keywordflow">return</span> rhs &lt; lhs;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    }</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">operator&gt;</a>(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;,</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>                             Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    }</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <span class="keyword">template</span> &lt;<span class="keywordtype">int</span>64_t R, <span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> operator&lt;(Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;,</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                             Constant&lt;R, S&gt; <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    }</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span> </div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    <span class="comment">// No further operator&lt; for Constant and Constant unless given explicitly</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span></div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    <span class="comment">// Operators for specific constants</span></div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    <span class="comment">// PositiveInfinity is not less than any integral value, or</span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <span class="comment">// NegativeInfinity.</span></div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(<a class="code hl_typedef" href="group__constants__group.html#ga0d920ad4d233f91cc780bcc2e5bf3d62">PositiveInfinity</a> <span class="keyword">const</span>&amp;, T <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                                || std::is_same_v&lt;NegativeInfinity, T&gt;,</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                            SFINAE&gt; {</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <span class="comment">// Every integral value, and negative infinity, is less than</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <span class="comment">// PositiveInfinity.</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(T <span class="keyword">const</span>&amp;, <a class="code hl_typedef" href="group__constants__group.html#ga0d920ad4d233f91cc780bcc2e5bf3d62">PositiveInfinity</a> <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>                                || std::is_same_v&lt;NegativeInfinity, T&gt;,</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>                            SFINAE&gt; {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    }</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="comment">// NegativeInfinity is less than every integral value.</span></div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(<a class="code hl_typedef" href="group__constants__group.html#ga9260314f9ac86ceedd2a545c17c06269">NegativeInfinity</a> <span class="keyword">const</span>&amp;, T <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    }</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="comment">// No integral value is less than NegativeInfinity.</span></div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(T <span class="keyword">const</span>&amp;, <a class="code hl_typedef" href="group__constants__group.html#ga9260314f9ac86ceedd2a545c17c06269">NegativeInfinity</a> <span class="keyword">const</span>&amp;) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="comment">// LimitMax is compared by implicit conversion with any integral value.</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(<a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; lhs, T <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>      <span class="keywordflow">return</span> lhs.operator T() &lt; rhs;</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    }</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="comment">// LimitMax is compared by implicit conversion with any integral value.</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = <span class="keywordtype">bool</span>&gt;</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator&lt;(T <span class="keyword">const</span>&amp; lhs, <a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>      <span class="keywordflow">return</span> lhs &lt; rhs.operator T();</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    }</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = T&gt;</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator-(<a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; lhs, T <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>      <span class="keywordflow">return</span> lhs.operator T() - rhs;</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    }</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> SFINAE = T&gt;</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator-(T <span class="keyword">const</span>&amp; lhs, <a class="code hl_typedef" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> <span class="keyword">const</span>&amp; rhs) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>        -&gt; std::enable_if_t&lt;std::is_integral_v&lt;T&gt;, SFINAE&gt; {</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>      <span class="keywordflow">return</span> lhs - rhs.operator T();</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    }</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>  }     <span class="comment">// namespace detail</span></div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_CONSTANTS_HPP_</span></div>
+<div class="ttc" id="agroup__bipart__group_html_ga76a85ebe8ed3cd59fb632de99a443eb3"><div class="ttname"><a href="group__bipart__group.html#ga76a85ebe8ed3cd59fb632de99a443eb3">libsemigroups::operator&gt;</a></div><div class="ttdeci">bool operator&gt;(Bipartition const &amp;x, Bipartition const &amp;y)</div><div class="ttdoc">Compare bipartitions.</div><div class="ttdef"><b>Definition</b> bipart.hpp:1658</div></div>
+<div class="ttc" id="agroup__bipart__group_html_gaf750819dbb81752f8221c26eba6fb30a"><div class="ttname"><a href="group__bipart__group.html#gaf750819dbb81752f8221c26eba6fb30a">libsemigroups::operator!=</a></div><div class="ttdeci">bool operator!=(Bipartition const &amp;x, Bipartition const &amp;y)</div><div class="ttdoc">Check bipartitions for inequality.</div><div class="ttdef"><b>Definition</b> bipart.hpp:1637</div></div>
 <div class="ttc" id="agroup__constants__group_html_ga0aa8558f501ddcb52c7b5549c033e760"><div class="ttname"><a href="group__constants__group.html#ga0aa8558f501ddcb52c7b5549c033e760">libsemigroups::Undefined</a></div><div class="ttdeci">detail::Constant&lt; 0, detail::Max &gt; Undefined</div><div class="ttdoc">Type for undefined values.</div><div class="ttdef"><b>Definition</b> constants.hpp:97</div></div>
 <div class="ttc" id="agroup__constants__group_html_ga0d7795a3002953bee55b75f56e614664"><div class="ttname"><a href="group__constants__group.html#ga0d7795a3002953bee55b75f56e614664">libsemigroups::NEGATIVE_INFINITY</a></div><div class="ttdeci">NegativeInfinity const NEGATIVE_INFINITY</div><div class="ttdoc">Value for negative infinity.</div></div>
 <div class="ttc" id="agroup__constants__group_html_ga0d920ad4d233f91cc780bcc2e5bf3d62"><div class="ttname"><a href="group__constants__group.html#ga0d920ad4d233f91cc780bcc2e5bf3d62">libsemigroups::PositiveInfinity</a></div><div class="ttdeci">detail::Constant&lt;-1, detail::Max &gt; PositiveInfinity</div><div class="ttdoc">Type for positive infinity.</div><div class="ttdef"><b>Definition</b> constants.hpp:103</div></div>
@@ -424,7 +431,7 @@ $(function(){initNavTree('constants_8hpp_source.html',''); initResizable(true); 
 <div class="ttc" id="agroup__constants__group_html_gab635a1f4aeb78ba4dded370c2fd20941"><div class="ttname"><a href="group__constants__group.html#gab635a1f4aeb78ba4dded370c2fd20941">libsemigroups::POSITIVE_INFINITY</a></div><div class="ttdeci">PositiveInfinity const POSITIVE_INFINITY</div><div class="ttdoc">Value for positive infinity.</div></div>
 <div class="ttc" id="agroup__constants__group_html_gad6f08fa16691724172bb75e5805cf756"><div class="ttname"><a href="group__constants__group.html#gad6f08fa16691724172bb75e5805cf756">libsemigroups::LIMIT_MAX</a></div><div class="ttdeci">LimitMax const LIMIT_MAX</div><div class="ttdoc">Value for the maximum of something.</div></div>
 <div class="ttc" id="agroup__constants__group_html_gaf857f1918c5dcad0a351ea8b78417f35"><div class="ttname"><a href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">libsemigroups::LimitMax</a></div><div class="ttdeci">detail::Constant&lt;-2, detail::Max &gt; LimitMax</div><div class="ttdoc">Type for the maximum value of something.</div><div class="ttdef"><b>Definition</b> constants.hpp:109</div></div>
-<div class="ttc" id="agroup__presentations__group_html_ga252e3c85e68f7ddc06e13e08f3314fa6"><div class="ttname"><a href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">libsemigroups::operator==</a></div><div class="ttdeci">bool operator==(Presentation&lt; Word &gt; const &amp;lhop, Presentation&lt; Word &gt; const &amp;rhop)</div><div class="ttdoc">Compare for equality.</div><div class="ttdef"><b>Definition</b> presentation.hpp:2267</div></div>
+<div class="ttc" id="agroup__presentations__group_html_ga252e3c85e68f7ddc06e13e08f3314fa6"><div class="ttname"><a href="group__presentations__group.html#ga252e3c85e68f7ddc06e13e08f3314fa6">libsemigroups::operator==</a></div><div class="ttdeci">bool operator==(Presentation&lt; Word &gt; const &amp;lhop, Presentation&lt; Word &gt; const &amp;rhop)</div><div class="ttdoc">Compare for equality.</div><div class="ttdef"><b>Definition</b> presentation.hpp:2346</div></div>
 <div class="ttc" id="amax_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/numeric_limits/max.html">std::numeric_limits::max</a></div><div class="ttdeci">T max(T... args)</div></div>
 <div class="ttc" id="amin_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/numeric_limits/min.html">std::numeric_limits::min</a></div><div class="ttdeci">T min(T... args)</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>

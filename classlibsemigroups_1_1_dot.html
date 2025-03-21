@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -278,9 +282,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8aa70d98d151066c4bf01c66a589de47" id="r_a8aa70d98d151066c4bf01c66a589de47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8aa70d98d151066c4bf01c66a589de47">name</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;val)</td></tr>
 <tr class="memdesc:a8aa70d98d151066c4bf01c66a589de47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the name of the represented graph.  <br /></td></tr>
 <tr class="separator:a8aa70d98d151066c4bf01c66a589de47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33b174243839a6b26ee29423571e07f7" id="r_a33b174243839a6b26ee29423571e07f7"><td class="memTemplParams" colspan="2"><a id="a33b174243839a6b26ee29423571e07f7" name="a33b174243839a6b26ee29423571e07f7"></a>
-template&lt;typename Thing&gt; </td></tr>
-<tr class="memitem:a33b174243839a6b26ee29423571e07f7"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structlibsemigroups_1_1_dot_1_1_node.html">Node</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>node</b> (Thing &amp;&amp;thing)</td></tr>
+<tr class="memitem:a33b174243839a6b26ee29423571e07f7" id="r_a33b174243839a6b26ee29423571e07f7"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:a33b174243839a6b26ee29423571e07f7"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structlibsemigroups_1_1_dot_1_1_node.html">Node</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a33b174243839a6b26ee29423571e07f7">node</a> (Thing &amp;&amp;thing)</td></tr>
+<tr class="memdesc:a33b174243839a6b26ee29423571e07f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a node from the represented graph.  <br /></td></tr>
 <tr class="separator:a33b174243839a6b26ee29423571e07f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bee676a9bdabb40756efbccae5bd777" id="r_a0bee676a9bdabb40756efbccae5bd777"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bee676a9bdabb40756efbccae5bd777">nodes</a> () const noexcept</td></tr>
 <tr class="memdesc:a0bee676a9bdabb40756efbccae5bd777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a range object of const references to the current nodes.  <br /></td></tr>
@@ -483,8 +487,8 @@ template&lt;typename Thing1, typename Thing2&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">head</td><td>the head of the edge </td></tr>
-    <tr><td class="paramname">tail</td><td>the tail of the edge</td></tr>
+    <tr><td class="paramname">head</td><td>the head of the edge. </td></tr>
+    <tr><td class="paramname">tail</td><td>the tail of the edge.</td></tr>
   </table>
   </dd>
 </dl>
@@ -677,8 +681,8 @@ template&lt;typename Thing1, typename Thing2&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">head</td><td>the head of the edge </td></tr>
-    <tr><td class="paramname">tail</td><td>the tail of the edge</td></tr>
+    <tr><td class="paramname">head</td><td>the head of the edge. </td></tr>
+    <tr><td class="paramname">tail</td><td>the tail of the edge.</td></tr>
   </table>
   </dd>
 </dl>
@@ -939,6 +943,53 @@ template&lt;typename Thing, typename std::enable_if_t&lt; !std::is_same_v&lt; st
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code>this</code>. </dd></dl>
+
+</div>
+</div>
+<a id="a33b174243839a6b26ee29423571e07f7" name="a33b174243839a6b26ee29423571e07f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33b174243839a6b26ee29423571e07f7">&#9670;&#160;</a></span>node()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structlibsemigroups_1_1_dot_1_1_node.html">Node</a> &amp; node </td>
+          <td>(</td>
+          <td class="paramtype">Thing &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>thing</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns a reference to a node with name obtained from <code class="param">thing</code> by converting it to a <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> (unless they are <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>, std::string_view, or <code>char const*</code> already) using <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string/to_string.html">std::to_string</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the argument.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thing</td><td>the object to use as the name of a node.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to the <a class="el" href="structlibsemigroups_1_1_dot_1_1_node.html" title="This nested struct represents a node in the represented graph.">Node</a> object with <a class="el" href="#a8aa70d98d151066c4bf01c66a589de47">name</a> obtained from <code class="param">thing</code>.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if there is no node with name <code>std::to_string(thing)</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

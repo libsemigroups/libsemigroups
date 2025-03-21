@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -192,7 +196,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_to_string.html',''); initResiza
 <div class="line"> </div>
 <div class="line">tostring.init();</div>
 <div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({1, 0, 2}));                 <span class="comment">// returns &quot;bac&quot;</span></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_to_string_html_a1e77d819d63e7e9261ac3250ad8d5428"><div class="ttname"><a href="#a1e77d819d63e7e9261ac3250ad8d5428">libsemigroups::ToString::ToString</a></div><div class="ttdeci">ToString()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1107</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_to_string_html_a1e77d819d63e7e9261ac3250ad8d5428"><div class="ttname"><a href="#a1e77d819d63e7e9261ac3250ad8d5428">libsemigroups::ToString::ToString</a></div><div class="ttdeci">ToString()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1140</div></div>
 <div class="ttc" id="agroup__types__group_html_ga4c833ae5c1a57b830205688bf18f9991"><div class="ttname"><a href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">libsemigroups::word_type</a></div><div class="ttdeci">std::vector&lt; letter_type &gt; word_type</div><div class="ttdoc">Type for a word over the generators of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:101</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><table class="memberdecls">
@@ -234,9 +238,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3e65f185b73180eb9b85469d87448a4a"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3e65f185b73180eb9b85469d87448a4a">operator()</a> (InputRange &amp;&amp;input) const</td></tr>
 <tr class="memdesc:a3e65f185b73180eb9b85469d87448a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call operator for combining with other range objects.  <br /></td></tr>
 <tr class="separator:a3e65f185b73180eb9b85469d87448a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e41b5aedd5523f0b5f49ce4dbaefcfb" id="r_a4e41b5aedd5523f0b5f49ce4dbaefcfb"><td class="memTemplParams" colspan="2"><a id="a4e41b5aedd5523f0b5f49ce4dbaefcfb" name="a4e41b5aedd5523f0b5f49ce4dbaefcfb"></a>
-template&lt;typename Int&gt; </td></tr>
-<tr class="memitem:a4e41b5aedd5523f0b5f49ce4dbaefcfb"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator()</b> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt; input) const</td></tr>
+<tr class="memitem:a4e41b5aedd5523f0b5f49ce4dbaefcfb" id="r_a4e41b5aedd5523f0b5f49ce4dbaefcfb"><td class="memTemplParams" colspan="2">template&lt;typename Int&gt; </td></tr>
+<tr class="memitem:a4e41b5aedd5523f0b5f49ce4dbaefcfb"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a4e41b5aedd5523f0b5f49ce4dbaefcfb">operator()</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt; input) const</td></tr>
+<tr class="memdesc:a4e41b5aedd5523f0b5f49ce4dbaefcfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a> to a <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>.  <br /></td></tr>
 <tr class="separator:a4e41b5aedd5523f0b5f49ce4dbaefcfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe1905f023653358b51512dbbbbd6e8d" id="r_abe1905f023653358b51512dbbbbd6e8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe1905f023653358b51512dbbbbd6e8d">operator()</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;output, <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> const &amp;input) const</td></tr>
 <tr class="memdesc:abe1905f023653358b51512dbbbbd6e8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> to a <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>.  <br /></td></tr>
@@ -579,7 +583,7 @@ template&lt;typename Int&gt; </td></tr>
 </div>
 </div>
 <a id="a3e65f185b73180eb9b85469d87448a4a" name="a3e65f185b73180eb9b85469d87448a4a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e65f185b73180eb9b85469d87448a4a">&#9670;&#160;</a></span>operator()() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e65f185b73180eb9b85469d87448a4a">&#9670;&#160;</a></span>operator()() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -611,13 +615,57 @@ template&lt;typename InputRange, typename = std::enable_if_t&lt;rx::is_input_or_
 <div class="line"><span class="comment">// {&quot;&quot;, &quot;a&quot;, &quot;aa&quot;, &quot;aaa&quot;, &quot;aaaa&quot;, &quot;aaaaa&quot;, &quot;aaaaaa&quot;, &quot;aaaaaaa&quot;,</span></div>
 <div class="line"><span class="comment">// &quot;aaaaaaaa&quot;, &quot;aaaaaaaaa&quot;};</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_range_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_range.html">libsemigroups::WordRange</a></div><div class="ttdoc">Class for generating words in a given range and in a particular order.</div><div class="ttdef"><b>Definition</b> word-range.hpp:318</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1words_html"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html">libsemigroups::words</a></div><div class="ttdoc">Namespace containing some operators for creating words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2022</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1words_html"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html">libsemigroups::words</a></div><div class="ttdoc">Namespace containing some operators for creating words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2072</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
 </div>
+<a id="a4e41b5aedd5523f0b5f49ce4dbaefcfb" name="a4e41b5aedd5523f0b5f49ce4dbaefcfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e41b5aedd5523f0b5f49ce4dbaefcfb">&#9670;&#160;</a></span>operator()() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Int&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> operator() </td>
+          <td>(</td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt;</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function converts its argument <code class="param">input</code> into a <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>, by first converting it to a <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>. The characters of <code class="param">input</code> are converted using the alphabet used to construct the object or set via <a class="el" href="#a0dc7721046e018cb108a8f7f1f1c486d" title="Initialize an existing ToString object.">init()</a>, or with <a class="el" href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">human_readable_letter</a> if <a class="el" href="#a3f6fc5de06a318920d84f3c3742db07f">empty</a> returns <code>true</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>the initializer list to convert.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the alphabet used to define an instance of <a class="el" href="classlibsemigroups_1_1_to_string.html" title="Class for converting word_type into std::string with specified alphabet.">ToString</a> is not empty and <code class="param">input</code> contains letters that do not correspond to letters of the alphabet.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><ul>
+<li><a class="el" href="namespacelibsemigroups_1_1literals.html">literals</a> </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
 <a id="abe1905f023653358b51512dbbbbd6e8d" name="abe1905f023653358b51512dbbbbd6e8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe1905f023653358b51512dbbbbd6e8d">&#9670;&#160;</a></span>operator()() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abe1905f023653358b51512dbbbbd6e8d">&#9670;&#160;</a></span>operator()() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -657,7 +705,7 @@ template&lt;typename InputRange, typename = std::enable_if_t&lt;rx::is_input_or_
 </div>
 </div>
 <a id="a752415f2fa5eadc530f1197326e3e78b" name="a752415f2fa5eadc530f1197326e3e78b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a752415f2fa5eadc530f1197326e3e78b">&#9670;&#160;</a></span>operator()() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a752415f2fa5eadc530f1197326e3e78b">&#9670;&#160;</a></span>operator()() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

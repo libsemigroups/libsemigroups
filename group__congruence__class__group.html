@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -193,7 +197,7 @@ $(function(){initNavTree('group__congruence__class__group.html',''); initResizab
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__cong__common__helpers__group.html">Common congruence helpers</a> for information about helper functions for the <a class="el" href="group__congruence__class__group.html">Congruence</a> class template.</dd></dl>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">Presentation&lt;word_type&gt; p;</div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
 <div class="line">p.alphabet(2)</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, {0, 1}, {});</div>
 <div class="line">Congruence cong(<a class="code hl_enumvalue" href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">congruence_kind::twosided</a>, p);</div>
@@ -201,9 +205,10 @@ $(function(){initNavTree('group__congruence__class__group.html',''); initResizab
 <div class="line"><a class="code hl_function" href="group__cong__common__helpers__add__pair__group.html#ga16074615f30aabe07828fd18e3767303">congruence_common::add_generating_pair</a>(cong, {0, 0, 0}, {});</div>
 <div class="line">cong.number_of_classes(); <span class="comment">// 3</span></div>
 <div class="ttc" id="agroup__cong__common__helpers__add__pair__group_html_ga16074615f30aabe07828fd18e3767303"><div class="ttname"><a href="group__cong__common__helpers__add__pair__group.html#ga16074615f30aabe07828fd18e3767303">libsemigroups::congruence_common::add_generating_pair</a></div><div class="ttdeci">void add_generating_pair(Thing &amp;thing, typename Thing::native_word_type const &amp;u, typename Thing::native_word_type const &amp;v)</div><div class="ttdoc">Helper for adding a generating pair of words.</div><div class="ttdef"><b>Definition</b> cong-common-helpers.hpp:200</div></div>
-<div class="ttc" id="agroup__obvinf__group_html_gad2114ce6b9a5c58fb69842a91704c034"><div class="ttname"><a href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">libsemigroups::is_obviously_infinite</a></div><div class="ttdeci">bool is_obviously_infinite(Presentation&lt; Word &gt; const &amp;p)</div><div class="ttdoc">Function for checking if the finitely presented semigroup or monoid defined by a Presentation object ...</div><div class="ttdef"><b>Definition</b> obvinf.hpp:412</div></div>
+<div class="ttc" id="agroup__obvinf__group_html_gad2114ce6b9a5c58fb69842a91704c034"><div class="ttname"><a href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">libsemigroups::is_obviously_infinite</a></div><div class="ttdeci">bool is_obviously_infinite(Presentation&lt; Word &gt; const &amp;p)</div><div class="ttdoc">Function for checking if the finitely presented semigroup or monoid defined by a Presentation object ...</div><div class="ttdef"><b>Definition</b> obvinf.hpp:411</div></div>
+<div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:73</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:731</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:806</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>

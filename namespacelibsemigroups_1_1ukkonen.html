@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -526,7 +530,7 @@ Functions</h2></td></tr>
 <tr class="separator:ad007286c43c4ab0214f764c0ba79ed40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b3a35eeb570b8d38a14c2b6b9763f9d" id="r_a7b3a35eeb570b8d38a14c2b6b9763f9d"><td class="memTemplParams" colspan="2">template&lt;typename Word&gt; </td></tr>
 <tr class="memitem:a7b3a35eeb570b8d38a14c2b6b9763f9d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a7b3a35eeb570b8d38a14c2b6b9763f9d">traverse_no_checks</a> (<a class="el" href="structlibsemigroups_1_1_ukkonen_1_1_state.html">Ukkonen::State</a> &amp;st, <a class="el" href="classlibsemigroups_1_1_ukkonen.html">Ukkonen</a> const &amp;u, Word const &amp;w)</td></tr>
-<tr class="memdesc:a7b3a35eeb570b8d38a14c2b6b9763f9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverse the suffix tree from the root.     <br /></td></tr>
+<tr class="memdesc:a7b3a35eeb570b8d38a14c2b6b9763f9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverse the suffix tree from the root.   .  <br /></td></tr>
 <tr class="separator:a7b3a35eeb570b8d38a14c2b6b9763f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9b865db29a12821d8a79056d3fe6567" id="r_ae9b865db29a12821d8a79056d3fe6567"><td class="memItemLeft" align="right" valign="top">word_type::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9b865db29a12821d8a79056d3fe6567">traverse_no_checks</a> (<a class="el" href="structlibsemigroups_1_1_ukkonen_1_1_state.html">Ukkonen::State</a> &amp;st, <a class="el" href="classlibsemigroups_1_1_ukkonen.html">Ukkonen</a> const &amp;u, <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> const &amp;w)</td></tr>
 <tr class="memdesc:ae9b865db29a12821d8a79056d3fe6567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traverse the suffix tree from the root.     <br /></td></tr>
@@ -554,11 +558,11 @@ Functions</h2></td></tr>
 <p>See <a class="el" href="classlibsemigroups_1_1_ukkonen.html#a54b89d9ef7b86c8a2042f9d35877d26b">add_word_no_checks</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -1012,11 +1016,11 @@ template&lt;typename T&gt; </div>
 <p>See <a class="el" href="#ae754f9dcff6bd3ca974cf6522dc95058">is_piece_no_checks(Ukkonen const&amp;, Iterator, Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -1276,11 +1280,11 @@ template&lt;typename Word&gt; </div>
 <p>See <a class="el" href="#a449f7176c9f4d4f461ca2f1e134cd510">is_subword_no_checks(Ukkonen const&amp;, Iterator, Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -1516,11 +1520,11 @@ template&lt;typename Word&gt; </div>
 <p>See <a class="el" href="#ab614c02c5b9bb27d4c61fb3aafea7fb6">is_suffix_no_checks(Ukkonen const&amp;, Iterator, Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -1762,14 +1766,14 @@ template&lt;typename Word&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>See <a class="el" href="#aeb6fb119912edd43442d944f4e206e76">length_maximal_piece_prefix_no_checks(Ukkonen const&amp;, Iterator,
-        Iterator)</a>.</p>
+Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -2041,14 +2045,14 @@ Iterator)</a>. </p>
 </table>
 </div><div class="memdoc">
 <p>See <a class="el" href="#a57225ee5b878a7044413dcd4debe26d8">length_maximal_piece_suffix_no_checks(Ukkonen const&amp;, Iterator,
-        Iterator)</a>.</p>
+Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -2320,14 +2324,14 @@ Iterator)</a>. </p>
 </table>
 </div><div class="memdoc">
 <p>See <a class="el" href="#ac420d98d59ef03a29bb8d926f15f591a">maximal_piece_prefix_no_checks(Ukkonen const&amp;, Iterator,
-        Iterator)</a>.</p>
+Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -2599,14 +2603,14 @@ Iterator)</a>. </p>
 </table>
 </div><div class="memdoc">
 <p>See <a class="el" href="#a57014d536cbd0d38d446255011a54337">maximal_piece_suffix_no_checks(Ukkonen const&amp;, Iterator,
-        Iterator)</a>.</p>
+Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -2905,14 +2909,14 @@ Iterator)</a>. </p>
 </table>
 </div><div class="memdoc">
 <p>See <a class="el" href="#a9d51097ab96a4718fab91c4391693be8">number_of_pieces_no_checks(Ukkonen const&amp;, Iterator,
-        Iterator)</a>.</p>
+Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -3186,7 +3190,7 @@ Iterator)</a>. </p>
 <p>See <a class="el" href="#abc114eda5f519e9a0a6c8307255b26b0">pieces_no_checks(Ukkonen const&amp;, Iterator, Iterator)</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws. </td></tr>
   </table>
   </dd>
 </dl>
@@ -3433,11 +3437,11 @@ template&lt;typename Word&gt; </div>
 <p>See <a class="el" href="classlibsemigroups_1_1_ukkonen.html#a3646f96b954d1496bdca1e7c2ea10d7d">traverse_no_checks(Iterator, Iterator) const</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>
@@ -3527,11 +3531,11 @@ template&lt;typename Word&gt; </div>
 <p>See <a class="el" href="classlibsemigroups_1_1_ukkonen.html#a07982678a78153dd1de0d15f0479321f">State&amp;, Iterator, Iterator) const</a>.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, ! w + std::strlen(w))</code> throws. <pre class="fragment">    \sa \ref Ukkonen::throw_if_contains_unique_letter. 
-</pre> </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>u.throw_if_contains_unique_letter(w, w + std::strlen(w))</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_ukkonen.html#a1d4c81a754be35e62b7055474756f517">throw_if_contains_unique_letter</a>. </dd></dl>
 
 </div>
 </div>

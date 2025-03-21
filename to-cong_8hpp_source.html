@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -213,7 +217,7 @@ $(function(){initNavTree('to-cong_8hpp_source.html',''); initResizable(true); })
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span></div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Node&gt;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="group__to__cong__group.html#gaa40fe251f7d4fb2e398b5b87eb6d3b9b">   75</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> knd, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a>&amp; fpb, <a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;Node&gt;</a> <span class="keyword">const</span>&amp; wg)</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="group__to__cong__group.html#gaa40fe251f7d4fb2e398b5b87eb6d3b9b">   75</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> knd, <a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a>&amp; fpb, <a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;Node&gt;</a> <span class="keyword">const</span>&amp; wg)</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>      -&gt; std::enable_if_t&lt;</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>          std::is_same_v&lt;Congruence&lt;typename Result::native_word_type&gt;, Result&gt;,</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>          Result&gt;;</div>
@@ -224,8 +228,8 @@ $(function(){initNavTree('to-cong_8hpp_source.html',''); initResizable(true); })
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_CONG_HPP_</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin_base.html">libsemigroups::FroidurePinBase</a></div><div class="ttdoc">Base class for FroidurePin containing non-element specific data and member functions.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:66</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:85</div></div>
-<div class="ttc" id="agroup__to__froidure__pin__group_html_gad6324051450cbfb3d711117608524fe3"><div class="ttname"><a href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">libsemigroups::to</a></div><div class="ttdeci">auto to(Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;</div><div class="ttdoc">Convert a Kambites object to a FroidurePin object.</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:82</div></div>
+<div class="ttc" id="agroup__to__froidure__pin__group_html_gae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
 <div class="ttc" id="agroup__types__group_html_gaefc0b002795e4a0b5db2a5c04078aa42"><div class="ttname"><a href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">libsemigroups::congruence_kind</a></div><div class="ttdeci">congruence_kind</div><div class="ttdoc">Enum to indicate the sided-ness of a congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:69</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 </div><!-- fragment --></div><!-- contents -->

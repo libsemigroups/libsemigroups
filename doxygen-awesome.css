@@ -1807,7 +1807,6 @@ table.memberdecls .memTemplParams {
 table.memberdecls .memTemplItemLeft {
     border-radius: 0 0 0 var(--border-radius-small);
     border-left: 1px solid var(--separator-color);
-    padding-left: 0;
     border-top: 0;
 }
 

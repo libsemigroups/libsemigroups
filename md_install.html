@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -180,37 +184,38 @@ $(function(){initNavTree('md_install.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Installation</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md17"></a></p>
-<h1><a class="anchor" id="autotoc_md18"></a>
+<div class="textblock"><p><a class="anchor" id="installation-1"></a></p>
+<h1><a class="anchor" id="installing-with-conda"></a>
 Installing with conda</h1>
-<p>This installation method assumes that you have anaconda or miniconda installed. See the <a href="http://bit.ly/33B0Vfs">getting started</a> and <a href="https://conda.io/miniconda.html">miniconda download page</a> on the <a href="https://conda.io/">conda</a> website.</p>
-<p>Activate the <a href="https://conda-forge.github.io/">conda-forge</a> package repository: </p><pre class="fragment">conda config --add channels conda-forge
+<p>This installation method assumes that you have a working version of <code>conda</code>. See the <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html">getting started</a> on the <a href="https://conda.io/">conda</a> website.</p>
+<p>Activate the <a href="https://conda-forge.org/">conda-forge</a> package repository: </p><pre class="fragment">conda config --add channels conda-forge
 </pre><p>Install <code>libsemigroups</code>: </p><pre class="fragment">conda install libsemigroups
-</pre><h1><a class="anchor" id="autotoc_md19"></a>
+</pre><h1><a class="anchor" id="from-the-sources"></a>
 From the sources</h1>
-<p>Building <code>libsemigroups</code> from the source files requires a C++ compiler supporting the C++14 standard, <code>autoconf</code>, and <code>automake</code>. Building the documentation from source has some additional requirements that are detailed [here](Building%20the%20documentation%20from%20source).</p>
-<h2><a class="anchor" id="autotoc_md20"></a>
+<p>Building <code>libsemigroups</code> from the source files requires a C++ compiler supporting the C++17 standard, <code>autoconf</code>, and <code>automake</code>. Building the documentation from source has some additional requirements that are detailed in the section <a class="el" href="#building-the-documentation">Building the documentation</a>.</p>
+<h2><a class="anchor" id="from-the-github-repo"></a>
 From the github repo</h2>
 <p>To build <code>libsemigroups</code> from the github repository: </p><pre class="fragment">git clone https://github.com/libsemigroups/libsemigroups
 cd libsemigroups
 ./autogen.sh &amp;&amp; ./configure &amp;&amp; make -j8 &amp;&amp; sudo make install
-</pre><h2><a class="anchor" id="autotoc_md21"></a>
+</pre><h2><a class="anchor" id="from-a-release-archive"></a>
 From a release archive</h2>
-<p>To build <code>libsemigroups</code> from a release archive:</p>
-<p>::: parsed-literal curl -L -O <a href="https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-%7Clibsemigroups-version">https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-%7Clibsemigroups-version</a>libsemigroups-versionlibsemigroups-versionlibsemigroups-version| ./configure &amp;&amp; make -j8 &amp;&amp; sudo make install :::</p>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<p>To build <code>libsemigroups</code> from a release archive: </p><pre class="fragment">curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.0.0.tar.gz
+tar -xf libsemigroups-3.0.0.tar.gz
+rm -f libsemigroups-3.0.0.tar.gz
+cd libsemigroups-3.0.0
+./configure &amp;&amp; make -j8 &amp;&amp; sudo make install
+</pre><h2><a class="anchor" id="docker"></a>
 Docker</h2>
-<p>If you have <a href="https://www.docker.com">Docker</a> installed, you can download an <a href="https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker">x86 docker image</a> for <code>libsemigroups</code> as follows:</p>
-<p>::: parsed-literal docker pull libsemigroups/libsemigroups-docker :::</p>
-<p>or an <a href="https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker-arm">arm docker image</a> as follows</p>
-<p>::: parsed-literal docker pull libsemigroups/libsemigroups-docker-arm :::</p>
-<p>and run it by doing</p>
-<p>::: parsed-literal docker run --rm -it libsemigroups/libsemigroups-docker docker run --rm -it libsemigroups/libsemigroups-docker-arm :::</p>
-<p>If you want to use a specific version of <code>libsemigroups</code>, then use:</p>
-<p>::: parsed-literal docker pull libsemigroups/libsemigroups-docker:version-1.0.9 docker run --rm -it libsemigroups/libsemigroups-docker:version-1.0.9 :::</p>
-<p>or, for the latest version, use:</p>
-<p>::: parsed-literal docker pull libsemigroups/libsemigroups-docker:latest docker run --rm -it libsemigroups/libsemigroups-docker:latest :::</p>
-<h1><a class="anchor" id="autotoc_md23"></a>
+<p>If you have <a href="https://www.docker.com">Docker</a> installed, you can download an <a href="https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker">x86 docker image</a> for <code>libsemigroups</code> as follows: </p><pre class="fragment">docker pull libsemigroups/libsemigroups-docker
+</pre><p>or an <a href="https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker-arm">arm docker image</a> as follows </p><pre class="fragment">docker pull libsemigroups/libsemigroups-docker-arm
+</pre><p>and run it by doing </p><pre class="fragment">docker run --rm -it libsemigroups/libsemigroups-docker
+</pre><p>or </p><pre class="fragment">docker run --rm -it libsemigroups/libsemigroups-docker-arm
+</pre><p>If you want to use a specific version of <code>libsemigroups</code>, such as 1.0.9, then use: </p><pre class="fragment">docker pull libsemigroups/libsemigroups-docker:version-1.0.9
+docker run --rm -it libsemigroups/libsemigroups-docker:version-1.0.9
+</pre><p>or, for the latest version, use: </p><pre class="fragment">docker pull libsemigroups/libsemigroups-docker:latest
+docker run --rm -it libsemigroups/libsemigroups-docker:latest
+</pre><h1><a class="anchor" id="configuration-options"></a>
 Configuration options</h1>
 <p>In addition to the usual <code>autoconf</code> configuration options, the following configuration options are available for <code>libsemigroups</code>:</p>
 <table class="markdownTable">
@@ -233,27 +238,20 @@ Configuration options</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">--disable-popcnt   </td><td class="markdownTableBodyNone">do not use __builtin_popcountl (default=yes)    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">--disable-clzll   </td><td class="markdownTableBodyNone">do not use __builtin_ctzll (default=yes)   </td></tr>
+<td class="markdownTableBodyNone">--disable-clzll   </td><td class="markdownTableBodyNone">do not use __builtin_clzll (default=yes)   </td></tr>
 </table>
-<p>Debug mode and verbose mode significantly degrade the performance of <code>libsemigroups</code>. Compiling with <code>fmt</code> enabled increases build times significantly. Note that the flags <code>--enable-fmt</code> and <code>--with-external-fmt</code> are independent of each other, and so both flags should be included to enable <code>fmt</code> and use an external <code>fmt</code>.</p>
-<h1><a class="anchor" id="autotoc_md24"></a>
+<p>Debug mode significantly degrades the performance of <code>libsemigroups</code>. Note that the flags <code>--enable-eigen</code> and <code>--with-external-eigen</code> are independent of each other, and so both flags should be included to enable <code>eigen</code> and use an external <code>eigen</code>.</p>
+<h1><a class="anchor" id="make-install"></a>
 Make install</h1>
 <p>By default, <code>make install</code> installs the library and its <code>pkg-config</code> configuration into <code>/usr/local</code>. One can also specify another install location, say, <code>/foo/bar</code>, by calling <code>./configure</code> with parameter <code>--prefix</code>, e.g. <code>./configure --prefix=/foo/bar</code>. This might be useful if <code>sudo</code> is not available.</p>
 <p>If you have <code>pkg-config</code> installed, it may be called to get <code>libsemigroups</code>'s version, location, etc (see its docs for details; this facility is used in GAP package Semigroups, which may be configured to use the external <code>libsemigroups</code>). For example, </p><pre class="fragment">pkg-config --modversion libsemigroups
 </pre><p>will print the version of the installed <code>libsemigroups</code>, provided it is scanning configurations in the install location. For installation location unknown to <code>pkg-config</code>, one needs to add it to <code>PKG_CONFIG_PATH</code> (an environment variable). E.g. if it is <code>/foo/bar</code> as above then </p><pre class="fragment">PKG_CONFIG_PATH=/foo/bar/lib/pkgconfig pkg-config --modversion libsemigroups
-</pre><p>will print the version of the installed <code>libsemigroups</code>. (As usual, <code>PKG_CONFIG_PATH</code> may be exported, added to shell configuration, etc.)</p>
-<h1><a class="anchor" id="autotoc_md25"></a>
+</pre><p>will print the version of the installed <code>libsemigroups</code>. (As usual, <code>PKG_CONFIG_PATH</code> may be exported, added to shell configuration, etc.).</p>
+<h1><a class="anchor" id="building-the-documentation"></a>
 Building the documentation</h1>
-<p>The following are required to be able to build the documentation:</p>
-<ol type="1">
-<li><code>python3</code></li>
-<li><code>doxygen</code></li>
-<li>the python packages: <code>sphinx bs4 lxml breathe pyyaml sphinx_rtd_theme sphinx_copybutton sphinxcontrib-bibtex</code></li>
-</ol>
-<p>Assuming you already have <code>python3</code> install, on Mac OSX you can install all of the above by doing: </p><pre class="fragment">brew install doxygen sphinx
-pip3 install -r docs/requirements.txt
-</pre><p>Then it ought to be possible to just run <code>make doc</code> in the <code>libsemigroups</code> directory.</p>
-<h1><a class="anchor" id="autotoc_md26"></a>
+<p>To build the documentation, a version of <code>doxygen</code> is required. Instructions on how to do this can be found on Doxygen's <a href="https://www.doxygen.nl/manual/install.html">Installation page</a>.</p>
+<p>Then, it ought to be possible to just run <code>make doc</code> in the <code>libsemigroups</code> directory, and the documentation will be generated.</p>
+<h1><a class="anchor" id="issues-1"></a>
 Issues</h1>
 <p>If you find any problems with <code>libsemigroups</code>, or have any suggestions for features that you'd like to see, please use the <a href="https://github.com/libsemigroups/libsemigroups/issues">issue tracker</a>. </p>
 </div></div><!-- contents -->

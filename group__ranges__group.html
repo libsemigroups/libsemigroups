@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -199,11 +203,11 @@ Classes</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga4e3c90e5fe3084c46ed7cb7abc263072" id="r_ga4e3c90e5fe3084c46ed7cb7abc263072"><td class="memTemplParams" colspan="2">template&lt;typename S, typename T&gt; </td></tr>
 <tr class="memitem:ga4e3c90e5fe3084c46ed7cb7abc263072"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga4e3c90e5fe3084c46ed7cb7abc263072">chain</a> (S const &amp;x, T const &amp;y)</td></tr>
-<tr class="memdesc:ga4e3c90e5fe3084c46ed7cb7abc263072"><td class="mdescLeft">&#160;</td><td class="mdescRight">Chain objects (const references)  <br /></td></tr>
+<tr class="memdesc:ga4e3c90e5fe3084c46ed7cb7abc263072"><td class="mdescLeft">&#160;</td><td class="mdescRight">Chain objects (const references).  <br /></td></tr>
 <tr class="separator:ga4e3c90e5fe3084c46ed7cb7abc263072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3e87a78968cf46c193bf8f7a096302d1" id="r_ga3e87a78968cf46c193bf8f7a096302d1"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:ga3e87a78968cf46c193bf8f7a096302d1"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga3e87a78968cf46c193bf8f7a096302d1">enumerate</a> (T const &amp;thing)</td></tr>
-<tr class="memdesc:ga3e87a78968cf46c193bf8f7a096302d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerate an object (by const reference)  <br /></td></tr>
+<tr class="memdesc:ga3e87a78968cf46c193bf8f7a096302d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerate an object (by const reference).  <br /></td></tr>
 <tr class="separator:ga3e87a78968cf46c193bf8f7a096302d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac326cb8a88eceb1c50e1ca23d9a9f060" id="r_gac326cb8a88eceb1c50e1ca23d9a9f060"><td class="memTemplParams" colspan="2">template&lt;typename Range1, typename Range2&gt; </td></tr>
 <tr class="memitem:gac326cb8a88eceb1c50e1ca23d9a9f060"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gac326cb8a88eceb1c50e1ca23d9a9f060">equal</a> (Range1 r1, Range2 r2)</td></tr>
@@ -491,8 +495,8 @@ template&lt;typename Range, typename = std::enable_if_t&lt;rx::is_input_or_sink_
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">os</td><td>the output stream </td></tr>
-    <tr><td class="paramname">r</td><td>the range object</td></tr>
+    <tr><td class="paramname">os</td><td>the output stream. </td></tr>
+    <tr><td class="paramname">r</td><td>the range object.</td></tr>
   </table>
   </dd>
 </dl>

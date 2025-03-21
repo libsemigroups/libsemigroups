@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,7 +186,7 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// libsemigroups - C++ library for semigroups and monoids</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019-2024 James D. Mitchell</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019-2025 James D. Mitchell</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// it under the terms of the GNU General Public License as published by</span></div>
@@ -615,7 +619,7 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00989" name="l00989"></a><span class="lineno">  989</span>    <span class="comment">// 2. Make the Screier-Sims object during runtime, since we compute the</span></div>
 <div class="line"><a id="l00990" name="l00990"></a><span class="lineno">  990</span>    <span class="comment">//    stabilizers of the intersection already.</span></div>
 <div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span>    <span class="comment">// 3. Refactor for more generality (i.e. so the template parameters N don&#39;t</span></div>
-<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span>    <span class="comment">//    all have to be the same</span></div>
+<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span>    <span class="comment">//    all have to be the same.</span></div>
 <div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>    <span class="comment">//</span></div>
 <div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span>    <span class="comment">// TODO (from JDM):</span></div>
 <div class="line"><a id="l00995" name="l00995"></a><span class="lineno">  995</span>    <span class="comment">// * use the no_checks mem fns of SchreierSims now that they exist</span></div>
@@ -626,15 +630,15 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l01000" name="l01000"></a><span class="lineno"> 1000</span>  }  <span class="comment">// namespace schreier_sims</span></div>
 </div>
 <div class="line"><a id="l01001" name="l01001"></a><span class="lineno"> 1001</span></div>
-<div class="line"><a id="l01016" name="l01016"></a><span class="lineno"> 1016</span>  <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> N, <span class="keyword">typename</span> Po<span class="keywordtype">int</span>, <span class="keyword">typename</span> Element, <span class="keyword">typename</span> Traits&gt;</div>
-<div class="line"><a id="l01017" name="l01017"></a><span class="lineno"> 1017</span>  [[nodiscard]] <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div>
-<div class="line"><a id="l01018" name="l01018"></a><span class="lineno"><a class="line" href="group__schreier__sims__group.html#ga93a2e9699cb06202773b45fdad294807"> 1018</a></span>  <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(<a class="code hl_class" href="classlibsemigroups_1_1_schreier_sims.html">SchreierSims&lt;N, Point, Element, Traits&gt;</a> <span class="keyword">const</span>&amp; S,</div>
-<div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>                         <span class="keywordtype">size_t</span> max_width = 72);</div>
-<div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span> </div>
-<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span><span class="preprocessor">#include &quot;schreier-sims.tpp&quot;</span></div>
-<div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span> </div>
-<div class="line"><a id="l01024" name="l01024"></a><span class="lineno"> 1024</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_SCHREIER_SIMS_HPP_</span></div>
+<div class="line"><a id="l01015" name="l01015"></a><span class="lineno"> 1015</span>  <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> N, <span class="keyword">typename</span> Po<span class="keywordtype">int</span>, <span class="keyword">typename</span> Element, <span class="keyword">typename</span> Traits&gt;</div>
+<div class="line"><a id="l01016" name="l01016"></a><span class="lineno"> 1016</span>  [[nodiscard]] <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div>
+<div class="line"><a id="l01017" name="l01017"></a><span class="lineno"><a class="line" href="group__schreier__sims__group.html#ga93a2e9699cb06202773b45fdad294807"> 1017</a></span>  <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(<a class="code hl_class" href="classlibsemigroups_1_1_schreier_sims.html">SchreierSims&lt;N, Point, Element, Traits&gt;</a> <span class="keyword">const</span>&amp; S,</div>
+<div class="line"><a id="l01018" name="l01018"></a><span class="lineno"> 1018</span>                         <span class="keywordtype">size_t</span> max_width = 72);</div>
+<div class="line"><a id="l01019" name="l01019"></a><span class="lineno"> 1019</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l01020" name="l01020"></a><span class="lineno"> 1020</span> </div>
+<div class="line"><a id="l01021" name="l01021"></a><span class="lineno"> 1021</span><span class="preprocessor">#include &quot;schreier-sims.tpp&quot;</span></div>
+<div class="line"><a id="l01022" name="l01022"></a><span class="lineno"> 1022</span> </div>
+<div class="line"><a id="l01023" name="l01023"></a><span class="lineno"> 1023</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_SCHREIER_SIMS_HPP_</span></div>
 <div class="ttc" id="aarray_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a></div></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html"><div class="ttname"><a href="classlibsemigroups_1_1_schreier_sims.html">libsemigroups::SchreierSims</a></div><div class="ttdoc">A deterministic version of the Schreier-Sims algorithm acting on a small number of points.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:176</div></div>
@@ -690,17 +694,17 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_af4a79e8dc474aed98f35c74d3b5b8967"><div class="ttname"><a href="classlibsemigroups_1_1_schreier_sims.html#af4a79e8dc474aed98f35c74d3b5b8967">libsemigroups::SchreierSims::operator=</a></div><div class="ttdeci">SchreierSims &amp; operator=(SchreierSims &amp;&amp;)</div><div class="ttdoc">Default move assignment.</div></div>
 <div class="ttc" id="afind_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find_if</a></div><div class="ttdeci">T find_if(T... args)</div></div>
 <div class="ttc" id="agroup__aho__corasick__group_html_ga7956beb763e4ab0a09f6d68b158bd748"><div class="ttname"><a href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(AhoCorasick const &amp;ac)</div><div class="ttdoc">Return a string representation.</div></div>
-<div class="ttc" id="agroup__transf__group_html_ga00d69f8dd014160fe1ef10a1040e543a"><div class="ttname"><a href="group__transf__group.html#ga00d69f8dd014160fe1ef10a1040e543a">libsemigroups::LeastPerm</a></div><div class="ttdeci">typename detail::LeastPermHelper&lt; N &gt;::type LeastPerm</div><div class="ttdoc">Type of perms using the least memory for a given degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:2406</div></div>
+<div class="ttc" id="agroup__transf__group_html_ga00d69f8dd014160fe1ef10a1040e543a"><div class="ttname"><a href="group__transf__group.html#ga00d69f8dd014160fe1ef10a1040e543a">libsemigroups::LeastPerm</a></div><div class="ttdeci">typename detail::LeastPermHelper&lt; N &gt;::type LeastPerm</div><div class="ttdoc">Type of perms using the least memory for a given degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:2408</div></div>
 <div class="ttc" id="ais_same_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same</a></div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1schreier__sims_html"><div class="ttname"><a href="namespacelibsemigroups_1_1schreier__sims.html">libsemigroups::schreier_sims</a></div><div class="ttdoc">Namespace for SchreierSims helper functions.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:970</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1schreier__sims_html_a7fbd0d1a98951ffce1ff377f6081e7eb"><div class="ttname"><a href="namespacelibsemigroups_1_1schreier__sims.html#a7fbd0d1a98951ffce1ff377f6081e7eb">libsemigroups::schreier_sims::intersection</a></div><div class="ttdeci">void intersection(SchreierSims&lt; N, Point, Element, Traits &gt; &amp;T, SchreierSims&lt; N, Point, Element, Traits &gt; &amp;S1, SchreierSims&lt; N, Point, Element, Traits &gt; &amp;S2)</div><div class="ttdoc">Find the intersection of two permutation groups.</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:159</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_equal_to_html"><div class="ttname"><a href="structlibsemigroups_1_1_equal_to.html">libsemigroups::EqualTo</a></div><div class="ttdoc">Adapter for testing equality.</div><div class="ttdef"><b>Definition</b> adapters.hpp:414</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_image_right_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_right_action.html">libsemigroups::ImageRightAction</a></div><div class="ttdoc">Adapter for the value of a right action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:394</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_inverse_html"><div class="ttname"><a href="structlibsemigroups_1_1_inverse.html">libsemigroups::Inverse</a></div><div class="ttdoc">Adapter for the inverse of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:320</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_equal_to_html"><div class="ttname"><a href="structlibsemigroups_1_1_equal_to.html">libsemigroups::EqualTo</a></div><div class="ttdoc">Adapter for testing equality.</div><div class="ttdef"><b>Definition</b> adapters.hpp:413</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_image_right_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_right_action.html">libsemigroups::ImageRightAction</a></div><div class="ttdoc">Adapter for the value of a right action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:392</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_inverse_html"><div class="ttname"><a href="structlibsemigroups_1_1_inverse.html">libsemigroups::Inverse</a></div><div class="ttdoc">Adapter for the inverse of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:319</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:246</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_product_html"><div class="ttname"><a href="structlibsemigroups_1_1_product.html">libsemigroups::Product</a></div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> adapters.hpp:285</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_product_html"><div class="ttname"><a href="structlibsemigroups_1_1_product.html">libsemigroups::Product</a></div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> adapters.hpp:284</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_schreier_sims_traits_html"><div class="ttname"><a href="structlibsemigroups_1_1_schreier_sims_traits.html">libsemigroups::SchreierSimsTraits</a></div><div class="ttdoc">Traits class for use with the class template SchreierSims.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:99</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_schreier_sims_traits_html_a13eafca43065fdacfe827adbbcaf798e"><div class="ttname"><a href="structlibsemigroups_1_1_schreier_sims_traits.html#a13eafca43065fdacfe827adbbcaf798e">libsemigroups::SchreierSimsTraits::Swap</a></div><div class="ttdeci">libsemigroups::Swap&lt; element_type &gt; Swap</div><div class="ttdoc">Adapter for swapping.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:140</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_schreier_sims_traits_html_a21f9d3968f7cf6ba4538a9b0f0b45602"><div class="ttname"><a href="structlibsemigroups_1_1_schreier_sims_traits.html#a21f9d3968f7cf6ba4538a9b0f0b45602">libsemigroups::SchreierSimsTraits::domain_type</a></div><div class="ttdeci">detail::IntRange&lt; Point &gt; domain_type</div><div class="ttdoc">Type of the object containing all points acted on.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:108</div></div>
@@ -714,7 +718,7 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="ttc" id="astructlibsemigroups_1_1_schreier_sims_traits_html_ade6305bf1499d5899eda3384fc3667aa"><div class="ttname"><a href="structlibsemigroups_1_1_schreier_sims_traits.html#ade6305bf1499d5899eda3384fc3667aa">libsemigroups::SchreierSimsTraits::Product</a></div><div class="ttdeci">libsemigroups::Product&lt; element_type &gt; Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:137</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_schreier_sims_traits_html_aebf6333fa0f0ab8d8cfb1ecd8322c311"><div class="ttname"><a href="structlibsemigroups_1_1_schreier_sims_traits.html#aebf6333fa0f0ab8d8cfb1ecd8322c311">libsemigroups::SchreierSimsTraits::Degree</a></div><div class="ttdeci">libsemigroups::Degree&lt; element_type &gt; Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:125</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_smallest_integer_html_ad0f4ffde28e8e321abc7d846a8f3e2e7"><div class="ttname"><a href="structlibsemigroups_1_1_smallest_integer.html#ad0f4ffde28e8e321abc7d846a8f3e2e7">libsemigroups::SmallestInteger::type</a></div><div class="ttdeci">std::conditional_t&lt; N &gt;=0x100000000, uint64_t, std::conditional_t&lt; N &gt;=0x10000, uint32_t, std::conditional_t&lt; N &gt;=0x100, uint16_t, uint8_t &gt; &gt; &gt; type</div><div class="ttdef"><b>Definition</b> types.hpp:89</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_swap_html"><div class="ttname"><a href="structlibsemigroups_1_1_swap.html">libsemigroups::Swap</a></div><div class="ttdoc">Adapter for swapping.</div><div class="ttdef"><b>Definition</b> adapters.hpp:660</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_swap_html"><div class="ttname"><a href="structlibsemigroups_1_1_swap.html">libsemigroups::Swap</a></div><div class="ttdoc">Adapter for swapping.</div><div class="ttdef"><b>Definition</b> adapters.hpp:666</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

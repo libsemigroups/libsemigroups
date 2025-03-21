@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -272,7 +276,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4" name="ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4"></a>lex&#160;</td><td class="fielddoc"><p>The lexicographic ordering. Note that this is not a well-order, so there may not be a lexicographically least word in a given congruence class of words. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4" name="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4"></a>recursive&#160;</td><td class="fielddoc"><p>The recursive-path ordering, as described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[34]</a> (Definition 1.2.14, page 24). </p>
+<tr><td class="fieldname"><a id="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4" name="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4"></a>recursive&#160;</td><td class="fielddoc"><p>The recursive-path ordering, as described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[35]</a> (Definition 1.2.14, page 24). </p>
 </td></tr>
 </table>
 
@@ -418,7 +422,7 @@ template&lt;typename T&gt; </div>
 <div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
 <div class="ttc" id="agroup__orders__group_html_gadffe31339a26a333b7e64776b424c2e7"><div class="ttname"><a href="#gadffe31339a26a333b7e64776b424c2e7">libsemigroups::recursive_path_compare</a></div><div class="ttdeci">bool recursive_path_compare(T const &amp;first1, T last1, T const &amp;first2, T last2) noexcept</div><div class="ttdoc">Compare two objects of the same type using the recursive path comparison.</div><div class="ttdef"><b>Definition</b> order.hpp:417</div></div>
 </div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd>recursive_path_compare(T const&amp;, T, S const&amp;, S) </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare(T const&amp;, T, T const&amp;, T)</a> </dd></dl>
 
 </div>
 </div>
@@ -461,13 +465,13 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
 </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects of the same type using the recursive path comparison described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[34]</a> (Definition 1.2.14, page 24).</p>
+<p>Compare two objects of the same type using the recursive path comparison described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[35]</a> (Definition 1.2.14, page 24).</p>
 <p>If \(u, v\in X ^ {*}\), \(u \neq v\), and \(u = a&#39;u\), \(v = bv&#39;\) for some \(a,b \in X\), \(u&#39;,v&#39;\in X ^ {*}\), then \(u &gt; v\) if one of the following conditions holds:</p><ol type="1">
 <li>\(a = b\) and \(u&#39; \geq v&#39;\);</li>
 <li>\(a &gt; b\) and \(u  &gt; v&#39;\);</li>
 <li>\(b &gt; a\) and \(u&#39; &gt; v\).</li>
 </ol>
-<p>This documentation and the implementation of <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a> is based on the source code of <a class="el" href="citelist.html#CITEREF_holt2018aa">[31]</a>.</p>
+<p>This documentation and the implementation of <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a> is based on the source code of <a class="el" href="citelist.html#CITEREF_holt2018aa">[32]</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>the type of iterators to the first object to be compared.</td></tr>
@@ -537,7 +541,7 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
 <dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>(</div>
 <div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend());</div>
 </div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd>recursive_path_compare(T const&amp;, T, S const&amp;, S) </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare(T const&amp;, T, T const&amp;, T)</a> </dd></dl>
 
 </div>
 </div>
@@ -577,13 +581,13 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word short-lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>See shortlex_compare(T const&amp;, T const&amp;, S const&amp;, S const&amp;).</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At most \(O(n)\) where \(n\) is the minimum of the length of the word pointed to by <code class="param">x</code> and the length of word pointed to by <code class="param">y</code>.</dd></dl>
 <dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>(</div>
 <div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
 <div class="ttc" id="agroup__orders__group_html_ga3233f95f6ca46ac303936e7d8b5d0fb2"><div class="ttname"><a href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">libsemigroups::shortlex_compare</a></div><div class="ttdeci">bool shortlex_compare(T const &amp;first1, T const &amp;last1, T const &amp;first2, T const &amp;last2)</div><div class="ttdoc">Compare two objects of the same type using the short-lex reduction ordering.</div><div class="ttdef"><b>Definition</b> order.hpp:267</div></div>
 </div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd>shortlex_compare(T const&amp;, T const&amp;, S const&amp;, S const&amp;). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>. </dd></dl>
 
 </div>
 </div>
@@ -687,12 +691,12 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is short-lex less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>See shortlex_compare(T const&amp;, T const&amp;, S const&amp;, S const&amp;).</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At most \(O(n)\) where \(n\) is the minimum of the length of <code class="param">x</code> and the length of <code class="param">y</code>.</dd></dl>
 <dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>(</div>
 <div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend());</div>
 </div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd>shortlex_compare(T const&amp;, T const&amp;, S const&amp;, S const&amp;). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>. </dd></dl>
 
 </div>
 </div>

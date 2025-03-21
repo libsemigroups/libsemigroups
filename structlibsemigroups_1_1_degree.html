@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -183,7 +187,7 @@ $(function(){initNavTree('structlibsemigroups_1_1_degree.html',''); initResizabl
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename = void&gt;<br />
 struct libsemigroups::Degree&lt; Element, typename &gt;</div><p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>size_t ! operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>size_t operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The return value of the call operator ought to indicate the degree of a <code>Element</code> instance which may or may not depend on the parameter <code class="param">x</code>. The degree of a permutation, for instance, would be the the number of points it acts on, the degree of a matrix is its dimension, and so on. This is used, for example, by <a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a> in some member functions to determine whether it is known <em>a priori</em> that a permutation does not belong to the object, because it acts on too many points.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -194,7 +198,7 @@ struct libsemigroups::Degree&lt; Element, typename &gt;</div><p>Defined in <code
 <p>The second template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
 <li><a class="el" href="structlibsemigroups_1_1_froidure_pin_traits.html" title="Traits class for FroidurePin.">FroidurePinTraits</a></li>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a></li>
 </ul>
 </dd></dl>
@@ -204,7 +208,7 @@ struct libsemigroups::Degree&lt; Element, typename &gt;</div><p>Defined in <code
 <div class="line">    <span class="keywordflow">return</span> 8;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:79</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:159</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>

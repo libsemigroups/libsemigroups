@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -293,15 +297,15 @@ Functions</h2></td></tr>
 <tr class="separator:ga5233547543cbc9a0e93494ef288dbba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1d5f56e9b069d769dcafe6e12b003c8c" id="r_ga1d5f56e9b069d769dcafe6e12b003c8c"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:ga1d5f56e9b069d769dcafe6e12b003c8c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__matrix__group.html#gab10e0c4a7e6430292b3d1f9befb33269">IsIntMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__intmat__group.html#ga1d5f56e9b069d769dcafe6e12b003c8c">throw_if_bad_entry</a> (Mat const &amp;, typename Mat::scalar_type val)</td></tr>
-<tr class="memdesc:ga1d5f56e9b069d769dcafe6e12b003c8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an entry in an integer matrix is valid.  <br /></td></tr>
+<tr class="memdesc:ga1d5f56e9b069d769dcafe6e12b003c8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an entry in an integer matrix is valid.  <br /></td></tr>
 <tr class="separator:ga1d5f56e9b069d769dcafe6e12b003c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafb5d190551c329dcb857e62c56c86f70" id="r_gafb5d190551c329dcb857e62c56c86f70"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gafb5d190551c329dcb857e62c56c86f70"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__matrix__group.html#ga04dd49e436f23a0788ce2380808e0d74">IsMaxPlusMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__maxplusmat__group.html#gafb5d190551c329dcb857e62c56c86f70">throw_if_bad_entry</a> (Mat const &amp;, typename Mat::scalar_type val)</td></tr>
-<tr class="memdesc:gafb5d190551c329dcb857e62c56c86f70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an entry in a max-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gafb5d190551c329dcb857e62c56c86f70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an entry in a max-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gafb5d190551c329dcb857e62c56c86f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac595ef9f0ba52b7827634eb0e661d3f5" id="r_gac595ef9f0ba52b7827634eb0e661d3f5"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gac595ef9f0ba52b7827634eb0e661d3f5"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__matrix__group.html#gacf0335b0dcd051469b7e62dff52e7e2b">IsMinPlusMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__minplusmat__group.html#gac595ef9f0ba52b7827634eb0e661d3f5">throw_if_bad_entry</a> (Mat const &amp;, typename Mat::scalar_type val)</td></tr>
-<tr class="memdesc:gac595ef9f0ba52b7827634eb0e661d3f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an entry in a min-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gac595ef9f0ba52b7827634eb0e661d3f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an entry in a min-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gac595ef9f0ba52b7827634eb0e661d3f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8edec42863a5e81d4e649d46ee92526a" id="r_ga8edec42863a5e81d4e649d46ee92526a"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:ga8edec42863a5e81d4e649d46ee92526a"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__bmat__group.html#ga4f23569fc5350a77a406bfa416a369f4">IsBMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__bmat__group.html#ga8edec42863a5e81d4e649d46ee92526a">throw_if_bad_entry</a> (Mat const &amp;m)</td></tr>
@@ -309,11 +313,11 @@ Functions</h2></td></tr>
 <tr class="separator:ga8edec42863a5e81d4e649d46ee92526a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf16899e03592669a2900aef20b49f8f0" id="r_gaf16899e03592669a2900aef20b49f8f0"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gaf16899e03592669a2900aef20b49f8f0"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__maxplustruncmat__group.html#gad81c841c2ce0b710d0e1afcb947b9e1a">IsMaxPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__maxplustruncmat__group.html#gaf16899e03592669a2900aef20b49f8f0">throw_if_bad_entry</a> (Mat const &amp;m)</td></tr>
-<tr class="memdesc:gaf16899e03592669a2900aef20b49f8f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a truncated max-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gaf16899e03592669a2900aef20b49f8f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that a truncated max-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gaf16899e03592669a2900aef20b49f8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab4d71961ac9a85f0eed4a89170c3c07c" id="r_gab4d71961ac9a85f0eed4a89170c3c07c"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__minplustruncmat__group.html#gad68b64357d34ca77c2a224e26752dfc0">IsMinPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__minplustruncmat__group.html#gab4d71961ac9a85f0eed4a89170c3c07c">throw_if_bad_entry</a> (Mat const &amp;m)</td></tr>
-<tr class="memdesc:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a truncated min-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that a truncated min-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gab4d71961ac9a85f0eed4a89170c3c07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga753f48c29c13b8bcbfbb98cf086a8f63" id="r_ga753f48c29c13b8bcbfbb98cf086a8f63"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:ga753f48c29c13b8bcbfbb98cf086a8f63"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__ntpmat__group.html#gaa2fa1c38389c072591db78219b056928">IsNTPMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__ntpmat__group.html#ga753f48c29c13b8bcbfbb98cf086a8f63">throw_if_bad_entry</a> (Mat const &amp;m)</td></tr>
@@ -321,11 +325,11 @@ Functions</h2></td></tr>
 <tr class="separator:ga753f48c29c13b8bcbfbb98cf086a8f63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7299d9f70bb83bc84e477414e1293c3d" id="r_ga7299d9f70bb83bc84e477414e1293c3d"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:ga7299d9f70bb83bc84e477414e1293c3d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__maxplustruncmat__group.html#gad81c841c2ce0b710d0e1afcb947b9e1a">IsMaxPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__maxplustruncmat__group.html#ga7299d9f70bb83bc84e477414e1293c3d">throw_if_bad_entry</a> (Mat const &amp;m, typename Mat::scalar_type val)</td></tr>
-<tr class="memdesc:ga7299d9f70bb83bc84e477414e1293c3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an entry in a truncated max-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:ga7299d9f70bb83bc84e477414e1293c3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an entry in a truncated max-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:ga7299d9f70bb83bc84e477414e1293c3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1b71f4186951b03b0a955b397dbea5b9" id="r_ga1b71f4186951b03b0a955b397dbea5b9"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:ga1b71f4186951b03b0a955b397dbea5b9"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__minplustruncmat__group.html#gad68b64357d34ca77c2a224e26752dfc0">IsMinPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__minplustruncmat__group.html#ga1b71f4186951b03b0a955b397dbea5b9">throw_if_bad_entry</a> (Mat const &amp;m, typename Mat::scalar_type val)</td></tr>
-<tr class="memdesc:ga1b71f4186951b03b0a955b397dbea5b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an entry in a truncated min-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:ga1b71f4186951b03b0a955b397dbea5b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an entry in a truncated min-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:ga1b71f4186951b03b0a955b397dbea5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff6c55606776f530a2803ac148309b81" id="r_gaff6c55606776f530a2803ac148309b81"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gaff6c55606776f530a2803ac148309b81"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__ntpmat__group.html#gaa2fa1c38389c072591db78219b056928">IsNTPMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__ntpmat__group.html#gaff6c55606776f530a2803ac148309b81">throw_if_bad_entry</a> (Mat const &amp;m, typename Mat::scalar_type val)</td></tr>
@@ -333,11 +337,11 @@ Functions</h2></td></tr>
 <tr class="separator:gaff6c55606776f530a2803ac148309b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf860eef5a2c9b000b072bd40d3636caf" id="r_gaf860eef5a2c9b000b072bd40d3636caf"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gaf860eef5a2c9b000b072bd40d3636caf"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__matrix__group.html#gab10e0c4a7e6430292b3d1f9befb33269">IsIntMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__intmat__group.html#gaf860eef5a2c9b000b072bd40d3636caf">throw_if_bad_entry</a> (Mat const &amp;x)</td></tr>
-<tr class="memdesc:gaf860eef5a2c9b000b072bd40d3636caf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that an integer matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gaf860eef5a2c9b000b072bd40d3636caf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that an integer matrix is valid.  <br /></td></tr>
 <tr class="separator:gaf860eef5a2c9b000b072bd40d3636caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabd31e591a32d774219515ec7f54ce653" id="r_gabd31e591a32d774219515ec7f54ce653"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gabd31e591a32d774219515ec7f54ce653"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__matrix__group.html#gacf0335b0dcd051469b7e62dff52e7e2b">IsMinPlusMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__minplusmat__group.html#gabd31e591a32d774219515ec7f54ce653">throw_if_bad_entry</a> (Mat const &amp;x)</td></tr>
-<tr class="memdesc:gabd31e591a32d774219515ec7f54ce653"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a min-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gabd31e591a32d774219515ec7f54ce653"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that a min-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gabd31e591a32d774219515ec7f54ce653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38cc3bb1dec205613bd00e503b20dbee" id="r_a38cc3bb1dec205613bd00e503b20dbee"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:a38cc3bb1dec205613bd00e503b20dbee"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::enable_if_t&lt; <a class="el" href="group__projmaxplus__group.html#ga7d92eec48adeb7d5b1f1611d8583be87">IsProjMaxPlusMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a38cc3bb1dec205613bd00e503b20dbee">throw_if_bad_entry</a> (Mat const &amp;x)</td></tr>
@@ -345,7 +349,7 @@ Functions</h2></td></tr>
 <tr class="separator:a38cc3bb1dec205613bd00e503b20dbee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad3fca7c2d87aac9bc4e36a796640e69f" id="r_gad3fca7c2d87aac9bc4e36a796640e69f"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:gad3fca7c2d87aac9bc4e36a796640e69f"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__maxplusmat__group.html#gad3fca7c2d87aac9bc4e36a796640e69f">throw_if_bad_entry</a> (Mat const &amp;x) -&gt; std::enable_if_t&lt; <a class="el" href="group__matrix__group.html#ga04dd49e436f23a0788ce2380808e0d74">IsMaxPlusMat</a>&lt; Mat &gt; &gt;</td></tr>
-<tr class="memdesc:gad3fca7c2d87aac9bc4e36a796640e69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate that a max-plus matrix is valid.  <br /></td></tr>
+<tr class="memdesc:gad3fca7c2d87aac9bc4e36a796640e69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that a max-plus matrix is valid.  <br /></td></tr>
 <tr class="separator:gad3fca7c2d87aac9bc4e36a796640e69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd6932aacdd8303c5054a7bdb7662df0" id="r_afd6932aacdd8303c5054a7bdb7662df0"><td class="memTemplParams" colspan="2">template&lt;typename Mat&gt; </td></tr>
 <tr class="memitem:afd6932aacdd8303c5054a7bdb7662df0"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::enable_if_t&lt; <a class="el" href="group__projmaxplus__group.html#ga7d92eec48adeb7d5b1f1611d8583be87">IsProjMaxPlusMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#afd6932aacdd8303c5054a7bdb7662df0">throw_if_bad_entry</a> (Mat const &amp;x, typename Mat::scalar_type val)</td></tr>
@@ -546,13 +550,9 @@ template&lt;typename Mat, size_t R, size_t C, typename Container&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <code>detail::StaticVector1&lt;BitSet&lt;C&gt;, ! R&gt;</code>. <pre class="fragment">    \par Exceptions
-    This function guarantees not to throw a \ref LibsemigroupsException.
-
-    \par Complexity
-    \f$O(mn)\f$ where \f$m\f$ is the number of rows in \p views and
-    and \f$n\f$ is the number of columns in any vector in \p views. 
-</pre> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code>detail::StaticVector1&lt;BitSet&lt;C&gt;, R&gt;</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where \(m\) is the number of rows in <code class="param">views</code> and and \(n\) is the number of columns in any vector in <code class="param">views</code>. </dd></dl>
 
 </div>
 </div>
@@ -849,8 +849,8 @@ template&lt;typename Mat&gt; </div>
 <div class="line">1}}));</div>
 <div class="line"><span class="comment">// returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}</span></div>
 <div class="line"><a class="code hl_function" href="#aee5f465d1002b3cd193aa435af16f358">matrix::pow</a>(x, 100);</div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Validate the arguments, construct a Blocks object, and validate it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:783</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_aee5f465d1002b3cd193aa435af16f358"><div class="ttname"><a href="#aee5f465d1002b3cd193aa435af16f358">libsemigroups::matrix::pow</a></div><div class="ttdeci">Mat pow(Mat const &amp;x, typename Mat::scalar_type e)</div><div class="ttdoc">Returns a power of a matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7087</div></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:798</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_aee5f465d1002b3cd193aa435af16f358"><div class="ttname"><a href="#aee5f465d1002b3cd193aa435af16f358">libsemigroups::matrix::pow</a></div><div class="ttdeci">Mat pow(Mat const &amp;x, typename Mat::scalar_type e)</div><div class="ttdoc">Returns a power of a matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7144</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -1121,7 +1121,7 @@ template&lt;typename Mat, typename = std::enable_if_t&lt;IsBMat&lt;Mat&gt;&gt;&g
 <dl class="section user"><dt>Example</dt><dd></dd></dl>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> x = <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;BMat&lt;&gt;</a>&gt;({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});</div>
 <div class="line"><a class="code hl_function" href="#a98253c8c2358331263d7b8d9fab43295">matrix::row_space_size</a>(x); <span class="comment">// returns 7</span></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_a98253c8c2358331263d7b8d9fab43295"><div class="ttname"><a href="#a98253c8c2358331263d7b8d9fab43295">libsemigroups::matrix::row_space_size</a></div><div class="ttdeci">size_t row_space_size(Mat const &amp;x)</div><div class="ttdoc">Returns the size of the row space of a boolean matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7831</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_a98253c8c2358331263d7b8d9fab43295"><div class="ttname"><a href="#a98253c8c2358331263d7b8d9fab43295">libsemigroups::matrix::row_space_size</a></div><div class="ttdeci">size_t row_space_size(Mat const &amp;x)</div><div class="ttdoc">Returns the size of the row space of a boolean matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7888</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -1407,7 +1407,7 @@ template&lt;typename Mat&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function can be used to validate that the matrix <code class="param">x</code> contains values in the underlying semiring, by checking the underlying matrix.</p>
+<p>This function can be used to check that the matrix <code class="param">x</code> contains values in the underlying semiring, by checking the underlying matrix.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the parameter (must satisfy <a class="el" href="group__projmaxplus__group.html#ga7d92eec48adeb7d5b1f1611d8583be87">IsProjMaxPlusMat&lt;Mat&gt;</a>).</td></tr>
@@ -1458,7 +1458,7 @@ template&lt;typename Mat&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
-<p>This function can be used to validate that the matrix <code class="param">x</code> contains values in the underlying semiring, using the underlying matrix.</p>
+<p>This function can be used to check that the matrix <code class="param">x</code> contains values in the underlying semiring, using the underlying matrix.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Mat</td><td>the type of the parameter (must satisfy <a class="el" href="group__projmaxplus__group.html#ga7d92eec48adeb7d5b1f1611d8583be87">IsProjMaxPlusMat&lt;Mat&gt;</a>).</td></tr>

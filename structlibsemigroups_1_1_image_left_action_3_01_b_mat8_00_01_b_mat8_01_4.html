@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -186,26 +190,27 @@ $(function(){initNavTree('structlibsemigroups_1_1_image_left_action_3_01_b_mat8_
 <a name="details" id="details"></a>
 <div class="textblock"><p>Adapter for the value of a left action.   </p>
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void ! operator()(Point&amp; res, Element const&amp; x, Point const&amp; pt) ! const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also). </p><pre class="fragment">  The call operator should change \p res in-place to contain the image of
-  the point \p pt under the left action of the element \p x. The purpose of
-  the 1st parameter is to avoid repeated allocations of memory to hold
-  temporary points that are discarded soon after they are created.
-
-  \tparam Element the type of the elements of a semigroup.
-  \tparam Point the type of the points acted on.
-
-  The third template parameter exists for SFINAE.
-
-  \par Example
-  \code
-  template &lt;&gt;
-  struct ImageLeftAction&lt;BMat8, BMat8&gt; {
-    void operator()(BMat8&amp; res, BMat8 pt, BMat8 x) const noexcept {
-      res = (x * pt).col_space_basis();
-    }
-  };
-  \endcode 
-</pre>    </div><table class="memberdecls">
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Point&amp; res, Element const&amp; x, Point const&amp; pt) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>The call operator should change <code class="param">res</code> in-place to contain the image of the point <code class="param">pt</code> under the left action of the element <code class="param">x</code>. The purpose of the 1st parameter is to avoid repeated allocations of memory to hold temporary points that are discarded soon after they are created.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Element</td><td>the type of the elements of a semigroup. </td></tr>
+    <tr><td class="paramname">Point</td><td>the type of the points acted on.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The third template parameter exists for SFINAE.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1_image_left_action.html">ImageLeftAction</a>&lt;<a class="code hl_class" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>, <a class="code hl_class" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>&gt; {</div>
+<div class="line">  <span class="keywordtype">void</span> <a class="code hl_function" href="#a693fd54b6f74e56e50010933db39cc66">operator()</a>(<a class="code hl_class" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>&amp; res, <a class="code hl_class" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> pt, <a class="code hl_class" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> x) <span class="keyword">const</span> <span class="keyword">noexcept</span> {</div>
+<div class="line">    res = (x * pt).col_space_basis();</div>
+<div class="line">  }</div>
+<div class="line">};</div>
+<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_image_left_action_3_01_b_mat8_00_01_b_mat8_01_4_html_a693fd54b6f74e56e50010933db39cc66"><div class="ttname"><a href="#a693fd54b6f74e56e50010933db39cc66">libsemigroups::ImageLeftAction&lt; BMat8, BMat8 &gt;::operator()</a></div><div class="ttdeci">void operator()(BMat8 &amp;res, BMat8 const &amp;pt, BMat8 const &amp;x) const noexcept</div><div class="ttdef"><b>Definition</b> bmat8.hpp:1096</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_image_left_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_left_action.html">libsemigroups::ImageLeftAction</a></div><div class="ttdoc">Adapter for the value of a left action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:350</div></div>
+</div><!-- fragment -->    </dd></dl>
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a693fd54b6f74e56e50010933db39cc66" id="r_a693fd54b6f74e56e50010933db39cc66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a693fd54b6f74e56e50010933db39cc66">operator()</a> (<a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> &amp;res, <a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> const &amp;pt, <a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> const &amp;x) const noexcept</td></tr>

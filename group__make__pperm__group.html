@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -184,37 +188,37 @@ $(function(){initNavTree('group__make__pperm__group.html',''); initResizable(tru
 <div class="contents">
 <a name="details" id="details"></a>
 <p>This page contains documentation related to safely constructing a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> instance.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__make__group.html">The `make` function</a> for an overview of possible uses of the <code><a class="el" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77" title="Validate the arguments, construct a Blocks object, and validate it.">make</a></code> function. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__make__group.html">The `make` function</a> for an overview of possible uses of the <code><a class="el" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77" title="Check the arguments, construct a Blocks object, and check it.">make</a></code> function. </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga7cb8f4b7c4b54a46a9181d70058d23dd" id="r_ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="memTemplParams" colspan="2">template&lt;typename Return, typename Container&gt; </td></tr>
 <tr class="memitem:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga7cb8f4b7c4b54a46a9181d70058d23dd">make</a> (Container &amp;&amp;cont)</td></tr>
-<tr class="memdesc:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from container and validate.  <br /></td></tr>
+<tr class="memdesc:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from container and check.  <br /></td></tr>
 <tr class="separator:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9a49e09e7f6c143fb397613a66b47ba5" id="r_ga9a49e09e7f6c143fb397613a66b47ba5"><td class="memTemplParams" colspan="2">template&lt;typename Return, typename OtherContainer&gt; </td></tr>
 <tr class="memitem:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga9a49e09e7f6c143fb397613a66b47ba5">make</a> (OtherContainer &amp;&amp;cont)</td></tr>
-<tr class="memdesc:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from universal reference container and validate.  <br /></td></tr>
+<tr class="memdesc:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from universal reference container and check.  <br /></td></tr>
 <tr class="separator:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae868c33601ee075c1bb1a8b29732404a" id="r_gae868c33601ee075c1bb1a8b29732404a"><td class="memTemplParams" colspan="2">template&lt;typename Return, typename Int&gt; </td></tr>
 <tr class="memitem:gae868c33601ee075c1bb1a8b29732404a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gae868c33601ee075c1bb1a8b29732404a">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt; dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt; ran, size_t M)</td></tr>
-<tr class="memdesc:gae868c33601ee075c1bb1a8b29732404a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from domain, range, and degree, and validate.  <br /></td></tr>
+<tr class="memdesc:gae868c33601ee075c1bb1a8b29732404a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from domain, range, and degree, and check.  <br /></td></tr>
 <tr class="separator:gae868c33601ee075c1bb1a8b29732404a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaaec675a942d25a731884ad2367798edf" id="r_gaaec675a942d25a731884ad2367798edf"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:gaaec675a942d25a731884ad2367798edf"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaaec675a942d25a731884ad2367798edf">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Return::point_type &gt; cont)</td></tr>
-<tr class="memdesc:gaaec675a942d25a731884ad2367798edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from initializer list and validate.  <br /></td></tr>
+<tr class="memdesc:gaaec675a942d25a731884ad2367798edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from initializer list and check.  <br /></td></tr>
 <tr class="separator:gaaec675a942d25a731884ad2367798edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5c155f14c0998f0dcdbad879f93e4271" id="r_ga5c155f14c0998f0dcdbad879f93e4271"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:ga5c155f14c0998f0dcdbad879f93e4271"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga5c155f14c0998f0dcdbad879f93e4271">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Return::point_type &gt; dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Return::point_type &gt; ran, size_t M)</td></tr>
-<tr class="memdesc:ga5c155f14c0998f0dcdbad879f93e4271"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from domain, range, and degree, and validate.  <br /></td></tr>
+<tr class="memdesc:ga5c155f14c0998f0dcdbad879f93e4271"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from domain, range, and degree, and check.  <br /></td></tr>
 <tr class="separator:ga5c155f14c0998f0dcdbad879f93e4271"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafdd7422ba2d71dd20b1694e98d8d6d82" id="r_gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gafdd7422ba2d71dd20b1694e98d8d6d82">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::point_type &gt; const &amp;dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::point_type &gt; const &amp;ran, size_t M)</td></tr>
-<tr class="memdesc:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from domain, range, and degree, and validate.  <br /></td></tr>
+<tr class="memdesc:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from domain, range, and degree, and check.  <br /></td></tr>
 <tr class="separator:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabdf81e17957ca1ff137f6e7ede85226c" id="r_gabdf81e17957ca1ff137f6e7ede85226c"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:gabdf81e17957ca1ff137f6e7ede85226c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gabdf81e17957ca1ff137f6e7ede85226c">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; uint8_t &gt; const &amp;dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; uint8_t &gt; const &amp;ran, size_t deg=16)</td></tr>
-<tr class="memdesc:gabdf81e17957ca1ff137f6e7ede85226c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from domain, range, and degree, and validate.  <br /></td></tr>
+<tr class="memdesc:gabdf81e17957ca1ff137f6e7ede85226c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from domain, range, and degree, and check.  <br /></td></tr>
 <tr class="separator:gabdf81e17957ca1ff137f6e7ede85226c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -256,7 +260,7 @@ template&lt;typename Return, typename Container&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A HPCombi::PPerm16 instance.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <code>HPCombi::PPerm16</code> instance.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
@@ -358,7 +362,7 @@ template&lt;typename Return, typename Int&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ! ran[i]</code> for all <code>i</code> and which is <code>0xFF</code> on every other value in the range \([0, M)\).</p>
+<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ran[i]</code> for all <code>i</code> and which is <code>0xFF</code> on every other value in the range \([0, M)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Return</td><td>the return type, must be HPCombi::PPerm16.</td></tr>
@@ -367,9 +371,9 @@ template&lt;typename Return, typename Int&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain </td></tr>
-    <tr><td class="paramname">ran</td><td>the range </td></tr>
-    <tr><td class="paramname">M</td><td>the degree</td></tr>
+    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
+    <tr><td class="paramname">ran</td><td>the range. </td></tr>
+    <tr><td class="paramname">M</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>
@@ -474,7 +478,7 @@ template&lt;typename Return&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ! ran[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
+<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ran[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm&lt;Return&gt;</a>.</td></tr>
@@ -483,9 +487,9 @@ template&lt;typename Return&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain </td></tr>
-    <tr><td class="paramname">ran</td><td>the range </td></tr>
-    <tr><td class="paramname">M</td><td>the degree</td></tr>
+    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
+    <tr><td class="paramname">ran</td><td>the range. </td></tr>
+    <tr><td class="paramname">M</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>
@@ -538,7 +542,7 @@ template&lt;typename Return&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ! ran[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
+<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ran[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm&lt;Return&gt;</a>.</td></tr>
@@ -547,9 +551,9 @@ template&lt;typename Return&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain </td></tr>
-    <tr><td class="paramname">ran</td><td>the range </td></tr>
-    <tr><td class="paramname">M</td><td>the degree</td></tr>
+    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
+    <tr><td class="paramname">ran</td><td>the range. </td></tr>
+    <tr><td class="paramname">M</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>
@@ -602,7 +606,7 @@ template&lt;typename Return&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ! ran[i]</code> for all <code>i</code> and which is <code>0xFF</code> on every other value in the range \([0, M)\).</p>
+<p>Constructs a partial perm of degree <code class="param">deg</code> such that <code>f[dom[i]] = ran[i]</code> for all <code>i</code> and which is <code>0xFF</code> on every other value in the range \([0, M)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Return</td><td>the return type, must be HPCombi::PPerm16.</td></tr>
@@ -611,9 +615,9 @@ template&lt;typename Return&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain </td></tr>
-    <tr><td class="paramname">ran</td><td>the range </td></tr>
-    <tr><td class="paramname">M</td><td>the degree</td></tr>
+    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
+    <tr><td class="paramname">ran</td><td>the range. </td></tr>
+    <tr><td class="paramname">deg</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>

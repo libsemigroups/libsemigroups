@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -228,8 +232,8 @@ template&lt;typename Result&gt; </div>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-knuth-bendix_8hpp_source.html">to-knuth-bendix.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;KnuthBendix&lt;Word, Rewriter&gt;</a>&gt;(knd, fpb);</div>
-<div class="ttc" id="agroup__to__froidure__pin__group_html_gad6324051450cbfb3d711117608524fe3"><div class="ttname"><a href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">libsemigroups::to</a></div><div class="ttdeci">auto to(Kambites&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;, FroidurePin&lt; detail::KE&lt; Word &gt; &gt; &gt;</div><div class="ttdoc">Convert a Kambites object to a FroidurePin object.</div></div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;KnuthBendix&lt;Word, Rewriter&gt;</a>&gt;(knd, fpb);</div>
+<div class="ttc" id="agroup__to__froidure__pin__group_html_gae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
 </div><!-- fragment --><p>This function converts the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object <code class="param">fpb</code> into a <a class="el" href="group__knuth__bendix__class__group.html">KnuthBendix</a> object using the presentation obtained using <a class="el" href="group__to__presentation__group.html#ga1e93abc105543c80499d53280e4ce5e0">to&lt;Presentation&lt;Word&gt;&gt;(FroidurePinBase&amp;)</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -274,7 +278,7 @@ template&lt;typename Result&gt; </div>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-knuth-bendix_8hpp_source.html">to-knuth-bendix.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;KnuthBendix&lt;Word, Rewriter&gt;</a>&gt;(knd, tc);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;KnuthBendix&lt;Word, Rewriter&gt;</a>&gt;(knd, tc);</div>
 </div><!-- fragment --><p>This function converts the <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> object <code class="param">tc</code> into a <a class="el" href="group__knuth__bendix__class__group.html">KnuthBendix</a> object using <a class="el" href="group__todd__coxeter__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7" title="Get the presentation used to define a ToddCoxeter instance (if any).">ToddCoxeter::presentation</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -317,7 +321,7 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="to-knuth-bendix_8hpp_source.html">to-knuth-bendix.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">to&lt;KnuthBendix&gt;</a>(knd, tc);</div>
+<div class="fragment"><div class="line"><a class="code hl_function" href="group__to__froidure__pin__group.html#gae2b8ad3fa013a7e70bceed05e2e95486">to&lt;KnuthBendix&gt;</a>(knd, tc);</div>
 </div><!-- fragment --><p>This function converts the <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> object <code class="param">tc</code> into a <a class="el" href="group__knuth__bendix__class__group.html">KnuthBendix</a> object using <a class="el" href="group__todd__coxeter__class__intf__group.html#gac10ef7a5522cfb2916a13b3958f004f7" title="Get the presentation used to define a ToddCoxeter instance (if any).">ToddCoxeter::presentation</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

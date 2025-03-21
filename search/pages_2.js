@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['libsemigroups_0',['libsemigroups',['../index.html',1,'']]]
+  ['3_0',['Changelog - version 3',['../md_changelog-v3.html',1,'']]]
 ];

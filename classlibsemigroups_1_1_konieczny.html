@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -182,22 +186,21 @@ $(function(){initNavTree('classlibsemigroups_1_1_konieczny.html',''); initResiza
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classlibsemigroups_1_1_konieczny-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">Konieczny&lt; Element, Traits &gt;</div></div>
+  <div class="headertitle"><div class="title">Konieczny&lt; Element, Traits &gt;<div class="ingroups"><a class="el" href="group__konieczny__group.html">Konieczny</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt;<br />
-class libsemigroups::Konieczny&lt; Element, Traits &gt;</div><p>Defined in <code><a class="el" href="konieczny_8hpp_source.html">konieczny.hpp</a></code>.</p>
-<p>The class template <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> implements Konieczny's algorithm as described in the article 'Green's equivalences in finite semigroups of binary relations' by Janusz Konieczny; see <a href="https://link.springer.com/article/10.1007/BF02573672">here</a> for more details. This algorithm is similar to that of Lallement and McFadden; see <a href="https://www.sciencedirect.com/science/article/pii/S0747717108800570">this</a> paper for more details. It differs in being applicable to subsemigroups of a non-regular semigroup, though is essentially the same algorithm for elements which happen to be regular.</p>
-<p>A <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance is defined by a generating set, and the main function is <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">Konieczny::run</a>, which implements Konieczny's Algorithm. If <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">Konieczny::run</a> is invoked and <a class="el" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">Konieczny::finished</a> returns <code>true</code>, then the size, partial order of \(\mathscr{D}\)-classes, and frames for each \(\mathscr{D}\)-class are known.</p>
+class libsemigroups::Konieczny&lt; Element, Traits &gt;</div><p>The class template <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> implements Konieczny's algorithm as described in the article 'Green's equivalences in finite semigroups of binary relations' by Janusz Konieczny <a class="el" href="citelist.html#CITEREF_konieczny1994aa">[40]</a>. This algorithm is similar to that of Lallement and McFadden; see <a class="el" href="citelist.html#CITEREF_lallement1990aa">[42]</a>. It differs in being applicable to subsemigroups of a non-regular semigroup, though is essentially the same algorithm for elements which happen to be regular.</p>
+<p>A <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> instance is defined by a generating set, and the main function is <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">Konieczny::run</a>, which implements Konieczny's Algorithm. If <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">Konieczny::run</a> is invoked and <a class="el" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">Konieczny::finished</a> returns <code>true</code>, then the size, partial order of \(\mathscr{D}\)-classes, and frames for each \(\mathscr{D}\)-class are known.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of the elements of the semigroup (must not be a pointer).</td></tr>
-    <tr><td class="paramname">Traits</td><td>the type of a traits class with the requirements of <a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.</td></tr>
+    <tr><td class="paramname">Traits</td><td>the type of a traits class with the requirements of <a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a> and <a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html">DClass</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a> and <a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html" title="A class representing a -class in a Konieczny object.">DClass</a> </dd></dl>
 </div><div class="dynheader">
 Inheritance diagram for Konieczny&lt; Element, Traits &gt;:</div>
 <div class="dyncontent">
@@ -207,11 +210,13 @@ Inheritance diagram for Konieczny&lt; Element, Traits &gt;:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html">DClass</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class representing a \(\mathscr{D}\)-class in a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object.  <a href="classlibsemigroups_1_1_konieczny_1_1_d_class.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:ae52f884e01a965e8567194274e637647" id="r_ae52f884e01a965e8567194274e637647"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a> = detail::ConstIteratorStateless&lt;DClassIteratorTraits&lt;<a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html">DClass</a>&gt;&gt;</td></tr>
+<tr class="memdesc:ae52f884e01a965e8567194274e637647"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return type of <a class="el" href="#ac77b1cc35b3d41a0677ea1b685df7608">cbegin_current_D_classes</a> and <a class="el" href="#ae92a149e50752c37739ac24749bd7e83">cend_current_D_classes</a>.  <br /></td></tr>
 <tr class="separator:ae52f884e01a965e8567194274e637647"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0112afe83daeebb3f8b4d6a842fa318e" id="r_a0112afe83daeebb3f8b4d6a842fa318e"><td class="memItemLeft" align="right" valign="top"><a id="a0112afe83daeebb3f8b4d6a842fa318e" name="a0112afe83daeebb3f8b4d6a842fa318e"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>const_element_type</b> = typename Traits::const_element_type</td></tr>
@@ -224,6 +229,7 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>const_element_type</
 <tr class="memdesc:a4b7befd22f1b15b1b1646b2222def240"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of element const references.  <br /></td></tr>
 <tr class="separator:a4b7befd22f1b15b1b1646b2222def240"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af62d4b0095d00ae8771a07f62f77e2f5" id="r_af62d4b0095d00ae8771a07f62f77e2f5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a> = detail::ConstIteratorStateless&lt;DClassIteratorTraits&lt;RegularDClass&gt;&gt;</td></tr>
+<tr class="memdesc:af62d4b0095d00ae8771a07f62f77e2f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return type of <a class="el" href="#a16d71e61641e32aaa5e353e8f2da4488">cbegin_current_regular_D_classes</a> and <a class="el" href="#aa49e7aa01853be97d7fd893dbe22ea46">cend_current_regular_D_classes</a>.  <br /></td></tr>
 <tr class="separator:af62d4b0095d00ae8771a07f62f77e2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0bb5c2967716c43c8a8c2db80df1a0d" id="r_ad0bb5c2967716c43c8a8c2db80df1a0d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0bb5c2967716c43c8a8c2db80df1a0d">D_class_index_type</a> = size_t</td></tr>
 <tr class="separator:ad0bb5c2967716c43c8a8c2db80df1a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -302,106 +308,139 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>time_point</b> = std
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0a9acdd01e2c022077792926f0c580e3" id="r_a0a9acdd01e2c022077792926f0c580e3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a9acdd01e2c022077792926f0c580e3">Konieczny</a> ()</td></tr>
+<tr class="memdesc:a0a9acdd01e2c022077792926f0c580e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
 <tr class="separator:a0a9acdd01e2c022077792926f0c580e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32315ce144f9eeb96e3722cd7bc61301" id="r_a32315ce144f9eeb96e3722cd7bc61301"><td class="memItemLeft" align="right" valign="top"><a id="a32315ce144f9eeb96e3722cd7bc61301" name="a32315ce144f9eeb96e3722cd7bc61301"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Konieczny</b> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&amp;)=delete</td></tr>
-<tr class="memdesc:a32315ce144f9eeb96e3722cd7bc61301"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted. <br /></td></tr>
-<tr class="separator:a32315ce144f9eeb96e3722cd7bc61301"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96bc27303c468725bbb618f7ea508133" id="r_a96bc27303c468725bbb618f7ea508133"><td class="memItemLeft" align="right" valign="top"><a id="a96bc27303c468725bbb618f7ea508133" name="a96bc27303c468725bbb618f7ea508133"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Konieczny</b> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> const &amp;)=delete</td></tr>
-<tr class="memdesc:a96bc27303c468725bbb618f7ea508133"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted. <br /></td></tr>
-<tr class="separator:a96bc27303c468725bbb618f7ea508133"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5506b96741e4084a0b7c0fdb69e8921c" id="r_a5506b96741e4084a0b7c0fdb69e8921c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5506b96741e4084a0b7c0fdb69e8921c">Konieczny</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="#a087ccbb57810b203b7d1c545dfc73403">element_type</a> &gt; const &amp;gens)</td></tr>
-<tr class="separator:a5506b96741e4084a0b7c0fdb69e8921c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0adfee28916191d0bbd3f84451816e2" id="r_af0adfee28916191d0bbd3f84451816e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0adfee28916191d0bbd3f84451816e2">Konieczny</a> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&amp;that)</td></tr>
+<tr class="memdesc:af0adfee28916191d0bbd3f84451816e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor.  <br /></td></tr>
+<tr class="separator:af0adfee28916191d0bbd3f84451816e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59b32fd155e72a128762d6387c2bd1da" id="r_a59b32fd155e72a128762d6387c2bd1da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59b32fd155e72a128762d6387c2bd1da">Konieczny</a> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> const &amp;that)</td></tr>
+<tr class="memdesc:a59b32fd155e72a128762d6387c2bd1da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <br /></td></tr>
+<tr class="separator:a59b32fd155e72a128762d6387c2bd1da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32304812e87187f754944fd00eb31b7b" id="r_a32304812e87187f754944fd00eb31b7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> (<a class="el" href="#a4b7befd22f1b15b1b1646b2222def240">const_reference</a> gen)</td></tr>
+<tr class="memdesc:a32304812e87187f754944fd00eb31b7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a copy of an element to the generators of a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a>.  <br /></td></tr>
 <tr class="separator:a32304812e87187f754944fd00eb31b7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cdb07af03521d3d08e493a7934f3a50" id="r_a7cdb07af03521d3d08e493a7934f3a50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7cdb07af03521d3d08e493a7934f3a50">add_generators</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="#a0112afe83daeebb3f8b4d6a842fa318e">const_element_type</a> &gt; coll)</td></tr>
-<tr class="separator:a7cdb07af03521d3d08e493a7934f3a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2abc70480acb5de86481bca69f6d4f8a" id="r_a2abc70480acb5de86481bca69f6d4f8a"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a2abc70480acb5de86481bca69f6d4f8a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a2abc70480acb5de86481bca69f6d4f8a">add_generators</a> (T const &amp;coll)</td></tr>
-<tr class="separator:a2abc70480acb5de86481bca69f6d4f8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cfa410db69d65b25034d710997355b0" id="r_a7cfa410db69d65b25034d710997355b0"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a7cfa410db69d65b25034d710997355b0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a7cfa410db69d65b25034d710997355b0">add_generators</a> (T const &amp;first, T const &amp;last)</td></tr>
+<tr class="memdesc:a7cfa410db69d65b25034d710997355b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add collection of generators from iterators.  <br /></td></tr>
 <tr class="separator:a7cfa410db69d65b25034d710997355b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a663e2a88a0468197f28cbca55f73758d" id="r_a663e2a88a0468197f28cbca55f73758d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a663e2a88a0468197f28cbca55f73758d">cbegin_D_classes</a> () const</td></tr>
-<tr class="separator:a663e2a88a0468197f28cbca55f73758d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac77b1cc35b3d41a0677ea1b685df7608" id="r_ac77b1cc35b3d41a0677ea1b685df7608"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac77b1cc35b3d41a0677ea1b685df7608">cbegin_current_D_classes</a> () const</td></tr>
+<tr class="memdesc:ac77b1cc35b3d41a0677ea1b685df7608"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to a pointer to the current first \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:ac77b1cc35b3d41a0677ea1b685df7608"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16d71e61641e32aaa5e353e8f2da4488" id="r_a16d71e61641e32aaa5e353e8f2da4488"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16d71e61641e32aaa5e353e8f2da4488">cbegin_current_regular_D_classes</a> () const</td></tr>
+<tr class="memdesc:a16d71e61641e32aaa5e353e8f2da4488"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to a pointer to the current first regular \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:a16d71e61641e32aaa5e353e8f2da4488"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae596708366f075fa313d58fc84859d" id="r_aaae596708366f075fa313d58fc84859d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaae596708366f075fa313d58fc84859d">cbegin_D_classes</a> ()</td></tr>
+<tr class="memdesc:aaae596708366f075fa313d58fc84859d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to a pointer to the first \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:aaae596708366f075fa313d58fc84859d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2077dd771135787cefb33ef9f6f2d458" id="r_a2077dd771135787cefb33ef9f6f2d458"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#adfcf1cf76efef163976f62f4c5b53ff8">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2077dd771135787cefb33ef9f6f2d458">cbegin_generators</a> () const noexcept</td></tr>
+<tr class="memdesc:a2077dd771135787cefb33ef9f6f2d458"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to the first generator.  <br /></td></tr>
 <tr class="separator:a2077dd771135787cefb33ef9f6f2d458"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c9149eee9e851c9779432857fea4510" id="r_a6c9149eee9e851c9779432857fea4510"><td class="memItemLeft" align="right" valign="top"><a id="a6c9149eee9e851c9779432857fea4510" name="a6c9149eee9e851c9779432857fea4510"></a>
-<a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cbegin_rdc</b> () const noexcept</td></tr>
-<tr class="memdesc:a6c9149eee9e851c9779432857fea4510"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shorter form of <a class="el" href="#afe672ce1abfc057b1520a623bb4ee1a8">cbegin_regular_D_classes</a>. <br /></td></tr>
-<tr class="separator:a6c9149eee9e851c9779432857fea4510"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe672ce1abfc057b1520a623bb4ee1a8" id="r_afe672ce1abfc057b1520a623bb4ee1a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe672ce1abfc057b1520a623bb4ee1a8">cbegin_regular_D_classes</a> () const</td></tr>
-<tr class="separator:afe672ce1abfc057b1520a623bb4ee1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ba3271a5bedae46ef0690fc482a49a8" id="r_a2ba3271a5bedae46ef0690fc482a49a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2ba3271a5bedae46ef0690fc482a49a8">cend_D_classes</a> () const noexcept</td></tr>
-<tr class="separator:a2ba3271a5bedae46ef0690fc482a49a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7c69c90bc174fb5b2b79700c61b3c6e" id="r_ad7c69c90bc174fb5b2b79700c61b3c6e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7c69c90bc174fb5b2b79700c61b3c6e">cbegin_regular_D_classes</a> ()</td></tr>
+<tr class="memdesc:ad7c69c90bc174fb5b2b79700c61b3c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to a pointer to the first regular \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:ad7c69c90bc174fb5b2b79700c61b3c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae92a149e50752c37739ac24749bd7e83" id="r_ae92a149e50752c37739ac24749bd7e83"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae92a149e50752c37739ac24749bd7e83">cend_current_D_classes</a> () const noexcept</td></tr>
+<tr class="memdesc:ae92a149e50752c37739ac24749bd7e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to past the pointer to the current last \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:ae92a149e50752c37739ac24749bd7e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa49e7aa01853be97d7fd893dbe22ea46" id="r_aa49e7aa01853be97d7fd893dbe22ea46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa49e7aa01853be97d7fd893dbe22ea46">cend_current_regular_D_classes</a> () const noexcept</td></tr>
+<tr class="memdesc:aa49e7aa01853be97d7fd893dbe22ea46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to past the pointer to the current last regular \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:aa49e7aa01853be97d7fd893dbe22ea46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09cda626d4727257707c71e9e260fd3a" id="r_a09cda626d4727257707c71e9e260fd3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09cda626d4727257707c71e9e260fd3a">cend_D_classes</a> ()</td></tr>
+<tr class="memdesc:a09cda626d4727257707c71e9e260fd3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to past the pointer to the last \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:a09cda626d4727257707c71e9e260fd3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa68eb4749db264ff1d09bd5e2242fab2" id="r_aa68eb4749db264ff1d09bd5e2242fab2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#adfcf1cf76efef163976f62f4c5b53ff8">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa68eb4749db264ff1d09bd5e2242fab2">cend_generators</a> () const noexcept</td></tr>
+<tr class="memdesc:aa68eb4749db264ff1d09bd5e2242fab2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator pointing to one past the last generator.  <br /></td></tr>
 <tr class="separator:aa68eb4749db264ff1d09bd5e2242fab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad68bafe5c61cc423aaf056c41be7e69" id="r_aad68bafe5c61cc423aaf056c41be7e69"><td class="memItemLeft" align="right" valign="top"><a id="aad68bafe5c61cc423aaf056c41be7e69" name="aad68bafe5c61cc423aaf056c41be7e69"></a>
-<a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cend_rdc</b> () const</td></tr>
-<tr class="memdesc:aad68bafe5c61cc423aaf056c41be7e69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shorter form of <a class="el" href="#ac5116bc66a91e1eb70c6c28d39a2cb07">cend_regular_D_classes</a>. <br /></td></tr>
-<tr class="separator:aad68bafe5c61cc423aaf056c41be7e69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5116bc66a91e1eb70c6c28d39a2cb07" id="r_ac5116bc66a91e1eb70c6c28d39a2cb07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5116bc66a91e1eb70c6c28d39a2cb07">cend_regular_D_classes</a> () const noexcept</td></tr>
-<tr class="separator:ac5116bc66a91e1eb70c6c28d39a2cb07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa669f86568b9989889c15091ac51e1ff" id="r_aa669f86568b9989889c15091ac51e1ff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa669f86568b9989889c15091ac51e1ff">cend_regular_D_classes</a> ()</td></tr>
+<tr class="memdesc:aa669f86568b9989889c15091ac51e1ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const iterator referring to past the pointer to the last regular \(\mathscr{D}\)-class.  <br /></td></tr>
+<tr class="separator:aa669f86568b9989889c15091ac51e1ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a254e58049ebb78c3d3211d83bf556ca2" id="r_a254e58049ebb78c3d3211d83bf556ca2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a254e58049ebb78c3d3211d83bf556ca2">contains</a> (<a class="el" href="#a4b7befd22f1b15b1b1646b2222def240">const_reference</a> x)</td></tr>
+<tr class="memdesc:a254e58049ebb78c3d3211d83bf556ca2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test membership of an element.  <br /></td></tr>
 <tr class="separator:a254e58049ebb78c3d3211d83bf556ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8a97ce553b5bd5b30096980c117a5c9" id="r_ad8a97ce553b5bd5b30096980c117a5c9"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8a97ce553b5bd5b30096980c117a5c9">current_number_of_D_classes</a> () const</td></tr>
+<tr class="memdesc:ad8a97ce553b5bd5b30096980c117a5c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of \(\mathscr{D}\)-classes.  <br /></td></tr>
 <tr class="separator:ad8a97ce553b5bd5b30096980c117a5c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9356ecaa475275951a2fc302b2de8f76" id="r_a9356ecaa475275951a2fc302b2de8f76"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9356ecaa475275951a2fc302b2de8f76">current_number_of_H_classes</a> () const</td></tr>
+<tr class="memdesc:a9356ecaa475275951a2fc302b2de8f76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of \(\mathscr{H}\)-classes.  <br /></td></tr>
 <tr class="separator:a9356ecaa475275951a2fc302b2de8f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08ddff62695b4bc9a75711ccc5b9ed5f" id="r_a08ddff62695b4bc9a75711ccc5b9ed5f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08ddff62695b4bc9a75711ccc5b9ed5f">current_number_of_idempotents</a> () const</td></tr>
+<tr class="memdesc:a08ddff62695b4bc9a75711ccc5b9ed5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of idempotents.  <br /></td></tr>
 <tr class="separator:a08ddff62695b4bc9a75711ccc5b9ed5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecea811e6354bd20e37085537e5cccef" id="r_aecea811e6354bd20e37085537e5cccef"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aecea811e6354bd20e37085537e5cccef">current_number_of_L_classes</a> () const</td></tr>
+<tr class="memdesc:aecea811e6354bd20e37085537e5cccef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of \(\mathscr{L}\)-classes.  <br /></td></tr>
 <tr class="separator:aecea811e6354bd20e37085537e5cccef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe97f6fb99f53b923f91276e6cbc261c" id="r_afe97f6fb99f53b923f91276e6cbc261c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe97f6fb99f53b923f91276e6cbc261c">current_number_of_R_classes</a> () const</td></tr>
+<tr class="memdesc:afe97f6fb99f53b923f91276e6cbc261c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of regular \(\mathscr{R}\)-classes.  <br /></td></tr>
 <tr class="separator:afe97f6fb99f53b923f91276e6cbc261c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae53686b2e72e6210bd0590437db8a38" id="r_aae53686b2e72e6210bd0590437db8a38"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae53686b2e72e6210bd0590437db8a38">current_number_of_regular_D_classes</a> () const</td></tr>
+<tr class="memdesc:aae53686b2e72e6210bd0590437db8a38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of regular \(\mathscr{D}\)-classes.  <br /></td></tr>
 <tr class="separator:aae53686b2e72e6210bd0590437db8a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a6d6a77bdbaa6c830ea0496d65a4fba" id="r_a6a6d6a77bdbaa6c830ea0496d65a4fba"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a6d6a77bdbaa6c830ea0496d65a4fba">current_number_of_regular_elements</a> () const</td></tr>
+<tr class="memdesc:a6a6d6a77bdbaa6c830ea0496d65a4fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of regular elements.  <br /></td></tr>
 <tr class="separator:a6a6d6a77bdbaa6c830ea0496d65a4fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa16e3fd76795738e0031d4119282d950" id="r_aa16e3fd76795738e0031d4119282d950"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa16e3fd76795738e0031d4119282d950">current_number_of_regular_L_classes</a> () const</td></tr>
+<tr class="memdesc:aa16e3fd76795738e0031d4119282d950"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of regular \(\mathscr{L}\)-classes.  <br /></td></tr>
 <tr class="separator:aa16e3fd76795738e0031d4119282d950"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ed0e57c5043b177ebe2d6af1549a024" id="r_a6ed0e57c5043b177ebe2d6af1549a024"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ed0e57c5043b177ebe2d6af1549a024">current_number_of_regular_R_classes</a> () const</td></tr>
+<tr class="memdesc:a6ed0e57c5043b177ebe2d6af1549a024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current number of regular \(\mathscr{R}\)-classes.  <br /></td></tr>
 <tr class="separator:a6ed0e57c5043b177ebe2d6af1549a024"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1473834c678fe5ce5c99fb4a24b0d916" id="r_a1473834c678fe5ce5c99fb4a24b0d916"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1473834c678fe5ce5c99fb4a24b0d916">current_size</a> () const</td></tr>
+<tr class="memdesc:a1473834c678fe5ce5c99fb4a24b0d916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current size.  <br /></td></tr>
 <tr class="separator:a1473834c678fe5ce5c99fb4a24b0d916"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66d9c2fab740096c9ab05ebb81467dbb" id="r_a66d9c2fab740096c9ab05ebb81467dbb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html">DClass</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66d9c2fab740096c9ab05ebb81467dbb">D_class_of_element</a> (<a class="el" href="#a4b7befd22f1b15b1b1646b2222def240">const_reference</a> x)</td></tr>
+<tr class="memdesc:a66d9c2fab740096c9ab05ebb81467dbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the \(\mathscr{D}\)-class containing an element.  <br /></td></tr>
 <tr class="separator:a66d9c2fab740096c9ab05ebb81467dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a582b0d5da15b2f2c800b7b35a4601954" id="r_a582b0d5da15b2f2c800b7b35a4601954"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a582b0d5da15b2f2c800b7b35a4601954">degree</a> () const noexcept</td></tr>
+<tr class="memdesc:a582b0d5da15b2f2c800b7b35a4601954"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the degree of elements.  <br /></td></tr>
 <tr class="separator:a582b0d5da15b2f2c800b7b35a4601954"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb1807c4b2b8aeacb19f32309f7fbb10" id="r_aeb1807c4b2b8aeacb19f32309f7fbb10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a4b7befd22f1b15b1b1646b2222def240">const_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb1807c4b2b8aeacb19f32309f7fbb10">generator</a> (size_t pos) const</td></tr>
+<tr class="memdesc:aeb1807c4b2b8aeacb19f32309f7fbb10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the generator given by an index.  <br /></td></tr>
 <tr class="separator:aeb1807c4b2b8aeacb19f32309f7fbb10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8be9a2121dd55258faebe611d6511726" id="r_a8be9a2121dd55258faebe611d6511726"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8be9a2121dd55258faebe611d6511726">init</a> ()</td></tr>
+<tr class="memdesc:a8be9a2121dd55258faebe611d6511726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reinitialize an existing <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object.  <br /></td></tr>
+<tr class="separator:a8be9a2121dd55258faebe611d6511726"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a042688760b69ad8544c4fb0ef1a505c4" id="r_a042688760b69ad8544c4fb0ef1a505c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a042688760b69ad8544c4fb0ef1a505c4">is_regular_element</a> (<a class="el" href="#a4b7befd22f1b15b1b1646b2222def240">const_reference</a> x)</td></tr>
+<tr class="memdesc:a042688760b69ad8544c4fb0ef1a505c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test regularity of an element.  <br /></td></tr>
 <tr class="separator:a042688760b69ad8544c4fb0ef1a505c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a508e9834378eddbb5084ad9e23305613" id="r_a508e9834378eddbb5084ad9e23305613"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a508e9834378eddbb5084ad9e23305613">number_of_D_classes</a> ()</td></tr>
+<tr class="memdesc:a508e9834378eddbb5084ad9e23305613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of \(\mathscr{D}\)-classes.  <br /></td></tr>
 <tr class="separator:a508e9834378eddbb5084ad9e23305613"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66917974c897a3bac999814a063f3d1f" id="r_a66917974c897a3bac999814a063f3d1f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66917974c897a3bac999814a063f3d1f">number_of_generators</a> () const noexcept</td></tr>
+<tr class="memdesc:a66917974c897a3bac999814a063f3d1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of generators.  <br /></td></tr>
 <tr class="separator:a66917974c897a3bac999814a063f3d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81ed67edc40d3bc844cc1ea9dd1048c9" id="r_a81ed67edc40d3bc844cc1ea9dd1048c9"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a81ed67edc40d3bc844cc1ea9dd1048c9">number_of_H_classes</a> ()</td></tr>
+<tr class="memdesc:a81ed67edc40d3bc844cc1ea9dd1048c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of \(\mathscr{H}\)-classes.  <br /></td></tr>
 <tr class="separator:a81ed67edc40d3bc844cc1ea9dd1048c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d687fa95b773a88cb4fdb589388ba89" id="r_a6d687fa95b773a88cb4fdb589388ba89"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d687fa95b773a88cb4fdb589388ba89">number_of_idempotents</a> ()</td></tr>
+<tr class="memdesc:a6d687fa95b773a88cb4fdb589388ba89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of idempotents.  <br /></td></tr>
 <tr class="separator:a6d687fa95b773a88cb4fdb589388ba89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f52112f34b20303543b9eac1815ed02" id="r_a9f52112f34b20303543b9eac1815ed02"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f52112f34b20303543b9eac1815ed02">number_of_L_classes</a> ()</td></tr>
+<tr class="memdesc:a9f52112f34b20303543b9eac1815ed02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of \(\mathscr{L}\)-classes.  <br /></td></tr>
 <tr class="separator:a9f52112f34b20303543b9eac1815ed02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a410be89207f729b2249e6b7b50fcd69d" id="r_a410be89207f729b2249e6b7b50fcd69d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a410be89207f729b2249e6b7b50fcd69d">number_of_R_classes</a> ()</td></tr>
+<tr class="memdesc:a410be89207f729b2249e6b7b50fcd69d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of \(\mathscr{R}\)-classes.  <br /></td></tr>
 <tr class="separator:a410be89207f729b2249e6b7b50fcd69d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53ce48177a3508c9065c649f89abf63a" id="r_a53ce48177a3508c9065c649f89abf63a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53ce48177a3508c9065c649f89abf63a">number_of_regular_D_classes</a> ()</td></tr>
+<tr class="memdesc:a53ce48177a3508c9065c649f89abf63a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of regular \(\mathscr{D}\)-classes.  <br /></td></tr>
 <tr class="separator:a53ce48177a3508c9065c649f89abf63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fd8442360035f033d2d2f90701dc463" id="r_a5fd8442360035f033d2d2f90701dc463"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fd8442360035f033d2d2f90701dc463">number_of_regular_elements</a> ()</td></tr>
+<tr class="memdesc:a5fd8442360035f033d2d2f90701dc463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of regular elements.  <br /></td></tr>
 <tr class="separator:a5fd8442360035f033d2d2f90701dc463"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bf940012a3e856b1fe063caa04f8946" id="r_a5bf940012a3e856b1fe063caa04f8946"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bf940012a3e856b1fe063caa04f8946">number_of_regular_L_classes</a> ()</td></tr>
+<tr class="memdesc:a5bf940012a3e856b1fe063caa04f8946"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of regular \(\mathscr{L}\)-classes.  <br /></td></tr>
 <tr class="separator:a5bf940012a3e856b1fe063caa04f8946"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a261d6889b77322b5a8574ef459d04b70" id="r_a261d6889b77322b5a8574ef459d04b70"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a261d6889b77322b5a8574ef459d04b70">number_of_regular_R_classes</a> ()</td></tr>
+<tr class="memdesc:a261d6889b77322b5a8574ef459d04b70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of regular \(\mathscr{R}\)-classes.  <br /></td></tr>
 <tr class="separator:a261d6889b77322b5a8574ef459d04b70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad84d7c6280ccbd9a096411ecd432e3c8" id="r_ad84d7c6280ccbd9a096411ecd432e3c8"><td class="memItemLeft" align="right" valign="top"><a id="ad84d7c6280ccbd9a096411ecd432e3c8" name="ad84d7c6280ccbd9a096411ecd432e3c8"></a>
-<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&amp;)=delete</td></tr>
-<tr class="memdesc:ad84d7c6280ccbd9a096411ecd432e3c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted. <br /></td></tr>
-<tr class="separator:ad84d7c6280ccbd9a096411ecd432e3c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac417b020ed67163cdf16e13e8c3a8c45" id="r_ac417b020ed67163cdf16e13e8c3a8c45"><td class="memItemLeft" align="right" valign="top"><a id="ac417b020ed67163cdf16e13e8c3a8c45" name="ac417b020ed67163cdf16e13e8c3a8c45"></a>
-<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> const &amp;)=delete</td></tr>
-<tr class="memdesc:ac417b020ed67163cdf16e13e8c3a8c45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted. <br /></td></tr>
-<tr class="separator:ac417b020ed67163cdf16e13e8c3a8c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dd3c960b3c055957c78507a6a5890b1" id="r_a5dd3c960b3c055957c78507a6a5890b1"><td class="memItemLeft" align="right" valign="top"><a id="a5dd3c960b3c055957c78507a6a5890b1" name="a5dd3c960b3c055957c78507a6a5890b1"></a>
+<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&amp;)</td></tr>
+<tr class="memdesc:a5dd3c960b3c055957c78507a6a5890b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator. <br /></td></tr>
+<tr class="separator:a5dd3c960b3c055957c78507a6a5890b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add517628d788ea2e3b28885a950ef6b8" id="r_add517628d788ea2e3b28885a950ef6b8"><td class="memItemLeft" align="right" valign="top"><a id="add517628d788ea2e3b28885a950ef6b8" name="add517628d788ea2e3b28885a950ef6b8"></a>
+<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> const &amp;)</td></tr>
+<tr class="memdesc:add517628d788ea2e3b28885a950ef6b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment operator. <br /></td></tr>
+<tr class="separator:add517628d788ea2e3b28885a950ef6b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b6b70701c46e22849f0f363861351cd" id="r_a0b6b70701c46e22849f0f363861351cd"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b6b70701c46e22849f0f363861351cd">size</a> ()</td></tr>
+<tr class="memdesc:a0b6b70701c46e22849f0f363861351cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size.  <br /></td></tr>
 <tr class="separator:a0b6b70701c46e22849f0f363861351cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classlibsemigroups_1_1_runner"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classlibsemigroups_1_1_runner')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td></tr>
 <tr class="memitem:a6a95e6fb518e68f8e1ea92cec3f3837c inherit pub_methods_classlibsemigroups_1_1_runner" id="r_a6a95e6fb518e68f8e1ea92cec3f3837c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_runner.html#a6a95e6fb518e68f8e1ea92cec3f3837c">Runner</a> ()</td></tr>
@@ -490,6 +529,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Reporter</b> (<a class="el" href="classlibsemigroups_1_1_reporter.html">Reporter</a> const &amp;that)</td></tr>
 <tr class="memdesc:ac7388a234e6256f35c262f5f8c07df9a inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default copy constructor. <br /></td></tr>
 <tr class="separator:ac7388a234e6256f35c262f5f8c07df9a inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcd8d5545399f013e1e793cca17db02e inherit pub_methods_classlibsemigroups_1_1_reporter" id="r_abcd8d5545399f013e1e793cca17db02e"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>emit_divider</b> ()</td></tr>
+<tr class="separator:abcd8d5545399f013e1e793cca17db02e inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a917ad173887ea16737589547027c844b inherit pub_methods_classlibsemigroups_1_1_reporter" id="r_a917ad173887ea16737589547027c844b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_reporter.html">Reporter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_reporter.html#a917ad173887ea16737589547027c844b">init</a> ()</td></tr>
 <tr class="memdesc:a917ad173887ea16737589547027c844b inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an existing <a class="el" href="classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting.">Reporter</a> object.  <br /></td></tr>
 <tr class="separator:a917ad173887ea16737589547027c844b inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -507,6 +549,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1538c196c66305d82ca5d146cf37067a inherit pub_methods_classlibsemigroups_1_1_reporter" id="r_a1538c196c66305d82ca5d146cf37067a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_reporter.html#a1538c196c66305d82ca5d146cf37067a">report</a> () const</td></tr>
 <tr class="memdesc:a1538c196c66305d82ca5d146cf37067a inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if it is time to report.  <br /></td></tr>
 <tr class="separator:a1538c196c66305d82ca5d146cf37067a inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1411033b3d6244383e684faebe08b5b1 inherit pub_methods_classlibsemigroups_1_1_reporter" id="r_a1411033b3d6244383e684faebe08b5b1"><td class="memItemLeft" align="right" valign="top">
+<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>report_divider</b> () const noexcept</td></tr>
+<tr class="separator:a1411033b3d6244383e684faebe08b5b1 inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea58ee6d162cb75079c236c707dbe30e inherit pub_methods_classlibsemigroups_1_1_reporter" id="r_aea58ee6d162cb75079c236c707dbe30e"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classlibsemigroups_1_1_reporter.html">Reporter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>report_divider</b> (<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;val)</td></tr>
+<tr class="separator:aea58ee6d162cb75079c236c707dbe30e inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c8c6ca29df3a33bb7eeeaaa212e8537 inherit pub_methods_classlibsemigroups_1_1_reporter" id="r_a3c8c6ca29df3a33bb7eeeaaa212e8537"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_reporter.html#ad625f34e7622cece15f24634e02ae3f7">nanoseconds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_reporter.html#a3c8c6ca29df3a33bb7eeeaaa212e8537">report_every</a> () const noexcept</td></tr>
 <tr class="memdesc:a3c8c6ca29df3a33bb7eeeaaa212e8537 inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the minimum elapsed time between reports.  <br /></td></tr>
 <tr class="separator:a3c8c6ca29df3a33bb7eeeaaa212e8537 inherit pub_methods_classlibsemigroups_1_1_reporter"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -554,9 +602,8 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Return type of <a class="el" href="#a663e2a88a0468197f28cbca55f73758d">cbegin_D_classes</a> and <a class="el" href="#a2ba3271a5bedae46ef0690fc482a49a8">cend_D_classes</a>.</p>
 <p>Type for const random access iterators through the \(\mathscr{D}\)-classes, in the order they were enumerated.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5" title="Return type of cbegin_current_regular_D_classes and cend_current_regular_D_classes.">const_regular_d_class_iterator</a>. </dd></dl>
 
 </div>
 </div>
@@ -611,9 +658,8 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Return type of <a class="el" href="#afe672ce1abfc057b1520a623bb4ee1a8">cbegin_regular_D_classes</a> and <a class="el" href="#ac5116bc66a91e1eb70c6c28d39a2cb07">cend_regular_D_classes</a>.</p>
 <p>A type for const random access iterators through the regular \(\mathscr{D}\)-classes, in the order they were enumerated.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a>. </dd></dl>
 
 </div>
 </div>
@@ -631,7 +677,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Type of indices of \(\mathscr{D}\)-classes.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a663e2a88a0468197f28cbca55f73758d">cbegin_D_classes</a> and <a class="el" href="#afe672ce1abfc057b1520a623bb4ee1a8">cbegin_regular_D_classes</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ac77b1cc35b3d41a0677ea1b685df7608" title="Returns a const iterator referring to a pointer to the current first -class.">cbegin_current_D_classes</a> and <a class="el" href="#a16d71e61641e32aaa5e353e8f2da4488" title="Returns a const iterator referring to a pointer to the current first regular -class.">cbegin_current_regular_D_classes</a>. </dd></dl>
 
 </div>
 </div>
@@ -649,7 +695,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>size_t ! operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>size_t operator()(Element const&amp; x) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The return value of the call operator ought to indicate the degree of a <code>Element</code> instance which may or may not depend on the parameter <code class="param">x</code>. The degree of a permutation, for instance, would be the the number of points it acts on, the degree of a matrix is its dimension, and so on. This is used, for example, by <a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a> in some member functions to determine whether it is known <em>a priori</em> that a permutation does not belong to the object, because it acts on too many points.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -660,7 +706,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <p>The second template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
 <li><a class="el" href="structlibsemigroups_1_1_froidure_pin_traits.html" title="Traits class for FroidurePin.">FroidurePinTraits</a></li>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a></li>
 </ul>
 </dd></dl>
@@ -670,8 +716,8 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <div class="line">    <span class="keywordflow">return</span> 8;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:79</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::Konieczny::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:209</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::Konieczny::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:232</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -690,7 +736,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value ! const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) for use with, for example, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>.</p>
+<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) for use with, for example, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Value</td><td>the type of objects to compare.</td></tr>
@@ -721,7 +767,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with an operator of signature <code>void ! operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the lambda value of the second argument. The kernel of the lambda function should be Green's \(\mathscr{L}\)-relation on the semigroup in question.</p>
+<p>This type should be a stateless trivially default constructible with an operator of signature <code>void operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the lambda value of the second argument. The kernel of the lambda function should be Green's \(\mathscr{L}\)-relation on the semigroup in question.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of elements. </td></tr>
@@ -731,7 +777,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 </dl>
 <p>The third template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.    </li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.    </li>
 </ul>
 </dd></dl>
 
@@ -751,7 +797,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value ! const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) which defines a linear order on the objects of type Value.</p>
+<p>This type should be a stateless trivially default constructible with a call operator of signature <code>bool operator()(Value const&amp;, Value const&amp;)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) which defines a linear order on the objects of type Value.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Value</td><td>the type of objects to compare.</td></tr>
@@ -812,7 +858,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <div class="line">    <span class="keywordflow">return</span> T::one();</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::Konieczny::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:221</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::Konieczny::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:244</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
 </div><!-- fragment -->    </dd></dl>
 
@@ -832,7 +878,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp; xy, Element const&amp; x, Element ! const&amp; y, size_t = 0)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
+<p>Specialisations of this struct should be stateless trivially default constructible with a call operator of signature <code>void operator()(Element&amp;, Element const&amp;, Element const&amp;, size_t = 0)</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also).</p>
 <p>The call operator should change <code class="param">xy</code> in-place to be the product of <code class="param">x</code> and <code class="param">y</code>. The 4th parameter is optional and it can be used as an index for static thread local storage, that might be required for forming the product of <code class="param">x</code> and <code class="param">y</code>. The purpose of the 1st parameter is to avoid repeated allocations of memory to hold temporary products that are discarded soon after they are created.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -854,7 +900,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::Konieczny::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:224</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::Konieczny::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:247</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -873,11 +919,11 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be default constructible and a call operator of signature <code>size_t operator()(Element const&amp;)</code> if no additional data is required to compute the rank, or a call operator of signature <code>size_t ! operator()(State&lt;Element&gt; const&amp;, Element const&amp;)</code> if additional data is required.</p>
+<p>This type should be default constructible and a call operator of signature <code>size_t operator()(Element const&amp;)</code> if no additional data is required to compute the rank, or a call operator of signature <code>size_t operator()(State&lt;Element&gt; const&amp;, Element const&amp;)</code> if additional data is required.</p>
 <p>The call operator should return the rank of the element given as argument. This must satisfy the following properties:</p><ul>
 <li>\(\operatorname{rank}\) should agree with the \(D\)-order on the semigroup; that is, if \(D_x \leq D_y\), then \(\operatorname{rank}(x) \leq \operatorname{rank}(y)\),</li>
 <li>if \(D_x \leq D_y\) and  \(\operatorname{rank}(x) =
-        \operatorname{rank}(y)\), then \(D_x = D_y\).</li>
+  \operatorname{rank}(y)\), then \(D_x = D_y\).</li>
 </ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -888,7 +934,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 </dl>
 <p>The third template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.    </li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.    </li>
 </ul>
 </dd></dl>
 
@@ -908,7 +954,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
       </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></code>.</p>
-<p>This type should be a stateless trivially default constructible with an operator of signature <code>void ! operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the rho value of the second argument. The kernel of the rho function should be Green's \(\mathscr{R}\)-relation on the semigroup in question.</p>
+<p>This type should be a stateless trivially default constructible with an operator of signature <code>void operator()(Point&amp;, Element const&amp;)</code>, which should modify the first argument in-place to contain the rho value of the second argument. The kernel of the rho function should be Green's \(\mathscr{R}\)-relation on the semigroup in question.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of elements. </td></tr>
@@ -918,7 +964,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 </dl>
 <p>The third template parameter exists for SFINAE.</p>
 <dl class="section user"><dt>Used by:</dt><dd><ul>
-<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html">KoniecznyTraits</a>.    </li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a>.    </li>
 </ul>
 </dd></dl>
 
@@ -957,15 +1003,12 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0a9acdd01e2c022077792926f0c580e3" name="a0a9acdd01e2c022077792926f0c580e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a9acdd01e2c022077792926f0c580e3">&#9670;&#160;</a></span>Konieczny() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a9acdd01e2c022077792926f0c580e3">&#9670;&#160;</a></span>Konieczny() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> </td>
@@ -974,62 +1017,64 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p>Default constructor.</p>
-<p>This is the standard constructor for a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance with unspecified generators.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
+<p>This is the standard constructor for a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> instance with unspecified generators.</p>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> and <a class="el" href="#a2abc70480acb5de86481bca69f6d4f8a">add_generators</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a32304812e87187f754944fd00eb31b7b" title="Add a copy of an element to the generators of a Konieczny.">add_generator</a> and <a class="el" href="#a7cfa410db69d65b25034d710997355b0" title="Add collection of generators from iterators.">add_generators</a> </dd></dl>
 
 </div>
 </div>
-<a id="a5506b96741e4084a0b7c0fdb69e8921c" name="a5506b96741e4084a0b7c0fdb69e8921c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5506b96741e4084a0b7c0fdb69e8921c">&#9670;&#160;</a></span>Konieczny() <span class="overload">[2/2]</span></h2>
+<a id="a59b32fd155e72a128762d6387c2bd1da" name="a59b32fd155e72a128762d6387c2bd1da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59b32fd155e72a128762d6387c2bd1da">&#9670;&#160;</a></span>Konieczny() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="#a087ccbb57810b203b7d1c545dfc73403">element_type</a> &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>gens</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>that</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel explicit">explicit</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p>Construct from generators.</p>
-<p>This function constructs a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> instance generated by the specified container of generators. There can be duplicate generators and although they do not count as distinct elements, they do count as distinct generators. In other words, the generators are precisely (a copy of) <code class="param">gens</code> in the same order they occur in <code class="param">gens</code>.</p>
+<p>Constructs a new <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> which is an exact copy of <code class="param">that</code>. No enumeration is triggered for either <code class="param">that</code> or of the newly constructed <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">gens</td><td>the generators represented by <code>this</code>.</td></tr>
+    <tr><td class="paramname">that</td><td>the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> to copy.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
-<li><code class="param">gens</code> is empty</li>
-<li><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a><code>{}(x)</code> != <a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a><code>{}(y)</code> for some <code>x</code>, <code>y</code> in <code class="param">gens</code>. </li>
-</ul>
-</td></tr>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="af0adfee28916191d0bbd3f84451816e2" name="af0adfee28916191d0bbd3f84451816e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0adfee28916191d0bbd3f84451816e2">&#9670;&#160;</a></span>Konieczny() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt; &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>that</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructs a new <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> using the data from <code class="param">that</code>. No enumeration is triggered for either <code class="param">that</code> or of the newly constructed <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object. The object <code class="param">that</code> is left in a state which is undefined, though guaranteed to be independent from the new <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">that</td><td>the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> to move from.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
 </div>
 </div>
@@ -1058,7 +1103,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Add a copy of an element to the generators.</p>
 <p>It is possible, if perhaps not desirable, to add the same generator multiple times.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1066,112 +1110,11 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>(None)</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
-<li>the degree of <code class="param">x</code> is incompatible with the existing degree</li>
-<li><a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> returns <code>true</code> </li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a7cdb07af03521d3d08e493a7934f3a50" name="a7cdb07af03521d3d08e493a7934f3a50"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7cdb07af03521d3d08e493a7934f3a50">&#9670;&#160;</a></span>add_generators() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void add_generators </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="el" href="#a0112afe83daeebb3f8b4d6a842fa318e">const_element_type</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>coll</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Add collection of generators from initializer list.</p>
-<p>See <a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> for a detailed description.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">coll</td><td>the collection of generators to add.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>(None)</dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
-<li>the degree of <code class="param">x</code> is incompatible with the existing degree.</li>
-<li><a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> returns <code>true</code> </li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a2abc70480acb5de86481bca69f6d4f8a" name="a2abc70480acb5de86481bca69f6d4f8a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2abc70480acb5de86481bca69f6d4f8a">&#9670;&#160;</a></span>add_generators() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
-<div class="memtemplate">
-template&lt;typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void add_generators </td>
-          <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>coll</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Add collection of generators from container.</p>
-<p>See <a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> for a detailed description.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the container for generators to add (must be a non-pointer type).</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">coll</td><td>the collection of generators to add.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>(None)</dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
-<li>the degree of <code class="param">x</code> is incompatible with the existing degree.</li>
-<li><a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> returns <code>true</code> </li>
+<li>the degree of <code class="param">x</code> is incompatible with <code>K.degree()</code>;</li>
+<li><code>K.started()</code> returns <code>true</code>. </li>
 </ul>
 </td></tr>
   </table>
@@ -1181,7 +1124,7 @@ template&lt;typename T&gt; </div>
 </div>
 </div>
 <a id="a7cfa410db69d65b25034d710997355b0" name="a7cfa410db69d65b25034d710997355b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7cfa410db69d65b25034d710997355b0">&#9670;&#160;</a></span>add_generators() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7cfa410db69d65b25034d710997355b0">&#9670;&#160;</a></span>add_generators()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1189,9 +1132,6 @@ template&lt;typename T&gt; </div>
 template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
 <div class="memtemplate">
 template&lt;typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void add_generators </td>
@@ -1204,13 +1144,7 @@ template&lt;typename T&gt; </div>
           <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>last</em></span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p>Add collection of generators from iterators.</p>
 <p>Add copies of the generators in the range <code class="param">first</code> to <code class="param">last</code> to <code>this</code>. See <a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> for a detailed description.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -1225,7 +1159,6 @@ template&lt;typename T&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>(None)</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
@@ -1239,8 +1172,68 @@ template&lt;typename T&gt; </div>
 
 </div>
 </div>
-<a id="a663e2a88a0468197f28cbca55f73758d" name="a663e2a88a0468197f28cbca55f73758d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a663e2a88a0468197f28cbca55f73758d">&#9670;&#160;</a></span>cbegin_D_classes()</h2>
+<a id="ac77b1cc35b3d41a0677ea1b685df7608" name="ac77b1cc35b3d41a0677ea1b685df7608"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac77b1cc35b3d41a0677ea1b685df7608">&#9670;&#160;</a></span>cbegin_current_D_classes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a> cbegin_current_D_classes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> class.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a16d71e61641e32aaa5e353e8f2da4488" name="a16d71e61641e32aaa5e353e8f2da4488"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16d71e61641e32aaa5e353e8f2da4488">&#9670;&#160;</a></span>cbegin_current_regular_D_classes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a> cbegin_current_regular_D_classes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> class.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="aaae596708366f075fa313d58fc84859d" name="aaae596708366f075fa313d58fc84859d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaae596708366f075fa313d58fc84859d">&#9670;&#160;</a></span>cbegin_D_classes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1254,7 +1247,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
           <td class="memname"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a> cbegin_D_classes </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -1263,11 +1256,8 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const iterator referring to a pointer to the first \(\mathscr{D}\)-class.</p>
-<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> class.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a></code>.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+<p>This function triggers the main algorithm to run fully.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>. </dd></dl>
 
 </div>
 </div>
@@ -1295,17 +1285,15 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const iterator pointing to the first generator.</p>
-<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> class.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
+<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> class.</p>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#adfcf1cf76efef163976f62f4c5b53ff8" title="A type for const iterators through elements.">const_iterator</a></code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aa68eb4749db264ff1d09bd5e2242fab2">cend_generators</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aa68eb4749db264ff1d09bd5e2242fab2" title="Returns a const iterator pointing to one past the last generator.">cend_generators</a> </dd></dl>
 
 </div>
 </div>
-<a id="afe672ce1abfc057b1520a623bb4ee1a8" name="afe672ce1abfc057b1520a623bb4ee1a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe672ce1abfc057b1520a623bb4ee1a8">&#9670;&#160;</a></span>cbegin_regular_D_classes()</h2>
+<a id="ad7c69c90bc174fb5b2b79700c61b3c6e" name="ad7c69c90bc174fb5b2b79700c61b3c6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7c69c90bc174fb5b2b79700c61b3c6e">&#9670;&#160;</a></span>cbegin_regular_D_classes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1319,7 +1307,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
           <td class="memname"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a> cbegin_regular_D_classes </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -1328,17 +1316,74 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const iterator referring to a pointer to the first regular \(\mathscr{D}\)-class.</p>
-<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> class.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a></code>.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a6c9149eee9e851c9779432857fea4510" title="Shorter form of cbegin_regular_D_classes.">cbegin_rdc</a> </dd></dl>
+<p>This function triggers the main algorithm to run fully.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
 </div>
 </div>
-<a id="a2ba3271a5bedae46ef0690fc482a49a8" name="a2ba3271a5bedae46ef0690fc482a49a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ba3271a5bedae46ef0690fc482a49a8">&#9670;&#160;</a></span>cend_D_classes()</h2>
+<a id="ae92a149e50752c37739ac24749bd7e83" name="ae92a149e50752c37739ac24749bd7e83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae92a149e50752c37739ac24749bd7e83">&#9670;&#160;</a></span>cend_current_D_classes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a> cend_current_D_classes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> class.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="aa49e7aa01853be97d7fd893dbe22ea46" name="aa49e7aa01853be97d7fd893dbe22ea46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa49e7aa01853be97d7fd893dbe22ea46">&#9670;&#160;</a></span>cend_current_regular_D_classes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a> cend_current_regular_D_classes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> class.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a09cda626d4727257707c71e9e260fd3a" name="a09cda626d4727257707c71e9e260fd3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09cda626d4727257707c71e9e260fd3a">&#9670;&#160;</a></span>cend_D_classes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1352,20 +1397,17 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
           <td class="memname"><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a> cend_D_classes </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const iterator referring to past the pointer to the last \(\mathscr{D}\)-class.</p>
-<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> class.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a></code>.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+<p>This function triggers the main algorithm to run fully.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>. </dd></dl>
 
 </div>
 </div>
@@ -1393,17 +1435,15 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const iterator pointing to one past the last generator.</p>
-<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> class.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
+<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> class.</p>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#adfcf1cf76efef163976f62f4c5b53ff8" title="A type for const iterators through elements.">const_iterator</a></code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a2077dd771135787cefb33ef9f6f2d458">cbegin_generators</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a2077dd771135787cefb33ef9f6f2d458" title="Returns a const iterator pointing to the first generator.">cbegin_generators</a> </dd></dl>
 
 </div>
 </div>
-<a id="ac5116bc66a91e1eb70c6c28d39a2cb07" name="ac5116bc66a91e1eb70c6c28d39a2cb07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5116bc66a91e1eb70c6c28d39a2cb07">&#9670;&#160;</a></span>cend_regular_D_classes()</h2>
+<a id="aa669f86568b9989889c15091ac51e1ff" name="aa669f86568b9989889c15091ac51e1ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa669f86568b9989889c15091ac51e1ff">&#9670;&#160;</a></span>cend_regular_D_classes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1417,21 +1457,18 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
           <td class="memname"><a class="el" href="#af62d4b0095d00ae8771a07f62f77e2f5">const_regular_d_class_iterator</a> cend_regular_D_classes </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const iterator referring to past the pointer to the last regular \(\mathscr{D}\)-class.</p>
-<p>This function does not trigger any enumeration; the iterator returned may be invalidated by any call to a non-const member function of the <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> class.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647">const_d_class_iterator</a></code>.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aad68bafe5c61cc423aaf056c41be7e69">cend_rdc</a> </dd></dl>
+<p>This function triggers the main algorithm to run fully.</p>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="#ae52f884e01a965e8567194274e637647" title="Return type of cbegin_current_D_classes and cend_current_D_classes.">const_d_class_iterator</a></code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
 </div>
 </div>
@@ -1459,7 +1496,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Test membership of an element.</p>
 <p>Returns <code>true</code> if <code class="param">x</code> belongs to <code>this</code> and <code>false</code> if it does not.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1497,8 +1533,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of \(\mathscr{D}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1529,8 +1563,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of \(\mathscr{H}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1561,8 +1593,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of idempotents.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1593,8 +1623,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of \(\mathscr{L}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1625,8 +1653,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of regular \(\mathscr{R}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1657,8 +1683,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of regular \(\mathscr{D}\)-classes</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1689,8 +1713,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of regular elements.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1721,8 +1743,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of regular \(\mathscr{L}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1753,8 +1773,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current number of regular \(\mathscr{R}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration. </dd></dl>
@@ -1785,8 +1803,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the current size.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers no enumeration.</dd></dl>
@@ -1818,14 +1834,13 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the \(\mathscr{D}\)-class containing an element.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>a const reference to a possible element.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A reference to <a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html">DClass</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to <a class="el" href="classlibsemigroups_1_1_konieczny_1_1_d_class.html" title="A class representing a -class in a Konieczny object.">DClass</a>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">x</code> does not belong to <code>this</code>.</td></tr>
@@ -1860,9 +1875,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the degree of elements.</p>
-<p>All elements of a <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> must have the same degree, as computed by an instance of <a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>; this function returns that degree.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
+<p>All elements of a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> must have the same degree, as computed by an instance of <a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>; this function returns that degree.</p>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a> </dd></dl>
@@ -1893,7 +1906,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const reference to the generator given by an index.</p>
 <p>This function returns a const reference to the <code class="param">pos</code> generators of <code>this</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1904,13 +1916,35 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="#a4b7befd22f1b15b1b1646b2222def240">const_reference</a></dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the value of <code class="param">pos</code> is greater than <a class="el" href="#a66917974c897a3bac999814a063f3d1f">number_of_generators()</a>.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the value of <code class="param">pos</code> is greater than <a class="el" href="#a66917974c897a3bac999814a063f3d1f" title="Returns the number of generators.">number_of_generators()</a>.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>There may be duplicate generators, and so <code>this</code> may have more generators than unique generators.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> and <a class="el" href="#a2abc70480acb5de86481bca69f6d4f8a">add_generators</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a32304812e87187f754944fd00eb31b7b" title="Add a copy of an element to the generators of a Konieczny.">add_generator</a> and <a class="el" href="#a7cfa410db69d65b25034d710997355b0" title="Add collection of generators from iterators.">add_generators</a> </dd></dl>
+
+</div>
+</div>
+<a id="a8be9a2121dd55258faebe611d6511726" name="a8be9a2121dd55258faebe611d6511726"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8be9a2121dd55258faebe611d6511726">&#9670;&#160;</a></span>init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a> &amp; init </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function re-initializes a <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> instance so that it is in the same (logical) state as if it had just been default-constructed.</p>
+<dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
 </div>
 </div>
@@ -1938,7 +1972,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Test regularity of an element.</p>
 <p>Returns <code>true</code> if <code class="param">x</code> is a regular element and <code>false</code> if it is not.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1976,8 +2009,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of \(\mathscr{D}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2008,12 +2039,10 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of generators.</p>
 <p>This function returns the number of generators given to <code>this</code>. Note that there may be duplicate generators, and so <code>this</code> may have more generators than unique generators.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a32304812e87187f754944fd00eb31b7b">add_generator</a> and <a class="el" href="#a2abc70480acb5de86481bca69f6d4f8a">add_generators</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a32304812e87187f754944fd00eb31b7b" title="Add a copy of an element to the generators of a Konieczny.">add_generator</a> and <a class="el" href="#a7cfa410db69d65b25034d710997355b0" title="Add collection of generators from iterators.">add_generators</a> </dd></dl>
 
 </div>
 </div>
@@ -2041,8 +2070,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of \(\mathscr{H}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2073,8 +2100,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of idempotents.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2105,8 +2130,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of \(\mathscr{L}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2137,8 +2160,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of \(\mathscr{R}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2169,8 +2190,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of regular \(\mathscr{D}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2201,8 +2220,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of regular elements.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2233,8 +2250,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of regular \(\mathscr{L}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2265,8 +2280,6 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of regular \(\mathscr{R}\)-classes.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class. </dd></dl>
@@ -2297,12 +2310,10 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the size.</p>
-<dl class="section user"><dt>Parameters</dt><dd>(None)</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>size_t</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function triggers a full enumeration of the frames of every \(\mathscr{D}\)-class.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a1473834c678fe5ce5c99fb4a24b0d916">current_size</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a1473834c678fe5ce5c99fb4a24b0d916" title="Returns the current size.">current_size</a> </dd></dl>
 
 </div>
 </div>

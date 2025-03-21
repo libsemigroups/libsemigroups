@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -194,8 +198,8 @@ class libsemigroups::PPerm&lt; N, Scalar &gt;</div><p>Defined in <code><a class=
 <p>If <code class="param">N</code> is <code>0</code>, then the default value of <code class="param">Scalar</code> is <code>uint32_t</code>. If <code class="param">N</code> is not <code>0</code>, then the default value of <code class="param">Scalar</code> is the smallest integer type able to hold <code>N</code>. See also <a class="el" href="structlibsemigroups_1_1_smallest_integer.html" title="Type giving the smallest unsigned integer type that can represent a template.">SmallestInteger</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">N</td><td>the degree (default: <code>0</code>) </td></tr>
-    <tr><td class="paramname">Scalar</td><td>an unsigned integer type (the type of the image values) (default: <code>uint32_t</code>)</td></tr>
+    <tr><td class="paramname">N</td><td>the degree (default: <code>0</code>). </td></tr>
+    <tr><td class="paramname">Scalar</td><td>an unsigned integer type (the type of the image values) (default: <code>uint32_t</code>).</td></tr>
   </table>
   </dd>
 </dl>
@@ -292,7 +296,7 @@ template&lt;typename OtherScalar&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ! img[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
+<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = img[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">OtherScalar</td><td>the type of the points in <code class="param">dom</code> and <code class="param">img</code>. </td></tr>
@@ -301,9 +305,9 @@ template&lt;typename OtherScalar&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain </td></tr>
-    <tr><td class="paramname">img</td><td>the range </td></tr>
-    <tr><td class="paramname">M</td><td>the degree</td></tr>
+    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
+    <tr><td class="paramname">img</td><td>the range. </td></tr>
+    <tr><td class="paramname">M</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>
@@ -346,7 +350,7 @@ template&lt;size_t N = 0, typename Scalar = std::conditional_t&lt;N == 0, uint32
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ! img[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
+<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = img[i]</code> for all <code>i</code> and which is <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> on every other value in the range \([0, M)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">OtherScalar</td><td>the type of the points in <code class="param">dom</code> and <code class="param">img</code>. </td></tr>
@@ -355,9 +359,9 @@ template&lt;size_t N = 0, typename Scalar = std::conditional_t&lt;N == 0, uint32
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain </td></tr>
-    <tr><td class="paramname">img</td><td>the range </td></tr>
-    <tr><td class="paramname">M</td><td>the degree</td></tr>
+    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
+    <tr><td class="paramname">img</td><td>the range. </td></tr>
+    <tr><td class="paramname">M</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>

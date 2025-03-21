@@ -93,6 +93,9 @@ $(function() { codefold.init(0); });
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="_HEADING_"><span>Installation&#160;and&#160;Changelog</span></a></li>
       <li><a href="md_install.html"><span>Install</span></a></li>
+      <li><a href="md_changelog-v3.html"><span>changelog&#160;-&#160;version&#160;3</span></a></li>
+      <li><a href="md_changelog-v2.html"><span>changelog&#160;-&#160;version&#160;2</span></a></li>
+      <li><a href="md_changelog-v1.html"><span>changelog&#160;-&#160;version&#160;1</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
@@ -114,9 +117,10 @@ $(function() { codefold.init(0); });
       <li><a href="group__froidure__pin__group.html"><span>Froidure-Pin</span></a></li>
       <li><a href="group__kambites__group.html"><span>Kambites</span></a></li>
       <li><a href="group__knuth__bendix__group.html"><span>Knuth-Bendix</span></a></li>
+      <li><a href="group__konieczny__group.html"><span>Konieczny</span></a></li>
+      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__freeband__group.html"><span>Radoszewski-Rytter</span></a></li>
       <li><a href="group__schreier__sims__group.html"><span>Schreier-Sims</span></a></li>
-      <li><a href="group__sims__group.html"><span>Low&#160;Index&#160;Congruences</span></a></li>
       <li><a href="group__stephen__group.html"><span>Stephen</span></a></li>
       <li><a href="group__todd__coxeter__group.html"><span>Todd-Coxeter</span></a></li>
       <li><a href="_HEADING_"><span>Bibliography</span></a></li>
@@ -187,14 +191,50 @@ $(function(){initNavTree('namespacelibsemigroups_1_1blocks.html',''); initResiza
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aba9b007fa21cff57aa2fd0015e9bf25a" id="r_aba9b007fa21cff57aa2fd0015e9bf25a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba9b007fa21cff57aa2fd0015e9bf25a">throw_if_invalid</a> (<a class="el" href="classlibsemigroups_1_1_blocks.html">Blocks</a> const &amp;x)</td></tr>
+<tr class="memdesc:aba9b007fa21cff57aa2fd0015e9bf25a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check a <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object.  <br /></td></tr>
+<tr class="separator:aba9b007fa21cff57aa2fd0015e9bf25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd44e6e5266444848189cd3596f59f38" id="r_abd44e6e5266444848189cd3596f59f38"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; int32_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd44e6e5266444848189cd3596f59f38">underlying_partition</a> (<a class="el" href="classlibsemigroups_1_1_blocks.html">Blocks</a> const &amp;x)</td></tr>
 <tr class="memdesc:abd44e6e5266444848189cd3596f59f38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the underlying partition of a <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object.  <br /></td></tr>
 <tr class="separator:abd44e6e5266444848189cd3596f59f38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a757e995c21568feb875f500cc3dbd16e" id="r_a757e995c21568feb875f500cc3dbd16e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a757e995c21568feb875f500cc3dbd16e">validate</a> (<a class="el" href="classlibsemigroups_1_1_blocks.html">Blocks</a> const &amp;x)</td></tr>
-<tr class="memdesc:a757e995c21568feb875f500cc3dbd16e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate a <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object.  <br /></td></tr>
-<tr class="separator:a757e995c21568feb875f500cc3dbd16e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aba9b007fa21cff57aa2fd0015e9bf25a" name="aba9b007fa21cff57aa2fd0015e9bf25a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba9b007fa21cff57aa2fd0015e9bf25a">&#9670;&#160;</a></span>throw_if_invalid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_invalid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_blocks.html">Blocks</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function checks a <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object, and throws an exception if the object does not:</p>
+<ul>
+<li>consist of non-negative integers; and</li>
+<li>have the property that if \(i\), \(i &gt; 0\) occurs in <code class="param">x</code>, then \(i - 1\) occurs earlier in <code class="param">x</code>.</li>
+</ul>
+<p>The value of <code>x[i]</code> should represent the index of the block containing <code>i</code>.</p>
+<p>For example, if <code class="param">x</code> is <code>{0, 1, 1, 2, 1, 1, 3, 1, 1, 4, 5, 6}</code>, then the above conditions are satisfied, but if <code class="param">x</code> is <code>{1, 0, 1, 10}</code> then they are not.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the blocks object to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">x</code> is invalid. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="abd44e6e5266444848189cd3596f59f38" name="abd44e6e5266444848189cd3596f59f38"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd44e6e5266444848189cd3596f59f38">&#9670;&#160;</a></span>underlying_partition()</h2>
 
@@ -231,36 +271,6 @@ n\}\) such that:</p><ul>
 <dl class="section return"><dt>Returns</dt><dd>A vector of vectors of integers.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(n)\) where \(n\) is the degree(). </dd></dl>
-
-</div>
-</div>
-<a id="a757e995c21568feb875f500cc3dbd16e" name="a757e995c21568feb875f500cc3dbd16e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a757e995c21568feb875f500cc3dbd16e">&#9670;&#160;</a></span>validate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void validate </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_blocks.html">Blocks</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>This function validates a <a class="el" href="classlibsemigroups_1_1_blocks.html" title="A Blocks object represents a signed partition of the set .">Blocks</a> object, and throws an exception if the object is not valid.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>the blocks object to validate.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">x</code> is invalid. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
