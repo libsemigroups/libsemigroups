@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,17 +20,17 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"                    // for REQUIRE, REQUIRE_THROWS_AS
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException (ptr o...
-#include "libsemigroups/race.hpp"       // for Race
-#include "libsemigroups/report.hpp"     // for ReportGuard
 #include "libsemigroups/runner.hpp"     // for Runner
-#include "test-main.hpp"                // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/detail/race.hpp"    // for Race
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
   struct LibsemigroupsException;
-
-  constexpr bool REPORT = false;
 
   namespace detail {
 
@@ -65,8 +65,8 @@ namespace libsemigroups {
       }
     };
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "001", "run_for", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "000", "run_for", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(1);
       REQUIRE(rc.max_threads() == 1);
@@ -76,18 +76,18 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "002", "run_until", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "001", "run_until", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.add_runner(std::make_shared<TestRunner1>());
       size_t nr  = 0;
       auto   foo = [&nr]() -> bool { return ++nr == 2; };
-      rc.run_until(foo, std::chrono::milliseconds(10));
+      rc.run_until(foo);
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "003", "exceptions", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "002", "exceptions", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       REQUIRE_THROWS_AS(rc.run_for(std::chrono::milliseconds(10)),
                         LibsemigroupsException);
@@ -102,19 +102,19 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(rc.add_runner(tr), LibsemigroupsException);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "004", "iterators", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "003", "iterators", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
       rc.add_runner(std::make_shared<TestRunner1>());
-      REQUIRE(size_t(rc.end() - rc.begin()) == rc.number_runners());
-      REQUIRE(size_t(rc.cend() - rc.cbegin()) == rc.number_runners());
-      REQUIRE(2 == rc.number_runners());
+      REQUIRE(size_t(rc.end() - rc.begin()) == rc.number_of_runners());
+      REQUIRE(size_t(rc.cend() - rc.cbegin()) == rc.number_of_runners());
+      REQUIRE(2 == rc.number_of_runners());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "005", "find_runner", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "004", "find_runner", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
@@ -123,8 +123,8 @@ namespace libsemigroups {
       REQUIRE(rc.find_runner<TestRunner2>() == nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "006", "run_func", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "005", "run_func", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       rc.add_runner(std::make_shared<TestRunner1>());
@@ -133,8 +133,8 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "007", "run_func", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "006", "run_func", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
       TestRunner1* tr = new TestRunner1();
@@ -145,8 +145,8 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "008", "run_func", "[quick]") {
-      auto rg = ReportGuard(REPORT);
+    LIBSEMIGROUPS_TEST_CASE("Race", "007", "run_func", "[quick]") {
+      auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(4);
       rc.add_runner(std::make_shared<TestRunner1>());

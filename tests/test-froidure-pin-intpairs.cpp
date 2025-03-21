@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,14 +19,14 @@
 #include <cstddef>      // for size_t
 #include <type_traits>  // for integral_constant<>::value
 
-#include "catch.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"
+
 #include "libsemigroups/adapters.hpp"      // for complexity etc
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_i...
-#include "test-main.hpp"
 
 namespace libsemigroups {
-  constexpr bool REPORT = false;
 
   class IntPair {
    public:
@@ -109,11 +109,12 @@ namespace libsemigroups {
   static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "039",
+                          "027",
                           "(pairs of integers) non-trivial user type",
                           "[quick][froidure-pin][intpairs][108]") {
-    auto                 rg = ReportGuard(REPORT);
-    FroidurePin<IntPair> S({IntPair(1, 1)});
+    auto                 rg = ReportGuard(false);
+    FroidurePin<IntPair> S;
+    S.add_generator(IntPair(1, 1));
     REQUIRE(S.size() == 1);
     REQUIRE(S.number_of_idempotents() == 1);
   }

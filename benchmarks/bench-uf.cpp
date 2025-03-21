@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,13 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <random>  // for default_random_engine
+
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "uf-old.hpp"  // for UFOld
 
-#include "libsemigroups/string.hpp"  // for to_string
-#include "libsemigroups/uf.hpp"      // for Duf and Suf
+#include "libsemigroups/detail/string.hpp"  // for to_string
+#include "libsemigroups/detail/uf.hpp"      // for Duf and Suf
 
 namespace libsemigroups {
   namespace detail {

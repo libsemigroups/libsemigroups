@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-2023 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2025 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,18 +20,18 @@
 
 #include "libsemigroups/ukkonen.hpp"
 
-#include <algorithm>  // for lower_bound, sort, max
+#include <algorithm>  // for copy, max, fill_n, fill
 #include <array>      // for array
-#include <cstddef>    // for size_t
-#include <cstdint>    // for uint64_t
 #include <numeric>    // for accumulate
-#include <string>     // for operator+, char_traits, to_st...
+#include <string>     // for operator+, allocator, bas...
 
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/constants.hpp"  // for Max, UNDEFINED, operator!=
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/string.hpp"     // for to_string
-#include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/types.hpp"      // for word_type, letter_type
+
+#include "libsemigroups/detail/string.hpp"  // for to_string
 
 namespace libsemigroups {
 
@@ -68,21 +68,27 @@ namespace libsemigroups {
   // Ukkonen - constructors - public
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO init all data members
-  Ukkonen::Ukkonen()
-      : _max_word_length(0),
-        _multiplicity(),
-        _next_unique_letter(static_cast<unique_letter_type>(-1)),
-        _nodes(1),
-        _ptr(0, 0),
-        _word_begin({0}),
-        _word() {}
+  Ukkonen::Ukkonen() {
+    init();
+  }
 
-  ////////////////////////////////////////////////////////////////////////
-  // Ukkonen - destructors - public
-  ////////////////////////////////////////////////////////////////////////
+  Ukkonen& Ukkonen::init() {
+    _max_word_length = 0;
+    _multiplicity.clear();
+    _next_unique_letter = static_cast<unique_letter_type>(-1);
+    _nodes              = {Node()};
+    _ptr                = State(0, 0);
+    _word_begin         = {0};
+    _word_index_lookup.clear();
+    _word.clear();
+    return *this;
+  }
 
-  Ukkonen::~Ukkonen() = default;
+  Ukkonen::Ukkonen(Ukkonen const&)            = default;
+  Ukkonen::Ukkonen(Ukkonen&&)                 = default;
+  Ukkonen& Ukkonen::operator=(Ukkonen const&) = default;
+  Ukkonen& Ukkonen::operator=(Ukkonen&&)      = default;
+  Ukkonen::~Ukkonen()                         = default;
 
   ////////////////////////////////////////////////////////////////////////
   // Ukkonen - initialisation - public
@@ -133,10 +139,6 @@ namespace libsemigroups {
       result += word_length(i) * multiplicity(i);
     }
     return result;
-  }
-
-  size_t Ukkonen::multiplicity(word_index_type i) const {
-    return _multiplicity[i];
   }
 
   // TODO(later) could do some more caching here, i.e. only check the children
@@ -298,16 +300,106 @@ namespace libsemigroups {
   }
 
   namespace ukkonen {
+    void add_word_no_checks(Ukkonen& u, word_type const& w) {
+      u.add_word_no_checks(w.cbegin(), w.cend());
+    }
+
     void add_words_no_checks(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
-        st.add_word_no_checks(word);
+        add_word_no_checks(st, word);
       }
+    }
+
+    void add_word_no_checks(Ukkonen& u, char const* w) {
+      add_word_no_checks(u, w, w + std::strlen(w));
+    }
+
+    void add_word(Ukkonen& u, word_type const& w) {
+      u.add_word(w.cbegin(), w.cend());
+    }
+
+    void add_word(Ukkonen& u, char const* w) {
+      add_word(u, w, w + std::strlen(w));
     }
 
     void add_words(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
-        st.add_word(word);
+        add_word(st, word);
       }
+    }
+
+    bool is_subword_no_checks(Ukkonen const& u, char const* w) {
+      return is_subword_no_checks(u, w, w + std::strlen(w));
+    }
+
+    bool is_subword_no_checks(Ukkonen const& u, word_type const& w) {
+      return is_subword_no_checks(u, w.cbegin(), w.cend());
+    }
+
+    bool is_subword(Ukkonen const& u, word_type const& w) {
+      return is_subword(u, w.cbegin(), w.cend());
+    }
+
+    bool is_subword(Ukkonen const& u, char const* w) {
+      return is_subword(u, w, w + std::strlen(w));
+    }
+
+    bool is_suffix(Ukkonen const& u, word_type const& w) {
+      return is_suffix(u, w.cbegin(), w.cend());
+    }
+
+    bool is_suffix(Ukkonen const& u, char const* w) {
+      return is_suffix(u, w, w + std::strlen(w));
+    }
+
+    bool is_suffix_no_checks(Ukkonen const& u, word_type const& w) {
+      return is_suffix_no_checks(u, w.cbegin(), w.cend());
+    }
+
+    bool is_suffix_no_checks(Ukkonen const& u, char const* w) {
+      return is_suffix_no_checks(u, w, w + std::strlen(w));
+    }
+
+    std::pair<Ukkonen::State, word_type::const_iterator>
+    traverse_no_checks(Ukkonen const& u, word_type const& w) {
+      return u.traverse_no_checks(w.cbegin(), w.cend());
+    }
+
+    std::pair<Ukkonen::State, char const*> traverse_no_checks(Ukkonen const& u,
+                                                              char const* w) {
+      return u.traverse_no_checks(w, w + std::strlen(w));
+    }
+
+    char const* traverse_no_checks(Ukkonen::State& st,
+                                   Ukkonen const&  u,
+                                   char const*     w) {
+      return u.traverse_no_checks(st, w, w + std::strlen(w));
+    }
+
+    word_type::const_iterator traverse(Ukkonen::State&  st,
+                                       Ukkonen const&   u,
+                                       word_type const& w) {
+      return u.traverse(st, w.cbegin(), w.cend());
+    }
+
+    std::pair<Ukkonen::State, word_type::const_iterator>
+    traverse(Ukkonen const& u, word_type const& w) {
+      return u.traverse(w.cbegin(), w.cend());
+    }
+
+    std::pair<Ukkonen::State, char const*> traverse(Ukkonen const& u,
+                                                    char const*    w) {
+      return u.traverse(w, w + std::strlen(w));
+    }
+
+    word_type::const_iterator traverse_no_checks(Ukkonen::State&  st,
+                                                 Ukkonen const&   u,
+                                                 word_type const& w) {
+      return u.traverse_no_checks(st, w.cbegin(), w.cend());
+    }
+
+    char const* traverse(Ukkonen::State& st, Ukkonen const& u, char const* w) {
+      return u.traverse(st, w, w + std::strlen(w));
     }
 
     size_t number_of_distinct_subwords(Ukkonen const& u) {
@@ -352,12 +444,12 @@ namespace libsemigroups {
       }
     }  // namespace
 
-    std::string dot(Ukkonen const& u) {
+    [[nodiscard]] Dot dot(Ukkonen const& u) {
       if (u.number_of_distinct_words() == 0) {
         LIBSEMIGROUPS_EXCEPTION("expected at least 1 word, found 0");
       }
-      static const std::vector<std::array<char const*, 24>> colors = {
-          {"#00ff00"},
+      static constexpr std::array<std::array<char const*, 24>, 24> colors = {
+          std::array<char const*, 24>({"#00ff00"}),
           {"#00ff00", "#ff00ff"},
           {"#00ff00", "#ff00ff", "#007fff"},
           {"#00ff00", "#ff00ff", "#007fff", "#ff7f00"},
@@ -552,106 +644,40 @@ namespace libsemigroups {
            "#de0328", "#19801d", "#d881f5", "#00ffff", "#ffff00", "#00ff7f",
            "#ad5867", "#85f610", "#84e9f5", "#f5c778", "#207090", "#764ef3",
            "#7b4c00", "#0000ff", "#b80c9a", "#601045", "#29b7c0", "#839f12"}};
-      if (u.number_of_distinct_words() > colors.size()) {
-        LIBSEMIGROUPS_EXCEPTION("expected at most %llu words, found %llu",
-                                uint64_t(colors.size()),
-                                uint64_t(u.number_of_distinct_words()));
+      if (u.number_of_distinct_words() >= colors.size()) {
+        LIBSEMIGROUPS_EXCEPTION("expected at most {} words, found {}",
+                                colors.size(),
+                                u.number_of_distinct_words());
       }
+      LIBSEMIGROUPS_ASSERT(colors.size() == 24);
+      Dot result;
+      result.name("Ukkonen").kind(Dot::Kind::digraph);
+      auto const&              nodes = u.nodes();
+      size_t const             n     = u.number_of_distinct_words();
+      Ukkonen::word_index_type color_index;
 
-      std::string  result = "digraph {\nordering=\"out\"\n";
-      auto const&  nodes  = u.nodes();
-      size_t const n      = u.number_of_distinct_words();
       for (size_t i = 0; i < nodes.size(); ++i) {
-        auto color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
-        result += std::to_string(i) + "[shape=box, width=.5, color=\""
-                  + colors[n][color_index] + "\"]\n";
+        color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
+        LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
+        result.add_node(i)
+            .add_attr("shape", "box")
+            .add_attr("width", ".5")
+            .add_attr("color", colors[n][color_index]);
+      }
+      for (size_t i = 0; i < nodes.size(); ++i) {
         for (auto const& child : nodes[i].children) {
           auto const& l = nodes[child.second].l;
           auto const& r = nodes[child.second].r;
-          color_index   = u.word_index(nodes[child.second]);
-          result += std::to_string(i) + "->" + std::to_string(child.second)
-                    + "[color=\"" + colors[n][color_index] + "\" label=\"["
-                    + std::to_string(l) + "," + std::to_string(r)
-                    + ")=" + dot_word(u, nodes[child.second]) + "\"]\n";
+          LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
+          color_index = u.word_index(nodes[child.second]);
+          result.add_edge(i, child.second)
+              .add_attr("color", colors[n][color_index])
+              .add_attr("label",
+                        "[" + std::to_string(l) + "," + std::to_string(r)
+                            + ")=" + dot_word(u, nodes[child.second]));
         }
       }
-      result += "}\n";
       return result;
     }
-
-    namespace detail {
-      GreedyReduceHelper::GreedyReduceHelper(Ukkonen const& st)
-          : _best(),
-            _best_goodness(),
-            _distance_from_root(st.nodes().size(), 0),
-            _num_leafs(st.nodes().size(), 0),
-            _scratch(),
-            _suffix_index() {}
-
-      GreedyReduceHelper::~GreedyReduceHelper() = default;
-
-      void GreedyReduceHelper::pre_order(Ukkonen const& st, size_t v) {
-        auto const& nodes = st.nodes();
-        // This is a tree so we've never seen v before!
-        if (!nodes[v].is_root()) {
-          _distance_from_root[v]
-              = _distance_from_root[nodes[v].parent] + nodes[v].length();
-        }
-        if (nodes[v].is_leaf()) {
-          _num_leafs[v]++;
-          // Starting index of the suffix that the leaf corresponds to
-          _suffix_index.push_back(nodes[v].r - _distance_from_root[v]);
-        }
-      }
-
-      void GreedyReduceHelper::post_order(Ukkonen const& st, size_t v) {
-        auto const& nodes = st.nodes();
-        if (nodes[v].is_leaf() || nodes[v].is_root()) {
-          return;
-        }
-
-        for (auto const& child : nodes[v].children) {
-          _num_leafs[v] += _num_leafs[child.second];
-        }
-        _scratch.assign(_suffix_index.cend() - _num_leafs[v],
-                        _suffix_index.cend());
-        std::sort(_scratch.begin(), _scratch.end());
-        // number of non-overlapping subwords corresponding to the node v
-        size_t num_non_overlap = st.multiplicity(st.word_index(_scratch[0]));
-
-        // Only try greedily matching non-overlapping subwords from left to
-        // right
-        auto subword_begin = _scratch[0];
-        auto it            = _scratch.cbegin();
-        do {
-          auto subword_end = subword_begin + _distance_from_root[v];
-          it               = std::lower_bound(it, _scratch.cend(), subword_end);
-          if (it != _scratch.cend()) {
-            subword_begin = *it;
-            num_non_overlap += st.multiplicity(st.word_index(subword_begin));
-          }
-        } while (it != _scratch.cend());
-        int goodness = (_distance_from_root[v] * num_non_overlap)
-                       - num_non_overlap - (_distance_from_root[v] + 1);
-        if (goodness > _best_goodness) {
-          _best          = v;
-          _best_goodness = goodness;
-        }
-      }
-
-      using const_iterator = typename Ukkonen::const_iterator;
-
-      std::pair<const_iterator, const_iterator>
-      GreedyReduceHelper::yield(Ukkonen const& st) {
-        auto const& nodes = st.nodes();
-        if (nodes[_best].is_root()) {
-          return {st.cbegin(), st.cbegin()};
-        }
-        return {
-            st.cbegin()
-                + (nodes[_best].l - _distance_from_root[nodes[_best].parent]),
-            st.cbegin() + nodes[_best].r};
-      }
-    }  // namespace detail
-  }    // namespace ukkonen
+  }  // namespace ukkonen
 }  // namespace libsemigroups

@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2025 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 
 #include <string>  // for string
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/string.hpp"  // for is_prefix, is_suffix, maximum_common_suffix
+#include "libsemigroups/detail/string.hpp"  // for is_prefix, is_suffix, maximum_common_suffix
 
 namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("string",
@@ -79,6 +79,7 @@ namespace libsemigroups {
                           "003",
                           "detail::group_digits",
                           "[quick][string]") {
+    REQUIRE(detail::group_digits(0) == "0");
     REQUIRE(detail::group_digits(1) == "1");
     REQUIRE(detail::group_digits(10) == "10");
     REQUIRE(detail::group_digits(100) == "100");

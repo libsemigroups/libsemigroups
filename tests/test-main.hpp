@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,16 +16,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <type_traits>  // for is_reference
+
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
+
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #define STR2(X) #X
 #define STR(X) STR2(X)
 
-#define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)             \
-  TEST_CASE(classname " " nr ": " msg,                                \
-            "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
-            "][" STR(__LINE__) "]" tags)
+#define LIBSEMIGROUPS_TEST_NUM "LIBSEMIGROUPS_TEST_NUM="
+#define LIBSEMIGROUPS_TEST_PREFIX "LIBSEMIGROUPS_TEST_PREFIX="
+
+// Note that TEST_NUM_ID and TEST_PREFIX_ID allow us to locate these
+// tags in the listener
+#define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)                 \
+  TEST_CASE(classname ": " msg,                                           \
+            "[" LIBSEMIGROUPS_TEST_PREFIX classname " " nr "][" classname \
+            " " nr "][" classname "][" nr "][" LIBSEMIGROUPS_TEST_NUM nr  \
+            "][" __FILE__ "][" STR(__LINE__) "]" tags)
+
+#define LIBSEMIGROUPS_TEMPLATE_TEST_CASE(classname, nr, msg, tags, ...) \
+  TEMPLATE_TEST_CASE(classname ": " msg,                                \
+                     "[" LIBSEMIGROUPS_TEST_PREFIX classname " " nr     \
+                     "][" classname " " nr "][" classname "][" nr       \
+                     "][" LIBSEMIGROUPS_TEST_NUM nr "][" __FILE__       \
+                     "][" STR(__LINE__) "]" tags,                       \
+                     __VA_ARGS__)
 
 namespace libsemigroups {
 
@@ -57,4 +75,5 @@ namespace libsemigroups {
     REQUIRE(*it == *copy);
   }
 }  // namespace libsemigroups
+
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_

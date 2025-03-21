@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-21 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,14 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"      // for TEST_CASE
-#include "test-main.hpp"  // LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"                       // LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/types.hpp"   // for SmallestInteger, Smalle...
 
 namespace libsemigroups {
-  LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "001", "", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "000", "", "[quick]") {
     REQUIRE(sizeof(SmallestInteger<0>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<255>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<256>::type) == 2);

@@ -1,0 +1,142 @@
+name: Config options
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  basic-options:
+    timeout-minutes: 45
+    name: ${{ matrix.debug }} ${{ matrix.eigen }} ${{ matrix.hpcombi }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        debug:
+          - --enable-debug
+          - --disable-debug
+        eigen:
+          - --enable-eigen
+          - --disable-eigen
+        hpcombi:
+          - --enable-hpcombi
+          - --disable-hpcombi
+        exclude:
+          - debug: --disable-debug
+            eigen: --enable-eigen
+            hpcombi: --enable-hpcombi
+    env:
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color
+      CONFIGFLAGS: ${{ matrix.debug }} ${{ matrix.eigen }} ${{ matrix.hpcombi }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Configure . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh 
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" $CONFIGFLAGS
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_all . . .
+        run: make test_all -j4
+      - name: Run the quick tests . . .
+        run: ./test_all "[quick]"
+
+  external-deps:
+    timeout-minutes: 45
+    name: ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        external-fmt:
+          - --with-external-fmt
+          - ""
+        external-eigen:
+          - --with-external-eigen
+          - ""
+        exclude:
+          - external-fmt: ""
+            external-eigen: ""
+    env:
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color
+      CONFIGFLAGS: ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+      PKG_CONFIG_PATH: /home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/
+      LD_LIBRARY_PATH: /home/runner/micromamba/envs/libsemigroups/lib
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Install conda environment from environment.yml . . .
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+      - name: Configure . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh 
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" $CONFIGFLAGS
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build and run tests for eigen
+        if: ${{ matrix.external-fmt == '' }}
+        run: |
+          make test_obvinf test_word_graph test_cong -j4
+          ./test_cong [quick]
+          ./test_obvinf [quick]
+          ./test_word_graph [quick]
+      - name: Build and run all quick tests . . .
+        if: ${{ matrix.external-fmt != '' }}
+        run: |
+          make test_all -j4
+          ./test_all [quick]
+
+  bitset:
+    timeout-minutes: 45
+    name: ${{ matrix.popcnt }} ${{ matrix.clzll }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        popcnt:
+          - ""
+          - --disable-popcnt
+        clzll:
+          - ""
+          - --disable-clzll
+        exclude:
+          - popcnt: ""
+            clzll: ""
+    env:
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color
+      CONFIGFLAGS: ${{ matrix.popcnt }} ${{ matrix.clzll }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Configure . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh 
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" $CONFIGFLAGS
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_bitset . . .
+        run: make test_bitset -j4
+      - name: Run the quick bitset tests . . .
+        run: ./test_bitset "[quick]"

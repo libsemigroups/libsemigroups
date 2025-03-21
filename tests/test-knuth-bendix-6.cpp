@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,495 +19,427 @@
 // classes. In a mostly vain attempt to speed up compilation the tests are
 // split across 6 files as follows:
 //
-// 1: contains quick tests for fpsemigroup::KnuthBendix created from rules and
-//    all commented out tests.
+// 1: contains quick tests for KnuthBendix created from rules and all commented
+//    out tests.
 //
-// 2: contains more quick tests for fpsemigroup::KnuthBendix created from rules
+// 2: contains more quick tests for KnuthBendix created from rules
 //
-// 3: contains yet more quick tests for fpsemigroup::KnuthBendix created from
-//    rules
+// 3: contains yet more quick tests for KnuthBendix created from rules
 //
-// 4: contains standard and extreme test for fpsemigroup::KnuthBendix created
-//    from rules
+// 4: contains standard and extreme test for KnuthBendix created from rules
 //
-// 5: contains tests for fpsemigroup::KnuthBendix created from FroidurePin
-//    instances
+// 5: contains tests for KnuthBendix created from FroidurePin instances
 //
-// 6: contains tests for congruence::KnuthBendix.
+// 6: contains tests for KnuthBendix.
 
-// #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
+#include <cstddef>  // for size_t
+#include <utility>  // for move
+#include <vector>   // for vector
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for chinese_monoid
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, operator<<
-#include "libsemigroups/report.hpp"           // for ReportGuard
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/constants.hpp"     // for operator==, Max, POSIT...
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/presentation-examples.hpp"  // for partial_transformation...
+#include "libsemigroups/presentation.hpp"           // for add_rule
+#include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-range.hpp"             // for operator""_w
+
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
-  struct LibsemigroupsException;
-  constexpr bool REPORT = false;
+  congruence_kind constexpr twosided = congruence_kind::twosided;
 
-  using fpsemigroup::author;
-  using fpsemigroup::make;
+  using literals::operator""_w;
 
-  using fpsemigroup::chinese_monoid;
-  using fpsemigroup::partial_transformation_monoid;
+  using RewriteTrie     = detail::RewriteTrie;
+  using RewriteFromLeft = detail::RewriteFromLeft;
 
-  namespace congruence {
+#define KNUTH_BENDIX_TYPES RewriteTrie, RewriteFromLeft
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "103",
-                            "(cong) free semigroup congruence (5 classes)",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto rg = ReportGuard(REPORT);
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "129",
+                                   "Presentation<word_type>",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto rg = ReportGuard(false);
 
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({0}, {1, 1});
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 0_w, 11_w);
 
-      REQUIRE(!kb.finished());
-      REQUIRE(kb.number_of_classes() == 5);
-      REQUIRE(kb.finished());
+    KnuthBendix<word_type, TestType> kb(twosided, p);
 
-      REQUIRE(kb.word_to_class_index({0, 0, 1}) == 4);
-      REQUIRE(kb.word_to_class_index({0, 0, 0, 0, 1}) == 4);
-      REQUIRE(kb.word_to_class_index({0, 1, 1, 0, 0, 1}) == 4);
-      REQUIRE(kb.word_to_class_index({0, 0, 0}) == 0);
-      REQUIRE(kb.word_to_class_index({1}) == 1);
-      REQUIRE(kb.word_to_class_index({0, 0, 0, 0}) == 2);
-    }
+    REQUIRE(!kb.finished());
+    REQUIRE(kb.number_of_classes() == 5);
+    REQUIRE(kb.finished());
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "104",
-                            "free semigroup congruence (6 classes)",
-                            "[quick][cong][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(5);
-      kb.add_pair({0, 0}, {0});
-      kb.add_pair({0, 1}, {1});
-      kb.add_pair({1, 0}, {1});
-      kb.add_pair({0, 2}, {2});
-      kb.add_pair({2, 0}, {2});
-      kb.add_pair({0, 3}, {3});
-      kb.add_pair({3, 0}, {3});
-      kb.add_pair({0, 4}, {4});
-      kb.add_pair({4, 0}, {4});
-      kb.add_pair({1, 2}, {0});
-      kb.add_pair({2, 1}, {0});
-      kb.add_pair({3, 4}, {0});
-      kb.add_pair({4, 3}, {0});
-      kb.add_pair({2, 2}, {0});
-      kb.add_pair({1, 4, 2, 3, 3}, {0});
-      kb.add_pair({4, 4, 4}, {0});
+    REQUIRE(knuth_bendix::reduce(kb, 001_w) == 001_w);
+    REQUIRE(knuth_bendix::reduce(kb, 00001_w) == 001_w);
+    REQUIRE(knuth_bendix::reduce(kb, 011001_w) == 001_w);
+    REQUIRE(!knuth_bendix::contains(kb, 000_w, 1_w));
+    REQUIRE(!knuth_bendix::contains(kb, 0000_w, 000_w));
+  }
 
-      REQUIRE(kb.number_of_classes() == 6);
-      // Throws because there's no parent semigroup
-      REQUIRE_THROWS_AS(kb.number_of_non_trivial_classes(),
-                        LibsemigroupsException);
-      REQUIRE(kb.word_to_class_index({1}) == kb.word_to_class_index({2}));
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "130",
+                                   "free semigroup congruence (6 classes)",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(5);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 01_w, 1_w);
+    presentation::add_rule(p, 10_w, 1_w);
+    presentation::add_rule(p, 02_w, 2_w);
+    presentation::add_rule(p, 20_w, 2_w);
+    presentation::add_rule(p, 03_w, 3_w);
+    presentation::add_rule(p, 30_w, 3_w);
+    presentation::add_rule(p, 04_w, 4_w);
+    presentation::add_rule(p, 40_w, 4_w);
+    presentation::add_rule(p, 12_w, 0_w);
+    presentation::add_rule(p, 21_w, 0_w);
+    presentation::add_rule(p, 34_w, 0_w);
+    presentation::add_rule(p, 43_w, 0_w);
+    presentation::add_rule(p, 22_w, 0_w);
+    presentation::add_rule(p, 14233_w, 0_w);
+    presentation::add_rule(p, 444_w, 0_w);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "105",
-                            "(cong) free semigroup congruence (16 classes)",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(4);
-      kb.add_pair({3}, {2});
-      kb.add_pair({0, 3}, {0, 2});
-      kb.add_pair({1, 1}, {1});
-      kb.add_pair({1, 3}, {1, 2});
-      kb.add_pair({2, 1}, {2});
-      kb.add_pair({2, 2}, {2});
-      kb.add_pair({2, 3}, {2});
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({0, 0, 1}, {1});
-      kb.add_pair({0, 0, 2}, {2});
-      kb.add_pair({0, 1, 2}, {1, 2});
-      kb.add_pair({1, 0, 0}, {1});
-      kb.add_pair({1, 0, 2}, {0, 2});
-      kb.add_pair({2, 0, 0}, {2});
-      kb.add_pair({0, 1, 0, 1}, {1, 0, 1});
-      kb.add_pair({0, 2, 0, 2}, {2, 0, 2});
-      kb.add_pair({1, 0, 1, 0}, {1, 0, 1});
-      kb.add_pair({1, 2, 0, 1}, {1, 0, 1});
-      kb.add_pair({1, 2, 0, 2}, {2, 0, 2});
-      kb.add_pair({2, 0, 1, 0}, {2, 0, 1});
-      kb.add_pair({2, 0, 2, 0}, {2, 0, 2});
+    KnuthBendix<word_type, TestType> kb(twosided, p);
 
-      REQUIRE(kb.number_of_classes() == 16);
-      // REQUIRE(kb.knuth_bendix().number_of_active_rules() == 16);
-      REQUIRE(kb.word_to_class_index({2}) == kb.word_to_class_index({3}));
-    }
+    REQUIRE(kb.number_of_classes() == 6);
+    REQUIRE(knuth_bendix::contains(kb, 1_w, 2_w));
+    // TODO(0) try constructing a KnuthBendix object from a presentation with
+    // more than 255 generators
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "106",
-                            "(cong) free semigroup congruence (6 classes)",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(11);
-      kb.add_pair({2}, {1});
-      kb.add_pair({4}, {3});
-      kb.add_pair({5}, {0});
-      kb.add_pair({6}, {3});
-      kb.add_pair({7}, {1});
-      kb.add_pair({8}, {3});
-      kb.add_pair({9}, {3});
-      kb.add_pair({10}, {0});
-      kb.add_pair({0, 2}, {0, 1});
-      kb.add_pair({0, 4}, {0, 3});
-      kb.add_pair({0, 5}, {0, 0});
-      kb.add_pair({0, 6}, {0, 3});
-      kb.add_pair({0, 7}, {0, 1});
-      kb.add_pair({0, 8}, {0, 3});
-      kb.add_pair({0, 9}, {0, 3});
-      kb.add_pair({0, 10}, {0, 0});
-      kb.add_pair({1, 1}, {1});
-      kb.add_pair({1, 2}, {1});
-      kb.add_pair({1, 4}, {1, 3});
-      kb.add_pair({1, 5}, {1, 0});
-      kb.add_pair({1, 6}, {1, 3});
-      kb.add_pair({1, 7}, {1});
-      kb.add_pair({1, 8}, {1, 3});
-      kb.add_pair({1, 9}, {1, 3});
-      kb.add_pair({1, 10}, {1, 0});
-      kb.add_pair({3, 1}, {3});
-      kb.add_pair({3, 2}, {3});
-      kb.add_pair({3, 3}, {3});
-      kb.add_pair({3, 4}, {3});
-      kb.add_pair({3, 5}, {3, 0});
-      kb.add_pair({3, 6}, {3});
-      kb.add_pair({3, 7}, {3});
-      kb.add_pair({3, 8}, {3});
-      kb.add_pair({3, 9}, {3});
-      kb.add_pair({3, 10}, {3, 0});
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({0, 0, 1}, {1});
-      kb.add_pair({0, 0, 3}, {3});
-      kb.add_pair({0, 1, 3}, {1, 3});
-      kb.add_pair({1, 0, 0}, {1});
-      kb.add_pair({1, 0, 3}, {0, 3});
-      kb.add_pair({3, 0, 0}, {3});
-      kb.add_pair({0, 1, 0, 1}, {1, 0, 1});
-      kb.add_pair({0, 3, 0, 3}, {3, 0, 3});
-      kb.add_pair({1, 0, 1, 0}, {1, 0, 1});
-      kb.add_pair({1, 3, 0, 1}, {1, 0, 1});
-      kb.add_pair({1, 3, 0, 3}, {3, 0, 3});
-      kb.add_pair({3, 0, 1, 0}, {3, 0, 1});
-      kb.add_pair({3, 0, 3, 0}, {3, 0, 3});
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "131",
+                                   "free semigroup congruence (16 classes)",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto rg = ReportGuard(false);
 
-      REQUIRE(kb.number_of_classes() == 16);
-      REQUIRE(kb.word_to_class_index({0}) == kb.word_to_class_index({5}));
-      REQUIRE(kb.word_to_class_index({0}) == kb.word_to_class_index({10}));
-      REQUIRE(kb.word_to_class_index({1}) == kb.word_to_class_index({2}));
-      REQUIRE(kb.word_to_class_index({1}) == kb.word_to_class_index({7}));
-      REQUIRE(kb.word_to_class_index({3}) == kb.word_to_class_index({4}));
-      REQUIRE(kb.word_to_class_index({3}) == kb.word_to_class_index({6}));
-      REQUIRE(kb.word_to_class_index({3}) == kb.word_to_class_index({8}));
-      REQUIRE(kb.word_to_class_index({3}) == kb.word_to_class_index({9}));
-    }
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule(p, 3_w, 2_w);
+    presentation::add_rule(p, 03_w, 02_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 13_w, 12_w);
+    presentation::add_rule(p, 21_w, 2_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 23_w, 2_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 001_w, 1_w);
+    presentation::add_rule(p, 002_w, 2_w);
+    presentation::add_rule(p, 012_w, 12_w);
+    presentation::add_rule(p, 100_w, 1_w);
+    presentation::add_rule(p, 102_w, 02_w);
+    presentation::add_rule(p, 200_w, 2_w);
+    presentation::add_rule(p, 0101_w, 101_w);
+    presentation::add_rule(p, 0202_w, 202_w);
+    presentation::add_rule(p, 1010_w, 101_w);
+    presentation::add_rule(p, 1201_w, 101_w);
+    presentation::add_rule(p, 1202_w, 202_w);
+    presentation::add_rule(p, 2010_w, 201_w);
+    presentation::add_rule(p, 2020_w, 202_w);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "KnuthBendix",
-        "107",
-        "(cong) free semigroup congruence (240 classes)",
-        "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 0}, {0, 0});
-      kb.add_pair({1, 0, 0, 1}, {1, 1});
-      kb.add_pair({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0});
+    KnuthBendix<word_type, TestType> kb(twosided, p);
 
-      REQUIRE(kb.number_of_classes() == 240);
-    }
+    REQUIRE(kb.number_of_classes() == 16);
+    REQUIRE(kb.number_of_active_rules() == 18);
+    REQUIRE(knuth_bendix::contains(kb, 2_w, 3_w));
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "KnuthBendix",
-        "108",
-        "(cong) free semigroup congruence (240 classes)",
-        "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 0}, {0, 0});
-      kb.add_pair({1, 0, 0, 1}, {1, 1});
-      kb.add_pair({0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}, {0, 0});
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "132",
+                                   "free semigroup congruence x 2",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(11);
+    p.rules
+        = {{2},          {1},          {4},          {3},          {5},
+           {0},          {6},          {3},          {7},          {1},
+           {8},          {3},          {9},          {3},          {10},
+           {0},          {0, 2},       {0, 1},       {0, 4},       {0, 3},
+           {0, 5},       {0, 0},       {0, 6},       {0, 3},       {0, 7},
+           {0, 1},       {0, 8},       {0, 3},       {0, 9},       {0, 3},
+           {0, 10},      {0, 0},       {1, 1},       {1},          {1, 2},
+           {1},          {1, 4},       {1, 3},       {1, 5},       {1, 0},
+           {1, 6},       {1, 3},       {1, 7},       {1},          {1, 8},
+           {1, 3},       {1, 9},       {1, 3},       {1, 10},      {1, 0},
+           {3, 1},       {3},          {3, 2},       {3},          {3, 3},
+           {3},          {3, 4},       {3},          {3, 5},       {3, 0},
+           {3, 6},       {3},          {3, 7},       {3},          {3, 8},
+           {3},          {3, 9},       {3},          {3, 10},      {3, 0},
+           {0, 0, 0},    {0},          {0, 0, 1},    {1},          {0, 0, 3},
+           {3},          {0, 1, 3},    {1, 3},       {1, 0, 0},    {1},
+           {1, 0, 3},    {0, 3},       {3, 0, 0},    {3},          {0, 1, 0, 1},
+           {1, 0, 1},    {0, 3, 0, 3}, {3, 0, 3},    {1, 0, 1, 0}, {1, 0, 1},
+           {1, 3, 0, 1}, {1, 0, 1},    {1, 3, 0, 3}, {3, 0, 3},    {3, 0, 1, 0},
+           {3, 0, 1},    {3, 0, 3, 0}, {3, 0, 3}};
 
-      REQUIRE_NOTHROW(kb.knuth_bendix().froidure_pin());
-      REQUIRE_THROWS_AS(kb.add_pair({0}, {1}), LibsemigroupsException);
-    }
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(kb.number_of_classes() == 16);
+    REQUIRE(knuth_bendix::contains(kb, {0}, {5}));
+    REQUIRE(knuth_bendix::contains(kb, {0}, {5}));
+    REQUIRE(knuth_bendix::contains(kb, {0}, {10}));
+    REQUIRE(knuth_bendix::contains(kb, {1}, {2}));
+    REQUIRE(knuth_bendix::contains(kb, {1}, {7}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {4}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {6}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {8}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {9}));
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "KnuthBendix",
-        "109",
-        "(cong) less",
-        "[no-valgrind][quick][congruence][knuth-bendix][cong]") {
-      auto rg = ReportGuard(REPORT);
-      {
-        KnuthBendix kb;
-        kb.set_number_of_generators(2);
-        kb.add_pair({0, 0, 0}, {0});
-        kb.add_pair({1, 1, 1, 1, 1}, {1});
-        kb.add_pair({0, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
-        kb.run();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "133",
+                                   "free semigroup congruence (240 classes)",
+                                   "[no-valgrind][quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 1111_w, 1_w);
+    presentation::add_rule(p, 01110_w, 00_w);
+    presentation::add_rule(p, 1001_w, 11_w);
+    presentation::add_rule(p, 001010101010_w, 00_w);
 
-        REQUIRE(!kb.less({0, 1, 1, 1, 0, 0, 1, 1, 1, 0}, {1, 1, 1, 1, 0, 0}));
-        REQUIRE(!kb.less({0, 1, 1, 0}, {0, 1, 1, 0}));
-      }
-      {
-        KnuthBendix kb;
-        kb.set_number_of_generators(2);
-        kb.add_pair({0, 0, 0}, {0});
-        kb.add_pair({1, 1, 1, 1, 1}, {1});
-        kb.add_pair({0, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(kb.number_of_classes() == 240);
+  }
 
-        REQUIRE(!kb.less({0, 1, 1, 1, 0, 0, 1, 1, 1, 0}, {1, 1, 1, 1, 0, 0}));
-        REQUIRE(!kb.less({0, 1, 1, 0}, {0, 1, 1, 0}));
-      }
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "134",
+                                   "free semigroup congruence x 2",
+                                   "[no-valgrind][quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 1111_w, 1_w);
+    presentation::add_rule(p, 01110_w, 00_w);
+    presentation::add_rule(p, 1001_w, 11_w);
+    presentation::add_rule(p, 001010101010_w, 00_w);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "KnuthBendix",
-        "110",
-        "(cong) less",
-        "[quick][congruence][knuth-bendix][cong][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1, 1, 1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE_NOTHROW(to<FroidurePin>(kb));
+  }
 
-      REQUIRE(kb.less({0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 1}));
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "135",
+                                   "constructors",
+                                   "[quick][knuth-bendix][no-valgrind]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 111111111_w, 1_w);
+    presentation::add_rule(p, 011111011_w, 110_w);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "KnuthBendix",
-        "111",
-        "(cong) constructors",
-        "[quick][congruence][knuth-bendix][cong][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1, 1, 1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
-      REQUIRE(kb.number_of_classes() == 746);
-      auto copy(kb);
-      REQUIRE(copy.number_of_classes() == 746);
-      REQUIRE(copy.number_of_generators() == 2);
-      // the copy uses the "active rules" of kb, of which there are 105 since
-      // knuth-bendix has already been run.
-      REQUIRE(copy.number_of_generating_pairs() == 105);
-    }
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(kb.number_of_classes() == 746);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "112",
-                            "(cong) const_contains/contains",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
+    auto copy(kb);
+    REQUIRE(copy.number_of_classes() == 746);
+    REQUIRE(copy.presentation().alphabet().size() == 2);
+    // the copy uses the "active rules" of kb, of which there are 105 since
+    // knuth-bendix has already been run.
+    REQUIRE(copy.number_of_active_rules() == 105);
+  }
 
-      REQUIRE(kb.const_contains({0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 1})
-              == tril::unknown);
-      REQUIRE(kb.const_contains({0, 0, 0}, {0, 0, 0}) == tril::TRUE);
-      REQUIRE_THROWS_AS(kb.const_contains({0, 0, 2}, {0, 0, 0}),
-                        LibsemigroupsException);
-      REQUIRE(kb.const_contains({0, 0, 0}, {0}) == tril::TRUE);
-      REQUIRE(kb.number_of_classes() == 12);
-      REQUIRE(kb.const_contains({0, 0, 0}, {1, 1}) == tril::FALSE);
-      REQUIRE(!kb.contains({0, 0, 0}, {1, 1}));
-      REQUIRE(kb.contains({0, 0, 0}, {0, 0, 0}));
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "136",
+                                   "number of classes when obv-inf",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(3);
+    presentation::add_rule(p, 01_w, 10_w);
+    presentation::add_rule(p, 02_w, 20_w);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 02_w, 0_w);
+    presentation::add_rule(p, 20_w, 0_w);
+    presentation::add_rule(p, 11_w, 11_w);
+    presentation::add_rule(p, 12_w, 21_w);
+    presentation::add_rule(p, 111_w, 1_w);
+    presentation::add_rule(p, 12_w, 1_w);
+    presentation::add_rule(p, 21_w, 1_w);
+    presentation::add_rule(p, 0_w, 1_w);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "113",
-                            "(cong) is_quotient_obviously_finite",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
-      REQUIRE(!kb.is_quotient_obviously_finite());
-    }
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "114",
-                            "(cong) class_index_to_word",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
-      REQUIRE(kb.class_index_to_word(0) == word_type({0}));
-      REQUIRE(kb.class_index_to_word(1) == word_type({1}));
-      REQUIRE(kb.class_index_to_word(2) == word_type({0, 0}));
-      REQUIRE(kb.class_index_to_word(3) == word_type({0, 1}));
-      REQUIRE(kb.class_index_to_word(4) == word_type({1, 0}));
-      REQUIRE(kb.class_index_to_word(5) == word_type({1, 1}));
-      REQUIRE(kb.class_index_to_word(6) == word_type({0, 0, 1}));
-      REQUIRE(kb.class_index_to_word(7) == word_type({0, 1, 1}));
-      REQUIRE(kb.class_index_to_word(8) == word_type({1, 1, 1}));
-      REQUIRE(kb.class_index_to_word(9) == word_type({0, 0, 1, 1}));
-      REQUIRE(kb.class_index_to_word(10) == word_type({0, 1, 1, 1}));
-      REQUIRE(kb.class_index_to_word(11) == word_type({0, 0, 1, 1, 1}));
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "137",
+                                   "Chinese monoid x 2",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = presentation::examples::chinese_monoid(3);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "115",
-                            "(cong) quotient_froidure_pin",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(2);
-      kb.add_pair({0, 0, 0}, {0});
-      kb.add_pair({1, 1, 1, 1}, {1});
-      kb.add_pair({0, 1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 0});
-      REQUIRE(kb.quotient_froidure_pin()->size() == 12);
-    }
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(kb.presentation().rules.size() / 2 == 8);
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(10);
+    REQUIRE(nf.count() == 1'175);
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "116",
-                            "(cong) set_number_of_generators",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      REQUIRE_NOTHROW(kb.set_number_of_generators(2));
-      REQUIRE_THROWS_AS(kb.set_number_of_generators(3), LibsemigroupsException);
-      REQUIRE_NOTHROW(kb.set_number_of_generators(2));
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "138",
+                                   "partial_transformation_monoid(4)",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto rg = ReportGuard(false);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "117",
-                            "(cong) number of classes when obv-inf",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(3);
-      kb.add_pair({0, 1}, {1, 0});
-      kb.add_pair({0, 2}, {2, 0});
-      kb.add_pair({0, 0}, {0});
-      kb.add_pair({0, 2}, {0});
-      kb.add_pair({2, 0}, {0});
-      kb.add_pair({1, 1}, {1, 1});
-      kb.add_pair({1, 2}, {2, 1});
-      kb.add_pair({1, 1, 1}, {1});
-      kb.add_pair({1, 2}, {1});
-      kb.add_pair({2, 1}, {1});
-      kb.add_pair({0}, {1});
-      REQUIRE(kb.is_quotient_obviously_infinite());
-      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-    }
+    size_t n = 4;
+    auto   p = presentation::examples::partial_transformation_monoid_Shu60(n);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "020",
-                            "(cong) Chinese monoid",
-                            "[quick][congruence][knuth-bendix][cong]") {
-      auto        rg = ReportGuard(REPORT);
-      KnuthBendix kb;
-      kb.set_number_of_generators(3);
-      for (auto const& rel : chinese_monoid(3)) {
-        kb.add_pair(rel.first, rel.second);
-      }
-      REQUIRE(kb.is_quotient_obviously_infinite());
-      REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-      REQUIRE(kb.number_of_generating_pairs() == 8);
-      REQUIRE(std::vector<relation_type>(kb.cbegin_generating_pairs(),
-                                         kb.cend_generating_pairs())
-              == std::vector<relation_type>({{{1, 0, 0}, {0, 1, 0}},
-                                             {{2, 0, 0}, {0, 2, 0}},
-                                             {{1, 1, 0}, {1, 0, 1}},
-                                             {{2, 1, 0}, {2, 0, 1}},
-                                             {{2, 1, 0}, {1, 2, 0}},
-                                             {{2, 2, 0}, {2, 0, 2}},
-                                             {{2, 1, 1}, {1, 2, 1}},
-                                             {{2, 2, 1}, {2, 1, 2}}}));
-      REQUIRE(kb.knuth_bendix().number_of_normal_forms(0, 10) == 1175);
-    }
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(!is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == 625);
+    REQUIRE(to_human_readable_repr(kb)
+            == "<confluent 2-sided KnuthBendix over <monoid presentation with "
+               "5 letters, 260 rules, and length 4131> with 362/204 "
+               "active/inactive rules>");
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "083",
-                            "(cong) partial_transformation_monoid4",
-                            "[standard][congruence][knuth-bendix][cong]") {
-      auto rg = ReportGuard(REPORT);
+  // Takes about 1 minute
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "139",
+                                   "partial_transformation_monoid5",
+                                   "[extreme][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto rg = ReportGuard(true);
 
-      size_t n = 4;
-      auto   s = partial_transformation_monoid(n, author::Sutov);
-      auto   p = make<Presentation<word_type>>(s);
-      p.alphabet(n + 2);
-      presentation::replace_word(p, word_type({}), {n + 1});
-      presentation::add_identity_rules(p, n + 1);
+    size_t n = 5;
+    auto   p = presentation::examples::partial_transformation_monoid_Shu60(n);
 
-      KnuthBendix kb;
-      kb.set_number_of_generators(n + 2);
-      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-        kb.add_pair(p.rules[i], p.rules[i + 1]);
-      }
-      REQUIRE(!kb.is_quotient_obviously_infinite());
-      REQUIRE(kb.number_of_classes() == 625);
-    }
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(!is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == 7'776);
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "118",
-                            "(cong) partial_transformation_monoid5",
-                            "[extreme][congruence][knuth-bendix][cong]") {
-      auto rg = ReportGuard(REPORT);
+  // Takes about 5 seconds
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "140",
+                                   "full_transformation_monoid Iwahori",
+                                   "[extreme][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    auto rg = ReportGuard(true);
 
-      size_t n = 5;
-      auto   s = partial_transformation_monoid(n, author::Sutov);
-      auto   p = make<Presentation<word_type>>(s);
-      p.alphabet(n + 2);
-      presentation::replace_word(p, word_type({}), {n + 1});
-      presentation::add_identity_rules(p, n + 1);
+    size_t n = 5;
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(!is_obviously_infinite(kb));
+    kb.run();
+    REQUIRE(kb.number_of_active_rules() == 1'162);
+    REQUIRE(kb.number_of_classes() == 3'125);
+  }
 
-      KnuthBendix kb;
-      kb.set_number_of_generators(n + 2);
-      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-        kb.add_pair(p.rules[i], p.rules[i + 1]);
-      }
-      REQUIRE(!kb.is_quotient_obviously_infinite());
-      REQUIRE(kb.number_of_classes() == 7776);
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "141",
+                                   "constructors/init for finished x 2",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
 
-    LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                            "119",
-                            "(cong) full_transformation_monoid Iwahori",
-                            "[extreme][congruence][knuth-bendix][cong]") {
-      auto rg = ReportGuard(REPORT);
+    Presentation<word_type> p1;
+    p1.contains_empty_word(true);
+    p1.alphabet(4);
+    presentation::add_rule(p1, 01_w, {});
+    presentation::add_rule(p1, 10_w, {});
+    presentation::add_rule(p1, 23_w, {});
+    presentation::add_rule(p1, 32_w, {});
+    presentation::add_rule(p1, 20_w, 02_w);
 
-      size_t n = 5;
-      auto   s = full_transformation_monoid(n, author::Iwahori);
-      auto   p = make<Presentation<word_type>>(s);
-      p.alphabet(n + 1);
-      presentation::replace_word(p, word_type({}), {n});
-      presentation::add_identity_rules(p, n);
-      KnuthBendix kb;
-      kb.set_number_of_generators(n + 1);
-      for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-        kb.add_pair(p.rules[i], p.rules[i + 1]);
-      }
-      REQUIRE(!kb.is_quotient_obviously_infinite());
-      REQUIRE(kb.number_of_classes() == 3125);
-    }
+    Presentation<word_type> p2;
+    p2.contains_empty_word(true);
+    p2.alphabet(2);
+    presentation::add_rule(p2, 000_w, {});
+    presentation::add_rule(p2, 111_w, {});
+    presentation::add_rule(p2, 010101_w, {});
 
-  }  // namespace congruence
+    KnuthBendix<word_type, TestType> kb1(twosided, p1);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    kb1.init(twosided, p2);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.number_of_active_rules() == 4);
+
+    kb1.init(twosided, p1);
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    KnuthBendix kb2(std::move(kb1));
+    REQUIRE(kb2.confluent());
+    REQUIRE(kb2.confluent_known());
+    REQUIRE(kb2.finished());
+    REQUIRE(kb2.number_of_active_rules() == 8);
+
+    kb1 = std::move(kb2);
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    kb1.init(twosided, std::move(p1));
+    REQUIRE(!kb1.confluent());
+    REQUIRE(!kb1.finished());
+    kb1.run();
+    REQUIRE(kb1.finished());
+    REQUIRE(kb1.confluent());
+    REQUIRE(kb1.confluent_known());
+    REQUIRE(kb1.number_of_active_rules() == 8);
+
+    KnuthBendix<word_type, TestType> kb3(twosided, std::move(p2));
+    REQUIRE(!kb3.confluent());
+    REQUIRE(!kb3.finished());
+    kb3.run();
+    REQUIRE(kb3.finished());
+    REQUIRE(kb3.confluent());
+    REQUIRE(kb3.confluent_known());
+    REQUIRE(kb3.number_of_active_rules() == 4);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "142",
+                                   "close to or greater than 255 letters",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    Presentation<word_type> p;
+    p.alphabet(257);
+
+    REQUIRE_THROWS_AS(KnuthBendix(twosided, p), LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups

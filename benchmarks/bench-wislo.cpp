@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,12 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/order.hpp"  // for shortlex_compare
-#include "libsemigroups/wislo.hpp"  // for cbegin_wislo
-#include "libsemigroups/word.hpp"   // for number_of_words
+#include "libsemigroups/order.hpp"       // for shortlex_compare
+#include "libsemigroups/word-range.hpp"  // for number_of_words
 
 namespace libsemigroups {
   namespace {
@@ -52,8 +50,7 @@ namespace libsemigroups {
       auto      w = words_in_shortlex_order(3, first, last);
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(
-          std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<word_type>()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
     };
 
     BENCHMARK("vector of all words length 0 to 13 using iterators") {
@@ -65,8 +62,7 @@ namespace libsemigroups {
       w.assign(cbegin_wislo(3, first, last), cend_wislo(3, first, last));
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(
-          std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<word_type>()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
     };
   }
 }  // namespace libsemigroups

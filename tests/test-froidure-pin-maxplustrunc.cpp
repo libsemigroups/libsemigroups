@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 #include <cstdint>  // for int64_t
 #include <vector>   // for vector
 
-#include "catch.hpp"      // for  REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for  REQUIRE
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
@@ -105,20 +105,18 @@ namespace libsemigroups {
     std::swap(buf, rows);
   }
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "055",
+                          "034",
                           "(tropical max-plus semiring matrices)",
                           "[quick][froidure-pin][tropmaxplus]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // threshold 9, 2 x 2
     using Mat = MaxPlusTruncMat<9, 2>;
     using Row = typename Mat::Row;
 
     FroidurePin<Mat> S;
-    S.add_generator(Mat({{1, 3}, {2, 1}}));
-    S.add_generator(Mat({{2, 1}, {4, 0}}));
+    S.add_generator(make<Mat>({{1, 3}, {2, 1}}));
+    S.add_generator(make<Mat>({{2, 1}, {4, 0}}));
 
     REQUIRE(S.size() == 20);
     REQUIRE(S.number_of_idempotents() == 1);
@@ -128,16 +126,17 @@ namespace libsemigroups {
       REQUIRE(S.position(*it) == pos);
       pos++;
     }
-    S.add_generator(Mat({{1, 1}, {0, 2}}));
+    S.add_generator(make<Mat>({{1, 1}, {0, 2}}));
     REQUIRE(S.size() == 73);
-    S.closure({Mat({{1, 1}, {0, 2}})});
+    froidure_pin::closure(S, {make<Mat>({{1, 1}, {0, 2}})});
     REQUIRE(S.size() == 73);
-    REQUIRE(
-        S.minimal_factorisation(Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
-        == word_type({2, 1}));
-    REQUIRE(S.minimal_factorisation(52) == word_type({0, 2, 2, 1}));
-    REQUIRE(S.at(52) == Mat({{9, 7}, {9, 5}}));
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S, make<Mat>({{1, 1}, {0, 2}}) * make<Mat>({{2, 1}, {4, 0}}))
+            == word_type({2, 1}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, 52)
+            == word_type({0, 2, 2, 1}));
+    REQUIRE(S.at(52) == make<Mat>({{9, 7}, {9, 5}}));
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
     for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
@@ -150,14 +149,14 @@ namespace libsemigroups {
     }
     {
       auto const& x  = S[4];
-      auto        rb = matrix_helpers::row_basis(x);
+      auto        rb = matrix::row_basis(x);
       REQUIRE(rb.size() == 1);
       REQUIRE(rb[0] == Row({3, 5}));
       REQUIRE(x.row(0) == Row({3, 5}));
       REQUIRE(x.row(1) == Row({5, 7}));
 
       std::vector<std::array<int64_t, 2>> expected;
-      for (auto& r : matrix_helpers::rows(x)) {
+      for (auto& r : matrix::rows(x)) {
         std::array<int64_t, 2> rr;
         std::copy(r.cbegin(), r.cend(), rr.begin());
         expected.push_back(rr);
@@ -169,9 +168,9 @@ namespace libsemigroups {
     }
 
     for (auto const& x : S) {
-      auto                                rb = matrix_helpers::row_basis(x);
+      auto                                rb = matrix::row_basis(x);
       std::vector<std::array<int64_t, 2>> expected;
-      for (auto& r : matrix_helpers::rows(x)) {
+      for (auto& r : matrix::rows(x)) {
         std::array<int64_t, 2> rr;
         std::copy(r.cbegin(), r.cend(), rr.begin());
         expected.push_back(rr);

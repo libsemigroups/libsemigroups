@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-23 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2025 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -80,18 +80,19 @@ namespace libsemigroups {
   }
 
   template <typename Iterator>
-  void Ukkonen::validate_word(Iterator first, Iterator last) const {
+  void Ukkonen::throw_if_contains_unique_letter(Iterator first,
+                                                Iterator last) const {
     auto it = std::find_if(
         first, last, [this](letter_type l) { return is_unique_letter(l); });
 
     if (it != last) {
       LIBSEMIGROUPS_EXCEPTION("illegal letter in word, expected value not "
-                              "in the range (%llu, %llu) found %llu in "
-                              "position %llu",
-                              uint64_t(_next_unique_letter),
-                              uint64_t(-1),
-                              uint64_t(*it),
-                              uint64_t(it - first));
+                              "in the range ({}, {}) found {} in "
+                              "position {}",
+                              _next_unique_letter,
+                              -1,
+                              *it,
+                              it - first);
     }
   }
 

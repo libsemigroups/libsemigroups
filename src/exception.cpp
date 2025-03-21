@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2023 James D. Mitchell
+// Copyright (C) 2023-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,19 +20,26 @@
 
 #include "libsemigroups/exception.hpp"
 
-#include <cstddef>    // for size_t
 #include <stdexcept>  // for std::runtime_error
 #include <string>     // for char_traits, allocator, operator+
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_BACKWARD_ENABLED
                                      //
 #ifdef LIBSEMIGROUPS_BACKWARD_ENABLED
+#include <cstddef>  // for size_t
 #if defined(__CYGWIN__) || defined(__CYGWIN32__)
 #undef LIBSEMIGROUPS_BACKWARD_ENABLED
 #else
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wundef"
+#endif
 #include "backward-cpp/backward.hpp"  // for StackTrace, TraceResolver, Reso...
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
 #endif
-#endif
+#endif  // defined(__CYGWIN__) || defined(__CYGWIN32__)
+#endif  // LIBSEMIGROUPS_BACKWARD_ENABLED
 
 namespace libsemigroups {
   LibsemigroupsException::LibsemigroupsException(std::string const& fname,

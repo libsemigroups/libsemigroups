@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2022-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,15 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/felsch-tree.hpp"  // for FelschTree
-#include "libsemigroups/present.hpp"      // for Presentation
-#include "libsemigroups/report.hpp"       // for ReportGuard
-#include "libsemigroups/types.hpp"        // for word_type
+#include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/types.hpp"         // for word_type
+
+#include "libsemigroups/detail/felsch-tree.hpp"  // for FelschTree
+#include "libsemigroups/detail/report.hpp"       // for ReportGuard
 
 namespace libsemigroups {
+  using literals::operator""_w;
 
   namespace detail {
     LIBSEMIGROUPS_TEST_CASE("FelschTree",
@@ -33,15 +35,15 @@ namespace libsemigroups {
                             "[quick][low-index]") {
       auto                    rg = ReportGuard(false);
       Presentation<word_type> p;
-      presentation::add_rule(p, {1, 2, 1}, {1, 1});
-      presentation::add_rule(p, {3, 3}, {1, 1});
-      presentation::add_rule(p, {1, 1, 1}, {1, 1});
-      presentation::add_rule(p, {3, 2}, {2, 3});
-      presentation::add_rule(p, {3, 1}, {1, 1});
-      presentation::add_rule(p, {2, 2}, {2});
-      presentation::add_rule(p, {1, 3}, {1, 1});
+      presentation::add_rule_no_checks(p, 121_w, 11_w);
+      presentation::add_rule_no_checks(p, 33_w, 11_w);
+      presentation::add_rule_no_checks(p, 111_w, 11_w);
+      presentation::add_rule_no_checks(p, 32_w, 23_w);
+      presentation::add_rule_no_checks(p, 31_w, 11_w);
+      presentation::add_rule_no_checks(p, 22_w, 2_w);
+      presentation::add_rule_no_checks(p, 13_w, 11_w);
       p.alphabet_from_rules();
-      p.validate();
+      p.throw_if_bad_alphabet_or_rules();
 
       FelschTree ft(4);
       ft.add_relations(p.rules.cbegin(), p.rules.cend());

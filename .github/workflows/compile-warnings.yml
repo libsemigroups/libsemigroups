@@ -1,0 +1,37 @@
+name: Compiler warnings
+on: [pull_request, workflow_dispatch]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: ${{ matrix.compiler }}
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+      CXX: ccache ${{ matrix.compiler }}
+      CXXFLAGS: -fdiagnostics-color -O0 -g -Werror
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [clang++-18, g++-14]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Compiler information . . .
+        run: $CXX --version
+      - name: Configure . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh 
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --enable-compile-warnings
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_all . . .
+        run: make test_all -j4

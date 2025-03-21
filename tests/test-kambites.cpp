@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2025 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,75 +15,44 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <stddef.h>  // for size_t
+#include <algorithm>  // for count_if, all_of
+#include <cstddef>    // for size_t
+#include <iostream>   // for string, char_traits
+#include <string>     // for basic_string, operator==, operator!=, operator+
+#include <vector>     // for vector
 
-#include <algorithm>      // for count_if, all_of
-#include <iostream>       // for string, char_traits
-#include <iterator>       // for distance
-#include <memory>         // for allocator, shared_ptr
-#include <string>         // for basic_string, operator==, operator!=, operator+
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/constants.hpp"        // for UNDEFINED
+#include "libsemigroups/kambites.hpp"         // for Kambites
+#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
+#include "libsemigroups/transf.hpp"           // for LeastTransf
+#include "libsemigroups/types.hpp"            // for tril etc
+#include "libsemigroups/word-range.hpp"       // for number_of_words
 
-#include "libsemigroups/constants.hpp"          // for UNDEFINED
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/iterator.hpp"           // for ConstIteratorStateful
-#include "libsemigroups/kambites.hpp"           // for Kambites
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
-#include "libsemigroups/report.hpp"             // for ReportGuard
-#include "libsemigroups/siso.hpp"               // for const_sislo_iterator
-#include "libsemigroups/string.hpp"             // for random_string etc
-#include "libsemigroups/transf.hpp"             // for LeastTransf
-#include "libsemigroups/types.hpp"              // for tril etc
-#include "libsemigroups/word.hpp"               // for number_of_words
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/string.hpp"  // for random_string etc
 
 namespace libsemigroups {
+  using namespace rx;
+  using namespace literals;
   struct LibsemigroupsException;  // Forward decl
 
-  constexpr bool REPORT = false;
   using detail::MultiStringView;
-  using detail::random_string;
+
+  congruence_kind constexpr onesided = congruence_kind::onesided;
+  congruence_kind constexpr twosided = congruence_kind::twosided;
+
+  using kambites::contains;
+  using kambites::contains_no_checks;
+  using kambites::non_trivial_classes;
+  using kambites::normal_forms;
+  using kambites::partition;
+  using kambites::reduce;
 
   namespace {
-    // TODO(later) remove this, or put it in test-suffix-tree.cpp
-    template <typename T>
-    size_t number_of_subwords(T first, T last) {
-      std::unordered_set<std::string> mp;
-
-      for (auto it = first; it < last; ++it) {
-        {
-          auto& w = it->first;
-          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
-            for (auto prefix = suffix + 1; prefix < w.cend(); ++prefix) {
-              mp.emplace(suffix, prefix);
-            }
-          }
-        }
-        {
-          auto& w = it->second;
-          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
-            for (auto prefix = suffix + 1; prefix < w.cend(); ++prefix) {
-              mp.emplace(suffix, prefix);
-            }
-          }
-        }
-      }
-      return mp.size();
-    }
-
-    // TODO(later) remove this
-    template <typename T>
-    size_t sum_lengths(T first, T last) {
-      size_t result = 0;
-      for (auto it = first; it < last; ++it) {
-        result += it->first.size();
-        result += it->second.size();
-      }
-      return result;
-    }
 
     std::string random_power_string(std::string const& s,
                                     std::string const& t,
@@ -114,20 +83,6 @@ namespace libsemigroups {
       return result;
     }
 
-    // std::string swap_a_and_b(std::string const& w) {
-    //   std::string result;
-    //   for (auto l : w) {
-    //     if (l == 'a') {
-    //       result += "b";
-    //     } else if (l == '#') {
-    //       result += '#';
-    //     } else {
-    //       result += "a";
-    //     }
-    //   }
-    //   return result;
-    // }
-
     auto sample(std::string A,
                 size_t      R,
                 size_t      min,
@@ -141,18 +96,16 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "the minimum and maximum values must be at least 2 apart");
       }
-      auto     rg              = ReportGuard(false);
-      uint64_t total_c4        = 0;
-      uint64_t total_confluent = 0;
+      auto                      rg              = ReportGuard(false);
+      uint64_t                  total_c4        = 0;
+      uint64_t                  total_confluent = 0;
+      Presentation<std::string> p;
+      p.alphabet(A);
+
+      Kambites<std::string>    k;
+      KnuthBendix<std::string> kb1, kb2;
+
       for (size_t j = 0; j < sample_size; ++j) {
-        fpsemigroup::Kambites<std::string> k;
-        k.set_alphabet(A);
-        fpsemigroup::KnuthBendix kb1;
-        kb1.set_alphabet(A);
-        fpsemigroup::KnuthBendix kb2;
-        std::reverse(A.begin(), A.end());
-        kb2.set_alphabet(A);
-        std::reverse(A.begin(), A.end());
         for (size_t r = 0; r < R; ++r) {
           auto        lhs = random_string(A, min, max);
           std::string rhs;
@@ -162,2081 +115,2192 @@ namespace libsemigroups {
             rhs = random_string(A, min, lhs.size());
           }
 
-          k.add_rule(lhs, rhs);
-          kb1.add_rule(lhs, rhs);
-          kb2.add_rule(lhs, rhs);
-        }
-        kb1.run_for(std::chrono::milliseconds(1));
-        kb2.run_for(std::chrono::milliseconds(1));
-        if (k.small_overlap_class() >= 4) {
-          total_c4++;
-        }
-        if (kb1.confluent() || kb2.confluent()) {
-          total_confluent++;
+          p.rules = {lhs, rhs};
+
+          k.init(twosided, p);
+
+          kb1.init(congruence_kind::twosided, p);
+
+          std::string AA = p.alphabet();
+          std::reverse(AA.begin(), AA.end());
+          p.alphabet(AA);
+          kb2.init(congruence_kind::twosided, p);
+
+          kb1.run_for(std::chrono::milliseconds(1));
+          kb2.run_for(std::chrono::milliseconds(1));
+          if (k.small_overlap_class() >= 4) {
+            total_c4++;
+          }
+          if (kb1.confluent() || kb2.confluent()) {
+            total_confluent++;
+          }
         }
       }
       return std::make_tuple(total_c4, total_confluent);
     }
-
-    std::array<std::string, 5> swap_a_b_c(std::string const& w) {
-      static std::array<std::string, 5> perms
-          = {"bac", "acb", "cba", "bca", "cab"};
-      std::array<std::string, 5> result;
-      size_t                     count = 0;
-      for (auto const& p : perms) {
-        std::string ww;
-        for (auto l : w) {
-          if (l == 'a') {
-            ww += p[0];
-          } else if (l == 'b') {
-            ww += p[1];
-          } else {
-            ww += p[2];
-          }
-        }
-        result[count] = ww;
-        count++;
-      }
-      return result;
-    }
-
   }  // namespace
 
-#ifdef false
-  namespace {
+  ////////////////////////////////////////////////////////////////////////
 
-    Kambites<> random_example(std::string const& alphabet) {
-      static std::random_device       rd;
-      static std::mt19937             generator(rd());
-      std::uniform_int_distribution<> distribution(1, 25);
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "000",
+                                   "MT test 4",
+                                   "[quick][kambites][no-valgrind]",
+                                   MultiStringView,
+                                   std::string) {
+    auto rg = ReportGuard(false);
 
-      Kambites<> k;
-      k.set_alphabet(alphabet);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
 
-      std::vector<std::string> pieces;
-      for (size_t i = 0; i < 13; ++i) {
-        pieces.push_back(random_string(alphabet, distribution(generator)));
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(contains(k, "abcd", "aaaeaa"));
+    REQUIRE(contains(k, "ef", "dg"));
+    REQUIRE(contains(k, "aaaaaef", "aaaaadg"));
+    REQUIRE(contains(k, "efababa", "dgababa"));
+
+    auto s = to<FroidurePin>(k);
+    s.enumerate(100);
+    REQUIRE(s.current_size() == 8'205);
+
+    StringRange strings;
+    strings.alphabet(p.alphabet()).min(1).max(4);
+    REQUIRE(strings.count() == 399);
+    REQUIRE(non_trivial_classes(k, strings)
+            == std::vector<std::vector<std::string>>({{"dg", "ef"},
+                                                      {"adg", "aef"},
+                                                      {"bdg", "bef"},
+                                                      {"cdg", "cef"},
+                                                      {"ddg", "def"},
+                                                      {"dga", "efa"},
+                                                      {"dgb", "efb"},
+                                                      {"dgc", "efc"},
+                                                      {"dgd", "efd"},
+                                                      {"dge", "efe"},
+                                                      {"dgf", "eff"},
+                                                      {"dgg", "efg"},
+                                                      {"edg", "eef"},
+                                                      {"fdg", "fef"},
+                                                      {"gdg", "gef"}}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "001",
+                                   "number_of_pieces",
+                                   "[quick][kambites]",
+                                   MultiStringView,
+                                   std::string) {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("aAbBcCe");
+    presentation::add_rule(p, "aaa", "e");
+    presentation::add_rule(p, "bbb", "e");
+    presentation::add_rule(p, "ccc", "e");
+    presentation::add_rule(p, "ABa", "BaB");
+    presentation::add_rule(p, "bcB", "cBc");
+    presentation::add_rule(p, "caC", "aCa");
+    presentation::add_rule(p, "abcABCabcABCabcABC", "e");
+    presentation::add_rule(p, "BcabCABcabCABcabCA", "e");
+    presentation::add_rule(p, "cbACBacbACBacbACBa", "e");
+
+    REQUIRE(p.rules.size() == 18);
+
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[0]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[1])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[2]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[3])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[4]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[5])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[6]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[7]) == 2);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[8]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[9]) == 2);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[10]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[11]) == 2);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[12]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[13])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[14]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[15])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[16]) == 2);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[17])
+            == POSITIVE_INFINITY);
+
+    REQUIRE(k.small_overlap_class() == 2);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "002",
+                                   "small_overlap_class",
+                                   "[quick][kambites]",
+                                   MultiStringView,
+                                   std::string) {
+    auto rg = ReportGuard(false);
+    for (size_t i = 4; i < 20; ++i) {
+      std::string lhs;
+      for (size_t b = 1; b <= i; ++b) {
+        lhs += "a" + std::string(b, 'b');
+      }
+      std::string rhs;
+      for (size_t b = i + 1; b <= 2 * i; ++b) {
+        rhs += "a" + std::string(b, 'b');
       }
 
-      k.add_rule(pieces[0] + pieces[1] + pieces[2] + pieces[3],
-                 pieces[2] + pieces[0] + pieces[7] + pieces[4]);
-      k.add_rule(pieces[4] + pieces[0] + pieces[5], pieces[6]);
-      k.add_rule(pieces[7] + pieces[1] + pieces[8], pieces[9]);
-      k.add_rule(pieces[10] + pieces[3] + pieces[11], pieces[12]);
+      Presentation<std::string> p;
+      p.alphabet("ab");
+      presentation::add_rule(p, lhs, rhs);
 
-      std::cout << "k.add_rule(\""
-                << pieces[0] + pieces[1] + pieces[2] + pieces[3] << "\", \""
-                << pieces[2] + pieces[0] + pieces[7] + pieces[4] << "\");\n";
-      std::cout << "k.add_rule(\"" << pieces[4] + pieces[0] + pieces[5]
-                << "\", \"" << pieces[6] << "\");\n";
-      std::cout << "k.add_rule(\"" << pieces[7] + pieces[1] + pieces[8]
-                << "\", \"" << pieces[9] << "\");\n";
-      std::cout << "k.add_rule(\"" << pieces[10] + pieces[3] + pieces[11]
-                << "\", \"" << pieces[12] << "\");\n";
-      return k;
+      Kambites<TestType> k(twosided, p);
+      REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), lhs) == i);
+      REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), rhs) == i + 1);
+      REQUIRE(k.small_overlap_class() == i);
     }
-  }  // namespace
-#endif
+  }
 
-  namespace fpsemigroup {
+  // TODO(1) split into multiple tests
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "003",
+                                   "random",
+                                   "[quick][kambites]",
+                                   MultiStringView,
+                                   std::string) {
+    auto rg = ReportGuard(false);
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule(
+          p,
+          "eiehiegiggfaigcdfdfdgiidcebacgfaf",
+          "cgfaeiehiegiggfaigcdfdfdgigcccbddchbbhgaaedfiiahhehihcba");
+      presentation::add_rule(
+          p, "hihcbaeiehiegiggfaigcdfdfdgiefhbidhbdgb", "chhfgafiiddg");
+      presentation::add_rule(
+          p,
+          "gcccbddchbbhgaaedfiiahheidcebacbdefegcehgffedacddiaiih",
+          "eddfcfhbedecacheahcdeeeda");
+      presentation::add_rule(p, "dfbiccfeagaiffcfifg", "dceibahghaedhefh");
 
-    ////////////////////////////////////////////////////////////////////////
+      Kambites<TestType> k(twosided, p);
 
-    template <typename T>
-    void test_case_mt_4() {
-      auto rg = ReportGuard(REPORT);
+      REQUIRE(k.small_overlap_class() == 4);
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 3'996);
 
-      Kambites<T> k;
-      k.set_alphabet("abcdefg");
-      k.add_rule("abcd", "aaaeaa");
-      k.add_rule("ef", "dg");
-
-      REQUIRE(k.equal_to("abcd", "aaaeaa"));
-      REQUIRE(k.equal_to("ef", "dg"));
-      REQUIRE(k.equal_to("aaaaaef", "aaaaadg"));
-      REQUIRE(k.equal_to("efababa", "dgababa"));
-      k.froidure_pin()->enumerate(100);
-      REQUIRE(k.froidure_pin()->current_size() == 8205);
+      size_t n = presentation::length(p);
+      REQUIRE(n == 254);
+      REQUIRE(n * n == 64'516);
     }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule(
+          p,
+          "feffgccdgcfbeagiifheabecdfbgebfcibeifibccahaafabeihfgfieade"
+          "bciheddeigbaf",
+          "ifibccahaafabeihfgfiefeffgccdgcfbeagiifheabecfeibghddfgbaia"
+          "acghhdhggagaide");
+      presentation::add_rule(
+          p,
+          "ghhdhggagaidefeffgccdgcfbeagiifheabeccbeiddgdcbcf",
+          "ahccccffdeb");
+      presentation::add_rule(
+          p, "feibghddfgbaiaacdfbgebfcibeieaacdbdb", "gahdfgbghhhbcci");
+      presentation::add_rule(
+          p,
+          "dgibafaahiabfgeiiibadebciheddeigbaficfbfdbfbbiddgdcifbe",
+          "iahcfgdbggaciih");
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "000",
-                            "(fpsemi) MT test 4 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_4<std::string>();
+      Kambites<TestType> k(twosided, p);
+      REQUIRE(k.small_overlap_class() == 4);
+
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 7'482);
+      size_t n = presentation::length(p);
+
+      REQUIRE(n == 327);
+      REQUIRE(n * n == 106'929);
     }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule(
+          p,
+          "adichhbhibfchbfbbibaidfibifgagcgdedfeeibhggdbchfdaefbefcbaa"
+          "hcbhbidgaahbahhahhb",
+          "edfeeibhggdbchfdaefbeadichhbhibfchbfbbibaiihebabeabahcgdbic"
+          "bgiciffhfggbfadf");
+      presentation::add_rule(
+          p,
+          "bgiciffhfggbfadfadichhbhibfchbfbbibaaggfdcfcebehhbdegiaeaf",
+          "hebceeicbhidcgahhcfbb");
+      presentation::add_rule(p,
+                             "iihebabeabahcgdbicidfibifgagcgdedehed",
+                             "ecbcgaieieicdcdfdbgagdbf");
+      presentation::add_rule(p, "iagaadbfcbaahcbhbidgaahbahhahhbd", "ddddh");
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "001",
-                            "(fpsemi) MT test 4 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_4<detail::MultiStringView>();
+      Kambites<TestType> k(twosided, p);
+      REQUIRE(k.small_overlap_class() == 3);
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 7'685);
+
+      size_t n = presentation::length(p);
+      REQUIRE(n == 330);
+      REQUIRE(n * n == 108'900);
     }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule(
+          p,
+          "ibddgdgddiabcahbidbedffeddciiabahbbiacbfehdfccacbhgafbgcdg",
+          "iabahibddgdgddbdfacbafhcgfhdheieihd");
+      presentation::add_rule(
+          p, "hdheieihdibddgdgddebhaeaicciidebegg", "giaeehdeeec");
+      presentation::add_rule(
+          p,
+          "bdfacbafhcgfiabcahbidbedffeddcifdfcdcdadhhcbcbebhei",
+          "icaebehdff");
+      presentation::add_rule(
+          p,
+          "aggiiacdbbiacbfehdfccacbhgafbgcdghiahfccdchaiagaha",
+          "hhafbagbhghhihg");
 
-    ////////////////////////////////////////////////////////////////////////
+      Kambites<TestType> k(twosided, p);
+      REQUIRE(k.small_overlap_class() == 4);
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 4'779);
 
-    template <typename T>
-    void test_case_no_name_1() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("aAbBcCe");
-
-      k.add_rule("aaa", "e");
-      k.add_rule("bbb", "e");
-      k.add_rule("ccc", "e");
-      k.add_rule("ABa", "BaB");
-      k.add_rule("bcB", "cBc");
-      k.add_rule("caC", "aCa");
-      k.add_rule("abcABCabcABCabcABC", "e");
-      k.add_rule("BcabCABcabCABcabCA", "e");
-      k.add_rule("cbACBacbACBacbACBa", "e");
-
-      REQUIRE(k.number_of_pieces(0) == 2);
-      REQUIRE(k.number_of_pieces(1) == POSITIVE_INFINITY);
-
-      REQUIRE(k.number_of_pieces(2) == 2);
-      REQUIRE(k.number_of_pieces(3) == POSITIVE_INFINITY);
-
-      REQUIRE(k.number_of_pieces(4) == 2);
-      REQUIRE(k.number_of_pieces(5) == POSITIVE_INFINITY);
-
-      REQUIRE(k.number_of_pieces(6) == 2);
-      REQUIRE(k.number_of_pieces(7) == 2);
-
-      REQUIRE(k.number_of_pieces(8) == 2);
-      REQUIRE(k.number_of_pieces(9) == 2);
-
-      REQUIRE(k.number_of_pieces(10) == 2);
-      REQUIRE(k.number_of_pieces(11) == 2);
-
-      REQUIRE(k.number_of_pieces(12) == 2);
-      REQUIRE(k.number_of_pieces(13) == POSITIVE_INFINITY);
-
-      REQUIRE(k.number_of_pieces(14) == 2);
-      REQUIRE(k.number_of_pieces(15) == POSITIVE_INFINITY);
-
-      REQUIRE(k.number_of_pieces(16) == 2);
-      REQUIRE(k.number_of_pieces(17) == POSITIVE_INFINITY);
-
-      REQUIRE(k.small_overlap_class() == 2);
+      size_t n = presentation::length(p);
+      REQUIRE(n == 265);
+      REQUIRE(n * n == 70'225);
     }
+    {
+      Presentation<std::string> p;
+      p.alphabet("abcdefghi");
+      presentation::add_rule(
+          p,
+          "fibehffegdeggaddgfdaeaiacbhbgbbccceaibfcabbiedhecggbbdgihddd",
+          "ceafibehffegdeggafidbaefcebegahcbhciheceaehaaehih");
+      presentation::add_rule(
+          p, "haaehihfibehffegdeggaecbedccaeabifeafi", "bfcccibgefiidgaih");
+      presentation::add_rule(
+          p,
+          "fidbaefcebegahcbhciheceaeddgfdaeaiacbhbgbbcccgiahbibehgbgab"
+          "efdieiggc",
+          "abigdadaecdfdeeciggbdfdf");
+      presentation::add_rule(
+          p,
+          "eeaaiicigieiabibfcabbiedhecggbbdgihdddifadgbgidbfeg",
+          "daheebdgdiaeceeiicddg");
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "002",
-                            "(fpsemi) number_of_pieces (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_no_name_1<std::string>();
+      Kambites<TestType> k(twosided, p);
+      REQUIRE(k.small_overlap_class() == 4);
+
+      REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 6'681);
+
+      size_t n = presentation::length(p);
+      REQUIRE(n == 328);
+      REQUIRE(n * n == 107'584);
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "003",
-                            "(fpsemi) number_of_pieces (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_no_name_1<detail::MultiStringView>();
-    }
+  ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "004",
+                                   "KnuthBendix 055",
+                                   "[quick][kambites][no-valgrind]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
 
-    template <typename T>
-    void test_case_no_name_2() {
-      auto rg = ReportGuard(REPORT);
-      for (size_t i = 4; i < 20; ++i) {
-        std::string lhs;
-        for (size_t b = 1; b <= i; ++b) {
-          lhs += "a" + std::string(b, 'b');
-        }
-        std::string rhs;
-        for (size_t b = i + 1; b <= 2 * i; ++b) {
-          rhs += "a" + std::string(b, 'b');
-        }
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "ce");
+    presentation::add_rule(p, "df", "dg");
 
-        Kambites<T> k;
+    Kambites<TestType> k(twosided, p);
 
-        k.set_alphabet("ab");
-        k.add_rule(lhs, rhs);
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    REQUIRE(is_obviously_infinite(k));
 
-        REQUIRE(k.number_of_pieces(0) == i);
-        REQUIRE(k.number_of_pieces(1) == i + 1);
+    REQUIRE(contains(k, "dfabcdf", "dfabcdg"));
+    REQUIRE(kambites::reduce(k, "dfabcdg") == "dfabcdf");
 
-        REQUIRE(k.small_overlap_class() == i);
-      }
-    }
+    REQUIRE(contains(k, "abcdf", "ceg"));
+    REQUIRE(contains(k, "abcdf", "cef"));
+    REQUIRE(contains(k, "dfabcdf", "dfabcdg"));
+    REQUIRE(contains(k, "abcdf", "ceg"));
+    REQUIRE(contains(k, "abcdf", "cef"));
+    REQUIRE(kambites::reduce(k, "abcdfceg") == "abcdfabcdf");
+    REQUIRE(contains(k, "abcdfceg", "abcdfabcdf"));
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "004",
-                            "(fpsemi) small_overlap_class (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_no_name_2<std::string>();
-    }
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(number_of_words(p.alphabet().size(), 0, 6) == 19'608);
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "005",
-                            "(fpsemi) small_overlap_class (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_no_name_2<detail::MultiStringView>();
-    }
+    auto s = to<FroidurePin>(k);
 
-    ////////////////////////////////////////////////////////////////////////
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
 
-    template <typename T>
-    void test_case_random() {
-      auto rg = ReportGuard(REPORT);
-      {
-        Kambites<T> k;
-        k.set_alphabet("abcdefghi");
-        k.add_rule("eiehiegiggfaigcdfdfdgiidcebacgfaf",
-                   "cgfaeiehiegiggfaigcdfdfdgigcccbddchbbhgaaedfiiahhehihcba");
-        k.add_rule("hihcbaeiehiegiggfaigcdfdfdgiefhbidhbdgb", "chhfgafiiddg");
-        k.add_rule("gcccbddchbbhgaaedfiiahheidcebacbdefegcehgffedacddiaiih",
-                   "eddfcfhbedecacheahcdeeeda");
-        k.add_rule("dfbiccfeagaiffcfifg", "dceibahghaedhefh");
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 17'921);
 
-        REQUIRE(k.small_overlap_class() == 4);
-        REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 3762);
-        size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-        REQUIRE(n == 254);
-        REQUIRE(n * n == 64516);
-      }
-      {
-        Kambites<T> k;
-        k.set_alphabet("abcdefghi");
-        k.add_rule("feffgccdgcfbeagiifheabecdfbgebfcibeifibccahaafabeihfgfieade"
-                   "bciheddeigbaf",
-                   "ifibccahaafabeihfgfiefeffgccdgcfbeagiifheabecfeibghddfgbaia"
-                   "acghhdhggagaide");
-        k.add_rule("ghhdhggagaidefeffgccdgcfbeagiifheabeccbeiddgdcbcf",
-                   "ahccccffdeb");
-        k.add_rule("feibghddfgbaiaacdfbgebfcibeieaacdbdb", "gahdfgbghhhbcci");
-        k.add_rule("dgibafaahiabfgeiiibadebciheddeigbaficfbfdbfbbiddgdcifbe",
-                   "iahcfgdbggaciih");
-        REQUIRE(k.small_overlap_class() == 4);
-        REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 7197);
-        size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-        REQUIRE(n == 327);
-        REQUIRE(n * n == 106929);
-      }
-      {
-        Kambites<T> k;
-        k.set_alphabet("abcdefghi");
-        k.add_rule("adichhbhibfchbfbbibaidfibifgagcgdedfeeibhggdbchfdaefbefcbaa"
-                   "hcbhbidgaahbahhahhb",
-                   "edfeeibhggdbchfdaefbeadichhbhibfchbfbbibaiihebabeabahcgdbic"
-                   "bgiciffhfggbfadf");
-        k.add_rule("bgiciffhfggbfadfadichhbhibfchbfbbibaaggfdcfcebehhbdegiaeaf",
-                   "hebceeicbhidcgahhcfbb");
-        k.add_rule("iihebabeabahcgdbicidfibifgagcgdedehed",
-                   "ecbcgaieieicdcdfdbgagdbf");
-        k.add_rule("iagaadbfcbaahcbhbidgaahbahhahhbd", "ddddh");
-        REQUIRE(k.small_overlap_class() == 3);
-        REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 7408);
-        size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-        REQUIRE(n == 330);
-        REQUIRE(n * n == 108900);
-      }
-      {
-        Kambites<T> k;
-        k.set_alphabet("abcdefghi");
-        k.add_rule("ibddgdgddiabcahbidbedffeddciiabahbbiacbfehdfccacbhgafbgcdg",
-                   "iabahibddgdgddbdfacbafhcgfhdheieihd");
-        k.add_rule("hdheieihdibddgdgddebhaeaicciidebegg", "giaeehdeeec");
-        k.add_rule("bdfacbafhcgfiabcahbidbedffeddcifdfcdcdadhhcbcbebhei",
-                   "icaebehdff");
-        k.add_rule("aggiiacdbbiacbfehdfccacbhgafbgcdghiahfccdchaiagaha",
-                   "hhafbagbhghhihg");
+    REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 17);
+    REQUIRE((kambites::normal_forms(k) | rx::take(100) | rx::to_vector())
+            == std::vector<std::string>(  // codespell:begin-ignore
+                {"a",   "b",   "c",   "d",   "e",   "f",   "g",   "aa",  "ab",
+                 "ac",  "ad",  "ae",  "af",  "ag",  "ba",  "bb",  "bc",  "bd",
+                 "be",  "bf",  "bg",  "ca",  "cb",  "cc",  "cd",  "ce",  "cf",
+                 "cg",  "da",  "db",  "dc",  "dd",  "de",  "df",  "ea",  "eb",
+                 "ec",  "ed",  "ee",  "ef",  "eg",  "fa",  "fb",  "fc",  "fd",
+                 "fe",  "ff",  "fg",  "ga",  "gb",  "gc",  "gd",  "ge",  "gf",
+                 "gg",  "aaa", "aab", "aac", "aad", "aae", "aaf", "aag", "aba",
+                 "abb", "abc", "abd", "abe", "abf", "abg", "aca", "acb", "acc",
+                 "acd", "ace", "acf", "acg", "ada", "adb", "adc", "add", "ade",
+                 "adf", "aea", "aeb", "aec", "aed", "aee", "aef", "aeg", "afa",
+                 "afb", "afc", "afd", "afe", "aff", "afg", "aga", "agb", "agc",
+                 "agd"}));  // codespell:end-ignore
+  }
 
-        REQUIRE(k.small_overlap_class() == 4);
-        REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 4560);
-        size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-        REQUIRE(n == 265);
-        REQUIRE(n * n == 70225);
-      }
-      {
-        Kambites<T> k;
-        k.set_alphabet("abcdefghi");
-        k.add_rule(
-            "fibehffegdeggaddgfdaeaiacbhbgbbccceaibfcabbiedhecggbbdgihddd",
-            "ceafibehffegdeggafidbaefcebegahcbhciheceaehaaehih");
-        k.add_rule("haaehihfibehffegdeggaecbedccaeabifeafi",
-                   "bfcccibgefiidgaih");
-        k.add_rule("fidbaefcebegahcbhciheceaeddgfdaeaiacbhbgbbcccgiahbibehgbgab"
-                   "efdieiggc",
-                   "abigdadaecdfdeeciggbdfdf");
-        k.add_rule("eeaaiicigieiabibfcabbiedhecggbbdgihdddifadgbgidbfeg",
-                   "daheebdgdiaeceeiicddg");
-        REQUIRE(k.small_overlap_class() == 4);
-        REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 6398);
-        size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-        REQUIRE(n == 328);
-        REQUIRE(n * n == 107584);
-      }
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "005",
+                                   "smalloverlap/gap/test.gi:85",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "006",
-                            "(fpsemi) random (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_random<std::string>();
-    }
+    Presentation<std::string> p;
+    p.alphabet("cab");
+    presentation::add_rule(p, "aabc", "acba");
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "007",
-                            "(fpsemi) random (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_random<detail::MultiStringView>();
-    }
+    Kambites<TestType> k(twosided, p);
 
-    ////////////////////////////////////////////////////////////////////////
+    REQUIRE(!contains(k, "a", "b"));
+    REQUIRE(contains(k, "aabcabc", "aabccba"));
 
-    template <typename T>
-    void test_case_knuth_bendix_055() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcdefg");
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
-      k.add_rule("abcd", "ce");
-      k.add_rule("df", "dg");
+    StringRange s;
+    s.alphabet("cab").first("aabc").last("aaabc");
+    REQUIRE((s | count()) == 162);
 
+    s.first("cccc").last("ccccc");
+    REQUIRE(
+        (s | filter([&k](auto& w) { return contains(k, w, "acba"); }) | count())
+        == 2);
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "006",
+                          "free semigroup",
+                          "[quick][kambites]") {
+    {
+      Presentation<std::string> p;
+      p.alphabet("cab");
+      Kambites k(twosided, p);
       REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
-      REQUIRE(k.is_obviously_infinite());
-
-      REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
-      REQUIRE(k.normal_form("dfabcdg") == "dfabcdf");
-
-      REQUIRE(k.equal_to("abcdf", "ceg"));
-      REQUIRE(k.equal_to("abcdf", "cef"));
-      REQUIRE(k.equal_to("dfabcdf", "dfabcdg"));
-      REQUIRE(k.equal_to("abcdf", "ceg"));
-      REQUIRE(k.equal_to("abcdf", "cef"));
-      REQUIRE(k.normal_form("abcdfceg") == "abcdfabcdf");
-      REQUIRE(k.equal_to("abcdfceg", "abcdfabcdf"));
-
-      REQUIRE(k.size() == POSITIVE_INFINITY);
-      REQUIRE(number_of_words(k.alphabet().size(), 0, 6) == 19608);
-      REQUIRE(k.number_of_normal_forms(0, 6) == 17921);
-
-      REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 7);
-      // REQUIRE(std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-      //                                 k.cend_normal_forms())
-      //        == std::vector<std::string>({"a", "b", "c", "d", "e", "f",
-      //        "g"}));
     }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "008",
-                            "(fpsemi) KnuthBendix 055 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_knuth_bendix_055<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "009",
-        "(fpsemi) KnuthBendix 055 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_knuth_bendix_055<detail::MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_gap_smalloverlap_85() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("cab");
-
-      k.add_rule("aabc", "acba");
-      REQUIRE(!k.equal_to("a", "b"));
-      REQUIRE(k.equal_to("aabcabc", "aabccba"));
-
-      REQUIRE(k.size() == POSITIVE_INFINITY);
-      REQUIRE(number_of_words(3, 4, 16) == 21523320);
-      REQUIRE(std::distance(cbegin_sislo("cab", "aabc", "aaabc"),
-                            cend_sislo("cab", "aabc", "aaabc"))
-              == 162);
-
-      REQUIRE(std::count_if(
-                  cbegin_sislo("cab", "cccc", "ccccc"),
-                  cend_sislo("cab", "cccc", "ccccc"),
-                  [&k](std::string const& w) { return k.equal_to(w, "acba"); })
-              == 2);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "010",
-        "(fpsemi) smalloverlap/gap/test.gi:85 (std::string)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_gap_smalloverlap_85<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "011",
-        "(fpsemi) smalloverlap/gap/test.gi:85 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_gap_smalloverlap_85<detail::MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "012",
-                            "(fpsemi) free semigroup",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      Kambites<std::string> k;
-      k.set_alphabet("cab");
+    {
+      Presentation<std::string> p;
+      Kambites                  k(twosided, p);
       REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
-
-      Kambites<detail::MultiStringView> kk;
-      kk.set_alphabet("cab");
-      REQUIRE(kk.small_overlap_class() == POSITIVE_INFINITY);
     }
+  }
 
-    ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
 
-    template <typename T>
-    void test_case_gap_smalloverlap_49() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcdefgh");
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "007",
+                                   "smalloverlap/gap/test.gi:49",
+                                   "[quick][kambites][no-valgrind]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefgh");
+    presentation::add_rule(p, "abcd", "ce");
+    presentation::add_rule(p, "df", "hd");
 
-      k.add_rule("abcd", "ce");
-      k.add_rule("df", "hd");
+    Kambites<TestType> k(twosided, p);
 
-      REQUIRE(k.is_obviously_infinite());
+    REQUIRE(k.small_overlap_class() >= 4);
+    REQUIRE(is_obviously_infinite(k));
 
-      REQUIRE(k.equal_to("abchd", "abcdf"));
-      REQUIRE(!k.equal_to("abchf", "abcdf"));
-      REQUIRE(k.equal_to("abchd", "abchd"));
-      REQUIRE(k.equal_to("abchdf", "abchhd"));
-      // Test cases (4) and (5)
-      REQUIRE(k.equal_to("abchd", "cef"));
-      REQUIRE(k.equal_to("cef", "abchd"));
+    REQUIRE(contains(k, "abchd", "abcdf"));
+    REQUIRE(!contains(k, "abchf", "abcdf"));
+    REQUIRE(contains(k, "abchd", "abchd"));
+    REQUIRE(contains(k, "abchdf", "abchhd"));
+    // Test cases (4) and (5)
+    REQUIRE(contains(k, "abchd", "cef"));
+    REQUIRE(contains(k, "cef", "abchd"));
 
-      REQUIRE(k.size() == POSITIVE_INFINITY);
-      REQUIRE(k.number_of_normal_forms(0, 6) == 35199);
-      REQUIRE(k.normal_form("hdfabce") == "dffababcd");
-      REQUIRE(k.equal_to("hdfabce", "dffababcd"));
-      // TODO(later) include when we have cbegin_normal_forms,
-      // cend_normal_forms
-      //  REQUIRE(std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-      //                                   k.cend_normal_forms())
-      //          == std::vector<std::string>(
-      //              {"a", "b", "c", "d", "e", "f", "g", "h"}));*/
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(kambites::reduce(k, "hdfabce") == "dffababcd");
+    REQUIRE(contains(k, "hdfabce", "dffababcd"));
+
+    auto s = to<FroidurePin>(k);
+
+    // The next 7 lines make take approx. 3.6 seconds
+    // s.run_until([&s]() {
+    //   return froidure_pin::current_position(s, 7350124_w) != UNDEFINED;
+    // });
+
+    // REQUIRE(s.number_of_generators() == p.alphabet().size());
+    // REQUIRE(froidure_pin::current_position(s, 7350124_w) == 1'175'302);
+    // REQUIRE(froidure_pin::current_position(s, 355010123_w) == UNDEFINED);
+
+    REQUIRE(p.letter_no_checks(0) == 'a');
+    REQUIRE(k.presentation().letter_no_checks(0) == 'a');
+
+    REQUIRE(s[0].value() == "a");
+
+    REQUIRE(
+        (iterator_range(s.cbegin(), s.cbegin() + 8)
+         | transform([](auto const& val) { return val.value(); }) | to_vector())
+        == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g", "h"}));
+
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    {
+      auto r
+          = seq() | filter([&s](size_t i) { return s.current_length(i) == 6; });
+      REQUIRE(r.get() == 35'199);
     }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "013",
-        "(fpsemi) smalloverlap/gap/test.gi:49 (std::string)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_gap_smalloverlap_49<std::string>();
+    {
+      auto r
+          = seq() | filter([&s](size_t i) { return s.current_length(i) == 1; });
+      REQUIRE(r.get() == 0);
     }
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 35'199);
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "014",
-        "(fpsemi) smalloverlap/gap/test.gi:49 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_gap_smalloverlap_49<detail::MultiStringView>();
-    }
+  ////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "008",
+                                   "smalloverlap/gap/test.gi:63",
+                                   "[quick][kambites][no-valgrind]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefgh");
 
-    template <typename T>
-    void test_case_gap_smalloverlap_63() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcdefgh");
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "d");
 
-      k.add_rule("afh", "bgh");
-      k.add_rule("hc", "d");
+    Kambites<TestType> k(twosided, p);
 
-      REQUIRE(k.is_obviously_infinite());
+    REQUIRE(is_obviously_infinite(k));
 
-      // Test case (6)
-      REQUIRE(k.equal_to("afd", "bgd"));
-      REQUIRE(k.equal_to("bghcafhbgd", "afdafhafd"));
-      REQUIRE(k.normal_form("bghcafhbgd") == "afdafhafd");
-      REQUIRE(k.number_of_normal_forms(0, 6) == 34819);
+    // Test case (6)
+    REQUIRE(contains(k, "afd", "bgd"));
+    REQUIRE(contains(k, "bghcafhbgd", "afdafhafd"));
+    REQUIRE(kambites::reduce(k, "bghcafhbgd") == "afdafhafd");
+    auto s = to<FroidurePin>(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 34'819);
 
-      REQUIRE(k.size() == POSITIVE_INFINITY);
-    }
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "015",
-        "(fpsemi) smalloverlap/gap/test.gi:63 (std::string)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_gap_smalloverlap_63<std::string>();
-    }
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "016",
-        "(fpsemi) smalloverlap/gap/test.gi:63 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_gap_smalloverlap_63<detail::MultiStringView>();
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "009",
+                                   "smalloverlap/gap/test.gi:70",
+                                   "[quick][kambites][no-valgrind]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+    // The following permits a more complex test of case (6), which also
+    // involves using the case (2) code to change the prefix being looked
+    // for:
+    Presentation<std::string> p;
+    p.alphabet("abcdefghij");
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "de");
+    presentation::add_rule(p, "ei", "j");
 
-    ////////////////////////////////////////////////////////////////////////
+    Kambites<TestType> k(twosided, p);
 
-    template <typename T>
-    void test_case_gap_smalloverlap_70() {
-      auto rg = ReportGuard(REPORT);
-      // The following permits a more complex test of case (6), which also
-      // involves using the case (2) code to change the prefix being looked
-      // for:
-      Kambites<T> k;
-      k.set_alphabet("abcdefghij");
+    REQUIRE(is_obviously_infinite(k));
 
-      k.add_rule("afh", "bgh");
-      k.add_rule("hc", "de");
-      k.add_rule("ei", "j");
+    REQUIRE(contains(k, "afdj", "bgdj"));
+    REQUIRE_THROWS_AS(contains(k, "xxxxxxxxxxxxxxxxxxxxxxx", "b"),
+                      LibsemigroupsException);
+    REQUIRE(!contains_no_checks(k, "xxxxxxxxxxxxxxxxxxxxxxx", "b"));
 
-      REQUIRE(k.number_of_normal_forms(0, 6) == 102255);
-      REQUIRE(k.is_obviously_infinite());
+    auto s = to<FroidurePin>(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 102'255);
+  }
 
-      REQUIRE(k.equal_to("afdj", "bgdj"));
-      REQUIRE(!k.equal_to("xxxxxxxxxxxxxxxxxxxxxxx", "b"));
-    }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "010",
+                                   "smalloverlap/gap/test.gi:77",
+                                   "[standard][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+    // A slightly more complicated presentation for testing case (6), in
+    // which the max piece suffixes of the first two relation words no
+    // longer agree (since fh and gh are now pieces).
+    Presentation<std::string> p;
+    p.alphabet("abcdefghijkl");
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "017",
-        "(fpsemi) smalloverlap/gap/test.gi:70 (std::string)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_gap_smalloverlap_70<std::string>();
-    }
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "de");
+    presentation::add_rule(p, "ei", "j");
+    presentation::add_rule(p, "fhk", "ghl");
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "018",
-        "(fpsemi) smalloverlap/gap/test.gi:70 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_gap_smalloverlap_70<detail::MultiStringView>();
-    }
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(is_obviously_infinite(k));
 
-    ////////////////////////////////////////////////////////////////////////
+    REQUIRE(contains(k, "afdj", "bgdj"));
+    REQUIRE(contains(k, "afdj", "afdj"));
+    REQUIRE(kambites::reduce(k, "bfhk") == "afhl");
+    REQUIRE(contains(k, "bfhk", "afhl"));
 
-    template <typename T>
-    void test_case_1_million_equals() {
-      auto rg = ReportGuard(REPORT);
-      // A slightly more complicated presentation for testing case (6), in
-      // which the max piece suffixes of the first two relation words no
-      // longer agree (since fh and gh are now pieces).
-      Kambites<T> k;
-      k.set_alphabet("abcdefghijkl");
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-      k.add_rule("afh", "bgh");
-      k.add_rule("hc", "de");
-      k.add_rule("ei", "j");
-      k.add_rule("fhk", "ghl");
+    StringRange lhs;
+    lhs.alphabet("abcdefghijkl").first("a").last("bgdk");
+    StringRange rhs = lhs;
 
-      REQUIRE(k.is_obviously_infinite());
+    REQUIRE((lhs | count()) == 4'522);
+    size_t N = 4'522;
+    size_t M = 0;
 
-      REQUIRE(k.equal_to("afdj", "bgdj"));
-      REQUIRE(k.equal_to("afdj", "afdj"));
-      REQUIRE(k.normal_form("bfhk") == "afhl");
-      REQUIRE(k.equal_to("bfhk", "afhl"));
-
-      REQUIRE(k.size() == POSITIVE_INFINITY);
-
-      size_t N = std::distance(cbegin_sislo("abcdefghijkl", "a", "bgdk"),
-                               cend_sislo("abcdefghijkl", "a", "bgdk"));
-      REQUIRE(N == 4522);
-      size_t M = 0;
-      for (auto it1 = cbegin_sislo("abcdefghijkl", "a", "bgdk");
-           it1 != cend_sislo("abcdefghijkl", "a", "bgdk");
-           ++it1) {
-        for (auto it2 = cbegin_sislo("abcdefghijkl", "a", "bgdk"); it2 != it1;
-             ++it2) {
-          M++;
-          if (k.equal_to(*it1, *it2)) {
-            N--;
-            break;
-          }
+    for (auto const& u : lhs) {
+      for (auto const& v : (rhs | skip_n(1))) {
+        M++;
+        if (contains(k, u, v)) {
+          N--;
+          break;
         }
       }
-      REQUIRE(M == 10052729);
-      REQUIRE(N == 4392);
-      REQUIRE(k.number_of_normal_forms(0, 6) == 255932);
-
-      // TODO(later) include when we have cbegin_normal_forms,
-      // cend_normal_forms
-      // REQUIRE(
-      //     std::vector<std::string>(k.cbegin_normal_forms(0, 2),
-      //                              k.cend_normal_forms())
-      //     == std::vector<std::string>(
-      //         {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
-      // "l"}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "019",
-                            "(fpsemi) std::string smalloverlap/gap/test.gi:77 "
-                            "(infinite) (KnuthBendix 059)",
-                            "[standard][kambites][fpsemigroup][fpsemi]") {
-      test_case_1_million_equals<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "020",
-        "(fpsemi) MultiStringView smalloverlap/gap/test.gi:77 "
-        "(infinite) (KnuthBendix 059)",
-        "[standard][kambites][fpsemigroup][fpsemi]") {
-      test_case_1_million_equals<detail::MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_code_cov() {
-      auto rg = ReportGuard(REPORT);
-      // A slightly more complicated presentation for testing case (6), in
-      // which the max piece suffixes of the first two relation words no
-      // longer agree (since fh and gh are now pieces).
-      Kambites<T> k;
-      k.set_alphabet("abcde");
-      k.add_rule("cadeca", "baedba");
-      REQUIRE(!k.equal_to("cadece", "baedce"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "021",
-                            "(fpsemi) code coverage (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_code_cov<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "022",
-                            "(fpsemi) code coverage (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_code_cov<detail::MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_ex_3_13_14() {
-      auto rg = ReportGuard(REPORT);
-      // Example 3.13 + 3.14
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abbba", "cdc");
-      std::string p = "c";
-      REQUIRE(k.normal_form("cdcdcabbbabbbabbcd") == "abbbadcabbbabbbabbcd");
-      REQUIRE(k.equal_to(k.normal_form("cdcdcabbbabbbabbcd"),
-                         "cdcdcabbbabbbabbcd"));
-      REQUIRE(k.equal_to("abbbadcbbba", "cdabbbcdc"));
-      REQUIRE(k.equal_to(k.normal_form("cdabbbcdc"), "cdabbbcdc"));
-      REQUIRE(k.normal_form("cdabbbcdc") == "abbbadcbbba");
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "023",
-                            "(fpsemi) prefix (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_ex_3_13_14<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "024",
-                            "(fpsemi) prefix (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_ex_3_13_14<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_ex_3_15() {
-      auto rg = ReportGuard(REPORT);
-      // Example 3.15
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("aabc", "acba");
-      std::string original = "cbacbaabcaabcacbacba";
-      std::string expected = "cbaabcabcaabcaabcabc";
-
-      REQUIRE(k.equal_to("cbaabcabcaabcaabccba", original));
-      REQUIRE(k.equal_to(original, expected));
-      REQUIRE(k.equal_to(expected, original));
-      REQUIRE(k.equal_to("cbaabcabcaabcaabccba", expected));
-
-      REQUIRE(k.equal_to(original, "cbaabcabcaabcaabccba"));
-
-      REQUIRE(k.equal_to(expected, "cbaabcabcaabcaabccba"));
-      REQUIRE(k.equal_to(k.normal_form(original), original));
-      REQUIRE(k.normal_form(original) == expected);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "025",
-                            "(fpsemi) normal_form (Example 3.15) (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_ex_3_15<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "026",
-        "(fpsemi) normal_form (Example 3.15) (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_ex_3_15<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_ex_3_16() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abcd", "acca");
-      std::string original = "bbcabcdaccaccabcddd";
-      std::string expected = "bbcabcdabcdbcdbcddd";
-
-      REQUIRE(k.equal_to(original, expected));
-      REQUIRE(k.equal_to(expected, original));
-
-      REQUIRE(k.normal_form(original) == expected);
-      REQUIRE(k.equal_to(k.normal_form(original), original));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "027",
-                            "(fpsemi) normal_form (Example 3.16) (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_ex_3_16<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "028",
-        "(fpsemi) normal_form (Example 3.16) (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_ex_3_16<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_ex_3_16_again() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abcd", "acca");
-
-      REQUIRE(std::all_of(
-          cbegin_sislo("abcd", "a", "aaaa"),
-          cend_sislo("abcd", "a", "aaaa"),
-          [&k](std::string const& w) { return k.normal_form(w) == w; }));
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaa"),
-                  [&k](std::string const& w) { return k.normal_form(w) != w; })
-              == 1);
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.normal_form(w) != w; })
-              == 8);
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaaaa", "aaaaaaa"),
-                  cend_sislo("abcd", "aaaaaa", "aaaaaaa"),
-                  [&k](std::string const& w) { return k.normal_form(w) != w; })
-              == 48);
-      {
-        std::string w = k.normal_form("accaccabd");
-
-        REQUIRE(w == "abcdbcdbd");
-
-        REQUIRE(std::count_if(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                              cend_sislo("abcd", "aaaaaaaaa", w),
-                              [&k, &w](std::string const& u) {
-                                return !k.equal_to(u, w);
-                              })
-                == std::distance(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                                 cend_sislo("abcd", "aaaaaaaaa", w)));
-      }
-      {
-        std::string w = k.normal_form("accbaccad");
-        REQUIRE(w == "accbabcdd");
-
-        REQUIRE(std::count_if(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                              cend_sislo("abcd", "aaaaaaaaa", w),
-                              [&k, &w](std::string const& u) {
-                                return !k.equal_to(u, w);
-                              })
-                == std::distance(cbegin_sislo("abcd", "aaaaaaaaa", w),
-                                 cend_sislo("abcd", "aaaaaaaaa", w)));
-      }
-      {
-        std::string w = k.normal_form("abcdbcacca");
-        REQUIRE(w == "abcdbcabcd");
-        REQUIRE(k.equal_to(w, "abcdbcacca"));
-
-        REQUIRE(
-            std::count_if(
-                cbegin_sislo("abcd", std::string(w.size(), 'a'), w),
-                cend_sislo("abcd", std::string(w.size(), 'a'), w),
-                [&k, &w](std::string const& u) { return !k.equal_to(u, w); })
-            == std::distance(
-                cbegin_sislo("abcd", std::string(w.size(), 'a'), w),
-                cend_sislo("abcd", std::string(w.size(), 'a'), w)));
-      }
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "029",
-        "(fpsemi) normal_form (Example 3.16) more exhaustive (std::string)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_ex_3_16_again<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "030",
-        "(fpsemi) normal_form (Example 3.16) more exhaustive (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_ex_3_16_again<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_small() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("ab");
-      REQUIRE(k.is_obviously_infinite());
-      REQUIRE(k.size() == POSITIVE_INFINITY);
-      k.add_rule("aaa", "a");
-      k.add_rule("a", "bb");
-      REQUIRE(k.small_overlap_class() == 1);
-      REQUIRE_THROWS_AS(k.size(), LibsemigroupsException);
-      REQUIRE_THROWS_AS(k.equal_to("a", "aaa"), LibsemigroupsException);
-      REQUIRE(!k.finished());
-      k.run();
-      REQUIRE(!k.finished());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "031",
-                            "(fpsemi) small presentation (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_small<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "032",
-                            "(fpsemi) small presentation (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_small<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_non_smalloverlap() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcdefg");
-      k.add_rule("abcd", "aaaeaa");
-      k.add_rule("ef", "dg");
-      k.add_rule("a", "b");
-      REQUIRE(k.small_overlap_class() == 1);
-      REQUIRE_THROWS_AS(k.size(), LibsemigroupsException);
-      REQUIRE_THROWS_AS(k.equal_to("a", "aaa"), LibsemigroupsException);
-      REQUIRE(!k.finished());
-      k.run();
-      REQUIRE(!k.finished());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "033",
-                            "(fpsemi) non-smalloverlap (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_non_smalloverlap<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "034",
-                            "(fpsemi) non-smalloverlap (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_non_smalloverlap<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_3() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abcd", "accca");
-      REQUIRE(k.number_of_pieces(0) == POSITIVE_INFINITY);
-      REQUIRE(k.number_of_pieces(1) == 4);
-
-      REQUIRE(k.small_overlap_class() == 4);
-      REQUIRE(k.normal_form("bbcabcdaccaccabcddd") == "bbcabcdaccaccabcddd");
-      REQUIRE(k.equal_to("bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
-      k.run();
-      REQUIRE(k.started());
-      REQUIRE(k.finished());
-
-      Kambites<T> l(k);
-      REQUIRE(l.started());
-      REQUIRE(l.finished());
-
-      REQUIRE(l.number_of_pieces(0) == POSITIVE_INFINITY);
-      REQUIRE(l.number_of_pieces(1) == 4);
-
-      REQUIRE(l.small_overlap_class() == 4);
-      REQUIRE(l.normal_form("bbcabcdaccaccabcddd") == "bbcabcdaccaccabcddd");
-      REQUIRE(l.equal_to("bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
-      REQUIRE(l.number_of_normal_forms(0, 0) == 0);
-      REQUIRE(l.number_of_normal_forms(6, 6) == 0);
-      REQUIRE(l.number_of_normal_forms(10, 1) == 0);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "035",
-                            "(fpsemi) MT test 3 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_3<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "036",
-                            "(fpsemi) MT test 3 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_3<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_5() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abc");
-      k.add_rule("ac", "cbbbbc");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("acbbbbc") == "aac");
-      REQUIRE(k.equal_to("acbbbbc", "aac"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "037",
-                            "(fpsemi) MT test 5 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_5<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "038",
-                            "(fpsemi) MT test 5 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_5<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_6() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abc");
-      k.add_rule("ccab", "cbac");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("bacbaccabccabcbacbac") == "bacbacbaccbaccbacbac");
-      REQUIRE(k.equal_to("bacbaccabccabcbacbac", "bacbacbaccbaccbacbac"));
-      REQUIRE(k.normal_form("ccabcbaccab") == "cbaccbacbac");
-      REQUIRE(k.equal_to("ccabcbaccab", "cbaccbacbac"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "039",
-                            "(fpsemi) MT test 6 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_6<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "040",
-                            "(fpsemi) MT test 6 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_6<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_10() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcdefghij");
-      k.add_rule("afh", "bgh");
-      k.add_rule("hc", "de");
-      k.add_rule("ei", "j");
-      REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
-
-      REQUIRE(k.normal_form("bgdj") == "afdei");
-      REQUIRE(k.equal_to("bgdj", "afdei"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "041",
-                            "(fpsemi) MT test 10 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_6<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "042",
-                            "(fpsemi) MT test 10 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_6<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_13() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abcd", "dcba");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("dcbdcba") == "abcdbcd");
-      REQUIRE(k.equal_to("dcbdcba", "abcdbcd"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "043",
-                            "(fpsemi) MT test 13 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_13<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "044",
-                            "(fpsemi) MT test 13 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_13<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    template <typename T>
-    void test_case_mt_14() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abca", "dcbd");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("dcbabca") == "abcacbd");
-      REQUIRE(k.equal_to("dcbabca", "abcacbd"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "045",
-                            "(fpsemi) MT test 14 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_14<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "046",
-                            "(fpsemi) MT test 14 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_14<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_15() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("abcd", "dcba");
-      k.add_rule("adda", "dbbd");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("dbbabcd") == "addacba");
-      REQUIRE(k.equal_to("dbbabcd", "addacba"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "047",
-                            "(fpsemi) MT test 15 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_15<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "048",
-                            "(fpsemi) MT test 15 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_15<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_16() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcdefg");
-      k.add_rule("abcd", "acca");
-      k.add_rule("gf", "ge");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("accabcdgf") == "abcdbcdge");
-      REQUIRE(k.equal_to("accabcdgf", "abcdbcdge"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "049",
-                            "(fpsemi) MT test 16 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_16<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "050",
-                            "(fpsemi) MT test 16 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_16<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_mt_17() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-      k.add_rule("cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      REQUIRE(k.normal_form("abbbacdddddcddddddcdddddddcdddddddd")
-              == "abbbacdcddcdddcdddd");
-      REQUIRE(k.equal_to("abbbacdddddcddddddcdddddddcdddddddd",
-                         "abbbacdcddcdddcdddd"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "051",
-                            "(fpsemi) MT test 17 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_17<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "052",
-                            "(fpsemi) MT test 17 (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_mt_17<MultiStringView>();
-    }
-
-    ///////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_weak_1() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("acba", "aabc");
-      k.add_rule("acba", "dbbbd");
-
-      REQUIRE(k.small_overlap_class() == 4);
-      REQUIRE(k.equal_to("aaabc", "adbbbd"));
-      REQUIRE(k.equal_to("adbbbd", "aaabc"));
-      REQUIRE(number_of_words(4, 4, 6) == 1280);
-
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.equal_to("acba", w); })
-              == 3);
-
-      REQUIRE(k.equal_to("aaabcadbbbd", "adbbbdadbbbd"));
-      REQUIRE(k.equal_to("aaabcaaabc", "adbbbdadbbbd"));
-      REQUIRE(k.equal_to("acba", "dbbbd"));
-      REQUIRE(k.equal_to("acbabbbd", "aabcbbbd"));
-      REQUIRE(k.equal_to("aabcbbbd", "acbabbbd"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "053",
-                            "(fpsemi) weak C(4) not strong x 1 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_1<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "054",
-        "(fpsemi) weak C(4) not strong x 1 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_1<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_weak_2() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("acba", "aabc");
-      k.add_rule("acba", "adbd");
-      REQUIRE(k.equal_to("acbacba", "aabcabc"));
-      REQUIRE(k.normal_form("acbacba") == "aabcabc");
-      REQUIRE(k.equal_to(k.normal_form("acbacba"), "aabcabc"));
-      REQUIRE(k.equal_to("aabcabc", k.normal_form("acbacba")));
-
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.equal_to("acba", w); })
-              == 3);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "055",
-                            "(fpsemi) weak C(4) not strong x 2 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_2<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "056",
-        "(fpsemi) weak C(4) not strong x 2 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_2<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_weak_3() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcde");
-      k.add_rule("bceac", "aeebbc");
-      k.add_rule("aeebbc", "dabcd");
-      REQUIRE(k.normal_form("bceacdabcd") == "aeebbcaeebbc");
-      REQUIRE(k.equal_to(k.normal_form("bceacdabcd"), "aeebbcaeebbc"));
-      REQUIRE(k.equal_to("aeebbcaeebbc", k.normal_form("bceacdabcd")));
-
-      REQUIRE(std::count_if(
-                  cbegin_sislo("abcd", "aaaa", "aaaaaa"),
-                  cend_sislo("abcd", "aaaa", "aaaaaa"),
-                  [&k](std::string const& w) { return k.equal_to("acba", w); })
-              == 1);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "057",
-                            "(fpsemi) weak C(4) not strong x 3 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_3<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "058",
-        "(fpsemi) weak C(4) not strong x 3 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_3<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_weak_4() {
-      auto        rg = ReportGuard(REPORT);
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("acba", "aabc");
-      k.add_rule("acba", "dbbd");
-      REQUIRE(k.normal_form("bbacbcaaabcbbd") == "bbacbcaaabcbbd");
-      REQUIRE(k.equal_to(k.normal_form("bbacbcaaabcbbd"), "bbacbcaaabcbbd"));
-      REQUIRE(k.equal_to("bbacbcaaabcbbd", k.normal_form("bbacbcaaabcbbd")));
-      REQUIRE(k.normal_form("acbacba") == "aabcabc");
-      REQUIRE(k.equal_to(k.normal_form("acbacba"), "aabcabc"));
-      REQUIRE(k.equal_to("aabcabc", k.normal_form("acbacba")));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "059",
-                            "(fpsemi) weak C(4) not strong x 4 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_4<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "060",
-        "(fpsemi) weak C(4) not strong x 4 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_4<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_weak_5() {
-      Kambites<T> k;
-      k.set_alphabet("abcde");
-      k.add_rule("abcd", "aaeaaa");
-      REQUIRE(number_of_subwords(k.cbegin_rules(), k.cend_rules()) == 16);
-      size_t n = sum_lengths(k.cbegin_rules(), k.cend_rules());
-      REQUIRE(n == 10);
-      REQUIRE(n * n == 100);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "061",
-                            "(fpsemi) weak C(4) not strong x 5 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_5<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "062",
-        "(fpsemi) weak C(4) not strong x 5 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_5<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_weak_6() {
-      Kambites<T> k;
-      k.set_alphabet("abcd");
-      k.add_rule("acba", "aabc");
-      k.add_rule("acba", "adbd");
-      REQUIRE(k.normal_form("acbacba") == "aabcabc");
-      REQUIRE(k.equal_to(k.normal_form("acbacba"), "aabcabc"));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "063",
-                            "(fpsemi) weak C(4) not strong x 6 (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_6<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "064",
-        "(fpsemi) weak C(4) not strong x 6 (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_weak_6<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_konovalov() {
-      Kambites<T> k;
-      k.set_alphabet("abAB");
-      k.add_rule("Abba", "BB");
-      k.add_rule("Baab", "AA");
-      REQUIRE(k.small_overlap_class() == 2);
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "065",
-                            "(fpsemi) Konovalov example (std::string)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_konovalov<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "066",
-                            "(fpsemi) Konovalov example (MultiStringView)",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      test_case_konovalov<MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename T>
-    void test_case_long_words() {
-      Kambites<T> k;
-      k.set_alphabet("abcde");
-      k.add_rule("bceac", "aeebbc");
-      k.add_rule("aeebbc", "dabcd");
-      REQUIRE(k.small_overlap_class() == 4);
-
-      std::string w1  = "bceac";
-      std::string w2  = "dabcd";
-      std::string w3  = "aeebbc";
-      auto        lhs = random_power_string(w1, w2, w3, 4000);
-      auto        rhs = random_power_string(w1, w2, w3, 4000);
-      for (size_t i = 0; i < 10; ++i) {
-        REQUIRE(k.equal_to(lhs, rhs));
-      }
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "067",
-        "(fpsemi) long words (std::string)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_long_words<std::string>();
-    }
-
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "068",
-        "(fpsemi) long words (MultiStringView)",
-        "[quick][kambites][fpsemigroup][fpsemi][no-valgrind]") {
-      test_case_long_words<detail::MultiStringView>();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Some tests for exploration of the space of all 2-generator 1-relation
-    // semigroups
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(v3) reuse the same Kambites in-place rather than this
-    template <typename T>
-    auto count_2_gen_1_rel(size_t min, size_t max) {
-      Sislo x;
-      x.alphabet("ab");
-      x.first(min);
-      x.last(max);
-
-      auto last = x.cbegin();
-      std::advance(last, std::distance(x.cbegin(), x.cend()) - 1);
-
-      uint64_t total_c4 = 0;
-      uint64_t total    = 0;
-
-      for (auto it1 = x.cbegin(); it1 != last; ++it1) {
-        for (auto it2 = it1 + 1; it2 != x.cend(); ++it2) {
-          total++;
-          Kambites<std::string> k;
-          k.set_alphabet("ab");
-          k.add_rule(*it1, *it2);
-          if (k.small_overlap_class() >= 4) {
-            total_c4++;
-          }
+    REQUIRE(M == 10'057'120);
+    REQUIRE(N == 1);
+
+    auto s = to<FroidurePin>(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 255'932);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "011",
+                                   "code coverage",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+    // A slightly more complicated presentation for testing case (6), in
+    // which the max piece suffixes of the first two relation words no
+    // longer agree (since fh and gh are now pieces).
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule(p, "cadeca", "baedba");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(!contains(k, "cadece", "baedce"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "012",
+                                   "Ex. 3.13 + 3.14 - prefix",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+    // Example 3.13 + 3.14
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abbba", "cdc");
+
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(kambites::reduce(k, "cdcdcabbbabbbabbcd")
+            == "abbbadcabbbabbbabbcd");
+    REQUIRE(contains(
+        k, kambites::reduce(k, "cdcdcabbbabbbabbcd"), "cdcdcabbbabbbabbcd"));
+    REQUIRE(contains(k, "abbbadcbbba", "cdabbbcdc"));
+    REQUIRE(contains(k, kambites::reduce(k, "cdabbbcdc"), "cdabbbcdc"));
+    REQUIRE(kambites::reduce(k, "cdabbbcdc") == "abbbadcbbba");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "013",
+                                   "normal_form (Example 3.15)",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+    // Example 3.15
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "aabc", "acba");
+
+    Kambites<TestType> k(twosided, p);
+
+    std::string original = "cbacbaabcaabcacbacba";
+    std::string expected = "cbaabcabcaabcaabcabc";
+
+    REQUIRE(contains(k, "cbaabcabcaabcaabccba", original));
+    REQUIRE(contains(k, original, expected));
+    REQUIRE(contains(k, expected, original));
+    REQUIRE(contains(k, "cbaabcabcaabcaabccba", expected));
+
+    REQUIRE(contains(k, original, "cbaabcabcaabcaabccba"));
+
+    REQUIRE(contains(k, expected, "cbaabcabcaabcaabccba"));
+    REQUIRE(contains(k, kambites::reduce(k, original), original));
+    REQUIRE(kambites::reduce(k, original) == expected);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "014",
+                                   "normal_form (Example 3.16) ",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abcd", "acca");
+
+    Kambites<TestType> k(twosided, p);
+    std::string        original = "bbcabcdaccaccabcddd";
+    std::string        expected = "bbcabcdabcdbcdbcddd";
+
+    REQUIRE(contains(k, original, expected));
+    REQUIRE(contains(k, expected, original));
+
+    REQUIRE(kambites::reduce(k, original) == expected);
+    REQUIRE(contains(k, kambites::reduce(k, original), original));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "015",
+                                   "normal_form (Example 3.16) more exhaustive",
+                                   "[quick][kambites][no-valgrind]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abcd", "acca");
+
+    Kambites<TestType> k(twosided, p);
+
+    StringRange s;
+    s.alphabet("abcd").first("a").last("aaaa");
+    REQUIRE(
+        (s | all_of([&k](auto& w) { return kambites::reduce(k, w) == w; })));
+
+    s.first("aaaa").last("aaaaa");
+    REQUIRE((s | filter([&k](auto& w) { return kambites::reduce(k, w) != w; })
+             | count())
+            == 1);
+
+    s.first("aaaaa").last("aaaaaa");
+    REQUIRE((s | filter([&k](auto& w) { return kambites::reduce(k, w) != w; })
+             | count())
+            == 8);
+    s.first("aaaaaa").last("aaaaaaa");
+    REQUIRE((s | filter([&k](auto& w) { return kambites::reduce(k, w) != w; })
+             | count())
+            == 48);
+
+    for (auto& w :
+         std::vector<std::string>({"accaccabd", "accbaccad", "abcdbcacca"})) {
+      auto nf = kambites::reduce(k, w);
+      s.min(w.size()).last(nf);
+      REQUIRE((s | all_of([&k, &nf](auto& u) { return !contains(k, u, nf); })));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "016",
+                                   "small presentation",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaa", "a");
+    presentation::add_rule(p, "a", "bb");
+
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(k.small_overlap_class() == 1);
+    REQUIRE(!is_obviously_infinite(k));
+
+    REQUIRE_THROWS_AS(k.number_of_classes(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(contains(k, "a", "aaa"), LibsemigroupsException);
+    REQUIRE(k.finished());
+    REQUIRE(!k.success());
+    k.run();
+    REQUIRE(k.finished());
+    REQUIRE(!k.success());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "017",
+                                   "non-smalloverlap",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
+    presentation::add_rule(p, "a", "b");
+
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(k.small_overlap_class() == 1);
+    REQUIRE_THROWS_AS(k.number_of_classes(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(contains(k, "a", "aaa"), LibsemigroupsException);
+    REQUIRE(k.finished());
+    REQUIRE(!k.success());
+    k.run();
+    REQUIRE(k.finished());
+    REQUIRE(!k.success());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "018",
+                                   "MT test 3",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abcd", "accca");
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[0])
+            == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[1]) == 4);
+
+    REQUIRE(k.small_overlap_class() == 4);
+    REQUIRE(kambites::reduce(k, "bbcabcdaccaccabcddd")
+            == "bbcabcdaccaccabcddd");
+    REQUIRE(contains(k, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
+    k.run();
+    REQUIRE(k.started());
+    REQUIRE(k.finished());
+
+    Kambites<TestType> l(k);
+    REQUIRE(l.started());
+    REQUIRE(l.finished());
+
+    REQUIRE(ukkonen::number_of_pieces(l.ukkonen(), p.rules[0])
+            == POSITIVE_INFINITY);
+    REQUIRE(ukkonen::number_of_pieces(l.ukkonen(), p.rules[1]) == 4);
+
+    REQUIRE(l.small_overlap_class() == 4);
+    REQUIRE(kambites::reduce(l, "bbcabcdaccaccabcddd")
+            == "bbcabcdaccaccabcddd");
+    REQUIRE(contains(l, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
+
+    auto s = to<FroidurePin>(k);
+    REQUIRE(s.number_of_elements_of_length(0, 0) == 0);
+    REQUIRE(s.number_of_elements_of_length(6, 6) == 0);
+    REQUIRE(s.number_of_elements_of_length(10, 1) == 0);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "019",
+                                   "MT test 5",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "ac", "cbbbbc");
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "acbbbbc") == "aac");
+    REQUIRE(contains(k, "acbbbbc", "aac"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "020",
+                                   "MT test 6",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    presentation::add_rule(p, "ccab", "cbac");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "bacbaccabccabcbacbac")
+            == "bacbacbaccbaccbacbac");
+    REQUIRE(contains(k, "bacbaccabccabcbacbac", "bacbacbaccbaccbacbac"));
+    REQUIRE(kambites::reduce(k, "ccabcbaccab") == "cbaccbacbac");
+    REQUIRE(contains(k, "ccabcbaccab", "cbaccbacbac"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "021",
+                                   "MT test 10",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefghij");
+    presentation::add_rule(p, "afh", "bgh");
+    presentation::add_rule(p, "hc", "de");
+    presentation::add_rule(p, "ei", "j");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+
+    REQUIRE(kambites::reduce(k, "bgdj") == "afdei");
+    REQUIRE(contains(k, "bgdj", "afdei"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "022",
+                                   "MT test 13",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abcd", "dcba");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "dcbdcba") == "abcdbcd");
+    REQUIRE(contains(k, "dcbdcba", "abcdbcd"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "023",
+                                   "MT test 14",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abca", "dcbd");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "dcbabca") == "abcacbd");
+    REQUIRE(contains(k, "dcbabca", "abcacbd"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "024",
+                                   "MT test 15",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "abcd", "dcba");
+    presentation::add_rule(p, "adda", "dbbd");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "dbbabcd") == "addacba");
+    REQUIRE(contains(k, "dbbabcd", "addacba"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "025",
+                                   "MT test 16",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "acca");
+    presentation::add_rule(p, "gf", "ge");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "accabcdgf") == "abcdbcdge");
+    REQUIRE(contains(k, "accabcdgf", "abcdbcdge"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "026",
+                                   "MT test 17",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(
+        p, "ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
+    presentation::add_rule(
+        p, "cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    REQUIRE(kambites::reduce(k, "abbbacdddddcddddddcdddddddcdddddddd")
+            == "abbbacdcddcdddcdddd");
+    REQUIRE(contains(
+        k, "abbbacdddddcddddddcdddddddcdddddddd", "abbbacdcddcdddcdddd"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "027",
+                                   "weak C(4) not strong x 1",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "dbbbd");
+    Kambites<TestType> k(twosided, p);
+
+    REQUIRE(k.small_overlap_class() == 4);
+    REQUIRE(contains(k, "aaabc", "adbbbd"));
+    REQUIRE(contains(k, "adbbbd", "aaabc"));
+    REQUIRE(number_of_words(4, 4, 6) == 1280);
+
+    StringRange s;
+    s.alphabet("abcd").first("aaaa").last("aaaaaa");
+    REQUIRE(
+        (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
+        == 3);
+
+    REQUIRE(contains(k, "aaabcadbbbd", "adbbbdadbbbd"));
+    REQUIRE(contains(k, "aaabcaaabc", "adbbbdadbbbd"));
+    REQUIRE(contains(k, "acba", "dbbbd"));
+    REQUIRE(contains(k, "acbabbbd", "aabcbbbd"));
+    REQUIRE(contains(k, "aabcbbbd", "acbabbbd"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "028",
+                                   "weak C(4) not strong x 2",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "adbd");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(contains(k, "acbacba", "aabcabc"));
+    REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
+    REQUIRE(contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
+    REQUIRE(contains(k, "aabcabc", kambites::reduce(k, "acbacba")));
+
+    StringRange s;
+    s.alphabet("abcd").first("aaaa").last("aaaaaa");
+
+    REQUIRE(
+        (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
+        == 3);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "029",
+                                   "weak C(4) not strong x 3",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule(p, "bceac", "aeebbc");
+    presentation::add_rule(p, "aeebbc", "dabcd");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(kambites::reduce(k, "bceacdabcd") == "aeebbcaeebbc");
+    REQUIRE(contains(k, kambites::reduce(k, "bceacdabcd"), "aeebbcaeebbc"));
+    REQUIRE(contains(k, "aeebbcaeebbc", kambites::reduce(k, "bceacdabcd")));
+
+    StringRange s;
+    s.alphabet("abcd").first("aaaa").last("aaaaaa");
+
+    REQUIRE(
+        (s | filter([&k](auto& w) { return contains(k, "acba", w); }) | count())
+        == 1);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "030",
+                                   "weak C(4) not strong x 4",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "dbbd");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(kambites::reduce(k, "bbacbcaaabcbbd") == "bbacbcaaabcbbd");
+    REQUIRE(
+        contains(k, kambites::reduce(k, "bbacbcaaabcbbd"), "bbacbcaaabcbbd"));
+    REQUIRE(
+        contains(k, "bbacbcaaabcbbd", kambites::reduce(k, "bbacbcaaabcbbd")));
+    REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
+    REQUIRE(contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
+    REQUIRE(contains(k, "aabcabc", kambites::reduce(k, "acbacba")));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "031",
+                                   "weak C(4) not strong x 5",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule(p, "abcd", "aaeaaa");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 25);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "032",
+                                   "weak C(4) not strong x 6",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "acba", "aabc");
+    presentation::add_rule(p, "acba", "adbd");
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
+    REQUIRE(contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "033",
+                                   "Konovalov example",
+                                   "[quick][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    presentation::add_rule(p, "Abba", "BB");
+    presentation::add_rule(p, "Baab", "AA");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 2);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "034",
+                                   "long words",
+                                   "[quick][kambites][no-valgrind]",
+                                   std::string,
+                                   MultiStringView) {
+    Presentation<std::string> p;
+    p.alphabet("abcde");
+    presentation::add_rule(p, "bceac", "aeebbc");
+    presentation::add_rule(p, "aeebbc", "dabcd");
+
+    Kambites<TestType> k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+
+    std::string w1  = "bceac";
+    std::string w2  = "dabcd";
+    std::string w3  = "aeebbc";
+    auto        lhs = random_power_string(w1, w2, w3, 4000);
+    auto        rhs = random_power_string(w1, w2, w3, 4000);
+    for (size_t i = 0; i < 10; ++i) {
+      REQUIRE(contains(k, lhs, rhs));
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Some tests for exploration of the space of all 2-generator 1-relation
+  // semigroups
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename TestType>
+  auto count_2_gen_1_rel(size_t min, size_t max) {
+    StringRange x;
+    x.alphabet("ab").min(min).max(max);
+    StringRange y = x;
+
+    uint64_t total_c4 = 0;
+    uint64_t total    = 0;
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    Kambites<TestType> k;
+
+    for (auto const& lhs : x) {
+      y.first(lhs);
+      for (auto const& rhs : (y | skip_n(1))) {
+        REQUIRE(lhs != rhs);
+        total++;
+        p.rules = {lhs, rhs};
+        k.init(twosided, p);
+        if (k.small_overlap_class() >= 4) {
+          total_c4++;
         }
       }
-      return std::make_pair(total_c4, total);
     }
+    return std::make_pair(total_c4, total);
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "069",
-        "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[extreme][kambites][fpsemigroup][fpsemi]") {
-      auto x = count_2_gen_1_rel<std::string>(1, 7);
-      REQUIRE(x.first == 1);
-      REQUIRE(x.second == 7875);
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "035",
+                          "almost all 2-generated 1-relation monoids are C(4)",
+                          "[quick][kambites][no-valgrind]") {
+    auto x = count_2_gen_1_rel<std::string>(1, 7);
+    REQUIRE(x.first == 1);
+    REQUIRE(x.second == 7'875);
+  }
+
+  // Takes approx 5s
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
+                                   "036",
+                                   "almost all 2-gen. 1-rel. monoids are C(4)",
+                                   "[extreme][kambites]",
+                                   std::string,
+                                   MultiStringView) {
+    auto x = count_2_gen_1_rel<TestType>(1, 11);
+    REQUIRE(x.first == 18'171);
+    REQUIRE(x.second == 2'092'035);
+  }
+
+  // Takes approx. 21s
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "037",
+                          "almost all 2-gen. 1-rel. monoids are C(4)",
+                          "[extreme][kambites]") {
+    auto x = count_2_gen_1_rel<std::string>(1, 12);
+    REQUIRE(x.first == 235'629);
+    REQUIRE(x.second == 8'378'371);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "038",
+                          "almost all 2-gen. 1-rel. monoids are C(4)",
+                          "[fail][kambites]") {
+    auto x = count_2_gen_1_rel<std::string>(1, 13);
+    REQUIRE(x.first == 0);
+    REQUIRE(x.second == 0);
+  }
+
+  // Takes about 1m45s
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "039",
+                          "almost all 2-gen. 1-relation monoids are C(4)",
+                          "[extreme][kambites]") {
+    std::cout.precision(10);
+    size_t const sample_size = 1000;
+    std::cout << std::string(69, '-') << std::endl;
+    fmt::print("Sample size = {}\n", sample_size);
+    std::cout << std::string(69, '-') << std::endl;
+    for (size_t i = 8; i < 100; ++i) {
+      size_t const min = 7;
+      size_t const max = i + 1;
+      auto         x   = sample("ab", 1, min, max, sample_size);
+      fmt::print("Estimate of C(4) / non-C(4) {:<9} (length [{}, {:>2})) = "
+                 "{:.10f}\n",
+                 " ",
+                 min,
+                 max + 1,
+                 static_cast<double>(std::get<0>(x)) / sample_size);
+
+      fmt::print("Estimate of confluent / non-confluent (length "
+                 "[{}, {:>2})) = {:.10f}\n",
+                 min,
+                 max + 1,
+                 static_cast<double>(std::get<1>(x)) / sample_size);
+      std::cout << std::string(69, '-') << std::endl;
     }
+  }
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "070",
-        "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[extreme][kambites][fpsemigroup][fpsemi]") {
-      auto x = count_2_gen_1_rel<std::string>(1, 11);
-      REQUIRE(x.first == 18171);
-      REQUIRE(x.second == 2092035);
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "040",
+                          "normal form possible bug",
+                          "[quick][kambites]") {
+    // There was a bug in MultiStringView::append, that caused this
+    // test to fail, so we keep this test to check that the bug in
+    // MultiStringView::append is resolved.
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaabbab", "bbbaaba");
+
+    Kambites<> k(twosided, p);
+
+    std::vector<std::string> words
+        = {"bbbaabaabbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbababab"
+           "baabbabaabb"
+           "aaabbabbaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaa"
+           "aabaabbabba"
+           "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbab"
+           "bbabbbabbbb"
+           "aaaaaabbabbaababbbaaababbbbababababbabaabbbbbabaaaababaaa"
+           "bbaaabbaaab"
+           "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbb"
+           "aaabbbabbba"
+           "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbb"
+           "abbbbbabaab"
+           "bbaaabaaabbababbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbb"
+           "aaabaaabbab"
+           "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaa"
+           "baaaabababa"
+           "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaa"
+           "baaabbabaaa"
+           "abaaabbbaaaabbabbababaaaabbbbaaabbababababaabbaaaabaabbab"
+           "abbabbaaaba"
+           "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaa"
+           "babbabbabab"
+           "aabbaababbaaabbabbbbabbbaaabbabbbaabbababbaabbaaaaaabaaab"
+           "bbaababbaaa"
+           "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbb"
+           "bbaabbbbaaa"
+           "babaaaabaababbbaabaaabaaabaaaaabaabbbbabbabaaabbabbaabbaa"
+           "bbabaaabbbb"
+           "baaabababbaabbbaababababaababbaabbabaaaaabaaabaaababaabab"
+           "aaaaaababaa"
+           "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaa"
+           "ababababbbb"
+           "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaa"
+           "bbbabbbbbab"
+           "aaabbbababbbaabaaaabaabbaaaabbabbbabababbaaabbbbaabaabbab"
+           "abaaaabbbaa"
+           "aabbbaabaa",
+           "aaabbababbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbababab"
+           "baabbabaabb"
+           "bbbaababaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaa"
+           "aabaabbabba"
+           "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbab"
+           "bbabbbabbbb"
+           "aaabbbaababaababbbaaababbbbababababbabaabbbbbabaaaababaaa"
+           "bbaaabbaaab"
+           "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbb"
+           "aaabbbabbba"
+           "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbb"
+           "abbbbbabaab"
+           "bbaaabbbbaabaabbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbb"
+           "aaabaaabbab"
+           "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaa"
+           "baaaabababa"
+           "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaa"
+           "baaabbabaaa"
+           "abaaabbbabbbaababababaaaabbbbaaabbababababaabbaaaabaabbab"
+           "abbabbaaaba"
+           "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaa"
+           "babbabbabab"
+           "aabbaababbbbbaababbbabbbaaabbabbbaabbababbaabbaaaaaabaaab"
+           "bbaababbaaa"
+           "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbb"
+           "bbaabbbbaaa"
+           "babaaaabaabaaaabbabaabaaabaaaaabaabbbbabbabaaabbabbaabbaa"
+           "bbabaaabbbb"
+           "baaabababbaaaaabbabbababaababbaabbabaaaaabaaabaaababaabab"
+           "aaaaaababaa"
+           "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaa"
+           "ababababbbb"
+           "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaa"
+           "bbbabbbbbab"
+           "aaabbbabaaaabbabaaabaabbaaaabbabbbabababbaaabbbbaabaabbab"
+           "abaaaabbbaa"
+           "aabbbaabaa",
+           "bbbaabaabbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbb"
+           "aaaababaaab"
+           "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbab"
+           "abbbbbbbbaa"
+           "aaaaaabbabbbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbba"
+           "aaaabbabbab"
+           "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababba"
+           "abbbababbaa"
+           "abbabaaabbabaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaab"
+           "bbaaaaaaabb"
+           "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaa"
+           "baabaababab"
+           "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbb"
+           "baaabbaaabb"
+           "abbbbababbaaabbabbbaabaaabaaaaaababbaaabbbbbababbaabbaaaa"
+           "bbaaaaabaaa"
+           "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaa"
+           "abbaabbaabb"
+           "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaab"
+           "bbbaabababa"
+           "abbbbbbaaaabbabbbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaa"
+           "abbbaabaabb"
+           "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaa"
+           "bbbbbababba"
+           "abbabbabbbaaabbabaaaabbbaaaaabbbbbbbabbbabbbababbbabaaaba"
+           "bababaaaaba"
+           "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaaba"
+           "baaaabbabaa"
+           "babbaaaaabaaaaabbabbbbbbbbbaabbaabaabbabbaabbabaabaaaabaa"
+           "babaababbaa"
+           "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaab"
+           "bbaaabbbaba"
+           "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbba"
+           "baaaabaabaa"
+           "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaab"
+           "bbabaabbbba"
+           "aaabbbaaaaabaaabab",
+           "aaabbababbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbb"
+           "aaaababaaab"
+           "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbab"
+           "abbbbbbbbaa"
+           "aaabbbaababbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbba"
+           "aaaabbabbab"
+           "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababba"
+           "abbbababbaa"
+           "abbabbbbaabaaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaab"
+           "bbaaaaaaabb"
+           "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaa"
+           "baabaababab"
+           "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbb"
+           "baaabbaaabb"
+           "abbbbababbbbbaababbaabaaabaaaaaababbaaabbbbbababbaabbaaaa"
+           "bbaaaaabaaa"
+           "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaa"
+           "abbaabbaabb"
+           "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaab"
+           "bbbaabababa"
+           "abbbbbbabbbaababbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaa"
+           "abbbaabaabb"
+           "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaa"
+           "bbbbbababba"
+           "abbabbabbbbbbaabaaaaabbbaaaaabbbbbbbabbbabbbababbbabaaaba"
+           "bababaaaaba"
+           "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaaba"
+           "baaaabbabaa"
+           "babbaaaaabaabbbaababbbbbbbbaabbaabaabbabbaabbabaabaaaabaa"
+           "babaababbaa"
+           "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaab"
+           "bbaaabbbaba"
+           "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbba"
+           "baaaabaabaa"
+           "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaab"
+           "bbabaabbbba"
+           "aaabbbaaaaabaaabab",
+           "bbbaababbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbba"
+           "baabbbaabbb"
+           "aabaaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaab"
+           "baabaabaaba"
+           "aabbabbaababbbbababaaaabaababbaababbbbabaabbbabbabaababaa"
+           "abaaabbbaba"
+           "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaabab"
+           "bbbaaabaaaa"
+           "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababb"
+           "aabaababbbb"
+           "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbba"
+           "bbbbbbbabaa"
+           "bbbaaaaabbabbbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbba"
+           "babaaabbaaa"
+           "bbbbbabaaabbabbaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabba"
+           "bababbabbaa"
+           "ababaabbbbbbaababbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabb"
+           "bbabaabbbab"
+           "babaabababaaaabbababbabaabbaababaabbbbbabaaabbbbabaababaa"
+           "aaaaababbbb"
+           "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabb"
+           "abaaabbbaba"
+           "abaaabbbbabbbaababaaabbaaabaabababbabababaaabbabaabbabbaa"
+           "aabbbbabbab"
+           "abbabbababbbbbaababbaabbabaabbaaabaaaababbbbaaaabbabbaaaa"
+           "baaabbbbaba"
+           "bbbbbaaabbaaaabbabbabaaaabbabbaaaababbbaababbabbbaababaaa"
+           "bababbabbab"
+           "babbbabbbaababbbaababbbbbbbbababbbabababbababbbaaabbaabab"
+           "aabbbaaabbb"
+           "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababb"
+           "babaaabaabb"
+           "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbb"
+           "aabaabbbbbb"
+           "ababbbbbbbbaabaabbbaabaaaabababbaaabaabaababaabababbabbab"
+           "bbaabbbbaba"
+           "baaababbbbabbaaa",
+           "aaabbabbbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbba"
+           "baabbbaaaaa"
+           "bbabaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaab"
+           "baabaabaabb"
+           "bbaababaababbbbababaaaabaababbaababbbbabaabbbabbabaababaa"
+           "abaaabbbaba"
+           "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaabab"
+           "bbbaaabaaaa"
+           "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababb"
+           "aabaababbbb"
+           "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbba"
+           "bbbbbbbabaa"
+           "bbbaabbbaababbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbba"
+           "babaaabbaaa"
+           "bbbbbabbbbaababaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabba"
+           "bababbabbaa"
+           "ababaabbbaaabbabbbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabb"
+           "bbabaabbbab"
+           "babaababababbbaabaabbabaabbaababaabbbbbabaaabbbbabaababaa"
+           "aaaaababbbb"
+           "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabb"
+           "abaaabbbaba"
+           "abaaabbbbaaaabbabbaaabbaaabaabababbabababaaabbabaabbabbaa"
+           "aabbbbabbab"
+           "abbabbababbaaabbabbbaabbabaabbaaabaaaababbbbaaaabbabbaaaa"
+           "baaabbbbaba"
+           "bbbbbaaabbabbbaabababaaaabbabbaaaababbbaababbabbbaababaaa"
+           "bababbabbab"
+           "babbbabbbaabaaaabbabbbbbbbbbababbbabababbababbbaaabbaabab"
+           "aabbbaaabbb"
+           "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababb"
+           "babaaabaabb"
+           "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbb"
+           "aabaabbbbbb"
+           "ababbbbbbbbaabaaaaabbabaaabababbaaabaabaababaabababbabbab"
+           "bbaabbbbaba"
+           "baaababbbbabbaaa",
+           "bbbaabaaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaa"
+           "bbbaabbbbbb"
+           "bbaaabbabbabaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaa"
+           "abbbabbbabb"
+           "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabba"
+           "abbababbabb"
+           "bababaaaabbababbabbabbbaaaabbaaaababaabaababaabbaababaaaa"
+           "bbbbbbbbaba"
+           "babbbbbabbbaabaabaabaaababbababaababaaaaaababbabaabaabbba"
+           "baaaabbbabb"
+           "aaabbbaabbaaabbabbbabababbabbbaaaaabbaaabaaabaabbaabbbbbb"
+           "bbaaabaaaab"
+           "babbbbbbaaabaaabbabbbbabbbbbaabbabaabbbaaaaababaaaaababbb"
+           "abbabbabbbb"
+           "bbababaaabbaaabbbaababaabaaabbaabababbbbaabbaabbabaaaabbb"
+           "abbbaabaabb"
+           "baaababbbbbbbbaababbaabbbbaaaaaabababababbaababbbabaaaabb"
+           "baaabbbbaba"
+           "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabb"
+           "bababaaaabb"
+           "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbb"
+           "aaabbababab"
+           "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaa"
+           "abaababaaab"
+           "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaaba"
+           "bababbbabbb"
+           "abbaabaaaabbabaaaaaaabbabbabaaabaaabbabbababbaaaaaababbab"
+           "abbaababbbb"
+           "aababbbbbbaabbbabaabaaabbabaababbabaaaaabbbabaabaaababaaa"
+           "aaaaaabaaab"
+           "bbabbbbabaaabaaaabbaabbbaabaaabbaabbbbaaabbbbbbaabbbabbab"
+           "abbbabaaabb"
+           "baaaabbabababbababbabbabbbaababaaabaaabbabaaaabbbbabaaaba"
+           "ababbbaabba"
+           "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbb"
+           "baabbbbabba"
+           "abaabbaabaaaaabaaabaabbbaaa",
+           "aaabbabaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaa"
+           "bbbaabbbbbb"
+           "bbbbbaabababaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaa"
+           "abbbabbbabb"
+           "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabba"
+           "abbababbabb"
+           "babababbbaabaabbabbabbbaaaabbaaaababaabaababaabbaababaaaa"
+           "bbbbbbbbaba"
+           "babbbbbaaaabbababaabaaababbababaababaaaaaababbabaabaabbba"
+           "baaaabbbabb"
+           "aaabbbaabbbbbaababbabababbabbbaaaaabbaaabaaabaabbaabbbbbb"
+           "bbaaabaaaab"
+           "babbbbbbaaabbbbaababbbabbbbbaabbabaabbbaaaaababaaaaababbb"
+           "abbabbabbbb"
+           "bbababaaabbaaaaaabbabbaabaaabbaabababbbbaabbaabbabaaaabbb"
+           "abbbaabaabb"
+           "baaababbbbbaaabbabbbaabbbbaaaaaabababababbaababbbabaaaabb"
+           "baaabbbbaba"
+           "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabb"
+           "bababaaaabb"
+           "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbb"
+           "aaabbababab"
+           "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaa"
+           "abaababaaab"
+           "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaaba"
+           "bababbbabbb"
+           "abbaabaaaabbabaaaabbbaabababaaabaaabbabbababbaaaaaababbab"
+           "abbaababbbb"
+           "aababbbbbbaabbbabaabbbbaabaaababbabaaaaabbbabaabaaababaaa"
+           "aaaaaabaaab"
+           "bbabbbbabaaabaaaabbaaaaabbabaabbaabbbbaaabbbbbbaabbbabbab"
+           "abbbabaaabb"
+           "baaaabbabababbababbabbaaaabbabbaaabaaabbabaaaabbbbabaaaba"
+           "ababbbaabba"
+           "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbb"
+           "baabbbbabba"
+           "abaabbaabaaaaabaaabaabbbaaa",
+           "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaabab"
+           "babbababaaa"
+           "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaa"
+           "aaabbababab"
+           "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaab"
+           "bbaababbbba"
+           "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaab"
+           "bbbabbbbbbb"
+           "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbba"
+           "bbaabbbbaba"
+           "aaabbabbabbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbaba"
+           "abbabbbbabb"
+           "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaa"
+           "bbabbbbaabb"
+           "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababb"
+           "babaaababbb"
+           "bbabaaabbabaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaa"
+           "aabaabababb"
+           "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbb"
+           "babaabbbabb"
+           "bbaabaaaaabbabaabbabbaabbbabaabbbaaaaabbababbbaaaabaababa"
+           "baaabbbbbaa"
+           "abbaaababbbaabaaaaaaababbbbabbbabaaaababbaababaababaaabab"
+           "babbbabbaba"
+           "ababbbaabbaaabbabaabaaaabbbbbababbbbabbababbbabaabaabbbab"
+           "babbabaaaaa"
+           "abbabaababaaaaabbabbaaaaaaabaaaabbaaabaababbaababaaabbbba"
+           "aaababaaaba"
+           "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbb"
+           "abaabbbbaba"
+           "abbbaabbbbbabbbbbaabababbbbaabbbbbabbbbabbaaababbabaabbab"
+           "ababaababab"
+           "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaa"
+           "babbaababbb"
+           "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabba"
+           "bbbabbbbaab"
+           "aabbbaabbbaaabaaaabb",
+           "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaabab"
+           "babbababaaa"
+           "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaa"
+           "aaabbababab"
+           "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaab"
+           "bbaababbbba"
+           "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaab"
+           "bbbabbbbbbb"
+           "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbba"
+           "bbaabbbbaba"
+           "bbbaabababbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbaba"
+           "abbabbbbabb"
+           "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaa"
+           "bbabbbbaabb"
+           "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababb"
+           "babaaababbb"
+           "bbabbbbaabaaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaa"
+           "aabaabababb"
+           "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbb"
+           "babaabbbabb"
+           "bbaabaabbbaabaaabbabbaabbbabaabbbaaaaabbababbbaaaabaababa"
+           "baaabbbbbaa"
+           "abbaaabaaaabbabaaaaaababbbbabbbabaaaababbaababaababaaabab"
+           "babbbabbaba"
+           "ababbbaabbbbbaabaaabaaaabbbbbababbbbabbababbbabaabaabbbab"
+           "babbabaaaaa"
+           "abbabaababaabbbaababaaaaaaabaaaabbaaabaababbaababaaabbbba"
+           "aaababaaaba"
+           "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbb"
+           "abaabbbbaba"
+           "abbbaabbbbbabbaaabbabbabbbbaabbbbbabbbbabbaaababbabaabbab"
+           "ababaababab"
+           "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaa"
+           "babbaababbb"
+           "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabba"
+           "bbbabbbbaab"
+           "aabbbaabbbaaabaaaabb",
+           "aaabbabababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbb"
+           "bbbbbbabbab"
+           "abbbbaabaabababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabb"
+           "bbbaaaaabba"
+           "babaaabbabbbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbb"
+           "bbabaaabbbb"
+           "bbaabaababaabbbbaabaabbabbbbbababaaababababbababaabaabbbb"
+           "bbbbabaabaa"
+           "baaabbabaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaa"
+           "abababbbaba"
+           "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaa"
+           "abbbbabbabb"
+           "abbbabbbaabaabbaabbbbaaabbaabbaabaabaababbabababbbbbabaaa"
+           "aaaababaaba"
+           "bbababbbbbaababbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbb"
+           "bbbabaabaab"
+           "bbaababaaaaabbabbabbbbabbbbbaababbbbbbbbaabbaabbababbbaba"
+           "aabbbababaa"
+           "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabb"
+           "babaaabaaab"
+           "aabbbbaabaaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaa"
+           "abbaaababbb"
+           "bbbbbaaabbababbabaabaabababaabaabaaabaabbbaabaabbaabaaaab"
+           "aabbbbbbbaa"
+           "bbaaabaaaabbabbabbabbaaabbabaaaabbbbababbbaabaaaabbbababb"
+           "bbababbbaaa"
+           "baababbbaaaabbabababbbbbbaaaabaabaaababbaaabbaaaaabaaaaab"
+           "babbaababab"
+           "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaab"
+           "bbabbabaaab"
+           "abbabaaaabbbbbbaabaaaabaaaaaababbbbbaaaabbabbbbbbbbabbbab"
+           "bababbbabaa"
+           "bbbaaaaaaabaaaaaabbababbbaabbaaabaaaaaabbbababbaabbbaaaab"
+           "baabaaaaaab"
+           "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbb"
+           "abbabbabaab"
+           "abababbabbbab",
+           "bbbaabaababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbb"
+           "bbbbbbabbab"
+           "abaaabbababababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabb"
+           "bbbaaaaabba"
+           "babbbbaababbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbb"
+           "bbabaaabbba"
+           "aabbabababaabbbbaabaabbabbbbbababaaababababbababaabaabbbb"
+           "bbbbabaabaa"
+           "bbbbaabaaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaa"
+           "abababbbaba"
+           "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaa"
+           "abbbbabbabb"
+           "abbbaaaabbababbaabbbbaaabbaabbaabaabaababbabababbbbbabaaa"
+           "aaaababaaba"
+           "bbababbaaabbabbbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbb"
+           "bbbabaabaab"
+           "bbaababaabbbaabababbbbabbbbbaababbbbbbbbaabbaabbababbbaba"
+           "aabbbababaa"
+           "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabb"
+           "babaaabaaab"
+           "aabaaabbabaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaa"
+           "abbaaababbb"
+           "bbbbbbbbaabaabbabaabaabababaabaabaaabaabbbaabaabbaabaaaab"
+           "aabbbbbbbaa"
+           "bbaaababbbaabababbabbaaabbabaaaabbbbababbbaabaaaabbbababb"
+           "bbababbbaaa"
+           "baababbbabbbaabaababbbbbbaaaabaabaaababbaaabbaaaaabaaaaab"
+           "babbaababab"
+           "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaab"
+           "bbabbabaaab"
+           "abbabaaaabbbaaabbabaaabaaaaaababbbbbaaaabbabbbbbbbbabbbab"
+           "bababbbabaa"
+           "bbbaaaaaaabaaabbbaabaabbbaabbaaabaaaaaabbbababbaabbbaaaab"
+           "baabaaaaaab"
+           "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbb"
+           "abbabbabaab"
+           "abababbabbbab",
+           "aaabbabaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabb"
+           "abaaabbabba"
+           "babbbaababbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaaba"
+           "aabaabaaaba"
+           "abbabbbaabaababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaa"
+           "abbbbbbabab"
+           "bababbbbbaabababbbabbabaaabbabbabaaabbbbabaaaaababbbbabbb"
+           "babbabaabba"
+           "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbb"
+           "bbbbaababab"
+           "ababbbbbbbaabababababaabbbbbaabbabbbbbaabbabbbbbaabaabbbb"
+           "babaaaaaaab"
+           "aabbbababbbbaabaaabbbaaaaaabbbabbabaaabbbabaababbabbbaaab"
+           "ababbabaaba"
+           "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababa"
+           "aaaaaaaaaba"
+           "aababbaababbaaaabbabbbaabaaababaaabaabaaabbbaabbababbabaa"
+           "aaaaabababb"
+           "abbaabbbbabbaabbbbaabaaabbaabaaaaababbabbaaaabbaabaabbaba"
+           "ababaabaaaa"
+           "aabbbbaabababbbabaaabbabaabbaababbaabaaabaababbabbbbaabba"
+           "aabbbbbabba"
+           "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaa"
+           "ababbaabbab"
+           "babbbaabaaaabbababaabbbaababaaaabbbaaabaaaaaaaaaaaaabbaba"
+           "abaaabbabbb"
+           "bbabbababaababaaabbbbbbaabababbabbbbbbbbabbbaaaaabbbababa"
+           "abaaabbbaba"
+           "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabba"
+           "baaaabbabaa"
+           "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaa"
+           "baaaabbaaba"
+           "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbba"
+           "bbbaabbbbab"
+           "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaa"
+           "babbbababaa"
+           "abaaaaaabbabbaaabaaa"
+           "bbbaabaaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabb"
+           "abaaabbabba"
+           "baaaabbabbbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaaba"
+           "aabaabaaaba"
+           "abbaaaabbabababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaa"
+           "abbbbbbabab"
+           "bababbaaabbabbabbbabbabaaabbabbabaaabbbbabaaaaababbbbabbb"
+           "babbabaabba"
+           "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbb"
+           "bbbbaababab"
+           "ababbbbaaabbabbabababaabbbbbaabbabbbbbaabbabbbbbaabaabbbb"
+           "babaaaaaaab"
+           "aabbbababaaabbabaabbbaaaaaabbbabbabaaabbbabaababbabbbaaab"
+           "ababbabaaba"
+           "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababa"
+           "aaaaaaaaaba"
+           "aababbaababbabbbaababbaabaaababaaabaabaaabbbaabbababbabaa"
+           "aaaaabababb"
+           "abbaabbbbabbaabaaabbabaabbaabaaaaababbabbaaaabbaabaabbaba"
+           "ababaabaaaa"
+           "aabbbbaabababbbabbbbaabaaabbaababbaabaaabaababbabbbbaabba"
+           "aabbbbbabba"
+           "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaa"
+           "ababbaabbab"
+           "babbbaabaaaabbababaaaaabbabbaaaabbbaaabaaaaaaaaaaaaabbaba"
+           "abaaabbabbb"
+           "bbabbababaababaaabbbaaabbabbabbabbbbbbbbabbbaaaaabbbababa"
+           "abaaabbbaba"
+           "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabba"
+           "baaaabbabaa"
+           "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaa"
+           "baaaabbaaba"
+           "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbba"
+           "bbbaabbbbab"
+           "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaa"
+           "babbbababaa"
+           "abaaaaaabbabbaaabaaa",
+           "bbbaabaabbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaa"
+           "baabaaabaaa"
+           "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaa"
+           "abbabbbbabb"
+           "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbab"
+           "bbaaabaabba"
+           "abbbbaaabbababbbbabababbaabbabbaaabbbbabbabababbbbbbabbba"
+           "bbbbaaabaab"
+           "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaa"
+           "baaaababaaa"
+           "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaab"
+           "babaaaababb"
+           "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaa"
+           "aaabbabbbba"
+           "baabaaaaaaabbababbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaab"
+           "baabaabbaaa"
+           "abaaaabbabaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaa"
+           "bbaabbbbbbb"
+           "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaa"
+           "babbaababba"
+           "aaaababaaabbabbaababbabbababbabaaaaabbbababbababaabaaabab"
+           "abbbaabaaab"
+           "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbb"
+           "abbaaaaaaaa"
+           "babbbaabaaabbabaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabb"
+           "abbaaaabbaa"
+           "bbabbaaaabaaabbababbbbaababaabbbbbbababaabababbbabbbaaabb"
+           "babbbaabaab"
+           "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbaba"
+           "bbaaaaababa"
+           "bbbaabbbaababbbbbaababaaababbbaabaaabaabbbaaabbbbabaaabbb"
+           "babbaaabaab"
+           "babaaabbaaabbaaaabbabaaabbbbaabaabbbabaabbbaaabbbabaaabbb"
+           "aabaaaababa"
+           "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababa"
+           "aaabbaaabba"
+           "baaaababbab",
+           "aaabbababbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaa"
+           "baabaaabaaa"
+           "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaa"
+           "abbabbbbabb"
+           "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbab"
+           "bbaaabaabba"
+           "abbbbbbbaabaabbbbabababbaabbabbaaabbbbabbabababbbbbbabbba"
+           "bbbbaaabaab"
+           "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaa"
+           "baaaababaaa"
+           "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaab"
+           "babaaaababb"
+           "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaa"
+           "aaabbabbbba"
+           "baabaaaabbbaabaabbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaab"
+           "baabaabbaaa"
+           "ababbbaabaaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaa"
+           "bbaabbbbbbb"
+           "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaa"
+           "babbaababba"
+           "aaaababbbbaababaababbabbababbabaaaaabbbababbababaabaaabab"
+           "abbbaabaaab"
+           "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbb"
+           "abbaaaaaaaa"
+           "babbbaabbbbaabaaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabb"
+           "abbaaaabbaa"
+           "bbabbaaaabbbbaabaabbbbaababaabbbbbbababaabababbbabbbaaabb"
+           "babbbaabaab"
+           "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbaba"
+           "bbaaaaababa"
+           "bbbaabbbaababbaaabbabbaaababbbaabaaabaabbbaaabbbbabaaabbb"
+           "babbaaabaab"
+           "babaaabbaaabbabbbaabaaaabbbbaabaabbbabaabbbaaabbbabaaabbb"
+           "aabaaaababa"
+           "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababa"
+           "aaabbaaabba"
+           "baaaababbab",
+           "aaabbabbbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaa"
+           "bbbbabbbbbb"
+           "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbba"
+           "babbbabaaab"
+           "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababba"
+           "abbaaababba"
+           "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbb"
+           "babbbbbaaaa"
+           "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababb"
+           "babaaaaabbb"
+           "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaabab"
+           "aabaaabaaba"
+           "aaaaabbababaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaa"
+           "abababbabba"
+           "aabbaaabbabbbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbb"
+           "babaaababba"
+           "aaaabbaaabbabbababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaa"
+           "bbbbbbbabab"
+           "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaab"
+           "babbaabbabb"
+           "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaabab"
+           "aaaabaaaaaa"
+           "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaa"
+           "bbabbaaabaa"
+           "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbab"
+           "aabaaaaaabb"
+           "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbb"
+           "aaaaaaabaaa"
+           "aaaababbaaabbbaabaaababaaabbbaaaaabaaaabbbbbbbabbbaaaabab"
+           "aababbababb"
+           "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaa"
+           "ababbbbbbab"
+           "babbababaabaaabbbbaababbbaababbabbbbabbbbbbabbbaaabbbabaa"
+           "aaaabbbbaba"
+           "bbbbabaaaaabaababbbaababbabbbabaaababbaaabaabbbabaaaabbaa"
+           "bbbbaababaa"
+           "baabbaabaaabbaa",
+           "bbbaababbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaa"
+           "bbbbabbbbbb"
+           "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbba"
+           "babbbabaaab"
+           "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababba"
+           "abbaaababba"
+           "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbb"
+           "babbbbbaaaa"
+           "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababb"
+           "babaaaaabbb"
+           "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaabab"
+           "aabaaabaaba"
+           "aabbbaabaabaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaa"
+           "abababbabba"
+           "aabbbbbaababbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbb"
+           "babaaababba"
+           "aaaabbbbbaababababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaa"
+           "bbbbbbbabab"
+           "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaab"
+           "babbaabbabb"
+           "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaabab"
+           "aaaabaaaaaa"
+           "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaa"
+           "bbabbaaabaa"
+           "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbab"
+           "aabaaaaaabb"
+           "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbb"
+           "aaaaaaabaaa"
+           "aaaababbaaaaaabbabaababaaabbbaaaaabaaaabbbbbbbabbbaaaabab"
+           "aababbababb"
+           "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaa"
+           "ababbbbbbab"
+           "babbababaabaaabaaabbabbbbaababbabbbbabbbbbbabbbaaabbbabaa"
+           "aaaabbbbaba"
+           "bbbbabaaaaabaabaaaabbabbbabbbabaaababbaaabaabbbabaaaabbaa"
+           "bbbbaababaa"
+           "baabbaabaaabbaa",
+           "bbbaababababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabba"
+           "abaabaaabbb"
+           "abbbbaabaabbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaabab"
+           "ababbbbabba"
+           "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaabab"
+           "aaabababbbb"
+           "ababaaaaabbababaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbb"
+           "baaaaaabaaa"
+           "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabb"
+           "aaabbaababa"
+           "baaaabbbbaaaabbabbbbabbbbbbbaaabbaabbbbbabaabbbbababbabaa"
+           "ababbabbaab"
+           "bbbbbabbaaabaaabbababaabbbbaaaaababaaabaaaababaaaabbaabba"
+           "abbaaaabbbb"
+           "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababb"
+           "ababbabbbbb"
+           "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabb"
+           "aababbabbaa"
+           "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbb"
+           "aaaabababba"
+           "abaaabaabbbabbaaabbabaabaabbbaaaaaabbbbaabbaabbbaababaabb"
+           "aabaaaaaabb"
+           "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabb"
+           "babaaaaabaa"
+           "babbbabaababababbbbaabaaaabbababbaabababbbababbabbbbbaaab"
+           "aaaaabababb"
+           "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaab"
+           "baaaaaabaaa"
+           "aaaaaaaaaabaaaabbabbbbaababaabaababbbbbbbaababaaaaaababab"
+           "babbbabbaba"
+           "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaab"
+           "aabaabbabbb"
+           "abaabbbbbbaababbaabaaaabbabbababaabbaabaabbabbbbbabaababb"
+           "bbaabbabaaa"
+           "baabaababbaaabababaabbbbaababaaababbbbbbbaaaaabbbbbaababb"
+           "baaabbbbbaa"
+           "bbaabbaaaabbbabaababb",
+           "aaabbabbababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabba"
+           "abaabaaabbb"
+           "abaaabbababbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaabab"
+           "ababbbbabba"
+           "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaabab"
+           "aaabababbbb"
+           "ababaabbbaabaabaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbb"
+           "baaaaaabaaa"
+           "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabb"
+           "aaabbaababa"
+           "baaaabbbbabbbaababbbabbbbbbbaaabbaabbbbbabaabbbbababbabaa"
+           "ababbabbaab"
+           "bbbbbabbaaabbbbaabaabaabbbbaaaaababaaabaaaababaaaabbaabba"
+           "abbaaaabbbb"
+           "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababb"
+           "ababbabbbbb"
+           "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabb"
+           "aababbabbaa"
+           "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbb"
+           "aaaabababba"
+           "abaaabaabbbabbbbbaabaaabaabbbaaaaaabbbbaabbaabbbaababaabb"
+           "aabaaaaaabb"
+           "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabb"
+           "babaaaaabaa"
+           "babbbabaababababaaabbabaaabbababbaabababbbababbabbbbbaaab"
+           "aaaaabababb"
+           "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaab"
+           "baaaaaabaaa"
+           "aaaaaaaaaabaaaabbabaaabbabbaabaababbbbbbbaababaaaaaababab"
+           "babbbabbaba"
+           "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaab"
+           "aabaabbabbb"
+           "abaabbbbbbaababbaababbbaababababaabbaabaabbabbbbbabaababb"
+           "bbaabbabaaa"
+           "baabaababbaaabababaabaaabbabbaaababbbbbbbaaaaabbbbbaababb"
+           "baaabbbbbaa"
+           "bbaabbaaaabbbabaababb"};
+
+    for (auto const& w : words) {
+      REQUIRE(contains(k, kambites::reduce(k, w), w));
+      REQUIRE(contains(k, w, kambites::reduce(k, w)));
     }
+  }
 
-    // Takes approx. 31s
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "071",
-        "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[extreme][kambites][fpsemigroup][fpsemi]") {
-      auto x = count_2_gen_1_rel<std::string>(1, 12);
-      REQUIRE(x.first == 235'629);
-      REQUIRE(x.second == 8'378'371);
-    }
+  LIBSEMIGROUPS_TEST_CASE("Kambites", "041", "example 1", "[quick][kambites]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 0_w, 11_w);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "072",
-        "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[fail][kambites][fpsemigroup][fpsemi]") {
-      auto x = count_2_gen_1_rel<std::string>(1, 13);
-      REQUIRE(x.first == 0);
-      REQUIRE(x.second == 0);
-    }
+    Kambites k(twosided, p);
 
-    LIBSEMIGROUPS_TEST_CASE(
-        "Kambites",
-        "073",
-        "(fpsemi) almost all 2-generated 1-relation monoids are C(4)",
-        "[extreme][kambites][fpsemigroup][fpsemi]") {
-      std::cout.precision(10);
-      size_t const sample_size = 1000;
-      std::cout << "Sample size = " << sample_size << std::endl;
-      for (size_t i = 8; i < 100; ++i) {
-        size_t const min = 7;
-        size_t const max = i + 1;
-        auto         x   = sample("ab", 1, min, max, sample_size);
-        std::cout << "Estimate of C(4) / non-C(4) (length " << min << " to "
-                  << max << ") =           " << std::fixed
-                  << double(std::get<0>(x)) / sample_size << std::endl;
-        std::cout << "Estimate of confluent / non-confluent (length " << min
-                  << " to " << max << ") = " << std::fixed
-                  << double(std::get<1>(x)) / sample_size << std::endl
-                  << std::endl;
-      }
-    }
+    REQUIRE_THROWS_AS(k.number_of_classes(), LibsemigroupsException);
+    REQUIRE(k.small_overlap_class() == 1);
+    REQUIRE(!is_obviously_infinite(k));
+    REQUIRE_THROWS_AS(contains(k, 00_w, 0_w), LibsemigroupsException);
+  }
 
-    ////////////////////////////////////////////////////////////////////////
-    // Some tests for exploration of the space of all 3-generator 1-relation
-    // semigroups
-    ////////////////////////////////////////////////////////////////////////
+  LIBSEMIGROUPS_TEST_CASE("Kambites", "042", "example 2", "[quick][kambites]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(7);
+    presentation::add_rule(p, 0123_w, 000400_w);
+    presentation::add_rule(p, 45_w, 36_w);
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "074",
-                            "(fpsemi) 3-generated 1-relation C(4)-semigroups",
-                            "[extreme][kambites][fpsemigroup][fpsemi]") {
-      auto   first = cbegin_sislo("abc", "a", std::string(8, 'a'));
-      auto   last  = cbegin_sislo("abc", "a", std::string(8, 'a'));
-      size_t N
-          = std::distance(first, cend_sislo("abc", "a", std::string(8, 'a')));
-      REQUIRE(N == 3279);
-      std::advance(last, N - 1);
+    Kambites k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-      size_t total_c4 = 0;
-      size_t total    = 0;
-      auto   llast    = last;
-      ++llast;
-      std::unordered_set<std::string> set;
+    REQUIRE(contains(k, 0123_w, 000400_w));
+    REQUIRE(contains(k, 45_w, 36_w));
+    REQUIRE(contains(k, 0000045_w, 0000036_w));
+    REQUIRE(contains(k, 4501010_w, 3601010_w));
 
-      for (auto it1 = first; it1 != last; ++it1) {
-        auto it2 = it1;
-        ++it2;
-        for (; it2 != llast; ++it2) {
-          total++;
-          Kambites<std::string> k;
-          k.set_alphabet("abc");
-          k.add_rule(*it1, *it2);
-          if (k.small_overlap_class() >= 4) {
-            auto tmp = *it1 + "#" + *it2;
-            if (set.insert(tmp).second) {
-              auto u = swap_a_b_c(*it1);
-              auto v = swap_a_b_c(*it2);
-              for (size_t i = 0; i < 5; ++i) {
-                if (shortlex_compare(u[i], v[i])) {
-                  set.insert(u[i] + "#" + v[i]);
-                } else {
-                  set.insert(v[i] + "#" + u[i]);
-                }
-              }
-              std::cout << *it1 << " = " << *it2 << std::endl;
-              total_c4++;
-            }
-          }
-        }
-      }
-      REQUIRE(total_c4 == 307511);
-      REQUIRE(total == 5374281);
-    }
+    REQUIRE((normal_forms(k) | rx::take(50) | rx::to_vector())
+            == std::vector(
+                {0_w,  1_w,  2_w,  3_w,  4_w,  5_w,  6_w,  00_w, 01_w, 02_w,
+                 03_w, 04_w, 05_w, 06_w, 10_w, 11_w, 12_w, 13_w, 14_w, 15_w,
+                 16_w, 20_w, 21_w, 22_w, 23_w, 24_w, 25_w, 26_w, 30_w, 31_w,
+                 32_w, 33_w, 34_w, 35_w, 36_w, 40_w, 41_w, 42_w, 43_w, 44_w,
+                 46_w, 50_w, 51_w, 52_w, 53_w, 54_w, 55_w, 56_w, 60_w, 61_w}));
+    // Skip 9000 to ensure that this reruns enumerate on the underlying
+    // FroidurePinBase
+    REQUIRE(
+        (normal_forms(k) | rx::skip_n(9'000) | rx::take(50) | rx::to_vector())
+        == std::vector({25530_w, 25531_w, 25532_w, 25533_w, 25534_w, 25535_w,
+                        25536_w, 25540_w, 25541_w, 25542_w, 25543_w, 25544_w,
+                        25546_w, 25550_w, 25551_w, 25552_w, 25553_w, 25554_w,
+                        25555_w, 25556_w, 25560_w, 25561_w, 25562_w, 25563_w,
+                        25564_w, 25565_w, 25566_w, 25600_w, 25601_w, 25602_w,
+                        25603_w, 25604_w, 25605_w, 25606_w, 25610_w, 25611_w,
+                        25612_w, 25613_w, 25614_w, 25615_w, 25616_w, 25620_w,
+                        25621_w, 25622_w, 25623_w, 25624_w, 25625_w, 25626_w,
+                        25630_w, 25631_w}));
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "079",
-                            "(fpsemi) normal form possible bug",
-                            "[standard][kambites][fpsemigroup][fpsemi]") {
-      // There was a bug in MultiStringView::append, that caused this test to
-      // fail, so we keep this test to check that the bug in
-      // MultiStringView::append is resolved.
-      Kambites<MultiStringView> k;
-      k.set_alphabet("ab");
-      k.add_rule("aaabbab", "bbbaaba");
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "043",
+                          "code coverage",
+                          "[quick][kambites][no-valgrind]") {
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule(
+        p, 01011011101111_w, 011111011111101111111011111111_w);
+    presentation::add_rule(
+        p, 23233233323333_w, 233333233333323333333233333333_w);
 
-      std::vector<std::string> words = {
-          "bbbaabaabbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbabababbaabbabaabb"
-          "aaabbabbaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaaaabaabbabba"
-          "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbabbbabbbabbbb"
-          "aaaaaabbabbaababbbaaababbbbababababbabaabbbbbabaaaababaaabbaaabbaaab"
-          "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbbaaabbbabbba"
-          "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbbabbbbbabaab"
-          "bbaaabaaabbababbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbbaaabaaabbab"
-          "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaabaaaabababa"
-          "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaabaaabbabaaa"
-          "abaaabbbaaaabbabbababaaaabbbbaaabbababababaabbaaaabaabbababbabbaaaba"
-          "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaababbabbabab"
-          "aabbaababbaaabbabbbbabbbaaabbabbbaabbababbaabbaaaaaabaaabbbaababbaaa"
-          "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbbbbaabbbbaaa"
-          "babaaaabaababbbaabaaabaaabaaaaabaabbbbabbabaaabbabbaabbaabbabaaabbbb"
-          "baaabababbaabbbaababababaababbaabbabaaaaabaaabaaababaababaaaaaababaa"
-          "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaaababababbbb"
-          "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaabbbabbbbbab"
-          "aaabbbababbbaabaaaabaabbaaaabbabbbabababbaaabbbbaabaabbababaaaabbbaa"
-          "aabbbaabaa",
-          "aaabbababbbbbaabaabaaabbaabbbbbaaabaaabababbbbaaabbabababbaabbabaabb"
-          "bbbaababaaaabbabbbbbbaabbbbaabbabaaabaaaaabbaabababababaaaabaabbabba"
-          "bbaaabbabababbabaabbbbbbabaabbabaaaababbababbabbabbabbbabbbabbbabbbb"
-          "aaabbbaababaababbbaaababbbbababababbabaabbbbbabaaaababaaabbaaabbaaab"
-          "babaabbbaababbbaaabbaabbbbaabbbbaaaaababbabbbaaaaaababbbbaaabbbabbba"
-          "babbbbbbaabaabababbabbbbbaaaabbbbabbababbbaaaabbbbaabbbbbabbbbbabaab"
-          "bbaaabbbbaabaabbbabbaaaaaabbbbabababbaabbabbbbabbabbaabbbaaabaaabbab"
-          "abbbabbbbaabaaababbabbaababbbabbaababbabbbbabbbbabaabaaaabaaaabababa"
-          "abababbaaabbabbbbbbaaaaaabbbbabbabbabaaaaabaabbaababbbbaabaaabbabaaa"
-          "abaaabbbabbbaababababaaaabbbbaaabbababababaabbaaaabaabbababbabbaaaba"
-          "bbaaabbbbbabbbaababaaabbababbbbbaabbbabaaaaabbbbabbabaaaababbabbabab"
-          "aabbaababbbbbaababbbabbbaaabbabbbaabbababbaabbaaaaaabaaabbbaababbaaa"
-          "ababaabbaaabbbaabababbbbbababbbbbbbaabbbbaabababbbaabbbbbbbaabbbbaaa"
-          "babaaaabaabaaaabbabaabaaabaaaaabaabbbbabbabaaabbabbaabbaabbabaaabbbb"
-          "baaabababbaaaaabbabbababaababbaabbabaaaaabaaabaaababaababaaaaaababaa"
-          "aaaaaabaababbbbaabaabbabbabaaaaaabaabbabbbabbaabbbbbbbaaaababababbbb"
-          "ababbbabbbaaabbabbabbaabbbbbbbababaabaabababbaaabbaabbbaabbbabbbbbab"
-          "aaabbbabaaaabbabaaabaabbaaaabbabbbabababbaaabbbbaabaabbababaaaabbbaa"
-          "aabbbaabaa",
-          "bbbaabaabbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbbaaaababaaab"
-          "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbababbbbbbbbaa"
-          "aaaaaabbabbbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbbaaaaabbabbab"
-          "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababbaabbbababbaa"
-          "abbabaaabbabaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaabbbaaaaaaabb"
-          "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaabaabaababab"
-          "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbbbaaabbaaabb"
-          "abbbbababbaaabbabbbaabaaabaaaaaababbaaabbbbbababbaabbaaaabbaaaaabaaa"
-          "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaaabbaabbaabb"
-          "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaabbbbaabababa"
-          "abbbbbbaaaabbabbbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaaabbbaabaabb"
-          "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaabbbbbababba"
-          "abbabbabbbaaabbabaaaabbbaaaaabbbbbbbabbbabbbababbbabaaababababaaaaba"
-          "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaababaaaabbabaa"
-          "babbaaaaabaaaaabbabbbbbbbbbaabbaabaabbabbaabbabaabaaaabaababaababbaa"
-          "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaabbbaaabbbaba"
-          "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbbabaaaabaabaa"
-          "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaabbbabaabbbba"
-          "aaabbbaaaaabaaabab",
-          "aaabbababbbbabaaaaababbbaababbabbabbaabaaabbaaabbabbbabbbaaaababaaab"
-          "baaabbabbbbaaabbabaaaaaaababbaaabbaabbaabaabbabbaabaabbababbbbbbbbaa"
-          "aaabbbaababbabaaababbbbbabababbbaaabbaaaaaabbbbbbabbabbbaaaaabbabbab"
-          "bbbaaaaabbabbabbbbababbbababbbaaabaabbabaabbaaaaabbababbaabbbababbaa"
-          "abbabbbbaabaaaaaaaabbaababbaabbbabbabaaaabaabaaabbbbaaaabbbaaaaaaabb"
-          "aabaaabbbaababbaaabbbbaabbabbbbabbbababbabbbbababbbbbbaaabaabaababab"
-          "aabbabbbaaabbabbaaabaabbbbaabbaabaabaababbabbaabaabbabbbbbaaabbaaabb"
-          "abbbbababbbbbaababbaabaaabaaaaaababbaaabbbbbababbaabbaaaabbaaaaabaaa"
-          "aaabbbaaaaaaaabbabbbaabaaaabaababbaaabbbbbabaaaabbbabaaaaabbaabbaabb"
-          "bbaaabbbbaabaabbaaabbbbaabbbaaaaaabbbabbaabbaabbabbbabaabbbbaabababa"
-          "abbbbbbabbbaababbbabbaaabbbabbabaaabbabbabbbabbbaaaabbbaaabbbaabaabb"
-          "aaabaabbabbbbaabaaabaabbaaababaabbabaaabaabbaaabaaababbaabbbbbababba"
-          "abbabbabbbbbbaabaaaaabbbaaaaabbbbbbbabbbabbbababbbabaaababababaaaaba"
-          "aaaaaaaabbabaaabbabbbabbaaababababaaabbabbbbababbbaaaaababaaaabbabaa"
-          "babbaaaaabaabbbaababbbbbbbbaabbaabaabbabbaabbabaabaaaabaababaababbaa"
-          "aabaabaababbaaaaabbabbababbabbbaabbbbbaaabbbaabaaaaabaaabbbaaabbbaba"
-          "bbbbbabbabbaaaabbbaababbababbabaabaabbbbaaabaaabbbabbbbbabaaaabaabaa"
-          "bbbabbbbaabbbaaabbbbaabaababbaabbabbabaaabbaaaababbabbaabbbabaabbbba"
-          "aaabbbaaaaabaaabab",
-          "bbbaababbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbbabaabbbaabbb"
-          "aabaaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaabbaabaabaaba"
-          "aabbabbaababbbbababaaaabaababbaababbbbabaabbbabbabaababaaabaaabbbaba"
-          "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaababbbbaaabaaaa"
-          "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababbaabaababbbb"
-          "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbbabbbbbbbabaa"
-          "bbbaaaaabbabbbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbbababaaabbaaa"
-          "bbbbbabaaabbabbaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabbabababbabbaa"
-          "ababaabbbbbbaababbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabbbbabaabbbab"
-          "babaabababaaaabbababbabaabbaababaabbbbbabaaabbbbabaababaaaaaaababbbb"
-          "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabbabaaabbbaba"
-          "abaaabbbbabbbaababaaabbaaabaabababbabababaaabbabaabbabbaaaabbbbabbab"
-          "abbabbababbbbbaababbaabbabaabbaaabaaaababbbbaaaabbabbaaaabaaabbbbaba"
-          "bbbbbaaabbaaaabbabbabaaaabbabbaaaababbbaababbabbbaababaaabababbabbab"
-          "babbbabbbaababbbaababbbbbbbbababbbabababbababbbaaabbaababaabbbaaabbb"
-          "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababbbabaaabaabb"
-          "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbbaabaabbbbbb"
-          "ababbbbbbbbaabaabbbaabaaaabababbaaabaabaababaabababbabbabbbaabbbbaba"
-          "baaababbbbabbaaa",
-          "aaabbabbbaabbababbbaabbbbaaaaaaabbaabbbbbabaababaababbbbabaabbbaaaaa"
-          "bbabaabbbaabbbabbabbbbabbbabbbbbaaaaaaabaabbbbaabbbbbbaabbaabaabaabb"
-          "bbaababaababbbbababaaaabaababbaababbbbabaabbbabbabaababaaabaaabbbaba"
-          "bbbaabaababbbbaaaaabaaaababaababbababaaabaaaaaabbaabaababbbbaaabaaaa"
-          "bbaaabbabaaabbababbbabbbbbbababbaabbaaaababbbbaabbbaababbaabaababbbb"
-          "aabbbbaabababbbabaabbaaaabaabbbabbbaabaabbabbaababbbbbbbabbbbbbbabaa"
-          "bbbaabbbaababbbabbbbabbbaaabbbbaabbbabaabaabaabbaaaaabbbababaaabbaaa"
-          "bbbbbabbbbaababaabbbaaabbabbbbbbabbabaaabbbabbbabaabbabbabababbabbaa"
-          "ababaabbbaaabbabbbbbbbbaaaaaaabaababbaaababbbbbaaaaaaaabbbbabaabbbab"
-          "babaababababbbaabaabbabaabbaababaabbbbbabaaabbbbabaababaaaaaaababbbb"
-          "bbbbbbbbbaaabbabbbbaaabaabbbabaabaabaaaabaabbbbbbabbaaabbabaaabbbaba"
-          "abaaabbbbaaaabbabbaaabbaaabaabababbabababaaabbabaabbabbaaaabbbbabbab"
-          "abbabbababbaaabbabbbaabbabaabbaaabaaaababbbbaaaabbabbaaaabaaabbbbaba"
-          "bbbbbaaabbabbbaabababaaaabbabbaaaababbbaababbabbbaababaaabababbabbab"
-          "babbbabbbaabaaaabbabbbbbbbbbababbbabababbababbbaaabbaababaabbbaaabbb"
-          "bbaaabababaaabbbbbaabaaababababaabbbbbbabbbabaaabaabababbbabaaabaabb"
-          "bbaabbaababbbabaaabbabaaaaaabbaaaababbaabbbaababbaaababbbaabaabbbbbb"
-          "ababbbbbbbbaabaaaaabbabaaabababbaaabaabaababaabababbabbabbbaabbbbaba"
-          "baaababbbbabbaaa",
-          "bbbaabaaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaabbbaabbbbbb"
-          "bbaaabbabbabaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaaabbbabbbabb"
-          "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabbaabbababbabb"
-          "bababaaaabbababbabbabbbaaaabbaaaababaabaababaabbaababaaaabbbbbbbbaba"
-          "babbbbbabbbaabaabaabaaababbababaababaaaaaababbabaabaabbbabaaaabbbabb"
-          "aaabbbaabbaaabbabbbabababbabbbaaaaabbaaabaaabaabbaabbbbbbbbaaabaaaab"
-          "babbbbbbaaabaaabbabbbbabbbbbaabbabaabbbaaaaababaaaaababbbabbabbabbbb"
-          "bbababaaabbaaabbbaababaabaaabbaabababbbbaabbaabbabaaaabbbabbbaabaabb"
-          "baaababbbbbbbbaababbaabbbbaaaaaabababababbaababbbabaaaabbbaaabbbbaba"
-          "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabbbababaaaabb"
-          "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbbaaabbababab"
-          "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaaabaababaaab"
-          "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaababababbbabbb"
-          "abbaabaaaabbabaaaaaaabbabbabaaabaaabbabbababbaaaaaababbababbaababbbb"
-          "aababbbbbbaabbbabaabaaabbabaababbabaaaaabbbabaabaaababaaaaaaaaabaaab"
-          "bbabbbbabaaabaaaabbaabbbaabaaabbaabbbbaaabbbbbbaabbbabbababbbabaaabb"
-          "baaaabbabababbababbabbabbbaababaaabaaabbabaaaabbbbabaaabaababbbaabba"
-          "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbbbaabbbbabba"
-          "abaabbaabaaaaabaaabaabbbaaa",
-          "aaabbabaaabababaabbbbbbbabbbaaabbbabbabbbbbabaaaabaaaabaabbbaabbbbbb"
-          "bbbbbaabababaaabbaaaaaabbbabaaaaabababbbbabbbaaaabbbabbaaabbbabbbabb"
-          "aababbbaababaaaaabaaaaababaabbaaaaaaabbbaaaaaaaaaaaaaabbaabbababbabb"
-          "babababbbaabaabbabbabbbaaaabbaaaababaabaababaabbaababaaaabbbbbbbbaba"
-          "babbbbbaaaabbababaabaaababbababaababaaaaaababbabaabaabbbabaaaabbbabb"
-          "aaabbbaabbbbbaababbabababbabbbaaaaabbaaabaaabaabbaabbbbbbbbaaabaaaab"
-          "babbbbbbaaabbbbaababbbabbbbbaabbabaabbbaaaaababaaaaababbbabbabbabbbb"
-          "bbababaaabbaaaaaabbabbaabaaabbaabababbbbaabbaabbabaaaabbbabbbaabaabb"
-          "baaababbbbbaaabbabbbaabbbbaaaaaabababababbaababbbabaaaabbbaaabbbbaba"
-          "baaaaaabbbabbbbbaabaaaaabbabbaabaaaabbbaaabaaabbabaabaabbbababaaaabb"
-          "babbabaabababaaaaabbabbbaabbbaababbaaaababbbabbaaabababbbaaabbababab"
-          "baaabbbbbbbbaaabbbbaabababaaaaaabaaabbabaabbabbababbaabaaabaababaaab"
-          "babaabbbbbbbbbbbbbbaabaababbbababaaaaaaabababbbbababbaababababbbabbb"
-          "abbaabaaaabbabaaaabbbaabababaaabaaabbabbababbaaaaaababbababbaababbbb"
-          "aababbbbbbaabbbabaabbbbaabaaababbabaaaaabbbabaabaaababaaaaaaaaabaaab"
-          "bbabbbbabaaabaaaabbaaaaabbabaabbaabbbbaaabbbbbbaabbbabbababbbabaaabb"
-          "baaaabbabababbababbabbaaaabbabbaaabaaabbabaaaabbbbabaaabaababbbaabba"
-          "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbbbaabbbbabba"
-          "abaabbaabaaaaabaaabaabbbaaa, "
-          "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaababbabbababaaa"
-          "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaaaaabbababab"
-          "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaabbbaababbbba"
-          "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaabbbbabbbbbbb"
-          "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbbabbaabbbbaba"
-          "aaabbabbabbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbabaabbabbbbabb"
-          "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaabbabbbbaabb"
-          "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababbbabaaababbb"
-          "bbabaaabbabaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaaaabaabababb"
-          "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbbbabaabbbabb"
-          "bbaabaaaaabbabaabbabbaabbbabaabbbaaaaabbababbbaaaabaabababaaabbbbbaa"
-          "abbaaababbbaabaaaaaaababbbbabbbabaaaababbaababaababaaababbabbbabbaba"
-          "ababbbaabbaaabbabaabaaaabbbbbababbbbabbababbbabaabaabbbabbabbabaaaaa"
-          "abbabaababaaaaabbabbaaaaaaabaaaabbaaabaababbaababaaabbbbaaaababaaaba"
-          "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbbabaabbbbaba"
-          "abbbaabbbbbabbbbbaabababbbbaabbbbbabbbbabbaaababbabaabbabababaababab"
-          "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaababbaababbb"
-          "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabbabbbabbbbaab"
-          "aabbbaabbbaaabaaaabb",
-          "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaababbabbababaaa"
-          "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaaaaabbababab"
-          "aaabbabbbbbbabbbbbaababbbbaabaabaaabbababaaabaaabbbaaaaabbbaababbbba"
-          "abaaabbababaabababbababbbababbbabbababbabaabbbabbabbaaaabbbbabbbbbbb"
-          "ababbbaabaaaabaaaaaaaaabbabbabaaaabbbaabbaababababaaabbbabbaabbbbaba"
-          "bbbaabababbaaaababababaabbbbaabbababbbbbabbabbbbbbaabbabaabbabbbbabb"
-          "abbbaabaaabbbbbbabbaaabbaaabbbababaabababbabbbaababaabbaabbabbbbaabb"
-          "babbbbaabaabaaaabaaabbbbaaaaaaaabbbbbbabaabbabbbaaabababbbabaaababbb"
-          "bbabbbbaabaaabbbbbabbabaababbabbabbabaabbbaaaaabbbaabbbaaaabaabababb"
-          "bbabaaaaabbabaaaabbbaabbbbbbbabbabbababbaaaaabababaaabbbbbabaabbbabb"
-          "bbaabaabbbaabaaabbabbaabbbabaabbbaaaaabbababbbaaaabaabababaaabbbbbaa"
-          "abbaaabaaaabbabaaaaaababbbbabbbabaaaababbaababaababaaababbabbbabbaba"
-          "ababbbaabbbbbaabaaabaaaabbbbbababbbbabbababbbabaabaabbbabbabbabaaaaa"
-          "abbabaababaabbbaababaaaaaaabaaaabbaaabaababbaababaaabbbbaaaababaaaba"
-          "abbabababaababaaabbabbbaababbbabbbbabbaaaabaabbbababbbbbbabaabbbbaba"
-          "abbbaabbbbbabbaaabbabbabbbbaabbbbbabbbbabbaaababbabaabbabababaababab"
-          "bbbbaaaabbaaabaaaaabbabaaaaaaaabbbaababbaaabbbabbbbaaabaababbaababbb"
-          "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabbabbbabbbbaab"
-          "aabbbaabbbaaabaaaabb, "
-          "aaabbabababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbbbbbbbbabbab"
-          "abbbbaabaabababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabbbbbaaaaabba"
-          "babaaabbabbbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbbbbabaaabbbb"
-          "bbaabaababaabbbbaabaabbabbbbbababaaababababbababaabaabbbbbbbbabaabaa"
-          "baaabbabaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaaabababbbaba"
-          "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaaabbbbabbabb"
-          "abbbabbbaabaabbaabbbbaaabbaabbaabaabaababbabababbbbbabaaaaaaababaaba"
-          "bbababbbbbaababbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbbbbbabaabaab"
-          "bbaababaaaaabbabbabbbbabbbbbaababbbbbbbbaabbaabbababbbabaaabbbababaa"
-          "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabbbabaaabaaab"
-          "aabbbbaabaaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaaabbaaababbb"
-          "bbbbbaaabbababbabaabaabababaabaabaaabaabbbaabaabbaabaaaabaabbbbbbbaa"
-          "bbaaabaaaabbabbabbabbaaabbabaaaabbbbababbbaabaaaabbbababbbbababbbaaa"
-          "baababbbaaaabbabababbbbbbaaaabaabaaababbaaabbaaaaabaaaaabbabbaababab"
-          "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaabbbabbabaaab"
-          "abbabaaaabbbbbbaabaaaabaaaaaababbbbbaaaabbabbbbbbbbabbbabbababbbabaa"
-          "bbbaaaaaaabaaaaaabbababbbaabbaaabaaaaaabbbababbaabbbaaaabbaabaaaaaab"
-          "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbbabbabbabaab"
-          "abababbabbbab, "
-          "bbbaabaababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbbbbbbbbabbab"
-          "abaaabbababababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabbbbbaaaaabba"
-          "babbbbaababbbabaabbabaababaabababaaabbbbbaaabaabbbbaabbbbbbabaaabbba"
-          "aabbabababaabbbbaabaabbabbbbbababaaababababbababaabaabbbbbbbbabaabaa"
-          "bbbbaabaaababbabbabbbbbbaaabababbabbbbbbababaabbaaabaabaaabababbbaba"
-          "babbbbaabaababaababababaabbbabababbbbabbbbabbbaaaabaaaaaaabbbbabbabb"
-          "abbbaaaabbababbaabbbbaaabbaabbaabaabaababbabababbbbbabaaaaaaababaaba"
-          "bbababbaaabbabbbaaaabaaaabbbbbbabbbabbbaabbabababbbabbbbbbbbabaabaab"
-          "bbaababaabbbaabababbbbabbbbbaababbbbbbbbaabbaabbababbbabaaabbbababaa"
-          "aaaaabbabbbbaabaabbabbbbabaabababbaaabbbbbaaabaaabbbaaabbbabaaabaaab"
-          "aabaaabbabaaaaaaaabbbbbaabbaabbbabbaaabaabbbbababaaaaabaaabbaaababbb"
-          "bbbbbbbbaabaabbabaabaabababaabaabaaabaabbbaabaabbaabaaaabaabbbbbbbaa"
-          "bbaaababbbaabababbabbaaabbabaaaabbbbababbbaabaaaabbbababbbbababbbaaa"
-          "baababbbabbbaabaababbbbbbaaaabaabaaababbaaabbaaaaabaaaaabbabbaababab"
-          "abaabbbabbaaabbababaaaababbbbabbabbabababaabbbbabbaabaaabbbabbabaaab"
-          "abbabaaaabbbaaabbabaaabaaaaaababbbbbaaaabbabbbbbbbbabbbabbababbbabaa"
-          "bbbaaaaaaabaaabbbaabaabbbaabbaaabaaaaaabbbababbaabbbaaaabbaabaaaaaab"
-          "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbbabbabbabaab"
-          "abababbabbbab, "
-          "aaabbabaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabbabaaabbabba"
-          "babbbaababbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaabaaabaabaaaba"
-          "abbabbbaabaababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaaabbbbbbabab"
-          "bababbbbbaabababbbabbabaaabbabbabaaabbbbabaaaaababbbbabbbbabbabaabba"
-          "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbbbbbbaababab"
-          "ababbbbbbbaabababababaabbbbbaabbabbbbbaabbabbbbbaabaabbbbbabaaaaaaab"
-          "aabbbababbbbaabaaabbbaaaaaabbbabbabaaabbbabaababbabbbaaabababbabaaba"
-          "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababaaaaaaaaaaba"
-          "aababbaababbaaaabbabbbaabaaababaaabaabaaabbbaabbababbabaaaaaaabababb"
-          "abbaabbbbabbaabbbbaabaaabbaabaaaaababbabbaaaabbaabaabbabaababaabaaaa"
-          "aabbbbaabababbbabaaabbabaabbaababbaabaaabaababbabbbbaabbaaabbbbbabba"
-          "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaaababbaabbab"
-          "babbbaabaaaabbababaabbbaababaaaabbbaaabaaaaaaaaaaaaabbabaabaaabbabbb"
-          "bbabbababaababaaabbbbbbaabababbabbbbbbbbabbbaaaaabbbababaabaaabbbaba"
-          "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabbabaaaabbabaa"
-          "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaabaaaabbaaba"
-          "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbbabbbaabbbbab"
-          "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaababbbababaa"
-          "abaaaaaabbabbaaabaaa, "
-          "bbbaabaaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabbabaaabbabba"
-          "baaaabbabbbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaabaaabaabaaaba"
-          "abbaaaabbabababbbbabbbaaababbababaaaaaaabbbabbbbbaaaabbaaabbbbbbabab"
-          "bababbaaabbabbabbbabbabaaabbabbabaaabbbbabaaaaababbbbabbbbabbabaabba"
-          "aaaaabbbbbaabaababbbabbabaabbaababbabaaaaaaabbbbbabbbbbbbbbbbaababab"
-          "ababbbbaaabbabbabababaabbbbbaabbabbbbbaabbabbbbbaabaabbbbbabaaaaaaab"
-          "aabbbababaaabbabaabbbaaaaaabbbabbabaaabbbabaababbabbbaaabababbabaaba"
-          "ababaabbaaaaaabbababbaaabbbabbaabaababbabaabaabaababababaaaaaaaaaaba"
-          "aababbaababbabbbaababbaabaaababaaabaabaaabbbaabbababbabaaaaaaabababb"
-          "abbaabbbbabbaabaaabbabaabbaabaaaaababbabbaaaabbaabaabbabaababaabaaaa"
-          "aabbbbaabababbbabbbbaabaaabbaababbaabaaabaababbabbbbaabbaaabbbbbabba"
-          "abbbaabaabaaaaaabbaaabbabaabbbbabbababaabbaabbbabbaaabaaaababbaabbab"
-          "babbbaabaaaabbababaaaaabbabbaaaabbbaaabaaaaaaaaaaaaabbabaabaaabbabbb"
-          "bbabbababaababaaabbbaaabbabbabbabbbbbbbbabbbaaaaabbbababaabaaabbbaba"
-          "bbaaabaaabaaaababbaaabbabbbabbbbbbabababbbaaabbabaabbabbabaaaabbabaa"
-          "aaaaaabbbbbabaabbbaaaabbababbbbbabbbbbaaaaabbabbbabaabaaabaaaabbaaba"
-          "baabbaababaabaaabbabbbbbaabaabaaaaabbaabaababbabbabbbbbbabbbaabbbbab"
-          "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaababbbababaa"
-          "abaaaaaabbabbaaabaaa",
-          "bbbaabaabbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaabaabaaabaaa"
-          "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaaabbabbbbabb"
-          "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbabbbaaabaabba"
-          "abbbbaaabbababbbbabababbaabbabbaaabbbbabbabababbbbbbabbbabbbbaaabaab"
-          "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaabaaaababaaa"
-          "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaabbabaaaababb"
-          "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaaaaabbabbbba"
-          "baabaaaaaaabbababbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaabbaabaabbaaa"
-          "abaaaabbabaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaabbaabbbbbbb"
-          "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaababbaababba"
-          "aaaababaaabbabbaababbabbababbabaaaaabbbababbababaabaaabababbbaabaaab"
-          "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbbabbaaaaaaaa"
-          "babbbaabaaabbabaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabbabbaaaabbaa"
-          "bbabbaaaabaaabbababbbbaababaabbbbbbababaabababbbabbbaaabbbabbbaabaab"
-          "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbababbaaaaababa"
-          "bbbaabbbaababbbbbaababaaababbbaabaaabaabbbaaabbbbabaaabbbbabbaaabaab"
-          "babaaabbaaabbaaaabbabaaabbbbaabaabbbabaabbbaaabbbabaaabbbaabaaaababa"
-          "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababaaaabbaaabba"
-          "baaaababbab",
-          "aaabbababbaabbababbbbabaabaaaaabaabbbbaabbbbbbbabaababbaabaabaaabaaa"
-          "abbbaabaaaabbaabbaaaabababbaaaaabbbbabbaabababbbbbabbaaaaabbabbbbabb"
-          "babbbbaababaaaaabbbbaaaabababbaaabbabaaaabaabbabaababbbabbbaaabaabba"
-          "abbbbbbbaabaabbbbabababbaabbabbaaabbbbabbabababbbbbbabbbabbbbaaabaab"
-          "aababbbaaabbababbbaabbaaabaabbabbaaaaaaaaaaabbbbabbaaabaabaaaababaaa"
-          "aabbbabaaabbababaaaaabaaaababbabaabbabbababbaabbbabbabaabbabaaaababb"
-          "babbbaaaabbbaabaaababbabaaaababbbbaaaaabaabbabaababaaaaaaaaabbabbbba"
-          "baabaaaabbbaabaabbbaabbbbaabbbbaabbbbaabaababbaabbbaaaaabbaabaabbaaa"
-          "ababbbaabaaabbbbbabababaababbbbbabbbabbaabaabbaaaaaabbaaabbaabbbbbbb"
-          "baabaaaabbabbbabbbaabbababaaabbbbbbbabbaaabbbabbaaaaaabaababbaababba"
-          "aaaababbbbaababaababbabbababbabaaaaabbbababbababaabaaabababbbaabaaab"
-          "aabbbabbbbbbaabaaaaababbbabbbabaabababbababbbabaaabbbbbbbabbaaaaaaaa"
-          "babbbaabbbbaabaaaabaabaaabbbaaaaaaaabbbbaaabaaaabaaabaabbabbaaaabbaa"
-          "bbabbaaaabbbbaabaabbbbaababaabbbbbbababaabababbbabbbaaabbbabbbaabaab"
-          "bbabaabbbababbbaababaabaababaaabbbaabbabbaaaaabbbababbababbaaaaababa"
-          "bbbaabbbaababbaaabbabbaaababbbaabaaabaabbbaaabbbbabaaabbbbabbaaabaab"
-          "babaaabbaaabbabbbaabaaaabbbbaabaabbbabaabbbaaabbbabaaabbbaabaaaababa"
-          "bbbbaabaaabbbaabaabaaabbaaaabaabbabbabaabbbaaababbbaababaaaabbaaabba"
-          "baaaababbab",
-          "aaabbabbbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaabbbbabbbbbb"
-          "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbbababbbabaaab"
-          "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababbaabbaaababba"
-          "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbbbabbbbbaaaa"
-          "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababbbabaaaaabbb"
-          "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaababaabaaabaaba"
-          "aaaaabbababaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaaabababbabba"
-          "aabbaaabbabbbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbbbabaaababba"
-          "aaaabbaaabbabbababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaabbbbbbbabab"
-          "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaabbabbaabbabb"
-          "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaababaaaabaaaaaa"
-          "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaabbabbaaabaa"
-          "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbabaabaaaaaabb"
-          "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbbaaaaaaabaaa"
-          "aaaababbaaabbbaabaaababaaabbbaaaaabaaaabbbbbbbabbbaaaababaababbababb"
-          "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaaababbbbbbab"
-          "babbababaabaaabbbbaababbbaababbabbbbabbbbbbabbbaaabbbabaaaaaabbbbaba"
-          "bbbbabaaaaabaababbbaababbabbbabaaababbaaabaabbbabaaaabbaabbbbaababaa"
-          "baabbaabaaabbaa",
-          "bbbaababbbaaabaaaabaabbaaabbabaabababaaaaabbaabbabaabbaaabbbbabbbbbb"
-          "baababaaababbbbbababababaaabbbaabbbabaaabbbbbbbaaaaabbbbababbbabaaab"
-          "bbaabababababaaabbbaabbbbbaaabbaababbbaabbbaababaaaababbaabbaaababba"
-          "baaabbababbbaaaaababaabbbbbaaaabbbaaabaabaababaaabbabbbbbbabbbbbaaaa"
-          "bbaaabbabaabbbbbaabbbbbbbaabaabbabbbbbabbbaabbbaababababbbabaaaaabbb"
-          "bbaaabbabbabaabaaaaaabbaabbbaabbbaabbbbaababaaababbbaababaabaaabaaba"
-          "aabbbaabaabaaabbbbaaabbabbabbbbbbabbaaababbbabaababbbbaaaabababbabba"
-          "aabbbbbaababbbbabbaaabaaaabbbaaabbabbababababbbbbabbbbbbbbabaaababba"
-          "aaaabbbbbaababababbbbbaabbaaaabaaababbbbabaabaabbbbabaaaabbbbbbbabab"
-          "abababaaabbabbabaaababaaabbaaababbbabaabaaaabaaaaabbabaabbabbaabbabb"
-          "bbabaabbbbaabaaaabbabbabbabbaaaaaababaaaaaabbabbaabaaababaaaabaaaaaa"
-          "aabbaabbaaaabbabaababbabbababbaabbbbababaabaaaabaaaaabaaabbabbaaabaa"
-          "aaaaaaaabbbaabaababaabbbbbaababaabbaaaabbbbabaabbabaabbabaabaaaaaabb"
-          "aababbbabaaaabbababbbbbaababbaabbbabbaabaabbbabababbaabbbaaaaaaabaaa"
-          "aaaababbaaaaaabbabaababaaabbbaaaaabaaaabbbbbbbabbbaaaababaababbababb"
-          "bbaaaabbbababbbbaabaaabbababbbabaaabbbbbaabbababbaabbbbaaababbbbbbab"
-          "babbababaabaaabaaabbabbbbaababbabbbbabbbbbbabbbaaabbbabaaaaaabbbbaba"
-          "bbbbabaaaaabaabaaaabbabbbabbbabaaababbaaabaabbbabaaaabbaabbbbaababaa"
-          "baabbaabaaabbaa",
-          "bbbaababababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabbaabaabaaabbb"
-          "abbbbaabaabbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaababababbbbabba"
-          "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaababaaabababbbb"
-          "ababaaaaabbababaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbbbaaaaaabaaa"
-          "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabbaaabbaababa"
-          "baaaabbbbaaaabbabbbbabbbbbbbaaabbaabbbbbabaabbbbababbabaaababbabbaab"
-          "bbbbbabbaaabaaabbababaabbbbaaaaababaaabaaaababaaaabbaabbaabbaaaabbbb"
-          "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababbababbabbbbb"
-          "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabbaababbabbaa"
-          "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbbaaaabababba"
-          "abaaabaabbbabbaaabbabaabaabbbaaaaaabbbbaabbaabbbaababaabbaabaaaaaabb"
-          "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabbbabaaaaabaa"
-          "babbbabaababababbbbaabaaaabbababbaabababbbababbabbbbbaaabaaaaabababb"
-          "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaabbaaaaaabaaa"
-          "aaaaaaaaaabaaaabbabbbbaababaabaababbbbbbbaababaaaaaabababbabbbabbaba"
-          "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaabaabaabbabbb"
-          "abaabbbbbbaababbaabaaaabbabbababaabbaabaabbabbbbbabaababbbbaabbabaaa"
-          "baabaababbaaabababaabbbbaababaaababbbbbbbaaaaabbbbbaababbbaaabbbbbaa"
-          "bbaabbaaaabbbabaababb",
-          "aaabbabbababaabbbabbaabbbbabbabbbbbbbaaabbaabbbbbbbaaabbaabaabaaabbb"
-          "abaaabbababbbabbaaabababbaabaaaaaaaabbbbbabbbbbbababaababababbbbabba"
-          "baaabbbaabaabbbababbabbbaaababbbabbbbbaababbaababaaaaababaaabababbbb"
-          "ababaabbbaabaabaabaabbaaaaabbbbbbabaabbabaaabaaaaabbabbbbbaaaaaabaaa"
-          "babbbbabaaabbabbbaaaabaaaabababbbbaaaabbabbbabbbbababaabbaaabbaababa"
-          "baaaabbbbabbbaababbbabbbbbbbaaabbaabbbbbabaabbbbababbabaaababbabbaab"
-          "bbbbbabbaaabbbbaabaabaabbbbaaaaababaaabaaaababaaaabbaabbaabbaaaabbbb"
-          "abaabaabaaaaaabbbaababababaabbbbbabaaabbbbaabaabbabaababbababbabbbbb"
-          "bbbabaabbabaaabaaabbabbabbbabbbabababbaaabaaabbbbbbabaabbaababbabbaa"
-          "aaaabaaabbbabbbbbaababbbbbabaababbababaabaaaaabbbbbaaabbbaaaabababba"
-          "abaaabaabbbabbbbbaabaaabaabbbaaaaaabbbbaabbaabbbaababaabbaabaaaaaabb"
-          "bbaaababaabbaaabbbaabaabaabbbbbbbbababaaaaaabbaabaabbaabbbabaaaaabaa"
-          "babbbabaababababaaabbabaaabbababbaabababbbababbabbbbbaaabaaaaabababb"
-          "babaaaababbabbbbabbbaababaababbaaaaaaaaaaababbababbbabaabbaaaaaabaaa"
-          "aaaaaaaaaabaaaabbabaaabbabbaabaababbbbbbbaababaaaaaabababbabbbabbaba"
-          "baaabaababaaaabaabbaaaaabbababaabbabaaaabbbbaabaabbabbaabaabaabbabbb"
-          "abaabbbbbbaababbaababbbaababababaabbaabaabbabbbbbabaababbbbaabbabaaa"
-          "baabaababbaaabababaabaaabbabbaaababbbbbbbaaaaabbbbbaababbbaaabbbbbaa"
-          "bbaabbaaaabbbabaababb"};
+    Kambites k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 4);
+    REQUIRE(contains(k, 01110_w, 01110_w));
+    REQUIRE(contains(
+        k, 01110233333233333323333333233333333_w, 0111023233233323333_w));
+    REQUIRE(k.finished());
+    REQUIRE(is_obviously_infinite(k));
+    REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-      for (auto const& w : words) {
-        REQUIRE(k.equal_to(k.normal_form(w), w));
-        REQUIRE(k.equal_to(w, k.normal_form(w)));
-      }
-    }
+    auto s = to<FroidurePin>(k);
+    REQUIRE(froidure_pin::minimal_factorisation(s, 100) == 0100_w);
+    using element_type = decltype(s)::element_type;
+    REQUIRE(s.position(element_type(k, 0100_w)) == 100);
+    REQUIRE(s.current_size() == 8196);
+  }
 
-  }  // namespace fpsemigroup
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "044",
+                          "large number of rules",
+                          "[quick][kambites][no-valgrind]") {
+    auto S = make<FroidurePin>({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+                                LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                                LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+    REQUIRE(S.size() == 46'656);
+    REQUIRE(S.number_of_rules() == 7'939);
+    auto     p = to<Presentation<word_type>>(S);
+    Kambites k(twosided, p);
+    REQUIRE(k.small_overlap_class() == 1);
+    REQUIRE(k.kind() == twosided);
+    REQUIRE_THROWS_AS(contains(k, 0000_w, 00_w), LibsemigroupsException);
+  }
 
-  namespace congruence {
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "075",
-                            "(cong) example 1",
-                            "[quick][kambites][fpsemigroup][fpsemi]") {
-      auto     rg = ReportGuard(REPORT);
-      Kambites k;
-      k.set_number_of_generators(2);
-      REQUIRE(k.is_quotient_obviously_infinite());
-      REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-      k.add_pair({0, 0, 0}, {0});
-      k.add_pair({0}, {1, 1});
-      REQUIRE(k.kambites().small_overlap_class() == 1);
-      REQUIRE(k.const_contains({0, 0}, {0}) == tril::unknown);
-    }
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "045",
+                          "code coverage for constructors/init",
+                          "[quick][kambites]") {
+    Kambites k;
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "076",
-                            "(cong) example 2",
-                            "[quick][kambites][cong][congruence]") {
-      auto     rg = ReportGuard(REPORT);
-      Kambites k;
-      k.set_number_of_generators(7);
-      k.add_pair({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0});
-      k.add_pair({4, 5}, {3, 6});
-      REQUIRE(k.kambites().small_overlap_class() == 4);
-      REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-      REQUIRE_THROWS_AS(k.number_of_non_trivial_classes(),
-                        LibsemigroupsException);
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
 
-      REQUIRE(k.contains({0, 1, 2, 3}, {0, 0, 0, 4, 0, 0}));
-      REQUIRE(k.contains({4, 5}, {3, 6}));
-      REQUIRE(k.contains({0, 0, 0, 0, 0, 4, 5}, {0, 0, 0, 0, 0, 3, 6}));
-      REQUIRE(k.contains({4, 5, 0, 1, 0, 1, 0}, {3, 6, 0, 1, 0, 1, 0}));
-      REQUIRE_NOTHROW(k.quotient_froidure_pin());
-    }
+    Kambites l = std::move(k);
+    REQUIRE(l.small_overlap_class() == POSITIVE_INFINITY);
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "077",
-                            "(cong) code coverage",
-                            "[quick][kambites][cong][congruence]") {
-      fpsemigroup::Kambites<std::string> k;
-      k.set_alphabet("abcd");
-      k.add_rule("ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-      k.add_rule("cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
-      Kambites l(k);
-      l.run();
-      REQUIRE(l.contains({0, 1, 1, 1, 0}, {0, 1, 1, 1, 0}));
-      REQUIRE(l.contains(
-          {0, 1, 1, 1, 0, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3,
-           2, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3},
-          {0, 1, 1, 1, 0, 2, 3, 2, 3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3}));
-      REQUIRE(l.finished());
-      REQUIRE(l.is_quotient_obviously_infinite());
-      REQUIRE(!l.is_quotient_obviously_finite());
-      REQUIRE(l.number_of_classes() == POSITIVE_INFINITY);
-      REQUIRE(l.class_index_to_word(100) == word_type({0, 1, 0, 0}));
-      REQUIRE_NOTHROW(l.quotient_froidure_pin());
-      REQUIRE(l.word_to_class_index({0, 1, 0, 0}) == 100);
-    }
+    k = l;
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    REQUIRE(l.small_overlap_class() == POSITIVE_INFINITY);
 
-    LIBSEMIGROUPS_TEST_CASE("Kambites",
-                            "078",
-                            "(cong) large number of rules",
-                            "[quick][kambites][cong][congruence]") {
-      FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-                                     LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-                                     LeastTransf<6>({0, 1, 2, 3, 4, 0})});
-      REQUIRE(S.size() == 46'656);
-      Kambites k;
-      k.set_number_of_generators(3);
-      for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
-        k.add_pair(it->first, it->second);
-      }
-      REQUIRE(k.kambites().small_overlap_class() == 1);
-    }
+    k = std::move(l);
+    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
 
-  }  // namespace congruence
+    l.init();
+    REQUIRE(l.small_overlap_class() == POSITIVE_INFINITY);
 
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    ToWord to_word(p.alphabet());
+
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
+
+    Kambites kk(twosided, std::move(p));
+    REQUIRE(kk.presentation().alphabet() == "abcdefg");
+    REQUIRE(kk.presentation().rules
+            == std::vector<std::string>({"abcd", "aaaeaa", "ef", "dg"}));
+    REQUIRE(kk.small_overlap_class() == 4);
+
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
+
+    kk.init(twosided, std::move(p));
+    REQUIRE(!kk.started());
+    REQUIRE(kk.presentation().alphabet() == "abcdefg");
+
+    p.alphabet("abcdefg");
+    kambites::add_generating_pair(kk, "abababab", "aba");
+    REQUIRE(kk.small_overlap_class() == 1);
+
+    kk.init();
+    REQUIRE(kk.presentation().rules.empty());
+    REQUIRE(kk.presentation().alphabet().empty());
+    REQUIRE(kk.generating_pairs().empty());
+
+    Presentation<word_type> pp;
+    pp.alphabet(7);
+    presentation::add_rule(pp, to_word("abcd"), to_word("aaaeaa"));
+    presentation::add_rule(pp, to_word("ef"), to_word("dg"));
+
+    Kambites kkk(twosided, pp);
+    REQUIRE(kkk.generating_pairs().empty());
+    REQUIRE(kkk.small_overlap_class() == 4);
+
+    Kambites<word_type> k2;
+    REQUIRE_THROWS_AS(
+        kambites::add_generating_pair(k2, 01011011101111_w, 0123_w),
+        LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(Kambites(onesided, p), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "046",
+                          "to_human_readable_repr",
+                          "[quick][kambites]") {
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "ce");
+    presentation::add_rule(p, "df", "dg");
+
+    Kambites k(twosided, p);
+
+    REQUIRE(to_human_readable_repr(k)
+            == "<Kambites over <semigroup presentation "
+               "with 7 letters, 2 rules, and length 10>>");
+    k.run();
+    REQUIRE(to_human_readable_repr(k)
+            == "<Kambites over <semigroup presentation "
+               "with 7 letters, 2 rules, and length 10> with small overlap "
+               "class +∞>");
+  }
 }  // namespace libsemigroups

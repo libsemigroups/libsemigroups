@@ -1,0 +1,20 @@
+#MSearchBox {
+  width: var(--searchbar-width);
+}
+
+.tabs #MSearchBox {
+  position: relative;
+}
+
+.github-corner svg {
+  fill: var(--primary-light-color);
+  color: var(--page-background-color);
+  width: 72px;
+  height: 72px;
+}
+
+#nav-tree .label[role="heading"] {
+  text-transform: uppercase;
+  color: var(--primary-dark-color);
+  font-weight: 600;
+}

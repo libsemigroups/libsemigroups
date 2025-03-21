@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,20 +25,37 @@
 #include <string>     // for operator+, char...
 #include <thread>     // for thread
 
-#include "libsemigroups/containers.hpp"  // for DynamicArray2
-#include "libsemigroups/debug.hpp"       // for LIBSEMIGROUPS_A...
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_E...
-#include "libsemigroups/string.hpp"      // for to_string
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_A...
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_E...
+
+#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
+#include "libsemigroups/detail/string.hpp"      // for to_string
 
 namespace libsemigroups {
 
   namespace {
-    std::vector<std::vector<uint32_t>>
-    process_left_right(std::vector<std::vector<int32_t>> const& left,
-                       std::vector<std::vector<int32_t>> const& right) {
-      size_t                             n = left.size();
-      std::vector<std::vector<uint32_t>> out;
-      std::vector<uint32_t>              v;
+    void throw_if_invalid_side(PBR::vector_type<int32_t> side,
+                               std::string               position) {
+      size_t n = side.size();
+      for (std::vector<int32_t> const& vec : side) {
+        for (int32_t x : vec) {
+          if (x == 0 || x < -static_cast<int32_t>(n)
+              || x > static_cast<int32_t>(n)) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "value out of bounds in the {} argument, expected values in "
+                "[-{}, -1] or [1, {}] but found {}",
+                position,
+                n,
+                n,
+                x);
+          }
+        }
+      }
+    }
+
+    void throw_if_invalid_left_right(PBR::vector_type<int32_t> left,
+                                     PBR::vector_type<int32_t> right) {
+      size_t n = left.size();
 
       if (n != right.size()) {
         LIBSEMIGROUPS_EXCEPTION("the two vectors must have the same length");
@@ -46,18 +63,30 @@ namespace libsemigroups {
       if (n > 0x40000000) {
         LIBSEMIGROUPS_EXCEPTION("too many points!");
       }
-      for (std::vector<int32_t> vec : left) {
-        v = std::vector<uint32_t>();
+
+      throw_if_invalid_side(left, std::string("1st"));
+      throw_if_invalid_side(right, std::string("2nd"));
+    }
+
+    std::vector<std::vector<int32_t>>
+    sorted_side(PBR::vector_type<int32_t> side) {
+      std::vector<std::vector<int32_t>> out(side);
+      for (std::vector<int32_t>& vec : out) {
+        if (!std::is_sorted(vec.cbegin(), vec.cend())) {
+          std::sort(vec.begin(), vec.end());
+        }
+      }
+      return out;
+    }
+
+    void process_side_no_checks(std::vector<std::vector<uint32_t>>& out,
+                                PBR::vector_type<int32_t>           side) {
+      std::vector<uint32_t> v;
+      size_t                n = side.size();
+
+      for (std::vector<int32_t> const& vec : side) {
+        v.clear();
         for (int32_t x : vec) {
-          if (x == 0 || x < -static_cast<int32_t>(n)
-              || x > static_cast<int32_t>(n)) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "value out of bounds in the 1st argument, expected values in "
-                "[%d, -1] or [1, %d] but found %d",
-                -n,
-                n,
-                x);
-          }
           if (x > 0) {
             v.push_back(static_cast<uint32_t>(x - 1));
           }
@@ -72,29 +101,14 @@ namespace libsemigroups {
         }
         out.push_back(v);
       }
-      for (std::vector<int32_t> vec : right) {
-        v = std::vector<uint32_t>();
-        for (int32_t x : vec) {
-          if (x == 0 || x < -static_cast<int32_t>(n)
-              || x > static_cast<int32_t>(n)) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "value out of bounds in the 1st argument, expected values in "
-                "[%d, -1] or [1, %d] but found %d",
-                -n,
-                n,
-                x);
-          }
-          if (x > 0) {
-            v.push_back(static_cast<uint32_t>(x - 1));
-          }
-        }
-        for (auto it = vec.rbegin(); it < vec.rend(); ++it) {
-          if (*it < 0) {
-            v.push_back(static_cast<uint32_t>(n - *it - 1));
-          }
-        }
-        out.push_back(v);
-      }
+    }
+
+    std::vector<std::vector<uint32_t>>
+    process_left_right_no_checks(PBR::vector_type<int32_t> left,
+                                 PBR::vector_type<int32_t> right) {
+      std::vector<std::vector<uint32_t>> out;
+      process_side_no_checks(out, left);
+      process_side_no_checks(out, right);
       return out;
     }
 
@@ -158,19 +172,50 @@ namespace libsemigroups {
 
   }  // namespace
 
+  std::vector<std::vector<uint32_t>>
+  detail::process_left_right(PBR::vector_type<int32_t> left,
+                             PBR::vector_type<int32_t> right) {
+    throw_if_invalid_left_right(left, right);
+    PBR::vector_type<int32_t> sorted_left(sorted_side(left));
+    PBR::vector_type<int32_t> sorted_right(sorted_side(right));
+    return process_left_right_no_checks(sorted_left, sorted_right);
+  }
+
   PBR operator*(PBR const& x, PBR const& y) {
     PBR xy(x.degree());
-    xy.product_inplace(x, y);
+    xy.product_inplace_no_checks(x, y);
     return xy;
   }
 
-  void validate(PBR const& x) {
-    size_t n = x._vector.size();
-    if (n % 2 == 1) {
-      LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
+  PBR pbr::one(size_t n) {
+    std::vector<std::vector<uint32_t>> adj;
+    adj.reserve(2 * n);
+    for (uint32_t i = 0; i < 2 * n; i++) {
+      adj.push_back(std::vector<uint32_t>());
     }
+    for (uint32_t i = 0; i < n; i++) {
+      adj[i].push_back(i + n);
+      adj[i + n].push_back(i);
+    }
+    return PBR(adj);
+  }
+
+  PBR pbr::one(PBR const& x) {
+    return pbr::one(x.degree());
+  }
+
+  void pbr::throw_if_not_even_length(PBR const& x) {
+    size_t n(x.number_of_points());
+    if (n % 2 == 1) {
+      LIBSEMIGROUPS_EXCEPTION("expected argument of even length, found {}",
+                              detail::to_string(n));
+    }
+  }
+
+  void pbr::throw_if_entry_out_of_bounds(PBR const& x) {
+    size_t n(x.number_of_points());
     for (size_t u = 0; u < n; ++u) {
-      for (auto const& v : x._vector.at(u)) {
+      for (auto const& v : x[u]) {
         if (v >= n) {
           LIBSEMIGROUPS_EXCEPTION(
               "entry out of bounds, vertex " + detail::to_string(u)
@@ -179,35 +224,43 @@ namespace libsemigroups {
         }
       }
     }
+  }
+
+  void pbr::throw_if_adjacencies_unsorted(PBR const& x) {
+    size_t n(x.number_of_points());
     for (size_t u = 0; u < n; ++u) {
-      if (!std::is_sorted(x._vector.at(u).cbegin(), x._vector.at(u).cend())) {
-        LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex ",
-                                detail::to_string(u).c_str(),
-                                " are unsorted");
+      if (!std::is_sorted(x[u].cbegin(), x[u].cend())) {
+        LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex {} are unsorted",
+                                detail::to_string(u));
       }
     }
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(PBR const& x) {
+    // TODO(2) allow different braces
+    // TODO(now) Make this better, probably by including some data from
+    // x._vector
+    return fmt::format("<PBR of degree {}>", x.degree());
   }
 
   ////////////////////////////////////////////////////////////////////////
   // Partitioned binary relations (PBRs)
   ////////////////////////////////////////////////////////////////////////
 
-  PBR::PBR(std::vector<std::vector<uint32_t>> const& vec) : _vector(vec) {}
+  PBR::PBR(PBR::vector_type<uint32_t> vec) : _vector(vec) {}
 
-  PBR::PBR(std::initializer_list<std::vector<uint32_t>> const& vec)
-      : _vector(vec) {}
+  PBR::PBR(PBR::initializer_list_type<uint32_t> vec) : _vector(vec) {}
 
   PBR::PBR(size_t degree)
       : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
                                                std::vector<uint32_t>())) {}
 
-  PBR::PBR(std::initializer_list<std::vector<int32_t>> const& left,
-           std::initializer_list<std::vector<int32_t>> const& right)
-      : PBR(process_left_right(left, right)) {}
+  PBR::PBR(PBR::initializer_list_type<int32_t> left,
+           PBR::initializer_list_type<int32_t> right)
+      : PBR(process_left_right_no_checks(left, right)) {}
 
-  PBR::PBR(std::vector<std::vector<int32_t>> const& left,
-           std::vector<std::vector<int32_t>> const& right)
-      : PBR(process_left_right(left, right)) {}
+  PBR::PBR(PBR::vector_type<int32_t> left, PBR::vector_type<int32_t> right)
+      : PBR(process_left_right_no_checks(left, right)) {}
 
   std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
     if (pbr.degree() == 0) {
@@ -246,34 +299,13 @@ namespace libsemigroups {
     return _vector.size() / 2;
   }
 
-  PBR PBR::identity() const {
-    std::vector<std::vector<uint32_t>> adj;
-    size_t                             n = this->degree();
-    adj.reserve(2 * n);
-    for (uint32_t i = 0; i < 2 * n; i++) {
-      adj.push_back(std::vector<uint32_t>());
-    }
-    for (uint32_t i = 0; i < n; i++) {
-      adj[i].push_back(i + n);
-      adj[i + n].push_back(i);
-    }
-    return PBR(adj);
+  size_t PBR::number_of_points() const noexcept {
+    return _vector.size();
   }
 
-  PBR PBR::identity(size_t n) {
-    std::vector<std::vector<uint32_t>> adj;
-    adj.reserve(2 * n);
-    for (uint32_t i = 0; i < 2 * n; i++) {
-      adj.push_back(std::vector<uint32_t>());
-    }
-    for (uint32_t i = 0; i < n; i++) {
-      adj[i].push_back(i + n);
-      adj[i + n].push_back(i);
-    }
-    return PBR(adj);
-  }
-
-  void PBR::product_inplace(PBR const& xx, PBR const& yy, size_t thread_id) {
+  void PBR::product_inplace_no_checks(PBR const& xx,
+                                      PBR const& yy,
+                                      size_t     thread_id) {
     LIBSEMIGROUPS_ASSERT(xx.degree() == yy.degree());
     LIBSEMIGROUPS_ASSERT(xx.degree() == this->degree());
     LIBSEMIGROUPS_ASSERT(&xx != this && &yy != this);
@@ -372,6 +404,51 @@ namespace libsemigroups {
         }
       }
     }
+  }
+
+  void PBR::product_inplace(PBR const& xx, PBR const& yy, size_t thread_id) {
+    if (xx.degree() != yy.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the degree of the first argument ({}) is not equal to the degree "
+          "of the second argument ({})",
+          xx.degree(),
+          yy.degree());
+    }
+    if (xx.degree() != this->degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the degree of the this ({}) is not equal to the degree "
+          "of the first argument ({})",
+          this->degree(),
+          xx.degree());
+    }
+    if (&xx == this || &yy == this) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the address of this is the same as that of one of the arguments, "
+          "expected this to be distinct from the arguments");
+    }
+    pbr::throw_if_invalid(xx);
+    pbr::throw_if_invalid(yy);
+    this->product_inplace_no_checks(xx, yy, thread_id);
+  }
+
+  std::vector<uint32_t>& PBR::at(size_t i) {
+    if (i >= this->number_of_points()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "index out of range, expected values in [0, {}) but found {}",
+          this->number_of_points(),
+          i);
+    }
+    return this->operator[](i);
+  }
+
+  std::vector<uint32_t> const& PBR::at(size_t i) const {
+    if (i >= this->number_of_points()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "index out of range, expected values in [0, {}) but found {}",
+          this->number_of_points(),
+          i);
+    }
+    return this->operator[](i);
   }
 
 }  // namespace libsemigroups

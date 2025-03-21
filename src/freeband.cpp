@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell
+// Copyright (C) 2021-2025 James D. Mitchell
 //                    Tom D. Conti-Leslie
 //                    Murray T. Whyte
 //                    Reinis Cirpons
@@ -19,6 +19,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(2):
+// * be better if the functions in this file were encapsulated in a class to
+//   avoid repeated memory allocations. This would be more inkeeping with the
+//   idioms of libsemigroups too.
+
 #include "libsemigroups/freeband.hpp"
 
 #include <algorithm>    // for max_element
@@ -29,6 +34,7 @@
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/types.hpp"      // for word_type, letter_type
 
 namespace libsemigroups {
 
@@ -36,6 +42,7 @@ namespace libsemigroups {
     using level_edges_type = std::vector<std::vector<size_t>>;
     using left_type        = std::vector<size_t>;
     using right_type       = std::vector<size_t>;
+
     template <typename T>
     bool is_standardized(T first, T last) {
       size_t m = 0;
@@ -80,7 +87,7 @@ namespace libsemigroups {
 
     template <typename T>
     void right(T first, T last, size_t const k, std::vector<size_t>& out) {
-      // TODO(later) assertions
+      // TODO(2) assertions
       static_assert(
           std::is_same<std::decay_t<T>,
                        typename word_type::const_iterator>::value

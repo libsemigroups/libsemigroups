@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(later)
-// 1) doc
+// 1) doc TODO(1)
+// 2) tpp file TODO(1)
 
 #ifndef LIBSEMIGROUPS_BITSET_HPP_
 #define LIBSEMIGROUPS_BITSET_HPP_
@@ -33,7 +33,8 @@
 #include "config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "string.hpp"     // for detail::to_string
+
+#include "detail/string.hpp"  // for detail::to_string
 
 namespace libsemigroups {
 
@@ -131,11 +132,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(first <= last);
       size_t const K = std::distance(first, last);
       if (K > size()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the size of the container is %llu, trying to initialize with %llu "
-            "items",
-            static_cast<uint64_t>(size()),
-            static_cast<uint64_t>(K))
+        LIBSEMIGROUPS_EXCEPTION("the size of the container is {}, trying to "
+                                "initialize with {} items",
+                                size(),
+                                K)
       }
       auto it = first;
       for (size_t i = 0; i < K; ++i, ++it) {

@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 Finn Smith
+// Copyright (C) 2019-2025 Finn Smith
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,27 +17,30 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "libsemigroups/presentation.hpp"
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+
 #include "libsemigroups/forest.hpp"  // for Forest
-#include "test-main.hpp"             // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("Forest", "001", "test forest", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Forest", "000", "test forest", "[quick]") {
     Forest forest(100);
     REQUIRE(forest.number_of_nodes() == 100);
     for (size_t i = 1; i < 100; ++i) {
-      forest.set(i, i - 1, i * i % 7);
+      forest.set_parent_and_label(i, i - 1, i * i % 7);
     }
-    REQUIRE_THROWS_AS(forest.set(0, -1, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(forest.set_parent_and_label(0, -1, 0),
+                      LibsemigroupsException);
 
     for (size_t i = 1; i < 100; ++i) {
       REQUIRE(forest.label(i) == i * i % 7);
       REQUIRE(forest.parent(i) == i - 1);
     }
     REQUIRE(
-        std::vector<size_t>(forest.cbegin_parent(), forest.cend_parent())
+        forest.parents()
         == std::vector<size_t>(
             {UNDEFINED, 0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
              14,        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -46,7 +49,9 @@ namespace libsemigroups {
              59,        60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
              74,        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
              89,        90, 91, 92, 93, 94, 95, 96, 97, 98}));
-    REQUIRE_NOTHROW(forest.clear());
+    REQUIRE(to_human_readable_repr(forest)
+            == "<Forest with 100 nodes, 100 edges, and 1 root>");
+    REQUIRE_NOTHROW(forest.init());
     REQUIRE(forest.number_of_nodes() == 0);
     REQUIRE_NOTHROW(forest.add_nodes(10));
     REQUIRE(forest.number_of_nodes() == 10);
