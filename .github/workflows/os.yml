@@ -54,8 +54,6 @@ jobs:
         run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
       - name: Build libsemigroups . . .
         run: make -j4
-      - name: Build test_all . . .
-        run: make check -j4
       - name: Run the quick tests . . .
         run: ./test_all "[quick]"
   macos:
