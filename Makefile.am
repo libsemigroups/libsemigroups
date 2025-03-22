@@ -127,6 +127,8 @@ pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
@@ -851,6 +853,7 @@ EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
 EXTRA_PROGRAMS += test_word_graph
+EXTRA_PROGRAMS += test_word_graph_view
 EXTRA_PROGRAMS += test_word_range
 
 EXTRA_PROGRAMS += bench_all
@@ -946,6 +949,7 @@ test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
 test_all_SOURCES += tests/test-word-graph.cpp
+test_all_SOURCES += tests/test-word-graph-view.cpp
 test_all_SOURCES += tests/test-word-range.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
@@ -1222,6 +1226,10 @@ test_ukkonen_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
 test_word_graph_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+
+test_word_graph_view_SOURCES =  tests/test-word-graph-view.cpp
+test_word_graph_view_SOURCES += tests/test-main.cpp
+test_word_graph_view_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
