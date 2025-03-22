@@ -7,5 +7,5 @@ Name: @PACKAGE_NAME@
 Description: C++ library for semigroups and monoids
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lsemigroups
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${includedir}/libsemigroups
 Requires: @eigen_PCDEP@ @fmt_PCDEP@
