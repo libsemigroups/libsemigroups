@@ -191,7 +191,8 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] node_type target() const noexcept {
-        if (_it == cend_pilo(_it.word_graph()) && _length == UNDEFINED) {
+        if (_it == const_pilo_iterator<Node>(&_it.word_graph(), 0, 0, 0)
+            && _length == UNDEFINED) {
           return UNDEFINED;
         }
         return _it.target();
@@ -337,10 +338,11 @@ namespace libsemigroups {
                              size_type                   max)
           : _count(source == UNDEFINED
                        ? 0
-                       : number_of_paths(*ptr, source, target, min, max)),
+                       //  : number_of_paths(*ptr, source, target, min, max)),
+                       : 0),
             _it(ptr, source, min, max),
             _target(target),
-            _end(cend_pislo(*ptr)) {
+            _end(const_pislo_iterator<Node>(ptr, UNDEFINED, 0, 0)) {
         operator++();
       }
 

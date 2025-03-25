@@ -155,20 +155,21 @@ namespace libsemigroups {
           _max(max),
           _source(source) {
       if (_length != UNDEFINED) {
-        _it = cbegin_pilo(*ptr, source, _length, _length + 1);
+        _it = const_pilo_iterator<Node>(ptr, source, _length, _length + 1);
       } else {
-        _it = cend_pilo(*ptr);
+        _it = const_pilo_iterator<Node>(ptr, 0, 0, 0);
       }
     }
 
     template <typename Node>
     const_pislo_iterator<Node> const& const_pislo_iterator<Node>::operator++() {
       ++_it;
-      if (_it == cend_pilo(_it.word_graph())) {
+      if (_it == const_pilo_iterator<Node>(&_it.word_graph(), 0, 0, 0)) {
         if (_length < _max - 1) {
           ++_length;
-          _it = cbegin_pilo(_it.word_graph(), _source, _length, _length + 1);
-          if (_it == cend_pilo(_it.word_graph())) {
+          _it = const_pilo_iterator<Node>(
+              &_it.word_graph(), _source, _length, _length + 1);
+          if (_it == const_pilo_iterator<Node>(&_it.word_graph(), 0, 0, 0)) {
             _length = UNDEFINED;
           }
         } else {

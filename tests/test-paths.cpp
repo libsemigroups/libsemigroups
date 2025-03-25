@@ -336,11 +336,12 @@ namespace libsemigroups {
     p.target(UNDEFINED);
     REQUIRE((p | count()) == 262'143);
 
-    REQUIRE(number_of_paths(wg, 0, 4, 0, N) == 131'062);
-    REQUIRE(number_of_paths(wg, 0, 4, 10, N) == 130'556);
-    REQUIRE(number_of_paths(wg, 4, 1, 0, N) == 0);
-    REQUIRE(number_of_paths(wg, 0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
-    REQUIRE(number_of_paths(wg, 0, 0, 10) == 1'023);
+    REQUIRE(paths::number_of_paths(wg, 0, 4, 0, N) == 131'062);
+    REQUIRE(paths::number_of_paths(wg, 0, 4, 10, N) == 130'556);
+    REQUIRE(paths::number_of_paths(wg, 4, 1, 0, N) == 0);
+    REQUIRE(paths::number_of_paths(wg, 0, 0, POSITIVE_INFINITY)
+            == POSITIVE_INFINITY);
+    REQUIRE(paths::number_of_paths(wg, 0, 0, 10) == 1'023);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "005", "#4", "[quick]") {
@@ -553,33 +554,33 @@ namespace libsemigroups {
                                        {UNDEFINED, 5},
                                        {3}});
 
-    REQUIRE_THROWS_AS(cbegin_pstilo(wg, 1, 6), LibsemigroupsException);
-    REQUIRE_THROWS_AS(cbegin_pstilo(wg, 6, 1), LibsemigroupsException);
-    REQUIRE(cbegin_pstilo(wg, 2, 1) == cend_pstilo(wg));
-    REQUIRE(cbegin_pstilo(wg, 0, 3, 10, 1) == cend_pstilo(wg));
+    REQUIRE_THROWS_AS(paths::cbegin_pstilo(wg, 1, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(paths::cbegin_pstilo(wg, 6, 1), LibsemigroupsException);
+    REQUIRE(paths::cbegin_pstilo(wg, 2, 1) == paths::cend_pstilo(wg));
+    REQUIRE(paths::cbegin_pstilo(wg, 0, 3, 10, 1) == paths::cend_pstilo(wg));
 
-    REQUIRE_THROWS_AS(cbegin_pstislo(wg, 1, 6), LibsemigroupsException);
-    REQUIRE_THROWS_AS(cbegin_pstislo(wg, 6, 1), LibsemigroupsException);
-    REQUIRE(cbegin_pstislo(wg, 2, 1) == cend_pstislo(wg));
-    REQUIRE(cbegin_pstislo(wg, 0, 3, 10, 1) == cend_pstislo(wg));
+    REQUIRE_THROWS_AS(paths::cbegin_pstislo(wg, 1, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(paths::cbegin_pstislo(wg, 6, 1), LibsemigroupsException);
+    REQUIRE(paths::cbegin_pstislo(wg, 2, 1) == paths::cend_pstislo(wg));
+    REQUIRE(paths::cbegin_pstislo(wg, 0, 3, 10, 1) == paths::cend_pstislo(wg));
 
-    REQUIRE_THROWS_AS(cbegin_pilo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pilo(wg, 0, 1, 1) == cend_pilo(wg));
-    REQUIRE_THROWS_AS(cbegin_pislo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pislo(wg, 0, 1, 1) == cend_pislo(wg));
+    REQUIRE_THROWS_AS(paths::cbegin_pilo(wg, 6), LibsemigroupsException);
+    REQUIRE(paths::cbegin_pilo(wg, 0, 1, 1) == paths::cend_pilo(wg));
+    REQUIRE_THROWS_AS(paths::cbegin_pislo(wg, 6), LibsemigroupsException);
+    REQUIRE(paths::cbegin_pislo(wg, 0, 1, 1) == paths::cend_pislo(wg));
 
-    REQUIRE_THROWS_AS(cbegin_pilo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pilo(wg, 0, 1, 1) == cend_pilo(wg));
+    REQUIRE_THROWS_AS(paths::cbegin_pilo(wg, 6), LibsemigroupsException);
+    REQUIRE(paths::cbegin_pilo(wg, 0, 1, 1) == paths::cend_pilo(wg));
 
-    REQUIRE_THROWS_AS(cbegin_pislo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pislo(wg, 0, 1, 1) == cend_pislo(wg));
+    REQUIRE_THROWS_AS(paths::cbegin_pislo(wg, 6), LibsemigroupsException);
+    REQUIRE(paths::cbegin_pislo(wg, 0, 1, 1) == paths::cend_pislo(wg));
 
-    verify_forward_iterator_requirements(cbegin_pilo(wg, 0));
-    verify_forward_iterator_requirements(cbegin_pislo(wg, 0));
-    verify_forward_iterator_requirements(cbegin_pilo(wg, 0));
-    verify_forward_iterator_requirements(cbegin_pislo(wg, 0));
-    verify_forward_iterator_requirements(cbegin_pstilo(wg, 0, 1));
-    verify_forward_iterator_requirements(cbegin_pstislo(wg, 0, 1));
+    verify_forward_iterator_requirements(paths::cbegin_pilo(wg, 0));
+    verify_forward_iterator_requirements(paths::cbegin_pislo(wg, 0));
+    verify_forward_iterator_requirements(paths::cbegin_pilo(wg, 0));
+    verify_forward_iterator_requirements(paths::cbegin_pislo(wg, 0));
+    verify_forward_iterator_requirements(paths::cbegin_pstilo(wg, 0, 1));
+    verify_forward_iterator_requirements(paths::cbegin_pstislo(wg, 0, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "009", "pstilo corner case", "[quick]") {
@@ -625,23 +626,23 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
-                          "010",
+                          "number_of_paths",
                           "number_of_paths corner cases",
                           "[quick]") {
     WordGraph<size_t> wg;
-    REQUIRE_THROWS_AS(number_of_paths(wg, 0, 0, POSITIVE_INFINITY),
+    REQUIRE_THROWS_AS(paths::number_of_paths(wg, 0, 0, POSITIVE_INFINITY),
                       LibsemigroupsException);
     size_t const n = 20;
     wg.add_to_out_degree(1);
     word_graph::add_cycle(wg, n);
-    REQUIRE(number_of_paths(wg, 10) == POSITIVE_INFINITY);
-    REQUIRE(number_of_paths_algorithm(wg, 10, 10, 0, POSITIVE_INFINITY)
+    REQUIRE(paths::number_of_paths(wg, 10) == POSITIVE_INFINITY);
+    REQUIRE(paths::number_of_paths_algorithm(wg, 10, 10, 0, POSITIVE_INFINITY)
             == paths::algorithm::trivial);
-    REQUIRE(number_of_paths(wg, 10, 10, 0, POSITIVE_INFINITY)
+    REQUIRE(paths::number_of_paths(wg, 10, 10, 0, POSITIVE_INFINITY)
             == POSITIVE_INFINITY);
     wg = chain(n);
-    REQUIRE(number_of_paths(wg, 10) == 10);
-    REQUIRE(number_of_paths(wg, 19) == 1);
+    REQUIRE(paths::number_of_paths(wg, 10) == 10);
+    REQUIRE(paths::number_of_paths(wg, 19) == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
@@ -733,7 +734,8 @@ namespace libsemigroups {
     for (auto s = wg.cbegin_nodes(); s != wg.cend_nodes(); ++s) {
       for (size_t min = 0; min < wg.number_of_nodes(); ++min) {
         for (size_t max = 0; max < wg.number_of_nodes(); ++max) {
-          REQUIRE(number_of_paths(wg, *s, min, max) == expected[*s][min][max]);
+          REQUIRE(paths::number_of_paths(wg, *s, min, max)
+                  == expected[*s][min][max]);
           p.source(*s).min(min).max(max);
           REQUIRE(p.count() == expected[*s][min][max]);
         }
@@ -744,7 +746,7 @@ namespace libsemigroups {
     p.source(0).target(3).min(0).max(2);
     REQUIRE((p | to_vector()) == std::vector({0_w, 2_w}));
 
-    REQUIRE(number_of_paths(wg, 0, 3, 0, 2, paths::algorithm::acyclic)
+    REQUIRE(paths::number_of_paths(wg, 0, 3, 0, 2, paths::algorithm::acyclic)
             == (p | count()));
 
     for (auto s = wg.cbegin_nodes(); s != wg.cend_nodes(); ++s) {
@@ -752,15 +754,16 @@ namespace libsemigroups {
         for (size_t min = 0; min < N; ++min) {
           for (size_t max = min; max < N; ++max) {
             p.source(*s).target(*t).min(min).max(max);
-            REQUIRE(number_of_paths(wg, *s, *t, min, max) == (p | count()));
+            REQUIRE(paths::number_of_paths(wg, *s, *t, min, max)
+                    == (p | count()));
           }
         }
       }
     }
   }
 
-  // This test is marginally slower using Paths rather than cbegin_pstilo etc,
-  // seemily because of the use of std::variant in Paths (according to
+  // This test is marginally slower using Paths rather than paths::cbegin_pstilo
+  // etc, seemily because of the use of std::variant in Paths (according to
   // Instruments)
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "012",
@@ -772,7 +775,7 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(number_of_paths(wg, 0) == std::pow(2, n) - 1);
+    REQUIRE(paths::number_of_paths(wg, 0) == std::pow(2, n) - 1);
 
     Paths p(wg);
     p.order(Order::lex);
@@ -781,15 +784,15 @@ namespace libsemigroups {
       for (node_type min = 0; min < n; ++min) {
         for (size_t max = min; max < n; ++max) {
           p.source(*s).min(min).max(max);
-          REQUIRE(number_of_paths(wg, *s, min, max) == (p | count()));
+          REQUIRE(paths::number_of_paths(wg, *s, min, max) == (p | count()));
         }
       }
     }
-    REQUIRE(number_of_paths_algorithm(wg, 0, 1, 0, 1)
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0, 1, 0, 1)
             == paths::algorithm::acyclic);
 
     p.source(0).target(1).min(0).max(1);
-    REQUIRE(number_of_paths(wg, 0, 1, 0, 1) == (p | count()));
+    REQUIRE(paths::number_of_paths(wg, 0, 1, 0, 1) == (p | count()));
     REQUIRE(p.count() == (p | count()));
 
     for (auto s = wg.cbegin_nodes(); s != wg.cend_nodes(); ++s) {
@@ -797,7 +800,8 @@ namespace libsemigroups {
         for (node_type min = 0; min < n; ++min) {
           for (size_t max = min; max < n; ++max) {
             p.source(*s).target(*t).min(min).max(max);
-            REQUIRE(number_of_paths(wg, *s, *t, min, max) == (p | count()));
+            REQUIRE(paths::number_of_paths(wg, *s, *t, min, max)
+                    == (p | count()));
           }
         }
       }
@@ -813,16 +817,17 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(number_of_paths_algorithm(wg, 0) == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0) == std::pow(2, n) - 1);
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0)
+            == paths::algorithm::acyclic);
+    REQUIRE(paths::number_of_paths(wg, 0) == std::pow(2, n) - 1);
 
     // The following tests for code coverage
     wg.target(19, 0, 0);
-    REQUIRE(
-        number_of_paths(wg, 0, 0, 0, POSITIVE_INFINITY, paths::algorithm::dfs)
-        == POSITIVE_INFINITY);
+    REQUIRE(paths::number_of_paths(
+                wg, 0, 0, 0, POSITIVE_INFINITY, paths::algorithm::dfs)
+            == POSITIVE_INFINITY);
     // 0 not reachable from 10
-    REQUIRE(number_of_paths(
+    REQUIRE(paths::number_of_paths(
                 wg, 10, 0, 0, POSITIVE_INFINITY, paths::algorithm::matrix)
             == 0);
   }
@@ -838,7 +843,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_reachable(wg, 1, 0));
     REQUIRE(word_graph::is_reachable(wg, 0, 1));
     REQUIRE(word_graph::is_reachable(wg, 0, 0));
-    REQUIRE(number_of_paths(wg, 0, 0, 401) != 0);
+    REQUIRE(paths::number_of_paths(wg, 0, 0, 401) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
@@ -867,12 +872,15 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(wg));
     REQUIRE(!word_graph::is_complete(wg));
 
-    REQUIRE(number_of_paths_algorithm(wg, 0, 0, 16)
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0, 0, 16)
             == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0, 0, 30) == 9);
-    REQUIRE(number_of_paths(wg, 1, 0, 10, paths::algorithm::acyclic) == 6);
-    REQUIRE(number_of_paths(wg, 1, 0, 10, paths::algorithm::matrix) == 6);
-    REQUIRE(number_of_paths(wg, 1, 9, 0, 10, paths::algorithm::matrix) == 3);
+    REQUIRE(paths::number_of_paths(wg, 0, 0, 30) == 9);
+    REQUIRE(paths::number_of_paths(wg, 1, 0, 10, paths::algorithm::acyclic)
+            == 6);
+    REQUIRE(paths::number_of_paths(wg, 1, 0, 10, paths::algorithm::matrix)
+            == 6);
+    REQUIRE(paths::number_of_paths(wg, 1, 9, 0, 10, paths::algorithm::matrix)
+            == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
@@ -898,26 +906,29 @@ namespace libsemigroups {
     REQUIRE(!word_graph::is_acyclic(wg));
     REQUIRE(word_graph::is_complete(wg));
 
-    REQUIRE(number_of_paths_algorithm(wg, 0) == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0) == POSITIVE_INFINITY);
-    REQUIRE_THROWS_AS(number_of_paths(wg, 0, 0, 10, paths::algorithm::acyclic),
-                      LibsemigroupsException);
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0)
+            == paths::algorithm::acyclic);
+    REQUIRE(paths::number_of_paths(wg, 0) == POSITIVE_INFINITY);
     REQUIRE_THROWS_AS(
-        number_of_paths(wg, 1, 9, 0, 10, paths::algorithm::acyclic),
+        paths::number_of_paths(wg, 0, 0, 10, paths::algorithm::acyclic),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        paths::number_of_paths(wg, 1, 9, 0, 10, paths::algorithm::acyclic),
         LibsemigroupsException);
 
     wg = binary_tree(n);
-    REQUIRE(number_of_paths_algorithm(wg, 0) == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0) == 1023);
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0)
+            == paths::algorithm::acyclic);
+    REQUIRE(paths::number_of_paths(wg, 0) == 1023);
 
     word_graph::add_cycle(wg, n);
     wg.target(0, 0, n + 1);
     REQUIRE(!word_graph::is_acyclic(wg));
     REQUIRE(!word_graph::is_complete(wg));
-    REQUIRE(number_of_paths(wg, 1) == 511);
-    REQUIRE(number_of_paths_algorithm(wg, 1, 0, POSITIVE_INFINITY)
+    REQUIRE(paths::number_of_paths(wg, 1) == 511);
+    REQUIRE(paths::number_of_paths_algorithm(wg, 1, 0, POSITIVE_INFINITY)
             == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 1, 0, POSITIVE_INFINITY) == 511);
+    REQUIRE(paths::number_of_paths(wg, 1, 0, POSITIVE_INFINITY) == 511);
     REQUIRE(word_graph::topological_sort(wg).empty());
     REQUIRE(*std::find_if(wg.cbegin_nodes(), wg.cend_nodes(), [&wg](size_t m) {
       return word_graph::topological_sort(wg, m).empty();
@@ -944,14 +955,15 @@ namespace libsemigroups {
     Paths p(wg);
     p.order(Order::lex).source(0).min(0).max(10);
     REQUIRE((p | count()) == 6'858);
-    REQUIRE(number_of_paths_algorithm(wg, 0, 0, 10)
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0, 0, 10)
             == paths::algorithm::matrix);
-    REQUIRE(number_of_paths(wg, 0, 0, 10) == 6'858);
-    REQUIRE_THROWS_AS(number_of_paths(wg, 1, 0, 10, paths::algorithm::trivial),
-                      LibsemigroupsException);
-    REQUIRE(number_of_paths_algorithm(wg, 0, 10, 12)
+    REQUIRE(paths::number_of_paths(wg, 0, 0, 10) == 6'858);
+    REQUIRE_THROWS_AS(
+        paths::number_of_paths(wg, 1, 0, 10, paths::algorithm::trivial),
+        LibsemigroupsException);
+    REQUIRE(paths::number_of_paths_algorithm(wg, 0, 10, 12)
             == paths::algorithm::matrix);
-    REQUIRE(number_of_paths(wg, 0, 10, 12) == 35300);
+    REQUIRE(paths::number_of_paths(wg, 0, 10, 12) == 35300);
 
     auto checker1 = [&wg](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
@@ -969,19 +981,19 @@ namespace libsemigroups {
     REQUIRE(distinct_words.size() == 35'300);
     REQUIRE((p | count()) == 35'300);
 
-    REQUIRE(number_of_paths_algorithm(wg, 1, 5, 0, 10)
+    REQUIRE(paths::number_of_paths_algorithm(wg, 1, 5, 0, 10)
             == paths::algorithm::trivial);
-    REQUIRE(number_of_paths(wg, 1, 5, 0, 10) == 0);
+    REQUIRE(paths::number_of_paths(wg, 1, 5, 0, 10) == 0);
 
     p.source(1).target(5).min(0).max(10);
     REQUIRE(0 == (p | count()));
-    REQUIRE(number_of_paths(wg, 1, 1, 0, 10) == 1404);
+    REQUIRE(paths::number_of_paths(wg, 1, 1, 0, 10) == 1404);
     REQUIRE_THROWS_AS(
-        number_of_paths(wg, 1, 1, 0, 10, paths::algorithm::trivial),
+        paths::number_of_paths(wg, 1, 1, 0, 10, paths::algorithm::trivial),
         LibsemigroupsException);
 
     p.source(1).target(1).min(0).max(10);
-    REQUIRE(number_of_paths(wg, 1, 1, 0, 10)
+    REQUIRE(paths::number_of_paths(wg, 1, 1, 0, 10)
             == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
@@ -1000,10 +1012,11 @@ namespace libsemigroups {
     wg.target(0, 0, 1);
     wg.target(1, 0, 0);
 
-    REQUIRE(number_of_paths(
+    REQUIRE(paths::number_of_paths(
                 wg, 0, 1, 0, POSITIVE_INFINITY, paths::algorithm::matrix)
             == POSITIVE_INFINITY);
-    REQUIRE(number_of_paths(wg, 0, 1, 0, 10, paths::algorithm::matrix) == 5);
+    REQUIRE(paths::number_of_paths(wg, 0, 1, 0, 10, paths::algorithm::matrix)
+            == 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",

@@ -722,7 +722,7 @@ namespace libsemigroups {
                                       size_t max = POSITIVE_INFINITY) {
       s.run();
       using node_type = typename Stephen<PresentationType>::node_type;
-      return number_of_paths(
+      return paths::number_of_paths(
           s.word_graph(), node_type(0), s.accept_state(), min, max);
     }
 
@@ -758,7 +758,7 @@ namespace libsemigroups {
                                     size_t                     min = 0,
                                     size_t max = POSITIVE_INFINITY) {
       s.run();
-      return number_of_paths(s.word_graph(), 0, min, max);
+      return paths::number_of_paths(s.word_graph(), 0, min, max);
     }
 
     //! \brief Returns a \ref Dot object representing the Stephen word graph.

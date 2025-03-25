@@ -292,7 +292,7 @@ namespace libsemigroups {
       if (internal_presentation().alphabet().empty()) {
         return 1 + modifier;
       } else {
-        uint64_t result = number_of_paths(gilman_graph(), 0);
+        uint64_t result = paths::number_of_paths(gilman_graph(), 0);
         return result == POSITIVE_INFINITY ? result : result + modifier;
       }
     }

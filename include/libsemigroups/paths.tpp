@@ -312,7 +312,7 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(WordGraph<Node1> const& wg, Node2 source) {
+  uint64_t paths::number_of_paths(WordGraph<Node1> const& wg, Node2 source) {
     // Don't allow selecting the algorithm because we check
     // acyclicity anyway.
     // TODO(2): could use algorithm::dfs in some cases.
@@ -345,10 +345,10 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& wg,
-                                             Node2                   source,
-                                             size_t                  min,
-                                             size_t                  max) {
+  paths::algorithm paths::number_of_paths_algorithm(WordGraph<Node1> const& wg,
+                                                    Node2  source,
+                                                    size_t min,
+                                                    size_t max) {
     if (min >= max || word_graph::is_complete(wg)) {
       return paths::algorithm::trivial;
     }
@@ -373,16 +373,17 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(WordGraph<Node1> const& wg,
-                           Node2                   source,
-                           size_t                  min,
-                           size_t                  max,
-                           paths::algorithm        lgrthm) {
+  uint64_t paths::number_of_paths(WordGraph<Node1> const& wg,
+                                  Node2                   source,
+                                  size_t                  min,
+                                  size_t                  max,
+                                  paths::algorithm        lgrthm) {
     word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
-        return std::distance(cbegin_pilo(wg, source, min, max), cend_pilo(wg));
+        return std::distance(paths::cbegin_pilo(wg, source, min, max),
+                             paths::cend_pilo(wg));
       case paths::algorithm::matrix:
         return detail::number_of_paths_matrix(wg, source, min, max);
       case paths::algorithm::acyclic:
@@ -392,20 +393,21 @@ namespace libsemigroups {
       case paths::algorithm::automatic:
         // intentional fall through
       default:
-        return number_of_paths(wg,
-                               source,
-                               min,
-                               max,
-                               number_of_paths_algorithm(wg, source, min, max));
+        return paths::number_of_paths(
+            wg,
+            source,
+            min,
+            max,
+            paths::number_of_paths_algorithm(wg, source, min, max));
     }
   }
 
   template <typename Node1, typename Node2>
-  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& wg,
-                                             Node2                   source,
-                                             Node2                   target,
-                                             size_t                  min,
-                                             size_t                  max) {
+  paths::algorithm paths::number_of_paths_algorithm(WordGraph<Node1> const& wg,
+                                                    Node2  source,
+                                                    Node2  target,
+                                                    size_t min,
+                                                    size_t max) {
     bool acyclic = word_graph::is_acyclic(wg, source, target);
     if (min >= max || !word_graph::is_reachable(wg, source, target)
         || (!acyclic && max == POSITIVE_INFINITY)) {
@@ -421,12 +423,12 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(WordGraph<Node1> const& wg,
-                           Node2                   source,
-                           Node2                   target,
-                           size_t                  min,
-                           size_t                  max,
-                           paths::algorithm        lgrthm) {
+  uint64_t paths::number_of_paths(WordGraph<Node1> const& wg,
+                                  Node2                   source,
+                                  Node2                   target,
+                                  size_t                  min,
+                                  size_t                  max,
+                                  paths::algorithm        lgrthm) {
     word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
     word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
 
@@ -435,8 +437,8 @@ namespace libsemigroups {
         if (detail::number_of_paths_special(wg, source, target, min, max)) {
           return POSITIVE_INFINITY;
         }
-        return std::distance(cbegin_pstilo(wg, source, target, min, max),
-                             cend_pstilo(wg));
+        return std::distance(paths::cbegin_pstilo(wg, source, target, min, max),
+                             paths::cend_pstilo(wg));
       case paths::algorithm::matrix:
         return detail::number_of_paths_matrix(wg, source, target, min, max);
       case paths::algorithm::acyclic:
@@ -446,13 +448,13 @@ namespace libsemigroups {
       case paths::algorithm::automatic:
         // intentional fall through
       default:
-        return number_of_paths(
+        return paths::number_of_paths(
             wg,
             source,
             target,
             min,
             max,
-            number_of_paths_algorithm(wg, source, target, min, max));
+            paths::number_of_paths_algorithm(wg, source, target, min, max));
     }
   }
 
@@ -488,19 +490,21 @@ namespace libsemigroups {
       _position      = 0;
       if (_order == Order::shortlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
-          _current = cbegin_pstislo(*_word_graph, _source, _target, _min, _max);
-          _end     = cend_pstislo(*_word_graph);
+          _current = paths::cbegin_pstislo(
+              *_word_graph, _source, _target, _min, _max);
+          _end = paths::cend_pstislo(*_word_graph);
         } else {
-          _current = cbegin_pislo(*_word_graph, _source, _min, _max);
-          _end     = cend_pislo(*_word_graph);
+          _current = paths::cbegin_pislo(*_word_graph, _source, _min, _max);
+          _end     = paths::cend_pislo(*_word_graph);
         }
       } else if (_order == Order::lex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
-          _current = cbegin_pstilo(*_word_graph, _source, _target, _min, _max);
-          _end     = cend_pstilo(*_word_graph);
+          _current = paths::cbegin_pstilo(
+              *_word_graph, _source, _target, _min, _max);
+          _end = paths::cend_pstilo(*_word_graph);
         } else {
-          _current = cbegin_pilo(*_word_graph, _source, _min, _max);
-          _end     = cend_pilo(*_word_graph);
+          _current = paths::cbegin_pilo(*_word_graph, _source, _min, _max);
+          _end     = paths::cend_pilo(*_word_graph);
         }
       }
       return true;
@@ -514,9 +518,10 @@ namespace libsemigroups {
     if (_word_graph->number_of_nodes() == 0) {
       return num_paths;
     } else if (_target != UNDEFINED) {
-      num_paths = number_of_paths(*_word_graph, _source, _target, _min, _max);
+      num_paths
+          = paths::number_of_paths(*_word_graph, _source, _target, _min, _max);
     } else {
-      num_paths = number_of_paths(*_word_graph, _source, _min, _max);
+      num_paths = paths::number_of_paths(*_word_graph, _source, _min, _max);
     }
 
     if (_current_valid && num_paths != POSITIVE_INFINITY) {
