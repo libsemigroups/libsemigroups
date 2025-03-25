@@ -1,5 +1,18 @@
 # Changelog - version 3
 
+## v3.0.1 (released 26/03/2025)
+
+This is a minor release to fix some issues in the last release, namely:
+
+- the library version number was not updated to 3 (thanks to Jan Engelhardt for
+  pointing this out);
+- the include directories for `make install` were not correct (thanks to
+  Antonio Rojas for pointing this out);
+- the release archive contained an extra directory named
+  `libsemigroups-3.0.0/libsemigroups-3.0.0` when unpacked under some
+  circumstances, which prevented the conda feedstock from updating correctly;
+- we made some minor improvements to the doc + `README.md`.
+
 ## v3.0.0 (released 21/03/2025)
 
 This release includes a major refactor of the interfaces of the main
