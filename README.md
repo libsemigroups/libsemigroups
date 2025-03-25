@@ -124,7 +124,7 @@ See the documentation <https://libsemigroups.github.io/libsemigroups/>.
 
 ## Installation
 
-See [the installation page](install.md) for more info.
+See [the installation page](docs/install.md) for more info.
 
 ## Issues
 
