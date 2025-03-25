@@ -392,6 +392,10 @@ namespace libsemigroups {
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the word graph.
   //!
+  //! \note If `libsemigroups` is compiled with the flag `--enable-eigen`, then
+  //! this function makes use of the Eigen library for linear algebra (see
+  //! \cite Guennebaud2010aa).
+  //!
   //! \warning If the number of paths exceeds 2 ^ 64, then return value of
   //! this function will not be correct.
   template <typename Node1, typename Node2>
@@ -463,6 +467,10 @@ namespace libsemigroups {
   //! * paths::algorithm::automatic: attempts to select the fastest algorithm of
   //! the
   //!   preceding algorithms and then applies that.
+  //!
+  //! \note If `libsemigroups` is compiled with the flag `--enable-eigen`, then
+  //! this function makes use of the Eigen library for linear algebra (see
+  //! \cite Guennebaud2010aa).
   //!
   //! \warning If \p lgrthm is paths::algorithm::automatic, then it is not
   //! always the case that the fastest algorithm is used.
@@ -543,6 +551,10 @@ namespace libsemigroups {
   //! * paths::algorithm::trivial: constant (only valid in some circumstances)
   //! * paths::algorithm::automatic: attempts to select the fastest algorithm of
   //!   the preceding algorithms and then applies that.
+  //!
+  //! \note If `libsemigroups` is compiled with the flag `--enable-eigen`, then
+  //! this function makes use of the Eigen library for linear algebra (see
+  //! \cite Guennebaud2010aa).
   //!
   //! \warning If \p lgrthm is paths::algorithm::automatic, then it is not
   //! always the case that the fastest algorithm is used.

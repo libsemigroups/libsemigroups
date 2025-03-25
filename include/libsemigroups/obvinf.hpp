@@ -70,6 +70,10 @@ namespace libsemigroups {
   //! This page collects the documentation for the functionality in
   //! `libsemigroups` for checking if a finitely presented semigroup or monoid
   //! is obviously infinite.
+  //!
+  //! If `libsemigroups` is compiled with the flag `--enable-eigen`, then the
+  //! functions and classes documented on this page may make use of the Eigen
+  //! library for linear algebra (see \cite Guennebaud2010aa).
 
   //! \ingroup obvinf_group
   //!
