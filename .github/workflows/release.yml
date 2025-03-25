@@ -1,0 +1,26 @@
+name: "Release tests"
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".VERSION"
+
+jobs:
+  ppc64le:  
+    name: Ubuntu-ppc64le
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: uraimo/run-on-arch-action@v3
+        with:
+          arch: ppc64le
+          distro: ubuntu22.04
+          run: | 
+            apt-get --yes update
+            apt-get install autoconf automake libtool build-essential --yes
+            gcc --version
+            g++ --version
+            ./autogen.sh && ./configure --disable-hpcombi --disable-eigen --disable-backward
+            make test_all -j4
+            ./test_all "[quick]"
+
