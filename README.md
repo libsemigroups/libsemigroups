@@ -75,7 +75,7 @@ monoids. The main algorithms implemented in `libsemigroups` are:
 [Jean-Eric Pin]: https://www.irif.fr/~jep/
 
 `libsemigroups` is used in the [Semigroups package for
-GAP](https://semigroups.github.io/Semigroups) (see \cite Mitchell2025aa), and it
+GAP](https://semigroups.github.io/Semigroups), and it
 is possible to use `libsemigroups` directly in Python 3 via the package
 [libsemigroups_pybind11](https://libsemigroups.github.io/libsemigroups_pybind11/).
 The development version of `libsemigroups` is available on
@@ -137,7 +137,7 @@ tracker](https://github.com/libsemigroups/libsemigroups/issues).
 `libsemigroups` uses:
 
 - [Catch2](https://github.com/catchorg/Catch2) for tests and benchmarks;
-- [eigen](http://eigen.tuxfamily.org/) for some linear algebra computations \cite Guennebaud2010aa;
+- [eigen](http://eigen.tuxfamily.org/) for some linear algebra computations;
 - [fmt](https://github.com/fmtlib/fmt) for string formatting;
 - [HPCombi](https://github.com/libsemigroups/HPCombi) which uses the SSE and AVX
   instruction sets for very fast manipulation of transformations, partial
