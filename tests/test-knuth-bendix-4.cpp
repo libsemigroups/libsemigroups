@@ -425,7 +425,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_nodes() == 6'021);
     REQUIRE(ad.number_of_edges() == 7'435);
     REQUIRE(word_graph::is_acyclic(ad));
-    REQUIRE(number_of_paths(ad, 0, 0, 100) == 10'752);
+    REQUIRE(paths::number_of_paths(ad, 0, 0, 100) == 10'752);
   }
 
   ////////////////////////////////////////////////////////////////////////
