@@ -47,9 +47,9 @@ monoids. The main algorithms implemented in `libsemigroups` are:
   for permutation groups in the class template [`libsemigroups::SchreierSims`][];
 - a version of Stephen's procedure from
   ["Applications of automata theory to presentations of monoids and inverse monoids"][]
-  for finitely presented inverse semigroups and monoids (for a given word \\(w\\) this
-  procedure is for determining words equivalent to \\(w\\) or that are
-  left divisors of \\(w\\)) in the class template [`libsemigroups::Stephen`][];
+  for finitely presented inverse semigroups and monoids (for a given word `w` this
+  procedure is for determining words equivalent to `w` or that are
+  left divisors of `w`) in the class template [`libsemigroups::Stephen`][];
 - the [Todd-Coxeter algorithm][] for finitely presented semigroups and monoids;
   in the class template [`libsemigroups::ToddCoxeter`][]; see also
   ["The Todd–Coxeter algorithm for semigroups and monoids"][].
