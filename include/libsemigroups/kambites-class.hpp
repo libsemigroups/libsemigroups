@@ -65,7 +65,7 @@ namespace libsemigroups {
   //! On this page there are links to the documentation for the algorithms in
   //! `libsemigroups` for small overlap monoids by Mark %Kambites and the
   //! authors of `libsemigroups`; see \cite Kambites2009aa,
-  //! \cite Kambites2009ab, and \cite Mitchell2021aa.
+  //! \cite Kambites2009ab, and \cite Mitchell2023aa.
   //!
   //! Helper functions for the class template \ref_kambites can be found in the
   //! namespace \ref cong_common_helpers_group "congruence_common" and
