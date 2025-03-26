@@ -19,7 +19,7 @@
 #include <cstddef>  // for size_t
 #include <utility>  // for std::move
 
-#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "libsemigroups/word-graph.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
