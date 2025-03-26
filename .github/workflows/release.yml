@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - ".VERSION"
+      - "CITATION.cff"
 
 jobs:
   ppc64le:  
