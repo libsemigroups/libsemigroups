@@ -25,8 +25,9 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for add_clique etc
 
-#include "libsemigroups/forest.hpp"      // for Forest
-#include "libsemigroups/paths.hpp"       // for cbegin_pilo
+#include "libsemigroups/forest.hpp"  // for Forest
+#include "libsemigroups/paths.hpp"   // for cbegin_pilo
+#include "libsemigroups/word-graph-helpers.hpp"
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
 #include "libsemigroups/word-range.hpp"  // for literals, WordRange
 

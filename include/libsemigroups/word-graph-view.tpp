@@ -31,6 +31,10 @@ namespace libsemigroups {
       : _graph(&graph), _start(start), _end(end) {}
 
   template <typename Node>
+  WordGraphView<Node>::WordGraphView(WordGraph<Node> const& graph)
+      : _graph(&graph), _start(0), _end(graph.number_of_nodes()) {}
+
+  template <typename Node>
   WordGraphView<Node>::WordGraphView() : _graph(nullptr), _start(), _end() {}
 
   template <typename Node>

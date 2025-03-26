@@ -93,6 +93,10 @@ namespace libsemigroups {
     //! \param graph underlying WordGraphView object
     WordGraphView(WordGraph<Node> const& graph, size_type start, size_type end);
 
+    //! \brief Construct from an existing WordGraphView
+    //! \param graph underlying WordGraphView object
+    WordGraphView(WordGraph<Node> const& graph);
+
     //! \brief Copy constructor
     WordGraphView(WordGraphView<Node> const&) = default;
 

@@ -632,41 +632,6 @@ namespace libsemigroups {
       return uf.number_of_blocks() == 1;
     }
 
-    template <typename Node>
-    bool is_strictly_cyclic(WordGraph<Node> const& wg) {
-      using node_type = typename WordGraph<Node>::node_type;
-      auto const N    = wg.number_of_nodes();
-
-      if (N == 0) {
-        return true;
-      }
-
-      std::vector<bool> seen(N, false);
-      std::stack<Node>  stack;
-
-      for (node_type m = 0; m < N; ++m) {
-        stack.push(m);
-        size_t count = 0;
-        while (!stack.empty()) {
-          auto n = stack.top();
-          stack.pop();
-          if (!seen[n]) {
-            seen[n] = true;
-            if (++count == N) {
-              return true;
-            }
-            for (auto t : wg.targets_no_checks(n)) {
-              if (t < N) {
-                stack.push(t);
-              }
-            }
-          }
-        }
-        std::fill(seen.begin(), seen.end(), false);
-      }
-      return false;
-    }
-
     template <typename Node1, typename Node2>
     bool is_reachable_no_checks(WordGraph<Node1> const& wg,
                                 Node2                   source,
