@@ -217,7 +217,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "010",
                           "random/random_acyclic exceptions",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     // Too few nodes
     REQUIRE_THROWS_AS(word_graph::random_acyclic<size_t>(0, 0),
                       LibsemigroupsException);

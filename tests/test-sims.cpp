@@ -511,7 +511,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "005",
                           "partition_monoid(3)",
-                          "[quick][low-index][no-coverage]") {
+                          "[quick][low-index][no-coverage][no-valgrind]") {
     auto rg = ReportGuard(false);
     auto p  = presentation::examples::partition_monoid_HR05(3);
     REQUIRE(p.contains_empty_word());
@@ -1778,7 +1778,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "039",
                           "temperley_lieb_monoid(n) - n = 3 .. 6, minimal rep",
-                          "[quick][sims1]") {
+                          "[quick][sims1][no-valgrind]") {
     auto rg = ReportGuard(false);
 
     std::array<uint64_t, 11> const sizes
@@ -2616,7 +2616,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "069",
                           "fp example 1 (settings)",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
@@ -4171,7 +4171,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "116",
                           "1-sided ideals 2-generated free semigroup",
-                          "[quick][sims1]") {
+                          "[quick][sims1][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");

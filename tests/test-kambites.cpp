@@ -1361,7 +1361,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "040",
                           "normal form possible bug",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     // There was a bug in MultiStringView::append, that caused this
     // test to fail, so we keep this test to check that the bug in
     // MultiStringView::append is resolved.

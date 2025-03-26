@@ -4219,7 +4219,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "108",
                           "plactic (n, 1)-id monoid",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-valgrind]") {
     // auto                          r = 3, s = 2;
     // std::array<uint64_t, 7> const size = {1, 3, 14, 95, 885, 10'858,
     // 170'209};

@@ -36,7 +36,10 @@ namespace libsemigroups {
 
   using literals::operator""_w;
 
-  LIBSEMIGROUPS_TEST_CASE("Ukkonen", "000", "basic tests", "[quick][ukkonen]") {
+  LIBSEMIGROUPS_TEST_CASE("Ukkonen",
+                          "000",
+                          "basic tests",
+                          "[quick][ukkonen][no-valgrind]") {
     Ukkonen t;
     // aaeaaa$
     // abcd$'

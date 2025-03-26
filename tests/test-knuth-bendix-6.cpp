@@ -302,7 +302,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "138",
                                    "partial_transformation_monoid(4)",
-                                   "[quick][knuth-bendix]",
+                                   "[quick][knuth-bendix][no-valgrind]",
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 

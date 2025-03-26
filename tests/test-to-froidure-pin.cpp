@@ -188,7 +188,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "005",
                           "from Todd-Coxeter",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     using literals::operator""_w;
     auto            rg = ReportGuard(false);
 
@@ -265,7 +265,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "008",
                           "from ToddCoxeter",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);

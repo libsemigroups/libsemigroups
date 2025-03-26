@@ -616,7 +616,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "040",
                           "full_transformation_monoid(5) Mitchell + Whyte",
-                          "[pres-examples][quick]") {
+                          "[pres-examples][quick][no-valgrind]") {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
 
@@ -664,7 +664,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "044",
                           "partial_transformation_monoid(5) Mitchell + Whyte",
-                          "[pres-examples][quick]") {
+                          "[pres-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(false);
     size_t      n  = 5;
     ToddCoxeter tc(congruence_kind::twosided,
