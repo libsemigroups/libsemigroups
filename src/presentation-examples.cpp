@@ -2006,5 +2006,42 @@ namespace libsemigroups {
       return p;
     }
 
+    Presentation<word_type> abacus_jones_monoid_AJP25(size_t n, size_t d) {
+      using words::pow;
+      using words::operator+;
+      if (d == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must not be 0, found 0");
+      }
+
+      auto p = temperley_lieb_monoid_Eas21(n);
+      p.alphabet(2 * n - 1);
+      auto t = range(0, n - 1);
+      auto o = range(n - 1, 2 * n - 1);
+      for (size_t i = 0; i < n; ++i) {
+        presentation::add_rule(p, pow({o[i]}, d), word_type({}));
+      }
+      presentation::add_commutes_rules_no_checks(p, o, o);
+      for (size_t i = 0; i < n - 1; ++i) {
+        presentation::add_rule(p, {t[i], o[i]}, {t[i], o[i + 1]});
+        presentation::add_rule(p, {o[i], t[i]}, {o[i + 1], t[i]});
+      }
+      for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < n - 1; ++j) {
+          if (i != j && i != j + 1) {
+            presentation::add_rule(p, {o[i], t[j]}, {t[j], o[i]});
+          }
+        }
+      }
+      for (size_t i = 0; i < n - 1; ++i) {
+        for (size_t k = 1; k < d; ++k) {
+          presentation::add_rule(p,
+                                 word_type({t[i]}) + pow({o[i]}, k)
+                                     + word_type({t[i]}),
+                                 {t[i]});
+        }
+      }
+      return p;
+    }
+
   }  // namespace presentation::examples
 }  // namespace libsemigroups
