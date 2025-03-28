@@ -1013,9 +1013,6 @@ namespace libsemigroups {
     template <typename Sims1or2>
     void SimsBase<Sims1or2>::thread_runner::run(
         std::function<bool(word_graph_type const&)> hook) {
-      // TODO(2) Implement a ThreadIdGuard so that thread ids are automatically
-      // reset after they exit scope.
-      detail::reset_thread_ids();
       try {
         detail::JoinThreads joiner(_threads);
         for (size_t i = 0; i < _num_threads; ++i) {
