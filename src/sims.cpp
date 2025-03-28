@@ -1013,6 +1013,9 @@ namespace libsemigroups {
     template <typename Sims1or2>
     void SimsBase<Sims1or2>::thread_runner::run(
         std::function<bool(word_graph_type const&)> hook) {
+      // TODO(2) Implement a ThreadIdGuard so that thread ids are automatically
+      // reset after they exit scope.
+      detail::reset_thread_ids();
       try {
         detail::JoinThreads joiner(_threads);
         for (size_t i = 0; i < _num_threads; ++i) {
@@ -1023,9 +1026,6 @@ namespace libsemigroups {
         _done = true;
         throw;
       }
-      // TODO(2) Implement a ThreadIdGuard so that thread ids are automatically
-      // reset after they exit scope.
-      detail::reset_thread_ids();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1472,13 +1472,14 @@ namespace libsemigroups {
 
   }  // namespace sims
 
-  // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
+  // TODO(1): (reiniscirpons) Change this in the same way as we do for Sims1,
   // Once we add the citw stuff
   SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
+    // TODO(0) checks as promised in the doc
     _presentation = p;
-    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-    std::fill(
-        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
+    _knuth_bendices.find(_default_thread_id)
+        ->second.init(congruence_kind::twosided, _presentation)
+        .run();
     return *this;
   }
 
@@ -1510,16 +1511,11 @@ namespace libsemigroups {
 
   bool SimsRefinerIdeals::operator()(Sims1::word_graph_type const& wg) {
     // TODO(2) Make knuth bendix thread safe to use here without the bodge
-    using sims::right_generating_pairs_no_checks;
 
     node_type sink = UNDEFINED;
 
-    LIBSEMIGROUPS_ASSERT(detail::this_threads_id()
-                         < std::thread::hardware_concurrency() + 1);
-    auto const& kb = _knuth_bendices[detail::this_threads_id()];
-    for (auto const& p : right_generating_pairs_no_checks(wg)) {
-      auto const& u = p.first;
-      auto const& v = p.second;
+    auto const& kb = knuth_bendix(std::this_thread::get_id());
+    for (auto const& [u, v] : sims::right_generating_pairs_no_checks(wg)) {
       // KnuthBendix gets run on initialization, so using currently_contains
       // should be fine
       LIBSEMIGROUPS_ASSERT(knuth_bendix::currently_contains_no_checks(kb, u, v)

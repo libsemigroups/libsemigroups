@@ -4215,9 +4215,6 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 101_w);
     presentation::add_rule(p, 1010_w, 101_w);
 
-    // KnuthBendix kb(congruence_kind::twosided, p);
-    // REQUIRE(kb.number_of_classes() == 15);
-
     SimsRefinerIdeals ip(p);
 
     Sims1 s(p);
@@ -4230,10 +4227,17 @@ namespace libsemigroups {
     REQUIRE(s.number_of_threads(8).number_of_congruences(15)
             == 15);  // correct value is 15
 
-    // p  = presentation::examples::partition_monoid(3);
-    // ip = SimsRefinerIdeals(to<Presentation<std::string>>(p));
-    // s.init(p).add_pruner(ip);
-    // REQUIRE(s.number_of_congruences(203) == 5767);  // checked in GAP
+    // TODO(0) make this an extreme test case
+    // auto S = make<FroidurePin>({Bipartition({{1, -2}, {2, -3}, {3, -1}}),
+    //                             Bipartition({{1, -2}, {2, -1}, {3, -3}}),
+    //                             Bipartition({{1}, {2, -2}, {3, -3}, {-1}}),
+    //                             Bipartition({{1, 2, -1, -2}, {3, -3}})});
+    // REQUIRE(S.size() == 203);
+    // p = to<Presentation<word_type>>(S);
+    // SimsRefinerIdeals ip2(p);
+
+    // s.init(p).add_pruner(ip2).number_of_threads(4);
+    // REQUIRE(s.number_of_congruences(203) == 5'767);  // checked in GAP
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -4654,13 +4658,12 @@ namespace libsemigroups {
                 "<Sims2 object over {} with 1 excluded pair and {} threads>",
                 to_human_readable_repr(p),
                 std::thread::hardware_concurrency()));
-    REQUIRE(
-        to_human_readable_repr(rep_orc)
-        == fmt::format(
-            "<RepOrc object over {} with 1 excluded pair, node bounds [0, 0), "
-            "target size 0 and {} threads>",
-            to_human_readable_repr(p),
-            std::thread::hardware_concurrency()));
+    REQUIRE(to_human_readable_repr(rep_orc)
+            == fmt::format("<RepOrc object over {} with 1 excluded pair, "
+                           "node bounds [0, 0), "
+                           "target size 0 and {} threads>",
+                           to_human_readable_repr(p),
+                           std::thread::hardware_concurrency()));
     REQUIRE(to_human_readable_repr(minimal_rep_orc)
             == fmt::format("<MinimalRepOrc object over {} with 1 excluded "
                            "pair, target size 0 and {} threads>",
