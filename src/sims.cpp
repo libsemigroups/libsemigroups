@@ -1509,7 +1509,18 @@ namespace libsemigroups {
   // TODO(1): (reiniscirpons) Change this in the same way as we do for Sims1,
   // Once we add the citw stuff
   SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
-    // TODO(0) checks as promised in the doc
+    p.throw_if_bad_alphabet_or_rules();
+    if (p.alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (a presentation) must not have 0 generators");
+    }
+    presentation::throw_if_not_normalized(p);
+    // TODO(1): (reiniscirpons) change this so that we just have a concrete
+    // implementation for word_type and then another which takes a Word and then
+    // calls the concete implementation like e.g. ToddCoxeter
+    // TODO(1): (reiniscirpons) use the citw stuff from ToddCoxeter once its
+    // available.
+
     _presentation = p;
     _knuth_bendices.find(_default_thread_id)
         ->second.init(congruence_kind::twosided, _presentation)

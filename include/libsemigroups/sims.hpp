@@ -3164,6 +3164,10 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //!
+    //! \throws LibsemigroupsException if `p` is not valid.
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
+    //!
     //! \warning
     //! This method assumes that \ref_knuth_bendix terminates on the input
     //! presentation \p p. If this is not the case, then this pruner may not
