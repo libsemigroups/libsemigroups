@@ -4226,18 +4226,6 @@ namespace libsemigroups {
             == 15);  // correct value is 15
     REQUIRE(s.number_of_threads(8).number_of_congruences(15)
             == 15);  // correct value is 15
-
-    // TODO(0) make this an extreme test case
-    // auto S = make<FroidurePin>({Bipartition({{1, -2}, {2, -3}, {3, -1}}),
-    //                             Bipartition({{1, -2}, {2, -1}, {3, -3}}),
-    //                             Bipartition({{1}, {2, -2}, {3, -3}, {-1}}),
-    //                             Bipartition({{1, 2, -1, -2}, {3, -3}})});
-    // REQUIRE(S.size() == 203);
-    // p = to<Presentation<word_type>>(S);
-    // SimsRefinerIdeals ip2(p);
-
-    // s.init(p).add_pruner(ip2).number_of_threads(4);
-    // REQUIRE(s.number_of_congruences(203) == 5'767);  // checked in GAP
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -5269,6 +5257,25 @@ namespace libsemigroups {
     // REQUIRE(sims.number_of_congruences(5) == 6);
     // sims::add_excluded_pair(sims, 22_w, 2_w);
     // REQUIRE(sims.presentation().alphabet() == p.alphabet());
+  }
+
+  // Takes approx. 8s with 4 threads, requires a high number of thread restarts
+  // to utilize all threads.
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "136",
+                          "PartitionMonoid(3) right ideals",
+                          "[extreme][low-index]") {
+    auto rg = ReportGuard(true);
+    auto S  = make<FroidurePin>({Bipartition({{1, -2}, {2, -3}, {3, -1}}),
+                                 Bipartition({{1, -2}, {2, -1}, {3, -3}}),
+                                 Bipartition({{1}, {2, -2}, {3, -3}, {-1}}),
+                                 Bipartition({{1, 2, -1, -2}, {3, -3}})});
+    REQUIRE(S.size() == 203);
+    auto              p = to<Presentation<word_type>>(S);
+    SimsRefinerIdeals ip2(p);
+    Sims1             s(p);
+    s.add_pruner(ip2).number_of_threads(4).idle_thread_restarts(100'000);
+    REQUIRE(s.number_of_congruences(203) == 5'767);  // checked in GAP
   }
 
 }  // namespace libsemigroups
