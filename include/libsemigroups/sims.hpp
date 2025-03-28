@@ -3133,23 +3133,21 @@ namespace libsemigroups {
       init();
     }
 
+    //! \brief Reinitialize an existing SimsRefinerIdeals object.
+    //!
+    //! This function puts an object back into the same state as if it had
+    //! been newly default constructed.
+    //!
+    //! \returns A reference to \c *this.
+    SimsRefinerIdeals& init();
+
     //! Copy constructor.
     SimsRefinerIdeals(SimsRefinerIdeals const& that) : SimsRefinerIdeals() {
       *this = that;
     }
 
     //! Copy assignment operator.
-    // TODO to cpp
-    SimsRefinerIdeals& operator=(SimsRefinerIdeals const& that) {
-      _default_thread_id = that._default_thread_id;
-      _knuth_bendices.clear();
-      _presentation = that._presentation;
-      // Don't copy _knuth_bendices because the thread id's will be wrong
-      _knuth_bendices.emplace(
-          _default_thread_id,
-          (*that._knuth_bendices.find(that._default_thread_id)).second);
-      return *this;
-    }
+    SimsRefinerIdeals& operator=(SimsRefinerIdeals const& that);
 
     //! Move constructor.
     SimsRefinerIdeals(SimsRefinerIdeals&& that) : SimsRefinerIdeals() {
@@ -3157,28 +3155,7 @@ namespace libsemigroups {
     }
 
     //! Move assignment operator.
-    // TODO to cpp
-    SimsRefinerIdeals& operator=(SimsRefinerIdeals&& that) {
-      _default_thread_id = std::move(that._default_thread_id);
-      _knuth_bendices    = std::move(that._knuth_bendices);
-      _presentation      = std::move(that._presentation);
-      return *this;
-    }
-
-    //! \brief Reinitialize an existing SimsRefinerIdeals object.
-    //!
-    //! This function puts an object back into the same state as if it had
-    //! been newly default constructed.
-    //!
-    //! \returns A reference to \c *this.
-    // TODO(1) to cpp
-    SimsRefinerIdeals& init() {
-      _presentation.init();
-      _knuth_bendices.clear();
-      _knuth_bendices.emplace(_default_thread_id, KnuthBendix_());
-
-      return *this;
-    }
+    SimsRefinerIdeals& operator=(SimsRefinerIdeals&& that);
 
     //! \brief Construct from presentation.
     //!
@@ -3191,11 +3168,7 @@ namespace libsemigroups {
     //! This method assumes that \ref_knuth_bendix terminates on the input
     //! presentation \p p. If this is not the case, then this pruner may not
     //! terminate on certain inputs.
-    explicit SimsRefinerIdeals(Presentation<word_type> const& p)
-        : _default_thread_id(), _knuth_bendices(), _mtx(), _presentation() {
-      _knuth_bendices.emplace(_default_thread_id, KnuthBendix_());
-      init(p);
-    }
+    explicit SimsRefinerIdeals(Presentation<word_type> const& p);
 
     //! \brief Reinitialize an existing SimsRefinerIdeals object from a
     //! word_type presentation.
@@ -3253,25 +3226,7 @@ namespace libsemigroups {
     [[nodiscard]] bool operator()(Sims1::word_graph_type const& wg);
 
    private:
-    // TODO(0) to cpp
-    // NOTE: if this turns out to be too much of a performance hit (locking the
-    // mutex), then we could add a function call to the pruners in Sims1/2 that
-    // is called in every thread *before* any calls to Refiner::operator(), so
-    // that _knuth_bendices is populated and then we don't need to use a mutex
-    // here at all. Testing case 117 with the extreme part at the end
-    // uncommented indicates no change in perf, so not doing the more
-    // complicated thing.
-    KnuthBendix_ const& knuth_bendix(std::thread::id tid) {
-      std::lock_guard<std::mutex> lg(_mtx);
-      auto                        it = _knuth_bendices.find(tid);
-      if (it != _knuth_bendices.cend()) {
-        return it->second;
-      } else {
-        _knuth_bendices.emplace(
-            tid, (*_knuth_bendices.find(_default_thread_id)).second);
-        return _knuth_bendices.find(tid)->second;
-      }
-    }
+    KnuthBendix_ const& knuth_bendix(std::thread::id tid);
   };  // class SimsRefinerIdeals
 
   //! \ingroup sims_group
