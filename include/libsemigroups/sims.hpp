@@ -1485,7 +1485,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1966,7 +1966,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // class Sims2
+  };  // class Sims2
 
   //! \ingroup sims_group
   //!
@@ -3128,24 +3128,42 @@ namespace libsemigroups {
 
    public:
     //! Default constructor.
-    // TODO(1) to tpp
     SimsRefinerIdeals()
         : _default_thread_id(), _knuth_bendices(), _mtx(), _presentation() {
       init();
     }
 
-    SimsRefinerIdeals(SimsRefinerIdeals const& that)
-        : _default_thread_id(that._default_thread_id),
-          _knuth_bendices(),
-          _mtx(),
-          _presentation(that._presentation) {
+    //! Copy constructor.
+    SimsRefinerIdeals(SimsRefinerIdeals const& that) : SimsRefinerIdeals() {
+      *this = that;
+    }
+
+    //! Copy assignment operator.
+    // TODO to cpp
+    SimsRefinerIdeals& operator=(SimsRefinerIdeals const& that) {
+      _default_thread_id = that._default_thread_id;
+      _knuth_bendices.clear();
+      _presentation = that._presentation;
       // Don't copy _knuth_bendices because the thread id's will be wrong
       _knuth_bendices.emplace(
           _default_thread_id,
           (*that._knuth_bendices.find(that._default_thread_id)).second);
+      return *this;
     }
 
-    // TODO(0) the other constructors
+    //! Move constructor.
+    SimsRefinerIdeals(SimsRefinerIdeals&& that) : SimsRefinerIdeals() {
+      *this = std::move(that);
+    }
+
+    //! Move assignment operator.
+    // TODO to cpp
+    SimsRefinerIdeals& operator=(SimsRefinerIdeals&& that) {
+      _default_thread_id = std::move(that._default_thread_id);
+      _knuth_bendices    = std::move(that._knuth_bendices);
+      _presentation      = std::move(that._presentation);
+      return *this;
+    }
 
     //! \brief Reinitialize an existing SimsRefinerIdeals object.
     //!
@@ -3153,7 +3171,7 @@ namespace libsemigroups {
     //! been newly default constructed.
     //!
     //! \returns A reference to \c *this.
-    // TODO(1) to tpp
+    // TODO(1) to cpp
     SimsRefinerIdeals& init() {
       _presentation.init();
       _knuth_bendices.clear();
@@ -3232,7 +3250,7 @@ namespace libsemigroups {
     //! This method assumes that \ref_knuth_bendix terminates on the underlying
     //! presentation that was used to construct the SimsRefinerIdeals object. If
     //! this is not the case then th pruner may not terminate on certain inputs.
-    bool operator()(Sims1::word_graph_type const& wg);
+    [[nodiscard]] bool operator()(Sims1::word_graph_type const& wg);
 
    private:
     // TODO(0) to cpp
