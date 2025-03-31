@@ -2215,13 +2215,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "051",
-                          "Heineken group - index 10",
+                          "not Heineken group - index 10",
                           "[extreme][sims1]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xXyY");
     presentation::add_inverse_rules(p, "XxYy");
+    // NOTE: This presentation for the Heineken group is wrong
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
     presentation::balance_no_checks(p, p.alphabet(), std::string("XxYy"));
@@ -3585,13 +3586,14 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "099",
-                          "2-sided Heineken group",
+                          "2-sided not Heineken group",
                           "[extreme][sims2][low-index]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xXyY");
     presentation::add_inverse_rules(p, "XxYy");
+    // NOTE: This presentation for the Heineken group is wrong
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
@@ -3626,12 +3628,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "101",
-                          "2-sided Heineken monoid",
+                          "2-sided not Heineken monoid",
                           "[extreme][sims2][low-index]") {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("xyXY");
+    // NOTE: This presentation for the Heineken monoid is wrong
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
     // REQUIRE(presentation::to_gap_string(p, "S") == "");
