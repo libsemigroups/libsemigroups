@@ -2732,10 +2732,8 @@ namespace libsemigroups {
   template <typename Element, typename Traits>
   std::string
   to_human_readable_repr(typename Konieczny<Element, Traits>::DClass const& D) {
-    return fmt::format("<{}Konieczny::DClass with representative {}, {} "
-                       "L-classes, and {} R-classes, with total size {}>",
-                       D.is_regular_D_class() ? "Regular " : "",
-                       D.rep(),
+    return fmt::format("<{}{}x{} D-class with size {}>",
+                       D.is_regular_D_class() ? "regular " : "",
                        D.number_of_L_classes(),
                        D.number_of_R_classes(),
                        D.size());
