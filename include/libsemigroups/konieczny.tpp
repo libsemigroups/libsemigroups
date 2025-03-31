@@ -2725,8 +2725,8 @@ namespace libsemigroups {
                        K.current_size() == 1 ? "" : "s",
                        K.current_number_of_regular_elements(),
                        K.current_number_of_D_classes(),
-                       K.current_numer_of_D_classes() == 1 ? "" : "es",
-                       K.current_number_regular_D_classes());
+                       K.current_number_of_D_classes() == 1 ? "" : "es",
+                       K.current_number_of_regular_D_classes());
   }
 
   template <typename Element, typename Traits>
