@@ -1196,4 +1196,24 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 7'464'625);
   }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Example",
+      "098",
+      "abacus_jones_monoid(n, d) when 5 < n < 7 and 1 <= d < 4",
+      "[quick][pres-examples]") {
+    auto                   rg = ReportGuard(false);
+    ToddCoxeter<word_type> tc;
+
+    for (size_t n = 5; n < 7; ++n) {
+      tc.init(congruence_kind::twosided,
+              presentation::examples::temperley_lieb_monoid(n));
+      size_t N = tc.number_of_classes();
+      for (size_t d = 1; d < 4; ++d) {
+        tc.init(congruence_kind::twosided,
+                presentation::examples::abacus_jones_monoid(n, d));
+        REQUIRE(tc.number_of_classes() == N * std::pow(d, n));
+      }
+    }
+  }
 }  // namespace libsemigroups

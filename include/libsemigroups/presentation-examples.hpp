@@ -41,9 +41,10 @@ namespace libsemigroups {
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \name Default presentations
-    ///@{
+    //! @{
     // Forward declarations of the functions so they appear first in the
     // documentation
+    Presentation<word_type> abacus_jones_monoid(size_t n, size_t d);
     Presentation<word_type> alternating_group(size_t n);
     Presentation<word_type> brauer_monoid(size_t n);
     Presentation<word_type> chinese_monoid(size_t n);
@@ -80,7 +81,7 @@ namespace libsemigroups {
     Presentation<word_type> temperley_lieb_monoid(size_t n);
     Presentation<word_type> uniform_block_bijection_monoid(size_t n);
     Presentation<word_type> zero_rook_monoid(size_t n);
-    ///@}
+    //! @}
 #endif
 
     //! \name Specific presentations
@@ -94,7 +95,31 @@ namespace libsemigroups {
     //! function that is documented in the
     //! \ref default_presentations_member_group "Default presentations" section.
     //!
-    ///@{
+    //! @{
+
+    //! \brief A presentation for the abacus Jones monoid.
+    //!
+    //! This function returns a monoid presentation defining the abacus Jones
+    //! monoid of degree \p n; as defined in Proposition 3.2 of
+    //! \cite Aicardi2025aa. The abacus Jones monoid is formed by the diagrams
+    //! of the Jones monoid (aka the Temperley-Lieb monoid) whose arcs have at
+    //! most `d − 1` beads sliding on each arc.
+    //!
+    //! This presentation has \f$2n - 1\f$ generators, \f$5n ^ 2 - 5n + 2 + 2(n
+    //! - 1)(d - 1)\f$ relations, and defines a monoid of size \f$C_n\ d ^n\f$
+    //! where \f$C_n\f$ is the \f$n\f$th Catalan number \f$\frac{1}{n +
+    //! 1}\binom{2n}{n}\f$.
+    //!
+    //! \param n the degree.
+    //! \param d one more than the maximum number of beads on each arc of the
+    //! abacus.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 3`.
+    //! \throws LibsemigroupsException if `d = 0`.
+    [[nodiscard]] Presentation<word_type> abacus_jones_monoid_AJP25(size_t n,
+                                                                    size_t d);
 
     //! \brief A presentation for the alternating group.
     //!
@@ -1346,7 +1371,23 @@ namespace libsemigroups {
     [[nodiscard]] inline Presentation<word_type> zero_rook_monoid(size_t n) {
       return zero_rook_monoid_Gay18(n);
     }
-    ///@}
+
+    //! \copydoc abacus_jones_monoid_AJP25
+    //!
+    //! \note
+    //! This function performs exactly the same as `abacus_jones_monoid_AJP25`,
+    //! and exists as a convenience function for when a presentation for the
+    //! abacus Jones monoid is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `abacus_jones_monoid_AJP25`.
+    [[nodiscard]] inline Presentation<word_type> abacus_jones_monoid(size_t n,
+                                                                     size_t d) {
+      return abacus_jones_monoid_AJP25(n, d);
+    }
+
+    //! @}
 
   }  // namespace presentation::examples
 }  // namespace libsemigroups
