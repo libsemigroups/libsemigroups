@@ -103,7 +103,7 @@ namespace libsemigroups {
     //! monoid of degree \p n; as defined in Proposition 3.2 of
     //! \cite Aicardi2025aa. The abacus Jones monoid is formed by the diagrams
     //! of the Jones monoid (aka the Temperley-Lieb monoid) whose arcs have at
-    //! most d − 1 beads sliding on each arc.
+    //! most `d − 1` beads sliding on each arc.
     //!
     //! This presentation has \f$2n - 1\f$ generators, \f$5n ^ 2 - 5n + 2 + 2(n
     //! - 1)(d - 1)\f$ relations, and defines a monoid of size \f$C_n\ d ^n\f$
@@ -111,7 +111,8 @@ namespace libsemigroups {
     //! 1}\binom{2n}{n}\f$.
     //!
     //! \param n the degree.
-    //! \param d the number of beads on the abacus.
+    //! \param d one more than the maximum number of beads on each arc of the
+    //! abacus.
     //!
     //! \returns A value of type `Presentation<word_type>`.
     //!
