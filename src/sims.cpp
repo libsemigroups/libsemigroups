@@ -1023,9 +1023,6 @@ namespace libsemigroups {
         _done = true;
         throw;
       }
-      // TODO(2) Implement a ThreadIdGuard so that thread ids are automatically
-      // reset after they exit scope.
-      detail::reset_thread_ids();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1472,54 +1469,72 @@ namespace libsemigroups {
 
   }  // namespace sims
 
-  // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
-  // Once we add the citw stuff
-  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
-    _presentation = p;
-    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-    std::fill(
-        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
+  ////////////////////////////////////////////////////////////////////////
+  // SimsRefinerIdeals
+  ////////////////////////////////////////////////////////////////////////
+
+  SimsRefinerIdeals& SimsRefinerIdeals::init() {
+    _presentation.init();
+    _knuth_bendices.clear();
+    _knuth_bendices.emplace(_default_thread_id, KnuthBendix_());
+
     return *this;
   }
 
-  bool SimsRefinerFaithful::operator()(Sims1::word_graph_type const& wg) {
-    auto first = _forbid.cbegin(), last = _forbid.cend();
-    // TODO(2) use 1 felsch tree per excluded pairs, and use it to check if
-    // paths containing newly added edges, lead to the same place
-    for (auto it = first; it != last; it += 2) {
-      bool this_rule_compatible = true;
-      for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
-        auto l = word_graph::follow_path_no_checks(wg, n, *it);
-        if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
-          if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
-            this_rule_compatible = false;
-            break;
-          }
-        } else {
-          this_rule_compatible = false;
-          break;
-        }
-      }
-      if (this_rule_compatible) {
-        return false;
-      }
+  SimsRefinerIdeals&
+  SimsRefinerIdeals::operator=(SimsRefinerIdeals const& that) {
+    _default_thread_id = that._default_thread_id;
+    _knuth_bendices.clear();
+    _presentation = that._presentation;
+    // Don't copy _knuth_bendices because the thread id's will be wrong
+    _knuth_bendices.emplace(
+        _default_thread_id,
+        (*that._knuth_bendices.find(that._default_thread_id)).second);
+    return *this;
+  }
+
+  SimsRefinerIdeals& SimsRefinerIdeals::operator=(SimsRefinerIdeals&& that) {
+    _default_thread_id = std::move(that._default_thread_id);
+    _knuth_bendices    = std::move(that._knuth_bendices);
+    _presentation      = std::move(that._presentation);
+    return *this;
+  }
+
+  SimsRefinerIdeals::SimsRefinerIdeals(Presentation<word_type> const& p)
+      : _default_thread_id(), _knuth_bendices(), _mtx(), _presentation() {
+    _knuth_bendices.emplace(_default_thread_id, KnuthBendix_());
+    init(p);
+  }
+
+  // TODO(1): (reiniscirpons) Change this in the same way as we do for Sims1,
+  // Once we add the citw stuff
+  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
+    p.throw_if_bad_alphabet_or_rules();
+    if (p.alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the argument (a presentation) must not have 0 generators");
     }
-    return true;
+    presentation::throw_if_not_normalized(p);
+    // TODO(1): (reiniscirpons) change this so that we just have a concrete
+    // implementation for word_type and then another which takes a Word and then
+    // calls the concete implementation like e.g. ToddCoxeter
+    // TODO(1): (reiniscirpons) use the citw stuff from ToddCoxeter once its
+    // available.
+
+    _presentation = p;
+    _knuth_bendices.find(_default_thread_id)
+        ->second.init(congruence_kind::twosided, _presentation)
+        .run();
+    return *this;
   }
 
   bool SimsRefinerIdeals::operator()(Sims1::word_graph_type const& wg) {
     // TODO(2) Make knuth bendix thread safe to use here without the bodge
-    using sims::right_generating_pairs_no_checks;
 
     node_type sink = UNDEFINED;
 
-    LIBSEMIGROUPS_ASSERT(detail::this_threads_id()
-                         < std::thread::hardware_concurrency() + 1);
-    auto const& kb = _knuth_bendices[detail::this_threads_id()];
-    for (auto const& p : right_generating_pairs_no_checks(wg)) {
-      auto const& u = p.first;
-      auto const& v = p.second;
+    auto const& kb = knuth_bendix(std::this_thread::get_id());
+    for (auto const& [u, v] : sims::right_generating_pairs_no_checks(wg)) {
       // KnuthBendix gets run on initialization, so using currently_contains
       // should be fine
       LIBSEMIGROUPS_ASSERT(knuth_bendix::currently_contains_no_checks(kb, u, v)
@@ -1545,6 +1560,56 @@ namespace libsemigroups {
       auto       first = wg.cbegin_nodes();
       auto       last  = wg.cbegin_nodes() + N;
       if (word_graph::is_complete(wg, first, last)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // NOTE: if this turns out to be too much of a performance hit (locking the
+  // mutex), then we could add a function call to the pruners in Sims1/2 that
+  // is called in every thread *before* any calls to Refiner::operator(), so
+  // that _knuth_bendices is populated and then we don't need to use a mutex
+  // here at all. Testing case 117 with the extreme part at the end
+  // uncommented indicates no change in perf, so not doing the more
+  // complicated thing.
+  KnuthBendix<word_type> const&
+  SimsRefinerIdeals::knuth_bendix(std::thread::id tid) {
+    std::lock_guard<std::mutex> lg(_mtx);
+    auto                        it = _knuth_bendices.find(tid);
+    if (it != _knuth_bendices.cend()) {
+      return it->second;
+    } else {
+      _knuth_bendices.emplace(
+          tid, (*_knuth_bendices.find(_default_thread_id)).second);
+      return _knuth_bendices.find(tid)->second;
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // SimsRefinerFaithful
+  ////////////////////////////////////////////////////////////////////////
+
+  bool SimsRefinerFaithful::operator()(Sims1::word_graph_type const& wg) {
+    auto first = _forbid.cbegin(), last = _forbid.cend();
+    // TODO(2) use 1 felsch tree per excluded pairs, and use it to check if
+    // paths containing newly added edges, lead to the same place
+    for (auto it = first; it != last; it += 2) {
+      bool this_rule_compatible = true;
+      for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
+        auto l = word_graph::follow_path_no_checks(wg, n, *it);
+        if (l != UNDEFINED) {
+          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
+            this_rule_compatible = false;
+            break;
+          }
+        } else {
+          this_rule_compatible = false;
+          break;
+        }
+      }
+      if (this_rule_compatible) {
         return false;
       }
     }
