@@ -1,5 +1,14 @@
 # Changelog - version 3
 
+## v3.0.2 (released 01/04/2025)
+
+This is a minor release fixing some issues in the previous v3 releases. Namely:
+
+* Fix issue in `SimsRefinerIdeals` by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/710
+* Konieczny: fix typos in `to_human_readable_repr` by @james-d-mitchell in
+  https://github.com/libsemigroups/libsemigroups/pull/714
+
 ## v3.0.1 (released 26/03/2025)
 
 This is a minor release to fix some issues in the last release, namely:
