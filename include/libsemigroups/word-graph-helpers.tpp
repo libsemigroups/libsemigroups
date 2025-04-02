@@ -1,8 +1,12 @@
 namespace libsemigroups {
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Helper namespace
+  //////////////////////////////////////////////////////////////////////////////
   namespace word_graph {
     template <typename Node>
     [[nodiscard]] bool is_strictly_cyclic(WordGraphView<Node> const& wg) {
-      using node_type = typename WordGraph<Node>::node_type;
+      using node_type = typename WordGraphView<Node>::node_type;
       auto const N    = wg.number_of_nodes();
 
       if (N == 0) {
