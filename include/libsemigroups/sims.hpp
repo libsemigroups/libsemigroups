@@ -623,7 +623,7 @@ namespace libsemigroups {
     //! Returns a const reference to the set of pruners.
     //!
     //! A pruner is any function that takes as input a word graph and returns a
-    //! boolean. We require that if a pruner returns false for a word graph
+    //! boolean. We require that if a pruner returns \c false for a word graph
     //! `wg`, then it returns false for all word graphs that are descended from
     //! `wg` in the Sims word graph search tree. The pruners are used to refine
     //! the congruence search tree during the execution of the Sims algorithm.
@@ -3120,16 +3120,16 @@ namespace libsemigroups {
    private:
     using node_type    = uint32_t;
     using KnuthBendix_ = KnuthBendix<word_type>;
-    std::vector<KnuthBendix_> _knuth_bendices;
-    Presentation<word_type>   _presentation;
+
+    std::thread::id                                   _default_thread_id;
+    std::unordered_map<std::thread::id, KnuthBendix_> _knuth_bendices;
+    std::mutex                                        _mtx;
+    Presentation<word_type>                           _presentation;
 
    public:
     //! Default constructor.
-    // TODO(1) to tpp
     SimsRefinerIdeals()
-        : _knuth_bendices(std::thread::hardware_concurrency() + 1,
-                          KnuthBendix_()),
-          _presentation() {
+        : _default_thread_id(), _knuth_bendices(), _mtx(), _presentation() {
       init();
     }
 
@@ -3139,15 +3139,23 @@ namespace libsemigroups {
     //! been newly default constructed.
     //!
     //! \returns A reference to \c *this.
-    // TODO(1) to tpp
-    SimsRefinerIdeals& init() {
-      _presentation.init();
-      _knuth_bendices[0].init();
-      std::fill(_knuth_bendices.begin() + 1,
-                _knuth_bendices.end(),
-                _knuth_bendices[0]);
-      return *this;
+    SimsRefinerIdeals& init();
+
+    //! Copy constructor.
+    SimsRefinerIdeals(SimsRefinerIdeals const& that) : SimsRefinerIdeals() {
+      *this = that;
     }
+
+    //! Copy assignment operator.
+    SimsRefinerIdeals& operator=(SimsRefinerIdeals const& that);
+
+    //! Move constructor.
+    SimsRefinerIdeals(SimsRefinerIdeals&& that) : SimsRefinerIdeals() {
+      *this = std::move(that);
+    }
+
+    //! Move assignment operator.
+    SimsRefinerIdeals& operator=(SimsRefinerIdeals&& that);
 
     //! \brief Construct from presentation.
     //!
@@ -3156,16 +3164,15 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //!
+    //! \throws LibsemigroupsException if `p` is not valid.
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
+    //!
     //! \warning
     //! This method assumes that \ref_knuth_bendix terminates on the input
-    //! presentation \p p. If this is not the case then this pruner may not
+    //! presentation \p p. If this is not the case, then this pruner may not
     //! terminate on certain inputs.
-    explicit SimsRefinerIdeals(Presentation<word_type> const& p)
-        : _knuth_bendices(std::thread::hardware_concurrency() + 1,
-                          KnuthBendix_()),
-          _presentation() {
-      init(p);
-    }
+    explicit SimsRefinerIdeals(Presentation<word_type> const& p);
 
     //! \brief Reinitialize an existing SimsRefinerIdeals object from a
     //! word_type presentation.
@@ -3177,7 +3184,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `p` is not valid
+    //! \throws LibsemigroupsException if `p` is not valid.
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
@@ -3186,8 +3193,8 @@ namespace libsemigroups {
     //! thrown.
     //!
     //! \warning
-    //! This method assumes that \ref_knuth_bendix terminates on the input
-    //! presentation \p p. If this is not the case then th pruner may not
+    //! This function assumes that \ref_knuth_bendix terminates on the input
+    //! presentation \p p. If this is not the case, then the pruner may not
     //! terminate on certain inputs.
     //!
     //! \sa presentation(Presentation<word_type> const&)
@@ -3220,7 +3227,10 @@ namespace libsemigroups {
     //! This method assumes that \ref_knuth_bendix terminates on the underlying
     //! presentation that was used to construct the SimsRefinerIdeals object. If
     //! this is not the case then th pruner may not terminate on certain inputs.
-    bool operator()(Sims1::word_graph_type const& wg);
+    [[nodiscard]] bool operator()(Sims1::word_graph_type const& wg);
+
+   private:
+    KnuthBendix_ const& knuth_bendix(std::thread::id tid);
   };  // class SimsRefinerIdeals
 
   //! \ingroup sims_group
