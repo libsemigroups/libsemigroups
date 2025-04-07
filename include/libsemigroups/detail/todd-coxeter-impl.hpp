@@ -505,13 +505,16 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-      // This is documented in Runner, so we don't duplicate the doc here.
-      template <typename T>
-      void report_every(T val) {
+      // This is documented in Reporter, so we don't duplicate the doc here.
+      template <typename Time>
+      void report_every(Time val) {
         detail::CongruenceCommon::report_every(val);
         _word_graph.report_every(val);
       }
-      using Reporter::report_every;
+
+      [[nodiscard]] nanoseconds report_every() const noexcept {
+        return Reporter::report_every();
+      }
 #endif
 
       //! \ingroup todd_coxeter_class_settings_group
