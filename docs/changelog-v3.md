@@ -1,5 +1,12 @@
 # Changelog - version 3
 
+## v3.0.3 (released 09/04/2025)
+
+This is a minor release fixing some issues in the previous v3 releases. Namely:
+
+* failure to compile with (the not yet released) gcc-15
+  https://github.com/libsemigroups/libsemigroups/issues/557
+
 ## v3.0.2 (released 01/04/2025)
 
 This is a minor release fixing some issues in the previous v3 releases. Namely:
