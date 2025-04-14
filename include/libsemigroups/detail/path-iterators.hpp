@@ -28,8 +28,8 @@
 #include "libsemigroups/constants.hpp"        // for UNDEFINED, Undefined
 #include "libsemigroups/detail/iterator.hpp"  // for default_postfix_increment
 #include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"
+#include "libsemigroups/word-graph.hpp"
 
 #ifndef LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 #define LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_

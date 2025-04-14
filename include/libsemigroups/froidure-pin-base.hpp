@@ -27,12 +27,12 @@
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
 
-#include "constants.hpp"   // for UNDEFINED
-#include "ranges.hpp"      // for iterator_range
-#include "runner.hpp"      // for Runner
-#include "types.hpp"       // for word_type, generator_index_type, tril
-#include "word-graph.hpp"  // for WordGraph
+#include "constants.hpp"           // for UNDEFINED
+#include "ranges.hpp"              // for iterator_range
+#include "runner.hpp"              // for Runner
+#include "types.hpp"               // for word_type, generator_index_type, tril
 #include "word-graph-helpers.hpp"  // for WordGraph
+#include "word-graph.hpp"          // for WordGraph
 
 #include "detail/containers.hpp"  // for DynamicArray2
 
