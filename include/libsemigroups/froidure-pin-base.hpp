@@ -32,6 +32,7 @@
 #include "runner.hpp"      // for Runner
 #include "types.hpp"       // for word_type, generator_index_type, tril
 #include "word-graph.hpp"  // for WordGraph
+#include "word-graph-helpers.hpp"  // for WordGraph
 
 #include "detail/containers.hpp"  // for DynamicArray2
 

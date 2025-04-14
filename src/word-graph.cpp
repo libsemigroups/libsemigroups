@@ -19,6 +19,7 @@
 // This file contains the implementations of some things from word-graph.hpp.
 
 #include "libsemigroups/word-graph.hpp"
+#include "libsemigroups/word-graph-helpers.hpp"
 
 namespace libsemigroups {
 

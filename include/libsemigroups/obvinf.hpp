@@ -29,11 +29,12 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "ranges.hpp"      // for rx/ranges
-#include "types.hpp"       // for word_type etc
-#include "word-graph.hpp"  // for is_acyclic
-#include "word-range.hpp"  // for ToWord
+#include "config.hpp"              // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "ranges.hpp"              // for rx/ranges
+#include "types.hpp"               // for word_type etc
+#include "word-graph-helpers.hpp"  // for is_acyclic
+#include "word-graph.hpp"          // for is_acyclic
+#include "word-range.hpp"          // for ToWord
 
 #include "detail/eigen.hpp"  // for eigen
 #include "detail/uf.hpp"     // for Duf
