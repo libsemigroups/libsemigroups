@@ -14,10 +14,11 @@ var searchData=
   ['3_207_20released_2028_2002_202021_11',['v1.3.7 (released 28/02/2021)',['../md_changelog-v1.html#v137-released-28022021',1,'']]],
   ['3_20released_2007_2010_202020_12',['v1.3.3 (released 07/10/2020)',['../md_changelog-v1.html#v133-released-07102020',1,'']]],
   ['3_20released_2007_2012_202019_13',['v1.0.3 (released 07/12/2019)',['../md_changelog-v1.html#v103-released-07122019',1,'']]],
-  ['3_20released_2011_2011_202021_14',['v2.0.3 (released 11/11/2021)',['../md_changelog-v2.html#v203-released-11112021',1,'']]],
-  ['3_20released_2016_2012_202021_15',['v2.1.3 (released 16/12/2021)',['../md_changelog-v2.html#v213-released-16122021',1,'']]],
-  ['3_20released_2019_2001_202024_16',['v2.7.3 (released 19/01/2024)',['../md_changelog-v2.html#v273-released-19012024',1,'']]],
-  ['3_20released_2022_2009_202022_17',['v2.2.3 (released 22/09/2022)',['../md_changelog-v2.html#v223-released-22092022',1,'']]],
-  ['30_2011_202019_18',['v1.0.2 (released 30/11/2019)',['../md_changelog-v1.html#v102-released-30112019',1,'']]],
-  ['30_2011_202021_19',['v2.1.2 (released 30/11/2021)',['../md_changelog-v2.html#v212-released-30112021',1,'']]]
+  ['3_20released_2009_2004_202025_14',['v3.0.3 (released 09/04/2025)',['../md_changelog-v3.html#v303-released-09042025',1,'']]],
+  ['3_20released_2011_2011_202021_15',['v2.0.3 (released 11/11/2021)',['../md_changelog-v2.html#v203-released-11112021',1,'']]],
+  ['3_20released_2016_2012_202021_16',['v2.1.3 (released 16/12/2021)',['../md_changelog-v2.html#v213-released-16122021',1,'']]],
+  ['3_20released_2019_2001_202024_17',['v2.7.3 (released 19/01/2024)',['../md_changelog-v2.html#v273-released-19012024',1,'']]],
+  ['3_20released_2022_2009_202022_18',['v2.2.3 (released 22/09/2022)',['../md_changelog-v2.html#v223-released-22092022',1,'']]],
+  ['30_2011_202019_19',['v1.0.2 (released 30/11/2019)',['../md_changelog-v1.html#v102-released-30112019',1,'']]],
+  ['30_2011_202021_20',['v2.1.2 (released 30/11/2021)',['../md_changelog-v2.html#v212-released-30112021',1,'']]]
 ];

@@ -185,6 +185,28 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id="v303-released-09042025"></a>
+v3.0.3 (released 09/04/2025)</h1>
+<p>This is a minor release fixing some issues in the previous v3 releases. Namely:</p>
+<ul>
+<li>failure to compile with (the not yet released) gcc-15 <a href="https://github.com/libsemigroups/libsemigroups/issues/557">https://github.com/libsemigroups/libsemigroups/issues/557</a></li>
+</ul>
+<h1><a class="anchor" id="v302-released-01042025"></a>
+v3.0.2 (released 01/04/2025)</h1>
+<p>This is a minor release fixing some issues in the previous v3 releases. Namely:</p>
+<ul>
+<li>Fix issue in <code>SimsRefinerIdeals</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/710">https://github.com/libsemigroups/libsemigroups/pull/710</a></li>
+<li>Konieczny: fix typos in <code>to_human_readable_repr</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/714">https://github.com/libsemigroups/libsemigroups/pull/714</a></li>
+</ul>
+<h1><a class="anchor" id="v301-released-26032025"></a>
+v3.0.1 (released 26/03/2025)</h1>
+<p>This is a minor release to fix some issues in the last release, namely:</p>
+<ul>
+<li>the library version number was not updated to 3 (thanks to Jan Engelhardt for pointing this out);</li>
+<li>the include directories for <code>make install</code> were not correct (thanks to Antonio Rojas for pointing this out);</li>
+<li>the release archive contained an extra directory named <code>libsemigroups-3.0.0/libsemigroups-3.0.0</code> when unpacked under some circumstances, which prevented the conda feedstock from updating correctly;</li>
+<li>we made some minor improvements to the doc + <code>README.md</code>.</li>
+</ul>
 <h1><a class="anchor" id="v300-released-21032025"></a>
 v3.0.0 (released 21/03/2025)</h1>
 <p>This release includes a major refactor of the interfaces of the main algorithms in <code>libsemigroups</code> with the view to making them easier to use, more uniform, simpler, and more composable. The extent of the refactor means that it is likely that code written using earlier versions of <code>libsemigroups</code> will not compile.</p>
