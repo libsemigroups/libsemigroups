@@ -242,7 +242,7 @@ namespace libsemigroups {
     g1.target(0, 1, 3);
     g1.target(0, 2, 4);
     g1.target(0, 3, 2);
-    WordGraph<size_t>     from_view = word_graph_view::graph_from_view(v);
+    WordGraph<size_t>     from_view = word_graph::graph_from_view(v);
     WordGraphView<size_t> from_graph
         = WordGraphView<size_t>(from_view, 0, from_view.number_of_nodes());
     REQUIRE(from_graph == v);

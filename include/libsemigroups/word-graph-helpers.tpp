@@ -42,7 +42,7 @@ namespace libsemigroups {
 
     namespace detail {
       template <typename Node>
-      bool is_shortlex_standardized(WordGraph<Node> const& wg) {
+      bool is_shortlex_standardized(WordGraphView<Node> const& wg) {
         Node current_max_node = 0;
 
         for (auto s : wg.nodes()) {
@@ -59,6 +59,11 @@ namespace libsemigroups {
           }
         }
         return true;
+      }
+
+      template <typename Node>
+      bool is_shortlex_standardized(WordGraph<Node> const& wg) {
+        return is_shortlex_standardized(WordGraphView<Node>(wg));
       }
 
       // For best performance ensure that <f> has the correct number of nodes
@@ -268,12 +273,12 @@ namespace libsemigroups {
       // it because it was already written and uses less space than
       // topological_sort.
       template <typename Node>
-      bool is_acyclic(WordGraph<Node> const& wg,
-                      std::stack<Node>&      stck,
-                      std::vector<Node>&     preorder,
-                      Node&                  next_preorder_num,
-                      std::vector<Node>&     postorder,
-                      Node&                  next_postorder_num) {
+      bool is_acyclic(WordGraphView<Node> const& wg,
+                      std::stack<Node>&          stck,
+                      std::vector<Node>&         preorder,
+                      Node&                      next_preorder_num,
+                      std::vector<Node>&         postorder,
+                      Node&                      next_postorder_num) {
         size_t const M = wg.out_degree();
         size_t const N = wg.number_of_nodes();
         Node         v;
@@ -311,10 +316,10 @@ namespace libsemigroups {
 
       // helper function for the public functions below
       template <typename Node>
-      bool topological_sort(WordGraph<Node> const& wg,
-                            stack_type<Node>&      stck,
-                            lookup_type&           seen,
-                            std::vector<Node>&     order) {
+      bool topological_sort(WordGraphView<Node> const& wg,
+                            stack_type<Node>&          stck,
+                            lookup_type&               seen,
+                            std::vector<Node>&         order) {
         using label_type = typename WordGraph<Node>::label_type;
         Node       m;
         Node       n;
@@ -358,6 +363,15 @@ namespace libsemigroups {
           e = stck.top().second;
           goto rise;
         }
+      }
+
+      // helper function for the public functions below
+      template <typename Node>
+      bool topological_sort(WordGraph<Node> const& wg,
+                            stack_type<Node>&      stck,
+                            lookup_type&           seen,
+                            std::vector<Node>&     order) {
+        return topological_sort(WordGraphView<Node>(wg), stck, seen, order);
       }
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -420,7 +434,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    bool is_standardized(WordGraph<Node> const& wg, Order val) {
+    bool is_standardized(WordGraphView<Node> const& wg, Order val) {
       switch (val) {
         case Order::none:
           return true;
@@ -447,11 +461,11 @@ namespace libsemigroups {
               typename Iterator1,
               typename Iterator2,
               typename Iterator3>
-    bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                                 Iterator1              first_node,
-                                 Iterator2              last_node,
-                                 Iterator3              first_rule,
-                                 Iterator3              last_rule) {
+    bool is_compatible_no_checks(WordGraphView<Node> const& wg,
+                                 Iterator1                  first_node,
+                                 Iterator2                  last_node,
+                                 Iterator3                  first_rule,
+                                 Iterator3                  last_rule) {
       for (auto rit = first_rule; rit < last_rule; rit += 2) {
         if (!is_compatible_no_checks(
                 wg, first_node, last_node, *rit, *(rit + 1))) {
@@ -462,11 +476,11 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                                 Iterator1              first_node,
-                                 Iterator2              last_node,
-                                 word_type const&       lhs,
-                                 word_type const&       rhs) {
+    bool is_compatible_no_checks(WordGraphView<Node> const& wg,
+                                 Iterator1                  first_node,
+                                 Iterator2                  last_node,
+                                 word_type const&           lhs,
+                                 word_type const&           rhs) {
       for (auto nit = first_node; nit != last_node; ++nit) {
         auto l = word_graph::follow_path_no_checks(
             wg, *nit, lhs.cbegin(), lhs.cend());
@@ -486,11 +500,11 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_compatible(WordGraph<Node> const& wg,
-                       Iterator1              first_node,
-                       Iterator2              last_node,
-                       word_type const&       lhs,
-                       word_type const&       rhs) {
+    bool is_compatible(WordGraphView<Node> const& wg,
+                       Iterator1                  first_node,
+                       Iterator2                  last_node,
+                       word_type const&           lhs,
+                       word_type const&           rhs) {
       throw_if_node_out_of_bounds(wg, first_node, last_node);
       // TODO(1) be better to use follow_path in is_compatible_no_checks
       throw_if_label_out_of_bounds(wg, lhs);
@@ -502,11 +516,11 @@ namespace libsemigroups {
               typename Iterator1,
               typename Iterator2,
               typename Iterator3>
-    bool is_compatible(WordGraph<Node> const& wg,
-                       Iterator1              first_node,
-                       Iterator2              last_node,
-                       Iterator3              first_rule,
-                       Iterator3              last_rule) {
+    bool is_compatible(WordGraphView<Node> const& wg,
+                       Iterator1                  first_node,
+                       Iterator2                  last_node,
+                       Iterator3                  first_rule,
+                       Iterator3                  last_rule) {
       for (auto rit = first_rule; rit < last_rule; rit += 2) {
         if (!is_compatible(wg, first_node, last_node, *rit, *(rit + 1))) {
           return false;
@@ -516,9 +530,9 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_complete_no_checks(WordGraph<Node> const& wg,
-                               Iterator1              first_node,
-                               Iterator2              last_node) {
+    bool is_complete_no_checks(WordGraphView<Node> const& wg,
+                               Iterator1                  first_node,
+                               Iterator2                  last_node) {
       using label_type = typename WordGraph<Node>::label_type;
       size_t const n   = wg.out_degree();
       for (auto it = first_node; it != last_node; ++it) {
@@ -532,15 +546,15 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_complete(WordGraph<Node> const& wg,
-                     Iterator1              first_node,
-                     Iterator2              last_node) {
+    bool is_complete(WordGraphView<Node> const& wg,
+                     Iterator1                  first_node,
+                     Iterator2                  last_node) {
       throw_if_node_out_of_bounds(wg, first_node, last_node);
       return is_complete_no_checks(wg, first_node, last_node);
     }
 
     template <typename Node>
-    bool is_connected(WordGraph<Node> const& wg) {
+    bool is_connected(WordGraphView<Node> const& wg) {
       auto const N = wg.number_of_nodes();
       if (N == 0) {
         return true;
@@ -558,9 +572,9 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    bool is_reachable_no_checks(WordGraph<Node1> const& wg,
-                                Node2                   source,
-                                Node2                   target) {
+    bool is_reachable_no_checks(WordGraphView<Node1> const& wg,
+                                Node2                       source,
+                                Node2                       target) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       using label_type = typename WordGraph<Node1>::label_type;
       if (source == target) {
@@ -604,7 +618,9 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    bool is_reachable(WordGraph<Node1> const& wg, Node2 source, Node2 target) {
+    bool is_reachable(WordGraphView<Node1> const& wg,
+                      Node2                       source,
+                      Node2                       target) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
@@ -612,7 +628,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    bool is_acyclic(WordGraph<Node> const& wg) {
+    bool is_acyclic(WordGraphView<Node> const& wg) {
       if (word_graph::is_complete(wg)) {
         return false;
       }
@@ -640,7 +656,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    bool is_acyclic(WordGraph<Node1> const& wg, Node2 source) {
+    bool is_acyclic(WordGraphView<Node1> const& wg, Node2 source) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       auto const        N = wg.number_of_nodes();
@@ -655,7 +671,9 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    bool is_acyclic(WordGraph<Node1> const& wg, Node2 source, Node2 target) {
+    bool is_acyclic(WordGraphView<Node1> const& wg,
+                    Node2                       source,
+                    Node2                       target) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
@@ -681,7 +699,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    std::vector<Node> topological_sort(WordGraph<Node> const& wg) {
+    std::vector<Node> topological_sort(WordGraphView<Node> const& wg) {
       std::vector<Node> order;
       if (word_graph::is_complete(wg)) {
         return order;
@@ -707,8 +725,8 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    std::vector<Node1> topological_sort(WordGraph<Node1> const& wg,
-                                        Node2                   source) {
+    std::vector<Node1> topological_sort(WordGraphView<Node1> const& wg,
+                                        Node2                       source) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       std::vector<Node1> order;
       if (word_graph::is_complete(wg)) {
@@ -724,7 +742,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    auto adjacency_matrix(WordGraph<Node> const& wg) {
+    auto adjacency_matrix(WordGraphView<Node> const& wg) {
       using Mat = typename WordGraph<Node>::adjacency_matrix_type;
       Mat mat;
       detail::init_adjacency_matrix(wg, mat);
@@ -741,7 +759,8 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     std::unordered_set<Node1>
-    nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source) {
+    nodes_reachable_from_no_checks(WordGraphView<Node1> const& wg,
+                                   Node2                       source) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       std::unordered_set<Node1> seen;
       std::stack<Node1>         stack;
@@ -764,16 +783,16 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    std::unordered_set<Node1> nodes_reachable_from(WordGraph<Node1> const& wg,
-                                                   Node2 source) {
+    std::unordered_set<Node1>
+    nodes_reachable_from(WordGraphView<Node1> const& wg, Node2 source) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       return nodes_reachable_from_no_checks(wg, source);
     }
 
     template <typename Node1, typename Node2>
-    std::unordered_set<Node1> ancestors_of_no_checks(WordGraph<Node1> const& wg,
-                                                     Node2 target) {
+    std::unordered_set<Node1>
+    ancestors_of_no_checks(WordGraphView<Node1> const& wg, Node2 target) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       using label_type = typename WordGraph<Node1>::label_type;
 
@@ -813,18 +832,18 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    std::unordered_set<Node1> ancestors_of(WordGraph<Node1> const& wg,
-                                           Node2                   target) {
+    std::unordered_set<Node1> ancestors_of(WordGraphView<Node1> const& wg,
+                                           Node2                       target) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
       return ancestors_of_no_checks(wg, target);
     }
 
     template <typename Node1, typename Node2, typename Iterator>
-    Node1 follow_path(WordGraph<Node1> const& wg,
-                      Node2                   from,
-                      Iterator                first,
-                      Iterator                last) {
+    Node1 follow_path(WordGraphView<Node1> const& wg,
+                      Node2                       from,
+                      Iterator                    first,
+                      Iterator                    last) {
       static_assert(sizeof(Node1) <= sizeof(size_t));
       static_assert(sizeof(Node2) <= sizeof(Node1));
 
@@ -848,10 +867,10 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2, typename Iterator>
-    Node1 follow_path_no_checks(WordGraph<Node1> const& wg,
-                                Node2                   from,
-                                Iterator                first,
-                                Iterator                last) noexcept {
+    Node1 follow_path_no_checks(WordGraphView<Node1> const& wg,
+                                Node2                       from,
+                                Iterator                    first,
+                                Iterator                    last) noexcept {
       static_assert(sizeof(Node1) <= sizeof(size_t));
       static_assert(sizeof(Node2) <= sizeof(Node1));
       if constexpr (::libsemigroups::detail::HasLessEqual<Iterator,
@@ -872,10 +891,10 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2, typename Iterator>
     std::pair<Node1, Iterator>
-    last_node_on_path_no_checks(WordGraph<Node1> const& wg,
-                                Node2                   from,
-                                Iterator                first,
-                                Iterator                last) noexcept {
+    last_node_on_path_no_checks(WordGraphView<Node1> const& wg,
+                                Node2                       from,
+                                Iterator                    first,
+                                Iterator                    last) noexcept {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       auto  it   = first;
       Node1 prev = from, to = from;
@@ -892,10 +911,10 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2, typename Iterator>
-    std::pair<Node1, Iterator> last_node_on_path(WordGraph<Node1> const& wg,
-                                                 Node2                   from,
-                                                 Iterator                first,
-                                                 Iterator                last) {
+    std::pair<Node1, Iterator> last_node_on_path(WordGraphView<Node1> const& wg,
+                                                 Node2    from,
+                                                 Iterator first,
+                                                 Iterator last) {
       throw_if_node_out_of_bounds(wg, from);
 
       static_assert(sizeof(Node2) <= sizeof(Node1));
@@ -921,24 +940,24 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
-    last_node_on_path(WordGraph<Node1> const& wg,
-                      Node2                   from,
-                      word_type const&        w) {
+    last_node_on_path(WordGraphView<Node1> const& wg,
+                      Node2                       from,
+                      word_type const&            w) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return last_node_on_path(wg, from, w.cbegin(), w.cend());
     }
 
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
-    last_node_on_path_no_checks(WordGraph<Node1> const& wg,
-                                Node2                   from,
-                                word_type const&        w) {
+    last_node_on_path_no_checks(WordGraphView<Node1> const& wg,
+                                Node2                       from,
+                                word_type const&            w) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return last_node_on_path_no_checks(wg, from, w.cbegin(), w.cend());
     }
 
     template <typename Node>
-    Dot dot(WordGraph<Node> const& wg) {
+    Dot dot(WordGraphView<Node> const& wg) {
       Dot result;
       result.name("WordGraph").kind(Dot::Kind::digraph);
       for (auto n : wg.nodes()) {
@@ -952,26 +971,6 @@ namespace libsemigroups {
         }
       }
       return result;
-    }
-
-    template <typename Node>
-    bool equal_to_no_checks(WordGraph<Node> const& x,
-                            WordGraph<Node> const& y,
-                            Node                   first,
-                            Node                   last) {
-      using label_type = typename WordGraph<Node>::label_type;
-      if (x.out_degree() != y.out_degree()) {
-        return false;
-      }
-
-      for (auto n = first; n != last; ++n) {
-        for (label_type a = 0; a < x.out_degree(); ++a) {
-          if (x.target_no_checks(n, a) != y.target_no_checks(n, a)) {
-            return false;
-          }
-        }
-      }
-      return true;
     }
 
     template <typename Node>
@@ -1378,11 +1377,11 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    void spanning_tree_no_checks(WordGraph<Node1> const& wg,
-                                 Node2                   root,
-                                 Forest&                 f) {
+    void spanning_tree_no_checks(WordGraphView<Node1> const& wg,
+                                 Node2                       root,
+                                 Forest&                     f) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
-      using node_type = typename WordGraph<Node1>::node_type;
+      using node_type = typename WordGraphView<Node1>::node_type;
       f.init(1);
       size_t const N = wg.number_of_nodes();
 
@@ -1406,14 +1405,14 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
+    void spanning_tree(WordGraphView<Node1> const& wg, Node2 root, Forest& f) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, root);
       return spanning_tree_no_checks(wg, root, f);
     }
 
     template <typename Node1, typename Node2>
-    Forest spanning_tree(WordGraph<Node1> const& wg, Node2 root) {
+    Forest spanning_tree(WordGraphView<Node1> const& wg, Node2 root) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       Forest f;
       spanning_tree(wg, root, f);
@@ -1421,7 +1420,7 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    Forest spanning_tree_no_checks(WordGraph<Node1> const& wg, Node2 root) {
+    Forest spanning_tree_no_checks(WordGraphView<Node1> const& wg, Node2 root) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       Forest f;
       spanning_tree_no_checks(wg, root, f);

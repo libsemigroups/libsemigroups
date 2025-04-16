@@ -47,13 +47,13 @@ namespace libsemigroups {
 
   template <typename Node>
   auto WordGraphView<Node>::cbegin_targets(node_type source) const {
-    word_graph_view::throw_if_node_out_of_bounds(*this, source);
+    word_graph::throw_if_node_out_of_bounds(*this, source);
     return rx::begin(targets_no_checks(source));
   }
 
   template <typename Node>
   auto WordGraphView<Node>::cend_targets(node_type source) const {
-    word_graph_view::throw_if_node_out_of_bounds(*this, source);
+    word_graph::throw_if_node_out_of_bounds(*this, source);
     return rx::end(targets_no_checks(source));
   }
 
@@ -62,32 +62,36 @@ namespace libsemigroups {
             typename WordGraphView<Node>::node_type>
   WordGraphView<Node>::next_label_and_target_no_checks(node_type  s,
                                                        label_type a) const {
-    node_type translated = to_graph(s);
-    return to_view(_graph->next_label_and_target_no_checks(translated, a));
+    node_type                         translated = to_graph(s);
+    std::pair<node_type, label_type> result
+        = _graph->next_label_and_target_no_checks(translated, a);
+    to_view(result);
+    return result;
   }
 
   template <typename Node>
   std::pair<typename WordGraphView<Node>::label_type,
             typename WordGraphView<Node>::node_type>
   WordGraphView<Node>::next_label_and_target(node_type s, label_type a) const {
-    word_graph_view::throw_if_node_out_of_bounds(*this, s);
-    word_graph_view::throw_if_label_out_of_bounds(*this, a);
-    node_type translated = to_graph(s);
-    auto      result = _graph->next_label_and_target_no_checks(translated, a);
+    word_graph::throw_if_node_out_of_bounds(*this, s);
+    word_graph::throw_if_label_out_of_bounds(*this, a);
+    node_type                         translated = to_graph(s);
+    std::pair<node_type, label_type> result
+        = _graph->next_label_and_target_no_checks(translated, a);
     to_view(result);
     return result;
   }
 
   template <typename Node>
   auto WordGraphView<Node>::targets(node_type source) const {
-    word_graph_view::throw_if_node_out_of_bounds(*this, source);
+    word_graph::throw_if_node_out_of_bounds(*this, source);
     node_type translated = to_graph(source);
     return to_view(_graph->targets_no_checks(translated));
   }
 
   template <typename Node>
   auto WordGraphView<Node>::labels_and_targets(node_type source) const {
-    word_graph_view::throw_if_node_out_of_bounds(*this, source);
+    word_graph::throw_if_node_out_of_bounds(*this, source);
     return rx::enumerate(targets_no_checks(source));
   }
 
@@ -120,8 +124,8 @@ namespace libsemigroups {
   typename WordGraphView<Node>::node_type WordGraphView<Node>::target(
       typename WordGraphView<Node>::node_type  source,
       typename WordGraphView<Node>::label_type a) const {
-    word_graph_view::throw_if_node_out_of_bounds(*this, source);
-    word_graph_view::throw_if_label_out_of_bounds(*this, a);
+    word_graph::throw_if_node_out_of_bounds(*this, source);
+    word_graph::throw_if_label_out_of_bounds(*this, a);
     return target_no_checks(source, a);
   }
   template <typename Node>
@@ -155,7 +159,8 @@ namespace libsemigroups {
     return _graph->out_degree();
   }
 
-  namespace word_graph_view {
+  namespace word_graph {
+
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wgv, Node2 n) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
@@ -181,6 +186,76 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Node, typename Iterator1, typename Iterator2>
+    void throw_if_node_out_of_bounds(WordGraphView<Node> const& wg,
+                                     Iterator1                  first,
+                                     Iterator2                  last) {
+      for (auto it = first; it != last; ++it) {
+        word_graph::throw_if_node_out_of_bounds(wg, *it);
+      }
+    }
+
+    template <typename Node>
+    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wg) {
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    }
+
+    template <typename Node, typename Iterator>
+    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wg,
+                                           Iterator                   first,
+                                           Iterator                   last) {
+      for (auto it = first; it != last; ++it) {
+        auto s = *it;
+        for (auto [a, t] : wg.labels_and_targets(s)) {
+          if (t != UNDEFINED && t >= wg.number_of_nodes()) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "target out of bounds, the edge with source {} and label {} "
+                "has target {}, but expected value in the range [0, {})",
+                s,
+                a,
+                t,
+                wg.number_of_nodes());
+          }
+        }
+      }
+    }
+
+    // not noexcept because it throws an exception!
+    template <typename Node>
+    void
+    throw_if_label_out_of_bounds(WordGraphView<Node> const&           wg,
+                                 typename WordGraph<Node>::label_type lbl) {
+      if (lbl >= wg.out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
+                                "the range [0, {}), got {}",
+                                wg.out_degree(),
+                                lbl);
+      }
+    }
+
+    template <typename Node>
+    void throw_if_label_out_of_bounds(WordGraphView<Node> const& wg,
+                                      word_type const&           word) {
+      throw_if_label_out_of_bounds(wg, word.cbegin(), word.cend());
+    }
+
+    template <typename Node, typename Iterator>
+    void throw_if_label_out_of_bounds(WordGraphView<Node> const& wg,
+                                      Iterator                   first,
+                                      Iterator                   last) {
+      std::for_each(first, last, [&wg](letter_type a) {
+        throw_if_label_out_of_bounds(wg, a);
+      });
+    }
+
+    template <typename Node, typename Container>
+    void throw_if_label_out_of_bounds(WordGraphView<Node> const&    wg,
+                                      std::vector<word_type> const& rules) {
+      std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
+        throw_if_label_out_of_bounds(wg, w);
+      });
+    }
+
     template <typename Node>
     WordGraph<Node> graph_from_view(WordGraphView<Node> const& view) {
       WordGraph<Node> result
@@ -199,5 +274,5 @@ namespace libsemigroups {
       // reason
       return result;
     }
-  }  // namespace word_graph_view
+  }  // namespace word_graph
 }  // namespace libsemigroups
