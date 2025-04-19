@@ -45,8 +45,8 @@
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for add_generating_pair
 #include "libsemigroups/transf.hpp"                // for Transf, validate
 #include "libsemigroups/types.hpp"                 // for congruence_kind
+#include "libsemigroups/word-graph-helpers.hpp"    // for WordGraph helpers
 #include "libsemigroups/word-graph.hpp"            // for follow_path_no_...
-#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 #include "libsemigroups/detail/felsch-graph.hpp"  // for FelschGraph
 #include "libsemigroups/detail/report.hpp"        // for report_default

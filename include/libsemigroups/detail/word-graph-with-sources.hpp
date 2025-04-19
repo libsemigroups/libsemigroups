@@ -41,11 +41,11 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_DEBUG
-#include "libsemigroups/constants.hpp"   // for UNDEFINED
-#include "libsemigroups/types.hpp"       // for letter_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
+#include "libsemigroups/config.hpp"              // for LIBSEMIGROUPS_DEBUG
+#include "libsemigroups/constants.hpp"           // for UNDEFINED
+#include "libsemigroups/types.hpp"               // for letter_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph helpers
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "containers.hpp"  // for DynamicArray2
 

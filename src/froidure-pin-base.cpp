@@ -28,11 +28,11 @@
 #include "libsemigroups/runner.hpp"     // for Runner
 #include "libsemigroups/types.hpp"      // for letter_type, word_type
 
-#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
-#include "libsemigroups/detail/report.hpp"      // for REPORT_DEFAULT, Reporter
-#include "libsemigroups/detail/string.hpp"      // for group_digits
+#include "libsemigroups/detail/containers.hpp"   // for DynamicArray2
+#include "libsemigroups/detail/report.hpp"       // for REPORT_DEFAULT, Reporter
+#include "libsemigroups/detail/string.hpp"       // for group_digits
+#include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph helpers
 #include "libsemigroups/word-graph.hpp"
-#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;

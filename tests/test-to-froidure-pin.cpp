@@ -24,16 +24,16 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
-#include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/types.hpp"            // for congruence_kind
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
+#include "libsemigroups/cong.hpp"                // for Congruence
+#include "libsemigroups/constants.hpp"           // for UNDEFINED
+#include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin, Froidure...
+#include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix
+#include "libsemigroups/to-froidure-pin.hpp"     // for make
+#include "libsemigroups/transf.hpp"              // for Transf
+#include "libsemigroups/types.hpp"               // for congruence_kind
+#include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph helpers
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

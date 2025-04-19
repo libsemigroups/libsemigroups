@@ -20,8 +20,8 @@
 #include <utility>  // for std::move
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph helpers
 #include "libsemigroups/word-graph.hpp"
-#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/word-graph-view.hpp"

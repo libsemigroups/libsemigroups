@@ -49,17 +49,17 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
-#include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
+#include "libsemigroups/constants.hpp"           // for operator==, operator!=
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix, normal_f...
+#include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
+#include "libsemigroups/paths.hpp"               // for Paths
+#include "libsemigroups/presentation.hpp"        // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"              // for equal
+#include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph helpers
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
