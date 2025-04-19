@@ -39,6 +39,7 @@
 #include "libsemigroups/to-todd-coxeter.hpp"        // for ??
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
+#include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 #include "libsemigroups/word-range.hpp"             // for operator"" _w
 

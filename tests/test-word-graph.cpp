@@ -29,6 +29,7 @@
 #include "libsemigroups/paths.hpp"   // for cbegin_pilo
 #include "libsemigroups/word-graph-helpers.hpp"
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 #include "libsemigroups/word-range.hpp"  // for literals, WordRange
 
 #include "libsemigroups/detail/string.hpp"  // for detail::to_string

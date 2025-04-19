@@ -62,7 +62,7 @@ namespace libsemigroups {
             typename WordGraphView<Node>::node_type>
   WordGraphView<Node>::next_label_and_target_no_checks(node_type  s,
                                                        label_type a) const {
-    node_type                         translated = to_graph(s);
+    node_type                        translated = to_graph(s);
     std::pair<node_type, label_type> result
         = _graph->next_label_and_target_no_checks(translated, a);
     to_view(result);
@@ -75,7 +75,7 @@ namespace libsemigroups {
   WordGraphView<Node>::next_label_and_target(node_type s, label_type a) const {
     word_graph::throw_if_node_out_of_bounds(*this, s);
     word_graph::throw_if_label_out_of_bounds(*this, a);
-    node_type                         translated = to_graph(s);
+    node_type                        translated = to_graph(s);
     std::pair<node_type, label_type> result
         = _graph->next_label_and_target_no_checks(translated, a);
     to_view(result);

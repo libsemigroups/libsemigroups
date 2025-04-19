@@ -47,6 +47,7 @@
 #include "libsemigroups/to-presentation.hpp"  // for to_prese...
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 #include "cong-common-class.hpp"        // for Congruen...
 #include "felsch-graph.hpp"             // for FelschGraph

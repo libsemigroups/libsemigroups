@@ -2007,6 +2007,12 @@ namespace libsemigroups {
     [[nodiscard]] std::unordered_set<Node1>
     ancestors_of_no_checks(WordGraphView<Node1> const& wg, Node2 target);
 
+    template <typename Node1, typename Node2>
+    [[nodiscard]] std::unordered_set<Node1>
+    ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 source) {
+      return ancestors_of_no_checks(WordGraphView<Node1>(wg), source);
+    }
+
     //! \brief Returns the number of nodes reachable from a given node in a
     //! word graph.
     //!

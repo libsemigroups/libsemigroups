@@ -25,13 +25,13 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"          // for clique, add_clique
 
-#include "libsemigroups/constants.hpp"   // for UNDEFINED, Undefined, Max
-#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
-#include "libsemigroups/forest.hpp"      // for make<Forest>, Forest, opera...
-#include "libsemigroups/gabow.hpp"       // for Gabow
-#include "libsemigroups/ranges.hpp"      // for equal
-#include "libsemigroups/word-graph.hpp"  // for WordGraph, to_action...
+#include "libsemigroups/constants.hpp"  // for UNDEFINED, Undefined, Max
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
+#include "libsemigroups/forest.hpp"     // for make<Forest>, Forest, opera...
+#include "libsemigroups/gabow.hpp"      // for Gabow
+#include "libsemigroups/ranges.hpp"     // for equal
 #include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph, to_action...
+#include "libsemigroups/word-graph.hpp"          // for WordGraph, to_action...
 
 #include "libsemigroups/ranges.hpp"  // for Inner, operator|, remove...
 

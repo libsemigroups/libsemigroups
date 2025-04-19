@@ -51,6 +51,7 @@
 #include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"        // for equal
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 #include "libsemigroups/word-range.hpp"    // for Inner, ToString, Str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

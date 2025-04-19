@@ -52,6 +52,7 @@
 #include "libsemigroups/types.hpp"                 // for word_type, tril
 #include "libsemigroups/ukkonen.hpp"               // for Ukkonen
 #include "libsemigroups/word-graph.hpp"            // for is_complete
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 #include "libsemigroups/word-range.hpp"            // for operator""_w, hum...
 
 #include "libsemigroups/detail/fmt.hpp"       // for print etc

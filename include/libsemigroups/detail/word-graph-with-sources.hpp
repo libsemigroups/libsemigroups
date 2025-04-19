@@ -45,6 +45,7 @@
 #include "libsemigroups/constants.hpp"   // for UNDEFINED
 #include "libsemigroups/types.hpp"       // for letter_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 #include "containers.hpp"  // for DynamicArray2
 

@@ -33,6 +33,7 @@
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

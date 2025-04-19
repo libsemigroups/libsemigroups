@@ -32,6 +32,7 @@
 #include "libsemigroups/detail/report.hpp"      // for REPORT_DEFAULT, Reporter
 #include "libsemigroups/detail/string.hpp"      // for group_digits
 #include "libsemigroups/word-graph.hpp"
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;

@@ -379,6 +379,13 @@ namespace libsemigroups {
       void init_adjacency_matrix(
           WordGraph<Node> const&                                 wg,
           Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
+        init_adjacency_matrix(WordGraphView<Node>(wg), mat);
+      }
+
+      template <typename Node>
+      void init_adjacency_matrix(
+          WordGraphView<Node> const&                             wg,
+          Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
         size_t const N = wg.number_of_nodes();
         mat.resize(N, N);
         mat.fill(0);
@@ -394,11 +401,17 @@ namespace libsemigroups {
 
 #else
       template <typename Node>
-      void init_adjacency_matrix(WordGraph<Node> const& wg,
-                                 IntMat<0, 0, int64_t>& mat) {
+      void init_adjacency_matrix(WordGraphView<Node> const& wg,
+                                 IntMat<0, 0, int64_t>&     mat) {
         size_t const N = wg.number_of_nodes();
         mat            = IntMat<0, 0, int64_t>(N, N);
         std::fill(mat.begin(), mat.end(), 0);
+      }
+
+      template <typename Node>
+      void init_adjacency_matrix(WordGraph<Node> const& wg,
+                                 IntMat<0, 0, int64_t>& mat) {
+        init_adjacency_matrix(WordGraphView<Node>(wg), mat);
       }
 #endif
     }  // namespace detail

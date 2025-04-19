@@ -54,6 +54,7 @@
 #include "libsemigroups/presentation-examples.hpp"  // for partition_monoid
 #include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
 #include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 #include "libsemigroups/word-range.hpp"    // for Inner, StringRange, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

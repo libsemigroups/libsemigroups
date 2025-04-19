@@ -41,6 +41,7 @@
 #include "libsemigroups/runner.hpp"
 #include "libsemigroups/types.hpp"       // for word_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp" // for WordGraph helpers
 
 #include "felsch-graph.hpp"
 #include "node-manager.hpp"             // for NodeManager
