@@ -413,4 +413,24 @@ namespace libsemigroups {
     }
   }
 
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  void Action<Element, Point, Func, Traits, LeftOrRight>::throw_if_bad_degree(
+      element_type const& x) const {
+    if (_gens.empty()) {
+      return;
+    }
+    auto M = Degree()(x);
+    auto N = Degree()(_gens.front());
+    if (M != N) {
+      LIBSEMIGROUPS_EXCEPTION("the degree of the argument (an element) is "
+                              "incorrect, expected {} got {}",
+                              N,
+                              M);
+    }
+  }
+
 }  // namespace libsemigroups
