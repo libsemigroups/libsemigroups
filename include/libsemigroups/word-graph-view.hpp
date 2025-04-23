@@ -95,13 +95,13 @@ namespace libsemigroups {
 
     //! \brief Construct from an existing WordGraphView
     //! \param graph underlying WordGraphView object
-    WordGraphView(WordGraph<Node> const& graph);
+    explicit WordGraphView(WordGraph<Node> const& graph);
 
     //! \brief Copy constructor
-    WordGraphView(WordGraphView<Node> const&) = default;
+    explicit WordGraphView(WordGraphView<Node> const&) = default;
 
     //! \brief Move constructor
-    WordGraphView(WordGraphView<Node>&&) = default;
+    explicit WordGraphView(WordGraphView<Node>&&) = default;
 
     //! \brief Construct from WordGraph with another node type.
     //!
@@ -114,7 +114,7 @@ namespace libsemigroups {
     //! \note Any edge with target \ref UNDEFINED in \p that will have target
     //! `static_cast<Node>(UNDEFINED)` in the constructed word graph.
     template <typename OtherNode>
-    WordGraphView(WordGraphView<OtherNode> const& that);
+    explicit WordGraphView(WordGraphView<OtherNode> const& that);
 
     //! \brief Construct empty object for future assignment
     WordGraphView();

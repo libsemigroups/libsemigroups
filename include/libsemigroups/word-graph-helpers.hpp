@@ -1,5 +1,25 @@
-#ifndef WORD_GRAPH_HELPERS_HPP_
-#define WORD_GRAPH_HELPERS_HPP_
+//
+// libsemigroups - C++ library for semigroups and monoids
+// Copyright (C) 2025 Nadim Searight
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+// This file contains helper functions for word graphs and word graph views
+
+#ifndef LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
+#define LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
 
 #include "libsemigroups/word-graph-view.hpp"
 #include "libsemigroups/word-graph.hpp"
@@ -3530,4 +3550,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #include "libsemigroups/word-graph-helpers.tpp"
-#endif
+#endif  // LIBSEMIGROUPS_WORD_GRAPH_HELPERS_HPP_
