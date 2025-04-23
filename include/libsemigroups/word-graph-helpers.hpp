@@ -905,6 +905,17 @@ namespace libsemigroups {
     //! greater than or equal to WordGraphView::out_degree).
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename = std::enable_if_t<
+                  !std::is_same_v<std::decay_t<Iterator3>, word_type>>>
+    [[nodiscard]] bool is_compatible(WordGraphView<Node> const& wg,
+                                     Iterator1                  first_node,
+                                     Iterator2                  last_node,
+                                     Iterator3                  first_rule,
+                                     Iterator3                  last_rule);
 
     //! \brief Check if a word graph is compatible with some relations at a
     //! range of nodes.
@@ -912,9 +923,9 @@ namespace libsemigroups {
     //! This function returns \c true if the word graph \p wg is compatible
     //! with the relations in the range \p first_rule to \p last_rule at every
     //! node in the range from \p first_node to \p last_node. This means that
-    //! the paths with given sources that are labelled by one side of a relation
-    //! leads to the same node as the path labelled by the other side of the
-    //! relation.
+    //! the paths with given sources that are labelled by one side of a
+    //! relation leads to the same node as the path labelled by the other side
+    //! of the relation.
     //!
     //! \tparam Node  the type of the nodes of the WordGraph.
     //! \p wg.
@@ -935,24 +946,42 @@ namespace libsemigroups {
     //!
     //! \param last_rule iterator pointing one beyond the last rule.
     //!
-    //! \return Whether or not the word graph is compatible with the given rules
-    //! at each one of the given nodes.
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
     //!
-    //! \throws LibsemigroupsException if any of the nodes in the range between
-    //! \p first_node and \p last_node does not belong to \p wg (i.e. is greater
-    //! than or equal to WordGraph::number_of_nodes).
+    //! \throws LibsemigroupsException if any of the nodes in the range
+    //! between
+    //! \p first_node and \p last_node does not belong to \p wg (i.e. is
+    //! greater than or equal to WordGraph::number_of_nodes).
     //!
-    //! \throws LibsemigroupsException if any of the rules in the range between
+    //! \throws LibsemigroupsException if any of the rules in the range
+    //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraph::out_degree).
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
 
-    //! \brief Check if a word graph view is compatible with a pair of words for
-    //! a range of nodes.
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename = std::enable_if_t<
+                  !std::is_same_v<std::decay_t<Iterator3>, word_type>>>
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     Iterator3              first_rule,
+                                     Iterator3              last_rule) {
+      WordGraphView<Node> wgv(wg);
+      return is_compatible(wgv, first_node, last_node, first_rule, last_rule);
+    }
+
+    //! \brief Check if a word graph view is compatible with a pair of words
+    //! for a range of nodes.
     //!
-    //! This function returns \c true if the word graph view \p wg is compatible
-    //! with the words \p lhs and \p rhs at every node in the range from
+    //! This function returns \c true if the word graph view \p wg is
+    //! compatible with the words \p lhs and \p rhs at every node in the range
+    //! from
     //! \p first_node to \p last_node. This means that the paths with given
     //! sources that are labelled by \p lhs leads to the same node as the path
     //! labelled by \p rhs.
@@ -973,8 +1002,8 @@ namespace libsemigroups {
     //!
     //! \param rhs the second rule.
     //!
-    //! \return Whether or not the word graph view is compatible with the given
-    //! rules at each one of the given nodes.
+    //! \return Whether or not the word graph view is compatible with the
+    //! given rules at each one of the given nodes.
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
@@ -1011,8 +1040,8 @@ namespace libsemigroups {
     //!
     //! \param rhs the second rule.
     //!
-    //! \return Whether or not the word graph is compatible with the given rules
-    //! at each one of the given nodes.
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
@@ -1027,11 +1056,12 @@ namespace libsemigroups {
           WordGraphView<Node>(wg), first_node, last_node, lhs, rhs);
     }
 
-    //! \brief Check if a word graph view is compatible with a pair of words for
-    //! a range of nodes.
+    //! \brief Check if a word graph view is compatible with a pair of words
+    //! for a range of nodes.
     //!
-    //! This function returns \c true if the word graph view \p wg is compatible
-    //! with the words \p lhs and \p rhs at every node in the range from
+    //! This function returns \c true if the word graph view \p wg is
+    //! compatible with the words \p lhs and \p rhs at every node in the range
+    //! from
     //! \p first_node to \p last_node. This means that the paths with given
     //! sources that are labelled by \p lhs leads to the same node as the path
     //! labelled by \p rhs.
@@ -1052,14 +1082,16 @@ namespace libsemigroups {
     //!
     //! \param rhs the second rule.
     //!
-    //! \return Whether or not the word graph view is compatible with the given
-    //! rules at each one of the given nodes.
+    //! \return Whether or not the word graph view is compatible with the
+    //! given rules at each one of the given nodes.
     //!
-    //! \throws LibsemigroupsException if any of the nodes in the range between
-    //! \p first_node and \p last_node does not belong to \p wg (i.e. is greater
-    //! than or equal to WordGraphView::number_of_nodes).
+    //! \throws LibsemigroupsException if any of the nodes in the range
+    //! between
+    //! \p first_node and \p last_node does not belong to \p wg (i.e. is
+    //! greater than or equal to WordGraphView::number_of_nodes).
     //!
-    //! \throws LibsemigroupsException if any of the rules in the range between
+    //! \throws LibsemigroupsException if any of the rules in the range
+    //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraphView::out_degree).
     template <typename Node, typename Iterator1, typename Iterator2>
@@ -1094,14 +1126,16 @@ namespace libsemigroups {
     //!
     //! \param rhs the second rule.
     //!
-    //! \return Whether or not the word graph is compatible with the given rules
-    //! at each one of the given nodes.
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
     //!
-    //! \throws LibsemigroupsException if any of the nodes in the range between
-    //! \p first_node and \p last_node does not belong to \p wg (i.e. is greater
-    //! than or equal to WordGraph::number_of_nodes).
+    //! \throws LibsemigroupsException if any of the nodes in the range
+    //! between
+    //! \p first_node and \p last_node does not belong to \p wg (i.e. is
+    //! greater than or equal to WordGraph::number_of_nodes).
     //!
-    //! \throws LibsemigroupsException if any of the rules in the range between
+    //! \throws LibsemigroupsException if any of the rules in the range
+    //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraph::out_degree).
     template <typename Node, typename Iterator1, typename Iterator2>
@@ -1114,15 +1148,15 @@ namespace libsemigroups {
           WordGraphView<Node>(wg), first_node, last_node, lhs, rhs);
     }
 
-    //! \brief Check if a word graph or word graph view is compatible with some
-    //! relations at a range of nodes.
+    //! \brief Check if a word graph or word graph view is compatible with
+    //! some relations at a range of nodes.
     //!
     //! This function returns \c true if the word graph \p wg is compatible
     //! with the relations in the range \p first_rule to \p last_rule at every
     //! node in the range from \p first_node to \p last_node. This means that
-    //! the paths with given sources that are labelled by one side of a relation
-    //! leads to the same node as the path labelled by the other side of the
-    //! relation.
+    //! the paths with given sources that are labelled by one side of a
+    //! relation leads to the same node as the path labelled by the other side
+    //! of the relation.
     //!
     //! \tparam Node  the type of the nodes of the WordGraph.
     //! \p wg.
@@ -1143,14 +1177,16 @@ namespace libsemigroups {
     //!
     //! \param last_rule iterator pointing one beyond the last rule.
     //!
-    //! \return Whether or not the word graph is compatible with the given rules
-    //! at each one of the given nodes.
+    //! \return Whether or not the word graph is compatible with the given
+    //! rules at each one of the given nodes.
     //!
-    //! \throws LibsemigroupsException if any of the nodes in the range between
-    //! \p first_node and \p last_node does not belong to \p wg (i.e. is greater
-    //! than or equal to WordGraph::number_of_nodes).
+    //! \throws LibsemigroupsException if any of the nodes in the range
+    //! between
+    //! \p first_node and \p last_node does not belong to \p wg (i.e. is
+    //! greater than or equal to WordGraph::number_of_nodes).
     //!
-    //! \throws LibsemigroupsException if any of the rules in the range between
+    //! \throws LibsemigroupsException if any of the rules in the range
+    //! between
     //! \p first_rule and \p last_rule contains an invalid label (i.e. one
     //! greater than or equal to WordGraph::out_degree).
     //!
@@ -1175,7 +1211,8 @@ namespace libsemigroups {
     //                     WordGraphType,
     //                     WordGraph<typename WordGraphType::node_type>>) {
     //     return is_compatible(
-    //         static_cast<WordGraph<typename WordGraphType::node_type> const&>(
+    //         static_cast<WordGraph<typename WordGraphType::node_type>
+    //         const&>(
     //             wg),
     //         first_node,
     //         last_node,
@@ -1184,7 +1221,8 @@ namespace libsemigroups {
     //   } else {
     //     return is_compatible(
     //         static_cast<
-    //             WordGraphView<typename WordGraphType::node_type> const&>(wg),
+    //             WordGraphView<typename WordGraphType::node_type>
+    //             const&>(wg),
     //         first_node,
     //         last_node,
     //         first_rule,
@@ -1196,8 +1234,8 @@ namespace libsemigroups {
     //! WordGraphView::out_degree out-edges.
     //!
     //! This function returns \c true if every node in the range defined by
-    //! \p first_node and \p last_node is complete, meaning that every such node
-    //! is the source of an edge with every possible label.
+    //! \p first_node and \p last_node is complete, meaning that every such
+    //! node is the source of an edge with every possible label.
     //!
     //! \tparam Node the type of the nodes in the word graph view.
     //!
@@ -1229,12 +1267,12 @@ namespace libsemigroups {
                                              Iterator1 first_node,
                                              Iterator2 last_node);
 
-    //! \brief Check if every node in a range has exactly WordGraph::out_degree
-    //! out-edges.
+    //! \brief Check if every node in a range has exactly
+    //! WordGraph::out_degree out-edges.
     //!
     //! This function returns \c true if every node in the range defined by
-    //! \p first_node and \p last_node is complete, meaning that every such node
-    //! is the source of an edge with every possible label.
+    //! \p first_node and \p last_node is complete, meaning that every such
+    //! node is the source of an edge with every possible label.
     //!
     //! \tparam Node the type of the nodes in the word graph.
     //!
@@ -1302,8 +1340,8 @@ namespace libsemigroups {
                                    Iterator1                  first_node,
                                    Iterator2                  last_node);
 
-    //! \brief Check if every node in a range has exactly WordGraph::out_degree
-    //! out-edges.
+    //! \brief Check if every node in a range has exactly
+    //! WordGraph::out_degree out-edges.
     //!
     //! This function returns \c true if every node in the range defined by
     //! \p first_node and \p last_node is complete, meaning that
@@ -1361,7 +1399,8 @@ namespace libsemigroups {
       return wg.number_of_edges() == wg.number_of_nodes() * wg.out_degree();
     }
 
-    //! \brief Check if every node has exactly WordGraph::out_degree out-edges.
+    //! \brief Check if every node has exactly WordGraph::out_degree
+    //! out-edges.
     //!
     //! This function returns \c true if a WordGraph is complete, meaning that
     //! every node is the source of an edge with every possible label.
@@ -1385,13 +1424,14 @@ namespace libsemigroups {
 
     //! \brief Check if a word graph view is connected.
     //!
-    //! This function returns \c true if the word graph view \p wg is connected
-    //! and
+    //! This function returns \c true if the word graph view \p wg is
+    //! connected and
     //! \c false if it is not. A word graph view is *connected* if for every
-    //! pair of nodes \c s and \c t in the graph there exists a sequence \f$u_0
-    //! = s,
+    //! pair of nodes \c s and \c t in the graph there exists a sequence
+    //! \f$u_0 = s,
     //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
-    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$ or
+    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$
+    //! or
     //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
     //!
     //! \tparam Node the type of the nodes in the word graph view.
@@ -1404,18 +1444,20 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \note If any target of any edge in the word graph view \p wg that is out
-    //! of bounds, then this is ignored by this function.
+    //! \note If any target of any edge in the word graph view \p wg that is
+    //! out of bounds, then this is ignored by this function.
     template <typename Node>
     [[nodiscard]] bool is_connected(WordGraphView<Node> const& wg);
 
     //! \brief Check if a word graph is connected.
     //!
     //! This function returns \c true if the word graph \p wg is connected and
-    //! \c false if it is not. A word graph is *connected* if for every pair of
-    //! nodes \c s and \c t in the graph there exists a sequence \f$u_0 = s,
+    //! \c false if it is not. A word graph is *connected* if for every pair
+    //! of nodes \c s and \c t in the graph there exists a sequence \f$u_0 =
+    //! s,
     //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
-    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$ or
+    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$
+    //! or
     //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
     //!
     //! \tparam Node the type of the nodes in the word graph.
@@ -1437,8 +1479,8 @@ namespace libsemigroups {
 
     //! \brief Check if there is a path from one node to another.
     //!
-    //! This function returns \c true if there is a path from the node \p source
-    //! to the node \p target in the word graph view \p wg.
+    //! This function returns \c true if there is a path from the node \p
+    //! source to the node \p target in the word graph view \p wg.
     //!
     //! \tparam Node1 the type of the nodes in the WordGraphView.
     //!
@@ -1492,8 +1534,8 @@ namespace libsemigroups {
 
     //! \brief Check if there is a path from one node to another.
     //!
-    //! This function returns \c true if there is a path from the node \p source
-    //! to the node \p target in the word graph \p wg.
+    //! This function returns \c true if there is a path from the node \p
+    //! source to the node \p target in the word graph \p wg.
     //!
     //! \tparam Node1 the type of the nodes in the WordGraph.
     //!
@@ -1548,8 +1590,8 @@ namespace libsemigroups {
 
     //! \brief Check if there is a path from one node to another.
     //!
-    //! This function returns \c true if there is a path from the node \p source
-    //! to the node \p target in the word graph view \p wg.
+    //! This function returns \c true if there is a path from the node \p
+    //! source to the node \p target in the word graph view \p wg.
     //!
     //! \tparam Node1 the type of the nodes in the WordGraphView.
     //!
@@ -1566,7 +1608,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p source or \p target is out of
     //! bounds.
-    //! \throws LibsemigroupsException if any target in \p wg is out of bounds.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
@@ -1584,8 +1627,8 @@ namespace libsemigroups {
 
     //! \brief Check if there is a path from one node to another.
     //!
-    //! This function returns \c true if there is a path from the node \p source
-    //! to the node \p target in the word graph \p wg.
+    //! This function returns \c true if there is a path from the node \p
+    //! source to the node \p target in the word graph \p wg.
     //!
     //! \tparam Node1 the type of the nodes in the WordGraph.
     //!
@@ -1602,7 +1645,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p source or \p target is out of
     //! bounds.
-    //! \throws LibsemigroupsException if any target in \p wg is out of bounds.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
@@ -1625,8 +1669,8 @@ namespace libsemigroups {
     //! This function returns \c true if there exists a node in \p wg from
     //! which every other node is reachable; and \c false otherwise.
     //! A word graph view is *strictly cyclic* if there exists a node \f$v\f$
-    //! from which every node is reachable (including \f$v\f$). There must be a
-    //! path of length at least \f$1\f$ from the original node \f$v\f$ to
+    //! from which every node is reachable (including \f$v\f$). There must be
+    //! a path of length at least \f$1\f$ from the original node \f$v\f$ to
     //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
     //! default).
     //!
@@ -1637,7 +1681,8 @@ namespace libsemigroups {
     //! \returns
     //! A value of type `bool`.
     //!
-    //! \throws LibsemigroupsException if any target in \p wg is out of bounds.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
@@ -1649,8 +1694,8 @@ namespace libsemigroups {
     //! \code
     //! auto wg = make<WordGraph<uint8_t>>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    //! word_graph::is_strictly_cyclic(WordGraphView<uint8_t>(wg));  // returns
-    //! false \endcode
+    //! word_graph::is_strictly_cyclic(WordGraphView<uint8_t>(wg));  //
+    //! returns false \endcode
     // TODO(1) should have a version that returns the node that everything is
     // reachable from
     template <typename Node>
@@ -1673,7 +1718,8 @@ namespace libsemigroups {
     //! \returns
     //! A value of type `bool`.
     //!
-    //! \throws LibsemigroupsException if any target in \p wg is out of bounds.
+    //! \throws LibsemigroupsException if any target in \p wg is out of
+    //! bounds.
     //!
     //! \par Complexity
     //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
@@ -1717,9 +1763,9 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed, it is
-    //! assumed that \p source is a node in the word graph view \p wg; and that
-    //! the letters in the word described by \p first and \p last belong to the
-    //! range \c 0 to WordGraphView::out_degree.
+    //! assumed that \p source is a node in the word graph view \p wg; and
+    //! that the letters in the word described by \p first and \p last belong
+    //! to the range \c 0 to WordGraphView::out_degree.
     template <typename Node1, typename Node2, typename Iterator>
     [[nodiscard]] std::pair<Node1, Iterator>
     last_node_on_path_no_checks(WordGraphView<Node1> const& wg,
@@ -1784,8 +1830,8 @@ namespace libsemigroups {
     //!
     //! \note If any value in \p wg or in the word described by \p first and
     //! \p last is out of bounds (greater than or equal to
-    //! WordGraphView::number_of_nodes), the path labelled by the word exits the
-    //! word graph view, which is reflected in the result value of this
+    //! WordGraphView::number_of_nodes), the path labelled by the word exits
+    //! the word graph view, which is reflected in the result value of this
     //! function, but does not cause an exception to be thrown.
     template <typename Node1, typename Node2, typename Iterator>
     [[nodiscard]] std::pair<Node1, Iterator>
@@ -1846,9 +1892,9 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed, it is
-    //! assumed that \p source is a node in the word graph view \p wg; and that
-    //! the letters in the word described by \p first and \p last belong to the
-    //! range \c 0 to WordGraphView::out_degree.
+    //! assumed that \p source is a node in the word graph view \p wg; and
+    //! that the letters in the word described by \p first and \p last belong
+    //! to the range \c 0 to WordGraphView::out_degree.
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
     last_node_on_path_no_checks(WordGraphView<Node1> const& wg,
@@ -1902,8 +1948,8 @@ namespace libsemigroups {
     //!
     //! \note If any value in \p wg or in the word described by \p first and
     //! \p last is out of bounds (greater than or equal to
-    //! WordGraphView::number_of_nodes), the path labelled by the word exits the
-    //! word graph view, which is reflected in the result value of this
+    //! WordGraphView::number_of_nodes), the path labelled by the word exits
+    //! the word graph view, which is reflected in the result value of this
     //! function, but does not cause an exception to be thrown.
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
@@ -1958,12 +2004,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p source is out of bounds (greater
     //! than or equal to WordGraph::number_of_nodes).
     //!
-    //! \note If any target of any edge in the word graph view \p wg that is out
-    //! of bounds, then this is ignored by this function.
+    //! \note If any target of any edge in the word graph view \p wg that is
+    //! out of bounds, then this is ignored by this function.
     // TODO(1) tests
-    // TODO(1) version where std::unordered_set is passed by reference, or make
-    // this a class that stores its stack and unordered_set, not clear why we'd
-    // single out the unordered_set to be passed by reference.
+    // TODO(1) version where std::unordered_set is passed by reference, or
+    // make this a class that stores its stack and unordered_set, not clear
+    // why we'd single out the unordered_set to be passed by reference.
     // TODO(2) version which is an iterator i.e. returns an iterator or range
     // object that allows use to step through the nodes reachable from a given
     // node
@@ -1992,9 +2038,9 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     // TODO(1) tests
-    // TODO(1) version where std::unordered_set is passed by reference, or make
-    // this a class that stores its stack and unordered_set, not clear why we'd
-    // single out the unordered_set to be passed by reference.
+    // TODO(1) version where std::unordered_set is passed by reference, or
+    // make this a class that stores its stack and unordered_set, not clear
+    // why we'd single out the unordered_set to be passed by reference.
     // TODO(2) version which is an iterator i.e. returns an iterator or range
     // object that allows use to step through the nodes reachable from a given
     // node
@@ -2052,8 +2098,8 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p source is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p source is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
@@ -2102,8 +2148,8 @@ namespace libsemigroups {
     //! \param wg the word graph.
     //! \param source the source node.
     //!
-    //! \returns The number of nodes in the word graph \p wg that are reachable
-    //! from \p source.
+    //! \returns The number of nodes in the word graph \p wg that are
+    //! reachable from \p source.
     //!
     //! \throws LibsemigroupsException if \p source is out of bounds (greater
     //! than or equal to WordGraph::number_of_nodes).
@@ -2129,8 +2175,8 @@ namespace libsemigroups {
     //! \param wg the word graph.
     //! \param source the source node.
     //!
-    //! \returns The number of nodes in the word graph \p wg that are reachable
-    //! from \p source.
+    //! \returns The number of nodes in the word graph \p wg that are
+    //! reachable from \p source.
     //!
     //! \throws LibsemigroupsException if \p source is out of bounds (greater
     //! than or equal to WordGraph::number_of_nodes).
@@ -2152,14 +2198,14 @@ namespace libsemigroups {
     //! \param wg the word graph.
     //! \param source the source node.
     //!
-    //! \returns The number of nodes in the word graph \p wg that are reachable
-    //! from \p source.
+    //! \returns The number of nodes in the word graph \p wg that are
+    //! reachable from \p source.
     //!
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p source is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p source is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] size_t
@@ -2177,14 +2223,14 @@ namespace libsemigroups {
     //! \param wg the word graph.
     //! \param source the source node.
     //!
-    //! \returns The number of nodes in the word graph \p wg that are reachable
-    //! from \p source.
+    //! \returns The number of nodes in the word graph \p wg that are
+    //! reachable from \p source.
     //!
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p source is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p source is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] size_t
@@ -2194,8 +2240,8 @@ namespace libsemigroups {
                                                       source);
     }
 
-    //! \brief Construct a random connected acyclic word graph with given number
-    //! of nodes, and out-degree.
+    //! \brief Construct a random connected acyclic word graph with given
+    //! number of nodes, and out-degree.
     //!
     //! This function constructs a random acyclic connected word graph with
     //! \p number_of_nodes nodes, and out-degree \p out_degree. This function
@@ -2221,8 +2267,8 @@ namespace libsemigroups {
                                    std::mt19937 mt
                                    = std::mt19937(std::random_device()()));
 
-    //! \brief Replace the contents of a Forest by a spanning tree of the nodes
-    //! reachable from a given node in a word graph.
+    //! \brief Replace the contents of a Forest by a spanning tree of the
+    //! nodes reachable from a given node in a word graph.
     //!
     //! This function replaces the content of the Forest \p f with a spanning
     //! tree of the nodes reachable from \p root in the word graph \p wg.
@@ -2237,16 +2283,16 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p root is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p root is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     void spanning_tree_no_checks(WordGraphView<Node1> const& wg,
                                  Node2                       root,
                                  Forest&                     f);
 
-    //! \brief Replace the contents of a Forest by a spanning tree of the nodes
-    //! reachable from a given node in a word graph.
+    //! \brief Replace the contents of a Forest by a spanning tree of the
+    //! nodes reachable from a given node in a word graph.
     //!
     //! This function replaces the content of the Forest \p f with a spanning
     //! tree of the nodes reachable from \p root in the word graph \p wg.
@@ -2261,8 +2307,8 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p root is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p root is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     void spanning_tree_no_checks(WordGraph<Node1> const& wg,
@@ -2271,8 +2317,8 @@ namespace libsemigroups {
       return spanning_tree_no_checks(WordGraphView<Node1>(wg), root, f);
     }
 
-    //! \brief Replace the contents of a Forest by a spanning tree of the nodes
-    //! reachable from a given node in a word graph.
+    //! \brief Replace the contents of a Forest by a spanning tree of the
+    //! nodes reachable from a given node in a word graph.
     //!
     //! This function replaces the content of the Forest \p f with a spanning
     //! tree of the nodes reachable from \p root in the word graph \p wg.
@@ -2292,8 +2338,8 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     void spanning_tree(WordGraphView<Node1> const& wg, Node2 root, Forest& f);
 
-    //! \brief Replace the contents of a Forest by a spanning tree of the nodes
-    //! reachable from a given node in a word graph.
+    //! \brief Replace the contents of a Forest by a spanning tree of the
+    //! nodes reachable from a given node in a word graph.
     //!
     //! This function replaces the content of the Forest \p f with a spanning
     //! tree of the nodes reachable from \p root in the word graph \p wg.
@@ -2332,8 +2378,8 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p root is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p root is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] Forest spanning_tree_no_checks(WordGraphView<Node1> const& wg,
@@ -2356,8 +2402,8 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
-    //! \warning The arguments are not checked, and in particular it is assumed
-    //! that \p root is a node of \p wg (i.e. less than
+    //! \warning The arguments are not checked, and in particular it is
+    //! assumed that \p root is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] Forest spanning_tree_no_checks(WordGraph<Node1> const& wg,
@@ -2452,8 +2498,9 @@ namespace libsemigroups {
     //! \param val the order to use for standardization.
     //!
     //! \returns
-    //! A std::pair the first entry of which is \c true if the word graph \p wg
-    //! is modified by this function (i.e. it was not standardized already), and
+    //! A std::pair the first entry of which is \c true if the word graph \p
+    //! wg is modified by this function (i.e. it was not standardized
+    //! already), and
     //! \c false otherwise. The second entry is a Forest object containing a
     //! spanning tree for \p wg.
     //!
@@ -2622,40 +2669,6 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<Node1>
     topological_sort(WordGraph<Node1> const& wg, Node2 source) {
       return topological_sort(WordGraphView<Node1>(wg), source);
-    }
-
-    template <typename Node,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3>
-    [[nodiscard]] auto is_compatible(WordGraphView<Node> const& wg,
-                                     Iterator1                  first_node,
-                                     Iterator2                  last_node,
-                                     Iterator3                  first_rule,
-                                     Iterator3                  last_rule)
-        -> std::enable_if_t<!std::is_same_v<std::decay_t<Iterator3>, word_type>,
-                            bool> {
-      for (auto rit = first_rule; rit < last_rule; rit += 2) {
-        if (!is_compatible(wg, first_node, last_node, *rit, *(rit + 1))) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    template <typename Node,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3>
-    [[nodiscard]] auto is_compatible(WordGraph<Node> const& wg,
-                                     Iterator1              first_node,
-                                     Iterator2              last_node,
-                                     Iterator3              first_rule,
-                                     Iterator3              last_rule)
-        -> std::enable_if_t<!std::is_same_v<std::decay_t<Iterator3>, word_type>,
-                            bool> {
-      WordGraphView<Node> wgv(wg);
-      return is_compatible(wgv, first_node, last_node, first_rule, last_rule);
     }
 
   }  // namespace word_graph
@@ -2963,8 +2976,8 @@ namespace libsemigroups {
                         size_t                 ynum_nodes_reachable_from_root,
                         Node                   yroot);
 
-    //! \brief Check if the language accepted by one word graph is contained in
-    //! that accepted by another word graph.
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that accepted by another word graph.
     //!
     //! This function returns \c true if the language accepted by \p x with
     //! initial node \p xroot and accept state every node, is a subset of the
@@ -3010,9 +3023,9 @@ namespace libsemigroups {
     //! given word graphs with respect to given root vertices.
     //!
     //! This function replaces the contents of the word graph \p xy with the
-    //! join/meet of the word graphs \p x and \p y. This function is the same as
-    //! the 7-argument variant but it computes the number of nodes reachable
-    //! from \p xroot and \p yroot.
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 7-argument variant but it computes the number of nodes
+    //! reachable from \p xroot and \p yroot.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
@@ -3040,9 +3053,9 @@ namespace libsemigroups {
     //! given word graphs with respect to given root vertices.
     //!
     //! This function replaces the contents of the word graph \p xy with the
-    //! join/meet of the word graphs \p x and \p y. This function is the same as
-    //! the 5-argument variant but it uses \c 0 as the root node in both \p x
-    //! and \p y.
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 5-argument variant but it uses \c 0 as the root node in both \p
+    //! x and \p y.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
@@ -3063,10 +3076,10 @@ namespace libsemigroups {
     //! \brief Returns a word graph containing the join/meet of two given word
     //! graphs.
     //!
-    //! This function returns a word graph  containing the join/meet of the word
-    //! graphs \p x and \p y. If \c n is the number of arguments, then this
-    //! function constructs a word graph to contain the result, forwards this
-    //! and the other arguments to the overload of `call_no_checks` with
+    //! This function returns a word graph  containing the join/meet of the
+    //! word graphs \p x and \p y. If \c n is the number of arguments, then
+    //! this function constructs a word graph to contain the result, forwards
+    //! this and the other arguments to the overload of `call_no_checks` with
     //! `n + 1` parameters, then returns the word graph containing the result.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
@@ -3086,8 +3099,8 @@ namespace libsemigroups {
     //! given word graphs with respect to given root vertices.
     //!
     //! This function replaces the contents of the word graph \p xy with the
-    //! join/meet of the word graphs \p x and \p y. This function is the same as
-    //! the 5-argument overload of \c call_no_checks but it throws if its
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 5-argument overload of \c call_no_checks but it throws if its
     //! arguments aren't valid.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
@@ -3118,8 +3131,8 @@ namespace libsemigroups {
     //! given word graphs with respect to given root vertices.
     //!
     //! This function replaces the contents of the word graph \p xy with the
-    //! join/meet of the word graphs \p x and \p y. This function is the same as
-    //! the 3-argument overload of \c call_no_checks but it throws if its
+    //! join/meet of the word graphs \p x and \p y. This function is the same
+    //! as the 3-argument overload of \c call_no_checks but it throws if its
     //! arguments aren't valid.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
@@ -3160,15 +3173,15 @@ namespace libsemigroups {
     template <typename Node, typename... Args>
     [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args);
 
-    //! \brief Check if the language accepted by one word graph is contained in
-    //! that defined by another word graph.
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
     //!
     //! This function returns \c true if the language accepted by \p x with
     //! initial node \p xroot and accept state every node, is a subset of the
-    //! corresponding language in \p y. This version of the function is similar
-    //! to the 6-argument overload, except that here we must compute the number
-    //! of nodes in \p x and \p y reachable from \p xroot and \p yroot,
-    //! respectively.
+    //! corresponding language in \p y. This version of the function is
+    //! similar to the 6-argument overload, except that here we must compute
+    //! the number of nodes in \p x and \p y reachable from \p xroot and \p
+    //! yroot, respectively.
     //!
     //! \tparam Node1 the type of the nodes in the word graphs which are
     //! parameters to this function.
@@ -3196,14 +3209,14 @@ namespace libsemigroups {
                                   WordGraph<Node1> const& y,
                                   Node2                   yroot);
 
-    //! \brief Check if the language accepted by one word graph is contained in
-    //! that defined by another word graph.
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
     //!
     //! This function returns \c true if the language accepted by \p x with
     //! initial node \p xroot and accept state every node, is a subset of the
-    //! corresponding language in \p y. This version of the function is similar
-    //! to the 4-argument overload, except that \c 0 is used as the root node
-    //! in both \p x and \p y.
+    //! corresponding language in \p y. This version of the function is
+    //! similar to the 4-argument overload, except that \c 0 is used as the
+    //! root node in both \p x and \p y.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
     //! parameters to this function.
@@ -3226,8 +3239,8 @@ namespace libsemigroups {
     // roots as arguments (6 args in total) because we'd have to check that
     // they were valid, and the only way to do this is to recompute them.
 
-    //! \brief Check if the language accepted by one word graph is contained in
-    //! that defined by another word graph.
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
     //!
     //! This function returns \c true if the language accepted by \p x with
     //! initial node \p xroot and accept state every node, is a subset of the
@@ -3260,8 +3273,8 @@ namespace libsemigroups {
                         WordGraph<Node1> const& y,
                         Node2                   yroot);
 
-    //! \brief Check if the language accepted by one word graph is contained in
-    //! that defined by another word graph.
+    //! \brief Check if the language accepted by one word graph is contained
+    //! in that defined by another word graph.
     //!
     //! This function returns \c true if the language accepted by \p x with
     //! initial node \c 0 and accept state every node, is a subset of the
@@ -3387,10 +3400,10 @@ namespace libsemigroups {
     //! \brief Returns a word graph containing the join/meet of two given word
     //! graphs.
     //!
-    //! This function returns a word graph containing the join/meet of the word
-    //! graphs \p x and \p y. If \c n is the number of arguments, then this
-    //! function constructs a word graph to contain the result, forwards this
-    //! and the other arguments to the overload of `call_no_checks` with
+    //! This function returns a word graph containing the join/meet of the
+    //! word graphs \p x and \p y. If \c n is the number of arguments, then
+    //! this function constructs a word graph to contain the result, forwards
+    //! this and the other arguments to the overload of `call_no_checks` with
     //! `n + 1` parameters, then returns the word graph containing the result.
     //!
     //! \tparam Node the type of the nodes in the word graphs which are
@@ -3546,7 +3559,8 @@ namespace libsemigroups {
   //!
   //! \returns A string containing the input required to recreate \p wg.
   //!
-  //! \throws LibsemigroupsException if the argument \p braces is not of length
+  //! \throws LibsemigroupsException if the argument \p braces is not of
+  //! length
   //! \c 2.
   template <typename Node>
   [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
