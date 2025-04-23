@@ -905,17 +905,6 @@ namespace libsemigroups {
     //! greater than or equal to WordGraphView::out_degree).
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
-    template <
-        typename Node,
-        typename Iterator1,
-        typename Iterator2,
-        typename Iterator3,
-        std::enable_if_t<!std::is_same_v<std::decay_t<Iterator3>, word_type>>>
-    [[nodiscard]] bool is_compatible(WordGraphView<Node> const& wg,
-                                     Iterator1                  first_node,
-                                     Iterator2                  last_node,
-                                     Iterator3                  first_rule,
-                                     Iterator3                  last_rule);
 
     //! \brief Check if a word graph is compatible with some relations at a
     //! range of nodes.
@@ -958,23 +947,6 @@ namespace libsemigroups {
     //! greater than or equal to WordGraph::out_degree).
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
-    template <
-        typename Node,
-        typename Iterator1,
-        typename Iterator2,
-        typename Iterator3,
-        std::enable_if_t<!std::is_same_v<std::decay_t<Iterator3>, word_type>>>
-    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
-                                     Iterator1              first_node,
-                                     Iterator2              last_node,
-                                     Iterator3              first_rule,
-                                     Iterator3              last_rule) {
-      return is_compatible(WordGraphView<Node>(wg),
-                           first_node,
-                           last_node,
-                           first_rule,
-                           last_rule);
-    }
 
     //! \brief Check if a word graph view is compatible with a pair of words for
     //! a range of nodes.
@@ -1183,41 +1155,42 @@ namespace libsemigroups {
     //! greater than or equal to WordGraph::out_degree).
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
-    template <typename WordGraphType,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename = std::enable_if_t<
-                  std::is_same_v<WordGraphType,
-                                 WordGraph<typename WordGraphType::node_type>>
-                  || std::is_same_v<
-                      WordGraphType,
-                      WordGraphView<typename WordGraphType::node_type>>>>
-    bool is_compatible(WordGraphType const& wg,
-                       Iterator1            first_node,
-                       Iterator2            last_node,
-                       Iterator3            first_rule,
-                       Iterator3            last_rule) {
-      if constexpr (std::is_same_v<
-                        WordGraphType,
-                        WordGraph<typename WordGraphType::node_type>>) {
-        return is_compatible(
-            static_cast<WordGraph<typename WordGraphType::node_type> const&>(
-                wg),
-            first_node,
-            last_node,
-            first_rule,
-            last_rule);
-      } else {
-        return is_compatible(
-            static_cast<
-                WordGraphView<typename WordGraphType::node_type> const&>(wg),
-            first_node,
-            last_node,
-            first_rule,
-            last_rule);
-      }
-    }
+    // template <typename WordGraphType,
+    //           typename Iterator1,
+    //           typename Iterator2,
+    //           typename Iterator3,
+    //           typename = std::enable_if_t<
+    //               std::is_same_v<WordGraphType,
+    //                              WordGraph<typename
+    //                              WordGraphType::node_type>>
+    //               || std::is_same_v<
+    //                   WordGraphType,
+    //                   WordGraphView<typename WordGraphType::node_type>>>>
+    // bool is_compatible(WordGraphType const& wg,
+    //                    Iterator1            first_node,
+    //                    Iterator2            last_node,
+    //                    Iterator3            first_rule,
+    //                    Iterator3            last_rule) {
+    //   if constexpr (std::is_same_v<
+    //                     WordGraphType,
+    //                     WordGraph<typename WordGraphType::node_type>>) {
+    //     return is_compatible(
+    //         static_cast<WordGraph<typename WordGraphType::node_type> const&>(
+    //             wg),
+    //         first_node,
+    //         last_node,
+    //         first_rule,
+    //         last_rule);
+    //   } else {
+    //     return is_compatible(
+    //         static_cast<
+    //             WordGraphView<typename WordGraphType::node_type> const&>(wg),
+    //         first_node,
+    //         last_node,
+    //         first_rule,
+    //         last_rule);
+    //   }
+    // }
 
     //! \brief Check if every node in a range has exactly
     //! WordGraphView::out_degree out-edges.
@@ -2651,6 +2624,40 @@ namespace libsemigroups {
       return topological_sort(WordGraphView<Node1>(wg), source);
     }
 
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    [[nodiscard]] auto is_compatible(WordGraphView<Node> const& wg,
+                                     Iterator1                  first_node,
+                                     Iterator2                  last_node,
+                                     Iterator3                  first_rule,
+                                     Iterator3                  last_rule)
+        -> std::enable_if_t<!std::is_same_v<std::decay_t<Iterator3>, word_type>,
+                            bool> {
+      for (auto rit = first_rule; rit < last_rule; rit += 2) {
+        if (!is_compatible(wg, first_node, last_node, *rit, *(rit + 1))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    [[nodiscard]] auto is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     Iterator3              first_rule,
+                                     Iterator3              last_rule)
+        -> std::enable_if_t<!std::is_same_v<std::decay_t<Iterator3>, word_type>,
+                            bool> {
+      WordGraphView<Node> wgv(wg);
+      return is_compatible(wgv, first_node, last_node, first_rule, last_rule);
+    }
+
   }  // namespace word_graph
 
   //////////////////////////////////////////////////////////////////////////
@@ -2818,7 +2825,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2853,7 +2860,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.

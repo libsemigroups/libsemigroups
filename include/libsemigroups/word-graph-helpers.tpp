@@ -545,22 +545,16 @@ namespace libsemigroups {
       return is_compatible_no_checks(wg, first_node, last_node, lhs, rhs);
     }
 
-    template <typename Node,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3>
-    bool is_compatible(WordGraphView<Node> const& wg,
-                       Iterator1                  first_node,
-                       Iterator2                  last_node,
-                       Iterator3                  first_rule,
-                       Iterator3                  last_rule) {
-      for (auto rit = first_rule; rit < last_rule; rit += 2) {
-        if (!is_compatible(wg, first_node, last_node, *rit, *(rit + 1))) {
-          return false;
-        }
-      }
-      return true;
-    }
+    // template <typename Node,
+    //           typename Iterator1,
+    //           typename Iterator2,
+    //           typename Iterator3>
+    // bool is_compatible(WordGraphView<Node> const& wg,
+    //                    Iterator1                  first_node,
+    //                    Iterator2                  last_node,
+    //                    Iterator3                  first_rule,
+    //                    Iterator3                  last_rule) {
+    // }
 
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_complete_no_checks(WordGraphView<Node> const& wg,

@@ -174,18 +174,6 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Node>
-    void
-    throw_if_label_out_of_bounds(WordGraphView<Node> const&               wgv,
-                                 typename WordGraphView<Node>::label_type a) {
-      if (a >= wgv.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
-                                "the range [0, {}), got {}",
-                                wgv.out_degree(),
-                                a);
-      }
-    }
-
     template <typename Node, typename Iterator1, typename Iterator2>
     void throw_if_node_out_of_bounds(WordGraphView<Node> const& wg,
                                      Iterator1                  first,
@@ -248,7 +236,7 @@ namespace libsemigroups {
       });
     }
 
-    template <typename Node, typename Container>
+    template <typename Node>
     void throw_if_label_out_of_bounds(WordGraphView<Node> const&    wg,
                                       std::vector<word_type> const& rules) {
       std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
