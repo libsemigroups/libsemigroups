@@ -193,6 +193,17 @@ namespace libsemigroups {
                           "exceptions (dynamic)",
                           "[quick][pperm]") {
     using point_type = typename Transf<>::point_type;
+
+    auto x = make<PPerm<0, uint8_t>>({}, {}, 257);
+    REQUIRE(x * x == x);
+    x = make<PPerm<0, uint8_t>>({}, {}, 256);
+    REQUIRE(x * x == x);
+
+    REQUIRE_THROWS_AS((make<PPerm<0, uint8_t>>({255}, {255}, 256)),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS((make<PPerm<0, uint8_t>>({0}, {255}, 256)),
+                      LibsemigroupsException);
+
     REQUIRE_NOTHROW(PPerm<>());
     REQUIRE_NOTHROW(make<PPerm<>>({0}));
     REQUIRE_NOTHROW(make<PPerm<>>({UNDEFINED}));
