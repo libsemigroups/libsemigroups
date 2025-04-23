@@ -642,9 +642,9 @@ namespace libsemigroups {
     //! \brief Returns a \ref const_iterator (random access iterator) pointing
     //! one past the last point.
     //!
-    //!  This function returns a \ref const_iterator pointing one beyond the
-    //!  last point in the action (if any). No enumeration is triggered by
-    //!  calling this function.
+    //! This function returns a \ref const_iterator pointing one beyond the
+    //! last point in the action (if any). No enumeration is triggered by
+    //! calling this function.
     //!
     //! \returns
     //! A const iterator to one past the end.
@@ -830,6 +830,45 @@ namespace libsemigroups {
     [[nodiscard]] Gabow<uint32_t> const& scc() {
       run();
       return _scc;
+    }
+
+    //! \brief Apply the template parameter Func in-place.
+    //!
+    //! This static function applies the template parameter \c Func to the
+    //! point \p pt and element \p x and modifies \p result in-place to hold
+    //! the result.
+    //!
+    //! \param result the point to hold the result.
+    //! \param pt the point to apply the action function to.
+    //! \param x the element to apply the action function to.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // These functions allow the action operation (defined by Func) to be called
+    // on an instance of Action. This isn't very helpful in C++ code, but is in
+    // the python bindings, where figuring out the type of Func is a bit fiddly.
+    static void apply(point_type&         result,
+                      point_type const&   pt,
+                      element_type const& x) {
+      ActionOp()(result, pt, x);
+    }
+
+    //! \brief Apply the template parameter Func.
+    //!
+    //! This static function applies the template parameter \c Func to the
+    //! point \p pt and element \p x and returns the result in a newly
+    //! constructed \c point_type.
+    //!
+    //! \param pt the point to apply the action function to.
+    //! \param x the element to apply the action function to.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] static point_type apply(point_type const&   pt,
+                                          element_type const& x) {
+      point_type result;
+      apply(result, pt, x);
+      return result;
     }
 
    private:

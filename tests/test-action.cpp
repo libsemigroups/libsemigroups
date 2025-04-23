@@ -362,6 +362,12 @@ namespace libsemigroups {
     o.add_generator(
         make<PPerm<8>>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
     REQUIRE(o.size() == 256);
+    REQUIRE(o.apply(make<PPerm<8>>(
+                        {0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8),
+                    make<PPerm<8>>(
+                        {0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8))
+            == make<PPerm<8>>(
+                {0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6, 7}, 8));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
