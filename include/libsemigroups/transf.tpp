@@ -166,7 +166,10 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT(x.degree() == degree());
     LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
     size_t const n = degree();
-    for (point_type i = 0; i < n; ++i) {
+    // Use size_t for the loop variable <i> below because if, for example,
+    // n = 256 and point_type = uint8_t, then the i < n is always true in the
+    // next line.
+    for (size_t i = 0; i < n; ++i) {
       (*this)[i] = (x[i] == UNDEFINED ? UNDEFINED : y[x[i]]);
     }
   }
@@ -177,7 +180,7 @@ namespace libsemigroups {
                                  size_t                     deg) {
     if (N != 0 && deg != N) {
       // Sanity check that the final argument is compatible with the
-      // template param N, if we have a dynamic pperm
+      // template param N, if we have a static pperm
       LIBSEMIGROUPS_EXCEPTION(
           "the 3rd argument is not valid, expected {}, found {}", N, deg);
     } else if (dom.size() != ran.size()) {
@@ -198,6 +201,25 @@ namespace libsemigroups {
     std::unordered_map<Scalar, size_t> seen;
     detail::throw_if_duplicates(dom.cbegin(), dom.cend(), seen);
     detail::throw_if_duplicates(ran.cbegin(), ran.cend(), seen);
+
+    auto it = std::find(dom.cbegin(), dom.cend(), UNDEFINED);
+    if (it != dom.cend()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st argument (domain) must not contain UNDEFINED, but found "
+          "UNDEFINED (= {}) in position {}",
+          static_cast<Scalar>(UNDEFINED),
+          std::distance(dom.cbegin(), it));
+    }
+    it = std::find(ran.cbegin(), ran.cend(), UNDEFINED);
+    if (it != ran.cend()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (range) must not contain UNDEFINED, but found "
+          "UNDEFINED (= {}) in position {}",
+          static_cast<Scalar>(UNDEFINED),
+          std::distance(ran.cbegin(), it));
+    }
+    // NOTE: it is ok if deg >= max. value of Scalar, but then necessary that
+    // the values in <dom> and <ran> are less than (max. value of Scalar) - 1.
   }
 
   template <typename Return>
