@@ -2551,7 +2551,9 @@ namespace libsemigroups {
     //! \ref standardize.
     template <typename Node>
     bool is_standardized(WordGraph<Node> const& wg,
-                         Order                  val = Order::shortlex);
+                         Order                  val = Order::shortlex) {
+      return is_standardized(WordGraphView<Node>(wg), val);
+    }
 
     //! \brief Returns the nodes of the word graph in topological order (see
     //! below) if possible.
@@ -2838,7 +2840,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2873,7 +2875,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.
