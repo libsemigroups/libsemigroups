@@ -492,12 +492,12 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::RepOrc" title="RepOrc" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Sims1" title="Sims1" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Sims2" title="Sims2" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::SimsRefinerFaithful"
+          title="SimsRefinerFaithful" />
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsRefinerIdeals"
           title="SimsRefinerIdeals" />
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsSettings" title="SimsSettings" />
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::SimsRefinerFaithful"
-          title="SimsRefinerFaithful" />
       </tab>
       <tab type="user" visible="yes" url="@ref libsemigroups::sims" title="Helper functions" />
     </tab>
