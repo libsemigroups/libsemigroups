@@ -926,7 +926,7 @@ namespace libsemigroups {
   //! \sa Action for further details.
   template <typename Element,
             typename Point,
-            typename Func,
+            typename Func   = ImageRightAction<Element, Point>,
             typename Traits = ActionTraits<Element, Point>>
   using RightAction = Action<Element, Point, Func, Traits, side::right>;
 
@@ -936,7 +936,7 @@ namespace libsemigroups {
   //! \sa Action for further details.
   template <typename Element,
             typename Point,
-            typename Func,
+            typename Func   = ImageLeftAction<Element, Point>,
             typename Traits = ActionTraits<Element, Point>>
   using LeftAction = Action<Element, Point, Func, Traits, side::left>;
 }  // namespace libsemigroups
