@@ -852,4 +852,15 @@ namespace libsemigroups {
           == BMat8({{1, 0, 1, 1}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}}));
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Action", "022", "exception", "[quick]") {
+    RightAction<PPerm<>, PPerm<>> o;
+    o.add_seed(PPerm<>::one(8));
+    o.add_generator(
+        make<PPerm<>>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
+    REQUIRE_THROWS_AS(o.add_generator(make<PPerm<>>({0, 1, 2, 3, 4, 5, 6, 7},
+                                                    {1, 0, 2, 3, 4, 5, 6, 7},
+                                                    9)),
+                      LibsemigroupsException);
+  }
 }  // namespace libsemigroups
