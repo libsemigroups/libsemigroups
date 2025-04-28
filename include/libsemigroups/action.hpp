@@ -906,7 +906,7 @@ namespace libsemigroups {
   //! \sa Action.
   template <typename Element, typename Point>
   struct ActionTraits {
-    //! \copydoc libsemigroups::Hash
+    //! \copydoc libsemigroups::Degree
     using Degree = ::libsemigroups::Degree<Element>;
     //! \copydoc libsemigroups::Hash
     using Hash = ::libsemigroups::Hash<Point>;
