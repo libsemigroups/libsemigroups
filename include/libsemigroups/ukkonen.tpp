@@ -56,10 +56,11 @@ namespace libsemigroups {
     auto it = first;
     while (it < last) {
       if (st.pos == _nodes[st.v].length()) {
-        if (_nodes[st.v].child(*it) == UNDEFINED) {
+        auto letter = detail::deref_as_unsigned(it);
+        if (_nodes[st.v].child(letter) == UNDEFINED) {
           return it;
         } else {
-          st.v   = _nodes[st.v].child(*it);
+          st.v   = _nodes[st.v].child(letter);
           st.pos = 0;
         }
       } else {
@@ -82,16 +83,16 @@ namespace libsemigroups {
   template <typename Iterator>
   void Ukkonen::throw_if_contains_unique_letter(Iterator first,
                                                 Iterator last) const {
-    auto it = std::find_if(
-        first, last, [this](letter_type l) { return is_unique_letter(l); });
-
-    if (it != last) {
-      LIBSEMIGROUPS_EXCEPTION("illegal letter in word, expected value not "
-                              "in the range ({}, {}) found {} in position {}",
-                              _next_unique_letter,
-                              static_cast<unique_letter_type>(-1),
-                              *it,
-                              it - first);
+    for (auto it = first; it != last; ++it) {
+      auto letter = detail::deref_as_unsigned(it);
+      if (is_unique_letter(letter)) {
+        LIBSEMIGROUPS_EXCEPTION("illegal letter in word, expected value not "
+                                "in the range ({}, {}) found {} in position {}",
+                                _next_unique_letter,
+                                static_cast<unique_letter_type>(-1),
+                                letter,
+                                it - first);
+      }
     }
   }
 
