@@ -31,10 +31,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "000",
-                          "empty constructor",
+                          "empty constructor and entire graph",
                           "[quick]") {
     WordGraphView<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
+    WordGraph<size_t>     g1(10, 5);
+    WordGraphView<size_t> v1(g1);
+    REQUIRE(g1.number_of_nodes() == v1.number_of_nodes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
@@ -107,11 +110,20 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "007",
-                          "test label bounds checking throws",
+                          "test label and node bounds checking throws",
                           "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE_THROWS_AS(v.target(0, 7), LibsemigroupsException);
+    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(v, 15),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(word_graph::throw_if_node_out_of_bounds(v, 15),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(word_graph::throw_if_node_out_of_bounds(
+                          v, g.cbegin_nodes(), g.cbegin_nodes() + 7),
+                      LibsemigroupsException);
+    word_graph::throw_if_node_out_of_bounds(
+        v, g.cbegin_nodes(), g.cbegin_nodes() + 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
