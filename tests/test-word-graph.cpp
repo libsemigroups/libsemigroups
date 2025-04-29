@@ -757,11 +757,14 @@ namespace libsemigroups {
     REQUIRE(
         to_input_string(wg, "make<WordGraph<uint32_t>>(", "[]", ")")
         == "make<WordGraph<uint32_t>>(5, [[4294967295], [2], [3], [4], [0]])");
+    word_graph::add_cycle(wg, 1000);
+    REQUIRE(to_human_readable_repr(wg)
+            == "<WordGraph with 1,005 nodes, 1,004 edges, & out-degree 1>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "043",
-                          "WordGraph to_input_string",
+                          "WordGraph hash_value",
                           "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
