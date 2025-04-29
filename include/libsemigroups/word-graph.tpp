@@ -1906,9 +1906,10 @@ namespace libsemigroups {
   template <typename Node>
   std::string to_human_readable_repr(WordGraph<Node> const& wg) {
     // TODO(2) could be more elaborate, include complete, etc
+    // TODO(2) number_of_edges can be a bit slow
     return fmt::format("<WordGraph with {} nodes, {} edges, & out-degree {}>",
-                       wg.number_of_nodes(),
-                       wg.number_of_edges(),
+                       detail::group_digits(wg.number_of_nodes()),
+                       detail::group_digits(wg.number_of_edges()),
                        wg.out_degree());
   }
 
