@@ -2362,7 +2362,7 @@ namespace libsemigroups {
                 {"ad",    "",  "be",    "",  "cf",    "",  "da",    "",
                  "eb",    "",  "fc",    "",  "gjkii", "",  "hklgg", "",
                  "iljhh", "",  "ccefb", "g", "bbdea", "h", "aafdc", "i",
-                 "dbaee", "l", "facdd", "j", "ecbff", "k"}));
+                 "facdd", "j", "ecbff", "k", "dbaee", "l"}));
 
     ToddCoxeter tc(twosided, p);
 
