@@ -87,10 +87,9 @@ namespace libsemigroups {
 
     if (it != last) {
       LIBSEMIGROUPS_EXCEPTION("illegal letter in word, expected value not "
-                              "in the range ({}, {}) found {} in "
-                              "position {}",
+                              "in the range ({}, {}) found {} in position {}",
                               _next_unique_letter,
-                              -1,
+                              static_cast<unique_letter_type>(-1),
                               *it,
                               it - first);
     }
