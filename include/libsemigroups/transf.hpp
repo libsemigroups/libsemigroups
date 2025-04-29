@@ -2407,6 +2407,154 @@ namespace libsemigroups {
   template <size_t N>
   using LeastPerm = typename detail::LeastPermHelper<N>::type;
 
+  //! \ingroup transf_group
+  //!
+  //! \brief Return a string that can be used to recreate a transformation.
+  //!
+  //! This function returns a std::string containing the input required to
+  //! construct a copy of the argument \p x.
+  //!
+  //! \tparam N the degree.
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //!
+  //! \param x the transformation.
+  //! \param prefix a prefix for the returned string (defaults to `Transf<N,
+  //! Scalar>` with \p N and \p Scalar replaced by their values).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //!
+  //! \returns A string containing the input required to recreate \p x.
+  //!
+  //! \throws LibsemigroupsException if the argument \p braces is not of length
+  //! \c 2.
+  template <size_t N, typename Scalar>
+  [[nodiscard]] std::string to_input_string(Transf<N, Scalar> const& x,
+                                            std::string_view prefix = "",
+                                            std::string_view braces = "{}");
+
+  //! \ingroup transf_group
+  //!
+  //! \brief Return a string that can be used to recreate a permutation.
+  //!
+  //! This function returns a std::string containing the input required to
+  //! construct a copy of the argument \p x.
+  //!
+  //! \tparam N the degree.
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //!
+  //! \param x the permutation.
+  //! \param prefix a prefix for the returned string (defaults to `Perm<N,
+  //! Scalar>` with \p N and \p Scalar replaced by their values).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //!
+  //! \returns A string containing the input required to recreate \p x.
+  //!
+  //! \throws LibsemigroupsException if the argument \p braces is not of length
+  //! \c 2.
+  template <size_t N, typename Scalar>
+  [[nodiscard]] std::string to_input_string(Perm<N, Scalar> const& x,
+                                            std::string_view       prefix = "",
+                                            std::string_view braces = "{}");
+
+  //! \ingroup transf_group
+  //!
+  //! \brief Return a string that can be used to recreate a partial permutation.
+  //!
+  //! This function returns a std::string containing the input required to
+  //! construct a copy of the argument \p x.
+  //!
+  //! \tparam N the degree.
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //!
+  //! \param x the partial permutation.
+  //! \param prefix a prefix for the returned string (defaults to `PPerm<N,
+  //! Scalar>` with \p N and \p Scalar replaced by their values).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //!
+  //! \returns A string containing the input required to recreate \p x.
+  //!
+  //! \throws LibsemigroupsException if the argument \p braces is not of length
+  //! \c 2.
+  template <size_t N, typename Scalar>
+  [[nodiscard]] std::string to_input_string(PPerm<N, Scalar> const& x,
+                                            std::string_view        prefix = "",
+                                            std::string_view braces = "{}");
+
+  //! \ingroup transf_group
+  //!
+  //! \brief Return a human readable representation of a Transf object.
+  //!
+  //! This function returns a human readable representation of a Transf object.
+  //! The returned std::string is either the same as \ref to_input_string if the
+  //! width of the returned string is less than the parameter \p max_width, or
+  //! a std::string of the form \c "<transformation of degree X and rank Y>" if
+  //! not.
+  //!
+  //! \param x the Transf.
+  //! \param prefix a prefix for the returned string (defaults to `Transf<N,
+  //! Scalar>` with \p N and \p Scalar replaced by their values).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //! \param max_width the maximum width of the returned string (defaults to \c
+  //! 72).
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <size_t N, typename Scalar>
+  [[nodiscard]] std::string to_human_readable_repr(Transf<N, Scalar> const& x,
+                                                   std::string_view prefix = "",
+                                                   std::string_view braces
+                                                   = "{}",
+                                                   size_t max_width = 72);
+
+  //! \ingroup transf_group
+  //!
+  //! \brief Return a human readable representation of a Perm object.
+  //!
+  //! This function returns a human readable representation of a Perm object.
+  //! The returned std::string is either the same as \ref to_input_string if the
+  //! width of the returned string is less than the parameter \p max_width, or
+  //! a std::string of the form \c "<permutation of degree X>" if not.
+  //!
+  //! \param x the Perm.
+  //! \param prefix a prefix for the returned string (defaults to `Perm<N,
+  //! Scalar>` with \p N and \p Scalar replaced by their values).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //! \param max_width the maximum width of the returned string (defaults to \c
+  //! 72).
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <size_t N, typename Scalar>
+  [[nodiscard]] std::string to_human_readable_repr(Perm<N, Scalar> const& x,
+                                                   std::string_view prefix = "",
+                                                   std::string_view braces
+                                                   = "{}",
+                                                   size_t max_width = 72);
+
+  //! \ingroup transf_group
+  //!
+  //! \brief Return a human readable representation of a PPerm object.
+  //!
+  //! This function returns a human readable representation of a PPerm object.
+  //! The returned std::string is either the same as \ref to_input_string if the
+  //! width of the returned string is less than the parameter \p max_width, or
+  //! a std::string of the form \c "<partial permutation of degree X and rank
+  //! Y>" if not.
+  //!
+  //! \param x the PPerm.
+  //! \param prefix a prefix for the returned string (defaults to `PPerm<N,
+  //! Scalar>` with \p N and \p Scalar replaced by their values).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //! \param max_width the maximum width of the returned string (defaults to \c
+  //! 72).
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <size_t N, typename Scalar>
+  [[nodiscard]] std::string to_human_readable_repr(PPerm<N, Scalar> const& x,
+                                                   std::string_view prefix = "",
+                                                   std::string_view braces
+                                                   = "{}",
+                                                   size_t max_width = 72);
 }  // namespace libsemigroups
 
 #include "transf.tpp"

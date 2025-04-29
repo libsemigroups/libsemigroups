@@ -350,4 +350,44 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(LeastPPerm<3>({0, 1, 2}));
     REQUIRE_NOTHROW(LeastPerm<3>({0, 1, 2}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Transf",
+                          "011",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    auto x = make<Transf<3>>({0, 1, 2});
+    REQUIRE(to_human_readable_repr(x) == "Transf<3, uint8_t>({0, 1, 2})");
+    REQUIRE(to_human_readable_repr(x, "", "[]")
+            == "Transf<3, uint8_t>([0, 1, 2])");
+    REQUIRE(to_human_readable_repr(x, "Transf", "[]") == "Transf([0, 1, 2])");
+    REQUIRE(to_human_readable_repr(x) == to_input_string(x));
+    REQUIRE(to_human_readable_repr(x, "", "{}", 3)
+            == "<transformation of degree 3 and rank 3>");
+    // Too many braces
+    REQUIRE_THROWS_AS(to_human_readable_repr(x, "", "xxx"),
+                      LibsemigroupsException);
+
+    auto y = make<Perm<3>>({0, 1, 2});
+    REQUIRE(to_human_readable_repr(y) == "Perm<3, uint8_t>({0, 1, 2})");
+    REQUIRE(to_human_readable_repr(y, "", "[]")
+            == "Perm<3, uint8_t>([0, 1, 2])");
+    REQUIRE(to_human_readable_repr(y) == to_input_string(y));
+    REQUIRE(to_human_readable_repr(y, "", "{}", 3)
+            == "<permutation of degree 3>");
+    // Too many braces
+    REQUIRE_THROWS_AS(to_human_readable_repr(y, "", "xxx"),
+                      LibsemigroupsException);
+
+    auto z = make<PPerm<4>>({0, 1, 2}, {1, 2, 3}, 4);
+    REQUIRE(to_human_readable_repr(z)
+            == "PPerm<4, uint8_t>({0, 1, 2}, {1, 2, 3}, 4)");
+    REQUIRE(to_human_readable_repr(z, "", "[]")
+            == "PPerm<4, uint8_t>([0, 1, 2], [1, 2, 3], 4)");
+    REQUIRE(to_human_readable_repr(z) == to_input_string(z));
+    REQUIRE(to_human_readable_repr(z, "", "{}", 3)
+            == "<partial permutation of degree 4 and rank 3>");
+    // Too many braces
+    REQUIRE_THROWS_AS(to_human_readable_repr(z, "", "xxx"),
+                      LibsemigroupsException);
+  }
 }  // namespace libsemigroups

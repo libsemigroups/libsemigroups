@@ -483,4 +483,122 @@ namespace libsemigroups {
     inverse(x, xx);
     Lambda<PPerm<N, Scalar>, BitSet<M>>()(res, xx);
   }
+
+  namespace detail {
+    template <typename Thing>
+    std::string transf_to_input_string(Thing const&     x,
+                                       std::string_view prefix,
+                                       std::string_view braces = "{}") {
+      if (braces.size() != 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (braces) must have length 2, "
+                                "but found {} of length {}",
+                                braces,
+                                braces.size());
+      }
+      return fmt::format("{}({}{}{})",
+                         prefix,
+                         braces[0],
+                         fmt::join(x.begin(), x.end(), ", "),
+                         braces[1]);
+    }
+  }  // namespace detail
+
+  template <size_t N, typename Scalar>
+  std::string to_input_string(Transf<N, Scalar> const& x,
+                              std::string_view         prefix,
+                              std::string_view         braces) {
+    std::string actual_prefix;
+    if (prefix.empty()) {
+      // Yes this looks weird, but the point is to keep the string that prefix
+      // views alive until after the end of the function call.
+      actual_prefix
+          = fmt::format("Transf<{}, uint{}_t>", N, sizeof(Scalar) * 8);
+      prefix = actual_prefix;
+    }
+    return detail::transf_to_input_string(x, prefix, braces);
+  }
+
+  template <size_t N, typename Scalar>
+  std::string to_input_string(Perm<N, Scalar> const& x,
+                              std::string_view       prefix,
+                              std::string_view       braces) {
+    std::string actual_prefix;
+    if (prefix.empty()) {
+      // Yes this looks weird, but the point is to keep the string that prefix
+      // views alive until after the end of the function call.
+      actual_prefix = fmt::format("Perm<{}, uint{}_t>", N, sizeof(Scalar) * 8);
+      prefix        = actual_prefix;
+    }
+    return detail::transf_to_input_string(x, prefix, braces);
+  }
+
+  template <size_t N, typename Scalar>
+  std::string to_input_string(PPerm<N, Scalar> const& x,
+                              std::string_view        prefix,
+                              std::string_view        braces) {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (braces) must have length 2, "
+                              "but found {} of length {}",
+                              braces,
+                              braces.size());
+    }
+    std::string actual_prefix;
+    if (prefix.empty()) {
+      // Yes this looks weird, but the point is to keep the string that prefix
+      // views alive until after the end of the function call.
+      actual_prefix = fmt::format("PPerm<{}, uint{}_t>", N, sizeof(Scalar) * 8);
+      prefix        = actual_prefix;
+    }
+    auto dom = domain(x);
+    auto im  = dom;
+    std::for_each(im.begin(), im.end(), [&x](auto& val) { val = x[val]; });
+
+    return fmt::format("{}({}{}{}, {}{}{}, {})",
+                       prefix,
+                       braces[0],
+                       fmt::join(dom.begin(), dom.end(), ", "),
+                       braces[1],
+                       braces[0],
+                       fmt::join(im.begin(), im.end(), ", "),
+                       braces[1],
+                       x.degree());
+  }
+
+  template <size_t N, typename Scalar>
+  std::string to_human_readable_repr(Transf<N, Scalar> const& x,
+                                     std::string_view         prefix,
+                                     std::string_view         braces,
+                                     size_t                   max_width) {
+    auto result = to_input_string(x, prefix, braces);
+    if (result.size() <= max_width) {
+      return result;
+    }
+    return fmt::format(
+        "<transformation of degree {} and rank {}>", x.degree(), x.rank());
+  }
+
+  template <size_t N, typename Scalar>
+  std::string to_human_readable_repr(Perm<N, Scalar> const& x,
+                                     std::string_view       prefix,
+                                     std::string_view       braces,
+                                     size_t                 max_width) {
+    auto result = to_input_string(x, prefix, braces);
+    if (result.size() <= max_width) {
+      return result;
+    }
+    return fmt::format("<permutation of degree {}>", x.degree());
+  }
+
+  template <size_t N, typename Scalar>
+  std::string to_human_readable_repr(PPerm<N, Scalar> const& x,
+                                     std::string_view        prefix,
+                                     std::string_view        braces,
+                                     size_t                  max_width) {
+    auto result = to_input_string(x, prefix, braces);
+    if (result.size() <= max_width) {
+      return result;
+    }
+    return fmt::format(
+        "<partial permutation of degree {} and rank {}>", x.degree(), x.rank());
+  }
 }  // namespace libsemigroups
