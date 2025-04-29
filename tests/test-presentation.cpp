@@ -3152,4 +3152,35 @@ namespace libsemigroups {
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "077",
+                          "greedy_reduce_length",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    // Want to go over the number 127, in case char's are signed, to check that
+    // this works properly.
+    p.alphabet(127);
+    p.rules = {"aaaaaaaaaaaaaaaaaaaaaa", ""};
+
+    presentation::greedy_reduce_length_and_number_of_gens(p);
+    REQUIRE(p.alphabet().size() == 128);
+
+    p.alphabet(128);
+    p.rules = {"aaaaaaaaaaaaaaaaaaaaaa", ""};
+
+    presentation::greedy_reduce_length_and_number_of_gens(p);
+    REQUIRE(p.alphabet().size() == 129);
+
+    p.alphabet(255);
+    p.rules = {"aaaaaaaaaaaaaaaaaaaaaa", ""};
+    presentation::greedy_reduce_length_and_number_of_gens(p);
+    REQUIRE(p.alphabet().size() == 256);
+
+    p.alphabet(256);
+    p.rules = {"aaaaaaaaaaaaaaaaaaaaaa", ""};
+    REQUIRE_THROWS_AS(presentation::greedy_reduce_length_and_number_of_gens(p),
+                      LibsemigroupsException);
+    REQUIRE(p.alphabet().size() == 256);
+  }
 }  // namespace libsemigroups
