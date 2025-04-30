@@ -692,6 +692,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the alphabet of \p p is not `0` to
     //! `p.alphabet.size()`.
+    // TODO to tpp
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg = "1st") {
@@ -765,6 +766,10 @@ namespace libsemigroups {
     //! * the values in \p vals do not serve as semigroup inverses.
     template <typename Word>
     void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals);
+
+    // TODO(doc)
+    template <typename Word>
+    std::string to_report_string(Presentation<Word> const& p);
 
     //! \brief Add a rule to the presentation by reference.
     //!
