@@ -89,6 +89,14 @@ namespace libsemigroups {
     Ticker::Ticker(Func&& func, Time time)
         : _ticker_impl(new TickerImpl(std::forward<Func>(func), time)) {}
 
+    template <typename Func, typename Time>
+    void Ticker::operator()(Func&& func, Time time) {
+      if (_ticker_impl != nullptr) {
+        LIBSEMIGROUPS_EXCEPTION("the Ticker is already in use!");
+      }
+      _ticker_impl = new TickerImpl(std::forward<Func>(func), time);
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // ReportCell
     ////////////////////////////////////////////////////////////////////////

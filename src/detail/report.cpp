@@ -132,9 +132,11 @@ namespace libsemigroups {
     }
 
     Ticker::~Ticker() {
-      // See TickerImpl for an explanation of why we lock the mtx here.
-      std::lock_guard<std::mutex> lck(_ticker_impl->mtx());
-      _ticker_impl->stop();
+      if (_ticker_impl != nullptr) {
+        // See TickerImpl for an explanation of why we lock the mtx here.
+        std::lock_guard<std::mutex> lck(_ticker_impl->mtx());
+        _ticker_impl->stop();
+      }
     }
 
   }  // namespace detail

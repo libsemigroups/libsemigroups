@@ -29,6 +29,8 @@
 #include <thread>      // for get_id, thread, thread::id
 #include <utility>     // for pair
 
+#include "libsemigroups/exception.hpp"  // LIBSEMIGROUPS_EXCEPTION
+
 #include "fmt.hpp"         // for fmtlib includes
 #include "formatters.hpp"  // for custom formatters
 #include "timer.hpp"       // for string_format, to_strin
@@ -62,7 +64,10 @@ namespace libsemigroups {
       template <typename Func, typename Time = std::chrono::seconds>
       explicit Ticker(Func&& func, Time time = std::chrono::seconds(1));
 
-      Ticker()                         = delete;
+      template <typename Func, typename Time = std::chrono::seconds>
+      void operator()(Func&& func, Time time = std::chrono::seconds(1));
+
+      Ticker() : _ticker_impl(nullptr) {}
       Ticker(Ticker const&)            = delete;
       Ticker(Ticker&&)                 = delete;
       Ticker& operator=(Ticker const&) = delete;
