@@ -2,7 +2,7 @@
 """Check for bad linebreaks within doxygen commands.
 
 The script should be run from the libsemigroups root directory. It searches
-every .hpp file in the libsemigroups directory for doxygen-style documentation 
+every .hpp file in the libsemigroups directory for doxygen-style documentation
 lines that end with one of the following:
     * \\ref
     * \\c
@@ -11,13 +11,14 @@ lines that end with one of the following:
 """
 import re
 from glob import iglob
+from sys import version_info
 
 BOLD_TEXT = "\033[1m"
 YELLOW = "\033[93m"
 END_COLOUR = "\033[0m"
 
 command_with_line_break = re.compile(
-    r"//!.*((?:\\ref)|(?:\\c)|(?:\\p)(?:\\copydoc))(\s+)?$",
+    r"//!.*((?:\\ref)|(?:\\c)|(?:\\p)|(?:\\copydoc))(\s+)?$",
     re.IGNORECASE | re.MULTILINE,
 )
 
@@ -56,7 +57,11 @@ def process_path(pathname):
         + f"Checking for for bad linebreaks in {pathname} . . ."
         + END_COLOUR
     )
-    for filename in iglob(pathname, include_hidden=True):
+    if version_info[1] < 11:
+        files = iglob(pathname)
+    else:
+        files = iglob(pathname, include_hidden=True)
+    for filename in files:
         process_file(filename)
     print(f"{BOLD_TEXT}Done{END_COLOUR}")
 
