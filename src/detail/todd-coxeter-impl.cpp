@@ -422,7 +422,7 @@ namespace libsemigroups {
       p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p);
       init();
-      detail::CongruenceCommon::init(knd);
+      kind(knd);
       _word_graph.init(std::move(p));
       copy_settings_into_graph();
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
