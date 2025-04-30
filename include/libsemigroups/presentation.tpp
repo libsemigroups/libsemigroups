@@ -323,6 +323,18 @@ namespace libsemigroups {
     }
 
     template <typename Word>
+    std::string to_report_string(Presentation<Word> const& p) {
+      using detail::group_digits;
+      return fmt::format("|A| = {}, |R| = {}, "
+                         "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                         group_digits(p.alphabet().size()),
+                         group_digits(p.rules.size() / 2),
+                         group_digits(shortest_rule_length(p)),
+                         group_digits(longest_rule_length(p)),
+                         group_digits(length(p)));
+    }
+
+    template <typename Word>
     bool contains_rule(Presentation<Word>& p,
                        Word const&         lhs,
                        Word const&         rhs) {
