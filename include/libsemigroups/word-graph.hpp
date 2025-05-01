@@ -2094,7 +2094,8 @@ namespace libsemigroups {
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
-    //! \returns A pair consisting of WordGraph::node_type and \p S.
+    //! \returns A pair consisting of the last node reached and an iterator
+    //! pointing at the last letter in the word labelling an edge.
     //!
     //! \throws LibsemigroupsException if \p source is out of bounds.
     //!
