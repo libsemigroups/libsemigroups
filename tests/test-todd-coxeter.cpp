@@ -1087,6 +1087,8 @@ namespace libsemigroups {
       tc.lookahead_next(10);
       section_hlt(tc);
       REQUIRE(tc.number_of_classes() == 78);
+      tc.standardize(Order::shortlex);
+      REQUIRE(tc.spanning_tree().number_of_nodes() == 79);
       check_standardize(tc);
     }
     {
@@ -4889,6 +4891,23 @@ namespace libsemigroups {
                 tc, todd_coxeter::current_word_of(tc, n - 1))
             == n - 1);
     REQUIRE(!tc.finished());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "121",
+                          "standardize perf",
+                          "[todd-coxeter][extreme]") {
+    ReportGuard               rg(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    ToddCoxeter tc(twosided, p);
+    tc.strategy(options::strategy::felsch);
+    tc.run_until([&tc]() {
+      return tc.current_word_graph().number_of_nodes_active() > 256'000'000;
+    });
+
+    REQUIRE(tc.current_word_graph().number_of_nodes_active() > 256'000'000);
+    REQUIRE(!tc.standardize(Order::shortlex));
   }
 
 }  // namespace libsemigroups
