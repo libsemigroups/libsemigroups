@@ -282,12 +282,16 @@ namespace libsemigroups {
                                  word_type const& v);
 
         template <typename Iterator>
-        size_t make_compatible(node_type&               current,
-                               Iterator                 first,
-                               Iterator                 last,
-                               bool                     stop_early,
-                               std::chrono::nanoseconds stop_early_interval,
-                               float                    stop_early_ratio);
+        size_t make_compatible(ToddCoxeterImpl* tc,
+                               node_type&       current,
+                               Iterator         first,
+                               Iterator         last,
+                               bool             stop_early);
+
+       private:
+        void report_lookahead_stop_early(ToddCoxeterImpl* tc,
+                                         size_t           expected,
+                                         size_t           killed_last_interval);
       };  // class Graph
 
       ////////////////////////////////////////////////////////////////////////
@@ -298,6 +302,7 @@ namespace libsemigroups {
       Forest                                 _forest;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
+      bool                                   _ticker_running;
       Graph                                  _word_graph;
 
      public:
@@ -1751,8 +1756,15 @@ namespace libsemigroups {
       // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
-      void report_next_lookahead(size_t old_value) const;
-      void report_nodes_killed(int64_t number) const;
+      void report_after_lookahead(size_t old_lookahead_next,
+                                  size_t number_killed_in_lookahead,
+                                  std::chrono::high_resolution_clock::time_point
+                                      lookahead_start_time) const;
+      void report_after_run() const;
+      void report_before_lookahead() const;
+      void report_before_run() const;
+      void report_presentation() const;
+      void report_strategy() const;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - lookahead - private
