@@ -687,6 +687,24 @@ namespace libsemigroups {
       return _state == state::running_for;
     }
 
+    //! \brief Return the last value passed to \ref Runner::run_for.
+    //!
+    //! This function returns the last value passed to as an argument to
+    //! \ref Runner::run_for (if any), and \ref FOREVER otherwise.
+    //!
+    //! \returns
+    //! The \ref Runner::run_for time in nanoseconds.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::chrono::nanoseconds
+    running_for_how_long() const noexcept {
+      return _run_for;
+    }
+
     //! \brief Check if the runner is currently running until a nullary
     //! predicate returns \c true.
     //!
