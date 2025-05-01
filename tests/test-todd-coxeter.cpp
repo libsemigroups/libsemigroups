@@ -16,6 +16,8 @@
 
 // The purpose of this file is to test the ToddCoxeter class.
 
+// TODO reclassify the standard tests and run all extreme tests
+
 #include <cstdlib>   // for what?
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
@@ -1951,7 +1953,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "042",
                           "temperley_lieb_monoid(10) (East)",
-                          "[todd-coxeter][standard][no-coverage]") {
+                          "[todd-coxeter][quick][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 10;
     auto         p  = presentation::examples::temperley_lieb_monoid_Eas21(n);
@@ -2190,10 +2192,13 @@ namespace libsemigroups {
     // REQUIRE(presentation::length(p) == 8'515);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
+
     // TODO(1) should be some interplay between lookahead_min and
     // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be greater
     // than lookahead_next, maybe?
-    tc.lookahead_min(2'500'000).lookahead_growth_factor(1.2);
+    tc.lookahead_min(2'500'000)
+        .lookahead_growth_factor(1.2)
+        .lookahead_stop_early_ratio(0.1);
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 
@@ -2337,6 +2342,7 @@ namespace libsemigroups {
                           "(from kbmag/standalone/kb_data/degen4b) "
                           "(KnuthBendix 065)",
                           "[extreme][todd-coxeter][kbmag][shortlex]") {
+    fmt::print("\n");
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
@@ -3135,7 +3141,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "078",
                           "Renner monoid type D4 (Gay-Hivert), q = 1",
-                          "[standard][todd-coxeter][no-coverage]") {
+                          "[quick][todd-coxeter][no-coverage]") {
     auto rg = ReportGuard(false);
     auto p  = presentation::examples::renner_type_D_monoid(4, 1);
     presentation::normalize_alphabet(p);
@@ -3847,7 +3853,7 @@ namespace libsemigroups {
     // TODO(1) uncomment
     //     .reserve(50'000'000);
 
-    tc.run_for(std::chrono::seconds(30));
+    tc.run_for(std::chrono::seconds(3));
 
     std::vector<std::string> words
         = {"xxyyyYYayyaaaYxYaaXxxaaayXYyYXxXyXXyyyYYxxyyyYYayyaaaYxYaaXxxaaayXY"
@@ -3951,7 +3957,8 @@ namespace libsemigroups {
     tc.lookahead_style(options::lookahead_style::felsch)
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt)
-        .use_relations_in_extra(true);
+        .use_relations_in_extra(true)
+        .lookahead_next(40'000'000);
     REQUIRE(tc.number_of_classes() == 4'032'000);
   }
 
