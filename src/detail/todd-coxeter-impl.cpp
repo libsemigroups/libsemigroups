@@ -725,6 +725,8 @@ namespace libsemigroups {
       if (is_standardized(val)) {
         return false;
       }
+      _forest.init();
+      _forest.add_nodes(_word_graph.number_of_nodes_active());
       bool result   = word_graph::standardize(_word_graph, _forest, val);
       _standardized = val;
       return result;

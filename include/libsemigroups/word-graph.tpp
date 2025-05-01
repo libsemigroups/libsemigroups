@@ -50,14 +50,14 @@ namespace libsemigroups {
         return true;
       }
 
+      // For best performance ensure that <f> has the correct number of nodes
+      // when calling this function.
       template <typename Graph>
       bool shortlex_standardize(Graph& wg, Forest& f) {
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
-        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
+        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
         using node_type = typename Graph::node_type;
-
-        f.add_nodes(1);
 
         node_type    t      = 0;
         size_t const n      = wg.out_degree();
@@ -75,30 +75,32 @@ namespace libsemigroups {
               r = q[r];  // new
               if (r > t) {
                 t++;
-                f.add_nodes(1);
                 if (r > t) {
                   std::swap(p[t], p[r]);
                   std::swap(q[p[t]], q[p[r]]);
                   result = true;
+                }
+                if (t >= f.number_of_nodes()) {
+                  f.add_nodes(1);
                 }
                 f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
               }
             }
           }
         }
-        wg.permute_nodes_no_checks(p, q);
+        if (result) {
+          wg.permute_nodes_no_checks(p, q);
+        }
         return result;
       }
 
       template <typename Graph>
       bool lex_standardize(Graph& wg, Forest& f) {
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
-        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
+        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
         using node_type  = typename Graph::node_type;
         using label_type = typename Graph::label_type;
-
-        f.add_nodes(1);
 
         node_type  s = 0, t = 0;
         label_type x      = 0;
@@ -117,7 +119,9 @@ namespace libsemigroups {
             r = q[r];  // new
             if (r > t) {
               t++;
-              f.add_nodes(1);
+              if (t >= f.number_of_nodes()) {
+                f.add_nodes(1);
+              }
               if (r > t) {
                 std::swap(p[t], p[r]);
                 std::swap(q[p[t]], q[p[r]]);
@@ -142,11 +146,9 @@ namespace libsemigroups {
       template <typename Graph>
       bool recursive_standardize(Graph& wg, Forest& f) {
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
-        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() == 0);
+        LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
 
         using node_type = typename Graph::node_type;
-
-        f.add_nodes(1);
 
         std::vector<word_type> words;
         size_t const           n = wg.out_degree();
@@ -170,7 +172,9 @@ namespace libsemigroups {
             r = q[r];  // new
             if (r > tt) {
               tt++;
-              f.add_nodes(1);
+              if (tt >= f.number_of_nodes()) {
+                f.add_nodes(1);
+              }
               if (r > tt) {
                 std::swap(p[tt], p[r]);
                 std::swap(q[p[tt]], q[p[r]]);
@@ -468,11 +472,12 @@ namespace libsemigroups {
 
     template <typename Graph>
     bool standardize(Graph& wg, Forest& f, Order val) {
-      if (!f.empty()) {
-        f.init();
-      }
       if (wg.number_of_nodes() == 0) {
         return false;
+      }
+
+      if (f.number_of_nodes() == 0) {
+        f.add_nodes(1);
       }
 
       switch (val) {
