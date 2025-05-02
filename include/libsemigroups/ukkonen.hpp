@@ -939,7 +939,7 @@ namespace libsemigroups {
     std::pair<State, Iterator> traverse_no_checks(Iterator first,
                                                   Iterator last) const {
       State st(0, 0);
-      return std::make_pair(st, traverse(st, first, last));
+      return std::make_pair(st, traverse_no_checks(st, first, last));
     }
 
     //! \brief \copybrief traverse_no_checks(Iterator, Iterator) const
