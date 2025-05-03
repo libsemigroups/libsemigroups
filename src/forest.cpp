@@ -92,6 +92,17 @@ namespace libsemigroups {
     return *this;
   }
 
+  size_t Forest::depth_no_checks(node_type i) const {
+    LIBSEMIGROUPS_ASSERT(i < _parent.size());
+    LIBSEMIGROUPS_ASSERT(i < _edge_label.size());
+    size_t length = 0;
+    for (; parent_no_checks(i) != UNDEFINED; ++length) {
+      LIBSEMIGROUPS_ASSERT(i != parent_no_checks(i));
+      i = parent_no_checks(i);
+    }
+    return length;
+  }
+
   void Forest::throw_if_node_out_of_bounds(node_type v) const {
     if (v >= number_of_nodes()) {
       LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
@@ -118,10 +129,21 @@ namespace libsemigroups {
       f.path_to_root_no_checks(std::back_inserter(w), i);
     }
 
-    [[nodiscard]] word_type path_to_root_no_checks(Forest const&     f,
-                                                   Forest::node_type i) {
+    void path_from_root_no_checks(Forest const&     f,
+                                  word_type&        w,
+                                  Forest::node_type i) {
+      f.path_from_root_no_checks(std::back_inserter(w), i);
+    }
+
+    word_type path_to_root_no_checks(Forest const& f, Forest::node_type i) {
       word_type w;
       path_to_root_no_checks(f, w, i);
+      return w;
+    }
+
+    word_type path_from_root_no_checks(Forest const& f, Forest::node_type i) {
+      word_type w;
+      path_from_root_no_checks(f, w, i);
       return w;
     }
 
@@ -130,9 +152,21 @@ namespace libsemigroups {
       path_to_root_no_checks(f, w, i);
     }
 
+    void path_from_root(Forest const& f, word_type& w, Forest::node_type i) {
+      f.throw_if_node_out_of_bounds(i);
+      path_from_root_no_checks(f, w, i);
+    }
+
     [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i) {
       word_type w;
       path_to_root(f, w, i);
+      return w;
+    }
+
+    [[nodiscard]] word_type path_from_root(Forest const&     f,
+                                           Forest::node_type i) {
+      word_type w;
+      path_from_root(f, w, i);
       return w;
     }
   }  // namespace forest
