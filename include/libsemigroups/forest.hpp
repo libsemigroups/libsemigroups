@@ -45,7 +45,7 @@ namespace libsemigroups {
 
    public:
     //! Alias for the type of nodes in a forest
-    using node_type = size_t;
+    using node_type = size_t;  // TODO use uint32_t
 
     //! Alias for the type of edge labels in a forest.
     using label_type = size_t;
@@ -164,7 +164,7 @@ namespace libsemigroups {
     //!
     //! \warning No checks are performed on the arguments of this function. In
     //! particular, if \p node or \p parent is greater than or equal to
-    //! \ref number_of_nodes, then bad things may happen.
+    //! \ref Forest::number_of_nodes, then bad things may happen.
     Forest& set_parent_and_label_no_checks(node_type  node,
                                            node_type  parent,
                                            label_type gen) {
@@ -335,10 +335,10 @@ namespace libsemigroups {
     }
 
     //! \brief Store the labels of the edges on the path to a root node from
-    //! \p i.
+    //! a given node.
     //!
-    //! This function writes labels of the edges on the path to a root node from
-    //! node \p i to the iterator \p d_first.
+    //! This function writes labels of the edges on the path to a root node
+    //! from node \p i to the iterator \p d_first.
     //!
     //! \tparam Iterator The type of the parameter, and the return type.
     //!
@@ -350,17 +350,25 @@ namespace libsemigroups {
     //!
     //! \warning No checks are performed on the arguments of this function.
     template <typename Iterator>
-    Iterator path_to_root_no_checks(Iterator d_first, node_type i) const {
-      LIBSEMIGROUPS_ASSERT(i < _parent.size());
-      LIBSEMIGROUPS_ASSERT(i < _edge_label.size());
-      auto it = d_first;
-      for (; parent_no_checks(i) != UNDEFINED; ++it) {
-        *it = label_no_checks(i);
-        LIBSEMIGROUPS_ASSERT(i != parent_no_checks(i));
-        i = parent_no_checks(i);
-      }
-      return it;
-    }
+    Iterator path_to_root_no_checks(Iterator d_first, node_type i) const;
+
+    //! \brief Store the labels of the edges on the path from a root node to
+    //! a given node.
+    //!
+    //! This function writes labels of the edges on the path from a root node
+    //! to node \p i to the iterator \p d_first.
+    //!
+    //! \tparam Iterator The type of the parameter, and the return type.
+    //!
+    //! \param d_first the output iterator.
+    //! \param i the node.
+    //!
+    //! \returns An \c Iterator pointing one beyond the last letter inserted
+    //! into \p d_first.
+    //!
+    //! \warning No checks are performed on the arguments of this function.
+    template <typename Iterator>
+    Iterator path_from_root_no_checks(Iterator d_first, node_type i) const;
 
     //! \brief Throw an exception if a node is out of bound.
     //!
@@ -368,6 +376,140 @@ namespace libsemigroups {
     //!
     //! \param v the node.
     void throw_if_node_out_of_bounds(node_type v) const;
+
+   private:
+    class const_iterator_path {
+     private:
+      node_type     _current_node;
+      Forest const* _forest;
+
+     public:
+      using iterator_category = std::forward_iterator_tag;
+      using value_type        = label_type;
+      using difference_type   = std::ptrdiff_t;
+      using pointer           = label_type*;
+      using reference         = label_type&;
+
+      const_iterator_path(Forest const* f, node_type n)
+          : _current_node(n), _forest(f) {}
+
+      const_iterator_path() = delete;
+
+      const_iterator_path(const_iterator_path const& that)            = default;
+      const_iterator_path& operator=(const_iterator_path const& that) = default;
+      const_iterator_path(const_iterator_path&& that) noexcept        = default;
+      const_iterator_path& operator=(const_iterator_path&& that) noexcept
+          = default;
+
+      ~const_iterator_path() = default;
+
+      [[nodiscard]] value_type operator*() const;
+
+      // pointer operator->() const {
+      //   return TODO;
+      // }
+
+      // Pre-increment
+      const_iterator_path& operator++();
+
+      // Post-increment
+      const_iterator_path operator++(int) {
+        const_iterator_path tmp = *this;
+        ++(*this);
+        return tmp;
+      }
+
+      [[nodiscard]] bool operator==(const_iterator_path const& that) const;
+
+      [[nodiscard]] bool operator!=(const_iterator_path const& that) const {
+        return !(*this == that);
+      }
+    };
+
+   public:
+    //! \brief Returns a const iterator pointing at the first letter of a word
+    //! from a given node to its root.
+    //!
+    //! This function returns a const iterator point at the first letter of the
+    //! word from the node \p n to the root of the subtree of the Forest object
+    //! containing \p n. The letters in this word correspond to labels of edges
+    //! in the Forest, and not nodes.
+    //!
+    //! \param n the node.
+    //!
+    //! \returns A const iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning No checks are performed on the arguments of this function. In
+    //! particular, it is not checked whether or not \p n is less than
+    //! \ref number_of_nodes.
+    [[nodiscard]] const_iterator_path
+    cbegin_path_to_root_no_checks(node_type n) const noexcept {
+      return const_iterator_path(this, n);
+    }
+
+    //! \brief Returns a const iterator pointing one beyond the last letter in
+    //! a word from a given node to its root.
+    //!
+    //! This function returns a const iterator point at one beyond the last
+    //! letter of the word from the node \p n to the root of the subtree of the
+    //! Forest object containing \p n. The letters in this word correspond to
+    //! labels of edges in the Forest, and not nodes.
+    //!
+    //! \param n the node.
+    //!
+    //! \returns A const iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning No checks are performed on the arguments of this function. In
+    //! particular, it is not checked whether or not \p n is less than
+    //! \ref number_of_nodes.
+    [[nodiscard]] const_iterator_path
+    cend_path_to_root_no_checks(node_type) const noexcept {
+      return const_iterator_path(this, UNDEFINED);
+    }
+
+    //! \brief Returns a const iterator pointing at the first letter of a word
+    //! from a given node to its root.
+    //!
+    //! This function returns a const iterator point at the first letter of the
+    //! word from the node \p n to the root of the subtree of the Forest object
+    //! containing \p n. The letters in this word correspond to labels of edges
+    //! in the Forest, and not nodes.
+    //!
+    //! \param n the node.
+    //!
+    //! \returns A const iterator.
+    //!
+    //! \throws LibsemigroupsException if \p n is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    [[nodiscard]] const_iterator_path cbegin_path_to_root(node_type n) const {
+      throw_if_node_out_of_bounds(n);
+      return cbegin_path_to_root_no_checks(n);
+    }
+
+    //! \brief Returns a const iterator pointing one beyond the last letter in
+    //! a word from a given node to its root.
+    //!
+    //! This function returns a const iterator point at one beyond the last
+    //! letter of the word from the node \p n to the root of the subtree of the
+    //! Forest object containing \p n. The letters in this word correspond to
+    //! labels of edges in the Forest, and not nodes.
+    //!
+    //! \param n the node.
+    //!
+    //! \returns A const iterator.
+    //!
+    //! \throws LibsemigroupsException if \p n is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    [[nodiscard]] const_iterator_path cend_path_to_root(node_type n) const {
+      throw_if_node_out_of_bounds(n);
+      return cend_path_to_root_no_checks(n);
+    }
   };
 
   //! \defgroup make_forest_group make<Forest>
@@ -405,33 +547,8 @@ namespace libsemigroups {
   //! for any value of `i`.
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Forest>
-  make(std::vector<size_t> parent, std::vector<size_t> edge_labels) {
-    if (parent.size() != edge_labels.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected the 1st and 2nd arguments (parents and edge labels) to "
-          "have equal size equal, found {} != {}",
-          parent.size(),
-          edge_labels.size());
-    }
-    size_t const num_nodes = parent.size();
-    Forest       result(num_nodes);
-    for (size_t i = 0; i < num_nodes; ++i) {
-      auto p = *(parent.begin() + i);
-      auto l = *(edge_labels.begin() + i);
-      if (p != UNDEFINED && l != UNDEFINED) {
-        result.set_parent_and_label(i, p, l);
-      } else if (!(p == UNDEFINED && l == UNDEFINED)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "roots not at the same indices in the 1st and 2nd arguments "
-            "(parents and edge labels), expected UNDEFINED at index {} found "
-            "{} and {}",
-            i,
-            p,
-            l);
-      }
-    }
-    return result;
-  }
+  make(std::vector<size_t> const& parent,
+       std::vector<size_t> const& edge_labels);
 
   //! \ingroup make_forest_group
   //!
@@ -482,64 +599,189 @@ namespace libsemigroups {
   //! Forest class.
   namespace forest {
     //! \brief Modifies \p w to contain the labels of the edges on the path
-    //! to a root node from \p i.
+    //! to a root node from \p n.
     //!
     //! This function modifies its first argument \p w in-place to contain the
-    //! labels of the edges on the path to a root node from node \p i.
+    //! labels of the edges on the path to a root node from node \p n.
     //!
     //! \param f the forest.
     //! \param w value to contain the result.
-    //! \param i the node.
+    //! \param n the node.
     //!
     //! \warning No checks are performed on the arguments of this function.
     void path_to_root_no_checks(Forest const&     f,
                                 word_type&        w,
-                                Forest::node_type i);
-
-    //! \brief Returns a word containing the labels of the edges on the path
-    //! to a root node from \p i.
-    //!
-    //! This function returns a word containing the labels of the edges on the
-    //! path to a root node from node \p i.
-    //!
-    //! \param f the forest.
-    //! \param i the node.
-    //!
-    //! \returns The word labelling the path from a root node to \p i.
-    //!
-    //! \warning No checks are performed on the arguments of this function.
-    [[nodiscard]] word_type path_to_root_no_checks(Forest const&     f,
-                                                   Forest::node_type i);
+                                Forest::node_type n);
 
     //! \brief Modifies \p w to contain the labels of the edges on the path
-    //! to a root node from \p i.
+    //! from a root node to \p n.
     //!
     //! This function modifies its first argument \p w in-place to contain the
-    //! labels of the edges on the path to a root node from node \p i.
+    //! labels of the edges on the path from a root node to the node \p n.
     //!
     //! \param f the forest.
     //! \param w value to contain the result.
-    //! \param i the node.
+    //! \param n the node.
     //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to
-    //! \ref Forest::number_of_nodes.
-    void path_to_root(Forest const& f, word_type& w, Forest::node_type i);
+    //! \warning No checks are performed on the arguments of this function.
+    void path_from_root_no_checks(Forest const&     f,
+                                  word_type&        w,
+                                  Forest::node_type n);
 
     //! \brief Returns a word containing the labels of the edges on the path
-    //! to a root node from \p i.
+    //! to a root node from \p n.
     //!
     //! This function returns a word containing the labels of the edges on the
-    //! path to a root node from node \p i.
+    //! path to a root node from node \p n.
     //!
     //! \param f the forest.
-    //! \param i the node.
+    //! \param n the node.
     //!
-    //! \returns The word labelling the path from a root node to \p i.
+    //! \returns The word labelling the path from a root node to \p n.
     //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to
-    //! \ref Forest::number_of_nodes.
-    [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i);
+    //! \warning No checks are performed on the arguments of this function.
+    [[nodiscard]] word_type path_to_root_no_checks(Forest const&     f,
+                                                   Forest::node_type n);
 
+    //! \brief Returns a word containing the labels of the edges on the path
+    //! from a root node to \p n.
+    //!
+    //! This function returns a word containing the labels of the edges on the
+    //! path from a root node to the node \p n.
+    //!
+    //! \param f the forest.
+    //! \param n the node.
+    //!
+    //! \returns The word labelling the path from a root node to \p n.
+    //!
+    //! \warning No checks are performed on the arguments of this function.
+    [[nodiscard]] word_type path_from_root_no_checks(Forest const&     f,
+                                                     Forest::node_type n);
+
+    //! \brief Modifies \p w to contain the labels of the edges on the path
+    //! to a root node from \p n.
+    //!
+    //! This function modifies its first argument \p w in-place to contain the
+    //! labels of the edges on the path to a root node from node \p n.
+    //!
+    //! \param f the forest.
+    //! \param w value to contain the result.
+    //! \param n the node.
+    //!
+    //! \throws LibsemigroupsException if \p n is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    void path_to_root(Forest const& f, word_type& w, Forest::node_type n);
+
+    //! \brief Modifies \p w to contain the labels of the edges on the path
+    //! from a root node to \p n.
+    //!
+    //! This function modifies its first argument \p w in-place to contain the
+    //! labels of the edges on the path from a root node to the node \p n.
+    //!
+    //! \param f the forest.
+    //! \param w value to contain the result.
+    //! \param n the node.
+    //!
+    //! \throws LibsemigroupsException if \p n is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    void path_from_root(Forest const& f, word_type& w, Forest::node_type n);
+
+    //! \brief Returns a word containing the labels of the edges on the path
+    //! to a root node from \p n.
+    //!
+    //! This function returns a word containing the labels of the edges on the
+    //! path to a root node from node \p n.
+    //!
+    //! \param f the forest.
+    //! \param n the node.
+    //!
+    //! \returns The word labelling the path from a root node to \p n.
+    //!
+    //! \throws LibsemigroupsException if \p n is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type n);
+
+    //! \brief Returns a word containing the labels of the edges on the path
+    //! from a root node to \p n.
+    //!
+    //! This function returns a word containing the labels of the edges on the
+    //! path from a root node to the node \p n.
+    //!
+    //! \param f the forest.
+    //! \param n the node.
+    //!
+    //! \returns The word labelling the path from a root node to \p n.
+    //!
+    //! \throws LibsemigroupsException if \p n is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    [[nodiscard]] word_type path_from_root(Forest const&     f,
+                                           Forest::node_type n);
+
+    //! \brief Returns the depth of a node in the forest, n.e. the distance,
+    //! in terms of the number of edges, from a root.
+    //!
+    //! This function returns the length of the word returned by
+    //! \ref path_to_root_no_checks and \ref path_from_root_no_checks.
+    //!
+    //! \param f the Forest.
+    //! \param n the node.
+    //!
+    //! \returns The depth of \p n.
+    //!
+    //! \warning No checks are performed on the arguments of this function.
+    [[nodiscard]] size_t depth_no_checks(Forest const& f, Forest::node_type n);
+
+    //! \brief Returns the depth of a node in the forest, i.e. the distance,
+    //! in terms of the number of edges, from a root.
+    //!
+    //! This function returns the length of the word returned by
+    //! \ref path_to_root_no_checks and \ref path_from_root_no_checks.
+    //!
+    //! \param f the Forest.
+    //! \param n the node.
+    //!
+    //! \returns The depth of \p n.
+    //!
+    //! \throws LibsemigroupsException if \p n is out of bounds (i.e. it is
+    //! greater than or equal to \ref Forest::number_of_nodes).
+    [[nodiscard]] inline size_t depth(Forest const& f, Forest::node_type n) {
+      f.throw_if_node_out_of_bounds(n);
+      return depth_no_checks(f, n);
+    }
+
+    //! \brief Check if a node is the root of any tree in the Forest.
+    //!
+    //! This function returns \c true if the node \p n in the Forest \p f is a
+    //! root node, and \c false if it is not.
+    //!
+    //! \param f the Forest.
+    //! \param n the node.
+    //!
+    //! \returns Whether or not \p n is a root of \p f.
+    //!
+    //! \warning No checks are performed on the arguments of this function. In
+    //! particular it is not checked whether or not \p n is a node of \p f.
+    [[nodiscard]] inline bool is_root_no_checks(Forest const&     f,
+                                                Forest::node_type n) {
+      return f.parent_no_checks(n) == UNDEFINED;
+    }
+
+    //! \brief Check if a node is the root of any tree in the Forest.
+    //!
+    //! This function returns \c true if the node \p n in the Forest \p f is a
+    //! root node, and \c false if it is not.
+    //!
+    //! \param f the Forest.
+    //! \param n the node.
+    //!
+    //! \returns Whether or not \p n is a root of \p f.
+    //!
+    //! \throws LibsemigroupsException if \p n is out of bounds (i.e. it is
+    //! greater than or equal to \ref Forest::number_of_nodes).
+    [[nodiscard]] inline bool is_root(Forest const& f, Forest::node_type n) {
+      f.throw_if_node_out_of_bounds(n);
+      return is_root_no_checks(f, n);
+    }
   }  // namespace forest
 }  // namespace libsemigroups
 
@@ -573,4 +815,7 @@ namespace fmt {
     }
   };
 }  // namespace fmt
+
+#include "forest.tpp"
+
 #endif  // LIBSEMIGROUPS_FOREST_HPP_

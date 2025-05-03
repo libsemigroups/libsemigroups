@@ -169,6 +169,12 @@ namespace libsemigroups {
       reference operator*() {
         return reference(this->_ptr, this->_it);
       }
+
+      // TODO probably require more of these
+      itow& operator++() {
+        citow<Thing, Iterator>::operator++();
+        return *this;
+      }
     };  // class itow
 
     template <typename Iterator, typename Thing>
