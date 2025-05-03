@@ -26,12 +26,19 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("Forest", "000", "test forest", "[quick]") {
-    Forest forest(100);
-    REQUIRE(forest.number_of_nodes() == 100);
-    for (size_t i = 1; i < 100; ++i) {
-      forest.set_parent_and_label(i, i - 1, i * i % 7);
+  namespace {
+    Forest test_forest1() {
+      Forest forest(100);
+      REQUIRE(forest.number_of_nodes() == 100);
+      for (size_t i = 1; i < 100; ++i) {
+        forest.set_parent_and_label(i, i - 1, i * i % 7);
+      }
+      return forest;
     }
+  };  // namespace
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "000", "test forest", "[quick]") {
+    Forest forest = test_forest1();
     REQUIRE_THROWS_AS(forest.set_parent_and_label(0, -1, 0),
                       LibsemigroupsException);
 
@@ -55,5 +62,42 @@ namespace libsemigroups {
     REQUIRE(forest.number_of_nodes() == 0);
     REQUIRE_NOTHROW(forest.add_nodes(10));
     REQUIRE(forest.number_of_nodes() == 10);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "001", "path_to_root", "[quick]") {
+    using literals::operator""_w;
+
+    Forest forest = test_forest1();
+
+    REQUIRE(forest::path_to_root_no_checks(forest, 50)
+            == 10142241014224101422410142241014224101422410142241_w);
+    REQUIRE(forest::path_to_root(forest, 50)
+            == 10142241014224101422410142241014224101422410142241_w);
+    REQUIRE_THROWS_AS(forest::path_to_root(forest, 1'000),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "002", "path_from_root", "[quick]") {
+    using literals::operator""_w;
+
+    Forest forest = test_forest1();
+
+    REQUIRE(forest::path_from_root_no_checks(forest, 50)
+            == 14224101422410142241014224101422410142241014224101_w);
+    REQUIRE(forest::path_from_root(forest, 50)
+            == 14224101422410142241014224101422410142241014224101_w);
+    for (size_t n = 0; n < forest.number_of_nodes(); ++n) {
+      auto p = forest::path_from_root(forest, n);
+      std::reverse(p.begin(), p.end());
+      REQUIRE(p == forest::path_to_root(forest, n));
+    }
+    REQUIRE_THROWS_AS(forest::path_from_root(forest, 1'000),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "003", "depth", "[quick]") {
+    Forest forest = test_forest1();
+
+    REQUIRE(forest.depth_no_checks(50) == 50);
   }
 }  // namespace libsemigroups
