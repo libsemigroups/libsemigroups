@@ -32,15 +32,16 @@
 #ifndef LIBSEMIGROUPS_UKKONEN_HPP_
 #define LIBSEMIGROUPS_UKKONEN_HPP_
 
-#include <algorithm>  // for find_if, copy, max
-#include <cstring>    // for size_t, strlen
-#include <iterator>   // for distance
-#include <map>        // for operator!=, map, _Rb_tree_iterator
-#include <numeric>    // for accumulate
-#include <stack>      // for stack
-#include <string>     // for allocator, string, basic_string
-#include <utility>    // for pair, make_pair
-#include <vector>     // for vector
+#include <algorithm>    // for find_if, copy, max
+#include <cstring>      // for size_t, strlen
+#include <iterator>     // for distance
+#include <map>          // for operator!=, map, _Rb_tree_iterator
+#include <numeric>      // for accumulate
+#include <stack>        // for stack
+#include <string>       // for allocator, string, basic_string
+#include <type_traits>  // for make_unsigned_t
+#include <utility>      // for pair, make_pair
+#include <vector>       // for vector
 
 #include "constants.hpp"  // for operator==, operator!=, Max, UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
@@ -52,6 +53,14 @@
 #include "detail/string.hpp"  // for maximum_common_prefix
 
 namespace libsemigroups {
+  namespace detail {
+    // Helper for unsigned integers
+    template <typename Iterator>
+    [[nodiscard]] letter_type deref_as_unsigned(Iterator it) {
+      auto val = *it;
+      return static_cast<std::make_unsigned_t<decltype(val)>>(*it);
+    }
+  }  // namespace detail
 
   //! \defgroup ukkonen_group Ukkonen
   //!
@@ -416,7 +425,7 @@ namespace libsemigroups {
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
     //! any of the unique letters appended to the end of any existing word in
-    //! the tree, then bad things will happen.
+    //! the suffix tree, then bad things will happen.
     void add_word_no_checks(const_iterator first, const_iterator last);
 
     //! \brief Check and add a word to the suffix tree.
@@ -828,6 +837,9 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the distance from \p first to \p last.
     //!
+    //! \note If the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
+    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
     //! any of the unique letters appended to the end of any existing word in
@@ -873,6 +885,9 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the distance from \p first to \p last.
     //!
+    //! \note If the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
+    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
     //! any of the unique letters appended to the end of any existing word in
@@ -913,6 +928,9 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the distance from \p first to \p last.
     //!
+    //! \note If the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
+    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
     //! any of the unique letters appended to the end of any existing word in
@@ -921,7 +939,7 @@ namespace libsemigroups {
     std::pair<State, Iterator> traverse_no_checks(Iterator first,
                                                   Iterator last) const {
       State st(0, 0);
-      return std::make_pair(st, traverse(st, first, last));
+      return std::make_pair(st, traverse_no_checks(st, first, last));
     }
 
     //! \brief \copybrief traverse_no_checks(Iterator, Iterator) const
@@ -956,6 +974,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the distance from \p first to \p last.
+    //!
+    //! \note If the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
     template <typename Iterator>
     void throw_if_contains_unique_letter(Iterator first, Iterator last) const;
 
@@ -1005,7 +1026,7 @@ namespace libsemigroups {
 
     // Perform the phase starting with the pos letter of the word.
     void tree_extend(index_type pos);
-  };
+  };  // class Ukkonen
 
   //! \brief Namespace for Ukkonen helper functions.
   //!
@@ -1019,17 +1040,27 @@ namespace libsemigroups {
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
     //! See \ref Ukkonen::add_word_no_checks.
+    //!
+    //! \note If the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
     template <typename Iterator>
     void add_word_no_checks(Ukkonen& u, Iterator first, Iterator last) {
       // TODO(later) it'd be better to just convert the values pointed at by the
       // iterators, than to allocate a word_type here, but this is currently a
       // bit tricky to set up
-      add_word_no_checks(u, word_type(first, last));
+      word_type w;
+      for (auto it = first; it != last; ++it) {
+        w.push_back(detail::deref_as_unsigned(it));
+      }
+      add_word_no_checks(u, w);
     }
 
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
     //! See \ref Ukkonen::add_word_no_checks.
+    //!
+    //! \note If the values in \p w are signed integers, then they
+    //! are converted to unsigned integers using std::make_signed.
     template <typename Word>
     void add_word_no_checks(Ukkonen& u, Word const& w) {
       add_word_no_checks(u, w.cbegin(), w.cend());
@@ -1057,13 +1088,14 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if
     //! `throw_if_contains_unique_letter(first, last)` throws.
     //!
+    //! \note If the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
+    //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     template <typename Iterator>
     void add_word(Ukkonen& u, Iterator first, Iterator last) {
-      // TODO(later) it'd be better to just convert the values pointed at by the
-      // iterators, than to allocate a word_type here, but this is currently a
-      // bit tricky to set up
-      add_word(u, word_type(first, last));
+      u.throw_if_contains_unique_letter(first, last);
+      add_word_no_checks(u, first, last);
     }
 
     //! \brief \copybrief Ukkonen::add_word_no_checks
@@ -1117,6 +1149,9 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
+    //! \note if the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
+    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
     //! any of the unique letters appended to the end of any existing word in
@@ -1145,6 +1180,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `u.throw_if_contains_unique_letter(w)`
     //! throws for any `w` in `[first, last)`.
     //!
+    //! \note if the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
+    //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     template <typename Iterator1, typename Iterator2>
     void add_words(Ukkonen& u, Iterator1 first, Iterator2 last) {
@@ -1156,6 +1194,9 @@ namespace libsemigroups {
     //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
     //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    //!
+    //! \note If the values in \p w are signed integers, then they
+    //! are converted to unsigned integers using std::make_signed.
     template <typename Word>
     auto traverse_no_checks(Ukkonen const& u, Word const& w) {
       return u.traverse_no_checks(w.cbegin(), w.cend());
@@ -1179,6 +1220,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if
     //! `u.throw_if_contains_unique_letter(w.cbegin(),  w.cend())` throws.
+    //!
+    //! \note If the values in \p w are signed integers, then they
+    //! are converted to unsigned integers using std::make_signed.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     template <typename Word>
@@ -1214,6 +1258,9 @@ namespace libsemigroups {
     //!
     //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const.
+    //!
+    //! \note If the values in \p w are signed integers, then they
+    //! are converted to unsigned integers using std::make_signed.
     template <typename Word>
     auto traverse_no_checks(Ukkonen::State& st,
                             Ukkonen const&  u,
@@ -1247,6 +1294,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if
     //! `u.throw_if_contains_unique_letter(w.cbegin(),  w.cend())` throws.
+    //!
+    //! \note If the values in \p w are signed integers, then they
+    //! are converted to unsigned integers using std::make_signed.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     template <typename Word>
@@ -1298,6 +1348,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the distance between `first` and `last`.
+    //!
+    //! \note if the \c value_type of \p Iterator is a signed integer, then this
+    //! is converted to an unsigned integer using std::make_signed.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
