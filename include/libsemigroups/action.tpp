@@ -229,9 +229,10 @@ namespace libsemigroups {
       _tmp_point_init = true;
       _tmp_point      = this->internal_copy(internal_seed);
     }
-    _map.emplace(internal_seed, _orb.size());
-    _orb.push_back(internal_seed);
-    _graph.add_nodes(1);
+    if (_map.emplace(internal_seed, _orb.size()).second) {
+      _orb.push_back(internal_seed);
+      _graph.add_nodes(1);
+    }
     return *this;
   }
 
