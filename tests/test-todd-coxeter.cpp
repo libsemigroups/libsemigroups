@@ -3870,6 +3870,13 @@ namespace libsemigroups {
     std::for_each(expected.begin(), expected.end(), [&](std::string& word) {
       word = todd_coxeter::reduce_no_run(tc, word);
     });
+    // Standardising (triggered by reduce_no_run) after 3 seconds makes this run
+    // much faster
+
+    for (size_t i = 0; i != expected.size(); ++i) {
+      REQUIRE(todd_coxeter::currently_contains(tc, words[i], expected[i])
+              == tril::TRUE);
+    }
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {
