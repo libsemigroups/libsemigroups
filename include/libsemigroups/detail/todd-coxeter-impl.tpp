@@ -125,19 +125,24 @@ namespace libsemigroups {
                                                        Iterator2 last1,
                                                        Iterator3 first2,
                                                        Iterator4 last2) const {
-      if (std::equal(first1, last1, first2, last2)) {
-        return tril::TRUE;
+      auto index1 = current_index_of_no_checks(first1, last1);
+      auto index2 = current_index_of_no_checks(first2, last2);
+
+      if (finished()) {
+        return index1 == index2 ? tril::TRUE : tril::FALSE;
       }
-      auto i1 = current_index_of_no_checks(first1, last1);
-      auto i2 = current_index_of_no_checks(first2, last2);
-      if (i1 == UNDEFINED || i2 == UNDEFINED) {
+
+      if (index1 != index2 || index1 == UNDEFINED) {
+        word_type word1, word2;
+        reduce_no_run_no_checks(std::back_inserter(word1), first1, last1);
+        reduce_no_run_no_checks(std::back_inserter(word2), first2, last2);
+        if (std::equal(
+                word1.cbegin(), word1.cend(), word2.cbegin(), word2.cend())) {
+          return tril::TRUE;
+        }
         return tril::unknown;
-      } else if (i1 == i2) {
-        return tril::TRUE;
-      } else if (finished()) {
-        return tril::FALSE;
       } else {
-        return tril::unknown;
+        return tril::TRUE;
       }
     }
 
