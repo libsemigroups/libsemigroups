@@ -1738,6 +1738,8 @@ namespace libsemigroups {
       Settings&       tc_settings();
       Settings const& tc_settings() const;
 
+      void reset_settings_stack();
+
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - main strategies - private
       ////////////////////////////////////////////////////////////////////////

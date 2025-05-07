@@ -147,6 +147,17 @@ namespace libsemigroups {
       return *_settings_stack.back();
     }
 
+    void ToddCoxeterImpl::reset_settings_stack() {
+      if (_settings_stack.empty()) {
+        _settings_stack.push_back(std::make_unique<Settings>());
+      } else {
+        _settings_stack.erase(_settings_stack.begin() + 1,
+                              _settings_stack.end());
+        _settings_stack.back()->init();
+      }
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeterImpl::SettingsGuard
     ////////////////////////////////////////////////////////////////////////
@@ -404,9 +415,8 @@ namespace libsemigroups {
           _forest(),
           _settings_stack(),
           _standardized(),
-          _ticker_running(false),
+          _ticker_running(),
           _word_graph() {
-      // TODO copy ticker_running everywhere
       init();
     }
 
@@ -415,15 +425,9 @@ namespace libsemigroups {
       report_prefix("ToddCoxeter");
       _finished = false;
       _forest.init();
-      if (_settings_stack.empty()) {
-        _settings_stack.push_back(std::make_unique<Settings>());
-      } else {
-        _settings_stack.erase(_settings_stack.begin() + 1,
-                              _settings_stack.end());
-        _settings_stack.back()->init();
-      }
-      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
-      _standardized = Order::none;
+      reset_settings_stack();
+      _standardized   = Order::none;
+      _ticker_running = false;
       _word_graph.init();
       copy_settings_into_graph();
       return *this;
@@ -447,6 +451,7 @@ namespace libsemigroups {
       _forest         = std::move(that._forest);
       _settings_stack = std::move(that._settings_stack);
       _standardized   = std::move(that._standardized);
+      _ticker_running = std::move(that._ticker_running);
       _word_graph     = std::move(that._word_graph);
       // The next line is essential so that the _word_graph.definitions()._tc
       // points at <this>.
@@ -464,8 +469,9 @@ namespace libsemigroups {
       for (auto const& uptr : that._settings_stack) {
         _settings_stack.push_back(std::make_unique<Settings>(*uptr));
       }
-      _standardized = that._standardized;
-      _word_graph   = that._word_graph;
+      _standardized   = that._standardized;
+      _ticker_running = that._ticker_running;
+      _word_graph     = that._word_graph;
       return *this;
     }
 
@@ -518,15 +524,16 @@ namespace libsemigroups {
             knd);
       }
       init();
-      detail::CongruenceCommon::init(knd);
+      kind(knd);
       _word_graph.init(tc.internal_presentation());
+      reset_settings_stack();
+      _standardized = Order::none;
       copy_settings_into_graph();
       auto& rules = _word_graph.presentation().rules;
       rules.insert(rules.end(),
                    tc.internal_generating_pairs().cbegin(),
                    tc.internal_generating_pairs().cend());
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
-      // TODO(1) don't we need to reset the setting_stack here too?
       return *this;
     }
 
