@@ -519,21 +519,29 @@ namespace libsemigroups {
       if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
         LIBSEMIGROUPS_EXCEPTION(
             "incompatible types of congruence, found ({} / {}) but only "
-            "(right / right) and (two-sided / *) are valid",
+            "(onesided / onesided) and (two-sided / *) are valid",
             tc.kind(),
             knd);
       }
-      init();
-      kind(knd);
-      _word_graph.init(tc.internal_presentation());
-      reset_settings_stack();
-      _standardized = Order::none;
-      copy_settings_into_graph();
+      // if this and &tc are the same object, then we insert the generating
+      // pairs into the presentation before reinitialising.
       auto& rules = _word_graph.presentation().rules;
-      rules.insert(rules.end(),
-                   tc.internal_generating_pairs().cbegin(),
-                   tc.internal_generating_pairs().cend());
-      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
+      if (this == &tc) {
+        rules.insert(rules.end(),
+                     tc.internal_generating_pairs().cbegin(),
+                     tc.internal_generating_pairs().cend());
+      }
+      init(knd, tc.internal_presentation());
+      if (this != &tc) {
+        // This looks weird yes, but the if-clause above is triggered, then
+        // above we are adding the internal_generating_pairs of tc into the
+        // presentation of tc (because it's the same as *this), then
+        // initialising using it. If this != &tc, then we must copy the
+        // internal_generating_pairs into this after initialisation.
+        rules.insert(rules.end(),
+                     tc.internal_generating_pairs().cbegin(),
+                     tc.internal_generating_pairs().cend());
+      }
       return *this;
     }
 
