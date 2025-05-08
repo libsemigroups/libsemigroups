@@ -503,8 +503,9 @@ namespace libsemigroups {
     //! not compatible. If the first item is `tc.kind()` and the second is the
     //! parameter \p knd, then compatible arguments are (one-sided,
     //! one-sided), (two-sided, one-sided), and (two-sided, two-sided).
-    ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
-        : ToddCoxeterImpl(knd, tc), _presentation(tc.presentation()) {}
+    ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc) : ToddCoxeter() {
+      init(knd, tc);
+    }
 
     //! \ingroup todd_coxeter_class_init_group
     //! \brief Re-initialize a \ref_todd_coxeter instance.
@@ -525,6 +526,12 @@ namespace libsemigroups {
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc) {
       ToddCoxeterImpl::init(knd, tc);
       _presentation = tc.presentation();
+      _presentation.rules.insert(_presentation.rules.end(),
+                                 tc.generating_pairs().cbegin(),
+                                 tc.generating_pairs().cend());
+      // Clear generating pairs last, in case &tc == this!!!
+      _generating_pairs.clear();
+      // TODO(1) check KnuthBendix et al
       return *this;
     }
 
