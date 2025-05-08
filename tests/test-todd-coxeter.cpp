@@ -5021,4 +5021,81 @@ namespace libsemigroups {
     REQUIRE(!tc.standardize(Order::shortlex));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "122",
+                          "initialisation from ToddCoxeter",
+                          "[todd-coxeter][quick]") {
+    ReportGuard               rg(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+
+    ToddCoxeter tc(twosided, p);
+    todd_coxeter::add_generating_pair(tc, "ab", "");
+    REQUIRE(tc.generating_pairs() == std::vector<std::string>({"ab", ""}));
+    REQUIRE(tc.presentation().rules.empty());
+    REQUIRE(tc.internal_generating_pairs()
+            == std::vector<word_type>({01_w, {}}));
+    REQUIRE(tc.internal_presentation().rules.empty());
+
+    tc = ToddCoxeter(twosided, tc);
+    REQUIRE(tc.generating_pairs().empty());
+    REQUIRE(tc.presentation().rules == std::vector<std::string>({"ab", ""}));
+    REQUIRE(tc.internal_generating_pairs().empty());
+    REQUIRE(tc.internal_presentation().rules
+            == std::vector<word_type>({01_w, {}}));
+
+    todd_coxeter::add_generating_pair(tc, "bbbbb", "aaa");
+    REQUIRE(tc.generating_pairs()
+            == std::vector<std::string>({"bbbbb", "aaa"}));
+    REQUIRE(tc.internal_generating_pairs()
+            == std::vector<word_type>({11111_w, 000_w}));
+
+    tc.init(twosided, tc);
+    REQUIRE(tc.generating_pairs().empty());
+    REQUIRE(tc.presentation().rules
+            == std::vector<std::string>({"ab", "", "bbbbb", "aaa"}));
+    REQUIRE(tc.internal_generating_pairs().empty());
+    REQUIRE(tc.internal_presentation().rules
+            == std::vector<word_type>({01_w, {}, 11111_w, 000_w}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "123",
+                          "initialisation from ToddCoxeter",
+                          "[todd-coxeter][quick]") {
+    ReportGuard             rg(true);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+
+    ToddCoxeter tc(twosided, p);
+    todd_coxeter::add_generating_pair(tc, 01_w, {});
+    REQUIRE(tc.generating_pairs() == std::vector<word_type>({01_w, {}}));
+    REQUIRE(tc.internal_generating_pairs()
+            == std::vector<word_type>({01_w, {}}));
+    REQUIRE(tc.presentation().rules.empty());
+    REQUIRE(tc.internal_presentation().rules.empty());
+
+    tc = ToddCoxeter(twosided, tc);
+    REQUIRE(tc.generating_pairs().empty());
+    REQUIRE(tc.presentation().rules == std::vector<word_type>({01_w, {}}));
+    REQUIRE(tc.internal_generating_pairs().empty());
+    REQUIRE(tc.internal_presentation().rules
+            == std::vector<word_type>({01_w, {}}));
+
+    todd_coxeter::add_generating_pair(tc, 11111_w, 0_w);
+    REQUIRE(tc.generating_pairs() == std::vector<word_type>({11111_w, 0_w}));
+    REQUIRE(tc.internal_generating_pairs()
+            == std::vector<word_type>({11111_w, 0_w}));
+
+    tc.init(twosided, tc);
+    REQUIRE(tc.generating_pairs().empty());
+    REQUIRE(tc.presentation().rules
+            == std::vector<word_type>({01_w, {}, 11111_w, 0_w}));
+    REQUIRE(tc.internal_generating_pairs().empty());
+    REQUIRE(tc.internal_presentation().rules
+            == std::vector<word_type>({01_w, {}, 11111_w, 0_w}));
+  }
+
 }  // namespace libsemigroups
