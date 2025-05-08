@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains out-of-line ToddCoxeterImpl mem fn templates
+// This file contains out-of-line ToddCoxeterImpl mem fn templates.
 
 namespace libsemigroups {
   namespace detail {
