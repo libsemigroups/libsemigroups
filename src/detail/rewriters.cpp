@@ -234,14 +234,46 @@ namespace libsemigroups {
       }
     }
 
+    void RewriterBase::report_progress_from_thread(
+        std::chrono::high_resolution_clock::time_point start_time) {
+      using detail::group_digits;
+      using detail::signed_group_digits;
+      using std::chrono::duration_cast;
+      using std::chrono::nanoseconds;
+
+      using high_resolution_clock = std::chrono::high_resolution_clock;
+
+      auto active   = number_of_active_rules();
+      auto inactive = number_of_inactive_rules();
+      auto pending  = number_of_pending_rules();
+      auto defined  = stats().total_rules;
+
+      auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                                 - start_time);
+      report_default(
+          "KnuthBendix: rules {} (active) | {} (inactive) | {} (pending) | {} "
+          "(defined) | {}\n",
+          group_digits(active),
+          group_digits(inactive),
+          group_digits(pending),
+          group_digits(defined),
+          detail::string_time(run_time));
+    }
+
     bool RewriterBase::process_pending_rules() {
       bool                        rules_added = false;
       Rule*                       rule1;
       internal_string_type const* lhs;
+
       std::sort(
           _pending_rules.begin(),
           _pending_rules.end(),
           [](Rule const* x, Rule const* y) { return *x->lhs() > *y->lhs(); });
+
+      auto           start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker ticker;
+      bool           ticker_running = false;  // TODO(1) do this properly with a
+                                              // data member
 
       while (number_of_pending_rules() != 0) {
         rule1 = next_pending_rule();
@@ -272,6 +304,13 @@ namespace libsemigroups {
           }
         } else {
           add_inactive_rule(rule1);
+        }
+        if (!ticker_running && reporting_enabled()
+            && delta(start_time) >= std::chrono::seconds(1)) {
+          ticker_running = true;
+          ticker([this, start_time]() {
+            report_progress_from_thread(start_time);
+          });
         }
       }
       // reduce_rhs();
