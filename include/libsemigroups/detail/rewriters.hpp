@@ -527,6 +527,9 @@ namespace libsemigroups {
 
       bool add_pending_rule(Rule* rule);
 
+      void report_progress_from_thread(
+          std::chrono::high_resolution_clock::time_point start_time);
+
       bool process_pending_rules();
 
       void reduce();
@@ -607,7 +610,6 @@ namespace libsemigroups {
 
       using RewriterBase::add_rule;
 
-     private:
       void rewrite(Rule* rule) const;
 
       iterator make_active_rule_pending(iterator);
