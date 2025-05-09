@@ -853,7 +853,21 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Action", "022", "exception", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Action",
+                          "022",
+                          "add_seed with same element repeatedly",
+                          "[quick]") {
+    auto         rg = ReportGuard(false);
+    row_orb_type row_orb;
+    row_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
+    row_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
+    row_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
+    row_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
+
+    REQUIRE(row_orb.size() == 1);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Action", "023", "exception", "[quick]") {
     RightAction<PPerm<>, PPerm<>> o;
     o.add_seed(PPerm<>::one(8));
     o.add_generator(
@@ -863,4 +877,5 @@ namespace libsemigroups {
                                                     9)),
                       LibsemigroupsException);
   }
+
 }  // namespace libsemigroups
