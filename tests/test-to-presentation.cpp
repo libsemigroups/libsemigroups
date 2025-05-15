@@ -34,7 +34,7 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/presentation.hpp"     // for Presentation, change_...
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/types.hpp"            // for word_type, congruence_kind
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
@@ -379,6 +379,57 @@ namespace libsemigroups {
       REQUIRE_NOTHROW(to<InversePresentation>(q));
       q.alphabet(32769);
       REQUIRE_THROWS(to<InversePresentation>(q));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
+                                   "021",
+                                   "from KnuthBendix",
+                                   "[quick][to_presentation]",
+                                   string_string,
+                                   string_word,
+                                   word_string,
+                                   word_word) {
+    using W1 = typename TestType::first_type;
+    using W2 = typename TestType::second_type;
+    using literals::operator""_w;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<W1> p;
+
+    if constexpr (std::is_same_v<W1, std::string>) {
+      p.alphabet("hijkl");
+
+      presentation::add_rule(p, "hi", "j");
+      presentation::add_rule(p, "ij", "k");
+      presentation::add_rule(p, "jk", "l");
+      presentation::add_rule(p, "kl", "h");
+      presentation::add_rule(p, "lh", "i");
+    } else if constexpr (std::is_same_v<W1, word_type>) {
+      p.alphabet("02468"_w);
+
+      presentation::add_rule(p, "02"_w, "4"_w);
+      presentation::add_rule(p, "24"_w, "6"_w);
+      presentation::add_rule(p, "46"_w, "8"_w);
+      presentation::add_rule(p, "68"_w, "0"_w);
+      presentation::add_rule(p, "80"_w, "2"_w);
+    }
+
+    KnuthBendix<W1> kb(congruence_kind::twosided, p);
+    kb.run();
+
+    auto q = to<Presentation<W2>>(kb);
+    REQUIRE(q.alphabet().size() == 5);
+    REQUIRE(q.rules.size() == 48);
+
+    if constexpr (std::is_same_v<W1, W2>) {
+      REQUIRE(q.alphabet() == p.alphabet());
+      REQUIRE(q == to<Presentation>(kb));
+    } else if constexpr (std::is_same_v<W2, std::string>) {
+      REQUIRE(q.alphabet() == "abcde");
+    } else if constexpr (std::is_same_v<W2, word_type>) {
+      REQUIRE(q.alphabet() == "01234"_w);
     }
   }
 
