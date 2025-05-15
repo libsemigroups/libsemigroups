@@ -283,6 +283,27 @@ namespace libsemigroups {
   namespace presentation {
 
     template <typename Word>
+    void throw_if_not_normalized(Presentation<Word> const& p,
+                                 std::string_view          arg) {
+      auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
+      if (!std::is_sorted(first, last)) {
+        LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
+                                "sorted alphabet, found {}",
+                                arg,
+                                p.alphabet());
+      }
+
+      auto it = std::max_element(first, last);
+      if (it != last && *it != p.alphabet().size() - 1) {
+        LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
+                                "alphabet, expected [0, ..., {}] found {}",
+                                arg,
+                                p.alphabet().size() - 1,
+                                p.alphabet());
+      }
+    }
+
+    template <typename Word>
     void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals) {
       if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
