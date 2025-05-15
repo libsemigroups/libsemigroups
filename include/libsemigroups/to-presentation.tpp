@@ -53,25 +53,29 @@ namespace libsemigroups {
   // KnuthBendix -> Presentation
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Result, typename Rewriter, typename ReductionOrder>
-  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
+  template <typename Result,
+            typename WordIn,
+            typename Rewriter,
+            typename ReductionOrder>
+  auto to(KnuthBendix<WordIn, Rewriter, ReductionOrder>& kb)
       -> std::enable_if_t<
           std::is_same_v<Presentation<typename Result::word_type>, Result>,
           Result> {
-    using Word = typename Result::word_type;
-    if constexpr (std::is_same_v<Word, std::string>) {
-      auto const&               p_orig = kb.internal_presentation();
-      Presentation<std::string> p;
-      p.alphabet(p_orig.alphabet())
-          .contains_empty_word(p_orig.contains_empty_word());
+    using WordOut                      = typename Result::word_type;
+    Presentation<WordIn> const& p_orig = kb.presentation();
+    Presentation<WordIn>        p;
+    p.alphabet(p_orig.alphabet())
+        .contains_empty_word(p_orig.contains_empty_word());
 
-      for (auto const& rule : kb.active_rules()) {
-        presentation::add_rule(p, rule.first, rule.second);
-      }
+    for (auto const& rule : kb.active_rules()) {
+      presentation::add_rule(p, rule.first, rule.second);
+    }
+
+    if constexpr (std::is_same_v<WordIn, WordOut>) {
       return p;
     } else {
       // TODO(1) avoid double copy here
-      return to<Presentation<Word>>(to<Presentation<std::string>>(kb));
+      return to<Presentation<WordOut>>(p);
     }
   }
 

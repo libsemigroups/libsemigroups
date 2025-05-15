@@ -30,8 +30,7 @@
 #include "presentation.hpp"        // for Presentation
 #include "word-range.hpp"          // for human_readable...
 
-#include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
-
+// TODO(1): Make as many of these functions const as possible
 namespace libsemigroups {
 
   //! \defgroup to_presentation_group to<Presentation>
@@ -93,6 +92,15 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // KnuthBendix -> Presentation
   ////////////////////////////////////////////////////////////////////////
+
+  template <typename Result,
+            typename WordIn,
+            typename Rewriter,
+            typename ReductionOrder>
+  auto to(KnuthBendix<WordIn, Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<
+          std::is_same_v<Presentation<typename Result::word_type>, Result>,
+          Result>;
 
   //! \ingroup to_presentation_group
   //!
