@@ -1,4 +1,3 @@
-
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2019-2025 James D. Mitchell
@@ -17,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains out-of-line ToddCoxeterImpl mem fn templates
+// This file contains out-of-line ToddCoxeterImpl mem fn templates.
 
 namespace libsemigroups {
   namespace detail {
@@ -27,13 +26,17 @@ namespace libsemigroups {
                                            WordGraph<Node> const& wg) {
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
-      init();
-      // FIXME(1) setting the setting in the next line, and adding a Felsch
-      // runner to the word graph version of Congruence leads to an incorrect
-      // answer for the extreme test in congruence def_max(POSITIVE_INFINITY);
+      _finished = false;
+      reset_settings_stack();
+      _standardized   = Order::none;
+      _ticker_running = false;
+
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();
+      // FIXME(1) setting the setting in the next line, and adding a Felsch
+      // runner to the word graph version of Congruence leads to an incorrect
+      // answer for the extreme test in congruence def_max(POSITIVE_INFINITY);
       return *this;
     }
 
@@ -41,6 +44,7 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind                knd,
                                            Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
+      // TODO(0) if wg is _word_graph, then this is not going to work
       init(knd, p);
       _word_graph = wg;
       _word_graph.presentation(p);  // this does not throw when p is invalid
@@ -87,13 +91,10 @@ namespace libsemigroups {
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      if (!internal_presentation().contains_empty_word()) {
-        ++i;
-      }
+      size_t const offset
+          = (internal_presentation().contains_empty_word() ? 0 : 1);
 
-      word_type result;  // TODO(1) avoid alloc here
-      _forest.path_to_root_no_checks(std::back_inserter(result), i);
-      return std::copy(result.crbegin(), result.crend(), d_first);
+      return _forest.path_from_root_no_checks(d_first, i + offset);
     }
 
     template <typename OutputIterator>
@@ -111,8 +112,8 @@ namespace libsemigroups {
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
       if (i >= _word_graph.number_of_nodes_active() - offset) {
-        // Maybe we shouldn't standardize but should just check if corresponds
-        // to an active node
+        // We must standardize before doing this so that the index even makes
+        // sense.
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
                                 _word_graph.number_of_nodes_active() - offset,
@@ -129,19 +130,24 @@ namespace libsemigroups {
                                                        Iterator2 last1,
                                                        Iterator3 first2,
                                                        Iterator4 last2) const {
-      if (std::equal(first1, last1, first2, last2)) {
-        return tril::TRUE;
+      auto index1 = current_index_of_no_checks(first1, last1);
+      auto index2 = current_index_of_no_checks(first2, last2);
+
+      if (finished()) {
+        return index1 == index2 ? tril::TRUE : tril::FALSE;
       }
-      auto i1 = current_index_of_no_checks(first1, last1);
-      auto i2 = current_index_of_no_checks(first2, last2);
-      if (i1 == UNDEFINED || i2 == UNDEFINED) {
+
+      if (index1 != index2 || index1 == UNDEFINED) {
+        word_type word1, word2;
+        reduce_no_run_no_checks(std::back_inserter(word1), first1, last1);
+        reduce_no_run_no_checks(std::back_inserter(word2), first2, last2);
+        if (std::equal(
+                word1.cbegin(), word1.cend(), word2.cbegin(), word2.cend())) {
+          return tril::TRUE;
+        }
         return tril::unknown;
-      } else if (i1 == i2) {
-        return tril::TRUE;
-      } else if (finished()) {
-        return tril::FALSE;
       } else {
-        return tril::unknown;
+        return tril::TRUE;
       }
     }
 
@@ -192,8 +198,31 @@ namespace libsemigroups {
         // TODO(1) this is a bit fishy
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      return current_word_of_no_checks(d_first,
-                                       current_index_of_no_checks(first, last));
+      node_type const s = current_word_graph().initial_node();
+      if (finished()) {  // TODO(1) can we do anything if complete()?
+        return current_word_of_no_checks(
+            d_first, current_index_of_no_checks(first, last));
+      }
+
+      word_type u(first, last);
+      auto      v_begin = u.begin();
+
+      while (v_begin != u.end()) {
+        auto [t, old_end] = word_graph::last_node_on_path_no_checks(
+            current_word_graph(), s, v_begin, u.end());
+
+        if (!std::equal(std::reverse_iterator(old_end),
+                        std::reverse_iterator(v_begin),
+                        _forest.cbegin_path_to_root_no_checks(t),
+                        _forest.cend_path_to_root_no_checks(t))) {
+          auto new_end = _forest.path_from_root_no_checks(v_begin, t);
+          u.erase(new_end, old_end);
+          v_begin = u.begin();
+        } else {
+          v_begin++;
+        }
+      }
+      return std::copy(u.begin(), u.end(), d_first);
     }
   }  // namespace detail
 }  // namespace libsemigroups

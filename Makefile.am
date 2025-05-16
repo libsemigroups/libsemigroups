@@ -29,10 +29,6 @@ endif
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
 AM_CXXFLAGS += $(CODE_COVERAGE_CXXFLAGS)
 
-if LIBSEMIGROUPS_WITH_INTERNAL_FMT
-AM_CPPFLAGS += -DFMT_HEADER_ONLY
-endif
-
 LIBS = $(AM_LDFLAGS)
 
 ACLOCAL_AMFLAGS	= -I m4
@@ -68,6 +64,7 @@ pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/dot.hpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
+pkginclude_HEADERS += include/libsemigroups/forest.tpp
 pkginclude_HEADERS += include/libsemigroups/freeband.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin-base.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin.hpp

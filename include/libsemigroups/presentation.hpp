@@ -694,24 +694,7 @@ namespace libsemigroups {
     //! `p.alphabet.size()`.
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
-                                 std::string_view          arg = "1st") {
-      auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
-      if (!std::is_sorted(first, last)) {
-        LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
-                                "sorted alphabet, found {}",
-                                arg,
-                                p.alphabet());
-      }
-
-      auto it = std::max_element(first, last);
-      if (it != last && *it != p.alphabet().size() - 1) {
-        LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
-                                "alphabet, expected [0, ..., {}] found {}",
-                                arg,
-                                p.alphabet().size() - 1,
-                                p.alphabet());
-      }
-    }
+                                 std::string_view          arg = "1st");
 
     //! \brief Check rules against the alphabet of \p p.
     //!
@@ -765,6 +748,10 @@ namespace libsemigroups {
     //! * the values in \p vals do not serve as semigroup inverses.
     template <typename Word>
     void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals);
+
+    // TODO(doc)
+    template <typename Word>
+    std::string to_report_string(Presentation<Word> const& p);
 
     //! \brief Add a rule to the presentation by reference.
     //!
