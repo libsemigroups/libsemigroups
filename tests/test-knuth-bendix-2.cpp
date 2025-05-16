@@ -1834,7 +1834,6 @@ namespace libsemigroups {
     p.contains_empty_word(true);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    p = to<Presentation>(kb);
 
     auto S = to<FroidurePin>(kb);
     REQUIRE(S.contains_one());
