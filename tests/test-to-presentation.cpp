@@ -415,7 +415,7 @@ namespace libsemigroups {
                 "jl",  "ii", "kh",  "hk", "ki",  "hh", "kk",  "il", "li", "il",
                 "lj",  "ii", "ll",  "hj", "hhj", "il", "iil", "hhk"});
   }
-  
+
   LIBSEMIGROUPS_TEST_CASE("to<Presentation<std::string>>",
                           "022",
                           "from KnuthBendix<word_type>",
