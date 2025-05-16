@@ -789,9 +789,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::shrink_to_fit() {
-      if (!finished()) {
-        return;
-      }
       standardize(Order::shortlex);
       _word_graph.erase_free_nodes();
       _word_graph.induced_subgraph_no_checks(
@@ -852,6 +849,13 @@ namespace libsemigroups {
                  && strategy() != options::strategy::hlt && running_until()) {
         LIBSEMIGROUPS_EXCEPTION(
             "the strategy {} cannot be used with run_until !", strategy());
+      } else if (internal_presentation().rules.empty()
+                 && !internal_presentation().alphabet().empty()
+                 && (internal_generating_pairs().empty()
+                     || kind() == congruence_kind::onesided)
+                 && strategy() == options::strategy::hlt) {
+        LIBSEMIGROUPS_EXCEPTION("the HLT strategy cannot be used with an "
+                                "presentation with > 0 generators and 0 rules");
       }
 
       init_run();
