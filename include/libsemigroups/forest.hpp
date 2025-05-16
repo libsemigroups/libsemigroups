@@ -408,6 +408,110 @@ namespace libsemigroups {
     //!
     //! \param v the node.
     void throw_if_node_out_of_bounds(node_type v) const;
+
+    // TODO doc
+    // TODO helper?
+    [[nodiscard]] bool is_root_no_checks(node_type n) const noexcept {
+      return _parent[n] == UNDEFINED;
+    }
+
+   private:
+    class const_iterator_path {
+     private:
+      node_type     _current_node;
+      Forest const* _forest;
+
+     public:
+      using iterator_category = std::forward_iterator_tag;
+      using value_type        = label_type;
+      using difference_type   = std::ptrdiff_t;
+      using pointer           = label_type*;
+      using reference         = label_type&;
+
+      const_iterator_path(Forest const* f, node_type n)
+          : _current_node(n), _forest(f) {}
+
+      const_iterator_path() = delete;
+
+      const_iterator_path(const_iterator_path const& that)            = default;
+      const_iterator_path& operator=(const_iterator_path const& that) = default;
+      const_iterator_path(const_iterator_path&& that) noexcept        = default;
+      const_iterator_path& operator=(const_iterator_path&& that) noexcept
+          = default;
+
+      ~const_iterator_path() = default;
+
+      value_type operator*() const {
+        if (_current_node != UNDEFINED) {
+          return _forest->label_no_checks(_current_node);
+        }
+        return UNDEFINED;
+      }
+
+      // pointer operator->() const {
+      //   return TODO;
+      // }
+
+      // Pre-increment
+      const_iterator_path& operator++() {
+        if (_current_node != UNDEFINED
+            && !_forest->is_root_no_checks(_current_node)) {
+          // NOTE: This is a bit more complicated than might be expected
+          // because we use _current_node == UNDEFINED to denote the end of the
+          // range. This way we don't have to know/compute the root of
+          // _current_node in cend_path_to_root_no_checks. So, an non-"end"
+          // iterator always has _current_node set to a value != UNDEFINED.
+          _current_node = _forest->parent_no_checks(_current_node);
+        }
+        return *this;
+      }
+
+      // Post-increment
+      const_iterator_path operator++(int) {
+        const_iterator_path tmp = *this;
+        ++(*this);
+        return tmp;
+      }
+
+      bool operator==(const_iterator_path const& that) const {
+        if (_forest != that._forest) {
+          return false;
+        }
+        if (_current_node == that._current_node) {
+          return true;
+        } else {
+          // NOTE: This is a bit more complicated than might be expected
+          // because we use _current_node == UNDEFINED to denote the end of the
+          // range. This way we don't have to know/compute the root of
+          // _current_node in cend_path_to_root_no_checks. So, an non-"end"
+          // iterator always has _current_node set to a value != UNDEFINED. This
+          // means that checking equality of (non-"end", non-"end") or ("end",
+          // "end") iterators works as expected, but comparing (non-"end",
+          // "end") and ("end", non-"end") is the next check. Without something
+          // like this UNDEFINED is part of the range defined by
+          // [cbegin_path_to_root_no_checks, cend_path_to_root_no_checks).
+          return **this == *that;
+        }
+      }
+
+      bool operator!=(const_iterator_path const& that) const {
+        return !(*this == that);
+      }
+    };
+
+   public:
+    // TODO doc
+    // TODO checks version
+    const_iterator_path
+    cbegin_path_to_root_no_checks(node_type n) const noexcept {
+      return const_iterator_path(this, n);
+    }
+
+    // TODO doc
+    // TODO checks version
+    const_iterator_path cend_path_to_root_no_checks(node_type) const noexcept {
+      return const_iterator_path(this, UNDEFINED);
+    }
   };
 
   //! \defgroup make_forest_group make<Forest>

@@ -100,4 +100,14 @@ namespace libsemigroups {
 
     REQUIRE(forest.depth_no_checks(50) == 50);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "004", "cbegin_path_to_root", "[quick]") {
+    using literals::operator""_w;
+
+    Forest f = test_forest1();
+
+    REQUIRE(word_type(f.cbegin_path_to_root_no_checks(50),
+                      f.cend_path_to_root_no_checks(50))
+            == 10142241014224101422410142241014224101422410142241_w);
+  }
 }  // namespace libsemigroups
