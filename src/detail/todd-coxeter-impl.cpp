@@ -888,6 +888,8 @@ namespace libsemigroups {
       _word_graph.settings(*this);
       _word_graph.reset_start_time();
       _word_graph.stats_check_point();
+      reset_start_time();
+
       auto       first = internal_generating_pairs().cbegin();
       auto       last  = internal_generating_pairs().cend();
       auto const id    = current_word_graph().initial_node();
