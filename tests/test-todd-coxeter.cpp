@@ -18,6 +18,7 @@
 
 // TODO reclassify the standard tests and run all extreme tests
 
+#include <chrono>
 #include <cstdlib>   // for what?
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
@@ -5096,6 +5097,31 @@ namespace libsemigroups {
     REQUIRE(tc.internal_generating_pairs().empty());
     REQUIRE(tc.internal_presentation().rules
             == std::vector<word_type>({01_w, {}, 11111_w, 0_w}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "124",
+                          "initialisation from incomplete WordGraph",
+                          "[todd-coxeter][quick]") {
+    size_t n = 7;
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    tc.run_for(std::chrono::milliseconds(100));
+
+    size_t const expected = tc.current_word_graph().number_of_nodes();
+
+    // TODO(0) this should throw
+    // tc.init(
+    //     congruence_kind::twosided, tc.presentation(),
+    //     tc.current_word_graph());
+
+    // REQUIRE(expected == tc.current_word_graph().number_of_nodes());
+
+    // todd_coxeter::add_generating_pair(tc, 0_w, {});
+    // todd_coxeter::add_generating_pair(tc, 1_w, {});
+
+    // REQUIRE(tc.number_of_classes() == 0);
   }
 
 }  // namespace libsemigroups

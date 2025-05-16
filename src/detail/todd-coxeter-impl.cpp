@@ -523,6 +523,9 @@ namespace libsemigroups {
             tc.kind(),
             knd);
       }
+      // TODO(0) what about the word graph, if it's partially defined at least
+      // shouldn't we copy it also?
+
       // if this and &tc are the same object, then we insert the generating
       // pairs into the presentation before reinitialising.
       auto& rules = _word_graph.presentation().rules;
