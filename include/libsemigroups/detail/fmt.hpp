@@ -28,6 +28,15 @@
 #pragma GCC diagnostic ignored "-Winline"
 #pragma GCC diagnostic ignored "-Wtautological-compare"
 
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_WITH_INTERNAL_FMT
+
+#if defined(LIBSEMIGROUPS_WITH_INTERNAL_FMT) && !defined(FMT_HEADER_ONLY)
+// We define FMT_HEADER_ONLY here and not in Makefile.am so that it is properly
+// set when we are using the (e.g. system installed) headers in another
+// project, such as the python bindings.
+#define FMT_HEADER_ONLY
+#endif
+
 #include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/compile.h>
