@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 """
 This module expects to be used as:
-
-./bench_sims "[partition_monoid_2_sided]" --reporter=xml | benchmarks/to_table.py
+./bench_sims "[partition_monoid_2_sided]" --reporter=xml | benchmarks/latex_table.py
 """
 
 import sys
 from bs4 import BeautifulSoup
 from math import floor, log10
-
+import re
 from rich.console import Console
 from rich.table import Table
 
 
-def format_time(mean: str, sd: str) -> str:
-    mean, sd = float(mean), float(sd)
+def format_time(mean_str: str, sd_str: str) -> tuple[str, str]:
+    mean, sd = float(mean_str), float(sd_str)
     e = floor(log10(sd))
     if str(sd)[1] == 1:
         mean = floor(mean / (10 ** (e - 1))) / 10
@@ -31,7 +30,7 @@ def format_time(mean: str, sd: str) -> str:
     )
 
 
-def format_benchmark_result(table, xml):
+def format_benchmark_result(table: Table, xml: BeautifulSoup):
     mean = xml.find("mean")["value"]
     sd = xml.find("standardDeviation")["value"]
     table.add_row(xml["name"], *format_time(mean, sd))
@@ -46,7 +45,6 @@ num_benchmarks = 0
 for line in sys.stdin:
     print(line, file=sys.stdout, flush=True, end="")
     xml_str += line
-    # TODO read the whole of the output, then start processing the xml
 
     if line.find(r"</BenchmarkResults>") != -1:
         xml = BeautifulSoup(xml_str, "xml")
@@ -57,4 +55,6 @@ for line in sys.stdin:
             num_benchmarks += 1
             format_benchmark_result(table, results[0])
         # print(results)
+    if line.find(r"</Section>") != -1:
+        table.add_section()
 Console().print(table)
