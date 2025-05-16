@@ -1272,7 +1272,10 @@ namespace libsemigroups {
     REQUIRE(tc3.presentation().rules.empty());
     REQUIRE(tc3.number_of_generating_pairs() == 0);
 
-    REQUIRE_NOTHROW(tc3.run_for(std::chrono::nanoseconds(1)));
+    REQUIRE_THROWS_AS(tc3.run_for(std::chrono::nanoseconds(1)),
+                      LibsemigroupsException);
+    REQUIRE(tc3.current_word_graph().number_of_nodes_active() == 1);
+    REQUIRE(tc3.current_word_graph().number_of_edges() == 0);
     REQUIRE(!tc3.finished());
     // This shouldn't ever return true, since the presentation defines the free
     // semigroup with 2 generators
@@ -5106,22 +5109,90 @@ namespace libsemigroups {
     size_t n = 7;
     auto   p = presentation::examples::full_transformation_monoid_II74(n);
 
+    REQUIRE(p.contains_empty_word());
     ToddCoxeter tc(congruence_kind::twosided, p);
     tc.run_for(std::chrono::milliseconds(100));
 
+    tc.shrink_to_fit();
     size_t const expected = tc.current_word_graph().number_of_nodes();
 
-    // TODO(0) this should throw
-    // tc.init(
-    //     congruence_kind::twosided, tc.presentation(),
-    //     tc.current_word_graph());
+    // TODO(0) this should throw without the shrink_to_fit
+    word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
+    tc.init(
+        congruence_kind::twosided, tc.presentation(), tc.current_word_graph());
+    word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
 
-    // REQUIRE(expected == tc.current_word_graph().number_of_nodes());
+    REQUIRE(expected == tc.current_word_graph().number_of_nodes());
 
-    // todd_coxeter::add_generating_pair(tc, 0_w, {});
-    // todd_coxeter::add_generating_pair(tc, 1_w, {});
-
+    todd_coxeter::add_generating_pair(tc, 0_w, {});
+    todd_coxeter::add_generating_pair(tc, 1_w, {});
+    // FIXME and there's some sort of off by one error here, the following
+    // throws
     // REQUIRE(tc.number_of_classes() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "125",
+                          "refuse to run if free and using HLT",
+                          "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    tc.strategy(options::strategy::hlt);
+    todd_coxeter::add_generating_pair(tc, 01_w, 10_w);
+    todd_coxeter::add_generating_pair(tc, 000000000000_w, 000_w);
+    todd_coxeter::add_generating_pair(tc, 1111111111_w, 111111111_w);
+
+    REQUIRE(tc.number_of_classes() == 119);
+
+    // KnuthBendix kb(congruence_kind::twosided, p);
+    // knuth_bendix::add_generating_pair(kb, 01_w, 10_w);
+    // knuth_bendix::add_generating_pair(kb, 000000000000_w, 000_w);
+    // knuth_bendix::add_generating_pair(kb, 1111111111_w, 111111111_w);
+
+    // REQUIRE(kb.number_of_classes() == 119);
+
+    tc.init(congruence_kind::onesided, p);
+    tc.strategy(options::strategy::hlt);
+
+    todd_coxeter::add_generating_pair(tc, 01_w, 10_w);
+    todd_coxeter::add_generating_pair(tc, 000000000000_w, 000_w);
+    todd_coxeter::add_generating_pair(tc, 1111111111_w, 111111111_w);
+
+    // Before the changes in this commit, this returned 21, which is very
+    // wrong (there are infinitely many classes)
+    // REQUIRE(tc.number_of_classes() == 21);
+    REQUIRE_THROWS_AS(tc.number_of_classes(), LibsemigroupsException);
+
+    tc.init(congruence_kind::twosided, p);
+    tc.strategy(options::strategy::hlt);
+
+    REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(tc.run_for(std::chrono::milliseconds(10)),
+                      LibsemigroupsException);
+    size_t val = 0;
+    REQUIRE_THROWS_AS(tc.run_until([&val]() { return val++ > 10; }),
+                      LibsemigroupsException);
+
+    tc.init(congruence_kind::onesided, p);
+    tc.strategy(options::strategy::hlt);
+
+    // Before the changes in this commit:
+    // runs for 1 microsecond, ends up in some not very good state.
+    // tc.run_for(std::chrono::milliseconds(10));
+    // REQUIRE(tc.current_word_graph().number_of_nodes() == 2);
+    // REQUIRE(tc.current_word_graph().number_of_edges() == 0);
+    // REQUIRE(!tc.finished());
+    // REQUIRE(tc.started());
+
+    REQUIRE_THROWS_AS(tc.run(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(tc.run_for(std::chrono::milliseconds(10)),
+                      LibsemigroupsException);
+    val = 0;
+    REQUIRE_THROWS_AS(tc.run_until([&val]() { return val++ > 10; }),
+                      LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
