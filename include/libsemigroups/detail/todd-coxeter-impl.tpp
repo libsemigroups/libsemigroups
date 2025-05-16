@@ -26,13 +26,17 @@ namespace libsemigroups {
                                            WordGraph<Node> const& wg) {
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
-      init();
-      // FIXME(1) setting the setting in the next line, and adding a Felsch
-      // runner to the word graph version of Congruence leads to an incorrect
-      // answer for the extreme test in congruence def_max(POSITIVE_INFINITY);
+      _finished = false;
+      reset_settings_stack();
+      _standardized   = Order::none;
+      _ticker_running = false;
+
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();
+      // FIXME(1) setting the setting in the next line, and adding a Felsch
+      // runner to the word graph version of Congruence leads to an incorrect
+      // answer for the extreme test in congruence def_max(POSITIVE_INFINITY);
       return *this;
     }
 
@@ -40,6 +44,7 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind                knd,
                                            Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
+      // TODO(0) if wg is _word_graph, then this is not going to work
       init(knd, p);
       _word_graph = wg;
       _word_graph.presentation(p);  // this does not throw when p is invalid
