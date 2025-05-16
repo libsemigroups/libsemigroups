@@ -382,55 +382,144 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
-                                   "021",
-                                   "from KnuthBendix",
-                                   "[quick][to_presentation]",
-                                   string_string,
-                                   string_word,
-                                   word_string,
-                                   word_word) {
-    using W1 = typename TestType::first_type;
-    using W2 = typename TestType::second_type;
-    using literals::operator""_w;
-
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<std::string>>",
+                          "021",
+                          "from KnuthBendix<std::string>",
+                          "[quick][to_presentation]") {
     auto rg = ReportGuard(false);
 
-    Presentation<W1> p;
+    Presentation<std::string> p;
+    p.alphabet("hijkl");
+    presentation::add_rule(p, "hi", "j");
+    presentation::add_rule(p, "ij", "k");
+    presentation::add_rule(p, "jk", "l");
+    presentation::add_rule(p, "kl", "h");
+    presentation::add_rule(p, "lh", "i");
 
-    if constexpr (std::is_same_v<W1, std::string>) {
-      p.alphabet("hijkl");
-
-      presentation::add_rule(p, "hi", "j");
-      presentation::add_rule(p, "ij", "k");
-      presentation::add_rule(p, "jk", "l");
-      presentation::add_rule(p, "kl", "h");
-      presentation::add_rule(p, "lh", "i");
-    } else if constexpr (std::is_same_v<W1, word_type>) {
-      p.alphabet("02468"_w);
-
-      presentation::add_rule(p, "02"_w, "4"_w);
-      presentation::add_rule(p, "24"_w, "6"_w);
-      presentation::add_rule(p, "46"_w, "8"_w);
-      presentation::add_rule(p, "68"_w, "0"_w);
-      presentation::add_rule(p, "80"_w, "2"_w);
-    }
-
-    KnuthBendix<W1> kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string> kb(congruence_kind::twosided, p);
     kb.run();
 
-    auto q = to<Presentation<W2>>(kb);
-    REQUIRE(q.alphabet().size() == 5);
+    auto q = to<Presentation<std::string>>(kb);
+    REQUIRE(q == to<Presentation>(kb));
+
+    REQUIRE(q.alphabet() == p.alphabet());
     REQUIRE(q.rules.size() == 48);
 
-    if constexpr (std::is_same_v<W1, W2>) {
-      REQUIRE(q.alphabet() == p.alphabet());
-      REQUIRE(q == to<Presentation>(kb));
-    } else if constexpr (std::is_same_v<W2, std::string>) {
-      REQUIRE(q.alphabet() == "abcde");
-    } else if constexpr (std::is_same_v<W2, word_type>) {
-      REQUIRE(q.alphabet() == "01234"_w);
-    }
+    presentation::sort_each_rule(q);
+    presentation::sort_rules(q);
+    REQUIRE(q.rules
+            == std::vector<std::string>{
+                "hi",  "j",  "hl",  "i",  "ih",  "j",  "ij",  "k",  "ji", "k",
+                "jk",  "l",  "kj",  "l",  "kl",  "h",  "lh",  "i",  "lk", "h",
+                "hhh", "l",  "iii", "h",  "ik",  "hh", "jh",  "hj", "jj", "hk",
+                "jl",  "ii", "kh",  "hk", "ki",  "hh", "kk",  "il", "li", "il",
+                "lj",  "ii", "ll",  "hj", "hhj", "il", "iil", "hhk"});
+  }
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<std::string>>",
+                          "022",
+                          "from KnuthBendix<word_type>",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    KnuthBendix<word_type> kb(congruence_kind::twosided, p);
+    kb.run();
+
+    auto q = to<Presentation<std::string>>(kb);
+
+    REQUIRE(q.alphabet() == "abcde");
+    REQUIRE(q.rules.size() == 48);
+
+    presentation::sort_each_rule(q);
+    presentation::sort_rules(q);
+    REQUIRE(q.rules
+            == std::vector<std::string>{
+                "ab",  "c",  "ae",  "b",  "ba",  "c",  "bc",  "d",  "cb", "d",
+                "cd",  "e",  "dc",  "e",  "de",  "a",  "ea",  "b",  "ed", "a",
+                "aaa", "e",  "bbb", "a",  "bd",  "aa", "ca",  "ac", "cc", "ad",
+                "ce",  "bb", "da",  "ad", "db",  "aa", "dd",  "be", "eb", "be",
+                "ec",  "bb", "ee",  "ac", "aac", "be", "bbe", "aad"});
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "023",
+                          "from KnuthBendix<std::string>",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("hijkl");
+    presentation::add_rule(p, "hi", "j");
+    presentation::add_rule(p, "ij", "k");
+    presentation::add_rule(p, "jk", "l");
+    presentation::add_rule(p, "kl", "h");
+    presentation::add_rule(p, "lh", "i");
+
+    KnuthBendix<std::string> kb(congruence_kind::twosided, p);
+    kb.run();
+
+    auto q = to<Presentation<word_type>>(kb);
+
+    REQUIRE(q.alphabet() == "01234"_w);
+    REQUIRE(q.rules.size() == 48);
+
+    presentation::sort_each_rule(q);
+    presentation::sort_rules(q);
+    REQUIRE(q.rules
+            == std::vector<word_type>{
+                "01"_w, "2"_w,   "04"_w,  "1"_w,  "10"_w,  "2"_w,  "12"_w,
+                "3"_w,  "21"_w,  "3"_w,   "23"_w, "4"_w,   "32"_w, "4"_w,
+                "34"_w, "0"_w,   "40"_w,  "1"_w,  "43"_w,  "0"_w,  "000"_w,
+                "4"_w,  "111"_w, "0"_w,   "13"_w, "00"_w,  "20"_w, "02"_w,
+                "22"_w, "03"_w,  "24"_w,  "11"_w, "30"_w,  "03"_w, "31"_w,
+                "00"_w, "33"_w,  "14"_w,  "41"_w, "14"_w,  "42"_w, "11"_w,
+                "44"_w, "02"_w,  "002"_w, "14"_w, "114"_w, "003"_w});
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "024",
+                          "from KnuthBendix<word_type>",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    KnuthBendix<word_type> kb(congruence_kind::twosided, p);
+    kb.run();
+
+    auto q = to<Presentation<word_type>>(kb);
+    REQUIRE(q == to<Presentation>(kb));
+
+    REQUIRE(q.alphabet() == p.alphabet());
+    REQUIRE(q.rules.size() == 48);
+
+    presentation::sort_each_rule(q);
+    presentation::sort_rules(q);
+    REQUIRE(q.rules
+            == std::vector<word_type>{
+                "56"_w, "7"_w,   "59"_w,  "6"_w,  "65"_w,  "7"_w,  "67"_w,
+                "8"_w,  "76"_w,  "8"_w,   "78"_w, "9"_w,   "87"_w, "9"_w,
+                "89"_w, "5"_w,   "95"_w,  "6"_w,  "98"_w,  "5"_w,  "555"_w,
+                "9"_w,  "666"_w, "5"_w,   "68"_w, "55"_w,  "75"_w, "57"_w,
+                "77"_w, "58"_w,  "79"_w,  "66"_w, "85"_w,  "58"_w, "86"_w,
+                "55"_w, "88"_w,  "69"_w,  "96"_w, "69"_w,  "97"_w, "66"_w,
+                "99"_w, "57"_w,  "557"_w, "69"_w, "669"_w, "558"_w});
   }
 
 }  // namespace libsemigroups
