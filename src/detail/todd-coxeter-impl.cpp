@@ -854,13 +854,15 @@ namespace libsemigroups {
                  && (internal_generating_pairs().empty()
                      || kind() == congruence_kind::onesided)
                  && strategy() == options::strategy::hlt) {
+        // TODO(0) must accommodate when the presentation is empty, but we were
+        // initialised from a word graph.
         LIBSEMIGROUPS_EXCEPTION("the HLT strategy cannot be used with an "
                                 "presentation with > 0 generators and 0 rules");
       }
 
       init_run();
 
-      if (reporting_enabled()
+      if (!_ticker_running && reporting_enabled()
           && (!running_for()
               || duration_cast<seconds>(running_for_how_long())
                      >= seconds(1))) {
