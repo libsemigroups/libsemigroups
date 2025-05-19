@@ -863,7 +863,7 @@ namespace libsemigroups {
 
       init_run();
 
-      if (reporting_enabled()
+      if (!_ticker_running && reporting_enabled()
           && (!running_for()
               || duration_cast<seconds>(running_for_how_long())
                      >= seconds(1))) {
