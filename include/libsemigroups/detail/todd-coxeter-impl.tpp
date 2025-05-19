@@ -57,7 +57,8 @@ namespace libsemigroups {
       _standardized   = Order::none;
       _ticker_running = false;
 
-      _word_graph = wg;
+      _word_graph = wg;  // FIXME this doesn't seem to reset _word_graph
+      // properly, in particular, the node managed part isn't reset.
       _word_graph.presentation(p);  // this does not throw when p is invalid
       copy_settings_into_graph();
       return *this;
