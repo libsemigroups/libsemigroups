@@ -1634,7 +1634,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "063",
                                    "sigma sylvester monoid",
-                                   "[todd-coxeter][quick][no-valgrind]",
+                                   "[knuth-bendix][quick][no-valgrind]",
                                    REWRITER_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);
@@ -1792,27 +1792,11 @@ namespace libsemigroups {
     using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
-    p.alphabet(3);
-    p.contains_empty_word(true);
-    presentation::add_rule(p, 00_w, 0_w);
-    presentation::add_rule(p, 11_w, 1_w);
-    presentation::add_rule(p, 22_w, 2_w);
-    presentation::add_rule(p, 010_w, 01_w);
-    presentation::add_rule(p, 0120_w, 012_w);
-    presentation::add_rule(p, 020_w, 02_w);
-    presentation::add_rule(p, 0210_w, 021_w);
-    presentation::add_rule(p, 02120_w, 0212_w);
-    presentation::add_rule(p, 10212_w, 1021_w);
-    presentation::add_rule(p, 121_w, 12_w);
-    presentation::add_rule(p, 12012_w, 1201_w);
-    presentation::add_rule(p, 1202_w, 120_w);
-
-    p.rules.clear();
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
     WordRange    words;
-    words.alphabet_size(2).min(0).max(3);
+    words.alphabet_size(2).min(0).max(6);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
@@ -1832,6 +1816,7 @@ namespace libsemigroups {
     presentation::sort_rules(p);
     presentation::remove_trivial_rules(p);
     p.contains_empty_word(true);
+    std::reverse(p.rules.begin(), p.rules.end());
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
 
