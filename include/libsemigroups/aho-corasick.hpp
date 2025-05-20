@@ -797,7 +797,7 @@ namespace libsemigroups {
       return ac.rm_word_no_checks(w.cbegin(), w.cend());
     }
 
-    //! \brief Add a word to the trie of \p ac.
+    //! \brief Add a word.
     //!
     //! This function performs the same as `ac.add_word(w.begin(), w.end())`.
     //!
@@ -820,7 +820,28 @@ namespace libsemigroups {
       return ac.add_word(w.cbegin(), w.cend());
     }
 
-    //! \brief Remove a word from the trie of \p ac.
+    //! \brief Add a word.
+    //!
+    //! This function performs the same as `ac.add_word(w, w + std::strlen(w))`.
+    //!
+    //! \param ac AhoCorasick object to add the word to.
+    //! \param w the word to add.
+    //!
+    //! \returns An \ref index_type corresponding to the final node added to the
+    //! \p ac.
+    //!
+    //! \throws LibsemigroupsException if the word \p w corresponds to an
+    //! existing terminal node in the trie.
+    //!
+    //! \complexity
+    //! Linear in the length of \p w.
+    //!
+    //! \sa \ref AhoCorasick::add_word.
+    inline index_type add_word(AhoCorasick& ac, char const* w) {
+      return ac.add_word(w, w + std::strlen(w));
+    }
+
+    //! \brief Remove a word.
     //!
     //! This function performs the same as `ac.rm_word(w.begin(), w.end())`.
     //!
@@ -841,6 +862,27 @@ namespace libsemigroups {
     template <typename Word>
     index_type rm_word(AhoCorasick& ac, Word const& w) {
       return ac.rm_word(w.cbegin(), w.cend());
+    }
+
+    //! \brief Remove a word.
+    //!
+    //! This function performs the same as `ac.rm_word(w, w + std::strlen(w))`.
+    //!
+    //! \param ac AhoCorasick object to remove the word from.
+    //! \param w the word to remove.
+    //!
+    //! \returns An \ref index_type corresponding to the node with signature
+    //! equal to \p w.
+    //!
+    //! \throws LibsemigroupsException if the word \p w does not correspond to
+    //! an existing terminal node in the trie.
+    //!
+    //! \complexity
+    //! Linear in the length of \p w.
+    //!
+    //! \sa \ref AhoCorasick::rm_word.
+    inline index_type rm_word(AhoCorasick& ac, char const* w) {
+      return ac.rm_word(w, w + std::strlen(w));
     }
 
     //! \brief Traverse the trie of \p ac using suffix links where necessary.
