@@ -1602,7 +1602,7 @@ namespace libsemigroups {
             == std::vector<std::pair<word_type, word_type>>(
                 {{00_w, 0_w}, {11_w, 1_w}, {010_w, 10_w}, {101_w, 10_w}}));
     REQUIRE(kb.gilman_graph_node_labels()
-            == std::vector({{}, 1_w, 0_w, 10_w, 01_w}));
+            == std::vector({{}, 0_w, 01_w, 1_w, 10_w}));
     // The gilman_graph generated is isomorphic to the word_graph given, but not
     // identical. Since the normal forms are correct (see above) the below check
     // is omitted.
