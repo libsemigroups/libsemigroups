@@ -445,7 +445,7 @@ namespace libsemigroups {
       mutable std::atomic<bool>              _cached_confluent;
       mutable std::atomic<bool>              _confluence_known;
       size_t                                 _max_stack_depth;
-      std::stack<Rule*>                      _pending_rules;
+      std::vector<Rule*>                     _pending_rules;
       std::atomic<bool>                      _requires_alphabet;
 
       using alphabet_citerator
@@ -474,14 +474,15 @@ namespace libsemigroups {
         _cached_confluent  = that._cached_confluent.load();
         _confluence_known  = that._confluence_known.load();
         _requires_alphabet = that._requires_alphabet.load();
+        // TODO(0) update
         while (!_pending_rules.empty()) {
-          _pending_rules.pop();
+          _pending_rules.pop_back();
         }
         decltype(_pending_rules) tmp = that._pending_rules;
         while (!tmp.empty()) {
-          auto const* rule = tmp.top();
-          _pending_rules.push(copy_rule(rule));
-          tmp.pop();
+          auto const* rule = tmp.back();
+          _pending_rules.emplace_back(copy_rule(rule));
+          tmp.pop_back();
         }
 
         if (_requires_alphabet) {
@@ -551,8 +552,8 @@ namespace libsemigroups {
 
       Rule* next_pending_rule() {
         LIBSEMIGROUPS_ASSERT(_pending_rules.size() != 0);
-        Rule* rule = _pending_rules.top();
-        _pending_rules.pop();
+        Rule* rule = _pending_rules.back();
+        _pending_rules.pop_back();
         return rule;
       }
 
