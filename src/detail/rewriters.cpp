@@ -193,8 +193,8 @@ namespace libsemigroups {
       // Put all active rules and those rules in the stack into the
       // inactive_rules list
       while (!_pending_rules.empty()) {
-        Rules::add_inactive_rule(_pending_rules.top());
-        _pending_rules.pop();
+        Rules::add_inactive_rule(_pending_rules.back());
+        _pending_rules.pop_back();
       }
       _max_stack_depth  = 0;
       _cached_confluent = false;
@@ -204,8 +204,8 @@ namespace libsemigroups {
 
     RewriterBase::~RewriterBase() {
       while (!_pending_rules.empty()) {
-        Rule* rule = _pending_rules.top();
-        _pending_rules.pop();
+        Rule* rule = _pending_rules.back();
+        _pending_rules.pop_back();
         delete rule;
       }
     }
@@ -225,7 +225,7 @@ namespace libsemigroups {
     bool RewriterBase::add_pending_rule(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(!rule->active());
       if (*rule->lhs() != *rule->rhs()) {
-        _pending_rules.emplace(rule);
+        _pending_rules.emplace_back(rule);
         _max_stack_depth = std::max(_max_stack_depth, _pending_rules.size());
         return true;
       } else {
@@ -238,6 +238,11 @@ namespace libsemigroups {
       bool                        rules_added = false;
       Rule*                       rule1;
       internal_string_type const* lhs;
+      std::sort(
+          _pending_rules.begin(),
+          _pending_rules.end(),
+          [](Rule const* x, Rule const* y) { return *x->lhs() > *y->lhs(); });
+
       while (number_of_pending_rules() != 0) {
         rule1 = next_pending_rule();
         LIBSEMIGROUPS_ASSERT(!rule1->active());
