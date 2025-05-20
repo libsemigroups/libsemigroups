@@ -818,6 +818,11 @@ namespace libsemigroups {
       return ac.add_word(w.cbegin(), w.cend());
     }
 
+    // TODO(doc)
+    inline index_type add_word(AhoCorasick& ac, char const* w) {
+      return ac.add_word(w, w + std::strlen(w));
+    }
+
     //! \brief Remove a word from the trie of \p ac.
     //!
     //! This function performs the same as `ac.rm_word(w.begin(), w.end())`.
