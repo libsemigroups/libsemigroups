@@ -314,9 +314,10 @@ namespace libsemigroups {
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
+    // clang-format: off
     REQUIRE(aho_corasick::dot(ac).to_string() == R"(digraph {
   node [shape="box"]
-  
+
   0  [label="&#949;"]
   1  [label="0"]
   10  [label="010"]
@@ -410,16 +411,18 @@ namespace libsemigroups {
   29 -> 25  [color="black", constraint="false", style="dashed"]
   30 -> 28  [color="black", constraint="false", style="dashed"]
 })");
+    // clang-format: on
+
     AhoCorasick ac2;
     aho_corasick::add_word(ac2, 0101_w);
     aho_corasick::add_word(ac2, 0110_w);
     aho_corasick::add_word(ac2, 01101_w);
     aho_corasick::add_word(ac2, 01100_w);
     aho_corasick::rm_word(ac2, 0101_w);
-
+    // clang-format: off
     REQUIRE(aho_corasick::dot(ac2).to_string() == R"(digraph {
   node [shape="box"]
-  
+
   0  [label="&#949;"]
   1  [label="0"]
   2  [label="01"]
@@ -441,6 +444,19 @@ namespace libsemigroups {
   7 -> 2  [color="black", constraint="false", style="dashed"]
   8 -> 1  [color="black", constraint="false", style="dashed"]
 })");
+    // clang-format: on
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "012",
+                          "dot",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+    aho_corasick::add_word(ac, "abab");
+    aho_corasick::add_word(ac, "abba");
+    aho_corasick::add_word(ac, "");
+
+    REQUIRE(aho_corasick::dot(ac).to_string() == "");
   }
 
 }  // namespace libsemigroups
