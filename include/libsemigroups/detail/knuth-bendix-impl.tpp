@@ -559,7 +559,9 @@ namespace libsemigroups {
       auto& pairs = internal_generating_pairs();
 
       if (kind() != congruence_kind::twosided && !pairs.empty()) {
-        p.alphabet(p.alphabet() + presentation::first_unused_letter(p));
+        // TODO(0) throw exception if the number of generators is 256 already
+        p.alphabet(p.alphabet()
+                   + static_cast<std::string::value_type>(p.alphabet().size()));
       }
 
       for (auto it = pairs.cbegin(); it != pairs.cend(); ++it) {

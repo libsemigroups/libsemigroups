@@ -265,11 +265,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 
@@ -473,6 +472,9 @@ namespace libsemigroups {
     add_generating_pair(kb, "aabbaaaba", "baaab");
 
     kb.run();
+
+    REQUIRE(kb.internal_presentation().alphabet().size()
+            == kb.presentation().alphabet().size());
 
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
