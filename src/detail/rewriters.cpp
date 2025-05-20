@@ -290,6 +290,8 @@ namespace libsemigroups {
             Rule* rule2 = const_cast<Rule*>(*it);
 
             // Check if lhs is contained within either the lhs or rhs of rule2
+            // TODO(0) investigate whether or not this can be improved?
+            // Removed?
             if (rule2->lhs()->find(*lhs) != external_string_type::npos
                 || rule2->rhs()->find(*lhs) != external_string_type::npos) {
               // If it is, rule2 must be deactivated and re-processed
