@@ -18,41 +18,19 @@
 
 // This file contains the implementation of the KBE class.
 
+#include <iterator>
 namespace libsemigroups {
   namespace detail {
 
     template <typename KnuthBendix_>
-    KBE<KnuthBendix_>::KBE(internal_string_type const& w) : _kb_word(w) {}
-
-    template <typename KnuthBendix_>
-    KBE<KnuthBendix_>::KBE(internal_string_type&& w) : _kb_word(std::move(w)) {}
-
-    template <typename KnuthBendix_>
-    KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, internal_string_type const& w)
-        : KBE(w) {
-      kb._rewriter.rewrite(_kb_word);
+    KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, native_word_type const& w)
+        : _kb_word() {
+      kb.reduce_no_checks(std::back_inserter(_kb_word), w.begin(), w.end());
     }
 
     template <typename KnuthBendix_>
-    KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, internal_string_type&& w)
-        : KBE(std::move(w)) {
-      kb._rewriter.rewrite(_kb_word);
-    }
-
-    template <typename KnuthBendix_>
-    KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, word_type const& w)
-        : KBE(kb,
-              std::accumulate(w.cbegin(),
-                              w.cend(),
-                              std::string(),
-                              [](std::string& acc, letter_type a) {
-                                acc += KnuthBendix_::uint_to_internal_string(a);
-                                return acc;
-                              })) {}
-
-    template <typename KnuthBendix_>
-    KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, letter_type const& a)
-        : KBE(kb, KnuthBendix_::uint_to_internal_string(a)) {}
+    KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, native_letter_type const& a)
+        : KBE(kb, native_word_type(1, a)) {}
 
     template <typename KnuthBendix_>
     bool KBE<KnuthBendix_>::operator==(KBE const& that) const {
@@ -70,21 +48,9 @@ namespace libsemigroups {
     }
 
     template <typename KnuthBendix_>
-    typename KBE<KnuthBendix_>::internal_string_type const&
-    KBE<KnuthBendix_>::string() const noexcept {
+    typename KBE<KnuthBendix_>::native_word_type const&
+    KBE<KnuthBendix_>::word() const noexcept {
       return _kb_word;
-    }
-
-    template <typename KnuthBendix_>
-    word_type KBE<KnuthBendix_>::word(KnuthBendix_ const& kb) const {
-      return kb.internal_string_to_word(_kb_word);
-    }
-
-    template <typename KnuthBendix_>
-    std::string KBE<KnuthBendix_>::string(KnuthBendix_ const& kb) const {
-      std::string out(_kb_word);
-      kb.internal_to_external_string(out);  // changes out in-place
-      return out;
     }
 
   }  // namespace detail

@@ -283,6 +283,30 @@ namespace libsemigroups {
   namespace presentation {
 
     template <typename Word>
+    void throw_if_not_normalized(Presentation<Word> const& p,
+                                 std::string_view          arg) {
+      auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
+      if (!std::is_sorted(first, last)) {
+        LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
+                                "sorted alphabet, found {}",
+                                arg,
+                                p.alphabet());
+      }
+
+      auto it = std::max_element(first, last);
+      if (it != last
+          && *it
+                 != static_cast<typename Word::value_type>(p.alphabet().size()
+                                                           - 1)) {
+        LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
+                                "alphabet, expected [0, ..., {}] found {}",
+                                arg,
+                                p.alphabet().size() - 1,
+                                p.alphabet());
+      }
+    }
+
+    template <typename Word>
     void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals) {
       if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -320,6 +344,18 @@ namespace libsemigroups {
           }
         }
       }
+    }
+
+    template <typename Word>
+    std::string to_report_string(Presentation<Word> const& p) {
+      using detail::group_digits;
+      return fmt::format("|A| = {}, |R| = {}, "
+                         "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                         group_digits(p.alphabet().size()),
+                         group_digits(p.rules.size() / 2),
+                         group_digits(shortest_rule_length(p)),
+                         group_digits(longest_rule_length(p)),
+                         group_digits(length(p)));
     }
 
     template <typename Word>

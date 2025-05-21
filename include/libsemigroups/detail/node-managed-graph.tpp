@@ -56,6 +56,7 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     NodeManagedGraph<BaseGraph>& NodeManagedGraph<BaseGraph>::init() {
+      // FIXME this doesn't seem like enough is reset
       _coinc    = decltype(_coinc)();
       _settings = Settings();
       _stats    = Stats();
