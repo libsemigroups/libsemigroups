@@ -294,7 +294,10 @@ namespace libsemigroups {
       }
 
       auto it = std::max_element(first, last);
-      if (it != last && *it != p.alphabet().size() - 1) {
+      if (it != last
+          && *it
+                 != static_cast<typename Word::value_type>(p.alphabet().size()
+                                                           - 1)) {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
                                 "alphabet, expected [0, ..., {}] found {}",
                                 arg,

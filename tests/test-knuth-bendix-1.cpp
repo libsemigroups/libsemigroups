@@ -445,7 +445,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "009",
                                    "random example",
-
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITER_TYPES) {
     auto rg = ReportGuard(false);
