@@ -206,7 +206,6 @@ namespace libsemigroups {
       bool                            _gen_pairs_initted;
       WordGraph<uint32_t>             _gilman_graph;
       std::vector<std::string>        _gilman_graph_node_labels;
-      bool                            _internal_is_same_as_external;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
       Presentation<std::string>       _presentation;
       mutable Rewriter                _rewriter;
@@ -883,25 +882,6 @@ namespace libsemigroups {
 
       void stats_check_point();
 
-      [[nodiscard]] static detail::internal_char_type
-      uint_to_internal_char(size_t a);
-      [[nodiscard]] static size_t
-      internal_char_to_uint(detail::internal_char_type c);
-
-      [[nodiscard]] static detail::internal_string_type
-      uint_to_internal_string(size_t i);
-
-      [[nodiscard]] static word_type
-      internal_string_to_word(detail::internal_string_type const& s);
-
-      [[nodiscard]] detail::internal_char_type
-      external_to_internal_char(detail::external_char_type c) const;
-      [[nodiscard]] detail::external_char_type
-      internal_to_external_char(detail::internal_char_type a) const;
-
-      void external_to_internal_string(detail::external_string_type& w) const;
-      void internal_to_external_string(detail::internal_string_type& w) const;
-
       void add_octo(detail::external_string_type& w) const;
       void rm_octo(detail::external_string_type& w) const;
 
@@ -923,7 +903,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
