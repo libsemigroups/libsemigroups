@@ -153,7 +153,6 @@ namespace libsemigroups {
           _gen_pairs_initted(),
           _gilman_graph(),
           _gilman_graph_node_labels(),
-          _internal_is_same_as_external(),
           _overlap_measure(nullptr),
           _presentation(),
           _rewriter(),
@@ -171,8 +170,7 @@ namespace libsemigroups {
       _gen_pairs_initted = false;
       _gilman_graph.init(0, 0);
       _gilman_graph_node_labels.clear();
-      _internal_is_same_as_external = false;
-      _overlap_measure              = nullptr;
+      _overlap_measure = nullptr;
       _presentation.init();
       _rewriter.init();
       _settings.init();
@@ -191,13 +189,11 @@ namespace libsemigroups {
       _gen_pairs_initted        = std::move(that._gen_pairs_initted);
       _gilman_graph             = std::move(that._gilman_graph);
       _gilman_graph_node_labels = std::move(that._gilman_graph_node_labels);
-      _internal_is_same_as_external
-          = std::move(that._internal_is_same_as_external);
-      _overlap_measure = std::move(that._overlap_measure);
-      _presentation    = std::move(that._presentation);
-      _rewriter        = std::move(that._rewriter);
-      _settings        = std::move(that._settings);
-      _stats           = std::move(that._stats);
+      _overlap_measure          = std::move(that._overlap_measure);
+      _presentation             = std::move(that._presentation);
+      _rewriter                 = std::move(that._rewriter);
+      _settings                 = std::move(that._settings);
+      _stats                    = std::move(that._stats);
       return *this;
     }
 
@@ -206,15 +202,14 @@ namespace libsemigroups {
     KnuthBendixImpl<Rewriter, ReductionOrder>::operator=(
         KnuthBendixImpl const& that) {
       CongruenceCommon::operator=(that);
-      _gen_pairs_initted            = that._gen_pairs_initted;
-      _gilman_graph                 = that._gilman_graph;
-      _gilman_graph_node_labels     = that._gilman_graph_node_labels;
-      _internal_is_same_as_external = that._internal_is_same_as_external;
-      _overlap_measure              = nullptr;
-      _presentation                 = that._presentation;
-      _rewriter                     = that._rewriter;
-      _settings                     = that._settings;
-      _stats                        = that._stats;
+      _gen_pairs_initted        = that._gen_pairs_initted;
+      _gilman_graph             = that._gilman_graph;
+      _gilman_graph_node_labels = that._gilman_graph_node_labels;
+      _overlap_measure          = nullptr;
+      _presentation             = that._presentation;
+      _rewriter                 = that._rewriter;
+      _settings                 = that._settings;
+      _stats                    = that._stats;
 
       // The next line sets _overlap_measure to be something sensible.
       overlap_policy(_settings.overlap_policy);
@@ -253,6 +248,7 @@ namespace libsemigroups {
         congruence_kind             knd,
         Presentation<std::string>&& p) {
       p.throw_if_bad_alphabet_or_rules();
+      presentation::throw_if_not_normalized(p, "2nd");
       init();
       CongruenceCommon::init(knd);
       _presentation = std::move(p);
@@ -353,15 +349,7 @@ namespace libsemigroups {
           && _rewriter.number_of_pending_rules() != 0) {
         _rewriter.process_pending_rules();
       }
-      return iterator_range(_rewriter.begin(), _rewriter.end())
-             | transform([this](auto const& rule) {
-                 // TODO(1) remove allocation
-                 detail::internal_string_type lhs(*rule->lhs());
-                 detail::internal_string_type rhs(*rule->rhs());
-                 internal_to_external_string(lhs);
-                 internal_to_external_string(rhs);
-                 return std::make_pair(lhs, rhs);
-               });
+      return iterator_range(_rewriter.begin(), _rewriter.end());
     }
 
     // TODO(1) export a version of this for use elsewhere
@@ -499,9 +487,7 @@ namespace libsemigroups {
         _rewriter.process_pending_rules();
       }
       add_octo(w);
-      external_to_internal_string(w);
       _rewriter.rewrite(w);
-      internal_to_external_string(w);
       rm_octo(w);
     }
 
@@ -714,7 +700,6 @@ namespace libsemigroups {
         _gilman_graph_node_labels.resize(prefixes.size(), "");
         for (auto const& p : prefixes) {
           _gilman_graph_node_labels[p.second] = p.first;
-          internal_to_external_string(_gilman_graph_node_labels[p.second]);
         }
 
         _gilman_graph.add_nodes(prefixes.size());
@@ -722,9 +707,8 @@ namespace libsemigroups {
             internal_presentation().alphabet().size());
 
         for (auto& p : prefixes) {
-          for (size_t i = 0; i < internal_presentation().alphabet().size();
-               ++i) {
-            auto s  = p.first + uint_to_internal_string(i);
+          for (auto i : internal_presentation().alphabet()) {
+            auto s  = p.first + std::string({i});
             auto it = prefixes.find(s);
             if (it != prefixes.end()) {
               _gilman_graph.target(p.second, i, it->second);
@@ -784,114 +768,12 @@ namespace libsemigroups {
       if (p == q) {
         return;
       }
-      if (_internal_is_same_as_external) {
-        _rewriter.add_pending_rule(p, q);
-      } else {
-        auto pp(p), qq(q);
-        // Can't see an alternative to the copy here
-        external_to_internal_string(pp);
-        external_to_internal_string(qq);
-        _rewriter.add_pending_rule(pp, qq);
-      }
+      _rewriter.add_pending_rule(p, q);
     }
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendixImpl - converting ints <-> string/char - private
     //////////////////////////////////////////////////////////////////////////
-
-    template <typename Rewriter, typename ReductionOrder>
-    size_t KnuthBendixImpl<Rewriter, ReductionOrder>::internal_char_to_uint(
-        detail::internal_char_type c) {
-#ifdef LIBSEMIGROUPS_DEBUG
-      LIBSEMIGROUPS_ASSERT(c >= 97);
-      return static_cast<size_t>(c - 97);
-#else
-      return static_cast<size_t>(c - 1);
-#endif
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    typename detail::internal_char_type
-    KnuthBendixImpl<Rewriter, ReductionOrder>::uint_to_internal_char(size_t a) {
-      // Ensure that the input value doesn't overflow the internal char type,
-      // seems legit to me
-      // TODO(1) should this be
-      // std::numeric_limits<detail::internal_char_type>::max() -
-      // std::numeric_limits<detail::internal_char_type>::min()?
-      LIBSEMIGROUPS_ASSERT(
-          a <= size_t(std::numeric_limits<detail::internal_char_type>::max()));
-#ifdef LIBSEMIGROUPS_DEBUG
-      LIBSEMIGROUPS_ASSERT(
-          a <= size_t(std::numeric_limits<detail::internal_char_type>::max()
-                      - 97));
-      return static_cast<detail::internal_char_type>(a + 97);
-#else
-      return static_cast<detail::internal_char_type>(a + 1);
-#endif
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    typename detail::internal_string_type
-    KnuthBendixImpl<Rewriter, ReductionOrder>::uint_to_internal_string(
-        size_t i) {
-      // TODO(1) What is this check for?
-      // TODO(1) should this be
-      // std::numeric_limits<detail::internal_char_type>::max() -
-      // std::numeric_limits<detail::internal_char_type>::min()?
-      LIBSEMIGROUPS_ASSERT(
-          i <= size_t(std::numeric_limits<detail::internal_char_type>::max()));
-      return detail::internal_string_type({uint_to_internal_char(i)});
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    word_type
-    KnuthBendixImpl<Rewriter, ReductionOrder>::internal_string_to_word(
-        detail::internal_string_type const& s) {
-      word_type w;
-      w.reserve(s.size());
-      for (detail::internal_char_type const& c : s) {
-        w.push_back(internal_char_to_uint(c));
-      }
-      return w;
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    typename detail::internal_char_type
-    KnuthBendixImpl<Rewriter, ReductionOrder>::external_to_internal_char(
-        detail::external_char_type c) const {
-      LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
-      return uint_to_internal_char(internal_presentation().index(c));
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    typename detail::external_char_type
-    KnuthBendixImpl<Rewriter, ReductionOrder>::internal_to_external_char(
-        detail::internal_char_type a) const {
-      LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
-      return internal_presentation().letter_no_checks(internal_char_to_uint(a));
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    void KnuthBendixImpl<Rewriter, ReductionOrder>::external_to_internal_string(
-        detail::external_string_type& w) const {
-      if (_internal_is_same_as_external) {
-        return;
-      }
-      for (auto& a : w) {
-        a = external_to_internal_char(a);
-      }
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    void KnuthBendixImpl<Rewriter, ReductionOrder>::internal_to_external_string(
-        detail::internal_string_type& w) const {
-      if (_internal_is_same_as_external) {
-        return;
-      }
-      for (auto& a : w) {
-        a = internal_to_external_char(a);
-      }
-    }
 
     template <typename Rewriter, typename ReductionOrder>
     void KnuthBendixImpl<Rewriter, ReductionOrder>::add_octo(
@@ -921,24 +803,13 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     void KnuthBendixImpl<Rewriter,
                          ReductionOrder>::init_from_internal_presentation() {
-      auto const& p                 = _presentation;
-      _internal_is_same_as_external = true;
-      for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        if (uint_to_internal_char(i) != p.letter_no_checks(i)) {
-          _internal_is_same_as_external = false;
-          break;
-        }
-      }
+      auto const& p = _presentation;
 
+      // TODO(0) replace the following lines with:
+      // _rewriter.alphabet(p.alphabet());
       if (_rewriter.requires_alphabet()) {
-        if (_internal_is_same_as_external) {
-          for (auto x = p.alphabet().begin(); x != p.alphabet().end(); ++x) {
-            _rewriter.add_to_alphabet(*x);
-          }
-        } else {
-          for (auto x = p.alphabet().begin(); x != p.alphabet().end(); ++x) {
-            _rewriter.add_to_alphabet(external_to_internal_char(*x));
-          }
+        for (auto x = p.alphabet().begin(); x != p.alphabet().end(); ++x) {
+          _rewriter.add_to_alphabet(*x);
         }
       }
 
@@ -983,15 +854,16 @@ namespace libsemigroups {
             _rewriter.process_pending_rules();
           }
           // It can be that the iterator `it` is invalidated by the call to
-          // proccess_pending_rule (i.e. if `u` is deactivated, then rewritten,
-          // actually changed, and reactivated) and that is the reason for the
-          // checks in the for-loop above. If this is the case, then we should
-          // stop considering the overlaps of u and v here, and note that they
-          // will be considered later, because when the rule `u` is reactivated
-          // it is added to the end of the active rules list.
+          // proccess_pending_rule (i.e. if `u` is deactivated, then
+          // rewritten, actually changed, and reactivated) and that is the
+          // reason for the checks in the for-loop above. If this is the case,
+          // then we should stop considering the overlaps of u and v here, and
+          // note that they will be considered later, because when the rule
+          // `u` is reactivated it is added to the end of the active rules
+          // list.
 
-          // TODO(1) remove some of the above checks, since now rules don't get
-          // processed after being added.
+          // TODO(1) remove some of the above checks, since now rules don't
+          // get processed after being added.
         }
       }
     }
