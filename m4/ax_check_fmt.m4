@@ -26,4 +26,8 @@ AC_DEFUN([AX_CHECK_FMT], [
 
   dnl The following makes LIBSEMIGROUPS_WITH_INTERNAL_FMT usable in Makefile.am
   AM_CONDITIONAL([LIBSEMIGROUPS_WITH_INTERNAL_FMT], [test "x$with_external_fmt" != xyes])
+
+  # The next variable becomes the preprocessor macro LIBSEMIGROUPS_WITH_INTERNAL_FMT
+  AS_IF([test "x$with_external_fmt" != xyes],
+        [AC_DEFINE([WITH_INTERNAL_FMT], [1], [define if building with the vendored fmt])])
 ])

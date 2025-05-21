@@ -30,8 +30,7 @@
 #include "presentation.hpp"        // for Presentation
 #include "word-range.hpp"          // for human_readable...
 
-#include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
-
+// TODO(1): Make as many of these functions const as possible
 namespace libsemigroups {
 
   //! \defgroup to_presentation_group to<Presentation>
@@ -103,6 +102,54 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! to<Presentation<WordOut>>(kb);
+  //! \endcode
+  //!
+  //! This function constructs and returns a `Presentation<WordOut>` object
+  //! using the currently active rules of \p kb.
+  //!
+  //! No enumeration of the argument \p kb is performed, so it might be the
+  //! case that the resulting presentation does not define the same
+  //! semigroup/monoid as \p kb. To ensure that the resulting presentation
+  //! defines the same semigroup as \p kb, run \ref KnuthBendix::run (or any
+  //! other function that fully enumerates \p kb) prior to calling this
+  //! function.
+  //!
+  //! \tparam Result the return type, also used for SFINAE. Must be
+  //! `Presentation<WordOut>` for some type `WordOut`.
+  //! \tparam WordIn the type of the rules in the presentation of the
+  //! \ref_knuth_bendix object \p kb.
+  //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
+  //! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
+  //!
+  //! \param kb the \ref_knuth_bendix object from which to obtain the rules.
+  //!
+  //! \returns An object of type \c Presentation<WordOut>.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \note
+  //! If the word type of the desired presentation is the same as that \p kb,
+  //! then the simpler `to<Presentation>(kb)` may be used instead.
+  template <typename Result,
+            typename WordIn,
+            typename Rewriter,
+            typename ReductionOrder>
+  auto to(KnuthBendix<WordIn, Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<
+          std::is_same_v<Presentation<typename Result::word_type>, Result>,
+          Result>;
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a \ref_knuth_bendix object.
+  //!
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
   //! to<Presentation>(kb);
   //! \endcode
   //!
@@ -121,7 +168,6 @@ namespace libsemigroups {
   //! \ref_knuth_bendix object \p kb.
   //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
   //! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
-  //! constructed.
   //!
   //! \param kb the \ref_knuth_bendix object from which to obtain the rules.
   //!
