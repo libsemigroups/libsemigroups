@@ -112,18 +112,4 @@ namespace libsemigroups {
     return current;
   }
 
-  namespace aho_corasick {
-    template <typename Iterator>
-    AhoCorasickImpl::index_type
-    traverse_word_no_checks(AhoCorasickImpl const& ac,
-                            index_type             start,
-                            Iterator               first,
-                            Iterator               last) {
-      index_type current = start;
-      for (auto it = first; it != last; ++it) {
-        current = ac.traverse_no_checks(current, *it);
-      }
-      return current;
-    }
-  }  // namespace aho_corasick
 }  // namespace libsemigroups

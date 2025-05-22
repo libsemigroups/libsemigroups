@@ -374,6 +374,7 @@ namespace libsemigroups {
       }
 
       // Not noexcept
+      // WARNING: the values in the added columns are not initialized.
       void add_cols(size_type nr) {
         if (nr <= _nr_unused_cols) {
           _nr_used_cols += nr;
@@ -393,9 +394,15 @@ namespace libsemigroups {
 
           while (old_it != _vec.begin()) {
             std::move(old_it, old_it + _nr_used_cols, new_it);
+            // std::fill(new_it + _nr_used_cols,
+            //           new_it + _nr_used_cols + nr,
+            //           _default_val);
             old_it -= old_nr_cols;
             new_it -= new_nr_cols;
           }
+          // std::fill(new_it + _nr_used_cols,
+          //           new_it + _nr_used_cols + nr,
+          //           _default_val);
         }
         _nr_used_cols += nr;
         _nr_unused_cols = new_nr_cols - _nr_used_cols;

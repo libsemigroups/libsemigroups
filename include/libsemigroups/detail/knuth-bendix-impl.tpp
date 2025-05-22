@@ -544,10 +544,11 @@ namespace libsemigroups {
       auto& p     = _presentation;
       auto& pairs = internal_generating_pairs();
 
-      if (kind() != congruence_kind::twosided && !pairs.empty()) {
+      if (kind() == congruence_kind::onesided && !pairs.empty()) {
         // TODO(0) throw exception if the number of generators is 256 already
         p.alphabet(p.alphabet()
                    + static_cast<std::string::value_type>(p.alphabet().size()));
+        _rewriter.increase_alphabet_size_by(1);
       }
 
       for (auto it = pairs.cbegin(); it != pairs.cend(); ++it) {
@@ -805,13 +806,7 @@ namespace libsemigroups {
                          ReductionOrder>::init_from_internal_presentation() {
       auto const& p = _presentation;
 
-      // TODO(0) replace the following lines with:
-      // _rewriter.alphabet(p.alphabet());
-      if (_rewriter.requires_alphabet()) {
-        for (auto x = p.alphabet().begin(); x != p.alphabet().end(); ++x) {
-          _rewriter.add_to_alphabet(*x);
-        }
-      }
+      _rewriter.increase_alphabet_size_by(p.alphabet().size());
 
       auto const first = p.rules.cbegin();
       auto const last  = p.rules.cend();

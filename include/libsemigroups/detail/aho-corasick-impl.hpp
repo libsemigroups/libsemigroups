@@ -30,13 +30,13 @@
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
-#include "constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"     // for rx::iterator_range
-#include "types.hpp"      // for letter_type, word_type
+#include "libsemigroups/constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/ranges.hpp"     // for rx::iterator_range
+#include "libsemigroups/types.hpp"      // for letter_type, word_type
 
-#include "detail/container.hpp"  // DynamicArray2
+#include "containers.hpp"  // DynamicArray2
 
 // TODO(2) make nodes accessible as indices of some list (numbered nodes).
 // Make sure this address the badness of traversals (lots of different data
@@ -65,22 +65,24 @@ namespace libsemigroups {
      private:
       mutable index_type _link;
       mutable size_t     _height;
-      index_type         _this_index;
-      index_type         _parent;
-      letter_type        _parent_letter;
-      bool               _terminal;
+
+      index_type  _parent;
+      letter_type _parent_letter;
+      bool        _terminal;
+      index_type  _this_index;
 
      public:
       Node() : Node(UNDEFINED, UNDEFINED, UNDEFINED) {}
 
       // TODO to cpp
       Node(index_type this_index, index_type parent, letter_type a)
-          : _this_index(),
-            _link(),
+          : _link(),
             _height(),
+
             _parent(),
             _parent_letter(),
-            _terminal() {
+            _terminal(),
+            _this_index() {
         init(this_index, parent, a);
       }
 
@@ -105,7 +107,7 @@ namespace libsemigroups {
         return _link;
       }
 
-      Node& suffix_link(index_type val) const noexcept {
+      Node const& suffix_link(index_type val) const noexcept {
         _link = val;
         return *this;
       }
@@ -146,6 +148,9 @@ namespace libsemigroups {
     mutable bool _valid_links;
 
    public:
+    AhoCorasickImpl();
+    AhoCorasickImpl& init();
+
     AhoCorasickImpl(size_t num_letters);
     AhoCorasickImpl& init(size_t num_letters);
 
@@ -158,6 +163,20 @@ namespace libsemigroups {
     AhoCorasickImpl& operator=(AhoCorasickImpl&&) = default;
 
     ~AhoCorasickImpl();
+
+    size_t alphabet_size() const noexcept {
+      return _children.number_of_cols();
+    }
+
+    AhoCorasickImpl& increase_alphabet_size_by(size_t val) {
+      size_t c = _children.number_of_cols();
+      _children.add_cols(val);
+      for (; c < _children.number_of_cols(); ++c) {
+        std::fill(
+            _children.begin_column(c), _children.end_column(c), UNDEFINED);
+      }
+      return *this;
+    }
 
     [[nodiscard]] size_t number_of_nodes() const noexcept {
       LIBSEMIGROUPS_ASSERT(_children.number_of_rows()
@@ -237,13 +256,13 @@ namespace libsemigroups {
                                              letter_type letter) const {
       LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
       LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent) == 1);
-      return _all_nodes[parent].child(letter);
+      return _children.get(parent, letter);
     }
 
     [[nodiscard]] index_type child(index_type  parent,
                                    letter_type letter) const {
       throw_if_node_index_not_active(parent);
-      return _all_nodes[parent].child(letter);
+      return child_no_checks(parent, letter);
     }
 
     void throw_if_node_index_out_of_range(index_type i) const;
@@ -252,10 +271,13 @@ namespace libsemigroups {
 
     // TODO add no_checks.
     [[nodiscard]] size_t number_of_children(index_type i) const noexcept {
-      return _children.number_of_columns()
+      return _children.number_of_cols()
              - std::count(
                  _children.cbegin_row(i), _children.cend_row(i), UNDEFINED);
     }
+
+    template <typename Iterator>
+    [[nodiscard]] index_type traverse_trie(Iterator first, Iterator last) const;
 
    private:
     [[nodiscard]] index_type new_active_node_no_checks(index_type  parent,
@@ -273,13 +295,10 @@ namespace libsemigroups {
       deactivate_node_no_checks(i);
     }
 
-    template <typename Iterator>
-    [[nodiscard]] index_type traverse_trie(Iterator first, Iterator last) const;
-
     void clear_suffix_links() const;
   };
 }  // namespace libsemigroups
 
-#include "aho-corasick.tpp"
+#include "aho-corasick-impl.tpp"
 
 #endif  // LIBSEMIGROUPS_AHO_CORASICK_HPP_

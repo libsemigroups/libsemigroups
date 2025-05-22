@@ -621,7 +621,7 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(9, 9, 2);
-      rv1.                  operator=(rv2);
+      rv1.operator=(rv2);
       REQUIRE(rv1.number_of_cols() == 9);
       REQUIRE(rv1.number_of_rows() == 9);
       REQUIRE(std::all_of(
@@ -633,7 +633,7 @@ namespace libsemigroups {
 
       DynamicArray2<bool> rv3 = DynamicArray2<bool>(10, 10, false);
       DynamicArray2<bool> rv4 = DynamicArray2<bool>(9, 9, true);
-      rv3.                operator=(rv4);
+      rv3.operator=(rv4);
       REQUIRE(rv3.number_of_cols() == 9);
       REQUIRE(rv3.number_of_rows() == 9);
       REQUIRE(std::all_of(
@@ -1701,5 +1701,23 @@ namespace libsemigroups {
       REQUIRE(std::vector<size_t>(stv.begin(2), stv.end(2))
               == std::vector<size_t>({5}));
     }
+
+    LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
+                            "043",
+                            "add_cols feature",
+                            "[containers][quick]") {
+      DynamicArray2<size_t> da(2, 3, -1);
+
+      da.set(0, 0, 0);
+      da.set(0, 1, 0);
+      da.set(1, 0, 1);
+      da.set(1, 1, 1);
+      da.set(2, 0, 2);
+      da.set(2, 1, 2);
+
+      da.add_cols(1);
+      REQUIRE(da.get(0, 2) != da.default_value());
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups

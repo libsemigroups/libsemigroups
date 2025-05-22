@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementation of the AhoCorasickImpl class.
-#include "libsemigroups/aho-corasick.hpp"
+#include "libsemigroups/detail/aho-corasick-impl.hpp"
 
 #include <algorithm>    // for max, copy, reverse
 #include <array>        // for array
@@ -61,6 +61,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // AhoCorasickImplImpl class
   ////////////////////////////////////////////////////////////////////////
+
+  AhoCorasickImpl::AhoCorasickImpl() : AhoCorasickImpl(0) {}
+
+  AhoCorasickImpl& AhoCorasickImpl::init() {
+    init(0);
+    return *this;
+  }
 
   AhoCorasickImpl::AhoCorasickImpl(size_t num_letters)
       : _all_nodes({Node()}),
@@ -140,16 +147,16 @@ namespace libsemigroups {
     index_type index;
     if (_inactive_nodes_index.empty()) {
       index = _all_nodes.size();
-      _all_nodes.emplace_back(parent, a);
+      _all_nodes.emplace_back(index, parent, a);
       _active_nodes_index.insert(index);
       _children.add_rows(1);
     } else {
       index = _inactive_nodes_index.top();
       _inactive_nodes_index.pop();
       _active_nodes_index.insert(index);
-      _all_nodes[index].init(parent, a);
+      _all_nodes[index].init(index, parent, a);
       std::fill(
-          _children.cbegin_row(index), _children.cend_row(index), UNDEFINED);
+          _children.begin_row(index), _children.end_row(index), UNDEFINED);
     }
     return index;
   }
