@@ -738,6 +738,7 @@ libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-graph.cpp
 libsemigroups_la_SOURCES += src/word-range.cpp
 
+libsemigroups_la_SOURCES += src/detail/aho-corasick-impl.cpp
 libsemigroups_la_SOURCES += src/detail/cong-common-class.cpp
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/detail/ke.cpp

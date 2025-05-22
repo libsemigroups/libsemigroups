@@ -29,10 +29,10 @@
 #include <unordered_map>  // for unordered map
 #include <unordered_set>  // for unordered set
 
-#include "../aho-corasick.hpp"
 #include "../debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "../order.hpp"  // for shortlex_compare
 
+#include "aho-corasick-impl.hpp"
 #include "multi-string-view.hpp"  // for MultiStringView
 
 // TODO(2) Add a KnuthBendixImpl pointer to the rewriter class so that overlap
@@ -441,39 +441,27 @@ namespace libsemigroups {
     };
 
     class RewriterBase : public Rules {
-      std::unordered_set<internal_char_type> _alphabet;
-      mutable std::atomic<bool>              _cached_confluent;
-      mutable std::atomic<bool>              _confluence_known;
-      size_t                                 _max_stack_depth;
-      std::vector<Rule*>                     _pending_rules;
-      std::atomic<bool>                      _requires_alphabet;
-
-      using alphabet_citerator
-          = std::unordered_set<internal_char_type>::const_iterator;
+      mutable std::atomic<bool> _cached_confluent;
+      mutable std::atomic<bool> _confluence_known;
+      size_t                    _max_stack_depth;
+      std::vector<Rule*>        _pending_rules;
 
      public:
       // TODO(1) to cpp
       RewriterBase()
-          : _alphabet(),
-            _cached_confluent(false),
+          : _cached_confluent(false),
             _confluence_known(false),
             _max_stack_depth(0),
-            _pending_rules(),
-            _requires_alphabet() {}
+            _pending_rules() {}
 
       RewriterBase& init();
-
-      explicit RewriterBase(bool requires_alphabet) : RewriterBase() {
-        _requires_alphabet = requires_alphabet;
-      }
 
       ~RewriterBase();
 
       RewriterBase& operator=(RewriterBase const& that) {
         Rules::operator=(that);
-        _cached_confluent  = that._cached_confluent.load();
-        _confluence_known  = that._confluence_known.load();
-        _requires_alphabet = that._requires_alphabet.load();
+        _cached_confluent = that._cached_confluent.load();
+        _confluence_known = that._confluence_known.load();
         // TODO(0) update
         while (!_pending_rules.empty()) {
           _pending_rules.pop_back();
@@ -485,26 +473,11 @@ namespace libsemigroups {
           tmp.pop_back();
         }
 
-        if (_requires_alphabet) {
-          _alphabet = that._alphabet;
-        }
         return *this;
       }
 
-      bool requires_alphabet() const {
-        return _requires_alphabet;
-      }
-
-      decltype(_alphabet) alphabet() const {
-        return _alphabet;
-      }
-
-      alphabet_citerator alphabet_cbegin() const {
-        return _alphabet.cbegin();
-      }
-
-      alphabet_citerator alphabet_cend() const {
-        return _alphabet.cend();
+      RewriterBase& increase_alphabet_size_by(size_t) {
+        return *this;
       }
 
       void set_cached_confluent(tril val) const;
@@ -578,10 +551,6 @@ namespace libsemigroups {
               new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
-
-      void add_to_alphabet(internal_char_type letter) {
-        _alphabet.emplace(letter);
-      }
     };
 
     class RewriteFromLeft : public RewriterBase {
@@ -622,10 +591,11 @@ namespace libsemigroups {
     };
 
     class RewriteTrie : public RewriterBase {
-      using index_type = AhoCorasick::index_type;
+      using index_type = AhoCorasickImpl::index_type;
 
+      std::string                 _alphabet;  // TODO remove
       std::map<index_type, Rule*> _rules;
-      AhoCorasick                 _trie;
+      AhoCorasickImpl             _trie;
 
      public:
       using RewriterBase::cached_confluent;
@@ -633,7 +603,7 @@ namespace libsemigroups {
       using iterator      = internal_string_type::iterator;
       using rule_iterator = std::map<index_type, Rule*>::iterator;
 
-      RewriteTrie() : RewriterBase(true), _rules(), _trie() {}
+      RewriteTrie() : RewriterBase(), _rules(), _trie(0) {}
 
       RewriteTrie(RewriteTrie const& that);
 
@@ -643,6 +613,11 @@ namespace libsemigroups {
       ~RewriteTrie();
 
       RewriteTrie& init();
+
+      RewriteTrie& increase_alphabet_size_by(size_t val) {
+        _trie.increase_alphabet_size_by(val);
+        return *this;
+      }
 
       rule_iterator rules_begin() {
         return _rules.begin();
