@@ -16,8 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the declaration of a class implementing Gabow's algorithm
-// for WordGraphs.
+// This file contains TODO
 
 #ifndef LIBSEMIGROUPS_DETAIL_CITOW_HPP_
 #define LIBSEMIGROUPS_DETAIL_CITOW_HPP_
@@ -168,6 +167,12 @@ namespace libsemigroups {
 
       reference operator*() {
         return reference(this->_ptr, this->_it);
+      }
+
+      // TODO probably require more of these
+      itow& operator++() {
+        citow<Thing, Iterator>::operator++();
+        return *this;
       }
     };  // class itow
 

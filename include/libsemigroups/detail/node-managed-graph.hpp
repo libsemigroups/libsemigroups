@@ -122,8 +122,7 @@ namespace libsemigroups {
             WordGraph<node_type>::number_of_nodes() - 1);
       }
 
-      // TODO corresponding init
-      // to tpp
+      // TODO to tpp
       template <typename OtherNode>
       NodeManagedGraph& operator=(WordGraph<OtherNode> const& wg) {
         init();

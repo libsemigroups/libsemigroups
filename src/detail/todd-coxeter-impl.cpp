@@ -21,6 +21,7 @@
 
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
+#include <chrono>
 #include <string_view>  // for basic_string_view
 #include <tuple>        // for tie
 
@@ -42,7 +43,29 @@
 #include "libsemigroups/detail/report.hpp"        // for report_no_prefix
 
 namespace libsemigroups {
+  namespace {
+    void report_keys(std::set<std::string> const& keys) {
+      if (!keys.empty()) {
+        report_default("ToddCoxeter: where:  ");
+      }
+      bool first = true;
+      for (auto const& key : keys) {
+        if (!first) {
+          report_default("ToddCoxeter:         {}", key);
+        } else {
+          report_no_prefix("{}", key);
+          first = false;
+        }
+      }
+    }
+
+    std::string italic(char const* var) {
+      return fmt::format(fmt::emphasis::italic, "{}", var);
+    }
+  }  // namespace
+
   namespace detail {
+
     using node_type = typename ToddCoxeterImpl::node_type;
 
     ////////////////////////////////////////////////////////////////////////
@@ -122,6 +145,17 @@ namespace libsemigroups {
     ToddCoxeterImpl::Settings const& ToddCoxeterImpl::tc_settings() const {
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       return *_settings_stack.back();
+    }
+
+    void ToddCoxeterImpl::reset_settings_stack() {
+      if (_settings_stack.empty()) {
+        _settings_stack.push_back(std::make_unique<Settings>());
+      } else {
+        _settings_stack.erase(_settings_stack.begin() + 1,
+                              _settings_stack.end());
+        _settings_stack.back()->init();
+      }
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -238,26 +272,28 @@ namespace libsemigroups {
     }
 
     template <typename RuleIterator>
-    size_t ToddCoxeterImpl::Graph::make_compatible(
-        node_type&               current,
-        RuleIterator             first,
-        RuleIterator             last,
-        bool                     stop_early,
-        std::chrono::nanoseconds stop_early_interval,
-        float                    stop_early_ratio) {
-      detail::Timer t;
-      size_t const  old_number_of_killed
-          = NodeManager<node_type>::number_of_nodes_killed();
+    size_t ToddCoxeterImpl::Graph::make_compatible(ToddCoxeterImpl* tc,
+                                                   node_type&       current,
+                                                   RuleIterator     first,
+                                                   RuleIterator     last,
+                                                   bool stop_early) {
+      auto last_stop_early_check = std::chrono::high_resolution_clock::now();
+      size_t const old_number_of_killed    = number_of_nodes_killed();
+      size_t       killed_at_prev_interval = old_number_of_killed;
+
       CollectCoincidences                    incompat(_coinc);
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
-      size_t killed_at_prev_interval = old_number_of_killed;
+      bool           old_ticker_running = tc->_ticker_running;
+      auto           start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker ticker;
+
       while (current != NodeManager<node_type>::first_free_node()) {
         // TODO(1) when we have an RuleIterator into the active nodes, we
         // should remove the while loop, and use that in make_compatible
         // instead. At present there is a cbegin/cend_active_nodes in
-        // NodeManager but the RuleIterators returned by them are invalidated by
-        // any changes to the graph, such as those made by
+        // NodeManager but the RuleIterators returned by them are invalidated
+        // by any changes to the graph, such as those made by
         // felsch_graph::make_compatible.
         detail::felsch_graph::make_compatible<detail::DoNotRegisterDefs>(
             *this, current, current + 1, first, last, incompat, prefdefs);
@@ -266,27 +302,59 @@ namespace libsemigroups {
         // but didn't seem to be very useful).
         process_coincidences<detail::DoNotRegisterDefs>();
         current = NodeManager<node_type>::next_active_node(current);
-        if (stop_early && t > stop_early_interval) {
+        if (stop_early
+            && delta(last_stop_early_check)
+                   > tc->lookahead_stop_early_interval()) {
           size_t killed_last_interval
               = number_of_nodes_killed() - killed_at_prev_interval;
           killed_at_prev_interval = number_of_nodes_killed();
-          if (killed_last_interval
-              < number_of_nodes_active() * stop_early_ratio) {
-            report_no_prefix("{:-<90}\n", "");
-            report_default(
-                "ToddCoxeter: too few nodes killed in last {}, expected >= "
-                "{}, found {}, aborting lookahead . . .\n",
-                detail::string_time(stop_early_interval),
-                detail::group_digits(static_cast<size_t>(
-                    number_of_nodes_active() * stop_early_ratio)),
-                detail::group_digits(killed_last_interval));
-            report_no_prefix("{:-<90}\n", "");
+          auto expected           = static_cast<size_t>(
+              number_of_nodes_active() * tc->lookahead_stop_early_ratio());
+          if (killed_last_interval < expected) {
+            report_lookahead_stop_early(tc, expected, killed_last_interval);
             break;
+          }
+          last_stop_early_check = std::chrono::high_resolution_clock::now();
+          if (!tc->_ticker_running && reporting_enabled()
+              && delta(start_time) > std::chrono::seconds(1)) {
+            tc->_ticker_running = true;
+            ticker([this]() { report_progress_from_thread(); });
           }
         }
       }
-      return NodeManager<node_type>::number_of_nodes_killed()
-             - old_number_of_killed;
+      tc->_ticker_running = old_ticker_running;
+      return NodeManager<node_type>::number_of_nodes_killed();
+    }
+
+    void ToddCoxeterImpl::Graph::report_lookahead_stop_early(
+        ToddCoxeterImpl* tc,
+        size_t           expected,
+        size_t           killed_last_interval) {
+      if (reporting_enabled()) {
+        auto gd = detail::group_digits;
+        auto interval
+            = detail::string_time(tc->lookahead_stop_early_interval());
+        report_no_prefix("{:-<90}\n", "");
+        report_default("ToddCoxeter: too few nodes killed in last {} = "
+                       "{}, stopping lookahead early!\n",
+                       italic("i"),
+                       interval);
+        report_default("ToddCoxeter: expected at least {} x {} = {} but "
+                       "found {}\n",
+                       italic("r"),
+                       italic("a"),
+                       gd(expected),
+                       gd(killed_last_interval));
+        report_keys({fmt::format("{} = lookahead_stop_early_ratio()    = {}\n",
+                                 italic("r"),
+                                 tc->lookahead_stop_early_ratio()),
+                     fmt::format("{} = lookahead_stop_early_interval() = {}\n",
+                                 italic("i"),
+                                 interval),
+                     fmt::format("{} = number_of_nodes_active()        = {}\n",
+                                 italic("a"),
+                                 gd(number_of_nodes_active()))});
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -347,6 +415,7 @@ namespace libsemigroups {
           _forest(),
           _settings_stack(),
           _standardized(),
+          _ticker_running(),
           _word_graph() {
       init();
     }
@@ -356,15 +425,9 @@ namespace libsemigroups {
       report_prefix("ToddCoxeter");
       _finished = false;
       _forest.init();
-      if (_settings_stack.empty()) {
-        _settings_stack.push_back(std::make_unique<Settings>());
-      } else {
-        _settings_stack.erase(_settings_stack.begin() + 1,
-                              _settings_stack.end());
-        _settings_stack.back()->init();
-      }
-      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
-      _standardized = Order::none;
+      reset_settings_stack();
+      _standardized   = Order::none;
+      _ticker_running = false;
       _word_graph.init();
       copy_settings_into_graph();
       return *this;
@@ -388,6 +451,7 @@ namespace libsemigroups {
       _forest         = std::move(that._forest);
       _settings_stack = std::move(that._settings_stack);
       _standardized   = std::move(that._standardized);
+      _ticker_running = std::move(that._ticker_running);
       _word_graph     = std::move(that._word_graph);
       // The next line is essential so that the _word_graph.definitions()._tc
       // points at <this>.
@@ -405,8 +469,9 @@ namespace libsemigroups {
       for (auto const& uptr : that._settings_stack) {
         _settings_stack.push_back(std::make_unique<Settings>(*uptr));
       }
-      _standardized = that._standardized;
-      _word_graph   = that._word_graph;
+      _standardized   = that._standardized;
+      _ticker_running = that._ticker_running;
+      _word_graph     = that._word_graph;
       return *this;
     }
 
@@ -422,7 +487,7 @@ namespace libsemigroups {
       p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p);
       init();
-      detail::CongruenceCommon::init(knd);
+      kind(knd);
       _word_graph.init(std::move(p));
       copy_settings_into_graph();
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
@@ -454,20 +519,32 @@ namespace libsemigroups {
       if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
         LIBSEMIGROUPS_EXCEPTION(
             "incompatible types of congruence, found ({} / {}) but only "
-            "(right / right) and (two-sided / *) are valid",
+            "(onesided / onesided) and (two-sided / *) are valid",
             tc.kind(),
             knd);
       }
-      init();
-      detail::CongruenceCommon::init(knd);
-      _word_graph.init(tc.internal_presentation());
-      copy_settings_into_graph();
+      // TODO(0) what about the word graph, if it's partially defined at least
+      // shouldn't we copy it also?
+
+      // if this and &tc are the same object, then we insert the generating
+      // pairs into the presentation before reinitialising.
       auto& rules = _word_graph.presentation().rules;
-      rules.insert(rules.end(),
-                   tc.internal_generating_pairs().cbegin(),
-                   tc.internal_generating_pairs().cend());
-      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
-      // TODO(1) don't we need to reset the setting_stack here too?
+      if (this == &tc) {
+        rules.insert(rules.end(),
+                     tc.internal_generating_pairs().cbegin(),
+                     tc.internal_generating_pairs().cend());
+      }
+      init(knd, tc.internal_presentation());
+      if (this != &tc) {
+        // This looks weird yes, but the if-clause above is triggered, then
+        // above we are adding the internal_generating_pairs of tc into the
+        // presentation of tc (because it's the same as *this), then
+        // initialising using it. If this != &tc, then we must copy the
+        // internal_generating_pairs into this after initialisation.
+        rules.insert(rules.end(),
+                     tc.internal_generating_pairs().cbegin(),
+                     tc.internal_generating_pairs().cend());
+      }
       return *this;
     }
 
@@ -699,9 +776,9 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeterImpl::is_standardized() const {
-      // TODO(1) this is probably not always valid, i.e. if we are standardized,
-      // then grow, then collapse, but end up with the same number of nodes
-      // again.
+      // TODO(1) this is probably not always valid, i.e. if we are
+      // standardized, then grow, then collapse, but end up with the same
+      // number of nodes again.
       return _standardized != Order::none
              && _forest.number_of_nodes()
                     == current_word_graph().number_of_nodes_active();
@@ -712,9 +789,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::shrink_to_fit() {
-      if (!finished()) {
-        return;
-      }
       standardize(Order::shortlex);
       _word_graph.erase_free_nodes();
       _word_graph.induced_subgraph_no_checks(
@@ -725,8 +799,21 @@ namespace libsemigroups {
       if (is_standardized(val)) {
         return false;
       }
+      time_point start_time;
+      if (reporting_enabled()) {
+        start_time = std::chrono::high_resolution_clock::now();
+        report_default(
+            "ToddCoxeter: {} standardizing the word graph, this might "
+            "take a few moments!\n",
+            val);
+      }
+      _forest.init();
+      _forest.add_nodes(_word_graph.number_of_nodes_active());
       bool result   = word_graph::standardize(_word_graph, _forest, val);
       _standardized = val;
+      report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
+                     val,
+                     detail::string_time(delta(start_time)));
       return result;
     }
 
@@ -750,9 +837,10 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(1) add !running_until to check below?
     void ToddCoxeterImpl::run_impl() {
-      if (!running_for() && is_obviously_infinite(*this)) {
+      using std::chrono::duration_cast;
+      using std::chrono::seconds;
+      if (!running_for() && !running_until() && is_obviously_infinite(*this)) {
         LIBSEMIGROUPS_EXCEPTION(
             "there are infinitely many classes in the congruence and "
             "Todd-Coxeter will never terminate");
@@ -760,25 +848,30 @@ namespace libsemigroups {
                  && strategy() != options::strategy::hlt && running_until()) {
         LIBSEMIGROUPS_EXCEPTION(
             "the strategy {} cannot be used with run_until !", strategy());
+      } else if (internal_presentation().rules.empty()
+                 && !internal_presentation().alphabet().empty()
+                 && (internal_generating_pairs().empty()
+                     || kind() == congruence_kind::onesided)
+                 && strategy() == options::strategy::hlt
+                 && current_word_graph().number_of_nodes_active() == 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the HLT strategy cannot be used with a presentation with > 0 "
+            "generators and 0 rules unless the word graph was defined at "
+            "construction or re-initialisation");
       }
 
       init_run();
 
-      if (reporting_enabled()
+      if (!_ticker_running && reporting_enabled()
           && (!running_for()
-              || report_every() >= std::chrono::milliseconds(1'500))) {
-        // TODO(1) report_strategy
-        // TODO(1) if using ACE style strategy include the value of the relevant
-        // setting
-        auto msg = fmt::format("{:+<90}\n", "");
-        msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n",
-                           strategy());
-        msg += fmt::format("{:+<90}\n", "");
-        report_no_prefix(msg);
-
+              || duration_cast<seconds>(running_for_how_long())
+                     >= seconds(1))) {
+        report_before_run();
+        _ticker_running = true;
         detail::Ticker t(
             [this]() { current_word_graph().report_progress_from_thread(); });
         really_run_impl();
+        _ticker_running = false;
       } else {
         really_run_impl();
       }
@@ -804,6 +897,8 @@ namespace libsemigroups {
       _word_graph.settings(*this);
       _word_graph.reset_start_time();
       _word_graph.stats_check_point();
+      reset_start_time();
+
       auto       first = internal_generating_pairs().cbegin();
       auto       last  = internal_generating_pairs().cend();
       auto const id    = current_word_graph().initial_node();
@@ -866,14 +961,14 @@ namespace libsemigroups {
         _word_graph.report_progress_from_thread();
         report_no_prefix("{:-<90}\n", "");
         if (!is_obviously_infinite(*this)) {
-          // We require this clause because we might still be obviously infinite
-          // and running_for a specific amount of time, in which case we are
-          // never finished. This is an issue when the input presentation has no
-          // rules for example.
+          // We require this clause because we might still be obviously
+          // infinite and running_for a specific amount of time, in which case
+          // we are never finished. This is an issue when the input
+          // presentation has no rules for example.
           _finished = true;
         }
       }
-      report_why_we_stopped();
+      report_after_run();
     }
 
     void ToddCoxeterImpl::felsch() {
@@ -916,8 +1011,8 @@ namespace libsemigroups {
         if ((!save() || _word_graph.definitions().any_skipped())
             && (_word_graph.number_of_nodes_active() > lookahead_next())) {
           // If save() == true and no deductions were skipped, then we have
-          // already run process_definitions, and so there's no point in doing a
-          // lookahead.
+          // already run process_definitions, and so there's no point in doing
+          // a lookahead.
           perform_lookahead(StopEarly);
         }
         current = _word_graph.next_active_node(current);
@@ -1010,22 +1105,213 @@ namespace libsemigroups {
     // ToddCoxeterImpl - reporting - private
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeterImpl::report_next_lookahead(size_t old_value) const {
-      static const std::string pad(8, ' ');
-      int64_t diff = static_cast<int64_t>(lookahead_next()) - old_value;
-      report_default("ToddCoxeter: next lookahead at {} | {:>12} (nodes)  "
-                     "| {:>12} (diff)\n",
-                     pad,
-                     fmt::group_digits(lookahead_next()),
-                     detail::signed_group_digits(diff));
-      report_no_prefix("{:-<90}\n", "");
+    void ToddCoxeterImpl::report_after_lookahead(
+        size_t old_lookahead_next,
+        size_t number_killed_in_lookahead,
+        std::chrono::high_resolution_clock::time_point lookahead_start_time)
+        const {
+      auto gd = detail::group_digits;
+      using detail::signed_group_digits;
+
+      if (reporting_enabled()) {
+        auto lgf      = lookahead_growth_factor();
+        auto lgf_name = italic("f");
+        auto lgf_key  = fmt::format(
+            "{} = lookahead_growth_factor()    = {}\n", lgf_name, lgf);
+
+        auto lgt      = lookahead_growth_threshold();
+        auto lgt_name = italic("t");
+        auto lgt_key  = fmt::format(
+            "{} = lookahead_growth_threshold() = {}\n", lgt_name, lgt);
+
+        auto oln      = old_lookahead_next;
+        auto oln_name = italic("n");
+        auto oln_key  = fmt::format(
+            "{} = lookahead_next()             = {}\n", oln_name, gd(oln));
+
+        auto ln = lookahead_next();
+
+        auto a      = _word_graph.number_of_nodes_active();
+        auto a_name = italic("a");
+        auto a_key  = fmt::format(
+            "{} = number_of_nodes_active()     = {}\n", a_name, gd(a));
+
+        auto l      = number_killed_in_lookahead;
+        auto l_name = italic("l");
+        auto l_key  = fmt::format(
+            "{} = nodes killed in lookahead    = {}\n", l_name, gd(l));
+
+        auto m      = lookahead_min();
+        auto m_name = italic("m");
+        auto m_key  = fmt::format(
+            "{} = lookahead_min()              = {}\n", m_name, gd(m));
+
+        std::set<std::string> keys;
+
+        std::string reason
+            = fmt_default("ToddCoxeter: lookahead_next() is now ");
+
+        if (a * lgf < oln || a > oln) {
+          reason += fmt::format("max({} x {} = {}, {} = {})\n",
+                                lgf_name,
+                                a_name,
+                                gd(lgf * a),
+                                m_name,
+                                gd(m));
+          if (a * lgf < oln) {
+            reason += fmt_default("ToddCoxeter: because {} x {} < {}\n",
+                                  lgf_name,
+                                  a_name,
+                                  oln_name);
+          } else {
+            reason += fmt_default(
+                "ToddCoxeter: because {} > {}\n", a_name, oln_name);
+          }
+          keys.insert(a_key);
+          keys.insert(lgf_key);
+          keys.insert(oln_key);
+          keys.insert(m_key);
+        } else if (l < (l + a) / lgt) {
+          reason += fmt::format(
+              "{} x {} = {}\n", oln_name, lgf_name, gd(oln * lgf));
+
+          reason
+              += fmt_default("ToddCoxeter: because: {} < ({} + {}) / {} = {}\n",
+                             l_name,
+                             l_name,
+                             a_name,
+                             lgt_name,
+                             gd((l + a) / lgt));
+          keys.insert(a_key);
+          keys.insert(l_key);
+          keys.insert(lgf_key);
+          keys.insert(lgt_key);
+          keys.insert(oln_key);
+        } else {
+          reason += fmt::format("{}\n", gd(ln));
+          reason += fmt_default("ToddCoxeter: because:\n");
+          reason += fmt_default("ToddCoxeter: 1. {} <= {} x {} = {}\n",
+                                oln_name,
+                                lgf_name,
+                                a_name,
+                                gd(lgf * a));
+          reason += fmt_default("ToddCoxeter: 2. {} <= {}\n", a_name, oln_name);
+          reason += fmt_default("ToddCoxeter: 3. {} >= ({} + {}) / {} = {}\n",
+                                l_name,
+                                l_name,
+                                a_name,
+                                lgt_name,
+                                gd((l + a) / lgt));
+          keys.insert(a_key);
+          keys.insert(l_key);
+          keys.insert(lgf_key);
+          keys.insert(lgt_key);
+          keys.insert(oln_key);
+        }
+
+        int64_t const diff = static_cast<int64_t>(ln) - oln;
+
+        report_no_prefix("{:+<90}\n", "");
+        report_default("ToddCoxeter: lookahead complete with    |{:>12} "
+                       "(active) |{:>12} (diff)\n",
+                       gd(a),
+                       gd(-l));
+        report_default("ToddCoxeter: after                      |{:>12} "
+                       "(time)   |{:>12} (total)\n",
+                       detail::string_time(delta(lookahead_start_time)),
+                       detail::string_time(delta(start_time())));
+        if (!finished()) {
+          report_default(
+              "ToddCoxeter: next lookahead at          |{:>12} (nodes)  "
+              "|{:>12} (diff)\n",
+              gd(ln),
+              signed_group_digits(diff));
+          report_no_prefix("{:+<90}\n", "");
+          report_no_prefix(reason);
+          report_keys(keys);
+        }
+
+        report_no_prefix("{:+<90}\n", "");
+      }
     }
 
-    void ToddCoxeterImpl::report_nodes_killed(int64_t N) const {
-      report_no_prefix("{:-<90}\n", "");
-      report_default(
-          "ToddCoxeter: lookahead complete with    | {:>12} (killed) |\n",
-          detail::group_digits(-1 * N));
+    void ToddCoxeterImpl::report_after_run() const {
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<90}\n", "");
+        report_default("ToddCoxeter: STOPPING ({}) --- ",
+                       detail::string_time(delta(start_time())));
+        if (finished()) {
+          report_no_prefix("finished!\n");
+        } else if (dead()) {
+          report_no_prefix("killed!\n");
+        } else if (timed_out()) {
+          report_no_prefix("timed out!\n");
+        } else if (stopped_by_predicate()) {
+          report_no_prefix("stopped by predicate!\n");
+        }
+        report_no_prefix("{:+<90}\n", "");
+        // TODO(1) report time spent doing lookaheads, definitions, etc.
+      }
+    }
+
+    void ToddCoxeterImpl::report_before_lookahead() const {
+      using detail::group_digits;
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<90}\n", "");
+        report_default("ToddCoxeter: performing {} {} lookahead, triggered at "
+                       "{} . . .\n",
+                       lookahead_extent(),
+                       lookahead_style(),
+                       detail::string_time(delta(start_time())));
+        if (current_word_graph().number_of_nodes_active() > lookahead_next()) {
+          auto ln      = lookahead_next();
+          auto ln_name = italic("n");
+          auto ln_key  = fmt::format("{} = lookahead_next()         = {}\n",
+                                    ln_name,
+                                    group_digits(ln));
+
+          auto a      = current_word_graph().number_of_nodes_active();
+          auto a_name = italic("a");
+          auto a_key  = fmt::format(
+              "{} = number_of_nodes_active() = {}\n", a_name, group_digits(a));
+
+          std::set<std::string> keys;
+          report_default("ToddCoxeter: because {} >= {}\n", a_name, ln_name);
+          keys.insert(a_key);
+          keys.insert(ln_key);
+          report_keys(keys);
+
+        } else if (current_word_graph().definitions().any_skipped()) {
+          report_default(
+              "ToddCoxeter: because of skipped definitions ({} active "
+              "nodes)!\n",
+              group_digits(current_word_graph().number_of_nodes_active()));
+        }
+
+        report_no_prefix("{:+<90}\n", "");
+      }
+    }
+
+    void ToddCoxeterImpl::report_before_run() const {
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<90}\n", "");
+        report_default("ToddCoxeter: STARTING --- ");
+        report_strategy();
+        report_no_prefix("{:+<90}\n", "");
+        report_presentation();
+      }
+    }
+
+    void ToddCoxeterImpl::report_presentation() const {
+      report_default("ToddCoxeter: {}",
+                     presentation::to_report_string(internal_presentation()));
+    }
+
+    void ToddCoxeterImpl::report_strategy() const {
+      // TODO(1) if using ACE style strategy include the value of the relevant
+      // setting
+      // TODO(1) add more nuance when not using hlt/felsch
+      report_no_prefix("using {} strategy . . .\n", strategy());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1033,11 +1319,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
-      report_no_prefix("{:-<90}\n", "");
-      report_default("ToddCoxeter: performing {} {} lookahead . . .\n",
-                     lookahead_extent(),
-                     lookahead_style());
-      report_no_prefix("{:-<90}\n", "");
+      report_before_lookahead();
+      std::chrono::high_resolution_clock::time_point lookahead_start_time
+          = std::chrono::high_resolution_clock::now();
+
       auto& current = _word_graph.lookahead_cursor();
 
       if (lookahead_extent() == options::lookahead_extent::partial) {
@@ -1057,41 +1342,55 @@ namespace libsemigroups {
         num_killed_by_me = felsch_lookahead();
       }
 
-      report_nodes_killed(num_killed_by_me);
-
       size_t const num_nodes = _word_graph.number_of_nodes_active();
 
       size_t const old_lookahead_next = lookahead_next();
 
-      if (num_nodes < (lookahead_next() / lookahead_growth_factor())) {
-        // If the lookahead_next is much bigger than the current number of
-        // nodes, then reduce the next lookahead.
-        if (lookahead_growth_factor() * num_nodes > lookahead_min()) {
-          lookahead_next(lookahead_growth_factor() * num_nodes);
-        } else if (lookahead_next() / lookahead_growth_factor()
-                   > lookahead_min()) {
-          lookahead_next(lookahead_next() / lookahead_growth_factor());
-        } else {
-          lookahead_next(lookahead_min());
-        }
-      } else if (num_nodes > lookahead_next()
-                 || num_killed_by_me
-                        < (num_nodes / lookahead_growth_threshold())) {
-        // Otherwise, if we already exceed the lookahead_next or too few
-        // nodes were killed, then increase the next lookahead.
-        tc_settings().lookahead_next *= lookahead_growth_factor();
+      // NOTE: that lookahead_next() is ~= num_nodes + num_killed_by_me
+      // unless triggered by skipped definitions.
+
+      // The aim is that lookahead_next() should at most num_nodes *
+      // growth_factor, or if num_killed_by_me is too small lookahead_next()
+      // be should increased.
+      if (num_nodes * lookahead_growth_factor() < lookahead_next()
+          || num_nodes > lookahead_next()) {
+        // In the first case,
+        // num_killed_by_me ~= lookahead_next() - num_nodes
+        //                   > num_nodes * lookahead_growth_factor() -
+        //                   num_nodes = num_nodes * (lookahead_growth_factor
+        //                   - 1).
+        // I.e. num_killed_by_me is relatively big, and so we decrease
+        // lookahead_next().
+
+        // In the second case, if we don't change lookahead_next(), then we'd
+        // immediately perform the same lookahead again without making any
+        // further definitions, so we increase lookahead_next().
+        lookahead_next(std::max(
+            lookahead_min(),
+            static_cast<size_t>(lookahead_growth_factor() * num_nodes)));
+      } else if (num_killed_by_me < ((num_nodes + num_killed_by_me)
+                                     / lookahead_growth_threshold())) {
+        // In this case,
+        // num_killed_by_me ~= lookahead_next() - num_nodes
+        //                   < (num_nodes + num_killed_by_me) / lgt
+        // => num_killed_by_me * lgt < num_nodes + num_killed_by_me
+        // => num_killed_by_me (lgt - 1) < num_nodes
+        // => num_killed_by_me < num_nodes / (lgt - 1)
+        // i.e. num_killed_by_me is relatively small and so we increase
+        // lookahead_next().
+        lookahead_next(lookahead_next() * lookahead_growth_factor());
       }
-      report_next_lookahead(old_lookahead_next);
+      report_after_lookahead(
+          old_lookahead_next, num_killed_by_me, lookahead_start_time);
     }
 
     size_t ToddCoxeterImpl::hlt_lookahead(bool stop_early) {
       size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
-      _word_graph.make_compatible(_word_graph.lookahead_cursor(),
+      _word_graph.make_compatible(this,
+                                  _word_graph.lookahead_cursor(),
                                   internal_presentation().rules.cbegin(),
                                   internal_presentation().rules.cend(),
-                                  stop_early,
-                                  lookahead_stop_early_interval(),
-                                  lookahead_stop_early_ratio());
+                                  stop_early);
       return _word_graph.number_of_nodes_killed() - old_number_of_killed;
     }
 
@@ -1100,6 +1399,11 @@ namespace libsemigroups {
       node_type&   current              = _word_graph.lookahead_cursor();
       size_t const n                    = _word_graph.out_degree();
 
+      bool           old_ticker_running = _ticker_running;
+      detail::Ticker ticker;
+      time_point     lookahead_start_time
+          = std::chrono::high_resolution_clock::now();
+
       while (current != _word_graph.first_free_node()) {
         _word_graph.definitions().clear();
         for (size_t a = 0; a < n; ++a) {
@@ -1107,7 +1411,15 @@ namespace libsemigroups {
         }
         _word_graph.process_definitions();
         current = _word_graph.next_active_node(current);
+        if (!_ticker_running && reporting_enabled()
+            && delta(lookahead_start_time) >= std::chrono::seconds(1)) {
+          _ticker_running = true;
+          ticker(
+              [this]() { current_word_graph().report_progress_from_thread(); });
+        }
       }
+      // TODO(1) stop early?
+      _ticker_running = old_ticker_running;
       return _word_graph.number_of_nodes_killed() - old_number_of_killed;
     }
 

@@ -201,6 +201,7 @@ namespace libsemigroups {
     if (dead()) {
       report_default("{}: killed!\n", report_prefix());
     } else if (timed_out()) {
+      // TODO(1) include the amount of time that we ran for
       report_default("{}: timed out!\n", report_prefix());
     } else if (stopped_by_predicate()) {
       report_default("{}: stopped by predicate!\n", report_prefix());
