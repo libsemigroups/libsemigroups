@@ -796,7 +796,6 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeterImpl::standardize(Order val) {
-      using time_point = std::chrono::high_resolution_clock::time_point;
       if (is_standardized(val)) {
         return false;
       }
@@ -1396,8 +1395,6 @@ namespace libsemigroups {
     }
 
     size_t ToddCoxeterImpl::felsch_lookahead() {
-      using time_point = std::chrono::high_resolution_clock::time_point;
-
       size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
       node_type&   current              = _word_graph.lookahead_cursor();
       size_t const n                    = _word_graph.out_degree();
