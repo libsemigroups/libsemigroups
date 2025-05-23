@@ -9,7 +9,8 @@ normal=$(tput sgr0)
 Help() {
     # Display Help
     cat <<-EOF
-A script for timing libsemigroups tests.
+A script for timing libsemigroups tests. The output of this script is written to
+"results/DATE-COMMIT_HASH-ARCHITECTURE-TEST_COMMAND.json".
 
 ${bold}Usage:${normal}
     $(basename $0) -h
@@ -49,17 +50,27 @@ while getopts "h" option; do
     esac
 done
 
-if [ $# -ne 2 ]; then
-    echo "Expected two arguments, but found $#."
+# Validate number of arguments
+if [ $# -ne 1 ] && [ $# -ne 2 ]; then
+    echo "Expected one or two arguments, but found $#."
     echo "For more information, try '-h'."
     exit 1
 fi
 
-# Change file name to DATE+HASH+ARCHITECTURE+COMMAND
-printf -v date "%(%Y_%m_%d_%H_%M_%S)T" -1
-hash=$(git rev-parse HEAD)
-output_file="tests/run-times/results/${date}_${hash}.json"
+# Construct the file path
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
-tags=$($1 $2 --list-tags | grep -Po --line-buffered "(?<=LIBSEMIGROUPS_TEST_NUM=)\d\d\d" | tr '\n' ',' | sed 's/.$//')
+printf -v DATE "%(%Y_%m_%d_%H_%M_%S)T" -1
+HASH=$(git rev-parse --short HEAD)
+ARCH=$(uname -m)
+COMMAND=$(basename $1)
 
-hyperfine --max-runs=3 -L tag $tags "$1 '[{tag}]'" --export-json $output_file
+OUTPUT_FILE="${SCRIPT_DIR}/results/${DATE}-${HASH}-${ARCH}-${COMMAND}.json"
+
+# Find the the tags of the tests to run, wrap them in quotes, and separate by
+# commas
+TAGS=$($1 $2 --list-tags | grep -Po --line-buffered "(?<=LIBSEMIGROUPS_TEST_NUM=)\d\d\d" | tr '\n' ',' | sed 's/.$//')
+
+# Run the specified tests and export to json file.
+hyperfine --max-runs=3 -L tag $TAGS "$1 '[{tag}]'" --export-json $OUTPUT_FILE --sort=command
+echo Writing results to $OUTPUT_FILE . . .
