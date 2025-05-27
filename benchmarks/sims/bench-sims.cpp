@@ -43,6 +43,68 @@
 
 namespace libsemigroups {
   namespace {
+    std::string invert(std::string const& g) {
+      auto invert = [](char c) {
+        if (std::isupper(c)) {
+          return std::tolower(c);
+        } else {
+          return std::toupper(c);
+        }
+      };
+      auto G = g;
+      std::reverse(G.begin(), G.end());
+      std::transform(G.begin(), G.end(), G.begin(), invert);
+      return G;
+    }
+
+    std::string comm(std::string const& g, std::string const& h) {
+      return invert(g) + invert(h) + g + h;
+    }
+
+    bool conj_pruner(WordGraph<uint32_t> const& wg) {
+      using node_type = uint32_t;
+      static thread_local std::vector<node_type> new_old(
+          wg.number_of_nodes(), static_cast<node_type>(UNDEFINED));
+      static thread_local std::vector<node_type> old_new(
+          wg.number_of_nodes(), static_cast<node_type>(UNDEFINED));
+
+      for (uint32_t root = 1; root < wg.number_of_active_nodes(); ++root) {
+        node_type    next = 0;
+        size_t const n    = wg.out_degree();
+        std::fill(
+            old_new.begin(), old_new.end(), static_cast<node_type>(UNDEFINED));
+
+        new_old[0]    = root;
+        old_new[root] = 0;
+
+        for (node_type s = 0; s <= next; ++s) {
+          for (letter_type a = 0; a < n; ++a) {
+            node_type t_old = wg.target_no_checks(new_old[s], a);
+            node_type sa    = wg.target_no_checks(s, a);
+            if (t_old == UNDEFINED || sa == UNDEFINED) {
+              goto end;
+            }
+            node_type t_new = old_new[t_old];
+            if (t_new == UNDEFINED) {
+              old_new[t_old] = ++next;
+              new_old[next]  = t_old;
+              t_new          = next;
+            }
+            if (sa < t_new) {
+              goto end;
+            } else if (sa != UNDEFINED && sa > t_new) {
+              // fmt::print("{}\n", old_new);
+              // fmt::print("{}\n\n", detail::to_string(wg));
+              return false;
+            }
+          }
+        }
+      end:
+        (void) 0;
+      }
+      return true;
+    }
+
     template <typename S, typename T>
     void xml_tag(S name, T val) {
       std::cout << fmt::format("<{0} value=\"{1}\"></{0}>", name, val);
@@ -502,7 +564,12 @@ namespace libsemigroups {
   //   bench_length(pp, 720, 1'455);
   // }
 
-  TEST_CASE("(2, 3, 7)-triangle group - index 50", "[triangle]") {
+  ////////////////////////////////////////////////////////////////////////
+  // Low index subgroups of groups
+  ////////////////////////////////////////////////////////////////////////
+
+  TEST_CASE("(2, 3, 7)-triangle group - 1-sided - index 50",
+            "[triangle-group-2-3-7-50]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -510,17 +577,233 @@ namespace libsemigroups {
     presentation::add_rule(p, "xx", "");
     presentation::add_rule(p, "yyy", "");
     presentation::add_rule(p, "xyxyxyxyxyxyxy", "");
+    presentation::add_rule(p, "yxyxyxyxyxyxyx", "");
+
+    // REQUIRE(presentation::to_gap_string(p, "G") == "");
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p));
-    BENCHMARK("1 thread") {
-      REQUIRE(S.number_of_threads(1).number_of_congruences(50) == 75'971);
+    S.presentation(to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
+
+    BENCHMARK("libsemigroups (1 thread)") {
+      REQUIRE(S.number_of_threads(1).number_of_congruences(50) == 1'747);
     };
-    BENCHMARK("2 threads") {
-      REQUIRE(S.number_of_threads(2).number_of_congruences(50) == 75'971);
+    BENCHMARK("libsemigroups (2 threads)") {
+      REQUIRE(S.number_of_threads(2).number_of_congruences(50) == 1'747);
     };
-    BENCHMARK("4 threads") {
-      REQUIRE(S.number_of_threads(4).number_of_congruences(50) == 75'971);
+    BENCHMARK("libsemigroups (4 threads)") {
+      REQUIRE(S.number_of_threads(4).number_of_congruences(50) == 1'747);
     };
+    BENCHMARK("libsemigroups (8 threads)") {
+      REQUIRE(S.number_of_threads(8).number_of_congruences(50) == 1'747);
+    };
+  }
+
+  TEST_CASE("Braid group 5 - index 12 - 1-sided", "[braid-group-5-12]") {
+    auto rg = ReportGuard(false);
+    auto p  = presentation::examples::braid_group(5);
+    presentation::reduce_complements(p);
+    REQUIRE(presentation::length(p) == 76);
+    presentation::remove_trivial_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::remove_redundant_generators(p);
+    REQUIRE(presentation::length(p) == 76);
+
+    // REQUIRE(presentation::to_gap_string(p, "G") == "");
+    Sims1 S;
+    S.presentation(p).add_pruner(conj_pruner);
+    for (auto nr_threads : {1, 2, 4, 8}) {
+      BENCHMARK(fmt::format("libsemigroups ({} thread{})",
+                            nr_threads,
+                            nr_threads == 1 ? "" : "s")
+                    .c_str()) {
+        REQUIRE(S.number_of_threads(nr_threads).number_of_congruences(12)
+                == 21);
+      };
+    }
+  }
+
+  TEST_CASE("modular group - index 23 - 1-sided", "[modular-group-23]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("STt");
+    presentation::add_rule(p, "SS", "");
+    presentation::add_rule(p, "Tt", "");
+    presentation::add_rule(p, "tT", "");
+    presentation::add_rule(p, "STSTST", "");
+    presentation::add_rule(p, "TSTSTS", "");
+
+    // REQUIRE(presentation::to_gap_string(p, "G") == "");
+    Sims1 S;
+    S.presentation(to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
+
+    for (auto nr_threads : {1, 2, 4, 8}) {
+      BENCHMARK(fmt::format("libsemigroups ({} thread{})",
+                            nr_threads,
+                            nr_threads == 1 ? "" : "s")
+                    .c_str()) {
+        REQUIRE(S.number_of_threads(nr_threads).number_of_congruences(23)
+                == 109'859);
+      };
+    }
+  }
+
+  TEST_CASE("fundamental group of K11n34 - index 7 - 1-sided",
+            "[fundamental-group-of-K11n34-7]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcABC");
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_cyclic_conjugates_no_checks(p, "aaBcbbcAc");
+    presentation::add_rule(p, "aacAbCBBaCAAbbcBc", "");
+
+    presentation::reduce_complements(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    // REQUIRE(presentation::to_gap_string(p, "G") == "");
+    Sims1 S;
+    S.presentation(to<Presentation<word_type>>(p))
+        .add_pruner(conj_pruner)
+        .long_rule_length(17);
+    // REQUIRE(S.presentation().rules == std::vector<word_type>());
+
+    REQUIRE(S.number_of_long_rules() == 1);
+
+    for (auto nr_threads : {1, 2, 4, 8}) {
+      BENCHMARK(fmt::format("libsemigroups ({} thread{})",
+                            nr_threads,
+                            nr_threads == 1 ? "" : "s")
+                    .c_str()) {
+        REQUIRE(S.number_of_threads(nr_threads).number_of_congruences(7) == 52);
+      };
+    }
+  }
+
+  TEST_CASE("Heineken group - index 8 - 1-sided", "[heineken-group-8]") {
+    using knuth_bendix::reduce;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("xXyYzZ");
+    presentation::add_inverse_rules(p, "XxYyZz");
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    //  < x,y,z | [x,[x,y]]=z, [y,[y,z]]=x, [z,[z,x]]=y >
+    auto w = reduce(kb, comm("x", comm("x", "y")) + "Z");
+    presentation::add_cyclic_conjugates_no_checks(p, w);
+    w = invert(w);
+    presentation::add_cyclic_conjugates_no_checks(p, w);
+
+    w = reduce(kb, comm("y", comm("y", "z")) + "X");
+    presentation::add_cyclic_conjugates_no_checks(p, w);
+    w = invert(w);
+    presentation::add_cyclic_conjugates_no_checks(p, w);
+
+    w = reduce(kb, comm("z", comm("z", "x")) + "Y");
+    presentation::add_cyclic_conjugates_no_checks(p, w);
+    w = invert(w);
+    presentation::add_cyclic_conjugates_no_checks(p, w);
+
+    presentation::remove_trivial_rules(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    // REQUIRE(p.rules == std::vector<std::string>());
+    REQUIRE(presentation::to_gap_string(p, "G") == "");
+    Sims1 S;
+
+    S.presentation(to<Presentation<word_type>>(p))
+        .add_pruner(conj_pruner)
+        .idle_thread_restarts(256);
+
+    for (auto nr_threads : {1, 2, 4, 8}) {
+      BENCHMARK(fmt::format("libsemigroups ({} thread{})",
+                            nr_threads,
+                            nr_threads == 1 ? "" : "s")
+                    .c_str()) {
+        REQUIRE(S.number_of_threads(nr_threads).number_of_congruences(8) == 3);
+      };
+    }
+  }
+
+  TEST_CASE("fundamental group of K15n12345 - index 7 - 1-sided",
+            "[fundamental-group-of-K15n12345-7]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abcABC");
+    presentation::add_inverse_rules(p, "ABCabc");
+
+    // Short rules
+    presentation::add_cyclic_conjugates_no_checks(p, "aBcACAcb");
+
+    // Long rules
+    presentation::add_rule(
+        p,
+        "aBaCacBAcAbaBabaCAcAbaBaCacBAcAbaBabCAcAbABaCabABAbABaCabCAcAb",
+        "");
+
+    presentation::reduce_complements(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::remove_trivial_rules(p);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+    // REQUIRE(S.presentation().rules == std::vector<std::string>());
+    // REQUIRE(presentation::to_gap_string(p, "G") == "");
+
+    Sims1 S;
+    S.presentation(to<Presentation<word_type>>(p))
+        .add_pruner(conj_pruner)
+        .long_rule_length(62);
+
+    for (auto nr_threads : {1, 2, 4, 8}) {
+      BENCHMARK(fmt::format("libsemigroups ({} thread{})",
+                            nr_threads,
+                            nr_threads == 1 ? "" : "s")
+                    .c_str()) {
+        REQUIRE(S.number_of_threads(nr_threads).number_of_congruences(7) == 40);
+      };
+    }
+  }
+
+  TEST_CASE("fundamental group of o9_15405 - index 9 - 1-sided",
+            "[fundamental-group-of-o9-15405-9]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abAB");
+    presentation::add_inverse_rules(p, "ABab");
+
+    // Short rules
+    presentation::add_cyclic_conjugates_no_checks(
+        p, "aaaaabbbaabbbaaaaabbbaabbbaaaaaBBBBBBBB");
+
+    presentation::reduce_complements(p);
+    presentation::remove_duplicate_rules(p);
+    presentation::remove_trivial_rules(p);
+    presentation::sort_each_rule(p);
+    presentation::sort_rules(p);
+
+    // REQUIRE(S.presentation().rules == std::vector<std::string>());
+    // REQUIRE(presentation::to_gap_string(p, "G") == "");
+
+    Sims1 S;
+    S.presentation(to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
+
+    for (auto nr_threads : {1, 2, 4, 8}) {
+      BENCHMARK(fmt::format("libsemigroups ({} thread{})",
+                            nr_threads,
+                            nr_threads == 1 ? "" : "s")
+                    .c_str()) {
+        REQUIRE(S.number_of_threads(nr_threads).number_of_congruences(9) == 38);
+      };
+    }
   }
 
   // NOTE: this presentation was found to be wrong, use test case marked
@@ -1115,161 +1398,6 @@ namespace libsemigroups {
       S.init(p);
       REQUIRE(S.number_of_threads(1).number_of_congruences(76) == 16);
     };
-  }
-
-  std::string invert(std::string const& g) {
-    auto invert = [](char c) {
-      if (std::isupper(c)) {
-        return std::tolower(c);
-      } else {
-        return std::toupper(c);
-      }
-    };
-    auto G = g;
-    std::reverse(G.begin(), G.end());
-    std::transform(G.begin(), G.end(), G.begin(), invert);
-    return G;
-  }
-
-  std::string comm(std::string const& g, std::string const& h) {
-    return invert(g) + invert(h) + g + h;
-  }
-
-  std::string next_cyclic_perm(std::string v) {
-    std::rotate(v.begin(), v.begin() + 1, v.end());
-    return v;
-  }
-
-  void all_cyclic_perms(Presentation<std::string>& p, std::string const& v) {
-    std::string copy = v;
-    do {
-      presentation::add_rule(p, copy, "");
-      next_cyclic_perm(copy);
-    } while (copy != v);
-  }
-
-  TEST_CASE("Heineken group, 1-sided", "[sims1][group][heineken]") {
-    using knuth_bendix::reduce;
-    auto rg = ReportGuard(false);
-
-    auto conj = [](auto const& wg) {
-      using node_type = uint32_t;
-      std::vector<node_type> new_old(wg.number_of_nodes(),
-                                     static_cast<node_type>(UNDEFINED));
-      std::vector<node_type> old_new(wg.number_of_nodes(),
-                                     static_cast<node_type>(UNDEFINED));
-      for (uint32_t root = 1; root < wg.number_of_active_nodes(); ++root) {
-        node_type    next = 0;
-        size_t const n    = wg.out_degree();
-        // std::fill(new_old.begin(), new_old.end(), UNDEFINED);
-        std::fill(old_new.begin(), old_new.end(), UNDEFINED);
-
-        new_old[0]    = root;
-        old_new[root] = 0;
-
-        for (node_type s = 0; s <= next; ++s) {
-          for (letter_type a = 0; a < n; ++a) {
-            node_type t_old = wg.target_no_checks(new_old[s], a);
-            node_type sa    = wg.target_no_checks(s, a);
-            if (t_old == UNDEFINED || sa == UNDEFINED) {
-              goto end;
-            }
-            node_type t_new = old_new[t_old];
-            if (t_new == UNDEFINED) {
-              old_new[t_old] = ++next;
-              new_old[next]  = t_old;
-              t_new          = next;
-            }
-            if (sa < t_new) {
-              goto end;
-            } else if (sa != UNDEFINED && sa > t_new) {
-              // fmt::print("{}\n", old_new);
-              // fmt::print("{}\n\n", detail::to_string(wg));
-              return false;
-            }
-          }
-        }
-      end:
-        (void) 0;
-      }
-      return true;
-    };
-
-    Sims1 S;
-
-    SECTION("Heineken, no manipulation, conjugacy pruner") {
-      Presentation<std::string> p;
-      p.contains_empty_word(true);
-      p.alphabet("xXyYzZ");
-      presentation::add_inverse_rules(p, "XxYyZz");
-      KnuthBendix kb(congruence_kind::twosided, p);
-
-      //  < x,y,z | [x,[x,y]]=z, [y,[y,z]]=x, [z,[z,x]]=y >
-      auto w = reduce(kb, comm("x", comm("x", "y")) + "Z");
-      presentation::add_rule(p, w, "");
-      w = reduce(kb, comm("y", comm("y", "z")) + "X");
-      presentation::add_rule(p, w, "");
-      w = reduce(kb, comm("z", comm("z", "x")) + "Y");
-      presentation::add_rule(p, w, "");
-
-      presentation::remove_trivial_rules(p);
-      presentation::remove_duplicate_rules(p);
-      //                            0  1  2  3  4  5  6  7  8  9  10
-      std::vector<size_t> result = {0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 5};
-      for (auto max_index = 1; max_index < 5; ++max_index) {
-        for (auto nr_threads : {1, 2, 4, 8}) {
-          BENCHMARK(fmt::format("index {}, threads {}", max_index, nr_threads)
-                        .c_str()) {
-            S.init(to<Presentation<word_type>>(p))
-                .idle_thread_restarts(256)
-                .add_pruner(conj);
-            REQUIRE(
-                S.number_of_threads(nr_threads).number_of_congruences(max_index)
-                == result[max_index]);
-          };
-        }
-      }
-    }
-    SECTION("Heineken, all cyclic perms, conjugacy pruner") {
-      Presentation<std::string> p;
-      p.contains_empty_word(true);
-      p.alphabet("xXyYzZ");
-      presentation::add_inverse_rules(p, "XxYyZz");
-      KnuthBendix kb(congruence_kind::twosided, p);
-
-      //  < x,y,z | [x,[x,y]]=z, [y,[y,z]]=x, [z,[z,x]]=y >
-      auto w = reduce(kb, comm("x", comm("x", "y")) + "Z");
-      all_cyclic_perms(p, w);
-      w = invert(w);
-      all_cyclic_perms(p, w);
-
-      w = reduce(kb, comm("y", comm("y", "z")) + "X");
-      all_cyclic_perms(p, w);
-      w = invert(w);
-      all_cyclic_perms(p, w);
-
-      w = reduce(kb, comm("z", comm("z", "x")) + "Y");
-      all_cyclic_perms(p, w);
-      w = invert(w);
-      all_cyclic_perms(p, w);
-
-      presentation::remove_trivial_rules(p);
-      presentation::remove_duplicate_rules(p);
-      std::vector<size_t> result = {0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 5};
-      for (auto max_index = 1; max_index < 5; ++max_index) {
-        for (auto nr_threads : {1, 2, 4, 8}) {
-          BENCHMARK(fmt::format("index {}, threads {}", max_index, nr_threads)
-                        .c_str()) {
-            S.init(to<Presentation<word_type>>(p))
-                .idle_thread_restarts(256)
-                .add_pruner(conj);
-            REQUIRE(
-                S.number_of_threads(nr_threads).number_of_congruences(max_index)
-                == result[max_index]);
-          };
-        }
-      }
-    }
   }
 
 }  // namespace libsemigroups

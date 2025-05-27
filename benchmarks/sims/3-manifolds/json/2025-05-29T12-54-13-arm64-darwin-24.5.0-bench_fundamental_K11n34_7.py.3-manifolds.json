@@ -1,0 +1,224 @@
+{
+    "machine_info": {
+        "node": "MCFGQ540TNF4",
+        "processor": "arm",
+        "machine": "arm64",
+        "python_compiler": "Clang 18.1.8 ",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.13.3",
+        "python_version": "3.13.3",
+        "python_build": [
+            "main",
+            "Apr 14 2025 20:44:30"
+        ],
+        "release": "24.5.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.13.3.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "ARM_8",
+            "bits": 64,
+            "count": 14,
+            "arch_string_raw": "arm64",
+            "brand_raw": "Apple M4 Pro"
+        }
+    },
+    "commit_info": {
+        "id": "1c761ddaed130eeced7f52827c1d0502935043de",
+        "time": "2025-05-29T12:52:51+01:00",
+        "author_time": "2025-05-29T12:52:51+01:00",
+        "dirty": false,
+        "project": "libsemigroups",
+        "branch": "v3-more-sims-benchmarks"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_fundamental_K11n34_7[1]",
+            "fullname": "bench_fundamental_K11n34_7.py::test_fundamental_K11n34_7[1]",
+            "params": {
+                "threads": 1
+            },
+            "param": "1",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.6993004999967525,
+                "max": 0.7024618340074085,
+                "mean": 0.7010684251989006,
+                "stddev": 0.001340311476883157,
+                "rounds": 5,
+                "median": 0.7008699159923708,
+                "iqr": 0.0022581150115001947,
+                "q1": 0.7001074377440091,
+                "q3": 0.7023655527555093,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.6993004999967525,
+                "hd15iqr": 0.7024618340074085,
+                "ops": 1.4263942919926673,
+                "total": 3.5053421259945026,
+                "data": [
+                    0.6993004999967525,
+                    0.7024618340074085,
+                    0.7008699159923708,
+                    0.7003764169930946,
+                    0.7023334590048762
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_K11n34_7[2]",
+            "fullname": "bench_fundamental_K11n34_7.py::test_fundamental_K11n34_7[2]",
+            "params": {
+                "threads": 2
+            },
+            "param": "2",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.3517038749996573,
+                "max": 0.35971566700027324,
+                "mean": 0.3561301250010729,
+                "stddev": 0.0031687896382706234,
+                "rounds": 5,
+                "median": 0.3571729579998646,
+                "iqr": 0.00472972824354656,
+                "q1": 0.3535843755053065,
+                "q3": 0.3583141037488531,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.3517038749996573,
+                "hd15iqr": 0.35971566700027324,
+                "ops": 2.8079623985670614,
+                "total": 1.7806506250053644,
+                "data": [
+                    0.35971566700027324,
+                    0.3517038749996573,
+                    0.3578469159983797,
+                    0.3542112090071896,
+                    0.3571729579998646
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_K11n34_7[4]",
+            "fullname": "bench_fundamental_K11n34_7.py::test_fundamental_K11n34_7[4]",
+            "params": {
+                "threads": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.1940665409929352,
+                "max": 0.1961905000061961,
+                "mean": 0.19512811083404813,
+                "stddev": 0.0010074884945196004,
+                "rounds": 6,
+                "median": 0.19514922899543308,
+                "iqr": 0.0018764999986160547,
+                "q1": 0.19416833300783765,
+                "q3": 0.1960448330064537,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.1940665409929352,
+                "hd15iqr": 0.1961905000061961,
+                "ops": 5.124838218981561,
+                "total": 1.1707686650042888,
+                "data": [
+                    0.19416833300783765,
+                    0.1961905000061961,
+                    0.19587624999985565,
+                    0.1940665409929352,
+                    0.1960448330064537,
+                    0.1944222079910105
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_K11n34_7[8]",
+            "fullname": "bench_fundamental_K11n34_7.py::test_fundamental_K11n34_7[8]",
+            "params": {
+                "threads": 8
+            },
+            "param": "8",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.11716087500099093,
+                "max": 0.16348041698802263,
+                "mean": 0.12277441677805553,
+                "stddev": 0.015267754181722068,
+                "rounds": 9,
+                "median": 0.1176862499996787,
+                "iqr": 0.00041638549373601563,
+                "q1": 0.11756461450931965,
+                "q3": 0.11798100000305567,
+                "iqr_outliers": 1,
+                "stddev_outliers": 1,
+                "outliers": "1;1",
+                "ld15iqr": 0.11716087500099093,
+                "hd15iqr": 0.16348041698802263,
+                "ops": 8.145019347212555,
+                "total": 1.1049697510024998,
+                "data": [
+                    0.117899375007255,
+                    0.16348041698802263,
+                    0.11740783300774638,
+                    0.11762033400009386,
+                    0.11761687500984408,
+                    0.11716087500099093,
+                    0.1178719169984106,
+                    0.11822587499045767,
+                    0.1176862499996787
+                ],
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2025-05-29T11:54:26.252383+00:00",
+    "version": "5.1.0"
+}

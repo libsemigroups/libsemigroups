@@ -1,8 +1,9 @@
-!libsemigroups.pc.in
 *.aux
 *.bmp
 *.bmp*
 *.fdb_latexmk
+*.fdb_latexmk
+*.fls
 *.fls
 *.gcda
 *.gcno
@@ -33,6 +34,7 @@
 .dirstamp
 .ipynb_checkpoints
 .libs
+.null-ls*
 Makefile
 Makefile.in
 aclocal.m4
@@ -60,6 +62,8 @@ docs/source/_generated
 docs/xml
 docs/pictures/*.aux
 docs/pictures/*.pdf
+docs/source/_generated
+docs/xml
 gh-pages/
 html/
 libsemigroups-*-coverage*
@@ -86,5 +90,6 @@ third_party/HPCombi/examples
 third_party/HPCombi/src
 third_party/HPCombi/tests
 tmp/*
-*.fdb_latexmk
-*.fls
+!bench_*.py
+!benchmarks/sims/xml/*.xml
+!libsemigroups.pc.in

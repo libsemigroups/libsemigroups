@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Catch2TestRun name="bench_sims" rng-seed="3680624102" xml-format-version="3" catch2-version="3.8.0" filters="[fundamental-group-of-o9-15405-9]">
+  <TestCase name="fundamental group of o9_15405 - index 9 - 1-sided" tags="[fundamental-group-of-o9-15405-9]" filename="benchmarks/sims/bench-sims.cpp" line="776">
+    <BenchmarkResults name="libsemigroups (1 thread)" samples="100" resamples="100000" iterations="1" clockResolution="12.5995" estimatedDuration="1.7295e+11">
+      <!-- All values in nano seconds -->
+      <mean value="1.68244e+09" lowerBound="1.68014e+09" upperBound="1.68512e+09" ci="0.95"/>
+      <standardDeviation value="1.25854e+07" lowerBound="1.07417e+07" upperBound="1.52906e+07" ci="0.95"/>
+      <outliers variance="0.0099" lowMild="0" lowSevere="0" highMild="2" highSevere="0"/>
+    </BenchmarkResults>
+    <BenchmarkResults name="libsemigroups (2 threads)" samples="100" resamples="100000" iterations="1" clockResolution="12.5995" estimatedDuration="8.67771e+10">
+      <!-- All values in nano seconds -->
+      <mean value="8.72419e+08" lowerBound="8.71549e+08" upperBound="8.73277e+08" ci="0.95"/>
+      <standardDeviation value="4.4051e+06" lowerBound="3.83403e+06" upperBound="5.15339e+06" ci="0.95"/>
+      <outliers variance="0.0099" lowMild="2" lowSevere="0" highMild="0" highSevere="0"/>
+    </BenchmarkResults>
+    <BenchmarkResults name="libsemigroups (4 threads)" samples="100" resamples="100000" iterations="1" clockResolution="12.5995" estimatedDuration="4.60585e+10">
+      <!-- All values in nano seconds -->
+      <mean value="4.60091e+08" lowerBound="4.59672e+08" upperBound="4.60589e+08" ci="0.95"/>
+      <standardDeviation value="2.326e+06" lowerBound="1.95072e+06" upperBound="2.79044e+06" ci="0.95"/>
+      <outliers variance="0.0099" lowMild="0" lowSevere="0" highMild="8" highSevere="0"/>
+    </BenchmarkResults>
+    <BenchmarkResults name="libsemigroups (8 threads)" samples="100" resamples="100000" iterations="1" clockResolution="12.5995" estimatedDuration="2.73611e+10">
+      <!-- All values in nano seconds -->
+      <mean value="2.54506e+08" lowerBound="2.53789e+08" upperBound="2.55575e+08" ci="0.95"/>
+      <standardDeviation value="4.40546e+06" lowerBound="3.17224e+06" upperBound="7.28272e+06" ci="0.95"/>
+      <outliers variance="0.10369" lowMild="2" lowSevere="0" highMild="1" highSevere="1"/>
+    </BenchmarkResults>
+    <OverallResult success="true" skips="0"/>
+  </TestCase>
+  <OverallResults successes="404" failures="0" expectedFailures="0" skips="0"/>
+  <OverallResultsCases successes="1" failures="0" expectedFailures="0" skips="0"/>
+</Catch2TestRun>

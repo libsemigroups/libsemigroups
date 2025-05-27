@@ -1,0 +1,219 @@
+{
+    "machine_info": {
+        "node": "MCFGQ540TNF4",
+        "processor": "arm",
+        "machine": "arm64",
+        "python_compiler": "Clang 18.1.8 ",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.13.3",
+        "python_version": "3.13.3",
+        "python_build": [
+            "main",
+            "Apr 14 2025 20:44:30"
+        ],
+        "release": "24.5.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.13.3.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "ARM_8",
+            "bits": 64,
+            "count": 14,
+            "arch_string_raw": "arm64",
+            "brand_raw": "Apple M4 Pro"
+        }
+    },
+    "commit_info": {
+        "id": "1c761ddaed130eeced7f52827c1d0502935043de",
+        "time": "2025-05-29T12:52:51+01:00",
+        "author_time": "2025-05-29T12:52:51+01:00",
+        "dirty": false,
+        "project": "libsemigroups",
+        "branch": "v3-more-sims-benchmarks"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_heineken_8[1]",
+            "fullname": "bench_heineken_8.py::test_heineken_8[1]",
+            "params": {
+                "threads": 1
+            },
+            "param": "1",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 2.2444646670046495,
+                "max": 2.263342541002203,
+                "mean": 2.2557278332009445,
+                "stddev": 0.0069309436214416925,
+                "rounds": 5,
+                "median": 2.257048208004562,
+                "iqr": 0.006511907005915418,
+                "q1": 2.2528888537453895,
+                "q3": 2.259400760751305,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 2.2444646670046495,
+                "hd15iqr": 2.263342541002203,
+                "ops": 0.4433158935583866,
+                "total": 11.278639166004723,
+                "data": [
+                    2.263342541002203,
+                    2.2580868340010056,
+                    2.255696915992303,
+                    2.257048208004562,
+                    2.2444646670046495
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_heineken_8[2]",
+            "fullname": "bench_heineken_8.py::test_heineken_8[2]",
+            "params": {
+                "threads": 2
+            },
+            "param": "2",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 1.151076207999722,
+                "max": 1.1576931250019697,
+                "mean": 1.1548691083997256,
+                "stddev": 0.0024793336090758933,
+                "rounds": 5,
+                "median": 1.155748749995837,
+                "iqr": 0.002931197999714641,
+                "q1": 1.1533158647507662,
+                "q3": 1.1562470627504808,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 1.151076207999722,
+                "hd15iqr": 1.1576931250019697,
+                "ops": 0.8658989947230263,
+                "total": 5.774345541998628,
+                "data": [
+                    1.1557650419999845,
+                    1.1576931250019697,
+                    1.155748749995837,
+                    1.151076207999722,
+                    1.1540624170011142
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_heineken_8[4]",
+            "fullname": "bench_heineken_8.py::test_heineken_8[4]",
+            "params": {
+                "threads": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.6004646669898648,
+                "max": 0.6042091249983059,
+                "mean": 0.6019597166014137,
+                "stddev": 0.0015130558804268544,
+                "rounds": 5,
+                "median": 0.6017420420103008,
+                "iqr": 0.002307176750036888,
+                "q1": 0.6006991665017267,
+                "q3": 0.6030063432517636,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 0.6004646669898648,
+                "hd15iqr": 0.6042091249983059,
+                "ops": 1.6612407315989017,
+                "total": 3.0097985830070684,
+                "data": [
+                    0.6042091249983059,
+                    0.6026054160029162,
+                    0.6017420420103008,
+                    0.6004646669898648,
+                    0.6007773330056807
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_heineken_8[8]",
+            "fullname": "bench_heineken_8.py::test_heineken_8[8]",
+            "params": {
+                "threads": 8
+            },
+            "param": "8",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.3183996670122724,
+                "max": 0.3203522499970859,
+                "mean": 0.3194603747979272,
+                "stddev": 0.0007684976190351272,
+                "rounds": 5,
+                "median": 0.31943645799765363,
+                "iqr": 0.001177708494651597,
+                "q1": 0.31892269749732804,
+                "q3": 0.32010040599197964,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.3183996670122724,
+                "hd15iqr": 0.3203522499970859,
+                "ops": 3.1302786789521053,
+                "total": 1.597301873989636,
+                "data": [
+                    0.31943645799765363,
+                    0.3203522499970859,
+                    0.3183996670122724,
+                    0.32001645799027756,
+                    0.3190970409923466
+                ],
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2025-05-29T11:56:10.664385+00:00",
+    "version": "5.1.0"
+}

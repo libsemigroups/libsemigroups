@@ -1229,13 +1229,13 @@ bench_all_SOURCES += benchmarks/bench-freeband.cpp
 bench_all_SOURCES += benchmarks/bench-kambites.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-multi-string-view.cpp
-bench_all_SOURCES += benchmarks/bench-sims1.cpp
 bench_all_SOURCES += benchmarks/bench-string-range.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-uf.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/bench-word-graph.cpp
+bench_all_SOURCES += benchmarks/sims/bench-sims.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
 bench_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
@@ -1256,7 +1256,7 @@ bench_kambites_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
 bench_konieczny_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
-bench_sims_SOURCES =  benchmarks/bench-sims1.cpp
+bench_sims_SOURCES =  benchmarks/sims/bench-sims.cpp
 bench_sims_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_string_range_SOURCES =  benchmarks/bench-string-range.cpp
