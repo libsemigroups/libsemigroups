@@ -1,0 +1,222 @@
+{
+    "machine_info": {
+        "node": "MCFGQ540TNF4",
+        "processor": "arm",
+        "machine": "arm64",
+        "python_compiler": "Clang 18.1.8 ",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.13.3",
+        "python_version": "3.13.3",
+        "python_build": [
+            "main",
+            "Apr 14 2025 20:44:30"
+        ],
+        "release": "24.5.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.13.3.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "ARM_8",
+            "bits": 64,
+            "count": 14,
+            "arch_string_raw": "arm64",
+            "brand_raw": "Apple M4 Pro"
+        }
+    },
+    "commit_info": {
+        "id": "1c761ddaed130eeced7f52827c1d0502935043de",
+        "time": "2025-05-29T12:52:51+01:00",
+        "author_time": "2025-05-29T12:52:51+01:00",
+        "dirty": false,
+        "project": "libsemigroups",
+        "branch": "v3-more-sims-benchmarks"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_modular_23[1]",
+            "fullname": "bench_modular_23.py::test_modular_23[1]",
+            "params": {
+                "threads": 1
+            },
+            "param": "1",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.3766847910010256,
+                "max": 0.3804579999996349,
+                "mean": 0.37917613339959644,
+                "stddev": 0.0014471111383994421,
+                "rounds": 5,
+                "median": 0.3796315420040628,
+                "iqr": 0.0011413022402848583,
+                "q1": 0.3787370730024122,
+                "q3": 0.3798783752426971,
+                "iqr_outliers": 1,
+                "stddev_outliers": 1,
+                "outliers": "1;1",
+                "ld15iqr": 0.3794211670028744,
+                "hd15iqr": 0.3804579999996349,
+                "ops": 2.6372967914258085,
+                "total": 1.8958806669979822,
+                "data": [
+                    0.3794211670028744,
+                    0.3804579999996349,
+                    0.3766847910010256,
+                    0.37968516699038446,
+                    0.3796315420040628
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_modular_23[2]",
+            "fullname": "bench_modular_23.py::test_modular_23[2]",
+            "params": {
+                "threads": 2
+            },
+            "param": "2",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.2518864159937948,
+                "max": 0.2543523750064196,
+                "mean": 0.2527353582001524,
+                "stddev": 0.0010838989973684348,
+                "rounds": 5,
+                "median": 0.2521303329995135,
+                "iqr": 0.0016689265030436218,
+                "q1": 0.2519357607488928,
+                "q3": 0.2536046872519364,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 0.2518864159937948,
+                "hd15iqr": 0.2543523750064196,
+                "ops": 3.9567079458983154,
+                "total": 1.263676791000762,
+                "data": [
+                    0.2521303329995135,
+                    0.2518864159937948,
+                    0.2519522090005921,
+                    0.253355458000442,
+                    0.2543523750064196
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_modular_23[4]",
+            "fullname": "bench_modular_23.py::test_modular_23[4]",
+            "params": {
+                "threads": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.17393837501003873,
+                "max": 0.1780036249983823,
+                "mean": 0.17602688883440956,
+                "stddev": 0.0016169712617694165,
+                "rounds": 6,
+                "median": 0.17601668749557575,
+                "iqr": 0.0030746239935979247,
+                "q1": 0.1745556670066435,
+                "q3": 0.1776302910002414,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.17393837501003873,
+                "hd15iqr": 0.1780036249983823,
+                "ops": 5.680950260620189,
+                "total": 1.0561613330064574,
+                "data": [
+                    0.17620108400296886,
+                    0.1745556670066435,
+                    0.17583229098818265,
+                    0.17393837501003873,
+                    0.1776302910002414,
+                    0.1780036249983823
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_modular_23[8]",
+            "fullname": "bench_modular_23.py::test_modular_23[8]",
+            "params": {
+                "threads": 8
+            },
+            "param": "8",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.14563837500463706,
+                "max": 0.16310399999201763,
+                "mean": 0.1489698629988457,
+                "stddev": 0.0062899120298593346,
+                "rounds": 7,
+                "median": 0.146252958002151,
+                "iqr": 0.001785031498002354,
+                "q1": 0.14609303099859972,
+                "q3": 0.14787806249660207,
+                "iqr_outliers": 1,
+                "stddev_outliers": 1,
+                "outliers": "1;1",
+                "ld15iqr": 0.14563837500463706,
+                "hd15iqr": 0.16310399999201763,
+                "ops": 6.712767132018833,
+                "total": 1.04278904099192,
+                "data": [
+                    0.1475369999971008,
+                    0.14605358299741056,
+                    0.16310399999201763,
+                    0.1462113750021672,
+                    0.14563837500463706,
+                    0.14799174999643583,
+                    0.146252958002151
+                ],
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2025-05-29T11:56:29.784338+00:00",
+    "version": "5.1.0"
+}

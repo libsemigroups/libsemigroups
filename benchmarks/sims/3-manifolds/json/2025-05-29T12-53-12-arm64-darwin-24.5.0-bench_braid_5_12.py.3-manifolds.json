@@ -1,0 +1,221 @@
+{
+    "machine_info": {
+        "node": "MCFGQ540TNF4",
+        "processor": "arm",
+        "machine": "arm64",
+        "python_compiler": "Clang 18.1.8 ",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.13.3",
+        "python_version": "3.13.3",
+        "python_build": [
+            "main",
+            "Apr 14 2025 20:44:30"
+        ],
+        "release": "24.5.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.13.3.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "ARM_8",
+            "bits": 64,
+            "count": 14,
+            "arch_string_raw": "arm64",
+            "brand_raw": "Apple M4 Pro"
+        }
+    },
+    "commit_info": {
+        "id": "1c761ddaed130eeced7f52827c1d0502935043de",
+        "time": "2025-05-29T12:52:51+01:00",
+        "author_time": "2025-05-29T12:52:51+01:00",
+        "dirty": false,
+        "project": "libsemigroups",
+        "branch": "v3-more-sims-benchmarks"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_braid_5_12[1]",
+            "fullname": "bench_braid_5_12.py::test_braid_5_12[1]",
+            "params": {
+                "threads": 1
+            },
+            "param": "1",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.9842294590052916,
+                "max": 0.9898867500014603,
+                "mean": 0.9872578915994381,
+                "stddev": 0.0020506892690253303,
+                "rounds": 5,
+                "median": 0.9871357910014922,
+                "iqr": 0.0022276662566582672,
+                "q1": 0.9862897397433699,
+                "q3": 0.9885174060000281,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.9842294590052916,
+                "hd15iqr": 0.9898867500014603,
+                "ops": 1.0129065652541087,
+                "total": 4.936289457997191,
+                "data": [
+                    0.9898867500014603,
+                    0.986976499989396,
+                    0.9842294590052916,
+                    0.9880609579995507,
+                    0.9871357910014922
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_braid_5_12[2]",
+            "fullname": "bench_braid_5_12.py::test_braid_5_12[2]",
+            "params": {
+                "threads": 2
+            },
+            "param": "2",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.5038329160015564,
+                "max": 0.5142939999932423,
+                "mean": 0.5096241747960448,
+                "stddev": 0.004215436169495413,
+                "rounds": 5,
+                "median": 0.5091229999961797,
+                "iqr": 0.006607365008676425,
+                "q1": 0.5067887912409788,
+                "q3": 0.5133961562496552,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.5038329160015564,
+                "hd15iqr": 0.5142939999932423,
+                "ops": 1.9622303051071057,
+                "total": 2.548120873980224,
+                "data": [
+                    0.5077740829874529,
+                    0.5038329160015564,
+                    0.5142939999932423,
+                    0.5091229999961797,
+                    0.5130968750017928
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_braid_5_12[4]",
+            "fullname": "bench_braid_5_12.py::test_braid_5_12[4]",
+            "params": {
+                "threads": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.26957616599975154,
+                "max": 0.2708711249870248,
+                "mean": 0.2702311164001003,
+                "stddev": 0.0005162054772135944,
+                "rounds": 5,
+                "median": 0.27035512500151526,
+                "iqr": 0.0008051152508414816,
+                "q1": 0.269785791002505,
+                "q3": 0.2705909062533465,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.26957616599975154,
+                "hd15iqr": 0.2708711249870248,
+                "ops": 3.700536094146221,
+                "total": 1.3511555820005015,
+                "data": [
+                    0.27049750000878703,
+                    0.27035512500151526,
+                    0.2698556660034228,
+                    0.26957616599975154,
+                    0.2708711249870248
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_braid_5_12[8]",
+            "fullname": "bench_braid_5_12.py::test_braid_5_12[8]",
+            "params": {
+                "threads": 8
+            },
+            "param": "8",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.14320087499800138,
+                "max": 0.15149550000205636,
+                "mean": 0.14607754171343654,
+                "stddev": 0.002848732522241343,
+                "rounds": 7,
+                "median": 0.14457429200410843,
+                "iqr": 0.0030952602537581697,
+                "q1": 0.14440782299425337,
+                "q3": 0.14750308324801154,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.14320087499800138,
+                "hd15iqr": 0.15149550000205636,
+                "ops": 6.845679276022604,
+                "total": 1.0225427919940557,
+                "data": [
+                    0.14666708299773745,
+                    0.1477817499981029,
+                    0.14440399999148212,
+                    0.15149550000205636,
+                    0.14320087499800138,
+                    0.1444192920025671,
+                    0.14457429200410843
+                ],
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2025-05-29T11:53:28.281792+00:00",
+    "version": "5.1.0"
+}

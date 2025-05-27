@@ -1,0 +1,219 @@
+{
+    "machine_info": {
+        "node": "MCFGQ540TNF4",
+        "processor": "arm",
+        "machine": "arm64",
+        "python_compiler": "Clang 18.1.8 ",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.13.3",
+        "python_version": "3.13.3",
+        "python_build": [
+            "main",
+            "Apr 14 2025 20:44:30"
+        ],
+        "release": "24.5.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.13.3.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "ARM_8",
+            "bits": 64,
+            "count": 14,
+            "arch_string_raw": "arm64",
+            "brand_raw": "Apple M4 Pro"
+        }
+    },
+    "commit_info": {
+        "id": "1c761ddaed130eeced7f52827c1d0502935043de",
+        "time": "2025-05-29T12:52:51+01:00",
+        "author_time": "2025-05-29T12:52:51+01:00",
+        "dirty": false,
+        "project": "libsemigroups",
+        "branch": "v3-more-sims-benchmarks"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_o9_15405_9[1]",
+            "fullname": "bench_fundamental_o9_15405_9.py::test_fundamental_group_of_o9_15405_9[1]",
+            "params": {
+                "threads": 1
+            },
+            "param": "1",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 2.0994359579926822,
+                "max": 2.110839291999582,
+                "mean": 2.1042364583991002,
+                "stddev": 0.0041600342909557985,
+                "rounds": 5,
+                "median": 2.1031712500116555,
+                "iqr": 0.004000551994977286,
+                "q1": 2.1021850522483874,
+                "q3": 2.1061856042433647,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 2.0994359579926822,
+                "hd15iqr": 2.110839291999582,
+                "ops": 0.4752317620999678,
+                "total": 10.521182291995501,
+                "data": [
+                    2.104634374991292,
+                    2.1031712500116555,
+                    2.103101417000289,
+                    2.110839291999582,
+                    2.0994359579926822
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_o9_15405_9[2]",
+            "fullname": "bench_fundamental_o9_15405_9.py::test_fundamental_group_of_o9_15405_9[2]",
+            "params": {
+                "threads": 2
+            },
+            "param": "2",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 1.068652458008728,
+                "max": 1.0779154999909224,
+                "mean": 1.0717482999985806,
+                "stddev": 0.003867297445604356,
+                "rounds": 5,
+                "median": 1.069653999991715,
+                "iqr": 0.005189728999539511,
+                "q1": 1.069170958500763,
+                "q3": 1.0743606875003024,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 1.068652458008728,
+                "hd15iqr": 1.0779154999909224,
+                "ops": 0.9330548973124795,
+                "total": 5.358741499992902,
+                "data": [
+                    1.068652458008728,
+                    1.069343791998108,
+                    1.0779154999909224,
+                    1.0731757500034291,
+                    1.069653999991715
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_o9_15405_9[4]",
+            "fullname": "bench_fundamental_o9_15405_9.py::test_fundamental_group_of_o9_15405_9[4]",
+            "params": {
+                "threads": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.5616878330038162,
+                "max": 0.5623496250045719,
+                "mean": 0.5620886413991684,
+                "stddev": 0.0002495269843609292,
+                "rounds": 5,
+                "median": 0.5620924160029972,
+                "iqr": 0.0002768222548183985,
+                "q1": 0.5619837709928106,
+                "q3": 0.562260593247629,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 0.5616878330038162,
+                "hd15iqr": 0.5623496250045719,
+                "ops": 1.7790788255581347,
+                "total": 2.810443206995842,
+                "data": [
+                    0.5616878330038162,
+                    0.5622309159953147,
+                    0.5620924160029972,
+                    0.5620824169891421,
+                    0.5623496250045719
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_o9_15405_9[8]",
+            "fullname": "bench_fundamental_o9_15405_9.py::test_fundamental_group_of_o9_15405_9[8]",
+            "params": {
+                "threads": 8
+            },
+            "param": "8",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.29309595900122076,
+                "max": 0.29443516599712893,
+                "mean": 0.29393116680148523,
+                "stddev": 0.0005107348251445135,
+                "rounds": 5,
+                "median": 0.29397908299870323,
+                "iqr": 0.0005705207513528876,
+                "q1": 0.29371074000300723,
+                "q3": 0.2942812607543601,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 0.29309595900122076,
+                "hd15iqr": 0.29443516599712893,
+                "ops": 3.402157079434106,
+                "total": 1.4696558340074262,
+                "data": [
+                    0.29397908299870323,
+                    0.29309595900122076,
+                    0.29443516599712893,
+                    0.2939156670036027,
+                    0.2942299590067705
+                ],
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2025-05-29T11:55:25.477912+00:00",
+    "version": "5.1.0"
+}

@@ -1,0 +1,230 @@
+{
+    "machine_info": {
+        "node": "MCFGQ540TNF4",
+        "processor": "arm",
+        "machine": "arm64",
+        "python_compiler": "Clang 18.1.8 ",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.13.3",
+        "python_version": "3.13.3",
+        "python_build": [
+            "main",
+            "Apr 14 2025 20:44:30"
+        ],
+        "release": "24.5.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.13.3.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "ARM_8",
+            "bits": 64,
+            "count": 14,
+            "arch_string_raw": "arm64",
+            "brand_raw": "Apple M4 Pro"
+        }
+    },
+    "commit_info": {
+        "id": "1c761ddaed130eeced7f52827c1d0502935043de",
+        "time": "2025-05-29T12:52:51+01:00",
+        "author_time": "2025-05-29T12:52:51+01:00",
+        "dirty": false,
+        "project": "libsemigroups",
+        "branch": "v3-more-sims-benchmarks"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_K15n12345_7[1]",
+            "fullname": "bench_fundamental_K15n12345_7.py::test_fundamental_group_of_K15n12345_7[1]",
+            "params": {
+                "threads": 1
+            },
+            "param": "1",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.4452003339974908,
+                "max": 0.4510719579993747,
+                "mean": 0.4472653585980879,
+                "stddev": 0.002426431957035725,
+                "rounds": 5,
+                "median": 0.446298916998785,
+                "iqr": 0.003469531500741141,
+                "q1": 0.4454576147472835,
+                "q3": 0.44892714624802466,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 0.4452003339974908,
+                "hd15iqr": 0.4510719579993747,
+                "ops": 2.2358091919624803,
+                "total": 2.2363267929904396,
+                "data": [
+                    0.446298916998785,
+                    0.4455433749972144,
+                    0.44821220899757463,
+                    0.4510719579993747,
+                    0.4452003339974908
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_K15n12345_7[2]",
+            "fullname": "bench_fundamental_K15n12345_7.py::test_fundamental_group_of_K15n12345_7[2]",
+            "params": {
+                "threads": 2
+            },
+            "param": "2",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.22302070799923968,
+                "max": 0.2318848330032779,
+                "mean": 0.2259138499997789,
+                "stddev": 0.0037870664009445505,
+                "rounds": 5,
+                "median": 0.22384662499825936,
+                "iqr": 0.005319343741575722,
+                "q1": 0.22325992725382093,
+                "q3": 0.22857927099539666,
+                "iqr_outliers": 0,
+                "stddev_outliers": 1,
+                "outliers": "1;0",
+                "ld15iqr": 0.22302070799923968,
+                "hd15iqr": 0.2318848330032779,
+                "ops": 4.426466106442693,
+                "total": 1.1295692499988945,
+                "data": [
+                    0.22747741699276958,
+                    0.22384662499825936,
+                    0.2318848330032779,
+                    0.22333966700534802,
+                    0.22302070799923968
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_K15n12345_7[4]",
+            "fullname": "bench_fundamental_K15n12345_7.py::test_fundamental_group_of_K15n12345_7[4]",
+            "params": {
+                "threads": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.12234795799304266,
+                "max": 0.12424808299692813,
+                "mean": 0.1228530048756511,
+                "stddev": 0.0006883725766848481,
+                "rounds": 8,
+                "median": 0.12256306200288236,
+                "iqr": 0.0006340620020637289,
+                "q1": 0.12245843750133645,
+                "q3": 0.12309249950340018,
+                "iqr_outliers": 1,
+                "stddev_outliers": 2,
+                "outliers": "2;1",
+                "ld15iqr": 0.12234795799304266,
+                "hd15iqr": 0.12424808299692813,
+                "ops": 8.13980904262111,
+                "total": 0.9828240390052088,
+                "data": [
+                    0.12234795799304266,
+                    0.12359766601002775,
+                    0.1225328340078704,
+                    0.12256533300387673,
+                    0.12238404099480249,
+                    0.12424808299692813,
+                    0.1225873329967726,
+                    0.12256079100188799
+                ],
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_fundamental_group_of_K15n12345_7[8]",
+            "fullname": "bench_fundamental_K15n12345_7.py::test_fundamental_group_of_K15n12345_7[8]",
+            "params": {
+                "threads": 8
+            },
+            "param": "8",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 0.07498195800872054,
+                "max": 0.1067901670030551,
+                "mean": 0.08293477884748987,
+                "stddev": 0.013563378220150442,
+                "rounds": 13,
+                "median": 0.07645195900113322,
+                "iqr": 0.009219730251061264,
+                "q1": 0.07517770774575183,
+                "q3": 0.0843974379968131,
+                "iqr_outliers": 3,
+                "stddev_outliers": 3,
+                "outliers": "3;3",
+                "ld15iqr": 0.07498195800872054,
+                "hd15iqr": 0.10661237499152776,
+                "ops": 12.057667650370378,
+                "total": 1.0781521250173682,
+                "data": [
+                    0.10668908299703617,
+                    0.10661237499152776,
+                    0.07657925000239629,
+                    0.07498195800872054,
+                    0.07654312500380911,
+                    0.07699245899857488,
+                    0.0751895409921417,
+                    0.1067901670030551,
+                    0.07514220800658222,
+                    0.07591983300517313,
+                    0.0750131670065457,
+                    0.07524700000067241,
+                    0.07645195900113322
+                ],
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2025-05-29T11:54:43.704190+00:00",
+    "version": "5.1.0"
+}
