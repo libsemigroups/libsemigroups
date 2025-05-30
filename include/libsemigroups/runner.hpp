@@ -743,9 +743,6 @@ namespace libsemigroups {
    private:
     virtual void               run_impl()            = 0;
     [[nodiscard]] virtual bool finished_impl() const = 0;
-    [[nodiscard]] virtual bool success_impl() const {
-      return finished();
-    }
 
     void set_state(state stt) const noexcept {
       // We can set the state back to never_run if run_impl throws, and we are

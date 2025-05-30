@@ -117,13 +117,19 @@ namespace libsemigroups {
       t = std::move(s);
       REQUIRE(t.report_prefix() == "");
       REQUIRE(t.report_every() == std::chrono::seconds(1));
+
+      s.report_divider("666");
+      REQUIRE(s.report_divider() == "666");
+      s.emit_divider();
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "001", "run_for", "[quick]") {
       auto        rg = ReportGuard(false);
       TestRunner1 tr;
       tr.run_for(std::chrono::milliseconds(10));
+      REQUIRE(tr.running_for_how_long() == std::chrono::milliseconds(10));
       REQUIRE(tr.finished());
+      REQUIRE(tr.success());
       REQUIRE(tr.stopped());
       REQUIRE(!tr.dead());
 
