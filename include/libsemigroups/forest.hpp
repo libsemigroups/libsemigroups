@@ -40,15 +40,15 @@ namespace libsemigroups {
   //! This class represents the collection of spanning trees of the strongly
   //! connected components of a word graph.
   class Forest {
-    std::vector<size_t> _edge_label;
-    std::vector<size_t> _parent;
+    std::vector<uint32_t> _edge_label;
+    std::vector<uint32_t> _parent;
 
    public:
     //! Alias for the type of nodes in a forest
-    using node_type = size_t;  // TODO use uint32_t
+    using node_type = uint32_t;
 
     //! Alias for the type of edge labels in a forest.
-    using label_type = size_t;
+    using label_type = uint32_t;
 
     //! \brief Constructs a forest with \p n nodes.
     //!
@@ -57,8 +57,8 @@ namespace libsemigroups {
     //!
     //! \param n the number of nodes, defaults to \c 0.
     explicit Forest(size_t n = 0)
-        : _edge_label(n, static_cast<size_t>(UNDEFINED)),
-          _parent(n, static_cast<size_t>(UNDEFINED)) {}
+        : _edge_label(n, static_cast<uint32_t>(UNDEFINED)),
+          _parent(n, static_cast<uint32_t>(UNDEFINED)) {}
 
     //! \brief Reinitialize an existing Forest object.
     //!
@@ -547,8 +547,8 @@ namespace libsemigroups {
   //! for any value of `i`.
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Forest>
-  make(std::vector<size_t> const& parent,
-       std::vector<size_t> const& edge_labels);
+  make(std::vector<uint32_t> const& parent,
+       std::vector<uint32_t> const& edge_labels);
 
   //! \ingroup make_forest_group
   //!
@@ -575,9 +575,10 @@ namespace libsemigroups {
   //! for any value of `i`.
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Forest>
-  make(std::initializer_list<size_t> parent,
-       std::initializer_list<size_t> edge_labels) {
-    return make<Forest>(std::vector<size_t>(parent), std::vector(edge_labels));
+  make(std::initializer_list<uint32_t> parent,
+       std::initializer_list<uint32_t> edge_labels) {
+    return make<Forest>(std::vector<uint32_t>(parent),
+                        std::vector(edge_labels));
   }
 
   //! \relates Forest
