@@ -169,7 +169,7 @@ namespace libsemigroups {
         return reference(this->_ptr, this->_it);
       }
 
-      // TODO probably require more of these
+      // TODO(1) probably require more of these
       itow& operator++() {
         citow<Thing, Iterator>::operator++();
         return *this;
