@@ -65,6 +65,7 @@
 namespace libsemigroups {
 
   using literals::operator""_w;
+  using detail::StaticVector1;
 
   struct LibsemigroupsException;  // forward decl
 
@@ -409,7 +410,7 @@ namespace libsemigroups {
       Presentation<W> p;
       p.alphabet(10);
       p.remove_generator_no_checks(human_readable_letter<W>(4));
-      p.remove_generator_no_checks(human_readable_letter<W>(7));
+      p.remove_generator(human_readable_letter<W>(7));
       p.remove_generator_no_checks(human_readable_letter<W>(9));
       if constexpr (std::is_same_v<W, std::string>) {
         REQUIRE(p.alphabet() == "abcdfgi");
@@ -3225,8 +3226,26 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "079",
+                                   "throw_if_not_normalized",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type,
+                                   (StaticVector1<uint16_t, 10>) ) {
+    Presentation<TestType> p;
+    p.alphabet({0, 1, 2});
+    REQUIRE_NOTHROW(presentation::throw_if_not_normalized(p));
+    p.alphabet({0, 2, 1});
+    REQUIRE_THROWS_AS(presentation::throw_if_not_normalized(p),
+                      LibsemigroupsException);
+    p.alphabet({10, 11, 12});
+    REQUIRE_THROWS_AS(presentation::throw_if_not_normalized(p),
+                      LibsemigroupsException);
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "079",
+                          "080",
                           "add_cyclic_conjugates(char const*)",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -3258,4 +3277,15 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "caca"),
                       LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "081",
+                          "to_report_string",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    REQUIRE(presentation::to_report_string(p)
+            == "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], "
+               "∑(|u| + |v|) = 0\n");
+  }
+
 }  // namespace libsemigroups

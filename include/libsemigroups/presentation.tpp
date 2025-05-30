@@ -285,6 +285,7 @@ namespace libsemigroups {
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg) {
+      using letter_type = typename Presentation<Word>::letter_type;
       auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
       if (!std::is_sorted(first, last)) {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
@@ -294,7 +295,9 @@ namespace libsemigroups {
       }
 
       auto it = std::max_element(first, last);
-      if (it != last && *it != p.alphabet().size() - 1) {
+
+      if (it != last
+          && *it != static_cast<letter_type>(p.alphabet().size() - 1)) {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
                                 "alphabet, expected [0, ..., {}] found {}",
                                 arg,
