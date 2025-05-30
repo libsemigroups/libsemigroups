@@ -415,7 +415,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "028",
                           "singular_brauer_monoid(6)",
-                          "[pres-examples][quick][no-valgrind]") {
+                          "[pres-examples][quick][no-valgrind][no-coverage]") {
     auto        rg = ReportGuard(false);
     size_t      n  = 6;
     ToddCoxeter tc(congruence_kind::twosided, singular_brauer_monoid(n));
@@ -501,7 +501,7 @@ namespace libsemigroups {
       "Example",
       "035",
       "symmetric_group nr generators, relations and classes",
-      "[pres-examples][quick][no-valgrind]") {
+      "[pres-examples][quick][no-valgrind][no-coverage]") {
     auto                               rg = ReportGuard(false);
     Presentation<word_type>            p;
     ToddCoxeter<word_type>             tc;
@@ -585,7 +585,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "038",
                           "full_transformation_monoid(5) Iwahori",
-                          "[pres-examples][quick][no-valgrind]") {
+                          "[pres-examples][quick][no-valgrind][no-coverage]") {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
 
@@ -664,7 +664,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "044",
                           "partial_transformation_monoid(5) Mitchell + Whyte",
-                          "[pres-examples][quick][no-valgrind]") {
+                          "[pres-examples][quick][no-valgrind][no-coverage]") {
     auto        rg = ReportGuard(false);
     size_t      n  = 5;
     ToddCoxeter tc(congruence_kind::twosided,
