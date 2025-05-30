@@ -50,8 +50,8 @@ namespace libsemigroups {
 
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Forest>
-  make(std::vector<size_t> const& parent,
-       std::vector<size_t> const& edge_labels) {
+  make(std::vector<uint32_t> const& parent,
+       std::vector<uint32_t> const& edge_labels) {
     if (parent.size() != edge_labels.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st and 2nd arguments (parents and edge labels) to "

@@ -43,18 +43,20 @@ namespace libsemigroups {
     _edge_label.resize(n);
     std::fill(std::begin(_edge_label),
               std::end(_edge_label),
-              static_cast<size_t>(UNDEFINED));
+              static_cast<uint32_t>(UNDEFINED));
     _parent.resize(n);
-    std::fill(
-        std::begin(_parent), std::end(_parent), static_cast<size_t>(UNDEFINED));
+    std::fill(std::begin(_parent),
+              std::end(_parent),
+              static_cast<uint32_t>(UNDEFINED));
     return *this;
   }
 
   Forest& Forest::add_nodes(size_t n) {
     size_t const old_nr_nodes = number_of_nodes();
     try {
-      _edge_label.insert(_edge_label.cend(), n, static_cast<size_t>(UNDEFINED));
-      _parent.insert(_parent.cend(), n, static_cast<size_t>(UNDEFINED));
+      _edge_label.insert(
+          _edge_label.cend(), n, static_cast<uint32_t>(UNDEFINED));
+      _parent.insert(_parent.cend(), n, static_cast<uint32_t>(UNDEFINED));
     } catch (...) {
       _edge_label.resize(old_nr_nodes);
       _parent.resize(old_nr_nodes);
