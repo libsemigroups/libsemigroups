@@ -47,6 +47,7 @@ namespace libsemigroups {
     Presentation<word_type> abacus_jones_monoid(size_t n, size_t d);
     Presentation<word_type> alternating_group(size_t n);
     Presentation<word_type> brauer_monoid(size_t n);
+    Presentation<word_type> braid_group(size_t n);
     Presentation<word_type> chinese_monoid(size_t n);
     Presentation<word_type> cyclic_inverse_monoid(size_t n);
     Presentation<word_type> dual_symmetric_inverse_monoid(size_t n);
@@ -1386,6 +1387,19 @@ namespace libsemigroups {
                                                                      size_t d) {
       return abacus_jones_monoid_AJP25(n, d);
     }
+
+    //! \brief A presentation for the Braid group.
+    //!
+    //! This function returns a monoid presentation defining the Braid group
+    //! with \p n - 1 generators, as described in Equation (2) of
+    //! \cite Birman2005aa.
+    //!
+    //! \param n the degree, or equivalently the number of generators plus \c 1.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 3`.
+    [[nodiscard]] Presentation<word_type> braid_group(size_t n);
 
     //! @}
 

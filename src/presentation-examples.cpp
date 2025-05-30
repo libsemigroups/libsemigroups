@@ -2043,5 +2043,45 @@ namespace libsemigroups {
       return p;
     }
 
+    Presentation<word_type> braid_group(size_t n) {
+      using words::pow;
+      using words::operator+;
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION("the argument must be at least 3, found {}", n);
+      }
+
+      Presentation<word_type> p;
+      p.alphabet(2 * n - 2);
+      p.contains_empty_word(true);
+      auto s = p.alphabet();
+      // add inverse rules
+      for (size_t i = 0; i < n - 1; ++i) {
+        presentation::add_rule(p, {s[i], s[i + n - 1]}, {s[i + n - 1], s[i]});
+      }
+      for (size_t i = 0; i < n - 1; ++i) {
+        presentation::add_rule(p, {s[i], s[i + n - 1]}, {});
+      }
+
+      for (size_t i = 0; i < n - 2; ++i) {
+        presentation::add_rule(
+            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
+      }
+      for (size_t i = n - 1; i < 2 * n - 3; ++i) {
+        presentation::add_rule(
+            p, {s[i], s[i + 1], s[i]}, {s[i + 1], s[i], s[i + 1]});
+      }
+      for (size_t i = 0; i < n - 1; ++i) {
+        for (size_t j = i + 2; j < n - 1; ++j) {
+          presentation::add_rule(p, {s[i], s[j]}, {s[j], s[i]});
+        }
+      }
+      for (size_t i = n - 1; i < 2 * n - 2; ++i) {
+        for (size_t j = i + 2; j < 2 * n - 2; ++j) {
+          presentation::add_rule(p, {s[i], s[j]}, {s[j], s[i]});
+        }
+      }
+      return p;
+    }
+
   }  // namespace presentation::examples
 }  // namespace libsemigroups

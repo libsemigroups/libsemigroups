@@ -33,6 +33,8 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/config.hpp"  // LIBSEMIGROUPS_EIGEN_ENABLED
+
 #include "libsemigroups/constants.hpp"     // for operator==, operator!=
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, to_present...
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
@@ -303,5 +305,25 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "099",
+                          "Braid group 4 generators",
+                          "[quick]") {
+    auto        rg = ReportGuard(false);
+    KnuthBendix kb(congruence_kind::twosided, braid_group(5));
+    REQUIRE(kb.presentation().contains_empty_word());
+    REQUIRE(kb.presentation().alphabet().size() == 8);
+    REQUIRE(kb.presentation().rules.size() == 40);
+
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    REQUIRE(is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+#endif
+
+    REQUIRE_THROWS_AS(braid_group(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(braid_group(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(braid_group(2), LibsemigroupsException);
   }
 }  // namespace libsemigroups
