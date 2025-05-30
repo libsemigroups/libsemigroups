@@ -2134,12 +2134,106 @@ namespace libsemigroups {
     // TODO(later) add balance that checks p contains empty word, no duplicate
     // letters in alphabet, and inverses are valid.
 
-    // // TODO(later) do a proper version of this, where the inverses are
-    // // specified, rather than being assumed to be upper/lower cases
-    // template <typename Word>
-    // void add_cyclic_conjugates(Presentation<Word>& p,
-    //                            Word const&         lhs,
-    //                            Word const&         rhs);
+    // TODO version of balance that only specified inverses, and uses the
+    // alphabet as the letters
+
+    //! \brief Add all cyclic permutations of a word as relators in a
+    //! presentation.
+    //!
+    //! This function adds one rule with left-hand side \c w and right-hand side
+    //! the empty word to the presentation \p p, for every cyclic
+    //! permutation \c w of \p relator.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the word \p relator.
+    //! \param p the presentation.
+    //! \param relator the word.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function performs no checks that the letters in \p relator belong
+    //! to the alphabet of \p p or that \p p contains the empty word.
+    //!
+    //! \note If multiple cyclic permutations of \p relator are equal, then
+    //! there will be duplicate rules added to the presentation \p p. You can
+    //! remove these by calling \ref remove_duplicate_rules.
+    template <typename Word1, typename Word2>
+    void add_cyclic_conjugates_no_checks(Presentation<Word1>& p,
+                                         Word2 const&         relator);
+
+    //! \brief Add all cyclic permutations of a word as relators in a
+    //! presentation.
+    //!
+    //! This is an overload for
+    //! \ref add_cyclic_conjugates_no_checks(Presentation<Word1>&, Word2 const&)
+    //! to allow, for example, std::initializer_list to be used for the
+    //! parameters \p relator.
+    template <typename Word>
+    void add_cyclic_conjugates_no_checks(Presentation<Word>& p,
+                                         Word const&         relator) {
+      add_cyclic_conjugates_no_checks<Word, Word>(p, relator);
+    }
+
+    //! \brief Add all cyclic permutations of a word as relators in a
+    //! presentation.
+    //!
+    //! This is an overload for
+    //! \ref add_cyclic_conjugates_no_checks(Presentation<Word1>&, Word2 const&)
+    //! to allow, string literals to be used for the parameters \p relator.
+    inline void add_cyclic_conjugates_no_checks(Presentation<std::string>& p,
+                                                char const* relator) {
+      add_cyclic_conjugates_no_checks<std::string, std::string_view>(
+          p, std::string_view(relator));
+    }
+
+    //! \brief Add all cyclic permutations of a word as relators in a
+    //! presentation.
+    //!
+    //! This function adds one rule with left-hand side \c w and right-hand side
+    //! the empty word to the presentation \p p, for every cyclic
+    //! permutation \c w of \p relator.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the word \p relator.
+    //! \param p the presentation.
+    //! \param relator the word.
+    //!
+    //! \throws LibsemigroupsException if \p relator contains any letters not
+    //! belonging to `p.alphabet()`.
+    //!
+    //! \throws LibsemigroupsException if \p p does not contain the empty word.
+    //!
+    //! \note If multiple cyclic permutations of \p relator are equal, then
+    //! there will be duplicate rules added to the presentation \p p. You can
+    //! remove these by calling \ref remove_duplicate_rules.
+    template <typename Word1, typename Word2>
+    void add_cyclic_conjugates(Presentation<Word1>& p, Word2 const& relator);
+
+    //! \brief Add all cyclic permutations of a word as relators in a
+    //! presentation.
+    //!
+    //! This is an overload for
+    //! \ref add_cyclic_conjugates(Presentation<Word1>&, Word2 const&)
+    //! to allow, for example, std::initializer_list to be used for the
+    //! parameters \p relator.
+    template <typename Word>
+    void add_cyclic_conjugates(Presentation<Word>& p, Word const& relator) {
+      add_cyclic_conjugates<Word, Word>(p, relator);
+    }
+
+    //! \brief Add all cyclic permutations of a word as relators in a
+    //! presentation.
+    //!
+    //! This is an overload for
+    //! \ref add_cyclic_conjugates(Presentation<Word1>&, Word2 const&)
+    //! to allow, string literals to be used for the parameters \p relator.
+    inline void add_cyclic_conjugates(Presentation<std::string>& p,
+                                      char const*                relator) {
+      add_cyclic_conjugates<std::string, std::string_view>(
+          p, std::string_view(relator));
+    }
 
     //! \brief Return the code that would create \p p in GAP.
     //!

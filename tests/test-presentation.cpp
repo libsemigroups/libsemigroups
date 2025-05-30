@@ -3183,4 +3183,79 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE(p.alphabet().size() == 256);
   }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "078",
+                                   "add_cyclic_conjugates",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type,
+                                   (StaticVector1<uint16_t, 3>) ) {
+    using Word = TestType;
+
+    Presentation<Word> p;
+    p.alphabet({97, 98, 99});
+    p.contains_empty_word(true);
+
+    presentation::add_cyclic_conjugates(p, {97, 98, 99});
+    presentation::add_cyclic_conjugates(p, {97, 97, 97});
+
+    REQUIRE(p.rules
+            == std::vector<Word>({{97, 98, 99},
+                                  {},
+                                  {98, 99, 97},
+                                  {},
+                                  {99, 97, 98},
+                                  {},
+                                  {97, 98, 99},
+                                  {},
+                                  {97, 97, 97},
+                                  {},
+                                  {97, 97, 97},
+                                  {},
+                                  {97, 97, 97},
+                                  {},
+                                  {97, 97, 97},
+                                  {}}));
+
+    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, {100, 101}),
+                      LibsemigroupsException);
+    p.contains_empty_word(false);
+    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, {99, 97, 99}),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "079",
+                          "add_cyclic_conjugates(char const*)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    // Intentionally use no_checks in next line to test this specific function
+    presentation::add_cyclic_conjugates_no_checks(p, "bca");
+    p.contains_empty_word(true);
+    presentation::add_cyclic_conjugates(p, "abc");
+    REQUIRE(p.rules
+            == std::vector<std::string>({"bca",
+                                         "",
+                                         "cab",
+                                         "",
+                                         "abc",
+                                         "",
+                                         "bca",
+                                         "",
+                                         "abc",
+                                         "",
+                                         "bca",
+                                         "",
+                                         "cab",
+                                         "",
+                                         "abc",
+                                         ""}));
+    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "de"),
+                      LibsemigroupsException);
+    p.contains_empty_word(false);
+    REQUIRE_THROWS_AS(presentation::add_cyclic_conjugates(p, "caca"),
+                      LibsemigroupsException);
+  }
 }  // namespace libsemigroups
