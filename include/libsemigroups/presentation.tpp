@@ -1043,36 +1043,26 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(later) do a proper version of this
-    // template <typename Word>
-    // void add_cyclic_conjugates(Presentation<Word>& p,
-    //                            Word const&         lhs,
-    //                            Word const&         rhs) {
-    //   p.throw_if_letter_not_in_alphabet(lhs.cbegin(), lhs.cend());
-    //   p.throw_if_letter_not_in_alphabet(rhs.cbegin(), rhs.cend());
-    //   for (size_t i = 0; i < lhs.size(); ++i) {
-    //     std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
-    //     lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
-    //     for (auto it = lcopy.begin(); it < lcopy.begin() + i; ++it) {
-    //       if (std::isupper(*it)) {
-    //         *it = std::tolower(*it);
-    //       } else {
-    //         *it = std::toupper(*it);
-    //       }
-    //     }
+    template <typename Word1, typename Word2>
+    void add_cyclic_conjugates_no_checks(Presentation<Word1>& p,
+                                         Word2 const&         relator) {
+      for (size_t i = 0; i <= relator.size(); ++i) {
+        Word1 copy(relator);
+        std::rotate(copy.begin(), copy.begin() + i, copy.end());
+        presentation::add_rule_no_checks(p, copy, Word1());
+      }
+    }
 
-    //     std::string rcopy(rhs.cbegin(), rhs.cend() - i + 1);
-    //     rcopy.insert(rcopy.end(), lhs.crbegin(), lhs.crend() + i);
-    //     for (auto it = rcopy.end() - i; it < rcopy.end(); ++it) {
-    //       if (std::isupper(*it)) {
-    //         *it = std::tolower(*it);
-    //       } else {
-    //         *it = std::tolower(*it);
-    //       }
-    //     }
-    //     presentation::add_rule(p, lcopy, rcopy);
-    //   }
-    // }
+    template <typename Word1, typename Word2>
+    void add_cyclic_conjugates(Presentation<Word1>& p, Word2 const& relator) {
+      p.throw_if_letter_not_in_alphabet(relator.begin(), relator.end());
+      if (!p.contains_empty_word()) {
+        LIBSEMIGROUPS_EXCEPTION("this function requires the presentation to "
+                                "contain the empty word, did you mean to "
+                                "call contains_empty_word(true) first?");
+      }
+      add_cyclic_conjugates_no_checks(p, relator);
+    }
 
   }  // namespace presentation
 
