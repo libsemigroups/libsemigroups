@@ -1041,7 +1041,7 @@ namespace libsemigroups {
     //! to \ref number_of_nodes).
     [[nodiscard]] auto
     labels_and_targets_no_checks(node_type source) const noexcept {
-      return rx::enumerate(targets_no_checks(source));
+      return rx::zip(rx::seq<node_type>(), targets_no_checks(source));
     }
 
     //! \brief Returns a range object containing pairs consisting of edge
