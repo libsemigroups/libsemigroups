@@ -179,7 +179,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "004",
                           "infinite 2-sided congruence from presentation",
-                          "[quick][cong]") {
+                          "[quick][cong][no-valgrind]") {
     auto rg = ReportGuard(false);
 
     Presentation<word_type> p;

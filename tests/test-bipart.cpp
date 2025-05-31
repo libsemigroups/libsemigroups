@@ -271,7 +271,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
                           "009",
                           "hash",
-                          "[quick][bipartition]") {
+                          "[quick][bipartition][no-valgrind]") {
     auto x = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto expected = x.hash_value();
