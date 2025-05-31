@@ -16,8 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the declaration of a class implementing Gabow's algorithm
-// for WordGraphs.
+// This file contains TODO
 
 #ifndef LIBSEMIGROUPS_DETAIL_CITOW_HPP_
 #define LIBSEMIGROUPS_DETAIL_CITOW_HPP_
@@ -39,7 +38,7 @@ namespace libsemigroups {
     class citow {
      protected:
       Iterator     _it;
-      Thing const* _ptr;
+      Thing const* _ptr;  // TODO change to Presentation
 
      public:
       using internal_iterator_type = Iterator;
@@ -53,7 +52,7 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      citow(Thing const* tc, Iterator it) : _it(it), _ptr(tc) {}
+      citow(Thing const* thing, Iterator it) : _it(it), _ptr(thing) {}
 
       reference operator*() const {
         return _ptr->presentation().index_no_checks(*_it);
@@ -131,28 +130,32 @@ namespace libsemigroups {
       class proxy_ref {
        private:
         Iterator     _it;
-        Thing const* _ptr;
+        Thing const* _ptr;  // TODO(0) use Presentation const& instead
 
        public:
+        using native_letter_type =
+            typename std::decay_t<decltype(_ptr->presentation())>::letter_type;
+
         // Constructor from Thing and iterator
-        proxy_ref(Thing const* tc, Iterator it) noexcept : _it(it), _ptr(tc) {}
+        proxy_ref(Thing const* thing, Iterator it) noexcept
+            : _it(it), _ptr(thing) {}
 
         // Assignment operator to allow setting the value via the proxy
-        Iterator operator=(letter_type i) noexcept {
+        Iterator operator=(native_letter_type i) noexcept {
           *_it = _ptr->presentation().letter_no_checks(i);
           return _it;
         }
 
         // Conversion operator to obtain the letter corresponding to the
         // letter_type
-        [[nodiscard]] operator letter_type() const noexcept {
+        [[nodiscard]] operator native_letter_type() const noexcept {
           return _ptr->presentation().index_no_checks(*_it);
         }
       };  // class proxy_ref
 
      public:
       using internal_iterator_type = Iterator;
-      using value_type             = letter_type;
+      using value_type             = typename proxy_ref::native_letter_type;
       using reference              = proxy_ref;
       using const_reference        = value_type;
 
@@ -168,6 +171,12 @@ namespace libsemigroups {
 
       reference operator*() {
         return reference(this->_ptr, this->_it);
+      }
+
+      // TODO probably require more of these
+      itow& operator++() {
+        citow<Thing, Iterator>::operator++();
+        return *this;
       }
     };  // class itow
 

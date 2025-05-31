@@ -64,6 +64,7 @@ pkginclude_HEADERS += include/libsemigroups/deprecated.hpp
 pkginclude_HEADERS += include/libsemigroups/dot.hpp
 pkginclude_HEADERS += include/libsemigroups/exception.hpp
 pkginclude_HEADERS += include/libsemigroups/forest.hpp
+pkginclude_HEADERS += include/libsemigroups/forest.tpp
 pkginclude_HEADERS += include/libsemigroups/freeband.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin-base.hpp
 pkginclude_HEADERS += include/libsemigroups/froidure-pin.hpp

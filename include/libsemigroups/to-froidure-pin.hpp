@@ -174,13 +174,12 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if `kb.kind()` is not
   //! \ref congruence_kind.twosided.
   template <template <typename...> typename Thing,
+            typename Word,
             typename Rewriter,
             typename ReductionOrder>
-  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
-      -> std::enable_if_t<
-          std::is_same_v<Thing<int>, FroidurePin<int>>,
-          FroidurePin<
-              detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>>;
+  auto to(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) -> std::enable_if_t<
+      std::is_same_v<Thing<int>, FroidurePin<int>>,
+      FroidurePin<detail::KBE<KnuthBendix<Word, Rewriter, ReductionOrder>>>>;
 
   //! \ingroup to_froidure_pin_group
   //!

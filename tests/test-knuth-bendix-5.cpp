@@ -156,7 +156,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "122",
-                                   "internal_string_to_word",
+                                   "internal_string_to_word",  // TODO(0) rename
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
@@ -169,7 +169,7 @@ namespace libsemigroups {
     KnuthBendix<word_type, TestType> kb(twosided, p);
     REQUIRE(kb.confluent());
     auto t = to<FroidurePin>(kb);
-    REQUIRE(t.generator(0).word(kb) == 0_w);
+    REQUIRE(t.generator(0).word() == 0_w);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -473,6 +473,9 @@ namespace libsemigroups {
     add_generating_pair(kb, "aabbaaaba", "baaab");
 
     kb.run();
+
+    REQUIRE(kb.internal_presentation().alphabet().size()
+            == kb.presentation().alphabet().size());
 
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
