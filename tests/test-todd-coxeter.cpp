@@ -505,7 +505,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "003",
                           "constructed from FroidurePin",
-                          "[todd-coxeter][quick][no-coverage]") {
+                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto rg = ReportGuard(false);
 
     FroidurePin S = make<FroidurePin>(
@@ -1791,7 +1791,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "034",
                           "symmetric_group(7) Burnside",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-valgrind]") {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
@@ -1811,7 +1811,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "035",
                           "Easdown-East-FitzGerald DualSymInv(5)",
-                          "[todd-coxeter][quick][no-coverage]") {
+                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto       rg = ReportGuard(false);
     auto const n  = 5;
     auto p = presentation::examples::dual_symmetric_inverse_monoid_EEF07(n);
@@ -1852,7 +1852,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "037",
                           "stellar_monoid(7) (Gay-Hivert)",
-                          "[todd-coxeter][quick][no-coverage]") {
+                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 7;
     auto         p  = presentation::examples::stellar_monoid_GH19(n);
@@ -1956,7 +1956,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "042",
                           "temperley_lieb_monoid(10) (East)",
-                          "[todd-coxeter][quick][no-coverage]") {
+                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 10;
     auto         p  = presentation::examples::temperley_lieb_monoid_Eas21(n);
@@ -2629,7 +2629,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "065",
                           "Walker 2",
-                          "[todd-coxeter][quick][no-coverage]") {
+                          "[todd-coxeter][quick][no-coverage][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -2865,7 +2865,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "070",
                           "Walker 6",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3150,7 +3150,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "078",
                           "Renner monoid type D4 (Gay-Hivert), q = 1",
-                          "[quick][todd-coxeter][no-coverage]") {
+                          "[quick][todd-coxeter][no-coverage][no-valgrind]") {
     auto rg = ReportGuard(false);
     auto p  = presentation::examples::renner_type_D_monoid(4, 1);
     presentation::normalize_alphabet(p);
@@ -4906,7 +4906,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "120",
                           "check full enum not triggered",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");

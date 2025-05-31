@@ -1201,7 +1201,7 @@ namespace libsemigroups {
       "Example",
       "098",
       "abacus_jones_monoid(n, d) when 5 < n < 7 and 1 <= d < 4",
-      "[quick][pres-examples]") {
+      "[quick][pres-examples][no-valgrind]") {
     auto                   rg = ReportGuard(false);
     ToddCoxeter<word_type> tc;
 

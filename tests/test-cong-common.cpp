@@ -337,7 +337,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "008",
                                    "to<FroidurePin>",
-                                   "[quick]",
+                                   "[quick][no-valgrind]",
                                    Congruence<std::string>) {
     auto rg = ReportGuard(false);
     using knuth_bendix::normal_forms;
