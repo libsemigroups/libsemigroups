@@ -177,7 +177,7 @@ namespace libsemigroups {
       // Not noexcept because DynamicArray2::DynamicArray2(size_type, size_type)
       // can throw.
       explicit DynamicArray2(std::initializer_list<std::initializer_list<T>> il)
-          : DynamicArray2(il.begin()->size(), il.size()) {
+          : DynamicArray2(std::empty(il) ? 0 : il.begin()->size(), il.size()) {
         auto it = _vec.begin();
         for (auto const& row : il) {
           LIBSEMIGROUPS_ASSERT(row.size() == _nr_used_cols);
