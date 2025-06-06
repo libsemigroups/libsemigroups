@@ -2905,7 +2905,8 @@ namespace libsemigroups {
     //! \endcode
     explicit DynamicMatrix(
         std::initializer_list<std::initializer_list<scalar_type>> const& m)
-        : MatrixDynamicDim(m.size(), m.begin()->size()), MatrixCommon(m) {}
+        : MatrixDynamicDim(m.size(), std::empty(m) ? 0 : m.begin()->size()),
+          MatrixCommon(m) {}
 
     //! \brief Construct a matrix from std::vector of
     //! std::vector of scalars.
@@ -2922,7 +2923,8 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and \f$n\f$ is the
     //! number of columns in the matrix being constructed.
     explicit DynamicMatrix(std::vector<std::vector<scalar_type>> const& m)
-        : MatrixDynamicDim(m.size(), m.begin()->size()), MatrixCommon(m) {}
+        : MatrixDynamicDim(m.size(), std::empty(m) ? 0 : m.begin()->size()),
+          MatrixCommon(m) {}
 
     //! \brief Construct a row from a row view.
     //!
@@ -3302,7 +3304,8 @@ namespace libsemigroups {
     explicit DynamicMatrix(
         Semiring const*                                                  sr,
         std::initializer_list<std::initializer_list<scalar_type>> const& rws)
-        : MatrixDynamicDim(rws.size(), rws.begin()->size()),
+        : MatrixDynamicDim(rws.size(),
+                           std::empty(rws) ? 0 : rws.begin()->size()),
           MatrixCommon(rws),
           _semiring(sr) {}
 
@@ -3680,7 +3683,7 @@ namespace libsemigroups {
         -> std::enable_if_t<IsStaticMatrix<Mat>> {
       // Only call this if you've already called throw_if_any_row_wrong_size
       uint64_t const R = m.size();
-      uint64_t const C = m.begin()->size();
+      uint64_t const C = std::empty(m) ? 0 : m.begin()->size();
       if (R != Mat::nr_rows || C != Mat::nr_cols) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid argument, cannot initialize an {}x{} matrix with compile "

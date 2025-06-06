@@ -1477,7 +1477,7 @@ namespace libsemigroups {
   std::enable_if_t<IsWordGraph<Return>, Return>
   make(size_t                                                      num_nodes,
        std::vector<std::vector<typename Return::node_type>> const& edges) {
-    Return result(num_nodes, edges.begin()->size());
+    Return result(num_nodes, std::empty(edges) ? 0 : edges.begin()->size());
     for (size_t i = 0; i < edges.size(); ++i) {
       for (size_t j = 0; j < (edges.begin() + i)->size(); ++j) {
         auto val = *((edges.begin() + i)->begin() + j);
