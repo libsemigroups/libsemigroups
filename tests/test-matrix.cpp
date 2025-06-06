@@ -1162,4 +1162,29 @@ namespace libsemigroups {
     delete sr;
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "025",
+                                   "empty matrix",
+                                   "[quick]",
+                                   BMat<>,
+                                   IntMat<>,
+                                   MaxPlusMat<>,
+                                   MinPlusMat<>) {
+    TestType m = make<TestType>(
+        std::vector<std::vector<typename TestType::scalar_type>>());
+    REQUIRE(m.number_of_rows() == 0);
+    REQUIRE(m.number_of_cols() == 0);
+  }
+  LIBSEMIGROUPS_TEST_CASE("Matrix",
+                          "026",
+                          "empty matrix with Semiring",
+                          "[quick]") {
+    NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
+    auto                 x
+        = NTPMat<>(sr, std::initializer_list<std::initializer_list<size_t>>());
+    REQUIRE(x.number_of_rows() == 0);
+    REQUIRE(x.number_of_cols() == 0);
+    delete sr;
+  }
+
 }  // namespace libsemigroups
