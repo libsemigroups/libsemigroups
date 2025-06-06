@@ -46,7 +46,8 @@ namespace libsemigroups {
   //! This page contains the documentation for the class LibsemigroupsException.
   //! All exceptions thrown by `libsemigroups` are LibsemigroupsException
   //! instances.
-  struct LibsemigroupsException : public std::runtime_error {
+  struct __attribute__((visibility("default"))) LibsemigroupsException
+      : public std::runtime_error {
     //! \brief Create an exception.
     //!
     //! Create an exception with filename, line number, function name, and
