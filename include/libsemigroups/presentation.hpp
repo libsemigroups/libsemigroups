@@ -193,7 +193,7 @@ namespace libsemigroups {
     //!
     //! \param n the size of the alphabet.
     //!
-    //! \returns A const reference to \c *this.
+    //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if the value of \p n is greater than the
     //! maximum number of letters supported by \ref letter_type.
@@ -215,7 +215,7 @@ namespace libsemigroups {
     //!
     //! \param lphbt the alphabet.
     //!
-    //! \returns A const reference to \c *this.
+    //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if there are duplicate letters in
     //! \p lphbt.
@@ -235,7 +235,7 @@ namespace libsemigroups {
     //!
     //! \param lphbt the alphabet.
     //!
-    //! \returns A const reference to \c *this.
+    //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if there are duplicate letters in
     //! \p lphbt.
@@ -253,7 +253,7 @@ namespace libsemigroups {
     //!
     //! Sets the alphabet to be the letters in \ref rules.
     //!
-    //! \returns A const reference to \c *this.
+    //! \returns A reference to \c *this.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -367,7 +367,7 @@ namespace libsemigroups {
     //! right-hand side of the rule to be added.
     //! \param rhs_end an iterator pointing one past the last letter of the
     //! right-hand side of the rule to be added.
-    //! \returns A const reference to \c *this.
+    //! \returns A reference to \c *this.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -516,7 +516,7 @@ namespace libsemigroups {
     //!
     //! \param val whether the presentation can contain the empty word.
     //!
-    //! \returns A const reference to \c *this.
+    //! \returns A reference to \c *this.
     //!
     //! \exceptions
     //! \noexcept
