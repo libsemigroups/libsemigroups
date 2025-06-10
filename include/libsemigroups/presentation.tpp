@@ -153,7 +153,7 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  void Presentation<Word>::add_generator_no_checks(
+  Presentation<Word>& Presentation<Word>::add_generator_no_checks(
       typename Presentation<Word>::letter_type x) {
     size_t index = _alphabet_map.size();
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -163,19 +163,19 @@ namespace libsemigroups {
     _alphabet_map.emplace(x, index);
 #endif
     _alphabet.push_back(x);
+    return *this;
   }
 
   template <typename Word>
-  void Presentation<Word>::add_generator(
+  Presentation<Word>& Presentation<Word>::add_generator(
       typename Presentation<Word>::letter_type x) {
-    if (!in_alphabet(x)) {
-      add_generator_no_checks(x);
-    } else {
+    if (in_alphabet(x)) {
       LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
                               "{}, expected an unused letter",
                               detail::to_printable(x),
                               detail::to_printable(alphabet()));
     }
+    return add_generator_no_checks(x);
   }
 
   // TODO(now) should this be a helper function?
@@ -187,7 +187,7 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  void Presentation<Word>::remove_generator_no_checks(
+  Presentation<Word>& Presentation<Word>::remove_generator_no_checks(
       typename Presentation<Word>::letter_type x) {
     size_t index = _alphabet_map[x];
     _alphabet_map.erase(x);
@@ -196,10 +196,11 @@ namespace libsemigroups {
       --_alphabet_map[*it];
     }
     _alphabet.erase(start, start + 1);
+    return *this;
   }
 
   template <typename Word>
-  void Presentation<Word>::remove_generator(
+  Presentation<Word>& Presentation<Word>::remove_generator(
       typename Presentation<Word>::letter_type x) {
     throw_if_alphabet_has_duplicates();
     if (in_alphabet(x)) {
@@ -210,6 +211,7 @@ namespace libsemigroups {
                               detail::to_printable(x),
                               detail::to_printable(alphabet()));
     }
+    return *this;
   }
 
   template <typename Word>
