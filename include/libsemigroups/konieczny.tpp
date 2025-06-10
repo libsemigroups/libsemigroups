@@ -244,8 +244,8 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   template <typename T>
-  void Konieczny<Element, Traits>::add_generators(T const& first,
-                                                  T const& last) {
+  Konieczny<Element, Traits>&
+  Konieczny<Element, Traits>::add_generators(T const& first, T const& last) {
     if (!_can_accept_generators) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add generators after the algorithm has begun!");
@@ -269,6 +269,7 @@ namespace libsemigroups {
     // However, the next line does always do something; the rank state and rep
     // vecs depend on the generators.
     init_rank_state_and_rep_vecs();
+    return *this;
   }
 
   template <typename Element, typename Traits>

@@ -1387,7 +1387,7 @@ namespace libsemigroups {
              && is_regular_element_no_checks(this->to_internal_const(x));
     }
 
-    //! \brief  \brief Add collection of generators from iterators.
+    //! \brief Add collection of generators from iterators.
     //!
     //! Add copies of the generators in the range \p first to \p last to
     //! \c this.  See \ref add_generator for a detailed description.
@@ -1397,11 +1397,13 @@ namespace libsemigroups {
     //! \param first iterator pointing to the first generator to add.
     //! \param last iterator pointing one past the last generator to add.
     //!
+    //! \returns A reference to `*this`.
+    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
     //! * \ref started returns \c true
     template <typename T>
-    void add_generators(T const& first, T const& last);
+    Konieczny& add_generators(T const& first, T const& last);
 
     //! \brief Add a copy of an element to the generators of a Konieczny.
     //!
@@ -1410,11 +1412,13 @@ namespace libsemigroups {
     //!
     //! \param gen the generator to add.
     //!
+    //! \returns A reference to `*this`.
+    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with \c K.degree();
     //! * \c K.started() returns \c true.
-    void add_generator(const_reference gen) {
-      add_generators(&gen, &gen + 1);
+    Konieczny& add_generator(const_reference gen) {
+      return add_generators(&gen, &gen + 1);
     }
 
     ////////////////////////////////////////////////////////////////////////
