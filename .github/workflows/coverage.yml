@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo ln -sf /usr/bin/gcov-13 /usr/bin/gcov
           export GCOV=/usr/bin/gcov-13
-          etc/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
+          ci/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
       - name: Uploading to Codecov . . .
         uses: codecov/codecov-action@v5
         with:
