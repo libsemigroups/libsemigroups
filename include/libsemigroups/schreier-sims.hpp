@@ -829,7 +829,7 @@ namespace libsemigroups {
     //! Linear in the current number of base points.
     // TODO rename to add_basepoint?
     // not noexcept because can throw
-    void add_base_point(point_type pt);
+    SchreierSims& add_base_point(point_type pt);
 
     //! \brief Get a base point.
     //!

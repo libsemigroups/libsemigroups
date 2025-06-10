@@ -263,7 +263,8 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  void SchreierSims<N, Point, Element, Traits>::add_base_point(point_type pt) {
+  SchreierSims<N, Point, Element, Traits>&
+  SchreierSims<N, Point, Element, Traits>::add_base_point(point_type pt) {
     throw_if_point_gt_degree(pt);
     if (finished()) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -279,6 +280,7 @@ namespace libsemigroups {
                               m);
     }
     internal_add_base_point(pt);
+    return *this;
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
