@@ -1052,6 +1052,8 @@ namespace libsemigroups {
     //! \param first iterator pointing to the first generator to add.
     //! \param last iterator pointing one past the last generator to add.
     //!
+    //! \returns A reference to `*this`.
+    //!
     //! \throws LibsemigroupsException if any of the degree of \p x is
     //! incompatible with the existing degree.
     //!
@@ -1089,7 +1091,7 @@ namespace libsemigroups {
     //!
     //! \param x the generator to add.
     //!
-    //! \returns A const reference to `*this`.
+    //! \returns A reference to `*this`.
     //!
     //! \note
     //! This function triggers a (possibly partial) enumeration if and only if
