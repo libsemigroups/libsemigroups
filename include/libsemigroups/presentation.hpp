@@ -432,9 +432,11 @@ namespace libsemigroups {
     //!
     //! \param x the letter to add as a generator.
     //!
+    //! \returns A reference to \c *this.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    void add_generator_no_checks(letter_type x);
+    Presentation& add_generator_no_checks(letter_type x);
 
     //! \brief Add \p x as a generator.
     //!
@@ -442,14 +444,18 @@ namespace libsemigroups {
     //!
     //! \param x the letter to add as a generator.
     //!
+    //! \returns A reference to \c *this.
+    //!
     //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
-    void add_generator(letter_type x);
+    Presentation& add_generator(letter_type x);
 
     //! \brief Remove \p x as a generator.
     //!
     //! Remove the letter \p x as a generator.
     //!
     //! \param x the letter to remove as a generator.
+    //!
+    //! \returns A reference to \c *this.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -461,8 +467,7 @@ namespace libsemigroups {
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the letter \p x is not a generator, then bad things will
     //! happen.
-    //!
-    void remove_generator_no_checks(letter_type x);
+    Presentation& remove_generator_no_checks(letter_type x);
 
     //! \brief Remove \p x as a generator.
     //!
@@ -470,12 +475,14 @@ namespace libsemigroups {
     //!
     //! \param x the letter to remove as a generator.
     //!
+    //! \returns A reference to \c *this.
+    //!
     //! \throws LibsemigroupsException if \p x is not in `p.alphabet()`.
     //!
     //! \complexity
     //! Average case: linear in the length of the alphabet, worst case:
     //! quadratic in the length of the alphabet.
-    void remove_generator(letter_type x);
+    Presentation& remove_generator(letter_type x);
 
     //! \brief Return whether the empty word is a valid relation word.
     //!
