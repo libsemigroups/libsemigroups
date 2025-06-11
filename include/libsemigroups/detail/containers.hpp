@@ -425,6 +425,7 @@ namespace libsemigroups {
       template <typename S, typename B>
       void append(DynamicArray2<S, B> const& copy) {
         LIBSEMIGROUPS_ASSERT(copy._nr_used_cols == _nr_used_cols);
+        LIBSEMIGROUPS_ASSERT(&copy != this);
 
         size_type old_nr_rows = _nr_rows;
         add_rows(copy._nr_rows);

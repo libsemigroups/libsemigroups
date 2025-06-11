@@ -762,13 +762,18 @@ namespace libsemigroups {
             == "<WordGraph with 1,005 nodes, 1,004 edges, & out-degree 1>");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "043",
-                          "WordGraph hash_value",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "043", "hash_value", "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
     REQUIRE_NOTHROW(wg.hash_value());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "044",
+                          "disjoint_union_inplace exception",
+                          "[quick]") {
+    WordGraph<uint32_t> wg(0, 1);
+    REQUIRE_THROWS_AS(wg.disjoint_union_inplace(wg), LibsemigroupsException);
   }
 }  // namespace libsemigroups
