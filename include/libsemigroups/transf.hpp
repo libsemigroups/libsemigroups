@@ -793,6 +793,8 @@ namespace libsemigroups {
     //!
     //! \param m the number of points to add.
     //!
+    //! \returns A reference to `*this`.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
