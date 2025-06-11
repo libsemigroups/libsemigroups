@@ -1307,6 +1307,10 @@ namespace libsemigroups {
   template <typename Node>
   WordGraph<Node>&
   WordGraph<Node>::disjoint_union_inplace(WordGraph<Node> const& that) {
+    if (this == &that) {
+      LIBSEMIGROUPS_EXCEPTION("the argument <that> (a word graph) must be a "
+                              "distinct object from <*this>");
+    }
     if (out_degree() != that.out_degree()) {
       LIBSEMIGROUPS_EXCEPTION("expected word graphs with equal out-degrees "
                               "but found {} != {}",
