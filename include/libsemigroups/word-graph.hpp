@@ -2693,7 +2693,7 @@ namespace libsemigroups {
   //! This function outputs the word graph \p wg to the stream \p os.
   //! The word graph is represented by the out-neighbours of each node ordered
   //! according to their labels. The symbol `-` is used to denote that an
-  //! edge is not defined. For example, the word graph with 1 nodes,
+  //! edge is not defined. For example, the word graph with 1 node,
   //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
   //! represented as
   //! `{{-, 0}}`.
@@ -2726,7 +2726,7 @@ namespace libsemigroups {
   //!
   //! This function constructs a word graph from its arguments whose
   //! out-degree is specified by the length of the first item
-  //! in the 2nd parameter.
+  //! in the second parameter, or 0 if the second parameter is empty.
   //!
   //! \tparam Return the return type. Must satisfy \ref IsWordGraph<Return>.
   //!
