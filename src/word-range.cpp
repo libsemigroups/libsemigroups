@@ -290,6 +290,7 @@ namespace libsemigroups {
 
   [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr,
                                                    size_t           max_width) {
+    using detail::group_digits;
     word_type   first = wr.first();
     word_type   last  = wr.last();
     std::string order = (wr.order() == Order::lex) ? "lex" : "shortlex";
@@ -305,10 +306,10 @@ namespace libsemigroups {
     if (!print_short) {
       out = fmt::format("<WordRange of length {} between {} and {} with "
                         "letters in [0, {}) in {} order>",
-                        count,
+                        group_digits(count),
                         first,
                         last,
-                        wr.alphabet_size(),
+                        group_digits(wr.alphabet_size()),
                         order);
     }
 
@@ -319,8 +320,8 @@ namespace libsemigroups {
     if (print_short) {
       out = fmt::format(
           "<WordRange of length {} with letters in [0, {}) in {} order>",
-          count,
-          wr.alphabet_size(),
+          group_digits(count),
+          group_digits(wr.alphabet_size()),
           order);
     }
 
@@ -557,6 +558,8 @@ namespace libsemigroups {
 
   [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr,
                                                    size_t max_width) {
+    using detail::group_digits;
+
     std::string first    = sr.first();
     std::string last     = sr.last();
     std::string alphabet = sr.alphabet();
@@ -575,7 +578,7 @@ namespace libsemigroups {
       out = fmt::format(
           "<StringRange of length {} between \"{}\" and \"{}\" with letters "
           "in \"{}\" in {} order>",
-          count,
+          group_digits(count),
           first,
           last,
           alphabet,
@@ -587,7 +590,8 @@ namespace libsemigroups {
     }
 
     if (print_short) {
-      out = fmt::format("<StringRange of length {} in {} order>", count, order);
+      out = fmt::format(
+          "<StringRange of length {} in {} order>", group_digits(count), order);
     }
 
     return out;

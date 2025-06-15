@@ -1006,6 +1006,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   std::string to_human_readable_repr(
       detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
+    using detail::group_digits;
     std::string conf, genpairs;
     if (kb.confluent_known()) {
       conf = "confluent ";
@@ -1015,7 +1016,7 @@ namespace libsemigroups {
     }
     if (kb.number_of_generating_pairs() != 0) {
       genpairs = fmt::format("{} generating pairs + ",
-                             kb.number_of_generating_pairs());
+                             group_digits(kb.number_of_generating_pairs()));
     }
 
     return fmt::format(
@@ -1024,8 +1025,8 @@ namespace libsemigroups {
         kb.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
         to_human_readable_repr(kb.internal_presentation()),
         genpairs,
-        kb.number_of_active_rules(),
-        kb.number_of_inactive_rules());
+        group_digits(kb.number_of_active_rules()),
+        group_digits(kb.number_of_inactive_rules()));
   }
 
 }  // namespace libsemigroups

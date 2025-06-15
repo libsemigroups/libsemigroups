@@ -439,18 +439,20 @@ namespace libsemigroups {
 
   template <typename PresentationType>
   std::string to_human_readable_repr(Stephen<PresentationType> const& x) {
+    using detail::group_digits;
     if (!x.is_word_set()) {
       return fmt::format("<Stephen object over {} with no word set>",
                          to_human_readable_repr(x.presentation()));
     }
-    return fmt::format("<Stephen object over {} for {} with {} "
-                       "nodes and {} edges>",
-                       to_human_readable_repr(x.presentation()),
-                       x.word().size() < 10
-                           ? fmt::format("word {}", x.word())
-                           : fmt::format("{} letter word", x.word().size()),
-                       x.word_graph().number_of_active_nodes(),
-                       x.word_graph().number_of_edges());
+    return fmt::format(
+        "<Stephen object over {} for {} with {} "
+        "nodes and {} edges>",
+        to_human_readable_repr(x.presentation()),
+        x.word().size() < 10
+            ? fmt::format("word {}", x.word())
+            : fmt::format("{} letter word", group_digits(x.word().size())),
+        group_digits(x.word_graph().number_of_active_nodes()),
+        group_digits(x.word_graph().number_of_edges()));
   }
 
 }  // namespace libsemigroups

@@ -1106,16 +1106,17 @@ namespace libsemigroups {
 
   template <typename Word>
   std::string to_human_readable_repr(Presentation<Word> const& p) {
+    using detail::group_digits;
     size_t alphabet_size = p.alphabet().size();
     size_t n_rules       = p.rules.size() / 2;
     return fmt::format(
         "<{} presentation with {} letter{}, {} rule{}, and length {}>",
         (p.contains_empty_word() ? "monoid" : "semigroup"),
-        alphabet_size,
+        group_digits(alphabet_size),
         (alphabet_size == 1 ? "" : "s"),
-        n_rules,
+        group_digits(n_rules),
         (n_rules == 1 ? "" : "s"),
-        presentation::length(p));
+        group_digits(presentation::length(p)));
   }
 
   template <typename Word>

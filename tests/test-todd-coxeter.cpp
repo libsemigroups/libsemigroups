@@ -2160,7 +2160,7 @@ namespace libsemigroups {
       "055",
       "partial_transformation_monoid(5) Shutov",
       "[todd-coxeter][standard][no-coverage][no-valgrind]") {
-    auto   rg = ReportGuard(true);
+    auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = presentation::examples::partial_transformation_monoid_Shu60(n);
 

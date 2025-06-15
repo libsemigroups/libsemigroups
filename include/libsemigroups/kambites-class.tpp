@@ -838,13 +838,14 @@ namespace libsemigroups {
 
   template <typename Word>
   std::string to_human_readable_repr(Kambites<Word> const& k) {
+    using detail::group_digits;
     std::string suffix;
     if (k.finished()) {
       suffix += " with small overlap class ";
       if (k.small_overlap_class() == POSITIVE_INFINITY) {
         suffix += u8"+\u221E";
       } else {
-        suffix += fmt::format("{}", k.small_overlap_class());
+        suffix += fmt::format("{}", group_digits(k.small_overlap_class()));
       }
     }
     return fmt::format("<Kambites over {}{}>",
