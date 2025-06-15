@@ -2437,8 +2437,9 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   [[nodiscard]] inline std::string to_human_readable_repr(Ukkonen const& u) {
+    using detail::group_digits;
     return fmt::format("<Ukkonen with {} distinct words>",
-                       u.number_of_distinct_words());
+                       group_digits(u.number_of_distinct_words()));
   }
 
   //! \brief Return a human readable representation of an Ukkonen::State object.
@@ -2456,8 +2457,11 @@ namespace libsemigroups {
   [[nodiscard]] inline std::string
   to_human_readable_repr(Ukkonen::State const& st,
                          std::string const&    sep = "::") {
-    return fmt::format(
-        "<Ukkonen{}State with pos = {} and v = {}>", sep, st.pos, st.v);
+    using detail::group_digits;
+    return fmt::format("<Ukkonen{}State with pos = {} and v = {}>",
+                       sep,
+                       group_digits(st.pos),
+                       group_digits(st.v));
   }
 
   //! \brief Return a human readable representation of an Ukkonen::Node object.
@@ -2475,12 +2479,13 @@ namespace libsemigroups {
   [[nodiscard]] inline std::string
   to_human_readable_repr(Ukkonen::Node const& node,
                          std::string const&   sep = "::") {
+    using detail::group_digits;
     return fmt::format(
         "<Ukkonen{}Node with {} children and parent edge label [{}, {})>",
         sep,
-        node.children.size(),
-        node.l,
-        node.r);
+        group_digits(node.children.size()),
+        group_digits(node.l),
+        group_digits(node.r));
   }
 
   //! @}

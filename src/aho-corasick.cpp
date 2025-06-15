@@ -194,10 +194,11 @@ namespace libsemigroups {
   }
 
   std::string to_human_readable_repr(AhoCorasick const& ac) {
-    auto        n_nodes = ac.number_of_nodes();
-    std::string nodes
-        = (n_nodes == 1) ? "1 node" : std::to_string(n_nodes) + " nodes";
-    return "<AhoCorasick with " + nodes + ">";
+    using detail::group_digits;
+    auto n_nodes = ac.number_of_nodes();
+    return fmt::format("<AhoCorasick with {} node{}>",
+                       group_digits(n_nodes),
+                       n_nodes == 1 ? "" : "s");
   }
 
   [[nodiscard]] Dot aho_corasick::dot(AhoCorasick& ac) {

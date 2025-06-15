@@ -154,7 +154,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 40'320);
     REQUIRE(T.size() == 40'320);
     REQUIRE(to_human_readable_repr(S)
-            == "<SchreierSims with 2 generators, base size 7 & size 40320>");
+            == "<SchreierSims with 2 generators, base size 7 & size 40,320>");
 
     decltype(T) U(T);
     REQUIRE(U.finished());

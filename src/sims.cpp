@@ -1620,12 +1620,14 @@ namespace libsemigroups {
     return fmt::format("<SimsStats object>");
   }
 
-  namespace helper {
+  namespace detail {
 
     template <typename Subclass>
     [[nodiscard]] std::string
     sims_to_human_readable_repr_helper(SimsSettings<Subclass> const& x,
                                        std::string extra_text) {
+      using detail::group_digits;
+
       std::string result    = "";
       bool        needs_and = false;
 
@@ -1639,19 +1641,19 @@ namespace libsemigroups {
                 : ",";
       if ((x.included_pairs().size() > 0) && (x.excluded_pairs().size() > 0)) {
         result += fmt::format(" {} included and {} excluded pairs{}",
-                              x.included_pairs().size() / 2,
-                              x.excluded_pairs().size() / 2,
+                              group_digits(x.included_pairs().size() / 2),
+                              group_digits(x.excluded_pairs().size() / 2),
                               comma);
         needs_and = true;
       } else if (x.included_pairs().size() > 0) {
         result += fmt::format(" {} included pair{}{}",
-                              x.included_pairs().size() / 2,
+                              group_digits(x.included_pairs().size() / 2),
                               x.included_pairs().size() / 2 == 1 ? "" : "s",
                               comma);
         needs_and = true;
       } else if (x.excluded_pairs().size() > 0) {
         result += fmt::format(" {} excluded pair{}{}",
-                              x.excluded_pairs().size() / 2,
+                              group_digits(x.excluded_pairs().size() / 2),
                               x.excluded_pairs().size() / 2 == 1 ? "" : "s",
                               comma);
         needs_and = true;
@@ -1664,15 +1666,16 @@ namespace libsemigroups {
 
       if (x.pruners().size() > 1
           || (x.excluded_pairs().empty() && !x.pruners().empty())) {
-        result += fmt::format(
-            " {} pruner{}",
-            x.excluded_pairs().size() == 0 ? x.pruners().size()
-                                           : x.pruners().size() - 1,
-            (x.excluded_pairs().size() == 0 ? x.pruners().size()
-                                            : x.pruners().size() - 1)
-                    == 1
-                ? ""
-                : "s");
+        result += fmt::format(" {} pruner{}",
+                              x.excluded_pairs().size() == 0
+                                  ? group_digits(x.pruners().size())
+                                  : group_digits(x.pruners().size() - 1),
+                              (x.excluded_pairs().size() == 0
+                                   ? x.pruners().size()
+                                   : x.pruners().size() - 1)
+                                      == 1
+                                  ? ""
+                                  : "s");
         needs_and = true;
       }
       result += needs_and ? " and" : "";
@@ -1682,28 +1685,29 @@ namespace libsemigroups {
       return result;
     }
 
-  }  // namespace helper
+  }  // namespace detail
 
   [[nodiscard]] std::string to_human_readable_repr(Sims1 const& x) {
     return fmt::format("<Sims1 {}>",
-                       helper::sims_to_human_readable_repr_helper(x, ""));
+                       detail::sims_to_human_readable_repr_helper(x, ""));
   }
 
   [[nodiscard]] std::string to_human_readable_repr(Sims2 const& x) {
     return fmt::format("<Sims2 {}>",
-                       helper::sims_to_human_readable_repr_helper(x, ""));
+                       detail::sims_to_human_readable_repr_helper(x, ""));
   }
 
   [[nodiscard]] std::string to_human_readable_repr(RepOrc const& x) {
+    using detail::group_digits;
     return fmt::format(
         "<RepOrc {}>",
-        helper::sims_to_human_readable_repr_helper(
+        detail::sims_to_human_readable_repr_helper(
             x,
             fmt::format(
                 " node bounds [{}, {}), target size {}{}",
-                x.min_nodes(),
-                x.max_nodes(),
-                x.target_size(),
+                group_digits(x.min_nodes()),
+                group_digits(x.max_nodes()),
+                group_digits(x.target_size()),
                 (x.pruners().size() > 1
                  || (x.excluded_pairs().empty() && !x.pruners().empty()))
                     ? ","
@@ -1711,11 +1715,12 @@ namespace libsemigroups {
   }
 
   [[nodiscard]] std::string to_human_readable_repr(MinimalRepOrc const& x) {
+    using detail::group_digits;
     return fmt::format("<MinimalRepOrc {}>",
-                       helper::sims_to_human_readable_repr_helper(
+                       detail::sims_to_human_readable_repr_helper(
                            x,
                            fmt::format(" target size {}{}",
-                                       x.target_size(),
+                                       group_digits(x.target_size()),
                                        (x.pruners().size() > 1
                                         || (x.excluded_pairs().empty()
                                             && !x.pruners().empty()))
@@ -1730,8 +1735,9 @@ namespace libsemigroups {
 
   [[nodiscard]] std::string
   to_human_readable_repr(SimsRefinerFaithful const& x) {
+    using detail::group_digits;
     return fmt::format("<SimsRefinerFaithful object with {} forbidden pair{}>",
-                       x.forbid().size() / 2,
+                       group_digits(x.forbid().size() / 2),
                        x.forbid().size() / 2 == 1 ? "" : "s");
   }
 

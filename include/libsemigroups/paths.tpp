@@ -566,6 +566,8 @@ namespace libsemigroups {
 
   template <typename Node>
   std::string to_human_readable_repr(Paths<Node> const& p) {
+    using detail::group_digits;
+
     std::string source_target;
     std::string sep;
     if (p.source() != UNDEFINED) {
@@ -582,8 +584,8 @@ namespace libsemigroups {
         to_human_readable_repr(p.word_graph()),
         source_target,
         sep,
-        p.min(),
-        p.max() == POSITIVE_INFINITY ? "\u221e" : std::to_string(p.max() + 1));
+        group_digits(p.min()),
+        p.max() == POSITIVE_INFINITY ? "\u221e" : group_digits(p.max() + 1));
   }
 
 }  // namespace libsemigroups

@@ -692,6 +692,7 @@ namespace libsemigroups {
   std::string
   to_human_readable_repr(SchreierSims<N, Point, Element, Traits> const& S,
                          size_t max_width) {
+    using detail::group_digits;
     size_t      base_size     = S.base_size();
     size_t      nr_generators = S.number_of_generators();
     std::string base_string;
@@ -713,34 +714,34 @@ namespace libsemigroups {
       size_t size = S.current_size();
 
       out = fmt::format("<SchreierSims with {} generator{}, base {} & size {}>",
-                        nr_generators,
+                        group_digits(nr_generators),
                         nr_generators == 1 ? "" : "s",
                         base_string,
-                        size);
+                        group_digits(size));
 
       if (out.length() > max_width) {
         out = fmt::format(
             "<SchreierSims with {} generator{}, base size {} & size {}>",
-            nr_generators,
+            group_digits(nr_generators),
             nr_generators == 1 ? "" : "s",
-            base_size,
-            size);
+            group_digits(base_size),
+            group_digits(size));
       }
       return out;
     }
 
     out = fmt::format(
         "<partially enumerated SchreierSims with {} generator{} & base {}>",
-        nr_generators,
+        group_digits(nr_generators),
         nr_generators == 1 ? "" : "s",
         base_string);
 
     if (out.length() > max_width) {
       out = fmt::format("<partially enumerated SchreierSims with {} "
                         "generator{} & base size {}>",
-                        nr_generators,
+                        group_digits(nr_generators),
                         nr_generators == 1 ? "" : "s",
-                        base_size);
+                        group_digits(base_size));
     }
     return out;
   }

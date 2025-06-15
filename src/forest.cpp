@@ -75,12 +75,13 @@ namespace libsemigroups {
   }
 
   std::string to_human_readable_repr(Forest const& f) {
+    using detail::group_digits;
     size_t const num_roots
         = std::count(f.parents().begin(), f.parents().end(), UNDEFINED);
     return fmt::format("<Forest with {} nodes, {} edges, and {} root{}>",
-                       f.number_of_nodes(),
-                       f.parents().size(),
-                       num_roots,
+                       group_digits(f.number_of_nodes()),
+                       group_digits(f.parents().size()),
+                       group_digits(num_roots),
                        num_roots == 1 ? "" : "s");
   }
 

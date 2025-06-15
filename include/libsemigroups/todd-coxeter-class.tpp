@@ -120,13 +120,14 @@ namespace libsemigroups {
 
   template <typename Word>
   std::string to_human_readable_repr(ToddCoxeter<Word> const& tc) {
+    using detail::group_digits;
     return fmt::format(
         "<{} ToddCoxeter over {} with {} gen. pair{} + {} node{}>",
         tc.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
         to_human_readable_repr(tc.presentation()),
-        detail::group_digits(tc.number_of_generating_pairs()),
+        group_digits(tc.number_of_generating_pairs()),
         tc.number_of_generating_pairs() == 1 ? "" : "s",
-        detail::group_digits(tc.current_word_graph().number_of_nodes_active()),
+        group_digits(tc.current_word_graph().number_of_nodes_active()),
         tc.current_word_graph().number_of_nodes_active() == 1 ? "" : "s");
   }
 

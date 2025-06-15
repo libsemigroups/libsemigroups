@@ -2717,26 +2717,28 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   std::string to_human_readable_repr(Konieczny<Element, Traits> const& K) {
+    using detail::group_digits;
     return fmt::format("<{} enumerated Konieczny with {} generator{}, {} "
                        "element{} ({} regular) in {} D-class{} ({} regular)>",
                        K.finished() ? "fully" : "partially",
-                       K.number_of_generators(),
+                       group_digits(K.number_of_generators()),
                        K.number_of_generators() == 1 ? "" : "s",
-                       K.current_size(),
+                       group_digits(K.current_size()),
                        K.current_size() == 1 ? "" : "s",
-                       K.current_number_of_regular_elements(),
-                       K.current_number_of_D_classes(),
+                       group_digits(K.current_number_of_regular_elements()),
+                       group_digits(K.current_number_of_D_classes()),
                        K.current_number_of_D_classes() == 1 ? "" : "es",
-                       K.current_number_of_regular_D_classes());
+                       group_digits(K.current_number_of_regular_D_classes()));
   }
 
   template <typename Element, typename Traits>
   std::string
   to_human_readable_repr(typename Konieczny<Element, Traits>::DClass const& D) {
+    using detail::group_digits;
     return fmt::format("<{}{}x{} D-class with size {}>",
                        D.is_regular_D_class() ? "regular " : "",
-                       D.number_of_L_classes(),
-                       D.number_of_R_classes(),
-                       D.size());
+                       group_digits(D.number_of_L_classes()),
+                       group_digits(D.number_of_R_classes()),
+                       group_digits(D.size()));
   }
 }  // namespace libsemigroups

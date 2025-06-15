@@ -219,16 +219,17 @@ namespace libsemigroups {
 
   template <typename Node>
   std::string to_human_readable_repr(Gabow<Node> const& g) {
+    using detail::group_digits;
     std::string suffix = "";
     if (g.has_components()) {
       suffix = fmt::format("{} component{}",
-                           g.number_of_components(),
+                           group_digits(g.number_of_components()),
                            g.number_of_components() != 1 ? "s" : "");
     } else {
       suffix = "components not yet found";
     }
     return fmt::format("<Gabow with {} node{} and {}>",
-                       g.word_graph().number_of_nodes(),
+                       group_digits(g.word_graph().number_of_nodes()),
                        g.word_graph().number_of_nodes() != 1 ? "s" : "",
                        suffix);
   }

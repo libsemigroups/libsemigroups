@@ -1409,15 +1409,16 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   std::string to_human_readable_repr(FroidurePin<Element, Traits> const& fp) {
+    using detail::group_digits;
     return fmt::format("<{} enumerated FroidurePin with {} generator{}, {} "
                        "element{}, Cayley graph \u2300 {}, & {} rule{}>",
                        fp.finished() ? "fully" : "partially",
-                       fp.number_of_generators(),
+                       group_digits(fp.number_of_generators()),
                        fp.number_of_generators() == 1 ? "" : "s",
-                       fp.current_size(),
+                       group_digits(fp.current_size()),
                        fp.current_size() == 1 ? "" : "s",
-                       fp.current_max_word_length(),
-                       fp.current_number_of_rules(),
+                       group_digits(fp.current_max_word_length()),
+                       group_digits(fp.current_number_of_rules()),
                        fp.current_number_of_rules() == 1 ? "" : "s");
   }
 
