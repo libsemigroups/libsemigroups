@@ -93,6 +93,9 @@ namespace libsemigroups {
     std::vector<Word>  _generating_pairs;
     Presentation<Word> _presentation;
 
+    // defined in detail/kbe.hpp
+    friend class ::libsemigroups::detail::KBE<KnuthBendix>;
+
    public:
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \ingroup knuth_bendix_class_mem_types_group

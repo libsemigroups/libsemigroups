@@ -25,10 +25,9 @@ namespace libsemigroups {
   template <typename Word>
   FroidurePin(Kambites<Word> const&) -> FroidurePin<detail::KE<Word>>;
 
-  template <typename Rewriter, typename ReductionOrder>
-  FroidurePin(detail::KnuthBendixImpl<Rewriter, ReductionOrder> const&)
-      -> FroidurePin<
-          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  FroidurePin(KnuthBendix<Word, Rewriter, ReductionOrder> const&)
+      -> FroidurePin<detail::KBE<KnuthBendix<Word, Rewriter, ReductionOrder>>>;
 
   FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
 
@@ -87,14 +86,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <template <typename...> typename Thing,
+            typename Word,
             typename Rewriter,
             typename ReductionOrder>
-  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
-      -> std::enable_if_t<
-          std::is_same_v<Thing<int>, FroidurePin<int>>,
-          FroidurePin<
-              detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>> {
-    size_t const n = kb.internal_presentation().alphabet().size();
+  auto to(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) -> std::enable_if_t<
+      std::is_same_v<Thing<int>, FroidurePin<int>>,
+      FroidurePin<detail::KBE<KnuthBendix<Word, Rewriter, ReductionOrder>>>> {
+    size_t const n = kb.presentation().alphabet().size();
 
     if (n == 0) {
       LIBSEMIGROUPS_EXCEPTION("Cannot create a FroidurePin object from a "
@@ -108,11 +106,11 @@ namespace libsemigroups {
 
     FroidurePin result(kb);
     using KBE = typename decltype(result)::element_type;
-    for (size_t i = 0; i < n; ++i) {
-      result.add_generator(KBE(kb, i));
+    for (auto const& a : kb.presentation().alphabet()) {
+      result.add_generator(KBE(kb, a));
     }
-    if (kb.internal_presentation().contains_empty_word()) {
-      result.add_generator(KBE(kb, ""));
+    if (kb.presentation().contains_empty_word()) {
+      result.add_generator(KBE(kb, Word()));
     }
     return result;
   }

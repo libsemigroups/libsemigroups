@@ -133,9 +133,6 @@ namespace libsemigroups {
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
     class KnuthBendixImpl : public CongruenceCommon {
-      // defined in detail/kbe.hpp
-      friend class ::libsemigroups::detail::KBE<KnuthBendixImpl>;
-
       ////////////////////////////////////////////////////////////////////////
       // KnuthBendixImpl - nested subclasses - private
       ////////////////////////////////////////////////////////////////////////

@@ -44,7 +44,8 @@ namespace libsemigroups {
     template <typename Word>
     class KE {
      public:
-      using value_type = typename Kambites<Word>::native_word_type;
+      using value_type       = typename Kambites<Word>::native_word_type;
+      using native_word_type = typename Kambites<Word>::native_word_type;
 
      private:
       value_type _value;

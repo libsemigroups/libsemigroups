@@ -2389,11 +2389,11 @@ namespace libsemigroups {
   //! container of generators after first verifying that the
   //! proposed generators all have equal degree.
   //!
-  //!
   //! \param gens the generators.
   //!
   //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x
   //! and \c y in \p gens.
+  // TODO this only works if FroidurePin is stateless.
   template <template <typename...> typename Thing,
             typename Container,
             typename Element = typename Container::value_type>

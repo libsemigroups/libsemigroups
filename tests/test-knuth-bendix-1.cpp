@@ -439,13 +439,12 @@ namespace libsemigroups {
                  "abac", "acab", "acac", "baba", "baca", "caba", "caca"}));
     auto S = to<FroidurePin>(kb);
     REQUIRE(S.size() == 168);
-    REQUIRE(S.generator(2).string(kb) == "c");
+    REQUIRE(S.generator(2).word() == "c");
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "009",
                                    "random example",
-
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITER_TYPES) {
     auto rg = ReportGuard(false);
