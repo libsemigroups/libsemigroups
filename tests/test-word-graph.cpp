@@ -772,7 +772,7 @@ namespace libsemigroups {
             == "<WordGraph with 1,005 nodes, 1,004 edges, & out-degree 1>");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "043", "hash_value", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "045", "hash_value", "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);

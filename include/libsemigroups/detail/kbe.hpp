@@ -31,20 +31,19 @@
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
+#include "libsemigroups/word-range.hpp"    // for namespace words
 
 namespace libsemigroups {
   namespace detail {
-    // This class is used to wrap libsemigroups::internal_string_type into an
+    // This class is used to wrap KnuthBendix_::native_word_type into an
     // object that can be used as generators for a FroidurePin object.
     template <typename KnuthBendix_>
     class KBE {
-      using internal_string_type = std::string;
-
-      explicit KBE(internal_string_type const&);
-      explicit KBE(internal_string_type&&);
-
      public:
       using knuth_bendix_type = KnuthBendix_;
+      using native_word_type  = typename KnuthBendix_::native_word_type;
+      using native_letter_type =
+          typename KnuthBendix_::native_word_type::value_type;
 
       KBE() = default;
 
@@ -56,32 +55,24 @@ namespace libsemigroups {
 
       ~KBE() = default;
 
-      // Construct from internal string
-      KBE(knuth_bendix_type&, internal_string_type const&);
-      KBE(knuth_bendix_type&, internal_string_type&&);
-
       // Construct from external types
-      KBE(knuth_bendix_type&, letter_type const&);
-      KBE(knuth_bendix_type&, word_type const&);
+      KBE(knuth_bendix_type&, native_letter_type const&);
+      KBE(knuth_bendix_type&, native_word_type const&);
 
       bool operator==(KBE const&) const;
       bool operator<(KBE const&) const;
       void swap(KBE&);
 
-      internal_string_type const& string() const noexcept;
-
-      std::string string(knuth_bendix_type const& kb) const;
-
-      word_type word(knuth_bendix_type const& kb) const;
+      native_word_type const& word() const noexcept;
 
       friend std::ostringstream& operator<<(std::ostringstream& os,
                                             KBE const&          kbe) {
-        os << kbe.string();
+        os << kbe.word();
         return os;
       }
 
      private:
-      internal_string_type _kb_word;
+      native_word_type _kb_word;
     };
 
   }  // namespace detail
@@ -130,9 +121,12 @@ namespace libsemigroups {
                     detail::KBE<KnuthBendix_> const& y,
                     KnuthBendix_*                    kb,
                     size_t) {
-      std::string w(x.string());  // internal_string_type
-      w += y.string();
-      xy = detail::KBE<KnuthBendix_>(*kb, w);
+      using words::operator+=;
+      using KBE_ = detail::KBE<KnuthBendix_>;
+      auto w(x.word());
+      w += y.word();
+      // TODO improve
+      xy = KBE_(*kb, w);
     }
   };
 
@@ -158,7 +152,8 @@ namespace std {
   template <typename KnuthBendix_>
   struct hash<libsemigroups::detail::KBE<KnuthBendix_>> {
     size_t operator()(libsemigroups::detail::KBE<KnuthBendix_> const& x) const {
-      return hash<string>()(x.string());
+      return hash<typename libsemigroups::detail::KBE<
+          KnuthBendix_>::native_word_type>()(x.word());
     }
   };
 
