@@ -74,7 +74,12 @@ namespace libsemigroups {
     static_assert(
         std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        element_type>);
+
+    std::shared_ptr<state_type> prev_state = _state;
     init();
+    _state = prev_state;
+    // If we want to change the state in a call to init, then this can be
+    // achieved by init(state_type) followed by calls to add_generator(s).
     add_generators_before_start(first, last);
     return *this;
   }
