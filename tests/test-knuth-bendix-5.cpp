@@ -156,7 +156,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "122",
-                                   "internal_string_to_word",  // TODO(0) rename
+                                   "to_froidure_pin x 1",
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
     auto                  rg = ReportGuard(false);
@@ -174,7 +174,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "123",
-                                   "internal_string_to_word x 2",
+                                   "to_froidure_pin x 2",
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);

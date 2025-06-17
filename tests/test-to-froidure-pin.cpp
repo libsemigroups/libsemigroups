@@ -259,7 +259,15 @@ namespace libsemigroups {
     presentation::add_rule(p, 011111011_w, 110_w);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    REQUIRE(to<FroidurePin>(kb).size() == 12);
+    auto                             S = to<FroidurePin>(kb);
+    REQUIRE(S.size() == 12);
+
+    using KBE_             = typename decltype(S)::element_type;
+    std::vector<KBE_> gens = {KBE_(kb, 01_w), KBE_(kb, 10_w)};
+
+    // Check that FroidurePin state is not invalidated
+    S.init(gens.begin(), gens.end());
+    REQUIRE(S.size() == 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
