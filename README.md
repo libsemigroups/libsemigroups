@@ -181,8 +181,8 @@ We'd like to thank the authors and contributors to these excellent projects!
 - Alex Levine (<A.Levine@uea.ac.uk>) contributed to the Schreier-Sims
   implementation.
 - Michael Orlitzky (<michael@orlitzky.com>) contributed to the build system.
-- [Dima Pasechnik](http://users.ox.ac.uk/~coml0531)
-  (<dimpase@gmail.com>) contributed to the build system.
+- [Dima Pasechnik](https://pasechnik.info/dima)
+  (<dima@pasechnik.info>) contributed to the build system.
 - Chris Russell contributed some tests for finitely presented
   semigroups.
 - [Finn Smith][] (<fls3@st-andrews.ac.uk>)
