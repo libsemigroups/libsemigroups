@@ -1,6 +1,29 @@
 Changelog - version 2
 =====================
 
+v2.7.4 (released 18/06/2025)
+----------------------------
+
+This is a minor release mainly to include the fix of:
+
+https://github.com/libsemigroups/libsemigroups/issues/557
+
+in 
+
+https://github.com/libsemigroups/libsemigroups/pull/558
+
+No such issue exists from v3.0.0 of libsemigroups onwards, but currently the
+`Semigroups_` package for GAP requires v2 of libsemigroups, which is the reason
+for this release. See:
+
+https://github.com/semigroups/Semigroups/issues/1064
+
+Unless you are cloning libsemigroups to use in the GAP package `Semigroups_`,
+then please use version v3.0.3 or higher of libsemigroups. We are preparing a
+new version of the `Semigroups_` package for GAP that uses libsemigroups
+version 3, and this will (hopefully) be the final version 2 release of
+libsemigroups.
+
 v2.7.3 (released 19/01/2024)
 ----------------------------
 
