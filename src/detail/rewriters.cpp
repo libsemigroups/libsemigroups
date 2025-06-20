@@ -281,26 +281,8 @@ namespace libsemigroups {
 
         // Check rule is non-trivial
         if (*rule1->lhs() != *rule1->rhs()) {
-          lhs = rule1->lhs();
-
-          for (auto it = begin(); it != end();) {
-            Rule* rule2 = const_cast<Rule*>(*it);
-
-            // Check if lhs is contained within either the lhs or rhs of rule2
-            // TODO(0) investigate whether or not this can be improved?
-            // Removed?
-            if (rule2->lhs()->find(*lhs) != external_string_type::npos
-                || rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              // If it is, rule2 must be deactivated and re-processed
-              it = make_active_rule_pending(it);
-            } else {
-              ++it;
-            }
-          }
-          add_rule(rule1);
-          if (!rules_added) {
-            rules_added = true;
-          }
+          rules_add = true;
+          add_rule_and_reduce_old_rules(rules1);
         } else {
           add_inactive_rule(rule1);
         }
@@ -384,7 +366,9 @@ namespace libsemigroups {
     // REWRITE_FROM_LEFT from Sims, p67
     // Caution: this uses the assumption that rules are length reducing, if they
     // are not, then u might not have sufficient space!
-    void RewriteFromLeft::rewrite(internal_string_type& u) const {
+    void
+    RewriteFromLeft::rewrite_with_disabled_rule(internal_string_type& u,
+                                                Rule const* disabled_rule) {
       // Add underscore because there's already an "iterator" alias.
       using iterator_ = internal_string_type::iterator;
 
@@ -407,13 +391,15 @@ namespace libsemigroups {
         auto it = _set_rules.find(lookup(v_begin, v_end));
         if (it != _set_rules.end()) {
           Rule const* rule = (*it).rule();
-          if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
-            LIBSEMIGROUPS_ASSERT(detail::is_suffix(
-                v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
-            v_end -= rule->lhs()->size();
-            w_begin -= rule->rhs()->size();
-            detail::string_replace(
-                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+          if (rule != disable_rule) {
+            if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
+              LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+                  v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+              v_end -= rule->lhs()->size();
+              w_begin -= rule->rhs()->size();
+              detail::string_replace(
+                  w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+            }
           }
         }
         while (w_begin != w_end
@@ -427,6 +413,7 @@ namespace libsemigroups {
       u.erase(v_end - u.cbegin());
     }
 
+    // TODO rm use RewriterBase::rewrite instead
     void RewriteFromLeft::rewrite(Rule* rule) const {
       // LIBSEMIGROUPS_ASSERT(_id != 0);
       rewrite(*rule->lhs());
@@ -557,54 +544,10 @@ namespace libsemigroups {
       return *this;
     }
 
-    void RewriteTrie::all_overlaps() {
-      // For each active rule, get the corresponding terminal node.
-      for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
-        index_type link = _trie.suffix_link_no_checks(node_it->first);
-        while (link != _trie.root) {
-          // For each suffix link, add an overlap between rule and every other
-          // rule that corresponds to a terminal descendant of link
-          add_overlaps(node_it->second, link, _trie.height_no_checks(link));
-          link = _trie.suffix_link_no_checks(link);
-        }
-      }
-    }
-
-    void RewriteTrie::rule_overlaps(index_type node) {
-      index_type link = _trie.suffix_link_no_checks(node);
-      while (link != _trie.root) {
-        // For each suffix link, add an overlap between rule and every other
-        // rule that corresponds to a terminal descendant of link
-        add_overlaps(_rules[node], link, _trie.height_no_checks(link));
-        link = _trie.suffix_link_no_checks(link);
-      }
-    }
-
-    void RewriteTrie::add_overlaps(Rule*      rule,
-                                   index_type node,
-                                   size_t     overlap_length) {
-      // BFS find the terminal descendants of node and add overlaps with rule
-      if (_trie.node_no_checks(node).is_terminal()) {
-        Rule const*             rule2 = _rules.find(node)->second;
-        detail::MultiStringView x(rule->lhs()->cbegin(),
-                                  rule->lhs()->cend() - overlap_length);
-        x.append(rule2->rhs()->cbegin(), rule2->rhs()->cend());
-        detail::MultiStringView y(rule->rhs()->cbegin(), rule->rhs()->cend());
-        y.append(rule2->lhs()->cbegin() + overlap_length,
-                 rule2->lhs()->cend());  // rule = AQ_j -> Q_iC
-        add_pending_rule(x, y);
-      }
-      for (letter_type a = 0; a != _trie.alphabet_size(); ++a) {
-        auto child = _trie.child_no_checks(node, a);
-        if (child != UNDEFINED) {
-          add_overlaps(rule, child, overlap_length);
-        }
-      }
-    }
-
     // As with RewriteFromLeft::rewrite, this assumes that all rules are length
     // reducing.
-    void RewriteTrie::rewrite(internal_string_type& u) const {
+    void RewriteTrie::rewrite_with_disabled_rule(internal_string_type& u,
+                                                 Rule const* disabled_rule) {
       // Check if u is rewriteable
       if (u.size() < stats().min_length_lhs_rule) {
         return;
@@ -634,23 +577,26 @@ namespace libsemigroups {
           ++v_end;
         } else {
           // Find rule that corresponds to terminal node
-          Rule const* rule     = _rules.find(current)->second;
-          auto        lhs_size = rule->lhs()->size();
-          LIBSEMIGROUPS_ASSERT(lhs_size != 0);
+          Rule const* rule = _rules.find(current)->second;
 
-          // Check the lhs is smaller than the portion of the word that has
-          // been read
-          LIBSEMIGROUPS_ASSERT(lhs_size
-                               <= static_cast<size_t>(v_end - v_begin) + 1);
-          v_end -= lhs_size - 1;
-          w_begin -= rule->rhs()->size();
-          // Replace lhs with rhs in-place
-          detail::string_replace(
-              w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-          for (size_t i = 0; i < lhs_size - 1; ++i) {
-            nodes.pop_back();
+          if (rule != disabled_rule) {
+            auto lhs_size = rule->lhs()->size();
+            LIBSEMIGROUPS_ASSERT(lhs_size != 0);
+
+            // Check the lhs is smaller than the portion of the word that has
+            // been read
+            LIBSEMIGROUPS_ASSERT(lhs_size
+                                 <= static_cast<size_t>(v_end - v_begin) + 1);
+            v_end -= lhs_size - 1;
+            w_begin -= rule->rhs()->size();
+            // Replace lhs with rhs in-place
+            detail::string_replace(
+                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+            for (size_t i = 0; i < lhs_size - 1; ++i) {
+              nodes.pop_back();
+            }
+            current = nodes.back();
           }
-          current = nodes.back();
         }
       }
       u.erase(v_end - u.cbegin());

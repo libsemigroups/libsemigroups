@@ -277,6 +277,7 @@ namespace libsemigroups {
     }
 
     // TODO(0) remove Impl here
+    // TODO(1) deprecate and make this Rewriter mem fn
     template <typename Rewriter, typename ReductionOrder>
     bool is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {
