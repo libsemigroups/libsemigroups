@@ -566,34 +566,33 @@ namespace libsemigroups {
         current
             = _trie.traverse_no_checks(current, static_cast<letter_type>(x));
 
-        if (!_trie.node_no_checks(current).is_terminal()) {
+        auto rule_it = _rules.find(current);
+        if (!_trie.node_no_checks(current).is_terminal()
+            || rule_it->second == disabled_rule) {
           nodes.push_back(current);
           *v_end = x;
           ++v_end;
         } else {
           // Find rule that corresponds to terminal node
-          Rule const* rule = _rules.find(current)->second;
+          Rule const* rule = rule_it->second;
+          did_rewrite      = true;
+          auto lhs_size    = rule->lhs()->size();
+          LIBSEMIGROUPS_ASSERT(lhs_size != 0);
 
-          if (rule != disabled_rule) {
-            did_rewrite   = true;
-            auto lhs_size = rule->lhs()->size();
-            LIBSEMIGROUPS_ASSERT(lhs_size != 0);
-
-            // Check the lhs is smaller than the portion of the word that has
-            // been read
-            LIBSEMIGROUPS_ASSERT(lhs_size
-                                 <= static_cast<size_t>(v_end - v_begin) + 1);
-            v_end -= lhs_size - 1;
-            w_begin -= rule->rhs()->size();
-            // Replace lhs with rhs in-place
-            detail::string_replace(
-                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-            // TODO(0) terrible idea
-            for (size_t i = 0; i < lhs_size - 1; ++i) {
-              nodes.pop_back();
-            }
-            current = nodes.back();
+          // Check the lhs is smaller than the portion of the word that has
+          // been read
+          LIBSEMIGROUPS_ASSERT(lhs_size
+                               <= static_cast<size_t>(v_end - v_begin) + 1);
+          v_end -= lhs_size - 1;
+          w_begin -= rule->rhs()->size();
+          // Replace lhs with rhs in-place
+          detail::string_replace(
+              w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+          // TODO(0) terrible idea
+          for (size_t i = 0; i < lhs_size - 1; ++i) {
+            nodes.pop_back();
           }
+          current = nodes.back();
         }
       }
       u.erase(v_end - u.cbegin());
@@ -679,6 +678,7 @@ namespace libsemigroups {
     RewriteTrie::descendants_confluent(Rule const* rule1,
                                        index_type  current_node,
                                        size_t      overlap_length) const {
+      LIBSEMIGROUPS_ASSERT(rule1->active());
       if (_trie.node_no_checks(current_node).is_terminal()) {
         Rule const* rule2 = _rules.find(current_node)->second;
         // Process overlap
