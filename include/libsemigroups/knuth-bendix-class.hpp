@@ -22,12 +22,14 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
-#include <utility>  // for move
-#include <vector>   // for vector
+#include <algorithm>  // for for_each
+#include <utility>    // for move
+#include <vector>     // for vector
 
 #include "order.hpp"         // for ShortLexCompare
 #include "presentation.hpp"  // for Presentation
 
+#include "detail/citow.hpp"              // for citow
 #include "detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
 #include "detail/rewriters.hpp"          // for RewriteTrie
@@ -401,8 +403,23 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
-    // NOTE: contains_no_checks and currently_contains_no_checks are implemented
+    // TODO: contains_no_checks are implemented
     // and documented in KnuthBendixImpl
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(Iterator1 first1,
+                                      Iterator2 last1,
+                                      Iterator3 first2,
+                                      Iterator4 last2) const {
+      return KnuthBendixImpl_::currently_contains_no_checks(
+          detail::citow(this, first1),
+          detail::citow(this, last1),
+          detail::citow(this, first2),
+          detail::citow(this, last2));
+    }
 
     //! \ingroup knuth_bendix_class_intf_group
     //!
@@ -466,8 +483,32 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // NOTE: reduce_no_checks and reduce_no_run_no_checks are implemented and
-    // documented in KnuthBendixImpl
+    // TODO(0) get the doc from the Impl file
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           InputIterator1 first,
+                                           InputIterator2 last) const {
+      return KnuthBendixImpl_::reduce_no_run_no_checks(
+                 detail::itow(this, d_first),
+                 detail::citow(this, first),
+                 detail::citow(this, last))
+          .get();
+    }
+
+    // TODO(0) get the doc from the Impl file
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      return KnuthBendixImpl_::reduce_no_checks(detail::itow(this, d_first),
+                                                detail::citow(this, first),
+                                                detail::citow(this, last))
+          .get();
+    }
 
     //! \ingroup knuth_bendix_class_intf_group
     //!

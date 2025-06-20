@@ -187,14 +187,11 @@ namespace libsemigroups {
 
     RewriterBase& RewriterBase::init() {
       Rules::init();
-      if (_requires_alphabet) {
-        _alphabet.clear();
-      }
       // Put all active rules and those rules in the stack into the
       // inactive_rules list
       while (!_pending_rules.empty()) {
-        Rules::add_inactive_rule(_pending_rules.top());
-        _pending_rules.pop();
+        Rules::add_inactive_rule(_pending_rules.back());
+        _pending_rules.pop_back();
       }
       _max_stack_depth  = 0;
       _cached_confluent = false;
@@ -204,8 +201,8 @@ namespace libsemigroups {
 
     RewriterBase::~RewriterBase() {
       while (!_pending_rules.empty()) {
-        Rule* rule = _pending_rules.top();
-        _pending_rules.pop();
+        Rule* rule = _pending_rules.back();
+        _pending_rules.pop_back();
         delete rule;
       }
     }
@@ -225,7 +222,7 @@ namespace libsemigroups {
     bool RewriterBase::add_pending_rule(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(!rule->active());
       if (*rule->lhs() != *rule->rhs()) {
-        _pending_rules.emplace(rule);
+        _pending_rules.emplace_back(rule);
         _max_stack_depth = std::max(_max_stack_depth, _pending_rules.size());
         return true;
       } else {
@@ -234,10 +231,47 @@ namespace libsemigroups {
       }
     }
 
+    void RewriterBase::report_progress_from_thread(
+        std::chrono::high_resolution_clock::time_point start_time) {
+      using detail::group_digits;
+      using detail::signed_group_digits;
+      using std::chrono::duration_cast;
+      using std::chrono::nanoseconds;
+
+      using high_resolution_clock = std::chrono::high_resolution_clock;
+
+      auto active   = number_of_active_rules();
+      auto inactive = number_of_inactive_rules();
+      auto pending  = number_of_pending_rules();
+      auto defined  = stats().total_rules;
+
+      auto run_time = duration_cast<nanoseconds>(high_resolution_clock::now()
+                                                 - start_time);
+      report_default(
+          "KnuthBendix: rules {} (active) | {} (inactive) | {} (pending) | {} "
+          "(defined) | {}\n",
+          group_digits(active),
+          group_digits(inactive),
+          group_digits(pending),
+          group_digits(defined),
+          detail::string_time(run_time));
+    }
+
     bool RewriterBase::process_pending_rules() {
       bool                        rules_added = false;
       Rule*                       rule1;
       internal_string_type const* lhs;
+
+      std::sort(
+          _pending_rules.begin(),
+          _pending_rules.end(),
+          [](Rule const* x, Rule const* y) { return *x->lhs() > *y->lhs(); });
+
+      auto           start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker ticker;
+      bool           ticker_running = false;  // TODO(1) do this properly with a
+                                              // data member
+
       while (number_of_pending_rules() != 0) {
         rule1 = next_pending_rule();
         LIBSEMIGROUPS_ASSERT(!rule1->active());
@@ -247,26 +281,17 @@ namespace libsemigroups {
 
         // Check rule is non-trivial
         if (*rule1->lhs() != *rule1->rhs()) {
-          lhs = rule1->lhs();
-
-          for (auto it = begin(); it != end();) {
-            Rule* rule2 = const_cast<Rule*>(*it);
-
-            // Check if lhs is contained within either the lhs or rhs of rule2
-            if (rule2->lhs()->find(*lhs) != external_string_type::npos
-                || rule2->rhs()->find(*lhs) != external_string_type::npos) {
-              // If it is, rule2 must be deactivated and re-processed
-              it = make_active_rule_pending(it);
-            } else {
-              ++it;
-            }
-          }
-          add_rule(rule1);
-          if (!rules_added) {
-            rules_added = true;
-          }
+          rules_add = true;
+          add_rule_and_reduce_old_rules(rules1);
         } else {
           add_inactive_rule(rule1);
+        }
+        if (!ticker_running && reporting_enabled()
+            && delta(start_time) >= std::chrono::seconds(1)) {
+          ticker_running = true;
+          ticker([this, start_time]() {
+            report_progress_from_thread(start_time);
+          });
         }
       }
       // reduce_rhs();
@@ -341,7 +366,9 @@ namespace libsemigroups {
     // REWRITE_FROM_LEFT from Sims, p67
     // Caution: this uses the assumption that rules are length reducing, if they
     // are not, then u might not have sufficient space!
-    void RewriteFromLeft::rewrite(internal_string_type& u) const {
+    void
+    RewriteFromLeft::rewrite_with_disabled_rule(internal_string_type& u,
+                                                Rule const* disabled_rule) {
       // Add underscore because there's already an "iterator" alias.
       using iterator_ = internal_string_type::iterator;
 
@@ -364,13 +391,15 @@ namespace libsemigroups {
         auto it = _set_rules.find(lookup(v_begin, v_end));
         if (it != _set_rules.end()) {
           Rule const* rule = (*it).rule();
-          if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
-            LIBSEMIGROUPS_ASSERT(detail::is_suffix(
-                v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
-            v_end -= rule->lhs()->size();
-            w_begin -= rule->rhs()->size();
-            detail::string_replace(
-                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+          if (rule != disable_rule) {
+            if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
+              LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+                  v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+              v_end -= rule->lhs()->size();
+              w_begin -= rule->rhs()->size();
+              detail::string_replace(
+                  w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+            }
           }
         }
         while (w_begin != w_end
@@ -384,6 +413,7 @@ namespace libsemigroups {
       u.erase(v_end - u.cbegin());
     }
 
+    // TODO rm use RewriterBase::rewrite instead
     void RewriteFromLeft::rewrite(Rule* rule) const {
       // LIBSEMIGROUPS_ASSERT(_id != 0);
       rewrite(*rule->lhs());
@@ -501,61 +531,23 @@ namespace libsemigroups {
     RewriteTrie& RewriteTrie::operator=(RewriteTrie const& that) {
       init();
       RewriterBase::operator=(that);
+      _trie = that._trie;
       for (auto* crule : *this) {
-        Rule* rule = const_cast<Rule*>(crule);
-        add_rule_to_trie(rule);
+        Rule*      rule = const_cast<Rule*>(crule);
+        index_type node
+            = _trie.traverse_trie(rule->lhs()->cbegin(), rule->lhs()->cend());
+        // TODO check that node is correct
+        // LIBSEMIGROUPS_ASSERT(_trie.is_terminal(node));
+        _rules.emplace(node, rule);
       }
+
       return *this;
-    }
-
-    void RewriteTrie::all_overlaps() {
-      // For each active rule, get the corresponding terminal node.
-      for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
-        index_type link = _trie.suffix_link_no_checks(node_it->first);
-        while (link != _trie.root) {
-          // For each suffix link, add an overlap between rule and every other
-          // rule that corresponds to a terminal descendant of link
-          add_overlaps(node_it->second, link, _trie.height_no_checks(link));
-          link = _trie.suffix_link_no_checks(link);
-        }
-      }
-    }
-
-    void RewriteTrie::rule_overlaps(index_type node) {
-      index_type link = _trie.suffix_link_no_checks(node);
-      while (link != _trie.root) {
-        // For each suffix link, add an overlap between rule and every other
-        // rule that corresponds to a terminal descendant of link
-        add_overlaps(_rules[node], link, _trie.height_no_checks(link));
-        link = _trie.suffix_link_no_checks(link);
-      }
-    }
-
-    void RewriteTrie::add_overlaps(Rule*      rule,
-                                   index_type node,
-                                   size_t     overlap_length) {
-      // BFS find the terminal descendants of node and add overlaps with rule
-      if (_trie.node_no_checks(node).is_terminal()) {
-        Rule const*             rule2 = _rules.find(node)->second;
-        detail::MultiStringView x(rule->lhs()->cbegin(),
-                                  rule->lhs()->cend() - overlap_length);
-        x.append(rule2->rhs()->cbegin(), rule2->rhs()->cend());
-        detail::MultiStringView y(rule->rhs()->cbegin(), rule->rhs()->cend());
-        y.append(rule2->lhs()->cbegin() + overlap_length,
-                 rule2->lhs()->cend());  // rule = AQ_j -> Q_iC
-        add_pending_rule(x, y);
-      }
-      for (auto a = alphabet_cbegin(); a != alphabet_cend(); ++a) {
-        auto child = _trie.child_no_checks(node, static_cast<letter_type>(*a));
-        if (child != UNDEFINED) {
-          add_overlaps(rule, child, overlap_length);
-        }
-      }
     }
 
     // As with RewriteFromLeft::rewrite, this assumes that all rules are length
     // reducing.
-    void RewriteTrie::rewrite(internal_string_type& u) const {
+    void RewriteTrie::rewrite_with_disabled_rule(internal_string_type& u,
+                                                 Rule const* disabled_rule) {
       // Check if u is rewriteable
       if (u.size() < stats().min_length_lhs_rule) {
         return;
@@ -573,7 +565,7 @@ namespace libsemigroups {
       iterator w_end   = u.end();
 
       while (w_begin != w_end) {
-        // Read first letter of W and traverse trie
+        // Read first letter of w and traverse trie
         auto x = *w_begin;
         ++w_begin;
         current
@@ -585,23 +577,26 @@ namespace libsemigroups {
           ++v_end;
         } else {
           // Find rule that corresponds to terminal node
-          Rule const* rule     = _rules.find(current)->second;
-          auto        lhs_size = rule->lhs()->size();
-          LIBSEMIGROUPS_ASSERT(lhs_size != 0);
+          Rule const* rule = _rules.find(current)->second;
 
-          // Check the lhs is smaller than the portion of the word that has
-          // been read
-          LIBSEMIGROUPS_ASSERT(lhs_size
-                               <= static_cast<size_t>(v_end - v_begin) + 1);
-          v_end -= lhs_size - 1;
-          w_begin -= rule->rhs()->size();
-          // Replace lhs with rhs in-place
-          detail::string_replace(
-              w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-          for (size_t i = 0; i < lhs_size - 1; ++i) {
-            nodes.pop_back();
+          if (rule != disabled_rule) {
+            auto lhs_size = rule->lhs()->size();
+            LIBSEMIGROUPS_ASSERT(lhs_size != 0);
+
+            // Check the lhs is smaller than the portion of the word that has
+            // been read
+            LIBSEMIGROUPS_ASSERT(lhs_size
+                                 <= static_cast<size_t>(v_end - v_begin) + 1);
+            v_end -= lhs_size - 1;
+            w_begin -= rule->rhs()->size();
+            // Replace lhs with rhs in-place
+            detail::string_replace(
+                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+            for (size_t i = 0; i < lhs_size - 1; ++i) {
+              nodes.pop_back();
+            }
+            current = nodes.back();
           }
-          current = nodes.back();
         }
       }
       u.erase(v_end - u.cbegin());
@@ -717,9 +712,8 @@ namespace libsemigroups {
       }
 
       // Read each possible letter and traverse down the trie
-      for (auto x = alphabet_cbegin(); x != alphabet_cend(); ++x) {
-        auto child
-            = _trie.child_no_checks(current_node, static_cast<letter_type>(*x));
+      for (letter_type x = 0; x != _trie.alphabet_size(); ++x) {
+        auto child = _trie.child_no_checks(current_node, x);
         if (child != UNDEFINED) {
           if (!descendants_confluent(rule1, child, overlap_length)) {
             return false;

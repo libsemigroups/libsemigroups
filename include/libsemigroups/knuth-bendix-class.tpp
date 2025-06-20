@@ -46,14 +46,18 @@ namespace libsemigroups {
   KnuthBendix<Word, Rewriter, ReductionOrder>&
   KnuthBendix<Word, Rewriter, ReductionOrder>::init(congruence_kind      knd,
                                                     Presentation<Word>&& p) {
-    if constexpr (!std::is_same_v<Word, std::string>) {
-      // to<Presentation> throws in the next line if p isn't valid
-      KnuthBendixImpl_::init(
-          knd, to<Presentation<std::string>>(p, [](auto x) { return x; }));
-    } else {
-      KnuthBendixImpl_::init(knd, p);
-    }
+    // TODO(0) check if p is already "standard" and if so, then do no conversion
+    // if Word == std::string
+    KnuthBendixImpl_::init(knd, to<Presentation<std::string>>(p, [&p](auto x) {
+                             return p.index_no_checks(x);
+                           }));
     _presentation = std::move(p);
+    if (knd == congruence_kind::onesided) {
+      auto new_alphabet = _presentation.alphabet();
+      new_alphabet.push_back(presentation::first_unused_letter(_presentation));
+      _presentation.alphabet(new_alphabet);
+    }
+    _generating_pairs.clear();
     return *this;
   }
 
@@ -73,8 +77,10 @@ namespace libsemigroups {
     _generating_pairs.emplace_back(first2, last2);
     // Although this looks like it does nothing, remember the type of words in
     // *this and KnuthBendixImpl_ may not be the same
-    KnuthBendixImpl_::add_generating_pair_no_checks(
-        first1, last1, first2, last2);
+    KnuthBendixImpl_::add_generating_pair_no_checks(detail::citow(this, first1),
+                                                    detail::citow(this, last1),
+                                                    detail::citow(this, first2),
+                                                    detail::citow(this, last2));
     return *this;
   }
 
@@ -99,34 +105,34 @@ namespace libsemigroups {
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
   auto KnuthBendix<Word, Rewriter, ReductionOrder>::active_rules() {
-    auto result = KnuthBendixImpl_::active_rules();
-    if constexpr (std::is_same_v<native_word_type,
-                                 typename KnuthBendixImpl_::native_word_type>) {
-      return result;
-    } else {
-      // TODO(1) remove allocations here somehow (probably by making a custom
-      // range object holding memory to put the incoming rules into)
-      return result | rx::transform([](auto const& pair) {
-               return std::make_pair(
-                   Word(pair.first.begin(), pair.first.end()),
-                   Word(pair.second.begin(), pair.second.end()));
-             });
-    }
+    // TODO(1) remove allocations here somehow (probably by making a custom
+    // range object holding memory to put the incoming rules into)
+    auto        result = KnuthBendixImpl_::active_rules();
+    auto const& p      = presentation();
+    return result | rx::transform([&p](auto const* rule) {
+             auto pair = std::make_pair(
+                 Word(rule->lhs()->begin(), rule->lhs()->end()),
+                 Word(rule->rhs()->begin(), rule->rhs()->end()));
+             auto convert = [&p](auto& val) { val = p.letter_no_checks(val); };
+             std::for_each(pair.first.begin(), pair.first.end(), convert);
+             std::for_each(pair.second.begin(), pair.second.end(), convert);
+             return pair;
+           });
   }
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
   std::vector<Word>
   KnuthBendix<Word, Rewriter, ReductionOrder>::gilman_graph_node_labels() {
     auto base_result = KnuthBendixImpl_::gilman_graph_node_labels();
-    if constexpr (std::is_same_v<native_word_type,
-                                 typename KnuthBendixImpl_::native_word_type>) {
-      return base_result;
-    } else {
-      std::vector<Word> result;
-      for (auto& label : base_result) {
-        result.emplace_back(label.begin(), label.end());
-      }
-      return result;
+    // TODO(0) special case when Word == std::string
+    std::vector<Word> result;
+    auto const&       p = presentation();
+    for (auto& label : base_result) {
+      result.emplace_back(label.begin(), label.end());
+      std::for_each(result.back().begin(),
+                    result.back().end(),
+                    [&p](auto& val) { val = p.letter_no_checks(val); });
     }
+    return result;
   }
 }  // namespace libsemigroups

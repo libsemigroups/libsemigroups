@@ -754,6 +754,29 @@ namespace libsemigroups {
     kb1            = std::move(kb2);
     REQUIRE(kb1.number_of_active_rules() == M);
     REQUIRE(!kb1.finished());
+
+    kb1.init(twosided, p);
+    knuth_bendix::add_generating_pair(kb1, "ab", "ba");
+    REQUIRE(kb1.number_of_generating_pairs() == 1);
+    REQUIRE(kb1.generating_pairs() == std::vector<std::string>({"ab", "ba"}));
+    REQUIRE(kb1.internal_generating_pairs().size() == 2);
+
+    kb1.init(twosided, p);
+    REQUIRE(kb1.number_of_generating_pairs() == 0);
+    REQUIRE(kb1.internal_generating_pairs().size() == 0);
+    REQUIRE(kb1.generating_pairs().size() == 0);
+
+    knuth_bendix::add_generating_pair(kb1, "ab", "ba");
+
+    REQUIRE(kb1.number_of_generating_pairs() == 1);
+    REQUIRE(kb1.internal_generating_pairs().size() == 2);
+    REQUIRE(kb1.generating_pairs().size() == 2);
+
+    kb1.init();
+
+    REQUIRE(kb1.number_of_generating_pairs() == 0);
+    REQUIRE(kb1.internal_generating_pairs().size() == 0);
+    REQUIRE(kb1.generating_pairs().size() == 0);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",

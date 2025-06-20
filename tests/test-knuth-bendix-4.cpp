@@ -772,7 +772,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbbaabbaaba", "bbbaabbaaaa");
     presentation::add_rule(p, "aaaabbaaba", "bbaaaa");
     KnuthBendix<std::string, TestType> k(twosided, p);
-    k.run_for(std::chrono::seconds(10));
+    k.run_for(std::chrono::seconds(1));
     REQUIRE(!k.finished());
   }
 
