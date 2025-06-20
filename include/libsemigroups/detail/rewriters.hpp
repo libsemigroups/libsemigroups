@@ -410,14 +410,19 @@ namespace libsemigroups {
       }
 
       // TODO(0) to cpp
-      void add_rule_and_reduce_old_rules(Rule* new_rule) {
-        add_rule(new_rule);
+      void add_rule_and_reduce_old_rules(Rule* rule_to_add) {
+        LIBSEMIGROUPS_ASSERT(*rule_to_add->lhs() != *rule_to_add->rhs());
+        add_rule(rule_to_add);
         for (auto it = begin(); it != end();) {
-          if (*it == new_rule) {
+          if (*it == rule_to_add) {
             ++it;
             continue;
           }
-          if (rewrite_active_rule(*it)) {
+          Rule* copy = new_rule(rule_to_add->lhs()->begin(),
+                                rule_to_add->lhs()->end(),
+                                rule_to_add->rhs()->begin(),
+                                rule_to_add->rhs()->end());
+          if (rewrite_active_rule(copy)) {
             it = make_active_rule_pending(it);
           } else {
             ++it;
