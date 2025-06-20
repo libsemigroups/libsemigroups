@@ -287,8 +287,8 @@ namespace libsemigroups {
             continue;
           }
 
-          if (rule->lhs()->find(lhs) != detail::internal_string_type::npos
-              || rule->rhs()->find(lhs) != detail::internal_string_type::npos) {
+          if (rule->lhs()->find(lhs) != std::string::npos
+              || rule->rhs()->find(lhs) != std::string::npos) {
             return false;
           }
         }

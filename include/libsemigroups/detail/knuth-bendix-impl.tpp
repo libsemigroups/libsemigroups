@@ -36,10 +36,9 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::ABC
         : KnuthBendixImpl<Rewriter, ReductionOrder>::OverlapMeasure {
-      size_t
-      operator()(detail::Rule const*                                 AB,
-                 detail::Rule const*                                 BC,
-                 detail::internal_string_type::const_iterator const& it) {
+      size_t operator()(detail::Rule const*                AB,
+                        detail::Rule const*                BC,
+                        std::string::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
@@ -51,10 +50,9 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::AB_BC
         : KnuthBendixImpl<Rewriter, ReductionOrder>::OverlapMeasure {
-      size_t
-      operator()(detail::Rule const*                                 AB,
-                 detail::Rule const*                                 BC,
-                 detail::internal_string_type::const_iterator const& it) {
+      size_t operator()(detail::Rule const*                AB,
+                        detail::Rule const*                BC,
+                        std::string::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
@@ -67,10 +65,9 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::MAX_AB_BC
         : KnuthBendixImpl<Rewriter, ReductionOrder>::OverlapMeasure {
-      size_t
-      operator()(detail::Rule const*                                 AB,
-                 detail::Rule const*                                 BC,
-                 detail::internal_string_type::const_iterator const& it) {
+      size_t operator()(detail::Rule const*                AB,
+                        detail::Rule const*                BC,
+                        std::string::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
@@ -481,8 +478,8 @@ namespace libsemigroups {
     // REVIEW was it okay to remove const here? Needed to do so to maybe process
     // some rules.
     template <typename Rewriter, typename ReductionOrder>
-    void KnuthBendixImpl<Rewriter, ReductionOrder>::rewrite_inplace(
-        detail::external_string_type& w) {
+    void
+    KnuthBendixImpl<Rewriter, ReductionOrder>::rewrite_inplace(std::string& w) {
       if (_rewriter.number_of_active_rules() == 0
           && _rewriter.number_of_pending_rules() != 0) {
         _rewriter.process_pending_rules();
@@ -778,8 +775,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     template <typename Rewriter, typename ReductionOrder>
-    void KnuthBendixImpl<Rewriter, ReductionOrder>::add_octo(
-        detail::external_string_type& w) const {
+    void
+    KnuthBendixImpl<Rewriter, ReductionOrder>::add_octo(std::string& w) const {
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
         w = internal_presentation().alphabet().back() + w;
@@ -787,8 +784,8 @@ namespace libsemigroups {
     }
 
     template <typename Rewriter, typename ReductionOrder>
-    void KnuthBendixImpl<Rewriter, ReductionOrder>::rm_octo(
-        detail::external_string_type& w) const {
+    void
+    KnuthBendixImpl<Rewriter, ReductionOrder>::rm_octo(std::string& w) const {
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
         LIBSEMIGROUPS_ASSERT(w.front()
