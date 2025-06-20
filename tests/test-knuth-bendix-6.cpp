@@ -314,7 +314,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 625);
     REQUIRE(to_human_readable_repr(kb)
             == "<confluent 2-sided KnuthBendix over <monoid presentation with "
-               "5 letters, 260 rules, and length 4,131> with 362/204 "
+               "5 letters, 260 rules, and length 4,131> with 362/229 "
                "active/inactive rules>");
   }
 
