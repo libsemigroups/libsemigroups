@@ -276,27 +276,26 @@ namespace libsemigroups {
 
         // Check rule is non-trivial
         if (*rule1->lhs() != *rule1->rhs()) {
-          rules_added      = true;
-          std::string* lhs = rule1->lhs();
+          // std::string* lhs = rule1->lhs();
 
-          for (auto it = begin(); it != end();) {
-            Rule* rule2 = const_cast<Rule*>(*it);
+          // for (auto it = begin(); it != end();) {
+          //   Rule* rule2 = const_cast<Rule*>(*it);
 
-            // Check if lhs is contained within either the lhs or rhs of rule2
-            // TODO(0) investigate whether or not this can be improved?
-            // Removed?
-            if (rule2->lhs()->find(*lhs) != std::string::npos
-                || rule2->rhs()->find(*lhs) != std::string::npos) {
-              // If it is, rule2 must be deactivated and re-processed
-              it = make_active_rule_pending(it);
-            } else {
-              ++it;
-            }
-          }
-          add_rule(rule1);
+          //   // Check if lhs is contained within either the lhs or rhs of
+          //   rule2
+          //   // TODO(0) investigate whether or not this can be improved?
+          //   // Removed?
+          //   if (rule2->lhs()->find(*lhs) != std::string::npos
+          //       || rule2->rhs()->find(*lhs) != std::string::npos) {
+          //     // If it is, rule2 must be deactivated and re-processed
+          //     it = make_active_rule_pending(it);
+          //   } else {
+          //     ++it;
+          //   }
+          // }
+          // add_rule(rule1);
           rules_added = true;
-
-          //   add_rule_and_reduce_old_rules(rule1);
+          add_rule_and_reduce_old_rules(rule1);
         } else {
           add_inactive_rule(rule1);
         }
@@ -748,7 +747,6 @@ namespace libsemigroups {
           = _trie.rm_word_no_checks(rule->lhs()->cbegin(), rule->lhs()->cend());
       _rules.erase(node);
       return Rules::erase_from_active_rules(it);
-      LIBSEMIGROUPS_ASSERT(_trie.number_of_nodes() == number_of_active_rules());
     }
   }  // namespace detail
 }  // namespace libsemigroups
