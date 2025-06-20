@@ -974,7 +974,7 @@ namespace libsemigroups {
 
     REQUIRE((kb.active_rules() | rx::to_vector())
             == std::vector<std::decay_t<decltype(kb)>::rule_type>(
-                {{"ba", "a"}, {"ab", "a"}, {"aa", "a"}}));
+                {{"aa", "a"}, {"ab", "a"}, {"ba", "a"}}));
 
     cong.run();
 
