@@ -19,8 +19,8 @@
 // This file contains the implementation of a trie with suffix links for use by
 // the Aho-Corasick dictionary search algorithm
 
-#ifndef LIBSEMIGROUPS_DETAIL_AHO_CORASICK_HPP_
-#define LIBSEMIGROUPS_DETAIL_AHO_CORASICK_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_AHO_CORASICK_IMPL_HPP_
+#define LIBSEMIGROUPS_DETAIL_AHO_CORASICK_IMPL_HPP_
 
 #include <memory>         // for allocator_traits<>::value_type
 #include <set>            // for set
@@ -152,7 +152,7 @@ namespace libsemigroups {
       AhoCorasickImpl();
       AhoCorasickImpl& init();
 
-      AhoCorasickImpl(size_t num_letters);
+      explicit AhoCorasickImpl(size_t num_letters);
       AhoCorasickImpl& init(size_t num_letters);
 
       AhoCorasickImpl(AhoCorasickImpl const&) = default;
@@ -307,4 +307,4 @@ namespace libsemigroups {
 
 #include "aho-corasick-impl.tpp"
 
-#endif  // LIBSEMIGROUPS_DETAIL_AHO_CORASICK_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_AHO_CORASICK_IMPL_HPP_
