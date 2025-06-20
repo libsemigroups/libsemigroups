@@ -1795,7 +1795,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange words;
+    WordRange    words;
     words.alphabet_size(2).min(0).max(6);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
