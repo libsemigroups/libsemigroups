@@ -321,10 +321,9 @@ namespace libsemigroups {
 
     class Rules {
      public:
-      using iterator       = std::list<Rule const*>::iterator;
-      using const_iterator = std::list<Rule const*>::const_iterator;
-      using const_reverse_iterator
-          = std::list<Rule const*>::const_reverse_iterator;
+      using iterator               = std::list<Rule*>::iterator;
+      using const_iterator         = std::list<Rule*>::const_iterator;
+      using const_reverse_iterator = std::list<Rule*>::const_reverse_iterator;
 
      private:
       struct Stats {
@@ -345,7 +344,7 @@ namespace libsemigroups {
       };
 
       // TODO(2) remove const?
-      std::list<Rule const*>  _active_rules;
+      std::list<Rule*>        _active_rules;
       std::array<iterator, 2> _cursors;
       std::list<Rule*>        _inactive_rules;
       mutable Stats           _stats;
@@ -456,7 +455,7 @@ namespace libsemigroups {
 
       RewriterBase& init();
 
-      ~RewriterBase();
+      virtual ~RewriterBase();
 
       // TODO(1) to cpp
       RewriterBase& operator=(RewriterBase const& that) {
@@ -510,8 +509,28 @@ namespace libsemigroups {
         rule->reorder();
       }
 
-      // TODO(2) remove virtual functions
-      virtual void rewrite(internal_string_type& u) const = 0;
+      // Rewrite <u> without using <rule>, nullptr for rule indicates no rule
+      // is disabled.
+      [[nodiscard]] virtual bool
+      rewrite_with_disabled_rule(internal_string_type& u,
+                                 Rule const*           rule = nullptr)
+          = 0;
+
+      void rewrite(internal_string_type& u) {
+        // TODO improve
+        std::ignore = rewrite_with_disabled_rule(u);
+      }
+
+      void rewrite(internal_string_type& u) const {
+        // TODO improve
+        std::ignore
+            = const_cast<RewriterBase*>(this)->rewrite_with_disabled_rule(u);
+      }
+
+      bool rewrite_active_rule(Rule* rule) {
+        return rewrite_with_disabled_rule(*rule->lhs(), rule)
+               || rewrite_with_disabled_rule(*rule->rhs(), rule);
+      }
 
       virtual void add_rule(Rule* rule) = 0;
 
@@ -546,6 +565,22 @@ namespace libsemigroups {
               new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
+
+      // TODO(0) to cpp
+      void add_rule_and_reduce_old_rules(Rule* new_rule) {
+        add_rule(new_rule);
+        for (auto it = begin(); it != end();) {
+          if (*it == new_rule) {
+            ++it;
+            continue;
+          }
+          if (rewrite_active_rule(*it)) {
+            it = make_active_rule_pending(it);
+          } else {
+            ++it;
+          }
+        }
+      }
     };
 
     class RewriteFromLeft : public RewriterBase {
@@ -565,18 +600,20 @@ namespace libsemigroups {
 
       RewriteFromLeft& init();
 
-      void rewrite(internal_string_type& u) const;
+      [[nodiscard]] bool
+      rewrite_with_disabled_rule(internal_string_type& u,
+                                 Rule const*           disabled_rule) override;
 
       [[nodiscard]] bool confluent() const;
 
       // TODO(1) private?
-      void add_rule(Rule* rule);
+      void add_rule(Rule* rule) override;
 
       using RewriterBase::add_rule;
 
       void rewrite(Rule* rule) const;
 
-      iterator make_active_rule_pending(iterator);
+      iterator make_active_rule_pending(iterator) override;
 
       void report_from_confluent(
           std::atomic_uint64_t const&,
@@ -585,61 +622,52 @@ namespace libsemigroups {
       bool confluent_impl(std::atomic_uint64_t&) const;
     };
 
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteTrie
+    ////////////////////////////////////////////////////////////////////////
+
     class RewriteTrie : public RewriterBase {
-      using index_type = AhoCorasickImpl::index_type;
-
-      std::map<index_type, Rule*> _rules;
-      AhoCorasickImpl             _trie;
-
      public:
+      using index_type = AhoCorasickImpl::index_type;
       using RewriterBase::cached_confluent;
       using Rules::stats;
       using iterator      = internal_string_type::iterator;
       using rule_iterator = std::map<index_type, Rule*>::iterator;
 
+     private:
+      // TODO use std::unordered_map
+      std::map<index_type, Rule*> _rules;
+      AhoCorasickImpl             _trie;
+
+     public:
       RewriteTrie() : RewriterBase(), _rules(), _trie(0) {}
+      RewriteTrie& init();
 
       RewriteTrie(RewriteTrie const& that);
-
       RewriteTrie& operator=(RewriteTrie const& that);
+
       // TODO(1) move constructor, and move assignment operator
 
       ~RewriteTrie();
-
-      RewriteTrie& init();
 
       RewriteTrie& increase_alphabet_size_by(size_t val) {
         _trie.increase_alphabet_size_by(val);
         return *this;
       }
 
-      rule_iterator rules_begin() {
-        return _rules.begin();
-      }
-
-      rule_iterator rules_end() {
-        return _rules.end();
-      }
-
-      void all_overlaps();
-
-      void rule_overlaps(index_type node);
-
-      void add_overlaps(Rule* rule, index_type node, size_t overlap_length);
-
-      void rewrite(internal_string_type& u) const;
+      [[nodiscard]] bool
+      rewrite_with_disabled_rule(internal_string_type& u,
+                                 Rule const*           disabled_rule) override;
 
       [[nodiscard]] bool confluent() const;
 
       // TODO should be no_checks
       // TODO add a check version
-      void add_rule(Rule* rule) {
+      void add_rule(Rule* rule) override {
         Rules::add_rule(rule);
         add_rule_to_trie(rule);
         set_cached_confluent(tril::unknown);
       }
-
-      using RewriterBase::add_rule;
 
      private:
       [[nodiscard]] bool descendants_confluent(Rule const* rule1,
@@ -659,7 +687,7 @@ namespace libsemigroups {
         _rules.emplace(node, rule);
       }
 
-      Rules::iterator make_active_rule_pending(Rules::iterator it);
+      Rules::iterator make_active_rule_pending(Rules::iterator it) override;
 
       void report_from_confluent(
           std::atomic_uint64_t const&,
