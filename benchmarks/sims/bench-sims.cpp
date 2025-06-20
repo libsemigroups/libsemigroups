@@ -21,25 +21,25 @@
 #include <cstdint>   // for uint64_t
 #include <iostream>  // for operator<<, cout, ostream
 #include <string>    // for operator+, basic_string
-#include <thread>
-#include <vector>  // for vector, operator==
+#include <thread>    // for thread
+#include <vector>    // for vector, operator==
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/bipart.hpp"  // for Bipartition
-#include "libsemigroups/bmat-fastest.hpp"
-#include "libsemigroups/bmat8.hpp"
+#include "libsemigroups/bipart.hpp"                 // for Bipartition
+#include "libsemigroups/bmat-fastest.hpp"           // for BMatFastest
+#include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/detail/report.hpp"          // for ReportGuard
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"           // for redundant_rule
 #include "libsemigroups/pbr.hpp"                    // for PBR
 #include "libsemigroups/presentation-examples.hpp"  // for presentation::examples
-#include "libsemigroups/runner.hpp"
-#include "libsemigroups/sims.hpp"             // for ReportGuard
-#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/transf.hpp"           // for ReportGuard
-#include "libsemigroups/types.hpp"            // for word_type, letter_type
+#include "libsemigroups/runner.hpp"                 // for Runner
+#include "libsemigroups/sims.hpp"                   // for Sims
+#include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
+#include "libsemigroups/transf.hpp"                 // for Transf
+#include "libsemigroups/types.hpp"                  // for word_type etc
 
 namespace libsemigroups {
   namespace {
@@ -1278,7 +1278,7 @@ namespace libsemigroups {
   }
 
   TEST_CASE("full transf. monoid 2-sided", "[full_transf_2_sided]") {
-    using literals::    operator""_p;
+    using literals::operator""_p;
     auto                rg    = ReportGuard(false);
     std::vector<size_t> sizes = {0, 0, 4, 27, 256, 3125};
     std::vector<size_t> num   = {0, 0, 4, 7, 11, 14};
