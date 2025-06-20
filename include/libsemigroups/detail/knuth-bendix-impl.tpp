@@ -166,6 +166,7 @@ namespace libsemigroups {
     KnuthBendixImpl<Rewriter, ReductionOrder>&
     KnuthBendixImpl<Rewriter, ReductionOrder>::init() {
       CongruenceCommon::init();
+      report_prefix("KnuthBendix");
 
       _gen_pairs_initted = false;
       _gilman_graph.init(0, 0);
@@ -250,7 +251,7 @@ namespace libsemigroups {
       p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p, "2nd");
       init();
-      CongruenceCommon::init(knd);
+      kind(knd);
       _presentation = std::move(p);
       init_from_internal_presentation();
       return *this;

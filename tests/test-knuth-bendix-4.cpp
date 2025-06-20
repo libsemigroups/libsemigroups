@@ -772,8 +772,31 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbbaabbaaba", "bbbaabbaaaa");
     presentation::add_rule(p, "aaaabbaaba", "bbaaaa");
     KnuthBendix<std::string, TestType> k(twosided, p);
-    k.run_for(std::chrono::seconds(10));
+    k.run_for(std::chrono::seconds(1));
     REQUIRE(!k.finished());
+
+    k.init(twosided, p);
+    k.run_for(std::chrono::seconds(1));
+
+    k.init(twosided, p);
+    knuth_bendix::add_generating_pair(k, "ab", "ba");
+    REQUIRE(k.number_of_generating_pairs() == 1);
+    REQUIRE(k.generating_pairs() == std::vector<std::string>({"ab", "ba"}));
+    REQUIRE(k.internal_generating_pairs().size() == 2);
+
+    k.init(twosided, p);
+    REQUIRE(k.number_of_generating_pairs() == 0);
+    REQUIRE(k.internal_generating_pairs().size() == 0);
+    REQUIRE(k.generating_pairs().size() == 0);
+    knuth_bendix::add_generating_pair(k, "ab", "ba");
+    REQUIRE(k.number_of_generating_pairs() == 2);
+    REQUIRE(k.internal_generating_pairs().size() == 2);
+    REQUIRE(k.generating_pairs().size() == 2);
+
+    k.init();
+    REQUIRE(k.number_of_generating_pairs() == 0);
+    REQUIRE(k.internal_generating_pairs().size() == 0);
+    REQUIRE(k.generating_pairs().size() == 0);
   }
 
 }  // namespace libsemigroups
