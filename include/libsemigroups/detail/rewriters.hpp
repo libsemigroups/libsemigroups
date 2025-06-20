@@ -39,61 +39,21 @@
 // detection can be handled by the rewriter (and therefore depend on the
 // implementation) rather than on the KB object.
 
-//! \defgroup \rewriters_group Rewriters
-//!
-//! This file contains documentation for the functionality for rewriters in
-//! `libsemigroups`.
 namespace libsemigroups {
   namespace detail {
     // TODO(2) remove from libsemigroups namespace and put into relevant class
 
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of word that can be input by the user
-    using external_string_type = std::string;
+    ////////////////////////////////////////////////////////////////////////
+    // Rule
+    ////////////////////////////////////////////////////////////////////////
 
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of word used internally in the implementation
-    using internal_string_type = std::string;
-
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of letter that can be input by the user
-    using external_char_type = char;
-
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of letter used internally in the implementation
-    using internal_char_type = char;
-
-    //! \ingroup rewriters_group
-    //!
-    //! \brief For a rewriting rule.
-    //!
-    //! Defined in `rewriters.hpp`.
-    //!
-    //! This class implements a data structure for storing *rewriting rules*.
-    //! Here, a rewriting rule is a rule of the form \f$A \to B\f$, where
-    //! \f$A\f$ and \f$B\f$ are both words over some alphabet \f$\Sigma\f$.
-    //!
-    //! The left-hand and right-hand sides of a rule are specified externally
-    //! with the type \ref external_string_type, and stored internally with type
-    //! \ref internal_string_type.
     class Rule {
-      internal_string_type* _lhs;
-      internal_string_type* _rhs;
-      int64_t               _id;
+      // TODO Why are _lhs and _rhs pointers?
+      std::string* _lhs;
+      std::string* _rhs;
+      int64_t      _id;
 
      public:
-      //! \brief Construct with new empty left-hand and right-hand sides.
-      //!
-      //! Construct with new empty left-hand and right-hand sides.
-      //!
-      //! \param id the id of the new rule.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
       explicit Rule(int64_t id);
 
       Rule& operator=(Rule const& copy) = delete;
@@ -101,145 +61,39 @@ namespace libsemigroups {
       Rule(Rule&& copy)                 = delete;
       Rule& operator=(Rule&& copy)      = delete;
 
-      //! \brief Destruct the Rule.
-      //!
-      //! This function destructs a \ref Rule object by deleting the pointers
-      //! used for the left-hand and right-hand sides.
       ~Rule() {
         delete _lhs;
         delete _rhs;
       }
 
-      //! \brief Return the left-hand side of the rule.
-      //!
-      //! Return the left-hand side of the rule. If this rule was create by a
-      //! \ref_knuth_bendix, this is guaranteed to be greater than its
-      //! right-hand side according to the reduction ordering of that
-      //! \ref_knuth_bendix.
-      //!
-      //! \returns A pointer to the left-hand side.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref_knuth_bendix
-      [[nodiscard]] internal_string_type* lhs() const noexcept {
+      [[nodiscard]] std::string* lhs() const noexcept {
         return _lhs;
       }
 
-      //! \brief Return the right-hand side of the rule.
-      //!
-      //! Return the right-hand side of the rule. If this rule was create by a
-      //! \ref_knuth_bendix, this is guaranteed to be less than its left-hand
-      //! side according to the reduction ordering of that \ref_knuth_bendix.
-      //!
-      //! \returns A pointer to the right-hand side.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref_knuth_bendix
-      [[nodiscard]] internal_string_type* rhs() const noexcept {
+      [[nodiscard]] std::string* rhs() const noexcept {
         return _rhs;
       }
 
-      //! \brief Check if the left-hand and right-hand sides are empty.
-      //!
-      //! Check if the words pointed to by both the left-hand and the right-hand
-      //! sides are empty.
-      //!
-      //! \returns A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
       [[nodiscard]] bool empty() const noexcept {
         return _lhs->empty() && _rhs->empty();
       }
 
-      //! \brief Check if the Rule is active.
-      //!
-      //! Check if the rule is active.
-      //!
-      //! \returns A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
       [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);
       }
 
-      //! \brief Deactivate a rule.
-      //!
-      //! Deactivate a rule, if it is active.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref active
       void deactivate() noexcept;
 
-      //! \brief Activate a rule.
-      //!
-      //! Activate a rule, if it is inactive.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref active
       void activate() noexcept;
 
-      //! \brief Set the id of a rule.
-      //!
-      //! Set the id of a rule.
-      //!
-      //! \param id the id to set.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \note
-      //! This function does no checks on its parameters; however, the id of a
-      //! rule should only be set if the rule is inactive, and the id of a rule
-      //! should always be positive.
       void set_id_no_checks(int64_t id) noexcept {
         LIBSEMIGROUPS_ASSERT(id > 0);
         LIBSEMIGROUPS_ASSERT(!active());
         _id = -1 * id;
       }
 
-      //! \brief Set the id of a rule.
-      //!
-      //! After checking that the Rule is inactive \p id is positive, this
-      //! function performs the same as \ref set_id_no_checks.
-      //!
-      //! \throws LIBSEMIGROUPS_EXCEPTION if \p id is non-positive, or if `this`
-      //! is active.
+      // TODO to cpp
       void set_id(int64_t id) {
         if (id <= 0) {
           LIBSEMIGROUPS_EXCEPTION(
@@ -251,41 +105,21 @@ namespace libsemigroups {
         set_id_no_checks(id);
       }
 
-      //! \brief Return the id of a rule.
-      //!
-      //! Return the id of a rule.
-      //!
-      //! \returns A value of type `int64_t`
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
       }
 
-      //! \brief Reorder the left-hand and right-hand sides.
-      //!
-      //! If the right-hand side is greater than the left-hand side of a rule,
-      //! with regards to length-lexicographical order, then swap them.
-      //!
-      //! \exceptions
-      //! Throws if \ref shortlex_compare(T* const, T* const) does.
-      //!
-      //! \complexity
-      //! The same complexity as \ref shortlex_compare(T* const, T* const)
-      //!
-      //! \sa
-      //! shortlex_compare(T* const, T* const)
       void reorder() {
         if (shortlex_compare(_lhs, _rhs)) {
           std::swap(_lhs, _rhs);
         }
       }
     };  // class Rule
+
+    ////////////////////////////////////////////////////////////////////////
+    // RuleLookup
+    ////////////////////////////////////////////////////////////////////////
 
     class RuleLookup {
      public:
@@ -296,8 +130,8 @@ namespace libsemigroups {
             _last(rule->lhs()->cend()),
             _rule(rule) {}
 
-      RuleLookup& operator()(internal_string_type::iterator const& first,
-                             internal_string_type::iterator const& last) {
+      RuleLookup& operator()(std::string::iterator const& first,
+                             std::string::iterator const& last) {
         _first = first;
         _last  = last;
         return *this;
@@ -314,10 +148,14 @@ namespace libsemigroups {
       bool operator<(RuleLookup const& that) const;
 
      private:
-      internal_string_type::const_iterator _first;
-      internal_string_type::const_iterator _last;
-      Rule const*                          _rule;
+      std::string::const_iterator _first;
+      std::string::const_iterator _last;
+      Rule const*                 _rule;
     };  // class RuleLookup
+
+    ////////////////////////////////////////////////////////////////////////
+    // Rules
+    ////////////////////////////////////////////////////////////////////////
 
     class Rules {
      public:
@@ -340,7 +178,7 @@ namespace libsemigroups {
         size_t   max_active_rules;
         size_t   min_length_lhs_rule;
         uint64_t total_rules;
-        // std::unordered_set<internal_string_type> unique_lhs_rules;
+        // std::unordered_set<std::string> unique_lhs_rules;
       };
 
       // TODO(2) remove const?
@@ -437,7 +275,11 @@ namespace libsemigroups {
         rule->reorder();
         return rule;
       }
-    };
+    };  // class Rules
+
+    ////////////////////////////////////////////////////////////////////////
+    // RewriterBase
+    ////////////////////////////////////////////////////////////////////////
 
     class RewriterBase : public Rules {
       mutable std::atomic<bool> _cached_confluent;
@@ -446,6 +288,7 @@ namespace libsemigroups {
       std::vector<Rule*>        _pending_rules;
 
      public:
+      // TODO(0) everything is public!!!
       // TODO(1) to cpp
       RewriterBase()
           : _cached_confluent(false),
@@ -511,17 +354,17 @@ namespace libsemigroups {
 
       // Rewrite <u> without using <rule>, nullptr for rule indicates no rule
       // is disabled.
-      [[nodiscard]] virtual bool
-      rewrite_with_disabled_rule(internal_string_type& u,
-                                 Rule const*           rule = nullptr)
+      [[nodiscard]] virtual bool rewrite_with_disabled_rule(std::string& u,
+                                                            Rule const*  rule
+                                                            = nullptr)
           = 0;
 
-      void rewrite(internal_string_type& u) {
+      void rewrite(std::string& u) {
         // TODO improve
         std::ignore = rewrite_with_disabled_rule(u);
       }
 
-      void rewrite(internal_string_type& u) const {
+      void rewrite(std::string& u) const {
         // TODO improve
         std::ignore
             = const_cast<RewriterBase*>(this)->rewrite_with_disabled_rule(u);
@@ -581,37 +424,33 @@ namespace libsemigroups {
           }
         }
       }
-    };
+    };  // class RewriterBase
+
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteFromLeft
+    ////////////////////////////////////////////////////////////////////////
 
     class RewriteFromLeft : public RewriterBase {
       std::set<RuleLookup> _set_rules;
 
      public:
-      using RewriterBase::cached_confluent;
-      using Rules::stats;
+      using RewriterBase::add_rule;
 
       RewriteFromLeft() = default;
-
       RewriteFromLeft& operator=(RewriteFromLeft const&);
-
       // TODO(2) the other constructors
-
       ~RewriteFromLeft();
 
       RewriteFromLeft& init();
 
-      [[nodiscard]] bool
-      rewrite_with_disabled_rule(internal_string_type& u,
-                                 Rule const*           disabled_rule) override;
-
       [[nodiscard]] bool confluent() const;
 
-      // TODO(1) private?
+     private:
+      [[nodiscard]] bool
+      rewrite_with_disabled_rule(std::string& u,
+                                 Rule const*  disabled_rule) override;
+
       void add_rule(Rule* rule) override;
-
-      using RewriterBase::add_rule;
-
-      void rewrite(Rule* rule) const;
 
       iterator make_active_rule_pending(iterator) override;
 
@@ -631,7 +470,7 @@ namespace libsemigroups {
       using index_type = AhoCorasickImpl::index_type;
       using RewriterBase::cached_confluent;
       using Rules::stats;
-      using iterator      = internal_string_type::iterator;
+      using iterator      = std::string::iterator;
       using rule_iterator = std::map<index_type, Rule*>::iterator;
 
      private:
@@ -640,6 +479,8 @@ namespace libsemigroups {
       AhoCorasickImpl             _trie;
 
      public:
+      using RewriterBase::add_rule;
+
       RewriteTrie() : RewriterBase(), _rules(), _trie(0) {}
       RewriteTrie& init();
 
@@ -655,12 +496,9 @@ namespace libsemigroups {
         return *this;
       }
 
-      [[nodiscard]] bool
-      rewrite_with_disabled_rule(internal_string_type& u,
-                                 Rule const*           disabled_rule) override;
-
       [[nodiscard]] bool confluent() const;
 
+     private:
       // TODO should be no_checks
       // TODO add a check version
       void add_rule(Rule* rule) override {
@@ -669,17 +507,13 @@ namespace libsemigroups {
         set_cached_confluent(tril::unknown);
       }
 
-     private:
+      [[nodiscard]] bool
+      rewrite_with_disabled_rule(std::string& u,
+                                 Rule const*  disabled_rule) override;
+
       [[nodiscard]] bool descendants_confluent(Rule const* rule1,
                                                index_type  current_node,
                                                size_t backtrack_depth) const;
-
-      // TODO(2) (After removing virtual functions) Put in base
-      void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
-        rule->reorder();
-      }
 
       void add_rule_to_trie(Rule* rule) {
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
