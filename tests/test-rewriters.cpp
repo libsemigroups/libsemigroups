@@ -18,75 +18,86 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/aho-corasick.hpp"      // for dot
+#include "libsemigroups/aho-corasick.hpp"  // for dot
+#include "libsemigroups/word-range.hpp"    // for operator""_w
+
+#include "libsemigroups/detail/report.hpp"     // for ReportGuard
 #include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
 
 namespace libsemigroups {
+  using literals::operator""_w;
   namespace detail {
+
     using namespace std::literals;
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "000", "initial test", "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
       REQUIRE(rt.number_of_active_rules() == 0);
       rt.increase_alphabet_size_by(2);
-      rt.add_rule("ba"s, "a"s);
+      rt.add_rule("ba"_w, "a"_w);
       REQUIRE(rt.number_of_active_rules() == 1);
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
 
-      rt.add_rule("ac"s, "ca"s);
-      rt.add_rule("aa"s, "a"s);
-      rt.add_rule("ac"s, "a"s);
-      rt.add_rule("ca"s, "a"s);
-      rt.add_rule("bb"s, "bb"s);
-      rt.add_rule("bc"s, "cb"s);
-      rt.add_rule("bbb"s, "b"s);
-      rt.add_rule("bc"s, "b"s);
-      rt.add_rule("cb"s, "b"s);
-      rt.add_rule("a"s, "b"s);
+      rt.increase_alphabet_size_by(3);
+      rt.add_rule("ac"_w, "ca"_w);
+      rt.add_rule("aa"_w, "a"_w);
+      rt.add_rule("ac"_w, "a"_w);
+      rt.add_rule("ca"_w, "a"_w);
+      rt.add_rule("bb"_w, "bb"_w);
+      rt.add_rule("bc"_w, "cb"_w);
+      rt.add_rule("bbb"_w, "b"_w);
+      rt.add_rule("bc"_w, "b"_w);
+      rt.add_rule("cb"_w, "b"_w);
+      rt.add_rule("a"_w, "b"_w);
 
       REQUIRE(rt.confluent());
 
-      std::string w1 = "aa";
+      std::string w1 = {0, 0};
       rt.rewrite(w1);
-      REQUIRE(w1 == "a"s);
+      REQUIRE(w1 == std::string({0}));
 
-      std::string w2 = "ab";
+      std::string w2 = {0, 1};
       rt.rewrite(w2);
-      REQUIRE(w2 == "a"s);
+      REQUIRE(w2 == std::string({0}));
 
-      std::string w3 = "abc";
+      std::string w3 = {0, 1, 2};
       rt.rewrite(w3);
-      REQUIRE(w3 == "a"s);
+      REQUIRE(w3 == std::string({0}));
 
-      std::string w4 = "abca";
+      std::string w4 = {0, 1, 2, 0};
       rt.rewrite(w4);
-      REQUIRE(w4 == "a"s);
+      REQUIRE(w4 == std::string({0}));
 
-      std::string w5
-          = "cbcabcabcabcbacbacbacabacabbaccabbacabbaccabacabbacabba";
+      std::string w5 = {2, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 2, 1,
+                        0, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 0, 1,
+                        1, 0, 2, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 0, 1, 1, 0};
       rt.rewrite(w5);
-      REQUIRE(w5 == "a"s);
+      REQUIRE(w5 == std::string({0}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
                             "002",
                             "confluent fp semigroup 3 (infinite)",
                             "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
+      rt.increase_alphabet_size_by(3);
 
-      rt.add_rule("01"s, "10"s);
-      rt.add_rule("02"s, "20"s);
-      rt.add_rule("00"s, "0"s);
-      rt.add_rule("02"s, "0"s);
-      rt.add_rule("20"s, "0"s);
-      rt.add_rule("11"s, "11"s);
-      rt.add_rule("12"s, "21"s);
-      rt.add_rule("111"s, "1"s);
-      rt.add_rule("12"s, "1"s);
-      rt.add_rule("21"s, "1"s);
-      rt.add_rule("0"s, "1"s);
+      rt.add_rule("ab"_w, "ba"_w);
+      rt.add_rule("ac"_w, "ca"_w);
+      rt.add_rule("aa"_w, "a"_w);
+      rt.add_rule("ac"_w, "a"_w);
+      rt.add_rule("ca"_w, "a"_w);
+      rt.add_rule("bb"_w, "bb"_w);
+      rt.add_rule("bc"_w, "cb"_w);
+      rt.add_rule("bbb"_w, "b"_w);
+      rt.add_rule("bc"_w, "b"_w);
+      rt.add_rule("cb"_w, "b"_w);
+      rt.add_rule("a"_w, "b"_w);
 
       REQUIRE(rt.confluent());
     }
@@ -96,10 +107,12 @@ namespace libsemigroups {
                             "non-confluent fp semigroup from "
                             "wikipedia (infinite)",
                             "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
-      rt.add_rule("000"s, ""s);
-      rt.add_rule("111"s, ""s);
-      rt.add_rule("010101"s, ""s);
+      rt.increase_alphabet_size_by(2);
+      rt.add_rule("aaa"_w, ""_w);
+      rt.add_rule("bbb"_w, ""_w);
+      rt.add_rule("ababab"_w, ""_w);
       REQUIRE(!rt.confluent());
     }
 
@@ -107,12 +120,14 @@ namespace libsemigroups {
                             "004",
                             "Example 5.1 in Sims (infinite)",
                             "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
-      rt.add_rule("ab"s, ""s);
-      rt.add_rule("ba"s, ""s);
-      rt.add_rule("cd"s, ""s);
-      rt.add_rule("dc"s, ""s);
-      rt.add_rule("ca"s, "ac"s);
+      rt.increase_alphabet_size_by(4);
+      rt.add_rule("ab"_w, ""_w);
+      rt.add_rule("ba"_w, ""_w);
+      rt.add_rule("cd"_w, ""_w);
+      rt.add_rule("dc"_w, ""_w);
+      rt.add_rule("ca"_w, "ac"_w);
 
       REQUIRE(!rt.confluent());
     }
@@ -121,13 +136,15 @@ namespace libsemigroups {
                             "005",
                             "Example 5.1 in Sims (infinite)",
                             "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
 
-      rt.add_rule("Aa"s, ""s);
-      rt.add_rule("aA"s, ""s);
-      rt.add_rule("Bb"s, ""s);
-      rt.add_rule("bB"s, ""s);
-      rt.add_rule("ba"s, "ab"s);
+      rt.increase_alphabet_size_by(4);
+      rt.add_rule("ca"_w, ""_w);
+      rt.add_rule("ac"_w, ""_w);
+      rt.add_rule("db"_w, ""_w);
+      rt.add_rule("bd"_w, ""_w);
+      rt.add_rule("ba"_w, "ab"_w);
 
       REQUIRE(!rt.confluent());
     }
@@ -136,11 +153,12 @@ namespace libsemigroups {
                             "006",
                             "Example 5.3 in Sims",
                             "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
-
-      rt.add_rule("aa"s, ""s);
-      rt.add_rule("bbb"s, ""s);
-      rt.add_rule("ababab"s, ""s);
+      rt.increase_alphabet_size_by(2);
+      rt.add_rule("aa"_w, ""_w);
+      rt.add_rule("bbb"_w, ""_w);
+      rt.add_rule("ababab"_w, ""_w);
 
       REQUIRE(!rt.confluent());
     }
@@ -149,12 +167,14 @@ namespace libsemigroups {
                             "007",
                             "Example 5.4 in Sims",
                             "[quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
+      rt.increase_alphabet_size_by(3);
 
-      rt.add_rule("aa"s, ""s);
-      rt.add_rule("bB"s, ""s);
-      rt.add_rule("bbb"s, ""s);
-      rt.add_rule("ababab"s, ""s);
+      rt.add_rule("aa"_w, ""_w);
+      rt.add_rule("bc"_w, ""_w);
+      rt.add_rule("bbb"_w, ""_w);
+      rt.add_rule("ababab"_w, ""_w);
 
       REQUIRE(!rt.confluent());
     }
@@ -163,13 +183,15 @@ namespace libsemigroups {
                             "008",
                             "Example 6.4 in Sims (size 168)",
                             "[no-valgrind][quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
+      rt.increase_alphabet_size_by(3);
 
-      rt.add_rule("aa"s, ""s);
-      rt.add_rule("bc"s, ""s);
-      rt.add_rule("bbb"s, ""s);
-      rt.add_rule("ababababababab"s, ""s);
-      rt.add_rule("abacabacabacabac"s, ""s);
+      rt.add_rule("aa"_w, ""_w);
+      rt.add_rule("bc"_w, ""_w);
+      rt.add_rule("bbb"_w, ""_w);
+      rt.add_rule("ababababababab"_w, ""_w);
+      rt.add_rule("abacabacabacabac"_w, ""_w);
 
       REQUIRE(!rt.confluent());
     }
@@ -178,51 +200,18 @@ namespace libsemigroups {
                             "009",
                             "random example",
                             "[no-valgrind][quick]") {
+      auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();
 
-      rt.add_rule("000"s, "2"s);
-      rt.add_rule("111"s, "2"s);
-      rt.add_rule("010101"s, "2"s);
-      rt.add_rule("02"s, "0"s);
-      rt.add_rule("12"s, "1"s);
-      rt.add_rule("12"s, "2"s);
+      rt.increase_alphabet_size_by(3);
+      rt.add_rule("aaa"_w, "c"_w);
+      rt.add_rule("bbb"_w, "c"_w);
+      rt.add_rule("ababab"_w, "c"_w);
+      rt.add_rule("ac"_w, "a"_w);
+      rt.add_rule("bc"_w, "b"_w);
+      rt.add_rule("bc"_w, "c"_w);
 
       REQUIRE(!rt.confluent());
     }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
-
-    // LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]")
-    // {
-    //   RewriteTrie rt = RewriteTrie();
-    // }
   }  // namespace detail
 }  // namespace libsemigroups
