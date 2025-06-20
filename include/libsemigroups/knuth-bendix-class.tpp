@@ -51,13 +51,13 @@ namespace libsemigroups {
     KnuthBendixImpl_::init(knd, to<Presentation<std::string>>(p, [&p](auto x) {
                              return p.index_no_checks(x);
                            }));
-    // TODO(0) reset generating pairs
     _presentation = std::move(p);
     if (knd == congruence_kind::onesided) {
       auto new_alphabet = _presentation.alphabet();
       new_alphabet.push_back(presentation::first_unused_letter(_presentation));
       _presentation.alphabet(new_alphabet);
     }
+    _generating_pairs.clear();
     return *this;
   }
 
