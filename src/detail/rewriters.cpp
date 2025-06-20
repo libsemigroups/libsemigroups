@@ -25,11 +25,9 @@
 
 namespace libsemigroups {
   namespace detail {
-    // Construct from KnuthBendixImpl with new but empty internal_string_type's
+    // Construct from KnuthBendixImpl with new but empty std::string's
     Rule::Rule(int64_t id)
-        : _lhs(new internal_string_type()),
-          _rhs(new internal_string_type()),
-          _id(-1 * id) {
+        : _lhs(new std::string()), _rhs(new std::string()), _id(-1 * id) {
       LIBSEMIGROUPS_ASSERT(_id < 0);
     }
 
@@ -258,10 +256,6 @@ namespace libsemigroups {
     }
 
     bool RewriterBase::process_pending_rules() {
-      bool                        rules_added = false;
-      Rule*                       rule1;
-      internal_string_type const* lhs;
-
       std::sort(
           _pending_rules.begin(),
           _pending_rules.end(),
@@ -269,11 +263,12 @@ namespace libsemigroups {
 
       auto           start_time = std::chrono::high_resolution_clock::now();
       detail::Ticker ticker;
-      bool           ticker_running = false;  // TODO(1) do this properly with a
+      bool           ticker_running = false;  // TODO(0) do this properly with a
                                               // data member
+      bool rules_added = false;
 
       while (number_of_pending_rules() != 0) {
-        rule1 = next_pending_rule();
+        Rule* rule1 = next_pending_rule();
         LIBSEMIGROUPS_ASSERT(!rule1->active());
         LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
         // Rewrite both sides and reorder if necessary . . .
@@ -281,8 +276,8 @@ namespace libsemigroups {
 
         // Check rule is non-trivial
         if (*rule1->lhs() != *rule1->rhs()) {
-          rules_add = true;
-          add_rule_and_reduce_old_rules(rules1);
+          rules_added = true;
+          add_rule_and_reduce_old_rules(rule1);
         } else {
           add_inactive_rule(rule1);
         }
@@ -294,7 +289,6 @@ namespace libsemigroups {
           });
         }
       }
-      // reduce_rhs();
       return rules_added;
     }
 
@@ -314,6 +308,10 @@ namespace libsemigroups {
         rewrite(*rule->rhs());
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteFromLeft
+    ////////////////////////////////////////////////////////////////////////
 
     RewriteFromLeft::~RewriteFromLeft() = default;
 
@@ -366,20 +364,18 @@ namespace libsemigroups {
     // REWRITE_FROM_LEFT from Sims, p67
     // Caution: this uses the assumption that rules are length reducing, if they
     // are not, then u might not have sufficient space!
-    void
-    RewriteFromLeft::rewrite_with_disabled_rule(internal_string_type& u,
-                                                Rule const* disabled_rule) {
-      // Add underscore because there's already an "iterator" alias.
-      using iterator_ = internal_string_type::iterator;
-
+    bool
+    RewriteFromLeft::rewrite_with_disabled_rule(std::string& u,
+                                                Rule const*  disabled_rule) {
+      bool did_rewrite = false;
       if (u.size() < stats().min_length_lhs_rule) {
-        return;
+        return did_rewrite;
       }
 
-      iterator_ v_begin = u.begin();
-      iterator_ v_end   = u.begin() + stats().min_length_lhs_rule - 1;
-      iterator_ w_begin = v_end;
-      iterator_ w_end   = u.end();
+      auto v_begin = u.begin();
+      auto v_end   = u.begin() + stats().min_length_lhs_rule - 1;
+      auto w_begin = v_end;
+      auto w_end   = u.end();
 
       RuleLookup lookup;
 
@@ -391,7 +387,7 @@ namespace libsemigroups {
         auto it = _set_rules.find(lookup(v_begin, v_end));
         if (it != _set_rules.end()) {
           Rule const* rule = (*it).rule();
-          if (rule != disable_rule) {
+          if (rule != disabled_rule) {
             if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
               LIBSEMIGROUPS_ASSERT(detail::is_suffix(
                   v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
@@ -399,6 +395,7 @@ namespace libsemigroups {
               w_begin -= rule->rhs()->size();
               detail::string_replace(
                   w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+              did_rewrite = true;
             }
           }
         }
@@ -411,14 +408,7 @@ namespace libsemigroups {
         }
       }
       u.erase(v_end - u.cbegin());
-    }
-
-    // TODO rm use RewriterBase::rewrite instead
-    void RewriteFromLeft::rewrite(Rule* rule) const {
-      // LIBSEMIGROUPS_ASSERT(_id != 0);
-      rewrite(*rule->lhs());
-      rewrite(*rule->rhs());
-      rule->reorder();
+      return did_rewrite;
     }
 
     void RewriteFromLeft::report_from_confluent(
@@ -449,8 +439,8 @@ namespace libsemigroups {
       time_point start_time = std::chrono::high_resolution_clock::now();
 
       set_cached_confluent(tril::TRUE);
-      internal_string_type word1;
-      internal_string_type word2;
+      std::string word1;
+      std::string word2;
 
       for (auto it1 = begin(); it1 != end(); ++it1) {
         Rule const* rule1 = *it1;
@@ -519,6 +509,10 @@ namespace libsemigroups {
       }
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteTrie
+    ////////////////////////////////////////////////////////////////////////
+
     RewriteTrie::~RewriteTrie() = default;
 
     RewriteTrie& RewriteTrie::init() {
@@ -546,11 +540,12 @@ namespace libsemigroups {
 
     // As with RewriteFromLeft::rewrite, this assumes that all rules are length
     // reducing.
-    void RewriteTrie::rewrite_with_disabled_rule(internal_string_type& u,
-                                                 Rule const* disabled_rule) {
+    bool RewriteTrie::rewrite_with_disabled_rule(std::string& u,
+                                                 Rule const*  disabled_rule) {
+      bool did_rewrite = false;
       // Check if u is rewriteable
       if (u.size() < stats().min_length_lhs_rule) {
-        return;
+        return did_rewrite;
       }
 
       std::vector<index_type> nodes;
@@ -580,6 +575,7 @@ namespace libsemigroups {
           Rule const* rule = _rules.find(current)->second;
 
           if (rule != disabled_rule) {
+            did_rewrite   = true;
             auto lhs_size = rule->lhs()->size();
             LIBSEMIGROUPS_ASSERT(lhs_size != 0);
 
@@ -592,6 +588,7 @@ namespace libsemigroups {
             // Replace lhs with rhs in-place
             detail::string_replace(
                 w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
+            // TODO(0) terrible idea
             for (size_t i = 0; i < lhs_size - 1; ++i) {
               nodes.pop_back();
             }
@@ -600,6 +597,7 @@ namespace libsemigroups {
         }
       }
       u.erase(v_end - u.cbegin());
+      return did_rewrite;
     }
 
     bool RewriteTrie::confluent() const {
@@ -689,8 +687,8 @@ namespace libsemigroups {
         // AB -> X, BC -> Y
         // ABC gets rewritten to XC and AY
 
-        internal_string_type word1;
-        internal_string_type word2;
+        std::string word1;
+        std::string word2;
 
         word1.assign(*rule1->rhs());  // X
         word1.append(rule2->lhs()->cbegin() + overlap_length,
