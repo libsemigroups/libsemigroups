@@ -883,19 +883,19 @@ namespace libsemigroups {
         conf = "non-" + conf;
       }
     }
-    if (kb.number_of_generating_pairs() != 0) {
-      genpairs = fmt::format("{} generating pairs + ",
-                             group_digits(kb.number_of_generating_pairs()));
-    }
 
-    return fmt::format(
-        "<{}{} KnuthBendix over {} with {}{}/{} active/inactive rules>",
-        conf,
-        kb.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
-        to_human_readable_repr(kb.internal_presentation()),
-        genpairs,
-        group_digits(kb.number_of_active_rules()),
-        group_digits(kb.number_of_inactive_rules()));
+    return fmt::format("<{}{} KnuthBendix over {} with {} gen. pair{}, {} "
+                       "active rule{}, {} pending rule{}>",
+                       conf,
+                       kb.kind() == congruence_kind::twosided ? "2-sided"
+                                                              : "1-sided",
+                       to_human_readable_repr(kb.internal_presentation()),
+                       group_digits(kb.number_of_generating_pairs()),
+                       kb.number_of_generating_pairs() == 1 ? "" : "s",
+                       group_digits(kb.number_of_active_rules()),
+                       kb.number_of_active_rules() == 1 ? "" : "s",
+                       group_digits(kb.number_of_pending_rules()),
+                       kb.number_of_pending_rules() == 1 ? "" : "s");
   }
 
 }  // namespace libsemigroups

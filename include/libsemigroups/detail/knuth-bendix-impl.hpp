@@ -774,6 +774,11 @@ namespace libsemigroups {
         return _rewriter.number_of_inactive_rules();
       }
 
+      // TODO(0) doc
+      [[nodiscard]] size_t number_of_pending_rules() const noexcept {
+        return _rewriter.number_of_pending_rules();
+      }
+
       //! \ingroup knuth_bendix_class_accessors_group
       //!
       //! \brief Return the number of rules that \ref_knuth_bendix has created.
@@ -903,7 +908,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
