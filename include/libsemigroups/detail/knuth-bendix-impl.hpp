@@ -139,10 +139,9 @@ namespace libsemigroups {
 
       // Overlap measures
       struct OverlapMeasure {
-        virtual size_t
-        operator()(detail::Rule const*,
-                   detail::Rule const* examples,
-                   detail::internal_string_type::const_iterator const&)
+        virtual size_t operator()(detail::Rule const*,
+                                  detail::Rule const* examples,
+                                  std::string::const_iterator const&)
             = 0;
         virtual ~OverlapMeasure() {}
       };
@@ -887,8 +886,8 @@ namespace libsemigroups {
 
       void stats_check_point();
 
-      void add_octo(detail::external_string_type& w) const;
-      void rm_octo(detail::external_string_type& w) const;
+      void add_octo(std::string& w) const;
+      void rm_octo(std::string& w) const;
 
       void add_rule_impl(std::string const& p, std::string const& q);
 
