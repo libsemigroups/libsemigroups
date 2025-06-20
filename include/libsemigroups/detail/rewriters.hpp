@@ -32,7 +32,7 @@
 #include "../debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "../order.hpp"  // for shortlex_compare
 
-#include "aho-corasick-impl.hpp"
+#include "aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "multi-string-view.hpp"  // for MultiStringView
 
 // TODO(2) Add a KnuthBendixImpl pointer to the rewriter class so that overlap
