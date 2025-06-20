@@ -637,6 +637,8 @@ namespace libsemigroups {
 
       [[nodiscard]] bool confluent() const;
 
+      // TODO should be no_checks
+      // TODO add a check version
       void add_rule(Rule* rule) {
         Rules::add_rule(rule);
         add_rule_to_trie(rule);
