@@ -593,7 +593,6 @@ namespace libsemigroups {
     class RewriteTrie : public RewriterBase {
       using index_type = AhoCorasickImpl::index_type;
 
-      std::string                 _alphabet;  // TODO remove
       std::map<index_type, Rule*> _rules;
       AhoCorasickImpl             _trie;
 
