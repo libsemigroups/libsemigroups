@@ -285,7 +285,9 @@ namespace libsemigroups {
       mutable std::atomic<bool> _cached_confluent;
       mutable std::atomic<bool> _confluence_known;
       size_t                    _max_stack_depth;
-      std::vector<Rule*>        _pending_rules;
+
+     protected:
+      std::vector<Rule*> _pending_rules;
 
      public:
       // TODO(0) everything is public!!!
@@ -409,7 +411,7 @@ namespace libsemigroups {
         }
       }
 
-      // TODO(0) to cpp
+      // TODO(0) rm
       void add_rule_and_reduce_old_rules(Rule* rule_to_add) {
         LIBSEMIGROUPS_ASSERT(*rule_to_add->lhs() != *rule_to_add->rhs());
         add_rule(rule_to_add);
@@ -502,6 +504,8 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] bool confluent() const;
+
+      bool process_pending_rules();
 
      private:
       // TODO should be no_checks
