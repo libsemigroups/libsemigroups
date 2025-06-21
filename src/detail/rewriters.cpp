@@ -308,6 +308,15 @@ namespace libsemigroups {
       return rules_added;
     }
 
+    // IDEA:
+    // for each pending rule:
+    //    * rewrite both sides, and reorder
+    //    * if non-trivial, add to the rewriting trie + to the new rules trie
+    // for each active rule:
+    //    * check if either the lhs or rhs matches a new rule (that isn't
+    //    itself),
+    //    * if a new rule is matched, then add the active rule to the pending
+
     void RewriterBase::reduce() {
       for (Rule const* rule : *this) {
         // Copy rule and add_pending_rule so that it is not modified by the
@@ -615,6 +624,61 @@ namespace libsemigroups {
       return did_rewrite;
     }
 
+    bool RewriteTrie::process_pending_rules() {
+      using detail::aho_corasick_impl::search_no_checks;
+      std::sort(
+          _pending_rules.begin(),
+          _pending_rules.end(),
+          [](Rule const* x, Rule const* y) { return *x->lhs() > *y->lhs(); });
+
+      bool                    rules_added = false;
+      detail::AhoCorasickImpl _new_rule_trie;
+      std::unordered_map<AhoCorasickImpl::index_type, Rule*> _new_rule_map;
+
+      do {
+        _new_rule_trie.init(_trie.alphabet_size());
+        while (number_of_pending_rules() != 0) {
+          Rule* rule = next_pending_rule();
+          LIBSEMIGROUPS_ASSERT(!rule->active());
+          LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
+          // Rewrite both sides and reorder if necessary . . .
+          rewrite(rule);
+
+          if (*rule->lhs() != *rule->rhs()) {
+            add_rule(rule);
+            auto node_index = detail::aho_corasick_impl::add_word_no_checks(
+                _new_rule_trie, *rule->lhs());
+            auto [it, inserted] = _new_rule_map.emplace(node_index, rule);
+            // Shouldn't be possible for 2 rules with equal left-hand sides to
+            // exist, since the later added one will be rewritten using the
+            // first.
+            LIBSEMIGROUPS_ASSERT(inserted);
+            rules_added = true;
+          } else {
+            add_inactive_rule(rule);
+          }
+        }
+
+        // for (auto it = begin(); it != end();) {
+        //   Rule* rule = *it;
+        //   // Check whether any rule contains the left-hand-side of "new" rule
+        //   auto node_index = search(_new_rule_trie, *rule->lhs());
+        //   if (node_index != UNDEFINED && _new_rule_map[node_index] != rule) {
+        //     it = make_active_rule_pending(it);
+        //     continue;
+        //   }
+        //   node_index = search(_new_rule_trie, *rule->rhs());
+        //   if (node_index != UNDEFINED) {
+        //     //  _new_rule_map[node_index] != rule I think
+        //     it = make_active_rule_pending(it);
+        //   } else {
+        //     ++it;
+        //   }
+        // }
+      } while (true);  // !_new_rule_trie.empty());
+      return rules_added;
+    }
+
     bool RewriteTrie::confluent() const {
       if (number_of_pending_rules() != 0) {
         set_cached_confluent(tril::unknown);
@@ -664,7 +728,8 @@ namespace libsemigroups {
       index_type link;
       set_cached_confluent(tril::TRUE);
 
-      // For each rule, check if any descendent of any suffix breaks confluence
+      // For each rule, check if any descendent of any suffix breaks
+      // confluence
       for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
         seen++;
         link = _trie.suffix_link_no_checks(node_it->first);

@@ -302,6 +302,63 @@ namespace libsemigroups {
 
       void clear_suffix_links() const;
     };
+
+    namespace aho_corasick_impl {
+
+      template <typename Word>
+      [[nodiscard]] AhoCorasickImpl::index_type
+      add_word_no_checks(AhoCorasickImpl& ac, Word const& w) {
+        return ac.add_word_no_checks(w.begin(), w.end());
+      }
+
+      template <typename Iterator>
+      [[nodiscard]] bool contains_no_checks(AhoCorasickImpl const& ac,
+                                            Iterator               first,
+                                            Iterator               last) {
+        // TODO(0) JDM: I think traverse_trie should be named
+        // traverse_trie_no_checks
+        auto index = ac.traverse_trie(first, last);
+        return index == UNDEFINED ? false
+                                  : ac.node_no_checks(index).is_terminal();
+      }
+
+      template <typename Word>
+      [[nodiscard]] AhoCorasickImpl::index_type
+      contains_no_checks(AhoCorasickImpl& ac, Word const& w) {
+        return contains_no_checks(ac, w.begin(), w.end());
+      }
+
+      // Check if a subword of [first, last) is contained in the trie
+      template <typename Iterator>
+      [[nodiscard]] AhoCorasickImpl::index_type
+      search_no_checks(AhoCorasickImpl const& ac,
+                       Iterator               first,
+                       Iterator               last) {
+        using index_type = AhoCorasickImpl::index_type;
+
+        index_type current = ac.root;
+        while (first != last && current != UNDEFINED) {
+          // Read the next letter and traverse trie
+          auto x = *first;
+          ++first;
+          current = ac.traverse_no_checks(current, static_cast<letter_type>(x));
+          if (ac.node_no_checks(current).is_terminal()) {
+            return current;
+          }
+        }
+        if (ac.node_no_checks(current).is_terminal()) {
+          return current;
+        }
+        return UNDEFINED;
+      }
+
+      template <typename Word>
+      [[nodiscard]] AhoCorasickImpl::index_type
+      search_no_checks(AhoCorasickImpl& ac, Word const& w) {
+        return search_no_checks(ac, w.begin(), w.end());
+      }
+
+    }  // namespace aho_corasick_impl
   }  // namespace detail
 }  // namespace libsemigroups
 

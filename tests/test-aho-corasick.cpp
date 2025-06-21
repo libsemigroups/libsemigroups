@@ -15,6 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include <string>  // for basic_string, allocator
 #include <tuple>   // for __ignore_t, ignore
 #include <vector>  // for vector, operator==
@@ -29,7 +31,8 @@
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/types.hpp"         // for word_type
 #include "libsemigroups/word-range.hpp"    // for operator""_w, WordRange, pow
-#include "libsemigroups/word-range.hpp"    // for namespace literals
+
+#include "libsemigroups/detail/aho-corasick-impl.hpp"  // for traverse_word, AhoCorasick
 
 namespace libsemigroups {
   using namespace literals;
@@ -324,4 +327,88 @@ namespace libsemigroups {
     aho_corasick::rm_word(ac2, 0101_w);
     REQUIRE(!aho_corasick::dot(ac2).to_string().empty());
   }
+
+  namespace detail {
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "012",
+                            "contains_no_checks",
+                            "[quick][aho-corasick]") {
+      AhoCorasickImpl ac(2);
+
+      std::ignore = aho_corasick_impl::add_word_no_checks(ac, 0101_w);
+      std::ignore = aho_corasick_impl::add_word_no_checks(ac, 0110_w);
+      std::ignore = aho_corasick_impl::add_word_no_checks(ac, 01101_w);
+      std::ignore = aho_corasick_impl::add_word_no_checks(ac, 01100_w);
+
+      REQUIRE(aho_corasick_impl::contains_no_checks(ac, 0101_w));
+      REQUIRE(!aho_corasick_impl::contains_no_checks(ac, 010_w));
+
+      WordRange words;
+      words.alphabet_size(2).min(0).max(7);
+      size_t count = 0;
+      for (auto const& w : words) {
+        count += aho_corasick_impl::contains_no_checks(ac, w);
+      }
+      REQUIRE(count == 4);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "013",
+                            "search",
+                            "[quick][aho-corasick]") {
+      using words::operator+;
+      AhoCorasickImpl ac(2);
+
+      std::vector         subwords = {0101_w, 0110_w, 01101_w, 01100_w};
+      std::vector<size_t> indexes;
+
+      for (auto const& word : subwords) {
+        indexes.push_back(aho_corasick_impl::add_word_no_checks(ac, word));
+      }
+      REQUIRE(indexes == std::vector<size_t>({4, 6, 7, 8}));
+
+      auto find = [](word_type const& haystack, word_type const& needle) {
+        if (haystack.size() < needle.size()) {
+          return false;
+        }
+        auto first = needle.begin(), last = needle.end();
+        auto len = last - first;
+        for (auto it = haystack.begin(); it <= haystack.end() - len; ++it) {
+          if (std::equal(first, last, it, it + len)) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      REQUIRE(!find("haystack"_w, "needle"_w));
+      REQUIRE(find("haystack"_w, "hay"_w));
+      REQUIRE(find("haystack"_w, "yst"_w));
+      REQUIRE(find(0101_w, 0101_w));
+
+      REQUIRE(aho_corasick_impl::search_no_checks(ac, 000000_w) == UNDEFINED);
+      REQUIRE(aho_corasick_impl::search_no_checks(ac, 11_w) == UNDEFINED);
+      REQUIRE(aho_corasick_impl::search_no_checks(ac, ""_w) == UNDEFINED);
+
+      WordRange words;
+      words.alphabet_size(2).min(0).max(4);
+      for (auto const& w : words) {
+        REQUIRE(aho_corasick_impl::search_no_checks(ac, w) == UNDEFINED);
+      }
+
+      std::vector expected = {indexes[0], indexes[1], indexes[1], indexes[1]};
+      for (auto const& [i, word] : rx::enumerate(subwords)) {
+        REQUIRE(std::pair(i, aho_corasick_impl::search_no_checks(ac, word))
+                == std::pair(i, expected[i]));
+      }
+
+      REQUIRE(aho_corasick_impl::search_no_checks(
+                  ac, 000000000011111111111110101010101010101111110000011110_w)
+              == 4);
+      REQUIRE(
+          aho_corasick_impl::search_no_checks(
+              ac, 0000000000111111111111100110101010101010101111110000011110_w)
+          == 6);
+    }
+  }  // namespace detail
 }  // namespace libsemigroups
