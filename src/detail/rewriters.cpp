@@ -627,6 +627,9 @@ namespace libsemigroups {
     bool RewriteTrie::process_pending_rules() {
       using detail::aho_corasick_impl::begin_search_no_checks;
       using detail::aho_corasick_impl::end_search_no_checks;
+      auto           start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker ticker;
+      bool           ticker_running = false;  // TODO(0) do this properly with a
       std::sort(
           _pending_rules.begin(),
           _pending_rules.end(),
@@ -660,6 +663,13 @@ namespace libsemigroups {
             rules_added_this_pass = true;
           } else {
             add_inactive_rule(rule);
+          }
+          if (!ticker_running && reporting_enabled()
+              && delta(start_time) >= std::chrono::seconds(1)) {
+            ticker_running = true;
+            ticker([this, start_time]() {
+              report_progress_from_thread(start_time);
+            });
           }
         }
 
