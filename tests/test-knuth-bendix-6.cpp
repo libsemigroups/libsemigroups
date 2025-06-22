@@ -442,4 +442,44 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(KnuthBendix(twosided, p), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "118",
+                                   "process pending rules x1",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+
+    WordRange wr;
+    wr.alphabet_size(2).min(16).max(17);
+    for (auto const& word : wr) {
+      presentation::add_rule(p, word, ""_w);
+    }
+
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    kb.process_pending_rules();
+    REQUIRE(kb.number_of_active_rules() == wr.count());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "143",
+                                   "process pending rules x2",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+
+    WordRange wr;
+    wr.alphabet_size(2).min(0).max(19);
+    for (auto const& word : wr) {
+      presentation::add_rule(p, word, ""_w);
+    }
+
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    kb.process_pending_rules();
+    REQUIRE(kb.number_of_active_rules() == 2);
+  }
+
 }  // namespace libsemigroups

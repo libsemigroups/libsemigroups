@@ -28,6 +28,7 @@
 #include <stddef.h>       // for size_t
 #include <string>         // for string
 #include <unordered_map>  // for unordered_map
+#include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
 #include "libsemigroups/constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
@@ -79,7 +80,6 @@ namespace libsemigroups {
         Node(index_type this_index, index_type parent, letter_type a)
             : _link(),
               _height(),
-
               _parent(),
               _parent_letter(),
               _terminal(),
@@ -143,7 +143,7 @@ namespace libsemigroups {
 
       std::vector<Node>                 _all_nodes;
       detail::DynamicArray2<index_type> _children;
-      std::set<index_type>              _active_nodes_index;
+      std::unordered_set<index_type>    _active_nodes_index;
       std::stack<index_type>            _inactive_nodes_index;
 
       mutable bool _valid_links;
@@ -185,27 +185,29 @@ namespace libsemigroups {
         return _active_nodes_index.size();
       }
 
-      [[nodiscard]] rx::iterator_range<std::set<index_type>::const_iterator>
+      [[nodiscard]] rx::iterator_range<
+          std::unordered_set<index_type>::const_iterator>
       active_nodes() const {
         return rx::iterator_range(cbegin_nodes(), cend_nodes());
       }
 
-      [[nodiscard]] std::set<index_type>::const_iterator
+      [[nodiscard]] std::unordered_set<index_type>::const_iterator
       cbegin_nodes() const noexcept {
         return _active_nodes_index.cbegin();
       }
 
-      [[nodiscard]] std::set<index_type>::const_iterator
+      [[nodiscard]] std::unordered_set<index_type>::const_iterator
       cend_nodes() const noexcept {
         return _active_nodes_index.cend();
       }
 
-      [[nodiscard]] std::set<index_type>::iterator
+      [[nodiscard]] std::unordered_set<index_type>::iterator
       begin_nodes() const noexcept {
         return _active_nodes_index.begin();
       }
 
-      [[nodiscard]] std::set<index_type>::iterator end_nodes() const noexcept {
+      [[nodiscard]] std::unordered_set<index_type>::iterator
+      end_nodes() const noexcept {
         return _active_nodes_index.end();
       }
 
@@ -283,6 +285,10 @@ namespace libsemigroups {
       [[nodiscard]] index_type traverse_trie(Iterator first,
                                              Iterator last) const;
 
+      [[nodiscard]] bool empty() const noexcept {
+        return number_of_nodes() == 1;
+      }
+
      private:
       [[nodiscard]] index_type new_active_node_no_checks(index_type  parent,
                                                          letter_type a);
@@ -328,6 +334,116 @@ namespace libsemigroups {
         return contains_no_checks(ac, w.begin(), w.end());
       }
 
+      template <typename Iterator>
+      class SearchIterator {
+        using index_type = AhoCorasickImpl::index_type;
+
+        Iterator               _first;
+        Iterator               _last;
+        index_type             _prefix;
+        index_type             _suffix;
+        AhoCorasickImpl const& _trie;
+
+       public:
+        using iterator_category = std::input_iterator_tag;
+        using value_type        = index_type;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = value_type const*;
+        using reference         = value_type const&;
+
+        SearchIterator(AhoCorasickImpl const& trie,
+                       Iterator               first,
+                       Iterator               last)
+            : _first(first),
+              _last(last),
+              _prefix(trie.root),
+              _suffix(trie.root),
+              _trie(trie) {
+          operator++();
+        }
+
+        SearchIterator(AhoCorasickImpl const& trie)
+            : _first(),
+              _last(),
+              _prefix(UNDEFINED),
+              _suffix(trie.root),
+              _trie(trie) {}
+
+        reference operator*() const {
+          // TODO would be easy enough to return the position of the match also,
+          // I think it's just height(_prefix) - height(_suffix)
+          return _suffix;
+        }
+
+        // Pre-increment
+        SearchIterator& operator++() {
+          // Every subword is a suffix of a prefix, so we follow the edges
+          // labeled by _first to _last to some node _prefix, then consider all
+          // the suffices of _prefix by following the suffix links back to the
+          // root.
+          while (_suffix != _trie.root) {
+            _suffix = _trie.suffix_link_no_checks(_suffix);
+            if (_trie.node_no_checks(_suffix).is_terminal()) {
+              // the _suffix of the _prefix of [first, last) is a match so
+              // return.
+              return *this;
+            }
+          }
+          while (_first != _last && _prefix != UNDEFINED) {
+            auto x = *_first;
+            ++_first;
+            _prefix = _trie.traverse_no_checks(_prefix,
+                                               static_cast<letter_type>(x));
+            _suffix = _prefix;
+            do {
+              if (_trie.node_no_checks(_suffix).is_terminal()) {
+                return *this;
+              }
+              _suffix = _trie.suffix_link_no_checks(_suffix);
+            } while (_suffix != _trie.root);
+          }
+          _prefix = UNDEFINED;
+          _suffix = _trie.root;
+          return *this;
+        }
+
+        // Post-increment
+        SearchIterator operator++(int) {
+          SearchIterator tmp = *this;
+          ++(*this);
+          return tmp;
+        }
+
+        friend bool operator==(SearchIterator const& a,
+                               SearchIterator const& b) {
+          // TODO more?
+          return a._prefix == b._prefix and a._suffix == b._suffix;
+        }
+
+        friend bool operator!=(SearchIterator const& a,
+                               SearchIterator const& b) {
+          return !(a == b);
+        }
+      };
+
+      template <typename Iterator>
+      SearchIterator(AhoCorasickImpl const& ac, Iterator first, Iterator last)
+          -> SearchIterator<Iterator>;
+
+      template <typename Iterator>
+      [[nodiscard]] auto begin_search_no_checks(AhoCorasickImpl const& ac,
+                                                Iterator               first,
+                                                Iterator               last) {
+        return SearchIterator(ac, first, last);
+      }
+
+      template <typename Iterator>
+      [[nodiscard]] auto end_search_no_checks(AhoCorasickImpl const& ac,
+                                              Iterator,
+                                              Iterator) {
+        return SearchIterator<Iterator>(ac);
+      }
+
       // Check if a subword of [first, last) is contained in the trie
       template <typename Iterator>
       [[nodiscard]] AhoCorasickImpl::index_type
@@ -356,6 +472,18 @@ namespace libsemigroups {
       [[nodiscard]] AhoCorasickImpl::index_type
       search_no_checks(AhoCorasickImpl& ac, Word const& w) {
         return search_no_checks(ac, w.begin(), w.end());
+      }
+
+      template <typename Word>
+      [[nodiscard]] auto begin_search_no_checks(AhoCorasickImpl& ac,
+                                                Word const&      w) {
+        return begin_search_no_checks(ac, w.begin(), w.end());
+      }
+
+      template <typename Word>
+      [[nodiscard]] auto end_search_no_checks(AhoCorasickImpl& ac,
+                                              Word const&      w) {
+        return end_search_no_checks(ac, w.begin(), w.end());
       }
 
     }  // namespace aho_corasick_impl

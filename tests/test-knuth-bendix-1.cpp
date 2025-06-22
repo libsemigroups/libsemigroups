@@ -226,7 +226,11 @@ namespace libsemigroups {
     REQUIRE(kb.presentation().alphabet() == "01");
     REQUIRE(!kb.confluent());
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 4);
+    // REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(
+        (kb.active_rules() | rx::to_vector())
+        == std::vector<std::pair<std::string, std::string>>(
+            {{"000", ""}, {"111", ""}, {"1010", "0011"}, {"1100", "0101"}}));
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 

@@ -80,7 +80,6 @@ namespace libsemigroups {
       auto last_index = traverse_trie(first, last);
       auto rule_index = last_index;
       if (number_of_children(last_index) != 0) {
-        // TODO implement number_of_children
         _all_nodes[last_index].terminal(false);
         return rule_index;
       }
