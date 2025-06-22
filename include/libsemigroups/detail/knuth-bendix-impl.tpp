@@ -671,10 +671,10 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     size_t KnuthBendixImpl<Rewriter, ReductionOrder>::number_of_active_rules()
         const noexcept {
-      if (_rewriter.number_of_active_rules() == 0
-          && _rewriter.number_of_pending_rules() != 0) {
-        _rewriter.process_pending_rules();
-      }
+      // if (_rewriter.number_of_active_rules() == 0
+      //     && _rewriter.number_of_pending_rules() != 0) {
+      //   _rewriter.process_pending_rules();
+      // }
       return _rewriter.number_of_active_rules();
     }
 
