@@ -511,6 +511,13 @@ namespace libsemigroups {
         return *this;
       }
 
+      // TODO move to correct place in this file
+      // TODO doc
+      KnuthBendixImpl& process_pending_rules() {
+        _rewriter.process_pending_rules();
+        return *this;
+      }
+
       //! \ingroup knuth_bendix_class_settings_group
       //!
       //! \brief Get the current number of rules to accumulate before

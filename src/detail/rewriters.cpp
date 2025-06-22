@@ -625,7 +625,8 @@ namespace libsemigroups {
     }
 
     bool RewriteTrie::process_pending_rules() {
-      using detail::aho_corasick_impl::search_no_checks;
+      using detail::aho_corasick_impl::begin_search_no_checks;
+      using detail::aho_corasick_impl::end_search_no_checks;
       std::sort(
           _pending_rules.begin(),
           _pending_rules.end(),
@@ -635,8 +636,10 @@ namespace libsemigroups {
       detail::AhoCorasickImpl _new_rule_trie;
       std::unordered_map<AhoCorasickImpl::index_type, Rule*> _new_rule_map;
 
-      do {
+      while (number_of_pending_rules() != 0) {
+        bool rules_added_this_pass = false;
         _new_rule_trie.init(_trie.alphabet_size());
+        _new_rule_map.clear();
         while (number_of_pending_rules() != 0) {
           Rule* rule = next_pending_rule();
           LIBSEMIGROUPS_ASSERT(!rule->active());
@@ -653,29 +656,46 @@ namespace libsemigroups {
             // exist, since the later added one will be rewritten using the
             // first.
             LIBSEMIGROUPS_ASSERT(inserted);
-            rules_added = true;
+            rules_added           = true;
+            rules_added_this_pass = true;
           } else {
             add_inactive_rule(rule);
           }
         }
 
-        // for (auto it = begin(); it != end();) {
-        //   Rule* rule = *it;
-        //   // Check whether any rule contains the left-hand-side of "new" rule
-        //   auto node_index = search(_new_rule_trie, *rule->lhs());
-        //   if (node_index != UNDEFINED && _new_rule_map[node_index] != rule) {
-        //     it = make_active_rule_pending(it);
-        //     continue;
-        //   }
-        //   node_index = search(_new_rule_trie, *rule->rhs());
-        //   if (node_index != UNDEFINED) {
-        //     //  _new_rule_map[node_index] != rule I think
-        //     it = make_active_rule_pending(it);
-        //   } else {
-        //     ++it;
-        //   }
-        // }
-      } while (true);  // !_new_rule_trie.empty());
+        if (rules_added_this_pass) {
+          for (auto it = begin(); it != end();) {
+            Rule* rule = *it;
+            // Check whether any rule contains the left-hand-side of the "new"
+            // rule
+            {
+              auto first = begin_search_no_checks(_new_rule_trie, *rule->lhs());
+              auto last  = end_search_no_checks(_new_rule_trie, *rule->lhs());
+
+              if (std::any_of(
+                      first, last, [&rule, &_new_rule_map](auto node_index) {
+                        return _new_rule_map[node_index] != rule;
+                      })) {
+                it = make_active_rule_pending(it);
+                continue;
+              }
+            }
+            {
+              auto first = begin_search_no_checks(_new_rule_trie, *rule->rhs());
+              auto last  = end_search_no_checks(_new_rule_trie, *rule->rhs());
+
+              if (std::any_of(
+                      first, last, [&rule, &_new_rule_map](auto node_index) {
+                        return _new_rule_map[node_index] != rule;
+                      })) {
+                it = make_active_rule_pending(it);
+              } else {
+                ++it;
+              }
+            }
+          }
+        }
+      }
       return rules_added;
     }
 
