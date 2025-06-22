@@ -807,6 +807,10 @@ namespace libsemigroups {
         return _rewriter.stats().total_rules;
       }
 
+      Rewriter& rewriter() noexcept {
+        return _rewriter;
+      }
+
       // Documented in KnuthBendix
       // TODO(1) should be const
       // TODO(1) add note about empty active rules after, or better discuss that

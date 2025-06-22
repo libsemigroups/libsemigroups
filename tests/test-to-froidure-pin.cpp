@@ -251,7 +251,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    REWRITER_TYPES) {
     using literals::        operator""_w;
-    auto                    rg = ReportGuard(false);
+    auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
