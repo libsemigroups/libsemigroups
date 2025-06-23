@@ -388,8 +388,7 @@ namespace libsemigroups {
       REQUIRE(find(0101_w, 0101_w));
 
       REQUIRE(aho_corasick_impl::search_no_checks(ac, 000000_w) == UNDEFINED);
-      REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, 000000_w)
-              == UNDEFINED);
+      REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, 000000_w) == 0);
       REQUIRE(aho_corasick_impl::search_no_checks(ac, 11_w) == UNDEFINED);
       REQUIRE(aho_corasick_impl::search_no_checks(ac, ""_w) == UNDEFINED);
 
@@ -437,7 +436,7 @@ namespace libsemigroups {
       ++it;
       REQUIRE(*it == index[4]);
       ++it;
-      REQUIRE(*it == UNDEFINED);
+      REQUIRE(*it == 0);
       REQUIRE(it == aho_corasick_impl::end_search_no_checks(ac, 001100_w));
     }
 
