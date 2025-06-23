@@ -630,6 +630,7 @@ namespace libsemigroups {
       auto           start_time = std::chrono::high_resolution_clock::now();
       detail::Ticker ticker;
       bool           ticker_running = false;  // TODO(0) do this properly with a
+      // TODO use a heap for these maybe?
       std::sort(
           _pending_rules.begin(),
           _pending_rules.end(),
