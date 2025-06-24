@@ -38,15 +38,22 @@ namespace libsemigroups {
     // Node nested class
     ////////////////////////////////////////////////////////////////////////
 
-    AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  this_index,
-                                                       index_type  parent,
+    AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  parent,
                                                        letter_type a) noexcept {
-      _parent        = parent;
-      _parent_letter = a;
-      _this_index    = this_index;
-      _height        = UNDEFINED;
+      // mutable
+      _height = UNDEFINED;
       clear_suffix_link();
-      _terminal = false;
+
+      // non-mutable
+      _first_node_this_link = UNDEFINED;
+      _next_node_same_link  = UNDEFINED;
+      _parent               = parent;
+      _parent_letter        = a;
+      _terminal             = false;
+
+      // Cannot set _link or _height here because we don't have access to the
+      // relevant info here.
+
       return *this;
     }
 
@@ -150,14 +157,14 @@ namespace libsemigroups {
       index_type index;
       if (_inactive_nodes_index.empty()) {
         index = _all_nodes.size();
-        _all_nodes.emplace_back(index, parent, a);
+        _all_nodes.emplace_back(parent, a);
         _active_nodes_index.insert(index);
         _children.add_rows(1);
       } else {
         index = _inactive_nodes_index.top();
         _inactive_nodes_index.pop();
         _active_nodes_index.insert(index);
-        _all_nodes[index].init(index, parent, a);
+        _all_nodes[index].init(parent, a);
         std::fill(
             _children.begin_row(index), _children.end_row(index), UNDEFINED);
       }
