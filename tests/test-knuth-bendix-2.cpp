@@ -997,8 +997,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "abacabacabacabac", "");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.number_of_active_rules() == 5);
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 5);
     REQUIRE(!kb.confluent());
 
     kb.max_rules(10);
@@ -1079,8 +1079,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.number_of_active_rules() == 9);
+
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 47);
     REQUIRE(!kb.confluent());
     kb.run();
     REQUIRE(kb.confluent());
