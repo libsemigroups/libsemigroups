@@ -655,7 +655,10 @@ namespace libsemigroups {
             add_rule(rule);
             auto node_index = detail::aho_corasick_impl::add_word_no_checks(
                 _new_rule_trie, *rule->lhs());
-            auto [it, inserted] = _new_rule_map.emplace(node_index, rule);
+#ifdef LIBSEMIGROUPS_DEBUG
+            auto [it, inserted] =
+#endif
+                _new_rule_map.emplace(node_index, rule);
             // Shouldn't be possible for 2 rules with equal left-hand sides to
             // exist, since the later added one will be rewritten using the
             // first.
