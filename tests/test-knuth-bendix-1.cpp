@@ -107,9 +107,8 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
-    // kb.process_pending_rules();
-
-    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 10);
     REQUIRE(kb.confluent());
     REQUIRE(knuth_bendix::reduce(kb, "ca") == "a");
     REQUIRE(knuth_bendix::reduce(kb, "ac") == "a");
@@ -147,8 +146,6 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
-    // kb.process_pending_rules();
-
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(is_obviously_infinite(kb));
@@ -182,9 +179,8 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
-    // kb.process_pending_rules();
-
-    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 10);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
