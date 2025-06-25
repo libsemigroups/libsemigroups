@@ -478,12 +478,12 @@ namespace libsemigroups {
       using RewriterBase::cached_confluent;
       using Rules::stats;
       using iterator      = std::string::iterator;
-      using rule_iterator = std::map<index_type, Rule*>::iterator;
+      using rule_iterator = std::unordered_map<index_type, Rule*>::iterator;
 
      private:
-      // TODO use std::unordered_map
-      std::map<index_type, Rule*> _rules;
-      AhoCorasickImpl             _trie;
+      std::vector<index_type>               _nodes;
+      std::unordered_map<index_type, Rule*> _rules;
+      AhoCorasickImpl                       _trie;
 
      public:
       using RewriterBase::add_rule;

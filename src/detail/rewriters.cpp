@@ -573,9 +573,9 @@ namespace libsemigroups {
         return did_rewrite;
       }
 
-      std::vector<index_type> nodes;
-      index_type              current = _trie.root;
-      nodes.push_back(current);
+      _nodes.clear();
+      index_type current = _trie.root;
+      _nodes.push_back(current);
 
 #ifdef LIBSEMIGROUPS_DEBUG
       iterator v_begin = u.begin();
@@ -594,7 +594,7 @@ namespace libsemigroups {
         auto rule_it = _rules.find(current);
         if (!_trie.node_no_checks(current).is_terminal()
             || rule_it->second == disabled_rule) {
-          nodes.push_back(current);
+          _nodes.push_back(current);
           *v_end = x;
           ++v_end;
         } else {
@@ -613,11 +613,8 @@ namespace libsemigroups {
           // Replace lhs with rhs in-place
           detail::string_replace(
               w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-          // TODO(0) terrible idea
-          for (size_t i = 0; i < lhs_size - 1; ++i) {
-            nodes.pop_back();
-          }
-          current = nodes.back();
+          _nodes.erase(_nodes.end() - lhs_size + 1, _nodes.end());
+          current = _nodes.back();
         }
       }
       u.erase(v_end - u.cbegin());
