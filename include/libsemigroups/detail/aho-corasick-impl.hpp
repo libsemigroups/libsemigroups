@@ -75,8 +75,6 @@ namespace libsemigroups {
         letter_type _parent_letter;
         bool        _terminal;
 
-        Node() : Node(UNDEFINED, UNDEFINED) {}
-
         Node& init() noexcept {
           return init(UNDEFINED, UNDEFINED);
         }
@@ -88,6 +86,7 @@ namespace libsemigroups {
         // Constructors/initializers - public
         ////////////////////////////////////////////////////////////////////////
 
+        Node() : Node(UNDEFINED, UNDEFINED) {}
         Node(index_type parent, letter_type a);
 
         Node(Node const&)            = default;
@@ -109,7 +108,7 @@ namespace libsemigroups {
           return _link;
         }
 
-        [[nodiscard]] bool is_terminal() const noexcept {
+        [[nodiscard]] bool terminal() const noexcept {
           return _terminal;
         }
 
@@ -336,6 +335,8 @@ namespace libsemigroups {
 
       void deactivate_node_no_checks(index_type i);
 
+      void deactivate_all_nodes();
+
       ////////////////////////////////////////////////////////////////////////
       // Update suffix link sources
       ////////////////////////////////////////////////////////////////////////
@@ -376,8 +377,7 @@ namespace libsemigroups {
                                             Iterator               first,
                                             Iterator               last) {
         auto index = ac.traverse_trie_no_checks(first, last);
-        return index == UNDEFINED ? false
-                                  : ac.node_no_checks(index).is_terminal();
+        return index == UNDEFINED ? false : ac.node_no_checks(index).terminal();
       }
 
       template <typename Word>
@@ -424,25 +424,11 @@ namespace libsemigroups {
         using pointer           = value_type const*;
         using reference         = value_type const&;
 
-        // TODO to cpp
         SearchIterator(AhoCorasickImpl const& trie,
                        Iterator               first,
-                       Iterator               last)
-            : _first(first),
-              _last(last),
-              _prefix(trie.root),
-              _suffix(trie.root),
-              _trie(trie) {
-          operator++();
-        }
+                       Iterator               last);
 
-        // TODO to cpp
-        SearchIterator(AhoCorasickImpl const& trie)
-            : _first(),
-              _last(),
-              _prefix(UNDEFINED),
-              _suffix(UNDEFINED),
-              _trie(trie) {}
+        SearchIterator(AhoCorasickImpl const& trie);
 
         reference operator*() const {
           // TODO would be easy enough to return the position of the match
@@ -450,42 +436,8 @@ namespace libsemigroups {
           return _suffix;
         }
 
-        // TODO to cpp
         // Pre-increment
-        SearchIterator& operator++() {
-          if (_suffix == UNDEFINED) {
-            // We're at the end
-            return *this;
-          }
-          // Every subword is a suffix of a prefix, so we follow the edges
-          // labeled by _first to _last to some node _prefix, then consider
-          // all the suffixes of _prefix by following the suffix links back to
-          // the root.
-          while (_suffix != _trie.root) {
-            _suffix = _trie.suffix_link_no_checks(_suffix);
-            if (_trie.node_no_checks(_suffix).is_terminal()) {
-              // the _suffix of the _prefix of [first, last) is a match so
-              // return.
-              return *this;
-            }
-          }
-          while (_first != _last && _prefix != UNDEFINED) {
-            auto x = *_first;
-            ++_first;
-            _prefix = _trie.traverse_no_checks(_prefix,
-                                               static_cast<letter_type>(x));
-            _suffix = _prefix;
-            do {
-              if (_trie.node_no_checks(_suffix).is_terminal()) {
-                return *this;
-              }
-              _suffix = _trie.suffix_link_no_checks(_suffix);
-            } while (_suffix != _trie.root);
-          }
-          _prefix = UNDEFINED;
-          _suffix = UNDEFINED;
-          return *this;
-        }
+        SearchIterator& operator++();
 
         // Post-increment
         SearchIterator operator++(int) {
@@ -504,8 +456,9 @@ namespace libsemigroups {
                                SearchIterator const& b) {
           return !(a == b);
         }
-      };
+      };  // class SearchIterator
 
+      // Deduction guide
       template <typename Iterator>
       SearchIterator(AhoCorasickImpl const& ac, Iterator first, Iterator last)
           -> SearchIterator<Iterator>;
@@ -531,7 +484,6 @@ namespace libsemigroups {
       }
 
       template <typename Word>
-
       [[nodiscard]] auto end_search_no_checks(AhoCorasickImpl& ac,
                                               Word const&      w) {
         return end_search_no_checks(ac, w.begin(), w.end());
