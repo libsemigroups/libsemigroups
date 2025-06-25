@@ -62,6 +62,10 @@ namespace libsemigroups {
 
      private:
       class Node {
+        friend class AhoCorasickImpl;
+        ////////////////////////////////////////////////////////////////////////
+        // Private data
+        ////////////////////////////////////////////////////////////////////////
        private:
         index_type  _first_suffix_link_source;
         uint32_t    _height;
@@ -71,64 +75,42 @@ namespace libsemigroups {
         letter_type _parent_letter;
         bool        _terminal;
 
-       public:
         Node() : Node(UNDEFINED, UNDEFINED) {}
 
         Node& init() noexcept {
           return init(UNDEFINED, UNDEFINED);
         }
 
+        Node& init(index_type parent, letter_type a) noexcept;
+
+       public:
+        ////////////////////////////////////////////////////////////////////////
+        // Constructors/initializers - public
+        ////////////////////////////////////////////////////////////////////////
+
+        Node(index_type parent, letter_type a);
+
         Node(Node const&)            = default;
         Node& operator=(Node const&) = default;
         Node(Node&&)                 = default;
         Node& operator=(Node&&)      = default;
 
-        // TODO to cpp
-        Node(index_type parent, letter_type a)
-            : _first_suffix_link_source(),
-              _height(),
-              _link(),
-              _next_node_same_suffix_link(),
-              _parent(),
-              _parent_letter(),
-              _terminal() {
-          init(parent, a);
-        }
-
-        Node& init(index_type parent, letter_type a) noexcept;
-
         ~Node() = default;
+
+        ////////////////////////////////////////////////////////////////////////
+        // Getters - public
+        ////////////////////////////////////////////////////////////////////////
 
         [[nodiscard]] size_t height() const noexcept {
           return _height;
-        }
-
-        // TODO make the setters private/protected i.e. so that they can't
-        // actually be used except by AhoCorasickImpl
-        Node const& height(size_t val) noexcept {
-          _height = val;
-          return *this;
         }
 
         [[nodiscard]] index_type suffix_link() const noexcept {
           return _link;
         }
 
-        Node const& suffix_link(index_type val) noexcept {
-          _link = val;
-          return *this;
-        }
-
-        // TODO private?
-        void clear_suffix_link() noexcept;
-
         [[nodiscard]] bool is_terminal() const noexcept {
           return _terminal;
-        }
-
-        Node& terminal(bool val) noexcept {
-          _terminal = val;
-          return *this;
         }
 
         [[nodiscard]] index_type parent() const noexcept {
@@ -143,13 +125,35 @@ namespace libsemigroups {
           return _first_suffix_link_source;
         }
 
-        Node& first_suffix_link_source(index_type val) noexcept {
-          _first_suffix_link_source = val;
+        [[nodiscard]] index_type next_node_same_suffix_link() const noexcept {
+          return _next_node_same_suffix_link;
+        }
+
+       private:
+        ////////////////////////////////////////////////////////////////////////
+        // Setters - private
+        ////////////////////////////////////////////////////////////////////////
+
+        // All setters are private to avoid corrupting the objects.
+
+        Node const& height(size_t val) noexcept {
+          _height = val;
           return *this;
         }
 
-        [[nodiscard]] index_type next_node_same_suffix_link() const noexcept {
-          return _next_node_same_suffix_link;
+        Node const& suffix_link(index_type val) noexcept {
+          _link = val;
+          return *this;
+        }
+
+        Node& terminal(bool val) noexcept {
+          _terminal = val;
+          return *this;
+        }
+
+        Node& first_suffix_link_source(index_type val) noexcept {
+          _first_suffix_link_source = val;
+          return *this;
         }
 
         Node& next_node_same_suffix_link(index_type val) noexcept {
@@ -159,11 +163,11 @@ namespace libsemigroups {
 
       };  // class Node
 
-      // TODO if we store pointers here instead of Nodes, then inside the Nodes
-      // themselves we could store pointers to the parents etc, rather than
-      // indices, which would mean we could set the _link and other info in the
-      // Node::init() function, also will remove the index <-> Node conversions
-      // everywhere.
+      // TODO(1) if we store pointers here instead of Nodes, then inside the
+      // Nodes themselves we could store pointers to the parents etc, rather
+      // than indices, which would mean we could set the _link and other info in
+      // the Node::init() function, also will remove the index <-> Node
+      // conversions everywhere.
       std::vector<Node>                               _all_nodes;
       detail::DynamicArray2<index_type>               _children;
       std::unordered_set<index_type>                  _active_nodes_index;
@@ -193,47 +197,12 @@ namespace libsemigroups {
         return _children.number_of_cols();
       }
 
-      // TODO to cpp
-      AhoCorasickImpl& increase_alphabet_size_by(size_t val) {
-        size_t c = _children.number_of_cols();
-        _children.add_cols(val);
-        for (; c < _children.number_of_cols(); ++c) {
-          std::fill(
-              _children.begin_column(c), _children.end_column(c), UNDEFINED);
-        }
-        return *this;
-      }
+      AhoCorasickImpl& increase_alphabet_size_by(size_t val);
 
       [[nodiscard]] size_t number_of_nodes() const noexcept {
         LIBSEMIGROUPS_ASSERT(_children.number_of_rows()
                              == _active_nodes_index.size());
         return _active_nodes_index.size();
-      }
-
-      [[nodiscard]] rx::iterator_range<
-          std::unordered_set<index_type>::const_iterator>
-      active_nodes() const {
-        return rx::iterator_range(cbegin_nodes(), cend_nodes());
-      }
-
-      [[nodiscard]] std::unordered_set<index_type>::const_iterator
-      cbegin_nodes() const noexcept {
-        return _active_nodes_index.cbegin();
-      }
-
-      [[nodiscard]] std::unordered_set<index_type>::const_iterator
-      cend_nodes() const noexcept {
-        return _active_nodes_index.cend();
-      }
-
-      [[nodiscard]] std::unordered_set<index_type>::const_iterator
-      begin_nodes() const noexcept {
-        return _active_nodes_index.begin();
-      }
-
-      [[nodiscard]] std::unordered_set<index_type>::const_iterator
-      end_nodes() const noexcept {
-        return _active_nodes_index.end();
       }
 
       template <typename Iterator>
