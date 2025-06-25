@@ -75,9 +75,9 @@ namespace libsemigroups {
     template <typename Iterator>
     AhoCorasickImpl::index_type
     AhoCorasickImpl::rm_word_no_checks(Iterator first, Iterator last) {
-      auto last_index = traverse_trie(first, last);
+      auto last_index = traverse_trie_no_checks(first, last);
       auto rule_index = last_index;
-      if (number_of_children(last_index) != 0) {
+      if (number_of_children_no_checks(last_index) != 0) {
         LIBSEMIGROUPS_ASSERT(_all_nodes[last_index].terminal());
         _all_nodes[last_index].terminal(false);
         return rule_index;
@@ -88,7 +88,7 @@ namespace libsemigroups {
       auto parent_index  = _all_nodes[last_index].parent();
       auto parent_letter = *(last - 1);
       deactivate_node_no_checks(last_index);
-      while (number_of_children(parent_index) == 1
+      while (number_of_children_no_checks(parent_index) == 1
              && !_all_nodes[parent_index].is_terminal()
              && parent_index != root) {
         last_index    = parent_index;
@@ -119,7 +119,8 @@ namespace libsemigroups {
 
     template <typename Iterator>
     AhoCorasickImpl::index_type
-    AhoCorasickImpl::traverse_trie(Iterator first, Iterator last) const {
+    AhoCorasickImpl::traverse_trie_no_checks(Iterator first,
+                                             Iterator last) const {
       index_type current = root;
       for (auto it = first; it != last; ++it) {
         current = _children.get(current, *it);
@@ -129,5 +130,21 @@ namespace libsemigroups {
       }
       return current;
     }
+
+    namespace aho_corasick_impl {
+
+      template <typename Iterator>
+      AhoCorasickImpl::index_type
+      traverse_word_no_checks(AhoCorasickImpl const&      ac,
+                              AhoCorasickImpl::index_type start,
+                              Iterator                    first,
+                              Iterator                    last) {
+        AhoCorasickImpl::index_type current = start;
+        for (auto it = first; it != last; ++it) {
+          current = ac.traverse_no_checks(current, *it);
+        }
+        return current;
+      }
+    }  // namespace aho_corasick_impl
   }  // namespace detail
 }  // namespace libsemigroups
