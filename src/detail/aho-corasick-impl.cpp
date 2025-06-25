@@ -159,7 +159,16 @@ namespace libsemigroups {
       new_node.suffix_link(link_index);
       new_node.height(_all_nodes[new_node.parent()].height() + 1);
 
-      update_suffix_link_sources(parent_index, new_node_index, a);
+      _node_indices_to_update.clear();
+      populate_node_indices_to_update(parent_index, new_node_index, a);
+      for (size_t node_index : _node_indices_to_update) {
+        auto& node = _all_nodes[node_index];
+        LIBSEMIGROUPS_ASSERT(node_index != new_node_index);
+        LIBSEMIGROUPS_ASSERT(node.suffix_link() != new_node_index);
+        rm_suffix_link_source(node_index, node.suffix_link());
+        node.suffix_link(new_node_index);
+        add_suffix_link_source(node_index, new_node_index);
+      }
 
       // Add new node as a source of its suffix link
       add_suffix_link_source(new_node_index, link_index);
