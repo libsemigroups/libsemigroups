@@ -56,17 +56,16 @@ namespace libsemigroups {
 
     class AhoCorasickImpl {
      public:
-      using index_type = size_t;
+      using index_type = uint32_t;
 
       static constexpr const index_type root = 0;
 
      private:
       class Node {
        private:
-        mutable size_t     _height;  // TODO make non-mutable
-        mutable index_type _link;    // TODO make non-mutable
-
         index_type  _first_suffix_link_source;
+        uint32_t    _height;
+        index_type  _link;
         index_type  _next_node_same_suffix_link;
         index_type  _parent;
         letter_type _parent_letter;
@@ -86,11 +85,9 @@ namespace libsemigroups {
 
         // TODO to cpp
         Node(index_type parent, letter_type a)
-            :  // mutable
+            : _first_suffix_link_source(),
               _height(),
               _link(),
-              // non-mutable
-              _first_suffix_link_source(),
               _next_node_same_suffix_link(),
               _parent(),
               _parent_letter(),
@@ -108,7 +105,7 @@ namespace libsemigroups {
 
         // TODO make the setters private/protected i.e. so that they can't
         // actually be used except by AhoCorasickImpl
-        Node const& height(size_t val) const noexcept {
+        Node const& height(size_t val) noexcept {
           _height = val;
           return *this;
         }
@@ -117,13 +114,13 @@ namespace libsemigroups {
           return _link;
         }
 
-        Node const& suffix_link(index_type val) const noexcept {
+        Node const& suffix_link(index_type val) noexcept {
           _link = val;
           return *this;
         }
 
-        // TODO private? rm?
-        void clear_suffix_link() const noexcept;
+        // TODO private?
+        void clear_suffix_link() noexcept;
 
         [[nodiscard]] bool is_terminal() const noexcept {
           return _terminal;
@@ -177,8 +174,6 @@ namespace libsemigroups {
       // _all_nodes will become scattered and disordered over time, and so it'd
       // probably be best to periodically (or maybe always?) compress, and sort
       // the nodes.
-
-      mutable bool _valid_links;  // TODO remove
 
      public:
       AhoCorasickImpl();

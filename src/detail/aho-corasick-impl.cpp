@@ -58,7 +58,7 @@ namespace libsemigroups {
     }
 
     // TODO why const?
-    void AhoCorasickImpl::Node::clear_suffix_link() const noexcept {
+    void AhoCorasickImpl::Node::clear_suffix_link() noexcept {
       if (parent() == root || parent() == UNDEFINED) {
         suffix_link(root);
       } else {
@@ -81,8 +81,7 @@ namespace libsemigroups {
         : _all_nodes({Node()}),
           _children(num_letters, 1, UNDEFINED),
           _active_nodes_index(),
-          _inactive_nodes_index(),
-          _valid_links(true) {
+          _inactive_nodes_index() {
       _active_nodes_index.insert(0);
       // TODO use init, and don't dupl code
     }
@@ -96,7 +95,6 @@ namespace libsemigroups {
       while (!_inactive_nodes_index.empty()) {
         _inactive_nodes_index.pop();
       }
-      _valid_links = true;
       return *this;
     }
 
