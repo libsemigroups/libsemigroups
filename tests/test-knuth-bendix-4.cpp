@@ -175,7 +175,8 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    knuth_bendix::by_overlap_length(kb);
+    kb.run();
+    // knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.finished());
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 194);

@@ -323,13 +323,15 @@ namespace libsemigroups {
                                    "139",
                                    "partial_transformation_monoid5",
                                    "[extreme][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   RewriteTrie  // KNUTH_BENDIX_TYPES
+  ) {
     auto rg = ReportGuard(true);
 
     size_t n = 5;
     auto   p = presentation::examples::partial_transformation_monoid_Shu60(n);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
+    kb.max_pending_rules(100'000);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 7'776);
   }

@@ -254,7 +254,17 @@ namespace libsemigroups {
       index_type rm_word_no_checks(Iterator first, Iterator last);
 
       [[nodiscard]] index_type traverse_no_checks(index_type  current,
-                                                  letter_type a) const;
+                                                  letter_type a) const {
+        LIBSEMIGROUPS_ASSERT(current < _all_nodes.size());
+        LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(current) == 1);
+        index_type next = _children.get(current, a);
+        if (next != UNDEFINED) {
+          return next;
+        } else if (current == root) {
+          return root;
+        }
+        return traverse_no_checks(suffix_link_no_checks(current), a);
+      }
 
       [[nodiscard]] index_type traverse(index_type  current,
                                         letter_type a) const {
@@ -269,7 +279,11 @@ namespace libsemigroups {
         return height_no_checks(i);
       }
 
-      [[nodiscard]] index_type suffix_link_no_checks(index_type current) const;
+      [[nodiscard]] index_type suffix_link_no_checks(index_type i) const {
+        LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+        LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
+        return _all_nodes[i].suffix_link();
+      }
 
       [[nodiscard]] index_type suffix_link(index_type current) const {
         throw_if_node_index_not_active(current);
