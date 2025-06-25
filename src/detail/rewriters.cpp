@@ -308,16 +308,8 @@ namespace libsemigroups {
       return rules_added;
     }
 
-    // IDEA:
-    // for each pending rule:
-    //    * rewrite both sides, and reorder
-    //    * if non-trivial, add to the rewriting trie + to the new rules trie
-    // for each active rule:
-    //    * check if either the lhs or rhs matches a new rule (that isn't
-    //    itself),
-    //    * if a new rule is matched, then add the active rule to the pending
-
     void RewriterBase::reduce() {
+      // TODO required?
       for (Rule const* rule : *this) {
         // Copy rule and add_pending_rule so that it is not modified by the
         // call to process_pending_rules.
@@ -325,12 +317,6 @@ namespace libsemigroups {
         if (add_pending_rule(copy_rule(rule))) {
           process_pending_rules();
         }
-      }
-    }
-
-    void RewriterBase::reduce_rhs() {
-      for (Rule const* rule : *this) {
-        rewrite(*rule->rhs());
       }
     }
 

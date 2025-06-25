@@ -346,8 +346,6 @@ namespace libsemigroups {
 
       void reduce();
 
-      void reduce_rhs();
-
       void rewrite(Rule* rule) const {
         rewrite(*rule->lhs());
         rewrite(*rule->rhs());
@@ -411,26 +409,6 @@ namespace libsemigroups {
         }
       }
 
-      // TODO(0) rm
-      void add_rule_and_reduce_old_rules(Rule* rule_to_add) {
-        LIBSEMIGROUPS_ASSERT(*rule_to_add->lhs() != *rule_to_add->rhs());
-        add_rule(rule_to_add);
-        for (auto it = begin(); it != end();) {
-          if (*it == rule_to_add) {
-            ++it;
-            continue;
-          }
-          Rule* copy = new_rule(rule_to_add->lhs()->begin(),
-                                rule_to_add->lhs()->end(),
-                                rule_to_add->rhs()->begin(),
-                                rule_to_add->rhs()->end());
-          if (rewrite_active_rule(copy)) {
-            it = make_active_rule_pending(it);
-          } else {
-            ++it;
-          }
-        }
-      }
     };  // class RewriterBase
 
     ////////////////////////////////////////////////////////////////////////
@@ -481,7 +459,8 @@ namespace libsemigroups {
       using rule_iterator = std::unordered_map<index_type, Rule*>::iterator;
 
      private:
-      std::vector<index_type>               _nodes;
+      std::vector<index_type> _nodes;
+
       std::unordered_map<index_type, Rule*> _rules;
       AhoCorasickImpl                       _trie;
 
