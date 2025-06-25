@@ -34,7 +34,7 @@ namespace libsemigroups {
       RewriteTrie rt = RewriteTrie();
       REQUIRE(rt.number_of_active_rules() == 0);
       rt.increase_alphabet_size_by(2);
-      rt.add_rule("ba"_w, "a"_w);
+      rt.add_rule("ba"_w, "a"_w);  // TODO should be a helper
       REQUIRE(rt.number_of_active_rules() == 1);
     }
 

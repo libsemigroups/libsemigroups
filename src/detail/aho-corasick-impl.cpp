@@ -40,16 +40,16 @@ namespace libsemigroups {
 
     AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  parent,
                                                        letter_type a) noexcept {
-      // mutable
-      _height = UNDEFINED;
+      // mutable TODO remove mutability here
+      _height = parent == UNDEFINED ? 0 : UNDEFINED;
       clear_suffix_link();
 
       // non-mutable
-      _first_node_this_link = UNDEFINED;
-      _next_node_same_link  = UNDEFINED;
-      _parent               = parent;
-      _parent_letter        = a;
-      _terminal             = false;
+      _first_suffix_link_source   = UNDEFINED;
+      _next_node_same_suffix_link = UNDEFINED;
+      _parent                     = parent;
+      _parent_letter              = a;
+      _terminal                   = false;
 
       // Cannot set _link or _height here because we don't have access to the
       // relevant info here.
@@ -84,12 +84,13 @@ namespace libsemigroups {
           _inactive_nodes_index(),
           _valid_links(true) {
       _active_nodes_index.insert(0);
+      // TODO use init, and don't dupl code
     }
 
-    // TODO combine with constructor and private default constructor
     AhoCorasickImpl& AhoCorasickImpl::init(size_t num_letters) {
       _all_nodes = {Node()};
       _children.init(num_letters, 1, UNDEFINED);
+      // TODO maybe better to just deactivate all the nodes?
       _active_nodes_index.clear();
       _active_nodes_index.insert(0);
       while (!_inactive_nodes_index.empty()) {
@@ -118,57 +119,52 @@ namespace libsemigroups {
     [[nodiscard]] size_t AhoCorasickImpl::height_no_checks(index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
       LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
-      size_t cached_height = _all_nodes[i].height();
-      if (cached_height != UNDEFINED) {
-        return cached_height;
-      }
-
-      if (i == root) {
-        _all_nodes[i].height(0);
-        return 0;
-      }
-
-      cached_height = height_no_checks(_all_nodes[i].parent()) + 1;
-      _all_nodes[i].height(cached_height);
-      return cached_height;
+      return _all_nodes[i].height();
     }
 
     [[nodiscard]] AhoCorasickImpl::index_type
-    AhoCorasickImpl::suffix_link_no_checks(index_type current) const {
-      LIBSEMIGROUPS_ASSERT(current < _all_nodes.size());
-      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(current) == 1);
-      if (!_valid_links) {
-        clear_suffix_links();
-        _valid_links = true;
-      }
-      auto& n = _all_nodes[current];
-      if (n.suffix_link() == UNDEFINED) {
-        n.suffix_link(traverse_no_checks(suffix_link_no_checks(n.parent()),
-                                         n.parent_letter()));
-      }
-      return n.suffix_link();
+    AhoCorasickImpl::suffix_link_no_checks(index_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
+      return _all_nodes[i].suffix_link();
     }
 
     [[nodiscard]] AhoCorasickImpl::index_type
-    AhoCorasickImpl::new_active_node_no_checks(index_type  parent,
+    AhoCorasickImpl::new_active_node_no_checks(index_type  parent_index,
                                                letter_type a) {
-      LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
-      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent) == 1);
-      index_type index;
+      LIBSEMIGROUPS_ASSERT(parent_index < _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent_index) == 1);
+
+      index_type new_node_index;
       if (_inactive_nodes_index.empty()) {
-        index = _all_nodes.size();
-        _all_nodes.emplace_back(parent, a);
-        _active_nodes_index.insert(index);
+        new_node_index = _all_nodes.size();
+        _all_nodes.emplace_back(parent_index, a);
+        _active_nodes_index.insert(new_node_index);
         _children.add_rows(1);
       } else {
-        index = _inactive_nodes_index.top();
+        new_node_index = _inactive_nodes_index.top();
         _inactive_nodes_index.pop();
-        _active_nodes_index.insert(index);
-        _all_nodes[index].init(parent, a);
-        std::fill(
-            _children.begin_row(index), _children.end_row(index), UNDEFINED);
+        _active_nodes_index.insert(new_node_index);
+        _all_nodes[new_node_index].init(parent_index, a);
+        std::fill(_children.begin_row(new_node_index),
+                  _children.end_row(new_node_index),
+                  UNDEFINED);
       }
-      return index;
+
+      // Set the suffix link and height of new node
+      auto&      new_node   = _all_nodes[new_node_index];
+      index_type link_index = traverse_no_checks(
+          suffix_link_no_checks(new_node.parent()), new_node.parent_letter());
+      LIBSEMIGROUPS_ASSERT(link_index != UNDEFINED);
+      new_node.suffix_link(link_index);
+      new_node.height(_all_nodes[new_node.parent()].height() + 1);
+
+      update_suffix_link_sources(parent_index, new_node_index, a);
+
+      // Add new node as a source of its suffix link
+      add_suffix_link_source(new_node_index, link_index);
+
+      return new_node_index;
     }
 
     void AhoCorasickImpl::deactivate_node_no_checks(index_type i) {
@@ -181,14 +177,6 @@ namespace libsemigroups {
       _active_nodes_index.erase(i);
 #endif
       _inactive_nodes_index.push(i);
-    }
-
-    void AhoCorasickImpl::clear_suffix_links() const {
-      // TODO(2) determine if it is more efficient to clear the link of all
-      // nodes, or just the active ones
-      for (auto node = _all_nodes.begin(); node != _all_nodes.end(); ++node) {
-        node->clear_suffix_link();
-      }
     }
 
     void AhoCorasickImpl::throw_if_node_index_out_of_range(index_type i) const {

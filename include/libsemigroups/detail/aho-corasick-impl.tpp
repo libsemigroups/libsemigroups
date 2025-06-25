@@ -28,7 +28,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
                                 "last) already belongs to the trie",
                                 word_type(first, last));
-        // TODO(2) Look in presentations and do one thing for chars and one
+        // TODO(0) Look in presentations and do one thing for chars and one
         // thing for letter type.
       }
       return add_word_no_checks(first, last);
@@ -37,19 +37,17 @@ namespace libsemigroups {
     template <typename Iterator>
     AhoCorasickImpl::index_type
     AhoCorasickImpl::add_word_no_checks(Iterator first, Iterator last) {
-      _valid_links       = false;
       index_type current = root;
       for (auto it = first; it != last; ++it) {
         index_type next = _children.get(current, *it);
-        if (next != UNDEFINED) {
-          current = next;
-        } else {
+        if (next == UNDEFINED) {
           next = new_active_node_no_checks(current,
                                            *it);  // index of next node added
           // set next as child of parent
+          // TODO move this into new_active_node_no_checks
           _children.set(current, *it, next);
-          current = next;
         }
+        current = next;
       }
       _all_nodes[current].terminal(true);
       return current;
@@ -97,6 +95,7 @@ namespace libsemigroups {
         deactivate_node_no_checks(last_index);
       }
       _children.set(parent_index, parent_letter, UNDEFINED);
+      // TODO update suffix links
       return rule_index;
     }
 
