@@ -38,32 +38,34 @@ namespace libsemigroups {
     // Node nested class
     ////////////////////////////////////////////////////////////////////////
 
-    AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  parent,
-                                                       letter_type a) noexcept {
-      // mutable TODO remove mutability here
-      _height = parent == UNDEFINED ? 0 : UNDEFINED;
-      clear_suffix_link();
+    AhoCorasickImpl::Node::Node(index_type parent, letter_type a)
+        : _first_suffix_link_source(),
+          _height(),
+          _link(),
+          _next_node_same_suffix_link(),
+          _parent(),
+          _parent_letter(),
+          _terminal() {
+      init(parent, a);
+    }
 
-      // non-mutable
+    AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  i,
+                                                       letter_type a) noexcept {
+      _height                     = i == UNDEFINED ? 0 : UNDEFINED;
       _first_suffix_link_source   = UNDEFINED;
       _next_node_same_suffix_link = UNDEFINED;
-      _parent                     = parent;
+      _parent                     = i;
       _parent_letter              = a;
       _terminal                   = false;
 
+      if (_parent == root || _parent == UNDEFINED) {
+        _link = root;
+      } else {
+        _link = UNDEFINED;
+      }
       // Cannot set _link or _height here because we don't have access to the
       // relevant info here.
-
       return *this;
-    }
-
-    // TODO why const?
-    void AhoCorasickImpl::Node::clear_suffix_link() noexcept {
-      if (parent() == root || parent() == UNDEFINED) {
-        suffix_link(root);
-      } else {
-        suffix_link(UNDEFINED);
-      }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -99,6 +101,16 @@ namespace libsemigroups {
     }
 
     AhoCorasickImpl::~AhoCorasickImpl() = default;
+
+    AhoCorasickImpl& AhoCorasickImpl::increase_alphabet_size_by(size_t val) {
+      size_t c = _children.number_of_cols();
+      _children.add_cols(val);
+      for (; c < _children.number_of_cols(); ++c) {
+        std::fill(
+            _children.begin_column(c), _children.end_column(c), UNDEFINED);
+      }
+      return *this;
+    }
 
     [[nodiscard]] size_t AhoCorasickImpl::height_no_checks(index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
