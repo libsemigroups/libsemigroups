@@ -161,7 +161,7 @@ namespace libsemigroups {
 
       _node_indices_to_update.clear();
       populate_node_indices_to_update(parent_index, new_node_index, a);
-      for (size_t node_index : _node_indices_to_update) {
+      for (index_type node_index : _node_indices_to_update) {
         auto& node = _all_nodes[node_index];
         LIBSEMIGROUPS_ASSERT(node_index != new_node_index);
         LIBSEMIGROUPS_ASSERT(node.suffix_link() != new_node_index);
@@ -178,6 +178,22 @@ namespace libsemigroups {
 
     void AhoCorasickImpl::deactivate_node_no_checks(index_type i) {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+      // For each active suffix link source <current_source> of <i>, push
+      // <current_source> to the vector of nodes which need to have their suffix
+      // link updated.
+      index_type current_source_index
+          = _all_nodes[i].first_suffix_link_source();
+      while (current_source_index != UNDEFINED) {
+        LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
+                             == i);
+        if (_active_nodes_index.find(current_source_index)
+            != _active_nodes_index.end())
+          _node_indices_to_update.push_back(current_source_index);
+        current_source_index
+            = _all_nodes[current_source_index].next_node_same_suffix_link();
+      }
+
+      // Make the node inactive
 #ifdef LIBSEMIGROUPS_DEBUG
       auto num_removed = _active_nodes_index.erase(i);
       (void) num_removed;

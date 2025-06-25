@@ -82,7 +82,8 @@ namespace libsemigroups {
         return rule_index;
       }
 
-      _valid_links       = false;
+      _node_indices_to_update.clear();
+
       auto parent_index  = _all_nodes[last_index].parent();
       auto parent_letter = *(last - 1);
       deactivate_node_no_checks(last_index);
@@ -95,7 +96,25 @@ namespace libsemigroups {
         deactivate_node_no_checks(last_index);
       }
       _children.set(parent_index, parent_letter, UNDEFINED);
-      // TODO update suffix links
+
+      for (index_type node_index : _node_indices_to_update) {
+        auto&      node                      = _all_nodes[node_index];
+        index_type current_suffix_link_index = node.suffix_link();
+        index_type next_suffix_link_index
+            = _all_nodes[current_suffix_link_index].suffix_link();
+
+        while (_active_nodes_index.find(next_suffix_link_index)
+               == _active_nodes_index.end()) {
+          current_suffix_link_index = next_suffix_link_index;
+          next_suffix_link_index
+              = _all_nodes[next_suffix_link_index].suffix_link();
+        }
+        rm_suffix_link_source(next_suffix_link_index,
+                              current_suffix_link_index);
+        node.suffix_link(next_suffix_link_index);
+        add_suffix_link_source(node_index, next_suffix_link_index);
+      }
+
       return rule_index;
     }
 
