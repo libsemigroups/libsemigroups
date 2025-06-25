@@ -171,7 +171,7 @@ namespace libsemigroups {
       detail::DynamicArray2<index_type>               _children;
       std::unordered_set<index_type>                  _active_nodes_index;
       std::stack<index_type, std::vector<index_type>> _inactive_nodes_index;
-      std::vector<index_type> _previous_suffix_link_sources;
+      std::vector<index_type>                         _node_indices_to_update;
 
       // TODO(1): it seems likely that the positions of the active nodes in
       // _all_nodes will become scattered and disordered over time, and so it'd
@@ -341,27 +341,11 @@ namespace libsemigroups {
       void add_suffix_link_source(index_type source_index,
                                   index_type target_index) {
         LIBSEMIGROUPS_ASSERT(source_index != target_index);
+        auto& source = _all_nodes[source_index];
         auto& target = _all_nodes[target_index];
-        if (target.first_suffix_link_source() == UNDEFINED) {
-          target.first_suffix_link_source(source_index);
-          _all_nodes[source_index].next_node_same_suffix_link(UNDEFINED);
-        } else {
-          index_type current_source_index = target.first_suffix_link_source();
-          LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                               == target_index);
-          while (_all_nodes[current_source_index].next_node_same_suffix_link()
-                     != UNDEFINED
-                 && current_source_index != source_index) {
-            current_source_index
-                = _all_nodes[current_source_index].next_node_same_suffix_link();
-            LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                                 == target_index);
-          }
-          if (current_source_index != source_index) {
-            _all_nodes[current_source_index].next_node_same_suffix_link(
-                source_index);
-          }
-        }
+        LIBSEMIGROUPS_ASSERT(source_index != target.first_suffix_link_source());
+        source.next_node_same_suffix_link(target.first_suffix_link_source());
+        target.first_suffix_link_source(source_index);
       }
 
       // Remove <source_index> as a suffix link source of <target_index>, i.e.
@@ -394,37 +378,25 @@ namespace libsemigroups {
         }
       }
 
-      void update_suffix_link_sources(index_type  target_index,
-                                      index_type  new_node_index,
-                                      letter_type a) {
-        index_type start = _previous_suffix_link_sources.size();
-
+      void populate_node_indices_to_update(index_type  target_index,
+                                           index_type  new_node_index,
+                                           letter_type a) {
         index_type current_source_index
             = _all_nodes[target_index].first_suffix_link_source();
+
+        LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
         while (current_source_index != UNDEFINED) {
-          _previous_suffix_link_sources.push_back(current_source_index);
+          LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
+          index_type child_index = _children.get(current_source_index, a);
+          if (child_index == UNDEFINED) {
+            populate_node_indices_to_update(
+                current_source_index, new_node_index, a);
+          } else {
+            _node_indices_to_update.push_back(child_index);
+          }
           current_source_index
               = _all_nodes[current_source_index].next_node_same_suffix_link();
         }
-
-        LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
-        for (size_t i = start; i < _previous_suffix_link_sources.size(); ++i) {
-          current_source_index   = _previous_suffix_link_sources[i];
-          index_type child_index = _children.get(current_source_index, a);
-          if (child_index == UNDEFINED) {
-            update_suffix_link_sources(current_source_index, new_node_index, a);
-          } else {
-            fmt::print("{}\n", child_index);
-            auto& child = _all_nodes[child_index];
-            rm_suffix_link_source(child_index, child.suffix_link());
-            child.suffix_link(new_node_index);
-            add_suffix_link_source(child_index, new_node_index);
-          }
-          LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
-        }
-        _previous_suffix_link_sources.erase(
-            _previous_suffix_link_sources.begin() + start,
-            _previous_suffix_link_sources.end());
       }
 
     };  // class AhoCorasickImpl
@@ -633,6 +605,7 @@ namespace libsemigroups {
       }
 
       template <typename Word>
+
       [[nodiscard]] auto end_search_no_checks(AhoCorasickImpl& ac,
                                               Word const&      w) {
         return end_search_no_checks(ac, w.begin(), w.end());
