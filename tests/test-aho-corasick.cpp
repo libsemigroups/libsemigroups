@@ -504,10 +504,10 @@ namespace libsemigroups {
       REQUIRE(aho_corasick_impl::traverse_word_no_checks(ac, 1110_w) == 29);
       REQUIRE(aho_corasick_impl::traverse_word_no_checks(ac, 1111_w) == 30);
 
-      // aho_corasick::rm_word(ac, 0111_w);
-      // REQUIRE(ac.number_of_nodes() == 30);
-      // REQUIRE(aho_corasick::traverse_word(ac, 0111_w)
-      //         == aho_corasick::traverse_word(ac, 111_w));
+      aho_corasick_impl::rm_word_no_checks(ac, 0111_w);
+      REQUIRE(ac.number_of_nodes() == 30);
+      REQUIRE(aho_corasick_impl::traverse_word_no_checks(ac, 0111_w)
+              == aho_corasick_impl::traverse_word_no_checks(ac, 111_w));
     }
 
   }  // namespace detail

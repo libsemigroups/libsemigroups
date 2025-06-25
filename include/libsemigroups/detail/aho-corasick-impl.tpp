@@ -78,6 +78,7 @@ namespace libsemigroups {
       auto last_index = traverse_trie(first, last);
       auto rule_index = last_index;
       if (number_of_children(last_index) != 0) {
+        LIBSEMIGROUPS_ASSERT(_all_nodes[last_index].terminal());
         _all_nodes[last_index].terminal(false);
         return rule_index;
       }
@@ -98,19 +99,17 @@ namespace libsemigroups {
       _children.set(parent_index, parent_letter, UNDEFINED);
 
       for (index_type node_index : _node_indices_to_update) {
+        LIBSEMIGROUPS_ASSERT(is_active_node(node_index));
         auto&      node                      = _all_nodes[node_index];
         index_type current_suffix_link_index = node.suffix_link();
+        LIBSEMIGROUPS_ASSERT(!is_active_node(current_suffix_link_index));
         index_type next_suffix_link_index
             = _all_nodes[current_suffix_link_index].suffix_link();
-
-        while (_active_nodes_index.find(next_suffix_link_index)
-               == _active_nodes_index.end()) {
+        while (!is_active_node(next_suffix_link_index)) {
           current_suffix_link_index = next_suffix_link_index;
           next_suffix_link_index
               = _all_nodes[next_suffix_link_index].suffix_link();
         }
-        rm_suffix_link_source(next_suffix_link_index,
-                              current_suffix_link_index);
         node.suffix_link(next_suffix_link_index);
         add_suffix_link_source(node_index, next_suffix_link_index);
       }
