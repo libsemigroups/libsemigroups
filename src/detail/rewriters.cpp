@@ -542,7 +542,7 @@ namespace libsemigroups {
         index_type node = _trie.traverse_trie_no_checks(rule->lhs()->cbegin(),
                                                         rule->lhs()->cend());
         // TODO check that node is correct
-        // LIBSEMIGROUPS_ASSERT(_trie.is_terminal(node));
+        // LIBSEMIGROUPS_ASSERT(_trie.terminal(node));
         _rules.emplace(node, rule);
       }
 
@@ -578,7 +578,7 @@ namespace libsemigroups {
             = _trie.traverse_no_checks(current, static_cast<letter_type>(x));
 
         auto rule_it = _rules.find(current);
-        if (!_trie.node_no_checks(current).is_terminal()
+        if (!_trie.node_no_checks(current).terminal()
             || rule_it->second == disabled_rule) {
           _nodes.push_back(current);
           *v_end = x;
@@ -777,7 +777,7 @@ namespace libsemigroups {
                                        index_type  current_node,
                                        size_t      overlap_length) const {
       LIBSEMIGROUPS_ASSERT(rule1->active());
-      if (_trie.node_no_checks(current_node).is_terminal()) {
+      if (_trie.node_no_checks(current_node).terminal()) {
         Rule const* rule2 = _rules.find(current_node)->second;
         // Process overlap
         // Word looks like ABC where the LHS of rule1 corresponds to AB,

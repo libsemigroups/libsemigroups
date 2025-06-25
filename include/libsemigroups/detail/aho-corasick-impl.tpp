@@ -24,7 +24,7 @@ namespace libsemigroups {
     AhoCorasickImpl::index_type AhoCorasickImpl::add_word(Iterator first,
                                                           Iterator last) {
       auto last_index = traverse_trie(first, last);
-      if (last_index != UNDEFINED && _all_nodes[last_index].is_terminal()) {
+      if (last_index != UNDEFINED && _all_nodes[last_index].terminal()) {
         LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
                                 "last) already belongs to the trie",
                                 word_type(first, last));
@@ -63,7 +63,7 @@ namespace libsemigroups {
                                 "correspond to a node in the trie",
                                 word_type(first, last));
       }
-      if (!_all_nodes[last_index].is_terminal()) {
+      if (!_all_nodes[last_index].terminal()) {
         LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
                                 "arguments [first, last), as it does not "
                                 "correspond to a terminal node in the trie",
@@ -89,8 +89,7 @@ namespace libsemigroups {
       auto parent_letter = *(last - 1);
       deactivate_node_no_checks(last_index);
       while (number_of_children_no_checks(parent_index) == 1
-             && !_all_nodes[parent_index].is_terminal()
-             && parent_index != root) {
+             && !_all_nodes[parent_index].terminal() && parent_index != root) {
         last_index    = parent_index;
         parent_index  = _all_nodes[last_index].parent();
         parent_letter = _all_nodes[last_index].parent_letter();
@@ -145,6 +144,64 @@ namespace libsemigroups {
         }
         return current;
       }
+
+      template <typename Iterator>
+      SearchIterator<Iterator>::SearchIterator(AhoCorasickImpl const& trie,
+                                               Iterator               first,
+                                               Iterator               last)
+          : _first(first),
+            _last(last),
+            _prefix(trie.root),
+            _suffix(trie.root),
+            _trie(trie) {
+        operator++();
+      }
+
+      template <typename Iterator>
+      SearchIterator<Iterator>::SearchIterator(AhoCorasickImpl const& trie)
+          : _first(),
+            _last(),
+            _prefix(UNDEFINED),
+            _suffix(UNDEFINED),
+            _trie(trie) {}
+
+      // Pre-increment
+      template <typename Iterator>
+      SearchIterator<Iterator>& SearchIterator<Iterator>::operator++() {
+        if (_suffix == UNDEFINED) {
+          // We're at the end
+          return *this;
+        }
+        // Every subword is a suffix of a prefix, so we follow the edges
+        // labeled by _first to _last to some node _prefix, then consider
+        // all the suffixes of _prefix by following the suffix links back to
+        // the root.
+        while (_suffix != _trie.root) {
+          _suffix = _trie.suffix_link_no_checks(_suffix);
+          if (_trie.node_no_checks(_suffix).terminal()) {
+            // the _suffix of the _prefix of [first, last) is a match so
+            // return.
+            return *this;
+          }
+        }
+        while (_first != _last && _prefix != UNDEFINED) {
+          auto x = *_first;
+          ++_first;
+          _prefix
+              = _trie.traverse_no_checks(_prefix, static_cast<letter_type>(x));
+          _suffix = _prefix;
+          do {
+            if (_trie.node_no_checks(_suffix).terminal()) {
+              return *this;
+            }
+            _suffix = _trie.suffix_link_no_checks(_suffix);
+          } while (_suffix != _trie.root);
+        }
+        _prefix = UNDEFINED;
+        _suffix = UNDEFINED;
+        return *this;
+      }
+
     }  // namespace aho_corasick_impl
   }  // namespace detail
 }  // namespace libsemigroups

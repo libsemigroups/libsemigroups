@@ -51,18 +51,18 @@ namespace libsemigroups {
 
     AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  i,
                                                        letter_type a) noexcept {
-      _height                     = i == UNDEFINED ? 0 : UNDEFINED;
-      _first_suffix_link_source   = UNDEFINED;
-      _next_node_same_suffix_link = UNDEFINED;
-      _parent                     = i;
-      _parent_letter              = a;
-      _terminal                   = false;
-
+      _first_suffix_link_source = UNDEFINED;
+      _height                   = i == UNDEFINED ? 0 : UNDEFINED;
       if (_parent == root || _parent == UNDEFINED) {
         _link = root;
       } else {
         _link = UNDEFINED;
       }
+      _next_node_same_suffix_link = UNDEFINED;
+      _parent                     = i;
+      _parent_letter              = a;
+      _terminal                   = false;
+
       // Cannot set _link or _height here because we don't have access to the
       // relevant info here.
       return *this;
@@ -72,7 +72,11 @@ namespace libsemigroups {
     // AhoCorasickImplImpl class
     ////////////////////////////////////////////////////////////////////////
 
-    AhoCorasickImpl::AhoCorasickImpl() : AhoCorasickImpl(0) {}
+    AhoCorasickImpl::AhoCorasickImpl()
+        : _all_nodes({Node()}),
+          _children(0, 1, UNDEFINED),
+          _active_nodes_index(),
+          _inactive_nodes_index() {}
 
     AhoCorasickImpl& AhoCorasickImpl::init() {
       init(0);
@@ -85,18 +89,32 @@ namespace libsemigroups {
           _active_nodes_index(),
           _inactive_nodes_index() {
       _active_nodes_index.insert(0);
-      // TODO use init, and don't dupl code
     }
 
     AhoCorasickImpl& AhoCorasickImpl::init(size_t num_letters) {
       _all_nodes = {Node()};
       _children.init(num_letters, 1, UNDEFINED);
-      // TODO maybe better to just deactivate all the nodes?
       _active_nodes_index.clear();
       _active_nodes_index.insert(0);
       while (!_inactive_nodes_index.empty()) {
         _inactive_nodes_index.pop();
       }
+
+      // TODO maybe better to just deactivate all the nodes, the following
+      // causes a seg fault for some reason.
+      // _children.init(num_letters, _all_nodes.size(), UNDEFINED);
+      // for (auto i : _active_nodes_index) {
+      //   if (i != 0) {
+      //     _inactive_nodes_index.push(i);
+      //   }
+      // }
+      // _active_nodes_index.clear();
+      // _active_nodes_index.insert(0);
+      // LIBSEMIGROUPS_ASSERT(_active_nodes_index.size()
+      //                          + _inactive_nodes_index.size()
+      //                      == _all_nodes.size());
+      // LIBSEMIGROUPS_ASSERT(_children.number_of_rows() ==
+      // _all_nodes.size());
       return *this;
     }
 
@@ -168,8 +186,8 @@ namespace libsemigroups {
     void AhoCorasickImpl::deactivate_node_no_checks(index_type i) {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
       // For each active suffix link source <current_source> of <i>, push
-      // <current_source> to the vector of nodes which need to have their suffix
-      // link updated.
+      // <current_source> to the vector of nodes which need to have their
+      // suffix link updated.
       index_type current_source_index
           = _all_nodes[i].first_suffix_link_source();
       while (current_source_index != UNDEFINED) {
@@ -286,6 +304,5 @@ namespace libsemigroups {
             = _all_nodes[current_source_index].next_node_same_suffix_link();
       }
     }
-
   }  // namespace detail
 }  // namespace libsemigroups
