@@ -186,15 +186,17 @@ namespace libsemigroups {
       while (current_source_index != UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
                              == i);
-        if (_active_nodes_index.find(current_source_index)
-            != _active_nodes_index.end())
+        if (is_active_node(current_source_index)) {
           _node_indices_to_update.push_back(current_source_index);
+        }
         current_source_index
             = _all_nodes[current_source_index].next_node_same_suffix_link();
       }
+      rm_suffix_link_source(i, _all_nodes[i].suffix_link());
 
       // Make the node inactive
 #ifdef LIBSEMIGROUPS_DEBUG
+
       auto num_removed = _active_nodes_index.erase(i);
       (void) num_removed;
       LIBSEMIGROUPS_ASSERT(num_removed == 1);

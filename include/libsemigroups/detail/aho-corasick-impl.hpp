@@ -299,6 +299,10 @@ namespace libsemigroups {
         return child_no_checks(parent, letter);
       }
 
+      [[nodiscard]] bool is_active_node(index_type i) {
+        return _active_nodes_index.find(i) != _active_nodes_index.end();
+      }
+
       void throw_if_node_index_out_of_range(index_type i) const;
 
       void throw_if_node_index_not_active(index_type i) const;
@@ -365,6 +369,10 @@ namespace libsemigroups {
             prev_source_index = current_source_index;
             current_source_index
                 = _all_nodes[current_source_index].next_node_same_suffix_link();
+            // The next assertion asserts that source_index is in fact a suffix
+            // link source of target_index.
+            LIBSEMIGROUPS_ASSERT(current_source_index != UNDEFINED);
+
             LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
                                  == target_index);
           } while (current_source_index != source_index);
@@ -404,12 +412,16 @@ namespace libsemigroups {
     namespace aho_corasick_impl {
 
       template <typename Word>
-      [[nodiscard]] AhoCorasickImpl::index_type
-      add_word_no_checks(AhoCorasickImpl& ac, Word const& w) {
+      AhoCorasickImpl::index_type add_word_no_checks(AhoCorasickImpl& ac,
+                                                     Word const&      w) {
         return ac.add_word_no_checks(w.begin(), w.end());
       }
 
-      // TODO rm_word_no_checks variant here too
+      template <typename Word>
+      AhoCorasickImpl::index_type rm_word_no_checks(AhoCorasickImpl& ac,
+                                                    Word const&      w) {
+        return ac.rm_word_no_checks(w.begin(), w.end());
+      }
 
       // Check if a word is one of those used to create the trie
       template <typename Iterator>
