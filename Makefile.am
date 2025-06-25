@@ -43,8 +43,8 @@ pkgconfig_DATA     = libsemigroups.pc
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
 pkginclude_HEADERS += include/libsemigroups/action.tpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
-pkginclude_HEADERS += include/libsemigroups/aho-corasick.hpp
-pkginclude_HEADERS += include/libsemigroups/aho-corasick.tpp
+pkginclude_HEADERS += include/libsemigroups/aho-corasick-class.hpp
+pkginclude_HEADERS += include/libsemigroups/aho-corasick-class.tpp
 pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat-adapters.hpp
@@ -719,7 +719,7 @@ endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-libsemigroups_la_SOURCES  = src/aho-corasick.cpp
+libsemigroups_la_SOURCES  = src/aho-corasick-class.cpp
 libsemigroups_la_SOURCES += src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-helpers.cpp
