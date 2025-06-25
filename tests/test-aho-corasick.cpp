@@ -24,13 +24,13 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for SourceLineInfo, operator""...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/aho-corasick.hpp"  // for traverse_word, AhoCorasick
-#include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
-#include "libsemigroups/constants.hpp"     // for operator==, operator!=
-#include "libsemigroups/dot.hpp"           // for Dot
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/word-range.hpp"    // for operator""_w, WordRange, pow
+#include "libsemigroups/aho-corasick-class.hpp"  // for traverse_word, AhoCorasick
+#include "libsemigroups/aho-corasick-class.hpp"  // for AhoCorasick
+#include "libsemigroups/constants.hpp"           // for operator==, operator!=
+#include "libsemigroups/dot.hpp"                 // for Dot
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-range.hpp"  // for operator""_w, WordRange, pow
 
 #include "libsemigroups/detail/aho-corasick-impl.hpp"  // for traverse_word, AhoCorasick
 

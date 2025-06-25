@@ -19,8 +19,8 @@
 // This file contains the implementation of a trie with suffix links for use by
 // the Aho-Corasick dictionary search algorithm
 
-#ifndef LIBSEMIGROUPS_AHO_CORASICK_HPP_
-#define LIBSEMIGROUPS_AHO_CORASICK_HPP_
+#ifndef LIBSEMIGROUPS_AHO_CORASICK_CLASS_HPP_
+#define LIBSEMIGROUPS_AHO_CORASICK_CLASS_HPP_
 
 #include <memory>         // for allocator_traits<>::value_type
 #include <set>            // for set
@@ -61,7 +61,7 @@ namespace libsemigroups {
   //!
   //! \brief For an implementation of the Aho-Corasick algorithm.
   //!
-  //! Defined in `aho-corasick.hpp`.
+  //! Defined in `aho-corasick-class.hpp`.
   //!
   //! This class implements a trie based data structure with suffix links to be
   //! used with the Aho-Corasick dictionary searching algorithm. An introduction
@@ -737,7 +737,7 @@ namespace libsemigroups {
   //!
   //! \brief Namespace for AhoCorasick helper functions.
   //!
-  //! Defined in `aho-corasick.hpp`.
+  //! Defined in `aho-corasick-class.hpp`.
   //!
   //! This namespace contains various helper functions for the class
   //! AhoCorasick. These functions could be functions of AhoCorasick but they
@@ -970,6 +970,6 @@ namespace libsemigroups {
 
 }  // namespace libsemigroups
 
-#include "aho-corasick.tpp"
+#include "aho-corasick-class.tpp"
 
-#endif  // LIBSEMIGROUPS_AHO_CORASICK_HPP_
+#endif  // LIBSEMIGROUPS_AHO_CORASICK_CLASS_HPP_

@@ -18,8 +18,8 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/aho-corasick.hpp"  // for dot
-#include "libsemigroups/word-range.hpp"    // for operator""_w
+#include "libsemigroups/aho-corasick-class.hpp"  // for dot
+#include "libsemigroups/word-range.hpp"          // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
 #include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie

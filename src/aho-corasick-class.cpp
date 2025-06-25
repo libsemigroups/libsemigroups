@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementation of the AhoCorasick class.
-#include "libsemigroups/aho-corasick.hpp"
+#include "libsemigroups/aho-corasick-class.hpp"
 
 #include <algorithm>    // for max, copy, reverse
 #include <array>        // for array
