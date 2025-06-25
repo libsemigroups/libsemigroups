@@ -211,5 +211,81 @@ namespace libsemigroups {
             "invalid index, expected an index of an active node, found {}", i);
       }
     }
+
+    void AhoCorasickImpl::throw_if_letter_out_of_range(index_type i) const {
+      if (i >= alphabet_size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected a value [0, {}), found {}", alphabet_size(), i);
+      }
+    }
+
+    // Add <source_index> as a suffix link source of <target_index>, i.e.
+    // _all_nodes[source_index].suffix_link() == target_index
+    void AhoCorasickImpl::add_suffix_link_source(index_type source_index,
+                                                 index_type target_index) {
+      LIBSEMIGROUPS_ASSERT(source_index != target_index);
+      auto& source = _all_nodes[source_index];
+      auto& target = _all_nodes[target_index];
+      LIBSEMIGROUPS_ASSERT(source_index != target.first_suffix_link_source());
+      source.next_node_same_suffix_link(target.first_suffix_link_source());
+      target.first_suffix_link_source(source_index);
+    }
+
+    // Remove <source_index> as a suffix link source of <target_index>, i.e.
+    // _all_nodes[source_index].suffix_link() == target_index
+    void AhoCorasickImpl::rm_suffix_link_source(index_type source_index,
+                                                index_type target_index) {
+      auto& target = _all_nodes[target_index];
+      if (target.first_suffix_link_source() == source_index) {
+        target.first_suffix_link_source(
+            _all_nodes[source_index].next_node_same_suffix_link());
+      } else {
+        index_type current_source_index = target.first_suffix_link_source();
+        index_type prev_source_index;
+        LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
+                             == target_index);
+        do {
+          prev_source_index = current_source_index;
+          current_source_index
+              = _all_nodes[current_source_index].next_node_same_suffix_link();
+          // The next assertion asserts that source_index is in fact a suffix
+          // link source of target_index.
+          LIBSEMIGROUPS_ASSERT(current_source_index != UNDEFINED);
+
+          LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
+                               == target_index);
+        } while (current_source_index != source_index);
+
+        index_type new_next_index
+            = _all_nodes[current_source_index].next_node_same_suffix_link();
+
+        LIBSEMIGROUPS_ASSERT(prev_source_index != new_next_index);
+        _all_nodes[prev_source_index].next_node_same_suffix_link(
+            new_next_index);
+      }
+    }
+
+    void
+    AhoCorasickImpl::populate_node_indices_to_update(index_type  target_index,
+                                                     index_type  new_node_index,
+                                                     letter_type a) {
+      index_type current_source_index
+          = _all_nodes[target_index].first_suffix_link_source();
+
+      LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
+      while (current_source_index != UNDEFINED) {
+        LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
+        index_type child_index = _children.get(current_source_index, a);
+        if (child_index == UNDEFINED) {
+          populate_node_indices_to_update(
+              current_source_index, new_node_index, a);
+        } else {
+          _node_indices_to_update.push_back(child_index);
+        }
+        current_source_index
+            = _all_nodes[current_source_index].next_node_same_suffix_link();
+      }
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups

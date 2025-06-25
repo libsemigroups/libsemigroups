@@ -539,8 +539,8 @@ namespace libsemigroups {
       _trie = that._trie;
       for (auto* crule : *this) {
         Rule*      rule = const_cast<Rule*>(crule);
-        index_type node
-            = _trie.traverse_trie(rule->lhs()->cbegin(), rule->lhs()->cend());
+        index_type node = _trie.traverse_trie_no_checks(rule->lhs()->cbegin(),
+                                                        rule->lhs()->cend());
         // TODO check that node is correct
         // LIBSEMIGROUPS_ASSERT(_trie.is_terminal(node));
         _rules.emplace(node, rule);

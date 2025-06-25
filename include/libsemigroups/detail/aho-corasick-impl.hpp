@@ -217,6 +217,8 @@ namespace libsemigroups {
       template <typename Iterator>
       index_type rm_word_no_checks(Iterator first, Iterator last);
 
+      // The following function is critical for KnuthBendix and so we leave it
+      // here to be inlined possibly.
       [[nodiscard]] index_type traverse_no_checks(index_type  current,
                                                   letter_type a) const {
         LIBSEMIGROUPS_ASSERT(current < _all_nodes.size());
@@ -277,113 +279,80 @@ namespace libsemigroups {
         return child_no_checks(parent, letter);
       }
 
-      [[nodiscard]] bool is_active_node(index_type i) {
-        return _active_nodes_index.find(i) != _active_nodes_index.end();
-      }
-
-      void throw_if_node_index_out_of_range(index_type i) const;
-
-      void throw_if_node_index_not_active(index_type i) const;
-
-      // TODO add no_checks.
-      [[nodiscard]] size_t number_of_children(index_type i) const noexcept {
+      [[nodiscard]] size_t
+      number_of_children_no_checks(index_type i) const noexcept {
         return _children.number_of_cols()
                - std::count(
                    _children.cbegin_row(i), _children.cend_row(i), UNDEFINED);
       }
 
-      // TODO checks? no_checks?
+      [[nodiscard]] size_t number_of_children(index_type i) const noexcept {
+        throw_if_node_index_not_active(i);
+        return number_of_children_no_checks(i);
+      }
+
+      template <typename Iterator>
+      [[nodiscard]] index_type traverse_trie_no_checks(Iterator first,
+                                                       Iterator last) const;
+
       template <typename Iterator>
       [[nodiscard]] index_type traverse_trie(Iterator first,
-                                             Iterator last) const;
+                                             Iterator last) const {
+        throw_if_any_letter_out_of_range(first, last);
+        return traverse_trie_no_checks(first, last);
+      }
 
       [[nodiscard]] bool empty() const noexcept {
         return number_of_nodes() == 1;
       }
 
      private:
+      ////////////////////////////////////////////////////////////////////////
+      // Exceptions
+      ////////////////////////////////////////////////////////////////////////
+
+      void throw_if_node_index_out_of_range(index_type i) const;
+      void throw_if_node_index_not_active(index_type i) const;
+      void throw_if_letter_out_of_range(index_type i) const;
+
+      template <typename Iterator>
+      void throw_if_any_letter_out_of_range(Iterator first,
+                                            Iterator last) const {
+        for (auto it = first; it != last; ++it) {
+          throw_if_letter_out_of_range(*it);
+        }
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // Activate or deactivate a node
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] bool is_active_node(index_type i) {
+        return _active_nodes_index.find(i) != _active_nodes_index.end();
+      }
+
       [[nodiscard]] index_type new_active_node_no_checks(index_type  parent,
                                                          letter_type a);
 
-      [[nodiscard]] index_type new_active_node(index_type  parent,
-                                               letter_type a) {
-        throw_if_node_index_not_active(parent);
-        return new_active_node_no_checks(parent, a);
-      }
-
       void deactivate_node_no_checks(index_type i);
 
-      void deactivate_node(index_type i) {
-        throw_if_node_index_not_active(i);
-        deactivate_node_no_checks(i);
-      }
+      ////////////////////////////////////////////////////////////////////////
+      // Update suffix link sources
+      ////////////////////////////////////////////////////////////////////////
 
-      // Add <n_index> as a reverse suffix link of <m_index>, i.e.
-      // _all_nodes[n_index].suffix_link() == m_index
+      // Add <source_index> as a suffix link source of <target_index>, i.e.
+      // _all_nodes[source_index].suffix_link() == target_index
       void add_suffix_link_source(index_type source_index,
-                                  index_type target_index) {
-        LIBSEMIGROUPS_ASSERT(source_index != target_index);
-        auto& source = _all_nodes[source_index];
-        auto& target = _all_nodes[target_index];
-        LIBSEMIGROUPS_ASSERT(source_index != target.first_suffix_link_source());
-        source.next_node_same_suffix_link(target.first_suffix_link_source());
-        target.first_suffix_link_source(source_index);
-      }
+                                  index_type target_index);
 
       // Remove <source_index> as a suffix link source of <target_index>, i.e.
       // _all_nodes[source_index].suffix_link() == target_index
       void rm_suffix_link_source(index_type source_index,
-                                 index_type target_index) {
-        auto& target = _all_nodes[target_index];
-        if (target.first_suffix_link_source() == source_index) {
-          target.first_suffix_link_source(
-              _all_nodes[source_index].next_node_same_suffix_link());
-        } else {
-          index_type current_source_index = target.first_suffix_link_source();
-          index_type prev_source_index;
-          LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                               == target_index);
-          do {
-            prev_source_index = current_source_index;
-            current_source_index
-                = _all_nodes[current_source_index].next_node_same_suffix_link();
-            // The next assertion asserts that source_index is in fact a suffix
-            // link source of target_index.
-            LIBSEMIGROUPS_ASSERT(current_source_index != UNDEFINED);
-
-            LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                                 == target_index);
-          } while (current_source_index != source_index);
-
-          index_type new_next_index
-              = _all_nodes[current_source_index].next_node_same_suffix_link();
-
-          LIBSEMIGROUPS_ASSERT(prev_source_index != new_next_index);
-          _all_nodes[prev_source_index].next_node_same_suffix_link(
-              new_next_index);
-        }
-      }
+                                 index_type target_index);
 
       void populate_node_indices_to_update(index_type  target_index,
                                            index_type  new_node_index,
-                                           letter_type a) {
-        index_type current_source_index
-            = _all_nodes[target_index].first_suffix_link_source();
-
-        LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
-        while (current_source_index != UNDEFINED) {
-          LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
-          index_type child_index = _children.get(current_source_index, a);
-          if (child_index == UNDEFINED) {
-            populate_node_indices_to_update(
-                current_source_index, new_node_index, a);
-          } else {
-            _node_indices_to_update.push_back(child_index);
-          }
-          current_source_index
-              = _all_nodes[current_source_index].next_node_same_suffix_link();
-        }
-      }
+                                           letter_type a);
 
     };  // class AhoCorasickImpl
 
@@ -406,9 +375,7 @@ namespace libsemigroups {
       [[nodiscard]] bool contains_no_checks(AhoCorasickImpl const& ac,
                                             Iterator               first,
                                             Iterator               last) {
-        // TODO(0) JDM: I think traverse_trie should be named
-        // traverse_trie_no_checks
-        auto index = ac.traverse_trie(first, last);
+        auto index = ac.traverse_trie_no_checks(first, last);
         return index == UNDEFINED ? false
                                   : ac.node_no_checks(index).is_terminal();
       }
@@ -424,13 +391,7 @@ namespace libsemigroups {
       traverse_word_no_checks(AhoCorasickImpl const&      ac,
                               AhoCorasickImpl::index_type start,
                               Iterator                    first,
-                              Iterator                    last) {
-        AhoCorasickImpl::index_type current = start;
-        for (auto it = first; it != last; ++it) {
-          current = ac.traverse_no_checks(current, *it);
-        }
-        return current;
-      }
+                              Iterator                    last);
 
       template <typename Iterator>
       AhoCorasickImpl::index_type
@@ -463,6 +424,7 @@ namespace libsemigroups {
         using pointer           = value_type const*;
         using reference         = value_type const&;
 
+        // TODO to cpp
         SearchIterator(AhoCorasickImpl const& trie,
                        Iterator               first,
                        Iterator               last)
@@ -474,11 +436,12 @@ namespace libsemigroups {
           operator++();
         }
 
+        // TODO to cpp
         SearchIterator(AhoCorasickImpl const& trie)
             : _first(),
               _last(),
               _prefix(UNDEFINED),
-              _suffix(trie.root),
+              _suffix(UNDEFINED),
               _trie(trie) {}
 
         reference operator*() const {
@@ -487,11 +450,16 @@ namespace libsemigroups {
           return _suffix;
         }
 
+        // TODO to cpp
         // Pre-increment
         SearchIterator& operator++() {
+          if (_suffix == UNDEFINED) {
+            // We're at the end
+            return *this;
+          }
           // Every subword is a suffix of a prefix, so we follow the edges
           // labeled by _first to _last to some node _prefix, then consider
-          // all the suffices of _prefix by following the suffix links back to
+          // all the suffixes of _prefix by following the suffix links back to
           // the root.
           while (_suffix != _trie.root) {
             _suffix = _trie.suffix_link_no_checks(_suffix);
@@ -515,7 +483,7 @@ namespace libsemigroups {
             } while (_suffix != _trie.root);
           }
           _prefix = UNDEFINED;
-          _suffix = _trie.root;
+          _suffix = UNDEFINED;
           return *this;
         }
 
@@ -554,38 +522,6 @@ namespace libsemigroups {
                                               Iterator,
                                               Iterator) {
         return SearchIterator<Iterator>(ac);
-      }
-
-      // Check if a subword of [first, last) is contained in the trie
-      // TODO remove this function altogether
-      template <typename Iterator>
-      [[nodiscard]] AhoCorasickImpl::index_type
-      search_no_checks(AhoCorasickImpl const& ac,
-                       Iterator               first,
-                       Iterator               last) {
-        using index_type = AhoCorasickImpl::index_type;
-
-        index_type current = ac.root;
-        while (first != last && current != UNDEFINED) {
-          // Read the next letter and traverse trie
-          auto x = *first;
-          ++first;
-          current = ac.traverse_no_checks(current, static_cast<letter_type>(x));
-          if (ac.node_no_checks(current).is_terminal()) {
-            return current;
-          }
-        }
-        if (ac.node_no_checks(current).is_terminal()) {
-          return current;
-        }
-        return UNDEFINED;
-      }
-
-      // TODO remove this function altogether
-      template <typename Word>
-      [[nodiscard]] AhoCorasickImpl::index_type
-      search_no_checks(AhoCorasickImpl& ac, Word const& w) {
-        return search_no_checks(ac, w.begin(), w.end());
       }
 
       template <typename Word>
