@@ -216,6 +216,16 @@ namespace libsemigroups {
     }
   }
 
+  Blocks::Blocks() noexcept = default;
+
+  Blocks& Blocks::operator=(Blocks const&) = default;
+
+  Blocks& Blocks::operator=(Blocks&&) = default;
+
+  Blocks::Blocks(Blocks const& copy) = default;
+
+  Blocks::Blocks(Blocks&& copy) = default;
+
   Blocks::~Blocks() = default;
 
   Blocks::Blocks(const_iterator first, const_iterator last) {

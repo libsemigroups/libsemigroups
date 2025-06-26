@@ -82,6 +82,8 @@ namespace libsemigroups {
     return *this;
   }
 
+  Runner::~Runner() = default;
+
   bool Reporter::report() const {
     auto t       = std::chrono::high_resolution_clock::now();
     auto elapsed = t - _last_report.load();
