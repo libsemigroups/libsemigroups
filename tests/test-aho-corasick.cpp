@@ -358,16 +358,17 @@ namespace libsemigroups {
                             "search",
                             "[quick][aho-corasick]") {
       using words::operator+;
+      using index_type = AhoCorasickImpl::index_type;
 
       AhoCorasickImpl ac(2);
 
-      std::vector         subwords = {0101_w, 0110_w, 01101_w, 01100_w};
-      std::vector<size_t> indexes;
+      std::vector             subwords = {0101_w, 0110_w, 01101_w, 01100_w};
+      std::vector<index_type> indexes;
 
       for (auto const& word : subwords) {
         indexes.push_back(aho_corasick_impl::add_word_no_checks(ac, word));
       }
-      REQUIRE(indexes == std::vector<size_t>({4, 6, 7, 8}));
+      REQUIRE(indexes == std::vector<index_type>({4, 6, 7, 8}));
 
       auto find = [](word_type const& haystack, word_type const& needle) {
         if (haystack.size() < needle.size()) {
@@ -421,17 +422,18 @@ namespace libsemigroups {
                             "014",
                             "begin_search_no_checks",
                             "[quick][aho-corasick]") {
-      using words::   operator+;
+      using words::operator+;
+      using index_type = AhoCorasickImpl::index_type;
       AhoCorasickImpl ac(2);
 
-      std::vector         subwords = {000_w, 111_w, 1010_w, 001100_w, 1100_w};
-      std::vector<size_t> index;
+      std::vector subwords = {000_w, 111_w, 1010_w, 001100_w, 1100_w};
+      std::vector<index_type> index;
 
       for (auto const& word : subwords) {
         index.push_back(aho_corasick_impl::add_word_no_checks(ac, word));
       }
 
-      REQUIRE(index == std::vector<size_t>({3, 6, 9, 13, 15}));
+      REQUIRE(index == std::vector<index_type>({3, 6, 9, 13, 15}));
 
       auto it = aho_corasick_impl::begin_search_no_checks(ac, 001100_w);
       REQUIRE(*it == index[3]);
