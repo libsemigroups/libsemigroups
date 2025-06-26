@@ -159,7 +159,6 @@ namespace libsemigroups {
           _next_node_same_suffix_link = val;
           return *this;
         }
-
       };  // class Node
 
       // TODO(1) if we store pointers here instead of Nodes, then inside the
@@ -354,7 +353,6 @@ namespace libsemigroups {
       void populate_node_indices_to_update(index_type  target_index,
                                            index_type  new_node_index,
                                            letter_type a);
-
     };  // class AhoCorasickImpl
 
     namespace aho_corasick_impl {
@@ -428,7 +426,7 @@ namespace libsemigroups {
                        Iterator               first,
                        Iterator               last);
 
-        SearchIterator(AhoCorasickImpl const& trie);
+        explicit SearchIterator(AhoCorasickImpl const& trie);
 
         reference operator*() const {
           // TODO would be easy enough to return the position of the match
@@ -449,7 +447,7 @@ namespace libsemigroups {
         friend bool operator==(SearchIterator const& a,
                                SearchIterator const& b) {
           // TODO more?
-          return a._prefix == b._prefix and a._suffix == b._suffix;
+          return a._prefix == b._prefix && a._suffix == b._suffix;
         }
 
         friend bool operator!=(SearchIterator const& a,
@@ -490,7 +488,7 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }  // namespace detail
+  }    // namespace detail
 }  // namespace libsemigroups
 
 #include "aho-corasick-impl.tpp"

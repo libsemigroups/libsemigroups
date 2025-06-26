@@ -408,7 +408,6 @@ namespace libsemigroups {
               new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
-
     };  // class RewriterBase
 
     ////////////////////////////////////////////////////////////////////////

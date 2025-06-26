@@ -29,7 +29,7 @@ namespace libsemigroups {
   FroidurePin(KnuthBendix<Word, Rewriter, ReductionOrder> const&)
       -> FroidurePin<detail::KBE<KnuthBendix<Word, Rewriter, ReductionOrder>>>;
 
-  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
@@ -102,8 +102,8 @@ namespace libsemigroups {
           "the argument must be a 2-sided congruence, found a {} congruence",
           kb.kind());
     }
-    // kb.run();
-    kb.rewriter().process_pending_rules();
+    kb.run();
+    // kb.rewriter().process_pending_rules();
 
     FroidurePin result(kb);
     using KBE = typename decltype(result)::element_type;
