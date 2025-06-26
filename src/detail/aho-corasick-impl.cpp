@@ -39,29 +39,22 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     AhoCorasickImpl::Node::Node(index_type parent, letter_type a)
-        : _first_suffix_link_source(),
-          _height(),
-          _link(),
-          _next_node_same_suffix_link(),
-          _parent(),
-          _parent_letter(),
-          _terminal() {
+        : _height(), _link(), _parent(), _parent_letter(), _terminal() {
       init(parent, a);
     }
 
     AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  i,
                                                        letter_type a) noexcept {
-      _first_suffix_link_source = UNDEFINED;
-      _height                   = i == UNDEFINED ? 0 : UNDEFINED;
+      _height = i == UNDEFINED ? 0 : UNDEFINED;
       if (_parent == root || _parent == UNDEFINED) {
         _link = root;
       } else {
         _link = UNDEFINED;
       }
-      _next_node_same_suffix_link = UNDEFINED;
-      _parent                     = i;
-      _parent_letter              = a;
-      _terminal                   = false;
+      _parent        = i;
+      _parent_letter = a;
+      _terminal      = false;
+      _suffix_link_sources.clear();
 
       // Cannot set _link or _height here because we don't have access to the
       // relevant info here.
@@ -187,34 +180,31 @@ namespace libsemigroups {
       return new_node_index;
     }
 
-    void AhoCorasickImpl::deactivate_node_no_checks(index_type i) {
-      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
-      // For each active suffix link source <current_source> of <i>, push
+    void AhoCorasickImpl::deactivate_node_no_checks(index_type index) {
+      LIBSEMIGROUPS_ASSERT(index < _all_nodes.size());
+      // For each active suffix link source <current_source> of <index>, push
       // <current_source> to the vector of nodes which need to have their
       // suffix link updated.
-      index_type current_source_index
-          = _all_nodes[i].first_suffix_link_source();
-      while (current_source_index != UNDEFINED) {
+      auto& node = _all_nodes[index];
+      for (auto current_source_index : node._suffix_link_sources) {
         LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                             == i);
+                             == index);
         if (is_active_node(current_source_index)) {
           _node_indices_to_update.push_back(current_source_index);
         }
-        current_source_index
-            = _all_nodes[current_source_index].next_node_same_suffix_link();
       }
-      rm_suffix_link_source(i, _all_nodes[i].suffix_link());
+      rm_suffix_link_source(index, _all_nodes[index].suffix_link());
 
       // Make the node inactive
 #ifdef LIBSEMIGROUPS_DEBUG
 
-      auto num_removed = _active_nodes_index.erase(i);
+      auto num_removed = _active_nodes_index.erase(index);
       (void) num_removed;
       LIBSEMIGROUPS_ASSERT(num_removed == 1);
 #else
-      _active_nodes_index.erase(i);
+      _active_nodes_index.erase(index);
 #endif
-      _inactive_nodes_index.push(i);
+      _inactive_nodes_index.push(index);
     }
 
     void AhoCorasickImpl::throw_if_node_index_out_of_range(index_type i) const {
@@ -246,56 +236,33 @@ namespace libsemigroups {
     void AhoCorasickImpl::add_suffix_link_source(index_type source_index,
                                                  index_type target_index) {
       LIBSEMIGROUPS_ASSERT(source_index != target_index);
-      auto& source = _all_nodes[source_index];
-      auto& target = _all_nodes[target_index];
-      LIBSEMIGROUPS_ASSERT(source_index != target.first_suffix_link_source());
-      source.next_node_same_suffix_link(target.first_suffix_link_source());
-      target.first_suffix_link_source(source_index);
+#ifdef LIBSEMIGROUPS_DEBUG
+      auto [it, inserted] =
+#endif
+          _all_nodes[target_index]._suffix_link_sources.insert(source_index);
+      LIBSEMIGROUPS_ASSERT(inserted);
     }
 
     // Remove <source_index> as a suffix link source of <target_index>, i.e.
     // _all_nodes[source_index].suffix_link() == target_index
     void AhoCorasickImpl::rm_suffix_link_source(index_type source_index,
                                                 index_type target_index) {
-      auto& target = _all_nodes[target_index];
-      if (target.first_suffix_link_source() == source_index) {
-        target.first_suffix_link_source(
-            _all_nodes[source_index].next_node_same_suffix_link());
-      } else {
-        index_type current_source_index = target.first_suffix_link_source();
-        index_type prev_source_index;
-        LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                             == target_index);
-        do {
-          prev_source_index = current_source_index;
-          current_source_index
-              = _all_nodes[current_source_index].next_node_same_suffix_link();
-          // The next assertion asserts that source_index is in fact a suffix
-          // link source of target_index.
-          LIBSEMIGROUPS_ASSERT(current_source_index != UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(source_index != target_index);
 
-          LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                               == target_index);
-        } while (current_source_index != source_index);
-
-        index_type new_next_index
-            = _all_nodes[current_source_index].next_node_same_suffix_link();
-
-        LIBSEMIGROUPS_ASSERT(prev_source_index != new_next_index);
-        _all_nodes[prev_source_index].next_node_same_suffix_link(
-            new_next_index);
-      }
+#ifdef LIBSEMIGROUPS_DEBUG
+      auto num_erased =
+#endif
+          _all_nodes[target_index]._suffix_link_sources.erase(source_index);
+      LIBSEMIGROUPS_ASSERT(num_erased == 1);
     }
 
     void
     AhoCorasickImpl::populate_node_indices_to_update(index_type  target_index,
                                                      index_type  new_node_index,
                                                      letter_type a) {
-      index_type current_source_index
-          = _all_nodes[target_index].first_suffix_link_source();
+      auto& target = _all_nodes[target_index];
 
-      LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
-      while (current_source_index != UNDEFINED) {
+      for (auto current_source_index : target._suffix_link_sources) {
         LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
         index_type child_index = _children.get(current_source_index, a);
         if (child_index == UNDEFINED) {
@@ -304,8 +271,6 @@ namespace libsemigroups {
         } else {
           _node_indices_to_update.push_back(child_index);
         }
-        current_source_index
-            = _all_nodes[current_source_index].next_node_same_suffix_link();
       }
     }
   }  // namespace detail

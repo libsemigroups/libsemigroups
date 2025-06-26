@@ -67,10 +67,8 @@ namespace libsemigroups {
         // Private data
         ////////////////////////////////////////////////////////////////////////
        private:
-        index_type                     _first_suffix_link_source;  // TODO rm
         uint32_t                       _height;
         index_type                     _link;
-        index_type                     _next_node_same_suffix_link;  // TODO rm
         index_type                     _parent;
         letter_type                    _parent_letter;
         std::unordered_set<index_type> _suffix_link_sources;
@@ -121,14 +119,6 @@ namespace libsemigroups {
           return _parent_letter;
         }
 
-        [[nodiscard]] index_type first_suffix_link_source() const noexcept {
-          return _first_suffix_link_source;
-        }
-
-        [[nodiscard]] index_type next_node_same_suffix_link() const noexcept {
-          return _next_node_same_suffix_link;
-        }
-
        private:
         ////////////////////////////////////////////////////////////////////////
         // Setters - private
@@ -151,15 +141,10 @@ namespace libsemigroups {
           return *this;
         }
 
-        Node& first_suffix_link_source(index_type val) noexcept {
-          _first_suffix_link_source = val;
-          return *this;
+        std::unordered_set<index_type>& suffix_link_sources() noexcept {
+          return _suffix_link_sources;
         }
 
-        Node& next_node_same_suffix_link(index_type val) noexcept {
-          _next_node_same_suffix_link = val;
-          return *this;
-        }
       };  // class Node
 
       // TODO(1) if we store pointers here instead of Nodes, then inside the
