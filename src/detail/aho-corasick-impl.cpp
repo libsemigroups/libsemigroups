@@ -145,9 +145,13 @@ namespace libsemigroups {
       index_type new_node_index;
       if (_inactive_nodes_index.empty()) {
         new_node_index = _all_nodes.size();
-        _all_nodes.emplace_back(parent_index, a);
+        _all_nodes.resize(2 * _all_nodes.size());
+        _all_nodes[new_node_index].init(parent_index, a);
         _active_nodes_index.insert(new_node_index);
-        _children.add_rows(1);
+        for (index_type i = new_node_index + 1; i != _all_nodes.size(); ++i) {
+          _inactive_nodes_index.push(i);
+        }
+        _children.add_rows(_all_nodes.size());
       } else {
         new_node_index = _inactive_nodes_index.top();
         _inactive_nodes_index.pop();
