@@ -34,6 +34,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Winline"
+#pragma GCC diagnostic ignored "-Wclass-memaccess"
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
 #include <Eigen/QR>
