@@ -255,59 +255,6 @@ namespace libsemigroups {
           detail::string_time(run_time));
     }
 
-    bool RewriterBase::process_pending_rules() {
-      std::sort(
-          _pending_rules.begin(),
-          _pending_rules.end(),
-          [](Rule const* x, Rule const* y) { return *x->lhs() > *y->lhs(); });
-
-      auto           start_time = std::chrono::high_resolution_clock::now();
-      detail::Ticker ticker;
-      bool           ticker_running = false;  // TODO(0) do this properly with a
-                                              // data member
-      bool rules_added = false;
-
-      while (number_of_pending_rules() != 0) {
-        Rule* rule1 = next_pending_rule();
-        LIBSEMIGROUPS_ASSERT(!rule1->active());
-        LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
-        // Rewrite both sides and reorder if necessary . . .
-        rewrite(rule1);
-
-        // Check rule is non-trivial
-        if (*rule1->lhs() != *rule1->rhs()) {
-          std::string* lhs = rule1->lhs();
-
-          for (auto it = begin(); it != end();) {
-            Rule* rule2 = const_cast<Rule*>(*it);
-
-            // Check if lhs is contained within either the lhs or rhs of rule2
-            // TODO(0) investigate whether or not this can be improved?
-            // Removed?
-            if (rule2->lhs()->find(*lhs) != std::string::npos
-                || rule2->rhs()->find(*lhs) != std::string::npos) {
-              // If it is, rule2 must be deactivated and re-processed
-              it = make_active_rule_pending(it);
-            } else {
-              ++it;
-            }
-          }
-          add_rule(rule1);
-          rules_added = true;
-        } else {
-          add_inactive_rule(rule1);
-        }
-        if (!ticker_running && reporting_enabled()
-            && delta(start_time) >= std::chrono::seconds(1)) {
-          ticker_running = true;
-          ticker([this, start_time]() {
-            report_progress_from_thread(start_time);
-          });
-        }
-      }
-      return rules_added;
-    }
-
     void RewriterBase::reduce() {
       // TODO required?
       for (Rule const* rule : *this) {
@@ -315,7 +262,6 @@ namespace libsemigroups {
         // call to process_pending_rules.
         LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
         if (add_pending_rule(copy_rule(rule))) {
-          process_pending_rules();
         }
       }
     }
@@ -502,10 +448,9 @@ namespace libsemigroups {
       return cached_confluent();
     }
 
-    bool RewriteFromLeft::confluent() const {
+    bool RewriteFromLeft::confluent() {
       if (number_of_pending_rules() != 0) {
-        set_cached_confluent(tril::unknown);
-        return false;
+        process_pending_rules();
       } else if (confluence_known()) {
         return RewriterBase::cached_confluent();
       }
@@ -518,6 +463,59 @@ namespace libsemigroups {
       } else {
         return confluent_impl(seen);
       }
+    }
+
+    bool RewriteFromLeft::process_pending_rules() {
+      std::sort(
+          _pending_rules.begin(),
+          _pending_rules.end(),
+          [](Rule const* x, Rule const* y) { return *x->lhs() > *y->lhs(); });
+
+      auto           start_time = std::chrono::high_resolution_clock::now();
+      detail::Ticker ticker;
+      bool           ticker_running = false;  // TODO(0) do this properly with a
+                                              // data member
+      bool rules_added = false;
+
+      while (number_of_pending_rules() != 0) {
+        Rule* rule1 = next_pending_rule();
+        LIBSEMIGROUPS_ASSERT(!rule1->active());
+        LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+        // Rewrite both sides and reorder if necessary . . .
+        rewrite(rule1);
+
+        // Check rule is non-trivial
+        if (*rule1->lhs() != *rule1->rhs()) {
+          std::string* lhs = rule1->lhs();
+
+          for (auto it = begin(); it != end();) {
+            Rule* rule2 = const_cast<Rule*>(*it);
+
+            // Check if lhs is contained within either the lhs or rhs of rule2
+            // TODO(0) investigate whether or not this can be improved?
+            // Removed?
+            if (rule2->lhs()->find(*lhs) != std::string::npos
+                || rule2->rhs()->find(*lhs) != std::string::npos) {
+              // If it is, rule2 must be deactivated and re-processed
+              it = make_active_rule_pending(it);
+            } else {
+              ++it;
+            }
+          }
+          add_rule(rule1);
+          rules_added = true;
+        } else {
+          add_inactive_rule(rule1);
+        }
+        if (!ticker_running && reporting_enabled()
+            && delta(start_time) >= std::chrono::seconds(1)) {
+          ticker_running = true;
+          ticker([this, start_time]() {
+            report_progress_from_thread(start_time);
+          });
+        }
+      }
+      return rules_added;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -696,10 +694,9 @@ namespace libsemigroups {
       return rules_added;
     }
 
-    bool RewriteTrie::confluent() const {
+    bool RewriteTrie::confluent() {
       if (number_of_pending_rules() != 0) {
-        set_cached_confluent(tril::unknown);
-        return false;
+        process_pending_rules();
       } else if (confluence_known()) {
         return RewriterBase::cached_confluent();
       }

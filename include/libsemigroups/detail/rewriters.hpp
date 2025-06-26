@@ -342,8 +342,6 @@ namespace libsemigroups {
       void report_progress_from_thread(
           std::chrono::high_resolution_clock::time_point start_time);
 
-      bool process_pending_rules();
-
       void reduce();
 
       void rewrite(Rule* rule) const {
@@ -393,11 +391,8 @@ namespace libsemigroups {
       template <typename StringLike>
       void add_rule(StringLike const& lhs, StringLike const& rhs) {
         if (lhs != rhs) {
-          if (add_pending_rule(new_rule(
-                  lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-            // TODO(1) only process_pending_rules when ready to run
-            process_pending_rules();
-          }
+          add_pending_rule(
+              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
 
@@ -427,7 +422,11 @@ namespace libsemigroups {
 
       RewriteFromLeft& init();
 
-      [[nodiscard]] bool confluent() const;
+      // TODO should be const
+      [[nodiscard]] bool confluent();
+
+      // TODO should be const
+      bool process_pending_rules();
 
      private:
       [[nodiscard]] bool
@@ -481,7 +480,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      [[nodiscard]] bool confluent() const;
+      [[nodiscard]] bool confluent();
 
       bool process_pending_rules();
 
