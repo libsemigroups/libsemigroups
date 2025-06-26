@@ -370,7 +370,6 @@ namespace libsemigroups {
       // Virtual functions - protected
       ////////////////////////////////////////////////////////////////////////
 
-      virtual void            add_rule(Rule* rule)                         = 0;
       virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
 
       ////////////////////////////////////////////////////////////////////////
@@ -418,7 +417,8 @@ namespace libsemigroups {
         rewrite(*rule->rhs());
         rule->reorder();
       }
-      void add_rule(Rule* rule) override;
+
+      void add_rule(Rule* rule);
 
       iterator make_active_rule_pending(iterator) override;
 
@@ -485,7 +485,7 @@ namespace libsemigroups {
      private:
       // TODO should be no_checks
       // TODO add a check version
-      void add_rule(Rule* rule) override {
+      void add_rule(Rule* rule) {
         Rules::add_rule(rule);
         add_rule_to_trie(rule);
         set_cached_confluent(tril::unknown);
