@@ -220,7 +220,7 @@ namespace libsemigroups {
     for (auto index : ac.active_nodes()) {
       ac.signature_no_checks(w, index);
       auto& node = result.add_node(index).add_attr("label", to_word(w));
-      if (ac.node_no_checks(index).is_terminal()) {
+      if (ac.node_no_checks(index).terminal()) {
         node.add_attr("peripheries", "2");
       }
     }

@@ -147,7 +147,7 @@ namespace libsemigroups {
         return _children.size();
       }
 
-      [[nodiscard]] bool is_terminal() const noexcept {
+      [[nodiscard]] bool terminal() const noexcept {
         return _terminal;
       }
 
