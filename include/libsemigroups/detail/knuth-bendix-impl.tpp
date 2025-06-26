@@ -766,7 +766,7 @@ namespace libsemigroups {
       if (p == q) {
         return;
       }
-      _rewriter.add_pending_rule(p, q);
+      _rewriter.add_rule(p, q);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -839,7 +839,7 @@ namespace libsemigroups {
           detail::MultiStringView y(urhs.cbegin(), urhs.cend());
           y.append(vlhs.cbegin() + (ulhs.cend() - it),
                    vlhs.cend());  // rule = AQ_j -> Q_iC
-          _rewriter.add_pending_rule(x, y);
+          _rewriter.add_rule(x, y);
 
           if (_rewriter.number_of_pending_rules()
               >= _settings.max_pending_rules) {

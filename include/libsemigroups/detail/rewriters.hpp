@@ -365,14 +365,6 @@ namespace libsemigroups {
         }
       }
 
-      template <typename StringLike>
-      void add_pending_rule(StringLike const& lhs, StringLike const& rhs) {
-        if (lhs != rhs) {
-          add_pending_rule(
-              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
-        }
-      }
-
       void set_cached_confluent(tril val) const;
 
      protected:
