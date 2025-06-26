@@ -278,10 +278,10 @@ namespace libsemigroups {
     };  // class Rules
 
     ////////////////////////////////////////////////////////////////////////
-    // RewriterBase
+    // RewriteBase
     ////////////////////////////////////////////////////////////////////////
 
-    class RewriterBase : public Rules {
+    class RewriteBase : public Rules {
       mutable std::atomic<bool> _cached_confluent;
       mutable std::atomic<bool> _confluence_known;
       size_t                    _max_stack_depth;
@@ -290,20 +290,21 @@ namespace libsemigroups {
       std::vector<Rule*> _pending_rules;
 
      public:
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + inits
+      ////////////////////////////////////////////////////////////////////////
+
       // TODO(0) everything is public!!!
       // TODO(1) to cpp
-      RewriterBase()
+      RewriteBase()
           : _cached_confluent(false),
             _confluence_known(false),
             _max_stack_depth(0),
             _pending_rules() {}
-
-      RewriterBase& init();
-
-      virtual ~RewriterBase();
+      RewriteBase& init();
 
       // TODO(1) to cpp
-      RewriterBase& operator=(RewriterBase const& that) {
+      RewriteBase& operator=(RewriteBase const& that) {
         Rules::operator=(that);
         _cached_confluent = that._cached_confluent.load();
         _confluence_known = that._confluence_known.load();
@@ -315,11 +316,17 @@ namespace libsemigroups {
         return *this;
       }
 
-      RewriterBase& increase_alphabet_size_by(size_t) {
+      // TODO other constructors
+
+      virtual ~RewriteBase();
+
+      ////////////////////////////////////////////////////////////////////////
+      // Public mem fns
+      ////////////////////////////////////////////////////////////////////////
+
+      RewriteBase& increase_alphabet_size_by(size_t) {
         return *this;
       }
-
-      void set_cached_confluent(tril val) const;
 
       bool cached_confluent() const noexcept {
         return _cached_confluent;
@@ -338,28 +345,6 @@ namespace libsemigroups {
       }
 
       bool add_pending_rule(Rule* rule);
-
-      void report_progress_from_thread(
-          std::chrono::high_resolution_clock::time_point start_time);
-
-      void reduce();
-
-      void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
-        rule->reorder();
-      }
-
-      void rewrite(std::string& u) const {
-        // TODO improve
-        const_cast<RewriterBase*>(this)->rewrite(u);
-      }
-
-      virtual void rewrite(std::string& u) = 0;
-
-      virtual void add_rule(Rule* rule) = 0;
-
-      virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
 
       size_t number_of_pending_rules() const noexcept {
         return _pending_rules.size();
@@ -387,18 +372,45 @@ namespace libsemigroups {
               new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
         }
       }
-    };  // class RewriterBase
+
+      void set_cached_confluent(tril val) const;
+
+     protected:
+      ////////////////////////////////////////////////////////////////////////
+      // Virtual functions - protected
+      ////////////////////////////////////////////////////////////////////////
+
+      virtual void            add_rule(Rule* rule)                         = 0;
+      virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Non-virtual functions - protected
+      ////////////////////////////////////////////////////////////////////////
+
+      void report_progress_from_thread(
+          std::chrono::high_resolution_clock::time_point start_time);
+    };  // class RewriteBase
 
     ////////////////////////////////////////////////////////////////////////
     // RewriteFromLeft
     ////////////////////////////////////////////////////////////////////////
 
-    class RewriteFromLeft : public RewriterBase {
+    class RewriteFromLeft : public RewriteBase {
       std::set<RuleLookup> _set_rules;
 
      public:
-      using RewriterBase::add_rule;
-      using RewriterBase::rewrite;
+      using RewriteBase::add_rule;
+
+      void rewrite(Rule* rule) const {
+        rewrite(*rule->lhs());
+        rewrite(*rule->rhs());
+        rule->reorder();
+      }
+
+      void rewrite(std::string& u) const {
+        // TODO improve
+        const_cast<RewriteFromLeft*>(this)->rewrite(u);
+      }
 
       RewriteFromLeft() = default;
       RewriteFromLeft& operator=(RewriteFromLeft const&);
@@ -413,7 +425,7 @@ namespace libsemigroups {
       // TODO should be const
       bool process_pending_rules();
 
-      void rewrite(std::string& u) override;
+      void rewrite(std::string& u);
 
      private:
       void add_rule(Rule* rule) override;
@@ -431,10 +443,10 @@ namespace libsemigroups {
     // RewriteTrie
     ////////////////////////////////////////////////////////////////////////
 
-    class RewriteTrie : public RewriterBase {
+    class RewriteTrie : public RewriteBase {
      public:
       using index_type = AhoCorasickImpl::index_type;
-      using RewriterBase::cached_confluent;
+      using RewriteBase::cached_confluent;
       using Rules::stats;
       using iterator      = std::string::iterator;
       using rule_iterator = std::unordered_map<index_type, Rule*>::iterator;
@@ -446,10 +458,20 @@ namespace libsemigroups {
       AhoCorasickImpl                       _trie;
 
      public:
-      using RewriterBase::add_rule;
-      using RewriterBase::rewrite;
+      using RewriteBase::add_rule;
 
-      RewriteTrie() : RewriterBase(), _rules(), _trie(0) {}
+      void rewrite(Rule* rule) const {
+        rewrite(*rule->lhs());
+        rewrite(*rule->rhs());
+        rule->reorder();
+      }
+
+      void rewrite(std::string& u) const {
+        // TODO improve
+        const_cast<RewriteTrie*>(this)->rewrite(u);
+      }
+
+      RewriteTrie() : RewriteBase(), _rules(), _trie(0) {}
       RewriteTrie& init();
 
       RewriteTrie(RewriteTrie const& that);
@@ -468,7 +490,7 @@ namespace libsemigroups {
 
       bool process_pending_rules();
       // TODO iterators
-      void rewrite(std::string& u) override;
+      void rewrite(std::string& u);
 
      private:
       // TODO should be no_checks

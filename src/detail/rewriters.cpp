@@ -183,7 +183,7 @@ namespace libsemigroups {
       return _stats.max_active_word_length;
     }
 
-    RewriterBase& RewriterBase::init() {
+    RewriteBase& RewriteBase::init() {
       Rules::init();
       // Put all active rules and those rules in the stack into the
       // inactive_rules list
@@ -197,7 +197,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    RewriterBase::~RewriterBase() {
+    RewriteBase::~RewriteBase() {
       while (!_pending_rules.empty()) {
         Rule* rule = _pending_rules.back();
         _pending_rules.pop_back();
@@ -205,7 +205,7 @@ namespace libsemigroups {
       }
     }
 
-    void RewriterBase::set_cached_confluent(tril val) const {
+    void RewriteBase::set_cached_confluent(tril val) const {
       if (val == tril::TRUE) {
         _confluence_known = true;
         _cached_confluent = true;
@@ -217,7 +217,7 @@ namespace libsemigroups {
       }
     }
 
-    bool RewriterBase::add_pending_rule(Rule* rule) {
+    bool RewriteBase::add_pending_rule(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(!rule->active());
       if (*rule->lhs() != *rule->rhs()) {
         _pending_rules.emplace_back(rule);
@@ -229,7 +229,7 @@ namespace libsemigroups {
       }
     }
 
-    void RewriterBase::report_progress_from_thread(
+    void RewriteBase::report_progress_from_thread(
         std::chrono::high_resolution_clock::time_point start_time) {
       using detail::group_digits;
       using detail::signed_group_digits;
@@ -255,17 +255,6 @@ namespace libsemigroups {
           detail::string_time(run_time));
     }
 
-    void RewriterBase::reduce() {
-      // TODO required?
-      for (Rule const* rule : *this) {
-        // Copy rule and add_pending_rule so that it is not modified by the
-        // call to process_pending_rules.
-        LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
-        if (add_pending_rule(copy_rule(rule))) {
-        }
-      }
-    }
-
     ////////////////////////////////////////////////////////////////////////
     // RewriteFromLeft
     ////////////////////////////////////////////////////////////////////////
@@ -273,14 +262,14 @@ namespace libsemigroups {
     RewriteFromLeft::~RewriteFromLeft() = default;
 
     RewriteFromLeft& RewriteFromLeft::init() {
-      RewriterBase::init();
+      RewriteBase::init();
       _set_rules.clear();
       return *this;
     }
 
     RewriteFromLeft& RewriteFromLeft::operator=(RewriteFromLeft const& that) {
       init();
-      RewriterBase::operator=(that);
+      RewriteBase::operator=(that);
       for (auto* crule : that) {
         Rule* rule = const_cast<Rule*>(crule);
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -445,7 +434,7 @@ namespace libsemigroups {
       if (number_of_pending_rules() != 0) {
         process_pending_rules();
       } else if (confluence_known()) {
-        return RewriterBase::cached_confluent();
+        return RewriteBase::cached_confluent();
       }
       std::atomic_uint64_t seen = 0;
       if (reporting_enabled()) {
@@ -518,7 +507,7 @@ namespace libsemigroups {
     RewriteTrie::~RewriteTrie() = default;
 
     RewriteTrie& RewriteTrie::init() {
-      RewriterBase::init();
+      RewriteBase::init();
       _trie.init();
       _rules.clear();
       return *this;
@@ -526,7 +515,7 @@ namespace libsemigroups {
 
     RewriteTrie& RewriteTrie::operator=(RewriteTrie const& that) {
       init();
-      RewriterBase::operator=(that);
+      RewriteBase::operator=(that);
       _trie = that._trie;
       for (auto* crule : *this) {
         Rule*      rule = const_cast<Rule*>(crule);
@@ -686,7 +675,7 @@ namespace libsemigroups {
       if (number_of_pending_rules() != 0) {
         process_pending_rules();
       } else if (confluence_known()) {
-        return RewriterBase::cached_confluent();
+        return RewriteBase::cached_confluent();
       }
 
       std::atomic_uint64_t seen = 0;
