@@ -67,13 +67,14 @@ namespace libsemigroups {
         // Private data
         ////////////////////////////////////////////////////////////////////////
        private:
-        index_type  _first_suffix_link_source;
-        uint32_t    _height;
-        index_type  _link;
-        index_type  _next_node_same_suffix_link;
-        index_type  _parent;
-        letter_type _parent_letter;
-        bool        _terminal;
+        index_type                     _first_suffix_link_source;  // TODO rm
+        uint32_t                       _height;
+        index_type                     _link;
+        index_type                     _next_node_same_suffix_link;  // TODO rm
+        index_type                     _parent;
+        letter_type                    _parent_letter;
+        std::unordered_set<index_type> _suffix_link_sources;
+        bool                           _terminal;
 
         Node& init() noexcept {
           return init(UNDEFINED, UNDEFINED);
@@ -488,7 +489,7 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "aho-corasick-impl.tpp"
