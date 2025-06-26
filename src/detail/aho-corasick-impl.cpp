@@ -104,7 +104,7 @@ namespace libsemigroups {
       // causes a seg fault for some reason.
       // _children.init(num_letters, _all_nodes.size(), UNDEFINED);
       // for (auto i : _active_nodes_index) {
-      //   if (i != 0) {
+      //   if (i != root) {
       //     _inactive_nodes_index.push(i);
       //   }
       // }
@@ -151,7 +151,7 @@ namespace libsemigroups {
         for (index_type i = new_node_index + 1; i != _all_nodes.size(); ++i) {
           _inactive_nodes_index.push(i);
         }
-        _children.add_rows(_all_nodes.size());
+        _children.add_rows(new_node_index);
       } else {
         new_node_index = _inactive_nodes_index.top();
         _inactive_nodes_index.pop();
