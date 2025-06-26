@@ -344,8 +344,6 @@ namespace libsemigroups {
         return _max_stack_depth;
       }
 
-      bool add_pending_rule(Rule* rule);
-
       size_t number_of_pending_rules() const noexcept {
         return _pending_rules.size();
       }
@@ -381,6 +379,7 @@ namespace libsemigroups {
 
       void report_progress_from_thread(
           std::chrono::high_resolution_clock::time_point start_time);
+      bool add_pending_rule(Rule* rule);
     };  // class RewriteBase
 
     ////////////////////////////////////////////////////////////////////////
@@ -392,17 +391,6 @@ namespace libsemigroups {
 
      public:
       using RewriteBase::add_rule;
-
-      void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
-        rule->reorder();
-      }
-
-      void rewrite(std::string& u) const {
-        // TODO improve
-        const_cast<RewriteFromLeft*>(this)->rewrite(u);
-      }
 
       RewriteFromLeft() = default;
       RewriteFromLeft& operator=(RewriteFromLeft const&);
@@ -419,7 +407,17 @@ namespace libsemigroups {
 
       void rewrite(std::string& u);
 
+      void rewrite(std::string& u) const {
+        // TODO improve
+        const_cast<RewriteFromLeft*>(this)->rewrite(u);
+      }
+
      private:
+      void rewrite(Rule* rule) const {
+        rewrite(*rule->lhs());
+        rewrite(*rule->rhs());
+        rule->reorder();
+      }
       void add_rule(Rule* rule) override;
 
       iterator make_active_rule_pending(iterator) override;
