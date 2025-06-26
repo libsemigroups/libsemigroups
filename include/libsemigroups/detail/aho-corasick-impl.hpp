@@ -305,13 +305,14 @@ namespace libsemigroups {
         return number_of_nodes() == 1;
       }
 
+      void throw_if_node_index_out_of_range(index_type i) const;
+      void throw_if_node_index_not_active(index_type i) const;
+
      private:
       ////////////////////////////////////////////////////////////////////////
       // Exceptions
       ////////////////////////////////////////////////////////////////////////
 
-      void throw_if_node_index_out_of_range(index_type i) const;
-      void throw_if_node_index_not_active(index_type i) const;
       void throw_if_letter_out_of_range(index_type i) const;
 
       template <typename Iterator>
