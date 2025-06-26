@@ -321,12 +321,9 @@ namespace libsemigroups {
     // REWRITE_FROM_LEFT from Sims, p67
     // Caution: this uses the assumption that rules are length reducing, if they
     // are not, then u might not have sufficient space!
-    bool
-    RewriteFromLeft::rewrite_with_disabled_rule(std::string& u,
-                                                Rule const*  disabled_rule) {
-      bool did_rewrite = false;
+    void RewriteFromLeft::rewrite(std::string& u) {
       if (u.size() < stats().min_length_lhs_rule) {
-        return did_rewrite;
+        return;
       }
 
       auto v_begin = u.begin();
@@ -344,16 +341,13 @@ namespace libsemigroups {
         auto it = _set_rules.find(lookup(v_begin, v_end));
         if (it != _set_rules.end()) {
           Rule const* rule = (*it).rule();
-          if (rule != disabled_rule) {
-            if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
-              LIBSEMIGROUPS_ASSERT(detail::is_suffix(
-                  v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
-              v_end -= rule->lhs()->size();
-              w_begin -= rule->rhs()->size();
-              detail::string_replace(
-                  w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
-              did_rewrite = true;
-            }
+          if (rule->lhs()->size() <= static_cast<size_t>(v_end - v_begin)) {
+            LIBSEMIGROUPS_ASSERT(detail::is_suffix(
+                v_begin, v_end, rule->lhs()->cbegin(), rule->lhs()->cend()));
+            v_end -= rule->lhs()->size();
+            w_begin -= rule->rhs()->size();
+            detail::string_replace(
+                w_begin, rule->rhs()->cbegin(), rule->rhs()->cend());
           }
         }
         while (w_begin != w_end
@@ -365,7 +359,6 @@ namespace libsemigroups {
         }
       }
       u.erase(v_end - u.cbegin());
-      return did_rewrite;
     }
 
     void RewriteFromLeft::report_from_confluent(
@@ -391,7 +384,7 @@ namespace libsemigroups {
       }
     }
 
-    bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) const {
+    bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) {
       using std::chrono::time_point;
       time_point start_time = std::chrono::high_resolution_clock::now();
 
@@ -549,12 +542,10 @@ namespace libsemigroups {
 
     // As with RewriteFromLeft::rewrite, this assumes that all rules are length
     // reducing.
-    bool RewriteTrie::rewrite_with_disabled_rule(std::string& u,
-                                                 Rule const*  disabled_rule) {
-      bool did_rewrite = false;
+    void RewriteTrie::rewrite(std::string& u) {
       // Check if u is rewriteable
       if (u.size() < stats().min_length_lhs_rule) {
-        return did_rewrite;
+        return;
       }
 
       _nodes.clear();
@@ -576,16 +567,14 @@ namespace libsemigroups {
             = _trie.traverse_no_checks(current, static_cast<letter_type>(x));
 
         auto rule_it = _rules.find(current);
-        if (!_trie.node_no_checks(current).terminal()
-            || rule_it->second == disabled_rule) {
+        if (!_trie.node_no_checks(current).terminal()) {
           _nodes.push_back(current);
           *v_end = x;
           ++v_end;
         } else {
           // Find rule that corresponds to terminal node
-          Rule const* rule = rule_it->second;
-          did_rewrite      = true;
-          auto lhs_size    = rule->lhs()->size();
+          Rule const* rule     = rule_it->second;
+          auto        lhs_size = rule->lhs()->size();
           LIBSEMIGROUPS_ASSERT(lhs_size != 0);
 
           // Check the lhs is smaller than the portion of the word that has
@@ -602,7 +591,6 @@ namespace libsemigroups {
         }
       }
       u.erase(v_end - u.cbegin());
-      return did_rewrite;
     }
 
     bool RewriteTrie::process_pending_rules() {
@@ -735,7 +723,7 @@ namespace libsemigroups {
       }
     }
 
-    bool RewriteTrie::confluent_impl(std::atomic_uint64_t& seen) const {
+    bool RewriteTrie::confluent_impl(std::atomic_uint64_t& seen) {
       using std::chrono::time_point;
       time_point start_time = std::chrono::high_resolution_clock::now();
 

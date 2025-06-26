@@ -350,28 +350,12 @@ namespace libsemigroups {
         rule->reorder();
       }
 
-      // Rewrite <u> without using <rule>, nullptr for rule indicates no rule
-      // is disabled.
-      [[nodiscard]] virtual bool rewrite_with_disabled_rule(std::string& u,
-                                                            Rule const*  rule
-                                                            = nullptr)
-          = 0;
-
-      void rewrite(std::string& u) {
-        // TODO improve
-        std::ignore = rewrite_with_disabled_rule(u);
-      }
-
       void rewrite(std::string& u) const {
         // TODO improve
-        std::ignore
-            = const_cast<RewriterBase*>(this)->rewrite_with_disabled_rule(u);
+        const_cast<RewriterBase*>(this)->rewrite(u);
       }
 
-      bool rewrite_active_rule(Rule* rule) {
-        return rewrite_with_disabled_rule(*rule->lhs(), rule)
-               || rewrite_with_disabled_rule(*rule->rhs(), rule);
-      }
+      virtual void rewrite(std::string& u) = 0;
 
       virtual void add_rule(Rule* rule) = 0;
 
@@ -414,6 +398,7 @@ namespace libsemigroups {
 
      public:
       using RewriterBase::add_rule;
+      using RewriterBase::rewrite;
 
       RewriteFromLeft() = default;
       RewriteFromLeft& operator=(RewriteFromLeft const&);
@@ -428,11 +413,9 @@ namespace libsemigroups {
       // TODO should be const
       bool process_pending_rules();
 
-     private:
-      [[nodiscard]] bool
-      rewrite_with_disabled_rule(std::string& u,
-                                 Rule const*  disabled_rule) override;
+      void rewrite(std::string& u) override;
 
+     private:
       void add_rule(Rule* rule) override;
 
       iterator make_active_rule_pending(iterator) override;
@@ -441,7 +424,7 @@ namespace libsemigroups {
           std::atomic_uint64_t const&,
           std::chrono::high_resolution_clock::time_point const&) const;
 
-      bool confluent_impl(std::atomic_uint64_t&) const;
+      bool confluent_impl(std::atomic_uint64_t&);
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -464,6 +447,7 @@ namespace libsemigroups {
 
      public:
       using RewriterBase::add_rule;
+      using RewriterBase::rewrite;
 
       RewriteTrie() : RewriterBase(), _rules(), _trie(0) {}
       RewriteTrie& init();
@@ -483,6 +467,8 @@ namespace libsemigroups {
       [[nodiscard]] bool confluent();
 
       bool process_pending_rules();
+      // TODO iterators
+      void rewrite(std::string& u) override;
 
      private:
       // TODO should be no_checks
@@ -492,10 +478,6 @@ namespace libsemigroups {
         add_rule_to_trie(rule);
         set_cached_confluent(tril::unknown);
       }
-
-      [[nodiscard]] bool
-      rewrite_with_disabled_rule(std::string& u,
-                                 Rule const*  disabled_rule) override;
 
       [[nodiscard]] bool descendants_confluent(Rule const* rule1,
                                                index_type  current_node,
@@ -513,7 +495,7 @@ namespace libsemigroups {
           std::atomic_uint64_t const&,
           std::chrono::high_resolution_clock::time_point const&) const;
 
-      bool confluent_impl(std::atomic_uint64_t&) const;
+      bool confluent_impl(std::atomic_uint64_t&);
     };
   }  // namespace detail
 }  // namespace libsemigroups
