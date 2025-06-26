@@ -35,7 +35,8 @@ namespace libsemigroups {
       REQUIRE(rt.number_of_active_rules() == 0);
       rt.increase_alphabet_size_by(2);
       rt.add_rule("ba"_w, "a"_w);  // TODO should be a helper
-      REQUIRE(rt.number_of_active_rules() == 1);
+      REQUIRE(rt.number_of_pending_rules() == 1);
+      REQUIRE(rt.number_of_active_rules() == 0);
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
