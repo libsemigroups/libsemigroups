@@ -81,14 +81,14 @@ namespace libsemigroups {
           _children(num_letters, 1, UNDEFINED),
           _active_nodes_index(),
           _inactive_nodes_index() {
-      _active_nodes_index.insert(0);
+      _active_nodes_index.insert(root);
     }
 
     AhoCorasickImpl& AhoCorasickImpl::init(size_t num_letters) {
       _all_nodes = {Node()};
       _children.init(num_letters, 1, UNDEFINED);
       _active_nodes_index.clear();
-      _active_nodes_index.insert(0);
+      _active_nodes_index.insert(root);
       while (!_inactive_nodes_index.empty()) {
         _inactive_nodes_index.pop();
       }

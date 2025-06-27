@@ -588,8 +588,8 @@ namespace libsemigroups {
             overlap(rule1, rule2);
             ++nr;
             if (rule1->active() && rule2->active()) {
-              ++nr;
               overlap(rule2, rule1);
+              ++nr;
             }
           }
 
