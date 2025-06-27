@@ -28,8 +28,8 @@
 #include <string>         // for basic_string, operator==
 #include <unordered_map>  // for unordered_map
 
-#include "../debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "../order.hpp"  // for shortlex_compare
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/order.hpp"  // for shortlex_compare
 
 #include "aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "multi-string-view.hpp"  // for MultiStringView
