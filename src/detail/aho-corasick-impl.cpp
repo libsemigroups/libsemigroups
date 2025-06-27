@@ -68,7 +68,7 @@ namespace libsemigroups {
     AhoCorasickImpl::AhoCorasickImpl()
         : _all_nodes({Node()}),
           _children(0, 1, UNDEFINED),
-          _active_nodes_index(),
+          _active_nodes_index({root}),
           _inactive_nodes_index() {}
 
     AhoCorasickImpl& AhoCorasickImpl::init() {
@@ -79,35 +79,32 @@ namespace libsemigroups {
     AhoCorasickImpl::AhoCorasickImpl(size_t num_letters)
         : _all_nodes({Node()}),
           _children(num_letters, 1, UNDEFINED),
-          _active_nodes_index(),
-          _inactive_nodes_index() {
-      _active_nodes_index.insert(root);
-    }
+          _active_nodes_index({root}),
+          _inactive_nodes_index() {}
 
     AhoCorasickImpl& AhoCorasickImpl::init(size_t num_letters) {
-      _all_nodes = {Node()};
-      _children.init(num_letters, 1, UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(!_all_nodes.empty());
+      LIBSEMIGROUPS_ASSERT(!_active_nodes_index.empty());
+
+      _children.init(num_letters, _all_nodes.size(), UNDEFINED);
+      size_t const old_num_inactive_nodes = _inactive_nodes_index.size();
+      _inactive_nodes_index.resize(old_num_inactive_nodes
+                                   + _active_nodes_index.size() - 1);
+      std::copy_if(_active_nodes_index.begin(),
+                   _active_nodes_index.end(),
+                   _inactive_nodes_index.begin() + old_num_inactive_nodes,
+                   [](auto val) { return val != root; });
+      std::sort(_inactive_nodes_index.begin(),
+                _inactive_nodes_index.end(),
+                std::greater{});
       _active_nodes_index.clear();
       _active_nodes_index.insert(root);
-      while (!_inactive_nodes_index.empty()) {
-        _inactive_nodes_index.pop();
-      }
+      _all_nodes[0].init();
+      LIBSEMIGROUPS_ASSERT(_active_nodes_index.size()
+                               + _inactive_nodes_index.size()
+                           == _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(_children.number_of_rows() == _all_nodes.size());
 
-      // TODO maybe better to just deactivate all the nodes, the following
-      // causes a seg fault for some reason.
-      // _children.init(num_letters, _all_nodes.size(), UNDEFINED);
-      // for (auto i : _active_nodes_index) {
-      //   if (i != root) {
-      //     _inactive_nodes_index.push(i);
-      //   }
-      // }
-      // _active_nodes_index.clear();
-      // _active_nodes_index.insert(0);
-      // LIBSEMIGROUPS_ASSERT(_active_nodes_index.size()
-      //                          + _inactive_nodes_index.size()
-      //                      == _all_nodes.size());
-      // LIBSEMIGROUPS_ASSERT(_children.number_of_rows() ==
-      // _all_nodes.size());
       return *this;
     }
 
@@ -141,25 +138,26 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(parent_index < _all_nodes.size());
       LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent_index) == 1);
 
-      index_type new_node_index;
       if (_inactive_nodes_index.empty()) {
-        new_node_index = _all_nodes.size();
-        _all_nodes.resize(2 * _all_nodes.size());
-        _all_nodes[new_node_index].init(parent_index, a);
-        _active_nodes_index.insert(new_node_index);
-        for (index_type i = new_node_index + 1; i != _all_nodes.size(); ++i) {
-          _inactive_nodes_index.push(i);
-        }
-        _children.add_rows(new_node_index);
-      } else {
-        new_node_index = _inactive_nodes_index.top();
-        _inactive_nodes_index.pop();
-        _active_nodes_index.insert(new_node_index);
-        _all_nodes[new_node_index].init(parent_index, a);
-        std::fill(_children.begin_row(new_node_index),
-                  _children.end_row(new_node_index),
-                  UNDEFINED);
+        size_t const old_nodes_size         = _all_nodes.size();
+        size_t const old_num_inactive_nodes = _inactive_nodes_index.size();
+
+        _all_nodes.resize(2 * old_nodes_size);
+        _inactive_nodes_index.resize(old_num_inactive_nodes + old_nodes_size);
+        std::iota(_inactive_nodes_index.begin() + old_num_inactive_nodes,
+                  _inactive_nodes_index.end(),
+                  index_type(old_nodes_size));
+        _children.add_rows(old_nodes_size);
+        return new_active_node_no_checks(parent_index, a);
       }
+
+      index_type new_node_index = _inactive_nodes_index.back();
+      _inactive_nodes_index.pop_back();
+      _active_nodes_index.insert(new_node_index);
+      _all_nodes[new_node_index].init(parent_index, a);
+      std::fill(_children.begin_row(new_node_index),
+                _children.end_row(new_node_index),
+                UNDEFINED);
 
       // Set the suffix link and height of new node
       auto&      new_node   = _all_nodes[new_node_index];
@@ -210,7 +208,7 @@ namespace libsemigroups {
 #else
       _active_nodes_index.erase(index);
 #endif
-      _inactive_nodes_index.push(index);
+      _inactive_nodes_index.push_back(index);
     }
 
     void AhoCorasickImpl::throw_if_node_index_out_of_range(index_type i) const {

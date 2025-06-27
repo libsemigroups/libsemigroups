@@ -151,11 +151,11 @@ namespace libsemigroups {
       // than indices, which would mean we could set the _link and other info in
       // the Node::init() function, also will remove the index <-> Node
       // conversions everywhere.
-      std::vector<Node>                               _all_nodes;
-      detail::DynamicArray2<index_type>               _children;
-      std::unordered_set<index_type>                  _active_nodes_index;
-      std::stack<index_type, std::vector<index_type>> _inactive_nodes_index;
-      std::vector<index_type>                         _node_indices_to_update;
+      std::vector<Node>                 _all_nodes;
+      detail::DynamicArray2<index_type> _children;
+      std::unordered_set<index_type>    _active_nodes_index;
+      std::vector<index_type>           _inactive_nodes_index;
+      std::vector<index_type>           _node_indices_to_update;
 
       // TODO(1): it seems likely that the positions of the active nodes in
       // _all_nodes will become scattered and disordered over time, and so it'd
