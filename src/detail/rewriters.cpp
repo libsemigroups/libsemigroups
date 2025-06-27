@@ -100,8 +100,8 @@ namespace libsemigroups {
     }
 
     Rules::~Rules() {
-      for (Rule const* rule : _active_rules) {
-        delete const_cast<Rule*>(rule);
+      for (Rule* rule : _active_rules) {
+        delete rule;
       }
       for (Rule* rule : _inactive_rules) {
         delete rule;
@@ -113,7 +113,7 @@ namespace libsemigroups {
       Rule* rule;
       if (!_inactive_rules.empty()) {
         rule = _inactive_rules.front();
-        rule->set_id(_stats.total_rules);
+        rule->set_id_no_checks(_stats.total_rules);
         _inactive_rules.erase(_inactive_rules.begin());
       } else {
         rule = new Rule(_stats.total_rules);
@@ -432,7 +432,8 @@ namespace libsemigroups {
 
     bool RewriteFromLeft::confluent() {
       if (number_of_pending_rules() != 0) {
-        process_pending_rules();
+        set_cached_confluent(tril::unknown);
+        return false;
       } else if (confluence_known()) {
         return RewriteBase::cached_confluent();
       }
@@ -673,7 +674,8 @@ namespace libsemigroups {
 
     bool RewriteTrie::confluent() {
       if (number_of_pending_rules() != 0) {
-        process_pending_rules();
+        set_cached_confluent(tril::unknown);
+        return false;
       } else if (confluence_known()) {
         return RewriteBase::cached_confluent();
       }
