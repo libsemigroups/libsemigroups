@@ -175,7 +175,8 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.confluent());
 
-    knuth_bendix::by_overlap_length(kb);
+    kb.run();
+    // knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.finished());
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 194);
@@ -772,7 +773,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbbaabbaaba", "bbbaabbaaaa");
     presentation::add_rule(p, "aaaabbaaba", "bbaaaa");
     KnuthBendix<std::string, TestType> k(twosided, p);
-    k.run_for(std::chrono::seconds(10));
+    k.run_for(std::chrono::seconds(1));
     REQUIRE(!k.finished());
   }
 

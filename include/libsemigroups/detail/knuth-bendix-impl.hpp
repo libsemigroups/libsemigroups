@@ -139,10 +139,9 @@ namespace libsemigroups {
 
       // Overlap measures
       struct OverlapMeasure {
-        virtual size_t
-        operator()(detail::Rule const*,
-                   detail::Rule const* examples,
-                   detail::internal_string_type::const_iterator const&)
+        virtual size_t operator()(detail::Rule const*,
+                                  detail::Rule const* examples,
+                                  std::string::const_iterator const&)
             = 0;
         virtual ~OverlapMeasure() {}
       };
@@ -206,7 +205,6 @@ namespace libsemigroups {
       bool                            _gen_pairs_initted;
       WordGraph<uint32_t>             _gilman_graph;
       std::vector<std::string>        _gilman_graph_node_labels;
-      bool                            _internal_is_same_as_external;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
       Presentation<std::string>       _presentation;
       mutable Rewriter                _rewriter;
@@ -513,6 +511,13 @@ namespace libsemigroups {
         return *this;
       }
 
+      // TODO move to correct place in this file
+      // TODO doc
+      KnuthBendixImpl& process_pending_rules() {
+        _rewriter.process_pending_rules();
+        return *this;
+      }
+
       //! \ingroup knuth_bendix_class_settings_group
       //!
       //! \brief Get the current number of rules to accumulate before
@@ -775,6 +780,11 @@ namespace libsemigroups {
         return _rewriter.number_of_inactive_rules();
       }
 
+      // TODO(0) doc
+      [[nodiscard]] size_t number_of_pending_rules() const noexcept {
+        return _rewriter.number_of_pending_rules();
+      }
+
       //! \ingroup knuth_bendix_class_accessors_group
       //!
       //! \brief Return the number of rules that \ref_knuth_bendix has created.
@@ -795,6 +805,10 @@ namespace libsemigroups {
       //! Constant.
       [[nodiscard]] size_t total_rules() const noexcept {
         return _rewriter.stats().total_rules;
+      }
+
+      Rewriter& rewriter() noexcept {
+        return _rewriter;
       }
 
       // Documented in KnuthBendix
@@ -883,27 +897,8 @@ namespace libsemigroups {
 
       void stats_check_point();
 
-      [[nodiscard]] static detail::internal_char_type
-      uint_to_internal_char(size_t a);
-      [[nodiscard]] static size_t
-      internal_char_to_uint(detail::internal_char_type c);
-
-      [[nodiscard]] static detail::internal_string_type
-      uint_to_internal_string(size_t i);
-
-      [[nodiscard]] static word_type
-      internal_string_to_word(detail::internal_string_type const& s);
-
-      [[nodiscard]] detail::internal_char_type
-      external_to_internal_char(detail::external_char_type c) const;
-      [[nodiscard]] detail::external_char_type
-      internal_to_external_char(detail::internal_char_type a) const;
-
-      void external_to_internal_string(detail::external_string_type& w) const;
-      void internal_to_external_string(detail::internal_string_type& w) const;
-
-      void add_octo(detail::external_string_type& w) const;
-      void rm_octo(detail::external_string_type& w) const;
+      void add_octo(std::string& w) const;
+      void rm_octo(std::string& w) const;
 
       void add_rule_impl(std::string const& p, std::string const& q);
 

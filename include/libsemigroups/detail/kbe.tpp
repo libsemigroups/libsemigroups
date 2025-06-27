@@ -25,7 +25,8 @@ namespace libsemigroups {
     template <typename KnuthBendix_>
     KBE<KnuthBendix_>::KBE(KnuthBendix_& kb, native_word_type const& w)
         : _kb_word() {
-      kb.reduce_no_checks(std::back_inserter(_kb_word), w.begin(), w.end());
+      kb.reduce_no_run_no_checks(
+          std::back_inserter(_kb_word), w.begin(), w.end());
     }
 
     template <typename KnuthBendix_>

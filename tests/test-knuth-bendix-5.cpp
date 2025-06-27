@@ -474,6 +474,9 @@ namespace libsemigroups {
 
     kb.run();
 
+    REQUIRE(kb.internal_presentation().alphabet().size()
+            == kb.presentation().alphabet().size());
+
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);

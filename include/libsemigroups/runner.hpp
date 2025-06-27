@@ -457,7 +457,7 @@ namespace libsemigroups {
     //! \param other the Runner to move from.
     Runner& operator=(Runner&& other);
 
-    virtual ~Runner() = default;
+    virtual ~Runner();
 
     ////////////////////////////////////////////////////////////////////////
     // Runner - non-virtual member functions - public

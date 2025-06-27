@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementation of the AhoCorasick class.
-#include "libsemigroups/aho-corasick.hpp"
+#include "libsemigroups/aho-corasick-class.hpp"
 
 #include <algorithm>    // for max, copy, reverse
 #include <array>        // for array
@@ -220,15 +220,17 @@ namespace libsemigroups {
     for (auto index : ac.active_nodes()) {
       ac.signature_no_checks(w, index);
       auto& node = result.add_node(index).add_attr("label", to_word(w));
-      if (ac.node_no_checks(index).is_terminal()) {
+      if (ac.node_no_checks(index).terminal()) {
         node.add_attr("peripheries", "2");
       }
     }
 
     for (auto index : ac.active_nodes()) {
       for (auto [label, child] : ac.node_no_checks(index).children()) {
-        result.add_edge(index, child)
-            .add_attr("color", result.colors[label])
+        result
+            .add_edge(index, child)
+            // FIXME properly
+            .add_attr("color", result.colors[label % result.colors.size()])
             .add_attr("label", label);
       }
       result.add_edge(index, ac.suffix_link_no_checks(index))

@@ -29,7 +29,7 @@
 
 #include "action.hpp"
 #include "adapters.hpp"
-#include "aho-corasick.hpp"
+#include "aho-corasick-class.hpp"
 #include "bipart.hpp"
 #include "bitset.hpp"
 #include "bmat-adapters.hpp"

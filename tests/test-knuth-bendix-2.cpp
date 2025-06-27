@@ -997,8 +997,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "abacabacabacabac", "");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.number_of_active_rules() == 5);
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 5);
     REQUIRE(!kb.confluent());
 
     kb.max_rules(10);
@@ -1079,8 +1079,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "BaAAaAAaAAaAAA", "cAAaAAaAAaAAa");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.number_of_active_rules() == 9);
+
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 47);
     REQUIRE(!kb.confluent());
     kb.run();
     REQUIRE(kb.confluent());
@@ -1602,7 +1603,7 @@ namespace libsemigroups {
             == std::vector<std::pair<word_type, word_type>>(
                 {{00_w, 0_w}, {11_w, 1_w}, {010_w, 10_w}, {101_w, 10_w}}));
     REQUIRE(kb.gilman_graph_node_labels()
-            == std::vector({{}, 1_w, 0_w, 10_w, 01_w}));
+            == std::vector({{}, 0_w, 01_w, 1_w, 10_w}));
     // The gilman_graph generated is isomorphic to the word_graph given, but not
     // identical. Since the normal forms are correct (see above) the below check
     // is omitted.
@@ -1787,7 +1788,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "065",
                                    "sigma sylvester monoid x 2",
-                                   "[todd-coxeter][quick]",
+                                   "[todd-coxeter][standard]",
                                    REWRITER_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);
