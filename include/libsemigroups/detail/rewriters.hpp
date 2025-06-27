@@ -47,10 +47,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     class Rule {
-      // TODO Why are _lhs and _rhs pointers?
-      std::string* _lhs;
-      std::string* _rhs;
-      int64_t      _id;
+      std::string _lhs;
+      std::string _rhs;
+      int64_t     _id;
 
      public:
       explicit Rule(int64_t id);
@@ -61,21 +60,26 @@ namespace libsemigroups {
       Rule(Rule&& copy)                 = delete;
       Rule& operator=(Rule&& copy)      = delete;
 
-      ~Rule() {
-        delete _lhs;
-        delete _rhs;
+      ~Rule() = default;
+
+      [[nodiscard]] std::string const& lhs() const noexcept {
+        return _lhs;
       }
 
-      [[nodiscard]] std::string& lhs() const noexcept {
-        return *_lhs;
+      [[nodiscard]] std::string const& rhs() const noexcept {
+        return _rhs;
       }
 
-      [[nodiscard]] std::string& rhs() const noexcept {
-        return *_rhs;
+      [[nodiscard]] std::string& lhs() noexcept {
+        return _lhs;
+      }
+
+      [[nodiscard]] std::string& rhs() noexcept {
+        return _rhs;
       }
 
       [[nodiscard]] bool empty() const noexcept {
-        return _lhs->empty() && _rhs->empty();
+        return _lhs.empty() && _rhs.empty();
       }
 
       [[nodiscard]] inline bool active() const noexcept {

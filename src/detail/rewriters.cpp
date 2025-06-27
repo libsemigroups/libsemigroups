@@ -26,8 +26,7 @@
 namespace libsemigroups {
   namespace detail {
     // Construct from KnuthBendixImpl with new but empty std::string's
-    Rule::Rule(int64_t id)
-        : _lhs(new std::string()), _rhs(new std::string()), _id(-1 * id) {
+    Rule::Rule(int64_t id) : _lhs(), _rhs(), _id(-1 * id) {
       LIBSEMIGROUPS_ASSERT(_id < 0);
     }
 
