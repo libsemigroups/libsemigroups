@@ -86,9 +86,8 @@ namespace libsemigroups {
         return (_id > 0);
       }
 
-      void deactivate() noexcept;
-
-      void activate() noexcept;
+      void activate_no_checks() noexcept;
+      void deactivate_no_checks() noexcept;
 
       void set_id_no_checks(int64_t id) noexcept {
         LIBSEMIGROUPS_ASSERT(id > 0);
@@ -228,11 +227,6 @@ namespace libsemigroups {
         return _cursors[index];
       }
 
-      // TODO(1) is this ever called?
-      void add_active_rule(Rule* rule) {
-        _active_rules.push_back(rule);
-      }
-
       void add_inactive_rule(Rule* rule) {
         _inactive_rules.push_back(rule);
       }
@@ -243,8 +237,6 @@ namespace libsemigroups {
 
       [[nodiscard]] iterator erase_from_active_rules(iterator it);
 
-      // TODO(1) this feels like it should be add_active rule. The above
-      // add_active_rule seems a bit dangerous
       void add_rule(Rule* rule);
 
       [[nodiscard]] Rule* copy_rule(Rule const* rule);
@@ -379,7 +371,6 @@ namespace libsemigroups {
       // TODO should be const
       [[nodiscard]] bool confluent();
 
-      // TODO should be const
       bool process_pending_rules();
 
       void rewrite(std::string& u);

@@ -35,15 +35,15 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_id < 0);
     }
 
-    void Rule::deactivate() noexcept {
+    void Rule::activate_no_checks() noexcept {
       LIBSEMIGROUPS_ASSERT(_id != 0);
-      LIBSEMIGROUPS_ASSERT(active());
+      LIBSEMIGROUPS_ASSERT(!active());
       _id *= -1;
     }
 
-    void Rule::activate() noexcept {
+    void Rule::deactivate_no_checks() noexcept {
       LIBSEMIGROUPS_ASSERT(_id != 0);
-      LIBSEMIGROUPS_ASSERT(!active());
+      LIBSEMIGROUPS_ASSERT(active());
       _id *= -1;
     }
 
@@ -84,7 +84,7 @@ namespace libsemigroups {
       // Put all active rules and those rules in the stack into the
       // inactive_rules list
       for (Rule* ptr : _active_rules) {
-        ptr->deactivate();
+        ptr->deactivate_no_checks();
         _inactive_rules.insert(_inactive_rules.end(), ptr);
       }
       _active_rules.clear();
@@ -142,7 +142,7 @@ namespace libsemigroups {
     Rules::iterator Rules::erase_from_active_rules(iterator it) {
       // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
       Rule* rule = const_cast<Rule*>(*it);
-      rule->deactivate();
+      rule->deactivate_no_checks();
 
       if (it != _cursors[0] && it != _cursors[1]) {
         it = _active_rules.erase(it);
@@ -167,7 +167,7 @@ namespace libsemigroups {
       _stats.max_active_rules
           = std::max(_stats.max_active_rules, number_of_active_rules());
       // _stats.unique_lhs_rules.insert(*rule->lhs());
-      rule->activate();
+      rule->activate_no_checks();
       _active_rules.push_back(rule);
       for (auto& it : _cursors) {
         if (it == end()) {
@@ -295,7 +295,7 @@ namespace libsemigroups {
     RewriteFromLeft::iterator
     RewriteFromLeft::make_active_rule_pending(iterator it) {
       Rule* rule = const_cast<Rule*>(*it);
-      rule->deactivate();
+      rule->deactivate_no_checks();
       add_pending_rule(rule);
 #ifdef LIBSEMIGROUPS_DEBUG
       LIBSEMIGROUPS_ASSERT(_set_rules.erase(RuleLookup(rule)));
@@ -807,7 +807,7 @@ namespace libsemigroups {
 
     Rules::iterator RewriteTrie::make_active_rule_pending(Rules::iterator it) {
       Rule* rule = const_cast<Rule*>(*it);
-      rule->deactivate();  // Done in Rules::erase_from
+      rule->deactivate_no_checks();  // Done in Rules::erase_from
       add_pending_rule(rule);
       index_type node
           = _trie.rm_word_no_checks(rule->lhs().cbegin(), rule->lhs().cend());
