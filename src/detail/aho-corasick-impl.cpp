@@ -147,6 +147,9 @@ namespace libsemigroups {
         std::iota(_inactive_nodes_index.begin() + old_num_inactive_nodes,
                   _inactive_nodes_index.end(),
                   index_type(old_nodes_size));
+        std::sort(_inactive_nodes_index.begin(),
+                  _inactive_nodes_index.end(),
+                  std::greater{});
         _children.add_rows(old_nodes_size);
         return new_active_node_no_checks(parent_index, a);
       }
@@ -180,6 +183,8 @@ namespace libsemigroups {
 
       // Add new node as a source of its suffix link
       add_suffix_link_source(new_node_index, link_index);
+      // set new_node_index as child of parent
+      _children.set(parent_index, a, new_node_index);
 
       return new_node_index;
     }
