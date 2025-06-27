@@ -109,6 +109,15 @@ namespace libsemigroups {
       return *this;
     }
 
+    Rules& Rules::operator=(Rules&& that) {
+      // We swap to ensure that all rules are properly deleted
+      std::swap(_active_rules, that._active_rules);
+      std::swap(_inactive_rules, that._inactive_rules);
+      _cursors = std::move(that._cursors);
+      _stats   = std::move(that._stats);
+      return *this;
+    }
+
     Rules::~Rules() {
       for (Rule* rule : _active_rules) {
         delete rule;
@@ -142,7 +151,7 @@ namespace libsemigroups {
     Rules::iterator Rules::erase_from_active_rules(iterator it) {
       // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
       Rule* rule = *it;
-      rule->deactivate_no_checks();
+      LIBSEMIGROUPS_ASSERT(!rule->active());
 
       if (it != _cursors[0] && it != _cursors[1]) {
         it = _active_rules.erase(it);
@@ -161,7 +170,7 @@ namespace libsemigroups {
     }
 
     void Rules::add_rule(Rule* rule) {
-      LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
+      LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
       _stats.max_word_length
           = std::max(_stats.max_word_length, rule->lhs().size());
       _stats.max_active_rules
@@ -193,6 +202,16 @@ namespace libsemigroups {
       return _stats.max_active_word_length;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteBase
+    ////////////////////////////////////////////////////////////////////////
+
+    RewriteBase::RewriteBase()
+        : _cached_confluent(false),
+          _confluence_known(false),
+          _max_stack_depth(0),
+          _pending_rules() {}
+
     RewriteBase& RewriteBase::init() {
       Rules::init();
       // Put all active rules and those rules in the stack into the
@@ -205,6 +224,33 @@ namespace libsemigroups {
       _max_stack_depth  = 0;
       _cached_confluent = false;
       _confluence_known = false;
+      return *this;
+    }
+
+    RewriteBase::RewriteBase(RewriteBase&& that)
+        : _cached_confluent(that._cached_confluent.load()),
+          _confluence_known(that._confluence_known.load()),
+          _max_stack_depth(std::move(that._max_stack_depth)),
+          _pending_rules(std::move(that._pending_rules)) {}
+
+    RewriteBase& RewriteBase::operator=(RewriteBase const& that) {
+      Rules::operator=(that);
+      _cached_confluent = that._cached_confluent.load();
+      _confluence_known = that._confluence_known.load();
+      _pending_rules.clear();
+
+      for (auto const* rule : that._pending_rules) {
+        _pending_rules.emplace_back(copy_rule(rule));
+      }
+      return *this;
+    }
+
+    RewriteBase& RewriteBase::operator=(RewriteBase&& that) {
+      Rules::operator=(std::move(that));
+      _cached_confluent = that._cached_confluent.load();
+      _confluence_known = that._confluence_known.load();
+      // Again we swap so that all rules are properly deleted
+      std::swap(_pending_rules, that._pending_rules);
       return *this;
     }
 
@@ -266,6 +312,13 @@ namespace libsemigroups {
           detail::string_time(run_time));
     }
 
+    Rule* RewriteBase::next_pending_rule() {
+      LIBSEMIGROUPS_ASSERT(_pending_rules.size() != 0);
+      Rule* rule = _pending_rules.back();
+      _pending_rules.pop_back();
+      return rule;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // RewriteFromLeft
     ////////////////////////////////////////////////////////////////////////
@@ -281,7 +334,7 @@ namespace libsemigroups {
     RewriteFromLeft& RewriteFromLeft::operator=(RewriteFromLeft const& that) {
       init();
       RewriteBase::operator=(that);
-      for (auto* rule : that) {
+      for (auto* rule : *this) {
 #ifdef LIBSEMIGROUPS_DEBUG
         LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
 #else
@@ -473,7 +526,7 @@ namespace libsemigroups {
       while (number_of_pending_rules() != 0) {
         Rule* rule1 = next_pending_rule();
         LIBSEMIGROUPS_ASSERT(!rule1->active());
-        LIBSEMIGROUPS_ASSERT(*rule1->lhs() != *rule1->rhs());
+        LIBSEMIGROUPS_ASSERT(rule1->lhs() != rule1->rhs());
         // Rewrite both sides and reorder if necessary . . .
         rewrite(rule1);
 
@@ -518,8 +571,9 @@ namespace libsemigroups {
 
     RewriteTrie& RewriteTrie::init() {
       RewriteBase::init();
-      _trie.init();
       _rules.clear();
+      _trie.init();
+      // Do nothing to _nodes
       return *this;
     }
 
@@ -531,7 +585,7 @@ namespace libsemigroups {
         index_type node = _trie.traverse_trie_no_checks(rule->lhs().cbegin(),
                                                         rule->lhs().cend());
         // TODO check that node is correct
-        // LIBSEMIGROUPS_ASSERT(_trie.terminal(node));
+        LIBSEMIGROUPS_ASSERT(_trie.terminal(node));
         _rules.emplace(node, rule);
       }
 
@@ -613,7 +667,7 @@ namespace libsemigroups {
         while (number_of_pending_rules() != 0) {
           Rule* rule = next_pending_rule();
           LIBSEMIGROUPS_ASSERT(!rule->active());
-          LIBSEMIGROUPS_ASSERT(*rule->lhs() != *rule->rhs());
+          LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
           // Rewrite both sides and reorder if necessary . . .
           rewrite(rule);
 

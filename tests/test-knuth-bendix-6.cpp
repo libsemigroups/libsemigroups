@@ -323,8 +323,7 @@ namespace libsemigroups {
                                    "139",
                                    "partial_transformation_monoid5",
                                    "[extreme][knuth-bendix]",
-                                   RewriteTrie  // KNUTH_BENDIX_TYPES
-  ) {
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(true);
 
     size_t n = 5;

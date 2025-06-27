@@ -144,7 +144,6 @@ namespace libsemigroups {
         std::unordered_set<index_type>& suffix_link_sources() noexcept {
           return _suffix_link_sources;
         }
-
       };  // class Node
 
       // TODO(1) if we store pointers here instead of Nodes, then inside the
@@ -227,6 +226,13 @@ namespace libsemigroups {
       [[nodiscard]] size_t height(index_type i) const {
         throw_if_node_index_not_active(i);
         return height_no_checks(i);
+      }
+
+      [[nodiscard]] bool terminal_no_checks(index_type i) const;
+
+      [[nodiscard]] bool terminal(index_type i) const {
+        throw_if_node_index_not_active(i);
+        return terminal_no_checks(i);
       }
 
       [[nodiscard]] index_type suffix_link_no_checks(index_type i) const {
@@ -475,7 +481,7 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "aho-corasick-impl.tpp"
