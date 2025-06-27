@@ -141,7 +141,7 @@ namespace libsemigroups {
 
     Rules::iterator Rules::erase_from_active_rules(iterator it) {
       // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
-      Rule* rule = const_cast<Rule*>(*it);
+      Rule* rule = *it;
       rule->deactivate_no_checks();
 
       if (it != _cursors[0] && it != _cursors[1]) {
@@ -281,8 +281,7 @@ namespace libsemigroups {
     RewriteFromLeft& RewriteFromLeft::operator=(RewriteFromLeft const& that) {
       init();
       RewriteBase::operator=(that);
-      for (auto* crule : that) {
-        Rule* rule = const_cast<Rule*>(crule);
+      for (auto* rule : that) {
 #ifdef LIBSEMIGROUPS_DEBUG
         LIBSEMIGROUPS_ASSERT(_set_rules.emplace(RuleLookup(rule)).second);
 #else
@@ -294,7 +293,7 @@ namespace libsemigroups {
 
     RewriteFromLeft::iterator
     RewriteFromLeft::make_active_rule_pending(iterator it) {
-      Rule* rule = const_cast<Rule*>(*it);
+      Rule* rule = *it;
       rule->deactivate_no_checks();
       add_pending_rule(rule);
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -483,11 +482,10 @@ namespace libsemigroups {
           std::string& lhs = rule1->lhs();
 
           for (auto it = begin(); it != end();) {
-            Rule* rule2 = const_cast<Rule*>(*it);
+            Rule* rule2 = *it;
 
             // Check if lhs is contained within either the lhs or rhs of rule2
             // TODO(0) investigate whether or not this can be improved?
-            // Removed?
             if (rule2->lhs().find(lhs) != std::string::npos
                 || rule2->rhs().find(lhs) != std::string::npos) {
               // If it is, rule2 must be deactivated and re-processed
@@ -529,8 +527,7 @@ namespace libsemigroups {
       init();
       RewriteBase::operator=(that);
       _trie = that._trie;
-      for (auto* crule : *this) {
-        Rule*      rule = const_cast<Rule*>(crule);
+      for (Rule* rule : *this) {
         index_type node = _trie.traverse_trie_no_checks(rule->lhs().cbegin(),
                                                         rule->lhs().cend());
         // TODO check that node is correct
@@ -806,7 +803,7 @@ namespace libsemigroups {
     }
 
     Rules::iterator RewriteTrie::make_active_rule_pending(Rules::iterator it) {
-      Rule* rule = const_cast<Rule*>(*it);
+      Rule* rule = *it;
       rule->deactivate_no_checks();  // Done in Rules::erase_from
       add_pending_rule(rule);
       index_type node
