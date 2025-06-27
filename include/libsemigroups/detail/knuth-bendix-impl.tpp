@@ -638,7 +638,8 @@ namespace libsemigroups {
 
       init_from_generating_pairs();
       _rewriter.process_pending_rules();
-      if (_rewriter.consistent() && confluent() && !stop_running()) {
+      if (_rewriter.number_of_pending_rules() == 0 && confluent()
+          && !stop_running()) {
         // _rewriter._pending_rules can be non-empty if non-reduced rules were
         // used to define the KnuthBendixImpl.  If _rewriter._pending_rules is
         // non-empty, then it means that the rules in _rewriter might not define

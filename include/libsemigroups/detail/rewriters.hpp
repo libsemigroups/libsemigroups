@@ -41,7 +41,6 @@
 
 namespace libsemigroups {
   namespace detail {
-    // TODO(2) remove from libsemigroups namespace and put into relevant class
 
     ////////////////////////////////////////////////////////////////////////
     // Rule
@@ -56,6 +55,7 @@ namespace libsemigroups {
      public:
       explicit Rule(int64_t id);
 
+      Rule()                            = delete;
       Rule& operator=(Rule const& copy) = delete;
       Rule(Rule const& copy)            = delete;
       Rule(Rule&& copy)                 = delete;
@@ -181,7 +181,6 @@ namespace libsemigroups {
         // std::unordered_set<std::string> unique_lhs_rules;
       };
 
-      // TODO(2) remove const?
       std::list<Rule*>        _active_rules;
       std::array<iterator, 2> _cursors;
       std::list<Rule*>        _inactive_rules;
@@ -294,7 +293,6 @@ namespace libsemigroups {
       // Constructors + inits
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO(0) everything is public!!!
       // TODO(1) to cpp
       RewriteBase()
           : _cached_confluent(false),
@@ -318,7 +316,7 @@ namespace libsemigroups {
 
       // TODO other constructors
 
-      virtual ~RewriteBase();
+      ~RewriteBase();
 
       ////////////////////////////////////////////////////////////////////////
       // Public mem fns
@@ -330,10 +328,6 @@ namespace libsemigroups {
 
       bool cached_confluent() const noexcept {
         return _cached_confluent;
-      }
-
-      [[nodiscard]] bool consistent() const noexcept {
-        return _pending_rules.empty();
       }
 
       [[nodiscard]] bool confluence_known() const {
@@ -366,12 +360,6 @@ namespace libsemigroups {
       void set_cached_confluent(tril val) const;
 
      protected:
-      ////////////////////////////////////////////////////////////////////////
-      // Virtual functions - protected
-      ////////////////////////////////////////////////////////////////////////
-
-      virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
-
       ////////////////////////////////////////////////////////////////////////
       // Non-virtual functions - protected
       ////////////////////////////////////////////////////////////////////////
@@ -420,7 +408,7 @@ namespace libsemigroups {
 
       void add_rule(Rule* rule);
 
-      iterator make_active_rule_pending(iterator) override;
+      iterator make_active_rule_pending(iterator);
 
       void report_from_confluent(
           std::atomic_uint64_t const&,
@@ -501,7 +489,7 @@ namespace libsemigroups {
         _rules.emplace(node, rule);
       }
 
-      Rules::iterator make_active_rule_pending(Rules::iterator it) override;
+      Rules::iterator make_active_rule_pending(Rules::iterator it);
 
       void report_from_confluent(
           std::atomic_uint64_t const&,
