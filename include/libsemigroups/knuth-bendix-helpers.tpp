@@ -281,14 +281,14 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     bool is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {
-        auto const lhs = *test_rule->lhs();
+        auto const lhs = test_rule->lhs();
         for (auto const& rule : kb.active_rules()) {
           if (test_rule == rule) {
             continue;
           }
 
-          if (rule->lhs()->find(lhs) != std::string::npos
-              || rule->rhs()->find(lhs) != std::string::npos) {
+          if (rule->lhs().find(lhs) != std::string::npos
+              || rule->rhs().find(lhs) != std::string::npos) {
             return false;
           }
         }

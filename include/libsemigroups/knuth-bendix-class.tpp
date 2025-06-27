@@ -110,9 +110,9 @@ namespace libsemigroups {
     auto        result = KnuthBendixImpl_::active_rules();
     auto const& p      = presentation();
     return result | rx::transform([&p](auto const* rule) {
-             auto pair = std::make_pair(
-                 Word(rule->lhs()->begin(), rule->lhs()->end()),
-                 Word(rule->rhs()->begin(), rule->rhs()->end()));
+             auto pair
+                 = std::make_pair(Word(rule->lhs().begin(), rule->lhs().end()),
+                                  Word(rule->rhs().begin(), rule->rhs().end()));
              auto convert = [&p](auto& val) { val = p.letter_no_checks(val); };
              std::for_each(pair.first.begin(), pair.first.end(), convert);
              std::for_each(pair.second.begin(), pair.second.end(), convert);

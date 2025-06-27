@@ -40,10 +40,10 @@ namespace libsemigroups {
                         detail::Rule const*                BC,
                         std::string::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-        LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-        LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+        LIBSEMIGROUPS_ASSERT(AB->lhs().cbegin() <= it);
+        LIBSEMIGROUPS_ASSERT(it < AB->lhs().cend());
         // |A| + |BC|
-        return (it - AB->lhs()->cbegin()) + BC->lhs()->size();
+        return (it - AB->lhs().cbegin()) + BC->lhs().size();
       }
     };
 
@@ -54,11 +54,11 @@ namespace libsemigroups {
                         detail::Rule const*                BC,
                         std::string::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-        LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-        LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+        LIBSEMIGROUPS_ASSERT(AB->lhs().cbegin() <= it);
+        LIBSEMIGROUPS_ASSERT(it < AB->lhs().cend());
         (void) it;
         // |AB| + |BC|
-        return AB->lhs()->size() + BC->lhs()->size();
+        return AB->lhs().size() + BC->lhs().size();
       }
     };
 
@@ -69,11 +69,11 @@ namespace libsemigroups {
                         detail::Rule const*                BC,
                         std::string::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
-        LIBSEMIGROUPS_ASSERT(AB->lhs()->cbegin() <= it);
-        LIBSEMIGROUPS_ASSERT(it < AB->lhs()->cend());
+        LIBSEMIGROUPS_ASSERT(AB->lhs().cbegin() <= it);
+        LIBSEMIGROUPS_ASSERT(it < AB->lhs().cend());
         (void) it;
         // max(|AB|, |BC|)
-        return std::max(AB->lhs()->size(), BC->lhs()->size());
+        return std::max(AB->lhs().size(), BC->lhs().size());
       }
     };
 
@@ -357,7 +357,7 @@ namespace libsemigroups {
       using detail::group_digits;
       size_t min = POSITIVE_INFINITY, max = 0, len = 0;
       for (auto it = _rewriter.begin(); it != _rewriter.end(); ++it) {
-        auto rule_len = (**it).lhs()->size() + (**it).rhs()->size();
+        auto rule_len = (**it).lhs().size() + (**it).rhs().size();
         len += rule_len;
         min = (rule_len < min ? rule_len : min);
         max = (rule_len > max ? rule_len : max);
@@ -693,7 +693,7 @@ namespace libsemigroups {
         prefixes.emplace("", 0);
         size_t n = 1;
         for (auto const* rule : _rewriter) {
-          detail::prefixes_string(prefixes, *rule->lhs(), n);
+          detail::prefixes_string(prefixes, rule->lhs(), n);
         }
 
         _gilman_graph_node_labels.resize(prefixes.size(), "");
@@ -820,8 +820,8 @@ namespace libsemigroups {
     KnuthBendixImpl<Rewriter, ReductionOrder>::overlap(detail::Rule const* u,
                                                        detail::Rule const* v) {
       LIBSEMIGROUPS_ASSERT(u->active() && v->active());
-      auto const &ulhs = *(u->lhs()), vlhs = *(v->lhs());
-      auto const &urhs = *(u->rhs()), vrhs = *(v->rhs());
+      auto const &ulhs = u->lhs(), vlhs = v->lhs();
+      auto const &urhs = u->rhs(), vrhs = v->rhs();
       auto const lower_limit = ulhs.cend() - std::min(ulhs.size(), vlhs.size());
 
       int64_t const u_id = u->id(), v_id = v->id();
