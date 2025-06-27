@@ -32,16 +32,14 @@ namespace libsemigroups {
 
     void Rule::deactivate() noexcept {
       LIBSEMIGROUPS_ASSERT(_id != 0);
-      if (active()) {
-        _id *= -1;
-      }
+      LIBSEMIGROUPS_ASSERT(active());
+      _id *= -1;
     }
 
     void Rule::activate() noexcept {
       LIBSEMIGROUPS_ASSERT(_id != 0);
-      if (!active()) {
-        _id *= -1;
-      }
+      LIBSEMIGROUPS_ASSERT(!active());
+      _id *= -1;
     }
 
     bool RuleLookup::operator<(RuleLookup const& that) const {

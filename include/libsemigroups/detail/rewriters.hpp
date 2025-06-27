@@ -26,8 +26,7 @@
 #include <chrono>         // for time_point
 #include <set>            // for set
 #include <string>         // for basic_string, operator==
-#include <unordered_map>  // for unordered map
-#include <unordered_set>  // for unordered set
+#include <unordered_map>  // for unordered_map
 
 #include "../debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "../order.hpp"  // for shortlex_compare
@@ -170,7 +169,6 @@ namespace libsemigroups {
         size_t   max_active_rules;
         size_t   min_length_lhs_rule;
         uint64_t total_rules;
-        // std::unordered_set<std::string> unique_lhs_rules;
       };
 
       std::list<Rule*>        _active_rules;
