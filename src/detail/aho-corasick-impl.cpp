@@ -129,6 +129,12 @@ namespace libsemigroups {
       return _all_nodes[i].height();
     }
 
+    [[nodiscard]] bool AhoCorasickImpl::terminal_no_checks(index_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
+      return _all_nodes[i].terminal();
+    }
+
     [[nodiscard]] AhoCorasickImpl::index_type
     AhoCorasickImpl::new_active_node_no_checks(index_type  parent_index,
                                                letter_type a) {
