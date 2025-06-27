@@ -55,6 +55,8 @@ namespace libsemigroups {
       rt.add_rule("cb"_w, "b"_w);
       rt.add_rule("a"_w, "b"_w);
 
+      REQUIRE(!rt.confluent());
+      rt.process_pending_rules();
       REQUIRE(rt.confluent());
 
       std::string w1 = {0, 0};
@@ -99,6 +101,8 @@ namespace libsemigroups {
       rfl.add_rule("cb"_w, "b"_w);
       rfl.add_rule("a"_w, "b"_w);
 
+      REQUIRE(!rfl.confluent());
+      REQUIRE(rfl.process_pending_rules());
       REQUIRE(rfl.confluent());
 
       std::string w1 = {0, 0};
@@ -144,6 +148,8 @@ namespace libsemigroups {
       rt.add_rule("cb"_w, "b"_w);
       rt.add_rule("a"_w, "b"_w);
 
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
       REQUIRE(rt.confluent());
     }
 
@@ -158,6 +164,8 @@ namespace libsemigroups {
       rt.add_rule("aaa"_w, ""_w);
       rt.add_rule("bbb"_w, ""_w);
       rt.add_rule("ababab"_w, ""_w);
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
@@ -174,6 +182,8 @@ namespace libsemigroups {
       rt.add_rule("dc"_w, ""_w);
       rt.add_rule("ca"_w, "ac"_w);
 
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
@@ -192,6 +202,8 @@ namespace libsemigroups {
       rt.add_rule("ba"_w, "ab"_w);
 
       REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
+      REQUIRE(!rt.confluent());
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
@@ -205,6 +217,8 @@ namespace libsemigroups {
       rt.add_rule("bbb"_w, ""_w);
       rt.add_rule("ababab"_w, ""_w);
 
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
@@ -221,6 +235,8 @@ namespace libsemigroups {
       rt.add_rule("bbb"_w, ""_w);
       rt.add_rule("ababab"_w, ""_w);
 
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
@@ -239,6 +255,8 @@ namespace libsemigroups {
       rt.add_rule("abacabacabacabac"_w, ""_w);
 
       REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
+      REQUIRE(!rt.confluent());
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
@@ -256,6 +274,8 @@ namespace libsemigroups {
       rt.add_rule("bc"_w, "b"_w);
       rt.add_rule("bc"_w, "c"_w);
 
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
   }  // namespace detail
