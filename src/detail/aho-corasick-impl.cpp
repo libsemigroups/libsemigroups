@@ -189,31 +189,37 @@ namespace libsemigroups {
       return new_node_index;
     }
 
-    void AhoCorasickImpl::deactivate_node_no_checks(index_type index) {
-      LIBSEMIGROUPS_ASSERT(index < _all_nodes.size());
-      // For each active suffix link source <current_source> of <index>, push
-      // <current_source> to the vector of nodes which need to have their
+    void AhoCorasickImpl::deactivate_node_no_checks(index_type node_index) {
+      LIBSEMIGROUPS_ASSERT(node_index < _all_nodes.size());
+      // For each active suffix link source <current_source> of <node_index>,
+      // push <current_source> to the vector of nodes which need to have their
       // suffix link updated.
-      auto& node = _all_nodes[index];
-      for (auto current_source_index : node._suffix_link_sources) {
+      auto& node = _all_nodes[node_index];
+      for (auto current_source_index : node.suffix_link_sources()) {
         LIBSEMIGROUPS_ASSERT(_all_nodes[current_source_index].suffix_link()
-                             == index);
+                             == node_index);
         if (is_active_node(current_source_index)) {
-          _node_indices_to_update.push_back(current_source_index);
+          auto&      current_source    = _all_nodes[current_source_index];
+          index_type suffix_link_index = current_source.suffix_link();
+          index_type next_suffix_link_index
+              = _all_nodes[suffix_link_index].suffix_link();
+          while (!is_active_node(next_suffix_link_index)) {
+            suffix_link_index = next_suffix_link_index;
+            next_suffix_link_index
+                = _all_nodes[next_suffix_link_index].suffix_link();
+          }
+          current_source.suffix_link(next_suffix_link_index);
+          add_suffix_link_source(current_source_index, next_suffix_link_index);
         }
       }
-      rm_suffix_link_source(index, _all_nodes[index].suffix_link());
+      rm_suffix_link_source(node_index, _all_nodes[node_index].suffix_link());
 
-      // Make the node inactive
 #ifdef LIBSEMIGROUPS_DEBUG
-
-      auto num_removed = _active_nodes_index.erase(index);
-      (void) num_removed;
-      LIBSEMIGROUPS_ASSERT(num_removed == 1);
-#else
-      _active_nodes_index.erase(index);
+      auto num_removed =
 #endif
-      _inactive_nodes_index.push_back(index);
+          _active_nodes_index.erase(node_index);
+      LIBSEMIGROUPS_ASSERT(num_removed == 1);
+      _inactive_nodes_index.push_back(node_index);
     }
 
     void AhoCorasickImpl::throw_if_node_index_out_of_range(index_type i) const {
