@@ -254,7 +254,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_DEBUG
       auto [it, inserted] =
 #endif
-          _all_nodes[target_index]._suffix_link_sources.insert(source_index);
+          _all_nodes[target_index].suffix_link_sources().insert(source_index);
       LIBSEMIGROUPS_ASSERT(inserted);
     }
 

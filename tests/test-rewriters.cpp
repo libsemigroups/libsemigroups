@@ -278,5 +278,25 @@ namespace libsemigroups {
       REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
+
+    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
+                            "010",
+                            "large example",
+                            "[no-valgrind][extreme]") {
+      auto        rg = ReportGuard(false);
+      RewriteTrie rt = RewriteTrie();
+
+      rt.increase_alphabet_size_by(3);
+      rt.add_rule("aaa"_w, "c"_w);
+      rt.add_rule("bbb"_w, "c"_w);
+      rt.add_rule("ababab"_w, "c"_w);
+      rt.add_rule("ac"_w, "a"_w);
+      rt.add_rule("bc"_w, "b"_w);
+      rt.add_rule("bc"_w, "c"_w);
+
+      REQUIRE(!rt.confluent());
+      REQUIRE(rt.process_pending_rules());
+      REQUIRE(!rt.confluent());
+    }
   }  // namespace detail
 }  // namespace libsemigroups
