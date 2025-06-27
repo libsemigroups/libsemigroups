@@ -172,6 +172,9 @@ namespace libsemigroups {
       new_node.suffix_link(link_index);
       new_node.height(_all_nodes[new_node.parent()].height() + 1);
 
+      // We have to collect the node indices to update, and then update them,
+      // because we must traverse the suffix link sources here, and so we cannot
+      // change them at the same time.
       _node_indices_to_update.clear();
       populate_node_indices_to_update(parent_index, new_node_index, a);
       for (index_type node_index : _node_indices_to_update) {
