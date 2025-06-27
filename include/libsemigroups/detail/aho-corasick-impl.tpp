@@ -41,11 +41,8 @@ namespace libsemigroups {
       for (auto it = first; it != last; ++it) {
         index_type next = _children.get(current, *it);
         if (next == UNDEFINED) {
-          next = new_active_node_no_checks(current,
-                                           *it);  // index of next node added
-          // set next as child of parent
-          // TODO move this into new_active_node_no_checks
-          _children.set(current, *it, next);
+          // index of next node added
+          next = new_active_node_no_checks(current, *it);
         }
         current = next;
       }
@@ -203,5 +200,5 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
