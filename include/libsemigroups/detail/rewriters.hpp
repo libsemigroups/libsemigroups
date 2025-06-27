@@ -93,18 +93,6 @@ namespace libsemigroups {
         _id = -1 * id;
       }
 
-      // TODO to cpp
-      void set_id(int64_t id) {
-        if (id <= 0) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "invalid id, expected a value greater than 0, found {}", id);
-        }
-        if (active()) {
-          LIBSEMIGROUPS_EXCEPTION("cannot set the id of an active rule");
-        }
-        set_id_no_checks(id);
-      }
-
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
