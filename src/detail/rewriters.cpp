@@ -18,10 +18,11 @@
 
 #include "libsemigroups/detail/rewriters.hpp"
 
-#include "libsemigroups/detail/report.hpp"  // for report_default
-#include "libsemigroups/runner.hpp"         // for Ticker
 #include <algorithm>
 #include <chrono>
+
+#include "libsemigroups/detail/report.hpp"  // for report_default
+#include "libsemigroups/runner.hpp"         // for Ticker
 
 namespace libsemigroups {
   namespace detail {
