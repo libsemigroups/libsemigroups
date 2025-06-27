@@ -69,7 +69,8 @@ namespace libsemigroups {
         : _all_nodes({Node()}),
           _children(0, 1, UNDEFINED),
           _active_nodes_index({root}),
-          _inactive_nodes_index() {}
+          _inactive_nodes_index(),
+          _node_indices_to_update() {}
 
     AhoCorasickImpl& AhoCorasickImpl::init() {
       init(0);
@@ -80,7 +81,8 @@ namespace libsemigroups {
         : _all_nodes({Node()}),
           _children(num_letters, 1, UNDEFINED),
           _active_nodes_index({root}),
-          _inactive_nodes_index() {}
+          _inactive_nodes_index(),
+          _node_indices_to_update() {}
 
     AhoCorasickImpl& AhoCorasickImpl::init(size_t num_letters) {
       LIBSEMIGROUPS_ASSERT(!_all_nodes.empty());
