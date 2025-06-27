@@ -25,7 +25,11 @@
 
 namespace libsemigroups {
   namespace detail {
-    // Construct from KnuthBendixImpl with new but empty std::string's
+
+    ////////////////////////////////////////////////////////////////////////
+    // Rule
+    ////////////////////////////////////////////////////////////////////////
+
     Rule::Rule(int64_t id) : _lhs(), _rhs(), _id(-1 * id) {
       LIBSEMIGROUPS_ASSERT(_id < 0);
     }
@@ -42,6 +46,11 @@ namespace libsemigroups {
       _id *= -1;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // RuleLookup
+    ////////////////////////////////////////////////////////////////////////
+
+    // Reverse lex order
     bool RuleLookup::operator<(RuleLookup const& that) const {
       auto it_this = _last - 1;
       auto it_that = that._last - 1;
@@ -52,6 +61,10 @@ namespace libsemigroups {
       }
       return *it_this < *it_that;
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Rules
+    ////////////////////////////////////////////////////////////////////////
 
     Rules::Stats::Stats() noexcept {
       init();
@@ -69,8 +82,7 @@ namespace libsemigroups {
     Rules& Rules::init() {
       // Put all active rules and those rules in the stack into the
       // inactive_rules list
-      for (Rule const* cptr : _active_rules) {
-        Rule* ptr = const_cast<Rule*>(cptr);
+      for (Rule* ptr : _active_rules) {
         ptr->deactivate();
         _inactive_rules.insert(_inactive_rules.end(), ptr);
       }
@@ -184,10 +196,11 @@ namespace libsemigroups {
       Rules::init();
       // Put all active rules and those rules in the stack into the
       // inactive_rules list
-      while (!_pending_rules.empty()) {
-        Rules::add_inactive_rule(_pending_rules.back());
-        _pending_rules.pop_back();
+      for (Rule* rule : _pending_rules) {
+        Rules::add_inactive_rule(rule);
       }
+      _pending_rules.clear();
+      // TODO rename _max_pending_rules
       _max_stack_depth  = 0;
       _cached_confluent = false;
       _confluence_known = false;
@@ -195,11 +208,10 @@ namespace libsemigroups {
     }
 
     RewriteBase::~RewriteBase() {
-      while (!_pending_rules.empty()) {
-        Rule* rule = _pending_rules.back();
-        _pending_rules.pop_back();
+      for (Rule* rule : _pending_rules) {
         delete rule;
       }
+      _pending_rules.clear();
     }
 
     void RewriteBase::set_cached_confluent(tril val) const {
@@ -217,7 +229,8 @@ namespace libsemigroups {
     bool RewriteBase::add_pending_rule(Rule* rule) {
       LIBSEMIGROUPS_ASSERT(!rule->active());
       if (rule->lhs() != rule->rhs()) {
-        _pending_rules.emplace_back(rule);
+        rule->reorder();
+        _pending_rules.push_back(rule);
         _max_stack_depth = std::max(_max_stack_depth, _pending_rules.size());
         return true;
       } else {
@@ -332,8 +345,7 @@ namespace libsemigroups {
                 v_begin, v_end, rule->lhs().cbegin(), rule->lhs().cend()));
             v_end -= rule->lhs().size();
             w_begin -= rule->rhs().size();
-            detail::string_replace(
-                w_begin, rule->rhs().cbegin(), rule->rhs().cend());
+            std::copy(rule->rhs().cbegin(), rule->rhs().cend(), w_begin);
           }
         }
         while (w_begin != w_end
@@ -446,6 +458,7 @@ namespace libsemigroups {
     }
 
     bool RewriteFromLeft::process_pending_rules() {
+      // TODO try maintaining pending_rules as a heap
       std::sort(
           _pending_rules.begin(),
           _pending_rules.end(),
@@ -571,8 +584,7 @@ namespace libsemigroups {
           v_end -= lhs_size - 1;
           w_begin -= rule->rhs().size();
           // Replace lhs with rhs in-place
-          detail::string_replace(
-              w_begin, rule->rhs().cbegin(), rule->rhs().cend());
+          std::copy(rule->rhs().cbegin(), rule->rhs().cend(), w_begin);
           _nodes.erase(_nodes.end() - lhs_size + 1, _nodes.end());
           current = _nodes.back();
         }

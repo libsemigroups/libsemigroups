@@ -137,11 +137,7 @@ namespace libsemigroups {
     static inline void string_replace(std::string::iterator       it1_begin,
                                       std::string::const_iterator it2_begin,
                                       std::string::const_iterator it2_end) {
-      while (it2_begin < it2_end) {
-        *it1_begin = *it2_begin;
-        ++it1_begin;
-        ++it2_begin;
-      }
+      std::copy(it2_begin, it2_end, it1_begin);
     }
 
     // Returns true if [first_prefix, last_prefix) is a prefix of [first_word,
