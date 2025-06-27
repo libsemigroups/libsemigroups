@@ -132,14 +132,6 @@ namespace libsemigroups {
       return stm.str();
     }
 
-    // Replace [it1_begin .. it1_begin + (it2_end - it2_begin)] by
-    // [it2_begin .. it2_end], no checks performed.
-    static inline void string_replace(std::string::iterator       it1_begin,
-                                      std::string::const_iterator it2_begin,
-                                      std::string::const_iterator it2_end) {
-      std::copy(it2_begin, it2_end, it1_begin);
-    }
-
     // Returns true if [first_prefix, last_prefix) is a prefix of [first_word,
     // last_word).
     // Not noexcept, because std::equal isn't
