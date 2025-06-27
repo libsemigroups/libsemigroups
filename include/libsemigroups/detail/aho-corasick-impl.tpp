@@ -94,22 +94,6 @@ namespace libsemigroups {
       }
       _children.set(parent_index, parent_letter, UNDEFINED);
 
-      for (index_type node_index : _node_indices_to_update) {
-        LIBSEMIGROUPS_ASSERT(is_active_node(node_index));
-        auto&      node                      = _all_nodes[node_index];
-        index_type current_suffix_link_index = node.suffix_link();
-        LIBSEMIGROUPS_ASSERT(!is_active_node(current_suffix_link_index));
-        index_type next_suffix_link_index
-            = _all_nodes[current_suffix_link_index].suffix_link();
-        while (!is_active_node(next_suffix_link_index)) {
-          current_suffix_link_index = next_suffix_link_index;
-          next_suffix_link_index
-              = _all_nodes[next_suffix_link_index].suffix_link();
-        }
-        node.suffix_link(next_suffix_link_index);
-        add_suffix_link_source(node_index, next_suffix_link_index);
-      }
-
       return rule_index;
     }
 
