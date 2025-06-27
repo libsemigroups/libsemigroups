@@ -150,8 +150,13 @@ namespace libsemigroups {
 
     Rules::iterator Rules::erase_from_active_rules(iterator it) {
       // _stats.unique_lhs_rules.erase(*((*it)->lhs()));
-      Rule* rule = *it;
-      LIBSEMIGROUPS_ASSERT(!rule->active());
+      LIBSEMIGROUPS_ASSERT(!(*it)->active());
+      // TODO calling the next two lines double deactivates some rules (those
+      // coming from make_active_rule_pending), weirdly
+      // everything works when this happens (tests pass, though some assertions
+      // fail in debug mode) and test 139 is twice as fast for some reason!
+      // Rule* rule = *it;
+      // rule->deactivate_no_checks();
 
       if (it != _cursors[0] && it != _cursors[1]) {
         it = _active_rules.erase(it);
@@ -858,7 +863,7 @@ namespace libsemigroups {
 
     Rules::iterator RewriteTrie::make_active_rule_pending(Rules::iterator it) {
       Rule* rule = *it;
-      rule->deactivate_no_checks();  // Done in Rules::erase_from
+      rule->deactivate_no_checks();
       add_pending_rule(rule);
       index_type node
           = _trie.rm_word_no_checks(rule->lhs().cbegin(), rule->lhs().cend());
