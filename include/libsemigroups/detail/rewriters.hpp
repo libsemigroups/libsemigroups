@@ -66,12 +66,12 @@ namespace libsemigroups {
         delete _rhs;
       }
 
-      [[nodiscard]] std::string* lhs() const noexcept {
-        return _lhs;
+      [[nodiscard]] std::string& lhs() const noexcept {
+        return *_lhs;
       }
 
-      [[nodiscard]] std::string* rhs() const noexcept {
-        return _rhs;
+      [[nodiscard]] std::string& rhs() const noexcept {
+        return *_rhs;
       }
 
       [[nodiscard]] bool empty() const noexcept {
@@ -114,8 +114,8 @@ namespace libsemigroups {
       RuleLookup() : _rule(nullptr) {}
 
       explicit RuleLookup(Rule* rule)
-          : _first(rule->lhs()->cbegin()),
-            _last(rule->lhs()->cend()),
+          : _first(rule->lhs().cbegin()),
+            _last(rule->lhs().cend()),
             _rule(rule) {}
 
       RuleLookup& operator()(std::string::iterator const& first,
@@ -257,8 +257,8 @@ namespace libsemigroups {
                                    Iterator begin_rhs,
                                    Iterator end_rhs) {
         Rule* rule = new_rule();
-        rule->lhs()->assign(begin_lhs, end_lhs);
-        rule->rhs()->assign(begin_rhs, end_rhs);
+        rule->lhs().assign(begin_lhs, end_lhs);
+        rule->rhs().assign(begin_rhs, end_rhs);
         rule->reorder();
         return rule;
       }
@@ -389,8 +389,8 @@ namespace libsemigroups {
 
      private:
       void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
+        rewrite(rule->lhs());
+        rewrite(rule->rhs());
         rule->reorder();
       }
 
@@ -427,8 +427,8 @@ namespace libsemigroups {
       using RewriteBase::add_rule;
 
       void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
+        rewrite(rule->lhs());
+        rewrite(rule->rhs());
         rule->reorder();
       }
 
@@ -472,8 +472,8 @@ namespace libsemigroups {
                                                size_t backtrack_depth) const;
 
       void add_rule_to_trie(Rule* rule) {
-        index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
-                                                   rule->lhs()->cend());
+        index_type node = _trie.add_word_no_checks(rule->lhs().cbegin(),
+                                                   rule->lhs().cend());
         _rules.emplace(node, rule);
       }
 
