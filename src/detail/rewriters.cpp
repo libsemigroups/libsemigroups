@@ -589,7 +589,6 @@ namespace libsemigroups {
       for (Rule* rule : *this) {
         index_type node = _trie.traverse_trie_no_checks(rule->lhs().cbegin(),
                                                         rule->lhs().cend());
-        // TODO check that node is correct
         LIBSEMIGROUPS_ASSERT(_trie.terminal(node));
         _rules.emplace(node, rule);
       }

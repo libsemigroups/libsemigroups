@@ -481,7 +481,7 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }  // namespace detail
+  }    // namespace detail
 }  // namespace libsemigroups
 
 #include "aho-corasick-impl.tpp"
