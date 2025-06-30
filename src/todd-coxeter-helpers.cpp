@@ -18,7 +18,8 @@
 
 #include "libsemigroups/todd-coxeter-helpers.hpp"
 
-#include <algorithm>    // for minmax
+#include <algorithm>  // for minmax
+#include <chrono>
 #include <string_view>  // for basic_st...
 #include <tuple>        // for tie
 
@@ -75,5 +76,78 @@ namespace libsemigroups {
       report_default("failed to show non-triviality!\n");
       return tril::unknown;
     }
+
+    void perform_lookbehind(detail::ToddCoxeterImpl& tc) {
+      using word_graph_type = detail::ToddCoxeterImpl::word_graph_type;
+      using node_type       = word_graph_type::node_type;
+      using detail::group_digits;
+
+      auto& wg = const_cast<word_graph_type&>(tc.current_word_graph());
+
+      auto current = wg.cursor();
+
+      word_type w1, w2;
+
+      using detail::group_digits;
+
+      std::chrono::high_resolution_clock::time_point lookbehind_start_time;
+      size_t                                         at = 0, found = 0;
+      uint64_t num_nodes_before_lookbehind = wg.number_of_nodes_active();
+
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<90}\n", "");
+        report_default("ToddCoxeter: performing lookbehind at "
+                       "{} ({} active nodes) . . .\n",
+                       detail::string_time(delta(tc.start_time())),
+                       group_digits(wg.number_of_nodes_active()));
+        report_no_prefix("{:+<90}\n", "");
+        lookbehind_start_time = std::chrono::high_resolution_clock::now();
+        tc.reset_last_report();
+      }
+
+      while (current != wg.detail::NodeManager<node_type>::first_free_node()) {
+        if (reporting_enabled()) {
+          if (delta(tc.last_report()) > std::chrono::seconds(1)) {
+            tc.reset_last_report();
+            report_default(
+                "ToddCoxeter: at {} of {} found {} pairs of distinct "
+                "nodes so far\n",
+                group_digits(at),
+                group_digits(wg.number_of_nodes_active()),
+                group_digits(found));
+          }
+        }
+        w1.clear();
+        w2.clear();
+        tc.current_word_of_no_checks(std::back_inserter(w1), current);
+        tc.reduce_no_run_no_checks(
+            std::back_inserter(w2), w1.cbegin(), w1.cend());
+        if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
+          node_type other = word_graph::follow_path_no_checks(
+              wg, wg.initial_node(), w2.begin(), w2.end());
+          if (other != UNDEFINED) {
+            ++found;
+            wg.merge_nodes_no_checks(current, other);
+          }
+        }
+        ++at;
+        current = wg.detail::NodeManager<node_type>::next_active_node(current);
+      }
+      wg.process_coincidences<detail::DoNotRegisterDefs>();
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<90}\n", "");
+        report_default("ToddCoxeter: lookabehind complete with    |{:>12} "
+                       "(active) |{:>12} (diff)\n",
+                       group_digits(wg.number_of_nodes_active()),
+                       group_digits(wg.number_of_nodes_active()
+                                    - num_nodes_before_lookbehind));
+        report_default("ToddCoxeter: after                        |{:>12} "
+                       "(time)   |{:>12} (total)\n",
+                       detail::string_time(delta(lookbehind_start_time)),
+                       detail::string_time(delta(tc.start_time())));
+        report_no_prefix("{:+<90}\n", "");
+      }
+    }
+
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

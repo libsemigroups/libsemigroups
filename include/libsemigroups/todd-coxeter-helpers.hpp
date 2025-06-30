@@ -808,6 +808,65 @@ namespace libsemigroups {
                                       = std::chrono::milliseconds(100),
                                       float threshold = 0.99);
 
+    //! \brief Perform a lookbehind.
+    //!
+    //! Defined in \c todd-coxeter-helpers.hpp.
+    //!
+    //! This function performs a "lookbehind" on the argument \p tc which is
+    //! defined as follows. For every node \c n in the so-far computed \ref
+    //! WordGraph (obtained from \ref ToddCoxeter::current_word_graph) we use
+    //! the current word graph to rewrite the current short-lex least path from
+    //! the initial node to \c n. If this rewritten word is not equal to the
+    //! original word, and it also labels a path from the initial node in the
+    //! current word graph to a node \c m, then \c m and \c n represent the same
+    //! congruence class. Thus we may collapse \c m and \c n (i.e. quotient the
+    //! word graph by the least congruence containing the pair \c m and \c n).
+    //!
+    //! The intended use case for this function is when you have a large word
+    //! graph in a partially enumerated \ref_todd_coxeter instance, and you
+    //! would like to minimise this word graph as far as possible.
+    //!
+    //! For example, if we take the following monoid presentation of B. H.
+    //! Neumann for the trivial group:
+    //!
+    //! \code
+    //! Presentation<std::string> p;
+    //! p.alphabet("abcdef");
+    //! p.contains_empty_word(true);
+    //! presentation::add_inverse_rules(p, "defabc");
+    //! presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
+    //! presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
+    //! presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
+    //! ToddCoxeter tc(congruence_kind.twosided, p)
+    //! \endcode
+    //!
+    //! Then running \c tc will simply grow the underlying word graph until
+    //! your computer runs out of memory. The authors of ``libsemigroups`` were
+    //! not able to find any combination of the many settings for
+    //! \ref_todd_coxeter where running \p tc returned an answer. We also tried
+    //! with GAP and ACE but neither of these seemed able to return an answer
+    //! either. But doing the following:
+    //!
+    //! \code
+    //! tc.lookahead_extent(options::lookahead_extent::full)
+    //!     .lookahead_style(options::lookahead_style::felsch);
+    //!
+    //! tc.run_for(std::chrono::seconds(1));
+    //! tc.perform_lookahead(true);
+    //!
+    //! todd_coxeter::perform_lookbehind(tc);
+    //! tc.run_for(std::chrono::seconds(1));
+    //! todd_coxeter::perform_lookbehind(tc);
+    //! tc.perform_lookahead(true);
+    //! tc.number_of_classes(); // returns 1
+    //! \endcode
+    //!
+    //! returns the correct answer in about 22 seconds (on a 2024 Macbook Pro M4
+    //! Pro).
+    //!
+    //! \param tc the  \ref_todd_coxeter instance.
+    void perform_lookbehind(detail::ToddCoxeterImpl& tc);
+
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - redundant_rule
     ////////////////////////////////////////////////////////////////////////
