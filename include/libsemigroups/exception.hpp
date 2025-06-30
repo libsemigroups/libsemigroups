@@ -26,6 +26,10 @@
 #include "detail/fmt.hpp"
 #include "detail/formatters.hpp"
 
+// This macro doesn't really need to exist, it does because o/w doxygen fails
+// to produce the doc for LibsemigroupsException
+#define VISIBILITY __attribute__((visibility("default")))
+
 namespace libsemigroups {
   //! \defgroup exception_group Exceptions
   //!
@@ -35,7 +39,6 @@ namespace libsemigroups {
   //!
   //! This file contains functionality for the exceptions used in
   //! `libsemigroups`.
-  //!
 
   //! \ingroup exception_group
   //!
@@ -49,8 +52,7 @@ namespace libsemigroups {
   // We need to explicitly set the visibility to default here so that
   // LibsemigroupsExceptions can be caught within other binaries (e.g. in the
   // python bindings). See https://gcc.gnu.org/wiki/Visibility for more info.
-  struct __attribute__((visibility("default"))) LibsemigroupsException
-      : public std::runtime_error {
+  struct VISIBILITY LibsemigroupsException : public std::runtime_error {
     //! \brief Create an exception.
     //!
     //! Create an exception with filename, line number, function name, and
