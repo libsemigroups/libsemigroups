@@ -1181,6 +1181,10 @@ namespace libsemigroups {
       }
 #endif
 
+      [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
+        return _word_graph.number_of_nodes_active();
+      }
+
       // [[nodiscard]] bool empty() const {
       //   return (internal_presentation().rules.empty() &&
       //   generating_pairs().empty()
