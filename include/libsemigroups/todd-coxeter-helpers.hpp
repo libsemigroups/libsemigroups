@@ -813,14 +813,15 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function performs a "lookbehind" on the argument \p tc which is
-    //! defined as follows. For every node \c n in the so-far computed \ref
-    //! WordGraph (obtained from \ref ToddCoxeter::current_word_graph) we use
-    //! the current word graph to rewrite the current short-lex least path from
-    //! the initial node to \c n. If this rewritten word is not equal to the
-    //! original word, and it also labels a path from the initial node in the
-    //! current word graph to a node \c m, then \c m and \c n represent the same
-    //! congruence class. Thus we may collapse \c m and \c n (i.e. quotient the
-    //! word graph by the least congruence containing the pair \c m and \c n).
+    //! defined as follows. For every node \c n in the so-far computed
+    //! \ref WordGraph (obtained from \ref ToddCoxeter::current_word_graph) we
+    //! use the current word graph to rewrite the current short-lex least path
+    //! from the initial node to \c n. If this rewritten word is not equal to
+    //! the original word, and it also labels a path from the initial node in
+    //! the current word graph to a node \c m, then \c m and \c n represent the
+    //! same congruence class. Thus we may collapse \c m and \c n (i.e. quotient
+    //! the word graph by the least congruence containing the pair \c m and
+    //! \c n).
     //!
     //! The intended use case for this function is when you have a large word
     //! graph in a partially enumerated \ref_todd_coxeter instance, and you
