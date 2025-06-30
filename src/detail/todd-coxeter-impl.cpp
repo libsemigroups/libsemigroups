@@ -1422,6 +1422,5 @@ namespace libsemigroups {
       _ticker_running = old_ticker_running;
       return _word_graph.number_of_nodes_killed() - old_number_of_killed;
     }
-
   }  // namespace detail
 }  // namespace libsemigroups

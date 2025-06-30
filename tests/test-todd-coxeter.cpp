@@ -2340,13 +2340,12 @@ namespace libsemigroups {
   }
 
   // Second of BHN's series of increasingly complicated presentations
-  // of 1. Doesn't terminate
+  // of 1. Used to not terminate with lookbehind it does!!
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "059",
                           "(from kbmag/standalone/kb_data/degen4b) "
                           "(KnuthBendix 065)",
                           "[extreme][todd-coxeter][kbmag][shortlex]") {
-    fmt::print("\n");
     auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
@@ -2357,22 +2356,22 @@ namespace libsemigroups {
     presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
     presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
 
-    REQUIRE(presentation::length(p) == 87);
-    presentation::greedy_reduce_length(p);
-    REQUIRE(presentation::length(p) == 63);
-    REQUIRE(p.alphabet() == "abcdefghijkl");
-    // REQUIRE(random_string(p.alphabet(), 20, 30) == "");
+    // REQUIRE(presentation::length(p) == 87);
+    // presentation::greedy_reduce_length(p);
+    // REQUIRE(presentation::length(p) == 63);
+    // REQUIRE(p.alphabet() == "abcdefghijkl");
+    //// REQUIRE(random_string(p.alphabet(), 20, 30) == "");
 
-    presentation::remove_trivial_rules(p);
-    presentation::remove_duplicate_rules(p);
-    presentation::sort_rules(p);
-    presentation::sort_each_rule(p);
-    REQUIRE(p.rules
-            == std::vector<std::string>(
-                {"ad",    "",  "be",    "",  "cf",    "",  "da",    "",
-                 "eb",    "",  "fc",    "",  "gjkii", "",  "hklgg", "",
-                 "iljhh", "",  "ccefb", "g", "bbdea", "h", "aafdc", "i",
-                 "facdd", "j", "ecbff", "k", "dbaee", "l"}));
+    // presentation::remove_trivial_rules(p);
+    // presentation::remove_duplicate_rules(p);
+    // presentation::sort_rules(p);
+    // presentation::sort_each_rule(p);
+    // REQUIRE(p.rules
+    //         == std::vector<std::string>(
+    //             {"ad",    "",  "be",    "",  "cf",    "",  "da",    "",
+    //              "eb",    "",  "fc",    "",  "gjkii", "",  "hklgg", "",
+    //              "iljhh", "",  "ccefb", "g", "bbdea", "h", "aafdc", "i",
+    //              "facdd", "j", "ecbff", "k", "dbaee", "l"}));
 
     ToddCoxeter tc(twosided, p);
 
@@ -2380,15 +2379,19 @@ namespace libsemigroups {
         .lookahead_style(options::lookahead_style::felsch);
 
     REQUIRE(!is_obviously_infinite(tc));
-    tc.run_for(std::chrono::seconds(2));
+    tc.run_for(std::chrono::seconds(1));
     tc.perform_lookahead(true);
 
-    auto w = "afheliaaaaaadffibkgbfhhhhhhldblkdadadadadad";
-    REQUIRE(todd_coxeter::reduce_no_run(tc, w) == "afeaffbdfbd");
-    REQUIRE(todd_coxeter::currently_contains(
-                tc, todd_coxeter::reduce_no_run(tc, w), w)
-            == tril::TRUE);
-    // REQUIRE(tc.number_of_classes() == 1);
+    // auto w = "afheliaaaaaadffibkgbfhhhhhhldblkdadadadadad";
+    // REQUIRE(todd_coxeter::reduce_no_run(tc, w) == "afeaffbdfbd");
+    // REQUIRE(todd_coxeter::currently_contains(
+    //            tc, todd_coxeter::reduce_no_run(tc, w), w)
+    //        == tril::TRUE);
+    todd_coxeter::perform_lookbehind(tc);
+    tc.run_for(std::chrono::seconds(1));
+    todd_coxeter::perform_lookbehind(tc);
+    tc.perform_lookahead(true);
+    REQUIRE(tc.number_of_classes() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -3889,6 +3892,11 @@ namespace libsemigroups {
       REQUIRE(todd_coxeter::currently_contains(tc, words[i], expected[i])
               == tril::TRUE);
     }
+    tc.run_until([&tc]() {
+      return tc.current_word_graph().number_of_nodes_active()
+             > 1.5 * 10'200'960;
+    });
+    todd_coxeter::perform_lookbehind(tc);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {
