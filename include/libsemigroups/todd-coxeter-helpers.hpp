@@ -838,10 +838,10 @@ namespace libsemigroups {
     //! presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
     //! presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
     //! presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
-    //! ToddCoxeter tc(congruence_kind.twosided, p)
+    //! ToddCoxeter tc(congruence_kind.twosided, p);
     //! \endcode
     //!
-    //! Then running \c tc will simply grow the underlying word graph until
+    //! Then running \p tc will simply grow the underlying word graph until
     //! your computer runs out of memory. The authors of ``libsemigroups`` were
     //! not able to find any combination of the many settings for
     //! \ref_todd_coxeter where running \p tc returned an answer. We also tried
