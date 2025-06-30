@@ -266,6 +266,7 @@ namespace libsemigroups {
           return *this;
         }
 
+        using FelschGraph_::presentation;
         using FelschGraph_::target_no_checks;
         using NodeManagedGraph_::NodeManagedGraph;
 
@@ -273,6 +274,8 @@ namespace libsemigroups {
         // TODO(1) corresponding constructors
         Graph& init(Presentation<word_type> const& p);
         Graph& init(Presentation<word_type>&& p);
+
+        Graph& presentation_no_checks(Presentation<word_type> const& p);
 
         void process_definitions();
 
@@ -345,6 +348,8 @@ namespace libsemigroups {
       ToddCoxeterImpl(congruence_kind knd, ToddCoxeterImpl const& tc);
 
       ToddCoxeterImpl& init(congruence_kind knd, ToddCoxeterImpl const& tc);
+
+      ToddCoxeterImpl& presentation_no_checks(Presentation<word_type> const& p);
 
       // This is a constructor and not a helper so that everything that takes a
       // presentation has the same constructors, regardless of what they use

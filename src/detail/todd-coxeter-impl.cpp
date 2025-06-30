@@ -212,6 +212,12 @@ namespace libsemigroups {
       return *this;
     }
 
+    ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::presentation_no_checks(
+        Presentation<word_type> const& p) {
+      FelschGraph_::presentation(p);
+      return *this;
+    }
+
     void ToddCoxeterImpl::Graph::process_definitions() {
       if (presentation().rules.empty()) {
         return;
@@ -491,6 +497,12 @@ namespace libsemigroups {
       _word_graph.init(std::move(p));
       copy_settings_into_graph();
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
+      return *this;
+    }
+
+    ToddCoxeterImpl&
+    ToddCoxeterImpl::presentation_no_checks(Presentation<word_type> const& p) {
+      _word_graph.presentation(p);
       return *this;
     }
 
