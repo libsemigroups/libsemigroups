@@ -321,11 +321,11 @@ namespace libsemigroups {
             break;
           }
           last_stop_early_check = std::chrono::high_resolution_clock::now();
-          if (!tc->_ticker_running && reporting_enabled()
-              && delta(start_time) > std::chrono::seconds(1)) {
-            tc->_ticker_running = true;
-            ticker([this]() { report_progress_from_thread(); });
-          }
+        }
+        if (!tc->_ticker_running && reporting_enabled()
+            && delta(start_time) > std::chrono::seconds(1)) {
+          tc->_ticker_running = true;
+          ticker([this]() { report_progress_from_thread(); });
         }
       }
       tc->_ticker_running = old_ticker_running;
@@ -1249,6 +1249,7 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::report_after_run() const {
       if (reporting_enabled()) {
+        current_word_graph().report_progress_from_thread();
         report_no_prefix("{:+<90}\n", "");
         report_default("ToddCoxeter: STOPPING ({}) --- ",
                        detail::string_time(delta(start_time())));
