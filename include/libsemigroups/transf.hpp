@@ -2418,9 +2418,9 @@ namespace libsemigroups {
   //!
   //! If neither \p prefix nor \p braces is specified, then the returned string
   //! will have the form `"Transf<N, Scalar>({...})"` where \p N and \p Scalar
-  //! are replaced by their values, and `...` is replaced by the contents of \p
-  //! x. If \p prefix is a non-empty string, its value will replace the prefix
-  //! `"Transf<N, Scalar>"` in the returned string.
+  //! are replaced by their values, and `...` is replaced by the contents of
+  //! \p x. If \p prefix is a non-empty string, its value will replace the
+  //! prefix `"Transf<N, Scalar>"` in the returned string.
   //!
   //! \tparam N the degree.
   //! \tparam Scalar an unsigned integer type (the type of the image values).
@@ -2475,11 +2475,11 @@ namespace libsemigroups {
   //! construct a copy of the argument \p x.
   //!
   //! If neither \p prefix nor \p braces is specified, the returned string will
-  //! have the form `"PPerm<N, Scalar>({dom}, {im}, {deg})"` where \p N and \p
-  //! Scalar are replaced by their values, and `dom`, `im`, and `degree` are
-  //! replaced by the domain, image, and degree of \p x, respectively. If \p
-  //! prefix is a non-empty string, its value will replace the prefix "PPerm<N,
-  //! Scalar>" in the returned string.
+  //! have the form `"PPerm<N, Scalar>({dom}, {im}, {deg})"` where \p N and
+  //! \p Scalar are replaced by their values, and `dom`, `im`, and `degree` are
+  //! replaced by the domain, image, and degree of \p x, respectively. If
+  //! \p prefix is a non-empty string, its value will replace the prefix
+  //! "PPerm<N, Scalar>" in the returned string.
   //!
   //! \tparam N the degree.
   //! \tparam Scalar an unsigned integer type (the type of the image values).
@@ -2507,13 +2507,13 @@ namespace libsemigroups {
   //! a std::string of the form \c "<transformation of degree X and rank Y>" if
   //! not.
   //!
-  //! If the returned value of \ref to_input_string has length less than \p
-  //! max_width, then the following applies. If neither \p prefix nor \p braces
-  //! is specified, then the returned string will have the form `"Transf<N,
-  //! Scalar>({...})"` where \p N and \p Scalar are replaced by their values,
-  //! and `...` is replaced by the contents of \p x. If \p prefix is a non-empty
-  //! string, its value will replace the prefix `"Transf<N, Scalar>"` in the
-  //! returned string.
+  //! If the returned value of \ref to_input_string has length less than
+  //! \p max_width, then the following applies. If neither \p prefix nor
+  //! \p braces is specified, then the returned string will have the form
+  //! `"Transf<N, Scalar>({...})"` where \p N and \p Scalar are replaced by
+  //! their values, and `...` is replaced by the contents of \p x. If \p prefix
+  //! is a non-empty string, its value will replace the prefix `"Transf<N,
+  //! Scalar>"` in the returned string.
   //!
   //! \tparam N the degree of the transformation \p x.
   //! \tparam Scalar the type of the image values.
@@ -2521,8 +2521,8 @@ namespace libsemigroups {
   //! \param x the Transf.
   //! \param prefix a prefix for the returned string (defaults to `""`).
   //! \param braces the braces to use in the string (defaults to `"{}"`).
-  //! \param max_width the maximum width of the returned string (defaults to \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (defaults to
+  //! \c 72).
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -2542,13 +2542,13 @@ namespace libsemigroups {
   //! width of the returned string is less than the parameter \p max_width, or
   //! a std::string of the form \c "<permutation of degree X>" if not.
   //!
-  //! If the returned value of \ref to_input_string has length less than \p
-  //! max_width, then the following applies. If neither \p prefix nor \p braces
-  //! is specified, then the returned string
-  //! will have the form `"Perm<N, Scalar>({...})"` where \p N and \p Scalar are
-  //! replaced by their values, and `...` is replaced by the contents of \p x.
-  //! If \p prefix is a non-empty string, its value will replace the prefix
-  //! `"Perm<N, Scalar>"` in the returned string.
+  //! If the returned value of \ref to_input_string has length less than
+  //! \p max_width, then the following applies. If neither \p prefix nor
+  //! \p braces is specified, then the returned string will have the form
+  //! `"Perm<N, Scalar>({...})"` where \p N and \p Scalar are replaced by their
+  //! values, and `...` is replaced by the contents of \p x. If \p prefix is a
+  //! non-empty string, its value will replace the prefix `"Perm<N, Scalar>"` in
+  //! the returned string.
   //!
   //! \tparam N the degree of the permutation \p x.
   //! \tparam Scalar the type of the image values.
@@ -2578,14 +2578,14 @@ namespace libsemigroups {
   //! a std::string of the form \c "<partial permutation of degree X and rank
   //! Y>" if not.
   //!
-  //! If the returned value of \ref to_input_string has length less than \p
-  //! max_width, then the following applies. If neither \p prefix nor \p braces
-  //! is specified, the returned string will
-  //! have the form `"PPerm<N, Scalar>({dom}, {im}, {deg})"` where \p N and \p
-  //! Scalar are replaced by their values, and `dom`, `im`, and `degree` are
-  //! replaced by the domain, image, and degree of \p x, respectively. If \p
-  //! prefix is a non-empty string, its value will replace the prefix "PPerm<N,
-  //! Scalar>" in the returned string.
+  //! If the returned value of \ref to_input_string has length less than
+  //! \p max_width, then the following applies. If neither \p prefix nor
+  //! \p braces is specified, the returned string will have the form `"PPerm<N,
+  //! Scalar>({dom}, {im}, {deg})"` where \p N and \p Scalar are replaced by
+  //! their values, and `dom`, `im`, and `degree` are replaced by the domain,
+  //! image, and degree of \p x, respectively. If \p prefix is a non-empty
+  //! string, its value will replace the prefix "PPerm<N, Scalar>" in the
+  //! returned string.
   //!
   //! \tparam N the degree of the partial permutation \p x.
   //! \tparam Scalar the type of the image values.
@@ -2593,8 +2593,8 @@ namespace libsemigroups {
   //! \param x the PPerm.
   //! \param prefix a prefix for the returned string (defaults to `""`).
   //! \param braces the braces to use in the string (defaults to `"{}"`).
-  //! \param max_width the maximum width of the returned string (defaults to \c
-  //! 72).
+  //! \param max_width the maximum width of the returned string (defaults to
+  //! \c 72).
   //!
   //! \exceptions
   //! \no_libsemigroups_except

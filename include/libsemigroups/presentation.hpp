@@ -2146,13 +2146,13 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning
-    //! This function performs no checks that the letters in \p relator belong
-    //! to the alphabet of \p p or that \p p contains the empty word.
-    //!
     //! \note If multiple cyclic permutations of \p relator are equal, then
     //! there will be duplicate rules added to the presentation \p p. You can
     //! remove these by calling \ref remove_duplicate_rules.
+    //!
+    //! \warning
+    //! This function performs no checks that the letters in \p relator belong
+    //! to the alphabet of \p p or that \p p contains the empty word.
     template <typename Word1, typename Word2>
     void add_cyclic_conjugates_no_checks(Presentation<Word1>& p,
                                          Word2 const&         relator);
