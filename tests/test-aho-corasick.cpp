@@ -465,7 +465,7 @@ namespace libsemigroups {
       auto last  = aho_corasick_impl::end_search_no_checks(ac, w);
       REQUIRE(
           std::vector(first, last)
-          == std::vector<index_type>({1, 2, 1, 8, 5, 14, 5, 15, 1, 6, 2, 1}));
+          == std::vector<index_type>({1, 2, 1, 8, 7, 10, 7, 9, 1, 6, 2, 1}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
@@ -487,7 +487,7 @@ namespace libsemigroups {
       // REQUIRE(ac.number_of_nodes() == 7);
 
       std::vector<index_type> expected
-          = {4, 7, 5, 8, 13, 12, 10, 9, 29, 28, 26, 25, 22, 21, 19, 18};
+          = {4, 5, 7, 8, 11, 12, 14, 15, 19, 20, 22, 23, 26, 27, 29, 30};
       std::vector<index_type> result;
       for (auto& w : {0000_w,
                       0001_w,
