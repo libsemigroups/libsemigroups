@@ -511,13 +511,6 @@ namespace libsemigroups {
         return *this;
       }
 
-      // TODO move to correct place in this file
-      // TODO doc
-      KnuthBendixImpl& process_pending_rules() {
-        _rewriter.process_pending_rules();
-        return *this;
-      }
-
       //! \ingroup knuth_bendix_class_settings_group
       //!
       //! \brief Get the current number of rules to accumulate before
@@ -780,7 +773,26 @@ namespace libsemigroups {
         return _rewriter.number_of_inactive_rules();
       }
 
-      // TODO(0) doc
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Return the number of pending rules.
+      //!
+      //! This function returns the number of pending rules in the system. All
+      //! rules in the system are either active or pending. Active rules are
+      //! used to perform rewriting, but pending rules are not, until they have
+      //! been processed and become active rules. For example, when a
+      //! \ref_knuth_bendix object is constructed from a presentation, the rules
+      //! in the presentation are initially pending. This is to avoid incurring
+      //! the cost of processing the pending rules before absolutely necessary.
+      //!
+      //! \returns
+      //! The number of pending rules.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       [[nodiscard]] size_t number_of_pending_rules() const noexcept {
         return _rewriter.number_of_pending_rules();
       }
@@ -817,6 +829,29 @@ namespace libsemigroups {
       // there are three kinds of rules in the system: active, inactive, and
       // pending.
       [[nodiscard]] auto active_rules();
+
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Process any pending rules.
+      //!
+      //! This function processes any pending rules in the system.
+      //! All rules in
+      //! the system are either active or pending. Active rules are used to
+      //! perform rewriting, but pending rules are not, until they have been
+      //! processed and become active rules. For example, when a
+      //! \ref_knuth_bendix object is constructed from a presentation, the rules
+      //! in the presentation are initially pending. This is to avoid incurring
+      //! the cost of processing the pending rules before absolutely necessary.
+      //!
+      //! \return
+      //! A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      KnuthBendixImpl& process_pending_rules() {
+        _rewriter.process_pending_rules();
+        return *this;
+      }
 
      private:
       // TODO(1) remove this ...
@@ -918,7 +953,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
