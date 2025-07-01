@@ -38,16 +38,11 @@
 
 #include "containers.hpp"  // DynamicArray2
 
-// TODO(2) make nodes accessible as indices of some list (numbered nodes).
-// Make sure this address the badness of traversals (lots of different data
-// types and it just feels a bit hacky)
 // TODO(2) is it worthwhile storing a pointer to the terminal nodes beneath
 // each node? If this can be updated quickly, it would save a lot of time in
 // overlap/confluence checking. One compromise is to have a pointer to the rules
 // any given node is contained within. This could be updated easily when adding
 // new rules, but more care would be needed when removing rules.
-// TODO(1) change names from set_X and get_X to X(val) and X(). e.g.
-// set_suffix_link('a') -> suffix_link('a')
 // TODO(2) add something that gets a ranges element to find all terminal nodes.
 // TODO(2) change all_nodes[i] to node_no_checks(i);
 
@@ -420,7 +415,7 @@ namespace libsemigroups {
         explicit SearchIterator(AhoCorasickImpl const& trie);
 
         reference operator*() const {
-          // TODO would be easy enough to return the position of the match
+          // TODO(1) would be easy enough to return the position of the match
           // also, I think it's just height(_prefix) - height(_suffix)
           return _suffix;
         }
@@ -437,7 +432,7 @@ namespace libsemigroups {
 
         friend bool operator==(SearchIterator const& a,
                                SearchIterator const& b) {
-          // TODO more?
+          // TODO(1) more?
           return a._prefix == b._prefix && a._suffix == b._suffix;
         }
 
@@ -479,7 +474,7 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "aho-corasick-impl.tpp"

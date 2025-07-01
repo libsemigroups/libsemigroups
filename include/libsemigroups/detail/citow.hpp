@@ -38,7 +38,7 @@ namespace libsemigroups {
     class citow {
      protected:
       Iterator     _it;
-      Thing const* _ptr;  // TODO change to Presentation
+      Thing const* _ptr;
 
      public:
       using internal_iterator_type = Iterator;
@@ -130,7 +130,7 @@ namespace libsemigroups {
       class proxy_ref {
        private:
         Iterator     _it;
-        Thing const* _ptr;  // TODO(0) use Presentation const& instead
+        Thing const* _ptr;
 
        public:
         using native_letter_type =
