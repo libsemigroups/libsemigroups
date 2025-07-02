@@ -425,15 +425,17 @@ namespace libsemigroups {
       if (detail::CongruenceCommon::kind() == congruence_kind::onesided) {
         size_t max_alphabet
             = std::numeric_limits<std::string::value_type>::max()
-              - std::numeric_limits<std::string::value_type>::min();
+              - std::numeric_limits<std::string::value_type>::min() + 1;
         if (_presentation.alphabet().size() == max_alphabet) {
           LIBSEMIGROUPS_EXCEPTION(
               "it is not possible to add generating pairs to a 1-sided "
-              "KnuthBendix instance over a presentation with > {} generators "
-              "but found {} generators",
-              max_alphabet - 1,
+              "KnuthBendix instance over a presentation with == {} generators, "
+              "(because an additional letter is required in the alphabet that "
+              "cannot belong to any generating pair)",
               max_alphabet);
         }
+        // TODO remove this why are we adding a letter here? This should only
+        // be done in the impl
         auto new_alphabet = _presentation.alphabet();
         new_alphabet.push_back(
             presentation::first_unused_letter(_presentation));

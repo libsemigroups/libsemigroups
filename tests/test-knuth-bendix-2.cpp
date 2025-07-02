@@ -1876,6 +1876,11 @@ namespace libsemigroups {
     knuth_bendix::add_generating_pair(kb, {1}, {0});
 
     REQUIRE(kb.number_of_classes() == 128);
+
+    p.init().alphabet(256);
+    kb.init(congruence_kind::onesided, p);
+    REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 0}, {0}),
+                      LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
