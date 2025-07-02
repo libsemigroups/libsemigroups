@@ -157,6 +157,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/node-manager.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/node-manager.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/path-iterators.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/path-iterators.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/print.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/pool.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/race.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/report.hpp
