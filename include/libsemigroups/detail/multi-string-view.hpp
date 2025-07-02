@@ -605,7 +605,7 @@ namespace libsemigroups {
 
       struct IteratorTraits : detail::ConstIteratorTraits<string_type> {
         using const_iterator_string = typename string_type::const_iterator;
-        using value_type            = std::string::value_type;
+        using value_type            = string_type::value_type;
         using const_reference       = value_type const&;
         using reference             = value_type&;
         using const_pointer         = value_type const*;
@@ -778,7 +778,7 @@ namespace libsemigroups {
         erase(cbegin(), cbegin() + (first - p->cbegin()));
       }
 
-      explicit MultiStringView(std::string const& s)
+      explicit MultiStringView(string_type const& s)
           : MultiStringView(s.cbegin(), s.cend()) {}
 
       ////////////////////////////////////////////////////////////////////////
@@ -1041,6 +1041,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // libsemigroups comparison operators
     ////////////////////////////////////////////////////////////////////////
+
     static inline bool is_prefix(MultiStringView const& word,
                                  MultiStringView const& possible_prefix) {
       return is_prefix(word.cbegin(),
