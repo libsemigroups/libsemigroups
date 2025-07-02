@@ -343,7 +343,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
                                 "sorted alphabet, found {}",
                                 arg,
-                                p.alphabet());
+                                detail::to_printable(p.alphabet()));
       }
 
       auto it = std::max_element(first, last);
@@ -354,7 +354,7 @@ namespace libsemigroups {
                                 "alphabet, expected [0, ..., {}] found {}",
                                 arg,
                                 p.alphabet().size() - 1,
-                                p.alphabet());
+                                detail::to_printable(p.alphabet()));
       }
     }
 
