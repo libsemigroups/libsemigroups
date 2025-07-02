@@ -1849,11 +1849,27 @@ namespace libsemigroups {
 
     Presentation<std::basic_string<uint8_t>> p;
     p.alphabet(129);
+
+    REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(130),
+                      LibsemigroupsException);
+
     REQUIRE(p.alphabet()[0] == 0);
     REQUIRE(std::vector<uint8_t>(p.alphabet().begin(), p.alphabet().end())
             == (rx::seq<uint8_t>(0) | rx::take(129) | rx::to_vector()));
 
     KnuthBendix kb(congruence_kind::onesided, p);
-    // knuth_bendix::add_generating_pair(kb, 01_w, 0_w);
+    knuth_bendix::add_generating_pair(kb, {0, 1}, {0});
+    REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
+                      LibsemigroupsException);
+
+    kb.init(congruence_kind::onesided, p);
+    REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
+                      LibsemigroupsException);
+    knuth_bendix::add_generating_pair(kb, {0, 1}, {0});
+
+    // REQUIRE(kb.generating_pairs() ==
+    // std::vector<std::basic_string<uint8_t>>());
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
+
 }  // namespace libsemigroups

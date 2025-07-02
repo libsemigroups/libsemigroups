@@ -34,6 +34,7 @@ namespace libsemigroups {
       if (std::isprint(c)) {
         return fmt::format("\'{:c}\'", c);
       } else {
+        // TODO update to use correct type below (i.e. not char)
         return fmt::format("(char with value) {}", static_cast<int>(c));
       }
     }
@@ -52,16 +53,18 @@ namespace libsemigroups {
       if (std::all_of(alphabet.begin(), alphabet.end(), [&start](int val) {
             return val == start++;
           })) {
+        // TODO update to use correct type below (i.e. not char)
         return fmt::format("(char values) [{}, ..., {}]",
                            static_cast<int>(alphabet[0]),
                            start - 1);
       }
+      // TODO update to use correct type below (i.e. not char)
       return fmt::format("(char values) {}",
                          std::vector<int>(alphabet.begin(), alphabet.end()));
     }
 
     template <typename Thing>
-    [[nodiscard]] auto to_printable(Thing&& thing)
+    [[nodiscard]] auto to_printable(Thing const& thing)
         -> std::enable_if_t<!std::is_integral_v<std::decay_t<Thing>>,
                             std::string> {
       return fmt::format("{}", thing);
@@ -263,6 +266,7 @@ namespace libsemigroups {
       if constexpr (std::is_same_v<typename Presentation<Word>::letter_type,
                                    char>) {
         if (!std::isprint(c) && detail::isprint(_alphabet)) {
+          // TODO is this clause required? Isn't this covered by to_printable?
           msg += fmt::format(
               " == {}", std::vector<int>(_alphabet.begin(), _alphabet.end()));
         }

@@ -265,11 +265,35 @@ namespace libsemigroups {
     //!
     //! \throw LibsemigroupsException if any letter in the range from
     //! \p first to \p last is out of bounds.
-    // TODO(0) remove this
+    // TODO(1) remove this
+    // TODO(0) move to tpp
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_not_in_alphabet(Iterator1 first,
                                          Iterator2 last) const {
       presentation().throw_if_letter_not_in_alphabet(first, last);
+      if (detail::CongruenceCommon::kind() == congruence_kind::onesided
+          && !generating_pairs().empty()) {
+        auto const& alpha = presentation().alphabet();
+        auto        it    = std::find_if(first, last, [&alpha](auto val) {
+          return static_cast<typename native_word_type::value_type>(val)
+                 == alpha.back();
+        });
+        if (it != last) {
+          LIBSEMIGROUPS_ASSERT(!alpha.empty());
+          std::decay_t<decltype(alpha)> alpha_to_print(alpha.begin(),
+                                                       alpha.end() - 1);
+
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid letter {}, valid letters are {} (for 1-sided "
+              "congruences KnuthBendix requires an additional letter in "
+              "the alphabet of its presentation, in this case {}, which "
+              "belongs to presentation().alphabet() but cannot belong to any "
+              "generating pair)",
+              detail::to_printable(*it),
+              detail::to_printable(alpha_to_print),
+              detail::to_printable(alpha.back()));
+        }
+      }
     }
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
