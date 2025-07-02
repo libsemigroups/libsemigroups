@@ -378,7 +378,7 @@ namespace libsemigroups {
     // REWRITE_FROM_LEFT from Sims, p67
     // Caution: this uses the assumption that rules are length reducing, if they
     // are not, then u might not have sufficient space!
-    void RewriteFromLeft::rewrite(std::string& u) {
+    void RewriteFromLeft::rewrite(native_word_type& u) {
       if (u.size() < stats().min_length_lhs_rule) {
         return;
       }
@@ -445,8 +445,8 @@ namespace libsemigroups {
       time_point start_time = std::chrono::high_resolution_clock::now();
 
       set_cached_confluent(tril::TRUE);
-      std::string word1;
-      std::string word2;
+      native_word_type word1;
+      native_word_type word2;
 
       for (auto it1 = begin(); it1 != end(); ++it1) {
         Rule const* rule1 = *it1;
@@ -537,15 +537,15 @@ namespace libsemigroups {
 
         // Check rule is non-trivial
         if (rule1->lhs() != rule1->rhs()) {
-          std::string& lhs = rule1->lhs();
+          native_word_type& lhs = rule1->lhs();
 
           for (auto it = begin(); it != end();) {
             Rule* rule2 = *it;
 
             // Check if lhs is contained within either the lhs or rhs of rule2
             // TODO(0) investigate whether or not this can be improved?
-            if (rule2->lhs().find(lhs) != std::string::npos
-                || rule2->rhs().find(lhs) != std::string::npos) {
+            if (rule2->lhs().find(lhs) != native_word_type::npos
+                || rule2->rhs().find(lhs) != native_word_type::npos) {
               // If it is, rule2 must be deactivated and re-processed
               it = make_active_rule_pending(it);
             } else {
@@ -598,7 +598,7 @@ namespace libsemigroups {
 
     // As with RewriteFromLeft::rewrite, this assumes that all rules are length
     // reducing.
-    void RewriteTrie::rewrite(std::string& u) {
+    void RewriteTrie::rewrite(native_word_type& u) {
       // Check if u is rewriteable
       if (u.size() < stats().min_length_lhs_rule) {
         return;
@@ -825,9 +825,9 @@ namespace libsemigroups {
         // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
         // AB -> X, BC -> Y
         // ABC gets rewritten to XC and AY
-
-        std::string word1;
-        std::string word2;
+        // TODO remove allocation
+        native_word_type word1;
+        native_word_type word2;
 
         word1.assign(rule1->rhs());  // X
         word1.append(rule2->lhs().cbegin() + overlap_length,

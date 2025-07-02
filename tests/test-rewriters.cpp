@@ -26,8 +26,9 @@
 
 namespace libsemigroups {
   using literals::operator""_w;
-  namespace detail {
 
+  namespace detail {
+    using string_type = RewriteTrie::native_word_type;
     using namespace std::literals;
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "000", "initial test", "[quick]") {
       auto        rg = ReportGuard(false);
@@ -59,27 +60,27 @@ namespace libsemigroups {
       rt.process_pending_rules();
       REQUIRE(rt.confluent());
 
-      std::string w1 = {0, 0};
+      string_type w1 = {0, 0};
       rt.rewrite(w1);
-      REQUIRE(w1 == std::string({0}));
+      REQUIRE(w1 == string_type({0}));
 
-      std::string w2 = {0, 1};
+      string_type w2 = {0, 1};
       rt.rewrite(w2);
-      REQUIRE(w2 == std::string({0}));
+      REQUIRE(w2 == string_type({0}));
 
-      std::string w3 = {0, 1, 2};
+      string_type w3 = {0, 1, 2};
       rt.rewrite(w3);
-      REQUIRE(w3 == std::string({0}));
+      REQUIRE(w3 == string_type({0}));
 
-      std::string w4 = {0, 1, 2, 0};
+      string_type w4 = {0, 1, 2, 0};
       rt.rewrite(w4);
-      REQUIRE(w4 == std::string({0}));
+      REQUIRE(w4 == string_type({0}));
 
-      std::string w5 = {2, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 2, 1,
+      string_type w5 = {2, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 2, 1,
                         0, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 0, 1,
                         1, 0, 2, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 0, 1, 1, 0};
       rt.rewrite(w5);
-      REQUIRE(w5 == std::string({0}));
+      REQUIRE(w5 == string_type({0}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteFromLeft",
@@ -105,27 +106,27 @@ namespace libsemigroups {
       REQUIRE(rfl.process_pending_rules());
       REQUIRE(rfl.confluent());
 
-      std::string w1 = {0, 0};
+      string_type w1 = {0, 0};
       rfl.rewrite(w1);
-      REQUIRE(w1 == std::string({0}));
+      REQUIRE(w1 == string_type({0}));
 
-      std::string w2 = {0, 1};
+      string_type w2 = {0, 1};
       rfl.rewrite(w2);
-      REQUIRE(w2 == std::string({0}));
+      REQUIRE(w2 == string_type({0}));
 
-      std::string w3 = {0, 1, 2};
+      string_type w3 = {0, 1, 2};
       rfl.rewrite(w3);
-      REQUIRE(w3 == std::string({0}));
+      REQUIRE(w3 == string_type({0}));
 
-      std::string w4 = {0, 1, 2, 0};
+      string_type w4 = {0, 1, 2, 0};
       rfl.rewrite(w4);
-      REQUIRE(w4 == std::string({0}));
+      REQUIRE(w4 == string_type({0}));
 
-      std::string w5 = {2, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 2, 1,
+      string_type w5 = {2, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 2, 1,
                         0, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 0, 1,
                         1, 0, 2, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 0, 1, 1, 0};
       rfl.rewrite(w5);
-      REQUIRE(w5 == std::string({0}));
+      REQUIRE(w5 == string_type({0}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie",

@@ -47,9 +47,13 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     class Rule {
-      std::string _lhs;
-      std::string _rhs;
-      int64_t     _id;
+     public:
+      using native_word_type = std::string;
+
+     private:
+      native_word_type _lhs;
+      native_word_type _rhs;
+      int64_t          _id;
 
      public:
       explicit Rule(int64_t id);
@@ -62,19 +66,19 @@ namespace libsemigroups {
 
       ~Rule() = default;
 
-      [[nodiscard]] std::string const& lhs() const noexcept {
+      [[nodiscard]] native_word_type const& lhs() const noexcept {
         return _lhs;
       }
 
-      [[nodiscard]] std::string const& rhs() const noexcept {
+      [[nodiscard]] native_word_type const& rhs() const noexcept {
         return _rhs;
       }
 
-      [[nodiscard]] std::string& lhs() noexcept {
+      [[nodiscard]] native_word_type& lhs() noexcept {
         return _lhs;
       }
 
-      [[nodiscard]] std::string& rhs() noexcept {
+      [[nodiscard]] native_word_type& rhs() noexcept {
         return _rhs;
       }
 
@@ -114,6 +118,8 @@ namespace libsemigroups {
 
     class RuleLookup {
      public:
+      using native_word_type = Rule::native_word_type;
+
       RuleLookup() : _rule(nullptr) {}
 
       explicit RuleLookup(Rule* rule)
@@ -121,8 +127,8 @@ namespace libsemigroups {
             _last(rule->lhs().cend()),
             _rule(rule) {}
 
-      RuleLookup& operator()(std::string::iterator first,
-                             std::string::iterator last) {
+      RuleLookup& operator()(native_word_type::iterator first,
+                             native_word_type::iterator last) {
         _first = first;
         _last  = last;
         return *this;
@@ -139,9 +145,9 @@ namespace libsemigroups {
       bool operator<(RuleLookup const& that) const;
 
      private:
-      std::string::const_iterator _first;
-      std::string::const_iterator _last;
-      Rule const*                 _rule;
+      native_word_type::const_iterator _first;
+      native_word_type::const_iterator _last;
+      Rule const*                      _rule;
     };  // class RuleLookup
 
     ////////////////////////////////////////////////////////////////////////
@@ -272,6 +278,8 @@ namespace libsemigroups {
       std::vector<Rule*> _pending_rules;
 
      public:
+      using native_word_type = Rule::native_word_type;
+
       ////////////////////////////////////////////////////////////////////////
       // Constructors + inits
       ////////////////////////////////////////////////////////////////////////
@@ -345,6 +353,8 @@ namespace libsemigroups {
       std::set<RuleLookup> _set_rules;
 
      public:
+      using native_word_type = Rule::native_word_type;
+
       using RewriteBase::add_rule;
 
       RewriteFromLeft() = default;
@@ -365,9 +375,9 @@ namespace libsemigroups {
 
       bool process_pending_rules();
 
-      void rewrite(std::string& u);
+      void rewrite(native_word_type& u);
 
-      void rewrite(std::string& u) const {
+      void rewrite(native_word_type& u) const {
         const_cast<RewriteFromLeft*>(this)->rewrite(u);
       }
 
@@ -395,9 +405,10 @@ namespace libsemigroups {
 
     class RewriteTrie : public RewriteBase {
      public:
-      using index_type    = AhoCorasickImpl::index_type;
-      using iterator      = std::string::iterator;
-      using rule_iterator = std::unordered_map<index_type, Rule*>::iterator;
+      using index_type       = AhoCorasickImpl::index_type;
+      using iterator         = native_word_type::iterator;
+      using rule_iterator    = std::unordered_map<index_type, Rule*>::iterator;
+      using native_word_type = Rule::native_word_type;
 
      private:
       std::vector<index_type>               _nodes;
@@ -430,7 +441,7 @@ namespace libsemigroups {
       bool process_pending_rules();
 
       // TODO iterators
-      void rewrite(std::string& u);
+      void rewrite(native_word_type& u);
 
       void rewrite(Rule* rule) const {
         rewrite(rule->lhs());
@@ -438,7 +449,7 @@ namespace libsemigroups {
         rule->reorder();
       }
 
-      void rewrite(std::string& u) const {
+      void rewrite(native_word_type& u) const {
         const_cast<RewriteTrie*>(this)->rewrite(u);
       }
 
