@@ -1784,11 +1784,12 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, 000_w, 11_w));
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "065",
-                                   "sigma sylvester monoid x 2",
-                                   "[todd-coxeter][quick]",
-                                   REWRITER_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "065",
+      "sigma sylvester monoid x 2",
+      "[todd-coxeter][standard][no-valgrind][no-coverage]",
+      REWRITER_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
