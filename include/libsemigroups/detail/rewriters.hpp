@@ -48,7 +48,7 @@ namespace libsemigroups {
 
     class Rule {
      public:
-      using native_word_type = std::string;
+      using native_word_type = std::basic_string<uint8_t>;
 
      private:
       native_word_type _lhs;

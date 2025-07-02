@@ -46,9 +46,10 @@ namespace libsemigroups {
   KnuthBendix<Word, Rewriter, ReductionOrder>&
   KnuthBendix<Word, Rewriter, ReductionOrder>::init(congruence_kind      knd,
                                                     Presentation<Word>&& p) {
-    KnuthBendixImpl_::init(knd, to<Presentation<std::string>>(p, [&p](auto x) {
-                             return p.index_no_checks(x);
-                           }));
+    KnuthBendixImpl_::init(
+        knd, to<Presentation<std::basic_string<uint8_t>>>(p, [&p](auto x) {
+          return p.index_no_checks(x);
+        }));
     _presentation = std::move(p);
     _generating_pairs.clear();
     return *this;
