@@ -33,6 +33,7 @@
 #include "ranges.hpp"      // for rx/ranges
 #include "types.hpp"       // for word_type etc
 #include "word-graph.hpp"  // for is_acyclic
+#include "word-range.hpp"  // for ToWord
 
 #include "detail/eigen.hpp"  // for eigen
 #include "detail/uf.hpp"     // for Duf
@@ -44,7 +45,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixImpl;  // forward decl
     class ToddCoxeterImpl;  // forward decl
-  }                         // namespace detail
+  }  // namespace detail
 
   template <typename Word>
   class Congruence;  // forward decl
@@ -267,9 +268,32 @@ namespace libsemigroups {
     //!
     //! \warning
     //! This function does not check its arguments.
-    IsObviouslyInfinite& add_rules_no_checks(std::string const&    lphbt,
-                                             const_iterator_string first,
-                                             const_iterator_string last);
+    template <typename Char>
+    IsObviouslyInfinite& add_rules_no_checks(
+        std::basic_string<Char> const&                                lphbt,
+        typename std::vector<std::basic_string<Char>>::const_iterator first,
+        typename std::vector<std::basic_string<Char>>::const_iterator last) {
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      auto matrix_start = _matrix.rows();
+      _matrix.conservativeResize(matrix_start + (last - first) / 2,
+                                 Eigen::NoChange);
+      _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
+          .setZero();
+#else
+      auto matrix_start = 0;
+      std::fill(_matrix.begin(), _matrix.end(), 0);
+#endif
+
+      ToWord    stw(lphbt);
+      word_type lhs, rhs;
+      for (auto it = first; it < last; ++it) {
+        stw(lhs, *it++);  // lhs changed in-place
+        stw(rhs, *it);    // rhs changed in-place
+        private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
+      }
+      _nr_letter_components = _letter_components.number_of_blocks();
+      return *this;
+    }
 
     //! \brief Add rules from iterators to \ref word_type.
     //!
@@ -289,9 +313,38 @@ namespace libsemigroups {
     //!
     //! \warning
     //! This function does not check its arguments.
-    IsObviouslyInfinite& add_rules_no_checks(std::string const&       lphbt,
-                                             const_iterator_word_type first,
-                                             const_iterator_word_type last);
+    template <typename Char>
+    IsObviouslyInfinite&
+    add_rules_no_checks(std::basic_string<Char> const& lphbt,
+                        const_iterator_word_type       first,
+                        const_iterator_word_type       last) {
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+      auto matrix_start = _matrix.rows();
+      _matrix.conservativeResize(matrix_start + (last - first) / 2,
+                                 Eigen::NoChange);
+      _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
+          .setZero();
+#else
+      auto matrix_start = 0;
+      std::fill(_matrix.begin(), _matrix.end(), 0);
+#endif
+
+      ToWord                  to_word(lphbt);
+      word_type               lhs, rhs;
+      std::basic_string<Char> tmp;
+      for (auto it = first; it < last; ++it) {
+        // changes lhs in-place
+        tmp.assign(it->begin(), it->end());
+        to_word(lhs, tmp);
+        ++it;
+        // changes rhs in-place
+        tmp.assign(it->begin(), it->end());
+        to_word(rhs, tmp);
+        private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
+      }
+      _nr_letter_components = _letter_components.number_of_blocks();
+      return *this;
+    }
 
     //! \brief Add rules from iterators to std::pair of std::string.
     //!
