@@ -133,15 +133,34 @@ namespace libsemigroups {
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
     class KnuthBendixImpl : public CongruenceCommon {
+     public:
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixImpl - nested subclasses - private
+      // Aliases
+      ////////////////////////////////////////////////////////////////////////
+
+      using native_word_type = typename Rewriter::native_word_type;
+      using rule_type        = std::pair<native_word_type, native_word_type>;
+      using rewriter_type    = Rewriter;
+
+      //////////////////////////////////////////////////////////////////////////
+      // Nested classes - public
+      //////////////////////////////////////////////////////////////////////////
+
+      struct options {
+        enum class overlap { ABC = 0, AB_BC = 1, MAX_AB_BC = 2 };
+      };
+
+     private:
+      ////////////////////////////////////////////////////////////////////////
+      // Nested classes - private
       ////////////////////////////////////////////////////////////////////////
 
       // Overlap measures
       struct OverlapMeasure {
-        virtual size_t operator()(detail::Rule const*,
-                                  detail::Rule const* examples,
-                                  std::string::const_iterator const&)
+        virtual size_t
+        operator()(detail::Rule const*,
+                   detail::Rule const* examples,
+                   typename native_word_type::const_iterator const&)
             = 0;
         virtual ~OverlapMeasure() {}
       };
@@ -150,24 +169,6 @@ namespace libsemigroups {
       struct AB_BC;
       struct MAX_AB_BC;
 
-     public:
-      ////////////////////////////////////////////////////////////////////////
-      // Interface requirements - native-types
-      ////////////////////////////////////////////////////////////////////////
-
-      using rule_type        = std::pair<std::string, std::string>;
-      using native_word_type = std::string;
-      using rewriter_type    = Rewriter;
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixImpl - types - public
-      //////////////////////////////////////////////////////////////////////////
-
-      struct options {
-        enum class overlap { ABC = 0, AB_BC = 1, MAX_AB_BC = 2 };
-      };
-
-     private:
       struct Settings {
         Settings() noexcept;
         Settings& init() noexcept;
@@ -206,11 +207,11 @@ namespace libsemigroups {
       WordGraph<uint32_t>             _gilman_graph;
       std::vector<std::string>        _gilman_graph_node_labels;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
-      Presentation<std::string>       _presentation;
+      Presentation<native_word_type>  _presentation;
       mutable Rewriter                _rewriter;
       Settings                        _settings;
       mutable Stats                   _stats;
-      mutable std::string             _tmp_element1;
+      mutable native_word_type        _tmp_element1;
 
      public:
       //////////////////////////////////////////////////////////////////////////
@@ -229,14 +230,16 @@ namespace libsemigroups {
 
       ~KnuthBendixImpl();
 
-      KnuthBendixImpl(congruence_kind knd, Presentation<std::string> const& p);
+      KnuthBendixImpl(congruence_kind                       knd,
+                      Presentation<native_word_type> const& p);
+
+      KnuthBendixImpl& init(congruence_kind                       knd,
+                            Presentation<native_word_type> const& p);
+
+      KnuthBendixImpl(congruence_kind knd, Presentation<native_word_type>&& p);
 
       KnuthBendixImpl& init(congruence_kind                  knd,
-                            Presentation<std::string> const& p);
-
-      KnuthBendixImpl(congruence_kind knd, Presentation<std::string>&& p);
-
-      KnuthBendixImpl& init(congruence_kind knd, Presentation<std::string>&& p);
+                            Presentation<native_word_type>&& p);
 
       // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
       // consistency with ToddCoxeterImpl
@@ -731,7 +734,7 @@ namespace libsemigroups {
         internal_presentation().throw_if_letter_not_in_alphabet(first, last);
       }
 
-      [[nodiscard]] Presentation<std::string> const&
+      [[nodiscard]] Presentation<native_word_type> const&
       internal_presentation() const noexcept {
         return _presentation;
       }
@@ -855,10 +858,10 @@ namespace libsemigroups {
 
      private:
       // TODO(1) remove this ...
-      void rewrite_inplace(std::string& w);
+      void rewrite_inplace(native_word_type& w);
 
       // TODO(1) remove this ...
-      [[nodiscard]] std::string rewrite(std::string w) {
+      [[nodiscard]] native_word_type rewrite(native_word_type w) {
         rewrite_inplace(w);
         return w;
       }
@@ -932,10 +935,10 @@ namespace libsemigroups {
 
       void stats_check_point();
 
-      void add_octo(std::string& w) const;
-      void rm_octo(std::string& w) const;
+      void add_octo(native_word_type& w) const;
+      void rm_octo(native_word_type& w) const;
 
-      void add_rule_impl(std::string const& p, std::string const& q);
+      void add_rule_impl(native_word_type const& p, native_word_type const& q);
 
       void overlap(detail::Rule const* u, detail::Rule const* v);
 

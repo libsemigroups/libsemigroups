@@ -36,9 +36,9 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::ABC
         : KnuthBendixImpl<Rewriter, ReductionOrder>::OverlapMeasure {
-      size_t operator()(detail::Rule const*                AB,
-                        detail::Rule const*                BC,
-                        std::string::const_iterator const& it) {
+      size_t operator()(detail::Rule const*                              AB,
+                        detail::Rule const*                              BC,
+                        typename native_word_type::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs().cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs().cend());
@@ -50,9 +50,9 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::AB_BC
         : KnuthBendixImpl<Rewriter, ReductionOrder>::OverlapMeasure {
-      size_t operator()(detail::Rule const*                AB,
-                        detail::Rule const*                BC,
-                        std::string::const_iterator const& it) {
+      size_t operator()(detail::Rule const*                              AB,
+                        detail::Rule const*                              BC,
+                        typename native_word_type::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs().cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs().cend());
@@ -65,9 +65,9 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::MAX_AB_BC
         : KnuthBendixImpl<Rewriter, ReductionOrder>::OverlapMeasure {
-      size_t operator()(detail::Rule const*                AB,
-                        detail::Rule const*                BC,
-                        std::string::const_iterator const& it) {
+      size_t operator()(detail::Rule const*                              AB,
+                        detail::Rule const*                              BC,
+                        typename native_word_type::const_iterator const& it) {
         LIBSEMIGROUPS_ASSERT(AB->active() && BC->active());
         LIBSEMIGROUPS_ASSERT(AB->lhs().cbegin() <= it);
         LIBSEMIGROUPS_ASSERT(it < AB->lhs().cend());
@@ -234,8 +234,8 @@ namespace libsemigroups {
 
     template <typename Rewriter, typename ReductionOrder>
     KnuthBendixImpl<Rewriter, ReductionOrder>::KnuthBendixImpl(
-        congruence_kind             knd,
-        Presentation<std::string>&& p)
+        congruence_kind                  knd,
+        Presentation<native_word_type>&& p)
         : KnuthBendixImpl() {
       init(knd, std::move(p));
     }
@@ -243,8 +243,8 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     KnuthBendixImpl<Rewriter, ReductionOrder>&
     KnuthBendixImpl<Rewriter, ReductionOrder>::init(
-        congruence_kind             knd,
-        Presentation<std::string>&& p) {
+        congruence_kind                  knd,
+        Presentation<native_word_type>&& p) {
       p.throw_if_bad_alphabet_or_rules();
       // TODO shouldn't the following be an assertion?
       presentation::throw_if_not_normalized(p, "2nd");
@@ -257,8 +257,8 @@ namespace libsemigroups {
 
     template <typename Rewriter, typename ReductionOrder>
     KnuthBendixImpl<Rewriter, ReductionOrder>::KnuthBendixImpl(
-        congruence_kind                  knd,
-        Presentation<std::string> const& p)
+        congruence_kind                       knd,
+        Presentation<native_word_type> const& p)
         : KnuthBendixImpl() {
       init(knd, p);
     }
@@ -266,8 +266,8 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     KnuthBendixImpl<Rewriter, ReductionOrder>&
     KnuthBendixImpl<Rewriter, ReductionOrder>::init(
-        congruence_kind                  knd,
-        Presentation<std::string> const& p) {
+        congruence_kind                       knd,
+        Presentation<native_word_type> const& p) {
       // Call rvalue ref init
       return init(knd, Presentation(p));
     }
@@ -307,7 +307,7 @@ namespace libsemigroups {
         return tril::TRUE;
       }
       // TODO(1) remove allocations here
-      std::string w1, w2;
+      native_word_type w1, w2;
       reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
       reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
       if (w1 == w2) {
@@ -479,8 +479,8 @@ namespace libsemigroups {
     // REVIEW was it okay to remove const here? Needed to do so to maybe process
     // some rules.
     template <typename Rewriter, typename ReductionOrder>
-    void
-    KnuthBendixImpl<Rewriter, ReductionOrder>::rewrite_inplace(std::string& w) {
+    void KnuthBendixImpl<Rewriter, ReductionOrder>::rewrite_inplace(
+        native_word_type& w) {
       if (_rewriter.number_of_active_rules() == 0
           && _rewriter.number_of_pending_rules() != 0) {
         _rewriter.process_pending_rules();
@@ -546,10 +546,12 @@ namespace libsemigroups {
       if (kind() == congruence_kind::onesided && !pairs.empty()) {
         LIBSEMIGROUPS_ASSERT(
             p.alphabet().size()
-            < std::numeric_limits<std::string::value_type>::max()
-                  - std::numeric_limits<std::string::value_type>::min());
+            < std::numeric_limits<typename native_word_type::value_type>::max()
+                  - std::numeric_limits<
+                      typename native_word_type::value_type>::min());
         p.alphabet(p.alphabet()
-                   + static_cast<std::string::value_type>(p.alphabet().size()));
+                   + static_cast<typename native_word_type::value_type>(
+                       p.alphabet().size()));
         _rewriter.increase_alphabet_size_by(1);
       }
 
@@ -693,7 +695,7 @@ namespace libsemigroups {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         LIBSEMIGROUPS_ASSERT(confluent());
-        std::unordered_map<std::string, size_t> prefixes;
+        std::unordered_map<native_word_type, size_t> prefixes;
         prefixes.emplace("", 0);
         size_t n = 1;
         for (auto const* rule : _rewriter) {
@@ -711,7 +713,7 @@ namespace libsemigroups {
 
         for (auto& p : prefixes) {
           for (auto i : internal_presentation().alphabet()) {
-            auto s  = p.first + std::string({i});
+            auto s  = p.first + native_word_type({i});
             auto it = prefixes.find(s);
             if (it != prefixes.end()) {
               _gilman_graph.target(p.second, i, it->second);
@@ -720,7 +722,7 @@ namespace libsemigroups {
               _rewriter.rewrite(t);
               if (t == s) {
                 while (!s.empty()) {
-                  s  = std::string(s.begin() + 1, s.end());
+                  s  = native_word_type(s.begin() + 1, s.end());
                   it = prefixes.find(s);
                   if (it != prefixes.end()) {
                     _gilman_graph.target(p.second, i, it->second);
@@ -766,8 +768,8 @@ namespace libsemigroups {
 
     template <typename Rewriter, typename ReductionOrder>
     void KnuthBendixImpl<Rewriter, ReductionOrder>::add_rule_impl(
-        std::string const& p,
-        std::string const& q) {
+        native_word_type const& p,
+        native_word_type const& q) {
       if (p == q) {
         return;
       }
@@ -779,8 +781,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     template <typename Rewriter, typename ReductionOrder>
-    void
-    KnuthBendixImpl<Rewriter, ReductionOrder>::add_octo(std::string& w) const {
+    void KnuthBendixImpl<Rewriter, ReductionOrder>::add_octo(
+        native_word_type& w) const {
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
         w = internal_presentation().alphabet().back() + w;
@@ -788,8 +790,8 @@ namespace libsemigroups {
     }
 
     template <typename Rewriter, typename ReductionOrder>
-    void
-    KnuthBendixImpl<Rewriter, ReductionOrder>::rm_octo(std::string& w) const {
+    void KnuthBendixImpl<Rewriter, ReductionOrder>::rm_octo(
+        native_word_type& w) const {
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
         LIBSEMIGROUPS_ASSERT(w.front()
@@ -839,9 +841,10 @@ namespace libsemigroups {
         if (detail::is_prefix(vlhs.cbegin(), vlhs.cend(), it, ulhs.cend())) {
           // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j This version of
           // new_rule does not reorder _rewriter.add_rule(AQ_j, Q_iC);
-          detail::MultiStringView x(ulhs.cbegin(), it);
+          detail::MultiStringView<native_word_type> x(ulhs.cbegin(), it);
           x.append(vrhs.cbegin(), vrhs.cend());
-          detail::MultiStringView y(urhs.cbegin(), urhs.cend());
+          detail::MultiStringView<native_word_type> y(urhs.cbegin(),
+                                                      urhs.cend());
           y.append(vlhs.cbegin() + (ulhs.cend() - it),
                    vlhs.cend());  // rule = AQ_j -> Q_iC
           _rewriter.add_rule(x, y);

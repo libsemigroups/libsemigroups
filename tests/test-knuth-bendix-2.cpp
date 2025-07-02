@@ -105,6 +105,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "ea", "b");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
+    using rule_type = decltype(kb)::rule_type;
+
     REQUIRE(!kb.confluent());
 
     kb.run();
