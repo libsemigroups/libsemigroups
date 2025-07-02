@@ -26,7 +26,6 @@
 #define LIBSEMIGROUPS_PRESENTATION_HPP_
 
 #include <algorithm>         // for reverse, sort
-#include <cctype>            // for isprint
 #include <cmath>             // for pow
 #include <cstring>           // for size_t, strlen
 #include <initializer_list>  // for initializer_list
@@ -52,6 +51,7 @@
 #include "word-range.hpp"  // for operator+
 
 #include "detail/fmt.hpp"     // for format
+#include "detail/print.hpp"   // for isprint etc
 #include "detail/string.hpp"  // for maximum_common_prefix
 #include "detail/uf.hpp"      // for Duf
 

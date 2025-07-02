@@ -103,6 +103,7 @@ namespace libsemigroups {
           kb.kind());
     }
     kb.run();
+    // kb.rewriter().process_pending_rules();
 
     FroidurePin result(kb);
     using KBE = typename decltype(result)::element_type;

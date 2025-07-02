@@ -79,7 +79,7 @@ namespace libsemigroups {
 #define KNUTH_BENDIX_TYPES RewriteTrie, RewriteFromLeft
 
   namespace {
-    using rule_type = detail::KnuthBendixImpl<>::rule_type;
+    using rule_type = std::pair<std::string, std::string>;
 
     struct weird_cmp {
       bool operator()(rule_type const& x, rule_type const& y) const noexcept {
@@ -473,6 +473,9 @@ namespace libsemigroups {
     add_generating_pair(kb, "aabbaaaba", "baaab");
 
     kb.run();
+
+    REQUIRE(kb.internal_presentation().alphabet().size()
+            == kb.presentation().alphabet().size());
 
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);

@@ -133,15 +133,15 @@ namespace libsemigroups {
     static constexpr bool IsStdSharedPtr = IsStdSharedPtrHelper<T>::value;
 
     // From https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2098r0.pdf
-    template <class T, template <class...> class Primary>
+    template <typename Thing, template <typename...> typename Primary>
     struct is_specialization_of : std::false_type {};
 
-    template <template <class...> class Primary, class... Args>
+    template <template <typename...> typename Primary, typename... Args>
     struct is_specialization_of<Primary<Args...>, Primary> : std::true_type {};
 
-    template <class T, template <class...> class Primary>
+    template <typename Thing, template <typename...> typename Primary>
     inline constexpr bool is_specialization_of_v
-        = is_specialization_of<T, Primary>::value;
+        = is_specialization_of<Thing, Primary>::value;
 
     template <typename... Args>
     struct is_array : std::false_type {};

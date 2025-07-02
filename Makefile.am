@@ -21,7 +21,7 @@ AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
-AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer
+AM_CXXFLAGS += -g2 -O0 -fno-omit-frame-pointer
 else
 AM_CPPFLAGS = -DNDEBUG
 endif
@@ -43,8 +43,8 @@ pkgconfig_DATA     = libsemigroups.pc
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
 pkginclude_HEADERS += include/libsemigroups/action.tpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
-pkginclude_HEADERS += include/libsemigroups/aho-corasick.hpp
-pkginclude_HEADERS += include/libsemigroups/aho-corasick.tpp
+pkginclude_HEADERS += include/libsemigroups/aho-corasick-class.hpp
+pkginclude_HEADERS += include/libsemigroups/aho-corasick-class.tpp
 pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat-adapters.hpp
@@ -127,7 +127,9 @@ pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
-detailinclude_HEADERS =  include/libsemigroups/detail/bruidhinn-traits.hpp
+detailinclude_HEADERS =  include/libsemigroups/detail/aho-corasick-impl.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/aho-corasick-impl.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/citow.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.tpp
@@ -155,6 +157,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/node-manager.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/node-manager.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/path-iterators.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/path-iterators.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/print.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/pool.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/race.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/report.hpp
@@ -717,7 +720,7 @@ endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
-libsemigroups_la_SOURCES  = src/aho-corasick.cpp
+libsemigroups_la_SOURCES  = src/aho-corasick-class.cpp
 libsemigroups_la_SOURCES += src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-helpers.cpp
@@ -738,6 +741,7 @@ libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-graph.cpp
 libsemigroups_la_SOURCES += src/word-range.cpp
 
+libsemigroups_la_SOURCES += src/detail/aho-corasick-impl.cpp
 libsemigroups_la_SOURCES += src/detail/cong-common-class.cpp
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/detail/ke.cpp

@@ -20,16 +20,6 @@
 // monoid presentations.
 
 namespace libsemigroups {
-  namespace detail {
-    std::string to_printable(char c);
-    bool        isprint(std::string const& alphabet);
-    std::string to_printable(std::string const& alphabet);
-
-    template <typename Thing>
-    std::string to_printable(Thing thing) {
-      return fmt::format("{}", thing);
-    }
-  }  // namespace detail
 
   template <typename Word>
   Presentation<Word>::Presentation()
@@ -284,6 +274,19 @@ namespace libsemigroups {
 
   namespace presentation {
 
+    // TODO include in hpp and doc
+    template <typename Word>
+    bool is_normalized(Presentation<Word> const& p) {
+      using letter_type = typename Presentation<Word>::letter_type;
+      auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
+      if (!std::is_sorted(first, last)) {
+        return false;
+      }
+      auto it = std::max_element(first, last);
+      return it != last
+             && *it != static_cast<letter_type>(p.alphabet().size() - 1);
+    }
+
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg) {
@@ -293,7 +296,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
                                 "sorted alphabet, found {}",
                                 arg,
-                                p.alphabet());
+                                detail::to_printable(p.alphabet()));
       }
 
       auto it = std::max_element(first, last);
@@ -304,7 +307,7 @@ namespace libsemigroups {
                                 "alphabet, expected [0, ..., {}] found {}",
                                 arg,
                                 p.alphabet().size() - 1,
-                                p.alphabet());
+                                detail::to_printable(p.alphabet()));
       }
     }
 

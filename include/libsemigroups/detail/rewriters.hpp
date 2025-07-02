@@ -24,262 +24,87 @@
 
 #include <atomic>         // for atomic
 #include <chrono>         // for time_point
+#include <list>           // for list
 #include <set>            // for set
 #include <string>         // for basic_string, operator==
-#include <unordered_map>  // for unordered map
-#include <unordered_set>  // for unordered set
+#include <unordered_map>  // for unordered_map
 
-#include "../aho-corasick.hpp"
-#include "../debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-#include "../order.hpp"  // for shortlex_compare
+#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/order.hpp"  // for shortlex_compare
 
+#include "aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "multi-string-view.hpp"  // for MultiStringView
 
 // TODO(2) Add a KnuthBendixImpl pointer to the rewriter class so that overlap
 // detection can be handled by the rewriter (and therefore depend on the
 // implementation) rather than on the KB object.
 
-//! \defgroup \rewriters_group Rewriters
-//!
-//! This file contains documentation for the functionality for rewriters in
-//! `libsemigroups`.
 namespace libsemigroups {
   namespace detail {
-    // TODO(2) remove from libsemigroups namespace and put into relevant class
 
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of word that can be input by the user
-    using external_string_type = std::string;
+    ////////////////////////////////////////////////////////////////////////
+    // Rule
+    ////////////////////////////////////////////////////////////////////////
 
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of word used internally in the implementation
-    using internal_string_type = std::string;
-
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of letter that can be input by the user
-    using external_char_type = char;
-
-    //! \ingroup rewriters_group
-    //!
-    //! Alias for the type of letter used internally in the implementation
-    using internal_char_type = char;
-
-    //! \ingroup rewriters_group
-    //!
-    //! \brief For a rewriting rule.
-    //!
-    //! Defined in `rewriters.hpp`.
-    //!
-    //! This class implements a data structure for storing *rewriting rules*.
-    //! Here, a rewriting rule is a rule of the form \f$A \to B\f$, where
-    //! \f$A\f$ and \f$B\f$ are both words over some alphabet \f$\Sigma\f$.
-    //!
-    //! The left-hand and right-hand sides of a rule are specified externally
-    //! with the type \ref external_string_type, and stored internally with type
-    //! \ref internal_string_type.
     class Rule {
-      internal_string_type* _lhs;
-      internal_string_type* _rhs;
-      int64_t               _id;
+     public:
+      using native_word_type = std::basic_string<uint8_t>;
+
+     private:
+      native_word_type _lhs;
+      native_word_type _rhs;
+      int64_t          _id;
 
      public:
-      //! \brief Construct with new empty left-hand and right-hand sides.
-      //!
-      //! Construct with new empty left-hand and right-hand sides.
-      //!
-      //! \param id the id of the new rule.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
       explicit Rule(int64_t id);
 
+      Rule()                            = delete;
       Rule& operator=(Rule const& copy) = delete;
       Rule(Rule const& copy)            = delete;
       Rule(Rule&& copy)                 = delete;
       Rule& operator=(Rule&& copy)      = delete;
 
-      //! \brief Destruct the Rule.
-      //!
-      //! This function destructs a \ref Rule object by deleting the pointers
-      //! used for the left-hand and right-hand sides.
-      ~Rule() {
-        delete _lhs;
-        delete _rhs;
-      }
+      ~Rule() = default;
 
-      //! \brief Return the left-hand side of the rule.
-      //!
-      //! Return the left-hand side of the rule. If this rule was create by a
-      //! \ref_knuth_bendix, this is guaranteed to be greater than its
-      //! right-hand side according to the reduction ordering of that
-      //! \ref_knuth_bendix.
-      //!
-      //! \returns A pointer to the left-hand side.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref_knuth_bendix
-      [[nodiscard]] internal_string_type* lhs() const noexcept {
+      [[nodiscard]] native_word_type const& lhs() const noexcept {
         return _lhs;
       }
 
-      //! \brief Return the right-hand side of the rule.
-      //!
-      //! Return the right-hand side of the rule. If this rule was create by a
-      //! \ref_knuth_bendix, this is guaranteed to be less than its left-hand
-      //! side according to the reduction ordering of that \ref_knuth_bendix.
-      //!
-      //! \returns A pointer to the right-hand side.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref_knuth_bendix
-      [[nodiscard]] internal_string_type* rhs() const noexcept {
+      [[nodiscard]] native_word_type const& rhs() const noexcept {
         return _rhs;
       }
 
-      //! \brief Check if the left-hand and right-hand sides are empty.
-      //!
-      //! Check if the words pointed to by both the left-hand and the right-hand
-      //! sides are empty.
-      //!
-      //! \returns A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      [[nodiscard]] bool empty() const noexcept {
-        return _lhs->empty() && _rhs->empty();
+      [[nodiscard]] native_word_type& lhs() noexcept {
+        return _lhs;
       }
 
-      //! \brief Check if the Rule is active.
-      //!
-      //! Check if the rule is active.
-      //!
-      //! \returns A value of type `bool`.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
+      [[nodiscard]] native_word_type& rhs() noexcept {
+        return _rhs;
+      }
+
+      [[nodiscard]] bool empty() const noexcept {
+        return _lhs.empty() && _rhs.empty();
+      }
+
       [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
-        return (_id > 0);
+        return _id > 0;
       }
 
-      //! \brief Deactivate a rule.
-      //!
-      //! Deactivate a rule, if it is active.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref active
-      void deactivate() noexcept;
+      void activate_no_checks() noexcept;
+      void deactivate_no_checks() noexcept;
 
-      //! \brief Activate a rule.
-      //!
-      //! Activate a rule, if it is inactive.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \sa
-      //! \ref active
-      void activate() noexcept;
-
-      //! \brief Set the id of a rule.
-      //!
-      //! Set the id of a rule.
-      //!
-      //! \param id the id to set.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //!
-      //! \note
-      //! This function does no checks on its parameters; however, the id of a
-      //! rule should only be set if the rule is inactive, and the id of a rule
-      //! should always be positive.
       void set_id_no_checks(int64_t id) noexcept {
         LIBSEMIGROUPS_ASSERT(id > 0);
         LIBSEMIGROUPS_ASSERT(!active());
         _id = -1 * id;
       }
 
-      //! \brief Set the id of a rule.
-      //!
-      //! After checking that the Rule is inactive \p id is positive, this
-      //! function performs the same as \ref set_id_no_checks.
-      //!
-      //! \throws LIBSEMIGROUPS_EXCEPTION if \p id is non-positive, or if `this`
-      //! is active.
-      void set_id(int64_t id) {
-        if (id <= 0) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "invalid id, expected a value greater than 0, found {}", id);
-        }
-        if (active()) {
-          LIBSEMIGROUPS_EXCEPTION("cannot set the id of an active rule");
-        }
-        set_id_no_checks(id);
-      }
-
-      //! \brief Return the id of a rule.
-      //!
-      //! Return the id of a rule.
-      //!
-      //! \returns A value of type `int64_t`
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
       }
 
-      //! \brief Reorder the left-hand and right-hand sides.
-      //!
-      //! If the right-hand side is greater than the left-hand side of a rule,
-      //! with regards to length-lexicographical order, then swap them.
-      //!
-      //! \exceptions
-      //! Throws if \ref shortlex_compare(T* const, T* const) does.
-      //!
-      //! \complexity
-      //! The same complexity as \ref shortlex_compare(T* const, T* const)
-      //!
-      //! \sa
-      //! shortlex_compare(T* const, T* const)
       void reorder() {
         if (shortlex_compare(_lhs, _rhs)) {
           std::swap(_lhs, _rhs);
@@ -287,17 +112,23 @@ namespace libsemigroups {
       }
     };  // class Rule
 
+    ////////////////////////////////////////////////////////////////////////
+    // RuleLookup
+    ////////////////////////////////////////////////////////////////////////
+
     class RuleLookup {
      public:
+      using native_word_type = Rule::native_word_type;
+
       RuleLookup() : _rule(nullptr) {}
 
       explicit RuleLookup(Rule* rule)
-          : _first(rule->lhs()->cbegin()),
-            _last(rule->lhs()->cend()),
+          : _first(rule->lhs().cbegin()),
+            _last(rule->lhs().cend()),
             _rule(rule) {}
 
-      RuleLookup& operator()(internal_string_type::iterator const& first,
-                             internal_string_type::iterator const& last) {
+      RuleLookup& operator()(native_word_type::iterator first,
+                             native_word_type::iterator last) {
         _first = first;
         _last  = last;
         return *this;
@@ -314,17 +145,20 @@ namespace libsemigroups {
       bool operator<(RuleLookup const& that) const;
 
      private:
-      internal_string_type::const_iterator _first;
-      internal_string_type::const_iterator _last;
-      Rule const*                          _rule;
+      native_word_type::const_iterator _first;
+      native_word_type::const_iterator _last;
+      Rule const*                      _rule;
     };  // class RuleLookup
+
+    ////////////////////////////////////////////////////////////////////////
+    // Rules
+    ////////////////////////////////////////////////////////////////////////
 
     class Rules {
      public:
-      using iterator       = std::list<Rule const*>::iterator;
-      using const_iterator = std::list<Rule const*>::const_iterator;
-      using const_reverse_iterator
-          = std::list<Rule const*>::const_reverse_iterator;
+      using iterator               = std::list<Rule*>::iterator;
+      using const_iterator         = std::list<Rule*>::const_iterator;
+      using const_reverse_iterator = std::list<Rule*>::const_reverse_iterator;
 
      private:
       struct Stats {
@@ -341,11 +175,9 @@ namespace libsemigroups {
         size_t   max_active_rules;
         size_t   min_length_lhs_rule;
         uint64_t total_rules;
-        // std::unordered_set<internal_string_type> unique_lhs_rules;
       };
 
-      // TODO(2) remove const?
-      std::list<Rule const*>  _active_rules;
+      std::list<Rule*>        _active_rules;
       std::array<iterator, 2> _cursors;
       std::list<Rule*>        _inactive_rules;
       mutable Stats           _stats;
@@ -353,11 +185,13 @@ namespace libsemigroups {
      public:
       Rules() = default;
 
-      // Rules(Rules const& that);
-      // Rules(Rules&& that);
-      Rules& operator=(Rules const&);
+      Rules(Rules const& that) : Rules() {
+        *this = that;
+      }
+      Rules(Rules&& that) = default;
 
-      // TODO(1) the other constructors
+      Rules& operator=(Rules const&);
+      Rules& operator=(Rules&& that);
 
       ~Rules();
 
@@ -402,29 +236,11 @@ namespace libsemigroups {
         return _cursors[index];
       }
 
-      // TODO(1) is this ever called?
-      void add_active_rule(Rule* rule) {
-        _active_rules.push_back(rule);
-      }
-
-      void add_inactive_rule(Rule* rule) {
-        _inactive_rules.push_back(rule);
-      }
-
       Stats const& stats() const {
         return _stats;
       }
 
-      [[nodiscard]] iterator erase_from_active_rules(iterator it);
-
-      // TODO(1) this feels like it should be add_active rule. The above
-      // add_active_rule seems a bit dangerous
       void add_rule(Rule* rule);
-
-      [[nodiscard]] Rule* copy_rule(Rule const* rule);
-
-      //  private:
-      [[nodiscard]] Rule* new_rule();
 
      protected:
       template <typename Iterator>
@@ -433,87 +249,62 @@ namespace libsemigroups {
                                    Iterator begin_rhs,
                                    Iterator end_rhs) {
         Rule* rule = new_rule();
-        rule->lhs()->assign(begin_lhs, end_lhs);
-        rule->rhs()->assign(begin_rhs, end_rhs);
+        rule->lhs().assign(begin_lhs, end_lhs);
+        rule->rhs().assign(begin_rhs, end_rhs);
         rule->reorder();
         return rule;
       }
-    };
 
-    class RewriterBase : public Rules {
-      std::unordered_set<internal_char_type> _alphabet;
-      mutable std::atomic<bool>              _cached_confluent;
-      mutable std::atomic<bool>              _confluence_known;
-      size_t                                 _max_stack_depth;
-      std::stack<Rule*>                      _pending_rules;
-      std::atomic<bool>                      _requires_alphabet;
-
-      using alphabet_citerator
-          = std::unordered_set<internal_char_type>::const_iterator;
-
-     public:
-      // TODO(1) to cpp
-      RewriterBase()
-          : _alphabet(),
-            _cached_confluent(false),
-            _confluence_known(false),
-            _max_stack_depth(0),
-            _pending_rules(),
-            _requires_alphabet() {}
-
-      RewriterBase& init();
-
-      explicit RewriterBase(bool requires_alphabet) : RewriterBase() {
-        _requires_alphabet = requires_alphabet;
+      [[nodiscard]] Rule*    copy_rule(Rule const* rule);
+      [[nodiscard]] iterator erase_from_active_rules(iterator it);
+      void                   add_inactive_rule(Rule* rule) {
+        _inactive_rules.push_back(rule);
       }
 
-      ~RewriterBase();
+     private:
+      [[nodiscard]] Rule* new_rule();
+    };  // class Rules
 
-      RewriterBase& operator=(RewriterBase const& that) {
-        Rules::operator=(that);
-        _cached_confluent  = that._cached_confluent.load();
-        _confluence_known  = that._confluence_known.load();
-        _requires_alphabet = that._requires_alphabet.load();
-        while (!_pending_rules.empty()) {
-          _pending_rules.pop();
-        }
-        decltype(_pending_rules) tmp = that._pending_rules;
-        while (!tmp.empty()) {
-          auto const* rule = tmp.top();
-          _pending_rules.push(copy_rule(rule));
-          tmp.pop();
-        }
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteBase
+    ////////////////////////////////////////////////////////////////////////
 
-        if (_requires_alphabet) {
-          _alphabet = that._alphabet;
-        }
+    class RewriteBase : public Rules {
+      mutable std::atomic<bool> _cached_confluent;
+      mutable std::atomic<bool> _confluence_known;
+      size_t                    _max_stack_depth;
+
+     protected:
+      std::vector<Rule*> _pending_rules;
+
+     public:
+      using native_word_type = Rule::native_word_type;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + inits
+      ////////////////////////////////////////////////////////////////////////
+
+      RewriteBase();
+      RewriteBase& init();
+      RewriteBase(RewriteBase const& that) : RewriteBase() {
+        *this = that;
+      }
+      RewriteBase(RewriteBase&& that);
+      RewriteBase& operator=(RewriteBase const& that);
+      RewriteBase& operator=(RewriteBase&& that);
+
+      ~RewriteBase();
+
+      ////////////////////////////////////////////////////////////////////////
+      // Public mem fns
+      ////////////////////////////////////////////////////////////////////////
+
+      RewriteBase& increase_alphabet_size_by(size_t) {
         return *this;
       }
 
-      bool requires_alphabet() const {
-        return _requires_alphabet;
-      }
-
-      decltype(_alphabet) alphabet() const {
-        return _alphabet;
-      }
-
-      alphabet_citerator alphabet_cbegin() const {
-        return _alphabet.cbegin();
-      }
-
-      alphabet_citerator alphabet_cend() const {
-        return _alphabet.cend();
-      }
-
-      void set_cached_confluent(tril val) const;
-
       bool cached_confluent() const noexcept {
         return _cached_confluent;
-      }
-
-      [[nodiscard]] bool consistent() const noexcept {
-        return _pending_rules.empty();
       }
 
       [[nodiscard]] bool confluence_known() const {
@@ -524,90 +315,80 @@ namespace libsemigroups {
         return _max_stack_depth;
       }
 
-      bool add_pending_rule(Rule* rule);
-
-      bool process_pending_rules();
-
-      void reduce();
-
-      void reduce_rhs();
-
-      void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
-        rule->reorder();
-      }
-
-      // TODO(2) remove virtual functions
-      virtual void rewrite(internal_string_type& u) const = 0;
-
-      virtual void add_rule(Rule* rule) = 0;
-
-      virtual Rules::iterator make_active_rule_pending(Rules::iterator it) = 0;
-
       size_t number_of_pending_rules() const noexcept {
         return _pending_rules.size();
       }
 
-      Rule* next_pending_rule() {
-        LIBSEMIGROUPS_ASSERT(_pending_rules.size() != 0);
-        Rule* rule = _pending_rules.top();
-        _pending_rules.pop();
-        return rule;
-      }
+      Rule* next_pending_rule();
 
       template <typename StringLike>
-      void add_rule(StringLike const& lhs, StringLike const& rhs) {
-        if (lhs != rhs) {
-          if (add_pending_rule(new_rule(
-                  lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-            // TODO(1) only process_pending_rules when ready to run
-            process_pending_rules();
-          }
-        }
-      }
+      void add_rule(StringLike const& lhs, StringLike const& rhs);
 
-      template <typename StringLike>
-      void add_pending_rule(StringLike const& lhs, StringLike const& rhs) {
-        if (lhs != rhs) {
-          add_pending_rule(
-              new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
-        }
-      }
+      void set_cached_confluent(tril val) const;
 
-      void add_to_alphabet(internal_char_type letter) {
-        _alphabet.emplace(letter);
-      }
-    };
+     protected:
+      ////////////////////////////////////////////////////////////////////////
+      // Member functions - protected
+      ////////////////////////////////////////////////////////////////////////
 
-    class RewriteFromLeft : public RewriterBase {
+      void report_progress_from_thread(
+          std::chrono::high_resolution_clock::time_point start_time);
+      bool add_pending_rule(Rule* rule);
+    };  // class RewriteBase
+
+    // RewriteBase out-of-lined mem fn template
+    template <typename StringLike>
+    void RewriteBase::add_rule(StringLike const& lhs, StringLike const& rhs) {
+      if (lhs != rhs) {
+        add_pending_rule(
+            new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
+      }
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteFromLeft
+    ////////////////////////////////////////////////////////////////////////
+
+    class RewriteFromLeft : public RewriteBase {
       std::set<RuleLookup> _set_rules;
 
      public:
-      using RewriterBase::cached_confluent;
-      using Rules::stats;
+      using native_word_type = Rule::native_word_type;
+
+      using RewriteBase::add_rule;
 
       RewriteFromLeft() = default;
 
-      RewriteFromLeft& operator=(RewriteFromLeft const&);
+      RewriteFromLeft(RewriteFromLeft const& that) : RewriteFromLeft() {
+        *this = that;
+      }
+      RewriteFromLeft(RewriteFromLeft&&) = default;
 
-      // TODO(2) the other constructors
+      RewriteFromLeft& operator=(RewriteFromLeft const&);
+      RewriteFromLeft& operator=(RewriteFromLeft&&) = default;
 
       ~RewriteFromLeft();
 
       RewriteFromLeft& init();
 
-      void rewrite(internal_string_type& u) const;
+      [[nodiscard]] bool confluent();
 
-      [[nodiscard]] bool confluent() const;
+      bool process_pending_rules();
 
-      // TODO(1) private?
-      void add_rule(Rule* rule);
+      void rewrite(native_word_type& u);
 
-      using RewriterBase::add_rule;
+      void rewrite(native_word_type& u) const {
+        const_cast<RewriteFromLeft*>(this)->rewrite(u);
+      }
 
      private:
-      void rewrite(Rule* rule) const;
+      void rewrite(Rule* rule) const {
+        rewrite(rule->lhs());
+        rewrite(rule->rhs());
+        rule->reorder();
+      }
+
+      void add_rule(Rule* rule);
 
       iterator make_active_rule_pending(iterator);
 
@@ -615,73 +396,77 @@ namespace libsemigroups {
           std::atomic_uint64_t const&,
           std::chrono::high_resolution_clock::time_point const&) const;
 
-      bool confluent_impl(std::atomic_uint64_t&) const;
+      bool confluent_impl(std::atomic_uint64_t&);
     };
 
-    class RewriteTrie : public RewriterBase {
-      using index_type = AhoCorasick::index_type;
+    ////////////////////////////////////////////////////////////////////////
+    // RewriteTrie
+    ////////////////////////////////////////////////////////////////////////
 
-      std::map<index_type, Rule*> _rules;
-      AhoCorasick                 _trie;
+    class RewriteTrie : public RewriteBase {
+     public:
+      using index_type       = AhoCorasickImpl::index_type;
+      using iterator         = native_word_type::iterator;
+      using rule_iterator    = std::unordered_map<index_type, Rule*>::iterator;
+      using native_word_type = Rule::native_word_type;
+
+     private:
+      std::vector<index_type>               _nodes;
+      std::unordered_map<index_type, Rule*> _rules;
+      AhoCorasickImpl                       _trie;
 
      public:
-      using RewriterBase::cached_confluent;
       using Rules::stats;
-      using iterator      = internal_string_type::iterator;
-      using rule_iterator = std::map<index_type, Rule*>::iterator;
 
-      RewriteTrie() : RewriterBase(true), _rules(), _trie() {}
+      using RewriteBase::add_rule;
+      using RewriteBase::cached_confluent;
+
+      RewriteTrie() : RewriteBase(), _nodes(), _rules(), _trie(0) {}
+      RewriteTrie& init();
 
       RewriteTrie(RewriteTrie const& that);
-
       RewriteTrie& operator=(RewriteTrie const& that);
-      // TODO(1) move constructor, and move assignment operator
+
+      // TODO(0) move constructor, and move assignment operator
 
       ~RewriteTrie();
 
-      RewriteTrie& init();
-
-      rule_iterator rules_begin() {
-        return _rules.begin();
+      RewriteTrie& increase_alphabet_size_by(size_t val) {
+        _trie.increase_alphabet_size_by(val);
+        return *this;
       }
 
-      rule_iterator rules_end() {
-        return _rules.end();
+      [[nodiscard]] bool confluent();
+
+      bool process_pending_rules();
+
+      // TODO iterators
+      void rewrite(native_word_type& u);
+
+      void rewrite(Rule* rule) const {
+        rewrite(rule->lhs());
+        rewrite(rule->rhs());
+        rule->reorder();
       }
 
-      void all_overlaps();
+      void rewrite(native_word_type& u) const {
+        const_cast<RewriteTrie*>(this)->rewrite(u);
+      }
 
-      void rule_overlaps(index_type node);
-
-      void add_overlaps(Rule* rule, index_type node, size_t overlap_length);
-
-      void rewrite(internal_string_type& u) const;
-
-      [[nodiscard]] bool confluent() const;
-
+     private:
       void add_rule(Rule* rule) {
         Rules::add_rule(rule);
         add_rule_to_trie(rule);
         set_cached_confluent(tril::unknown);
       }
 
-      using RewriterBase::add_rule;
-
-     private:
       [[nodiscard]] bool descendants_confluent(Rule const* rule1,
                                                index_type  current_node,
                                                size_t backtrack_depth) const;
 
-      // TODO(2) (After removing virtual functions) Put in base
-      void rewrite(Rule* rule) const {
-        rewrite(*rule->lhs());
-        rewrite(*rule->rhs());
-        rule->reorder();
-      }
-
       void add_rule_to_trie(Rule* rule) {
-        index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
-                                                   rule->lhs()->cend());
+        index_type node = _trie.add_word_no_checks(rule->lhs().cbegin(),
+                                                   rule->lhs().cend());
         _rules.emplace(node, rule);
       }
 
@@ -691,7 +476,7 @@ namespace libsemigroups {
           std::atomic_uint64_t const&,
           std::chrono::high_resolution_clock::time_point const&) const;
 
-      bool confluent_impl(std::atomic_uint64_t&) const;
+      bool confluent_impl(std::atomic_uint64_t&);
     };
   }  // namespace detail
 }  // namespace libsemigroups

@@ -27,6 +27,7 @@
 
 namespace libsemigroups {
   namespace detail {
+    template <typename String>
     class MultiStringView;  // forward decl
   }
 
@@ -65,11 +66,11 @@ namespace libsemigroups {
   }
 
   template <>
-  tril
-  FroidurePin<detail::KE<detail::MultiStringView>,
-              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                Kambites<detail::MultiStringView>>>::is_finite()
-      const {
+  tril FroidurePin<
+      detail::KE<detail::MultiStringView<std::string>>,
+      FroidurePinTraits<detail::KE<detail::MultiStringView<std::string>>,
+                        Kambites<detail::MultiStringView<std::string>>>>::
+      is_finite() const {
     return tril::FALSE;
   }
 

@@ -22,7 +22,7 @@ namespace libsemigroups {
   template <typename Iterator>
   AhoCorasick::index_type AhoCorasick::add_word(Iterator first, Iterator last) {
     auto last_index = traverse_trie(first, last);
-    if (last_index != UNDEFINED && _all_nodes[last_index].is_terminal()) {
+    if (last_index != UNDEFINED && _all_nodes[last_index].terminal()) {
       LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
                               "last) already belongs to the trie",
                               word_type(first, last));
@@ -62,7 +62,7 @@ namespace libsemigroups {
                               "correspond to a node in the trie",
                               word_type(first, last));
     }
-    if (!_all_nodes[last_index].is_terminal()) {
+    if (!_all_nodes[last_index].terminal()) {
       LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
                               "arguments [first, last), as it does not "
                               "correspond to a terminal node in the trie",
@@ -86,7 +86,7 @@ namespace libsemigroups {
     auto parent_letter = *(last - 1);
     deactivate_node_no_checks(last_index);
     while (_all_nodes[parent_index].number_of_children() == 1
-           && !_all_nodes[parent_index].is_terminal() && parent_index != root) {
+           && !_all_nodes[parent_index].terminal() && parent_index != root) {
       last_index    = parent_index;
       parent_index  = _all_nodes[last_index].parent();
       parent_letter = _all_nodes[last_index].parent_letter();
