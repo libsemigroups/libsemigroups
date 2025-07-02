@@ -44,6 +44,7 @@
 #include <utility>        // for move, make_pair
 #include <vector>         // for vector
 
+#include "libsemigroups/adapters.hpp"      // for Hash
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_...
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
@@ -205,7 +206,7 @@ namespace libsemigroups {
 
       bool                            _gen_pairs_initted;
       WordGraph<uint32_t>             _gilman_graph;
-      std::vector<std::string>        _gilman_graph_node_labels;
+      std::vector<native_word_type>   _gilman_graph_node_labels;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
       Presentation<native_word_type>  _presentation;
       mutable Rewriter                _rewriter;
@@ -918,7 +919,8 @@ namespace libsemigroups {
       WordGraph<uint32_t> const& gilman_graph();
 
       // Documented in KnuthBendix
-      [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
+      [[nodiscard]] std::vector<native_word_type> const&
+      gilman_graph_node_labels() {
         gilman_graph();  // to ensure that gilman_graph is initialised
         return _gilman_graph_node_labels;
       }
@@ -956,7 +958,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }  // namespace detail
+  }     // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr

@@ -60,7 +60,8 @@
 
 // TODO(later) Add tests for add_cyclic_conjugates
 // TODO(later) Change word_type({0, 1, 2}) to "012"_w
-// TODO(1) use LIBSEMIGROUPS_TEMPLATE_TEST_CASE
+// TODO(0) use LIBSEMIGROUPS_TEMPLATE_TEST_CASE + add
+// Presentation<std::basic_string<uint8_t>>
 
 namespace libsemigroups {
 

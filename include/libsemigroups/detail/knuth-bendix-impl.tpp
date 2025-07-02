@@ -17,14 +17,25 @@
 //
 
 namespace libsemigroups {
+  template <>
+  struct Hash<std::basic_string<uint8_t>> {
+    std::size_t operator()(std::basic_string<uint8_t> const& x) const noexcept {
+      return std::hash<std::string_view>{}(
+          {reinterpret_cast<const char*>(x.data()), x.size()});
+    }
+  };
 
   namespace detail {
-    static inline void
-    prefixes_string(std::unordered_map<std::string, size_t>& st,
-                    std::string const&                       x,
-                    size_t&                                  n) {
+
+    static inline void prefixes_string(
+        std::unordered_map<std::basic_string<uint8_t>,
+                           size_t,
+                           Hash<std::basic_string<uint8_t>>,
+                           std::equal_to<std::basic_string<uint8_t>>>& st,
+        std::basic_string<uint8_t> const&                              x,
+        size_t&                                                        n) {
       for (auto it = x.cbegin() + 1; it < x.cend(); ++it) {
-        auto w   = std::string(x.cbegin(), it);
+        auto w   = std::basic_string<uint8_t>(x.cbegin(), it);
         auto wit = st.find(w);
         if (wit == st.end()) {
           st.emplace(w, n);
@@ -695,14 +706,19 @@ namespace libsemigroups {
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         LIBSEMIGROUPS_ASSERT(confluent());
-        std::unordered_map<native_word_type, size_t> prefixes;
-        prefixes.emplace("", 0);
+        std::unordered_map<std::basic_string<uint8_t>,
+                           size_t,
+                           Hash<std::basic_string<uint8_t>>,
+                           std::equal_to<std::basic_string<uint8_t>>>
+            prefixes;
+        prefixes.emplace(std::basic_string<uint8_t>(), 0);
         size_t n = 1;
         for (auto const* rule : _rewriter) {
           detail::prefixes_string(prefixes, rule->lhs(), n);
         }
 
-        _gilman_graph_node_labels.resize(prefixes.size(), "");
+        _gilman_graph_node_labels.resize(prefixes.size(),
+                                         std::basic_string<uint8_t>());
         for (auto const& p : prefixes) {
           _gilman_graph_node_labels[p.second] = p.first;
         }

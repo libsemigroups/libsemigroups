@@ -30,6 +30,7 @@ namespace libsemigroups {
   namespace detail {
     using string_type = RewriteTrie::native_word_type;
     using namespace std::literals;
+
     LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "000", "initial test", "[quick]") {
       auto        rg = ReportGuard(false);
       RewriteTrie rt = RewriteTrie();

@@ -68,8 +68,6 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  using rule_type = detail::KnuthBendixImpl<>::rule_type;
-
   using RewriteTrie     = detail::RewriteTrie;
   using RewriteFromLeft = detail::RewriteFromLeft;
 
@@ -105,7 +103,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ea", "b");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    using rule_type = decltype(kb)::rule_type;
+    using rule_type = typename decltype(kb)::rule_type;
 
     REQUIRE(!kb.confluent());
 
@@ -140,6 +138,7 @@ namespace libsemigroups {
 
     // REQUIRE(knuth_bendix::is_reduced(kb));
     REQUIRE(knuth_bendix::reduce_no_run(kb, "ca") == "ac");
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>(
                 {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},
@@ -187,6 +186,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "Aba", "bb"));
     REQUIRE(knuth_bendix::contains(kb, "Bcb", "cc"));
     REQUIRE(knuth_bendix::contains(kb, "Cac", "aa"));
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"A", ""},
                                        {"B", ""},
@@ -220,6 +220,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 16);
 
     REQUIRE(knuth_bendix::contains(kb, "DCdc", "ABab"));
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"Aa", ""},
                                        {"Bb", ""},
@@ -649,6 +650,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "Baaba", "abaaB"));
     REQUIRE(knuth_bendix::contains(kb, "BabB", "abab"));
     REQUIRE(knuth_bendix::contains(kb, "Bababa", "ababaB"));
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{{"Bb", "bB"},
                                         {"bb", "B"},
@@ -675,6 +677,7 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     // kb.process_pending_rules();
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}, {"b", ""}}));
     REQUIRE(kb.number_of_active_rules() == 2);
@@ -686,6 +689,7 @@ namespace libsemigroups {
 
     REQUIRE(knuth_bendix::contains(kb, "b", ""));
     REQUIRE(knuth_bendix::contains(kb, "a", ""));
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}, {"b", ""}}));
   }
@@ -734,6 +738,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 1);
 
     REQUIRE(knuth_bendix::contains(kb, "a", ""));
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}}));
   }
@@ -786,6 +791,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "dc", "y"));
     REQUIRE(knuth_bendix::contains(kb, "ay", "b"));
     REQUIRE(knuth_bendix::contains(kb, "bbb", "a"));
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>(
                 {{"ab", "c"},  {"ay", "b"},   {"ba", "c"},  {"bc", "d"},
@@ -819,6 +825,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 32);
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"Aa", ""},
                                        {"Ac", "b"},
@@ -876,6 +883,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1);
 
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"aa", ""}}));
   }
@@ -921,6 +929,8 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "bbaabb", "abba"));
     REQUIRE(knuth_bendix::contains(kb, "aabbaa", "baab"));
     REQUIRE(knuth_bendix::contains(kb, "baabba", "abbaab"));
+
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{{"HH", "H"},
                                         {"Hb", "H"},
@@ -1835,20 +1845,18 @@ namespace libsemigroups {
                                    "alphabet limit",
                                    "[todd-coxeter][quick]",
                                    REWRITER_TYPES) {
-    using literals::operator""_w;
+    auto rg = ReportGuard(false);
 
-    // Presentation<word_type> p;
-    // p.alphabet(256);
-    // auto copy = to<Presentation<std::string>>(
-    //     p, [&p](auto x) -> char { return p.index_no_checks(x); });
-
-    // std::vector<char> alpha(copy.alphabet().begin(), copy.alphabet().end());
-
-    // REQUIRE(alpha == (rx::seq<char>(-128) | rx::take(256) |
-    // rx::to_vector())); REQUIRE(std::is_sorted(alpha.begin(), alpha.end()));
-
-    Presentation<std::basic_string<uint8_t>> p;
+    // TODO export this somewhere else
+    using u8string = std::basic_string<uint8_t>;
+    Presentation<u8string> p;
     p.alphabet(129);
+    for (auto a : p.alphabet()) {
+      for (auto b : p.alphabet()) {
+        presentation::add_rule(
+            p, u8string(1, a) + u8string(1, b), u8string(1, a));
+      }
+    }
 
     REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(130),
                       LibsemigroupsException);
@@ -1865,11 +1873,9 @@ namespace libsemigroups {
     kb.init(congruence_kind::onesided, p);
     REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
                       LibsemigroupsException);
-    knuth_bendix::add_generating_pair(kb, {0, 1}, {0});
+    knuth_bendix::add_generating_pair(kb, {1}, {0});
 
-    // REQUIRE(kb.generating_pairs() ==
-    // std::vector<std::basic_string<uint8_t>>());
-    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(kb.number_of_classes() == 128);
   }
 
 }  // namespace libsemigroups

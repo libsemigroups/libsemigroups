@@ -695,6 +695,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> k(twosided, p);
     k.run();
     // knuth_bendix::by_overlap_length(k);
+    using rule_type = typename decltype(k)::rule_type;
     REQUIRE(k.active_rules().get() == rule_type({"", ""}));
   }
 

@@ -374,7 +374,8 @@ namespace libsemigroups {
     //!
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented by a
+    //! This function adds a generating pair to the congruence represented by
+    //! a
     //! \ref_knuth_bendix instance.
     //!
     //! \cong_common_params_contains
@@ -399,7 +400,8 @@ namespace libsemigroups {
     //!
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented by a
+    //! This function adds a generating pair to the congruence represented by
+    //! a
     //! \ref_knuth_bendix instance.
     //!
     //! \cong_common_params_contains
@@ -467,11 +469,13 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref_knuth_bendix instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref_knuth_bendix
+    //! instance. This function performs no enumeration, so it is possible for
+    //! the words to be contained in the congruence, but that this is not
+    //! currently known.
     //!
     //! \cong_common_params_contains
     //!
@@ -499,7 +503,8 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
+    //! This function checks whether or not the words represented by the
+    //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref_knuth_bendix
     //! instance. This function triggers a full enumeration,
@@ -559,11 +564,12 @@ namespace libsemigroups {
     //! This function writes a reduced word equivalent to the input word
     //! described by the iterator \p first and \p last to the output iterator
     //! \p d_first. This function triggers no enumeration. The word output by
-    //! this function is equivalent to the input word in the congruence defined
-    //! by a \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
-    //! \ref finished, then the output word is a normal form for the input word.
-    //! If the \ref_knuth_bendix instance is not \ref finished, then it might be
-    //! that equivalent input words produce different output words.
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a \ref_knuth_bendix instance. If the \ref_knuth_bendix
+    //! instance is
+    //! \ref finished, then the output word is a normal form for the input
+    //! word. If the \ref_knuth_bendix instance is not \ref finished, then it
+    //! might be that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!
@@ -588,12 +594,14 @@ namespace libsemigroups {
     //! \brief Reduce a word.
     //!
     //! This function triggers a full enumeration and then writes a reduced
-    //! word equivalent to the input word described by the iterator \p first and
+    //! word equivalent to the input word described by the iterator \p first
+    //! and
     //! \p last to the output iterator \p d_first. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
-    //! \ref_knuth_bendix instance. In other words, the output word is a normal
-    //! form for the input word or equivalently a canconical representative of
-    //! its congruence class.
+    //! function is equivalent to the input word in the congruence defined by
+    //! a
+    //! \ref_knuth_bendix instance. In other words, the output word is a
+    //! normal form for the input word or equivalently a canconical
+    //! representative of its congruence class.
     //!
     //! \cong_common_params_reduce
     //!
