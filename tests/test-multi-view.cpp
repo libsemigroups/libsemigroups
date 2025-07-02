@@ -28,20 +28,22 @@
 #include <string>       // for basic_string, operator==
 #include <type_traits>  // for move
 
-#include "libsemigroups/detail/multi-string-view.hpp"  // for MultiStringView, StringView...
+#include "libsemigroups/detail/multi-view.hpp"  // for MultiView, View...
 
 namespace libsemigroups {
-  using detail::MultiStringView;
+  using detail::MultiView;
   struct LibsemigroupsException;  // forward decl
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  using std::literals::string_literals::operator""s;
+
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "000",
                           "catch all",
                           "[quick][multistringview]") {
-    // REQUIRE(sizeof(detail::MultiStringView) == 32);
+    // REQUIRE(sizeof(detail::MultiView) == 32);
     // REQUIRE(sizeof(uint64_t) == 8);
-    std::string             s = "abcdefghijkl";
-    detail::MultiStringView msv(s.cbegin(), s.cbegin() + 3);
+    std::string       s = "abcdefghijkl";
+    detail::MultiView msv(s.cbegin(), s.cbegin() + 3);
     REQUIRE(msv.size() == 3);
     msv.append(s.cbegin(), s.cend());
     REQUIRE(msv.size() == s.size() + 3);
@@ -67,7 +69,7 @@ namespace libsemigroups {
     REQUIRE(msv.number_of_views() == 2);
     REQUIRE(msv == msv);
     REQUIRE(msv.cbegin()[10] == 'h');
-    detail::MultiStringView msv2(s.cbegin(), s.cbegin() + 3);
+    detail::MultiView msv2(s.cbegin(), s.cbegin() + 3);
     msv2.append(s.cbegin(), s.cbegin() + 3);
     msv2.append(s.cbegin() + 3, s.cend());
 
@@ -91,7 +93,7 @@ namespace libsemigroups {
     msv2.append(s.cbegin() + 1, s.cbegin() + 1);
     REQUIRE(msv2.number_of_views() == 3);
 
-    detail::MultiStringView msv3;
+    detail::MultiView msv3;
     REQUIRE(msv3.empty());
     REQUIRE(std::string(msv3) == "");
 
@@ -130,13 +132,13 @@ namespace libsemigroups {
     REQUIRE(std::string(msv3) == "defghijkla");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "001",
                           "is_prefix",
                           "[quick][multistringview]") {
-    using detail::MultiStringView;
-    std::string     s = "abcdefghijkl";
-    MultiStringView m1(s.cbegin(), s.cend() - 4);
+    using detail::MultiView;
+    std::string s = "abcdefghijkl";
+    MultiView   m1(s.cbegin(), s.cend() - 4);
     REQUIRE(std::string(m1) == "abcdefgh");
     REQUIRE(m1.number_of_views() == 1);
     m1.append(s.begin(), s.cend());
@@ -148,18 +150,18 @@ namespace libsemigroups {
     m1.append(s.begin(), s.cend());
     REQUIRE(m1.number_of_views() == 4);
 
-    MultiStringView m2(s.cbegin(), s.cend() - 4);
+    MultiView m2(s.cbegin(), s.cend() - 4);
     m2.append(s.begin(), s.cend());
 
     REQUIRE(detail::is_prefix(m1, m2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "002",
                           "erase",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
@@ -181,12 +183,12 @@ namespace libsemigroups {
     REQUIRE(m.size() == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "003",
                           "iterators",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
@@ -198,26 +200,26 @@ namespace libsemigroups {
     REQUIRE(it > m.cbegin());
     REQUIRE(it - m.cbegin() == 3);
 
-    MultiStringView mm;
+    MultiView mm;
     REQUIRE(mm.empty());
     REQUIRE(mm.cbegin() == mm.cend());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "004",
                           "constructors (long)",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
     m.append(s.begin(), s.cend());
     REQUIRE(!m.empty());
 
-    MultiStringView mm(m);
+    MultiView mm(m);
     REQUIRE(m == mm);
 
-    MultiStringView mmm(std::move(mm));
+    MultiView mmm(std::move(mm));
     REQUIRE(m == mmm);
 
     m.erase(m.cbegin() + 1, m.cbegin() + 4);
@@ -233,26 +235,26 @@ namespace libsemigroups {
     REQUIRE(m.size() == 41);
     REQUIRE(std::distance(m.cbegin() + 4, m.cend()) == 37);
     REQUIRE((m.cend() - 11) - (m.cbegin() + 4) == 26);
-    MultiStringView mmmm(m.cbegin() + 4, m.cend() - 11);
+    MultiView<> mmmm(m.cbegin() + 4, m.cend() - 11);
 
     REQUIRE(std::string(m) == "aefghabcdefghijklabcdefghijklabcdefghijkl");
     REQUIRE(std::string(mmmm) == "habcdefghijklabcdefghijkla");
-    REQUIRE(mmmm == MultiStringView("habcdefghijklabcdefghijkla"));
+    REQUIRE(mmmm == MultiView("habcdefghijklabcdefghijkla"s));
     REQUIRE(!mmmm.empty());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "005",
                           "constructors (short)",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
 
-    MultiStringView mm(m);
+    MultiView mm(m);
     REQUIRE(m == mm);
 
-    MultiStringView mmm(std::move(mm));
+    MultiView mmm(std::move(mm));
     REQUIRE(m == mmm);
 
     m.erase(m.cbegin() + 1, m.cbegin() + 4);
@@ -266,23 +268,23 @@ namespace libsemigroups {
     REQUIRE(mmm == m);
 
     REQUIRE(m.size() == 17);
-    MultiStringView mmmm(m.cbegin() + 4, m.cend() - 11);
+    MultiView<> mmmm(m.cbegin() + 4, m.cend() - 11);
 
     REQUIRE(std::string(m) == "aefghabcdefghijkl");
     REQUIRE(std::string(mmmm) == "ha");
-    REQUIRE(mmmm == MultiStringView("ha"));
+    REQUIRE(mmmm == MultiView("ha"s));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "006",
                           "copy assignment (short assigned to long)",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
 
-    MultiStringView mm(s.cbegin(), s.cend() - 4);
+    MultiView mm(s.cbegin(), s.cend() - 4);
     mm.append(s.begin(), s.cend());
     mm.append(s.begin(), s.cend());
     REQUIRE(mm.size() == 32);
@@ -296,16 +298,16 @@ namespace libsemigroups {
     REQUIRE(std::string(mm) == "abcdefghabcdefghijkl");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "007",
                           "copy assignment (short assigned to short)",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
 
-    MultiStringView mm(s.cbegin(), s.cend() - 4);
+    MultiView mm(s.cbegin(), s.cend() - 4);
     mm.append(s.begin(), s.cend() - 1);
     REQUIRE(mm.size() == 19);
     REQUIRE(m != mm);
@@ -319,16 +321,16 @@ namespace libsemigroups {
     REQUIRE(std::string(mm) == "abcdefghabcdefghijkl");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "008",
                           "move assignment (short assigned to long)",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
 
-    MultiStringView mm(s.cbegin(), s.cend() - 4);
+    MultiView mm(s.cbegin(), s.cend() - 4);
     mm.append(s.begin(), s.cend());
     mm.append(s.begin(), s.cend());
     REQUIRE(mm.size() == 32);
@@ -342,16 +344,16 @@ namespace libsemigroups {
     REQUIRE(std::string(mm) == "abcdefghabcdefghijkl");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "009",
                           "move assignment (short assigned to short)",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.cend() - 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.cend() - 4);
     m.append(s.begin(), s.cend());
     REQUIRE(m.size() == 20);
 
-    MultiStringView mm(s.cbegin(), s.cend() - 4);
+    MultiView mm(s.cbegin(), s.cend() - 4);
     mm.append(s.begin(), s.cend() - 1);
     REQUIRE(mm.size() == 19);
     REQUIRE(m != mm);
@@ -365,19 +367,19 @@ namespace libsemigroups {
     REQUIRE(std::string(mm) == "abcdefghabcdefghijkl");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "010",
                           "code coverage",
                           "[quick][stringview]") {
-    std::string                 s = "abcdefghijkl";
-    detail::StringViewContainer m;
+    std::string           s = "abcdefghijkl";
+    detail::ViewContainer m;
     m.emplace_back(s.cbegin() + 1, s.cbegin() + 5);
     m.emplace_back(s.cbegin() + 2, s.cbegin() + 6);
 
     REQUIRE(m.size(0) == 4);
     REQUIRE(m.size(1) == 4);
     REQUIRE(m.number_of_views() == 2);
-    auto foo = [](detail::StringViewContainer const& mm) { return mm.size(1); };
+    auto foo = [](detail::ViewContainer<> const& mm) { return mm.size(1); };
     REQUIRE(foo(m) == 4);
 
     m.pop_back();
@@ -391,10 +393,10 @@ namespace libsemigroups {
     REQUIRE(m.size() == 0);
     REQUIRE(m.empty());
 
-    m.insert(0, detail::StringView(s.cbegin(), s.cend()));
+    m.insert(0, detail::View(s.cbegin(), s.cend()));
     REQUIRE(m.number_of_views() == 1);
     REQUIRE(m.size() == 12);
-    m.insert(0, detail::StringView(s.cend() - 2, s.cend()));
+    m.insert(0, detail::View(s.cend() - 2, s.cend()));
     REQUIRE(m.number_of_views() == 2);
     REQUIRE(m.size(0) == 2);
     REQUIRE(m.size(1) == 12);
@@ -402,7 +404,7 @@ namespace libsemigroups {
     m.erase(0, 1);
     REQUIRE(m.number_of_views() == 1);
     REQUIRE(m.size() == 12);
-    m.insert(1, detail::StringView(s.cend() - 2, s.cend()));
+    m.insert(1, detail::View(s.cend() - 2, s.cend()));
     REQUIRE(m.number_of_views() == 2);
     REQUIRE(m.size(1) == 2);
     REQUIRE(m.size(0) == 12);
@@ -439,12 +441,12 @@ namespace libsemigroups {
     REQUIRE(m.empty());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "011",
                           "pop_front",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin(), s.begin() + 4);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin(), s.begin() + 4);
     m.append(s.begin() + 1, s.begin() + 3);
     REQUIRE(m.number_of_views() == 2);
     REQUIRE(m.size() == 6);
@@ -477,12 +479,12 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(m.pop_front(), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "012",
                           "append",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin() + 3, s.begin() + 6);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin() + 3, s.begin() + 6);
     REQUIRE(std::string(m) == "def");
     m.append(m.cbegin(), m.cbegin() + 1);
     REQUIRE(std::string(m) == "defd");
@@ -503,12 +505,12 @@ namespace libsemigroups {
     REQUIRE(m.number_of_views() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "013",
                           "operators",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin() + 3, s.begin() + 6);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin() + 3, s.begin() + 6);
     m.append(m.cbegin(), m.cbegin() + 1);
     m.append(m.cbegin(), m.cend());
     m.append(m.cbegin() + 3, m.cbegin() + 5);
@@ -524,34 +526,34 @@ namespace libsemigroups {
     REQUIRE(m[8] == 'd');
     REQUIRE(m[9] == 'd');
 
-    MultiStringView mm(s);
+    MultiView mm(s);
     REQUIRE(std::string(mm + m) == "abcdefghijkldefddefddd");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "014",
                           "maximum_common_suffix",
                           "[quick][multistringview]") {
-    std::string     s = "abcdefghijkl";
-    MultiStringView m(s.cbegin() + 3, s.begin() + 6);
+    std::string s = "abcdefghijkl";
+    MultiView   m(s.cbegin() + 3, s.begin() + 6);
     m.append(m.cbegin(), m.cbegin() + 1);
     m.append(m.cbegin(), m.cend());
     m.append(m.cbegin() + 3, m.cbegin() + 5);
     REQUIRE(std::string(m) == "defddefddd");
 
-    MultiStringView mm = m + m;
+    MultiView mm = m + m;
     REQUIRE(maximum_common_suffix(mm, m) == m);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("MultiStringView",
+  LIBSEMIGROUPS_TEST_CASE("MultiView",
                           "015",
                           "deep tests",
                           "[quick][multistringview]") {
-    std::string     s = "bcdabcd";
-    MultiStringView m(s.cbegin(), s.begin() + 2);
+    std::string s = "bcdabcd";
+    MultiView   m(s.cbegin(), s.begin() + 2);
     m.append(s.cbegin() + 2, s.end());
 
-    MultiStringView ww(m.cbegin(), m.cbegin() + 2);
+    MultiView<> ww(m.cbegin(), m.cbegin() + 2);
     REQUIRE(ww.size() == 2);
   }
 

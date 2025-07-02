@@ -173,10 +173,10 @@ namespace libsemigroups {
   //     factorisation(detail::KE<std::string> const& x);
 
   // template <>
-  // word_type FroidurePin<detail::KE<detail::MultiStringView>,
-  //                       FroidurePinTraits<detail::KE<detail::MultiStringView>,
-  //                                         Kambites<detail::MultiStringView>>>::
-  //     factorisation(detail::KE<detail::MultiStringView> const& x);
+  // word_type FroidurePin<detail::KE<detail::MultiView>,
+  //                       FroidurePinTraits<detail::KE<detail::MultiView>,
+  //                                         Kambites<detail::MultiView>>>::
+  //     factorisation(detail::KE<detail::MultiView> const& x);
 
   // template <>
   // word_type
@@ -191,10 +191,10 @@ namespace libsemigroups {
                                      Kambites<std::string>>>::is_finite() const;
 
   template <>
-  tril
-  FroidurePin<detail::KE<detail::MultiStringView>,
-              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                Kambites<detail::MultiStringView>>>::is_finite()
+  tril FroidurePin<
+      detail::KE<detail::MultiView<std::string>>,
+      FroidurePinTraits<detail::KE<detail::MultiView<std::string>>,
+                        Kambites<detail::MultiView<std::string>>>>::is_finite()
       const;
 
   template <>
@@ -211,9 +211,9 @@ namespace libsemigroups {
 //
 //  template <>
 //  [[nodiscard]] size_t
-//  FroidurePin<detail::KE<detail::MultiStringView>,
-//              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-//                                Kambites<detail::MultiStringView>>>::size();
+//  FroidurePin<detail::KE<detail::MultiView>,
+//              FroidurePinTraits<detail::KE<detail::MultiView>,
+//                                Kambites<detail::MultiView>>>::size();
 //
 //  template <>
 //  [[nodiscard]] size_t FroidurePin<

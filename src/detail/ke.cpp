@@ -27,7 +27,8 @@
 
 namespace libsemigroups {
   namespace detail {
-    class MultiStringView;  // forward decl
+    template <typename String>
+    class MultiView;  // forward decl
   }
 
   // TODO(1) uncomment
@@ -40,10 +41,10 @@ namespace libsemigroups {
   //  }
   //
   //  template <>
-  //  word_type FroidurePin<detail::KE<detail::MultiStringView>,
-  //                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
-  //                                          Kambites<detail::MultiStringView>>>::
-  //      factorisation(detail::KE<detail::MultiStringView> const& x) {
+  //  word_type FroidurePin<detail::KE<detail::MultiView>,
+  //                        FroidurePinTraits<detail::KE<detail::MultiView>,
+  //                                          Kambites<detail::MultiView>>>::
+  //      factorisation(detail::KE<detail::MultiView> const& x) {
   //    return x.to_word(*state());
   //  }
   //
@@ -65,10 +66,10 @@ namespace libsemigroups {
   }
 
   template <>
-  tril
-  FroidurePin<detail::KE<detail::MultiStringView>,
-              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                Kambites<detail::MultiStringView>>>::is_finite()
+  tril FroidurePin<
+      detail::KE<detail::MultiView<std::string>>,
+      FroidurePinTraits<detail::KE<detail::MultiView<std::string>>,
+                        Kambites<detail::MultiView<std::string>>>>::is_finite()
       const {
     return tril::FALSE;
   }
@@ -90,9 +91,9 @@ namespace libsemigroups {
   //
   //   template <>
   //   size_t
-  //   FroidurePin<detail::KE<detail::MultiStringView>,
-  //               FroidurePinTraits<detail::KE<detail::MultiStringView>,
-  //                                 Kambites<detail::MultiStringView>>>::size()
+  //   FroidurePin<detail::KE<detail::MultiView>,
+  //               FroidurePinTraits<detail::KE<detail::MultiView>,
+  //                                 Kambites<detail::MultiView>>>::size()
   //                                 {
   //     return POSITIVE_INFINITY;
   //   }

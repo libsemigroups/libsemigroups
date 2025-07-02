@@ -101,7 +101,7 @@
 #include "detail/ke.hpp"
 #include "detail/knuth-bendix-impl.hpp"
 #include "detail/knuth-bendix-nf.hpp"
-#include "detail/multi-string-view.hpp"
+#include "detail/multi-view.hpp"
 #include "detail/node-managed-graph.hpp"
 #include "detail/node-manager.hpp"
 #include "detail/path-iterators.hpp"

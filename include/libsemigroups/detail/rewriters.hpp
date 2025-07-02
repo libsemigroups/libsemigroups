@@ -33,7 +33,7 @@
 #include "../debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "../order.hpp"  // for shortlex_compare
 
-#include "multi-string-view.hpp"  // for MultiStringView
+#include "multi-view.hpp"  // for MultiView
 
 // TODO(2) Add a KnuthBendixImpl pointer to the rewriter class so that overlap
 // detection can be handled by the rewriter (and therefore depend on the

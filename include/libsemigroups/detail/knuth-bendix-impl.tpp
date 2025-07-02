@@ -969,9 +969,9 @@ namespace libsemigroups {
         if (detail::is_prefix(vlhs.cbegin(), vlhs.cend(), it, ulhs.cend())) {
           // u = P_i = AB -> Q_i and v = P_j = BC -> Q_j This version of
           // new_rule does not reorder _rewriter.add_rule(AQ_j, Q_iC);
-          detail::MultiStringView x(ulhs.cbegin(), it);
+          detail::MultiView x(ulhs.cbegin(), it);
           x.append(vrhs.cbegin(), vrhs.cend());
-          detail::MultiStringView y(urhs.cbegin(), urhs.cend());
+          detail::MultiView y(urhs.cbegin(), urhs.cend());
           y.append(vlhs.cbegin() + (ulhs.cend() - it),
                    vlhs.cend());  // rule = AQ_j -> Q_iC
           _rewriter.add_pending_rule(x, y);

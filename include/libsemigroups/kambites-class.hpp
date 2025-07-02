@@ -52,7 +52,7 @@
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for format
-#include "detail/multi-string-view.hpp"  // for MultiStringView, is_prefix
+#include "detail/multi-view.hpp"         // for MultiView, is_prefix
 #include "detail/string.hpp"             // for is_prefix, maximum_comm...
 #include "detail/uf.hpp"                 // for Duf
 
@@ -147,7 +147,7 @@ namespace libsemigroups {
   //!
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
-  template <typename Word = detail::MultiStringView>
+  template <typename Word = detail::MultiView<std::string>>
   class Kambites : public detail::CongruenceCommon {
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -161,10 +161,10 @@ namespace libsemigroups {
     //!
     //! Type of the words in the relations of the presentation stored in
     //! a \ref_kambites instance.
-    using native_word_type
-        = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
-                             std::string,
-                             Word>;
+    using native_word_type = std::conditional_t<
+        std::is_same_v<Word, detail::MultiView<std::string>>,
+        std::string,
+        Word>;
 
    private:
     using internal_type = Word;
@@ -1017,7 +1017,7 @@ namespace libsemigroups {
       x.erase(x.begin());
     }
 
-    static void pop_front(detail::MultiStringView& x) {
+    static void pop_front(detail::MultiView<std::string>& x) {
       x.pop_front();
     }
 
@@ -1027,9 +1027,9 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    static void append(detail::MultiStringView& w,
-                       Iterator                 first,
-                       Iterator                 last) {
+    static void append(detail::MultiView<std::string>& w,
+                       Iterator                        first,
+                       Iterator                        last) {
       w.append(first, last);
     }
 

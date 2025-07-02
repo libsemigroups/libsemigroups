@@ -536,11 +536,11 @@ namespace libsemigroups {
                                    size_t     overlap_length) {
       // BFS find the terminal descendants of node and add overlaps with rule
       if (_trie.node_no_checks(node).is_terminal()) {
-        Rule const*             rule2 = _rules.find(node)->second;
-        detail::MultiStringView x(rule->lhs()->cbegin(),
-                                  rule->lhs()->cend() - overlap_length);
+        Rule const*       rule2 = _rules.find(node)->second;
+        detail::MultiView x(rule->lhs()->cbegin(),
+                            rule->lhs()->cend() - overlap_length);
         x.append(rule2->rhs()->cbegin(), rule2->rhs()->cend());
-        detail::MultiStringView y(rule->rhs()->cbegin(), rule->rhs()->cend());
+        detail::MultiView y(rule->rhs()->cbegin(), rule->rhs()->cend());
         y.append(rule2->lhs()->cbegin() + overlap_length,
                  rule2->lhs()->cend());  // rule = AQ_j -> Q_iC
         add_pending_rule(x, y);

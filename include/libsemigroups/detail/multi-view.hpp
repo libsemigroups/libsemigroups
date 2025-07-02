@@ -18,10 +18,10 @@
 
 // TODO(later)
 // - more benchmarks
-// - make a cpp file
+// - make a tpp file
 
-#ifndef LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
-#define LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_MULTI_VIEW_HPP_
+#define LIBSEMIGROUPS_DETAIL_MULTI_VIEW_HPP_
 
 #include <algorithm>  // for equal, lexicographical_compare
 #include <cstddef>    // for size_t, etc
@@ -40,15 +40,18 @@
 
 namespace libsemigroups {
   namespace detail {
-    class StringView {
+    // TODO(v4) remove default value
+    template <typename Thing = std::string>
+    class View {
      public:
       ////////////////////////////////////////////////////////////////////////
-      // StringView - type aliases - public
+      // View - type aliases - public
       ////////////////////////////////////////////////////////////////////////
-      using string_type           = std::string;
-      using const_iterator_string = typename string_type::const_iterator;
 
-      StringView(const_iterator_string first, const_iterator_string last)
+      using view_of_type           = Thing;
+      using const_iterator_view_of = typename view_of_type::const_iterator;
+
+      View(const_iterator_view_of first, const_iterator_view_of last)
           : _begin(first), _length(last - first) {
         LIBSEMIGROUPS_ASSERT(first <= last);
       }
@@ -69,35 +72,38 @@ namespace libsemigroups {
         return *(begin() + pos);
       }
 
-      const_iterator_string& begin() noexcept {
+      const_iterator_view_of& begin() noexcept {
         return _begin;
       }
 
-      const_iterator_string const& begin() const noexcept {
+      const_iterator_view_of const& begin() const noexcept {
         return _begin;
       }
 
-      const_iterator_string end() const noexcept {
+      const_iterator_view_of end() const noexcept {
         return begin() + size();
       }
 
      private:
-      const_iterator_string _begin;
-      uint32_t              _length;
-    };
+      const_iterator_view_of _begin;
+      uint32_t               _length;
+    };  // class View
 
     ////////////////////////////////////////////////////////////////////////
-    // StringViewContainer
+    // ViewContainer
     ////////////////////////////////////////////////////////////////////////
 
-    class StringViewContainer {
-      using const_iterator_string = StringView::const_iterator_string;
+    // TODO remove default value?
+    template <typename Thing = std::string>
+    class ViewContainer {
+      using view_of_type = Thing;
+      using const_iterator_view_of =
+          typename View<view_of_type>::const_iterator_view_of;
 
      public:
-      StringViewContainer() : _is_long(false) {}
+      ViewContainer() : _is_long(false) {}
 
-      StringViewContainer(StringViewContainer const& that)
-          : _is_long(that._is_long) {
+      ViewContainer(ViewContainer const& that) : _is_long(that._is_long) {
         if (!_is_long) {
           _data._short = that._data._short;
         } else {
@@ -106,8 +112,7 @@ namespace libsemigroups {
         }
       }
 
-      StringViewContainer(StringViewContainer&& that)
-          : _is_long(that._is_long) {
+      ViewContainer(ViewContainer&& that) : _is_long(that._is_long) {
         if (!_is_long) {
           _data._short = std::move(that._data._short);
         } else {
@@ -116,7 +121,7 @@ namespace libsemigroups {
         }
       }
 
-      StringViewContainer& operator=(StringViewContainer const& that) {
+      ViewContainer& operator=(ViewContainer const& that) {
         if (is_long()) {
           if (that.is_long()) {
             _data._long = that._data._long;
@@ -136,7 +141,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      StringViewContainer& operator=(StringViewContainer&& that) {
+      ViewContainer& operator=(ViewContainer&& that) {
         if (is_long()) {
           if (that.is_long()) {
             _data._long = std::move(that._data._long);
@@ -156,7 +161,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      ~StringViewContainer() {
+      ~ViewContainer() {
         if (!is_long()) {
           _data.destroy_short();
         } else {
@@ -172,7 +177,7 @@ namespace libsemigroups {
         Short& operator=(Short const&) = default;
         Short& operator=(Short&&)      = default;
 
-        const_iterator_string const& begin(size_t i) const {
+        const_iterator_view_of const& begin(size_t i) const {
           if (i == 0) {
             return _begin1;
           } else {
@@ -181,7 +186,7 @@ namespace libsemigroups {
           }
         }
 
-        const_iterator_string& begin(size_t i) {
+        const_iterator_view_of& begin(size_t i) {
           if (i == 0) {
             return _begin1;
           } else {
@@ -190,7 +195,7 @@ namespace libsemigroups {
           }
         }
 
-        const_iterator_string end(size_t i) const {
+        const_iterator_view_of end(size_t i) const {
           if (i == 0) {
             return _begin1 + _length1;
           } else {
@@ -232,8 +237,8 @@ namespace libsemigroups {
           return (i == 0 && _length1 == 0) || (i == 1 && _length2 == 0);
         }
 
-        void emplace_back(const_iterator_string first,
-                          const_iterator_string last) {
+        void emplace_back(const_iterator_view_of first,
+                          const_iterator_view_of last) {
           LIBSEMIGROUPS_ASSERT(first < last);
           if (number_of_views() == 0) {
             _begin1  = first;
@@ -263,7 +268,7 @@ namespace libsemigroups {
           // do nothing if empty
         }
 
-        size_t insert(size_t pos, StringView&& sv) {
+        size_t insert(size_t pos, View<view_of_type>&& sv) {
           LIBSEMIGROUPS_ASSERT(pos < 2);
           LIBSEMIGROUPS_ASSERT(number_of_views() != 2);
           if (pos == 0) {
@@ -284,7 +289,7 @@ namespace libsemigroups {
         size_t erase(size_t first, size_t last) {
           if (empty()) {
             // It can happen that one of the next assertions is false because
-            // if we are part way through a call to MultiStringView::erase
+            // if we are part way through a call to MultiView::erase
             // because number_of_views() is determined by examining _length1
             // and _length2, which might already have been updated.
             return 0;
@@ -317,26 +322,26 @@ namespace libsemigroups {
         }
 
        private:
-        const_iterator_string _begin1;
-        const_iterator_string _begin2;
-        uint32_t              _length1;
-        uint32_t              _length2;
-      };
+        const_iterator_view_of _begin1;
+        const_iterator_view_of _begin2;
+        uint32_t               _length1;
+        uint32_t               _length2;
+      };  // class Short
 
       class Long {
        public:
         ~Long() {}
-        const_iterator_string const& begin(size_t i) const {
+        const_iterator_view_of const& begin(size_t i) const {
           LIBSEMIGROUPS_ASSERT(i < _views.size());
           return _views[i].begin();
         }
 
-        const_iterator_string& begin(size_t i) {
+        const_iterator_view_of& begin(size_t i) {
           LIBSEMIGROUPS_ASSERT(i < _views.size());
           return _views[i].begin();
         }
 
-        const_iterator_string end(size_t i) const {
+        const_iterator_view_of end(size_t i) const {
           LIBSEMIGROUPS_ASSERT(i < _views.size());
           return _views[i].end();
         }
@@ -346,12 +351,13 @@ namespace libsemigroups {
         }
 
         size_t size() const {
-          return std::accumulate(_views.cbegin(),
-                                 _views.cend(),
-                                 0,
-                                 [](size_t result, StringView const& sv) {
-                                   return result + sv.size();
-                                 });
+          return std::accumulate(
+              _views.cbegin(),
+              _views.cend(),
+              0,
+              [](size_t result, View<view_of_type> const& sv) {
+                return result + sv.size();
+              });
         }
 
         uint32_t const& size(size_t i) const {
@@ -373,8 +379,8 @@ namespace libsemigroups {
           return _views.empty();
         }
 
-        void emplace_back(const_iterator_string first,
-                          const_iterator_string last) {
+        void emplace_back(const_iterator_view_of first,
+                          const_iterator_view_of last) {
           LIBSEMIGROUPS_ASSERT(first < last);
           _views.emplace_back(first, last);
         }
@@ -389,7 +395,7 @@ namespace libsemigroups {
           }
         }
 
-        size_t insert(size_t pos, StringView&& sv) {
+        size_t insert(size_t pos, View<view_of_type>&& sv) {
           auto it = _views.insert(_views.begin() + pos, sv);
           return it - _views.cbegin();
         }
@@ -401,18 +407,18 @@ namespace libsemigroups {
         }
 
        private:
-        std::vector<StringView> _views;
-      };
+        std::vector<View<view_of_type>> _views;
+      };  // class Long
 
       ////////////////////////////////////////////////////////////////////////
-      // StringViewContainer - public
+      // ViewContainer - public
       ////////////////////////////////////////////////////////////////////////
 
       inline bool is_long() const noexcept {
         return _is_long;
       }
 
-      const_iterator_string const& begin(size_t i) const {
+      const_iterator_view_of const& begin(size_t i) const {
         if (!is_long()) {
           return _data._short.begin(i);
         } else {
@@ -420,7 +426,7 @@ namespace libsemigroups {
         }
       }
 
-      const_iterator_string& begin(size_t i) {
+      const_iterator_view_of& begin(size_t i) {
         if (!is_long()) {
           return _data._short.begin(i);
         } else {
@@ -428,7 +434,7 @@ namespace libsemigroups {
         }
       }
 
-      const_iterator_string end(size_t i) const {
+      const_iterator_view_of end(size_t i) const {
         if (!is_long()) {
           return _data._short.end(i);
         } else {
@@ -486,8 +492,8 @@ namespace libsemigroups {
         }
       }
 
-      void emplace_back(const_iterator_string first,
-                        const_iterator_string last) {
+      void emplace_back(const_iterator_view_of first,
+                        const_iterator_view_of last) {
         if (last <= first) {
           return;
         }
@@ -519,7 +525,7 @@ namespace libsemigroups {
         }
       }
 
-      size_t insert(size_t pos, StringView&& sv) {
+      size_t insert(size_t pos, View<view_of_type>&& sv) {
         if (!is_long()) {
           if (_data._short.number_of_views() < 2) {
             return _data._short.insert(pos, std::move(sv));
@@ -581,51 +587,52 @@ namespace libsemigroups {
 
         Short _short;
         Long  _long;
-      };
+      };  // class ShortOrLong
 
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - data - private
+      // MultiView - data - private
       ////////////////////////////////////////////////////////////////////////
       ShortOrLong _data;
       uint8_t     _is_long;
-    };
+    };  // class ViewContainer
 
-    class MultiStringView {
+    template <typename Thing = std::string>
+    class MultiView {
      public:
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - type aliases - public
+      // MultiView - type aliases - public
       ////////////////////////////////////////////////////////////////////////
-      using string_type           = std::string;
-      using const_iterator_string = typename string_type::const_iterator;
+      using view_of_type           = Thing;
+      using const_iterator_view_of = typename view_of_type::const_iterator;
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - iterator traits - private
+      // MultiView - iterator traits - private
       ////////////////////////////////////////////////////////////////////////
 
-      struct IteratorTraits : detail::ConstIteratorTraits<string_type> {
-        using const_iterator_string = typename string_type::const_iterator;
-        using value_type            = std::string::value_type;
-        using const_reference       = value_type const&;
-        using reference             = value_type&;
-        using const_pointer         = value_type const*;
-        using pointer               = value_type*;
+      struct IteratorTraits : detail::ConstIteratorTraits<view_of_type> {
+        using const_iterator_view_of = typename view_of_type::const_iterator;
+        using value_type             = typename view_of_type::value_type;
+        using const_reference        = value_type const&;
+        using reference              = value_type&;
+        using const_pointer          = value_type const*;
+        using pointer                = value_type*;
 
         // state_type.second is the index in _container into which the iterator
         // currently points
-        using state_type = std::pair<MultiStringView const*, size_t>;
+        using state_type = std::pair<MultiView const*, size_t>;
 
         struct PrefixIncrement {
-          void operator()(state_type& st, const_iterator_string& it) const {
-            MultiStringView const* ptr        = st.first;
-            size_t&                view_index = st.second;
+          void operator()(state_type& st, const_iterator_view_of& it) const {
+            MultiView const* ptr        = st.first;
+            size_t&          view_index = st.second;
 
             LIBSEMIGROUPS_ASSERT(ptr->_container.begin(view_index) <= it);
             LIBSEMIGROUPS_ASSERT(it < ptr->_container.end(view_index)
                                  || ptr->_container.empty(view_index));
 
             ++it;
-            // move to next StringView if necessary
+            // move to next View if necessary
             if (it >= ptr->_container.end(view_index)
                 && view_index < ptr->number_of_views() - 1) {
               ++view_index;
@@ -635,16 +642,16 @@ namespace libsemigroups {
         };
 
         struct PrefixDecrement {
-          void operator()(state_type& st, const_iterator_string& it) const {
-            MultiStringView const* ptr        = st.first;
-            size_t&                view_index = st.second;
+          void operator()(state_type& st, const_iterator_view_of& it) const {
+            MultiView const* ptr        = st.first;
+            size_t&          view_index = st.second;
 
             LIBSEMIGROUPS_ASSERT(ptr->_container.begin(view_index) <= it);
             LIBSEMIGROUPS_ASSERT(it <= ptr->_container.end(view_index)
                                  || ptr->_container.empty(view_index));
 
             --it;
-            // move to next StringView if necessary
+            // move to next View if necessary
             if (it < ptr->_container.begin(view_index) && view_index > 0) {
               --view_index;
               it = ptr->_container.end(view_index) - 1;
@@ -653,26 +660,28 @@ namespace libsemigroups {
         };
 
         struct EqualTo {
-          bool operator()(state_type const&           st1,
-                          const_iterator_string const it1,
-                          state_type const&           st2,
-                          const_iterator_string const it2) const {
+          bool operator()(state_type const&            st1,
+                          const_iterator_view_of const it1,
+                          state_type const&            st2,
+                          const_iterator_view_of const it2) const {
             return st1.second == st2.second && it1 == it2;
           }
         };
 
         struct NotEqualTo {
-          bool operator()(state_type const&           st1,
-                          const_iterator_string const it1,
-                          state_type const&           st2,
-                          const_iterator_string const it2) const {
+          bool operator()(state_type const&            st1,
+                          const_iterator_view_of const it1,
+                          state_type const&            st2,
+                          const_iterator_view_of const it2) const {
             return !EqualTo()(st1, it1, st2, it2);
           }
         };
 
         struct AddAssign {
-          void operator()(state_type& st, const_iterator_string& it, size_t n) {
-            MultiStringView const* ptr = st.first;
+          void operator()(state_type&             st,
+                          const_iterator_view_of& it,
+                          size_t                  n) {
+            MultiView const* ptr = st.first;
             if (ptr->empty() || n == 0) {
               return;
             }
@@ -690,10 +699,10 @@ namespace libsemigroups {
         // TODO(later) SubtractAssign
 
         struct Less {
-          bool operator()(state_type const&           st1,
-                          const_iterator_string const it1,
-                          state_type const&           st2,
-                          const_iterator_string const it2) {
+          bool operator()(state_type const&            st1,
+                          const_iterator_view_of const it1,
+                          state_type const&            st2,
+                          const_iterator_view_of const it2) {
             LIBSEMIGROUPS_ASSERT(st1.first == st2.first);
             return st1.second < st2.second
                    || (st1.second == st2.second && it1 < it2);
@@ -701,20 +710,20 @@ namespace libsemigroups {
         };
 
         struct LessOrEqualTo {
-          bool operator()(state_type const&           st1,
-                          const_iterator_string const it1,
-                          state_type const&           st2,
-                          const_iterator_string const it2) {
+          bool operator()(state_type const&            st1,
+                          const_iterator_view_of const it1,
+                          state_type const&            st2,
+                          const_iterator_view_of const it2) {
             LIBSEMIGROUPS_ASSERT(st1.first == st2.first);
             return Less()(st1, it1, st2, it2) || EqualTo()(st1, it1, st2, it2);
           }
         };
 
         struct More {
-          bool operator()(state_type const&           st1,
-                          const_iterator_string const it1,
-                          state_type const&           st2,
-                          const_iterator_string const it2) {
+          bool operator()(state_type const&            st1,
+                          const_iterator_view_of const it1,
+                          state_type const&            st2,
+                          const_iterator_view_of const it2) {
             LIBSEMIGROUPS_ASSERT(st1.first == st2.first);
             return !LessOrEqualTo()(st1, it1, st2, it2);
           }
@@ -722,12 +731,12 @@ namespace libsemigroups {
 
         struct Difference {
           using difference_type =
-              typename const_iterator_string::difference_type;
+              typename const_iterator_view_of::difference_type;
 
-          difference_type operator()(state_type const&           st1,
-                                     const_iterator_string const it1,
-                                     state_type const&           st2,
-                                     const_iterator_string const it2) {
+          difference_type operator()(state_type const&            st1,
+                                     const_iterator_view_of const it1,
+                                     state_type const&            st2,
+                                     const_iterator_view_of const it2) {
             LIBSEMIGROUPS_ASSERT(st1.first == st2.first);
             if (st1.second == st2.second) {
               return it1 - it2;
@@ -749,40 +758,41 @@ namespace libsemigroups {
       friend struct IteratorTraits;
 
      public:
-      using const_iterator = ConstIteratorStateful<IteratorTraits>;
+      using const_iterator         = ConstIteratorStateful<IteratorTraits>;
+      using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - constructors + destructor - public
+      // MultiView - constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
-      MultiStringView()                                       = default;
-      MultiStringView(MultiStringView const& that)            = default;
-      MultiStringView(MultiStringView&& that)                 = default;
-      MultiStringView& operator=(MultiStringView&& that)      = default;
-      MultiStringView& operator=(MultiStringView const& that) = default;
+      MultiView()                                 = default;
+      MultiView(MultiView const& that)            = default;
+      MultiView(MultiView&& that)                 = default;
+      MultiView& operator=(MultiView&& that)      = default;
+      MultiView& operator=(MultiView const& that) = default;
 
-      // construct from std::string::const_iterators
-      MultiStringView(const_iterator_string first, const_iterator_string last)
-          : MultiStringView() {
+      // construct from view_of_type::const_iterators
+      MultiView(const_iterator_view_of first, const_iterator_view_of last)
+          : MultiView() {
         if (first < last) {
           _container.emplace_back(first, last);
         }
       }
 
-      // construct from MultiStringView::const_iterators
-      MultiStringView(const_iterator first, const_iterator last)
-          : MultiStringView(*first.get_state().first) {
+      // construct from MultiView::const_iterators
+      MultiView(const_iterator first, const_iterator last)
+          : MultiView(*first.get_state().first) {
         LIBSEMIGROUPS_ASSERT(first.get_state().first == last.get_state().first);
-        MultiStringView const* p = first.get_state().first;
+        MultiView const* p = first.get_state().first;
         erase(cbegin() + (last - p->cbegin()), cend());
         erase(cbegin(), cbegin() + (first - p->cbegin()));
       }
 
-      explicit MultiStringView(std::string const& s)
-          : MultiStringView(s.cbegin(), s.cend()) {}
+      explicit MultiView(view_of_type const& s)
+          : MultiView(s.cbegin(), s.cend()) {}
 
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - attributes - public
+      // MultiView - attributes - public
       ////////////////////////////////////////////////////////////////////////
 
       size_t size() const {
@@ -798,7 +808,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - modifiers - public
+      // MultiView - modifiers - public
       ////////////////////////////////////////////////////////////////////////
 
       void clear() {
@@ -807,8 +817,7 @@ namespace libsemigroups {
 
       char pop_front() {
         if (empty()) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "cannot pop_front, MultiStringView is empty!");
+          LIBSEMIGROUPS_EXCEPTION("cannot pop_front, MultiView is empty!");
         }
         char result = (*this)[0];
         erase(cbegin());
@@ -816,7 +825,7 @@ namespace libsemigroups {
         return result;
       }
 
-      void append(const_iterator_string first, const_iterator_string last) {
+      void append(const_iterator_view_of first, const_iterator_view_of last) {
         if (first < last) {
           if (!empty()
               && first == _container.end(_container.number_of_views() - 1)) {
@@ -827,13 +836,13 @@ namespace libsemigroups {
         }
       }
 
-      MultiStringView& append(const_iterator first, const_iterator last) {
+      MultiView& append(const_iterator first, const_iterator last) {
         if (first < last) {
           LIBSEMIGROUPS_ASSERT(first.get_state().first
                                == last.get_state().first);
-          MultiStringView const* ptr         = first.get_state().first;
-          size_t                 first_index = first.get_state().second;
-          size_t const           last_index  = last.get_state().second;
+          MultiView const* ptr         = first.get_state().first;
+          size_t           first_index = first.get_state().second;
+          size_t const     last_index  = last.get_state().second;
           if (first_index == last_index) {
             // append so that we concatenate adjacent ranges!
             append(first.get_wrapped_iter(), last.get_wrapped_iter());
@@ -891,7 +900,8 @@ namespace libsemigroups {
             // ever points at view_last.end() !!
             LIBSEMIGROUPS_ASSERT(last.get_wrapped_iter()
                                  != _container.end(view_last));
-            StringView sv(last.get_wrapped_iter(), _container.end(view_first));
+            View<view_of_type> sv(last.get_wrapped_iter(),
+                                  _container.end(view_first));
             _container.size(view_first)
                 -= (_container.end(view_first) - first.get_wrapped_iter());
             LIBSEMIGROUPS_ASSERT(!_container.empty(view_first));
@@ -919,13 +929,13 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - iterators - public
+      // MultiView - iterators - public
       ////////////////////////////////////////////////////////////////////////
 
       const_iterator cbegin() const {
         if (empty()) {
           return const_iterator(std::make_pair(this, 0),
-                                null_string().cbegin());
+                                null_const_reference().cbegin());
         }
         LIBSEMIGROUPS_ASSERT(!_container.empty(0));
         return const_iterator(std::make_pair(this, 0), _container.begin(0));
@@ -934,14 +944,12 @@ namespace libsemigroups {
       const_iterator cend() const {
         if (empty()) {
           return const_iterator(std::make_pair(this, 0),
-                                null_string().cbegin());
+                                null_const_reference().cbegin());
         }
         return const_iterator(
             std::make_pair(this, _container.number_of_views() - 1),
             _container.end(_container.number_of_views() - 1));
       }
-
-      using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
       const_reverse_iterator crbegin() const {
         return const_reverse_iterator(cend());
@@ -960,53 +968,53 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - operators - public
+      // MultiView - operators - public
       ////////////////////////////////////////////////////////////////////////
 
-      operator string_type() const {
-        string_type result = "";
+      operator view_of_type() const {
+        view_of_type result = "";
         for (size_t i = 0; i < _container.number_of_views(); ++i) {
           result.append(_container.begin(i), _container.end(i));
         }
         return result;
       }
 
-      bool operator==(MultiStringView const& other) const {
+      bool operator==(MultiView const& other) const {
         if (size() != other.size()) {
           return false;
         }
         return std::equal(cbegin(), cend(), other.cbegin());
       }
 
-      bool operator!=(MultiStringView const& other) const {
+      bool operator!=(MultiView const& other) const {
         return !(*this == other);
       }
 
-      bool operator<(MultiStringView const& other) const {
+      bool operator<(MultiView const& other) const {
         return std::lexicographical_compare(
             cbegin(), cend(), other.cbegin(), other.cend());
       }
 
-      bool operator>(MultiStringView const& other) const {
+      bool operator>(MultiView const& other) const {
         return other < *this;
       }
 
-      bool operator<=(MultiStringView const& other) const {
+      bool operator<=(MultiView const& other) const {
         return *this < other || other == *this;
       }
 
-      bool operator>=(MultiStringView const& other) const {
+      bool operator>=(MultiView const& other) const {
         return *this > other || other == *this;
       }
 
-      void operator+=(MultiStringView const& other) {
+      void operator+=(MultiView const& other) {
         for (size_t i = 0; i < other.number_of_views(); ++i) {
           append(other._container.begin(i), other._container.end(i));
         }
       }
 
-      MultiStringView operator+(MultiStringView const& other) const {
-        MultiStringView result(*this);
+      MultiView operator+(MultiView const& other) const {
+        MultiView result(*this);
         result += other;
         return result;
       }
@@ -1022,7 +1030,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // MultiStringView - helpers - private
+      // MultiView - helpers - private
       ////////////////////////////////////////////////////////////////////////
 
       // returns _container.size() if it does not point inside any view
@@ -1030,31 +1038,35 @@ namespace libsemigroups {
         return it.get_state().second;
       }
 
-      static string_type const& null_string() noexcept {
-        static const string_type nll_strng;
+      static view_of_type const& null_const_reference() noexcept {
+        static const view_of_type nll_strng;
         return nll_strng;
       }
 
-      StringViewContainer _container;
-    };
+      ViewContainer<view_of_type> _container;
+    };  // class MultiView
+
+    // template <>
+    // MultiView(char const*) -> MultiView<std::string>;
 
     ////////////////////////////////////////////////////////////////////////
     // libsemigroups comparison operators
     ////////////////////////////////////////////////////////////////////////
-    static inline bool is_prefix(MultiStringView const& word,
-                                 MultiStringView const& possible_prefix) {
+
+    template <typename Thing>
+    bool is_prefix(Thing const& word, MultiView<Thing> const& possible_prefix) {
       return is_prefix(word.cbegin(),
                        word.cend(),
                        possible_prefix.cbegin(),
                        possible_prefix.cend());
     }
 
-    static inline MultiStringView
-    maximum_common_suffix(MultiStringView const& first,
-                          MultiStringView const& second) {
+    template <typename Thing>
+    MultiView<Thing> maximum_common_suffix(MultiView<Thing> const& first,
+                                           MultiView<Thing> const& second) {
       auto p = maximum_common_suffix(
           first.cbegin(), first.cend(), second.cbegin(), second.cend());
-      return MultiStringView(p.first, first.cend());
+      return MultiView<Thing>(p.first, first.cend());
     }
   }  // namespace detail
 }  // namespace libsemigroups
@@ -1065,15 +1077,16 @@ namespace std {
   // std comparison operators
   ////////////////////////////////////////////////////////////////////////
 
-  static inline bool
-  operator==(std::string const&                            x,
-             libsemigroups::detail::MultiStringView const& y) {
+  template <typename Thing>
+  bool operator==(Thing const&                                   x,
+                  libsemigroups::detail::MultiView<Thing> const& y) {
     return std::equal(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  static inline bool operator==(libsemigroups::detail::MultiStringView const& x,
-                                std::string const& y) {
+  template <typename Thing>
+  bool operator==(libsemigroups::detail::MultiView<Thing> const& x,
+                  Thing const&                                   y) {
     return y == x;
   }
 }  // namespace std
-#endif  // LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_MULTI_VIEW_HPP_
