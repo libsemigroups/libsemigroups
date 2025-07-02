@@ -385,6 +385,7 @@ namespace libsemigroups {
     //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \cong_common_throws_if_started
+    // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -395,6 +396,23 @@ namespace libsemigroups {
                                      Iterator4 last2) {
       // Call detail::CongruenceCommon version so that we perform bound checks
       // in KnuthBendix and not KnuthBendixImpl
+      if (detail::CongruenceCommon::kind() == congruence_kind::onesided) {
+        size_t max_alphabet
+            = std::numeric_limits<std::string::value_type>::max()
+              - std::numeric_limits<std::string::value_type>::min();
+        if (_presentation.alphabet().size() == max_alphabet) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "it is not possible to add generating pairs to a 1-sided "
+              "KnuthBendix instance over a presentation with > {} generators "
+              "but found {} generators",
+              max_alphabet - 1,
+              max_alphabet);
+        }
+        auto new_alphabet = _presentation.alphabet();
+        new_alphabet.push_back(
+            presentation::first_unused_letter(_presentation));
+        _presentation.alphabet(new_alphabet);
+      }
       return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
           first1, last1, first2, last2);
     }
@@ -403,7 +421,7 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO: contains_no_checks are implemented
+    // TODO: contains_no_checks is implemented
     // and documented in KnuthBendixImpl
 
     template <typename Iterator1,

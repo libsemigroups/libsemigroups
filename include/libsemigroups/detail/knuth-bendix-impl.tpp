@@ -246,6 +246,7 @@ namespace libsemigroups {
         congruence_kind             knd,
         Presentation<std::string>&& p) {
       p.throw_if_bad_alphabet_or_rules();
+      // TODO shouldn't the following be an assertion?
       presentation::throw_if_not_normalized(p, "2nd");
       init();
       kind(knd);
@@ -543,7 +544,10 @@ namespace libsemigroups {
       auto& pairs = internal_generating_pairs();
 
       if (kind() == congruence_kind::onesided && !pairs.empty()) {
-        // TODO(0) throw exception if the number of generators is 256 already
+        LIBSEMIGROUPS_ASSERT(
+            p.alphabet().size()
+            < std::numeric_limits<std::string::value_type>::max()
+                  - std::numeric_limits<std::string::value_type>::min());
         p.alphabet(p.alphabet()
                    + static_cast<std::string::value_type>(p.alphabet().size()));
         _rewriter.increase_alphabet_size_by(1);

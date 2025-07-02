@@ -1827,4 +1827,31 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 5);
     REQUIRE(kb.number_of_classes() == 6);
   }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "145",
+                                   "alphabet limit",
+                                   "[todd-coxeter][quick]",
+                                   REWRITER_TYPES) {
+    using literals::operator""_w;
+
+    // Presentation<word_type> p;
+    // p.alphabet(256);
+    // auto copy = to<Presentation<std::string>>(
+    //     p, [&p](auto x) -> char { return p.index_no_checks(x); });
+
+    // std::vector<char> alpha(copy.alphabet().begin(), copy.alphabet().end());
+
+    // REQUIRE(alpha == (rx::seq<char>(-128) | rx::take(256) |
+    // rx::to_vector())); REQUIRE(std::is_sorted(alpha.begin(), alpha.end()));
+
+    Presentation<std::basic_string<uint8_t>> p;
+    p.alphabet(129);
+    REQUIRE(p.alphabet()[0] == 0);
+    REQUIRE(std::vector<uint8_t>(p.alphabet().begin(), p.alphabet().end())
+            == (rx::seq<uint8_t>(0) | rx::take(129) | rx::to_vector()));
+
+    KnuthBendix kb(congruence_kind::onesided, p);
+    // knuth_bendix::add_generating_pair(kb, 01_w, 0_w);
+  }
 }  // namespace libsemigroups

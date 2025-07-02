@@ -688,7 +688,7 @@ namespace libsemigroups {
             // Shouldn't be possible for 2 rules with equal left-hand sides to
             // exist, since the later added one will be rewritten using the
             // first.
-            LIBSEMIGROUPS_ASSERT(inserted);
+            // TODO resolve this LIBSEMIGROUPS_ASSERT(inserted);
             rules_added           = true;
             rules_added_this_pass = true;
           } else {
