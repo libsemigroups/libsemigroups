@@ -354,7 +354,8 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit(
+          [](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -979,7 +980,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] word_type operator()(From const& input) const {
       word_type output;
-      operator()(output, input);
+                operator()(output, input);
       return output;
     }
 
@@ -1349,7 +1350,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] std::string operator()(word_type const& input) const {
       std::string output;
-      operator()(output, input);
+                  operator()(output, input);
       return output;
     }
 
@@ -1374,7 +1375,7 @@ namespace libsemigroups {
     operator()(std::initializer_list<Int> input) const {
       static_assert(std::is_integral_v<Int>);
       word_type copy(input.begin(), input.end());
-      return operator()(copy);
+      return    operator()(copy);
     }
 
     template <typename InputRange>
