@@ -44,6 +44,7 @@
 #include "ranges.hpp"     // for begin, end
 #include "types.hpp"      // for word_type
 
+#include "detail/print.hpp"           // for isprint etc
 #include "detail/word-iterators.hpp"  // for const_wilo_iterator
 
 namespace libsemigroups {
@@ -353,8 +354,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -766,17 +766,22 @@ namespace libsemigroups {
   //! \endcode
   // TODO (later) a version that takes a word_type, so that we can permute the
   // letters in a word
+  // TODO(v4) remove default template param
+  template <typename From = std::string>
   class ToWord {
+   private:
+    std::unordered_map<typename From::value_type, letter_type> _alphabet_map;
+
    public:
+    using from_type = From;
+
     //! \brief Default constructor.
     //!
     //! Constructs an empty object with no alphabet set.
-    // Not noexcept because std::array::fill isn't
     ToWord() : _alphabet_map() {
       init();
     }
 
-    // TODO (later) noexcept?
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
@@ -826,7 +831,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are repeated letters in
     //! \p alphabet.
-    explicit ToWord(std::string const& alphabet) : _alphabet_map() {
+    explicit ToWord(From const& alphabet) : _alphabet_map() {
       init(alphabet);
     }
 
@@ -843,7 +848,7 @@ namespace libsemigroups {
     //! \p alphabet.
     //!
     //! \sa ToWord(std::string const& alphabet)
-    ToWord& init(std::string const& alphabet);
+    ToWord& init(From const& alphabet);
 
     //! \brief Check if the alphabet is defined.
     //!
@@ -873,7 +878,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except.
-    [[nodiscard]] std::string alphabet() const;
+    [[nodiscard]] from_type alphabet() const;
 
     //! Check if the current ToWord instance can convert a specified letter.
     //!
@@ -886,10 +891,12 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] bool can_convert_letter(char const& c) const {
+    [[nodiscard]] bool
+    can_convert_letter(typename from_type::value_type const& c) const {
       return _alphabet_map.count(c) == 1;
     }
 
+    // TODO remove "string" from all the doc here
     //! \brief Convert a string to a word_type.
     //!
     //! This function converts its second argument \p input into a word_type and
@@ -910,7 +917,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    void call_no_checks(word_type& output, std::string const& input) const;
+    void call_no_checks(word_type& output, From const& input) const;
 
     //! \brief Convert a string to a word_type.
     //!
@@ -928,7 +935,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    [[nodiscard]] word_type call_no_checks(std::string const& input) const {
+    [[nodiscard]] word_type call_no_checks(From const& input) const {
       word_type output;
       call_no_checks(output, input);
       return output;
@@ -953,7 +960,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    void operator()(word_type& output, std::string const& input) const;
+    void operator()(word_type& output, From const& input) const;
 
     //! \brief Convert a string to a word_type.
     //!
@@ -970,12 +977,13 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    [[nodiscard]] word_type operator()(std::string const& input) const {
+    [[nodiscard]] word_type operator()(From const& input) const {
       word_type output;
-                operator()(output, input);
+      operator()(output, input);
       return output;
     }
 
+    // TODO remove reference to char in the doc
     //! \brief Convert a `char` to a \ref letter_type.
     //!
     //! This function converts its argument \p input into a letter_type. It is
@@ -991,7 +999,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    [[nodiscard]] letter_type operator()(char input) const {
+    [[nodiscard]] letter_type
+    operator()(typename From::value_type input) const {
       // TODO improve this
       // FIXME(1) it also doesn't work for example to_word('a') returns 63 for
       // some reason
@@ -1017,7 +1026,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    [[nodiscard]] letter_type call_no_checks(char input) const {
+    [[nodiscard]] letter_type
+    call_no_checks(typename From::value_type input) const {
       return _alphabet_map.find(input)->second;
     }
 
@@ -1048,34 +1058,35 @@ namespace libsemigroups {
       using Inner = rx::get_range_type_t<InputRange>;
       return Range<Inner>(std::forward<InputRange>(input), *this);
     }
+  };  // class ToWord
 
-   private:
-    std::unordered_map<char, letter_type> _alphabet_map;
-  };
+  template <size_t N>
+  ToWord(const char (&)[N]) -> ToWord<std::string>;
 
+  template <typename From>
   template <typename InputRange>
-  struct ToWord::Range {
+  struct ToWord<From>::Range {
     using output_type = word_type;
 
     static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
     static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-    InputRange _input;
-    ToWord     _to_word;
+    InputRange   _input;
+    ToWord<From> _to_word;
 
-    explicit Range(InputRange const& input, ToWord const& t_wrd)
+    explicit Range(InputRange const& input, ToWord<From> const& t_wrd)
         : _input(input), _to_word(t_wrd) {}
 
-    explicit Range(InputRange&& input, ToWord const& t_wrd)
+    explicit Range(InputRange&& input, ToWord<From> const& t_wrd)
         : _input(std::move(input)), _to_word(t_wrd) {}
 
-    explicit Range(InputRange const& input, ToWord&& t_wrd)
+    explicit Range(InputRange const& input, ToWord<From>&& t_wrd)
         : _input(input), _to_word(std::move(t_wrd)) {}
 
-    explicit Range(InputRange&& input, ToWord&& t_wrd)
+    explicit Range(InputRange&& input, ToWord<From>&& t_wrd)
         : _input(std::move(input)), _to_word(std::move(t_wrd)) {}
 
-    // Not noexcept because ToWord()() isn't
+    // Not noexcept because ToWord<From>()() isn't
     [[nodiscard]] output_type get() const {
       return _to_word.operator()(_input.get());
     }
@@ -1103,7 +1114,8 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  [[nodiscard]] inline std::string to_human_readable_repr(ToWord const& twrd) {
+  template <typename From>
+  [[nodiscard]] std::string to_human_readable_repr(ToWord<From> const& twrd) {
     return fmt::format("<ToWord object with alphabet \"{}\">", twrd.alphabet());
   }
 
@@ -1337,7 +1349,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] std::string operator()(word_type const& input) const {
       std::string output;
-                  operator()(output, input);
+      operator()(output, input);
       return output;
     }
 
@@ -1362,7 +1374,7 @@ namespace libsemigroups {
     operator()(std::initializer_list<Int> input) const {
       static_assert(std::is_integral_v<Int>);
       word_type copy(input.begin(), input.end());
-      return    operator()(copy);
+      return operator()(copy);
     }
 
     template <typename InputRange>
@@ -1592,7 +1604,7 @@ namespace libsemigroups {
     mutable std::string _current;
     mutable bool        _current_valid;
     std::string         _letters;
-    ToWord              _to_word;
+    ToWord<std::string> _to_word;
     ToString            _to_string;
     WordRange           _word_range;
 
@@ -2451,7 +2463,97 @@ namespace libsemigroups {
       return result;
     }
   }  // namespace words
-  //
+
+  ////////////////////////////////////////////////////////////////////////
+  // Out-of-line implementation of ToWord mem fns
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename From>
+  ToWord<From>::ToWord(ToWord const&) = default;
+
+  template <typename From>
+  ToWord<From>::ToWord(ToWord&&) = default;
+
+  template <typename From>
+  ToWord<From>& ToWord<From>::operator=(ToWord const&) = default;
+
+  template <typename From>
+  ToWord<From>& ToWord<From>::operator=(ToWord&&) = default;
+
+  template <typename From>
+  ToWord<From>::~ToWord() = default;
+
+  template <typename From>
+  ToWord<From>& ToWord<From>::init(From const& alphabet) {
+    if (alphabet.size() > 256) {
+      // TODO replace 256 with numeric_limits::max - numeric_limits::min
+      LIBSEMIGROUPS_EXCEPTION(
+          "The argument (alphabet) is too big, expected at most 256, found {}",
+          alphabet.size());
+    }
+    auto _old_alphabet_map = _alphabet_map;
+    init();
+    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
+    for (letter_type l = 0; l < alphabet.size(); ++l) {
+      auto it = _alphabet_map.emplace(alphabet[l], l);
+      if (!it.second) {
+        // Strong exception guarantee
+        std::swap(_old_alphabet_map, _alphabet_map);
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                detail::to_printable(alphabet),
+                                detail::to_printable(alphabet[l]));
+      }
+    }
+    return *this;
+  }
+
+  template <typename From>
+  [[nodiscard]] From ToWord<From>::alphabet() const {
+    if (empty()) {
+      return From();
+    }
+    From output(_alphabet_map.size(), typename From::value_type());
+    for (auto it : _alphabet_map) {
+      output[it.second] = it.first;
+    }
+    return output;
+  }
+
+  template <typename From>
+  void ToWord<From>::call_no_checks(word_type&  output,
+                                    From const& input) const {
+    // Empty alphabet implies conversion should use human_readable_index
+    if (empty()) {
+      // TODO remove this behaviour
+      output.resize(input.size(), 0);
+      std::transform(input.cbegin(), input.cend(), output.begin(), [](char c) {
+        return words::human_readable_index(c);
+      });
+    } else {  // Non-empty alphabet implies conversion should use the alphabet.
+      output.clear();
+      output.reserve(input.size());
+      for (auto const& c : input) {
+        output.push_back(_alphabet_map.at(c));
+      }
+    }
+  }
+
+  template <typename From>
+  void ToWord<From>::operator()(word_type& output, From const& input) const {
+    if (!empty()) {
+      for (auto const& c : input) {
+        if (_alphabet_map.find(c) == _alphabet_map.cend()) {
+          // TODO improve this like in presentation
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid letter \'{}\' in the 2nd argument (input word), "
+              "expected letters in the alphabet {}!",
+              c,
+              detail::to_printable(alphabet()));
+        }
+      }
+    }
+    call_no_checks(output, input);
+  }
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_WORD_RANGE_HPP_

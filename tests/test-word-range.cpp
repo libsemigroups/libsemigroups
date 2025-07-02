@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>                           // for find, is_sorted, sort
-#include <cstddef>                             // for size_t
-#include <iterator>                            // for distance
-#include <utility>                             // for swap
-#include <vector>                              // for vector
-                                               //
+#include <algorithm>  // for find, is_sorted, sort
+#include <cstddef>    // for size_t
+#include <iterator>   // for distance
+#include <utility>    // for swap
+#include <vector>     // for vector
+
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE etc
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -501,7 +501,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
 
     WordRange copy;
-    copy.     operator=(words);
+    copy.operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -514,7 +514,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     WordRange move;
-    move.     operator=(std::move(words));
+    move.operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -898,7 +898,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 
     StringRange copy;
-    copy.       operator=(strings);
+    copy.operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -911,7 +911,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     StringRange move;
-    move.       operator=(std::move(strings));
+    move.operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
