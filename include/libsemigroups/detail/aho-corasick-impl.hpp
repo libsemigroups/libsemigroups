@@ -178,8 +178,7 @@ namespace libsemigroups {
       AhoCorasickImpl& increase_alphabet_size_by(size_t val);
 
       [[nodiscard]] size_t number_of_nodes() const noexcept {
-        LIBSEMIGROUPS_ASSERT(_children.number_of_rows()
-                             == _active_nodes_index.size());
+        LIBSEMIGROUPS_ASSERT(_children.number_of_rows() == _all_nodes.size());
         return _active_nodes_index.size();
       }
 
@@ -474,7 +473,7 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }  // namespace detail
+  }    // namespace detail
 }  // namespace libsemigroups
 
 #include "aho-corasick-impl.tpp"
