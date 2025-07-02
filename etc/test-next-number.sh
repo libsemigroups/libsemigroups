@@ -16,17 +16,21 @@ else
   export TAG=
 fi
 
-./$EXEC $TAG --list-tests | perl -ne 'print if s/^.*?\[(\d\d\d)\].*$/\1/' > tmp.txt
+./$EXEC $TAG --list-tests > tmp.txt
 
 python3 - <<END
-import os, sys
-f = open('tmp.txt', 'r')
-l = sorted([int(x.strip()) for x in f.readlines()])
-for i in range(1, l[-1]):
-  if not i in l:
-    print('The first available test case in %s is: %s' % (os.environ['EXEC'], str(i).zfill(3)))
-    sys.exit(0)
-print('The first available test case in %s is: %s' % (os.environ['EXEC'], str(l[-1] + 1).zfill(3)))
+import os, re, sys
+with open('tmp.txt', 'r') as file:
+  lines = file.read()
+it = re.finditer(r"LIBSEMIGROUPS_TEST_NUM=\s*(\d\d\d)", lines, re.MULTILINE)
+matches = sorted(list(set([match.group(1) for match in it])))
+result = str(int(matches[-1]) + 1).zfill(3)
+for i in range(1, int(matches[-1])):
+  possible = str(i).zfill(3)
+  if not possible in matches:
+    result = possible
+    break
+print(f'The first available test case in "{os.environ['EXEC']}" is: {result}')
 END
 
 rm -f tmp.txt
