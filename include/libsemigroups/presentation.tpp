@@ -20,16 +20,6 @@
 // monoid presentations.
 
 namespace libsemigroups {
-  namespace detail {
-    std::string to_printable(char c);
-    bool        isprint(std::string const& alphabet);
-    std::string to_printable(std::string const& alphabet);
-
-    template <typename Thing>
-    std::string to_printable(Thing thing) {
-      return fmt::format("{}", thing);
-    }
-  }  // namespace detail
 
   template <typename Word>
   Presentation<Word>::Presentation()
