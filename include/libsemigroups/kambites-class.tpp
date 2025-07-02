@@ -189,7 +189,7 @@ namespace libsemigroups {
       // The Kambites class requires that input to contains to be actual
       // objects not iterators. This is different from KnuthBendixImpl and
       // ToddCoxeterImpl. One way to resolve this more satisfactorily would be
-      // to implement MultiStringView for non-strings, so that we can just
+      // to implement MultiView for non-strings, so that we can just
       // construct a light-weight view and bung that in here instead.
       return wp_prefix(internal_type(_tmp_value1),
                        internal_type(_tmp_value2),
@@ -454,7 +454,7 @@ namespace libsemigroups {
                            internal_type_iterator const& first,
                            internal_type_iterator const& last) const {
     // The following should hold but can't be checked when internal_type is
-    // MultiStringView.
+    // MultiView.
     // LIBSEMIGROUPS_ASSERT(x.cend() < first || x.cbegin() >= last);
     internal_type y = x;
     append(y, first, last);

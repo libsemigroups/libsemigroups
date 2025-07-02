@@ -31,7 +31,7 @@
 #include "libsemigroups/word-range.hpp"    // for StringRange
 
 namespace libsemigroups {
-  using detail::MultiStringView;
+  using detail::MultiView;
   using detail::power_string;
 
   namespace {
@@ -126,9 +126,9 @@ namespace libsemigroups {
         [](auto& k) { return k.small_overlap_class(); });
   }
 
-  TEST_CASE("Example A.1 - C(4)-check - MultiStringView", "[quick][001]", ) {
-    xml_tag("Label", "libsemigroups::MultiStringView");
-    c4_ex_A1<Kambites<MultiStringView>>(
+  TEST_CASE("Example A.1 - C(4)-check - MultiView<>", "[quick][001]", ) {
+    xml_tag("Label", "libsemigroups::MultiView<>");
+    c4_ex_A1<Kambites<MultiView<>>>(
         [](auto& k) { return k.small_overlap_class(); });
   }
 
@@ -177,9 +177,9 @@ namespace libsemigroups {
         [](auto& k) { return k.small_overlap_class(); });
   }
 
-  TEST_CASE("Example A.2 - C(4)-check - MultiStringView", "[quick][004]", ) {
-    xml_tag("Label", "libsemigroups::MultiStringView");
-    c4_ex_A2<Kambites<MultiStringView>>(
+  TEST_CASE("Example A.2 - C(4)-check - MultiView<>", "[quick][004]", ) {
+    xml_tag("Label", "libsemigroups::MultiView<>");
+    c4_ex_A2<Kambites<MultiView<>>>(
         [](auto& k) { return k.small_overlap_class(); });
   }
 
@@ -209,7 +209,7 @@ namespace libsemigroups {
     }
   }
 
-  TEST_CASE("Example A.1 - n = 10 - contains - MultiStringView",
+  TEST_CASE("Example A.1 - n = 10 - contains - MultiView<>",
             "[A1][contains][n=10]") {
     size_t const n = 10;
     xml_tag("Title",
@@ -217,7 +217,7 @@ namespace libsemigroups {
             "ab^{n + 1} ab^{n+2} \\cdots ab^{2n}\\rangle$");
     xml_tag("XLabel", "The sum of the lengths of the 2 words compared");
     xml_tag("Label", std::string("$n = ") + std::to_string(n) + "$");
-    equal_to_ex_A1<MultiStringView>(n);
+    equal_to_ex_A1<MultiView<>>(n);
   }
 
   namespace {
@@ -291,7 +291,7 @@ namespace libsemigroups {
     for (size_t n = 4; n < 13; ++n) {
       std::tuple<uint64_t, uint64_t, uint64_t> x;
       BENCHMARK(std::to_string(n)) {
-        x = c4_check_2_gen_1_rel_all<MultiStringView>(n);
+        x = c4_check_2_gen_1_rel_all<MultiView<>>(n);
       };
       results.push_back(std::get<1>(x));
       REQUIRE(x == expected[n]);
@@ -317,7 +317,7 @@ namespace libsemigroups {
         auto lhs_end = lhs.cend();
         auto rhs_end = rhs.cend();
 
-        Kambites<MultiStringView> k;
+        Kambites<MultiView<>> k;
         k.set_alphabet("ab");
         std::cout << "Writing file " << fname << " . . ." << std::endl;
         std::ofstream file;
@@ -402,7 +402,7 @@ namespace libsemigroups {
 
       std::tuple<uint64_t, uint64_t, uint64_t> x;
       BENCHMARK(std::to_string(n)) {
-        x = c4_check_2_gen_1_rel_from_sample<MultiStringView>(sample);
+        x = c4_check_2_gen_1_rel_from_sample<MultiView<>>(sample);
       };
       results.push_back(std::get<1>(x));
     }
@@ -425,7 +425,7 @@ namespace libsemigroups {
       }
 
       std::tuple<uint64_t, uint64_t, uint64_t> x
-          = c4_check_2_gen_1_rel_from_sample<MultiStringView>(sample);
+          = c4_check_2_gen_1_rel_from_sample<MultiView<>>(sample);
       std::cout << "n = " << n << std::endl;
       std::cout << "ratio = "
                 << static_cast<long double>(std::get<0>(x)) / std::get<1>(x)
@@ -452,7 +452,7 @@ namespace libsemigroups {
 
       std::tuple<uint64_t, uint64_t, uint64_t> x;
       BENCHMARK(std::to_string(n)) {
-        x = c4_check_2_gen_1_rel_from_sample<MultiStringView>(sample);
+        x = c4_check_2_gen_1_rel_from_sample<MultiView<>>(sample);
       };
       results.push_back(std::get<1>(x));
     }
@@ -525,7 +525,7 @@ namespace libsemigroups {
                         std::string              label = "") {
       auto data = relations.size() / 2;
 
-      Kambites<MultiStringView> k;
+      Kambites<MultiView<>>     k;
       Presentation<std::string> p;
       p.alphabet("ab");
 
@@ -694,7 +694,7 @@ namespace libsemigroups {
                            std::string              label = "") {
       auto data = relations.size() / 2;
 
-      Kambites<MultiStringView> k;
+      Kambites<MultiView<>>     k;
       Presentation<std::string> p;
       p.alphabet("ab");
 
