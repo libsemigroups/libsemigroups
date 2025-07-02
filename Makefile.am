@@ -21,7 +21,7 @@ AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
-AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer
+AM_CXXFLAGS += -g2 -O0 -fno-omit-frame-pointer
 else
 AM_CPPFLAGS = -DNDEBUG
 endif
