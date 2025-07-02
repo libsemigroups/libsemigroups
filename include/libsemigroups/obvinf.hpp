@@ -45,7 +45,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixImpl;  // forward decl
     class ToddCoxeterImpl;  // forward decl
-  }                         // namespace detail
+  }  // namespace detail
 
   template <typename Word>
   class Congruence;  // forward decl
@@ -293,6 +293,14 @@ namespace libsemigroups {
       }
       _nr_letter_components = _letter_components.number_of_blocks();
       return *this;
+    }
+
+    IsObviouslyInfinite& add_rules_no_checks(
+        char const*                                       lphbt,
+        typename std::vector<std::string>::const_iterator first,
+        typename std::vector<std::string>::const_iterator last) {
+      std::vector<std::string> copy(first, last);
+      return add_rules_no_checks(std::string(lphbt), copy.begin(), copy.end());
     }
 
     //! \brief Add rules from iterators to \ref word_type.
