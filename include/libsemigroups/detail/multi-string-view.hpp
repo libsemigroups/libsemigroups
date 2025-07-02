@@ -19,6 +19,7 @@
 // TODO(later)
 // - more benchmarks
 // - make a cpp file
+// - TODO rename String -> None i.e. StringView -> View etc
 
 #ifndef LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
 #define LIBSEMIGROUPS_DETAIL_MULTI_STRING_VIEW_HPP_
@@ -40,12 +41,15 @@
 
 namespace libsemigroups {
   namespace detail {
+    // TODO remove default value?
+    template <typename String = std::string>
     class StringView {
      public:
       ////////////////////////////////////////////////////////////////////////
       // StringView - type aliases - public
       ////////////////////////////////////////////////////////////////////////
-      using string_type           = std::string;
+
+      using string_type           = String;
       using const_iterator_string = typename string_type::const_iterator;
 
       StringView(const_iterator_string first, const_iterator_string last)
@@ -84,14 +88,18 @@ namespace libsemigroups {
      private:
       const_iterator_string _begin;
       uint32_t              _length;
-    };
+    };  // class StringView
 
     ////////////////////////////////////////////////////////////////////////
     // StringViewContainer
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO remove default value?
+    template <typename String = std::string>
     class StringViewContainer {
-      using const_iterator_string = StringView::const_iterator_string;
+      using string_type = String;
+      using const_iterator_string =
+          typename StringView<string_type>::const_iterator_string;
 
      public:
       StringViewContainer() : _is_long(false) {}
@@ -263,7 +271,7 @@ namespace libsemigroups {
           // do nothing if empty
         }
 
-        size_t insert(size_t pos, StringView&& sv) {
+        size_t insert(size_t pos, StringView<string_type>&& sv) {
           LIBSEMIGROUPS_ASSERT(pos < 2);
           LIBSEMIGROUPS_ASSERT(number_of_views() != 2);
           if (pos == 0) {
@@ -321,7 +329,7 @@ namespace libsemigroups {
         const_iterator_string _begin2;
         uint32_t              _length1;
         uint32_t              _length2;
-      };
+      };  // class Short
 
       class Long {
        public:
@@ -346,12 +354,13 @@ namespace libsemigroups {
         }
 
         size_t size() const {
-          return std::accumulate(_views.cbegin(),
-                                 _views.cend(),
-                                 0,
-                                 [](size_t result, StringView const& sv) {
-                                   return result + sv.size();
-                                 });
+          return std::accumulate(
+              _views.cbegin(),
+              _views.cend(),
+              0,
+              [](size_t result, StringView<string_type> const& sv) {
+                return result + sv.size();
+              });
         }
 
         uint32_t const& size(size_t i) const {
@@ -389,7 +398,7 @@ namespace libsemigroups {
           }
         }
 
-        size_t insert(size_t pos, StringView&& sv) {
+        size_t insert(size_t pos, StringView<string_type>&& sv) {
           auto it = _views.insert(_views.begin() + pos, sv);
           return it - _views.cbegin();
         }
@@ -401,8 +410,8 @@ namespace libsemigroups {
         }
 
        private:
-        std::vector<StringView> _views;
-      };
+        std::vector<StringView<string_type>> _views;
+      };  // class Long
 
       ////////////////////////////////////////////////////////////////////////
       // StringViewContainer - public
@@ -519,7 +528,7 @@ namespace libsemigroups {
         }
       }
 
-      size_t insert(size_t pos, StringView&& sv) {
+      size_t insert(size_t pos, StringView<string_type>&& sv) {
         if (!is_long()) {
           if (_data._short.number_of_views() < 2) {
             return _data._short.insert(pos, std::move(sv));
@@ -581,21 +590,22 @@ namespace libsemigroups {
 
         Short _short;
         Long  _long;
-      };
+      };  // class ShortOrLong
 
       ////////////////////////////////////////////////////////////////////////
       // MultiStringView - data - private
       ////////////////////////////////////////////////////////////////////////
       ShortOrLong _data;
       uint8_t     _is_long;
-    };
+    };  // class StringViewContainer
 
+    template <typename String = std::string>
     class MultiStringView {
      public:
       ////////////////////////////////////////////////////////////////////////
       // MultiStringView - type aliases - public
       ////////////////////////////////////////////////////////////////////////
-      using string_type           = std::string;
+      using string_type           = String;
       using const_iterator_string = typename string_type::const_iterator;
 
      private:
@@ -605,7 +615,7 @@ namespace libsemigroups {
 
       struct IteratorTraits : detail::ConstIteratorTraits<string_type> {
         using const_iterator_string = typename string_type::const_iterator;
-        using value_type            = string_type::value_type;
+        using value_type            = typename string_type::value_type;
         using const_reference       = value_type const&;
         using reference             = value_type&;
         using const_pointer         = value_type const*;
@@ -891,7 +901,8 @@ namespace libsemigroups {
             // ever points at view_last.end() !!
             LIBSEMIGROUPS_ASSERT(last.get_wrapped_iter()
                                  != _container.end(view_last));
-            StringView sv(last.get_wrapped_iter(), _container.end(view_first));
+            StringView<string_type> sv(last.get_wrapped_iter(),
+                                       _container.end(view_first));
             _container.size(view_first)
                 -= (_container.end(view_first) - first.get_wrapped_iter());
             LIBSEMIGROUPS_ASSERT(!_container.empty(view_first));
@@ -1035,24 +1046,29 @@ namespace libsemigroups {
         return nll_strng;
       }
 
-      StringViewContainer _container;
-    };
+      StringViewContainer<string_type> _container;
+    };  // class MultiStringView
+
+    // template <>
+    // MultiStringView(char const*) -> MultiStringView<std::string>;
 
     ////////////////////////////////////////////////////////////////////////
     // libsemigroups comparison operators
     ////////////////////////////////////////////////////////////////////////
 
-    static inline bool is_prefix(MultiStringView const& word,
-                                 MultiStringView const& possible_prefix) {
+    template <typename String>
+    bool is_prefix(String const&                  word,
+                   MultiStringView<String> const& possible_prefix) {
       return is_prefix(word.cbegin(),
                        word.cend(),
                        possible_prefix.cbegin(),
                        possible_prefix.cend());
     }
 
-    static inline MultiStringView
-    maximum_common_suffix(MultiStringView const& first,
-                          MultiStringView const& second) {
+    template <typename String>
+    MultiStringView<String>
+    maximum_common_suffix(MultiStringView<String> const& first,
+                          MultiStringView<String> const& second) {
       auto p = maximum_common_suffix(
           first.cbegin(), first.cend(), second.cbegin(), second.cend());
       return MultiStringView(p.first, first.cend());
@@ -1066,14 +1082,15 @@ namespace std {
   // std comparison operators
   ////////////////////////////////////////////////////////////////////////
 
-  static inline bool
-  operator==(std::string const&                            x,
-             libsemigroups::detail::MultiStringView const& y) {
+  template <typename String>
+  bool operator==(String const&                                         x,
+                  libsemigroups::detail::MultiStringView<String> const& y) {
     return std::equal(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
-  static inline bool operator==(libsemigroups::detail::MultiStringView const& x,
-                                std::string const& y) {
+  template <typename String>
+  bool operator==(libsemigroups::detail::MultiStringView<String> const& x,
+                  String const&                                         y) {
     return y == x;
   }
 }  // namespace std

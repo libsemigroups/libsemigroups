@@ -150,7 +150,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
     check_from_ke(p);
-    check_from_ke<std::string, detail::MultiStringView>(p);
+    check_from_ke<std::string, detail::MultiStringView<std::string>>(p);
     check_from_ke<word_type>(to<Presentation<word_type>>(p));
   }
 
@@ -163,8 +163,9 @@ namespace libsemigroups {
     p.alphabet("ab");
     presentation::add_rule(p, "bababa", "aba");
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
-    REQUIRE_THROWS_AS((check_from_ke<std::string, detail::MultiStringView>(p)),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        (check_from_ke<std::string, detail::MultiStringView<std::string>>(p)),
+        LibsemigroupsException);
     REQUIRE_THROWS_AS(
         (check_from_ke<word_type>(to<Presentation<word_type>>(p))),
         LibsemigroupsException);

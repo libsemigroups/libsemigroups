@@ -52,6 +52,8 @@ namespace libsemigroups {
   using kambites::partition;
   using kambites::reduce;
 
+#define STRING_TYPES std::string, MultiStringView<std::string>
+
   namespace {
 
     std::string random_power_string(std::string const& s,
@@ -146,8 +148,7 @@ namespace libsemigroups {
                                    "000",
                                    "MT test 4",
                                    "[quick][kambites][no-valgrind]",
-                                   MultiStringView,
-                                   std::string) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -191,8 +192,7 @@ namespace libsemigroups {
                                    "001",
                                    "number_of_pieces",
                                    "[quick][kambites]",
-                                   MultiStringView,
-                                   std::string) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -251,8 +251,7 @@ namespace libsemigroups {
                                    "002",
                                    "small_overlap_class",
                                    "[quick][kambites]",
-                                   MultiStringView,
-                                   std::string) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     for (size_t i = 4; i < 20; ++i) {
       std::string lhs;
@@ -280,8 +279,7 @@ namespace libsemigroups {
                                    "003",
                                    "random",
                                    "[quick][kambites]",
-                                   MultiStringView,
-                                   std::string) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     {
       Presentation<std::string> p;
@@ -424,8 +422,7 @@ namespace libsemigroups {
                                    "004",
                                    "KnuthBendix 055",
                                    "[quick][kambites][no-valgrind]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -479,8 +476,7 @@ namespace libsemigroups {
                                    "005",
                                    "smalloverlap/gap/test.gi:85",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -530,8 +526,7 @@ namespace libsemigroups {
                                    "007",
                                    "smalloverlap/gap/test.gi:49",
                                    "[quick][kambites][no-valgrind]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
@@ -596,8 +591,7 @@ namespace libsemigroups {
                                    "008",
                                    "smalloverlap/gap/test.gi:63",
                                    "[quick][kambites][no-valgrind]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
@@ -624,8 +618,7 @@ namespace libsemigroups {
                                    "009",
                                    "smalloverlap/gap/test.gi:70",
                                    "[quick][kambites][no-valgrind]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     // The following permits a more complex test of case (6), which also
     // involves using the case (2) code to change the prefix being looked
@@ -654,8 +647,7 @@ namespace libsemigroups {
                                    "010",
                                    "smalloverlap/gap/test.gi:77",
                                    "[standard][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     // A slightly more complicated presentation for testing case (6), in
     // which the max piece suffixes of the first two relation words no
@@ -708,8 +700,7 @@ namespace libsemigroups {
                                    "011",
                                    "code coverage",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     // A slightly more complicated presentation for testing case (6), in
     // which the max piece suffixes of the first two relation words no
@@ -726,8 +717,7 @@ namespace libsemigroups {
                                    "012",
                                    "Ex. 3.13 + 3.14 - prefix",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     // Example 3.13 + 3.14
     Presentation<std::string> p;
@@ -749,8 +739,7 @@ namespace libsemigroups {
                                    "013",
                                    "normal_form (Example 3.15)",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
     // Example 3.15
     Presentation<std::string> p;
@@ -776,10 +765,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
                                    "014",
-                                   "normal_form (Example 3.16) ",
+                                   "normal_form (Example 3.16) x1",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -798,10 +786,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
                                    "015",
-                                   "normal_form (Example 3.16) more exhaustive",
+                                   "normal_form (Example 3.16) x2",
                                    "[quick][kambites][no-valgrind]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -840,8 +827,7 @@ namespace libsemigroups {
                                    "016",
                                    "small presentation",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -866,8 +852,7 @@ namespace libsemigroups {
                                    "017",
                                    "non-smalloverlap",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
@@ -891,8 +876,7 @@ namespace libsemigroups {
                                    "018",
                                    "MT test 3",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -934,8 +918,7 @@ namespace libsemigroups {
                                    "019",
                                    "MT test 5",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -952,8 +935,7 @@ namespace libsemigroups {
                                    "020",
                                    "MT test 6",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -972,8 +954,7 @@ namespace libsemigroups {
                                    "021",
                                    "MT test 10",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghij");
@@ -991,8 +972,7 @@ namespace libsemigroups {
                                    "022",
                                    "MT test 13",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -1008,8 +988,7 @@ namespace libsemigroups {
                                    "023",
                                    "MT test 14",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -1025,8 +1004,7 @@ namespace libsemigroups {
                                    "024",
                                    "MT test 15",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -1044,8 +1022,7 @@ namespace libsemigroups {
                                    "025",
                                    "MT test 16",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
@@ -1062,8 +1039,7 @@ namespace libsemigroups {
                                    "026",
                                    "MT test 17",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -1085,8 +1061,7 @@ namespace libsemigroups {
                                    "027",
                                    "weak C(4) not strong x 1",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -1116,8 +1091,7 @@ namespace libsemigroups {
                                    "028",
                                    "weak C(4) not strong x 2",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -1142,8 +1116,7 @@ namespace libsemigroups {
                                    "029",
                                    "weak C(4) not strong x 3",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1167,8 +1140,7 @@ namespace libsemigroups {
                                    "030",
                                    "weak C(4) not strong x 4",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1191,8 +1163,7 @@ namespace libsemigroups {
                                    "031",
                                    "weak C(4) not strong x 5",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "abcd", "aaeaaa");
@@ -1205,8 +1176,7 @@ namespace libsemigroups {
                                    "032",
                                    "weak C(4) not strong x 6",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "acba", "aabc");
@@ -1220,8 +1190,7 @@ namespace libsemigroups {
                                    "033",
                                    "Konovalov example",
                                    "[quick][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abAB");
     presentation::add_rule(p, "Abba", "BB");
@@ -1235,8 +1204,7 @@ namespace libsemigroups {
                                    "034",
                                    "long words",
                                    "[quick][kambites][no-valgrind]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "bceac", "aeebbc");
@@ -1302,8 +1270,7 @@ namespace libsemigroups {
                                    "036",
                                    "almost all 2-gen. 1-rel. monoids are C(4)",
                                    "[extreme][kambites]",
-                                   std::string,
-                                   MultiStringView) {
+                                   STRING_TYPES) {
     auto x = count_2_gen_1_rel<TestType>(1, 11);
     REQUIRE(x.first == 18'171);
     REQUIRE(x.second == 2'092'035);

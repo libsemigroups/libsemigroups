@@ -34,6 +34,8 @@ namespace libsemigroups {
   using detail::MultiStringView;
   struct LibsemigroupsException;  // forward decl
 
+  using std::literals::string_literals::operator""s;
+
   LIBSEMIGROUPS_TEST_CASE("MultiStringView",
                           "000",
                           "catch all",
@@ -237,7 +239,7 @@ namespace libsemigroups {
 
     REQUIRE(std::string(m) == "aefghabcdefghijklabcdefghijklabcdefghijkl");
     REQUIRE(std::string(mmmm) == "habcdefghijklabcdefghijkla");
-    REQUIRE(mmmm == MultiStringView("habcdefghijklabcdefghijkla"));
+    REQUIRE(mmmm == MultiStringView("habcdefghijklabcdefghijkla"s));
     REQUIRE(!mmmm.empty());
   }
 
@@ -270,7 +272,7 @@ namespace libsemigroups {
 
     REQUIRE(std::string(m) == "aefghabcdefghijkl");
     REQUIRE(std::string(mmmm) == "ha");
-    REQUIRE(mmmm == MultiStringView("ha"));
+    REQUIRE(mmmm == MultiStringView("ha"s));
   }
 
   LIBSEMIGROUPS_TEST_CASE("MultiStringView",
@@ -377,7 +379,8 @@ namespace libsemigroups {
     REQUIRE(m.size(0) == 4);
     REQUIRE(m.size(1) == 4);
     REQUIRE(m.number_of_views() == 2);
-    auto foo = [](detail::StringViewContainer const& mm) { return mm.size(1); };
+    auto foo
+        = [](detail::StringViewContainer<> const& mm) { return mm.size(1); };
     REQUIRE(foo(m) == 4);
 
     m.pop_back();

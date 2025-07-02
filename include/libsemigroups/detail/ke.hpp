@@ -191,11 +191,11 @@ namespace libsemigroups {
                                      Kambites<std::string>>>::is_finite() const;
 
   template <>
-  tril
-  FroidurePin<detail::KE<detail::MultiStringView>,
-              FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                Kambites<detail::MultiStringView>>>::is_finite()
-      const;
+  tril FroidurePin<
+      detail::KE<detail::MultiStringView<std::string>>,
+      FroidurePinTraits<detail::KE<detail::MultiStringView<std::string>>,
+                        Kambites<detail::MultiStringView<std::string>>>>::
+      is_finite() const;
 
   template <>
   tril FroidurePin<detail::KE<word_type>,
