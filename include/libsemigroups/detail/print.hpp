@@ -22,30 +22,27 @@
 #include <cctype>     // for isprint
 #include <string>     // for basic_string
 
+#include "fmt.hpp"
+
 namespace libsemigroups {
   namespace detail {
-
-    template <typename Int>
-    [[nodiscard]] bool isprint(std::basic_string<Int> const& alphabet) {
+    // TODO cpp file
+    [[nodiscard]] bool static inline isprint(std::string const& alphabet) {
       return std::all_of(alphabet.cbegin(), alphabet.cend(), [](auto c) {
         return std::isprint(c);
       });
     }
 
-    template <typename Int>
-    [[nodiscard]] auto to_printable(Int c)
-        -> std::enable_if_t<std::is_integral_v<Int>, std::string> {
+    [[nodiscard]] static inline std::string to_printable(char c) {
       if (std::isprint(c)) {
         return fmt::format("\'{:c}\'", c);
       } else {
-        // TODO update to use correct type below (i.e. not char)
         return fmt::format("(char with value) {}", static_cast<int>(c));
       }
     }
 
-    template <typename Int>
-    [[nodiscard]] std::string
-    to_printable(std::basic_string<Int> const& alphabet) {
+    [[nodiscard]] static inline std::string
+    to_printable(std::string const& alphabet) {
       if (isprint(alphabet)) {
         return fmt::format("\"{}\"",
                            std::string(alphabet.begin(), alphabet.end()));
@@ -54,23 +51,27 @@ namespace libsemigroups {
 
       int start = alphabet[0];
       // TODO could do this repeatedly to indicate multiple ranges
-      if (std::all_of(alphabet.begin(), alphabet.end(), [&start](int val) {
-            return val == start++;
-          })) {
-        // TODO update to use correct type below (i.e. not char)
+      if (alphabet.size() > 2
+          && std::all_of(alphabet.begin(), alphabet.end(), [&start](int val) {
+               return val == start++;
+             })) {
         return fmt::format("(char values) [{}, ..., {}]",
                            static_cast<int>(alphabet[0]),
                            start - 1);
       }
-      // TODO update to use correct type below (i.e. not char)
       return fmt::format("(char values) {}",
                          std::vector<int>(alphabet.begin(), alphabet.end()));
     }
 
+    template <typename Int>
+    [[nodiscard]] static inline std::string
+    to_printable(std::basic_string<Int> const& alphabet) {
+      return fmt::format("{}",
+                         std::vector<int>(alphabet.begin(), alphabet.end()));
+    }
+
     template <typename Thing>
-    [[nodiscard]] auto to_printable(Thing const& thing)
-        -> std::enable_if_t<!std::is_integral_v<std::decay_t<Thing>>,
-                            std::string> {
+    [[nodiscard]] std::string to_printable(Thing const& thing) {
       return fmt::format("{}", thing);
     }
   }  // namespace detail

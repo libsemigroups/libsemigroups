@@ -216,7 +216,6 @@ namespace libsemigroups {
       if constexpr (std::is_same_v<typename Presentation<Word>::letter_type,
                                    char>) {
         if (!std::isprint(c) && detail::isprint(_alphabet)) {
-          // TODO is this clause required? Isn't this covered by to_printable?
           msg += fmt::format(
               " == {}", std::vector<int>(_alphabet.begin(), _alphabet.end()));
         }

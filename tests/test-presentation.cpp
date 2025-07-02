@@ -2705,6 +2705,37 @@ namespace libsemigroups {
     }
 
     {
+      Presentation<std::basic_string<uint8_t>> p;
+      p.alphabet({97, 98});
+      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(99),
+                            "invalid letter 99, valid letters are [97, 98]");
+      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(147),
+                            "invalid letter 147, valid letters are [97, 98]");
+      p.alphabet({0, 1});
+      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet('c'),
+                            "invalid letter 99, valid letters are [0, 1]");
+      REQUIRE_EXCEPTION_MSG(
+          p.alphabet(257), "expected a value in the range [0, 257), found 257");
+      REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
+                            "invalid alphabet [0, 1, 0], duplicate letter 0!");
+      REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
+                            "invalid alphabet [0, 1, 0], duplicate letter 0!");
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0}),
+                            "invalid inverses, the letter 0 is duplicated!");
+      p.alphabet(3);
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
+                            "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_inverse_rules(p, {1, 0, 2}, 0),
+          "invalid inverses, the identity is 0, but 0 ^ -1 = 1");
+      p.alphabet({0, 1, 2});
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0, 1}),
+                            "invalid inverses, the letter 0 is duplicated!");
+      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
+                            "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
+    }
+
+    {
       Presentation<std::vector<uint8_t>> p;
       p.alphabet(2);
       p.contains_empty_word(true);
@@ -2813,9 +2844,9 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "abcb", "aa");
       p.alphabet_from_rules();
       presentation::add_identity_rules(p, 'a');
-      REQUIRE(
-          to_human_readable_repr(p)
-          == "<semigroup presentation with 3 letters, 6 rules, and length 21>");
+      REQUIRE(to_human_readable_repr(p)
+              == "<semigroup presentation with 3 letters, 6 rules, and "
+                 "length 21>");
     }
     {
       Presentation<std::string> p;
@@ -2829,9 +2860,9 @@ namespace libsemigroups {
     }
     {
       Presentation<std::string> p;
-      REQUIRE(
-          to_human_readable_repr(p)
-          == "<semigroup presentation with 0 letters, 0 rules, and length 0>");
+      REQUIRE(to_human_readable_repr(p)
+              == "<semigroup presentation with 0 letters, 0 rules, and "
+                 "length 0>");
     }
     {
       Presentation<std::string> p;
@@ -3160,8 +3191,8 @@ namespace libsemigroups {
                           "greedy_reduce_length",
                           "[quick][presentation]") {
     Presentation<std::string> p;
-    // Want to go over the number 127, in case char's are signed, to check that
-    // this works properly.
+    // Want to go over the number 127, in case char's are signed, to check
+    // that this works properly.
     p.alphabet(127);
     p.rules = {"aaaaaaaaaaaaaaaaaaaaaa", ""};
 
