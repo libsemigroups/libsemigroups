@@ -321,6 +321,19 @@ namespace libsemigroups {
 
   namespace presentation {
 
+    // TODO include in hpp and doc
+    template <typename Word>
+    bool is_normalized(Presentation<Word> const& p) {
+      using letter_type = typename Presentation<Word>::letter_type;
+      auto first = std::begin(p.alphabet()), last = std::end(p.alphabet());
+      if (!std::is_sorted(first, last)) {
+        return false;
+      }
+      auto it = std::max_element(first, last);
+      return it != last
+             && *it != static_cast<letter_type>(p.alphabet().size() - 1);
+    }
+
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg) {
