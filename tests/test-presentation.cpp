@@ -2866,7 +2866,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
 
     p.alphabet("ab");
-    ToWord to_word(p.alphabet());
+    v4::ToWord to_word(p.alphabet());
     REQUIRE(to_word("aaabbbab") == word_type({0, 0, 0, 1, 1, 1, 0, 1}));
 
     word_type output({1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1});

@@ -44,6 +44,7 @@
 #include "ranges.hpp"     // for begin, end
 #include "types.hpp"      // for word_type
 
+#include "detail/print.hpp"           // for isprint etc
 #include "detail/word-iterators.hpp"  // for const_wilo_iterator
 
 namespace libsemigroups {
@@ -743,369 +744,389 @@ namespace libsemigroups {
   // Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
-  //! \brief Class for converting strings to \ref word_type with specified
-  //! alphabet.
-  //!
-  //! Defined in `word-range.hpp`.
-  //!
-  //! An instance of this class is used to convert from std::string to
-  //! \ref word_type. The characters in the string are converted to integers
-  //! according to their position in alphabet used to construct a ToWord
-  //! instance if one is provided, or using \ref words::human_readable_index
-  //! otherwise.
-  //!
-  //! \par Example
-  //! \code
-  //! ToWord toword("bac");
-  //! toword("bac");        // returns {0, 1, 2}
-  //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
-  //!
-  //! toword.init();
-  //! toword("bac");        // returns {1, 0, 2}
-  //! \endcode
-  // TODO (later) a version that takes a word_type, so that we can permute the
-  // letters in a word
-  class ToWord {
-   public:
-    //! \brief Default constructor.
+  namespace v4 {
+    //! \ingroup words_group
+    //! \brief Class for converting strings to \ref word_type with specified
+    //! alphabet.
     //!
-    //! Constructs an empty object with no alphabet set.
-    // Not noexcept because std::array::fill isn't
-    ToWord() : _alphabet_map() {
-      init();
-    }
-
-    // TODO (later) noexcept?
-    //! \brief Default copy constructor.
+    //! Defined in `word-range.hpp`.
     //!
-    //! Default copy constructor.
-    ToWord(ToWord const&);
-
-    //! \brief Default move constructor.
-    //!
-    //! Default move constructor.
-    ToWord(ToWord&&);
-
-    //! \brief Default copy assignment.
-    //!
-    //! Default copy assignment.
-    ToWord& operator=(ToWord const&);
-
-    //! \brief Default move assignment.
-    //!
-    //! Default move assignment.
-    ToWord& operator=(ToWord&&);
-
-    //! \brief Default destructor.
-    //!
-    //! Default destructor.
-    ~ToWord();
-
-    //! \brief Initialize an existing ToWord object.
-    //!
-    //! This function puts a ToWord object back into the same state as if it had
-    //! been newly default constructed.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \sa ToWord()
-    ToWord& init() {
-      _alphabet_map.clear();
-      return *this;
-    }
-
-    //! \brief Construct with given alphabet.
-    //!
-    //! Construct a ToWord object with the given alphabet.
-    //!
-    //! \param alphabet the alphabet.
-    //!
-    //! \throws LibsemigroupsException if there are repeated letters in
-    //! \p alphabet.
-    explicit ToWord(std::string const& alphabet) : _alphabet_map() {
-      init(alphabet);
-    }
-
-    //! \brief Initialize an existing ToWord object.
-    //!
-    //! This function puts a ToWord object back into the same state as if it had
-    //! been newly constructed from \p alphabet.
-    //!
-    //! \param alphabet the alphabet.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \throws LibsemigroupsException if there are repeated letters in
-    //! \p alphabet.
-    //!
-    //! \sa ToWord(std::string const& alphabet)
-    ToWord& init(std::string const& alphabet);
-
-    //! \brief Check if the alphabet is defined.
-    //!
-    //! This function returns \c true if no alphabet has been defined, and
-    //! \c false otherwise.
-    //!
-    //! \returns A value of type \c bool.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] bool empty() const noexcept {
-      return _alphabet_map.empty();
-    }
-
-    //! \brief Return the alphabet used for conversion.
-    //!
-    //! This function returns a std::string corresponding to the ordered-set
-    //! alphabet \f$\{a_0, a_1, \dots, a_{n-1}\}\f$ that the initialised ToWord
-    //! object will use to convert from std::string to \ref word_type.
-    //! Specifically, \f$a_i \mapsto i\f$ where \f$a_i\f$ will correspond to a
-    //! letter in a std::string, and \f$i\f$ is a \ref letter_type.
-    //!
-    //! If this function returns the empty string, then conversion will be
-    //! performed using \ref words::human_readable_index.
-    //!
-    //! \returns A value of type std::string.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except.
-    [[nodiscard]] std::string alphabet() const;
-
-    //! Check if the current ToWord instance can convert a specified letter.
-    //!
-    //! This function returns \c true if \p c can can be converted to a
-    //! \ref letter_type using this ToWord instance, and \c false otherwise.
-    //!
-    //! \param c the char to check the convertibility of.
-    //!
-    //! \returns A value of type bool.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] bool can_convert_letter(char const& c) const {
-      return _alphabet_map.count(c) == 1;
-    }
-
-    //! \brief Convert a string to a word_type.
-    //!
-    //! This function converts its second argument \p input into a word_type and
-    //! stores the result in the first argument \p output. The characters of
-    //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref words::human_readable_index if
-    //! \ref empty returns `true`.
-    //!
-    //! The contents of the first argument \p output, if any, is removed.
-    //!
-    //! \param output word to hold the result.
-    //! \param input the string to convert.
-    //!
-    //! \warning This functions performs no checks on its arguments. In
-    //! particular, if the alphabet used to define an instance of ToWord is not
-    //! empty, and \p input contains letters that do not correspond to letters
-    //! of the alphabet, then bad things will happen.
-    //!
-    //! \sa
-    //! * \ref literals
-    void call_no_checks(word_type& output, std::string const& input) const;
-
-    //! \brief Convert a string to a word_type.
-    //!
-    //! This function converts its argument \p input into a word_type. The
-    //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with
-    //! \ref words::human_readable_index if \ref empty returns `true`.
-    //!
-    //! \param input the string to convert.
-    //!
-    //! \warning This functions performs no checks on its arguments. In
-    //! particular, if the alphabet used to define an instance of ToWord is not
-    //! empty, and \p input contains letters that do not correspond to letters
-    //! of the alphabet, then bad things will happen.
-    //!
-    //! \sa
-    //! * \ref literals
-    [[nodiscard]] word_type call_no_checks(std::string const& input) const {
-      word_type output;
-      call_no_checks(output, input);
-      return output;
-    }
-
-    //! \brief Convert a string to a word_type.
-    //!
-    //! This function converts its second argument \p input into a word_type and
-    //! stores the result in the first argument \p output. The characters of
-    //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref words::human_readable_index if
-    //! \ref empty returns `true`.
-    //!
-    //! The contents of the first argument \p output, if any, is removed.
-    //!
-    //! \param output word to hold the result.
-    //! \param input the string to convert.
-    //!
-    //! \throw LibsemigroupsException if the alphabet used to define an instance
-    //! of ToWord is not empty and \p input contains letters that do not
-    //! correspond to letters of the alphabet.
-    //!
-    //! \sa
-    //! * \ref literals
-    void operator()(word_type& output, std::string const& input) const;
-
-    //! \brief Convert a string to a word_type.
-    //!
-    //! This function converts its argument \p input into a word_type The
-    //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with
-    //! \ref words::human_readable_index if \ref empty returns `true`.
-    //!
-    //! \param input the string to convert.
-    //!
-    //! \throw LibsemigroupsException if the alphabet used to define an instance
-    //! of ToWord is not empty and \p input contains letters that do not
-    //! correspond to letters of the alphabet.
-    //!
-    //! \sa
-    //! * \ref literals
-    [[nodiscard]] word_type operator()(std::string const& input) const {
-      word_type output;
-                operator()(output, input);
-      return output;
-    }
-
-    //! \brief Convert a `char` to a \ref letter_type.
-    //!
-    //! This function converts its argument \p input into a letter_type. It is
-    //! converted using the alphabet used to construct the object or set via
-    //! init(), or with \ref words::human_readable_index if \ref empty returns
-    //! `true`.
-    //!
-    //! \param input the character to convert.
-    //!
-    //! \throw LibsemigroupsException if the alphabet used to define an instance
-    //! of ToWord is not empty and \p input does not correspond to a letter of
-    //! the alphabet.
-    //!
-    //! \sa
-    //! * \ref literals
-    [[nodiscard]] letter_type operator()(char input) const {
-      // TODO improve this
-      // FIXME(1) it also doesn't work for example to_word('a') returns 63 for
-      // some reason
-      word_type output;
-      // operator()(output, std::string_view(&input, 1));
-      operator()(output, std::string(input, 1));
-      return output[0];
-    }
-
-    //! \brief Convert a `char` to a \ref letter_type.
-    //!
-    //! This function converts its argument \p input into a letter_type. It is
-    //! converted using the alphabet used to construct the object or set via
-    //! init(), or with \ref words::human_readable_index if \ref empty returns
-    //! `true`.
-    //!
-    //! \param input the character to convert.
-    //!
-    //! \warning This functions performs no checks on its arguments. In
-    //! particular, if the alphabet used to define an instance of ToWord is not
-    //! empty, and \p input does not correspond to a letter of the alphabet,
-    //! then bad things will happen.
-    //!
-    //! \sa
-    //! * \ref literals
-    [[nodiscard]] letter_type call_no_checks(char input) const {
-      return _alphabet_map.find(input)->second;
-    }
-
-    template <typename InputRange>
-    struct Range;
-
-    //! \brief Call operator for combining with other range objects.
-    //!
-    //! A custom combinator for rx::ranges to convert the output of a
-    //! StringRange object into \ref word_type, that can be combined with other
-    //! combinators using `operator|`.
+    //! An instance of this class is used to convert from std::string to
+    //! \ref word_type. The characters in the string are converted to integers
+    //! according to their position in alphabet used to construct a ToWord
+    //! instance if one is provided, or using \ref words::human_readable_index
+    //! otherwise.
     //!
     //! \par Example
     //! \code
-    //!  StringRange strings;
-    //!  strings.alphabet("ab").first("a").last("bbbb");
-    //!  auto words = (strings | ToWord("ba"));
-    //!  // contains the words
-    //!  // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
-    //!  //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
-    //!  //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
-    //!  //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
-    //!  //  0001_w}));
+    //! ToWord toword("bac");
+    //! toword("bac");        // returns {0, 1, 2}
+    //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
+    //!
+    //! toword.init();
+    //! toword("bac");        // returns {1, 0, 2}
     //! \endcode
-    template <typename InputRange,
-              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
-    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
-      using Inner = rx::get_range_type_t<InputRange>;
-      return Range<Inner>(std::forward<InputRange>(input), *this);
+    // TODO (later) a version that takes a word_type, so that we can permute the
+    // letters in a word
+    // TODO(0) remove default template param
+    template <typename From>
+    class ToWord {
+     private:
+      std::unordered_map<typename From::value_type, letter_type> _alphabet_map;
+
+     public:
+      using from_type = From;
+
+      //! \brief Default constructor.
+      //!
+      //! Constructs an empty object with no alphabet set.
+      ToWord() : _alphabet_map() {
+        init();
+      }
+
+      //! \brief Default copy constructor.
+      //!
+      //! Default copy constructor.
+      ToWord(ToWord const&);
+
+      //! \brief Default move constructor.
+      //!
+      //! Default move constructor.
+      ToWord(ToWord&&);
+
+      //! \brief Default copy assignment.
+      //!
+      //! Default copy assignment.
+      ToWord& operator=(ToWord const&);
+
+      //! \brief Default move assignment.
+      //!
+      //! Default move assignment.
+      ToWord& operator=(ToWord&&);
+
+      //! \brief Default destructor.
+      //!
+      //! Default destructor.
+      ~ToWord();
+
+      //! \brief Initialize an existing ToWord object.
+      //!
+      //! This function puts a ToWord object back into the same state as if it
+      //! had been newly default constructed.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \sa ToWord()
+      ToWord& init() {
+        _alphabet_map.clear();
+        return *this;
+      }
+
+      //! \brief Construct with given alphabet.
+      //!
+      //! Construct a ToWord object with the given alphabet.
+      //!
+      //! \param alphabet the alphabet.
+      //!
+      //! \throws LibsemigroupsException if there are repeated letters in
+      //! \p alphabet.
+      explicit ToWord(From const& alphabet) : _alphabet_map() {
+        init(alphabet);
+      }
+
+      //! \brief Initialize an existing ToWord object.
+      //!
+      //! This function puts a ToWord object back into the same state as if it
+      //! had been newly constructed from \p alphabet.
+      //!
+      //! \param alphabet the alphabet.
+      //!
+      //! \returns A reference to \c *this.
+      //!
+      //! \throws LibsemigroupsException if there are repeated letters in
+      //! \p alphabet.
+      //!
+      //! \sa ToWord(std::string const& alphabet)
+      ToWord& init(From const& alphabet);
+
+      //! \brief Check if the alphabet is defined.
+      //!
+      //! This function returns \c true if no alphabet has been defined, and
+      //! \c false otherwise.
+      //!
+      //! \returns A value of type \c bool.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] bool empty() const noexcept {
+        return _alphabet_map.empty();
+      }
+
+      //! \brief Return the alphabet used for conversion.
+      //!
+      //! This function returns a std::string corresponding to the ordered-set
+      //! alphabet \f$\{a_0, a_1, \dots, a_{n-1}\}\f$ that the initialised
+      //! ToWord object will use to convert from std::string to \ref word_type.
+      //! Specifically, \f$a_i \mapsto i\f$ where \f$a_i\f$ will correspond to a
+      //! letter in a std::string, and \f$i\f$ is a \ref letter_type.
+      //!
+      //! If this function returns the empty string, then conversion will be
+      //! performed using \ref words::human_readable_index.
+      //!
+      //! \returns A value of type std::string.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except.
+      [[nodiscard]] from_type alphabet() const;
+
+      //! Check if the current ToWord instance can convert a specified letter.
+      //!
+      //! This function returns \c true if \p c can can be converted to a
+      //! \ref letter_type using this ToWord instance, and \c false otherwise.
+      //!
+      //! \param c the char to check the convertibility of.
+      //!
+      //! \returns A value of type bool.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      [[nodiscard]] bool
+      can_convert_letter(typename from_type::value_type const& c) const {
+        return _alphabet_map.count(c) == 1;
+      }
+
+      // TODO remove "string" from all the doc here
+      //! \brief Convert a string to a word_type.
+      //!
+      //! This function converts its second argument \p input into a word_type
+      //! and stores the result in the first argument \p output. The characters
+      //! of
+      //! \p input are converted using the alphabet used to construct the object
+      //! or set via init(), or with \ref words::human_readable_index if
+      //! \ref empty returns `true`.
+      //!
+      //! The contents of the first argument \p output, if any, is removed.
+      //!
+      //! \param output word to hold the result.
+      //! \param input the string to convert.
+      //!
+      //! \warning This functions performs no checks on its arguments. In
+      //! particular, if the alphabet used to define an instance of ToWord is
+      //! not empty, and \p input contains letters that do not correspond to
+      //! letters of the alphabet, then bad things will happen.
+      //!
+      //! \sa
+      //! * \ref literals
+      void call_no_checks(word_type& output, From const& input) const;
+
+      //! \brief Convert a string to a word_type.
+      //!
+      //! This function converts its argument \p input into a word_type. The
+      //! characters of \p input are converted using the alphabet used to
+      //! construct the object or set via init(), or with
+      //! \ref words::human_readable_index if \ref empty returns `true`.
+      //!
+      //! \param input the string to convert.
+      //!
+      //! \warning This functions performs no checks on its arguments. In
+      //! particular, if the alphabet used to define an instance of ToWord is
+      //! not empty, and \p input contains letters that do not correspond to
+      //! letters of the alphabet, then bad things will happen.
+      //!
+      //! \sa
+      //! * \ref literals
+      [[nodiscard]] word_type call_no_checks(From const& input) const {
+        word_type output;
+        call_no_checks(output, input);
+        return output;
+      }
+
+      //! \brief Convert a string to a word_type.
+      //!
+      //! This function converts its second argument \p input into a word_type
+      //! and stores the result in the first argument \p output. The characters
+      //! of
+      //! \p input are converted using the alphabet used to construct the object
+      //! or set via init(), or with \ref words::human_readable_index if
+      //! \ref empty returns `true`.
+      //!
+      //! The contents of the first argument \p output, if any, is removed.
+      //!
+      //! \param output word to hold the result.
+      //! \param input the string to convert.
+      //!
+      //! \throw LibsemigroupsException if the alphabet used to define an
+      //! instance of ToWord is not empty and \p input contains letters that do
+      //! not correspond to letters of the alphabet.
+      //!
+      //! \sa
+      //! * \ref literals
+      void operator()(word_type& output, From const& input) const;
+
+      //! \brief Convert a string to a word_type.
+      //!
+      //! This function converts its argument \p input into a word_type The
+      //! characters of \p input are converted using the alphabet used to
+      //! construct the object or set via init(), or with
+      //! \ref words::human_readable_index if \ref empty returns `true`.
+      //!
+      //! \param input the string to convert.
+      //!
+      //! \throw LibsemigroupsException if the alphabet used to define an
+      //! instance of ToWord is not empty and \p input contains letters that do
+      //! not correspond to letters of the alphabet.
+      //!
+      //! \sa
+      //! * \ref literals
+      [[nodiscard]] word_type operator()(From const& input) const {
+        word_type output;
+                  operator()(output, input);
+        return output;
+      }
+
+      // TODO remove reference to char in the doc
+      //! \brief Convert a `char` to a \ref letter_type.
+      //!
+      //! This function converts its argument \p input into a letter_type. It is
+      //! converted using the alphabet used to construct the object or set via
+      //! init(), or with \ref words::human_readable_index if \ref empty returns
+      //! `true`.
+      //!
+      //! \param input the character to convert.
+      //!
+      //! \throw LibsemigroupsException if the alphabet used to define an
+      //! instance of ToWord is not empty and \p input does not correspond to a
+      //! letter of the alphabet.
+      //!
+      //! \sa
+      //! * \ref literals
+      [[nodiscard]] letter_type
+      operator()(typename From::value_type input) const {
+        // TODO improve this
+        // FIXME(1) it also doesn't work for example to_word('a') returns 63 for
+        // some reason
+        word_type output;
+        // operator()(output, std::string_view(&input, 1));
+        operator()(output, std::string(input, 1));
+        return output[0];
+      }
+
+      //! \brief Convert a `char` to a \ref letter_type.
+      //!
+      //! This function converts its argument \p input into a letter_type. It is
+      //! converted using the alphabet used to construct the object or set via
+      //! init(), or with \ref words::human_readable_index if \ref empty returns
+      //! `true`.
+      //!
+      //! \param input the character to convert.
+      //!
+      //! \warning This functions performs no checks on its arguments. In
+      //! particular, if the alphabet used to define an instance of ToWord is
+      //! not empty, and \p input does not correspond to a letter of the
+      //! alphabet, then bad things will happen.
+      //!
+      //! \sa
+      //! * \ref literals
+      [[nodiscard]] letter_type
+      call_no_checks(typename From::value_type input) const {
+        return _alphabet_map.find(input)->second;
+      }
+
+      template <typename InputRange>
+      struct Range;
+
+      //! \brief Call operator for combining with other range objects.
+      //!
+      //! A custom combinator for rx::ranges to convert the output of a
+      //! StringRange object into \ref word_type, that can be combined with
+      //! other combinators using `operator|`.
+      //!
+      //! \par Example
+      //! \code
+      //!  StringRange strings;
+      //!  strings.alphabet("ab").first("a").last("bbbb");
+      //!  auto words = (strings | ToWord("ba"));
+      //!  // contains the words
+      //!  // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
+      //!  //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
+      //!  //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
+      //!  //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
+      //!  //  0001_w}));
+      //! \endcode
+      template <typename InputRange,
+                typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+      [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+        using Inner = rx::get_range_type_t<InputRange>;
+        return Range<Inner>(std::forward<InputRange>(input), *this);
+      }
+    };  // class ToWord
+
+    template <size_t N>
+    ToWord(const char (&)[N]) -> ToWord<std::string>;
+
+    template <typename From>
+    template <typename InputRange>
+    struct ToWord<From>::Range {
+      using output_type = word_type;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      InputRange   _input;
+      ToWord<From> _to_word;
+
+      explicit Range(InputRange const& input, ToWord<From> const& t_wrd)
+          : _input(input), _to_word(t_wrd) {}
+
+      explicit Range(InputRange&& input, ToWord<From> const& t_wrd)
+          : _input(std::move(input)), _to_word(t_wrd) {}
+
+      explicit Range(InputRange const& input, ToWord<From>&& t_wrd)
+          : _input(input), _to_word(std::move(t_wrd)) {}
+
+      explicit Range(InputRange&& input, ToWord<From>&& t_wrd)
+          : _input(std::move(input)), _to_word(std::move(t_wrd)) {}
+
+      // Not noexcept because ToWord<From>()() isn't
+      [[nodiscard]] output_type get() const {
+        return _to_word.operator()(_input.get());
+      }
+
+      constexpr void next() noexcept {
+        _input.next();
+      }
+
+      [[nodiscard]] constexpr bool at_end() const noexcept {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] constexpr size_t size_hint() const noexcept {
+        return _input.size_hint();
+      }
+    };
+
+    //! \ingroup words_group
+    //!
+    //! \brief Return a human readable representation of a ToWord object.
+    //!
+    //! Return a human readable representation of a ToWord object.
+    //!
+    //! \param twrd the ToWord object.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    template <typename From>
+    [[nodiscard]] std::string to_human_readable_repr(ToWord<From> const& twrd) {
+      return fmt::format("<ToWord object with alphabet \"{}\">",
+                         twrd.alphabet());
     }
 
-   private:
-    std::unordered_map<char, letter_type> _alphabet_map;
-  };
+  }  // namespace v4
 
-  template <typename InputRange>
-  struct ToWord::Range {
-    using output_type = word_type;
-
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-
-    InputRange _input;
-    ToWord     _to_word;
-
-    explicit Range(InputRange const& input, ToWord const& t_wrd)
-        : _input(input), _to_word(t_wrd) {}
-
-    explicit Range(InputRange&& input, ToWord const& t_wrd)
-        : _input(std::move(input)), _to_word(t_wrd) {}
-
-    explicit Range(InputRange const& input, ToWord&& t_wrd)
-        : _input(input), _to_word(std::move(t_wrd)) {}
-
-    explicit Range(InputRange&& input, ToWord&& t_wrd)
-        : _input(std::move(input)), _to_word(std::move(t_wrd)) {}
-
-    // Not noexcept because ToWord()() isn't
-    [[nodiscard]] output_type get() const {
-      return _to_word.operator()(_input.get());
-    }
-
-    constexpr void next() noexcept {
-      _input.next();
-    }
-
-    [[nodiscard]] constexpr bool at_end() const noexcept {
-      return _input.at_end();
-    }
-
-    [[nodiscard]] constexpr size_t size_hint() const noexcept {
-      return _input.size_hint();
-    }
-  };
-
-  //! \ingroup words_group
-  //!
-  //! \brief Return a human readable representation of a ToWord object.
-  //!
-  //! Return a human readable representation of a ToWord object.
-  //!
-  //! \param twrd the ToWord object.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  [[nodiscard]] inline std::string to_human_readable_repr(ToWord const& twrd) {
-    return fmt::format("<ToWord object with alphabet \"{}\">", twrd.alphabet());
-  }
+  using ToWord [[deprecated]] = v4::ToWord<std::string>;
 
   ////////////////////////////////////////////////////////////////////////
   // Words -> Strings
@@ -1589,12 +1610,12 @@ namespace libsemigroups {
     using output_type = std::string const&;
 
    private:
-    mutable std::string _current;
-    mutable bool        _current_valid;
-    std::string         _letters;
-    ToWord              _to_word;
-    ToString            _to_string;
-    WordRange           _word_range;
+    mutable std::string     _current;
+    mutable bool            _current_valid;
+    std::string             _letters;
+    v4::ToWord<std::string> _to_word;
+    ToString                _to_string;
+    WordRange               _word_range;
 
     void init_current() const {
       if (!_current_valid) {
@@ -2451,7 +2472,101 @@ namespace libsemigroups {
       return result;
     }
   }  // namespace words
-  //
+
+  namespace v4 {
+    ////////////////////////////////////////////////////////////////////////
+    // Out-of-line implementation of ToWord mem fns
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename From>
+    ToWord<From>::ToWord(ToWord const&) = default;
+
+    template <typename From>
+    ToWord<From>::ToWord(ToWord&&) = default;
+
+    template <typename From>
+    ToWord<From>& ToWord<From>::operator=(ToWord const&) = default;
+
+    template <typename From>
+    ToWord<From>& ToWord<From>::operator=(ToWord&&) = default;
+
+    template <typename From>
+    ToWord<From>::~ToWord() = default;
+
+    template <typename From>
+    ToWord<From>& ToWord<From>::init(From const& alphabet) {
+      if (alphabet.size() > 256) {
+        // TODO replace 256 with numeric_limits::max - numeric_limits::min
+        LIBSEMIGROUPS_EXCEPTION("The argument (alphabet) is too big, expected "
+                                "at most 256, found {}",
+                                alphabet.size());
+      }
+      auto _old_alphabet_map = _alphabet_map;
+      init();
+      LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
+      for (letter_type l = 0; l < alphabet.size(); ++l) {
+        auto it = _alphabet_map.emplace(alphabet[l], l);
+        if (!it.second) {
+          // Strong exception guarantee
+          std::swap(_old_alphabet_map, _alphabet_map);
+          LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                  detail::to_printable(alphabet),
+                                  detail::to_printable(alphabet[l]));
+        }
+      }
+      return *this;
+    }
+
+    template <typename From>
+    [[nodiscard]] From ToWord<From>::alphabet() const {
+      if (empty()) {
+        return From();
+      }
+      From output(_alphabet_map.size(), typename From::value_type());
+      for (auto it : _alphabet_map) {
+        output[it.second] = it.first;
+      }
+      return output;
+    }
+
+    template <typename From>
+    void ToWord<From>::call_no_checks(word_type&  output,
+                                      From const& input) const {
+      // Empty alphabet implies conversion should use human_readable_index
+      if (empty()) {
+        // TODO remove this behaviour
+        output.resize(input.size(), 0);
+        std::transform(input.cbegin(),
+                       input.cend(),
+                       output.begin(),
+                       [](char c) { return words::human_readable_index(c); });
+      } else {  // Non-empty alphabet implies conversion should use the
+                // alphabet.
+        output.clear();
+        output.reserve(input.size());
+        for (auto const& c : input) {
+          output.push_back(_alphabet_map.at(c));
+        }
+      }
+    }
+
+    template <typename From>
+    void ToWord<From>::operator()(word_type& output, From const& input) const {
+      if (!empty()) {
+        for (auto const& c : input) {
+          if (_alphabet_map.find(c) == _alphabet_map.cend()) {
+            // TODO improve this like in presentation
+            LIBSEMIGROUPS_EXCEPTION(
+                "invalid letter \'{}\' in the 2nd argument (input word), "
+                "expected letters in the alphabet {}!",
+                c,
+                detail::to_printable(alphabet()));
+          }
+        }
+      }
+      call_no_checks(output, input);
+    }
+  }  // namespace v4
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_WORD_RANGE_HPP_

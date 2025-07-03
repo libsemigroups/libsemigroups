@@ -2684,7 +2684,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 14'911);
     REQUIRE(tc.finished());
 
-    ToWord to_word("abcd");
+    v4::ToWord to_word("abcd");
     REQUIRE(todd_coxeter::currently_contains_no_checks(tc, "dd", "a")
             == tril::TRUE);
     REQUIRE(todd_coxeter::contains_no_checks(tc, "dd", "a"));

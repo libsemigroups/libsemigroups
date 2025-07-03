@@ -2205,7 +2205,7 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcdefg");
-    ToWord to_word(p.alphabet());
+    v4::ToWord to_word(p.alphabet());
 
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");

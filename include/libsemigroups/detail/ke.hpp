@@ -85,7 +85,7 @@ namespace libsemigroups {
       }
 
       word_type to_word(Kambites<Word> const& k) const {
-        ToWord to_word(k.presentation().alphabet());
+        v4::ToWord<std::string> to_word(k.presentation().alphabet());
         return to_word(_value);
       }
 
