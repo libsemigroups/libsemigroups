@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>                           // for find, is_sorted, sort
-#include <cstddef>                             // for size_t
-#include <iterator>                            // for distance
-#include <utility>                             // for swap
-#include <vector>                              // for vector
-                                               //
+#include <algorithm>  // for find, is_sorted, sort
+#include <cstddef>    // for size_t
+#include <iterator>   // for distance
+#include <utility>    // for swap
+#include <vector>     // for vector
+
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE etc
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -32,6 +32,12 @@
 #include "libsemigroups/word-range.hpp"  // for number_of_words
 
 #include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator
+
+// We test the deprecated v3 ToWord rather than v4::ToWord to ensure that the
+// tests run as are (i.e. we didn't introduce breaking changes), and so we
+// suppress the warnings about using deprecated things.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 namespace libsemigroups {
   using namespace literals;
@@ -1505,3 +1511,5 @@ namespace libsemigroups {
             == "<ToString object with alphabet \"BAc2w\">");
   }
 }  // namespace libsemigroups
+
+#pragma GCC diagnostic pop

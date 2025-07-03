@@ -826,8 +826,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "e");
     presentation::add_rule(p, "ABabccc", "e");
 
-    Sims1  S;
-    ToWord to_word(p.alphabet());
+    Sims1      S;
+    v4::ToWord to_word(p.alphabet());
     S.presentation(to<Presentation<word_type>>(p));
     sims::add_included_pair(S, to_word("a"), to_word("A"));
     sims::add_included_pair(S, to_word("a"), to_word("b"));

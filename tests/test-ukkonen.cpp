@@ -494,8 +494,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen", "008", "pieces", "[quick][ukkonen]") {
-    Ukkonen t;
-    ToWord  string_to_word("ab");
+    Ukkonen    t;
+    v4::ToWord string_to_word("ab");
     ukkonen::add_word(t, string_to_word("baabbaaaa"));
     ukkonen::add_word(t, string_to_word("abababbbaa"));
 

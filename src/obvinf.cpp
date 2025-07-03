@@ -100,9 +100,9 @@ namespace libsemigroups {
     std::fill(_matrix.begin(), _matrix.end(), 0);
 #endif
 
-    ToWord    stw(lphbt);
-    word_type lhs;
-    word_type rhs;
+    v4::ToWord stw(lphbt);
+    word_type  lhs;
+    word_type  rhs;
     for (auto it = first; it < last; ++it) {
       stw(lhs, it->first);   // lhs changed in-place
       stw(rhs, it->second);  // rhs changed in-place
@@ -127,8 +127,8 @@ namespace libsemigroups {
     std::fill(_matrix.begin(), _matrix.end(), 0);
 #endif
 
-    ToWord    stw(lphbt);
-    word_type lhs, rhs;
+    v4::ToWord stw(lphbt);
+    word_type  lhs, rhs;
     for (auto it = first; it < last; ++it) {
       stw(lhs, *it++);  // lhs changed in-place
       stw(rhs, *it);    // rhs changed in-place
@@ -153,7 +153,7 @@ namespace libsemigroups {
     std::fill(_matrix.begin(), _matrix.end(), 0);
 #endif
 
-    ToWord      to_word(lphbt);
+    v4::ToWord  to_word(lphbt);
     word_type   lhs, rhs;
     std::string tmp;
     for (auto it = first; it < last; ++it) {
