@@ -69,7 +69,12 @@ namespace libsemigroups {
   template <typename Point, typename Container>
   template <typename Subclass, typename T>
   Subclass PTransfBase<Point, Container>::make(std::initializer_list<T> cont) {
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     return make<Subclass, std::vector<T>>(cont);
+#pragma GCC diagnostic pop
   }
 
   // STATIC
