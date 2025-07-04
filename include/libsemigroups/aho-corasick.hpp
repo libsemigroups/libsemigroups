@@ -22,10 +22,10 @@
 #ifndef LIBSEMIGROUPS_AHO_CORASICK_HPP_
 #define LIBSEMIGROUPS_AHO_CORASICK_HPP_
 
+#include <cstddef>        // for size_t
 #include <memory>         // for allocator_traits<>::value_type
 #include <set>            // for set
 #include <stack>          // for stack
-#include <stddef.h>       // for size_t
 #include <string>         // for string
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
@@ -35,6 +35,8 @@
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "ranges.hpp"     // for rx::iterator_range
 #include "types.hpp"      // for letter_type, word_type
+
+#include "detail/print.hpp"  // for to_printable
 
 // TODO(2) make nodes accessible as indices of some list (numbered nodes).
 // Make sure this address the badness of traversals (lots of different data

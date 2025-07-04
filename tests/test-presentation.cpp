@@ -2627,23 +2627,6 @@ namespace libsemigroups {
     }
   }
 
-  namespace {
-    std::string chomp(std::string_view what) {
-      size_t pos = what.find(": ");
-      LIBSEMIGROUPS_ASSERT(pos != std::string::npos);
-      LIBSEMIGROUPS_ASSERT(pos + 2 <= what.size() - 1);
-      return std::string(what.begin() + pos + 2);
-    }
-  }  // namespace
-
-#define REQUIRE_EXCEPTION_MSG(code, expected)      \
-  REQUIRE_THROWS_AS(code, LibsemigroupsException); \
-  try {                                            \
-    code;                                          \
-  } catch (LibsemigroupsException const& e) {      \
-    REQUIRE(chomp(e.what()) == expected);          \
-  }
-
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "054",
                           "meaningful exception messages",

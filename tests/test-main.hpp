@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <string_view>  // for string_view
 #include <type_traits>  // for is_reference
 
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
@@ -44,6 +45,16 @@
                      "][" LIBSEMIGROUPS_TEST_NUM nr "][" __FILE__       \
                      "][" STR(__LINE__) "]" tags,                       \
                      __VA_ARGS__)
+
+std::string chomp(std::string_view what);
+
+#define REQUIRE_EXCEPTION_MSG(code, expected)      \
+  REQUIRE_THROWS_AS(code, LibsemigroupsException); \
+  try {                                            \
+    code;                                          \
+  } catch (LibsemigroupsException const& e) {      \
+    REQUIRE(chomp(e.what()) == expected);          \
+  }
 
 namespace libsemigroups {
 

@@ -370,3 +370,10 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
 };
 
 CATCH_REGISTER_LISTENER(LibsemigroupsListener)
+
+std::string chomp(std::string_view what) {
+  size_t pos = what.find(": ");
+  LIBSEMIGROUPS_ASSERT(pos != std::string::npos);
+  LIBSEMIGROUPS_ASSERT(pos + 2 <= what.size() - 1);
+  return std::string(what.begin() + pos + 2);
+}
