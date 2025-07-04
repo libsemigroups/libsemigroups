@@ -295,7 +295,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) must have "
                                 "sorted alphabet, found {}",
                                 arg,
-                                p.alphabet());
+                                detail::to_printable(p.alphabet()));
       }
 
       auto it = std::max_element(first, last);
@@ -306,7 +306,7 @@ namespace libsemigroups {
                                 "alphabet, expected [0, ..., {}] found {}",
                                 arg,
                                 p.alphabet().size() - 1,
-                                p.alphabet());
+                                detail::to_printable(p.alphabet()));
       }
     }
 
@@ -1145,6 +1145,7 @@ namespace libsemigroups {
     if (_inverses.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no inverses have been defined")
     }
+    // TODO should throw if index is out of bounds
     return _inverses[Presentation<Word>::index(x)];
   }
 }  // namespace libsemigroups
