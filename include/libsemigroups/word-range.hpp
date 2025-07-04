@@ -849,7 +849,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if there are repeated letters in
       //! \p alphabet.
       //!
-      //! \sa ToWord(std::string const& alphabet)
+      //! \sa ToWord(From const& alphabet)
       ToWord& init(From const& alphabet);
 
       //! \brief Check if the alphabet is defined.
