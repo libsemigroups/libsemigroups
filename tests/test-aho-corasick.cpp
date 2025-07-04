@@ -115,8 +115,20 @@ namespace libsemigroups {
     REQUIRE(!ac.node(1).is_terminal());
 
     aho_corasick::add_word(ac, 010_w);
-    REQUIRE_THROWS_AS(aho_corasick::add_word(ac, 010_w),
-                      LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(
+        aho_corasick::add_word(ac, 010_w),
+        "the word [0, 1, 0] given by the arguments [first, last) already "
+        "belongs to the trie, and cannot be added again");
+    REQUIRE_EXCEPTION_MSG(aho_corasick::add_word(ac, std::string({0, 1, 0})),
+                          "the word (char values) [0, 1, 0] given by the "
+                          "arguments [first, last) already "
+                          "belongs to the trie, and cannot be added again");
+    aho_corasick::add_word(ac, "abc");
+    REQUIRE_EXCEPTION_MSG(
+        aho_corasick::add_word(ac, "abc"),
+        "the word \"abc\" given by the arguments [first, last) already belongs "
+        "to the trie, and cannot be added again");
+    aho_corasick::rm_word(ac, "abc");
     aho_corasick::add_word(ac, 00_w);
     aho_corasick::rm_word(ac, 00_w);
 

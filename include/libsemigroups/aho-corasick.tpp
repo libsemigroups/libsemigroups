@@ -23,11 +23,18 @@ namespace libsemigroups {
   AhoCorasick::index_type AhoCorasick::add_word(Iterator first, Iterator last) {
     auto last_index = traverse_trie(first, last);
     if (last_index != UNDEFINED && _all_nodes[last_index].is_terminal()) {
-      LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
-                              "last) already belongs to the trie",
-                              word_type(first, last));
-      // TODO(2) Look in presentations and do one thing for chars and one thing
-      // for letter type.
+      std::string word;
+      if constexpr (std::is_same_v<
+                        std::decay_t<decltype(*std::declval<Iterator>())>,
+                        char>) {
+        word = detail::to_printable(std::string(first, last));
+      } else {
+        word = fmt::format("[{}]", fmt::join(first, last, ", "));
+      }
+      LIBSEMIGROUPS_EXCEPTION(
+          "the word {} given by the arguments [first, last) already belongs to "
+          "the trie, and cannot be added again",
+          word);
     }
     return add_word_no_checks(first, last);
   }
