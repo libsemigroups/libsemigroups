@@ -695,13 +695,31 @@ namespace libsemigroups {
     //!
     //! \param p the presentation to check.
     //! \param arg the position of \p p in calling function's argument list
-    //! (defaults to "1st").
+    //! (defaults to `"1st"`).
     //!
     //! \throws LibsemigroupsException if the alphabet of \p p is not `0` to
     //! `p.alphabet.size()`.
+    //!
+    //! \sa \ref is_normalized.
     template <typename Word>
     void throw_if_not_normalized(Presentation<Word> const& p,
                                  std::string_view          arg = "1st");
+
+    //! \brief Check if the presentation is normalized.
+    //!
+    //! This function returns `true` if the \ref Presentation::alphabet of
+    //! \p p is `0` to `p.alphabet().size() - 1` and `false` otherwise.
+    //!
+    //! \param p the presentation to check.
+    //!
+    //! \returns Whether or not the presentation \p p is normalized.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa \ref throw_if_not_normalized.
+    template <typename Word>
+    bool is_normalized(Presentation<Word> const& p);
 
     //! \brief Check rules against the alphabet of \p p.
     //!
