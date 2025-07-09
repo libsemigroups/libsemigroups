@@ -21,7 +21,7 @@ AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
 
 if LIBSEMIGROUPS_DEBUG
 AM_CPPFLAGS = -DDEBUG
-AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer
+AM_CXXFLAGS += -g2 -O0 -fno-omit-frame-pointer
 else
 AM_CPPFLAGS = -DNDEBUG
 endif
@@ -127,7 +127,9 @@ pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
-detailinclude_HEADERS =  include/libsemigroups/detail/bruidhinn-traits.hpp
+detailinclude_HEADERS =  include/libsemigroups/detail/aho-corasick-impl.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/aho-corasick-impl.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/bruidhinn-traits.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/citow.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.tpp
@@ -739,6 +741,7 @@ libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-graph.cpp
 libsemigroups_la_SOURCES += src/word-range.cpp
 
+libsemigroups_la_SOURCES += src/detail/aho-corasick-impl.cpp
 libsemigroups_la_SOURCES += src/detail/cong-common-class.cpp
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/detail/ke.cpp

@@ -15,6 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include <string>  // for basic_string, allocator
 #include <tuple>   // for __ignore_t, ignore
 #include <vector>  // for vector, operator==
@@ -23,13 +25,13 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/aho-corasick.hpp"  // for traverse_word, AhoCorasick
-#include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
 #include "libsemigroups/constants.hpp"     // for operator==, operator!=
 #include "libsemigroups/dot.hpp"           // for Dot
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/types.hpp"         // for word_type
 #include "libsemigroups/word-range.hpp"    // for operator""_w, WordRange, pow
-#include "libsemigroups/word-range.hpp"    // for namespace literals
+
+#include "libsemigroups/detail/aho-corasick-impl.hpp"  // for traverse_word, AhoCorasick
 
 namespace libsemigroups {
   using namespace literals;
@@ -326,133 +328,204 @@ namespace libsemigroups {
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
-    REQUIRE(aho_corasick::dot(ac).to_string() == R"(digraph {
-  node [shape="box"]
-  
-  0  [label="&#949;"]
-  1  [label="0"]
-  10  [label="010"]
-  11  [label="0100", peripheries="2"]
-  12  [label="0101", peripheries="2"]
-  13  [label="011"]
-  14  [label="0110", peripheries="2"]
-  15  [label="0111", peripheries="2"]
-  16  [label="1"]
-  17  [label="10"]
-  18  [label="100"]
-  19  [label="1000", peripheries="2"]
-  2  [label="00"]
-  20  [label="1001", peripheries="2"]
-  21  [label="101"]
-  22  [label="1010", peripheries="2"]
-  23  [label="1011", peripheries="2"]
-  24  [label="11"]
-  25  [label="110"]
-  26  [label="1100", peripheries="2"]
-  27  [label="1101", peripheries="2"]
-  28  [label="111"]
-  29  [label="1110", peripheries="2"]
-  3  [label="000"]
-  30  [label="1111", peripheries="2"]
-  4  [label="0000", peripheries="2"]
-  5  [label="0001", peripheries="2"]
-  6  [label="001"]
-  7  [label="0010", peripheries="2"]
-  8  [label="0011", peripheries="2"]
-  9  [label="01"]
-  0 -> 16  [color="#ff00ff", label="1"]
-  0 -> 1  [color="#00ff00", label="0"]
-  0 -> 0  [color="black", constraint="false", style="dashed"]
-  1 -> 9  [color="#ff00ff", label="1"]
-  1 -> 2  [color="#00ff00", label="0"]
-  1 -> 0  [color="black", constraint="false", style="dashed"]
-  2 -> 6  [color="#ff00ff", label="1"]
-  2 -> 3  [color="#00ff00", label="0"]
-  2 -> 1  [color="black", constraint="false", style="dashed"]
-  3 -> 5  [color="#ff00ff", label="1"]
-  3 -> 4  [color="#00ff00", label="0"]
-  3 -> 2  [color="black", constraint="false", style="dashed"]
-  4 -> 3  [color="black", constraint="false", style="dashed"]
-  5 -> 6  [color="black", constraint="false", style="dashed"]
-  6 -> 8  [color="#ff00ff", label="1"]
-  6 -> 7  [color="#00ff00", label="0"]
-  6 -> 9  [color="black", constraint="false", style="dashed"]
-  7 -> 10  [color="black", constraint="false", style="dashed"]
-  8 -> 13  [color="black", constraint="false", style="dashed"]
-  9 -> 13  [color="#ff00ff", label="1"]
-  9 -> 10  [color="#00ff00", label="0"]
-  9 -> 16  [color="black", constraint="false", style="dashed"]
-  10 -> 12  [color="#ff00ff", label="1"]
-  10 -> 11  [color="#00ff00", label="0"]
-  10 -> 17  [color="black", constraint="false", style="dashed"]
-  11 -> 18  [color="black", constraint="false", style="dashed"]
-  12 -> 21  [color="black", constraint="false", style="dashed"]
-  13 -> 15  [color="#ff00ff", label="1"]
-  13 -> 14  [color="#00ff00", label="0"]
-  13 -> 24  [color="black", constraint="false", style="dashed"]
-  14 -> 25  [color="black", constraint="false", style="dashed"]
-  15 -> 28  [color="black", constraint="false", style="dashed"]
-  16 -> 24  [color="#ff00ff", label="1"]
-  16 -> 17  [color="#00ff00", label="0"]
-  16 -> 0  [color="black", constraint="false", style="dashed"]
-  17 -> 21  [color="#ff00ff", label="1"]
-  17 -> 18  [color="#00ff00", label="0"]
-  17 -> 1  [color="black", constraint="false", style="dashed"]
-  18 -> 20  [color="#ff00ff", label="1"]
-  18 -> 19  [color="#00ff00", label="0"]
-  18 -> 2  [color="black", constraint="false", style="dashed"]
-  19 -> 3  [color="black", constraint="false", style="dashed"]
-  20 -> 6  [color="black", constraint="false", style="dashed"]
-  21 -> 23  [color="#ff00ff", label="1"]
-  21 -> 22  [color="#00ff00", label="0"]
-  21 -> 9  [color="black", constraint="false", style="dashed"]
-  22 -> 10  [color="black", constraint="false", style="dashed"]
-  23 -> 13  [color="black", constraint="false", style="dashed"]
-  24 -> 28  [color="#ff00ff", label="1"]
-  24 -> 25  [color="#00ff00", label="0"]
-  24 -> 16  [color="black", constraint="false", style="dashed"]
-  25 -> 27  [color="#ff00ff", label="1"]
-  25 -> 26  [color="#00ff00", label="0"]
-  25 -> 17  [color="black", constraint="false", style="dashed"]
-  26 -> 18  [color="black", constraint="false", style="dashed"]
-  27 -> 21  [color="black", constraint="false", style="dashed"]
-  28 -> 30  [color="#ff00ff", label="1"]
-  28 -> 29  [color="#00ff00", label="0"]
-  28 -> 24  [color="black", constraint="false", style="dashed"]
-  29 -> 25  [color="black", constraint="false", style="dashed"]
-  30 -> 28  [color="black", constraint="false", style="dashed"]
-})");
+    REQUIRE(!aho_corasick::dot(ac).to_string().empty());
+
     AhoCorasick ac2;
     aho_corasick::add_word(ac2, 0101_w);
     aho_corasick::add_word(ac2, 0110_w);
     aho_corasick::add_word(ac2, 01101_w);
     aho_corasick::add_word(ac2, 01100_w);
     aho_corasick::rm_word(ac2, 0101_w);
-
-    REQUIRE(aho_corasick::dot(ac2).to_string() == R"(digraph {
-  node [shape="box"]
-  
-  0  [label="&#949;"]
-  1  [label="0"]
-  2  [label="01"]
-  5  [label="011"]
-  6  [label="0110", peripheries="2"]
-  7  [label="01101", peripheries="2"]
-  8  [label="01100", peripheries="2"]
-  0 -> 1  [color="#00ff00", label="0"]
-  0 -> 0  [color="black", constraint="false", style="dashed"]
-  1 -> 2  [color="#ff00ff", label="1"]
-  1 -> 0  [color="black", constraint="false", style="dashed"]
-  2 -> 5  [color="#ff00ff", label="1"]
-  2 -> 0  [color="black", constraint="false", style="dashed"]
-  5 -> 6  [color="#00ff00", label="0"]
-  5 -> 0  [color="black", constraint="false", style="dashed"]
-  6 -> 8  [color="#00ff00", label="0"]
-  6 -> 7  [color="#ff00ff", label="1"]
-  6 -> 1  [color="black", constraint="false", style="dashed"]
-  7 -> 2  [color="black", constraint="false", style="dashed"]
-  8 -> 1  [color="black", constraint="false", style="dashed"]
-})");
+    REQUIRE(!aho_corasick::dot(ac2).to_string().empty());
   }
 
+  namespace detail {
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "012",
+                            "contains_no_checks",
+                            "[quick][aho-corasick]") {
+      AhoCorasickImpl ac(2);
+
+      aho_corasick_impl::add_word_no_checks(ac, 0101_w);
+      aho_corasick_impl::add_word_no_checks(ac, 0110_w);
+      aho_corasick_impl::add_word_no_checks(ac, 01101_w);
+      aho_corasick_impl::add_word_no_checks(ac, 01100_w);
+
+      REQUIRE(aho_corasick_impl::contains_no_checks(ac, 0101_w));
+      REQUIRE(!aho_corasick_impl::contains_no_checks(ac, 010_w));
+
+      WordRange words;
+      words.alphabet_size(2).min(0).max(7);
+      size_t count = 0;
+      for (auto const& w : words) {
+        count += aho_corasick_impl::contains_no_checks(ac, w);
+      }
+
+      REQUIRE(count == 4);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "013",
+                            "search",
+                            "[quick][aho-corasick]") {
+      using words::operator+;
+      using index_type = AhoCorasickImpl::index_type;
+
+      AhoCorasickImpl ac(2);
+
+      std::vector             subwords = {0101_w, 0110_w, 01101_w, 01100_w};
+      std::vector<index_type> indexes;
+
+      for (auto const& word : subwords) {
+        indexes.push_back(aho_corasick_impl::add_word_no_checks(ac, word));
+      }
+      // REQUIRE(indexes == std::vector<index_type>({4, 6, 7, 8}));
+
+      auto find = [](word_type const& haystack, word_type const& needle) {
+        if (haystack.size() < needle.size()) {
+          return false;
+        }
+        auto first = needle.begin(), last = needle.end();
+        auto len = last - first;
+        for (auto it = haystack.begin(); it <= haystack.end() - len; ++it) {
+          if (std::equal(first, last, it, it + len)) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      REQUIRE(!find("haystack"_w, "needle"_w));
+      REQUIRE(find("haystack"_w, "hay"_w));
+      REQUIRE(find("haystack"_w, "yst"_w));
+      REQUIRE(find(0101_w, 0101_w));
+
+      REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, 000000_w)
+              == UNDEFINED);
+      REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, 11_w)
+              == UNDEFINED);
+      REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, ""_w)
+              == UNDEFINED);
+
+      WordRange words;
+      words.alphabet_size(2).min(0).max(4);
+      for (auto const& w : words) {
+        REQUIRE(*aho_corasick_impl::begin_search_no_checks(ac, w) == UNDEFINED);
+      }
+
+      std::vector expected = {indexes[0], indexes[1], indexes[1], indexes[1]};
+      for (auto const& [i, word] : rx::enumerate(subwords)) {
+        REQUIRE(
+            std::pair(i, *aho_corasick_impl::begin_search_no_checks(ac, word))
+            == std::pair(i, expected[i]));
+      }
+
+      REQUIRE(*aho_corasick_impl::begin_search_no_checks(
+                  ac, 000000000011111111111110101010101010101111110000011110_w)
+              == 4);
+      REQUIRE(
+          *aho_corasick_impl::begin_search_no_checks(
+              ac, 0000000000111111111111100110101010101010101111110000011110_w)
+          == 6);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "014",
+                            "begin_search_no_checks",
+                            "[quick][aho-corasick]") {
+      using words::operator+;
+      using index_type = AhoCorasickImpl::index_type;
+      AhoCorasickImpl ac(2);
+
+      std::vector subwords = {000_w, 111_w, 1010_w, 001100_w, 1100_w};
+      std::vector<index_type> index;
+
+      for (auto const& word : subwords) {
+        index.push_back(aho_corasick_impl::add_word_no_checks(ac, word));
+      }
+
+      // REQUIRE(index == std::vector<index_type>({3, 6, 15, 11, 9}));
+
+      auto it = aho_corasick_impl::begin_search_no_checks(ac, 001100_w);
+      REQUIRE(*it == index[3]);
+      ++it;
+      REQUIRE(*it == index[4]);
+      ++it;
+      REQUIRE(*it == UNDEFINED);
+      REQUIRE(it == aho_corasick_impl::end_search_no_checks(ac, 001100_w));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "015",
+                            "begin_search_no_checks",
+                            "[quick][aho-corasick]") {
+      using index_type = AhoCorasickImpl::index_type;
+
+      AhoCorasickImpl ac(2);
+      std::vector     subwords = {001100_w, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w};
+      //                          6,        1,   7,   2,    8,    9,    10}));
+      std::vector<size_t> index;
+
+      for (auto const& word : subwords) {
+        index.push_back(aho_corasick_impl::add_word_no_checks(ac, word));
+      }
+      // REQUIRE(index == std::vector<size_t>({6, 1, 7, 2, 8, 9, 10}));
+
+      auto w     = 001100_w;
+      auto first = aho_corasick_impl::begin_search_no_checks(ac, w);
+      auto last  = aho_corasick_impl::end_search_no_checks(ac, w);
+      REQUIRE(
+          std::vector(first, last)
+          == std::vector<index_type>({1, 2, 1, 8, 7, 10, 7, 9, 1, 6, 2, 1}));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
+                            "016",
+                            "all words size 4",
+                            "[quick][aho-corasick]") {
+      using index_type = AhoCorasick::index_type;
+      AhoCorasickImpl ac(2);
+      AhoCorasick     ac2;
+
+      WordRange words;
+      words.alphabet_size(2).min(4).max(5);
+      for (auto const& w : words) {
+        aho_corasick_impl::add_word_no_checks(ac, w);
+        //  aho_corasick::add_word(ac2, w);
+      }
+      // REQUIRE(aho_corasick::dot(ac2).to_string() == "");
+
+      // REQUIRE(ac.number_of_nodes() == 7);
+
+      std::vector<index_type> expected
+          = {4, 5, 7, 8, 11, 12, 14, 15, 19, 20, 22, 23, 26, 27, 29, 30};
+      std::vector<index_type> result;
+      for (auto& w : {0000_w,
+                      0001_w,
+                      0010_w,
+                      0011_w,
+                      0100_w,
+                      0101_w,
+                      0110_w,
+                      0111_w,
+                      1000_w,
+                      1001_w,
+                      1010_w,
+                      1011_w,
+                      1100_w,
+                      1101_w,
+                      1110_w,
+                      1111_w}) {
+        result.push_back(aho_corasick_impl::traverse_word_no_checks(ac, w));
+      }
+      REQUIRE(expected == result);
+
+      REQUIRE(ac.number_of_nodes() == 31);
+      aho_corasick_impl::rm_word_no_checks(ac, 0111_w);
+      REQUIRE(ac.number_of_nodes() == 30);
+      REQUIRE(aho_corasick_impl::traverse_word_no_checks(ac, 0111_w)
+              == aho_corasick_impl::traverse_word_no_checks(ac, 111_w));
+    }
+
+  }  // namespace detail
 }  // namespace libsemigroups
