@@ -243,6 +243,9 @@ namespace libsemigroups {
     auto ntc = non_trivial_classes(cong, froidure_pin::normal_forms(S));
     REQUIRE(ntc.size() == 4);
 
+    // REQUIRE((ntc | rx::to_vector()) ==
+    // std::vector<std::vector<word_type>>());
+
     std::vector<size_t> actual(4, 0);
     std::transform(ntc.begin(),
                    ntc.end(),

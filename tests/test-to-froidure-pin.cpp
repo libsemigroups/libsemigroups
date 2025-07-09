@@ -275,6 +275,7 @@ namespace libsemigroups {
                           "008",
                           "from ToddCoxeter",
                           "[quick][no-valgrind]") {
+    auto                    rg = ReportGuard(false);
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
@@ -312,9 +313,24 @@ namespace libsemigroups {
                           "009",
                           "from default constructed Kambites",
                           "[quick]") {
+    auto                  rg = ReportGuard(false);
     Kambites<std::string> k;
     auto                  fp = to<FroidurePin>(k);
     REQUIRE(fp.size() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>", "010", "exceptions", "[quick]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaaaaa", "aaa");
+    presentation::add_rule(p, "bbbbbbbb", "bb");
+    presentation::add_rule(p, "ab", "ba");
+    KnuthBendix kb(congruence_kind::twosided, p);
+    auto        S = to<FroidurePin>(kb);
+
+    using KBE_ = typename decltype(S)::element_type;
+    REQUIRE_THROWS_AS(S.contains(KBE_(kb, "cd")), LibsemigroupsException);
   }
 
 }  // namespace libsemigroups

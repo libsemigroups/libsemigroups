@@ -44,6 +44,7 @@
 #include <utility>        // for move, make_pair
 #include <vector>         // for vector
 
+#include "libsemigroups/adapters.hpp"      // for Hash
 #include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_...
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
@@ -133,8 +134,26 @@ namespace libsemigroups {
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
     class KnuthBendixImpl : public CongruenceCommon {
+     public:
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixImpl - nested subclasses - private
+      // Aliases
+      ////////////////////////////////////////////////////////////////////////
+
+      using native_word_type = typename Rewriter::native_word_type;
+      using rule_type        = std::pair<native_word_type, native_word_type>;
+      using rewriter_type    = Rewriter;
+
+      //////////////////////////////////////////////////////////////////////////
+      // Nested classes - public
+      //////////////////////////////////////////////////////////////////////////
+
+      struct options {
+        enum class overlap { ABC = 0, AB_BC = 1, MAX_AB_BC = 2 };
+      };
+
+     private:
+      ////////////////////////////////////////////////////////////////////////
+      // Nested classes - private
       ////////////////////////////////////////////////////////////////////////
 
       // Overlap measures
@@ -142,7 +161,7 @@ namespace libsemigroups {
         virtual size_t
         operator()(detail::Rule const*,
                    detail::Rule const* examples,
-                   detail::internal_string_type::const_iterator const&)
+                   typename native_word_type::const_iterator const&)
             = 0;
         virtual ~OverlapMeasure() {}
       };
@@ -151,24 +170,6 @@ namespace libsemigroups {
       struct AB_BC;
       struct MAX_AB_BC;
 
-     public:
-      ////////////////////////////////////////////////////////////////////////
-      // Interface requirements - native-types
-      ////////////////////////////////////////////////////////////////////////
-
-      using rule_type        = std::pair<std::string, std::string>;
-      using native_word_type = std::string;
-      using rewriter_type    = Rewriter;
-
-      //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixImpl - types - public
-      //////////////////////////////////////////////////////////////////////////
-
-      struct options {
-        enum class overlap { ABC = 0, AB_BC = 1, MAX_AB_BC = 2 };
-      };
-
-     private:
       struct Settings {
         Settings() noexcept;
         Settings& init() noexcept;
@@ -205,14 +206,13 @@ namespace libsemigroups {
 
       bool                            _gen_pairs_initted;
       WordGraph<uint32_t>             _gilman_graph;
-      std::vector<std::string>        _gilman_graph_node_labels;
-      bool                            _internal_is_same_as_external;
+      std::vector<native_word_type>   _gilman_graph_node_labels;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
-      Presentation<std::string>       _presentation;
+      Presentation<native_word_type>  _presentation;
       mutable Rewriter                _rewriter;
       Settings                        _settings;
       mutable Stats                   _stats;
-      mutable std::string             _tmp_element1;
+      mutable native_word_type        _tmp_element1;
 
      public:
       //////////////////////////////////////////////////////////////////////////
@@ -231,14 +231,16 @@ namespace libsemigroups {
 
       ~KnuthBendixImpl();
 
-      KnuthBendixImpl(congruence_kind knd, Presentation<std::string> const& p);
+      KnuthBendixImpl(congruence_kind                       knd,
+                      Presentation<native_word_type> const& p);
+
+      KnuthBendixImpl& init(congruence_kind                       knd,
+                            Presentation<native_word_type> const& p);
+
+      KnuthBendixImpl(congruence_kind knd, Presentation<native_word_type>&& p);
 
       KnuthBendixImpl& init(congruence_kind                  knd,
-                            Presentation<std::string> const& p);
-
-      KnuthBendixImpl(congruence_kind knd, Presentation<std::string>&& p);
-
-      KnuthBendixImpl& init(congruence_kind knd, Presentation<std::string>&& p);
+                            Presentation<native_word_type>&& p);
 
       // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
       // consistency with ToddCoxeterImpl
@@ -399,26 +401,6 @@ namespace libsemigroups {
       // KnuthBendixImpl - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
-      //! \ingroup knuth_bendix_class_intf_group
-      //! \brief Reduce a word with no run and no checks.
-      //!
-      //! This function writes a reduced word equivalent to the input word
-      //! described by the iterator \p first and \p last to the output iterator
-      //! \p d_first. This function triggers no enumeration. The word output by
-      //! this function is equivalent to the input word in the congruence
-      //! defined by a
-      //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
-      //! \ref finished, then the output word is a normal form for the input
-      //! word. If the \ref_knuth_bendix instance is not \ref finished, then
-      //! it might be that equivalent input words produce different output
-      //! words.
-      //!
-      //! \cong_common_params_reduce
-      //!
-      //! \returns An \p OutputIterator pointing one beyond the last letter
-      //! inserted into \p d_first.
-      //!
-      //! \cong_common_warn_assume_letters_in_bounds
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -439,27 +421,6 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
-      //! \ingroup knuth_bendix_class_intf_group
-      //! \brief Reduce a word with no checks.
-      //!
-      //! This function triggers a full enumeration and then writes a reduced
-      //! word equivalent to the input word described by the iterator \p first
-      //! and
-      //! \p last to the output iterator \p d_first. The word output by this
-      //! function is equivalent to the input word in the congruence defined by
-      //! a
-      //! \ref_knuth_bendix instance. In other words, the output word is a
-      //! normal form for the input word or equivalently a canconical
-      //! representative of its congruence class.
-      //!
-      //! \cong_common_params_reduce
-      //!
-      //! \returns An \p OutputIterator pointing one beyond the last letter
-      //! inserted into \p d_first.
-      //!
-      //! \cong_common_warn_assume_letters_in_bounds
-      //!
-      //! \cong_common_warn_undecidable{Knuth-Bendix}
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -733,7 +694,7 @@ namespace libsemigroups {
         internal_presentation().throw_if_letter_not_in_alphabet(first, last);
       }
 
-      [[nodiscard]] Presentation<std::string> const&
+      [[nodiscard]] Presentation<native_word_type> const&
       internal_presentation() const noexcept {
         return _presentation;
       }
@@ -777,6 +738,30 @@ namespace libsemigroups {
 
       //! \ingroup knuth_bendix_class_accessors_group
       //!
+      //! \brief Return the number of pending rules.
+      //!
+      //! This function returns the number of pending rules in the system. All
+      //! rules in the system are either active or pending. Active rules are
+      //! used to perform rewriting, but pending rules are not, until they have
+      //! been processed and become active rules. For example, when a
+      //! \ref_knuth_bendix object is constructed from a presentation, the rules
+      //! in the presentation are initially pending. This is to avoid incurring
+      //! the cost of processing the pending rules before absolutely necessary.
+      //!
+      //! \returns
+      //! The number of pending rules.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
+      [[nodiscard]] size_t number_of_pending_rules() const noexcept {
+        return _rewriter.number_of_pending_rules();
+      }
+
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
       //! \brief Return the number of rules that \ref_knuth_bendix has created.
       //!
       //! This function returns the total number of Rule instances that have
@@ -797,6 +782,10 @@ namespace libsemigroups {
         return _rewriter.stats().total_rules;
       }
 
+      Rewriter& rewriter() noexcept {
+        return _rewriter;
+      }
+
       // Documented in KnuthBendix
       // TODO(1) should be const
       // TODO(1) add note about empty active rules after, or better discuss that
@@ -804,12 +793,35 @@ namespace libsemigroups {
       // pending.
       [[nodiscard]] auto active_rules();
 
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Process any pending rules.
+      //!
+      //! This function processes any pending rules in the system.
+      //! All rules in
+      //! the system are either active or pending. Active rules are used to
+      //! perform rewriting, but pending rules are not, until they have been
+      //! processed and become active rules. For example, when a
+      //! \ref_knuth_bendix object is constructed from a presentation, the rules
+      //! in the presentation are initially pending. This is to avoid incurring
+      //! the cost of processing the pending rules before absolutely necessary.
+      //!
+      //! \return
+      //! A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      KnuthBendixImpl& process_pending_rules() {
+        _rewriter.process_pending_rules();
+        return *this;
+      }
+
      private:
       // TODO(1) remove this ...
-      void rewrite_inplace(std::string& w);
+      void rewrite_inplace(native_word_type& w);
 
       // TODO(1) remove this ...
-      [[nodiscard]] std::string rewrite(std::string w) {
+      [[nodiscard]] native_word_type rewrite(native_word_type w) {
         rewrite_inplace(w);
         return w;
       }
@@ -866,10 +878,15 @@ namespace libsemigroups {
       WordGraph<uint32_t> const& gilman_graph();
 
       // Documented in KnuthBendix
-      [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
+      [[nodiscard]] std::vector<native_word_type> const&
+      gilman_graph_node_labels() {
         gilman_graph();  // to ensure that gilman_graph is initialised
         return _gilman_graph_node_labels;
       }
+
+     protected:
+      // run_impl is called by KnuthBendix
+      void run_impl() override;
 
      private:
       //////////////////////////////////////////////////////////////////////////
@@ -883,29 +900,10 @@ namespace libsemigroups {
 
       void stats_check_point();
 
-      [[nodiscard]] static detail::internal_char_type
-      uint_to_internal_char(size_t a);
-      [[nodiscard]] static size_t
-      internal_char_to_uint(detail::internal_char_type c);
+      void add_octo(native_word_type& w) const;
+      void rm_octo(native_word_type& w) const;
 
-      [[nodiscard]] static detail::internal_string_type
-      uint_to_internal_string(size_t i);
-
-      [[nodiscard]] static word_type
-      internal_string_to_word(detail::internal_string_type const& s);
-
-      [[nodiscard]] detail::internal_char_type
-      external_to_internal_char(detail::external_char_type c) const;
-      [[nodiscard]] detail::external_char_type
-      internal_to_external_char(detail::internal_char_type a) const;
-
-      void external_to_internal_string(detail::external_string_type& w) const;
-      void internal_to_external_string(detail::internal_string_type& w) const;
-
-      void add_octo(detail::external_string_type& w) const;
-      void rm_octo(detail::external_string_type& w) const;
-
-      void add_rule_impl(std::string const& p, std::string const& q);
+      void add_rule_impl(native_word_type const& p, native_word_type const& q);
 
       void overlap(detail::Rule const* u, detail::Rule const* v);
 
@@ -920,7 +918,6 @@ namespace libsemigroups {
       // Runner - pure virtual member functions - private
       //////////////////////////////////////////////////////////////////////////
 
-      void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
   }     // namespace detail

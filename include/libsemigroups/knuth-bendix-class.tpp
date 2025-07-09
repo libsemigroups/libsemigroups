@@ -46,15 +46,48 @@ namespace libsemigroups {
   KnuthBendix<Word, Rewriter, ReductionOrder>&
   KnuthBendix<Word, Rewriter, ReductionOrder>::init(congruence_kind      knd,
                                                     Presentation<Word>&& p) {
-    if constexpr (!std::is_same_v<Word, std::string>) {
-      // to<Presentation> throws in the next line if p isn't valid
-      KnuthBendixImpl_::init(
-          knd, to<Presentation<std::string>>(p, [](auto x) { return x; }));
-    } else {
-      KnuthBendixImpl_::init(knd, p);
-    }
+    KnuthBendixImpl_::init(knd, to<Presentation<u8string>>(p, [&p](auto x) {
+                             return p.index_no_checks(x);
+                           }));
+    _extra_letter_added = false;
+    _generating_pairs.clear();
     _presentation = std::move(p);
+
     return *this;
+  }
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  template <typename Iterator1, typename Iterator2>
+  void
+  KnuthBendix<Word, Rewriter, ReductionOrder>::throw_if_letter_not_in_alphabet(
+      Iterator1 first,
+      Iterator2 last) const {
+    presentation().throw_if_letter_not_in_alphabet(first, last);
+    if (_extra_letter_added) {
+      // It is necessary to represent the "extra" letter in the alphabet here
+      // because o/w the output of (for example) active_rules inexplicably
+      // includes an extra letter.
+      auto const& alpha = presentation().alphabet();
+      auto        it    = std::find_if(first, last, [&alpha](auto val) {
+        return static_cast<typename native_word_type::value_type>(val)
+               == alpha.back();
+      });
+      if (it != last) {
+        LIBSEMIGROUPS_ASSERT(!alpha.empty());
+        std::decay_t<decltype(alpha)> alpha_to_print(alpha.begin(),
+                                                     alpha.end() - 1);
+
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter {}, valid letters are {} (for 1-sided "
+            "congruences KnuthBendix requires an additional letter in "
+            "the alphabet of its presentation, in this case {}, which "
+            "belongs to presentation().alphabet() but cannot belong to the "
+            "input for any of its member functions)",
+            detail::to_printable(*it),
+            detail::to_printable(alpha_to_print),
+            detail::to_printable(alpha.back()));
+      }
+    }
   }
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
@@ -73,9 +106,41 @@ namespace libsemigroups {
     _generating_pairs.emplace_back(first2, last2);
     // Although this looks like it does nothing, remember the type of words in
     // *this and KnuthBendixImpl_ may not be the same
-    KnuthBendixImpl_::add_generating_pair_no_checks(
-        first1, last1, first2, last2);
+    KnuthBendixImpl_::add_generating_pair_no_checks(detail::citow(this, first1),
+                                                    detail::citow(this, last1),
+                                                    detail::citow(this, first2),
+                                                    detail::citow(this, last2));
     return *this;
+  }
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  template <typename Iterator1,
+            typename Iterator2,
+            typename Iterator3,
+            typename Iterator4>
+  KnuthBendix<Word, Rewriter, ReductionOrder>&
+  KnuthBendix<Word, Rewriter, ReductionOrder>::add_generating_pair(
+      Iterator1 first1,
+      Iterator2 last1,
+      Iterator3 first2,
+      Iterator4 last2) {
+    if (detail::CongruenceCommon::kind() == congruence_kind::onesided) {
+      size_t max_alphabet
+          = std::numeric_limits<std::string::value_type>::max()
+            - std::numeric_limits<std::string::value_type>::min() + 1;
+      if (_presentation.alphabet().size() == max_alphabet) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "it is not possible to add generating pairs to a 1-sided "
+            "KnuthBendix instance over a presentation with {} generators, "
+            "(because an additional letter is required in the alphabet that "
+            "cannot belong to any generating pair)",
+            max_alphabet);
+      }
+    }
+    // Call detail::CongruenceCommon version so that we perform bound checks
+    // in KnuthBendix and not KnuthBendixImpl
+    return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
+        first1, last1, first2, last2);
   }
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
@@ -99,34 +164,46 @@ namespace libsemigroups {
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
   auto KnuthBendix<Word, Rewriter, ReductionOrder>::active_rules() {
-    auto result = KnuthBendixImpl_::active_rules();
-    if constexpr (std::is_same_v<native_word_type,
-                                 typename KnuthBendixImpl_::native_word_type>) {
-      return result;
-    } else {
-      // TODO(1) remove allocations here somehow (probably by making a custom
-      // range object holding memory to put the incoming rules into)
-      return result | rx::transform([](auto const& pair) {
-               return std::make_pair(
-                   Word(pair.first.begin(), pair.first.end()),
-                   Word(pair.second.begin(), pair.second.end()));
-             });
-    }
+    // TODO(1) remove allocations here somehow (probably by making a custom
+    // range object holding memory to put the incoming rules into)
+    auto        result = KnuthBendixImpl_::active_rules();
+    auto const& p      = presentation();
+    return result | rx::transform([&p](auto const* rule) {
+             auto pair
+                 = std::make_pair(Word(rule->lhs().begin(), rule->lhs().end()),
+                                  Word(rule->rhs().begin(), rule->rhs().end()));
+             auto convert = [&p](auto& val) { val = p.letter_no_checks(val); };
+             std::for_each(pair.first.begin(), pair.first.end(), convert);
+             std::for_each(pair.second.begin(), pair.second.end(), convert);
+             return pair;
+           });
   }
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
   std::vector<Word>
   KnuthBendix<Word, Rewriter, ReductionOrder>::gilman_graph_node_labels() {
     auto base_result = KnuthBendixImpl_::gilman_graph_node_labels();
-    if constexpr (std::is_same_v<native_word_type,
-                                 typename KnuthBendixImpl_::native_word_type>) {
-      return base_result;
-    } else {
-      std::vector<Word> result;
-      for (auto& label : base_result) {
-        result.emplace_back(label.begin(), label.end());
-      }
-      return result;
+    std::vector<Word> result;
+    auto const&       p = presentation();
+    for (auto& label : base_result) {
+      result.emplace_back(label.begin(), label.end());
+      std::for_each(result.back().begin(),
+                    result.back().end(),
+                    [&p](auto& val) { val = p.letter_no_checks(val); });
     }
+    return result;
   }
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  void KnuthBendix<Word, Rewriter, ReductionOrder>::run_impl() {
+    if (requires_extra_letter() && !_extra_letter_added) {
+      // It is necessary to represent the "extra" letter in the alphabet here
+      // because o/w the output of (for example) active_rules inexplicably
+      // includes an extra letter.
+      _presentation.add_generator();
+      _extra_letter_added = true;
+    }
+    KnuthBendixImpl_::run_impl();
+  }
+
 }  // namespace libsemigroups

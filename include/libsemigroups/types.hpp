@@ -104,6 +104,8 @@ namespace libsemigroups {
   //! \brief Type for a pair of \ref word_type (a *relation*) of a semigroup.
   using relation_type = std::pair<word_type, word_type>;
 
+  //! \brief Alias for strings over unsigned chars.
+  using u8string = std::basic_string<uint8_t>;
   //! @}
 }  // namespace libsemigroups
 
