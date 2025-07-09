@@ -227,8 +227,10 @@ namespace libsemigroups {
 
     for (auto index : ac.active_nodes()) {
       for (auto [label, child] : ac.node_no_checks(index).children()) {
-        result.add_edge(index, child)
-            .add_attr("color", result.colors[label])
+        result
+            .add_edge(index, child)
+            // FIXME proper fix
+            .add_attr("color", result.colors[label % result.colors.size()])
             .add_attr("label", label);
       }
       result.add_edge(index, ac.suffix_link_no_checks(index))
