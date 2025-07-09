@@ -107,9 +107,8 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
-    // kb.process_pending_rules();
-
-    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 10);
     REQUIRE(kb.confluent());
     REQUIRE(knuth_bendix::reduce(kb, "ca") == "a");
     REQUIRE(knuth_bendix::reduce(kb, "ac") == "a");
@@ -147,8 +146,6 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
-    // kb.process_pending_rules();
-
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(is_obviously_infinite(kb));
@@ -182,9 +179,8 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
-    // kb.process_pending_rules();
-
-    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.number_of_active_rules() == 0);
+    REQUIRE(kb.number_of_pending_rules() == 10);
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
@@ -226,7 +222,11 @@ namespace libsemigroups {
     REQUIRE(kb.presentation().alphabet() == "01");
     REQUIRE(!kb.confluent());
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 4);
+    // REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(
+        (kb.active_rules() | rx::to_vector())
+        == std::vector<std::pair<std::string, std::string>>(
+            {{"000", ""}, {"111", ""}, {"1010", "0011"}, {"1100", "0101"}}));
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
@@ -754,6 +754,29 @@ namespace libsemigroups {
     kb1            = std::move(kb2);
     REQUIRE(kb1.number_of_active_rules() == M);
     REQUIRE(!kb1.finished());
+
+    kb1.init(twosided, p);
+    knuth_bendix::add_generating_pair(kb1, "ab", "ba");
+    REQUIRE(kb1.number_of_generating_pairs() == 1);
+    REQUIRE(kb1.generating_pairs() == std::vector<std::string>({"ab", "ba"}));
+    REQUIRE(kb1.internal_generating_pairs().size() == 2);
+
+    kb1.init(twosided, p);
+    REQUIRE(kb1.number_of_generating_pairs() == 0);
+    REQUIRE(kb1.internal_generating_pairs().size() == 0);
+    REQUIRE(kb1.generating_pairs().size() == 0);
+
+    knuth_bendix::add_generating_pair(kb1, "ab", "ba");
+
+    REQUIRE(kb1.number_of_generating_pairs() == 1);
+    REQUIRE(kb1.internal_generating_pairs().size() == 2);
+    REQUIRE(kb1.generating_pairs().size() == 2);
+
+    kb1.init();
+
+    REQUIRE(kb1.number_of_generating_pairs() == 0);
+    REQUIRE(kb1.internal_generating_pairs().size() == 0);
+    REQUIRE(kb1.generating_pairs().size() == 0);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",

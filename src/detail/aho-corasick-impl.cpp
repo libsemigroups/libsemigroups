@@ -62,7 +62,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // AhoCorasickImplImpl class
+    // AhoCorasickImpl class
     ////////////////////////////////////////////////////////////////////////
 
     AhoCorasickImpl::AhoCorasickImpl()
@@ -76,6 +76,13 @@ namespace libsemigroups {
       init(0);
       return *this;
     }
+
+    AhoCorasickImpl::AhoCorasickImpl(AhoCorasickImpl const&) = default;
+    AhoCorasickImpl::AhoCorasickImpl(AhoCorasickImpl&&)      = default;
+
+    AhoCorasickImpl& AhoCorasickImpl::operator=(AhoCorasickImpl const&)
+        = default;
+    AhoCorasickImpl& AhoCorasickImpl::operator=(AhoCorasickImpl&&) = default;
 
     AhoCorasickImpl::AhoCorasickImpl(size_t num_letters)
         : _all_nodes({Node()}),

@@ -165,10 +165,10 @@ namespace libsemigroups {
       explicit AhoCorasickImpl(size_t num_letters);
       AhoCorasickImpl& init(size_t num_letters);
 
-      AhoCorasickImpl(AhoCorasickImpl const&)            = default;
-      AhoCorasickImpl& operator=(AhoCorasickImpl const&) = default;
-      AhoCorasickImpl(AhoCorasickImpl&&)                 = default;
-      AhoCorasickImpl& operator=(AhoCorasickImpl&&)      = default;
+      AhoCorasickImpl(AhoCorasickImpl const&);
+      AhoCorasickImpl& operator=(AhoCorasickImpl const&);
+      AhoCorasickImpl(AhoCorasickImpl&&);
+      AhoCorasickImpl& operator=(AhoCorasickImpl&&);
 
       ~AhoCorasickImpl();
 

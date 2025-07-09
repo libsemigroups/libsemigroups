@@ -63,8 +63,6 @@ namespace libsemigroups {
   using namespace rx;
   using literals::operator""_w;
 
-  using rule_type = detail::KnuthBendixImpl<>::rule_type;
-
   struct LibsemigroupsException;
 
   using RewriteTrie     = detail::RewriteTrie;
@@ -74,6 +72,7 @@ namespace libsemigroups {
 
   namespace {
     struct weird_cmp {
+      using rule_type = std::pair<std::string, std::string>;
       bool operator()(rule_type const& x, rule_type const& y) const noexcept {
         return shortlex_compare(x.first, y.first)
                || (x.first == y.first && shortlex_compare(x.second, y.second));
@@ -441,6 +440,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 1);
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | to_vector())
             == std::vector<rule_type>({{"aabc", "acba"}}));
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(6).count() == 356);
@@ -546,6 +546,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "bccb", "bccbb"));
     REQUIRE(!knuth_bendix::contains(kb, "aaaa", "bccbb"));
 
+    using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"bcbca", "bcbc"},
                                        {"bcbcb", "bcbc"},

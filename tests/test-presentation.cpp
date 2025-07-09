@@ -58,9 +58,9 @@
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/detail/string.hpp"      // for operator<<
 
-// TODO(later) Add tests for add_cyclic_conjugates
-// TODO(later) Change word_type({0, 1, 2}) to "012"_w
-// TODO(0) use LIBSEMIGROUPS_TEMPLATE_TEST_CASE + add
+// TODO(1) Add tests for add_cyclic_conjugates
+// TODO(1) Change word_type({0, 1, 2}) to "012"_w
+// TODO(1) use LIBSEMIGROUPS_TEMPLATE_TEST_CASE + add
 // Presentation<std::basic_string<uint8_t>>
 
 namespace libsemigroups {

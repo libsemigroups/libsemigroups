@@ -22,12 +22,14 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
-#include <utility>  // for move
-#include <vector>   // for vector
+#include <algorithm>  // for for_each
+#include <utility>    // for move
+#include <vector>     // for vector
 
 #include "order.hpp"         // for ShortLexCompare
 #include "presentation.hpp"  // for Presentation
 
+#include "detail/citow.hpp"              // for citow
 #include "detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
 #include "detail/rewriters.hpp"          // for RewriteTrie
@@ -90,6 +92,7 @@ namespace libsemigroups {
    private:
     using KnuthBendixImpl_ = detail::KnuthBendixImpl<Rewriter, ReductionOrder>;
 
+    bool               _extra_letter_added;
     std::vector<Word>  _generating_pairs;
     Presentation<Word> _presentation;
 
@@ -160,6 +163,7 @@ namespace libsemigroups {
     //! A reference to \c this.
     // TODO(1) to tpp file
     KnuthBendix& init() {
+      _extra_letter_added = false;
       _generating_pairs.clear();
       _presentation.init();
       KnuthBendixImpl_::init();
@@ -252,7 +256,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if any value pointed
     //! at by an iterator in the range \p first to \p last is out of bounds
     //! (i.e. does not belong to the alphabet of the \ref presentation used
-    //! to construct the \ref_knuth_bendix instance).
+    //! to construct the \ref_knuth_bendix instance, see the warning below).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -263,12 +267,17 @@ namespace libsemigroups {
     //!
     //! \throw LibsemigroupsException if any letter in the range from
     //! \p first to \p last is out of bounds.
-    // TODO(0) remove this
+    //!
+    //! \warning If a KnuthBendix instance represents a 1-sided congruence
+    //! (\ref kind) and there are any generating pairs
+    //! (\ref number_of_generating_pairs `> 0`), then the alphabet of the
+    //! presentation will contain one more letter than the original input
+    //! alphabet. This extra letter cannot be used in the input of any
+    //! function, and is required for the algorithm to work in
+    //! this case, and is present in the output of, for example,
+    //! \ref active_rules.
     template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_not_in_alphabet(Iterator1 first,
-                                         Iterator2 last) const {
-      presentation().throw_if_letter_not_in_alphabet(first, last);
-    }
+    void throw_if_letter_not_in_alphabet(Iterator1 first, Iterator2 last) const;
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \ingroup knuth_bendix_class_intf_group
@@ -336,6 +345,14 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \warning If a KnuthBendix instance represents a 1-sided congruence
+    //! (\ref kind) and there are any generating pairs
+    //! (\ref number_of_generating_pairs `> 0`), then the alphabet of the
+    //! presentation will contain one more letter than the original input
+    //! alphabet. This extra letter is required for the algorithm to work in
+    //! this case, and is present in the output of, for example,
+    //! \ref active_rules.
     [[nodiscard]] Presentation<Word> const& presentation() const noexcept {
       return _presentation;
     }
@@ -348,7 +365,8 @@ namespace libsemigroups {
     //!
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented by a
+    //! This function adds a generating pair to the congruence represented by
+    //! a
     //! \ref_knuth_bendix instance.
     //!
     //! \cong_common_params_contains
@@ -373,7 +391,8 @@ namespace libsemigroups {
     //!
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented by a
+    //! This function adds a generating pair to the congruence represented by
+    //! a
     //! \ref_knuth_bendix instance.
     //!
     //! \cong_common_params_contains
@@ -390,29 +409,41 @@ namespace libsemigroups {
     KnuthBendix& add_generating_pair(Iterator1 first1,
                                      Iterator2 last1,
                                      Iterator3 first2,
-                                     Iterator4 last2) {
-      // Call detail::CongruenceCommon version so that we perform bound checks
-      // in KnuthBendix and not KnuthBendixImpl
-      return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
-          first1, last1, first2, last2);
-    }
+                                     Iterator4 last2);
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
-    // NOTE: contains_no_checks and currently_contains_no_checks are implemented
+    // TODO: contains_no_checks is implemented
     // and documented in KnuthBendixImpl
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(Iterator1 first1,
+                                      Iterator2 last1,
+                                      Iterator3 first2,
+                                      Iterator4 last2) const {
+      return KnuthBendixImpl_::currently_contains_no_checks(
+          detail::citow(this, first1),
+          detail::citow(this, last1),
+          detail::citow(this, first2),
+          detail::citow(this, last2));
+    }
 
     //! \ingroup knuth_bendix_class_intf_group
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref_knuth_bendix instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref_knuth_bendix
+    //! instance. This function performs no enumeration, so it is possible for
+    //! the words to be contained in the congruence, but that this is not
+    //! currently known.
     //!
     //! \cong_common_params_contains
     //!
@@ -440,7 +471,8 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
+    //! This function checks whether or not the words represented by the
+    //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref_knuth_bendix
     //! instance. This function triggers a full enumeration,
@@ -466,8 +498,71 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // NOTE: reduce_no_checks and reduce_no_run_no_checks are implemented and
-    // documented in KnuthBendixImpl
+    //! \ingroup knuth_bendix_class_intf_group
+    //! \brief Reduce a word with no run and no checks.
+    //!
+    //! This function writes a reduced word equivalent to the input word
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a
+    //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
+    //! \ref finished, then the output word is a normal form for the input
+    //! word. If the \ref_knuth_bendix instance is not \ref finished, then
+    //! it might be that equivalent input words produce different output
+    //! words.
+    //!
+    //! \cong_common_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_common_warn_assume_letters_in_bounds
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           InputIterator1 first,
+                                           InputIterator2 last) const {
+      return KnuthBendixImpl_::reduce_no_run_no_checks(
+                 detail::itow(this, d_first),
+                 detail::citow(this, first),
+                 detail::citow(this, last))
+          .get();
+    }
+
+    //! \ingroup knuth_bendix_class_intf_group
+    //! \brief Reduce a word with no checks.
+    //!
+    //! This function triggers a full enumeration and then writes a reduced
+    //! word equivalent to the input word described by the iterator \p first
+    //! and
+    //! \p last to the output iterator \p d_first. The word output by this
+    //! function is equivalent to the input word in the congruence defined by
+    //! a
+    //! \ref_knuth_bendix instance. In other words, the output word is a
+    //! normal form for the input word or equivalently a canconical
+    //! representative of its congruence class.
+    //!
+    //! \cong_common_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_common_warn_assume_letters_in_bounds
+    //!
+    //! \cong_common_warn_undecidable{Knuth-Bendix}
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      return KnuthBendixImpl_::reduce_no_checks(detail::itow(this, d_first),
+                                                detail::citow(this, first),
+                                                detail::citow(this, last))
+          .get();
+    }
 
     //! \ingroup knuth_bendix_class_intf_group
     //!
@@ -476,11 +571,12 @@ namespace libsemigroups {
     //! This function writes a reduced word equivalent to the input word
     //! described by the iterator \p first and \p last to the output iterator
     //! \p d_first. This function triggers no enumeration. The word output by
-    //! this function is equivalent to the input word in the congruence defined
-    //! by a \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
-    //! \ref finished, then the output word is a normal form for the input word.
-    //! If the \ref_knuth_bendix instance is not \ref finished, then it might be
-    //! that equivalent input words produce different output words.
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a \ref_knuth_bendix instance. If the \ref_knuth_bendix
+    //! instance is
+    //! \ref finished, then the output word is a normal form for the input
+    //! word. If the \ref_knuth_bendix instance is not \ref finished, then it
+    //! might be that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!
@@ -505,12 +601,14 @@ namespace libsemigroups {
     //! \brief Reduce a word.
     //!
     //! This function triggers a full enumeration and then writes a reduced
-    //! word equivalent to the input word described by the iterator \p first and
+    //! word equivalent to the input word described by the iterator \p first
+    //! and
     //! \p last to the output iterator \p d_first. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
-    //! \ref_knuth_bendix instance. In other words, the output word is a normal
-    //! form for the input word or equivalently a canconical representative of
-    //! its congruence class.
+    //! function is equivalent to the input word in the congruence defined by
+    //! a
+    //! \ref_knuth_bendix instance. In other words, the output word is a
+    //! normal form for the input word or equivalently a canconical
+    //! representative of its congruence class.
     //!
     //! \cong_common_params_reduce
     //!
@@ -560,6 +658,14 @@ namespace libsemigroups {
     //!
     //! \sa \ref gilman_graph.
     std::vector<Word> gilman_graph_node_labels();
+
+   private:
+    void run_impl();
+
+    [[nodiscard]] bool requires_extra_letter() const {
+      return (!generating_pairs().empty()
+              && detail::CongruenceCommon::kind() == congruence_kind::onesided);
+    }
   };  // class KnuthBendix
 
   //! \ingroup knuth_bendix_class_group
