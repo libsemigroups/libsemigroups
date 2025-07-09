@@ -141,6 +141,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/felsch-tree.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/fmt.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/formatters.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/guard.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/int-range.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/iterator.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/kambites-nf.hpp
