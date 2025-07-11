@@ -276,17 +276,18 @@ namespace libsemigroups {
       kb.check_confluence_interval(prev_check_confluence_interval);
     }
 
+    // TODO(1) deprecate and make this Rewriter mem fn
     template <typename Rewriter, typename ReductionOrder>
     bool is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {
-        auto const lhs = test_rule.first;
+        auto const lhs = test_rule->lhs();
         for (auto const& rule : kb.active_rules()) {
           if (test_rule == rule) {
             continue;
           }
 
-          if (rule.first.find(lhs) != detail::internal_string_type::npos
-              || rule.second.find(lhs) != detail::internal_string_type::npos) {
+          if (rule->lhs().find(lhs) != std::string::npos
+              || rule->rhs().find(lhs) != std::string::npos) {
             return false;
           }
         }

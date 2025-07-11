@@ -374,6 +374,7 @@ namespace libsemigroups {
       }
 
       // Not noexcept
+      // WARNING: the values in the added columns are not initialized.
       void add_cols(size_type nr) {
         if (nr <= _nr_unused_cols) {
           _nr_used_cols += nr;

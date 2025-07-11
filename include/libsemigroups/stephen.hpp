@@ -200,7 +200,7 @@ namespace libsemigroups {
     //! Default move assignment operator
     Stephen& operator=(Stephen&&) = default;
 
-    ~Stephen() = default;
+    ~Stephen();
 
     //! \brief Initialize from a presentation (copy).
     //!

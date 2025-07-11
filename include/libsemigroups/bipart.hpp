@@ -328,7 +328,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Blocks() noexcept = default;
+    Blocks() noexcept;
 
     //! \brief Construct a blocks object from iterators.
     //!
@@ -387,22 +387,22 @@ namespace libsemigroups {
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    Blocks& operator=(Blocks const&) = default;
+    Blocks& operator=(Blocks const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    Blocks& operator=(Blocks&&) = default;
+    Blocks& operator=(Blocks&&);
 
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    Blocks(Blocks const& copy) = default;
+    Blocks(Blocks const& copy);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    Blocks(Blocks&& copy) = default;
+    Blocks(Blocks&& copy);
 
     ~Blocks();
 
