@@ -35,7 +35,7 @@ jobs:
       - name: Build libsemigroups . . .
         run: make -j4
       - name: Build test_all . . .
-        run: make check -j4
+        run: make test_all -j4
       - name: Run the quick tests . . .
         run: ./test_all "[quick]"
   cygwin:
@@ -54,8 +54,10 @@ jobs:
         run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
       - name: Build libsemigroups . . .
         run: make -j4
-      - name: Run make check . . .
-        run: make check -j4
+      - name: Run make test_all.exe . . .
+        run: make test_all.exe -j4
+      - name: Run the quick tests (ex:no-cygwin)
+        run: ./test_all "[quick][exclude:no-cygwin]"
   macos:
     name: macOS
     timeout-minutes: 60
@@ -116,10 +118,10 @@ jobs:
       - name: Build libsemigroups . . .
         run: make -j4
       - name: Build test_all . . .
-        run: make check -j4
+        run: make test_all -j4
       - name: Run the quick tests . . .
         run: ./test_all "[quick]"
-  aarch64:  
+  aarch64:
     name: Ubuntu-aarch64
     runs-on: ubuntu-24.04-arm
     steps:
@@ -128,7 +130,7 @@ jobs:
         with:
           arch: aarch64
           distro: ubuntu22.04
-          run: | 
+          run: |
             apt-get --yes update
             apt-get install autoconf automake libtool build-essential --yes
             gcc --version

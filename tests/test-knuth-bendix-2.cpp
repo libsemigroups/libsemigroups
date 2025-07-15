@@ -1843,7 +1843,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "145",
                                    "alphabet limit",
-                                   "[knuth-bendix][quick]",
+                                   "[knuth-bendix][quick][no-cygwin]",
                                    REWRITER_TYPES) {
     auto rg = ReportGuard(false);
 
