@@ -105,7 +105,15 @@ namespace libsemigroups {
   using relation_type = std::pair<word_type, word_type>;
 
   //! \brief Alias for strings over unsigned chars.
+  // There is undefined behaviour associated with std::char_traits and
+  // std::basic_string<uint8_t>. This only seems to present an issue in Cygwin,
+  // so we use the following conditional to revert back to the safety of
+  // std::strings when using Cygwin.
+#if defined(__CYGWIN__)
+  using u8string = std::string;
+#else
   using u8string = std::basic_string<uint8_t>;
+#endif
   //! @}
 }  // namespace libsemigroups
 
