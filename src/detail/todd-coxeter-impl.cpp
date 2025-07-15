@@ -326,7 +326,7 @@ namespace libsemigroups {
         if (!tc->_ticker_running && reporting_enabled()
             && delta(start_time) > std::chrono::seconds(1)) {
           tc->_ticker_running = true;
-          ticker([this]() { report_progress_from_thread(); });
+          ticker([&tc, this]() { tc->report_progress_from_thread(); });
         }
       }
       tc->_ticker_running = old_ticker_running;
