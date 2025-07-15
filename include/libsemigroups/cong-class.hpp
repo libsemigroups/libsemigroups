@@ -30,8 +30,9 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "knuth-bendix-class.hpp"  // for KnuthBendixImpl
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "presentation.hpp"        // for Presentation
+#include "todd-coxeter-class.hpp"  // for ToddCoxeter
 #include "types.hpp"               // for letter_type, wor...
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
@@ -42,9 +43,6 @@ namespace libsemigroups {
 
   template <typename Node>
   class WordGraph;
-
-  template <typename Word>
-  class ToddCoxeter;
 
   namespace detail {
     struct CongruenceBase {};
