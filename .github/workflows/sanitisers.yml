@@ -38,7 +38,7 @@ jobs:
         run: make test_all -j4
       - name: Run tests . . .
         run: ${{ matrix.environment_variables }} ./test_all "[quick][exclude:no-sanitize-${{ matrix.type }}]"
-      - name: Check log files
+      - name: Check log files (UBSAN only)
         if: ${{ matrix.type == 'undefined' }}
         run: |
           if [ -f ubsan.log* ]; then
