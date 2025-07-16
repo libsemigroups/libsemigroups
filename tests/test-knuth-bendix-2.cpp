@@ -1839,7 +1839,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 5);
     REQUIRE(kb.number_of_classes() == 6);
   }
-
+  // TODO(1): Remove no-cygwin and throw correct exception instead
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "145",
                                    "alphabet limit",
