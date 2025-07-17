@@ -309,13 +309,20 @@ namespace libsemigroups {
       // Public mem fns
       ////////////////////////////////////////////////////////////////////////
 
+      // Some rewriters require knowledge of the alphabet size, and some do not.
+      // For those that do not we provide a default implementation that does
+      // nothing.
       RewriteBase& increase_alphabet_size_by(size_t) {
         return *this;
       }
 
+      [[nodiscard]] bool confluent();
+
       bool cached_confluent() const noexcept {
         return _cached_confluent;
       }
+
+      void set_cached_confluent(tril val) const;
 
       [[nodiscard]] bool confluence_known() const {
         return _confluence_known;
@@ -331,12 +338,8 @@ namespace libsemigroups {
 
       Rule* next_pending_rule();
 
-      [[nodiscard]] bool confluent();
-
       template <typename StringLike>
       void add_rule(StringLike const& lhs, StringLike const& rhs);
-
-      void set_cached_confluent(tril val) const;
 
      protected:
       ////////////////////////////////////////////////////////////////////////
