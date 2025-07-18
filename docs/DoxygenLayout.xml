@@ -188,6 +188,7 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::Product<PBR>" title="Product" />
       </tab>
     </tab>
+    <tab type="user" visible="yes" url="@ref constants_group" title="Constants" />
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
       <tab type="usergroup" visible="yes" url="@ref bipart_group" title="Bipartitions">
         <tab type="user" visible="yes" url="@ref libsemigroups::Bipartition"
@@ -309,23 +310,9 @@
         <tab type="user" visible="yes" url="@ref make_perm_group" title="make<Perm>" />
       </tab>
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
-      <tab type="user" visible="yes" url="@ref constants_group" title="Constants" />
-      <tab type="usergroup" visible="yes" url="@ref exception_group" title="Exceptions">
-        <tab type="user" visible="yes" url="@ref libsemigroups::LibsemigroupsException"
-          title="LibsemigroupsException" />
-      </tab>
-      <tab type="usergroup" visible="yes" url="@ref obvinf_group" title="Obviously infinite">
-        <tab type="user" visible="yes" url="@ref libsemigroups::IsObviouslyInfinite"
-          title="IsObviouslyInfinite" />
-      </tab>
-      <tab type="usergroup" visible="yes" url="@ref types_group" title="Types">
-        <tab type="user" visible="yes" url="@ref libsemigroups::SmallestInteger<N>"
-          title="SmallestInteger" />
-      </tab>
-      <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::ReportGuard" title="ReportGuard" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
+    <tab type="usergroup" visible="yes" url="@ref exception_group" title="Exceptions">
+      <tab type="user" visible="yes" url="@ref libsemigroups::LibsemigroupsException"
+        title="LibsemigroupsException" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref orders_group" title="Orders">
       <tab type="user" visible="yes" url="@ref libsemigroups::LexicographicalCompare"
@@ -346,6 +333,10 @@
       <tab type="user" visible="yes" url="@ref to_presentation_group" title="to<Presentation>" />
       <tab type="user" visible="yes" url="@ref to_inverse_presentation_group"
         title="to<InversePresentation>" />
+            <tab type="usergroup" visible="yes" url="@ref obvinf_group" title="Obviously infinite">
+      <tab type="user" visible="yes" url="@ref libsemigroups::IsObviouslyInfinite"
+        title="IsObviouslyInfinite" />
+      </tab>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges">
       <tab type="user" visible="yes" url="@ref libsemigroups::Random" title="Random" />
@@ -369,6 +360,10 @@
     </tab>
     <tab type="user" visible="yes" url="@ref make_group" title="The `make` function" />
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function" />
+    <tab type="usergroup" visible="yes" url="@ref types_group" title="Types">
+      <tab type="user" visible="yes" url="@ref libsemigroups::SmallestInteger<N>"
+        title="SmallestInteger" />
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref dot_group" title="Visualisation">
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::Dot" title="The Dot class">
         <tab type="user" visible="yes" url="@ref libsemigroups::Dot::Edge" title="The Edge class" />
@@ -433,6 +428,11 @@
       <tab type="user" visible="yes" url="@ref congruence_helpers_group"
         title="Congruence helper functions" />
       <tab type="user" visible="yes" url="@ref to_cong_group" title="to<Congruence>" />
+    </tab>
+    <tab type="usergroup" visible="yes" url="@ref core_classes_group" title="Core classes">
+      <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ReportGuard" title="ReportGuard" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin">
       <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePin"

@@ -33,8 +33,6 @@
 namespace libsemigroups {
   //! \defgroup exception_group Exceptions
   //!
-  //! \ingroup misc_group
-  //!
   //! \brief Documentation for exceptions.
   //!
   //! This file contains functionality for the exceptions used in

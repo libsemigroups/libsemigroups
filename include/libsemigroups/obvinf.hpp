@@ -63,7 +63,6 @@ namespace libsemigroups {
   }
 
   //! \defgroup obvinf_group Obviously infinite
-  //! \ingroup misc_group
   //!
   //! \brief Functions for checking if a finitely presented semigroup or monoid
   //! is obviously infinite.
