@@ -5,8 +5,8 @@
 
   <!-- Navigation index tabs for HTML output -->
   <navindex>
-    <tab type="mainpage" visible="yes" title="" />
-    <tab type="user" visible="yes" url="_HEADING_" title="Installation and Changelog" />
+    <tab type="user" visible="yes" url="_HEADING_" title="Library Info" />
+    <tab type="user" visible="yes" url="@ref md_authors" title="Authors" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
     <tab type="user" visible="yes" url="@ref md_changelog-v3" title="changelog - version 3" />
     <tab type="user" visible="yes" url="@ref md_changelog-v2" title="changelog - version 2" />
