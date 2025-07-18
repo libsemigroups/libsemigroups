@@ -80,12 +80,14 @@ namespace libsemigroups {
   //! o.size();  // returns 65536
   //! \endcode
 
-  //! \ingroup action_group
+  //! \ingroup types_group
   //! \brief Enum class indicating the handedness or side of an action.
   //!
   //! The values in this enum can be used as a template parameter for the Action
   //! class to specify whether the action of the Action  is a left or right
   //! action.
+  //!
+  //! \sa action_group
   enum class side {
     //! This value indicates that the action in an Action instance should be a
     //! left action.

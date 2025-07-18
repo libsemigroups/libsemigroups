@@ -31,13 +31,8 @@
 #include "ranges.hpp"
 
 namespace libsemigroups {
-  //! \defgroup orders_group Orders
-  //! This page contains the documentation for several class and function
-  //! templates for comparing words or strings with respect to certain reduction
-  //! orderings.
+  //! \ingroup types_group
   //!
-  //! @{
-
   //! \brief The possible orderings of words and strings.
   //!
   //! The values in this enum can be used as the arguments for functions such as
@@ -45,6 +40,8 @@ namespace libsemigroups {
   //! specify which ordering should be used. The normal forms for congruence
   //! classes are given with respect to one of the orders specified by the
   //! values in this enum.
+  //!
+  //! \sa orders_group
   enum class Order : uint8_t {
     //! No ordering.
     none = 0,
@@ -64,6 +61,13 @@ namespace libsemigroups {
 
     // wreath TODO(later)
   };
+
+  //! \defgroup orders_group Orders
+  //! This page contains the documentation for several class and function
+  //! templates for comparing words or strings with respect to certain reduction
+  //! orderings.
+  //!
+  //! @{
 
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
