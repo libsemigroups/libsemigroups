@@ -180,7 +180,7 @@ namespace libsemigroups {
     report_default("{} elapsed time {}", prefix, tmr);
   }
 
-  //! \ingroup misc_group
+  //! \ingroup core_classes_group
   //!
   //! \brief Struct for specifying whether or not to report about an algorithm's
   //! performance.

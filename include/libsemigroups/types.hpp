@@ -32,8 +32,6 @@
 namespace libsemigroups {
   //! \defgroup types_group Types
   //!
-  //! \ingroup misc_group
-  //!
   //! \brief Documentation for types and aliases.
   //!
   //! This file contains functionality for various types used in

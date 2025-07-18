@@ -46,11 +46,16 @@
 
 namespace libsemigroups {
 
-  //! \defgroup misc_group Miscellaneous
-  //! In this section we describe some miscellaneous functionality in
-  //! \c libsemigroups.
+  //! \defgroup core_classes_group Core Classes
   //!
-  //! \hidegroupgraph
+  //! Many of the classes in \c libsemigroups implement algorithms, and hence
+  //! are runnable. During the running of these algorithms, it is often
+  //! desirable to report the state of the algorithm. Therefore, the classes
+  //! \ref Runner and \ref Reporter exist to provide common functions to many
+  //! classes that implement the main algorithms.
+  //!
+  //! This page describes the functionality in \c libsemigroups related to
+  //! running and reporting.
 
   //! \relates Reporter
   //! \brief The time between a given point and now.
@@ -78,7 +83,7 @@ namespace libsemigroups {
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
-  //! \ingroup misc_group
+  //! \ingroup core_classes_group
   //! \brief Collection of values related to reporting.
   //!
   //! Defined in `runner.hpp`.
@@ -337,7 +342,7 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup misc_group
+  //! \ingroup core_classes_group
   //!
   //! \brief Abstract class for derived classes that run an algorithm.
   //!
