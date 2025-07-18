@@ -7,6 +7,7 @@
   <navindex>
     <tab type="user" visible="yes" url="_HEADING_" title="Library Info" />
     <tab type="user" visible="yes" url="@ref md_authors" title="Authors" />
+    <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
     <tab type="user" visible="yes" url="@ref md_changelog-v3" title="changelog - version 3" />
     <tab type="user" visible="yes" url="@ref md_changelog-v2" title="changelog - version 2" />
@@ -541,8 +542,6 @@
         title="Todd-Coxeter helper functions" />
       <tab type="user" visible="yes" url="@ref to_todd_coxeter_group" title="to<ToddCoxeter>" />
     </tab>
-    <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
-    <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
     <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub" />
 
