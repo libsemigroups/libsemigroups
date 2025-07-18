@@ -22,7 +22,7 @@ command_with_line_break = re.compile(
     re.IGNORECASE | re.MULTILINE,
 )
 
-globs = ["include/libsemigroups/*.hpp", "include/libsemigroups/detail*.hpp"]
+globs = ["include/libsemigroups/*.hpp", "include/libsemigroups/detail/*.hpp"]
 
 
 def process_file(filename):
@@ -54,7 +54,7 @@ def process_path(pathname):
     """
     print(
         BOLD_TEXT
-        + f"Checking for for bad linebreaks in {pathname} . . ."
+        + f"Checking for bad linebreaks in {pathname} . . ."
         + END_COLOUR
     )
     if version_info[1] < 11:
