@@ -2199,9 +2199,29 @@ namespace libsemigroups {
     [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source);
 
+    //! \brief Returns the std::unordered_set of nodes that can reach a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that can reach \p target. This function can be
+    //! thought of like an inverse of `nodes_reachable_from`, in the sense that
+    //! the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and only if
+    //! `b` \f$\in\f$ `nodes_reachable_from(a)`.
+    //!
+    //! \tparam Node1 the node type of the word graph.
+    //! \tparam Node2 the type of the node \p target.
+    //!
+    //! \param wg the word graph.
+    //! \param target the target node.
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that can reach \p target.
+    //!
+    //! \throws LibsemigroupsException if \p target is out of bounds (greater
+    //! than or equal to WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
-    ancestors_of(WordGraph<Node1> const& wg, Node2 source);
+    ancestors_of(WordGraph<Node1> const& wg, Node2 target);
 
     //! \brief Returns the std::unordered_set of nodes reachable from a given
     //! node in a word graph.
@@ -2228,9 +2248,30 @@ namespace libsemigroups {
     [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source);
 
+    //! \brief Returns the std::unordered_set of nodes that can reach a given
+    //! node in a word graph.
+    //!
+    //! This function returns a std::unordered_set consisting of all the nodes
+    //! in the word graph \p wg that can reach \p target. This function can be
+    //! thought of like an inverse of `nodes_reachable_from`, in the sense that
+    //! the node `a` \f$\in\f$ `ancestor_of(b)` for some node `b` if and only if
+    //! `b` \f$\in\f$ `nodes_reachable_from(a)`.
+    //!
+    //! \tparam Node1 the node type of the word graph.
+    //! \tparam Node2 the type of the node \p target.
+    //!
+    //! \param wg the word graph.
+    //! \param target the target node.
+    //!
+    //! \returns A std::unordered_set consisting of all the nodes in the word
+    //! graph \p wg that can reach \p target.
+    //!
+    //! \warning The arguments are not checked, and in particular it is assumed
+    //! that \p target is a node of \p wg (i.e. less than
+    //! WordGraph::number_of_nodes).
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
-    ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 source);
+    ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target);
 
     //! \brief Returns the number of nodes reachable from a given node in a
     //! word graph.

@@ -175,6 +175,17 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  // FIXME(1) this is the same hack as elsewhere (deliberately introducing a
+  // typo) because Doxygen conflates functions with trailing return type but the
+  // same name and signature.
+  template <template <typename...> typename Thing,
+            typename Word,
+            typename Rewriter typename ReductionOrder>
+  auto to(KnutBendix<Word, Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<std::is_same_v<Thing<Word>, Presentation<Word>>,
+                          Presentation<Word>>;
+#else
   template <template <typename...> typename Thing,
             typename Word,
             typename Rewriter,
@@ -184,6 +195,7 @@ namespace libsemigroups {
                           Presentation<Word>> {
     return to<Presentation<Word>>(kb);
   }
+#endif
 
   ////////////////////////////////////////////////////////////////////////
   // Presentation + function -> Presentation

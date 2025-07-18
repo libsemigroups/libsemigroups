@@ -326,15 +326,44 @@ namespace libsemigroups {
       return _prefix;
     }
 
+    //! \brief Set the divider string for reporting.
+    //!
+    //! This function sets the return value of report_divider() to (a copy of)
+    //! the argument \p val.
+    //!
+    //! \param val the new value of the report divider.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \note This function is not thread-safe.
+    // Not noexcept because std::string::operator= isn't
     Reporter& report_divider(std::string const& val) {
       _divider = val;
       return *this;
     }
 
+    //! \brief Get the current divider string for reporting.
+    //!
+    //! This function gets the current value of the divider string for reporting
+    //! (set via report_divider(std::string const&)).
+    //!
+    //! \returns A const reference to the divider string.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \note This function is thread-safe.
     [[nodiscard]] std::string const& report_divider() const noexcept {
       return _divider;
     }
 
+    //! \brief Emits the current divider string for reporting.
+    //!
+    //! This function emits the current divider string for reporting
+    //! (set via report_divider(std::string const&), and retrieved via
+    //! report_divider()).
+    //!
+    //! \note This function is thread-safe.
     void emit_divider() {
       if (!_divider.empty()) {
         report_no_prefix(_divider, "");

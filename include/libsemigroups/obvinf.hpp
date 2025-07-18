@@ -294,6 +294,27 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! \brief Add rules from iterators to std::vector of std::string.
+    //!
+    //! This function adds the rules described by the iterators \p first and
+    //! \p last. The rules are translated to \ref word_type objects using the
+    //! position of each character in the 1st argument \p lphbt.
+    //!
+    //! \param lphbt the alphabet to use.
+    //!
+    //! \param first iterator pointing at the left-hand-side of the first rule
+    //! to add.
+    //!
+    //! \param last iterator pointing one beyond the right-hand-side of the last
+    //! rule to add.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not check its arguments.
     IsObviouslyInfinite& add_rules_no_checks(
         char const*                                       lphbt,
         typename std::vector<std::string>::const_iterator first,
