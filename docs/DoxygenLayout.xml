@@ -8,10 +8,10 @@
     <tab type="user" visible="yes" url="_HEADING_" title="Library Info" />
     <tab type="user" visible="yes" url="@ref md_authors" title="Authors" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
-    <tab type="user" visible="yes" url="@ref md_install" title="Install" />
-    <tab type="user" visible="yes" url="@ref md_changelog-v3" title="changelog - version 3" />
-    <tab type="user" visible="yes" url="@ref md_changelog-v2" title="changelog - version 2" />
-    <tab type="user" visible="yes" url="@ref md_changelog-v1" title="changelog - version 1" />
+    <tab type="user" visible="yes" url="@ref md_changelog-v3" title="Changelog - version 3" />
+    <tab type="user" visible="yes" url="@ref md_changelog-v2" title="Changelog - version 2" />
+    <tab type="user" visible="yes" url="@ref md_changelog-v1" title="Changelog - version 1" />
+    <tab type="user" visible="yes" url="@ref md_install" title="Installation" />
     <tab type="user" visible="yes" url="_HEADING_" title="Data structures" />
     <tab type="usergroup" visible="yes" url="@ref adapters_group" title="Adapters">
       <tab type="usergroup" visible="yes" url="[none]" title="No default implementation">
