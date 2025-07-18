@@ -1013,6 +1013,7 @@ WARN_LOGFILE           =
 INPUT                  = "../include/libsemigroups" \
                          "../include/libsemigroups/detail" \
                          "../README.md" \
+                         "authors.md" \
                          "install.md" \
                          "changelog-v1.md" \
                          "changelog-v2.md" \
