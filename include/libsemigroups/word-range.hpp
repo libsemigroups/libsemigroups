@@ -775,6 +775,8 @@ namespace libsemigroups {
       std::unordered_map<typename From::value_type, letter_type> _alphabet_map;
 
      public:
+      //! \brief The type of values an instance of ToWord will convert into
+      //! \ref word_type.
       using from_type = From;
 
       //! \brief Default constructor.

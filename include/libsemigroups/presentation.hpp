@@ -774,7 +774,30 @@ namespace libsemigroups {
     template <typename Word>
     void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals);
 
-    // TODO(doc)
+    //! \brief Return a representation of a presentation to appear in the
+    //! reporting output.
+    //!
+    //! Return a representation of a presentation that will appear in the
+    //! reporting output. The information that is provided is:
+    //! - the size of the alphabet (`|A|`);
+    //! - the number of rules (`|R|`);
+    //! - the range of values of the lengths of the rules (`|u| +  |v|`); and
+    //! - the sum of the lengths of the rules (`∑(|u| + |v|)`).
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \returns A value of type `std::string`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Example
+    //! \code
+    //! Presentation<std::string> p;
+    //! presentation::to_report_string(p)
+    //! // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
+    //! \endcode
     template <typename Word>
     std::string to_report_string(Presentation<Word> const& p);
 
