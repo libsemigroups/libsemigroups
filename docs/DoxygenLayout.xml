@@ -5,6 +5,7 @@
 
   <!-- Navigation index tabs for HTML output -->
   <navindex>
+    <tab type="mainpage" visible="yes" title="" />
     <tab type="user" visible="yes" url="_HEADING_" title="Library Info" />
     <tab type="user" visible="yes" url="@ref md_authors" title="Authors" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
@@ -542,8 +543,6 @@
         title="Todd-Coxeter helper functions" />
       <tab type="user" visible="yes" url="@ref to_todd_coxeter_group" title="to<ToddCoxeter>" />
     </tab>
-    <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
-    <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub" />
 
     <!--
     <tab type="pages" visible="no" title="" intro=""/>
