@@ -67,6 +67,8 @@ namespace libsemigroups {
   //! templates for comparing words or strings with respect to certain reduction
   //! orderings.
   //!
+  //! \sa \ref Order
+  //!
   //! @{
 
   //! \brief Compare two objects of the same type using

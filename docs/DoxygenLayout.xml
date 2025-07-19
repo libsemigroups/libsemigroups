@@ -361,7 +361,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::aho_corasick"
         title="AhoCorasick helper functions" />
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref types_group" title="Types">
+    <tab type="usergroup" visible="yes" url="@ref types_group" title="Enums + Types">
       <tab type="user" visible="yes" url="@ref libsemigroups::SmallestInteger<N>"
         title="SmallestInteger" />
     </tab>
