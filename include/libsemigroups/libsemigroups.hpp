@@ -84,6 +84,7 @@
 #include "word-graph.hpp"
 #include "word-range.hpp"
 
+#include "detail/aho-corasick-impl.hpp"
 #include "detail/bruidhinn-traits.hpp"
 #include "detail/citow.hpp"
 #include "detail/cong-common-class.hpp"
@@ -94,6 +95,7 @@
 #include "detail/fmt.hpp"
 #include "detail/formatters.hpp"
 #include "detail/function-ref.hpp"
+#include "detail/guard.hpp"
 #include "detail/int-range.hpp"
 #include "detail/iterator.hpp"
 #include "detail/kambites-nf.hpp"
@@ -106,6 +108,7 @@
 #include "detail/node-manager.hpp"
 #include "detail/path-iterators.hpp"
 #include "detail/pool.hpp"
+#include "detail/print.hpp"
 #include "detail/race.hpp"
 #include "detail/report.hpp"
 #include "detail/rewriters.hpp"

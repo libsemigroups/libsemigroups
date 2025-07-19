@@ -1,5 +1,45 @@
 # Changelog - version 3
 
+## v3.1.0 (released 19/07/2025)
+
+This release contains a number of bugfixes, and other improvements. In
+particular, the performance of the Todd-Coxeter and Knuth-Bendix algorithms has
+been improved. 
+
+* Add presentation for the `abacus_jones_monoid` by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/711
+* Fix issue 557 by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/717
+* Alphabetise Low Index menu section by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/719
+* Throw if bad degree by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/723
+* word-graph: group digits in WordGraph repr by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/725
+* word-graph: fix last_node_on_path doc by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/727
+* Fix transf corner cases by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/724
+* Make `check_doxygen_line_breaks.py` compatible with Python 3.9 by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/728
+* Fix greedy presentation issue by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/726
+* action: fix add_seed issue by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/729
+* Update doxygen-awesome by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/732
+* build: properly set `FMT_HEADER_ONLY` by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/733
+* to: fix `to<Presentation>(kb)` by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/731
+* Add more `Sims` benchmarks and improve benchmarking infrastructure by @reiniscirpons in https://github.com/libsemigroups/libsemigroups/pull/715
+* ToddCoxeter fixes by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/730
+* Prevent bad accesses of empty containers by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/737
+* exception: default visibility by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/736
+* konieczny: reference returned by add_generator/s by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/738
+* Fix return types by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/739
+* Use group_digits in all to_human_readable_repr by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/741
+* kbe: make it easier to use in python bindings by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/740
+* Update my coordinates in README.md by @dimpase in https://github.com/libsemigroups/libsemigroups/pull/742
+* Update the v2 changelog for v2.7.4 by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/744
+* Look behind by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/745
+* todd-coxeter: doc fixes by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/746
+* Todd coxeter redefine by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/747
+* print: split into separate file by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/748
+* multi-view: implement from MultiStringView by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/749
+* Presentation updates by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/751
+* Template `ToWord` by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/750
+* Add AhoCorasickImpl with strong alphabet constraints by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/752
+* Knuth bendix performance improvements by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/753
+* Reorganise the doc by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/755
+
 ## v3.0.3 (released 09/04/2025)
 
 This is a minor release fixing some issues in the previous v3 releases. Namely:

@@ -1,4 +1,4 @@
 [authors]
 expired_emails = ["aal20@st-andrews.ac.uk", "cr66@st-andrews.ac.uk"]
-author_files = ["README.md"]
+author_files = ["docs/authors.md"]
 ignore = ["dependabot"]

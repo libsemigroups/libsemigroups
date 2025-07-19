@@ -34,43 +34,11 @@ To build `libsemigroups` from the github repository:
 
 To build `libsemigroups` from a release archive:
 
-    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.0.3.tar.gz
-    tar -xf libsemigroups-3.0.3.tar.gz
-    rm -f libsemigroups-3.0.3.tar.gz
-    cd libsemigroups-3.0.3
+    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.1.0.tar.gz
+    tar -xf libsemigroups-3.1.0.tar.gz
+    rm -f libsemigroups-3.1.0.tar.gz
+    cd libsemigroups-3.1.0
     ./configure && make -j8 && sudo make install
-
-### Docker
-
-If you have [Docker](https://www.docker.com) installed, you can download an
-[x86 docker image](https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker)
-for `libsemigroups` as follows:
-
-    docker pull libsemigroups/libsemigroups-docker
-
-or an [arm docker image](https://hub.docker.com/repository/docker/libsemigroups/libsemigroups-docker-arm)
-as follows
-
-    docker pull libsemigroups/libsemigroups-docker-arm
-
-and run it by doing
-
-    docker run --rm -it libsemigroups/libsemigroups-docker
-
-or
-
-    docker run --rm -it libsemigroups/libsemigroups-docker-arm
-
-If you want to use a specific version of `libsemigroups`, such as 1.0.9, then
-use:
-
-    docker pull libsemigroups/libsemigroups-docker:version-1.0.9
-    docker run --rm -it libsemigroups/libsemigroups-docker:version-1.0.9
-
-or, for the latest version, use:
-
-    docker pull libsemigroups/libsemigroups-docker:latest
-    docker run --rm -it libsemigroups/libsemigroups-docker:latest
 
 ## Configuration options
 
