@@ -15,27 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-
 #include <algorithm>         // for equal
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint32_t, int32_t
 #include <initializer_list>  // for initializer_list
-#include <string>            // for basic_string, operator==
+#include <string>            // for allocator, basic_string
+#include <unordered_set>     // for unordered_set
 #include <utility>           // for move
-#include <vector>            // for vector, operator==
+#include <vector>            // for operator==
 
-#include <algorithm>  // for equal
-#include <cstddef>    // for size_t
-#include <cstdint>    // for uint32_t
-#include <vector>     // for vector, operator==, allocator
-
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
-
-#include "libsemigroups/bipart.hpp"     // for Bipartition
+#include "libsemigroups/bipart.hpp"     // for Bipartition, Blocks, make
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 
+#include "libsemigroups/detail/fmt.hpp"  // for format
+
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for SourceLineInfo, operat...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+
 namespace libsemigroups {
+
   struct LibsemigroupsException;
   namespace {
     Blocks construct_blocks(std::vector<uint32_t> const& blocks,
@@ -587,4 +585,58 @@ namespace libsemigroups {
     auto x = make<Bipartition>({{1, -2, -3}, {-1}, {2, 3}});
     REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "018",
+                          "random x 1",
+                          "[quick][bipart]") {
+    auto x = bipartition::random(10);
+    REQUIRE(x.degree() == 10);
+    REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
+
+    std::unordered_set<Bipartition, Hash<Bipartition>> map;
+
+    for (size_t i = 0; i < 3417; ++i) {
+      map.emplace(bipartition::random(3));
+    }
+    REQUIRE(map.size() >= 200);
+
+    REQUIRE_NOTHROW(bipartition::random(0));
+    REQUIRE(bipartition::random(0) == Bipartition());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "019",
+                          "random x 2",
+                          "[quick][bipart]") {
+    std::unordered_set<Bipartition, Hash<Bipartition>> map;
+    for (size_t i = 0; i < 1000; ++i) {
+      map.emplace(bipartition::random(100));
+    }
+    REQUIRE(map.size() == 1000);
+    // REQUIRE(to_human_readable_repr(bipartition::random(100)) == "");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "020",
+                          "random x 3",
+                          "[quick][bipart]") {
+    std::unordered_set<Bipartition, Hash<Bipartition>> map;
+
+    for (size_t i = 0; i < 82'138; ++i) {
+      map.emplace(bipartition::random(4));
+    }
+    REQUIRE(map.size() > 4'100);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "021",
+                          "uniform_random",
+                          "[quick][bipart]") {
+    REQUIRE_EXCEPTION_MSG(
+        bipartition::uniform_random(1000),
+        "the degree (1000) of the argument <x> (a bipartition) is too large, "
+        "please use random(x) instead");
+  }
+
 }  // namespace libsemigroups
