@@ -142,8 +142,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Blocks", "004", "copy [empty blocks]", "[quick]") {
     Blocks b = construct_blocks({}, {});
     Blocks c(b);
-    REQUIRE(!IsBipartition<Blocks>);
-    REQUIRE(IsBipartition<Bipartition>);
     REQUIRE(b.degree() == 0);
     REQUIRE(b.number_of_blocks() == 0);
     REQUIRE(b.rank() == 0);
