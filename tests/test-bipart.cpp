@@ -587,4 +587,30 @@ namespace libsemigroups {
     auto x = make<Bipartition>({{1, -2, -3}, {-1}, {2, 3}});
     REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "018",
+                          "uniform_random",
+                          "[quick][bipart]") {
+    auto x = bipartition::uniform_random(10);
+    REQUIRE(x.degree() == 10);
+    REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
+
+    std::unordered_map<Bipartition, size_t, Hash<Bipartition>> map;
+
+    for (size_t i = 0; i < 3417; ++i) {
+      // Chatgpt tells me this is enough to have 99.999% probability of covering
+      // all values
+      auto y              = bipartition::uniform_random(3);
+      auto [it, inserted] = map.emplace(y, 1);
+      if (!inserted) {
+        it->second++;
+      }
+    }
+    REQUIRE(map.size() == 203);
+
+    REQUIRE_THROWS_AS(bipartition::uniform_random(21), LibsemigroupsException);
+    REQUIRE_NOTHROW(bipartition::uniform_random(0));
+    REQUIRE(bipartition::uniform_random(0) == Bipartition());
+  }
 }  // namespace libsemigroups

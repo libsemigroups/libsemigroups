@@ -164,6 +164,42 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x is invalid.
     void throw_if_invalid(Bipartition const& x);
 
+    //! \brief Replace the contents of a bipartition with a random bipartition.
+    //!
+    //! This function replaces the contents of the bipartition \p x with a
+    //! random bipartition chosen uniformly at random from among all
+    //! bipartitions of degree equal to that of \p x.
+    //!
+    //! \param x the bipartition.
+    //!
+    //! \throws
+    //! LibsemigroupsException if `x.degree() > 20` because for larger values
+    //! factorials, which are required by the implementation, do not fit into 64
+    //! bit integers.
+    //!
+    //! \note This function is based on Sage's `random_element` method for the
+    //! `SetPartitions` class.
+    void uniform_random(Bipartition& x);
+
+    //! \brief Returns a random bipartition of specified degree.
+    //!
+    //! This function returns a random bipartition of degree \p deg, chosen
+    //! uniformly at random from among all bipartitions of degree equal to \p
+    //! deg.
+    //!
+    //! \param deg the degree of the returned bipartition.
+    //!
+    //! \returns A random Bipartition.
+    //!
+    //! \throws
+    //! LibsemigroupsException if `x.degree() > 20` because for larger values
+    //! factorials, which are required by the implementation, do not fit into 64
+    //! bit integers.
+    //!
+    //! \note This function is based on Sage's `random_element` method for the
+    //! `SetPartitions` class.
+    Bipartition uniform_random(size_t deg);
+
   }  // namespace bipartition
 
   //! \ingroup bipart_group
@@ -1118,6 +1154,21 @@ namespace libsemigroups {
       return _vector.cbegin();
     }
 
+    //! \brief Return an iterator pointing to the index of the first block.
+    //!
+    //! Returns an iterator pointing to the index of the first block.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] iterator begin() noexcept {
+      return _vector.begin();
+    }
+
     //! \brief Return a const iterator pointing one beyond the last index of
     //! the last block.
     //!
@@ -1133,6 +1184,23 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] const_iterator cend() const noexcept {
       return _vector.cend();
+    }
+
+    //! \brief Return an iterator pointing one beyond the last index of the last
+    //! block.
+    //!
+    //! Returns an iterator pointing one beyond the last index of the last
+    //! block.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] iterator end() noexcept {
+      return _vector.end();
     }
 
     //! \brief Const iterator pointing to the index of the first left
