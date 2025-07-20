@@ -174,21 +174,21 @@ namespace libsemigroups {
   //!
   //! \tparam T a type.
   template <typename T>
-  static constexpr bool IsBipartition
-      = std::is_same_v<std::decay_t<T>, Bipartition>;
+  static constexpr bool IsBipartition [[deprecated]]
+  = std::is_same_v<std::decay_t<T>, Bipartition>;
 
   namespace detail {
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void
     throw_if_bad_args(std::vector<std::vector<Scalar>> const& blocks) {
-      static_assert(std::is_same_v<BipartitionOrBlocks, Bipartition>
-                    || std::is_same_v<BipartitionOrBlocks, Blocks>);
+      static_assert(std::is_same_v<Thing, Bipartition>
+                    || std::is_same_v<Thing, Blocks>);
       static_assert(std::is_signed<Scalar>::value,
                     "the 2nd template parameter Scalar must be signed");
       int32_t offset = 2;
-      if (!IsBipartition<BipartitionOrBlocks>) {
+      if (!std::is_same_v<Thing, Bipartition>) {
         offset = 1;
       }
       int32_t                    m   = 0;
@@ -213,7 +213,7 @@ namespace libsemigroups {
                                     "position {} of the block with index {}",
                                     j,
                                     i);
-          } else if (!IsBipartition<BipartitionOrBlocks> && positive && x < 0) {
+          } else if (!std::is_same_v<Thing, Bipartition> && positive && x < 0) {
             LIBSEMIGROUPS_EXCEPTION(
                 "the argument (blocks) is invalid, expected every value in the "
                 "block with index {} to be {}tive, but found {} in position {}",
@@ -234,7 +234,7 @@ namespace libsemigroups {
             "too many points, expected at most {}, found {}", 0x40000000, m);
       } else if (deg != offset * m || vals.size() != size_t(deg)) {
         std::string range, prefix;
-        if (IsBipartition<BipartitionOrBlocks>) {
+        if (std::is_same_v<Thing, Bipartition>) {
           prefix = "the union of";
           range  = fmt::format("{{{}, ..., -1, 1, ..., {}}}", -m, m);
         } else {
@@ -251,21 +251,21 @@ namespace libsemigroups {
     }
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void throw_if_bad_args(
         std::initializer_list<std::vector<Scalar>> const& blocks) {
       std::vector<std::vector<Scalar>> arg(blocks);
-      throw_if_bad_args<BipartitionOrBlocks>(arg);
+      throw_if_bad_args<Thing>(arg);
     }
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void throw_if_bad_args(std::vector<Scalar> const&) {
       // checks for this argument type are done in throw_if_invalid
     }
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void throw_if_bad_args(std::initializer_list<Scalar> const&) {
       // checks for this argument type are done in throw_if_invalid
     }
