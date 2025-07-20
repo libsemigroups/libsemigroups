@@ -85,6 +85,11 @@ namespace libsemigroups {
   //! kb.confluent();               // true
   //! kb.number_of_classes();       // POSITIVE_INFINITY
   //! \endcode
+  //!
+  //! \warning At present it is only possible to create KnuthBendix objects from
+  //! presentations with alphabets containing at most:
+  //! * 128 letters if `char` a signed integer;
+  //! * 256 letters if `char` is an unsigned integer.
   template <typename Word,
             typename Rewriter       = detail::RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
@@ -226,6 +231,13 @@ namespace libsemigroups {
     //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p p has too many letters in its
+    //! alphabet, see the warning below.
+    //!
+    //! \warning At present it is only possible to create KnuthBendix objects
+    //! from presentations with alphabets containing at most:
+    //! * 128 letters if `char` a signed integer;
+    //! * 256 letters if `char` is an unsigned integer.
     KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
         // call the rval ref constructor
         : KnuthBendix(knd, Presentation<Word>(p)) {}
@@ -244,6 +256,13 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p p has too many letters in its
+    //! alphabet, see the warning below.
+    //!
+    //! \warning At present it is only possible to create KnuthBendix objects
+    //! from presentations with alphabets containing at most:
+    //! * 128 letters if `char` a signed integer;
+    //! * 256 letters if `char` is an unsigned integer.
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
       // call the rval ref init
       return init(knd, Presentation<Word>(p));

@@ -42,6 +42,10 @@ namespace libsemigroups {
       }
     }
 
+    std::string to_printable(char16_t c) {
+      return fmt::format("(char16_t with value) {}", static_cast<int>(c));
+    }
+
     std::string to_printable(std::string const& alphabet) {
       if (isprint(alphabet)) {
         return fmt::format("\"{}\"",

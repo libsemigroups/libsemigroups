@@ -29,6 +29,8 @@ namespace libsemigroups {
 
     [[nodiscard]] std::string to_printable(char c);
 
+    [[nodiscard]] std::string to_printable(char16_t c);
+
     [[nodiscard]] std::string to_printable(std::string const& alphabet);
 
     template <typename Int>

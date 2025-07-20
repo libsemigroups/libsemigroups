@@ -1839,6 +1839,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 5);
     REQUIRE(kb.number_of_classes() == 6);
   }
+
   // TODO(1): Remove no-cygwin and throw correct exception instead
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "145",
@@ -1847,38 +1848,67 @@ namespace libsemigroups {
                                    REWRITER_TYPES) {
     auto rg = ReportGuard(false);
 
-    Presentation<u8string> p;
-    p.alphabet(129);
+    Presentation<std::string> p;
+    p.alphabet(
+        {-128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117,
+         -116, -115, -114, -113, -112, -111, -110, -109, -108, -107, -106, -105,
+         -104, -103, -102, -101, -100, -99,  -98,  -97,  -96,  -95,  -94,  -93,
+         -92,  -91,  -90,  -89,  -88,  -87,  -86,  -85,  -84,  -83,  -82,  -81,
+         -80,  -79,  -78,  -77,  -76,  -75,  -74,  -73,  -72,  -71,  -70,  -69,
+         -68,  -67,  -66,  -65,  -64,  -63,  -62,  -61,  -60,  -59,  -58,  -57,
+         -56,  -55,  -54,  -53,  -52,  -51,  -50,  -49,  -48,  -47,  -46,  -45,
+         -44,  -43,  -42,  -41,  -40,  -39,  -38,  -37,  -36,  -35,  -34,  -33,
+         -32,  -31,  -30,  -29,  -28,  -27,  -26,  -25,  -24,  -23,  -22,  -21,
+         -20,  -19,  -18,  -17,  -16,  -15,  -14,  -13,  -12,  -11,  -10,  -9,
+         -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,   0,    1,    2,    3,
+         4,    5,    6,    7,    8,    9,    10,   11,   12,   13,   14,   15,
+         16,   17,   18,   19,   20,   21,   22,   23,   24,   25,   26,   27,
+         28,   29,   30,   31,   32,   33,   34,   35,   36,   37,   38,   39,
+         40,   41,   42,   43,   44,   45,   46,   47,   48,   49,   50,   51,
+         52,   53,   54,   55,   56,   57,   58,   59,   60,   61,   62,   63,
+         64,   65,   66,   67,   68,   69,   70,   71,   72,   73,   74,   75,
+         76,   77,   78,   79,   80,   81,   82,   83,   84,   85,   86,   87,
+         88,   89,   90,   91,   92,   93,   94,   95,   96,   97,   98,   99,
+         100,  101,  102,  103,  104,  105,  106,  107,  108,  109,  110,  111,
+         112,  113,  114,  115,  116,  117,  118,  119,  120,  121,  122,  123,
+         124,  125,  126,  127});
     for (auto a : p.alphabet()) {
       for (auto b : p.alphabet()) {
-        presentation::add_rule(
-            p, u8string(1, a) + u8string(1, b), u8string(1, a));
+        presentation::add_rule_no_checks(
+            p, std::string(1, a) + std::string(1, b), std::string(1, a));
       }
     }
 
-    REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(130),
-                      LibsemigroupsException);
+    // TODO(1) uncomment
+    // REQUIRE(std::vector<int>(p.alphabet().begin(), p.alphabet().end())
+    //         == std::vector<int>());
+    // REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(static_cast<char>(129)),
+    //                   LibsemigroupsException);
+    // REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(static_cast<char>(130)),
+    //                   LibsemigroupsException);
 
-    REQUIRE(p.alphabet()[0] == 0);
-    REQUIRE(std::vector<uint8_t>(p.alphabet().begin(), p.alphabet().end())
-            == (rx::seq<uint8_t>(0) | rx::take(129) | rx::to_vector()));
+    // REQUIRE(p.alphabet()[0] == 0);
 
-    KnuthBendix kb(congruence_kind::onesided, p);
-    knuth_bendix::add_generating_pair(kb, {0, 1}, {0});
-    REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
-                      LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(
+        (KnuthBendix<std::string, TestType>(congruence_kind::onesided, p)),
+        "expected the 2nd argument (presentation) to "
+        "have alphabet of size at most 128, but found 256");
 
-    kb.init(congruence_kind::onesided, p);
-    REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
-                      LibsemigroupsException);
-    knuth_bendix::add_generating_pair(kb, {1}, {0});
+    // knuth_bendix::add_generating_pair(kb, {0, 1}, {0});
+    // REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
+    //                   LibsemigroupsException);
 
-    REQUIRE(kb.number_of_classes() == 128);
+    // kb.init(congruence_kind::onesided, p);
+    // REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
+    //                   LibsemigroupsException);
+    // knuth_bendix::add_generating_pair(kb, {1}, {0});
 
-    p.init().alphabet(256);
-    kb.init(congruence_kind::onesided, p);
-    REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 0}, {0}),
-                      LibsemigroupsException);
+    // REQUIRE(kb.number_of_classes() == 128);
+
+    // p.init().alphabet(256);
+    // kb.init(congruence_kind::onesided, p);
+    // REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 0}, {0}),
+    //                   LibsemigroupsException);
   }
 
 }  // namespace libsemigroups

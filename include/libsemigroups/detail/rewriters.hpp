@@ -49,7 +49,7 @@ namespace libsemigroups {
 
     class Rule {
      public:
-      using native_word_type = u8string;
+      using native_word_type = std::string;
 
      private:
       native_word_type _lhs;

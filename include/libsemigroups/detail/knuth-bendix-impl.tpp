@@ -17,9 +17,11 @@
 //
 
 namespace libsemigroups {
+  // TODO remove
   template <>
-  struct Hash<u8string> {
-    std::size_t operator()(u8string const& x) const noexcept {
+  struct Hash<detail::Rule::native_word_type> {
+    std::size_t
+    operator()(detail::Rule::native_word_type const& x) const noexcept {
       return std::hash<std::string_view>{}(
           {reinterpret_cast<const char*>(x.data()), x.size()});
     }
@@ -27,12 +29,14 @@ namespace libsemigroups {
 
   namespace detail {
 
-    void prefixes_string(std::unordered_map<u8string,
+    using string_type = Rule::native_word_type;
+
+    void prefixes_string(std::unordered_map<string_type,
                                             size_t,
-                                            Hash<u8string>,
-                                            std::equal_to<u8string>>& st,
-                         u8string const&                              x,
-                         size_t&                                      n);
+                                            Hash<string_type>,
+                                            std::equal_to<string_type>>& st,
+                         string_type const&                              x,
+                         size_t&                                         n);
 
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::ABC
@@ -674,7 +678,6 @@ namespace libsemigroups {
       report_after_run();
     }
 
-    // REVIEW was it okay to remove const here?
     template <typename Rewriter, typename ReductionOrder>
     size_t KnuthBendixImpl<Rewriter, ReductionOrder>::number_of_active_rules()
         const noexcept {
@@ -690,20 +693,21 @@ namespace libsemigroups {
         // reset the settings so that we really run!
         max_rules(POSITIVE_INFINITY);
         run();
+        using string_type = detail::Rule::native_word_type;
         LIBSEMIGROUPS_ASSERT(finished());
         LIBSEMIGROUPS_ASSERT(confluent());
-        std::unordered_map<u8string,
+        std::unordered_map<string_type,
                            size_t,
-                           Hash<u8string>,
-                           std::equal_to<u8string>>
+                           Hash<string_type>,
+                           std::equal_to<string_type>>
             prefixes;
-        prefixes.emplace(u8string(), 0);
+        prefixes.emplace(string_type(), 0);
         size_t n = 1;
         for (auto const* rule : _rewriter) {
           detail::prefixes_string(prefixes, rule->lhs(), n);
         }
 
-        _gilman_graph_node_labels.resize(prefixes.size(), u8string());
+        _gilman_graph_node_labels.resize(prefixes.size(), string_type());
         for (auto const& p : prefixes) {
           _gilman_graph_node_labels[p.second] = p.first;
         }
