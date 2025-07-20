@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['libsemigroups_0',['libsemigroups',['../index.html',1,'']]]
+  ['installation_0',['Installation',['../md_install.html',1,'']]]
 ];

@@ -24,11 +24,13 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
-{text:"Installation and Changelog",url:"_HEADING_"},
-{text:"Install",url:"md_install.html"},
-{text:"changelog - version 3",url:"md_changelog-v3.html"},
-{text:"changelog - version 2",url:"md_changelog-v2.html"},
-{text:"changelog - version 1",url:"md_changelog-v1.html"},
+{text:"Library Info",url:"_HEADING_"},
+{text:"Authors",url:"md_authors.html"},
+{text:"Bibliography",url:"citelist.html"},
+{text:"Changelog - version 3",url:"md_changelog-v3.html"},
+{text:"Changelog - version 2",url:"md_changelog-v2.html"},
+{text:"Changelog - version 1",url:"md_changelog-v1.html"},
+{text:"Installation",url:"md_install.html"},
 {text:"Data structures",url:"_HEADING_"},
 {text:"Adapters",url:"group__adapters__group.html",children:[
 {text:"No default implementation",url:"",children:[
@@ -124,6 +126,7 @@ var menudata={children:[
 {text:"IncreaseDegree",url:"structlibsemigroups_1_1_increase_degree_3_01_p_b_r_01_4.html"},
 {text:"One",url:"structlibsemigroups_1_1_one_3_01_p_b_r_01_4.html"},
 {text:"Product",url:"structlibsemigroups_1_1_product_3_01_p_b_r_01_4.html"}]}]},
+{text:"Constants",url:"group__constants__group.html"},
 {text:"Elements",url:"group__elements__group.html",children:[
 {text:"Bipartitions",url:"group__bipart__group.html",children:[
 {text:"The Bipartition class",url:"classlibsemigroups_1_1_bipartition.html"},
@@ -190,17 +193,9 @@ var menudata={children:[
 {text:"make<Transf>",url:"group__make__transf__group.html"},
 {text:"make<PPerm>",url:"group__make__pperm__group.html"},
 {text:"make<Perm>",url:"group__make__perm__group.html"}]}]},
-{text:"Miscellaneous",url:"group__misc__group.html",children:[
-{text:"Constants",url:"group__constants__group.html"},
 {text:"Exceptions",url:"group__exception__group.html",children:[
 {text:"LibsemigroupsException",url:"structlibsemigroups_1_1_libsemigroups_exception.html"}]},
-{text:"Obviously infinite",url:"group__obvinf__group.html",children:[
-{text:"IsObviouslyInfinite",url:"classlibsemigroups_1_1_is_obviously_infinite.html"}]},
-{text:"Types",url:"group__types__group.html",children:[
-{text:"SmallestInteger",url:"structlibsemigroups_1_1_smallest_integer.html"}]},
-{text:"Reporter",url:"classlibsemigroups_1_1_reporter.html"},
-{text:"ReportGuard",url:"structlibsemigroups_1_1_report_guard.html"},
-{text:"Runner",url:"classlibsemigroups_1_1_runner.html"}]},
+{text:"The `make` function",url:"group__make__group.html"},
 {text:"Orders",url:"group__orders__group.html",children:[
 {text:"LexicographicalCompare",url:"structlibsemigroups_1_1_lexicographical_compare.html"},
 {text:"RecursivePathCompare",url:"structlibsemigroups_1_1_recursive_path_compare.html"},
@@ -211,7 +206,9 @@ var menudata={children:[
 {text:"Helper functions",url:"namespacelibsemigroups_1_1presentation.html"},
 {text:"Examples",url:"namespacelibsemigroups_1_1presentation_1_1examples.html"},
 {text:"to<Presentation>",url:"group__to__presentation__group.html"},
-{text:"to<InversePresentation>",url:"group__to__inverse__presentation__group.html"}]},
+{text:"to<InversePresentation>",url:"group__to__inverse__presentation__group.html"},
+{text:"Obviously infinite",url:"group__obvinf__group.html",children:[
+{text:"IsObviouslyInfinite",url:"classlibsemigroups_1_1_is_obviously_infinite.html"}]}]},
 {text:"Ranges",url:"group__ranges__group.html",children:[
 {text:"Random",url:"structlibsemigroups_1_1_random.html"}]},
 {text:"Suffix trees",url:"group__ukkonen__group.html",children:[
@@ -219,11 +216,12 @@ var menudata={children:[
 {text:"The Node class",url:"structlibsemigroups_1_1_ukkonen_1_1_node.html"},
 {text:"The State class",url:"structlibsemigroups_1_1_ukkonen_1_1_state.html"}]},
 {text:"Ukkonen helper functions",url:"namespacelibsemigroups_1_1ukkonen.html"}]},
+{text:"The `to` function",url:"group__to__group.html"},
 {text:"Tries",url:"group__aho__corasick__group.html",children:[
 {text:"The AhoCorasick class",url:"classlibsemigroups_1_1_aho_corasick.html"},
 {text:"AhoCorasick helper functions",url:"namespacelibsemigroups_1_1aho__corasick.html"}]},
-{text:"The `make` function",url:"group__make__group.html"},
-{text:"The `to` function",url:"group__to__group.html"},
+{text:"Enums + Types",url:"group__types__group.html",children:[
+{text:"SmallestInteger",url:"structlibsemigroups_1_1_smallest_integer.html"}]},
 {text:"Visualisation",url:"group__dot__group.html",children:[
 {text:"The Dot class",url:"classlibsemigroups_1_1_dot.html",children:[
 {text:"The Edge class",url:"structlibsemigroups_1_1_dot_1_1_edge.html"},
@@ -265,6 +263,10 @@ var menudata={children:[
 {text:"Accessors",url:"group__congruence__class__accessors__group.html"}]},
 {text:"Congruence helper functions",url:"group__congruence__helpers__group.html"},
 {text:"to<Congruence>",url:"group__to__cong__group.html"}]},
+{text:"Core classes",url:"group__core__classes__group.html",children:[
+{text:"Reporter",url:"classlibsemigroups_1_1_reporter.html"},
+{text:"ReportGuard",url:"structlibsemigroups_1_1_report_guard.html"},
+{text:"Runner",url:"classlibsemigroups_1_1_runner.html"}]},
 {text:"Froidure-Pin",url:"group__froidure__pin__group.html",children:[
 {text:"The FroidurePin class",url:"classlibsemigroups_1_1_froidure_pin.html"},
 {text:"The FroidurePinBase class",url:"classlibsemigroups_1_1_froidure_pin_base.html"},
@@ -300,10 +302,10 @@ var menudata={children:[
 {text:"RepOrc",url:"classlibsemigroups_1_1_rep_orc.html"},
 {text:"Sims1",url:"classlibsemigroups_1_1_sims1.html"},
 {text:"Sims2",url:"classlibsemigroups_1_1_sims2.html"},
+{text:"SimsRefinerFaithful",url:"classlibsemigroups_1_1_sims_refiner_faithful.html"},
 {text:"SimsRefinerIdeals",url:"classlibsemigroups_1_1_sims_refiner_ideals.html"},
 {text:"SimsSettings",url:"classlibsemigroups_1_1_sims_settings.html"},
-{text:"SimsStats",url:"classlibsemigroups_1_1_sims_stats.html"},
-{text:"SimsRefinerFaithful",url:"classlibsemigroups_1_1_sims_refiner_faithful.html"}]},
+{text:"SimsStats",url:"classlibsemigroups_1_1_sims_stats.html"}]},
 {text:"Helper functions",url:"namespacelibsemigroups_1_1sims.html"}]},
 {text:"Radoszewski-Rytter",url:"group__freeband__group.html"},
 {text:"Schreier-Sims",url:"group__schreier__sims__group.html",children:[
@@ -325,8 +327,4 @@ var menudata={children:[
 {text:"Word -> index",url:"group__todd__coxeter__class__word__index__group.html"},
 {text:"Index -> word",url:"group__todd__coxeter__class__index__word__group.html"}]},
 {text:"Todd-Coxeter helper functions",url:"group__todd__coxeter__helpers__group.html"},
-{text:"to<ToddCoxeter>",url:"group__to__todd__coxeter__group.html"}]},
-{text:"Bibliography",url:"_HEADING_"},
-{text:"Bibliography",url:"citelist.html"},
-{text:"Further info",url:"_HEADING_"},
-{text:"GitHub",url:"^https://github.com/libsemigroups/libsemigroups"}]}
+{text:"to<ToddCoxeter>",url:"group__to__todd__coxeter__group.html"}]}]}

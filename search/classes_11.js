@@ -70,7 +70,6 @@ var searchData=
   ['rhovalue_3c_20mat_20_3e_67',['RhoValue&lt; Mat &gt;',['../structlibsemigroups_1_1_rho_value_3_01_mat_01_4.html',1,'libsemigroups']]],
   ['rhovalue_3c_20pperm_3c_20n_2c_20scalar_20_3e_20_3e_68',['RhoValue&lt; PPerm&lt; N, Scalar &gt; &gt;',['../structlibsemigroups_1_1_rho_value_3_01_p_perm_3_01_n_00_01_scalar_01_4_01_4.html',1,'libsemigroups']]],
   ['rhovalue_3c_20transf_3c_20n_2c_20scalar_20_3e_20_3e_69',['RhoValue&lt; Transf&lt; N, Scalar &gt; &gt;',['../structlibsemigroups_1_1_rho_value_3_01_transf_3_01_n_00_01_scalar_01_4_01_4.html',1,'libsemigroups']]],
-  ['rule_70',['Rule',['../classlibsemigroups_1_1detail_1_1_rule.html',1,'libsemigroups::detail']]],
-  ['runner_71',['Runner',['../classlibsemigroups_1_1_runner.html',1,'libsemigroups']]],
-  ['runtime_5ferror_72',['runtime_error',['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std']]]
+  ['runner_70',['Runner',['../classlibsemigroups_1_1_runner.html',1,'libsemigroups']]],
+  ['runtime_5ferror_71',['runtime_error',['http://en.cppreference.com/w/cpp/error/runtime_error.html',1,'std']]]
 ];

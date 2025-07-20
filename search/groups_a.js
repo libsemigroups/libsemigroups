@@ -23,7 +23,6 @@ var searchData=
   ['member_20types_20',['Member types',['../group__knuth__bendix__class__mem__types__group.html',1,'Member types'],['../group__todd__coxeter__class__mem__types__group.html',1,'Member types']]],
   ['min_20plus_20matrices_21',['Min-plus matrices',['../group__minplusmat__group.html',1,'']]],
   ['min_20plus_20matrices_22',['Truncated min-plus matrices',['../group__minplustruncmat__group.html',1,'']]],
-  ['miscellaneous_23',['Miscellaneous',['../group__misc__group.html',1,'']]],
-  ['mod_20t_20t_20p_24',['Matrices over the natural numbers mod (t = t + p)',['../group__ntpmat__group.html',1,'']]],
-  ['modifiers_25',['Modifiers',['../group__todd__coxeter__class__mod__group.html',1,'']]]
+  ['mod_20t_20t_20p_23',['Matrices over the natural numbers mod (t = t + p)',['../group__ntpmat__group.html',1,'']]],
+  ['modifiers_24',['Modifiers',['../group__todd__coxeter__class__mod__group.html',1,'']]]
 ];

@@ -31,7 +31,7 @@ var searchData=
   ['unique_5fptr_3c_20overlapmeasure_20_3e_28',['unique_ptr&lt; OverlapMeasure &gt;',['http://en.cppreference.com/w/cpp/memory/unique_ptr.html',1,'std']]],
   ['unique_5fptr_3c_20rulecontainer_20_3e_29',['unique_ptr&lt; RuleContainer &gt;',['http://en.cppreference.com/w/cpp/memory/unique_ptr.html',1,'std']]],
   ['unordered_5fmap_30',['unordered_map',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
-  ['unordered_5fmap_3c_20char_2c_20letter_5ftype_20_3e_31',['unordered_map&lt; char, letter_type &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
+  ['unordered_5fmap_3c_20index_5ftype_2c_20rule_20_2a_20_3e_31',['unordered_map&lt; index_type, Rule * &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmap_3c_20internal_5fconst_5felement_5ftype_2c_20element_5findex_5ftype_2c_20internalhash_2c_20internalequalto_20_3e_32',['unordered_map&lt; internal_const_element_type, element_index_type, InternalHash, InternalEqualTo &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmap_3c_20internal_5fconst_5fpoint_5ftype_2c_20size_5ft_2c_20internalhash_2c_20internalequalto_20_3e_33',['unordered_map&lt; internal_const_point_type, size_t, InternalHash, InternalEqualTo &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmap_3c_20lambda_5forb_5findex_5ftype_2c_20std_3a_3avector_3c_20d_5fclass_5findex_5ftype_20_3e_20_3e_34',['unordered_map&lt; lambda_orb_index_type, std::vector&lt; D_class_index_type &gt; &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
@@ -43,9 +43,11 @@ var searchData=
   ['unordered_5fmap_3c_20std_3a_3apair_3c_20rho_5forb_5findex_5ftype_2c_20lambda_5forb_5findex_5ftype_20_3e_2c_20rho_5forb_5findex_5ftype_2c_20pairhash_20_3e_40',['unordered_map&lt; std::pair&lt; rho_orb_index_type, lambda_orb_index_type &gt;, rho_orb_index_type, PairHash &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmap_3c_20std_3a_3apair_3c_20uint64_5ft_2c_20uint64_5ft_20_3e_2c_20uint64_5ft_2c_20libsemigroups_3a_3ahash_3c_20std_3a_3apair_3c_20uint64_5ft_2c_20uint64_5ft_20_3e_20_3e_20_3e_41',['unordered_map&lt; std::pair&lt; uint64_t, uint64_t &gt;, uint64_t, libsemigroups::Hash&lt; std::pair&lt; uint64_t, uint64_t &gt; &gt; &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
   ['unordered_5fmap_3c_20std_3a_3athread_3a_3aid_2c_20knuthbendix_5f_20_3e_42',['unordered_map&lt; std::thread::id, KnuthBendix_ &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
-  ['unordered_5fmultimap_43',['unordered_multimap',['http://en.cppreference.com/w/cpp/container/unordered_multimap.html',1,'std']]],
-  ['unordered_5fmultiset_44',['unordered_multiset',['http://en.cppreference.com/w/cpp/container/unordered_multiset.html',1,'std']]],
-  ['unordered_5fset_45',['unordered_set',['http://en.cppreference.com/w/cpp/container/unordered_set.html',1,'std']]],
-  ['unordered_5fset_3c_20internal_5fchar_5ftype_20_3e_46',['unordered_set&lt; internal_char_type &gt;',['http://en.cppreference.com/w/cpp/container/unordered_set.html',1,'std']]],
-  ['uses_5fallocator_47',['uses_allocator',['http://en.cppreference.com/w/cpp/memory/uses_allocator.html',1,'std']]]
+  ['unordered_5fmap_3c_20typename_20from_3a_3avalue_5ftype_2c_20letter_5ftype_20_3e_43',['unordered_map&lt; typename From::value_type, letter_type &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
+  ['unordered_5fmap_3c_20typename_20std_3a_3astring_3a_3avalue_5ftype_2c_20letter_5ftype_20_3e_44',['unordered_map&lt; typename std::string::value_type, letter_type &gt;',['http://en.cppreference.com/w/cpp/container/unordered_map.html',1,'std']]],
+  ['unordered_5fmultimap_45',['unordered_multimap',['http://en.cppreference.com/w/cpp/container/unordered_multimap.html',1,'std']]],
+  ['unordered_5fmultiset_46',['unordered_multiset',['http://en.cppreference.com/w/cpp/container/unordered_multiset.html',1,'std']]],
+  ['unordered_5fset_47',['unordered_set',['http://en.cppreference.com/w/cpp/container/unordered_set.html',1,'std']]],
+  ['unordered_5fset_3c_20index_5ftype_20_3e_48',['unordered_set&lt; index_type &gt;',['http://en.cppreference.com/w/cpp/container/unordered_set.html',1,'std']]],
+  ['uses_5fallocator_49',['uses_allocator',['http://en.cppreference.com/w/cpp/memory/uses_allocator.html',1,'std']]]
 ];

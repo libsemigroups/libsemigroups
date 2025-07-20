@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bibliography_0',['Bibliography',['../citelist.html',1,'']]]
+  ['authors_0',['Authors',['../md_authors.html',1,'']]]
 ];
