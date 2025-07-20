@@ -164,6 +164,71 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x is invalid.
     void throw_if_invalid(Bipartition const& x);
 
+    //! \brief Replace the contents of a bipartition with a random bipartition.
+    //!
+    //! This function replaces the contents of the bipartition \p x with a
+    //! random bipartition chosen uniformly at random from among all
+    //! bipartitions of degree equal to that of \p x.
+    //!
+    //! \param x the bipartition.
+    //!
+    //! \throws
+    //! LibsemigroupsException if the degree of \p x is too large. The
+    //! implementation depends on computing several values that can easily
+    //! exceed the maximum value of any fixed precision integer or float type.
+    //! When this occurs this exception is thrown.
+    //!
+    //! \note This function is based on Sage's `random_element` method for the
+    //! [SetPartitions](https://github.com/sagemath/sage/blob/4cdd703f8b3b061d7f51676ef1a1aa0ba4140c9f/src/sage/combinat/set_partition.py#L2753)
+    //! class.
+    void uniform_random(Bipartition& x);
+
+    //! \brief Returns a random bipartition of specified degree.
+    //!
+    //! This function returns a random bipartition of degree \p deg, chosen
+    //! uniformly at random from among all bipartitions of degree equal to
+    //! \p deg.
+    //!
+    //! \param deg the degree of the returned bipartition.
+    //!
+    //! \returns A random Bipartition.
+    //!
+    //! \throws
+    //! LibsemigroupsException if the degree of \p x is too large. The
+    //! implementation depends on computing several values that can easily
+    //! exceed the maximum value of any fixed precision integer or float type.
+    //! When this occurs this exception is thrown.
+    //!
+    //! \note This function is based on Sage's `random_element` method for the
+    //! [SetPartitions](https://github.com/sagemath/sage/blob/4cdd703f8b3b061d7f51676ef1a1aa0ba4140c9f/src/sage/combinat/set_partition.py#L2753)
+    Bipartition uniform_random(size_t deg);
+
+    //! \brief Replace the contents of a bipartition with a random bipartition.
+    //!
+    //! This function replaces the contents of the bipartition \p x with a
+    //! random bipartition of degree equal to that of \p x, chosen at random
+    //! from among all bipartitions of degree equal to \p x. If the degree of
+    //! \p x is small enough for \ref uniform_random(Bipartition&) to run
+    //! successfully, then the distribution is uniform, otherwise, the
+    //! distribution is not uniform.
+    //!
+    //! \param x the bipartition.
+    void random(Bipartition& x);
+
+    //! \brief Returns a random bipartition of specified degree.
+    //!
+    //! This function returns a random bipartition of degree \p deg, chosen
+    //! at random from among all bipartitions of degree equal to \p deg.
+    //! If the degree \p deg
+    //! is small enough for \ref uniform_random(Bipartition&) to run
+    //! successfully, then the distribution is uniform, otherwise,
+    //! the distribution is not uniform.
+    //!
+    //! \param deg the degree of the returned bipartition.
+    //!
+    //! \returns A random Bipartition.
+    Bipartition random(size_t deg);
+
   }  // namespace bipartition
 
   //! \ingroup bipart_group
@@ -1120,6 +1185,21 @@ namespace libsemigroups {
       return _vector.cbegin();
     }
 
+    //! \brief Return an iterator pointing to the index of the first block.
+    //!
+    //! Returns an iterator pointing to the index of the first block.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] iterator begin() noexcept {
+      return _vector.begin();
+    }
+
     //! \brief Return a const iterator pointing one beyond the last index of
     //! the last block.
     //!
@@ -1135,6 +1215,23 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] const_iterator cend() const noexcept {
       return _vector.cend();
+    }
+
+    //! \brief Return an iterator pointing one beyond the last index of the last
+    //! block.
+    //!
+    //! Returns an iterator pointing one beyond the last index of the last
+    //! block.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] iterator end() noexcept {
+      return _vector.end();
     }
 
     //! \brief Const iterator pointing to the index of the first left
