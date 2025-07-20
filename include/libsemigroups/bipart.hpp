@@ -166,16 +166,6 @@ namespace libsemigroups {
 
   }  // namespace bipartition
 
-  namespace detail {
-
-    template <typename T>
-    struct IsBipartitionHelper : std::false_type {};
-
-    template <>
-    struct IsBipartitionHelper<Bipartition> : std::true_type {};
-
-  }  // namespace detail
-
   //! \ingroup bipart_group
   //! \brief Helper variable template.
   //!
@@ -185,7 +175,7 @@ namespace libsemigroups {
   //! \tparam T a type.
   template <typename T>
   static constexpr bool IsBipartition
-      = detail::IsBipartitionHelper<std::decay_t<T>>::value;
+      = std::is_same_v<std::decay_t<T>, Bipartition>;
 
   namespace detail {
 
