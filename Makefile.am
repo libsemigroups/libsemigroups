@@ -861,6 +861,7 @@ EXTRA_PROGRAMS += test_word_range
 
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
+EXTRA_PROGRAMS += bench_bipartition
 EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_kambites
@@ -1257,6 +1258,9 @@ bench_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
 bench_action_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+
+bench_bipartition_SOURCES =  benchmarks/bench-bipartition.cpp
+bench_bipartition_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
