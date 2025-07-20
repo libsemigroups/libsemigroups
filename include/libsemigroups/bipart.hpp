@@ -164,17 +164,43 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x is invalid.
     void throw_if_invalid(Bipartition const& x);
 
+    //! \brief Replace the contents of a bipartition with a random bipartition.
+    //!
+    //! This function replaces the contents of the bipartition \p x with a
+    //! random bipartition chosen uniformly at random from among all
+    //! bipartitions of degree equal to that of \p x.
+    //!
+    //! \param x the bipartition.
+    //!
+    //! \throws
+    //! LibsemigroupsException if `x.degree() > 20` because for larger values
+    //! factorials, which are required by the implementation, do not fit into 64
+    //! bit integers.
+    //!
+    //! \note This function is based on Sage's `random_element` method for the
+    //! `SetPartitions` class.
+    void uniform_random(Bipartition& x);
+
+    //! \brief Returns a random bipartition of specified degree.
+    //!
+    //! This function returns a random bipartition of degree \p deg, chosen
+    //! uniformly at random from among all bipartitions of degree equal to \p
+    //! deg.
+    //!
+    //! \param deg the degree of the returned bipartition.
+    //!
+    //! \returns A random Bipartition.
+    //!
+    //! \throws
+    //! LibsemigroupsException if `x.degree() > 20` because for larger values
+    //! factorials, which are required by the implementation, do not fit into 64
+    //! bit integers.
+    //!
+    //! \note This function is based on Sage's `random_element` method for the
+    //! `SetPartitions` class.
+    Bipartition uniform_random(size_t deg);
+
   }  // namespace bipartition
-
-  namespace detail {
-
-    template <typename T>
-    struct IsBipartitionHelper : std::false_type {};
-
-    template <>
-    struct IsBipartitionHelper<Bipartition> : std::true_type {};
-
-  }  // namespace detail
 
   //! \ingroup bipart_group
   //! \brief Helper variable template.
@@ -184,21 +210,21 @@ namespace libsemigroups {
   //!
   //! \tparam T a type.
   template <typename T>
-  static constexpr bool IsBipartition
-      = detail::IsBipartitionHelper<std::decay_t<T>>::value;
+  static constexpr bool IsBipartition [[deprecated]]
+  = std::is_same_v<std::decay_t<T>, Bipartition>;
 
   namespace detail {
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void
     throw_if_bad_args(std::vector<std::vector<Scalar>> const& blocks) {
-      static_assert(std::is_same_v<BipartitionOrBlocks, Bipartition>
-                    || std::is_same_v<BipartitionOrBlocks, Blocks>);
+      static_assert(std::is_same_v<Thing, Bipartition>
+                    || std::is_same_v<Thing, Blocks>);
       static_assert(std::is_signed<Scalar>::value,
                     "the 2nd template parameter Scalar must be signed");
       int32_t offset = 2;
-      if (!IsBipartition<BipartitionOrBlocks>) {
+      if (!std::is_same_v<Thing, Bipartition>) {
         offset = 1;
       }
       int32_t                    m   = 0;
@@ -223,7 +249,7 @@ namespace libsemigroups {
                                     "position {} of the block with index {}",
                                     j,
                                     i);
-          } else if (!IsBipartition<BipartitionOrBlocks> && positive && x < 0) {
+          } else if (!std::is_same_v<Thing, Bipartition> && positive && x < 0) {
             LIBSEMIGROUPS_EXCEPTION(
                 "the argument (blocks) is invalid, expected every value in the "
                 "block with index {} to be {}tive, but found {} in position {}",
@@ -244,7 +270,7 @@ namespace libsemigroups {
             "too many points, expected at most {}, found {}", 0x40000000, m);
       } else if (deg != offset * m || vals.size() != size_t(deg)) {
         std::string range, prefix;
-        if (IsBipartition<BipartitionOrBlocks>) {
+        if (std::is_same_v<Thing, Bipartition>) {
           prefix = "the union of";
           range  = fmt::format("{{{}, ..., -1, 1, ..., {}}}", -m, m);
         } else {
@@ -261,21 +287,21 @@ namespace libsemigroups {
     }
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void throw_if_bad_args(
         std::initializer_list<std::vector<Scalar>> const& blocks) {
       std::vector<std::vector<Scalar>> arg(blocks);
-      throw_if_bad_args<BipartitionOrBlocks>(arg);
+      throw_if_bad_args<Thing>(arg);
     }
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void throw_if_bad_args(std::vector<Scalar> const&) {
       // checks for this argument type are done in throw_if_invalid
     }
 
     //! No doc
-    template <typename BipartitionOrBlocks, typename Scalar>
+    template <typename Thing, typename Scalar>
     static void throw_if_bad_args(std::initializer_list<Scalar> const&) {
       // checks for this argument type are done in throw_if_invalid
     }
@@ -1128,6 +1154,21 @@ namespace libsemigroups {
       return _vector.cbegin();
     }
 
+    //! \brief Return an iterator pointing to the index of the first block.
+    //!
+    //! Returns an iterator pointing to the index of the first block.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] iterator begin() noexcept {
+      return _vector.begin();
+    }
+
     //! \brief Return a const iterator pointing one beyond the last index of
     //! the last block.
     //!
@@ -1143,6 +1184,23 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] const_iterator cend() const noexcept {
       return _vector.cend();
+    }
+
+    //! \brief Return an iterator pointing one beyond the last index of the last
+    //! block.
+    //!
+    //! Returns an iterator pointing one beyond the last index of the last
+    //! block.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] iterator end() noexcept {
+      return _vector.end();
     }
 
     //! \brief Const iterator pointing to the index of the first left

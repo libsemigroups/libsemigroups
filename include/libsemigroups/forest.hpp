@@ -470,6 +470,7 @@ namespace libsemigroups {
     //! \ref number_of_nodes.
     [[nodiscard]] const_iterator_path
     cend_path_to_root_no_checks(node_type n) const noexcept {
+      (void) n;
       return const_iterator_path(this, UNDEFINED);
     }
 
