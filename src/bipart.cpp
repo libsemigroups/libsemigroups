@@ -20,10 +20,11 @@
 
 #include "libsemigroups/bipart.hpp"
 
-#include <cmath>     // for abs
+#include <cmath>     // for abs, M_E
 #include <iterator>  // for distance
 #include <limits>    // for numeric_limits
 #include <numeric>   // for iota
+#include <random>    // for discrete_distribution
 #include <thread>    // for get_id
 #include <utility>   // for move
 
@@ -36,12 +37,37 @@
 #include "libsemigroups/detail/uf.hpp"      // for Duf
 
 namespace libsemigroups {
-
   ////////////////////////////////////////////////////////////////////////
   // Helpers
   ////////////////////////////////////////////////////////////////////////
 
   namespace {
+    long double factorial(size_t n) {
+      if (n <= 1) {
+        return 1;
+      }
+      long double result = 1;
+      for (uint64_t i = 2; i < n + 1; ++i) {
+        result *= i;
+      }
+      return result;
+    }
+
+    long double bell_number(size_t n) {
+      static std::vector<long double> bell;
+      if (n + 1 != bell.size()) {
+        bell.resize(n + 1);
+        bell[1] = 1;
+        for (size_t i = 1; i <= n - 1; ++i) {
+          bell[i + 1] = bell[1];
+          for (size_t k = 0; k <= i - 1; ++k) {
+            bell[i - k] = bell[i - k] + bell[i - k + 1];
+          }
+        }
+      }
+      return bell[1];
+    }
+
     std::vector<uint32_t>& thread_lookup(size_t thread_id) {
       static std::vector<std::vector<uint32_t>> lookups(
           std::thread::hardware_concurrency() + 1);
@@ -298,11 +324,11 @@ namespace libsemigroups {
 
   void Blocks::throw_if_class_index_out_of_range(size_t index) const {
     if (index >= _lookup.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (block index) is out of range, expected a value "
-          "in [0, {}) but found {}",
-          _lookup.size(),
-          index);
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (block index) is out of "
+                              "range, expected a value "
+                              "in [0, {}) but found {}",
+                              _lookup.size(),
+                              index);
     }
   }
 
@@ -343,6 +369,96 @@ namespace libsemigroups {
         size_t index = x[i];
         result[index].push_back(-(i - x.degree()) - 1);
       }
+      return result;
+    }
+
+    void uniform_random(Bipartition& x) {
+      if (x.degree() == 0) {
+        return;
+      }
+      long double const N = 2 * x.degree();
+
+      static std::random_device rd;
+      static std::mt19937       mt(rd());
+
+      long double const c = M_E * bell_number(N);
+      if (std::isnan(c)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the degree ({}) of the argument <x> (a bipartition) is too large, "
+            "please use random(x) instead",
+            N / 2);
+      }
+
+      // Construct a distribution over the sample space X = {0, 1, ..., 4N - 1}
+      // where the probability of selecting m in X is given by (m^N)/(cm!)
+      std::vector<long double> weights(4 * N);
+      std::iota(std::begin(weights), std::end(weights), 0);
+      std::transform(
+          std::cbegin(weights),
+          std::cend(weights),
+          std::begin(weights),
+          [&N, &c](long double m) -> long double {
+            long double num = std::pow(m, N);
+            long double den = c * factorial(m);
+            if (std::isnan(num) || std::isnan(den) || std::isnan(num / den)) {
+              LIBSEMIGROUPS_EXCEPTION("the degree ({}) of the argument <x> (a "
+                                      "bipartition) is too large, "
+                                      "please use random(x) instead",
+                                      N / 2);
+            }
+            return num / den;
+          });
+      std::discrete_distribution<uint64_t> g(std::begin(weights),
+                                             std::end(weights));
+
+      auto                                    M = g(mt) - 1;
+      std::uniform_int_distribution<uint32_t> dist(0, M);
+
+      uint32_t              next = 0;
+      std::vector<uint32_t> lookup(M + 1, static_cast<uint32_t>(UNDEFINED));
+      for (size_t i = 0; i != N; ++i) {
+        auto b = dist(mt);
+        if (lookup[b] == UNDEFINED) {
+          lookup[b] = next++;
+        }
+        x[i] = lookup[b];
+      }
+    }
+
+    Bipartition uniform_random(size_t deg) {
+      Bipartition result(deg);
+      uniform_random(result);
+      return result;
+    }
+
+    void random(Bipartition& x) {
+      try {
+        return uniform_random(x);
+      } catch (LibsemigroupsException const&) {
+        // Do nothing
+      }
+
+      uint64_t const N = 2 * x.degree();
+      LIBSEMIGROUPS_ASSERT(N != 0);
+
+      static std::random_device rd;
+      static std::mt19937       mt(rd());
+
+      uint32_t                                next = 1;
+      std::uniform_int_distribution<uint32_t> dist(0, next);
+      x[0] = 0;
+
+      for (size_t i = 1; i != N; ++i) {
+        x[i] = dist(mt);
+        if (x[i] == next && next < N) {
+          dist = std::uniform_int_distribution<uint32_t>(0, ++next);
+        }
+      }
+    }
+
+    Bipartition random(size_t deg) {
+      Bipartition result(deg);
+      random(result);
       return result;
     }
 
@@ -553,11 +669,11 @@ namespace libsemigroups {
 
   bool Bipartition::is_transverse_block(size_t index) const {
     if (index >= number_of_blocks()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (block index) is out of range, expected a value "
-          "in [0, {}) but found {}",
-          number_of_blocks(),
-          index);
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (block index) is out of "
+                              "range, expected a value "
+                              "in [0, {}) but found {}",
+                              number_of_blocks(),
+                              index);
     }
     bipartition::throw_if_invalid(*this);
     return is_transverse_block_no_checks(index);
