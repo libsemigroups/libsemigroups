@@ -59,9 +59,15 @@ jobs:
       - name: Run the quick tests (ex:no-cygwin)
         run: ./test_all "[quick][exclude:no-cygwin]"
   macos:
-    name: macOS
+    name: "macOS-${{ matrix.os.arch }}"
     timeout-minutes: 60
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.os.image_name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - { image_name: macos-latest, arch: arm }
+          - { image_name: macos-13, arch: x86 }
     env:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
@@ -72,6 +78,8 @@ jobs:
         with:
           update_packager_index: false
           install_ccache: true
+      - name: Runner information . . .
+        run: uname -a
       - name: Install dependencies . . .
         run: brew install autoconf automake libtool
       - name: Clang version . . .
