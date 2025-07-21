@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [clang++-18, g++-14]
+        compiler: [clang++-19, g++-14]
     steps:
       - uses: actions/checkout@v4
       - name: Setup ccache . . .
