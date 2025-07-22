@@ -46,7 +46,29 @@ namespace libsemigroups {
   KnuthBendix<Word, Rewriter, ReductionOrder>&
   KnuthBendix<Word, Rewriter, ReductionOrder>::init(congruence_kind      knd,
                                                     Presentation<Word>&& p) {
-    KnuthBendixImpl_::init(knd, to<Presentation<u8string>>(p, [&p](auto x) {
+    using string_type = typename KnuthBendixImpl_::native_word_type;
+
+    if constexpr (std::is_signed_v<char>) {
+      // if std::is_signed_v<char>, and p.alphabet().size() > 128, then in the
+      // next lines if <x> is the 129th letter in the alphabet, then
+      // p.index_no_checks(x) == size_type 128, and (int)(char)128 == -128, so
+      // the alphabet of the return presentation will be of the form [0, ...
+      // , 127, -128 ...], which is never normalised, and so can't be used in
+      // KnuthBendix.
+      //
+      // This could be fixed by using [-128, ..., -128 + size of alphabet]
+      // always inside KnuthBendixImpl (instead of [0, ..., size of alphabet] as
+      // we currently do) and then instead of using a letter "a" in the alphabet
+      // when accessing (for example) the trie, we use "a + 128" so that the
+      // values are always in [0, ..., size of alphabet].
+      if (p.alphabet().size() > 128) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the 2nd argument (presentation) to have alphabet of size "
+            "at most 128, but found {}",
+            p.alphabet().size());
+      }
+    }
+    KnuthBendixImpl_::init(knd, to<Presentation<string_type>>(p, [&p](auto x) {
                              return p.index_no_checks(x);
                            }));
     _extra_letter_added = false;
