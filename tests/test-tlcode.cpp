@@ -22,8 +22,7 @@
 #include "test-main.hpp"                       // LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
-#include "libsemigroups/tlcode.hpp"        // for TLCode
-#include "libsemigroups/bipart.hpp"        // for PBR
+#include "libsemigroups/tlcode.hpp"     // for TLCode
 
 #include "libsemigroups/detail/string.hpp"  // for to_string
 
@@ -31,10 +30,7 @@ namespace libsemigroups {
   // Forward decl
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("TLCode",
-                          "000",
-                          "TLmax method",
-                          "[quick][TlCode]") {
+  LIBSEMIGROUPS_TEST_CASE("TLCode", "000", "TLmax method", "[quick][TlCode]") {
     TLCode c{{0, 1, 0, 0}};
     REQUIRE(c.TL_max(0) == 0);
     REQUIRE(c.TL_max(1) == 1);
@@ -145,180 +141,111 @@ namespace libsemigroups {
     REQUIRE(c == d);
   }
 
-const std::array<TLCode, 132> TL6 = {{
- TLCode {{0, 0, 2, 0, 0, 0}},
- TLCode {{0, 1, 1, 0, 0, 0}},
- TLCode {{0, 0, 1, 0, 0, 0}},
- TLCode {{0, 1, 0, 0, 0, 0}},
- TLCode {{0, 0, 0, 0, 0, 0}},
- TLCode {{0, 1, 0, 1, 0, 0}},
- TLCode {{0, 0, 0, 1, 0, 0}},
- TLCode {{0, 0, 0, 2, 0, 0}},
- TLCode {{0, 0, 1, 1, 0, 0}},
- TLCode {{0, 0, 0, 3, 0, 0}},
- TLCode {{0, 0, 2, 2, 0, 0}},
- TLCode {{0, 1, 0, 2, 0, 0}},
- TLCode {{0, 0, 2, 1, 0, 0}},
- TLCode {{0, 1, 1, 1, 0, 0}},
- TLCode {{0, 0, 2, 0, 1, 0}},
- TLCode {{0, 1, 1, 0, 1, 0}},
- TLCode {{0, 0, 1, 0, 1, 0}},
- TLCode {{0, 1, 0, 0, 1, 0}},
- TLCode {{0, 0, 0, 0, 1, 0}},
- TLCode {{0, 1, 0, 0, 2, 0}},
- TLCode {{0, 0, 0, 0, 2, 0}},
- TLCode {{0, 1, 0, 1, 1, 0}},
- TLCode {{0, 0, 0, 1, 1, 0}},
- TLCode {{0, 0, 0, 0, 3, 0}},
- TLCode {{0, 0, 0, 2, 2, 0}},
- TLCode {{0, 0, 1, 0, 2, 0}},
- TLCode {{0, 0, 0, 2, 1, 0}},
- TLCode {{0, 0, 1, 1, 1, 0}},
- TLCode {{0, 0, 0, 3, 1, 0}},
- TLCode {{0, 0, 2, 2, 1, 0}},
- TLCode {{0, 1, 0, 2, 1, 0}},
- TLCode {{0, 0, 2, 1, 1, 0}},
- TLCode {{0, 1, 1, 1, 1, 0}},
- TLCode {{0, 0, 2, 0, 2, 0}},
- TLCode {{0, 1, 1, 0, 2, 0}},
- TLCode {{0, 1, 0, 0, 3, 0}},
- TLCode {{0, 1, 0, 2, 2, 0}},
- TLCode {{0, 0, 0, 0, 4, 0}},
- TLCode {{0, 0, 0, 3, 3, 0}},
- TLCode {{0, 0, 2, 0, 3, 0}},
- TLCode {{0, 0, 0, 3, 2, 0}},
- TLCode {{0, 0, 2, 2, 2, 0}},
- TLCode {{0, 0, 2, 0, 0, 1}},
- TLCode {{0, 1, 1, 0, 0, 1}},
- TLCode {{0, 0, 1, 0, 0, 1}},
- TLCode {{0, 1, 0, 0, 0, 1}},
- TLCode {{0, 0, 0, 0, 0, 1}},
- TLCode {{0, 1, 0, 1, 0, 1}},
- TLCode {{0, 0, 0, 1, 0, 1}},
- TLCode {{0, 0, 0, 2, 0, 1}},
- TLCode {{0, 0, 1, 1, 0, 1}},
- TLCode {{0, 0, 0, 3, 0, 1}},
- TLCode {{0, 0, 2, 2, 0, 1}},
- TLCode {{0, 1, 0, 2, 0, 1}},
- TLCode {{0, 0, 2, 1, 0, 1}},
- TLCode {{0, 1, 1, 1, 0, 1}},
- TLCode {{0, 0, 2, 0, 0, 2}},
- TLCode {{0, 1, 1, 0, 0, 2}},
- TLCode {{0, 0, 1, 0, 0, 2}},
- TLCode {{0, 1, 0, 0, 0, 2}},
- TLCode {{0, 0, 0, 0, 0, 2}},
- TLCode {{0, 0, 2, 0, 1, 1}},
- TLCode {{0, 1, 1, 0, 1, 1}},
- TLCode {{0, 0, 1, 0, 1, 1}},
- TLCode {{0, 1, 0, 0, 1, 1}},
- TLCode {{0, 0, 0, 0, 1, 1}},
- TLCode {{0, 1, 0, 0, 0, 3}},
- TLCode {{0, 0, 0, 0, 0, 3}},
- TLCode {{0, 1, 0, 0, 2, 2}},
- TLCode {{0, 0, 0, 0, 2, 2}},
- TLCode {{0, 1, 0, 1, 0, 2}},
- TLCode {{0, 0, 0, 1, 0, 2}},
- TLCode {{0, 1, 0, 0, 2, 1}},
- TLCode {{0, 0, 0, 0, 2, 1}},
- TLCode {{0, 1, 0, 1, 1, 1}},
- TLCode {{0, 0, 0, 1, 1, 1}},
- TLCode {{0, 0, 0, 0, 3, 1}},
- TLCode {{0, 0, 0, 2, 2, 1}},
- TLCode {{0, 0, 1, 0, 2, 1}},
- TLCode {{0, 0, 0, 2, 1, 1}},
- TLCode {{0, 0, 1, 1, 1, 1}},
- TLCode {{0, 0, 0, 2, 0, 2}},
- TLCode {{0, 0, 1, 1, 0, 2}},
- TLCode {{0, 0, 1, 0, 0, 3}},
- TLCode {{0, 0, 1, 0, 2, 2}},
- TLCode {{0, 0, 0, 0, 0, 4}},
- TLCode {{0, 0, 0, 0, 3, 3}},
- TLCode {{0, 0, 0, 2, 0, 3}},
- TLCode {{0, 0, 0, 0, 3, 2}},
- TLCode {{0, 0, 0, 2, 2, 2}},
- TLCode {{0, 0, 0, 3, 1, 1}},
- TLCode {{0, 0, 2, 2, 1, 1}},
- TLCode {{0, 1, 0, 2, 1, 1}},
- TLCode {{0, 0, 2, 1, 1, 1}},
- TLCode {{0, 1, 1, 1, 1, 1}},
- TLCode {{0, 0, 2, 0, 2, 1}},
- TLCode {{0, 1, 1, 0, 2, 1}},
- TLCode {{0, 1, 0, 0, 3, 1}},
- TLCode {{0, 1, 0, 2, 2, 1}},
- TLCode {{0, 0, 0, 0, 4, 1}},
- TLCode {{0, 0, 0, 3, 3, 1}},
- TLCode {{0, 0, 2, 0, 3, 1}},
- TLCode {{0, 0, 0, 3, 2, 1}},
- TLCode {{0, 0, 2, 2, 2, 1}},
- TLCode {{0, 0, 0, 3, 0, 2}},
- TLCode {{0, 0, 2, 2, 0, 2}},
- TLCode {{0, 1, 0, 2, 0, 2}},
- TLCode {{0, 0, 2, 1, 0, 2}},
- TLCode {{0, 1, 1, 1, 0, 2}},
- TLCode {{0, 0, 2, 0, 0, 3}},
- TLCode {{0, 1, 1, 0, 0, 3}},
- TLCode {{0, 0, 2, 0, 2, 2}},
- TLCode {{0, 1, 1, 0, 2, 2}},
- TLCode {{0, 1, 0, 0, 0, 4}},
- TLCode {{0, 1, 0, 0, 3, 3}},
- TLCode {{0, 1, 0, 2, 0, 3}},
- TLCode {{0, 1, 0, 0, 3, 2}},
- TLCode {{0, 1, 0, 2, 2, 2}},
- TLCode {{0, 0, 0, 0, 4, 2}},
- TLCode {{0, 0, 0, 3, 3, 2}},
- TLCode {{0, 0, 2, 0, 3, 2}},
- TLCode {{0, 0, 0, 3, 2, 2}},
- TLCode {{0, 0, 2, 2, 2, 2}},
- TLCode {{0, 0, 0, 3, 0, 3}},
- TLCode {{0, 0, 2, 2, 0, 3}},
- TLCode {{0, 0, 2, 0, 0, 4}},
- TLCode {{0, 0, 2, 0, 3, 3}},
- TLCode {{0, 0, 0, 0, 0, 5}},
- TLCode {{0, 0, 0, 0, 4, 4}},
- TLCode {{0, 0, 0, 3, 0, 4}},
- TLCode {{0, 0, 0, 0, 4, 3}},
- TLCode {{0, 0, 0, 3, 3, 3}} }};
+  const std::array<TLCode, 132> TL6
+      = {{TLCode{{0, 0, 2, 0, 0, 0}}, TLCode{{0, 1, 1, 0, 0, 0}},
+          TLCode{{0, 0, 1, 0, 0, 0}}, TLCode{{0, 1, 0, 0, 0, 0}},
+          TLCode{{0, 0, 0, 0, 0, 0}}, TLCode{{0, 1, 0, 1, 0, 0}},
+          TLCode{{0, 0, 0, 1, 0, 0}}, TLCode{{0, 0, 0, 2, 0, 0}},
+          TLCode{{0, 0, 1, 1, 0, 0}}, TLCode{{0, 0, 0, 3, 0, 0}},
+          TLCode{{0, 0, 2, 2, 0, 0}}, TLCode{{0, 1, 0, 2, 0, 0}},
+          TLCode{{0, 0, 2, 1, 0, 0}}, TLCode{{0, 1, 1, 1, 0, 0}},
+          TLCode{{0, 0, 2, 0, 1, 0}}, TLCode{{0, 1, 1, 0, 1, 0}},
+          TLCode{{0, 0, 1, 0, 1, 0}}, TLCode{{0, 1, 0, 0, 1, 0}},
+          TLCode{{0, 0, 0, 0, 1, 0}}, TLCode{{0, 1, 0, 0, 2, 0}},
+          TLCode{{0, 0, 0, 0, 2, 0}}, TLCode{{0, 1, 0, 1, 1, 0}},
+          TLCode{{0, 0, 0, 1, 1, 0}}, TLCode{{0, 0, 0, 0, 3, 0}},
+          TLCode{{0, 0, 0, 2, 2, 0}}, TLCode{{0, 0, 1, 0, 2, 0}},
+          TLCode{{0, 0, 0, 2, 1, 0}}, TLCode{{0, 0, 1, 1, 1, 0}},
+          TLCode{{0, 0, 0, 3, 1, 0}}, TLCode{{0, 0, 2, 2, 1, 0}},
+          TLCode{{0, 1, 0, 2, 1, 0}}, TLCode{{0, 0, 2, 1, 1, 0}},
+          TLCode{{0, 1, 1, 1, 1, 0}}, TLCode{{0, 0, 2, 0, 2, 0}},
+          TLCode{{0, 1, 1, 0, 2, 0}}, TLCode{{0, 1, 0, 0, 3, 0}},
+          TLCode{{0, 1, 0, 2, 2, 0}}, TLCode{{0, 0, 0, 0, 4, 0}},
+          TLCode{{0, 0, 0, 3, 3, 0}}, TLCode{{0, 0, 2, 0, 3, 0}},
+          TLCode{{0, 0, 0, 3, 2, 0}}, TLCode{{0, 0, 2, 2, 2, 0}},
+          TLCode{{0, 0, 2, 0, 0, 1}}, TLCode{{0, 1, 1, 0, 0, 1}},
+          TLCode{{0, 0, 1, 0, 0, 1}}, TLCode{{0, 1, 0, 0, 0, 1}},
+          TLCode{{0, 0, 0, 0, 0, 1}}, TLCode{{0, 1, 0, 1, 0, 1}},
+          TLCode{{0, 0, 0, 1, 0, 1}}, TLCode{{0, 0, 0, 2, 0, 1}},
+          TLCode{{0, 0, 1, 1, 0, 1}}, TLCode{{0, 0, 0, 3, 0, 1}},
+          TLCode{{0, 0, 2, 2, 0, 1}}, TLCode{{0, 1, 0, 2, 0, 1}},
+          TLCode{{0, 0, 2, 1, 0, 1}}, TLCode{{0, 1, 1, 1, 0, 1}},
+          TLCode{{0, 0, 2, 0, 0, 2}}, TLCode{{0, 1, 1, 0, 0, 2}},
+          TLCode{{0, 0, 1, 0, 0, 2}}, TLCode{{0, 1, 0, 0, 0, 2}},
+          TLCode{{0, 0, 0, 0, 0, 2}}, TLCode{{0, 0, 2, 0, 1, 1}},
+          TLCode{{0, 1, 1, 0, 1, 1}}, TLCode{{0, 0, 1, 0, 1, 1}},
+          TLCode{{0, 1, 0, 0, 1, 1}}, TLCode{{0, 0, 0, 0, 1, 1}},
+          TLCode{{0, 1, 0, 0, 0, 3}}, TLCode{{0, 0, 0, 0, 0, 3}},
+          TLCode{{0, 1, 0, 0, 2, 2}}, TLCode{{0, 0, 0, 0, 2, 2}},
+          TLCode{{0, 1, 0, 1, 0, 2}}, TLCode{{0, 0, 0, 1, 0, 2}},
+          TLCode{{0, 1, 0, 0, 2, 1}}, TLCode{{0, 0, 0, 0, 2, 1}},
+          TLCode{{0, 1, 0, 1, 1, 1}}, TLCode{{0, 0, 0, 1, 1, 1}},
+          TLCode{{0, 0, 0, 0, 3, 1}}, TLCode{{0, 0, 0, 2, 2, 1}},
+          TLCode{{0, 0, 1, 0, 2, 1}}, TLCode{{0, 0, 0, 2, 1, 1}},
+          TLCode{{0, 0, 1, 1, 1, 1}}, TLCode{{0, 0, 0, 2, 0, 2}},
+          TLCode{{0, 0, 1, 1, 0, 2}}, TLCode{{0, 0, 1, 0, 0, 3}},
+          TLCode{{0, 0, 1, 0, 2, 2}}, TLCode{{0, 0, 0, 0, 0, 4}},
+          TLCode{{0, 0, 0, 0, 3, 3}}, TLCode{{0, 0, 0, 2, 0, 3}},
+          TLCode{{0, 0, 0, 0, 3, 2}}, TLCode{{0, 0, 0, 2, 2, 2}},
+          TLCode{{0, 0, 0, 3, 1, 1}}, TLCode{{0, 0, 2, 2, 1, 1}},
+          TLCode{{0, 1, 0, 2, 1, 1}}, TLCode{{0, 0, 2, 1, 1, 1}},
+          TLCode{{0, 1, 1, 1, 1, 1}}, TLCode{{0, 0, 2, 0, 2, 1}},
+          TLCode{{0, 1, 1, 0, 2, 1}}, TLCode{{0, 1, 0, 0, 3, 1}},
+          TLCode{{0, 1, 0, 2, 2, 1}}, TLCode{{0, 0, 0, 0, 4, 1}},
+          TLCode{{0, 0, 0, 3, 3, 1}}, TLCode{{0, 0, 2, 0, 3, 1}},
+          TLCode{{0, 0, 0, 3, 2, 1}}, TLCode{{0, 0, 2, 2, 2, 1}},
+          TLCode{{0, 0, 0, 3, 0, 2}}, TLCode{{0, 0, 2, 2, 0, 2}},
+          TLCode{{0, 1, 0, 2, 0, 2}}, TLCode{{0, 0, 2, 1, 0, 2}},
+          TLCode{{0, 1, 1, 1, 0, 2}}, TLCode{{0, 0, 2, 0, 0, 3}},
+          TLCode{{0, 1, 1, 0, 0, 3}}, TLCode{{0, 0, 2, 0, 2, 2}},
+          TLCode{{0, 1, 1, 0, 2, 2}}, TLCode{{0, 1, 0, 0, 0, 4}},
+          TLCode{{0, 1, 0, 0, 3, 3}}, TLCode{{0, 1, 0, 2, 0, 3}},
+          TLCode{{0, 1, 0, 0, 3, 2}}, TLCode{{0, 1, 0, 2, 2, 2}},
+          TLCode{{0, 0, 0, 0, 4, 2}}, TLCode{{0, 0, 0, 3, 3, 2}},
+          TLCode{{0, 0, 2, 0, 3, 2}}, TLCode{{0, 0, 0, 3, 2, 2}},
+          TLCode{{0, 0, 2, 2, 2, 2}}, TLCode{{0, 0, 0, 3, 0, 3}},
+          TLCode{{0, 0, 2, 2, 0, 3}}, TLCode{{0, 0, 2, 0, 0, 4}},
+          TLCode{{0, 0, 2, 0, 3, 3}}, TLCode{{0, 0, 0, 0, 0, 5}},
+          TLCode{{0, 0, 0, 0, 4, 4}}, TLCode{{0, 0, 0, 3, 0, 4}},
+          TLCode{{0, 0, 0, 0, 4, 3}}, TLCode{{0, 0, 0, 3, 3, 3}}}};
 
   LIBSEMIGROUPS_TEST_CASE("TLCode",
                           "004",
                           "product_big_list",
                           "[quick][TlCode]") {
-      TLCode c{0};
-      REQUIRE(c * c == c);
-      c = TLCode{1};
-      REQUIRE(c * c == c);
-      for (auto const &x : TL6) {
-          for (auto const &y : TL6) {
-              for (auto const &z : TL6) {
-                  REQUIRE(x * (y * z) == (x * y) * z);
-              }
-          }
+    TLCode c{0};
+    REQUIRE(c * c == c);
+    c = TLCode{1};
+    REQUIRE(c * c == c);
+    for (auto const& x : TL6) {
+      for (auto const& y : TL6) {
+        for (auto const& z : TL6) {
+          REQUIRE(x * (y * z) == (x * y) * z);
+        }
       }
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("TLCode",
                           "005",
                           "product_big_list_inplace",
                           "[quick][TlCode]") {
-      TLCode a(6), b(6);
-      for (auto const &x : TL6) {
-          for (auto const &y : TL6) {
-              for (auto const &z : TL6) {
-                  a = x;
-                  b = y;
-                  b.product_inplace_no_checks(z);
-                  a.product_inplace_no_checks(b);
-                  b = x;
-                  b.product_inplace_no_checks(y);
-                  b.product_inplace_no_checks(z);
+    TLCode a(6), b(6);
+    for (auto const& x : TL6) {
+      for (auto const& y : TL6) {
+        for (auto const& z : TL6) {
+          a = x;
+          b = y;
+          b.product_inplace_no_checks(z);
+          a.product_inplace_no_checks(b);
+          b = x;
+          b.product_inplace_no_checks(y);
+          b.product_inplace_no_checks(z);
 
-                  REQUIRE(a == b);
-              }
-          }
+          REQUIRE(a == b);
+        }
       }
+    }
   }
 
-
 }  // namespace libsemigroups
-
-

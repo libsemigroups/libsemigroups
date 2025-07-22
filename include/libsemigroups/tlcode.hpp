@@ -134,7 +134,7 @@ namespace libsemigroups {
 
     //! \copydoc TLCode(vector_type<int32_t>,vector_type<int32_t>)
     TLCode(initializer_list_type<int32_t> left,
-        initializer_list_type<int32_t> right);
+           initializer_list_type<int32_t> right);
 
     //! \brief Construct from adjacencies \c 1 to \c n and \c -1 to \c -n.
     //!
@@ -164,8 +164,8 @@ namespace libsemigroups {
 
     //! \brief Returns the degree of a TLCode.
     //!
-    //! Returns the degree of a TLCode, where the *degree* of a TLCode is half the
-    //! number of points in the TLCode.
+    //! Returns the degree of a TLCode, where the *degree* of a TLCode is half
+    //! the number of points in the TLCode.
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -175,7 +175,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t degree() const noexcept { return _code.size(); }
+    size_t degree() const noexcept {
+      return _code.size();
+    }
 
     //! \brief Returns the number of points of a TLCode.
     //!
@@ -212,7 +214,7 @@ namespace libsemigroups {
     //! \p x and \p y have different degrees, then bad things will happen.
     void product_inplace_no_checks(TLCode const& x,
                                    TLCode const& y,
-                                   size_t     thread_id = 0);
+                                   size_t        thread_id = 0);
 
     //! \brief Multiply two TLCode objects and store the product in \c this.
     //!
@@ -237,7 +239,9 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref tlcode::throw_if_invalid.
-    void product_inplace(TLCode const& x, TLCode const& y, size_t thread_id = 0);
+    void product_inplace(TLCode const& x,
+                         TLCode const& y,
+                         size_t        thread_id = 0);
 
     //! \brief Compare two TLCodes for equality.
     //!
@@ -312,10 +316,12 @@ namespace libsemigroups {
 
     //! \brief action of the i-th generator in *this.
     void product_by_generator_inplace_no_checks(uint32_t t);
-  private:
+
+   private:
     //! \brief action of the i-th generator in *this[0 .. pos].
     void product_by_generator_inplace_no_checks(uint32_t t, size_t pos);
-  public:
+
+   public:
     void product_inplace_no_checks(TLCode const& x);
     void product_inplace(TLCode const& x);
 
@@ -418,8 +424,8 @@ namespace libsemigroups {
   //!
   //! Construct and check a \ref TLCode.
   //!
-  //! \tparam Return the return type. Must satisfy `std::is_same<Return, TLCode>`.
-  //! \tparam T the types of the arguments.
+  //! \tparam Return the return type. Must satisfy `std::is_same<Return,
+  //! TLCode>`. \tparam T the types of the arguments.
   //!
   //! \param args the arguments to forward to the \ref TLCode constructor.
   //!
@@ -460,7 +466,8 @@ namespace libsemigroups {
   //!
   //! Construct and check a \ref TLCode.
   //!
-  //! \tparam Return the return type. Must satisfy `std::is_same<Return, TLCode>`.
+  //! \tparam Return the return type. Must satisfy `std::is_same<Return,
+  //! TLCode>`.
   //!
   //! \param args the arguments to forward to the constructor.
   //!
@@ -498,7 +505,8 @@ namespace libsemigroups {
   //!
   //! Construct and check a \ref TLCode.
   //!
-  //! \tparam Return the return type. Must satisfy `std::is_same<Return, TLCode>`.
+  //! \tparam Return the return type. Must satisfy `std::is_same<Return,
+  //! TLCode>`.
   //!
   //! \param left the 1st argument to forward to the constructor.
   //! \param right the 2nd argument to forward to the constructor.
@@ -517,7 +525,8 @@ namespace libsemigroups {
   //! TLCode(initializer_list_type<int32_t>, initializer_list_type<int32_t>).
   // template <typename Return>
   // [[nodiscard]] enable_if_is_same<Return, TLCode>
-  // make(TLCode::vector_type<int32_t> left, TLCode::vector_type<int32_t> right) {
+  // make(TLCode::vector_type<int32_t> left, TLCode::vector_type<int32_t> right)
+  // {
   //   return TLCode(detail::process_left_right(left, right));
   // }
 
@@ -592,8 +601,8 @@ namespace libsemigroups {
   //! \brief Convenience function that just calls \ref TLCode::operator<
   //! "operator<" and \ref TLCode::operator== "operator==".
   //!
-  //! Convenience function that just calls \ref TLCode::operator< "operator<" and
-  //! \ref TLCode::operator== "operator==".
+  //! Convenience function that just calls \ref TLCode::operator< "operator<"
+  //! and \ref TLCode::operator== "operator==".
   inline bool operator<=(TLCode const& x, TLCode const& y) {
     return x < y || x == y;
   }
@@ -808,12 +817,16 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref TLCode::product_inplace_no_checks
-    void operator()(TLCode& xy, TLCode const& x, TLCode const& y, size_t thread_id = 0) {
+    void operator()(TLCode&       xy,
+                    TLCode const& x,
+                    TLCode const& y,
+                    size_t        thread_id = 0) {
       xy.product_inplace_no_checks(x, y, thread_id);
     }
   };
 
-  //! \brief Specialization of the adapter IncreaseDegree for instances of TLCode.
+  //! \brief Specialization of the adapter IncreaseDegree for instances of
+  //! TLCode.
   //!
   //! Specialization of the adapter IncreaseDegree for instances of TLCode.
   //!
