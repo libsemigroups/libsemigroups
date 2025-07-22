@@ -101,7 +101,7 @@ namespace libsemigroups {
   }
 
   void TLCode::product_by_generator_inplace_no_checks(uint32_t t) {
-    LIBSEMIGROUPS_ASSERT(t + 1 < _code_size()); // ensure that _code is not empty
+    LIBSEMIGROUPS_ASSERT(t + 1 < _code.size()); // ensure that _code is not empty
     // fmt::print("**************\nact {} by {}\n", _code, t);
     product_by_generator_inplace_no_checks(t, _code.size() - 1);
     // fmt::print("=============> {} \n", _code);

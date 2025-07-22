@@ -485,12 +485,12 @@ namespace libsemigroups {
   //! \ingroup make_tlcode_group
   //!
   //! \copydoc make(TLCode::vector_type<int32_t>, TLCode::vector_type<int32_t>)
-  template <typename Return>
-  [[nodiscard]] enable_if_is_same<Return, TLCode>
-  make(TLCode::initializer_list_type<int32_t> left,
-       TLCode::initializer_list_type<int32_t> right) {
-    return TLCode(detail::process_left_right(left, right));
-  }
+  // template <typename Return>
+  // [[nodiscard]] enable_if_is_same<Return, TLCode>
+  // make(TLCode::initializer_list_type<int32_t> left,
+  //      TLCode::initializer_list_type<int32_t> right) {
+  //   return TLCode(detail::process_left_right(left, right));
+  // }
 
   //! \ingroup make_tlcode_group
   //!
@@ -515,11 +515,11 @@ namespace libsemigroups {
   //!
   //! \sa
   //! TLCode(initializer_list_type<int32_t>, initializer_list_type<int32_t>).
-  template <typename Return>
-  [[nodiscard]] enable_if_is_same<Return, TLCode>
-  make(TLCode::vector_type<int32_t> left, TLCode::vector_type<int32_t> right) {
-    return TLCode(detail::process_left_right(left, right));
-  }
+  // template <typename Return>
+  // [[nodiscard]] enable_if_is_same<Return, TLCode>
+  // make(TLCode::vector_type<int32_t> left, TLCode::vector_type<int32_t> right) {
+  //   return TLCode(detail::process_left_right(left, right));
+  // }
 
   //! \relates TLCode
   //!
