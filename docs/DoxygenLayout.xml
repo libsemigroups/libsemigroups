@@ -315,7 +315,6 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::LibsemigroupsException"
         title="LibsemigroupsException" />
       </tab>
-    <tab type="user" visible="yes" url="@ref make_group" title="The `make` function" />
     <tab type="usergroup" visible="yes" url="@ref orders_group" title="Orders">
       <tab type="user" visible="yes" url="@ref libsemigroups::LexicographicalCompare"
         title="LexicographicalCompare" />
@@ -354,6 +353,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::ukkonen"
         title="Ukkonen helper functions" />
     </tab>
+    <tab type="user" visible="yes" url="@ref make_group" title="The `make` function" />
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function" />
     <tab type="usergroup" visible="yes" url="@ref aho_corasick_group" title="Tries">
       <tab type="user" visible="yes" url="@ref libsemigroups::AhoCorasick"
