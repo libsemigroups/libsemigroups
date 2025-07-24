@@ -138,3 +138,32 @@ jobs:
             ./autogen.sh && ./configure
             make test_all -j4
             ./test_all "[quick]"
+  single-core:
+    name: Ubuntu single core
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color -O2 -g
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Configure . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS"
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_all . . .
+        run: make test_all -j4
+      - name: Limit usage to one core . . .
+        run: sudo sh -c 'for f in /sys/devices/system/cpu/cpu*/online ; do echo 0 > $f ||:; done'
+      - name: Check number of cores . . .
+        run: lscpu | grep -E '^Thread|^Core|^Socket'
+      - name: Run the quick tests . . .
+        run: ./test_all "[quick]"
