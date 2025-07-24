@@ -14,8 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         sys:
-          # If you update the following list, please also update the compilers
-          # in compiler-warnings.yml to point to the latest version
           - { compiler: g++, version: 9 }
           - { compiler: g++, version: 10 }
           - { compiler: g++, version: 11 }
