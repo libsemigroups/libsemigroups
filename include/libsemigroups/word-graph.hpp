@@ -22,9 +22,9 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
 
-#include <algorithm>  // for uniform_int_distribution
-#include <cstddef>    // for size_t
-#include <cstdint>
+#include <algorithm>      // for uniform_int_distribution
+#include <cstddef>        // for size_t
+#include <cstdint>        // for uint32_t
 #include <ostream>        // for operator<<
 #include <queue>          // for queue
 #include <random>         // for mt19937
@@ -36,15 +36,16 @@
 #include <utility>        // for pair
 #include <vector>         // for vector
 
-#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_EN...
-#include "constants.hpp"  // for UNDEFINED
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "dot.hpp"        // for Dot
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"     // for Forest
-#include "order.hpp"      // for Order
-#include "ranges.hpp"     // for ??
-#include "types.hpp"      // for word_type, enable_if_is_same
+#include "config.hpp"                // for LIBSEMIGROUPS_EIGEN_EN...
+#include "constants.hpp"             // for UNDEFINED
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"                   // for Dot
+#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
+#include "forest.hpp"                // for Forest
+#include "is_specialization_of.hpp"  // for is_specialization_of_v
+#include "order.hpp"                 // for Order
+#include "ranges.hpp"                // for ??
+#include "types.hpp"                 // for word_type, enable_if_is_same
 
 #include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/int-range.hpp"   // for IntRange
@@ -2705,15 +2706,6 @@ namespace libsemigroups {
 
   }  // namespace word_graph
 
-  namespace detail {
-
-    template <typename T>
-    struct IsWordGraphHelper : std::false_type {};
-
-    template <typename Node>
-    struct IsWordGraphHelper<WordGraph<Node>> : std::true_type {};
-  }  // namespace detail
-
   //////////////////////////////////////////////////////////////////////////
   // WordGraph - non-member functions
   //////////////////////////////////////////////////////////////////////////
@@ -2721,12 +2713,15 @@ namespace libsemigroups {
   //! \ingroup word_graph_group
   //! \brief Helper variable template.
   //!
-  //! The value of this variable is \c true if the template parameter \p T is
-  //! \ref WordGraph for any template parameters.
+  //! The value of this variable is \c true if the template parameter \p Thing
+  //! is \ref WordGraph for any template parameters.
   //!
-  //! \tparam T a type.
-  template <typename T>
-  static constexpr bool IsWordGraph = detail::IsWordGraphHelper<T>::value;
+  //! \tparam Thing a type.
+  //!
+  //! \deprecated_alias_warning{is_specialization_of_v<Thing, WordGraph>}
+  template <typename Thing>
+  static constexpr bool IsWordGraph [[deprecated]]
+  = is_specialization_of_v<Thing, WordGraph>;
 
   //! \ingroup word_graph_group
   //! Output the edges of a wordGraph to a stream.
@@ -2769,7 +2764,8 @@ namespace libsemigroups {
   //! out-degree is specified by the length of the first item
   //! in the second parameter, or 0 if the second parameter is empty.
   //!
-  //! \tparam Return the return type. Must satisfy \ref IsWordGraph<Return>.
+  //! \tparam Return the return type. Must satisfy
+  //! \ref is_specialization_of_v<Return, WordGraph>.
   //!
   //! \param num_nodes the number of nodes in the word graph.
   //! \param targets the targets of the word graph.
@@ -2791,7 +2787,8 @@ namespace libsemigroups {
   // Passing the 2nd parameter "targets" by value disambiguates it from the
   // other make<WordGraph>.
   template <typename Return>
-  [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
+  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
+                                 Return>
   make(size_t                                                         num_nodes,
        std::initializer_list<std::vector<typename Return::node_type>> targets);
 
@@ -2801,7 +2798,8 @@ namespace libsemigroups {
   //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>) //NOLINT()
   // clang-format on
   template <typename Return>
-  [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
+  [[nodiscard]] std::enable_if_t<is_specialization_of_v<Return, WordGraph>,
+                                 Return>
   make(size_t                                                      num_nodes,
        std::vector<std::vector<typename Return::node_type>> const& targets);
 

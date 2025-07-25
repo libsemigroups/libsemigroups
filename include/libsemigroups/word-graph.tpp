@@ -1483,7 +1483,7 @@ namespace libsemigroups {
 
   // TODO(1) refactor to use vectors api, not initializer_list
   template <typename Return>
-  std::enable_if_t<IsWordGraph<Return>, Return>
+  std::enable_if_t<is_specialization_of_v<Return, WordGraph>, Return>
   make(size_t                                                      num_nodes,
        std::vector<std::vector<typename Return::node_type>> const& edges) {
     Return result(num_nodes, std::empty(edges) ? 0 : edges.begin()->size());
@@ -1499,7 +1499,7 @@ namespace libsemigroups {
   }
 
   template <typename Return>
-  std::enable_if_t<IsWordGraph<Return>, Return>
+  std::enable_if_t<is_specialization_of_v<Return, WordGraph>, Return>
   make(size_t                                                         num_nodes,
        std::initializer_list<std::vector<typename Return::node_type>> il) {
     return make<Return>(
