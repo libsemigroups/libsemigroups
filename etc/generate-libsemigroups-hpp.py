@@ -41,9 +41,7 @@ head = f"""//
 
 """
 
-foot = """
-#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_
-"""
+foot = "#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_\n"
 
 include_dirs = ["include/libsemigroups", "include/libsemigroups/detail"]
 
