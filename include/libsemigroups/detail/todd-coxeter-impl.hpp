@@ -181,6 +181,8 @@ namespace libsemigroups {
         };
       };  // struct options
 
+      enum class state : uint8_t { none, running, lookahead };
+
       using node_type        = typename WordGraph<uint32_t>::node_type;
       using index_type       = node_type;
       using label_type       = typename WordGraph<uint32_t>::label_type;
@@ -305,6 +307,7 @@ namespace libsemigroups {
       Forest                                 _forest;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
+      state                                  _state;
       bool                                   _ticker_running;
       Graph                                  _word_graph;
 
@@ -1774,7 +1777,9 @@ namespace libsemigroups {
       void report_after_run() const;
       void report_before_lookahead() const;
       void report_before_run() const;
+      void report_during_hlt_lookahead() const;
       void report_presentation() const;
+      void report_progress_from_thread() const;
       void report_strategy() const;
 
       ////////////////////////////////////////////////////////////////////////
