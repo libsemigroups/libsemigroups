@@ -2705,15 +2705,6 @@ namespace libsemigroups {
 
   }  // namespace word_graph
 
-  namespace detail {
-
-    template <typename T>
-    struct IsWordGraphHelper : std::false_type {};
-
-    template <typename Node>
-    struct IsWordGraphHelper<WordGraph<Node>> : std::true_type {};
-  }  // namespace detail
-
   //////////////////////////////////////////////////////////////////////////
   // WordGraph - non-member functions
   //////////////////////////////////////////////////////////////////////////
@@ -2725,8 +2716,9 @@ namespace libsemigroups {
   //! \ref WordGraph for any template parameters.
   //!
   //! \tparam T a type.
-  template <typename T>
-  static constexpr bool IsWordGraph = detail::IsWordGraphHelper<T>::value;
+  template <typename Thing>
+  static constexpr bool IsWordGraph [[deprecated]]
+  = detail::is_specialization_of_v<Thing, WordGraph>;
 
   //! \ingroup word_graph_group
   //! Output the edges of a wordGraph to a stream.
@@ -2769,7 +2761,8 @@ namespace libsemigroups {
   //! out-degree is specified by the length of the first item
   //! in the second parameter, or 0 if the second parameter is empty.
   //!
-  //! \tparam Return the return type. Must satisfy \ref IsWordGraph<Return>.
+  //! \tparam Return the return type. Must satisfy \ref
+  //! detail::is_specialization_of_v<Return, WordGraph>.
   //!
   //! \param num_nodes the number of nodes in the word graph.
   //! \param targets the targets of the word graph.
@@ -2791,7 +2784,9 @@ namespace libsemigroups {
   // Passing the 2nd parameter "targets" by value disambiguates it from the
   // other make<WordGraph>.
   template <typename Return>
-  [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
+  [[nodiscard]] std::enable_if_t<
+      detail::is_specialization_of_v<Return, WordGraph>,
+      Return>
   make(size_t                                                         num_nodes,
        std::initializer_list<std::vector<typename Return::node_type>> targets);
 
@@ -2801,9 +2796,10 @@ namespace libsemigroups {
   //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>) //NOLINT()
   // clang-format on
   template <typename Return>
-  [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
-  make(size_t                                                      num_nodes,
-       std::vector<std::vector<typename Return::node_type>> const& targets);
+  [[nodiscard]] std::
+      enable_if_t<detail::is_specialization_of_v<Return, WordGraph>, Return>
+      make(size_t num_nodes,
+           std::vector<std::vector<typename Return::node_type>> const& targets);
 
   namespace detail {
     template <typename Subclass>
