@@ -17,22 +17,11 @@
 //
 
 namespace libsemigroups {
-  template <>
-  struct Hash<u8string> {
-    std::size_t operator()(u8string const& x) const noexcept {
-      return std::hash<std::string_view>{}(
-          {reinterpret_cast<const char*>(x.data()), x.size()});
-    }
-  };
-
   namespace detail {
 
-    void prefixes_string(std::unordered_map<u8string,
-                                            size_t,
-                                            Hash<u8string>,
-                                            std::equal_to<u8string>>& st,
-                         u8string const&                              x,
-                         size_t&                                      n);
+    void prefixes_string(std::unordered_map<Rule::native_word_type, size_t>& st,
+                         Rule::native_word_type const&                       x,
+                         size_t&                                             n);
 
     template <typename Rewriter, typename ReductionOrder>
     struct KnuthBendixImpl<Rewriter, ReductionOrder>::ABC
@@ -674,7 +663,6 @@ namespace libsemigroups {
       report_after_run();
     }
 
-    // REVIEW was it okay to remove const here?
     template <typename Rewriter, typename ReductionOrder>
     size_t KnuthBendixImpl<Rewriter, ReductionOrder>::number_of_active_rules()
         const noexcept {
@@ -684,26 +672,26 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     WordGraph<uint32_t> const&
     KnuthBendixImpl<Rewriter, ReductionOrder>::gilman_graph() {
+      using detail::Rule;
       if (_gilman_graph.number_of_nodes() == 0
           && !internal_presentation().alphabet().empty()) {
+        // TODO(1) the Gilman graph is just the trie used by RewriteTrie, maybe
+        // this can make this function simpler in that case.
         // TODO(1) should implement a SettingsGuard as in ToddCoxeterImpl
         // reset the settings so that we really run!
         max_rules(POSITIVE_INFINITY);
         run();
         LIBSEMIGROUPS_ASSERT(finished());
         LIBSEMIGROUPS_ASSERT(confluent());
-        std::unordered_map<u8string,
-                           size_t,
-                           Hash<u8string>,
-                           std::equal_to<u8string>>
-            prefixes;
-        prefixes.emplace(u8string(), 0);
+        std::unordered_map<Rule::native_word_type, size_t> prefixes;
+        prefixes.emplace(Rule::native_word_type(), 0);
         size_t n = 1;
         for (auto const* rule : _rewriter) {
           detail::prefixes_string(prefixes, rule->lhs(), n);
         }
 
-        _gilman_graph_node_labels.resize(prefixes.size(), u8string());
+        _gilman_graph_node_labels.resize(prefixes.size(),
+                                         Rule::native_word_type());
         for (auto const& p : prefixes) {
           _gilman_graph_node_labels[p.second] = p.first;
         }

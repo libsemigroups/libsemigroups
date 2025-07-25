@@ -295,7 +295,7 @@ namespace libsemigroups {
    private:
     std::map<std::string, std::string> _attrs;
     std::vector<Edge>                  _edges;
-    Kind                               _kind;
+    Kind                               _kind{Kind::digraph};
     std::string                        _name;
     std::map<std::string, Node>        _nodes;
     std::vector<Dot>                   _subgraphs;

@@ -20,14 +20,12 @@
 
 namespace libsemigroups {
   namespace detail {
-    void prefixes_string(std::unordered_map<u8string,
-                                            size_t,
-                                            Hash<u8string>,
-                                            std::equal_to<u8string>>& st,
-                         u8string const&                              x,
-                         size_t&                                      n) {
+
+    void prefixes_string(std::unordered_map<Rule::native_word_type, size_t>& st,
+                         Rule::native_word_type const&                       x,
+                         size_t& n) {
       for (auto it = x.cbegin() + 1; it < x.cend(); ++it) {
-        auto w   = u8string(x.cbegin(), it);
+        auto w   = Rule::native_word_type(x.cbegin(), it);
         auto wit = st.find(w);
         if (wit == st.end()) {
           st.emplace(w, n);
