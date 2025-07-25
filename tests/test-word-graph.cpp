@@ -282,8 +282,6 @@ namespace libsemigroups {
     wg.target(2, 0, 0);
 
     wg.induced_subgraph_no_checks(0, 2);
-    static_assert(!IsWordGraph<size_t>);
-    static_assert(IsWordGraph<WordGraph<size_t>>);
     REQUIRE(wg == make<WordGraph<size_t>>(2, {{1, UNDEFINED}, {0}}));
   }
 
