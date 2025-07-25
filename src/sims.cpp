@@ -1679,9 +1679,7 @@ namespace libsemigroups {
         needs_and = true;
       }
       result += needs_and ? " and" : "";
-      result += fmt::format(" {} thread{}",
-                            x.number_of_threads(),
-                            x.number_of_threads() == 1 ? "" : "s");
+      result += fmt::format(" {} thread(s)", x.number_of_threads());
       return result;
     }
 
