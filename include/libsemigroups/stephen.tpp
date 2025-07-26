@@ -54,7 +54,8 @@ namespace libsemigroups {
                           label_type               letter,
                           node_type                to) {
       WordGraphWithSources_::target_no_checks(from, letter, to);
-      if constexpr (IsInversePresentation<presentation_type>) {
+      if constexpr (is_specialization_of_v<presentation_type,
+                                           InversePresentation>) {
         // convert l (which is an index)
         // -> actual letter
         // -> inverse of letter
@@ -420,7 +421,8 @@ namespace libsemigroups {
       result.add_edge(s.accept_state(), "accept");
 
       size_t max_letters = s.presentation().alphabet().size();
-      if constexpr (IsInversePresentation<PresentationType>) {
+      if constexpr (is_specialization_of_v<PresentationType,
+                                           InversePresentation>) {
         max_letters /= 2;
       }
 

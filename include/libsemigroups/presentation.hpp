@@ -41,9 +41,10 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"    // for Hash, EqualTo
-#include "constants.hpp"   // for Max, UNDEFINED, operator==
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "adapters.hpp"   // for Hash, EqualTo
+#include "constants.hpp"  // for Max, UNDEFINED, operator==
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "is_specialization_of.hpp"
 #include "order.hpp"       // for ShortLexCompare
 #include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
 #include "types.hpp"       // for word_type
@@ -2580,21 +2581,6 @@ namespace libsemigroups {
   std::string to_human_readable_repr(InversePresentation<Word> const& p);
 
   namespace detail {
-    template <typename T>
-    struct IsPresentationHelper : std::false_type {};
-
-    template <typename T>
-    struct IsPresentationHelper<Presentation<T>> : std::true_type {};
-
-    template <typename T>
-    struct IsPresentationHelper<InversePresentation<T>> : std::true_type {};
-
-    template <typename T>
-    struct IsInversePresentationHelper : std::false_type {};
-
-    template <typename T>
-    struct IsInversePresentationHelper<InversePresentation<T>>
-        : std::true_type {};
 
     class GreedyReduceHelper {
      private:
@@ -2629,13 +2615,17 @@ namespace libsemigroups {
   //!
   //! Helper variable template.
   //!
-  //! The value of this variable is \c true if the template parameter \p T is
-  //! \ref InversePresentation.
+  //! The value of this variable is \c true if the template parameter \p Thing
+  //! is \ref InversePresentation.
   //!
-  //! \tparam T a type.
-  template <typename T>
-  static constexpr bool IsInversePresentation
-      = detail::IsInversePresentationHelper<T>::value;
+  //! \tparam Thing a type.
+  // clang-format off
+  // NOLINTNEXTLINE(whitespace/line_length)
+  //! \deprecated_alias_warning{is_specialization_of_v<Thing, InversePresentation>}
+  // clang-format on
+  template <typename Thing>
+  static constexpr bool IsInversePresentation [[deprecated]]
+  = is_specialization_of_v<Thing, InversePresentation>;
 
   //! \ingroup presentations_group
   //!
@@ -2643,12 +2633,15 @@ namespace libsemigroups {
   //!
   //! Helper variable template.
   //!
-  //! The value of this variable is \c true if the template parameter \p T is
-  //! \ref InversePresentation.
+  //! The value of this variable is \c true if the template parameter \p Thing
+  //! is \ref InversePresentation.
   //!
-  //! \tparam T a type.
-  template <typename T>
-  static constexpr bool IsPresentation = detail::IsPresentationHelper<T>::value;
+  //! \tparam Thing a type.
+  //!
+  //! \deprecated_alias_warning{is_specialization_of_v<Thing, Presentation>}
+  template <typename Thing>
+  static constexpr bool IsPresentation [[deprecated]]
+  = is_specialization_of_v<Thing, Presentation>;
 
 }  // namespace libsemigroups
 
