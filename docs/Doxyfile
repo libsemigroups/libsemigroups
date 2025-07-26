@@ -309,7 +309,9 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "ref_todd_coxeter=\ref todd_coxeter_class_group \"ToddCoxeter\"" \
                          "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\"" \
                          "ref_kambites=\ref kambites_class_group \"Kambites\"" \
-                         "ref_congruence=\ref congruence_class_group \"Congruence\"" 
+                         "ref_congruence=\ref congruence_class_group \"Congruence\"" \
+                         "deprecated_alias_warning{1}=\warning This alias is deprecated and will be removed from `libsemigroups` in v4, please use `\1` instead."
+
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
