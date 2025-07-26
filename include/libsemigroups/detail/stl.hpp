@@ -27,7 +27,7 @@
 #include <thread>       // for std::thread
 #include <type_traits>  // for enable_if, forward, hash, is_function, is_same
 #include <vector>       // for vector
-                        //
+
 namespace libsemigroups {
   namespace detail {
     // Pass parameter p by value because this function modifies p.
@@ -131,17 +131,6 @@ namespace libsemigroups {
 
     template <typename T>
     static constexpr bool IsStdSharedPtr = IsStdSharedPtrHelper<T>::value;
-
-    // From https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2098r0.pdf
-    template <typename Thing, template <typename...> typename Primary>
-    struct is_specialization_of : std::false_type {};
-
-    template <template <typename...> typename Primary, typename... Args>
-    struct is_specialization_of<Primary<Args...>, Primary> : std::true_type {};
-
-    template <typename Thing, template <typename...> typename Primary>
-    inline constexpr bool is_specialization_of_v
-        = is_specialization_of<Thing, Primary>::value;
 
     template <typename... Args>
     struct is_array : std::false_type {};
