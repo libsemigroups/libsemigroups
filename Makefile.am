@@ -72,6 +72,7 @@ pkginclude_HEADERS += include/libsemigroups/froidure-pin.tpp
 pkginclude_HEADERS += include/libsemigroups/gabow.hpp
 pkginclude_HEADERS += include/libsemigroups/gabow.tpp
 pkginclude_HEADERS += include/libsemigroups/hpcombi.hpp
+pkginclude_HEADERS += include/libsemigroups/is_specialization_of.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites-class.hpp
 pkginclude_HEADERS += include/libsemigroups/kambites-class.tpp
 pkginclude_HEADERS += include/libsemigroups/kambites-helpers.hpp
