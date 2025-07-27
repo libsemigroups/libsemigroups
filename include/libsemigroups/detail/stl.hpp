@@ -62,20 +62,6 @@ namespace libsemigroups {
       }
     }
 
-    // Since std::is_invocable is only introduced in C++17, we use this
-    //
-    // from: https://stackoverflow.com/q/15393938/
-    // Only works if there are no overloads of operator() in type T.
-    template <typename T, typename = void>
-    struct IsCallable : std::is_function<T> {};
-
-    template <typename T>
-    struct IsCallable<
-        T,
-        std::enable_if_t<
-            std::is_same<decltype(void(&T::operator())), void>::value>>
-        : std::true_type {};
-
     // From p, 275, Section 8 of C++ concurrency in action, 2nd edition, by
     // Anthony Williams.
     class JoinThreads {
@@ -94,21 +80,6 @@ namespace libsemigroups {
       }
     };
 
-    // TODO ref
-    class ThreadGuard {
-      std::thread& _thread;
-
-     public:
-      explicit ThreadGuard(std::thread& thread) : _thread(thread) {}
-      ~ThreadGuard() {
-        if (_thread.joinable()) {
-          _thread.join();
-        }
-      }
-      ThreadGuard(ThreadGuard const&)            = delete;
-      ThreadGuard& operator=(ThreadGuard const&) = delete;
-    };
-
     template <typename A,
               typename B,
               typename = decltype(std::declval<A>() <= std::declval<B>())>
@@ -122,15 +93,6 @@ namespace libsemigroups {
         T,
         std::void_t<typename std::iterator_traits<T>::iterator_category>>
         : std::true_type {};
-
-    template <typename T>
-    struct IsStdSharedPtrHelper : std::false_type {};
-
-    template <typename T>
-    struct IsStdSharedPtrHelper<std::shared_ptr<T>> : std::true_type {};
-
-    template <typename T>
-    static constexpr bool IsStdSharedPtr = IsStdSharedPtrHelper<T>::value;
 
     template <typename... Args>
     struct is_array : std::false_type {};
