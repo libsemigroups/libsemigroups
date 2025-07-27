@@ -698,24 +698,16 @@ namespace libsemigroups {
     return y <= x;
   }
 
-  namespace detail {
-
-    template <typename T>
-    struct IsPBRHelper : std::false_type {};
-
-    template <>
-    struct IsPBRHelper<PBR> : std::true_type {};
-
-  }  // namespace detail
-
   //! \brief Helper variable template.
   //!
-  //! The value of this variable is \c true if the template parameter \p T is
-  //! \ref PBR.
+  //! The value of this variable is \c true if the template parameter \p Thing
+  //! is \ref PBR.
   //!
-  //! \tparam T a type.
-  template <typename T>
-  static constexpr bool IsPBR = detail::IsPBRHelper<T>::value;
+  //! \tparam Thing a type.
+  //!
+  //! \deprecated_alias_warning{std::is_same_v<Thing, PBR>}
+  template <typename Thing>
+  static constexpr bool IsPBR [[deprecated]] = std::is_same_v<Thing, PBR>;
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters
