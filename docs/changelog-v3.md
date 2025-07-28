@@ -1,6 +1,6 @@
 # Changelog - version 3
 
-## v3.1.1 (released 25/07/2025)
+## v3.1.1 (released 28/07/2025)
 
 This is a minor release fixing some issues in the previous release. It is
 currently only possible to construct `KnuthBendix` objects using presentations
