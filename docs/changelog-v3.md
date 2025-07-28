@@ -1,5 +1,12 @@
 # Changelog - version 3
 
+## v3.1.1 (released 28/07/2025)
+
+This is a minor release fixing some issues in the previous release. It is
+currently only possible to construct `KnuthBendix` objects using presentations
+with at most `128` generators. This is properly checked, and a meaningful
+exception is thrown.
+
 ## v3.1.0 (released 19/07/2025)
 
 This release contains a number of bugfixes, and other improvements. In
