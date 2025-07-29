@@ -1,5 +1,14 @@
 # Changelog - version 3
 
+## v3.1.2 (released 29/07/2025)
+
+This is a minor release fixing some more issues that were introduced in v3.1.0.
+Namely:
+
+* Remove remaining occurrences of ``std::basic_string<uint8_t>`` by
+  @joseph-edwards in
+  https://github.com/libsemigroups/libsemigroups/pull/772
+
 ## v3.1.1 (released 28/07/2025)
 
 This is a minor release fixing some issues in the previous release. It is

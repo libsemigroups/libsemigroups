@@ -38,7 +38,7 @@ jobs:
           sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa -y
           sudo apt-get --yes update
           sudo apt-get install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
-          CXX=${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          CXX="ccache ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}"
           echo "CXX=$CXX" >> $GITHUB_ENV
       - name: Compiler information
         run: |
@@ -51,6 +51,54 @@ jobs:
           mkdir -p m4
           ./autogen.sh 
           ./configure CXX="$CXX"
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_all . . .
+        run: make test_all -j4
+      - name: Run the quick and standard tests . . .
+        run: ./test_all "[quick],[standard]"
+  conda:
+    name: conda ${{ matrix.sys.compiler }} (${{ matrix.sys.os }})
+    timeout-minutes: 60
+    runs-on: ${{ matrix.sys.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        sys:
+          - { package: gxx, compiler: g++, os: ubuntu-latest }
+          - { package: clangxx, compiler: clang++, os: macOS-latest }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: "Create micromamba environment"
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: builder
+          cache-environment: true
+          create-args: >-
+            libcxx
+            make
+            automake
+            autoconf
+            libtool
+            pkg-config
+            compiler-rt
+            ${{ matrix.sys.package }}
+      - name: "Set environment variables . . ."
+        run: |
+          echo "PKG_CONFIG_PATH=$MAMBA_ROOT_PREFIX/envs/builder/lib/pkgconfig:$MAMBA_ROOT_PREFIX/envs/builder/share/pkgconfig:/usr/local/lib/pkgconfig" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/builder/lib:/usr/local/lib" >> $GITHUB_ENV
+          echo "PATH=$MAMBA_ROOT_PREFIX/envs/builder/bin:$PATH" >> $GITHUB_ENV
+      - name: Compiler info . . .
+        run: ${{ matrix.sys.compiler }} --version
+      - name: Configure . . .
+        run: |
+          ./autogen.sh
+          ./configure CXX="ccache ${{ matrix.sys.compiler }}"
       - name: Build libsemigroups . . .
         run: make -j4
       - name: Build test_all . . .
