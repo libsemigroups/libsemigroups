@@ -29,7 +29,7 @@ var NAVTREE =
   [['What is libsemigroups?', 'index.html#what-is-libsemigroups', None],
    ['Design principles', 'index.html#design-principles', None],
    ['How to use libsemigroups', 'index.html#how-to-use-libsemigroups', None],
-   ['Installation', 'index.html#installation-1', None],
+   ['Installation', 'index.html#installation', None],
    ['Issues', 'index.html#issues', None],
    ['Dependencies', 'index.html#dependencies', None],
    ['Acknowledgements', 'index.html#acknowledgements', None]]],

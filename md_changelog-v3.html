@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.1</span>
+   &#160;<span id="projectnumber">v3.1.2</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -188,6 +188,12 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id="v312-released-29072025"></a>
+v3.1.2 (released 29/07/2025)</h1>
+<p>This is a minor release fixing some more issues that were introduced in v3.1.0. Namely:</p>
+<ul>
+<li>Remove remaining occurrences of <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::basic_string</a>&lt;uint8_t&gt;</code> by @joseph-edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/772">https://github.com/libsemigroups/libsemigroups/pull/772</a></li>
+</ul>
 <h1><a class="anchor" id="v311-released-28072025"></a>
 v3.1.1 (released 28/07/2025)</h1>
 <p>This is a minor release fixing some issues in the previous release. It is currently only possible to construct <code>KnuthBendix</code> objects using presentations with at most <code>128</code> generators. This is properly checked, and a meaningful exception is thrown.</p>

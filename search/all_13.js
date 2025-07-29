@@ -75,7 +75,7 @@ var searchData=
   ['insert_5fiterator_72',['insert_iterator',['http://en.cppreference.com/w/cpp/iterator/insert_iterator.html',1,'std']]],
   ['inserter_73',['inserter',['http://en.cppreference.com/w/cpp/iterator/inserter.html',1,'std']]],
   ['install_74',['Make install',['../md_install.html#make-install',1,'']]],
-  ['installation_75',['Installation',['../md_install.html',1,'Installation'],['../index.html#installation-1',1,'Installation']]],
+  ['installation_75',['Installation',['../md_install.html',1,'Installation'],['../index.html#installation',1,'Installation']]],
   ['installing_20with_20conda_76',['Installing with conda',['../md_install.html#installing-with-conda',1,'']]],
   ['int16_5ft_77',['int16_t',['http://en.cppreference.com/w/cpp/types/integer.html',1,'std']]],
   ['int32_5ft_78',['int32_t',['http://en.cppreference.com/w/cpp/types/integer.html',1,'std']]],

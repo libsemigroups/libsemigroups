@@ -171,7 +171,7 @@ var NAVTREEINDEX0 =
  'index.html#dependencies': [0, 5],
  'index.html#design-principles': [0, 1],
  'index.html#how-to-use-libsemigroups': [0, 2],
- 'index.html#installation-1': [0, 3],
+ 'index.html#installation': [0, 3],
  'index.html#issues': [0, 4],
  'index.html#libsemigroups': [0],
  'index.html#what-is-libsemigroups': [0, 0],
