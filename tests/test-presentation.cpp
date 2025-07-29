@@ -2687,36 +2687,41 @@ namespace libsemigroups {
           "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
     }
 
-    {
-      Presentation<std::basic_string<uint8_t>> p;
-      p.alphabet({97, 98});
-      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(99),
-                            "invalid letter 99, valid letters are [97, 98]");
-      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(147),
-                            "invalid letter 147, valid letters are [97, 98]");
-      p.alphabet({0, 1});
-      REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet('c'),
-                            "invalid letter 99, valid letters are [0, 1]");
-      REQUIRE_EXCEPTION_MSG(
-          p.alphabet(257), "expected a value in the range [0, 257), found 257");
-      REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
-                            "invalid alphabet [0, 1, 0], duplicate letter 0!");
-      REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
-                            "invalid alphabet [0, 1, 0], duplicate letter 0!");
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0}),
-                            "invalid inverses, the letter 0 is duplicated!");
-      p.alphabet(3);
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
-                            "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
-      REQUIRE_EXCEPTION_MSG(
-          presentation::add_inverse_rules(p, {1, 0, 2}, 0),
-          "invalid inverses, the identity is 0, but 0 ^ -1 = 1");
-      p.alphabet({0, 1, 2});
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0, 1}),
-                            "invalid inverses, the letter 0 is duplicated!");
-      REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
-                            "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
-    }
+    // TODO(1): Uncomment if we re-add strings over small ints, or delete.
+    // {
+    //   Presentation<std::basic_string<uint8_t>> p;
+    //   p.alphabet({97, 98});
+    //   REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(99),
+    //                         "invalid letter 99, valid letters are [97, 98]");
+    //   REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet(147),
+    //                         "invalid letter 147, valid letters are [97,
+    //                         98]");
+    //   p.alphabet({0, 1});
+    //   REQUIRE_EXCEPTION_MSG(p.throw_if_letter_not_in_alphabet('c'),
+    //                         "invalid letter 99, valid letters are [0, 1]");
+    //   REQUIRE_EXCEPTION_MSG(
+    //       p.alphabet(257), "expected a value in the range [0, 257), found
+    //       257");
+    //   REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
+    //                         "invalid alphabet [0, 1, 0], duplicate letter
+    //                         0!");
+    //   REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
+    //                         "invalid alphabet [0, 1, 0], duplicate letter
+    //                         0!");
+    //   REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0}),
+    //                         "invalid inverses, the letter 0 is duplicated!");
+    //   p.alphabet(3);
+    //   REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
+    //                         "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
+    //   REQUIRE_EXCEPTION_MSG(
+    //       presentation::add_inverse_rules(p, {1, 0, 2}, 0),
+    //       "invalid inverses, the identity is 0, but 0 ^ -1 = 1");
+    //   p.alphabet({0, 1, 2});
+    //   REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {0, 0, 1}),
+    //                         "invalid inverses, the letter 0 is duplicated!");
+    //   REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, {1, 2, 0}),
+    //                         "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
+    // }
 
     {
       Presentation<std::vector<uint8_t>> p;
