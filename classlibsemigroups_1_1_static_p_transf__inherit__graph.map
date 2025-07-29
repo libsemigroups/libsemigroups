@@ -1,7 +1,7 @@
 <map id="StaticPTransf&lt; N, Scalar &gt;" name="StaticPTransf&lt; N, Scalar &gt;">
-<area shape="rect" id="Node000001" title="Partial transformations with static degree." alt="" coords="5,183,186,208"/>
-<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_p_transf_base.html" title=" " alt="" coords="21,79,170,135"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,150,98,182,93,182,93,150"/>
-<area shape="rect" id="Node000003" href="$structlibsemigroups_1_1detail_1_1_p_transf_polymorphic_base.html" title=" " alt="" coords="11,5,180,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="98,47,98,78,93,78,93,47"/>
+<area shape="rect" id="Node000001" title="Partial transformations with static degree." alt="" coords="5,181,187,207"/>
+<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_p_transf_base.html" title=" " alt="" coords="21,79,171,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,147,99,181,93,181,93,147"/>
+<area shape="rect" id="Node000003" href="$structlibsemigroups_1_1detail_1_1_p_transf_polymorphic_base.html" title=" " alt="" coords="11,5,181,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,44,99,79,93,79,93,44"/>
 </map>

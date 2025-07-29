@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.0</span>
+   &#160;<span id="projectnumber">v3.1.1</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -105,11 +105,11 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
-      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
       <li><a href="group__ukkonen__group.html"><span>Suffix&#160;trees</span></a></li>
+      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__to__group.html"><span>The&#160;`to`&#160;function</span></a></li>
       <li><a href="group__aho__corasick__group.html"><span>Tries</span></a></li>
       <li><a href="group__types__group.html"><span>Enums&#160;+&#160;Types</span></a></li>
@@ -221,7 +221,12 @@ $(function(){initNavTree('group__knuth__bendix__class__group.html',''); initResi
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:71</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_a8aa8feb639d28dbe9a7af0fce7b93c43"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#a8aa8feb639d28dbe9a7af0fce7b93c43">libsemigroups::presentation::add_rule_no_checks</a></div><div class="ttdeci">void add_rule_no_checks(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference.</div><div class="ttdef"><b>Definition</b> presentation.hpp:821</div></div>
-</div><!-- fragment --> </dd></dl>
+</div><!-- fragment --></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>At present it is only possible to create KnuthBendix objects from presentations with alphabets containing at most:<ul>
+<li>128 letters if <code>char</code> a signed integer;</li>
+<li>256 letters if <code>char</code> is an unsigned integer. </li>
+</ul>
+</dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 Topics</h2></td></tr>

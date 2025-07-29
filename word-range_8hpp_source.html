@@ -18,7 +18,7 @@
       content="https://github.com/libsemigroups/libsemigroups"
     />
     <!-- END opengraph metadata -->
-<title>libsemigroups: /Users/jdm3/libsemigroups/include/libsemigroups/word-range.hpp Source File</title>
+<title>libsemigroups: /home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/word-range.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.0</span>
+   &#160;<span id="projectnumber">v3.1.1</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -105,11 +105,11 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
-      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
       <li><a href="group__ukkonen__group.html"><span>Suffix&#160;trees</span></a></li>
+      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__to__group.html"><span>The&#160;`to`&#160;function</span></a></li>
       <li><a href="group__aho__corasick__group.html"><span>Tries</span></a></li>
       <li><a href="group__types__group.html"><span>Enums&#160;+&#160;Types</span></a></li>
@@ -1372,9 +1372,9 @@ $(function(){initNavTree('word-range_8hpp_source.html',''); initResizable(true);
 <div class="line"><a id="l02559" name="l02559"></a><span class="lineno"> 2559</span>          <span class="keywordflow">if</span> (_alphabet_map.find(c) == _alphabet_map.cend()) {</div>
 <div class="line"><a id="l02560" name="l02560"></a><span class="lineno"> 2560</span>            <span class="comment">// TODO improve this like in presentation</span></div>
 <div class="line"><a id="l02561" name="l02561"></a><span class="lineno"> 2561</span>            <a class="code hl_define" href="group__exception__group.html#ga0609ba76461a9785f315f06698f735bf">LIBSEMIGROUPS_EXCEPTION</a>(</div>
-<div class="line"><a id="l02562" name="l02562"></a><span class="lineno"> 2562</span>                <span class="stringliteral">&quot;invalid letter \&#39;{}\&#39; in the 2nd argument (input word), &quot;</span></div>
+<div class="line"><a id="l02562" name="l02562"></a><span class="lineno"> 2562</span>                <span class="stringliteral">&quot;invalid letter {} in the 2nd argument (input word), &quot;</span></div>
 <div class="line"><a id="l02563" name="l02563"></a><span class="lineno"> 2563</span>                <span class="stringliteral">&quot;expected letters in the alphabet {}!&quot;</span>,</div>
-<div class="line"><a id="l02564" name="l02564"></a><span class="lineno"> 2564</span>                c,</div>
+<div class="line"><a id="l02564" name="l02564"></a><span class="lineno"> 2564</span>                detail::to_printable(c),</div>
 <div class="line"><a id="l02565" name="l02565"></a><span class="lineno"> 2565</span>                detail::to_printable(<a class="code hl_function" href="classlibsemigroups_1_1v4_1_1_to_word.html#a799c4a95efbd55357df9897ad5e0ca0c">alphabet</a>()));</div>
 <div class="line"><a id="l02566" name="l02566"></a><span class="lineno"> 2566</span>          }</div>
 <div class="line"><a id="l02567" name="l02567"></a><span class="lineno"> 2567</span>        }</div>

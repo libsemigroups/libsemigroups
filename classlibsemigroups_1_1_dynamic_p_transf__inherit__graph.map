@@ -1,7 +1,7 @@
 <map id="DynamicPTransf&lt; Scalar &gt;" name="DynamicPTransf&lt; Scalar &gt;">
-<area shape="rect" id="Node000001" title="Partial transformations with dynamic degree." alt="" coords="5,168,186,193"/>
-<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_p_transf_base.html" title=" " alt="" coords="15,79,176,120"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,135,98,167,93,167,93,135"/>
-<area shape="rect" id="Node000003" href="$structlibsemigroups_1_1detail_1_1_p_transf_polymorphic_base.html" title=" " alt="" coords="11,5,180,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="98,46,98,79,93,79,93,46"/>
+<area shape="rect" id="Node000001" title="Partial transformations with dynamic degree." alt="" coords="5,167,187,192"/>
+<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_p_transf_base.html" title=" " alt="" coords="15,79,177,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,132,99,166,93,166,93,132"/>
+<area shape="rect" id="Node000003" href="$structlibsemigroups_1_1detail_1_1_p_transf_polymorphic_base.html" title=" " alt="" coords="11,5,181,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,44,99,79,93,79,93,44"/>
 </map>

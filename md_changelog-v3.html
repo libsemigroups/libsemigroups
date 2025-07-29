@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.0</span>
+   &#160;<span id="projectnumber">v3.1.1</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -105,11 +105,11 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
-      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
       <li><a href="group__ukkonen__group.html"><span>Suffix&#160;trees</span></a></li>
+      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__to__group.html"><span>The&#160;`to`&#160;function</span></a></li>
       <li><a href="group__aho__corasick__group.html"><span>Tries</span></a></li>
       <li><a href="group__types__group.html"><span>Enums&#160;+&#160;Types</span></a></li>
@@ -188,6 +188,9 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id="v311-released-28072025"></a>
+v3.1.1 (released 28/07/2025)</h1>
+<p>This is a minor release fixing some issues in the previous release. It is currently only possible to construct <code>KnuthBendix</code> objects using presentations with at most <code>128</code> generators. This is properly checked, and a meaningful exception is thrown.</p>
 <h1><a class="anchor" id="v310-released-19072025"></a>
 v3.1.0 (released 19/07/2025)</h1>
 <p>This release contains a number of bugfixes, and other improvements. In particular, the performance of the Todd-Coxeter and Knuth-Bendix algorithms has been improved.</p>

@@ -1,5 +1,5 @@
 <map id="LibsemigroupsException" name="LibsemigroupsException">
-<area shape="rect" id="Node000001" title="Exception class deriving from std::runtime_error." alt="" coords="5,79,169,105"/>
-<area shape="rect" id="Node000002" href="/Users/jdm3/libsemigroups/docs/tag-files/cppreference-doxygen-web.tag.xml$cpp/error/runtime_error.html" title=" " alt="" coords="38,5,136,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,46,90,79,84,79,84,46"/>
+<area shape="rect" id="Node000001" title="Exception class deriving from std::runtime_error." alt="" coords="5,79,169,104"/>
+<area shape="rect" id="Node000002" href="/home/joseph/Dev/Comp_Maths/testing/libsemigroups/docs/tag-files/cppreference-doxygen-web.tag.xml$cpp/error/runtime_error.html" title=" " alt="" coords="38,5,137,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,44,90,79,85,79,85,44"/>
 </map>

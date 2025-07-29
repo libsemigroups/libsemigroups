@@ -60,7 +60,7 @@ var searchData=
   ['07_2010_202020_57',['v1.3.3 (released 07/10/2020)',['../md_changelog-v1.html#v133-released-07102020',1,'']]],
   ['07_2012_202019_58',['v1.0.3 (released 07/12/2019)',['../md_changelog-v1.html#v103-released-07122019',1,'']]],
   ['07_202022_59',['v2.2.0 (released 01/07/2022)',['../md_changelog-v2.html#v220-released-01072022',1,'']]],
-  ['07_202025_60',['v3.1.0 (released 19/07/2025)',['../md_changelog-v3.html#v310-released-19072025',1,'']]],
+  ['07_202025_60',['07 2025',['../md_changelog-v3.html#v310-released-19072025',1,'v3.1.0 (released 19/07/2025)'],['../md_changelog-v3.html#v311-released-28072025',1,'v3.1.1 (released 28/07/2025)']]],
   ['08_202020_61',['08 2020',['../md_changelog-v1.html#v130-released-28082020',1,'v1.3.0 (released 28/08/2020)'],['../md_changelog-v1.html#v131-released-28082020',1,'v1.3.1 (released 28/08/2020)']]],
   ['08_202021_62',['v2.0.1 (released 28/08/2021)',['../md_changelog-v2.html#v201-released-28082021',1,'']]],
   ['08_202022_63',['v2.2.1 (released 12/08/2022)',['../md_changelog-v2.html#v221-released-12082022',1,'']]],

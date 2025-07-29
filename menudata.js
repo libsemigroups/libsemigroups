@@ -195,7 +195,6 @@ var menudata={children:[
 {text:"make<Perm>",url:"group__make__perm__group.html"}]}]},
 {text:"Exceptions",url:"group__exception__group.html",children:[
 {text:"LibsemigroupsException",url:"structlibsemigroups_1_1_libsemigroups_exception.html"}]},
-{text:"The `make` function",url:"group__make__group.html"},
 {text:"Orders",url:"group__orders__group.html",children:[
 {text:"LexicographicalCompare",url:"structlibsemigroups_1_1_lexicographical_compare.html"},
 {text:"RecursivePathCompare",url:"structlibsemigroups_1_1_recursive_path_compare.html"},
@@ -216,6 +215,7 @@ var menudata={children:[
 {text:"The Node class",url:"structlibsemigroups_1_1_ukkonen_1_1_node.html"},
 {text:"The State class",url:"structlibsemigroups_1_1_ukkonen_1_1_state.html"}]},
 {text:"Ukkonen helper functions",url:"namespacelibsemigroups_1_1ukkonen.html"}]},
+{text:"The `make` function",url:"group__make__group.html"},
 {text:"The `to` function",url:"group__to__group.html"},
 {text:"Tries",url:"group__aho__corasick__group.html",children:[
 {text:"The AhoCorasick class",url:"classlibsemigroups_1_1_aho_corasick.html"},

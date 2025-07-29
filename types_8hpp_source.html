@@ -18,7 +18,7 @@
       content="https://github.com/libsemigroups/libsemigroups"
     />
     <!-- END opengraph metadata -->
-<title>libsemigroups: /Users/jdm3/libsemigroups/include/libsemigroups/types.hpp Source File</title>
+<title>libsemigroups: /home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/types.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.0</span>
+   &#160;<span id="projectnumber">v3.1.1</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -105,11 +105,11 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
-      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
       <li><a href="group__ukkonen__group.html"><span>Suffix&#160;trees</span></a></li>
+      <li><a href="group__make__group.html"><span>The&#160;`make`&#160;function</span></a></li>
       <li><a href="group__to__group.html"><span>The&#160;`to`&#160;function</span></a></li>
       <li><a href="group__aho__corasick__group.html"><span>Tries</span></a></li>
       <li><a href="group__types__group.html"><span>Enums&#160;+&#160;Types</span></a></li>
@@ -261,22 +261,17 @@ $(function(){initNavTree('types_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span></div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>  <span class="comment">// There is undefined behaviour associated with std::char_traits and</span></div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>  <span class="comment">// std::basic_string&lt;uint8_t&gt;. This only seems to present an issue in Cygwin,</span></div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>  <span class="comment">// so we use the following conditional to revert back to the safety of</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>  <span class="comment">// std::strings when using Cygwin.</span></div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="preprocessor">#if defined(__CYGWIN__)</span></div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>  <span class="keyword">using </span><a class="code hl_typedef" href="group__types__group.html#gada8f9493e77af7eeefcc3bbfd759adfc">u8string</a> = <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>;</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="group__types__group.html#gada8f9493e77af7eeefcc3bbfd759adfc">  112</a></span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>  <span class="keyword">using </span><a class="code hl_typedef" href="group__types__group.html#gada8f9493e77af7eeefcc3bbfd759adfc">u8string</a> = <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::basic_string&lt;uint8_t&gt;</a>;</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TYPES_HPP_</span></div>
-<div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>  <span class="comment">// and in the conda feedstock tests. This alias was only used in v3.1.0 and</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>  <span class="comment">// is deprecated already in v3.1.1.</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>  <span class="keyword">using </span>u8string [[deprecated]] = <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::basic_string&lt;uint8_t&gt;</a>;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TYPES_HPP_</span></div>
+<div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::basic_string</a></div></div>
 <div class="ttc" id="agroup__types__group_html_ga2997d4c629358b2e320360bede28bd90"><div class="ttname"><a href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">libsemigroups::enable_if_is_same</a></div><div class="ttdeci">std::enable_if_t&lt; std::is_same_v&lt; Given, Expected &gt;, Expected &gt; enable_if_is_same</div><div class="ttdoc">Alias equal to the second template parameter if both template parameters are equal.</div><div class="ttdef"><b>Definition</b> types.hpp:48</div></div>
 <div class="ttc" id="agroup__types__group_html_ga4c833ae5c1a57b830205688bf18f9991"><div class="ttname"><a href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">libsemigroups::word_type</a></div><div class="ttdeci">std::vector&lt; letter_type &gt; word_type</div><div class="ttdoc">Type for a word over the generators of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:99</div></div>
 <div class="ttc" id="agroup__types__group_html_ga590f23f6d9ebc02389a53e56ea1a74c1"><div class="ttname"><a href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1">libsemigroups::letter_type</a></div><div class="ttdeci">size_t letter_type</div><div class="ttdoc">Type for the index of a generator of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:96</div></div>
 <div class="ttc" id="agroup__types__group_html_gaaffb8bbdaf344f5d45774913b67784aa"><div class="ttname"><a href="group__types__group.html#gaaffb8bbdaf344f5d45774913b67784aa">libsemigroups::relation_type</a></div><div class="ttdeci">std::pair&lt; word_type, word_type &gt; relation_type</div><div class="ttdoc">Type for a pair of word_type (a relation) of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:102</div></div>
-<div class="ttc" id="agroup__types__group_html_gada8f9493e77af7eeefcc3bbfd759adfc"><div class="ttname"><a href="group__types__group.html#gada8f9493e77af7eeefcc3bbfd759adfc">libsemigroups::u8string</a></div><div class="ttdeci">std::basic_string&lt; uint8_t &gt; u8string</div><div class="ttdoc">Alias for strings over unsigned chars.</div><div class="ttdef"><b>Definition</b> types.hpp:112</div></div>
 <div class="ttc" id="agroup__types__group_html_gae214dc6594738d449fb4483859d58932"><div class="ttname"><a href="group__types__group.html#gae214dc6594738d449fb4483859d58932">libsemigroups::tril</a></div><div class="ttdeci">tril</div><div class="ttdoc">Enum to indicate true, false or not currently knowable.</div><div class="ttdef"><b>Definition</b> types.hpp:54</div></div>
 <div class="ttc" id="agroup__types__group_html_gaefc0b002795e4a0b5db2a5c04078aa42"><div class="ttname"><a href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">libsemigroups::congruence_kind</a></div><div class="ttdeci">congruence_kind</div><div class="ttdoc">Enum to indicate the sided-ness of a congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:67</div></div>
 <div class="ttc" id="agroup__types__group_html_ggae214dc6594738d449fb4483859d58932a946003f97ccc52d5d3b54ac0ec31bbfc"><div class="ttname"><a href="group__types__group.html#ggae214dc6594738d449fb4483859d58932a946003f97ccc52d5d3b54ac0ec31bbfc">libsemigroups::tril::FALSE</a></div><div class="ttdeci">@ FALSE</div><div class="ttdoc">Value representing false.</div><div class="ttdef"><b>Definition</b> types.hpp:56</div></div>
