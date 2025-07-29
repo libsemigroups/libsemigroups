@@ -46,13 +46,14 @@
 
 #include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-#include "adapters.hpp"   // for Hash etc
-#include "bitset.hpp"     // for BitSet
-#include "constants.hpp"  // for UNDEFINED, Undefined
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "hpcombi.hpp"    // for HPCombi::Transf16
-#include "types.hpp"      // for SmallestInteger
+#include "adapters.hpp"              // for Hash etc
+#include "bitset.hpp"                // for BitSet
+#include "constants.hpp"             // for UNDEFINED, Undefined
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
+#include "hpcombi.hpp"               // for HPCombi::Transf16
+#include "is_specialization_of.hpp"  // for is_specialization_of
+#include "types.hpp"                 // for SmallestInteger
 
 #include "detail/stl.hpp"  // for is_array_v
 
@@ -128,7 +129,7 @@ namespace libsemigroups {
   class PTransfBase : public detail::PTransfPolymorphicBase {
     static_assert(std::is_integral_v<Scalar>,
                   "template parameter Scalar must be an integral type");
-    static_assert(!std::numeric_limits<Scalar>::is_signed,
+    static_assert(std::is_unsigned_v<Scalar>,
                   "template parameter Scalar must be unsigned");
 
    public:
@@ -516,6 +517,7 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, if
     //! \c *this and \c that have different degrees, then bad things may happen.
     // TODO(later) other operators such as power
+    // TODO to tpp
     template <typename Subclass>
     [[nodiscard]] Subclass operator*(Subclass const& that) const {
       static_assert(IsDerivedFromPTransf<Subclass>,
@@ -526,14 +528,14 @@ namespace libsemigroups {
       return xy;
     }
 
-    //! \brief Type of iterators point to image values.
+    //! \brief Type of iterators pointing to image values.
     //!
-    //! Type of iterators point to image values.
+    //! Type of iterators pointing to image values.
     using iterator = typename Container::iterator;
 
-    //! \brief Type of const iterators point to image values.
+    //! \brief Type of const iterators pointing to image values.
     //!
-    //! Type of const iterators point to image values.
+    //! Type of const iterators pointing to image values.
     using const_iterator = typename Container::const_iterator;
 
     //! \brief Returns a \ref const_iterator (random access iterator) pointing
