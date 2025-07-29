@@ -38,7 +38,7 @@ jobs:
           sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa -y
           sudo apt-get --yes update
           sudo apt-get install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
-          CXX=${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          CXX="ccache ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}"
           echo "CXX=$CXX" >> $GITHUB_ENV
       - name: Compiler information
         run: |
@@ -98,7 +98,7 @@ jobs:
       - name: Configure . . .
         run: |
           ./autogen.sh
-          ./configure CXX="${{ matrix.sys.compiler }}"
+          ./configure CXX="ccache ${{ matrix.sys.compiler }}"
       - name: Build libsemigroups . . .
         run: make -j4
       - name: Build test_all . . .
