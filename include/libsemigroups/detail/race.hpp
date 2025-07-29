@@ -28,21 +28,25 @@
 #ifndef LIBSEMIGROUPS_DETAIL_RACE_HPP_
 #define LIBSEMIGROUPS_DETAIL_RACE_HPP_
 
+#include <algorithm>    // for min, find_if
 #include <chrono>       // for nanoseconds
 #include <cstddef>      // for size_t
-#include <memory>       // for std::shared_ptr
-#include <thread>       // for mutex
-#include <type_traits>  // for invoke_result_t
-#include <vector>       // for vector
+#include <exception>    // for exception
+#include <memory>       // for shared_ptr, operator!=, opera...
+#include <mutex>        // for mutex, lock_guard
+#include <string_view>  // for basic_string_view
+#include <thread>       // for thread, get_id, __thread_id
+#include <type_traits>  // for invoke_result_t, is_same_v
+#include <typeinfo>     // for type_info
+#include <utility>      // for move, forward
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/runner.hpp"     // for Runner
+#include "libsemigroups/runner.hpp"     // for Runner, delta, Reporter
 
-#include "report.hpp"  // for report_default, REPORT_TIME
-#include "stl.hpp"     // for IsCallable
-#include "timer.hpp"   // for Timer
+#include "report.hpp"  // for report_default, thread_id
+#include "timer.hpp"   // for Timer, string_time
 
 namespace libsemigroups {
   namespace detail {
