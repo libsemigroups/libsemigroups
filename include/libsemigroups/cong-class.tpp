@@ -391,10 +391,14 @@ namespace libsemigroups {
 
   template <typename Word>
   std::string to_human_readable_repr(Congruence<Word> const& c) {
-    return fmt::format("<Congruence over {} with {} runner{}>",
-                       to_human_readable_repr(c.presentation()),
-                       c.number_of_runners(),
-                       c.number_of_runners() > 1 ? "s" : "");
+    return fmt::format(
+        "<{} Congruence over {} with {} gen. pair{}, {} runners>",
+        c.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
+        to_human_readable_repr(c.presentation()),
+        detail::group_digits(c.number_of_generating_pairs()),
+        c.number_of_generating_pairs() == 1 ? "" : "s",
+        c.number_of_runners(),
+        c.number_of_runners() > 1 ? "s" : "");
   }
 
   // This function is declared in obv-inf.hpp
