@@ -1356,4 +1356,21 @@ namespace libsemigroups {
     REQUIRE(c.has<KnuthBendix<std::string>>());
     REQUIRE(c.get<KnuthBendix<std::string>>() != nullptr);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "039",
+                          "to_human_readable_repr",
+                          "[quick][cong]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    Congruence cong(twosided, p);
+    congruence::add_generating_pair(cong, "ef", "dg");
+
+    REQUIRE(to_human_readable_repr(cong)
+            == "<2-sided Congruence over <semigroup presentation with 7 "
+               "letters, 1 rule, and length 10> with 1 gen. pair, 4 runners>");
+  }
+
 }  // namespace libsemigroups
