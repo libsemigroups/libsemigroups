@@ -33,11 +33,7 @@ namespace libsemigroups {
   std::ostringstream&
   operator<<(std::ostringstream&                                      os,
              Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    os << fmt::format("<{} {} action with {} generators, {} points>",
-                      action.finished() ? "complete" : "incomplete",
-                      LeftOrRight,
-                      action.number_of_generators(),
-                      action.current_size());
+    os << to_human_readable_repr(action);
     return os;
   }
 
@@ -432,6 +428,22 @@ namespace libsemigroups {
                               N,
                               M);
     }
+  }
+
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  std::string to_human_readable_repr(
+      Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
+    return fmt::format("<{} {} action with {} generator{}, {} point{}>",
+                       action.finished() ? "complete" : "incomplete",
+                       LeftOrRight,
+                       action.number_of_generators(),
+                       action.number_of_generators() == 1 ? "" : "s",
+                       action.current_size(),
+                       action.current_size() == 1 ? "" : "s");
   }
 
 }  // namespace libsemigroups
