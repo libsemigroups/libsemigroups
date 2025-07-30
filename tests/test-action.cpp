@@ -878,4 +878,16 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Action",
+                          "024",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    RightAction<PPerm<>, PPerm<>> o;
+    o.add_seed(PPerm<>::one(8));
+    o.add_generator(
+        make<PPerm<>>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
+    REQUIRE(to_human_readable_repr(o)
+            == "<incomplete right action with 1 generator, 1 point>");
+  }
+
 }  // namespace libsemigroups

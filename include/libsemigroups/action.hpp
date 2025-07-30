@@ -258,6 +258,7 @@ namespace libsemigroups {
               typename Fnc,
               typename Trits,
               side LftOrRight>
+    // TODO make this a free function, and non-friend
     friend std::ostringstream&
     operator<<(std::ostringstream&                                 os,
                Action<Elment, Pint, Fnc, Trits, LftOrRight> const& action);
@@ -266,6 +267,7 @@ namespace libsemigroups {
     //!
     //! This member function allows Action objects to be inserted into a
     //! std::ostream.
+    // TODO make this a free function, and non-friend
     friend std::ostream& operator<<(std::ostream& os, Action const& action) {
       os << detail::to_string(action);
       return os;
@@ -896,7 +898,7 @@ namespace libsemigroups {
     void throw_if_index_out_of_range(index_type i) const;
     void throw_if_no_generators() const;
     void throw_if_bad_degree(element_type const&) const;
-  };
+  };  // class Action
 
   //! \ingroup action_group
   //! This is a traits class for use with Action, \ref LeftAction,
@@ -941,6 +943,29 @@ namespace libsemigroups {
             typename Func   = ImageLeftAction<Element, Point>,
             typename Traits = ActionTraits<Element, Point>>
   using LeftAction = Action<Element, Point, Func, Traits, side::left>;
+
+  //! \ingroup action_group
+  //!
+  //! \brief Return a human readable representation of an Action object.
+  //!
+  //! Defined in `action.hpp`.
+  //!
+  //! This function returns a human readable representation of an Action
+  //! object.
+  //!
+  //! \param action the Action.
+  //!
+  //! \returns A std::string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  std::string to_human_readable_repr(
+      Action<Element, Point, Func, Traits, LeftOrRight> const& action);
 }  // namespace libsemigroups
 
 #include "action.tpp"
