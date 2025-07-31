@@ -20,10 +20,11 @@
 
 #include "libsemigroups/bipart.hpp"
 
-#include <cmath>     // for abs
+#include <cmath>     // for abs, M_E
 #include <iterator>  // for distance
 #include <limits>    // for numeric_limits
 #include <numeric>   // for iota
+#include <random>    // for discrete_distribution
 #include <thread>    // for get_id
 #include <utility>   // for move
 
@@ -36,12 +37,36 @@
 #include "libsemigroups/detail/uf.hpp"      // for Duf
 
 namespace libsemigroups {
-
   ////////////////////////////////////////////////////////////////////////
   // Helpers
   ////////////////////////////////////////////////////////////////////////
 
   namespace {
+    // Limited to n = 20, because o/w n! doesn't fit into a uint64_t.
+    uint64_t factorial(size_t n) {
+      LIBSEMIGROUPS_ASSERT(n <= 20);
+      if (n <= 1) {
+        return 1;
+      }
+      return n * factorial(n - 1);
+    }
+
+    // Limited to n = 25, because o/w bell_number(n) doesn't fit into a
+    // uint64_t.
+    uint64_t bell_number(size_t n) {
+      LIBSEMIGROUPS_ASSERT(n <= 25);
+      static std::vector<uint64_t> bell;
+      bell.resize(n + 1);
+      bell[1] = 1;
+      for (size_t i = 1; i <= n - 1; ++i) {
+        bell[i + 1] = bell[1];
+        for (size_t k = 0; k <= i - 1; ++k) {
+          bell[i - k] = bell[i - k] + bell[i - k + 1];
+        }
+      }
+      return bell[1];
+    }
+
     std::vector<uint32_t>& thread_lookup(size_t thread_id) {
       static std::vector<std::vector<uint32_t>> lookups(
           std::thread::hardware_concurrency() + 1);
@@ -298,11 +323,11 @@ namespace libsemigroups {
 
   void Blocks::throw_if_class_index_out_of_range(size_t index) const {
     if (index >= _lookup.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (block index) is out of range, expected a value "
-          "in [0, {}) but found {}",
-          _lookup.size(),
-          index);
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (block index) is out of "
+                              "range, expected a value "
+                              "in [0, {}) but found {}",
+                              _lookup.size(),
+                              index);
     }
   }
 
@@ -343,6 +368,42 @@ namespace libsemigroups {
         size_t index = x[i];
         result[index].push_back(-(i - x.degree()) - 1);
       }
+      return result;
+    }
+
+    void uniform_random(Bipartition& x) {
+      auto const N = 2 * x.degree();
+      if (N > 20) {
+        LIBSEMIGROUPS_EXCEPTION("the argument (a bipartition) must have degree "
+                                "at most 10 but found {}",
+                                x.degree());
+      }
+
+      static std::random_device rd;
+
+      auto const                           c = M_E * bell_number(N);
+      std::discrete_distribution<uint64_t> g(4 * N, 0, 4 * N, [&N, &c](auto m) {
+        return std::pow(m, N) / (c * factorial(m));
+      });
+
+      std::mt19937                            mt(rd());
+      auto                                    M = g(mt);
+      std::uniform_int_distribution<uint32_t> dist(0, M);
+
+      uint32_t              next = 0;
+      std::vector<uint32_t> lookup(M + 1, static_cast<uint32_t>(UNDEFINED));
+      for (size_t i = 0; i != N; ++i) {
+        auto b = dist(mt);
+        if (lookup[b] == UNDEFINED) {
+          lookup[b] = next++;
+        }
+        x[i] = lookup[b];
+      }
+    }
+
+    Bipartition uniform_random(size_t deg) {
+      Bipartition result(deg);
+      uniform_random(result);
       return result;
     }
 
@@ -553,11 +614,11 @@ namespace libsemigroups {
 
   bool Bipartition::is_transverse_block(size_t index) const {
     if (index >= number_of_blocks()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (block index) is out of range, expected a value "
-          "in [0, {}) but found {}",
-          number_of_blocks(),
-          index);
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (block index) is out of "
+                              "range, expected a value "
+                              "in [0, {}) but found {}",
+                              number_of_blocks(),
+                              index);
     }
     bipartition::throw_if_invalid(*this);
     return is_transverse_block_no_checks(index);
