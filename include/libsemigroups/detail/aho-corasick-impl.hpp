@@ -32,6 +32,7 @@
 
 #include "libsemigroups/constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/ranges.hpp"     // for rx::iterator_range
 #include "libsemigroups/types.hpp"      // for letter_type, word_type
@@ -182,6 +183,17 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(_children.number_of_rows() == _all_nodes.size());
         return _active_nodes_index.size();
       }
+
+      [[nodiscard]] rx::iterator_range<
+          std::unordered_set<index_type>::const_iterator>
+      node_indices() const {
+        return rx::iterator_range(_active_nodes_index.cbegin(),
+                                  _active_nodes_index.cend());
+      }
+
+      template <typename OutputIterator>
+      OutputIterator signature_no_checks(OutputIterator d_first,
+                                         index_type     i) const;
 
       template <typename Iterator>
       index_type add_word(Iterator first, Iterator last);
@@ -472,6 +484,8 @@ namespace libsemigroups {
                                               Word const&      w) {
         return end_search_no_checks(ac, w.begin(), w.end());
       }
+
+      [[nodiscard]] Dot dot(AhoCorasickImpl const& ac);
 
     }  // namespace aho_corasick_impl
   }    // namespace detail

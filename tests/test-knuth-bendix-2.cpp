@@ -46,6 +46,7 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
+#include "libsemigroups/aho-corasick.hpp"  // for dot
 #include "libsemigroups/constants.hpp"     // for operator==, operator!=
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
@@ -1616,12 +1617,22 @@ namespace libsemigroups {
                 {{00_w, 0_w}, {11_w, 1_w}, {010_w, 10_w}, {101_w, 10_w}}));
     REQUIRE(kb.gilman_graph_node_labels()
             == std::vector({{}, 0_w, 01_w, 1_w, 10_w}));
+
     // The gilman_graph generated is isomorphic to the word_graph given, but not
     // identical. Since the normal forms are correct (see above) the below check
     // is omitted.
     // REQUIRE(kb.gilman_graph()
     //         == make<WordGraph<size_t>>(5, {{1, 3}, {UNDEFINED, 2}, {},
     //         {4}}));
+    auto d = knuth_bendix::dot(kb);
+    REQUIRE((d.nodes()
+             | rx::transform([](auto& node) { return node.attrs["label"]; })
+             | rx::sort() | rx::to_vector())
+            == std::vector<std::string>({"&#949;", "0", "01", "1", "10"}));
+    REQUIRE((rx::iterator_range(d.edges().begin(), d.edges().end())
+             | rx::transform([](auto& edge) { return edge.attrs["label"]; })
+             | rx::sort() | rx::to_vector())
+            == std::vector<std::string>({"0", "0", "1", "1"}));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -1642,6 +1653,23 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::reduce(kb, "cbda") == "bcda");
     REQUIRE(knuth_bendix::reduce(kb, "badc") == "badc");
     REQUIRE(knuth_bendix::reduce(kb, "cadb") == "cadb");
+    auto d = knuth_bendix::dot(kb);
+
+    REQUIRE((d.nodes()
+             | rx::transform([](auto& node) { return node.attrs["label"]; })
+             | rx::sort() | rx::to_vector())
+            == std::vector<std::string>(
+                {"&#949;", "a",   "ab", "abc", "abcd", "abd", "ac", "acd", "ad",
+                 "b",      "ba",  "bc", "bca", "bcad", "bcd", "bd", "c",   "ca",
+                 "cb",     "cbd", "cd", "d",   "da",   "db",  "dc"}));
+    REQUIRE((rx::iterator_range(d.edges().begin(), d.edges().end())
+             | rx::transform([](auto& edge) { return edge.attrs["label"]; })
+             | rx::sort() | rx::to_vector())
+            == std::vector<std::string>({"a", "a", "a", "a", "a", "a", "a", "a",
+                                         "b", "b", "b", "b", "b", "b", "b", "b",
+                                         "c", "c", "c", "c", "c", "c", "c", "c",
+                                         "c", "c", "c", "d", "d", "d", "d", "d",
+                                         "d", "d", "d", "d", "d", "d", "d"}));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",

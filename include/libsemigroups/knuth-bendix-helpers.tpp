@@ -295,6 +295,53 @@ namespace libsemigroups {
       return true;
     }
 
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    Dot dot(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
+      auto to_word = [](Word const& w) {
+        if (w.empty()) {
+          return std::string("&#949;");
+        }
+        if constexpr (std::is_same_v<Word, std::string>) {
+          return w;
+        }
+        std::string result;
+        for (auto a : w) {
+          result += std::to_string(a);
+        }
+        return result;
+      };
+      kb.run();
+      std::unordered_set<uint32_t> seen;
+      Dot                          result;
+      result.kind(Dot::Kind::digraph).add_attr("node [shape=\"box\"]");
+
+      auto const& labels = kb.gilman_graph_node_labels();
+      // Gotta add all the nodes first since o/w add_edge throws
+      for (auto index : kb.gilman_graph().nodes()) {
+        result.add_node(index).add_attr("label", to_word(labels[index]));
+      }
+      for (auto index : kb.gilman_graph().nodes()) {
+        for (auto const& [label, child] :
+             kb.gilman_graph().labels_and_targets_no_checks(index)) {
+          if (child != UNDEFINED) {
+            // FIXME(1) proper fix
+            auto& edge
+                = result.add_edge(index, child)
+                      .add_attr("color",
+                                result.colors[label % result.colors.size()])
+                      .add_attr(
+                          "label",
+                          to_word(Word(
+                              1, kb.presentation().letter_no_checks(label))));
+            if (!seen.insert(child).second) {
+              edge.add_attr("style", "dashed");
+            }
+          }
+        }
+      }
+      return result;
+    }
+
     // template <typename T>
     // tril try_equal_to(Presentation<std::string>& p,
     //                          std::string const&         lhs,
