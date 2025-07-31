@@ -12,6 +12,7 @@
     <tab type="user" visible="yes" url="@ref md_changelog-v3" title="Changelog - version 3" />
     <tab type="user" visible="yes" url="@ref md_changelog-v2" title="Changelog - version 2" />
     <tab type="user" visible="yes" url="@ref md_changelog-v1" title="Changelog - version 1" />
+    <tab type="user" visible="yes" url="@ref md_deprecate" title="Deprecation" />
     <tab type="user" visible="yes" url="@ref md_install" title="Installation" />
     <tab type="user" visible="yes" url="_HEADING_" title="Data structures" />
     <tab type="usergroup" visible="yes" url="@ref adapters_group" title="Adapters">
