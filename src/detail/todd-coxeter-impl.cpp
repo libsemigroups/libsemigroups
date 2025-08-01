@@ -38,6 +38,7 @@
 #include "libsemigroups/detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "libsemigroups/detail/felsch-graph.hpp"  // for DoNotRegisterDefs
 #include "libsemigroups/detail/fmt.hpp"       // for format_decimal, copy_str
+#include "libsemigroups/detail/guard.hpp"     // for Guard
 #include "libsemigroups/detail/iterator.hpp"  // for operator+
 #include "libsemigroups/detail/node-manager.hpp"  // for NodeManager
 #include "libsemigroups/detail/report.hpp"        // for report_no_prefix
@@ -325,7 +326,7 @@ namespace libsemigroups {
         if (!tc->_ticker_running && reporting_enabled()
             && delta(start_time) > std::chrono::seconds(1)) {
           tc->_ticker_running = true;
-          ticker([this]() { report_progress_from_thread(); });
+          ticker([&tc]() { tc->report_progress_from_thread(); });
         }
       }
       tc->_ticker_running = old_ticker_running;
@@ -421,6 +422,7 @@ namespace libsemigroups {
           _forest(),
           _settings_stack(),
           _standardized(),
+          _state(),
           _ticker_running(),
           _word_graph() {
       init();
@@ -433,6 +435,7 @@ namespace libsemigroups {
       _forest.init();
       reset_settings_stack();
       _standardized   = Order::none;
+      _state          = state::none;
       _ticker_running = false;
       _word_graph.init();
       copy_settings_into_graph();
@@ -456,6 +459,7 @@ namespace libsemigroups {
       _finished       = std::move(that._finished);
       _forest         = std::move(that._forest);
       _settings_stack = std::move(that._settings_stack);
+      _state          = std::move(that._state);
       _standardized   = std::move(that._standardized);
       _ticker_running = std::move(that._ticker_running);
       _word_graph     = std::move(that._word_graph);
@@ -476,6 +480,7 @@ namespace libsemigroups {
         _settings_stack.push_back(std::make_unique<Settings>(*uptr));
       }
       _standardized   = that._standardized;
+      _state          = that._state;
       _ticker_running = that._ticker_running;
       _word_graph     = that._word_graph;
       return *this;
@@ -850,6 +855,8 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::run_impl() {
+      detail::Guard guard(_state, state::running);
+
       using std::chrono::duration_cast;
       using std::chrono::seconds;
       if (!running_for() && !running_until() && is_obviously_infinite(*this)) {
@@ -880,8 +887,7 @@ namespace libsemigroups {
                      >= seconds(1))) {
         report_before_run();
         _ticker_running = true;
-        detail::Ticker t(
-            [this]() { current_word_graph().report_progress_from_thread(); });
+        detail::Ticker t([this]() { report_progress_from_thread(); });
         really_run_impl();
         _ticker_running = false;
       } else {
@@ -1315,6 +1321,56 @@ namespace libsemigroups {
       }
     }
 
+    void ToddCoxeterImpl::report_during_hlt_lookahead() const {
+      if (reporting_enabled()) {
+        auto const& stats = current_word_graph().lookahead_stats();
+        auto        total = stats.num_active_nodes_at_start
+                     * (current_word_graph().presentation().rules.size() / 2);
+        detail::ReportCell<4> rc;
+        rc.min_width(11).min_width(0, report_prefix().size());
+
+        rc("{}: deadends       {} |         {} |           {}%\n",
+           report_prefix(),
+           group_digits(stats.num_deadends),
+           signed_group_digits(stats.num_deadends - stats.prev_num_deadends),
+           fmt::format("{:.3f}",
+                       100 * static_cast<double>(stats.num_deadends) / total));
+        rc("{}: compatible     {} |         {} |           {}%\n",
+           report_prefix(),
+           group_digits(stats.num_compatible),
+           signed_group_digits(stats.num_compatible
+                               - stats.prev_num_compatible),
+           fmt::format("{:.3f}",
+                       100 * static_cast<double>(stats.num_compatible)
+                           / total));
+        rc("{}: coincidences   {} |         {} |           {}%\n",
+           report_prefix(),
+           group_digits(stats.num_coincidence),
+           signed_group_digits(stats.num_coincidence
+                               - stats.prev_num_coincidence),
+           fmt::format("{:.3f}",
+                       100 * static_cast<double>(stats.num_coincidence)
+                           / total));
+        rc("{}: add_edge       {} |         {} |           {}%\n",
+           report_prefix(),
+           group_digits(stats.num_add_edge),
+           signed_group_digits(stats.num_add_edge - stats.prev_num_add_edge),
+           fmt::format("{:.3f}",
+                       100 * static_cast<double>(stats.num_add_edge) / total));
+
+        auto sum = stats.num_deadends + stats.num_compatible
+                   + stats.num_coincidence + stats.num_add_edge;
+        auto prev_sum = stats.prev_num_deadends + stats.prev_num_compatible
+                        + stats.prev_num_coincidence + stats.prev_num_add_edge;
+        rc("{}: total          {} |         {} |           {}%\n",
+           report_prefix(),
+           group_digits(sum),
+           signed_group_digits(sum - prev_sum),
+           fmt::format("{:.3f}", 100 * static_cast<double>(sum) / total));
+        current_word_graph().lookahead_stats_checkpoint();
+      }
+    }
+
     void ToddCoxeterImpl::report_presentation() const {
       report_default("ToddCoxeter: {}",
                      presentation::to_report_string(internal_presentation()));
@@ -1327,14 +1383,25 @@ namespace libsemigroups {
       report_no_prefix("using {} strategy . . .\n", strategy());
     }
 
+    void ToddCoxeterImpl::report_progress_from_thread() const {
+      LIBSEMIGROUPS_ASSERT(_state != state::none);
+      current_word_graph().report_progress_from_thread();
+      if (_state == state::lookahead
+          && lookahead_style() == options::lookahead_style::hlt) {
+        report_during_hlt_lookahead();
+      }  // TODO report_during_felsch_lookahead
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeterImpl - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
+      detail::Guard guard(_state, state::lookahead);
       report_before_lookahead();
       std::chrono::high_resolution_clock::time_point lookahead_start_time
           = std::chrono::high_resolution_clock::now();
+      _word_graph.reset_stats(_word_graph.number_of_nodes_active());
 
       auto& current = _word_graph.lookahead_cursor();
 
@@ -1427,8 +1494,7 @@ namespace libsemigroups {
         if (!_ticker_running && reporting_enabled()
             && delta(lookahead_start_time) >= std::chrono::seconds(1)) {
           _ticker_running = true;
-          ticker(
-              [this]() { current_word_graph().report_progress_from_thread(); });
+          ticker([this]() { report_progress_from_thread(); });
         }
       }
       // TODO(1) stop early?

@@ -48,6 +48,8 @@ namespace libsemigroups {
       uint64_t prev_active_nodes;
       uint64_t prev_nodes_killed;
       uint64_t prev_nodes_defined;
+      uint64_t num_deadends;
+      uint64_t num_compatible;
     };
 
     ////////////////////////////////////////////////////////////////////////

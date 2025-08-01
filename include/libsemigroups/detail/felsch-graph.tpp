@@ -227,11 +227,18 @@ namespace libsemigroups {
       if (xa == UNDEFINED && yb != UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(a < out_degree());
         target_no_checks<RegDefs>(x, a, yb);
+        _stats.num_add_edge++;
       } else if (xa != UNDEFINED && yb == UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(b < out_degree());
         target_no_checks<RegDefs>(y, b, xa);
-      } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
-        return incompat(xa, yb);
+        _stats.num_add_edge++;
+      } else if (xa != UNDEFINED && yb != UNDEFINED) {
+        if (xa != yb) {
+          _stats.num_coincidence++;
+          return incompat(xa, yb);
+        } else {
+          _stats.num_compatible++;
+        }
       } else if (xa == UNDEFINED && yb == UNDEFINED) {
         // We discover that we are one letter away from being able to follow
         // the paths labelled u and v from some node. I.e. u = u_1a and v =
@@ -241,7 +248,11 @@ namespace libsemigroups {
         // make the (x, a) and (y, b) "preferred" definitions, or make an
         // immediate definition or do nothing.
         pref_def(x, a, y, b);
+        _stats.num_deadends++;
+      } else {
+        _stats.num_deadends++;
       }
+
       return true;
     }
 
@@ -270,6 +281,7 @@ namespace libsemigroups {
         x = word_graph::follow_path_no_checks(
             *this, u_node, u_first, u_last - 1);
         if (x == UNDEFINED) {
+          _stats.num_deadends++;
           return true;
         }
         a = *(u_last - 1);
@@ -287,6 +299,7 @@ namespace libsemigroups {
         y = word_graph::follow_path_no_checks(
             *this, v_node, v_first, v_last - 1);
         if (y == UNDEFINED) {
+          _stats.num_deadends++;
           return true;
         }
         b = *(v_last - 1);

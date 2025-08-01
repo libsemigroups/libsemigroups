@@ -147,14 +147,75 @@ namespace libsemigroups {
       using WordGraph<Node>::out_degree;
       using WordGraph<Node>::number_of_nodes;
 
+      // TODO rename LookaheadStats
+      struct Stats {
+        // For use in make_compatible_if_possible:
+        // in what follows (u = u'a, v = v'b) is a relation.
+
+        // Incremented if u' or v' does not label a path in the graph.
+        uint64_t         num_deadends      = 0;
+        mutable uint64_t prev_num_deadends = 0;
+
+        // If u and v label paths in the graph with the same target node.
+        uint64_t         num_compatible      = 0;
+        mutable uint64_t prev_num_compatible = 0;
+
+        // If u and v label paths in the graph with different target nodes.
+        uint64_t         num_coincidence      = 0;
+        mutable uint64_t prev_num_coincidence = 0;
+
+        // If (u' and v) or (u and v') label paths in the graph, but u'a or v'b
+        // do not
+        uint64_t         num_add_edge      = 0;
+        mutable uint64_t prev_num_add_edge = 0;
+
+        uint64_t num_active_nodes_at_start = 1;
+
+        Stats& init(size_t num_active_nodes = 1) {
+          num_deadends              = 0;
+          num_compatible            = 0;
+          num_coincidence           = 0;
+          num_add_edge              = 0;
+          prev_num_deadends         = 0;
+          prev_num_compatible       = 0;
+          prev_num_coincidence      = 0;
+          prev_num_add_edge         = 0;
+          num_active_nodes_at_start = num_active_nodes;
+
+          return *this;
+        }
+
+        Stats const& checkpoint() const {
+          prev_num_deadends    = num_deadends;
+          prev_num_compatible  = num_compatible;
+          prev_num_coincidence = num_coincidence;
+          prev_num_add_edge    = num_add_edge;
+          return *this;
+        }
+      };
+
+      Stats const& lookahead_stats() const {
+        return _stats;
+      }
+
+      void reset_stats(size_t num_active_nodes) {
+        _stats.init(num_active_nodes);
+      }
+
+      void lookahead_stats_checkpoint() const {
+        _stats.checkpoint();
+      }
+
      private:
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - data members - private
       ////////////////////////////////////////////////////////////////////////
+
       Definitions                _definitions;
       mutable detail::FelschTree _felsch_tree;
       mutable bool               _felsch_tree_initted;
       Presentation<word_type>    _presentation;
+      Stats                      _stats;
 
      public:
       ////////////////////////////////////////////////////////////////////////
