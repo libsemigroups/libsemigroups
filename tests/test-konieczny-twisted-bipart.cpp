@@ -20,13 +20,13 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // FOR LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"     // for TwistedBipartition
-#include "libsemigroups/konieczny.hpp"  // for Konieczny
+#include "libsemigroups/konieczny.hpp"       // for Konieczny
+#include "libsemigroups/twisted-bipart.hpp"  // for TwistedBipartition
 
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "900",
+                          "043",
                           "small TwistedBipartition example",
                           "[quick][konieczny]") {
     auto rg = ReportGuard(true);
@@ -57,7 +57,22 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "901",
+                          "044",
+                          "small twisted example 2",
+                          "[quick][konieczny][element]") {
+    auto x = make<TwistedBipartition>(
+        {{1, 2, 3, -1}, {4, 5}, {6, -5, -6}, {-2, -3}, {-4}}, 10, 1);
+    auto y = make<TwistedBipartition>(
+        {{1, -1}, {2}, {3, 4, 5, -4}, {6, -5}, {-2}, {-3, -6}}, 10, 0);
+    auto z = make<TwistedBipartition>(
+        {{1, 2, -1, -2}, {3, -5}, {4, 5}, {6}, {-3}, {-4, -6}}, 10, 0);
+
+    Konieczny S = make<Konieczny>({x, y, z});
+    REQUIRE(S.size() == 236);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "045",
                           "twisted Brauer monoid, degree 6 threshold 1",
                           "[quick][konieczny]") {
     auto rg = ReportGuard(true);
@@ -80,7 +95,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "903",
+                          "046",
                           "twisted Brauer gens, degree 6 threshold 1",
                           "[quick][konieczny]") {
     auto rg = ReportGuard(true);
@@ -102,7 +117,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "904",
+                          "047",
                           "twisted Partition gens, degree 6 threshold 10",
                           "[standard][konieczny]") {
     auto rg = ReportGuard(true);
