@@ -174,6 +174,14 @@ namespace libsemigroups {
       return result;
     }
 
+    Blocks identity_blocks(size_t degree) {
+      auto ret = Blocks(degree);
+      for (size_t i = 0; i < degree; ++i) {
+        ret.block_no_checks(i, i);
+        ret.is_transverse_block_no_checks(i, true);
+      }
+      return ret;
+    }
   }  // namespace blocks
 
   [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
@@ -629,6 +637,8 @@ namespace libsemigroups {
       }
       _vector[i] = lookup[j];
     }
+
+    invalidate_cache();
   }
 
   uint32_t Bipartition::number_of_blocks() const {
@@ -725,6 +735,134 @@ namespace libsemigroups {
   Blocks* Bipartition::right_blocks() const {
     bipartition::throw_if_invalid(*this);
     return right_blocks_no_checks();
+  }
+
+  void Bipartition::invalidate_cache() const {
+    this->_nr_blocks      = UNDEFINED;
+    this->_nr_left_blocks = UNDEFINED;
+    this->_trans_blocks_lookup.clear();
+    this->_rank = UNDEFINED;
+  }
+
+  Bipartition bipartition::block_projection(Blocks const& blocks) {
+    std::vector<uint32_t> vector(blocks.cbegin(), blocks.cend());
+    vector.reserve(2 * blocks.degree());
+
+    std::vector<uint32_t> lookup;
+    lookup.assign(blocks.number_of_blocks(), UNDEFINED);
+    uint32_t next = blocks.number_of_blocks();
+    for (size_t i = 0; i < blocks.degree(); ++i) {
+      if (blocks.is_transverse_block_no_checks(blocks[i])) {
+        vector.push_back(vector[i]);
+      } else {
+        if (lookup[blocks[i]] == UNDEFINED) {
+          lookup[blocks[i]] = next++;
+        }
+        vector.push_back(lookup[blocks[i]]);
+      }
+    }
+    Bipartition result(std::move(vector));
+    return result;
+  }
+
+  size_t bipartition::number_floating_components(Bipartition const& a,
+                                                 Bipartition const& b) {
+    size_t              n   = a.degree();
+    size_t              anr = a.number_of_blocks();
+    size_t              bnr = b.number_of_blocks();
+    std::vector<size_t> fuse(anr + bnr);
+
+    for (size_t i = 0; i < fuse.size(); ++i) {
+      fuse[i] = i;
+    }
+
+    auto find_root = [&fuse](size_t i) -> size_t {
+      while (fuse[i] < i) {
+        i = fuse[i];
+      }
+      return i;
+    };
+
+    for (size_t i = 0; i < n; ++i) {
+      size_t x = find_root(a[i + n]);
+      size_t y = find_root(b[i] + anr);
+      if (x < y) {
+        fuse[y] = x;
+      } else if (x > y) {
+        fuse[x] = y;
+      }
+    }
+
+    std::vector<bool> earthed(fuse.size(), false);
+    for (size_t i = 0; i < n; ++i) {
+      earthed[find_root(a[i])]           = true;
+      earthed[find_root(b[i + n] + anr)] = true;
+    }
+
+    std::vector<bool> already_counted(fuse.size(), false);
+    size_t            floating_count = 0;
+
+    for (size_t i = n; i < 2 * n; ++i) {
+      size_t x = find_root(a[i]);
+      if (!earthed[x] && !already_counted[x]) {
+        already_counted[x] = true;
+        ++floating_count;
+      }
+    }
+
+    for (size_t i = 0; i < n; ++i) {
+      size_t x = find_root(b[i] + anr);
+      if (!earthed[x] && !already_counted[x]) {
+        already_counted[x] = true;
+        ++floating_count;
+      }
+    }
+
+    return floating_count;
+  }
+
+  TwistedBipartition operator*(TwistedBipartition const& x,
+                               TwistedBipartition const& y) {
+    TwistedBipartition result(x);
+    result.product_inplace_no_checks(x, y);
+    return result;
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(TwistedBipartition const& x,
+                                                   std::string_view braces,
+                                                   size_t           max_width) {
+    if (x.is_zero()) {
+      return fmt::format("<Zero for TwistedBipartitions of degree {}>",
+                         x.degree());
+    }
+
+    if (x.is_one()) {
+      return fmt::format("<One for TwistedBipartitions of degree {}>",
+                         x.degree());
+    }
+
+    std::string bipart_str
+        = to_human_readable_repr(x.bipartition(), braces, max_width);
+
+    std::string full_string = fmt::format(
+        "TwistedBipartition({}, threshold {}, {} floating components)",
+        bipart_str,
+        x.threshold(),
+        x.floating_components());
+
+    if (full_string.size() < max_width) {
+      return full_string;
+    }
+
+    // TODO(later): instead re-call Bipartition with lower max_width?
+    return fmt::format(
+        "<TwistedBipartition of degree {} with {} blocks, rank {}, "
+        "threshold {}, and {} floating components>",
+        x.degree(),
+        x.bipartition().number_of_blocks(),
+        x.bipartition().rank(),
+        x.threshold(),
+        x.floating_components());
   }
 
 }  // namespace libsemigroups

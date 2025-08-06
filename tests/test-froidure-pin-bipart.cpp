@@ -16,8 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
-#include <vector>   // for vector
+#include <cstddef>   // for size_t
+#include <iostream>  // for cout, endl // TODO(2): remove this include
+#include <vector>    // for vector
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
@@ -229,6 +230,116 @@ namespace libsemigroups {
       REQUIRE_NOTHROW(S.is_idempotent(i));
     }
     REQUIRE_THROWS_AS(S.is_idempotent(10), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<TwistedBipartition>",
+                          "900",
+                          "small example",
+                          "[quick][froidure-pin][element]") {
+    auto x = make<TwistedBipartition>({{1, 5, 8, -1, -2, -4, -10},
+                                       {2, 4, 7, -8},
+                                       {3, 6, 9, 10, -3},
+                                       {-5, -9},
+                                       {-6, -7}},
+                                      1,
+                                      0);
+    auto y = make<TwistedBipartition>({{1},
+                                       {2, 3, 4, 5, -5, -6, -7},
+                                       {6, 8, -2, -4, -8, -10},
+                                       {7, -9},
+                                       {9, -3},
+                                       {10, -1}},
+                                      1,
+                                      0);
+    auto z
+        = make<TwistedBipartition>({{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+                                    {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10}},
+                                   1,
+                                   0);
+
+    FroidurePin S = make<FroidurePin>({x, y, z});
+    REQUIRE(S.size() == 23);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<TwistedBipartition>",
+                          "901",
+                          "small example 2",
+                          "[quick][froidure-pin][element]") {
+    auto x = make<TwistedBipartition>(
+        {{1, 2, 3, -1}, {4, 5}, {6, -5, -6}, {-2, -3}, {-4}}, 10, 1);
+    auto y = make<TwistedBipartition>(
+        {{1, -1}, {2}, {3, 4, 5, -4}, {6, -5}, {-2}, {-3, -6}}, 10, 0);
+    auto z = make<TwistedBipartition>(
+        {{1, 2, -1, -2}, {3, -5}, {4, 5}, {6}, {-3}, {-4, -6}}, 10, 0);
+
+    FroidurePin S = make<FroidurePin>({x, y, z});
+    std::cout << S.size() << std::endl;
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<TwistedBipartition>",
+                          "902",
+                          "twisted Brauer monoid, deg 6 thresh 1",
+                          "[quick][froidure-pin][element]") {
+    auto rg = ReportGuard(true);
+
+    auto x = make<TwistedBipartition>(
+        {{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 1, 0);
+    auto y = make<TwistedBipartition>(
+        {{1, -2}, {2, -3}, {3, -4}, {4, -5}, {5, -6}, {6, -1}}, 1, 0);
+    auto z = make<TwistedBipartition>(
+        {{1, -2}, {2, -1}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 1, 0);
+    auto t = make<TwistedBipartition>(
+        {{1, 2}, {-1, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 1, 0);
+
+    FroidurePin S = make<FroidurePin>({x, y, z, t});
+
+    S.run();
+
+    REQUIRE(S.size() == 20071);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<TwistedBipartition>",
+                          "903",
+                          "twisted Brauer monoid, deg 6 thresh 10",
+                          "[quick][froidure-pin][element]") {
+    auto rg = ReportGuard(true);
+
+    auto x = make<TwistedBipartition>(
+        {{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 50, 0);
+    auto y = make<TwistedBipartition>(
+        {{1, -2}, {2, -3}, {3, -4}, {4, -5}, {5, -6}, {6, -1}}, 50, 0);
+    auto z = make<TwistedBipartition>(
+        {{1, -2}, {2, -1}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 50, 0);
+    auto t = make<TwistedBipartition>(
+        {{1, 2}, {-1, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 50, 0);
+
+    FroidurePin S = make<FroidurePin>({x, y, z, t});
+
+    S.run();
+
+    REQUIRE(S.size() == 494146);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<TwistedBipartition>",
+                          "904",
+                          "twisted partition gens, deg 6 thresh 10",
+                          "[quick][froidure-pin][element]") {
+    auto rg = ReportGuard(true);
+
+    auto x = make<TwistedBipartition>(
+        {{1}, {-1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 10, 0);
+    auto y = make<TwistedBipartition>(
+        {{1, -2}, {2, -3}, {3, -4}, {4, -5}, {5, -6}, {6, -1}}, 10, 0);
+    auto z = make<TwistedBipartition>(
+        {{1, -2}, {2, -1}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 10, 0);
+    auto t = make<TwistedBipartition>(
+        {{1, 2, -1, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 10, 0);
+
+    FroidurePin S = make<FroidurePin>({x, y, z, t});
+
+    S.run();
+
+    REQUIRE(S.size() == 46342368);
   }
 
 }  // namespace libsemigroups
