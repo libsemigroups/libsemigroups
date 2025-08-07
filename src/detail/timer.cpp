@@ -99,5 +99,14 @@ namespace libsemigroups {
       }
       return s;
     }
+
+    std::string now_string() {
+      auto now = std::chrono::system_clock::now();
+      return fmt::format(
+          "{:%Y-%m-%d}T{:%H:%M:%S}",
+          now,
+          std::chrono::time_point_cast<std::chrono::seconds>(now));
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
