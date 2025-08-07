@@ -181,6 +181,8 @@ namespace libsemigroups {
         };
       };  // struct options
 
+      enum class state : uint8_t { none, running, lookahead };
+
       using node_type        = typename WordGraph<uint32_t>::node_type;
       using index_type       = node_type;
       using label_type       = typename WordGraph<uint32_t>::label_type;
@@ -297,6 +299,12 @@ namespace libsemigroups {
                                          size_t           killed_last_interval);
       };  // class Graph
 
+      struct Stats {
+        uint64_t                                       number_of_runs = 0;
+        std::chrono::high_resolution_clock::time_point this_run_start_time;
+        std::chrono::nanoseconds                       total_run_time;
+      };
+
       ////////////////////////////////////////////////////////////////////////
       // 2. ToddCoxeterImpl - data members - private
       ////////////////////////////////////////////////////////////////////////
@@ -305,8 +313,11 @@ namespace libsemigroups {
       Forest                                 _forest;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
+      state                                  _state;
       bool                                   _ticker_running;
       Graph                                  _word_graph;
+
+      mutable Stats _stats;  // TODO add to constructors
 
      public:
       using word_graph_type = Graph;
@@ -1779,7 +1790,11 @@ namespace libsemigroups {
       void report_after_run() const;
       void report_before_lookahead() const;
       void report_before_run() const;
+      void report_during_hlt_lookahead() const;
       void report_presentation() const;
+      void report_progress_from_thread() const;
+
+      void add_timing_row(detail::ReportCell<4>& rc) const;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - lookahead - private
