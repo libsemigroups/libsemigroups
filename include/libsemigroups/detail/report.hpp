@@ -76,6 +76,8 @@ namespace libsemigroups {
       ~Ticker();
     };
 
+    enum class Align { left, right };
+
     // This object is a helper for formatting information reported by various
     // classes in libsemigroups such as ToddCoxeterImpl, KnuthBendixImpl, etc.
     //
@@ -87,12 +89,21 @@ namespace libsemigroups {
     class ReportCell {
      private:
       using Row = std::array<std::string, C + 1>;
-
+      Align                     _align;
       std::array<size_t, C + 1> _col_widths;
+      bool                      _divider_after;
+      bool                      _divider_before;
+      char                      _divider_char;
       std::vector<Row>          _rows;
 
      public:
-      ReportCell() : _col_widths(), _rows() {
+      ReportCell()
+          : _align(Align::right),
+            _col_widths(),
+            _divider_after(false),
+            _divider_before(true),
+            _divider_char('-'),
+            _rows() {
         _col_widths.fill(0);
       }
 
@@ -118,6 +129,15 @@ namespace libsemigroups {
         return *this;
       }
 
+      ReportCell& align(Align val) noexcept {
+        _align = val;
+        return *this;
+      }
+
+      Align align() const noexcept {
+        return _align;
+      }
+
       // Insert a row using a format string and arguments
       template <typename... Args>
       void operator()(std::string_view fmt_str, Args&&... args);
@@ -129,9 +149,24 @@ namespace libsemigroups {
         operator()(fmt_str, f(args)...);
       }
 
-     private:
-      size_t line_width() const;
+      [[nodiscard]] size_t line_width() const;
 
+      ReportCell& divider_after(bool val) {
+        _divider_after = val;
+        return *this;
+      }
+
+      ReportCell& divider_before(bool val) {
+        _divider_before = val;
+        return *this;
+      }
+
+      ReportCell& divider_char(char val) {
+        _divider_char = val;
+        return *this;
+      }
+
+     private:
       void emit();
     };  // ReportCell
   }     // namespace detail
