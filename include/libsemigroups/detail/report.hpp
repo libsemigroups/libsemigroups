@@ -46,6 +46,8 @@ namespace libsemigroups {
 
     bool is_report_suppressed_for(std::string_view);
 
+    [[nodiscard]] std::string& last_reported_line_var();
+
     // This class provides a thread-safe means of calling a function every
     // second in a detached thread. The purpose of this class is so that the
     // TickerImpl, which contains the data required by the function to be
@@ -188,7 +190,9 @@ namespace libsemigroups {
 
     if (reporting_enabled()) {
       std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(sv, std::forward<Args>(args)...);
+      auto line = fmt::format(sv, std::forward<Args>(args)...);
+      detail::last_reported_line_var() = line;
+      fmt::print("{}", line);
     }
   }
 
@@ -207,6 +211,9 @@ namespace libsemigroups {
       report_no_prefix(fmt_default(sv, std::forward<Args>(args)...));
     }
   }
+
+  //! No doc
+  [[nodiscard]] std::string const& last_reported_line();
 
   //! \ingroup core_classes_group
   //!
