@@ -203,28 +203,24 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(min < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(max < number_of_nodes());
       for (auto i : WordGraph<Node>::labels()) {
-        // v -> max is an edge
         node_type v = first_source_no_checks(max, i);
         while (v != UNDEFINED) {
           auto w = next_source_no_checks(v, i);
-          if (WordGraph<Node>::target_no_checks(v, i) != min) {
-            target_no_checks(v, i, min);
-            new_edge(v, i);
-          }
+          LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(v, i) != min);
+          LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(v, i) == max);
+          target_no_checks(v, i, min);
+          new_edge(v, i);
           v = w;
         }
 
-        // Now let <v> be the IMAGE of <max>
         v = WordGraph<Node>::target_no_checks(max, i);
         if (v != UNDEFINED) {
           remove_source_no_checks(v, i, max);
-          // Let <u> be the image of <min>, and ensure <u> = <v>
-          node_type u = WordGraph<Node>::target_no_checks(min, i);
+          node_type const u = WordGraph<Node>::target_no_checks(min, i);
           if (u == UNDEFINED) {
-            if (WordGraph<Node>::target_no_checks(min, i) != min) {
-              target_no_checks(min, i, v);
-              new_edge(min, i);
-            }
+            LIBSEMIGROUPS_ASSERT(u != min);
+            target_no_checks(min, i, v);
+            new_edge(min, i);
           } else if (u != v) {
             incompat(u, v);
           }
