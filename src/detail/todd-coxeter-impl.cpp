@@ -1309,7 +1309,10 @@ namespace libsemigroups {
       if (reporting_enabled()) {
         report_no_prefix("{:+<90}\n", "");
         report_default("ToddCoxeter: STARTING --- ");
-        report_strategy();
+        // TODO(1) if using ACE style strategy include the value of the relevant
+        // setting
+        // TODO(1) add more nuance when not using hlt/felsch
+        report_no_prefix("using {} strategy . . .\n", strategy());
         report_no_prefix("{:+<90}\n", "");
         report_presentation();
       }
@@ -1318,13 +1321,6 @@ namespace libsemigroups {
     void ToddCoxeterImpl::report_presentation() const {
       report_default("ToddCoxeter: {}",
                      presentation::to_report_string(internal_presentation()));
-    }
-
-    void ToddCoxeterImpl::report_strategy() const {
-      // TODO(1) if using ACE style strategy include the value of the relevant
-      // setting
-      // TODO(1) add more nuance when not using hlt/felsch
-      report_no_prefix("using {} strategy . . .\n", strategy());
     }
 
     ////////////////////////////////////////////////////////////////////////
