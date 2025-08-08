@@ -2920,7 +2920,7 @@ namespace libsemigroups {
       "071",
       "Walker 7",
       "[todd-coxeter][standard][no-valgrind][no-coverage]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "aaa", "a");
@@ -2964,7 +2964,7 @@ namespace libsemigroups {
       "072",
       "Walker 8",
       "[todd-coxeter][standard][no-coverage][no-valgrind]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3347,7 +3347,7 @@ namespace libsemigroups {
       "084",
       "ACE --- SL219 - HLT",
       "[todd-coxeter][standard][ace][no-valgrind][no-coverage]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abAB");
     p.contains_empty_word(true);
@@ -3447,7 +3447,7 @@ namespace libsemigroups {
       "086",
       "ACE --- M12",
       "[todd-coxeter][standard][ace][no-coverage][no-valgrind]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcABC");
     p.contains_empty_word(true);
