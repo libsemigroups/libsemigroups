@@ -170,11 +170,12 @@ namespace libsemigroups {
       // one-sided version of swap nodes.
       void rename_node_no_checks(node_type c, node_type d);
 
+      // Returns the number of edges removed
       template <typename NewEdgeFunc, typename IncompatibleFunc>
-      void merge_nodes_no_checks(node_type          min,
-                                 node_type          max,
-                                 NewEdgeFunc&&      new_edge,
-                                 IncompatibleFunc&& incompat);
+      uint64_t merge_nodes_no_checks(node_type          min,
+                                     node_type          max,
+                                     NewEdgeFunc&&      new_edge,
+                                     IncompatibleFunc&& incompat);
 
       // Is d a source of c under x? This is costly!
       bool is_source_no_checks(node_type c, label_type x, node_type d) const;
