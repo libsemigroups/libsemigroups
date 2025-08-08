@@ -214,11 +214,7 @@ namespace libsemigroups {
       }
       CollectCoincidences incompat_func(_coinc);
 
-      // TODO re-enable
-      // size_t        prev_num_nodes = this->number_of_nodes_active();
-      // static size_t total_coinc   = 0;
       while (!_coinc.empty() && _coinc.size() < large_collapse()) {
-        // total_coinc++;
         Coincidence c = _coinc.top();
         _coinc.pop();
         node_type min = NodeManager<node_type>::find_node(c.first);
@@ -227,7 +223,7 @@ namespace libsemigroups {
           std::tie(min, max) = std::minmax({min, max});
           NodeManager<node_type>::union_nodes(min, max);
           if constexpr (RegisterDefs) {
-            BaseGraph::merge_nodes_no_checks(
+            _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
                 min,
                 max,
                 [this](node_type n, letter_type x) {
@@ -235,31 +231,18 @@ namespace libsemigroups {
                 },
                 incompat_func);
           } else {
-            BaseGraph::merge_nodes_no_checks(min, max, Noop(), incompat_func);
+            _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
+                min, max, Noop(), incompat_func);
           }
         }
-        // if (_coinc.size() > large_collapse()) {
-        //   size_t num_nodes = this->number_of_nodes_active();
-        //   size_t cost_pairwise
-        //       = 2 * out_degree() * out_degree() * (prev_num_nodes -
-        //       num_nodes);
-        //   size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
-        //   if (cost_bigcrush < cost_pairwise) {
-        //     report_default("ToddCoxeterImpl: large collapse {} -> {}
-        //     nodes\n",
-        //                    fmt::group_digits(prev_num_nodes),
-        //                    fmt::group_digits(num_nodes));
-        //     report_default("ToddCoxeterImpl: {} (coincidences)\n",
-        //                    fmt::group_digits(_coinc.size()));
-        //     break;
-        //   }
-        // }
       }
 
       if (_coinc.empty()) {
-        // fmt::print("Position 1, total coincidences is {}\n", total_coinc);
         return;
       }
+
+      // TODO add info
+      report_default("{}: large collapse!\n", report_prefix());
 
       while (!_coinc.empty()) {
         Coincidence c = _coinc.top();
@@ -290,14 +273,14 @@ namespace libsemigroups {
         c = NodeManager<node_type>::next_active_node(c);
       }
 
-      c = NodeManager<node_type>::initial_node();
-      // size_t m = 0;
+      _stats.num_active_edges = 0;
+      c                       = NodeManager<node_type>::initial_node();
 
       while (c != NodeManager<node_type>::first_free_node()) {
-        // m++;
         for (letter_type x = 0; x < out_degree(); ++x) {
           auto cx = target_no_checks(c, x);
           if (cx != UNDEFINED) {
+            _stats.num_active_edges++;
             auto d = NodeManager<node_type>::find_node(cx);
             if (cx != d) {
               if constexpr (RegisterDefs) {
