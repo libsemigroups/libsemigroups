@@ -355,13 +355,10 @@ namespace libsemigroups {
                          / run_time.count())
             + "/s";
 
-      std::string_view const line1
-          = "{}: nodes {} (active) | {} (killed) | {} (defined)\n";
-
       detail::ReportCell<4> rc;
       rc.min_width(11).min_width(0, report_prefix().size());
 
-      rc(line1,
+      rc("{}: nodes {} (active) | {} (killed) | {} (defined)\n",
          report_prefix(),
          group_digits(active),
          group_digits(killed),
@@ -371,11 +368,14 @@ namespace libsemigroups {
          active_diff,
          killed_diff,
          defined_diff);
-      rc("{}: time  {} (total)  | {} (killed) | {} (defined)\n",
+
+      auto complete = 100 * static_cast<double>(_stats.num_active_edges)
+                      / (this->number_of_nodes_active() * out_degree());
+      rc("{}: edges {}          | {} (complete)\n",
          report_prefix(),
-         string_time(run_time),
-         mean_killed,
-         mean_defined);
+         group_digits(_stats.num_active_edges),
+         fmt::format("{:.1f}%", complete));
+      // TODO add diff line for edges
       stats_check_point();
     }
 
