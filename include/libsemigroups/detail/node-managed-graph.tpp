@@ -45,9 +45,30 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     struct NodeManagedGraph<BaseGraph>::Stats {
-      uint64_t prev_active_nodes;
-      uint64_t prev_nodes_killed;
-      uint64_t prev_nodes_defined;
+      uint64_t             prev_active_nodes;
+      uint64_t             prev_nodes_killed;
+      uint64_t             prev_nodes_defined;
+      std::atomic_uint64_t num_active_edges;
+
+      Stats()
+          : prev_active_nodes(),
+            prev_nodes_killed(),
+            prev_nodes_defined(),
+            num_active_edges(0) {}
+
+      Stats(Stats const& that)
+          : prev_active_nodes(that.prev_active_nodes),
+            prev_nodes_killed(that.prev_nodes_killed),
+            prev_nodes_defined(that.prev_nodes_defined),
+            num_active_edges(that.num_active_edges.load()) {}
+
+      Stats& operator=(Stats const& that) {
+        prev_active_nodes  = that.prev_active_nodes;
+        prev_nodes_killed  = that.prev_nodes_killed;
+        prev_nodes_defined = that.prev_nodes_defined;
+        num_active_edges   = that.num_active_edges.load();
+        return *this;
+      }
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -392,5 +413,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups

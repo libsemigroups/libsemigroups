@@ -97,6 +97,7 @@ namespace libsemigroups {
 
       using BaseGraph::out_degree;
       using BaseGraph::target_no_checks;
+
       using NodeManager<node_type>::cursor;
       using NodeManager<node_type>::lookahead_cursor;
 
@@ -153,6 +154,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       [[nodiscard]] Stats& stats() noexcept {
+        return _stats;
+      }
+
+      [[nodiscard]] Stats const& stats() const noexcept {
         return _stats;
       }
 
