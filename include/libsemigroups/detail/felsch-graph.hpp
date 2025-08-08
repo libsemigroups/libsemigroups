@@ -104,7 +104,7 @@ namespace libsemigroups {
       }
     };
 
-    // TODO move to detail namespace? If it's not user facing anywhere then yes.
+    // TODO remove Word template param (it's always word_type)
     template <typename Word, typename Node, typename Definitions>
     class FelschGraph
         : public WordGraphWithSources<Node>,
