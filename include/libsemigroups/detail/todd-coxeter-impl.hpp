@@ -331,8 +331,8 @@ namespace libsemigroups {
       ToddCoxeterImpl& init(congruence_kind                knd,
                             Presentation<word_type> const& p);
 
-      // TODO(1) a to_todd_coxeter variant that throws if wg is not valid
-      // see below
+      // TODO(1) a "to" function variant that throws if wg is not valid see
+      // below
       template <typename Node>
       ToddCoxeterImpl(congruence_kind knd, WordGraph<Node> const& wg)
           : ToddCoxeterImpl() {
