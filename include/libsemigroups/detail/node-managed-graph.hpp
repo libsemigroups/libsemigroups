@@ -60,8 +60,8 @@ namespace libsemigroups {
       // Aliases - public
       ////////////////////////////////////////////////////////////////////////
 
-      using node_type       = typename BaseGraph::node_type;
-      using base_Graph_type = BaseGraph;
+      using node_type  = typename BaseGraph::node_type;
+      using label_type = typename BaseGraph::label_type;
 
       static_assert(
           std::is_base_of<WordGraphWithSources<node_type>, BaseGraph>::value,
