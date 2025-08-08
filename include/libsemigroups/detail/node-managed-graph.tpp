@@ -124,6 +124,24 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
+    // Accessors
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename BaseGraph>
+    uint64_t
+    NodeManagedGraph<BaseGraph>::number_of_edges_active() const noexcept {
+      // TODO replace with _stats.number_of_edges_active, when that works, or
+      // maybe not?
+      auto     current   = NodeManager<node_type>::initial_node();
+      uint64_t num_edges = 0;
+      while (current != NodeManager<node_type>::first_free_node()) {
+        num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
+        current = NodeManager<node_type>::next_active_node(current);
+      }
+      return num_edges;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     // Modifiers
     ////////////////////////////////////////////////////////////////////////
 
