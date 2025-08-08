@@ -1780,7 +1780,6 @@ namespace libsemigroups {
       void report_before_lookahead() const;
       void report_before_run() const;
       void report_presentation() const;
-      void report_strategy() const;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - lookahead - private
