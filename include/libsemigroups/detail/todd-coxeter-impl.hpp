@@ -1190,6 +1190,11 @@ namespace libsemigroups {
         return _word_graph.number_of_nodes_active();
       }
 
+      // not thread safe, don't call from reporting thread only the main one.
+      [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
+        return _word_graph.number_of_edges_active();
+      }
+
       // [[nodiscard]] bool empty() const {
       //   return (internal_presentation().rules.empty() &&
       //   generating_pairs().empty()
