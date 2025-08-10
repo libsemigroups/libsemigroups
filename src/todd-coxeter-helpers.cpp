@@ -95,6 +95,7 @@ namespace libsemigroups {
       uint64_t num_nodes_before_lookbehind = wg.number_of_nodes_active();
 
       if (reporting_enabled()) {
+        // TODO update
         report_no_prefix("{:+<90}\n", "");
         report_default("ToddCoxeter: performing lookbehind at "
                        "{} ({} active nodes) . . .\n",
@@ -109,6 +110,7 @@ namespace libsemigroups {
         if (reporting_enabled()) {
           if (delta(tc.last_report()) > std::chrono::seconds(1)) {
             tc.reset_last_report();
+            // TODO update
             report_default(
                 "ToddCoxeter: at {} of {} found {} pairs of distinct "
                 "nodes so far\n",
@@ -134,6 +136,7 @@ namespace libsemigroups {
         current = wg.detail::NodeManager<node_type>::next_active_node(current);
       }
       wg.process_coincidences<detail::DoNotRegisterDefs>();
+      // TODO process_definitions
       if (reporting_enabled()) {
         report_no_prefix("{:+<90}\n", "");
         report_default("ToddCoxeter: lookabehind complete with    |{:>12} "

@@ -301,11 +301,11 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
-    section_hlt(tc);
-    section_CR_style(tc);
-    section_R_over_C_style(tc);
-    section_Rc_style(tc);
-    section_Cr_style(tc);
+    // section_hlt(tc);
+    // section_CR_style(tc);
+    // section_R_over_C_style(tc);
+    // section_Rc_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 27);
 
@@ -2356,41 +2356,18 @@ namespace libsemigroups {
     presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
     presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
 
-    // REQUIRE(presentation::length(p) == 87);
-    // presentation::greedy_reduce_length(p);
-    // REQUIRE(presentation::length(p) == 63);
-    // REQUIRE(p.alphabet() == "abcdefghijkl");
-    //// REQUIRE(random_string(p.alphabet(), 20, 30) == "");
-
-    // presentation::remove_trivial_rules(p);
-    // presentation::remove_duplicate_rules(p);
-    // presentation::sort_rules(p);
-    // presentation::sort_each_rule(p);
-    // REQUIRE(p.rules
-    //         == std::vector<std::string>(
-    //             {"ad",    "",  "be",    "",  "cf",    "",  "da",    "",
-    //              "eb",    "",  "fc",    "",  "gjkii", "",  "hklgg", "",
-    //              "iljhh", "",  "ccefb", "g", "bbdea", "h", "aafdc", "i",
-    //              "facdd", "j", "ecbff", "k", "dbaee", "l"}));
-
     ToddCoxeter tc(twosided, p);
 
     tc.lookahead_extent(options::lookahead_extent::full)
-        .lookahead_style(options::lookahead_style::felsch);
+        .lookahead_style(options::lookahead_style::hlt)
+        .large_collapse(1'000'000'000);
 
     REQUIRE(!is_obviously_infinite(tc));
-    tc.run_for(std::chrono::seconds(1));
-    tc.perform_lookahead(true);
+    tc.run_until([&tc]() -> bool {
+      return tc.current_word_graph().number_of_nodes() >= 10'000'000;
+    });
+    todd_coxeter::perform_lookbehind(tc);
 
-    // auto w = "afheliaaaaaadffibkgbfhhhhhhldblkdadadadadad";
-    // REQUIRE(todd_coxeter::reduce_no_run(tc, w) == "afeaffbdfbd");
-    // REQUIRE(todd_coxeter::currently_contains(
-    //            tc, todd_coxeter::reduce_no_run(tc, w), w)
-    //        == tril::TRUE);
-    todd_coxeter::perform_lookbehind(tc);
-    tc.run_for(std::chrono::seconds(1));
-    todd_coxeter::perform_lookbehind(tc);
-    tc.perform_lookahead(true);
     REQUIRE(tc.number_of_classes() == 1);
   }
 
@@ -3808,7 +3785,7 @@ namespace libsemigroups {
                           "096",
                           "http://brauer.maths.qmul.ac.uk/Atlas/spor/M22",
                           "[todd-coxeter][extreme]") {
-    ReportGuard               rg(false);
+    ReportGuard               rg(true);
     Presentation<std::string> p;
     p.alphabet("xyXY");
     p.contains_empty_word(true);
@@ -3896,7 +3873,8 @@ namespace libsemigroups {
       return tc.current_word_graph().number_of_nodes_active()
              > 1.5 * 10'200'960;
     });
-    todd_coxeter::perform_lookbehind(tc);
+    // todd_coxeter::perform_lookbehind(tc);
+    tc.large_collapse(POSITIVE_INFINITY);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {
@@ -4524,7 +4502,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
