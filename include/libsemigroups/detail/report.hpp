@@ -78,7 +78,7 @@ namespace libsemigroups {
       ~Ticker();
     };
 
-    enum class Align { left, right };
+    enum class Align : uint8_t { left, right };
 
     // This object is a helper for formatting information reported by various
     // classes in libsemigroups such as ToddCoxeterImpl, KnuthBendixImpl, etc.
@@ -91,7 +91,7 @@ namespace libsemigroups {
     class ReportCell {
      private:
       using Row = std::array<std::string, C + 1>;
-      Align                     _align;
+      std::array<Align, C + 1>  _align;
       std::array<size_t, C + 1> _col_widths;
       bool                      _divider_after;
       bool                      _divider_before;
@@ -100,12 +100,13 @@ namespace libsemigroups {
 
      public:
       ReportCell()
-          : _align(Align::right),
+          : _align(),
             _col_widths(),
             _divider_after(false),
             _divider_before(true),
-            _divider_char('-'),
+            _divider_char('+'),
             _rows() {
+        _align.fill(Align::right);
         _col_widths.fill(0);
       }
 
@@ -131,13 +132,20 @@ namespace libsemigroups {
         return *this;
       }
 
-      ReportCell& align(Align val) noexcept {
-        _align = val;
+      ReportCell& align(size_t col, Align val) noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        _align[col + 1] = val;
         return *this;
       }
 
-      Align align() const noexcept {
-        return _align;
+      ReportCell& align(Align val) noexcept {
+        _align.fill(val);
+        return *this;
+      }
+
+      Align align(size_t col) const noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        return _align[col + 1];
       }
 
       // Insert a row using a format string and arguments
@@ -164,14 +172,13 @@ namespace libsemigroups {
       }
 
       ReportCell& divider_char(char val) {
-        _divider_char = val;
         return *this;
       }
 
      private:
       void emit();
     };  // ReportCell
-  }     // namespace detail
+  }  // namespace detail
 
   //! No doc
   bool reporting_enabled() noexcept;

@@ -346,36 +346,45 @@ namespace libsemigroups {
       auto const defined_diff
           = signed_group_digits(defined - _stats.prev_nodes_defined);
 
-      auto const mean_killed
-          = group_digits(std::pow(10, 9) * static_cast<double>(killed)
-                         / run_time.count())
-            + "/s";
-      auto const mean_defined
-          = group_digits(std::pow(10, 9) * static_cast<double>(defined)
-                         / run_time.count())
-            + "/s";
-
-      detail::ReportCell<4> rc;
-      rc.min_width(11).min_width(0, report_prefix().size());
-
-      rc("{}: nodes {} (active) | {} (killed) | {} (defined)\n",
+      detail::ReportCell<5> rc;
+      rc.min_width(12)
+          .min_width(0, report_prefix().size())
+          .align(1, Align::left);
+      // auto invert = fmt::bg(fmt::terminal_color::white)
+      //               | fmt::fg(fmt::terminal_color::black) |
+      //               fmt::emphasis::bold;
+      // auto purple = fmt::fg(fmt::rgb(127, 0, 255));
+      auto purple = fmt::emphasis::underline;
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
+         fmt::format(purple, "RUN X.Y"),
+         "active",
+         "killed",
+         "defined");
+      rc("{}: {} | {} | {} | {}\n",
+         report_prefix(),
+         "nodes",
          group_digits(active),
          group_digits(killed),
          group_digits(defined));
-      rc("{}: diff  {} (active) | {} (killed) | {} (defined)\n",
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
+         "diff X.Y-1",
          active_diff,
          killed_diff,
          defined_diff);
-
-      auto complete = 100 * static_cast<double>(_stats.num_active_edges)
-                      / (this->number_of_nodes_active() * out_degree());
-      rc("{}: edges {}          | {} (complete)\n",
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "diff X.0", "?", "?", "?");
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "edges", "?", "?", "?");
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         group_digits(_stats.num_active_edges),
-         fmt::format("{:.1f}%", complete));
-      // TODO add diff line for edges
+         "diff X.Y-1",
+         "?",
+         "?",
+         "?");
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "diff X.0", "?", "?", "?");
+
+      // TODO auto complete = 100 * static_cast<double>(_stats.num_active_edges)
+      //                 / (this->number_of_nodes_active() * out_degree());
       stats_check_point();
     }
 

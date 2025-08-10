@@ -300,7 +300,8 @@ namespace libsemigroups {
       };  // class Graph
 
       struct Stats {
-        uint64_t                                       number_of_runs = 0;
+        uint64_t number_of_runs                = 0;
+        uint64_t number_of_lookaheads_this_run = 0;
         std::chrono::high_resolution_clock::time_point this_run_start_time;
         std::chrono::nanoseconds                       total_run_time;
       };
@@ -1765,6 +1766,12 @@ namespace libsemigroups {
 
       void reset_settings_stack();
 
+      [[nodiscard]] bool any_change() const {
+        // TODO could do more here
+        return _word_graph.stats().prev_active_nodes
+               != _word_graph.number_of_nodes_active();
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - main strategies - private
       ////////////////////////////////////////////////////////////////////////
@@ -1793,6 +1800,7 @@ namespace libsemigroups {
       void report_during_hlt_lookahead() const;
       void report_presentation() const;
       void report_progress_from_thread() const;
+      void report_times() const;
 
       void add_timing_row(detail::ReportCell<4>& rc) const;
 
