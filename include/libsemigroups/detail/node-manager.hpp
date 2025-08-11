@@ -48,6 +48,34 @@ namespace libsemigroups {
       using Perm      = std::vector<node_type>;
 
       ////////////////////////////////////////////////////////////////////////
+      // NodeManager - data - protected
+      ////////////////////////////////////////////////////////////////////////
+     protected:
+      node_type _current;
+      node_type _current_la;
+
+      ////////////////////////////////////////////////////////////////////////
+      // NodeManager - data - private
+      ////////////////////////////////////////////////////////////////////////
+     private:
+      static constexpr node_type _id_node = 0;
+
+      std::vector<node_type>         _bckwd;
+      node_type                      _first_free_node;
+      std::vector<node_type>         _forwd;
+      float                          _growth_factor;
+      mutable std::vector<node_type> _ident;
+      node_type                      _last_active_node;
+      //  mutable std::mutex             _mtx;
+      struct Stats {
+        // TODO these should have better names
+        size_t active       = 1;
+        size_t defined      = 1;
+        size_t nodes_killed = 0;
+      } _stats;
+
+     public:
+      ////////////////////////////////////////////////////////////////////////
       // NodeManager - constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +242,7 @@ namespace libsemigroups {
       //! \par Parameters
       //! (None)
       inline size_t number_of_nodes_active() const noexcept {
-        return _active;
+        return _stats.active;
       }
 
       //! Returns the total number of nodes defined so far.
@@ -230,7 +258,7 @@ namespace libsemigroups {
       //! \par Parameters
       //! (None)
       inline size_t number_of_nodes_defined() const noexcept {
-        return _defined;
+        return _stats.defined;
       }
 
       //! Returns the total number of nodes that have been killed so far.
@@ -246,7 +274,7 @@ namespace libsemigroups {
       //! \par Parameters
       //! (None)
       inline size_t number_of_nodes_killed() const noexcept {
-        return _nodes_killed;
+        return _stats.nodes_killed;
       }
 
       //! Set the value of the growth factor setting.
@@ -340,10 +368,6 @@ namespace libsemigroups {
         return _id_node;
       }
 
-      static constexpr node_type _id_node = 0;
-      node_type                  _current;
-      node_type                  _current_la;
-
      private:
       struct ActiveNodesRange {
         using output_type = node_type;
@@ -381,27 +405,6 @@ namespace libsemigroups {
       ActiveNodesRange active_nodes() const {
         return ActiveNodesRange(this);
       }
-
-     private:
-      ////////////////////////////////////////////////////////////////////////
-      // NodeManager - data - private
-      ////////////////////////////////////////////////////////////////////////
-
-      // Stats
-      size_t _active;
-      size_t _defined;
-      size_t _nodes_killed;
-
-      // Settings
-      float _growth_factor;
-
-      // Data
-      std::vector<node_type>         _bckwd;
-      node_type                      _first_free_node;
-      std::vector<node_type>         _forwd;
-      mutable std::vector<node_type> _ident;
-      node_type                      _last_active_node;
-      //  mutable std::mutex             _mtx;
 
 #ifdef LIBSEMIGROUPS_DEBUG
 
