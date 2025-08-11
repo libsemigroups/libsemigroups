@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementation for a class to manage nodes for a
-// ToddCoxeterDigraph instance.
+// ToddCoxeter::Graph instance.
 
 ////////////////////////////////////////////////////////////////////////////////
 //

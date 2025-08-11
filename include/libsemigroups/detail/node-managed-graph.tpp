@@ -232,6 +232,7 @@ namespace libsemigroups {
                 incompat_func);
           } else {
             _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
+
                 min, max, Noop(), incompat_func);
           }
         }
@@ -329,8 +330,6 @@ namespace libsemigroups {
     void NodeManagedGraph<BaseGraph>::report_progress_from_thread() const {
       using detail::group_digits;
       using detail::signed_group_digits;
-
-      auto run_time = delta(start_time());
 
       // TODO (2): FIXME The following 3 lines are not thread safe and can cause
       // data races. One way of resolving this would be to change the data

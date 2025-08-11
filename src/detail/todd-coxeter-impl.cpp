@@ -1366,8 +1366,18 @@ namespace libsemigroups {
       }
     }
 
+    // TODO rename to remove hlt
+    // TODO call this during any lookahead
     void ToddCoxeterImpl::report_during_hlt_lookahead() const {
       if (reporting_enabled()) {
+        // TODO this is highly non-thread safe
+        auto pos = _word_graph.position_of_node(_word_graph.lookahead_cursor());
+        auto tot = number_of_nodes_active();
+        // TODO format like a row in the NodeManagedGraph table
+        report_default("ToddCoxeter: at node {} / {} = {:.1f}%\n",
+                       group_digits(pos),
+                       group_digits(tot),
+                       double(100 * pos) / tot);
       }
     }
 

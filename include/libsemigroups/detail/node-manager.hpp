@@ -73,6 +73,10 @@ namespace libsemigroups {
         return _current_la;
       }
 
+      node_type const& lookahead_cursor() const {
+        return _current_la;
+      }
+
       //! Returns the current node capacity of the graph.
       //!
       //! \returns A value of type \c size_t.
@@ -139,6 +143,21 @@ namespace libsemigroups {
         return c != UNDEFINED && _ident[c] == c;
       }
 
+      // TODO to cpp
+      [[nodiscard]] size_t position_of_node(node_type n) const {
+        if (!is_active_node(n)) {
+          return UNDEFINED;
+        }
+        auto   current = initial_node();
+        size_t pos     = 0;
+        // std::lock_guard lock(_mtx);
+        while (current != n) {
+          current = next_active_node(current);
+          pos++;
+        }
+        return pos;
+      }
+
       //! Check if the given node is valid.
       //!
       //! \param c the node to check.
@@ -167,7 +186,6 @@ namespace libsemigroups {
       //! Constant
       // not noexcept since std::vector::operator[] isn't.
       inline node_type next_active_node(node_type c) const {
-        LIBSEMIGROUPS_ASSERT(is_active_node(c));
         return _forwd[c];
       }
 
@@ -275,6 +293,7 @@ namespace libsemigroups {
         free_node(max);
         // Leave a "forwarding address" so we know what <max> was identified
         // with
+        // std::lock_guard lock(_mtx);
         _ident[max] = min;
       }
 
@@ -282,6 +301,7 @@ namespace libsemigroups {
 
       inline node_type find_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(is_valid_node(c));
+        //  std::lock_guard lock(_mtx);
         while (true) {
           node_type d = _ident[c];
           if (d == c) {
@@ -381,6 +401,7 @@ namespace libsemigroups {
       std::vector<node_type>         _forwd;
       mutable std::vector<node_type> _ident;
       node_type                      _last_active_node;
+      //  mutable std::mutex             _mtx;
 
 #ifdef LIBSEMIGROUPS_DEBUG
 
