@@ -45,9 +45,9 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     struct NodeManagedGraph<BaseGraph>::Stats {
-      uint64_t             prev_active_nodes;
-      uint64_t             prev_nodes_killed;
-      uint64_t             prev_nodes_defined;
+      std::atomic_uint64_t prev_active_nodes;
+      std::atomic_uint64_t prev_nodes_killed;
+      std::atomic_uint64_t prev_nodes_defined;
       std::atomic_uint64_t num_active_edges;
 
       Stats()
@@ -57,15 +57,15 @@ namespace libsemigroups {
             num_active_edges(0) {}
 
       Stats(Stats const& that)
-          : prev_active_nodes(that.prev_active_nodes),
-            prev_nodes_killed(that.prev_nodes_killed),
-            prev_nodes_defined(that.prev_nodes_defined),
+          : prev_active_nodes(that.prev_active_nodes.load()),
+            prev_nodes_killed(that.prev_nodes_killed.load()),
+            prev_nodes_defined(that.prev_nodes_defined.load()),
             num_active_edges(that.num_active_edges.load()) {}
 
       Stats& operator=(Stats const& that) {
-        prev_active_nodes  = that.prev_active_nodes;
-        prev_nodes_killed  = that.prev_nodes_killed;
-        prev_nodes_defined = that.prev_nodes_defined;
+        prev_active_nodes  = that.prev_active_nodes.load();
+        prev_nodes_killed  = that.prev_nodes_killed.load();
+        prev_nodes_defined = that.prev_nodes_defined.load();
         num_active_edges   = that.num_active_edges.load();
         return *this;
       }
@@ -208,10 +208,16 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     template <bool RegisterDefs>
-    void NodeManagedGraph<BaseGraph>::process_coincidences() {
+    void NodeManagedGraph<BaseGraph>::process_coincidences(bool lock) {
       if (_coinc.empty()) {
         return;
       }
+
+      std::unique_lock ul(NodeManager<node_type>::mtx(), std::defer_lock);
+      if (lock) {
+        ul.lock();
+      }
+
       CollectCoincidences incompat_func(_coinc);
 
       while (!_coinc.empty() && _coinc.size() < large_collapse()) {
@@ -334,9 +340,9 @@ namespace libsemigroups {
       // TODO (2): FIXME The following 3 lines are not thread safe and can cause
       // data races. One way of resolving this would be to change the data
       // members of node managed graph to be atomic
-      auto const active  = this->number_of_nodes_active();
-      auto const killed  = this->number_of_nodes_killed();
-      auto const defined = this->number_of_nodes_defined();
+      auto const active  = NodeManager<node_type>::number_of_nodes_active();
+      auto const killed  = NodeManager<node_type>::number_of_nodes_killed();
+      auto const defined = NodeManager<node_type>::number_of_nodes_defined();
 
       auto const active_diff
           = signed_group_digits(active - _stats.prev_active_nodes);
