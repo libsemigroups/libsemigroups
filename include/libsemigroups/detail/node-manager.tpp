@@ -90,6 +90,7 @@ namespace libsemigroups {
           _growth_factor(2.0),
           _ident(1, 0),
           _last_active_node(0),
+          _mtx(),
           _stats() {}
 
     template <typename NodeType>

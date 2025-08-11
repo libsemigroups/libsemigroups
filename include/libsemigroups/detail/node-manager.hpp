@@ -66,12 +66,39 @@ namespace libsemigroups {
       float                          _growth_factor;
       mutable std::vector<node_type> _ident;
       node_type                      _last_active_node;
-      //  mutable std::mutex             _mtx;
+      mutable std::mutex             _mtx;
+
       struct Stats {
         // TODO these should have better names
-        size_t active       = 1;
-        size_t defined      = 1;
-        size_t nodes_killed = 0;
+        std::atomic_uint64_t active;
+        std::atomic_uint64_t defined;
+        std::atomic_uint64_t nodes_killed;
+
+        Stats() : active(1), defined(1), nodes_killed(0) {}
+
+        Stats(Stats const& that)
+            : active(that.active.load()),
+              defined(that.defined.load()),
+              nodes_killed(that.nodes_killed.load()) {}
+
+        Stats(Stats&& that)
+            : active(that.active.load()),
+              defined(that.defined.load()),
+              nodes_killed(that.nodes_killed.load()) {}
+
+        Stats& operator=(Stats const& that) {
+          active       = that.active.load();
+          defined      = that.defined.load();
+          nodes_killed = that.nodes_killed.load();
+          return *this;
+        }
+
+        Stats& operator=(Stats&& that) {
+          active       = that.active.load();
+          defined      = that.defined.load();
+          nodes_killed = that.nodes_killed.load();
+          return *this;
+        }
       } _stats;
 
      public:
@@ -81,17 +108,44 @@ namespace libsemigroups {
 
       NodeManager();
 
-      NodeManager(NodeManager const&) = default;
-      NodeManager(NodeManager&&)      = default;
+      // TODO to tpp
+      NodeManager(NodeManager const& that)
+          : _bckwd(that._bckwd),
+            _first_free_node(that._first_free_node),
+            _forwd(that._forwd),
+            _growth_factor(that._growth_factor),
+            _ident(that._ident),
+            _last_active_node(that._last_active_node),
+            _mtx(),
+            _stats(that._stats) {}
 
-      NodeManager& operator=(NodeManager const&) = default;
-      NodeManager& operator=(NodeManager&&)      = default;
+      // TODO expand
+      NodeManager(NodeManager&&) = default;
+
+      // TODO to tpp
+      NodeManager& operator=(NodeManager const& that) {
+        _bckwd            = that._bckwd;
+        _first_free_node  = that._first_free_node;
+        _forwd            = that._forwd;
+        _growth_factor    = that._growth_factor;
+        _ident            = that._ident;
+        _last_active_node = that._last_active_node;
+        _stats            = that._stats;
+        return *this;
+      }
+
+      // TODO expand
+      NodeManager& operator=(NodeManager&&) = default;
 
       ~NodeManager();
 
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - public
       ////////////////////////////////////////////////////////////////////////
+
+      std::mutex& mtx() const noexcept {
+        return _mtx;
+      }
 
       node_type& cursor() {
         return _current;
@@ -105,82 +159,34 @@ namespace libsemigroups {
         return _current_la;
       }
 
-      //! Returns the current node capacity of the graph.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
       // std::vector::size is noexcept
       inline size_t node_capacity() const noexcept {
         return _forwd.size();
       }
 
-      //! Returns the first inactive node.
-      //!
-      //! \returns A value of type NodeManager::node_type
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
       inline node_type first_free_node() const noexcept {
         return _first_free_node;
       }
 
-      //! Check if there are any inactive nodes.
-      //!
-      //! \returns A value of type \c bool.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
       inline bool has_free_nodes() const noexcept {
         return _first_free_node != UNDEFINED;
       }
 
-      //! Check if the given node is active or not.
-      //!
-      //! \param c the to check.
-      //!
-      //! \returns A value of type \c bool.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
       // not noexcept since std::vector::operator[] isn't.
       inline bool is_active_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(c < _ident.size() || c == UNDEFINED);
         return c != UNDEFINED && _ident[c] == c;
       }
 
-      // TODO to cpp
+      // TODO to tpp
       [[nodiscard]] size_t position_of_node(node_type n) const {
         if (!is_active_node(n)) {
           return UNDEFINED;
         }
         auto   current = initial_node();
         size_t pos     = 0;
-        // std::lock_guard lock(_mtx);
         while (current != n) {
-          current = next_active_node(current);
+          current = _forwd[current];
           pos++;
         }
         return pos;
@@ -229,51 +235,15 @@ namespace libsemigroups {
         return rx::end(ActiveNodesRange(this));
       }
 
-      //! Returns the number of active nodes.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
-      inline size_t number_of_nodes_active() const noexcept {
+      inline uint64_t number_of_nodes_active() const noexcept {
         return _stats.active;
       }
 
-      //! Returns the total number of nodes defined so far.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
-      inline size_t number_of_nodes_defined() const noexcept {
+      inline uint64_t number_of_nodes_defined() const noexcept {
         return _stats.defined;
       }
 
-      //! Returns the total number of nodes that have been killed so far.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
-      inline size_t number_of_nodes_killed() const noexcept {
+      inline uint64_t number_of_nodes_killed() const noexcept {
         return _stats.nodes_killed;
       }
 
@@ -321,7 +291,6 @@ namespace libsemigroups {
         free_node(max);
         // Leave a "forwarding address" so we know what <max> was identified
         // with
-        // std::lock_guard lock(_mtx);
         _ident[max] = min;
       }
 
@@ -329,7 +298,6 @@ namespace libsemigroups {
 
       inline node_type find_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(is_valid_node(c));
-        //  std::lock_guard lock(_mtx);
         while (true) {
           node_type d = _ident[c];
           if (d == c) {
