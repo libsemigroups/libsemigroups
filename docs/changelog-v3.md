@@ -1,5 +1,18 @@
 # Changelog - version 3
 
+## v3.1.3 (released 12/08/2025)
+
+This is a minor release that does the following:
+
+ * Add a `to_human_readable_repr` for the `Action` class by @james-d-mitchell in
+   https://github.com/libsemigroups/libsemigroups/pull/777
+ * Update the `to_human_readable_repr` of the `Congruence` class to be more
+   consistent with the `KnuthBendix` and `ToddCoxeter` classes by
+   @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/778
+ * Mark `IsBipartition`, `IsPBR`, `IsPresentation`, `IsInversePresentation` and
+   `IsWordGraph` as deprecated, to be favoured by `is_specialization_of` by
+   @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/771
+
 ## v3.1.2 (released 29/07/2025)
 
 This is a minor release fixing some more issues that were introduced in v3.1.0.
