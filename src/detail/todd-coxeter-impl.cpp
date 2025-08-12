@@ -1300,7 +1300,7 @@ namespace libsemigroups {
            report_prefix(),
            fmt::format(run_color, "RUN {} STOP", _stats.number_of_runs),
            reason);
-        // TODO(1) report time spent doing lookaheads, definitions, etc.
+        // TODO(0) report time spent doing lookaheads, definitions, etc.
       }
       report_times();
       _stats.total_run_time += delta(_stats.this_run_start_time);
