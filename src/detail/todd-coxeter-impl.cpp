@@ -317,6 +317,7 @@ namespace libsemigroups {
         // but didn't seem to be very useful).
         process_coincidences<DoNotRegisterDefs>();
         current = NodeManager<node_type>::next_active_node(current);
+        stats().lookahead_position++;
         if (stop_early
             && delta(last_stop_early_check)
                    > tc->lookahead_stop_early_interval()) {
@@ -1300,7 +1301,7 @@ namespace libsemigroups {
            report_prefix(),
            fmt::format(run_color, "RUN {} STOP", _stats.number_of_runs),
            reason);
-        // TODO(0) report time spent doing lookaheads, definitions, etc.
+        // TODO()) report time spent doing lookaheads, definitions, etc.
       }
       report_times();
       _stats.total_run_time += delta(_stats.this_run_start_time);
@@ -1369,31 +1370,17 @@ namespace libsemigroups {
 
     // TODO rename to remove hlt
     // TODO call this during any lookahead
-    void ToddCoxeterImpl::report_during_hlt_lookahead() const {
+    void ToddCoxeterImpl::report_during_lookahead() const {
       if (reporting_enabled()) {
-        std::unique_lock ul(_word_graph.mtx(), std::defer_lock);
-        // TODO this works but basically never manages to lock the mutex, just
-        // outright locking the mutex here causes a slow down in [098] that
-        // causes the HLT variant to spiral off to infinity. The TODO is to
-        // perhaps lock it some number of times and just estimate the stage we
-        // are at. Or could we just keep an atomic counter (nodes processed
-        // this lookahead) and use that as a proxy for the position? One
-        // problem will be that this will be too big, we'll keep counting up
-        // when but the number of active nodes might decrease (maybe subtracting
-        // the number of nodes killed in the current lookahead would be enough?)
-        if (ul.try_lock()) {
-          auto pos
-              = _word_graph.position_of_node(_word_graph.lookahead_cursor());
-          if (pos == UNDEFINED) {
-            return;
-          }
-          auto tot = number_of_nodes_active();
-          // TODO format like a row in the NodeManagedGraph table
-          report_default("ToddCoxeter: at node {} / {} = {:.1f}%\n",
-                         group_digits(pos),
-                         group_digits(tot),
-                         double(100 * pos) / tot);
-        }
+        // It is difficult to get the exact value of the % complete due to
+        // multi-threading issues, hence we don't try, we just assume that
+        // nodes are uniformly randomly killed, leading to the following
+        // approximate progress . . .
+        auto const p = _word_graph.stats().lookahead_position.load();
+        auto const N = _word_graph.stats().lookahead_nodes_at_start.load();
+        auto const r = _word_graph.stats().lookahead_nodes_killed.load();
+        report_default("ToddCoxeter: approx. {:.1f}% complete\n",
+                       (p - double(p * r) / N) * 100 / (N - r));
       }
     }
 
@@ -1405,9 +1392,8 @@ namespace libsemigroups {
     void ToddCoxeterImpl::report_progress_from_thread() const {
       LIBSEMIGROUPS_ASSERT(_state != state::none);
       current_word_graph().report_progress_from_thread();
-      if (_state == state::lookahead
-          && lookahead_style() == options::lookahead_style::hlt) {
-        report_during_hlt_lookahead();
+      if (_state == state::lookahead) {
+        report_during_lookahead();
       }
     }
 
@@ -1447,15 +1433,23 @@ namespace libsemigroups {
       // _word_graph.reset_stats(_word_graph.number_of_nodes_active());
 
       auto& current = _word_graph.lookahead_cursor();
-
       if (lookahead_extent() == options::lookahead_extent::partial) {
         // Start lookahead from the node after _current
         current = _word_graph.next_active_node(_word_graph.cursor());
+        // TODO lock mutex?
+        _word_graph.stats().lookahead_position
+            = _word_graph.position_of_node(current);
       } else {
         LIBSEMIGROUPS_ASSERT(lookahead_extent()
                              == options::lookahead_extent::full);
-        current = _word_graph.initial_node();
+        current                                = _word_graph.initial_node();
+        _word_graph.stats().lookahead_position = 0;
       }
+
+      _word_graph.stats().lookahead_nodes_at_start
+          = _word_graph.number_of_nodes_active();
+      _word_graph.stats().lookahead_nodes_killed = 0;
+
       size_t num_killed_by_me = 0;
       if (lookahead_style() == options::lookahead_style::hlt) {
         num_killed_by_me = hlt_lookahead(stop_early);
