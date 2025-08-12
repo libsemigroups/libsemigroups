@@ -187,7 +187,7 @@ namespace libsemigroups {
       }
 
       template <bool RegisterDefs>
-      void process_coincidences(bool lock = false);
+      void process_coincidences();
 
       void permute_nodes_no_checks(std::vector<node_type> const& p,
                                    std::vector<node_type> const& q) {
