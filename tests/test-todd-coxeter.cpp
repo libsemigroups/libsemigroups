@@ -3924,7 +3924,7 @@ namespace libsemigroups {
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(onesided, p);
       todd_coxeter::add_generating_pair(tc, "xy", "");
-      tc.strategy(options::strategy::felsch).lower_bound(10'644'480);
+      tc.strategy(options::strategy::felsch);  // .lower_bound(10'644'480);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
   }

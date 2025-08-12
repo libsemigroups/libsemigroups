@@ -1799,7 +1799,7 @@ namespace libsemigroups {
       void report_after_run() const;
       void report_before_lookahead() const;
       void report_before_run() const;
-      void report_during_hlt_lookahead() const;
+      void report_during_lookahead() const;
       void report_presentation() const;
       void report_progress_from_thread() const;
       void report_times() const;

@@ -45,24 +45,30 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     struct NodeManagedGraph<BaseGraph>::Stats {
+      std::atomic_uint64_t lookahead_nodes_at_start;
+      std::atomic_uint64_t lookahead_nodes_killed;
+      std::atomic_uint64_t lookahead_position;
       std::atomic_uint64_t prev_active_nodes;
       std::atomic_uint64_t prev_nodes_killed;
       std::atomic_uint64_t prev_nodes_defined;
       std::atomic_uint64_t num_active_edges;
 
       Stats()
-          : prev_active_nodes(),
+          : lookahead_position(),
+            prev_active_nodes(),
             prev_nodes_killed(),
             prev_nodes_defined(),
             num_active_edges(0) {}
 
       Stats(Stats const& that)
-          : prev_active_nodes(that.prev_active_nodes.load()),
+          : lookahead_position(that.lookahead_position.load()),
+            prev_active_nodes(that.prev_active_nodes.load()),
             prev_nodes_killed(that.prev_nodes_killed.load()),
             prev_nodes_defined(that.prev_nodes_defined.load()),
             num_active_edges(that.num_active_edges.load()) {}
 
       Stats& operator=(Stats const& that) {
+        lookahead_position = that.lookahead_position.load();
         prev_active_nodes  = that.prev_active_nodes.load();
         prev_nodes_killed  = that.prev_nodes_killed.load();
         prev_nodes_defined = that.prev_nodes_defined.load();
@@ -350,6 +356,10 @@ namespace libsemigroups {
           = signed_group_digits(killed - _stats.prev_nodes_killed);
       auto const defined_diff
           = signed_group_digits(defined - _stats.prev_nodes_defined);
+
+      // TODO this should not be done here, but in the function where the
+      // killing happens
+      _stats.lookahead_nodes_killed += killed - _stats.prev_nodes_killed;
 
       detail::ReportCell<5> rc;
       rc.min_width(12)
