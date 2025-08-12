@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -264,8 +265,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d" id="r_gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a> = detail::IsWordGraphHelper&lt;T&gt;::value</td></tr>
+<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d" id="r_gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a> = <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt;Thing, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&gt;</td></tr>
 <tr class="memdesc:gaf9b13717aad086da0618d454162e1a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:gaf9b13717aad086da0618d454162e1a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -532,13 +533,13 @@ template&lt;typename Node&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T&gt; </div>
+template&lt;typename Thing&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool IsWordGraph = detail::IsWordGraphHelper&lt;T&gt;::value</td>
+          <td class="memname">bool IsWordGraph = <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt;Thing, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&gt;</td>
         </tr>
       </table>
   </td>
@@ -547,13 +548,14 @@ template&lt;typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>The value of this variable is <code>true</code> if the template parameter <code class="param">T</code> is <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> for any template parameters.</p>
+<p>The value of this variable is <code>true</code> if the template parameter <code class="param">Thing</code> is <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> for any template parameters.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>a type. </td></tr>
+    <tr><td class="paramname">Thing</td><td>a type.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section warning"><dt>Warning</dt><dd>This alias is deprecated and will be removed from <code>libsemigroups</code> in v4, please use <code>is_specialization_of_v&lt;Thing, <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>&gt;</code> instead. </dd></dl>
 
 </div>
 </div>

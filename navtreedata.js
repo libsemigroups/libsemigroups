@@ -39,6 +39,7 @@ var NAVTREE =
  ['Changelog - version 3', 'md_changelog-v3.html', None],
  ['Changelog - version 2', 'md_changelog-v2.html', None],
  ['Changelog - version 1', 'md_changelog-v1.html', None],
+ ['Deprecation', 'md_deprecate.html', None],
  ['Installation', 'md_install.html', None],
  ['Data structures', '_HEADING_', None],
  ['Adapters',
@@ -634,7 +635,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_HEADING_",
-"structlibsemigroups_1_1_lambda_value_3_01_b_mat8_01_4.html"
+"structlibsemigroups_1_1_lambda_value.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

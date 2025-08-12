@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -220,7 +221,7 @@ $(function(){initNavTree('group__knuth__bendix__class__group.html',''); initResi
 <div class="ttc" id="agroup__knuth__bendix__class__group_html_ga53918be05b2da9fe4637a180dd329497"><div class="ttname"><a href="#ga53918be05b2da9fe4637a180dd329497">libsemigroups::KnuthBendix</a></div><div class="ttdeci">KnuthBendix(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; KnuthBendix&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:71</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_a8aa8feb639d28dbe9a7af0fce7b93c43"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#a8aa8feb639d28dbe9a7af0fce7b93c43">libsemigroups::presentation::add_rule_no_checks</a></div><div class="ttdeci">void add_rule_no_checks(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference.</div><div class="ttdef"><b>Definition</b> presentation.hpp:821</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_a8aa8feb639d28dbe9a7af0fce7b93c43"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#a8aa8feb639d28dbe9a7af0fce7b93c43">libsemigroups::presentation::add_rule_no_checks</a></div><div class="ttdeci">void add_rule_no_checks(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference.</div><div class="ttdef"><b>Definition</b> presentation.hpp:822</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>At present it is only possible to create KnuthBendix objects from presentations with alphabets containing at most:<ul>
 <li>128 letters if <code>char</code> a signed integer;</li>

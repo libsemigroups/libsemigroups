@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -702,11 +703,11 @@ $(function(){initNavTree('knuth-bendix-impl_8hpp_source.html',''); initResizable
 <div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN</span></div>
 <div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word, <span class="keyword">typename</span> Rewriter, <span class="keyword">typename</span> ReductionOrder&gt;</div>
 <div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div>
-<div class="line"><a id="l00979" name="l00979"></a><span class="lineno"><a class="line" href="group__knuth__bendix__group.html#gabe2b6fe6b3dd6b90fb3e7a199a16fba5">  979</a></span>  <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(KnuthBendix&lt;Word, Rewriter, ReductionOrder&gt;&amp; kb);</div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno"><a class="line" href="group__knuth__bendix__group.html#gabe2b6fe6b3dd6b90fb3e7a199a16fba5">  979</a></span>  <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(KnuthBendix&lt;Word, Rewriter, ReductionOrder&gt;&amp; kb);</div>
 <div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Rewriter, <span class="keyword">typename</span> ReductionOrder&gt;</div>
 <div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div>
-<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>  <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&amp; kb);</div>
+<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>  <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&amp; kb);</div>
 <div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span></div>
 <div class="line"><a id="l00987" name="l00987"></a><span class="lineno">  987</span>  <span class="comment">// TODO(1) kb should be const</span></div>
@@ -723,10 +724,10 @@ $(function(){initNavTree('knuth-bendix-impl_8hpp_source.html',''); initResizable
 <div class="line"><a id="l00998" name="l00998"></a><span class="lineno">  998</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_IMPL_HPP_</span></div>
 <div class="ttc" id="abasic_ostream_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a></div></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:102</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_runner_html_a13dea4340b21db6ccbe2c5a106b25c33"><div class="ttname"><a href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">libsemigroups::Runner::started</a></div><div class="ttdeci">bool started() const noexcept</div><div class="ttdoc">Check if run has been called at least once before.</div><div class="ttdef"><b>Definition</b> runner.hpp:612</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:82</div></div>
-<div class="ttc" id="agroup__aho__corasick__group_html_ga7956beb763e4ab0a09f6d68b158bd748"><div class="ttname"><a href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(AhoCorasick const &amp;ac)</div><div class="ttdoc">Return a string representation.</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:83</div></div>
+<div class="ttc" id="agroup__action__group_html_ga7ca613439fc4dcd69f978da888e5f54c"><div class="ttname"><a href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(Action&lt; Element, Point, Func, Traits, LeftOrRight &gt; const &amp;action)</div><div class="ttdoc">Return a human readable representation of an Action object.</div></div>
 <div class="ttc" id="agroup__bmat8__group_html_ga8db22dca52b74acbe6262e6d6a3420c1"><div class="ttname"><a href="group__bmat8__group.html#ga8db22dca52b74acbe6262e6d6a3420c1">libsemigroups::operator&lt;&lt;</a></div><div class="ttdeci">std::ostringstream &amp; operator&lt;&lt;(std::ostringstream &amp;os, BMat8 const &amp;x)</div><div class="ttdoc">Insertion operator.</div></div>
 <div class="ttc" id="agroup__cong__common__helpers__add__pair__group_html_ga16074615f30aabe07828fd18e3767303"><div class="ttname"><a href="group__cong__common__helpers__add__pair__group.html#ga16074615f30aabe07828fd18e3767303">libsemigroups::congruence_common::add_generating_pair</a></div><div class="ttdeci">void add_generating_pair(Thing &amp;thing, typename Thing::native_word_type const &amp;u, typename Thing::native_word_type const &amp;v)</div><div class="ttdoc">Helper for adding a generating pair of words.</div><div class="ttdef"><b>Definition</b> cong-common-helpers.hpp:200</div></div>
 <div class="ttc" id="agroup__cong__common__helpers__reduce__group_html_ga3356546bd3a9c0e3466397e833d2a3e2"><div class="ttname"><a href="group__cong__common__helpers__reduce__group.html#ga3356546bd3a9c0e3466397e833d2a3e2">libsemigroups::congruence_common::reduce</a></div><div class="ttdeci">Thing::native_word_type reduce(Thing const &amp;thing, typename Thing::native_word_type const &amp;w)</div><div class="ttdoc">Reduce a word.</div></div>

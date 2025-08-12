@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -188,6 +189,14 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id="v313-released-12082025"></a>
+v3.1.3 (released 12/08/2025)</h1>
+<p>This is a minor release that does the following:</p>
+<ul>
+<li>Add a <code>to_human_readable_repr</code> for the <code>Action</code> class by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/777">https://github.com/libsemigroups/libsemigroups/pull/777</a></li>
+<li>Update the <code>to_human_readable_repr</code> of the <code>Congruence</code> class to be more consistent with the <code>KnuthBendix</code> and <code>ToddCoxeter</code> classes by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/778">https://github.com/libsemigroups/libsemigroups/pull/778</a></li>
+<li>Mark <code>IsBipartition</code>, <code>IsPBR</code>, <code>IsPresentation</code>, <code>IsInversePresentation</code> and <code>IsWordGraph</code> as deprecated, to be favoured by <code>is_specialization_of</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/771">https://github.com/libsemigroups/libsemigroups/pull/771</a></li>
+</ul>
 <h1><a class="anchor" id="v312-released-29072025"></a>
 v3.1.2 (released 29/07/2025)</h1>
 <p>This is a minor release fixing some more issues that were introduced in v3.1.0. Namely:</p>

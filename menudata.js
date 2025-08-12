@@ -30,6 +30,7 @@ var menudata={children:[
 {text:"Changelog - version 3",url:"md_changelog-v3.html"},
 {text:"Changelog - version 2",url:"md_changelog-v2.html"},
 {text:"Changelog - version 1",url:"md_changelog-v1.html"},
+{text:"Deprecation",url:"md_deprecate.html"},
 {text:"Installation",url:"md_install.html"},
 {text:"Data structures",url:"_HEADING_"},
 {text:"Adapters",url:"group__adapters__group.html",children:[

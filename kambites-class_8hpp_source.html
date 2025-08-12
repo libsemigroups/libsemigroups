@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -729,7 +730,7 @@ $(function(){initNavTree('kambites-class_8hpp_source.html',''); initResizable(tr
 <div class="line"><a id="l01121" name="l01121"></a><span class="lineno"><a class="line" href="group__kambites__class__group.html#gab767fbdeddfa25f220569f31ab54adb7"> 1121</a></span>  <a class="code hl_function" href="group__kambites__class__group.html#ga570279f4b30ed45d3a90c15bbb74018c">Kambites</a>(Kambites&lt;Word&gt;&amp;&amp;) -&gt; Kambites&lt;Word&gt;;</div>
 <div class="line"><a id="l01122" name="l01122"></a><span class="lineno"> 1122</span></div>
 <div class="line"><a id="l01138" name="l01138"></a><span class="lineno"> 1138</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l01139" name="l01139"></a><span class="lineno"><a class="line" href="group__kambites__group.html#ga583963ae73f5a3c24f9ed6b747d101ea"> 1139</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(Kambites&lt;Word&gt; <span class="keyword">const</span>&amp; k);</div>
+<div class="line"><a id="l01139" name="l01139"></a><span class="lineno"><a class="line" href="group__kambites__group.html#ga583963ae73f5a3c24f9ed6b747d101ea"> 1139</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(Kambites&lt;Word&gt; <span class="keyword">const</span>&amp; k);</div>
 <div class="line"><a id="l01140" name="l01140"></a><span class="lineno"> 1140</span> </div>
 <div class="line"><a id="l01141" name="l01141"></a><span class="lineno"> 1141</span>}  <span class="comment">// namespace libsemigroups</span></div>
 <div class="line"><a id="l01142" name="l01142"></a><span class="lineno"> 1142</span> </div>
@@ -738,11 +739,11 @@ $(function(){initNavTree('kambites-class_8hpp_source.html',''); initResizable(tr
 <div class="line"><a id="l01145" name="l01145"></a><span class="lineno"> 1145</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_KAMBITES_CLASS_HPP_</span></div>
 <div class="ttc" id="aappend_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/append.html">std::string::append</a></div><div class="ttdeci">T append(T... args)</div></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:102</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_runner_html_a13a43e6d814de94978c515cb084873b1"><div class="ttname"><a href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">libsemigroups::Runner::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">Run until finished.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_runner_html_aebaed0be88cbcf45f1985b819c9dabb7"><div class="ttname"><a href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">libsemigroups::Runner::finished</a></div><div class="ttdeci">bool finished() const</div><div class="ttdoc">Check if run has been run to completion or not.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_ukkonen_html"><div class="ttname"><a href="classlibsemigroups_1_1_ukkonen.html">libsemigroups::Ukkonen</a></div><div class="ttdoc">For an implementation of Ukkonen&#39;s algorithm.</div><div class="ttdef"><b>Definition</b> ukkonen.hpp:90</div></div>
-<div class="ttc" id="agroup__aho__corasick__group_html_ga7956beb763e4ab0a09f6d68b158bd748"><div class="ttname"><a href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(AhoCorasick const &amp;ac)</div><div class="ttdoc">Return a string representation.</div></div>
+<div class="ttc" id="agroup__action__group_html_ga7ca613439fc4dcd69f978da888e5f54c"><div class="ttname"><a href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(Action&lt; Element, Point, Func, Traits, LeftOrRight &gt; const &amp;action)</div><div class="ttdoc">Return a human readable representation of an Action object.</div></div>
 <div class="ttc" id="agroup__constants__group_html_gab635a1f4aeb78ba4dded370c2fd20941"><div class="ttname"><a href="group__constants__group.html#gab635a1f4aeb78ba4dded370c2fd20941">libsemigroups::POSITIVE_INFINITY</a></div><div class="ttdeci">PositiveInfinity const POSITIVE_INFINITY</div><div class="ttdoc">Value for positive infinity.</div></div>
 <div class="ttc" id="agroup__kambites__class__accessors__group_html_ga56dd096be18eea3064633353bf5d65d7"><div class="ttname"><a href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">libsemigroups::Kambites::small_overlap_class</a></div><div class="ttdeci">size_t small_overlap_class()</div><div class="ttdoc">Get the small overlap class.</div></div>
 <div class="ttc" id="agroup__kambites__class__accessors__group_html_ga573edd6b9ac024bdb43f992ece6ceea7"><div class="ttname"><a href="group__kambites__class__accessors__group.html#ga573edd6b9ac024bdb43f992ece6ceea7">libsemigroups::Kambites&lt; Word &gt;::ukkonen</a></div><div class="ttdeci">auto const &amp; ukkonen() noexcept</div><div class="ttdef"><b>Definition</b> kambites-class.hpp:760</div></div>

@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -187,7 +188,8 @@ $(function(){initNavTree('group__types__group.html',''); initResizable(true); })
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Types</div></div>
 </div><!--header-->
 <div class="contents">
@@ -196,6 +198,9 @@ $(function(){initNavTree('group__types__group.html',''); initResizable(true); })
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of&lt; Thing, Primary &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct for checking if a template parameter is a specialization of another.  <a href="structlibsemigroups_1_1is__specialization__of.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1_smallest_integer.html">SmallestInteger&lt; N &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type giving the smallest unsigned integer type that can represent a template.  <a href="structlibsemigroups_1_1_smallest_integer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -244,6 +249,13 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:gae214dc6594738d449fb4483859d58932"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum to indicate true, false or not currently knowable.  <a href="#gae214dc6594738d449fb4483859d58932">More...</a><br /></td></tr>
 <tr class="separator:gae214dc6594738d449fb4483859d58932"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga1188c878628c9ce9037f1fb10ad0158f" id="r_ga1188c878628c9ce9037f1fb10ad0158f"><td class="memTemplParams" colspan="2">template&lt;typename Thing, template&lt; typename... &gt; typename Primary&gt; </td></tr>
+<tr class="memitem:ga1188c878628c9ce9037f1fb10ad0158f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a> = <a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>&lt;Thing, Primary&gt;::value</td></tr>
+<tr class="memdesc:ga1188c878628c9ce9037f1fb10ad0158f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template for <a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>.  <br /></td></tr>
+<tr class="separator:ga1188c878628c9ce9037f1fb10ad0158f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ga2997d4c629358b2e320360bede28bd90" name="ga2997d4c629358b2e320360bede28bd90"></a>
@@ -385,6 +397,46 @@ template&lt;typename Given, typename Expected&gt; </div>
 <tr><td class="fieldname"><a id="ggae214dc6594738d449fb4483859d58932aad921d60486366258809553a3db49a4a" name="ggae214dc6594738d449fb4483859d58932aad921d60486366258809553a3db49a4a"></a>unknown&#160;</td><td class="fielddoc"><p>Value representing unknown (either true or false). </p>
 </td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ga1188c878628c9ce9037f1fb10ad0158f" name="ga1188c878628c9ce9037f1fb10ad0158f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1188c878628c9ce9037f1fb10ad0158f">&#9670;&#160;</a></span>is_specialization_of_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, template&lt; typename... &gt; typename Primary&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_specialization_of_v = <a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>&lt;Thing, Primary&gt;::value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This helper is just a short version of <code><a class="el" href="structlibsemigroups_1_1is__specialization__of.html" title="Struct for checking if a template parameter is a specialization of another.">is_specialization_of</a>&lt;Thing, Primary&gt;::value</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type we are checking is a specialization of <code class="param">Primary</code>. </td></tr>
+    <tr><td class="paramname">Primary</td><td>the type we are checking <code class="param">Thing</code> against.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_variable" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;std::vector&lt;int&gt;</a>, <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&gt; <span class="comment">// true</span></div>
+<div class="line"><a class="code hl_variable" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;std::vector&lt;int&gt;</a>, <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>&gt; <span class="comment">// false</span></div>
+<div class="ttc" id="agroup__types__group_html_ga1188c878628c9ce9037f1fb10ad0158f"><div class="ttname"><a href="#ga1188c878628c9ce9037f1fb10ad0158f">libsemigroups::is_specialization_of_v</a></div><div class="ttdeci">constexpr bool is_specialization_of_v</div><div class="ttdoc">Helper variable template for is_specialization_of.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:83</div></div>
+<div class="ttc" id="aunordered_map_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a></div></div>
+<div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The template parameters of <code class="param">Primary</code> must be types, so, for example, <code><a class="el" href="structlibsemigroups_1_1is__specialization__of.html" title="Struct for checking if a template parameter is a specialization of another.">is_specialization_of</a>&lt;<a class="elRef" href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a>&lt;int, 2&gt;, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a>&gt;</code> will not compile. </dd></dl>
 
 </div>
 </div>

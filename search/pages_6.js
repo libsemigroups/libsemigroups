@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['installation_0',['Installation',['../md_install.html',1,'']]]
+  ['deprecation_20policy_0',['Deprecation policy',['../md_deprecate.html',1,'']]]
 ];

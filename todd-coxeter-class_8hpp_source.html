@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -670,15 +671,15 @@ $(function(){initNavTree('todd-coxeter-class_8hpp_source.html',''); initResizabl
 <div class="line"><a id="l01347" name="l01347"></a><span class="lineno"><a class="line" href="group__todd__coxeter__class__group.html#gaec980ccfbd4a222aba5bd556c2d93b41"> 1347</a></span>  <a class="code hl_function" href="group__todd__coxeter__class__group.html#ga85d089a95e53c442b0d970877c8d8942">ToddCoxeter</a>(ToddCoxeter&lt;Word&gt;&amp;&amp;) -&gt; ToddCoxeter&lt;Word&gt;;</div>
 <div class="line"><a id="l01348" name="l01348"></a><span class="lineno"> 1348</span></div>
 <div class="line"><a id="l01365" name="l01365"></a><span class="lineno"> 1365</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l01366" name="l01366"></a><span class="lineno"><a class="line" href="group__todd__coxeter__group.html#ga37083b485794d4b73d51579d6e3c9172"> 1366</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(ToddCoxeter&lt;Word&gt; <span class="keyword">const</span>&amp; tc);</div>
+<div class="line"><a id="l01366" name="l01366"></a><span class="lineno"><a class="line" href="group__todd__coxeter__group.html#ga37083b485794d4b73d51579d6e3c9172"> 1366</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(ToddCoxeter&lt;Word&gt; <span class="keyword">const</span>&amp; tc);</div>
 <div class="line"><a id="l01367" name="l01367"></a><span class="lineno"> 1367</span>}  <span class="comment">// namespace libsemigroups</span></div>
 <div class="line"><a id="l01368" name="l01368"></a><span class="lineno"> 1368</span> </div>
 <div class="line"><a id="l01369" name="l01369"></a><span class="lineno"> 1369</span><span class="preprocessor">#include &quot;todd-coxeter-class.tpp&quot;</span></div>
 <div class="line"><a id="l01370" name="l01370"></a><span class="lineno"> 1370</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_</span></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:102</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:82</div></div>
-<div class="ttc" id="agroup__aho__corasick__group_html_ga7956beb763e4ab0a09f6d68b158bd748"><div class="ttname"><a href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(AhoCorasick const &amp;ac)</div><div class="ttdoc">Return a string representation.</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:83</div></div>
+<div class="ttc" id="agroup__action__group_html_ga7ca613439fc4dcd69f978da888e5f54c"><div class="ttname"><a href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(Action&lt; Element, Point, Func, Traits, LeftOrRight &gt; const &amp;action)</div><div class="ttdoc">Return a human readable representation of an Action object.</div></div>
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__todd__coxeter__class__group_html_ga85d089a95e53c442b0d970877c8d8942"><div class="ttname"><a href="group__todd__coxeter__class__group.html#ga85d089a95e53c442b0d970877c8d8942">libsemigroups::ToddCoxeter</a></div><div class="ttdeci">ToddCoxeter(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; ToddCoxeter&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__todd__coxeter__class__index__word__group_html_ga0330481abf2f76b600f0e88b3f1d3d41"><div class="ttname"><a href="group__todd__coxeter__class__index__word__group.html#ga0330481abf2f76b600f0e88b3f1d3d41">libsemigroups::ToddCoxeter::current_word_of</a></div><div class="ttdeci">OutputIterator current_word_of(OutputIterator d_first, index_type i) const</div><div class="ttdoc">Insert a current word representing a class with given index into an output iterator.</div><div class="ttdef"><b>Definition</b> todd-coxeter-class.hpp:1207</div></div>

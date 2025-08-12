@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -483,6 +484,12 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">For an implementation of inverse presentations for semigroups or monoids.  <a href="classlibsemigroups_1_1_inverse_presentation.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct for checking if a template parameter is a specialization of another.  <a href="structlibsemigroups_1_1is__specialization__of.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1is__specialization__of_3_01_primary_3_01_args_8_8_8_01_4_00_01_primary_01_4.html">is_specialization_of&lt; Primary&lt; Args... &gt;, Primary &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct for checking if a template parameter is a specialization of another.     <a href="structlibsemigroups_1_1is__specialization__of_3_01_primary_3_01_args_8_8_8_01_4_00_01_primary_01_4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_is_obviously_infinite.html">IsObviouslyInfinite</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for checking if a finitely presented semigroup or monoid is obviously infinite.  <a href="classlibsemigroups_1_1_is_obviously_infinite.html#details">More...</a><br /></td></tr>
@@ -1297,14 +1304,14 @@ template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:ga5e42ccac41446ee739aa138fc74fe207"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__matrix__group.html#ga5e42ccac41446ee739aa138fc74fe207">make</a> (Semiring const *semiring, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Mat::scalar_type &gt; &gt; const &amp;rows)</td></tr>
 <tr class="memdesc:ga5e42ccac41446ee739aa138fc74fe207"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a matrix (from <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a> of <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>) and checks it.  <br /></td></tr>
 <tr class="separator:ga5e42ccac41446ee739aa138fc74fe207"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga47ec483ccd4cb3cf6ba69ca04df0ec22" id="r_ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
-<tr class="memitem:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__word__graph__group.html#ga47ec483ccd4cb3cf6ba69ca04df0ec22">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; targets)</td></tr>
-<tr class="memdesc:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.  <br /></td></tr>
-<tr class="separator:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae96fe4e79d0f089e8e9f1507d2e4ae2e" id="r_gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
-<tr class="memitem:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__word__graph__group.html#gae96fe4e79d0f089e8e9f1507d2e4ae2e">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; const &amp;targets)</td></tr>
-<tr class="memdesc:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.    //NOLINT()  <br /></td></tr>
-<tr class="separator:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac45428e66af642debdce517039f0371c" id="r_gac45428e66af642debdce517039f0371c"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
+<tr class="memitem:gac45428e66af642debdce517039f0371c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__word__graph__group.html#gac45428e66af642debdce517039f0371c">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; targets)</td></tr>
+<tr class="memdesc:gac45428e66af642debdce517039f0371c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.  <br /></td></tr>
+<tr class="separator:gac45428e66af642debdce517039f0371c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0563d75bc8821cfeff7a928b1b87601f" id="r_ga0563d75bc8821cfeff7a928b1b87601f"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
+<tr class="memitem:ga0563d75bc8821cfeff7a928b1b87601f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__word__graph__group.html#ga0563d75bc8821cfeff7a928b1b87601f">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; const &amp;targets)</td></tr>
+<tr class="memdesc:ga0563d75bc8821cfeff7a928b1b87601f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.    //NOLINT()  <br /></td></tr>
+<tr class="separator:ga0563d75bc8821cfeff7a928b1b87601f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8400485cec52d367b17f529c2b3d3f22" id="r_ga8400485cec52d367b17f529c2b3d3f22"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Thing, typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </td></tr>
 <tr class="memitem:ga8400485cec52d367b17f529c2b3d3f22"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt;, Thing&lt; Element, Traits &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__konieczny__group.html#ga8400485cec52d367b17f529c2b3d3f22">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Element &gt; const &amp;gens)</td></tr>
 <tr class="memdesc:ga8400485cec52d367b17f529c2b3d3f22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely construct from generators.  <br /></td></tr>
@@ -1731,6 +1738,10 @@ template&lt;typename Result, typename Rewriter, typename ReductionOrder&gt; </td
 <tr class="memitem:aad87c2e2ea853fd97e9b98214b6959f9" id="r_aad87c2e2ea853fd97e9b98214b6959f9"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_p_b_r.html#aad87c2e2ea853fd97e9b98214b6959f9">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_p_b_r.html">PBR</a> const &amp;x)</td></tr>
 <tr class="memdesc:aad87c2e2ea853fd97e9b98214b6959f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for representing PBRs.">PBR</a>.  <br /></td></tr>
 <tr class="separator:aad87c2e2ea853fd97e9b98214b6959f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7ca613439fc4dcd69f978da888e5f54c" id="r_ga7ca613439fc4dcd69f978da888e5f54c"><td class="memTemplParams" colspan="2">template&lt;typename Element, typename Point, typename Func, typename Traits, <a class="el" href="group__types__group.html#gafc015eff6557e84151d2e53b94375445">side</a> LeftOrRight&gt; </td></tr>
+<tr class="memitem:ga7ca613439fc4dcd69f978da888e5f54c"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_action.html">Action</a>&lt; Element, Point, Func, Traits, LeftOrRight &gt; const &amp;action)</td></tr>
+<tr class="memdesc:ga7ca613439fc4dcd69f978da888e5f54c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of an <a class="el" href="classlibsemigroups_1_1_action.html" title="Class for generating the action of a semigroup.">Action</a> object.  <br /></td></tr>
+<tr class="separator:ga7ca613439fc4dcd69f978da888e5f54c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7956beb763e4ab0a09f6d68b158bd748" id="r_ga7956beb763e4ab0a09f6d68b158bd748"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_aho_corasick.html">AhoCorasick</a> const &amp;ac)</td></tr>
 <tr class="memdesc:ga7956beb763e4ab0a09f6d68b158bd748"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string representation.  <br /></td></tr>
 <tr class="separator:ga7956beb763e4ab0a09f6d68b158bd748"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1902,8 +1913,12 @@ template&lt;size_t N&gt; </td></tr>
 <tr class="memitem:ga9707d3d574e1706b670e22924ed41c8e" id="r_ga9707d3d574e1706b670e22924ed41c8e"><td class="memItemLeft" align="right" valign="top">constexpr <a class="elRef" href="http://en.cppreference.com/w/cpp/chrono/duration.html">std::chrono::nanoseconds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__constants__group.html#ga9707d3d574e1706b670e22924ed41c8e">FOREVER</a> = <a class="elRef" href="http://en.cppreference.com/w/cpp/chrono/duration/max.html">std::chrono::nanoseconds::max</a>()</td></tr>
 <tr class="memdesc:ga9707d3d574e1706b670e22924ed41c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value indicating forever (system dependent but possibly approx. 292 years).  <br /></td></tr>
 <tr class="separator:ga9707d3d574e1706b670e22924ed41c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab8db223167007de3177219f671d7a1fc" id="r_gab8db223167007de3177219f671d7a1fc"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:gab8db223167007de3177219f671d7a1fc"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__bipart__group.html#gab8db223167007de3177219f671d7a1fc">IsBipartition</a> = detail::IsBipartitionHelper&lt;std::decay_t&lt;T&gt;&gt;::value</td></tr>
+<tr class="memitem:ga1188c878628c9ce9037f1fb10ad0158f" id="r_ga1188c878628c9ce9037f1fb10ad0158f"><td class="memTemplParams" colspan="2">template&lt;typename Thing, template&lt; typename... &gt; typename Primary&gt; </td></tr>
+<tr class="memitem:ga1188c878628c9ce9037f1fb10ad0158f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a> = <a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>&lt;Thing, Primary&gt;::value</td></tr>
+<tr class="memdesc:ga1188c878628c9ce9037f1fb10ad0158f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template for <a class="el" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>.  <br /></td></tr>
+<tr class="separator:ga1188c878628c9ce9037f1fb10ad0158f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab8db223167007de3177219f671d7a1fc" id="r_gab8db223167007de3177219f671d7a1fc"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:gab8db223167007de3177219f671d7a1fc"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__bipart__group.html#gab8db223167007de3177219f671d7a1fc">IsBipartition</a> = std::is_same_v&lt;std::decay_t&lt;Thing&gt;, <a class="el" href="classlibsemigroups_1_1_bipartition.html">Bipartition</a>&gt;</td></tr>
 <tr class="memdesc:gab8db223167007de3177219f671d7a1fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:gab8db223167007de3177219f671d7a1fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade9b1b0277f232b87dfe1851744583f0" id="r_ade9b1b0277f232b87dfe1851744583f0"><td class="memTemplParams" colspan="2"><a id="ade9b1b0277f232b87dfe1851744583f0" name="ade9b1b0277f232b87dfe1851744583f0"></a>
@@ -1930,8 +1945,8 @@ template&lt;typename T&gt; </td></tr>
 <tr class="memitem:gab10e0c4a7e6430292b3d1f9befb33269"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__matrix__group.html#gab10e0c4a7e6430292b3d1f9befb33269">IsIntMat</a> = detail::IsIntMatHelper&lt;T&gt;::value</td></tr>
 <tr class="memdesc:gab10e0c4a7e6430292b3d1f9befb33269"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:gab10e0c4a7e6430292b3d1f9befb33269"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gada8da64358e37de4b94a17e38f2163d9" id="r_gada8da64358e37de4b94a17e38f2163d9"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:gada8da64358e37de4b94a17e38f2163d9"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__presentations__group.html#gada8da64358e37de4b94a17e38f2163d9">IsInversePresentation</a> = detail::IsInversePresentationHelper&lt;T&gt;::value</td></tr>
+<tr class="memitem:gada8da64358e37de4b94a17e38f2163d9" id="r_gada8da64358e37de4b94a17e38f2163d9"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:gada8da64358e37de4b94a17e38f2163d9"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__presentations__group.html#gada8da64358e37de4b94a17e38f2163d9">IsInversePresentation</a> = <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt;Thing, <a class="el" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation</a>&gt;</td></tr>
 <tr class="memdesc:gada8da64358e37de4b94a17e38f2163d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:gada8da64358e37de4b94a17e38f2163d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad5ab08f2bdaa822ecae152fcd6f5e4fa" id="r_gad5ab08f2bdaa822ecae152fcd6f5e4fa"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
@@ -1962,8 +1977,8 @@ template&lt;typename T&gt; </td></tr>
 <tr class="memitem:gaa2fa1c38389c072591db78219b056928"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__ntpmat__group.html#gaa2fa1c38389c072591db78219b056928">IsNTPMat</a> = detail::IsNTPMatHelper&lt;U&gt;::value</td></tr>
 <tr class="memdesc:gaa2fa1c38389c072591db78219b056928"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to check if a type is <a class="el" href="group__ntpmat__group.html#gac851715916ffaa7edce06a38ddf6fd75">NTPMat</a>.  <br /></td></tr>
 <tr class="separator:gaa2fa1c38389c072591db78219b056928"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcde546c8027683552c746328f5ad9ba" id="r_abcde546c8027683552c746328f5ad9ba"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:abcde546c8027683552c746328f5ad9ba"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#abcde546c8027683552c746328f5ad9ba">IsPBR</a> = detail::IsPBRHelper&lt;T&gt;::value</td></tr>
+<tr class="memitem:abcde546c8027683552c746328f5ad9ba" id="r_abcde546c8027683552c746328f5ad9ba"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:abcde546c8027683552c746328f5ad9ba"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#abcde546c8027683552c746328f5ad9ba">IsPBR</a> = std::is_same_v&lt;Thing, <a class="el" href="classlibsemigroups_1_1_p_b_r.html">PBR</a>&gt;</td></tr>
 <tr class="memdesc:abcde546c8027683552c746328f5ad9ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:abcde546c8027683552c746328f5ad9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabd3f4250b77985562f3b2bd3c4194348" id="r_gabd3f4250b77985562f3b2bd3c4194348"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
@@ -1974,8 +1989,8 @@ template&lt;typename T&gt; </td></tr>
 <tr class="memitem:ga051924855e3a663c3b6c01bd6fefd553"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a> = detail::IsPPermHelper&lt;T&gt;::value</td></tr>
 <tr class="memdesc:ga051924855e3a663c3b6c01bd6fefd553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:ga051924855e3a663c3b6c01bd6fefd553"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga526cd1e2cb6afdbebcac1900c693c5cf" id="r_ga526cd1e2cb6afdbebcac1900c693c5cf"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ga526cd1e2cb6afdbebcac1900c693c5cf"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__presentations__group.html#ga526cd1e2cb6afdbebcac1900c693c5cf">IsPresentation</a> = detail::IsPresentationHelper&lt;T&gt;::value</td></tr>
+<tr class="memitem:ga526cd1e2cb6afdbebcac1900c693c5cf" id="r_ga526cd1e2cb6afdbebcac1900c693c5cf"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:ga526cd1e2cb6afdbebcac1900c693c5cf"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__presentations__group.html#ga526cd1e2cb6afdbebcac1900c693c5cf">IsPresentation</a> = <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt;Thing, <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&gt;</td></tr>
 <tr class="memdesc:ga526cd1e2cb6afdbebcac1900c693c5cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:ga526cd1e2cb6afdbebcac1900c693c5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7d92eec48adeb7d5b1f1611d8583be87" id="r_ga7d92eec48adeb7d5b1f1611d8583be87"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
@@ -1998,8 +2013,8 @@ template&lt;typename T&gt; </td></tr>
 <tr class="memitem:ga093d699d5ec9c202c455fbb638bfa2dc"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__transf__group.html#ga093d699d5ec9c202c455fbb638bfa2dc">IsTransf</a> = detail::IsTransfHelper&lt;T&gt;::value</td></tr>
 <tr class="memdesc:ga093d699d5ec9c202c455fbb638bfa2dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:ga093d699d5ec9c202c455fbb638bfa2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d" id="r_gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a> = detail::IsWordGraphHelper&lt;T&gt;::value</td></tr>
+<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d" id="r_gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:gaf9b13717aad086da0618d454162e1a5d"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a> = <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt;Thing, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&gt;</td></tr>
 <tr class="memdesc:gaf9b13717aad086da0618d454162e1a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper variable template.  <br /></td></tr>
 <tr class="separator:gaf9b13717aad086da0618d454162e1a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad6f08fa16691724172bb75e5805cf756" id="r_gad6f08fa16691724172bb75e5805cf756"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__constants__group.html#gaf857f1918c5dcad0a351ea8b78417f35">LimitMax</a> const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__constants__group.html#gad6f08fa16691724172bb75e5805cf756">LIMIT_MAX</a></td></tr>
@@ -2189,13 +2204,13 @@ template&lt;typename PresentationType&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T&gt; </div>
+template&lt;typename Thing&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool IsPBR = detail::IsPBRHelper&lt;T&gt;::value</td>
+          <td class="memname">bool IsPBR = std::is_same_v&lt;Thing, <a class="el" href="classlibsemigroups_1_1_p_b_r.html">PBR</a>&gt;</td>
         </tr>
       </table>
   </td>
@@ -2204,13 +2219,14 @@ template&lt;typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>The value of this variable is <code>true</code> if the template parameter <code class="param">T</code> is <a class="el" href="classlibsemigroups_1_1_p_b_r.html">PBR</a>.</p>
+<p>The value of this variable is <code>true</code> if the template parameter <code class="param">Thing</code> is <a class="el" href="classlibsemigroups_1_1_p_b_r.html">PBR</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>a type. </td></tr>
+    <tr><td class="paramname">Thing</td><td>a type.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section warning"><dt>Warning</dt><dd>This alias is deprecated and will be removed from <code>libsemigroups</code> in v4, please use <code>std::is_same_v&lt;Thing, <a class="el" href="classlibsemigroups_1_1_p_b_r.html" title="Class for representing PBRs.">PBR</a>&gt;</code> instead. </dd></dl>
 
 </div>
 </div>

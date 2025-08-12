@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -195,18 +196,18 @@ $(function(){initNavTree('group__make__word__graph__group.html',''); initResizab
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga47ec483ccd4cb3cf6ba69ca04df0ec22" id="r_ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
-<tr class="memitem:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga47ec483ccd4cb3cf6ba69ca04df0ec22">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; targets)</td></tr>
-<tr class="memdesc:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.  <br /></td></tr>
-<tr class="separator:ga47ec483ccd4cb3cf6ba69ca04df0ec22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae96fe4e79d0f089e8e9f1507d2e4ae2e" id="r_gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
-<tr class="memitem:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gae96fe4e79d0f089e8e9f1507d2e4ae2e">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; const &amp;targets)</td></tr>
-<tr class="memdesc:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.    //NOLINT()  <br /></td></tr>
-<tr class="separator:gae96fe4e79d0f089e8e9f1507d2e4ae2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac45428e66af642debdce517039f0371c" id="r_gac45428e66af642debdce517039f0371c"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
+<tr class="memitem:gac45428e66af642debdce517039f0371c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gac45428e66af642debdce517039f0371c">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; targets)</td></tr>
+<tr class="memdesc:gac45428e66af642debdce517039f0371c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.  <br /></td></tr>
+<tr class="separator:gac45428e66af642debdce517039f0371c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0563d75bc8821cfeff7a928b1b87601f" id="r_ga0563d75bc8821cfeff7a928b1b87601f"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
+<tr class="memitem:ga0563d75bc8821cfeff7a928b1b87601f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga0563d75bc8821cfeff7a928b1b87601f">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; const &amp;targets)</td></tr>
+<tr class="memdesc:ga0563d75bc8821cfeff7a928b1b87601f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.    //NOLINT()  <br /></td></tr>
+<tr class="separator:ga0563d75bc8821cfeff7a928b1b87601f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga47ec483ccd4cb3cf6ba69ca04df0ec22" name="ga47ec483ccd4cb3cf6ba69ca04df0ec22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga47ec483ccd4cb3cf6ba69ca04df0ec22">&#9670;&#160;</a></span>make() <span class="overload">[1/2]</span></h2>
+<a id="gac45428e66af642debdce517039f0371c" name="gac45428e66af642debdce517039f0371c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac45428e66af642debdce517039f0371c">&#9670;&#160;</a></span>make() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,7 +218,7 @@ template&lt;typename Return&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt; make </td>
+          <td class="memname">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt; make </td>
           <td>(</td>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>num_nodes</em></span>, </td>
         </tr>
@@ -236,7 +237,7 @@ template&lt;typename Return&gt; </div>
 <p>This function constructs a word graph from its arguments whose out-degree is specified by the length of the first item in the second parameter, or 0 if the second parameter is empty.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph&lt;Return&gt;</a>.</td></tr>
+    <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;Return, WordGraph&gt;</a>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -257,13 +258,13 @@ template&lt;typename Return&gt; </div>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where \(m\) is the length of <code class="param">targets</code> and \(n\) is the parameter <code class="param">num_nodes</code>.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Construct a word graph with 5 nodes and 10 edges (7 specified)</span></div>
 <div class="line"><a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;WordGraph&lt;uint8_t&gt;</a>&gt;(5, {{0, 0}, {1, 1}, {2}, {3, 3}});</div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:798</div></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:790</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
 </div>
-<a id="gae96fe4e79d0f089e8e9f1507d2e4ae2e" name="gae96fe4e79d0f089e8e9f1507d2e4ae2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae96fe4e79d0f089e8e9f1507d2e4ae2e">&#9670;&#160;</a></span>make() <span class="overload">[2/2]</span></h2>
+<a id="ga0563d75bc8821cfeff7a928b1b87601f" name="ga0563d75bc8821cfeff7a928b1b87601f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0563d75bc8821cfeff7a928b1b87601f">&#9670;&#160;</a></span>make() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,7 +275,7 @@ template&lt;typename Return&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt; <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph</a>&lt; Return &gt;, Return &gt; make </td>
+          <td class="memname">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt; make </td>
           <td>(</td>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>num_nodes</em></span>, </td>
         </tr>
@@ -293,7 +294,7 @@ template&lt;typename Return&gt; </div>
 <p>This function constructs a word graph from its arguments whose out-degree is specified by the length of the first item in the second parameter, or 0 if the second parameter is empty.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__word__graph__group.html#gaf9b13717aad086da0618d454162e1a5d">IsWordGraph&lt;Return&gt;</a>.</td></tr>
+    <tr><td class="paramname">Return</td><td>the return type. Must satisfy <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;Return, WordGraph&gt;</a>.</td></tr>
   </table>
   </dd>
 </dl>

@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.2</span>
+   &#160;<span id="projectnumber">v3.1.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -99,6 +99,7 @@ $(function() { codefold.init(0); });
       <li><a href="md_changelog-v3.html"><span>Changelog&#160;-&#160;version&#160;3</span></a></li>
       <li><a href="md_changelog-v2.html"><span>Changelog&#160;-&#160;version&#160;2</span></a></li>
       <li><a href="md_changelog-v1.html"><span>Changelog&#160;-&#160;version&#160;1</span></a></li>
+      <li><a href="md_deprecate.html"><span>Deprecation</span></a></li>
       <li><a href="md_install.html"><span>Installation</span></a></li>
       <li><a href="_HEADING_"><span>Data&#160;structures</span></a></li>
       <li><a href="group__adapters__group.html"><span>Adapters</span></a></li>
@@ -509,7 +510,7 @@ $(function(){initNavTree('cong-class_8hpp_source.html',''); initResizable(true);
 <div class="line"><a id="l00849" name="l00849"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gaa3b9a0e3a8e2e7ce35ed4c3708b6380e">  849</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(Congruence&lt;Word&gt;&amp;&amp;) -&gt; Congruence&lt;Word&gt;;</div>
 <div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span></div>
 <div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00867" name="l00867"></a><span class="lineno"><a class="line" href="group__congruence__group.html#ga43bab2c11eb72469ce537c72db2ed5f4">  867</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">to_human_readable_repr</a>(Congruence&lt;Word&gt; <span class="keyword">const</span>&amp; c);</div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno"><a class="line" href="group__congruence__group.html#ga43bab2c11eb72469ce537c72db2ed5f4">  867</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(Congruence&lt;Word&gt; <span class="keyword">const</span>&amp; c);</div>
 <div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>}  <span class="comment">// namespace libsemigroups</span></div>
 <div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span> </div>
 <div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span><span class="preprocessor">#include &quot;cong-class.tpp&quot;</span></div>
@@ -517,9 +518,9 @@ $(function(){initNavTree('cong-class_8hpp_source.html',''); initResizable(true);
 <div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_CONG_CLASS_HPP_</span></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin_base.html">libsemigroups::FroidurePinBase</a></div><div class="ttdoc">Base class for FroidurePin containing non-element specific data and member functions.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:66</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:102</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:82</div></div>
-<div class="ttc" id="agroup__aho__corasick__group_html_ga7956beb763e4ab0a09f6d68b158bd748"><div class="ttname"><a href="group__aho__corasick__group.html#ga7956beb763e4ab0a09f6d68b158bd748">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(AhoCorasick const &amp;ac)</div><div class="ttdoc">Return a string representation.</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:83</div></div>
+<div class="ttc" id="agroup__action__group_html_ga7ca613439fc4dcd69f978da888e5f54c"><div class="ttname"><a href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(Action&lt; Element, Point, Func, Traits, LeftOrRight &gt; const &amp;action)</div><div class="ttdoc">Return a human readable representation of an Action object.</div></div>
 <div class="ttc" id="agroup__congruence__class__accessors__group_html_ga03b660dd74a4ef688aa16e40d84be5c9"><div class="ttname"><a href="group__congruence__class__accessors__group.html#ga03b660dd74a4ef688aa16e40d84be5c9">libsemigroups::Congruence::get</a></div><div class="ttdeci">std::shared_ptr&lt; Thing &gt; get() const</div><div class="ttdoc">Get a derived class of detail::CongruenceCommon being used to compute a Congruence instance.</div></div>
 <div class="ttc" id="agroup__congruence__class__accessors__group_html_gaf2403acf5250d85d474308c1b84253f8"><div class="ttname"><a href="group__congruence__class__accessors__group.html#gaf2403acf5250d85d474308c1b84253f8">libsemigroups::Congruence::has</a></div><div class="ttdeci">bool has() const</div><div class="ttdoc">Check if a derived class of detail::CongruenceCommon being used to compute a Congruence instance.</div></div>
 <div class="ttc" id="agroup__congruence__class__group_html_gae8b36c3f690b40578cff4d86cad255b1"><div class="ttname"><a href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">libsemigroups::Congruence</a></div><div class="ttdeci">Congruence(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; Congruence&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
