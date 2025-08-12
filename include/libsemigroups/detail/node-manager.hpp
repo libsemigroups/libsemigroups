@@ -66,7 +66,6 @@ namespace libsemigroups {
       float                          _growth_factor;
       mutable std::vector<node_type> _ident;
       node_type                      _last_active_node;
-      mutable std::mutex             _mtx;
 
       struct Stats {
         // TODO these should have better names
@@ -116,7 +115,6 @@ namespace libsemigroups {
             _growth_factor(that._growth_factor),
             _ident(that._ident),
             _last_active_node(that._last_active_node),
-            _mtx(),
             _stats(that._stats) {}
 
       // TODO expand
@@ -142,10 +140,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - member functions - public
       ////////////////////////////////////////////////////////////////////////
-
-      std::mutex& mtx() const noexcept {
-        return _mtx;
-      }
 
       node_type& cursor() {
         return _current;

@@ -2365,7 +2365,7 @@ namespace libsemigroups {
 
     REQUIRE(!is_obviously_infinite(tc));
     tc.run_until([&tc]() -> bool {
-      return tc.current_word_graph().number_of_nodes() >= 10'000'000;
+      return tc.current_word_graph().number_of_nodes_active() >= 10'000'000;
     });
     todd_coxeter::perform_lookbehind(tc);
 

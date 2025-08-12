@@ -309,7 +309,6 @@ namespace libsemigroups {
         // NodeManager but the RuleIterators returned by them are invalidated
         // by any changes to the graph, such as those made by
         // felsch_graph::make_compatible.
-        std::lock_guard lock(mtx());
         felsch_graph::make_compatible<DoNotRegisterDefs>(
             *this, current, current + 1, first, last, incompat, prefdefs);
         // Using NoPreferredDefs is just a (more or less) arbitrary
@@ -1026,7 +1025,7 @@ namespace libsemigroups {
           for (auto it = first; it < last; it += 2) {
             _word_graph.push_definition_hlt<DoNotRegisterDefs>(
                 current, *it, *(it + 1));
-            _word_graph.process_coincidences<DoNotRegisterDefs>(true);
+            _word_graph.process_coincidences<DoNotRegisterDefs>();
           }
         } else {
           for (auto it = first; it < last; it += 2) {

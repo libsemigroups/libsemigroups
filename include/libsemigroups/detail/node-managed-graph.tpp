@@ -214,14 +214,9 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     template <bool RegisterDefs>
-    void NodeManagedGraph<BaseGraph>::process_coincidences(bool lock) {
+    void NodeManagedGraph<BaseGraph>::process_coincidences() {
       if (_coinc.empty()) {
         return;
-      }
-
-      std::unique_lock ul(NodeManager<node_type>::mtx(), std::defer_lock);
-      if (lock) {
-        ul.lock();
       }
 
       CollectCoincidences incompat_func(_coinc);
