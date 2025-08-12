@@ -3910,6 +3910,9 @@ namespace libsemigroups {
       tc.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
           .lookahead_style(options::lookahead_style::hlt)
+          .lookahead_stop_early_ratio(0.0)
+          .lookahead_next(16'000'000)
+          .lookahead_min(16'000'000)
           .save(false);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
@@ -3922,7 +3925,7 @@ namespace libsemigroups {
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(onesided, p);
       todd_coxeter::add_generating_pair(tc, "xy", "");
-      tc.strategy(options::strategy::felsch);
+      tc.strategy(options::strategy::felsch).lower_bound(10'644'480);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
   }
@@ -4503,7 +4506,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange words;
+    WordRange    words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

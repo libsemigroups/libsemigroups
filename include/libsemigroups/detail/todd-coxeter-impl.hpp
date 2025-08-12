@@ -314,9 +314,11 @@ namespace libsemigroups {
       Forest                                 _forest;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
-      state                                  _state;
-      bool                                   _ticker_running;
-      Graph                                  _word_graph;
+      // _state must be atomic to avoid the situation where the ticker function
+      // is called concurrently with a new lookahead starting
+      std::atomic<state> _state;
+      bool               _ticker_running;
+      Graph              _word_graph;
 
       mutable Stats _stats;  // TODO add to constructors
 
