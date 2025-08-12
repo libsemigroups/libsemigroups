@@ -51,6 +51,7 @@
 #include "froidure-pin.hpp"
 #include "gabow.hpp"
 #include "hpcombi.hpp"
+#include "is_specialization_of.hpp"
 #include "kambites-class.hpp"
 #include "kambites-helpers.hpp"
 #include "kambites.hpp"
