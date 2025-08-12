@@ -48,8 +48,8 @@ namespace libsemigroups {
   namespace {
     constexpr auto const run_color = fmt::bg(fmt::terminal_color::white)
                                      | fmt::fg(fmt::terminal_color::black);
-    auto const lookahead_color = fmt::bg(fmt::rgb(128, 128, 128))
-                                 | fmt::fg(fmt::terminal_color::black);
+    auto const phase_color
+        = fmt::bg(fmt::rgb(96, 96, 96)) | fmt::fg(fmt::terminal_color::white);
 
     void report_keys(std::set<std::string> const& keys) {
       if (!keys.empty()) {
@@ -919,7 +919,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::init_run() {
-      _stats.number_of_lookaheads_this_run = 0;
+      _stats.number_of_phases_this_run = 0;
 
       _word_graph.settings(*this);
       _word_graph.reset_start_time();  // TODO remove
@@ -1020,6 +1020,7 @@ namespace libsemigroups {
       current          = _word_graph.initial_node();
       auto const first = internal_presentation().rules.cbegin();
       auto const last  = internal_presentation().rules.cend();
+      report_before_hlt();
       while (current != _word_graph.first_free_node() && !stopped()) {
         if (!save()) {
           for (auto it = first; it < last; it += 2) {
@@ -1039,10 +1040,13 @@ namespace libsemigroups {
           // If save() == true and no deductions were skipped, then we have
           // already run process_definitions, and so there's no point in doing
           // a lookahead.
+          report_after_hlt();
           perform_lookahead(StopEarly);
+          report_before_hlt();
         }
         current = _word_graph.next_active_node(current);
       }
+      report_after_hlt();
     }
 
     void ToddCoxeterImpl::CR_style() {
@@ -1130,6 +1134,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeterImpl - reporting - private
     ////////////////////////////////////////////////////////////////////////
+
+    void ToddCoxeterImpl::report_after_hlt() const {
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<16}\n", "");
+        report_default("ToddCoxeter: {}\n",
+                       fmt::format(phase_color,
+                                   "HLT {}.{} STOP",
+                                   _stats.number_of_runs,
+                                   _stats.number_of_phases_this_run));
+        _stats.number_of_phases_this_run++;
+        // TODO report_progress_from_thread in the word_graph
+        report_times();
+      }
+    }
 
     void ToddCoxeterImpl::report_after_lookahead(
         size_t old_lookahead_next,
@@ -1243,10 +1261,10 @@ namespace libsemigroups {
         {
           report_no_prefix("{:+<16}\n", "");
           report_default("ToddCoxeter: {} ({})\n",
-                         fmt::format(lookahead_color,
+                         fmt::format(phase_color,
                                      "LOOKAHEAD {}.{} STOP",
                                      _stats.number_of_runs,
-                                     _stats.number_of_lookaheads_this_run),
+                                     _stats.number_of_phases_this_run),
                          string_time(delta(lookahead_start_time)));
           ReportCell<4> rc;
           rc.align(Align::left)
@@ -1306,18 +1324,32 @@ namespace libsemigroups {
       _stats.total_run_time += delta(_stats.this_run_start_time);
     }
 
+    void ToddCoxeterImpl::report_before_hlt() const {
+      if (reporting_enabled()) {
+        report_no_prefix("{:+<16}\n", "");
+        report_default("ToddCoxeter: {}\n",
+                       fmt::format(phase_color,
+                                   "HLT {}.{} START",
+                                   _stats.number_of_runs,
+                                   _stats.number_of_phases_this_run));
+        report_times();
+        _word_graph.stats().report_number = 0;
+      }
+    }
+
     void ToddCoxeterImpl::report_before_lookahead() const {
       if (reporting_enabled()) {
         report_no_prefix("{:+<16}\n", "");
         report_default("ToddCoxeter: {} (lookahead_extent() = {}, "
                        "lookahead_style() = {})\n",
-                       fmt::format(lookahead_color,
+                       fmt::format(phase_color,
                                    "LOOKAHEAD {}.{} START",
                                    _stats.number_of_runs,
-                                   _stats.number_of_lookaheads_this_run),
+                                   _stats.number_of_phases_this_run),
                        lookahead_extent(),
                        lookahead_style());
         report_times();
+        _word_graph.stats().report_number = 0;
 
         if (current_word_graph().number_of_nodes_active() > lookahead_next()) {
           auto ln      = lookahead_next();
@@ -1498,7 +1530,7 @@ namespace libsemigroups {
       }
       report_after_lookahead(
           old_lookahead_next, num_killed_by_me, lookahead_start_time);
-      _stats.number_of_lookaheads_this_run++;
+      _stats.number_of_phases_this_run++;
     }
 
     size_t ToddCoxeterImpl::hlt_lookahead(bool stop_early) {
