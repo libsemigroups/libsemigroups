@@ -291,12 +291,13 @@ namespace libsemigroups {
                                                    RuleIterator     last,
                                                    bool stop_early) {
       auto last_stop_early_check = std::chrono::high_resolution_clock::now();
-      size_t const old_number_of_killed    = number_of_nodes_killed();
-      size_t       killed_at_prev_interval = old_number_of_killed;
+      auto const old_number_of_killed    = number_of_nodes_killed();
+      auto       killed_at_prev_interval = old_number_of_killed;
 
       CollectCoincidences                    incompat(_coinc);
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
+      // TODO use Guard
       bool   old_ticker_running = tc->_ticker_running;
       auto   start_time         = std::chrono::high_resolution_clock::now();
       Ticker ticker;
@@ -308,6 +309,7 @@ namespace libsemigroups {
         // NodeManager but the RuleIterators returned by them are invalidated
         // by any changes to the graph, such as those made by
         // felsch_graph::make_compatible.
+        std::lock_guard lock(mtx());
         felsch_graph::make_compatible<DoNotRegisterDefs>(
             *this, current, current + 1, first, last, incompat, prefdefs);
         // Using NoPreferredDefs is just a (more or less) arbitrary
@@ -346,7 +348,7 @@ namespace libsemigroups {
       if (reporting_enabled()) {
         auto gd       = group_digits;
         auto interval = string_time(tc->lookahead_stop_early_interval());
-        report_no_prefix("{:-<90}\n", "");
+        report_no_prefix("{:+<16}\n", "");
         report_default("ToddCoxeter: too few nodes killed in last {} = "
                        "{}, stopping lookahead early!\n",
                        italic("i"),
@@ -464,7 +466,7 @@ namespace libsemigroups {
       _finished       = std::move(that._finished);
       _forest         = std::move(that._forest);
       _settings_stack = std::move(that._settings_stack);
-      _state          = std::move(that._state);
+      _state          = that._state.load();
       _standardized   = std::move(that._standardized);
       _ticker_running = std::move(that._ticker_running);
       _word_graph     = std::move(that._word_graph);
@@ -485,7 +487,7 @@ namespace libsemigroups {
         _settings_stack.push_back(std::make_unique<Settings>(*uptr));
       }
       _standardized   = that._standardized;
-      _state          = that._state;
+      _state          = that._state.load();
       _ticker_running = that._ticker_running;
       _word_graph     = that._word_graph;
       return *this;
@@ -1023,7 +1025,7 @@ namespace libsemigroups {
           for (auto it = first; it < last; it += 2) {
             _word_graph.push_definition_hlt<DoNotRegisterDefs>(
                 current, *it, *(it + 1));
-            _word_graph.process_coincidences<DoNotRegisterDefs>();
+            _word_graph.process_coincidences<DoNotRegisterDefs>(true);
           }
         } else {
           for (auto it = first; it < last; it += 2) {
@@ -1294,10 +1296,9 @@ namespace libsemigroups {
             .divider_after(true)
             .divider_char('+');
 
-        rc("{}: {}   {}   {}\n",
+        rc("{}: {}  {}\n",
            report_prefix(),
            fmt::format(run_color, "RUN {} STOP", _stats.number_of_runs),
-           fmt::format("@ {}", now_string()),
            reason);
         // TODO(1) report time spent doing lookaheads, definitions, etc.
       }
@@ -1370,14 +1371,29 @@ namespace libsemigroups {
     // TODO call this during any lookahead
     void ToddCoxeterImpl::report_during_hlt_lookahead() const {
       if (reporting_enabled()) {
-        // TODO this is highly non-thread safe
-        auto pos = _word_graph.position_of_node(_word_graph.lookahead_cursor());
-        auto tot = number_of_nodes_active();
-        // TODO format like a row in the NodeManagedGraph table
-        report_default("ToddCoxeter: at node {} / {} = {:.1f}%\n",
-                       group_digits(pos),
-                       group_digits(tot),
-                       double(100 * pos) / tot);
+        std::unique_lock ul(_word_graph.mtx(), std::defer_lock);
+        // TODO this works but basically never manages to lock the mutex, just
+        // outright locking the mutex here causes a slow down in [098] that
+        // causes the HLT variant to spiral off to infinity. The TODO is to
+        // perhaps lock it some number of times and just estimate the stage we
+        // are at. Or could we just keep an atomic counter (nodes processed
+        // this lookahead) and use that as a proxy for the position? One
+        // problem will be that this will be too big, we'll keep counting up
+        // when but the number of active nodes might decrease (maybe subtracting
+        // the number of nodes killed in the current lookahead would be enough?)
+        if (ul.try_lock()) {
+          auto pos
+              = _word_graph.position_of_node(_word_graph.lookahead_cursor());
+          if (pos == UNDEFINED) {
+            return;
+          }
+          auto tot = number_of_nodes_active();
+          // TODO format like a row in the NodeManagedGraph table
+          report_default("ToddCoxeter: at node {} / {} = {:.1f}%\n",
+                         group_digits(pos),
+                         group_digits(tot),
+                         double(100 * pos) / tot);
+        }
       }
     }
 
@@ -1392,7 +1408,7 @@ namespace libsemigroups {
       if (_state == state::lookahead
           && lookahead_style() == options::lookahead_style::hlt) {
         report_during_hlt_lookahead();
-      }  // TODO report_during_felsch_lookahead
+      }
     }
 
     void ToddCoxeterImpl::add_timing_row(ReportCell<4>& rc) const {
@@ -1433,7 +1449,7 @@ namespace libsemigroups {
       auto& current = _word_graph.lookahead_cursor();
 
       if (lookahead_extent() == options::lookahead_extent::partial) {
-        // Start lookahead from the coset after _current
+        // Start lookahead from the node after _current
         current = _word_graph.next_active_node(_word_graph.cursor());
       } else {
         LIBSEMIGROUPS_ASSERT(lookahead_extent()
