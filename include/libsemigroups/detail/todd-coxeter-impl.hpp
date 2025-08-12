@@ -300,8 +300,8 @@ namespace libsemigroups {
       };  // class Graph
 
       struct Stats {
-        uint64_t number_of_runs                = 0;
-        uint64_t number_of_lookaheads_this_run = 0;
+        uint64_t number_of_runs            = 0;
+        uint64_t number_of_phases_this_run = 0;
         std::chrono::high_resolution_clock::time_point this_run_start_time;
         std::chrono::nanoseconds                       total_run_time;
       };
@@ -1792,11 +1792,15 @@ namespace libsemigroups {
       // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
+      void report_after_hlt() const;
       void report_after_lookahead(size_t old_lookahead_next,
+                                  // TODO this is now in
+                                  // NodeManagedGraph::Stats
                                   size_t number_killed_in_lookahead,
                                   std::chrono::high_resolution_clock::time_point
                                       lookahead_start_time) const;
       void report_after_run() const;
+      void report_before_hlt() const;
       void report_before_lookahead() const;
       void report_before_run() const;
       void report_during_lookahead() const;

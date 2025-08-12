@@ -157,7 +157,7 @@ namespace libsemigroups {
         return _stats;
       }
 
-      [[nodiscard]] Stats const& stats() const noexcept {
+      [[nodiscard]] Stats& stats() const noexcept {
         return _stats;
       }
 

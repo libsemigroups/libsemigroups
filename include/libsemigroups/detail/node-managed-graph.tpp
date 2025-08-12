@@ -48,31 +48,41 @@ namespace libsemigroups {
       std::atomic_uint64_t lookahead_nodes_at_start;
       std::atomic_uint64_t lookahead_nodes_killed;
       std::atomic_uint64_t lookahead_position;
+      std::atomic_uint64_t num_active_edges;
       std::atomic_uint64_t prev_active_nodes;
       std::atomic_uint64_t prev_nodes_killed;
       std::atomic_uint64_t prev_nodes_defined;
-      std::atomic_uint64_t num_active_edges;
+      uint64_t             report_number;
 
       Stats()
-          : lookahead_position(),
+          : lookahead_nodes_at_start(),
+            lookahead_nodes_killed(),
+            lookahead_position(),
+            num_active_edges(0),
             prev_active_nodes(),
             prev_nodes_killed(),
             prev_nodes_defined(),
-            num_active_edges(0) {}
+            report_number(0) {}
 
       Stats(Stats const& that)
-          : lookahead_position(that.lookahead_position.load()),
+          : lookahead_nodes_at_start(that.lookahead_nodes_at_start.load()),
+            lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
+            lookahead_position(that.lookahead_position.load()),
+            num_active_edges(that.num_active_edges.load()),
             prev_active_nodes(that.prev_active_nodes.load()),
             prev_nodes_killed(that.prev_nodes_killed.load()),
             prev_nodes_defined(that.prev_nodes_defined.load()),
-            num_active_edges(that.num_active_edges.load()) {}
+            report_number(that.report_number) {}
 
       Stats& operator=(Stats const& that) {
-        lookahead_position = that.lookahead_position.load();
-        prev_active_nodes  = that.prev_active_nodes.load();
-        prev_nodes_killed  = that.prev_nodes_killed.load();
-        prev_nodes_defined = that.prev_nodes_defined.load();
-        num_active_edges   = that.num_active_edges.load();
+        lookahead_nodes_at_start = that.lookahead_nodes_at_start.load();
+        lookahead_nodes_killed   = that.lookahead_nodes_killed.load();
+        lookahead_position       = that.lookahead_position.load();
+        prev_active_nodes        = that.prev_active_nodes.load();
+        prev_nodes_killed        = that.prev_nodes_killed.load();
+        prev_nodes_defined       = that.prev_nodes_defined.load();
+        num_active_edges         = that.num_active_edges.load();
+        report_number            = that.report_number;
         return *this;
       }
     };
@@ -335,15 +345,11 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     void NodeManagedGraph<BaseGraph>::report_progress_from_thread() const {
-      using detail::group_digits;
-      using detail::signed_group_digits;
-
-      // TODO (2): FIXME The following 3 lines are not thread safe and can cause
-      // data races. One way of resolving this would be to change the data
-      // members of node managed graph to be atomic
       auto const active  = NodeManager<node_type>::number_of_nodes_active();
       auto const killed  = NodeManager<node_type>::number_of_nodes_killed();
       auto const defined = NodeManager<node_type>::number_of_nodes_defined();
+
+      _stats.lookahead_nodes_killed += killed - _stats.prev_nodes_killed;
 
       auto const active_diff
           = signed_group_digits(active - _stats.prev_active_nodes);
@@ -352,11 +358,7 @@ namespace libsemigroups {
       auto const defined_diff
           = signed_group_digits(defined - _stats.prev_nodes_defined);
 
-      // TODO this should not be done here, but in the function where the
-      // killing happens
-      _stats.lookahead_nodes_killed += killed - _stats.prev_nodes_killed;
-
-      detail::ReportCell<5> rc;
+      ReportCell<5> rc;
       rc.min_width(12)
           .min_width(0, report_prefix().size())
           .align(1, Align::left);
@@ -367,7 +369,7 @@ namespace libsemigroups {
       auto purple = fmt::emphasis::underline;
       rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         fmt::format(purple, "RUN X.Y"),
+         fmt::format(purple, "RUN X.Y.{}", _stats.report_number),
          "active",
          "killed",
          "defined");
@@ -395,6 +397,7 @@ namespace libsemigroups {
 
       // TODO auto complete = 100 * static_cast<double>(_stats.num_active_edges)
       //                 / (this->number_of_nodes_active() * out_degree());
+      _stats.report_number++;
       stats_check_point();
     }
 
