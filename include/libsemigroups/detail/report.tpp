@@ -140,7 +140,7 @@ namespace libsemigroups {
         }
       }
       if (_divider_before) {
-        report_no_prefix(std::string(16, _divider_char) + "\n");
+        report_no_prefix("{:+<32}\n", "");
       }
       for (size_t i = 0; i < _rows.size(); ++i) {
         std::apply(fmt, _rows[i]);

@@ -161,6 +161,7 @@ namespace libsemigroups {
 
       [[nodiscard]] size_t line_width() const;
 
+      // TODO rm
       ReportCell& divider_after(bool val) {
         _divider_after = val;
         return *this;
@@ -174,6 +175,10 @@ namespace libsemigroups {
       // TODO rm
       ReportCell& divider_char(char val) {
         return *this;
+      }
+
+      void add_divider() {
+        operator()("{:+<32}\n", "");
       }
 
      private:
