@@ -181,7 +181,7 @@ namespace libsemigroups {
         };
       };  // struct options
 
-      enum class state : uint8_t { none, running, lookahead };
+      enum class state : uint8_t { none, hlt, felsch, lookahead };
 
       using node_type        = typename WordGraph<uint32_t>::node_type;
       using index_type       = node_type;
@@ -300,11 +300,103 @@ namespace libsemigroups {
       };  // class Graph
 
       struct Stats {
-        uint64_t number_of_runs            = 0;
-        uint64_t number_of_phases_this_run = 0;
-        std::chrono::high_resolution_clock::time_point this_run_start_time;
-        std::chrono::nanoseconds                       total_run_time;
+        // TODO make the values here atomic?
+
+        // TODO required?
+        uint64_t run_defined_at_start;
+        uint64_t run_index = 0;
+        uint64_t run_killed_at_start;
+        // use instead of prev_active_nodes
+        uint64_t                                       run_nodes_at_start;
+        std::chrono::high_resolution_clock::time_point run_start_time;
+
+        uint64_t phase_index;
+        uint64_t phase_edges_defined_at_start;
+        uint64_t phase_edges_killed_at_start;
+        uint64_t phase_edges_active_at_start;
+        uint64_t phase_nodes_defined_at_start;
+        uint64_t phase_nodes_killed_at_start;
+        uint64_t phase_nodes_active_at_start;
+
+        mutable uint64_t report_index;
+        mutable uint64_t report_edges_defined_prev;
+        mutable uint64_t report_edges_killed_prev;
+        mutable uint64_t report_edges_active_prev;
+        mutable uint64_t report_nodes_defined_prev;
+        mutable uint64_t report_nodes_killed_prev;
+        mutable uint64_t report_nodes_active_prev;
+
+        std::chrono::nanoseconds total_run_time;
       };
+
+      void stats_phase_start() {
+        _stats.phase_nodes_active_at_start
+            = _word_graph.number_of_nodes_active();
+        _stats.phase_nodes_killed_at_start
+            = _word_graph.number_of_nodes_killed();
+        _stats.phase_nodes_defined_at_start
+            = _word_graph.number_of_nodes_defined();
+        _stats.report_index = 0;
+        // TODO edges
+      }
+
+      void stats_phase_stop() {
+        _stats.phase_index++;
+      }
+
+      void stats_report_stop() const {
+        _stats.report_index++;
+      }
+
+      void stats_run_start() {
+        _stats.phase_index    = 0;
+        _stats.run_start_time = std::chrono::high_resolution_clock::now();
+      }
+
+      void stats_run_stop() {
+        _stats.run_index++;
+        _stats.total_run_time += delta(_stats.run_start_time);
+      }
+
+      struct Defer {
+        uint64_t& receiver;
+        uint64_t  val;
+
+        Defer(uint64_t& receiver, uint64_t val)
+            : receiver(receiver), val(val) {}
+
+        ~Defer() {
+          receiver = val;
+        }
+
+        operator uint64_t() const {
+          return val;
+        }
+
+        // TODO needed?
+        operator int64_t() const {
+          return static_cast<int64_t>(val);
+        }
+
+        int64_t operator-(uint64_t that) const {
+          return val - that;
+        }
+      };
+
+      auto reporting_number_of_nodes_active() const {
+        return Defer(_stats.report_nodes_active_prev,
+                     _word_graph.number_of_nodes_active());
+      }
+
+      auto reporting_number_of_nodes_defined() const {
+        return Defer(_stats.report_nodes_active_prev,
+                     _word_graph.number_of_nodes_defined());
+      }
+
+      auto reporting_number_of_nodes_killed() const {
+        return Defer(_stats.report_nodes_active_prev,
+                     _word_graph.number_of_nodes_killed());
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // 2. ToddCoxeterImpl - data members - private
@@ -314,13 +406,14 @@ namespace libsemigroups {
       Forest                                 _forest;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
+
       // _state must be atomic to avoid the situation where the ticker function
       // is called concurrently with a new lookahead starting
       std::atomic<state> _state;
       bool               _ticker_running;
       Graph              _word_graph;
 
-      mutable Stats _stats;  // TODO add to constructors
+      Stats _stats;  // TODO add to constructors
 
      public:
       using word_graph_type = Graph;
@@ -1792,7 +1885,7 @@ namespace libsemigroups {
       // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
-      void report_after_hlt() const;
+      void report_after(std::string_view) const;
       void report_after_lookahead(size_t old_lookahead_next,
                                   // TODO this is now in
                                   // NodeManagedGraph::Stats
@@ -1800,15 +1893,18 @@ namespace libsemigroups {
                                   std::chrono::high_resolution_clock::time_point
                                       lookahead_start_time) const;
       void report_after_run() const;
-      void report_before_hlt() const;
+      void report_before(std::string_view) const;
       void report_before_lookahead() const;
       void report_before_run() const;
-      void report_during_lookahead() const;
       void report_presentation() const;
-      void report_progress_from_thread() const;
+      void report_progress_from_thread(bool divider = true) const;
       void report_times() const;
 
-      void add_timing_row(detail::ReportCell<4>& rc) const;
+      void report_divider() const {
+        report_no_prefix("{:+<32}\n", "");
+      }
+
+      void add_timing_row(detail::ReportCell<5>& rc) const;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - lookahead - private

@@ -846,9 +846,12 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::really_run_impl() {
+      stats_run_start();
       if (strategy() == options::strategy::felsch) {
+        Guard guard(_state, state::felsch);
         felsch();
       } else if (strategy() == options::strategy::hlt) {
+        Guard guard(_state, state::hlt);
         hlt();
       } else if (strategy() == options::strategy::CR) {
         CR_style();
@@ -862,8 +865,6 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::run_impl() {
-      Guard guard(_state, state::running);
-
       using std::chrono::duration_cast;
       using std::chrono::seconds;
       if (!running_for() && !running_until() && is_obviously_infinite(*this)) {
@@ -919,8 +920,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::init_run() {
-      _stats.number_of_phases_this_run = 0;
-
       _word_graph.settings(*this);
       _word_graph.reset_start_time();  // TODO remove
       _word_graph.stats_check_point();
@@ -983,7 +982,7 @@ namespace libsemigroups {
           }
         }
         if (any_change()) {
-          _word_graph.report_progress_from_thread();
+          report_progress_from_thread();
         };
         if (!is_obviously_infinite(*this)) {
           // We require this clause because we might still be obviously
@@ -994,10 +993,13 @@ namespace libsemigroups {
         }
       }
       report_after_run();
-      _stats.number_of_runs++;
+      stats_run_stop();
     }
 
     void ToddCoxeterImpl::felsch() {
+      stats_phase_start();
+      report_before("FELSCH");
+
       _word_graph.process_definitions();
 
       auto& current  = _word_graph.cursor();
@@ -1013,14 +1015,18 @@ namespace libsemigroups {
         }
         current = _word_graph.next_active_node(current);
       }
+      report_after("FELSCH");
+      stats_phase_stop();
     }
 
     void ToddCoxeterImpl::hlt() {
+      stats_phase_start();
+      // TODO rename report_before_phase
+      report_before("HLT");
       auto& current    = _word_graph.cursor();
       current          = _word_graph.initial_node();
       auto const first = internal_presentation().rules.cbegin();
       auto const last  = internal_presentation().rules.cend();
-      report_before_hlt();
       while (current != _word_graph.first_free_node() && !stopped()) {
         if (!save()) {
           for (auto it = first; it < last; it += 2) {
@@ -1040,13 +1046,17 @@ namespace libsemigroups {
           // If save() == true and no deductions were skipped, then we have
           // already run process_definitions, and so there's no point in doing
           // a lookahead.
-          report_after_hlt();
+          report_after("HLT");
+          stats_phase_stop();
+          stats_phase_start();
           perform_lookahead(StopEarly);
-          report_before_hlt();
+          report_before("HLT");
+          stats_phase_start();
         }
         current = _word_graph.next_active_node(current);
       }
-      report_after_hlt();
+      report_after("HLT");
+      stats_phase_stop();
     }
 
     void ToddCoxeterImpl::CR_style() {
@@ -1135,16 +1145,16 @@ namespace libsemigroups {
     // ToddCoxeterImpl - reporting - private
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeterImpl::report_after_hlt() const {
+    void ToddCoxeterImpl::report_after(std::string_view what) const {
       if (reporting_enabled()) {
         report_no_prefix("{:+<16}\n", "");
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
-                                   "HLT {}.{} STOP",
-                                   _stats.number_of_runs,
-                                   _stats.number_of_phases_this_run));
-        _stats.number_of_phases_this_run++;
-        // TODO report_progress_from_thread in the word_graph
+                                   "{} {}.{} STOP",
+                                   what,
+                                   _stats.run_index,
+                                   _stats.phase_index));
+        // TODO report_progress_from_thread
         report_times();
       }
     }
@@ -1263,8 +1273,8 @@ namespace libsemigroups {
           report_default("ToddCoxeter: {} ({})\n",
                          fmt::format(phase_color,
                                      "LOOKAHEAD {}.{} STOP",
-                                     _stats.number_of_runs,
-                                     _stats.number_of_phases_this_run),
+                                     _stats.run_index,
+                                     _stats.phase_index),
                          string_time(delta(lookahead_start_time)));
           ReportCell<4> rc;
           rc.align(Align::left)
@@ -1305,7 +1315,7 @@ namespace libsemigroups {
         // already prints out this info, so avoid duplication in case nothing
         // has changed.
         if (any_change()) {
-          current_word_graph().report_progress_from_thread();
+          report_progress_from_thread();
         }
 
         ReportCell<4> rc;
@@ -1316,40 +1326,39 @@ namespace libsemigroups {
 
         rc("{}: {}  {}\n",
            report_prefix(),
-           fmt::format(run_color, "RUN {} STOP", _stats.number_of_runs),
+           fmt::format(run_color, "RUN {} STOP", _stats.run_index),
            reason);
-        // TODO()) report time spent doing lookaheads, definitions, etc.
+        // TODO()) report time spent doing lookaheads, HLT, Felsch,
+        // process_definitions, process_coincidences, etc.
       }
       report_times();
-      _stats.total_run_time += delta(_stats.this_run_start_time);
     }
 
-    void ToddCoxeterImpl::report_before_hlt() const {
+    void ToddCoxeterImpl::report_before(std::string_view what) const {
       if (reporting_enabled()) {
         report_no_prefix("{:+<16}\n", "");
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
-                                   "HLT {}.{} START",
-                                   _stats.number_of_runs,
-                                   _stats.number_of_phases_this_run));
+                                   "{} {}.{} START",
+                                   what,
+                                   _stats.run_index,
+                                   _stats.phase_index));
         report_times();
-        _word_graph.stats().report_number = 0;
       }
     }
 
     void ToddCoxeterImpl::report_before_lookahead() const {
       if (reporting_enabled()) {
-        report_no_prefix("{:+<16}\n", "");
+        report_divider();
         report_default("ToddCoxeter: {} (lookahead_extent() = {}, "
                        "lookahead_style() = {})\n",
                        fmt::format(phase_color,
                                    "LOOKAHEAD {}.{} START",
-                                   _stats.number_of_runs,
-                                   _stats.number_of_phases_this_run),
+                                   _stats.run_index,
+                                   _stats.phase_index),
                        lookahead_extent(),
                        lookahead_style());
-        report_times();
-        _word_graph.stats().report_number = 0;
+        report_progress_from_thread(false);
 
         if (current_word_graph().number_of_nodes_active() > lookahead_next()) {
           auto ln      = lookahead_next();
@@ -1370,6 +1379,7 @@ namespace libsemigroups {
           report_keys(keys);
 
         } else if (current_word_graph().definitions().any_skipped()) {
+          // TODO move to be first?
           report_default(
               "ToddCoxeter: triggered because there are skipped definitions "
               "({} active "
@@ -1381,37 +1391,17 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::report_before_run() const {
       if (reporting_enabled()) {
-        _stats.this_run_start_time = std::chrono::high_resolution_clock::now();
-        {
-          report_default(
-              "ToddCoxeter: {} (strategy() = {})\n",
-              fmt::format(run_color, "RUN {} START", _stats.number_of_runs),
-              // TODO(1) if using ACE style strategy include the value of the
-              // relevant setting
-              // TODO(1) add more nuance when not using hlt/felsch
-              strategy());
-        }
-        if (_stats.number_of_runs > 0) {
+        report_default("ToddCoxeter: {} (strategy() = {})\n",
+                       fmt::format(run_color, "RUN {} START", _stats.run_index),
+                       // TODO(1) if using ACE style strategy include the value
+                       // of the relevant setting
+                       // TODO(1) add more nuance when not using hlt/felsch
+                       strategy());
+        if (_stats.run_index > 0) {
           report_times();
         }
 
         report_presentation();
-      }
-    }
-
-    // TODO rename to remove hlt
-    // TODO call this during any lookahead
-    void ToddCoxeterImpl::report_during_lookahead() const {
-      if (reporting_enabled()) {
-        // It is difficult to get the exact value of the % complete due to
-        // multi-threading issues, hence we don't try, we just assume that
-        // nodes are uniformly randomly killed, leading to the following
-        // approximate progress . . .
-        auto const p = _word_graph.stats().lookahead_position.load();
-        auto const N = _word_graph.stats().lookahead_nodes_at_start.load();
-        auto const r = _word_graph.stats().lookahead_nodes_killed.load();
-        report_default("ToddCoxeter: approx. {:.1f}% complete\n",
-                       (p - double(p * r) / N) * 100 / (N - r));
       }
     }
 
@@ -1420,28 +1410,120 @@ namespace libsemigroups {
                      presentation::to_report_string(internal_presentation()));
     }
 
-    void ToddCoxeterImpl::report_progress_from_thread() const {
+    void ToddCoxeterImpl::report_progress_from_thread(bool divider) const {
       LIBSEMIGROUPS_ASSERT(_state != state::none);
-      current_word_graph().report_progress_from_thread();
-      if (_state == state::lookahead) {
-        report_during_lookahead();
+      auto const active  = reporting_number_of_nodes_active();
+      auto const defined = reporting_number_of_nodes_defined();
+      auto const killed  = reporting_number_of_nodes_killed();
+
+      auto const active_diff1
+          = signed_group_digits(active - _stats.report_nodes_active_prev);
+      auto const killed_diff1
+          = signed_group_digits(killed - _stats.report_nodes_killed_prev);
+      auto const defined_diff1
+          = signed_group_digits(defined - _stats.report_nodes_defined_prev);
+
+      auto const active_diff2
+          = signed_group_digits(active - _stats.phase_nodes_active_at_start);
+      auto const killed_diff2
+          = signed_group_digits(killed - _stats.phase_nodes_killed_at_start);
+      auto const defined_diff2
+          = signed_group_digits(defined - _stats.phase_nodes_defined_at_start);
+
+      ReportCell<5> rc;
+      rc.min_width(12)
+          .min_width(0, report_prefix().size())
+          .divider_before(divider)
+          .align(1, Align::left);
+
+      auto const X = _stats.run_index, Y = _stats.phase_index,
+                 Z = _stats.report_index;
+
+      rc("{}: {} | {} | {} | {}\n",
+         report_prefix(),
+         fmt::format("{} {}.{}.{}", _state.load(), X, Y, Z),
+         "active",
+         "killed",
+         "defined");
+      rc("{}: {} | {} | {} | {}\n",
+         report_prefix(),
+         "nodes",
+         group_digits(active),
+         group_digits(killed),
+         group_digits(defined));
+      if (Z > 0) {
+        rc("{}: {} | {} | {} | {}\n",
+           report_prefix(),
+           fmt::format("diff {}.{}.{}", X, Y, Z - 1),
+           active_diff1,
+           killed_diff1,
+           defined_diff1);
+        if (Z > 1) {
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             fmt::format("diff {}.{}.0", X, Y),
+             active_diff2,
+             killed_diff2,
+             defined_diff2);
+        }
       }
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "edges", "?", "?", "?");
+      if (Z > 0) {
+        rc("{}: {} | {} | {} | {}\n",
+           report_prefix(),
+           fmt::format("diff {}.{}.{}", X, Y, Z - 1),
+           "?",
+           "?",
+           "?");
+        if (Z > 1) {
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             fmt::format("diff {}.{}.0", X, Y),
+             "?",
+             "?",
+             "?");
+        }
+      }
+      if (_state == state::lookahead && _stats.report_index != 0) {
+        // It is difficult to get the exact value of the % complete due to
+        // multi-threading issues, hence we don't try, we just assume that
+        // nodes are uniformly randomly killed, leading to the following
+        // approximate progress . . .
+        auto const p = _word_graph.stats().lookahead_position.load();
+        auto const N = _word_graph.stats().lookahead_nodes_at_start.load();
+        auto const r = _word_graph.stats().lookahead_nodes_killed.load();
+        rc("{}: {} | {} \n",
+           report_prefix(),
+           "lookahead progress",
+           fmt::format("~{:.1f}%", (p - double(p * r) / N) * 100 / (N - r)));
+        // TODO ETA?
+      }
+      add_timing_row(rc);
+
+      // TODO auto complete = 100 *
+      // static_cast<double>(_word_graph.stats().num_active_edges)
+      //                 / (this->number_of_nodes_active() * out_degree());
+      stats_report_stop();
+      // TODO remove next line
+      _word_graph.stats_check_point();
     }
 
-    void ToddCoxeterImpl::add_timing_row(ReportCell<4>& rc) const {
-      auto this_run_time = delta(_stats.this_run_start_time);
-      rc("{}: {} | {} | {}\n",
+    void ToddCoxeterImpl::add_timing_row(ReportCell<5>& rc) const {
+      // TODO phase_start_time + this_phase_time
+      auto this_run_time = delta(_stats.run_start_time);
+      auto elapsed       = delta(start_time());
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         fmt::format("t{} = {}",
-                     subscript(_stats.number_of_runs),
-                     string_time(this_run_time)),
-         fmt::format("\u03A3t\u1D62 = {}",
+         "time",
+         fmt::format(
+             "run {} = {}", _stats.run_index, string_time(this_run_time)),
+         fmt::format("all runs = {}",
                      string_time(_stats.total_run_time + this_run_time)),
-         fmt::format("elapsed time = {}", string_time(delta(start_time()))));
+         fmt::format("elapsed = {}", string_time(elapsed)));
     }
 
     void ToddCoxeterImpl::report_times() const {
-      auto this_run_time = delta(_stats.this_run_start_time);
+      auto this_run_time = delta(_stats.run_start_time);
       auto elapsed       = delta(start_time());
       report_default(
           "{}: time: {} | {} | {}\n",
@@ -1458,7 +1540,10 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
       Guard guard(_state, state::lookahead);
+
+      // TODO move things from _word_graph.stats() -> _stats
       report_before_lookahead();
+      // TODO make lookahead_start_time -> _stats
       std::chrono::high_resolution_clock::time_point lookahead_start_time
           = std::chrono::high_resolution_clock::now();
       // _word_graph.reset_stats(_word_graph.number_of_nodes_active());
@@ -1467,7 +1552,6 @@ namespace libsemigroups {
       if (lookahead_extent() == options::lookahead_extent::partial) {
         // Start lookahead from the node after _current
         current = _word_graph.next_active_node(_word_graph.cursor());
-        // TODO lock mutex?
         _word_graph.stats().lookahead_position
             = _word_graph.position_of_node(current);
       } else {
@@ -1530,7 +1614,6 @@ namespace libsemigroups {
       }
       report_after_lookahead(
           old_lookahead_next, num_killed_by_me, lookahead_start_time);
-      _stats.number_of_phases_this_run++;
     }
 
     size_t ToddCoxeterImpl::hlt_lookahead(bool stop_early) {
@@ -1548,6 +1631,7 @@ namespace libsemigroups {
       node_type&   current              = _word_graph.lookahead_cursor();
       size_t const n                    = _word_graph.out_degree();
 
+      // TODO use Guard
       bool       old_ticker_running = _ticker_running;
       Ticker     ticker;
       time_point lookahead_start_time
