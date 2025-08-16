@@ -360,6 +360,10 @@ namespace libsemigroups {
         _stats.total_run_time += delta(_stats.run_start_time);
       }
 
+      // Simple struct that allows the "receivers" value to be set to "val" but
+      // only when the Defer object goes out of scope. Useful in reporting when
+      // we want to do something with an old value, then update the data member
+      // of Stats.
       struct Defer {
         uint64_t& receiver;
         uint64_t  val;
@@ -391,12 +395,12 @@ namespace libsemigroups {
       }
 
       auto reporting_number_of_nodes_defined() const {
-        return Defer(_stats.report_nodes_active_prev,
+        return Defer(_stats.report_nodes_defined_prev,
                      _word_graph.number_of_nodes_defined());
       }
 
       auto reporting_number_of_nodes_killed() const {
-        return Defer(_stats.report_nodes_active_prev,
+        return Defer(_stats.report_nodes_killed_prev,
                      _word_graph.number_of_nodes_killed());
       }
 
@@ -1887,7 +1891,7 @@ namespace libsemigroups {
       // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
-      void report_after(std::string_view) const;
+      void report_after_phase(std::string_view) const;
       void report_after_lookahead(size_t old_lookahead_next,
                                   // TODO this is now in
                                   // NodeManagedGraph::Stats

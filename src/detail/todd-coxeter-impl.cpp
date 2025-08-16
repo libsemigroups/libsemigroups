@@ -859,7 +859,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::really_run_impl() {
-      stats_run_start();
       if (strategy() == options::strategy::felsch) {
         Guard guard(_state, state::felsch);
         felsch();
@@ -936,6 +935,7 @@ namespace libsemigroups {
       _word_graph.settings(*this);
       _word_graph.reset_start_time();  // TODO remove
       _word_graph.stats_check_point();
+      stats_run_start();
 
       auto       first = internal_generating_pairs().cbegin();
       auto       last  = internal_generating_pairs().cend();
@@ -1028,7 +1028,7 @@ namespace libsemigroups {
         }
         current = _word_graph.next_active_node(current);
       }
-      report_after("FELSCH");
+      report_after_phase("FELSCH");
       stats_phase_stop();
     }
 
@@ -1059,16 +1059,17 @@ namespace libsemigroups {
           // If save() == true and no deductions were skipped, then we have
           // already run process_definitions, and so there's no point in doing
           // a lookahead.
-          report_after("HLT");
+          report_after_phase("HLT");
           stats_phase_stop();
-          stats_phase_start();
+          stats_phase_start();  // TODO put thing into perform_lookahead
           perform_lookahead(StopEarly);
-          report_before_phase("HLT");
+          stats_phase_stop();  // TODO put thing into perform_lookahead
           stats_phase_start();
+          report_before_phase("HLT");
         }
         current = _word_graph.next_active_node(current);
       }
-      report_after("HLT");
+      report_after_phase("HLT");
       stats_phase_stop();
     }
 
@@ -1158,7 +1159,7 @@ namespace libsemigroups {
     // ToddCoxeterImpl - reporting - private
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeterImpl::report_after(std::string_view what) const {
+    void ToddCoxeterImpl::report_after_phase(std::string_view what) const {
       if (reporting_enabled()) {
         report_divider();
         report_default("ToddCoxeter: {}\n",
