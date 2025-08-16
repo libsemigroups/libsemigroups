@@ -330,6 +330,8 @@ namespace libsemigroups {
         std::chrono::nanoseconds total_run_time;
       };
 
+      // TODO move into Stats, also impl PhaseStats() which does this at
+      // construction, and phase_stop at destruction
       void stats_phase_start() {
         _stats.phase_nodes_active_at_start
             = _word_graph.number_of_nodes_active();
@@ -342,19 +344,23 @@ namespace libsemigroups {
         // TODO edges
       }
 
+      // TODO move into Stats
       void stats_phase_stop() {
         _stats.phase_index++;
       }
 
+      // TODO move into Stats
       void stats_report_stop() const {
         _stats.report_index++;
       }
 
+      // TODO move into Stats
       void stats_run_start() {
         _stats.phase_index    = 0;
         _stats.run_start_time = std::chrono::high_resolution_clock::now();
       }
 
+      // TODO move into Stats
       void stats_run_stop() {
         _stats.run_index++;
         _stats.total_run_time += delta(_stats.run_start_time);
