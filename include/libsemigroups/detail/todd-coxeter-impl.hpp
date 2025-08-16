@@ -155,9 +155,8 @@ namespace libsemigroups {
   //! isomorphism.
 
   namespace detail {
-    class ToddCoxeterImpl
-        : public detail::CongruenceCommon,
-          public detail::FelschGraphSettings<ToddCoxeterImpl> {
+    class ToddCoxeterImpl : public CongruenceCommon,
+                            public FelschGraphSettings<ToddCoxeterImpl> {
       using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeterImpl>;
 
      public:
@@ -247,10 +246,9 @@ namespace libsemigroups {
         }
       };  // class Definitions
 
-      class Graph : public detail::NodeManagedGraph<
-                        detail::FelschGraph<word_type, uint32_t, Definitions>> {
-        using FelschGraph_
-            = detail::FelschGraph<word_type, uint32_t, Definitions>;
+      class Graph : public NodeManagedGraph<
+                        FelschGraph<word_type, uint32_t, Definitions>> {
+        using FelschGraph_      = FelschGraph<word_type, uint32_t, Definitions>;
         using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
 
        public:
@@ -304,10 +302,10 @@ namespace libsemigroups {
         // TODO make the values here atomic?
 
         // TODO required?
-        uint64_t   run_defined_at_start;
+        uint64_t   run_defined_at_start;  // TODO use
         uint64_t   run_index = 0;
-        uint64_t   run_killed_at_start;
-        uint64_t   run_nodes_at_start;
+        uint64_t   run_killed_at_start;  // TODO use
+        uint64_t   run_nodes_at_start;   // TODO use
         time_point run_start_time;
 
         uint64_t   phase_index;
@@ -327,26 +325,63 @@ namespace libsemigroups {
         mutable uint64_t report_nodes_killed_prev;
         mutable uint64_t report_nodes_active_prev;
 
-        std::chrono::nanoseconds total_run_time;
+        std::chrono::nanoseconds all_runs_time;
+
+        std::chrono::nanoseconds all_hlt_phases_time;
+        std::chrono::nanoseconds all_felsch_phases_time;
+        std::chrono::nanoseconds all_lookahead_phases_time;
+
+        std::chrono::nanoseconds run_hlt_phases_time;
+        std::chrono::nanoseconds run_felsch_phases_time;
+        std::chrono::nanoseconds run_lookahead_phases_time;
+
+        uint64_t all_num_hlt_phases       = 0;
+        uint64_t all_num_felsch_phases    = 0;
+        uint64_t all_num_lookahead_phases = 0;
+
+        uint64_t run_num_hlt_phases       = 0;
+        uint64_t run_num_felsch_phases    = 0;
+        uint64_t run_num_lookahead_phases = 0;
       };
 
       // TODO move into Stats, also impl PhaseStats() which does this at
       // construction, and phase_stop at destruction
       void stats_phase_start() {
+        _stats.phase_start_time = std::chrono::high_resolution_clock::now();
+        _stats.report_index     = 0;
+
         _stats.phase_nodes_active_at_start
             = _word_graph.number_of_nodes_active();
         _stats.phase_nodes_killed_at_start
             = _word_graph.number_of_nodes_killed();
         _stats.phase_nodes_defined_at_start
             = _word_graph.number_of_nodes_defined();
-        _stats.phase_start_time = std::chrono::high_resolution_clock::now();
-        _stats.report_index     = 0;
         // TODO edges
       }
 
       // TODO move into Stats
       void stats_phase_stop() {
         _stats.phase_index++;
+
+        switch (_state) {
+          case state::none: {
+            break;
+          }
+          case state::hlt: {
+            _stats.run_num_hlt_phases++;
+            _stats.run_hlt_phases_time += delta(_stats.phase_start_time);
+            break;
+          }
+          case state::felsch: {
+            _stats.run_num_felsch_phases++;
+            _stats.run_felsch_phases_time += delta(_stats.phase_start_time);
+            break;
+          }
+          case state::lookahead: {
+            _stats.run_num_lookahead_phases++;
+            _stats.run_lookahead_phases_time += delta(_stats.phase_start_time);
+          }
+        }
       }
 
       // TODO move into Stats
@@ -354,16 +389,32 @@ namespace libsemigroups {
         _stats.report_index++;
       }
 
-      // TODO move into Stats
+      // TODO move into Stats?
       void stats_run_start() {
-        _stats.phase_index    = 0;
-        _stats.run_start_time = std::chrono::high_resolution_clock::now();
+        _stats.phase_index = 0;
+
+        _stats.run_start_time     = std::chrono::high_resolution_clock::now();
+        _stats.run_num_hlt_phases = 0;
+        _stats.run_num_felsch_phases    = 0;
+        _stats.run_num_lookahead_phases = 0;
+
+        _stats.run_hlt_phases_time       = std::chrono::nanoseconds(0);
+        _stats.run_felsch_phases_time    = std::chrono::nanoseconds(0);
+        _stats.run_lookahead_phases_time = std::chrono::nanoseconds(0);
       }
 
-      // TODO move into Stats
+      // TODO move into Stats?
       void stats_run_stop() {
         _stats.run_index++;
-        _stats.total_run_time += delta(_stats.run_start_time);
+
+        _stats.all_runs_time += delta(_stats.run_start_time);
+        _stats.all_num_hlt_phases += _stats.run_num_hlt_phases;
+        _stats.all_num_felsch_phases += _stats.run_num_felsch_phases;
+        _stats.all_num_lookahead_phases += _stats.run_num_lookahead_phases;
+
+        _stats.all_hlt_phases_time += _stats.run_hlt_phases_time;
+        _stats.all_felsch_phases_time += _stats.run_felsch_phases_time;
+        _stats.all_lookahead_phases_time += _stats.run_lookahead_phases_time;
       }
 
       // Simple struct that allows the "receivers" value to be set to "val" but
@@ -419,8 +470,8 @@ namespace libsemigroups {
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
 
-      // _state must be atomic to avoid the situation where the ticker function
-      // is called concurrently with a new lookahead starting
+      // _state must be atomic to avoid the situation where the ticker
+      // function is called concurrently with a new lookahead starting
       std::atomic<state> _state;
       bool               _ticker_running;
       Graph              _word_graph;
@@ -470,8 +521,8 @@ namespace libsemigroups {
 
       ToddCoxeterImpl& presentation_no_checks(Presentation<word_type> const& p);
 
-      // This is a constructor and not a helper so that everything that takes a
-      // presentation has the same constructors, regardless of what they use
+      // This is a constructor and not a helper so that everything that takes
+      // a presentation has the same constructors, regardless of what they use
       // inside.
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -510,7 +561,7 @@ namespace libsemigroups {
                                                      Iterator2 last1,
                                                      Iterator3 first2,
                                                      Iterator4 last2) {
-        return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
+        return CongruenceCommon::add_internal_generating_pair_no_checks<
             ToddCoxeterImpl>(first1, last1, first2, last2);
       }
 
@@ -522,7 +573,7 @@ namespace libsemigroups {
                                            Iterator2 last1,
                                            Iterator3 first2,
                                            Iterator4 last2) {
-        return detail::CongruenceCommon::add_generating_pair<ToddCoxeterImpl>(
+        return CongruenceCommon::add_generating_pair<ToddCoxeterImpl>(
             first1, last1, first2, last2);
       }
 
@@ -535,8 +586,8 @@ namespace libsemigroups {
       //! \brief Compute the number of classes in the congruence.
       //!
       //! This function computes the number of classes in the congruence
-      //! represented by a \ref_todd_coxeter instance by running the congruence
-      //! enumeration until it terminates.
+      //! represented by a \ref_todd_coxeter instance by running the
+      //! congruence enumeration until it terminates.
       //!
       //! \returns The number of congruences classes of a \ref_todd_coxeter
       //! instance if this number is finite, or \ref POSITIVE_INFINITY in some
@@ -566,7 +617,7 @@ namespace libsemigroups {
                               Iterator2 last1,
                               Iterator3 first2,
                               Iterator4 last2) const {
-        return detail::CongruenceCommon::currently_contains<ToddCoxeterImpl>(
+        return CongruenceCommon::currently_contains<ToddCoxeterImpl>(
             first1, last1, first2, last2);
       }
 
@@ -605,7 +656,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_run(OutputIterator d_first,
                                    InputIterator1 first,
                                    InputIterator2 last) const {
-        return detail::CongruenceCommon::reduce_no_run<ToddCoxeterImpl>(
+        return CongruenceCommon::reduce_no_run<ToddCoxeterImpl>(
             d_first, first, last);
       }
 
@@ -615,7 +666,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_checks(OutputIterator d_first,
                                       InputIterator1 first,
                                       InputIterator2 last) {
-        return detail::CongruenceCommon::reduce_no_checks<ToddCoxeterImpl>(
+        return CongruenceCommon::reduce_no_checks<ToddCoxeterImpl>(
             d_first, first, last);
       }
 
@@ -625,8 +676,7 @@ namespace libsemigroups {
       OutputIterator reduce(OutputIterator d_first,
                             InputIterator1 first,
                             InputIterator2 last) {
-        return detail::CongruenceCommon::reduce<ToddCoxeterImpl>(
-            d_first, first, last);
+        return CongruenceCommon::reduce<ToddCoxeterImpl>(d_first, first, last);
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -637,7 +687,7 @@ namespace libsemigroups {
       // This is documented in Reporter, so we don't duplicate the doc here.
       template <typename Time>
       void report_every(Time val) {
-        detail::CongruenceCommon::report_every(val);
+        CongruenceCommon::report_every(val);
         _word_graph.report_every(val);
       }
 
@@ -1138,12 +1188,12 @@ namespace libsemigroups {
       //!
       //! This function can be used to set a lower bound for the number of
       //! classes of the congruence represented by a  \ref_todd_coxeter
-      //! instance. If the number of active nodes becomes at least the value of
-      //! the argument, and the word graph is complete (
-      //! \ref word_graph::is_complete returns \c true), then the enumeration is
-      //! terminated. When the given bound is equal to the number of classes,
-      //! this may prevent following the paths labelled by relations at many
-      //! nodes when there is no possibility of finding coincidences.
+      //! instance. If the number of active nodes becomes at least the value
+      //! of the argument, and the word graph is complete (
+      //! \ref word_graph::is_complete returns \c true), then the enumeration
+      //! is terminated. When the given bound is equal to the number of
+      //! classes, this may prevent following the paths labelled by relations
+      //! at many nodes when there is no possibility of finding coincidences.
       //!
       //! The default value is \ref UNDEFINED.
       //!
@@ -1229,10 +1279,11 @@ namespace libsemigroups {
       //! \brief Set whether or not to perform an HLT-style push of the
       //! defining relations at the identity.
       //!
-      //! If a  \ref_todd_coxeter instance is defined over a finitely presented
-      //! semigroup or monoid and the Felsch strategy is being used, it can be
-      //! useful to follow all the paths from the identity labelled by the
-      //! underlying relations. The setting specifies whether or not to do this.
+      //! If a  \ref_todd_coxeter instance is defined over a finitely
+      //! presented semigroup or monoid and the Felsch strategy is being used,
+      //! it can be useful to follow all the paths from the identity labelled
+      //! by the underlying relations. The setting specifies whether or not to
+      //! do this.
       //!
       //! The default value of this setting is \c false.
       //!
@@ -1441,8 +1492,8 @@ namespace libsemigroups {
       //!   - the classes of the congruence will be indexed in an arbitrary
       //!   order;
       //! * Order::shortlex implies that:
-      //!   - the return value of \ref ToddCoxeter::reduce will be the short-lex
-      //!   least word belonging to a given congruence class;
+      //!   - the return value of \ref ToddCoxeter::reduce will be the
+      //!   short-lex least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   in short-lex order;
       //!   - the classes of the congruence will be indexed in short-lex order
@@ -1454,8 +1505,8 @@ namespace libsemigroups {
       //!   class are essentially arbitrary because there is not necessarily a
       //!   lexicographically least word in every class;
       //! * Order::recursive implies that:
-      //!   - the return value of \ref ToddCoxeter::reduce will be the recursive
-      //!   path least word belonging to a given congruence class;
+      //!   - the return value of \ref ToddCoxeter::reduce will be the
+      //!   recursive path least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   in recursive path order;
       //!   - the classes of the congruence will be indexed in recursive
@@ -1520,14 +1571,14 @@ namespace libsemigroups {
       //!
       //! This function standardizes the return value of
       //! \ref current_word_graph, and does not trigger any enumeration. See
-      //! \ref standardization_order for a full description. The return value of
-      //! this function indicates whether or not the \ref current_word_graph
-      //! was modified. In other words, if this function returns \c true,
-      //! then the word graph was not previously standardized with respect
-      //! to \p val, and was modified by calling this function if \c false
-      //! is returned, then the word graph was previously standardized with
-      //! respect to \p val (although this might not have been known), and
-      //! was not modified by calling this function.
+      //! \ref standardization_order for a full description. The return value
+      //! of this function indicates whether or not the \ref
+      //! current_word_graph was modified. In other words, if this function
+      //! returns \c true, then the word graph was not previously standardized
+      //! with respect to \p val, and was modified by calling this function if
+      //! \c false is returned, then the word graph was previously
+      //! standardized with respect to \p val (although this might not have
+      //! been known), and was not modified by calling this function.
       //!
       //! \param val the order of the standardization.
       //!
@@ -1548,10 +1599,10 @@ namespace libsemigroups {
       //! \ref lookahead_style and \ref lookahead_extent.
       //!
       //! If the argument \p stop_early is \c true, then the settings
-      //! \ref lookahead_stop_early_interval and \ref lookahead_stop_early_ratio
-      //! are used to determine whether or not the lookahead should be
-      //! aborted early. If \p stop_early is \c false, then these settings
-      //! are ignored.
+      //! \ref lookahead_stop_early_interval and \ref
+      //! lookahead_stop_early_ratio are used to determine whether or not the
+      //! lookahead should be aborted early. If \p stop_early is \c false,
+      //! then these settings are ignored.
       //!
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
@@ -1582,8 +1633,8 @@ namespace libsemigroups {
       //! This function returns the current index of the class containing
       //! the word described by the iterators \p first and \p last. No
       //! enumeration is triggered by calls to this function. Unless
-      //! \ref finished returns \c true, the index returned by this function is
-      //! essentially arbitrary, and can only really be used to check
+      //! \ref finished returns \c true, the index returned by this function
+      //! is essentially arbitrary, and can only really be used to check
       //! whether or not two words are currently known to belong to the
       //! congruence.
       //!
@@ -1614,8 +1665,8 @@ namespace libsemigroups {
       //! This function returns the current index of the class containing
       //! the word described by the iterators \p first and \p last. No
       //! enumeration is triggered by calls to this function. Unless
-      //! \ref finished returns \c true, the index returned by this function is
-      //! essentially arbitrary, and can only really be used to check
+      //! \ref finished returns \c true, the index returned by this function
+      //! is essentially arbitrary, and can only really be used to check
       //! whether or not two words are currently known to belong to the
       //! congruence.
       //!
@@ -1910,11 +1961,7 @@ namespace libsemigroups {
       void report_progress_from_thread(bool divider = true) const;
       void report_times() const;
 
-      void report_divider() const {
-        report_no_prefix("{:+<32}\n", "");
-      }
-
-      void add_timing_row(detail::ReportCell<5>& rc) const;
+      void add_timing_row(ReportCell<5>& rc) const;
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - lookahead - private
