@@ -1011,7 +1011,7 @@ namespace libsemigroups {
         }
         if (any_change()) {
           report_progress_from_thread();
-        };
+        }
         if (!is_obviously_infinite(*this)) {
           // We require this clause because we might still be obviously
           // infinite and running_for a specific amount of time, in which case
@@ -1585,7 +1585,8 @@ namespace libsemigroups {
         rc("{}: {} | {} \n",
            report_prefix(),
            "lookahead progress",
-           fmt::format("~{:.1f}%", (p - double(p * r) / N) * 100 / (N - r)));
+           fmt::format("~{:.1f}%",
+                       (p - static_cast<double>(p * r) / N) * 100 / (N - r)));
         // TODO ETA?
       }
 
