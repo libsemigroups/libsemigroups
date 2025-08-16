@@ -1061,9 +1061,7 @@ namespace libsemigroups {
           // a lookahead.
           report_after_phase("HLT");
           stats_phase_stop();
-          stats_phase_start();  // TODO put thing into perform_lookahead
           perform_lookahead(StopEarly);
-          stats_phase_stop();  // TODO put thing into perform_lookahead
           stats_phase_start();
           report_before_phase("HLT");
         }
@@ -1371,9 +1369,7 @@ namespace libsemigroups {
           // TODO move to be first?
           report_default(
               "ToddCoxeter: triggered because there are skipped "
-              "definitions "
-              "({} active "
-              "nodes)!\n",
+              "definitions ({} active nodes)!\n",
               group_digits(current_word_graph().number_of_nodes_active()));
         }
       }
@@ -1447,6 +1443,7 @@ namespace libsemigroups {
          group_digits(active),
          group_digits(killed),
          group_digits(defined));
+      // TODO could add rows with max. overall/run/phase./min. values,
       if (Z > 0) {
         rc("{}: {} | {} | {} | {}\n",
            report_prefix(),
@@ -1483,7 +1480,12 @@ namespace libsemigroups {
         // TODO add diff from last phase of previous run.
       }
       add_timing_row(rc);
-      if (_state == state::lookahead && _stats.report_index != 0) {
+      if (_state == state::lookahead && _stats.report_index != 0
+          && this_threads_id() != 0) {
+        // Don't call this in the main thread, because that's where we write
+        // after a lookahead, where this percentage is often wrong and
+        // superfluous.
+
         // It is difficult to get the exact value of the % complete due to
         // multi-threading issues, hence we don't try, we just assume that
         // nodes are uniformly randomly killed, leading to the following
@@ -1511,14 +1513,20 @@ namespace libsemigroups {
       auto this_phase_time = delta(_stats.phase_start_time);
       auto elapsed         = delta(start_time());
 
+      std::string c1;
+      if (_stats.report_index == 0 || _state == state::none) {
+        c1 = "time";
+      } else {
+        c1 = fmt::format("{} {}.{} = {}",
+                         toupper(_state.load()),
+                         _stats.run_index,
+                         _stats.phase_index,
+                         string_time(this_phase_time));
+      }
+
       rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         _stats.report_index == 0 ? "time"
-                                  : fmt::format("{} {}.{} = {}",
-                                                toupper(_state.load()),
-                                                _stats.run_index,
-                                                _stats.phase_index,
-                                                string_time(this_phase_time)),
+         c1,
          fmt::format(
              "run {} = {}", _stats.run_index, string_time(this_run_time)),
          fmt::format("all runs = {}",
@@ -1527,15 +1535,12 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::report_times() const {
-      auto this_run_time = delta(_stats.run_start_time);
-      auto elapsed       = delta(start_time());
-      report_default(
-          "{}: time: {} | {} | {}\n",
-          report_prefix(),
-          fmt::format("this run = {}", string_time(this_run_time)),
-          fmt::format("all runs = {}",
-                      string_time(_stats.total_run_time + this_run_time)),
-          fmt::format("elapsed = {}", string_time(elapsed)));
+      ReportCell<5> rc;
+      rc.min_width(12)
+          .min_width(0, report_prefix().size())
+          .divider_before(false)
+          .align(1, Align::left);
+      add_timing_row(rc);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1543,6 +1548,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
+      stats_phase_start();
       Guard guard(_state, state::lookahead);
 
       // TODO move things from _word_graph.stats() -> _stats
@@ -1614,6 +1620,7 @@ namespace libsemigroups {
         lookahead_next(lookahead_next() * lookahead_growth_factor());
       }
       report_after_lookahead(old_lookahead_next, num_killed_by_me);
+      stats_phase_stop();
     }
 
     size_t ToddCoxeterImpl::hlt_lookahead(bool stop_early) {
