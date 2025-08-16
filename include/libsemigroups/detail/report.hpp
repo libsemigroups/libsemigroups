@@ -167,6 +167,7 @@ namespace libsemigroups {
         return *this;
       }
 
+      // TODO rm
       ReportCell& divider_before(bool val) {
         _divider_before = val;
         return *this;
@@ -178,7 +179,7 @@ namespace libsemigroups {
       }
 
       void add_divider() {
-        operator()("{:+<32}\n", "");
+        operator()(std::string(32, '+'));
       }
 
      private:

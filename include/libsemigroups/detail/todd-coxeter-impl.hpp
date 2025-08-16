@@ -300,23 +300,24 @@ namespace libsemigroups {
       };  // class Graph
 
       struct Stats {
+        using time_point = std::chrono::high_resolution_clock::time_point;
         // TODO make the values here atomic?
 
         // TODO required?
-        uint64_t run_defined_at_start;
-        uint64_t run_index = 0;
-        uint64_t run_killed_at_start;
-        // use instead of prev_active_nodes
-        uint64_t                                       run_nodes_at_start;
-        std::chrono::high_resolution_clock::time_point run_start_time;
+        uint64_t   run_defined_at_start;
+        uint64_t   run_index = 0;
+        uint64_t   run_killed_at_start;
+        uint64_t   run_nodes_at_start;
+        time_point run_start_time;
 
-        uint64_t phase_index;
-        uint64_t phase_edges_defined_at_start;
-        uint64_t phase_edges_killed_at_start;
-        uint64_t phase_edges_active_at_start;
-        uint64_t phase_nodes_defined_at_start;
-        uint64_t phase_nodes_killed_at_start;
-        uint64_t phase_nodes_active_at_start;
+        uint64_t   phase_index;
+        uint64_t   phase_edges_defined_at_start;
+        uint64_t   phase_edges_killed_at_start;
+        uint64_t   phase_edges_active_at_start;
+        uint64_t   phase_nodes_defined_at_start;
+        uint64_t   phase_nodes_killed_at_start;
+        uint64_t   phase_nodes_active_at_start;
+        time_point phase_start_time;
 
         mutable uint64_t report_index;
         mutable uint64_t report_edges_defined_prev;
@@ -336,7 +337,8 @@ namespace libsemigroups {
             = _word_graph.number_of_nodes_killed();
         _stats.phase_nodes_defined_at_start
             = _word_graph.number_of_nodes_defined();
-        _stats.report_index = 0;
+        _stats.phase_start_time = std::chrono::high_resolution_clock::now();
+        _stats.report_index     = 0;
         // TODO edges
       }
 

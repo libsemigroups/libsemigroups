@@ -140,10 +140,18 @@ namespace libsemigroups {
         }
       }
       if (_divider_before) {
+        // TODO remove use add_divider
         report_no_prefix("{:+<32}\n", "");
       }
       for (size_t i = 0; i < _rows.size(); ++i) {
-        std::apply(fmt, _rows[i]);
+        if (!_rows[i].empty()
+            && static_cast<size_t>(
+                   std::count(_rows[i][0].begin(), _rows[i][0].end(), '+'))
+                   == _rows[i][0].size()) {
+          report_no_prefix("{}\n", _rows[i][0]);
+        } else {
+          std::apply(fmt, _rows[i]);
+        }
       }
       // if (_divider_after) {
       //   report_no_prefix(std::string(line_width(), _divider_char) + "\n");
