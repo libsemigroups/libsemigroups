@@ -56,6 +56,10 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
 #endif
       }
+
+      size_t unicode_length(char c) {
+        return ((c & 0xc0) != 0x80);
+      }
     }  // namespace
 
     std::string group_digits(int64_t num) {
@@ -98,7 +102,7 @@ namespace libsemigroups {
           }
         } else {
           // visible character
-          ++count;
+          count += unicode_length(c);
           ++i;
         }
       }

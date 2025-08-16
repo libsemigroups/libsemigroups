@@ -1891,11 +1891,9 @@ namespace libsemigroups {
       void report_after_lookahead(size_t old_lookahead_next,
                                   // TODO this is now in
                                   // NodeManagedGraph::Stats
-                                  size_t number_killed_in_lookahead,
-                                  std::chrono::high_resolution_clock::time_point
-                                      lookahead_start_time) const;
+                                  size_t number_killed_in_lookahead) const;
       void report_after_run() const;
-      void report_before(std::string_view) const;
+      void report_before_phase(std::string_view, std::string_view = "") const;
       void report_before_lookahead() const;
       void report_before_run() const;
       void report_presentation() const;
