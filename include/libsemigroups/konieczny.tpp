@@ -50,7 +50,8 @@ namespace libsemigroups {
         _tmp_rho_value1(),
         _tmp_rho_value2() {
     report_prefix("Konieczny");
-    report_divider("{:+<110}\n");
+    // TODO update
+    // report_divider("{:+<110}\n");
     _lambda_orb.report_prefix("Konieczny");
     _lambda_orb.cache_scc_multipliers(true);
     _rho_orb.report_prefix("Konieczny");

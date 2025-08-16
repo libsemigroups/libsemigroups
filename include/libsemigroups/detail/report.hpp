@@ -103,17 +103,17 @@ namespace libsemigroups {
           : _align(),
             _col_widths(),
             _divider_after(false),
-            _divider_before(true),
+            _divider_before(false),
             _divider_char('+'),
             _rows() {
         _align.fill(Align::right);
         _col_widths.fill(0);
       }
 
-      ReportCell(ReportCell const&)            = delete;
-      ReportCell(ReportCell&&)                 = delete;
-      ReportCell& operator=(ReportCell const&) = delete;
-      ReportCell& operator=(ReportCell&&)      = delete;
+      ReportCell(ReportCell const&)            = default;
+      ReportCell(ReportCell&&)                 = default;
+      ReportCell& operator=(ReportCell const&) = default;
+      ReportCell& operator=(ReportCell&&)      = default;
 
       ~ReportCell() {
         emit();
@@ -180,6 +180,7 @@ namespace libsemigroups {
      private:
       void emit();
     };  // ReportCell
+
   }  // namespace detail
 
   //! No doc
@@ -222,6 +223,7 @@ namespace libsemigroups {
   }
 
   //! No doc
+  // TODO rm
   [[nodiscard]] std::string const& last_reported_line();
 
   //! \ingroup core_classes_group
@@ -250,6 +252,12 @@ namespace libsemigroups {
     explicit SuppressReportFor(std::string_view);
     ~SuppressReportFor();
   };
+
+  namespace detail {
+    static inline void report_divider() {
+      report_no_prefix("{:+<32}\n", "");
+    }
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "report.tpp"

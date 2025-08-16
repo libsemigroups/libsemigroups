@@ -82,9 +82,22 @@ namespace libsemigroups {
       });
       return result;
     }
+
+    std::string to_percent(uint64_t num, uint64_t denom) {
+      double val = double(num) * 100 / denom;
+      return std::isnan(val) ? "-" : fmt::format("{:.0f}%", val);
+    }
+
   }  // namespace
 
   namespace detail {
+    namespace {
+      ReportCell<5> report_cell() {
+        ReportCell<5> rc;
+        rc.min_width(12).min_width(0, 0).align(1, Align::left);
+        return rc;
+      }
+    }  // namespace
 
     using node_type = typename ToddCoxeterImpl::node_type;
 
@@ -361,7 +374,7 @@ namespace libsemigroups {
       if (reporting_enabled()) {
         auto gd       = group_digits;
         auto interval = string_time(tc->lookahead_stop_early_interval());
-        tc->report_divider();
+        report_divider();
         report_default("ToddCoxeter: too few nodes killed in last {} = "
                        "{}, stopping lookahead early!\n",
                        italic("i"),
@@ -459,6 +472,7 @@ namespace libsemigroups {
       _ticker_running = false;
       _word_graph.init();
       copy_settings_into_graph();
+      // TODO reset stats!
       return *this;
     }
 
@@ -839,6 +853,7 @@ namespace libsemigroups {
       time_point start_time;
       if (reporting_enabled()) {
         start_time = std::chrono::high_resolution_clock::now();
+        report_divider();
         report_default(
             "ToddCoxeter: {} standardizing the word graph, this might "
             "take a few moments!\n",
@@ -1034,7 +1049,6 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::hlt() {
       stats_phase_start();
-      // TODO rename report_before_phase
       report_before_phase("HLT");
       auto& current    = _word_graph.cursor();
       current          = _word_graph.initial_node();
@@ -1160,6 +1174,7 @@ namespace libsemigroups {
     void ToddCoxeterImpl::report_after_phase(std::string_view what) const {
       if (reporting_enabled()) {
         report_divider();
+        // TODO remove the "what" argument and just use the _state instead
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
                                    "{} {}.{} STOP",
@@ -1311,17 +1326,91 @@ namespace libsemigroups {
           report_progress_from_thread();
         }
 
-        ReportCell<4> rc;
-        rc.align(Align::left).divider_before(true).divider_after(true);
-
-        rc("{}: {}  {}\n",
+        report_divider();
+        report_default("{}: {} ({})\n",
+                       report_prefix(),
+                       fmt::format(run_color, "RUN {} STOP", _stats.run_index),
+                       reason);
+        auto rc = report_cell();
+        rc("{}: {} | {} | {} | {}\n",
            report_prefix(),
-           fmt::format(run_color, "RUN {} STOP", _stats.run_index),
-           reason);
-        // TODO()) report time spent doing lookaheads, HLT, Felsch,
-        // process_definitions, process_coincidences, etc.
+           underline("# phases"),
+           "lookahead",
+           "hlt",
+           "felsch");
+        rc("{}: {} | {} | {} | {}\n",
+           report_prefix(),
+           fmt::format("run {}", _stats.run_index),
+           group_digits(_stats.run_num_lookahead_phases),
+           group_digits(_stats.run_num_hlt_phases),
+           group_digits(_stats.run_num_felsch_phases));
+        if (_stats.run_index > 0) {
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             "total",
+             group_digits(_stats.all_num_lookahead_phases
+                          + _stats.run_num_lookahead_phases),
+             group_digits(_stats.all_num_hlt_phases
+                          + _stats.run_num_hlt_phases),
+             group_digits(_stats.all_num_felsch_phases
+                          + _stats.run_num_felsch_phases));
+        }
+        auto this_run_time = delta(_stats.run_start_time);
+        add_timing_row(rc);
+
+        auto percent_run_time_lookahead = to_percent(
+            _stats.run_lookahead_phases_time.count(), this_run_time.count());
+        auto percent_run_time_hlt = to_percent(
+            _stats.run_hlt_phases_time.count(), this_run_time.count());
+        auto percent_run_time_felsch = to_percent(
+            _stats.run_felsch_phases_time.count(), this_run_time.count());
+
+        rc("{}: {} | {} | {} | {}\n",
+           report_prefix(),
+           "",
+           "lookahead",
+           "hlt",
+           "felsch");
+
+        rc("{}: {} | {} | {} | {}\n",
+           report_prefix(),
+           fmt::format("run {}", _stats.run_index),
+           fmt::format("{} ({})",
+                       string_time(_stats.run_lookahead_phases_time),
+                       percent_run_time_lookahead),
+           fmt::format("{} ({})",
+                       string_time(_stats.run_hlt_phases_time),
+                       percent_run_time_hlt),
+           fmt::format("{} ({})",
+                       string_time(_stats.run_felsch_phases_time),
+                       percent_run_time_felsch));
+
+        if (_stats.run_index != 0) {
+          auto total_lookahead = _stats.all_lookahead_phases_time
+                                 + _stats.run_lookahead_phases_time;
+          auto total_hlt
+              = _stats.all_hlt_phases_time + _stats.run_hlt_phases_time;
+          auto total_felsch
+              = _stats.all_felsch_phases_time + _stats.run_felsch_phases_time;
+          auto total = (_stats.all_runs_time + this_run_time).count();
+
+          auto percent_total_lookahead
+              = to_percent(total_lookahead.count(), total);
+          auto percent_total_hlt    = to_percent(total_hlt.count(), total);
+          auto percent_total_felsch = to_percent(total_felsch.count(), total);
+
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             "total",
+             fmt::format("{} ({})",
+                         string_time(total_lookahead),
+                         percent_total_lookahead),
+             fmt::format("{} ({})", string_time(total_hlt), percent_total_hlt),
+             fmt::format(
+                 "{} ({})", string_time(total_felsch), percent_total_felsch));
+        }
+        // TODO(1) time spent process_definitions, process_coincidences?
       }
-      report_times();
     }
 
     void ToddCoxeterImpl::report_before_phase(std::string_view what,
@@ -1417,12 +1506,10 @@ namespace libsemigroups {
       auto const defined_diff2
           = signed_group_digits(defined - _stats.phase_nodes_defined_at_start);
 
-      ReportCell<5> rc;
-      rc.min_width(12)
-          .min_width(0, report_prefix().size())
-          .divider_before(divider)
-          .align(1, Align::left);
-
+      if (divider) {
+        report_divider();
+      }
+      auto       rc = report_cell();
       auto const X = _stats.run_index, Y = _stats.phase_index,
                  Z = _stats.report_index;
 
@@ -1481,7 +1568,9 @@ namespace libsemigroups {
       }
       add_timing_row(rc);
       if (_state == state::lookahead && _stats.report_index != 0
+          && lookahead_style() == options::lookahead_style::hlt
           && this_threads_id() != 0) {
+        // TODO progress report for Felsch lookahead
         // Don't call this in the main thread, because that's where we write
         // after a lookahead, where this percentage is often wrong and
         // superfluous.
@@ -1515,7 +1604,7 @@ namespace libsemigroups {
 
       std::string c1;
       if (_stats.report_index == 0 || _state == state::none) {
-        c1 = "time";
+        c1 = underline("time");
       } else {
         c1 = fmt::format("{} {}.{} = {}",
                          toupper(_state.load()),
@@ -1530,16 +1619,12 @@ namespace libsemigroups {
          fmt::format(
              "run {} = {}", _stats.run_index, string_time(this_run_time)),
          fmt::format("all runs = {}",
-                     string_time(_stats.total_run_time + this_run_time)),
+                     string_time(_stats.all_runs_time + this_run_time)),
          fmt::format("elapsed = {}", string_time(elapsed)));
     }
 
     void ToddCoxeterImpl::report_times() const {
-      ReportCell<5> rc;
-      rc.min_width(12)
-          .min_width(0, report_prefix().size())
-          .divider_before(false)
-          .align(1, Align::left);
+      auto rc = report_cell();
       add_timing_row(rc);
     }
 
@@ -1630,6 +1715,7 @@ namespace libsemigroups {
                                   internal_presentation().rules.cbegin(),
                                   internal_presentation().rules.cend(),
                                   stop_early);
+
       return _word_graph.number_of_nodes_killed() - old_number_of_killed;
     }
 
