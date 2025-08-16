@@ -69,6 +69,10 @@ namespace libsemigroups {
     std::string italic(char const* var) {
       return fmt::format(fmt::emphasis::italic, "{}", var);
     }
+
+    std::string underline(char const* var) {
+      return fmt::format(fmt::emphasis::underline, "{}", var);
+    }
   }  // namespace
 
   namespace detail {
@@ -348,7 +352,7 @@ namespace libsemigroups {
       if (reporting_enabled()) {
         auto gd       = group_digits;
         auto interval = string_time(tc->lookahead_stop_early_interval());
-        report_no_prefix("{:+<16}\n", "");
+        tc->report_divider();
         report_default("ToddCoxeter: too few nodes killed in last {} = "
                        "{}, stopping lookahead early!\n",
                        italic("i"),
@@ -1147,7 +1151,7 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::report_after(std::string_view what) const {
       if (reporting_enabled()) {
-        report_no_prefix("{:+<16}\n", "");
+        report_no_prefix("{:+<32}\n", "");
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
                                    "{} {}.{} STOP",
@@ -1269,7 +1273,7 @@ namespace libsemigroups {
         }
 
         {
-          report_no_prefix("{:+<16}\n", "");
+          report_divider();
           report_default("ToddCoxeter: {} ({})\n",
                          fmt::format(phase_color,
                                      "LOOKAHEAD {}.{} STOP",
@@ -1336,7 +1340,7 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::report_before(std::string_view what) const {
       if (reporting_enabled()) {
-        report_no_prefix("{:+<16}\n", "");
+        report_divider();
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
                                    "{} {}.{} START",
@@ -1433,6 +1437,7 @@ namespace libsemigroups {
       ReportCell<5> rc;
       rc.min_width(12)
           .min_width(0, report_prefix().size())
+          .min_width(1, 20)
           .divider_before(divider)
           .align(1, Align::left);
 
@@ -1441,10 +1446,11 @@ namespace libsemigroups {
 
       rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         fmt::format("{} {}.{}.{}", _state.load(), X, Y, Z),
-         "active",
-         "killed",
-         "defined");
+         fmt::format(
+             fmt::emphasis::bold, "{} {}.{}.{}", _state.load(), X, Y, Z),
+         underline("active"),
+         underline("killed"),
+         underline("defined"));
       rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
          "nodes",
@@ -1484,6 +1490,8 @@ namespace libsemigroups {
              "?");
         }
       }
+      // rc.add_divider(); TODO better divider
+      add_timing_row(rc);
       if (_state == state::lookahead && _stats.report_index != 0) {
         // It is difficult to get the exact value of the % complete due to
         // multi-threading issues, hence we don't try, we just assume that
@@ -1498,7 +1506,6 @@ namespace libsemigroups {
            fmt::format("~{:.1f}%", (p - double(p * r) / N) * 100 / (N - r)));
         // TODO ETA?
       }
-      add_timing_row(rc);
 
       // TODO auto complete = 100 *
       // static_cast<double>(_word_graph.stats().num_active_edges)
@@ -1509,12 +1516,18 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::add_timing_row(ReportCell<5>& rc) const {
-      // TODO phase_start_time + this_phase_time
-      auto this_run_time = delta(_stats.run_start_time);
-      auto elapsed       = delta(start_time());
+      auto this_run_time   = delta(_stats.run_start_time);
+      auto this_phase_time = delta(_stats.phase_start_time);
+      auto elapsed         = delta(start_time());
+
       rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         "time",
+         _stats.report_index == 0 ? "time"
+                                  : fmt::format("{} {}.{} = {}",
+                                                _state.load(),
+                                                _stats.run_index,
+                                                _stats.phase_index,
+                                                string_time(this_phase_time)),
          fmt::format(
              "run {} = {}", _stats.run_index, string_time(this_run_time)),
          fmt::format("all runs = {}",
