@@ -73,6 +73,14 @@ namespace libsemigroups {
     std::string underline(char const* var) {
       return fmt::format(fmt::emphasis::underline, "{}", var);
     }
+
+    template <typename Thing>
+    std::string toupper(Thing const& thing) {
+      auto result = fmt::format("{}", thing);
+      std::for_each(
+          result.begin(), result.end(), [](auto& val) { std::toupper(val); });
+      return result;
+    }
   }  // namespace
 
   namespace detail {
@@ -1281,10 +1289,7 @@ namespace libsemigroups {
                                      _stats.phase_index),
                          string_time(delta(lookahead_start_time)));
           ReportCell<4> rc;
-          rc.align(Align::left)
-              .divider_before(false)
-              .divider_after(false)
-              .divider_char('=');
+          rc.align(Align::left).divider_before(false).divider_after(false);
           // TODO use the output of report_progress_from_thread for
           // NodeManagedGraph instead of the following line
 
@@ -1323,10 +1328,7 @@ namespace libsemigroups {
         }
 
         ReportCell<4> rc;
-        rc.align(Align::left)
-            .divider_before(true)
-            .divider_after(true)
-            .divider_char('+');
+        rc.align(Align::left).divider_before(true).divider_after(true);
 
         rc("{}: {}  {}\n",
            report_prefix(),
