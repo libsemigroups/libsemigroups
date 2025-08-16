@@ -119,6 +119,11 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   namespace detail {
+    std::string& last_reported_line_var() {
+      static std::string val;
+      return val;
+    }
+
     t_id thread_id(std::thread::id t) {
       return thread_id_manager.tid(t);
     }
@@ -147,6 +152,10 @@ namespace libsemigroups {
 
   bool reporting_enabled() noexcept {
     return report_data.report();
+  }
+
+  std::string const& last_reported_line() {
+    return detail::last_reported_line_var();
   }
 
   namespace detail {

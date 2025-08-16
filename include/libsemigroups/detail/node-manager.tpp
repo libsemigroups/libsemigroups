@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementation for a class to manage nodes for a
-// ToddCoxeterDigraph instance.
+// ToddCoxeter::Graph instance.
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -83,18 +83,14 @@ namespace libsemigroups {
         :  // protected
           _current(0),
           _current_la(0),
-          // private - stats
-          _active(1),
-          _defined(1),
-          _nodes_killed(0),
-          // private - settings
-          _growth_factor(2.0),
           // private - data
           _bckwd(1, 0),
           _first_free_node(UNDEFINED),
           _forwd(1, static_cast<NodeType>(UNDEFINED)),
+          _growth_factor(2.0),
           _ident(1, 0),
-          _last_active_node(0) {}
+          _last_active_node(0),
+          _stats() {}
 
     template <typename NodeType>
     NodeManager<NodeType>::~NodeManager() = default;
@@ -124,12 +120,12 @@ namespace libsemigroups {
         std::iota(_ident.begin() + (_ident.size() - m),
                   _ident.end(),
                   _ident.size() - m);
-        _active += m;
-        _defined += m;
+        _stats.active += m;
+        _stats.defined += m;
         n -= m;
       }
-      _active += n;
-      _defined += n;
+      _stats.active += n;
+      _stats.defined += n;
       for (; n > 0; --n) {
         _bckwd[_first_free_node]  = _last_active_node;
         _last_active_node         = _first_free_node;
@@ -283,8 +279,8 @@ namespace libsemigroups {
 
     template <typename NodeType>
     void NodeManager<NodeType>::free_node(NodeType c) {
-      _active--;
-      _nodes_killed++;
+      _stats.active--;
+      _stats.nodes_killed++;
       LIBSEMIGROUPS_ASSERT(is_active_node(c));
       // If any "controls" point to <c>, move them back one in the list
       LIBSEMIGROUPS_ASSERT(_current < _bckwd.size()
@@ -321,8 +317,8 @@ namespace libsemigroups {
     // Basically free all nodes
     template <typename NodeType>
     void NodeManager<NodeType>::clear() {
-      _nodes_killed += (_active - 1);
-      _active = 1;
+      _stats.nodes_killed += (_stats.active - 1);
+      _stats.active = 1;
       std::iota(_forwd.begin(), _forwd.end() - 1, 1);
       _forwd.back() = UNDEFINED;
       std::iota(_bckwd.begin() + 1, _bckwd.end(), 0);

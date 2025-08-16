@@ -22,9 +22,11 @@
 namespace libsemigroups {
 
   namespace detail {
+
     ////////////////////////////////////////////////////////////////////////
     // TickerImpl
     ////////////////////////////////////////////////////////////////////////
+
     class Ticker::TickerImpl {
       using nanoseconds = std::chrono::nanoseconds;
 
@@ -107,7 +109,8 @@ namespace libsemigroups {
       static_assert(sizeof...(args) <= C);
       _rows.push_back(Row({std::string(fmt_str), std::forward<Args>(args)...}));
       for (size_t i = 0; i < _rows.back().size(); ++i) {
-        _col_widths[i] = std::max(_col_widths[i], _rows.back()[i].size());
+        _col_widths[i]
+            = std::max(_col_widths[i], visible_length(_rows.back()[i]));
       }
     }
 
@@ -124,18 +127,35 @@ namespace libsemigroups {
       auto fmt = [](auto&&... args) {
         report_default(std::forward<decltype(args)>(args)...);
       };
+
       for (size_t i = 0; i < _rows.size(); ++i) {
         for (size_t j = 1; j < C + 1; ++j) {
-          _rows[i][j]
-              = std::string(_col_widths[j] - unicode_string_length(_rows[i][j]),
-                            ' ')
-                + _rows[i][j];
+          auto pad
+              = std::string(_col_widths[j] - visible_length(_rows[i][j]), ' ');
+          if (_align[j] == Align::right) {
+            _rows[i][j] = pad + _rows[i][j];
+          } else {
+            _rows[i][j] += pad;
+          }
         }
       }
-      report_no_prefix("{:-<{}}\n", "", line_width());
-      for (size_t i = 0; i < _rows.size(); ++i) {
-        std::apply(fmt, _rows[i]);
+      if (_divider_before) {
+        // TODO remove use add_divider
+        report_no_prefix("{:+<32}\n", "");
       }
+      for (size_t i = 0; i < _rows.size(); ++i) {
+        if (!_rows[i].empty()
+            && static_cast<size_t>(
+                   std::count(_rows[i][0].begin(), _rows[i][0].end(), '+'))
+                   == _rows[i][0].size()) {
+          report_no_prefix("{}\n", _rows[i][0]);
+        } else {
+          std::apply(fmt, _rows[i]);
+        }
+      }
+      // if (_divider_after) {
+      //   report_no_prefix(std::string(line_width(), _divider_char) + "\n");
+      // }
     }
   }  // namespace detail
 }  // namespace libsemigroups
