@@ -173,11 +173,6 @@ namespace libsemigroups {
         return *this;
       }
 
-      // TODO rm
-      ReportCell& divider_char(char val) {
-        return *this;
-      }
-
       void add_divider() {
         operator()(std::string(32, '+'));
       }
