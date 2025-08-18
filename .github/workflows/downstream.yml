@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout libsemigroups
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install git + autotools
         run: |
           sudo apt-get --yes update
