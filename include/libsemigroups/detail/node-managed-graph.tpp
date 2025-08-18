@@ -45,9 +45,46 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     struct NodeManagedGraph<BaseGraph>::Stats {
-      uint64_t prev_active_nodes;
-      uint64_t prev_nodes_killed;
-      uint64_t prev_nodes_defined;
+      std::atomic_uint64_t lookahead_nodes_at_start;
+      std::atomic_uint64_t lookahead_nodes_killed;
+      std::atomic_uint64_t lookahead_position;
+      std::atomic_uint64_t num_active_edges;
+      std::atomic_uint64_t prev_active_nodes;
+      std::atomic_uint64_t prev_nodes_killed;
+      std::atomic_uint64_t prev_nodes_defined;
+      uint64_t             report_number;
+
+      Stats()
+          : lookahead_nodes_at_start(),
+            lookahead_nodes_killed(),
+            lookahead_position(),
+            num_active_edges(0),
+            prev_active_nodes(),
+            prev_nodes_killed(),
+            prev_nodes_defined(),
+            report_number(0) {}
+
+      Stats(Stats const& that)
+          : lookahead_nodes_at_start(that.lookahead_nodes_at_start.load()),
+            lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
+            lookahead_position(that.lookahead_position.load()),
+            num_active_edges(that.num_active_edges.load()),
+            prev_active_nodes(that.prev_active_nodes.load()),
+            prev_nodes_killed(that.prev_nodes_killed.load()),
+            prev_nodes_defined(that.prev_nodes_defined.load()),
+            report_number(that.report_number) {}
+
+      Stats& operator=(Stats const& that) {
+        lookahead_nodes_at_start = that.lookahead_nodes_at_start.load();
+        lookahead_nodes_killed   = that.lookahead_nodes_killed.load();
+        lookahead_position       = that.lookahead_position.load();
+        prev_active_nodes        = that.prev_active_nodes.load();
+        prev_nodes_killed        = that.prev_nodes_killed.load();
+        prev_nodes_defined       = that.prev_nodes_defined.load();
+        num_active_edges         = that.num_active_edges.load();
+        report_number            = that.report_number;
+        return *this;
+      }
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -124,6 +161,24 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
+    // Accessors
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename BaseGraph>
+    uint64_t
+    NodeManagedGraph<BaseGraph>::number_of_edges_active() const noexcept {
+      // TODO replace with _stats.number_of_edges_active, when that works, or
+      // maybe not?
+      auto     current   = NodeManager<node_type>::initial_node();
+      uint64_t num_edges = 0;
+      while (current != NodeManager<node_type>::first_free_node()) {
+        num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
+        current = NodeManager<node_type>::next_active_node(current);
+      }
+      return num_edges;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     // Modifiers
     ////////////////////////////////////////////////////////////////////////
 
@@ -173,13 +228,10 @@ namespace libsemigroups {
       if (_coinc.empty()) {
         return;
       }
+
       CollectCoincidences incompat_func(_coinc);
 
-      // TODO re-enable
-      // size_t        prev_num_nodes = this->number_of_nodes_active();
-      // static size_t total_coinc   = 0;
       while (!_coinc.empty() && _coinc.size() < large_collapse()) {
-        // total_coinc++;
         Coincidence c = _coinc.top();
         _coinc.pop();
         node_type min = NodeManager<node_type>::find_node(c.first);
@@ -188,7 +240,7 @@ namespace libsemigroups {
           std::tie(min, max) = std::minmax({min, max});
           NodeManager<node_type>::union_nodes(min, max);
           if constexpr (RegisterDefs) {
-            BaseGraph::merge_nodes_no_checks(
+            _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
                 min,
                 max,
                 [this](node_type n, letter_type x) {
@@ -196,31 +248,19 @@ namespace libsemigroups {
                 },
                 incompat_func);
           } else {
-            BaseGraph::merge_nodes_no_checks(min, max, Noop(), incompat_func);
+            _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
+
+                min, max, Noop(), incompat_func);
           }
         }
-        // if (_coinc.size() > large_collapse()) {
-        //   size_t num_nodes = this->number_of_nodes_active();
-        //   size_t cost_pairwise
-        //       = 2 * out_degree() * out_degree() * (prev_num_nodes -
-        //       num_nodes);
-        //   size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
-        //   if (cost_bigcrush < cost_pairwise) {
-        //     report_default("ToddCoxeterImpl: large collapse {} -> {}
-        //     nodes\n",
-        //                    fmt::group_digits(prev_num_nodes),
-        //                    fmt::group_digits(num_nodes));
-        //     report_default("ToddCoxeterImpl: {} (coincidences)\n",
-        //                    fmt::group_digits(_coinc.size()));
-        //     break;
-        //   }
-        // }
       }
 
       if (_coinc.empty()) {
-        // fmt::print("Position 1, total coincidences is {}\n", total_coinc);
         return;
       }
+
+      // TODO add info
+      report_default("{}: large collapse!\n", report_prefix());
 
       while (!_coinc.empty()) {
         Coincidence c = _coinc.top();
@@ -251,14 +291,14 @@ namespace libsemigroups {
         c = NodeManager<node_type>::next_active_node(c);
       }
 
-      c = NodeManager<node_type>::initial_node();
-      // size_t m = 0;
+      _stats.num_active_edges = 0;
+      c                       = NodeManager<node_type>::initial_node();
 
       while (c != NodeManager<node_type>::first_free_node()) {
-        // m++;
         for (letter_type x = 0; x < out_degree(); ++x) {
           auto cx = target_no_checks(c, x);
           if (cx != UNDEFINED) {
+            _stats.num_active_edges++;
             auto d = NodeManager<node_type>::find_node(cx);
             if (cx != d) {
               if constexpr (RegisterDefs) {
@@ -305,17 +345,11 @@ namespace libsemigroups {
 
     template <typename BaseGraph>
     void NodeManagedGraph<BaseGraph>::report_progress_from_thread() const {
-      using detail::group_digits;
-      using detail::signed_group_digits;
+      auto const active  = NodeManager<node_type>::number_of_nodes_active();
+      auto const killed  = NodeManager<node_type>::number_of_nodes_killed();
+      auto const defined = NodeManager<node_type>::number_of_nodes_defined();
 
-      auto run_time = delta(start_time());
-
-      // TODO (2): FIXME The following 3 lines are not thread safe and can cause
-      // data races. One way of resolving this would be to change the data
-      // members of node managed graph to be atomic
-      auto const active  = this->number_of_nodes_active();
-      auto const killed  = this->number_of_nodes_killed();
-      auto const defined = this->number_of_nodes_defined();
+      _stats.lookahead_nodes_killed += killed - _stats.prev_nodes_killed;
 
       auto const active_diff
           = signed_group_digits(active - _stats.prev_active_nodes);
@@ -324,36 +358,46 @@ namespace libsemigroups {
       auto const defined_diff
           = signed_group_digits(defined - _stats.prev_nodes_defined);
 
-      auto const mean_killed
-          = group_digits(std::pow(10, 9) * static_cast<double>(killed)
-                         / run_time.count())
-            + "/s";
-      auto const mean_defined
-          = group_digits(std::pow(10, 9) * static_cast<double>(defined)
-                         / run_time.count())
-            + "/s";
-
-      std::string_view const line1
-          = "{}: nodes {} (active) | {} (killed) | {} (defined)\n";
-
-      detail::ReportCell<4> rc;
-      rc.min_width(11).min_width(0, report_prefix().size());
-
-      rc(line1,
+      ReportCell<5> rc;
+      rc.min_width(12)
+          .min_width(0, report_prefix().size())
+          .align(1, Align::left);
+      // auto invert = fmt::bg(fmt::terminal_color::white)
+      //               | fmt::fg(fmt::terminal_color::black) |
+      //               fmt::emphasis::bold;
+      // auto purple = fmt::fg(fmt::rgb(127, 0, 255));
+      auto purple = fmt::emphasis::underline;
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
+         fmt::format(purple, "RUN X.Y.{}", _stats.report_number),
+         "active",
+         "killed",
+         "defined");
+      rc("{}: {} | {} | {} | {}\n",
+         report_prefix(),
+         "nodes",
          group_digits(active),
          group_digits(killed),
          group_digits(defined));
-      rc("{}: diff  {} (active) | {} (killed) | {} (defined)\n",
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
+         "diff X.Y-1",
          active_diff,
          killed_diff,
          defined_diff);
-      rc("{}: time  {} (total)  | {} (killed) | {} (defined)\n",
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "diff X.0", "?", "?", "?");
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "edges", "?", "?", "?");
+      rc("{}: {} | {} | {} | {}\n",
          report_prefix(),
-         string_time(run_time),
-         mean_killed,
-         mean_defined);
+         "diff X.Y-1",
+         "?",
+         "?",
+         "?");
+      rc("{}: {} | {} | {} | {}\n", report_prefix(), "diff X.0", "?", "?", "?");
+
+      // TODO auto complete = 100 * static_cast<double>(_stats.num_active_edges)
+      //                 / (this->number_of_nodes_active() * out_degree());
+      _stats.report_number++;
       stats_check_point();
     }
 
@@ -374,5 +418,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups

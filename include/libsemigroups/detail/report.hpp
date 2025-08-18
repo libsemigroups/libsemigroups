@@ -46,6 +46,8 @@ namespace libsemigroups {
 
     bool is_report_suppressed_for(std::string_view);
 
+    [[nodiscard]] std::string& last_reported_line_var();
+
     // This class provides a thread-safe means of calling a function every
     // second in a detached thread. The purpose of this class is so that the
     // TickerImpl, which contains the data required by the function to be
@@ -76,6 +78,8 @@ namespace libsemigroups {
       ~Ticker();
     };
 
+    enum class Align : uint8_t { left, right };
+
     // This object is a helper for formatting information reported by various
     // classes in libsemigroups such as ToddCoxeterImpl, KnuthBendixImpl, etc.
     //
@@ -87,19 +91,29 @@ namespace libsemigroups {
     class ReportCell {
      private:
       using Row = std::array<std::string, C + 1>;
-
+      std::array<Align, C + 1>  _align;
       std::array<size_t, C + 1> _col_widths;
+      bool                      _divider_after;
+      bool                      _divider_before;
+      char                      _divider_char;
       std::vector<Row>          _rows;
 
      public:
-      ReportCell() : _col_widths(), _rows() {
+      ReportCell()
+          : _align(),
+            _col_widths(),
+            _divider_after(false),
+            _divider_before(false),
+            _divider_char('+'),
+            _rows() {
+        _align.fill(Align::right);
         _col_widths.fill(0);
       }
 
-      ReportCell(ReportCell const&)            = delete;
-      ReportCell(ReportCell&&)                 = delete;
-      ReportCell& operator=(ReportCell const&) = delete;
-      ReportCell& operator=(ReportCell&&)      = delete;
+      ReportCell(ReportCell const&)            = default;
+      ReportCell(ReportCell&&)                 = default;
+      ReportCell& operator=(ReportCell const&) = default;
+      ReportCell& operator=(ReportCell&&)      = default;
 
       ~ReportCell() {
         emit();
@@ -118,6 +132,22 @@ namespace libsemigroups {
         return *this;
       }
 
+      ReportCell& align(size_t col, Align val) noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        _align[col + 1] = val;
+        return *this;
+      }
+
+      ReportCell& align(Align val) noexcept {
+        _align.fill(val);
+        return *this;
+      }
+
+      Align align(size_t col) const noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        return _align[col + 1];
+      }
+
       // Insert a row using a format string and arguments
       template <typename... Args>
       void operator()(std::string_view fmt_str, Args&&... args);
@@ -129,12 +159,29 @@ namespace libsemigroups {
         operator()(fmt_str, f(args)...);
       }
 
-     private:
-      size_t line_width() const;
+      [[nodiscard]] size_t line_width() const;
 
+      // TODO rm
+      ReportCell& divider_after(bool val) {
+        _divider_after = val;
+        return *this;
+      }
+
+      // TODO rm
+      ReportCell& divider_before(bool val) {
+        _divider_before = val;
+        return *this;
+      }
+
+      void add_divider() {
+        operator()(std::string(32, '+'));
+      }
+
+     private:
       void emit();
     };  // ReportCell
-  }     // namespace detail
+
+  }  // namespace detail
 
   //! No doc
   bool reporting_enabled() noexcept;
@@ -153,7 +200,9 @@ namespace libsemigroups {
 
     if (reporting_enabled()) {
       std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(sv, std::forward<Args>(args)...);
+      auto line = fmt::format(sv, std::forward<Args>(args)...);
+      detail::last_reported_line_var() = line;
+      fmt::print("{}", line);
     }
   }
 
@@ -174,11 +223,8 @@ namespace libsemigroups {
   }
 
   //! No doc
-  static inline void
-  report_elapsed_time(std::string_view                    prefix,
-                      libsemigroups::detail::Timer const& tmr) {
-    report_default("{} elapsed time {}", prefix, tmr);
-  }
+  // TODO rm
+  [[nodiscard]] std::string const& last_reported_line();
 
   //! \ingroup core_classes_group
   //!
@@ -206,6 +252,12 @@ namespace libsemigroups {
     explicit SuppressReportFor(std::string_view);
     ~SuppressReportFor();
   };
+
+  namespace detail {
+    static inline void report_divider() {
+      report_no_prefix("{:+<32}\n", "");
+    }
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "report.tpp"

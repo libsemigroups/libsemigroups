@@ -60,8 +60,8 @@ namespace libsemigroups {
       // Aliases - public
       ////////////////////////////////////////////////////////////////////////
 
-      using node_type       = typename BaseGraph::node_type;
-      using base_Graph_type = BaseGraph;
+      using node_type  = typename BaseGraph::node_type;
+      using label_type = typename BaseGraph::label_type;
 
       static_assert(
           std::is_base_of<WordGraphWithSources<node_type>, BaseGraph>::value,
@@ -97,6 +97,7 @@ namespace libsemigroups {
 
       using BaseGraph::out_degree;
       using BaseGraph::target_no_checks;
+
       using NodeManager<node_type>::cursor;
       using NodeManager<node_type>::lookahead_cursor;
 
@@ -156,7 +157,18 @@ namespace libsemigroups {
         return _stats;
       }
 
+      [[nodiscard]] Stats& stats() const noexcept {
+        return _stats;
+      }
+
       void stats_check_point() const;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Accessors
+      ////////////////////////////////////////////////////////////////////////
+
+      // 100% not thread safe
+      [[nodiscard]] uint64_t number_of_edges_active() const noexcept;
 
       ////////////////////////////////////////////////////////////////////////
       // Modifiers
