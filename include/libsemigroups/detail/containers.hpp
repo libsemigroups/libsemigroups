@@ -34,9 +34,10 @@
 #include <utility>           // for forward
 #include <vector>            // for vector, allocator
 
-#include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
-
 #include "iterator.hpp"  // for ConstIteratorStateful, ConstItera...
+#include "libsemigroups/adapters.hpp"  // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/debug.hpp"     // for Hash
+#include "string.hpp"                  // for to_string
 
 namespace libsemigroups {
   namespace detail {
@@ -1034,9 +1035,9 @@ namespace libsemigroups {
       }
       os << "{{";  // {{ is an escaped single { for fmt
       for (auto it = vec.cbegin(); it < vec.cend() - 1; ++it) {
-        os << std::to_string(*it) << ", ";
+        os << detail::to_string(*it) << ", ";
       }
-      os << std::to_string(*(vec.cend() - 1)) << "}}";
+      os << detail::to_string(*(vec.cend() - 1)) << "}}";
       return os;
     }
 
@@ -1200,7 +1201,7 @@ namespace std {
     operator()(libsemigroups::detail::StaticVector1<T, N> const& sv) const {
       size_t seed = 0;
       for (T const& x : sv) {
-        seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
+        seed ^= libsemigroups::Hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
                 + (seed >> 2);
       }
       return seed;
@@ -1213,7 +1214,7 @@ namespace std {
     operator()(libsemigroups::detail::DynamicArray2<T, A> const& da) const {
       size_t seed = 0;
       for (T const& x : da) {
-        seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
+        seed ^= libsemigroups::Hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
                 + (seed >> 2);
       }
       return seed;
