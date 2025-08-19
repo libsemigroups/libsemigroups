@@ -1524,8 +1524,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2781,9 +2781,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -6682,7 +6682,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -7855,7 +7855,9 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(2) complexity
-    template <typename Mat, typename Container>
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<!IsMatrix<std::decay_t<Container>>>>
     std::decay_t<Container> row_basis(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
       static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
@@ -7864,6 +7866,70 @@ namespace libsemigroups {
 
       std::decay_t<Container> result;
       row_basis<Mat>(std::forward<Container>(rows), result);
+      return result;
+    }
+
+    template <typename T>
+    struct RowSum {
+      void operator()(T& res, T const& pt, T const& x) const {
+        res = pt;
+        res += x;
+      }
+    };
+
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsMatrix<Mat>>>
+    void row_basis_rows(Mat const& x, Container& result) {
+      LIBSEMIGROUPS_ASSERT(result.empty());
+      for (auto x : row_basis<Mat>(x)) {
+        result.push_back(typename Mat::Row(x));
+      }
+    }
+
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsStaticMatrix<Mat>>>
+    detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
+    row_basis_rows(Mat const& x) {
+      detail::StaticVector1<typename Mat::Row, Mat::nr_rows> container;
+      row_basis_rows(x, container);
+      return container;
+    }
+
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
+    std::vector<typename Mat::Row> row_basis_rows(Mat const& x) {
+      std::vector<typename Mat::Row> container;
+      row_basis_rows(x, container);
+      return container;
+    }
+
+    // This modifies the argument rows by moving out those in the basis
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsStaticMatrix<Mat>>>
+    detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
+    row_basis_rows(Container&& rows) {
+      using value_type = typename std::decay_t<Container>::value_type;
+      static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
+      static_assert(std::is_same<value_type, typename Mat::Row>::value,
+                    "Container::value_type must be Mat::Row");
+
+      detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> rvs;
+      std::unordered_map<typename Mat::scalar_type*, size_t>     lookup;
+
+      for (size_t i = 0; i < rows.size(); ++i) {
+        auto rv = typename Mat::RowView(rows[i]);
+        rvs.push_back(rv);
+        lookup.insert({&(*rv.begin()), i});
+      }
+      std::decay_t<Container> result;
+      for (auto rv : row_basis<Mat>(rvs)) {
+        // TODO: really???
+        result.push_back(std::move(rows[lookup.at(&(*rv.begin()))]));
+      }
       return result;
     }
 
