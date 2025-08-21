@@ -23,26 +23,24 @@ namespace libsemigroups {
     // FelschGraph - constructors + initializers - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>::FelschGraph(FelschGraph const&)
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph(FelschGraph const&) = default;
+
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph(FelschGraph&&) = default;
+
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::operator=(FelschGraph const&)
         = default;
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>::FelschGraph(FelschGraph&&) = default;
-
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::operator=(FelschGraph const&)
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::operator=(FelschGraph&&)
         = default;
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::operator=(FelschGraph&&)
-        = default;
-
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::init() {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>& FelschGraph<Node, Definitions>::init() {
       WordGraphWithSources<Node>::init();
       FelschGraphSettings_::init();
       _definitions.clear();
@@ -52,71 +50,71 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>::FelschGraph(
-        Presentation<Word> const& p)
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph(
+        Presentation<word_type> const& p)
         : FelschGraph() {
       init(p);
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::init(Presentation<Word> const& p) {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p) {
       if (&_presentation != &p) {
         _presentation = p;
       }
       return private_init_from_presentation();
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>::FelschGraph(Presentation<Word>&& p)
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph(Presentation<word_type>&& p)
         : FelschGraph() {
       init(std::move(p));
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::init(Presentation<Word>&& p) {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::init(Presentation<word_type>&& p) {
       _presentation = std::move(p);
       return private_init_from_presentation();
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename M>
-    FelschGraph<Word, Node, Definitions>::FelschGraph(WordGraph<M> const& ad)
+    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<M> const& ad)
         : FelschGraph() {
       init(ad);
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename M>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::init(WordGraph<M> const& ad) {
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::init(WordGraph<M> const& ad) {
       WordGraphWithSources<M>::init(ad);
       return private_init_from_word_graph();
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>::FelschGraph(WordGraph<Node>&& ad)
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<Node>&& ad)
         : FelschGraph() {
       init(std::move(ad));
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::init(WordGraph<Node>&& ad) {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::init(WordGraph<Node>&& ad) {
       WordGraphWithSources<Node>::init(std::move(ad));
       return private_init_from_word_graph();
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>::~FelschGraph() = default;
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::~FelschGraph() = default;
 
     // TODO(2) this should be removed
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::presentation(
-        Presentation<Word> const& p) {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::presentation(
+        Presentation<word_type> const& p) {
       _presentation = p;
       size_t c      = _presentation.alphabet().size();
       if (c > out_degree()) {
@@ -129,9 +127,9 @@ namespace libsemigroups {
     }
 
     // TODO this should be removed
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::presentation(Presentation<Word>&& p) {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::presentation(Presentation<word_type>&& p) {
       // TODO avoid code dupl in constructors and init
       _presentation = std::move(p);
       size_t c      = _presentation.alphabet().size();
@@ -147,9 +145,9 @@ namespace libsemigroups {
     // FelschGraph - operators - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
-    bool FelschGraph<Word, Node, Definitions>::operator==(
-        FelschGraph const& that) const {
+    template <typename Node, typename Definitions>
+    bool
+    FelschGraph<Node, Definitions>::operator==(FelschGraph const& that) const {
       size_type const m = WordGraph<Node>::number_of_active_nodes();
       size_type const n = that.number_of_active_nodes();
       return (m == 0 && n == 0)
@@ -161,16 +159,16 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO Move back to hpp
-    template <typename Word, typename Node, typename Definitions>
-    Presentation<Word>&
-    FelschGraph<Word, Node, Definitions>::presentation() noexcept {
+    template <typename Node, typename Definitions>
+    Presentation<word_type>&
+    FelschGraph<Node, Definitions>::presentation() noexcept {
       return _presentation;
     }
 
     // TODO Move back to hpp
-    template <typename Word, typename Node, typename Definitions>
-    Presentation<Word> const&
-    FelschGraph<Word, Node, Definitions>::presentation() const noexcept {
+    template <typename Node, typename Definitions>
+    Presentation<word_type> const&
+    FelschGraph<Node, Definitions>::presentation() const noexcept {
       return _presentation;
     }
 
@@ -178,12 +176,12 @@ namespace libsemigroups {
     // FelschGraph - modifiers - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <bool RegDefs>
-    void FelschGraph<Word, Node, Definitions>::target_no_checks(
-        node_type  c,
-        label_type x,
-        node_type  d) noexcept {
+    void
+    FelschGraph<Node, Definitions>::target_no_checks(node_type  c,
+                                                     label_type x,
+                                                     node_type  d) noexcept {
       LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
       LIBSEMIGROUPS_ASSERT(x < out_degree());
       LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
@@ -193,9 +191,9 @@ namespace libsemigroups {
       WordGraphWithSources<Node>::target_no_checks(c, x, d);
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    void FelschGraph<Word, Node, Definitions>::reduce_number_of_edges_to(
-        size_type n) {
+    template <typename Node, typename Definitions>
+    void
+    FelschGraph<Node, Definitions>::reduce_number_of_edges_to(size_type n) {
       LIBSEMIGROUPS_ASSERT(WordGraph<Node>::number_of_edges()
                            == _definitions.size());
 
@@ -206,10 +204,9 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <bool RegDefs, typename Incompatible, typename PreferredDefs>
-    bool
-    FelschGraph<Word, Node, Definitions>::merge_targets_of_nodes_if_possible(
+    bool FelschGraph<Node, Definitions>::merge_targets_of_nodes_if_possible(
         node_type      x,
         label_type     a,
         node_type      y,
@@ -245,10 +242,9 @@ namespace libsemigroups {
       return true;
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <bool RegDefs, typename Incompatible, typename PreferredDefs>
-    bool
-    FelschGraph<Word, Node, Definitions>::merge_targets_of_paths_if_possible(
+    bool FelschGraph<Node, Definitions>::merge_targets_of_paths_if_possible(
         node_type                          u_node,
         typename word_type::const_iterator u_first,
         typename word_type::const_iterator u_last,
@@ -301,9 +297,9 @@ namespace libsemigroups {
     // FelschGraph - process definitions - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definitions(
+    bool FelschGraph<Node, Definitions>::process_definitions(
         size_t         start,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
@@ -315,9 +311,8 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    bool
-    FelschGraph<Word, Node, Definitions>::process_definitions(size_t start) {
+    template <typename Node, typename Definitions>
+    bool FelschGraph<Node, Definitions>::process_definitions(size_t start) {
       StopIfIncompatible incompat;
       NoPreferredDefs    pref_defs;
       return process_definitions(start, incompat, pref_defs);
@@ -327,9 +322,9 @@ namespace libsemigroups {
     // FelschGraph - constructors + initializers - private
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::private_init_from_presentation() {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::private_init_from_presentation() {
 #ifdef LIBSEMIGROUPS_DEBUG
       _presentation.throw_if_bad_alphabet_or_rules();
 #endif
@@ -344,9 +339,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename Word, typename Node, typename Definitions>
-    FelschGraph<Word, Node, Definitions>&
-    FelschGraph<Word, Node, Definitions>::private_init_from_word_graph() {
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::private_init_from_word_graph() {
       // Don't call init because we don't want to re-init WordGraphWithSources
       FelschGraphSettings_::init();
       _definitions.clear();
@@ -369,8 +364,8 @@ namespace libsemigroups {
     // FelschGraph - accessors - private
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
-    void FelschGraph<Word, Node, Definitions>::init_felsch_tree() const {
+    template <typename Node, typename Definitions>
+    void FelschGraph<Node, Definitions>::init_felsch_tree() const {
       if (!_felsch_tree_initted) {
         _felsch_tree_initted = true;
         _felsch_tree.add_relations(_presentation.rules.cbegin(),
@@ -385,9 +380,9 @@ namespace libsemigroups {
     // Follows the paths from node c labelled by the left and right handsides
     // of the i-th rule, and returns merge_targets on the last but one nodes
     // and letters.
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <bool RegDefs, typename Incompatible, typename PreferredDefs>
-    inline bool FelschGraph<Word, Node, Definitions>::
+    inline bool FelschGraph<Node, Definitions>::
         merge_targets_of_paths_labelled_by_rules_if_possible(
             node_type const& c,
             size_t           i,
@@ -409,9 +404,9 @@ namespace libsemigroups {
     // FelschGraph - process definitions - private
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definition_v2(
+    bool FelschGraph<Node, Definitions>::process_definition_v2(
         Definition     d,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
@@ -431,9 +426,9 @@ namespace libsemigroups {
       return true;
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definition_v1(
+    bool FelschGraph<Node, Definitions>::process_definition_v1(
         Definition     d,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
@@ -444,9 +439,9 @@ namespace libsemigroups {
       return true;
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definitions_v2(
+    bool FelschGraph<Node, Definitions>::process_definitions_v2(
         size_t         start,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
@@ -459,9 +454,9 @@ namespace libsemigroups {
     }
 
     // TODO(2) remove code dupl with process_definitions_v2
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definitions_v1(
+    bool FelschGraph<Node, Definitions>::process_definitions_v1(
         size_t         start,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
@@ -473,9 +468,9 @@ namespace libsemigroups {
       return true;
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definitions_dfs_v2(
+    bool FelschGraph<Node, Definitions>::process_definitions_dfs_v2(
         node_type      root,
         node_type      c,
         Incompatible&  incompat,
@@ -562,9 +557,9 @@ namespace libsemigroups {
       return true;
     }
 
-    template <typename Word, typename Node, typename Definitions>
+    template <typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
-    bool FelschGraph<Word, Node, Definitions>::process_definitions_dfs_v1(
+    bool FelschGraph<Node, Definitions>::process_definitions_dfs_v1(
         node_type      c,
         Incompatible&  incompat,
         PreferredDefs& pref_defs) {
@@ -595,18 +590,17 @@ namespace libsemigroups {
     // Helper namespace
     namespace felsch_graph {
       template <bool RegDefs,
-                typename Word,
                 typename Node,
                 typename Definitions,
                 typename Incompatible,
                 typename PrefDefs>
       bool make_compatible(
-          FelschGraph<Word, Node, Definitions>&                    fd,
-          typename FelschGraph<Word, Node, Definitions>::node_type first_node,
-          typename FelschGraph<Word, Node, Definitions>::node_type last_node,
-          typename std::vector<Word>::const_iterator               first_rule,
-          typename std::vector<Word>::const_iterator               last_rule,
-          Incompatible&&                                           incompat,
+          FelschGraph<Node, Definitions>&                    fd,
+          typename FelschGraph<Node, Definitions>::node_type first_node,
+          typename FelschGraph<Node, Definitions>::node_type last_node,
+          typename std::vector<word_type>::const_iterator    first_rule,
+          typename std::vector<word_type>::const_iterator    last_rule,
+          Incompatible&&                                     incompat,
           PrefDefs&& pref_defs) noexcept {
         LIBSEMIGROUPS_ASSERT(first_node < fd.number_of_nodes());
         LIBSEMIGROUPS_ASSERT(last_node <= fd.number_of_nodes());
@@ -632,5 +626,5 @@ namespace libsemigroups {
         return true;
       }
     }  // namespace felsch_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups

@@ -1269,8 +1269,7 @@ namespace libsemigroups {
 
         // TODO(1) (Sims1) ensure that _felsch_graph's settings are
         // properly initialised
-        FelschGraph<word_type, node_type, std::vector<Definition>>
-            _felsch_graph;
+        FelschGraph<node_type, std::vector<Definition>> _felsch_graph;
 
         // This mutex does nothing for iterator, only does something for
         // thread_iterator
@@ -1485,7 +1484,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1557,7 +1556,7 @@ namespace libsemigroups {
     friend class sims::const_cgp_iterator;
 
     using felsch_graph_type
-        = detail::FelschGraph<word_type, node_type, std::vector<Definition>>;
+        = detail::FelschGraph<node_type, std::vector<Definition>>;
 
    public:
     //! Default constructor
@@ -1966,7 +1965,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // class Sims2
+  };  // class Sims2
 
   //! \ingroup sims_group
   //!

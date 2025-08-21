@@ -104,17 +104,17 @@ namespace libsemigroups {
       }
     };
 
-    // TODO remove Word template param (it's always word_type)
-    template <typename Word, typename Node, typename Definitions>
+    // TODO remove word_type template param (it's always word_type)
+    template <typename Node, typename Definitions>
     class FelschGraph
         : public WordGraphWithSources<Node>,
-          public FelschGraphSettings<FelschGraph<Word, Node, Definitions>> {
+          public FelschGraphSettings<FelschGraph<Node, Definitions>> {
      private:
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - aliases - private
       ////////////////////////////////////////////////////////////////////////
 
-      using FelschGraph_          = FelschGraph<Word, Node, Definitions>;
+      using FelschGraph_          = FelschGraph<Node, Definitions>;
       using FelschGraphSettings_  = FelschGraphSettings<FelschGraph_>;
       using WordGraphWithSources_ = WordGraphWithSources<Node>;
 
@@ -126,7 +126,7 @@ namespace libsemigroups {
       using options = typename FelschGraphSettings_::options;
 
       using node_type     = Node;
-      using word_type     = Word;
+      using word_type     = word_type;
       using label_type    = typename WordGraphWithSources_::label_type;
       using size_type     = typename WordGraphWithSources_::size_type;
       using word_iterator = typename word_type::const_iterator;
@@ -169,11 +169,11 @@ namespace libsemigroups {
       FelschGraph& operator=(FelschGraph const&);
       FelschGraph& operator=(FelschGraph&&);
 
-      explicit FelschGraph(Presentation<Word> const& p);
-      FelschGraph& init(Presentation<Word> const& p);
+      explicit FelschGraph(Presentation<word_type> const& p);
+      FelschGraph& init(Presentation<word_type> const& p);
 
-      explicit FelschGraph(Presentation<Word>&& p);
-      FelschGraph& init(Presentation<Word>&& p);
+      explicit FelschGraph(Presentation<word_type>&& p);
+      FelschGraph& init(Presentation<word_type>&& p);
 
       // TODO remove and replace with an init(Presentation, WordGraph)
       template <typename M>
@@ -202,8 +202,8 @@ namespace libsemigroups {
       // function so that they are coupled and it's not possible to get into a
       // bad undefined position.
       // TODO remove and replace with an init(Presentation, WordGraph)
-      FelschGraph& presentation(Presentation<Word> const& p);
-      FelschGraph& presentation(Presentation<Word>&& p);
+      FelschGraph& presentation(Presentation<word_type> const& p);
+      FelschGraph& presentation(Presentation<word_type>&& p);
 
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - settings - public
@@ -387,44 +387,40 @@ namespace libsemigroups {
       // Not nodiscard because we don't care about the return value in
       // ToddCoxeterImpl
       template <bool RegDefs,
-                typename Word,
                 typename Node,
                 typename Definitions,
                 typename Incompatible,
                 typename PrefDefs>
       bool make_compatible(
-          FelschGraph<Word, Node, Definitions>&                    fd,
-          typename FelschGraph<Word, Node, Definitions>::node_type first_node,
-          typename FelschGraph<Word, Node, Definitions>::node_type last_node,
-          typename std::vector<Word>::const_iterator               first_rule,
-          typename std::vector<Word>::const_iterator               last_rule,
-          Incompatible&&                                           incompat,
+          FelschGraph<Node, Definitions>&                    fd,
+          typename FelschGraph<Node, Definitions>::node_type first_node,
+          typename FelschGraph<Node, Definitions>::node_type last_node,
+          typename std::vector<word_type>::const_iterator    first_rule,
+          typename std::vector<word_type>::const_iterator    last_rule,
+          Incompatible&&                                     incompat,
           PrefDefs&& pref_defs) noexcept;
 
       // Not nodiscard because we don't care about the return value in
       // ToddCoxeterImpl
-      template <bool RegDefs,
-                typename Word,
-                typename Node,
-                typename Definitions>
+      template <bool RegDefs, typename Node, typename Definitions>
       bool make_compatible(
-          FelschGraph<Word, Node, Definitions>&                    fd,
-          typename FelschGraph<Word, Node, Definitions>::node_type first_node,
-          typename FelschGraph<Word, Node, Definitions>::node_type last_node,
-          typename std::vector<Word>::const_iterator               first_rule,
-          typename std::vector<Word>::const_iterator               last_rule) {
+          FelschGraph<Node, Definitions>&                    fd,
+          typename FelschGraph<Node, Definitions>::node_type first_node,
+          typename FelschGraph<Node, Definitions>::node_type last_node,
+          typename std::vector<word_type>::const_iterator    first_rule,
+          typename std::vector<word_type>::const_iterator    last_rule) {
         return make_compatible<RegDefs>(
             fd,
             first_node,
             last_node,
             first_rule,
             last_rule,
-            typename FelschGraph<Word, Node, Definitions>::StopIfIncompatible(),
-            typename FelschGraph<Word, Node, Definitions>::NoPreferredDefs());
+            typename FelschGraph<Node, Definitions>::StopIfIncompatible(),
+            typename FelschGraph<Node, Definitions>::NoPreferredDefs());
       }
 
     }  // namespace felsch_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "felsch-graph.tpp"

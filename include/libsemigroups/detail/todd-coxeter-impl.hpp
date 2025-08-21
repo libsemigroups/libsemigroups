@@ -246,9 +246,9 @@ namespace libsemigroups {
         }
       };  // class Definitions
 
-      class Graph : public NodeManagedGraph<
-                        FelschGraph<word_type, uint32_t, Definitions>> {
-        using FelschGraph_      = FelschGraph<word_type, uint32_t, Definitions>;
+      class Graph
+          : public NodeManagedGraph<FelschGraph<uint32_t, Definitions>> {
+        using FelschGraph_      = FelschGraph<uint32_t, Definitions>;
         using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
 
        public:
