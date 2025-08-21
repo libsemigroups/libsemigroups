@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/detail/felsch-graph.hpp"
 namespace libsemigroups {
   namespace detail {
 
@@ -25,13 +26,13 @@ namespace libsemigroups {
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::FelschGraph()
-        : _felsch_tree(),
-          _felsch_tree_initted(),
+        : WordGraphWithSources<Node>(),
+          FelschGraphSettings_(),
+          _felsch_tree(0),
+          _felsch_tree_initted(false),
           _definitions(),
           _presentation(),
-          _word_graph() {
-      init();
-    }
+          _word_graph() {}
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>& FelschGraph<Node, Definitions>::init() {
@@ -64,8 +65,7 @@ namespace libsemigroups {
     FelschGraph<Node, Definitions>::FelschGraph(
         Presentation<word_type> const& p)
         : FelschGraph() {
-      _presentation = p;
-      private_init_from_presentation();
+      init(p);
     }
 
     template <typename Node, typename Definitions>
