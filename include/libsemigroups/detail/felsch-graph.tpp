@@ -68,13 +68,6 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::init(WordGraph<Node> const& wg) {
-      WordGraphWithSources<Node>::init(wg);
-      return private_init_from_word_graph();
-    }
-
-    template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::~FelschGraph() = default;
 
     template <typename Node, typename Definitions>

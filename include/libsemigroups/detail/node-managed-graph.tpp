@@ -140,7 +140,7 @@ namespace libsemigroups {
     NodeManagedGraph<BaseGraph>&
     NodeManagedGraph<BaseGraph>::operator=(WordGraph<OtherNode> const& wg) {
       init();
-      BaseGraph::init(wg);
+      BaseGraph::operator=(wg);
       NodeManager<node_type>::add_active_nodes(
           WordGraph<node_type>::number_of_nodes() - 1);
       // TODO assert that number of nodes in NodeManager and BaseGraph are the
