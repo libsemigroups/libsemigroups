@@ -24,6 +24,27 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph()
+        : _felsch_tree(),
+          _felsch_tree_initted(),
+          _definitions(),
+          _presentation(),
+          _word_graph() {
+      init();
+    }
+
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>& FelschGraph<Node, Definitions>::init() {
+      WordGraphWithSources<Node>::init();
+      FelschGraphSettings_::init();
+      _definitions.clear();
+      _felsch_tree.init(0);
+      _felsch_tree_initted = false;
+      _presentation.init();
+      return *this;
+    }
+
+    template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::FelschGraph(FelschGraph const&) = default;
 
     template <typename Node, typename Definitions>
@@ -38,17 +59,6 @@ namespace libsemigroups {
     FelschGraph<Node, Definitions>&
     FelschGraph<Node, Definitions>::operator=(FelschGraph&&)
         = default;
-
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>& FelschGraph<Node, Definitions>::init() {
-      WordGraphWithSources<Node>::init();
-      FelschGraphSettings_::init();
-      _definitions.clear();
-      _felsch_tree.init(0);
-      _felsch_tree_initted = false;
-      _presentation.init();
-      return *this;
-    }
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::FelschGraph(
