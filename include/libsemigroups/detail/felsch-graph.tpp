@@ -112,15 +112,11 @@ namespace libsemigroups {
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::presentation(
+    FelschGraph<Node, Definitions>::presentation_no_checks(
         Presentation<word_type> const& p) {
+      LIBSEMIGROUPS_ASSERT(p.alphabet().size() == out_degree());
       _presentation = p;
-      size_t c      = _presentation.alphabet().size();
-      if (c > out_degree()) {
-        // Not sure this is required
-        WordGraph<Node>::add_to_out_degree(c - out_degree());
-      }
-      _felsch_tree.init(c);
+      _felsch_tree.init(_presentation.alphabet().size());
       _felsch_tree_initted = false;
       return *this;
     }

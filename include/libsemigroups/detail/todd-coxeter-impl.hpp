@@ -275,7 +275,7 @@ namespace libsemigroups {
         Graph& init(Presentation<word_type> const& p,
                     WordGraph<node_type> const&    wg) {
           NodeManagedGraph_::operator=(wg);
-          FelschGraph_::presentation(p);
+          FelschGraph_::presentation_no_checks(p);
           return *this;
         }
 

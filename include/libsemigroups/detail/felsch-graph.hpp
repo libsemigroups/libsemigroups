@@ -177,7 +177,7 @@ namespace libsemigroups {
       // word graph that these be one of the parameters of the constructor/init
       // function so that they are coupled and it's not possible to get into a
       // bad undefined position.
-      FelschGraph& presentation(Presentation<word_type> const& p);
+      FelschGraph& presentation_no_checks(Presentation<word_type> const& p);
 
       ////////////////////////////////////////////////////////////////////////
       // WordGraph + similar - mem. fns - public

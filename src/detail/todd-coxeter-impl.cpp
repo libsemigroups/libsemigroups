@@ -247,7 +247,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::presentation_no_checks(
         Presentation<word_type> const& p) {
-      FelschGraph_::presentation(p);
+      FelschGraph_::presentation_no_checks(p);
       return *this;
     }
 
@@ -543,7 +543,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl&
     ToddCoxeterImpl::presentation_no_checks(Presentation<word_type> const& p) {
-      _word_graph.presentation(p);
+      _word_graph.presentation_no_checks(p);
       return *this;
     }
 
@@ -991,7 +991,7 @@ namespace libsemigroups {
         presentation::add_rules(p,
                                 internal_generating_pairs().cbegin(),
                                 internal_generating_pairs().cend());
-        _word_graph.presentation(std::move(p));
+        _word_graph.presentation_no_checks(std::move(p));
       }
 
       if (save() || strategy() == options::strategy::felsch) {

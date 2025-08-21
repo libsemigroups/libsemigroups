@@ -1461,7 +1461,7 @@ namespace libsemigroups {
       // Copy wasteful
       auto p = _reconstructed_word_graph.presentation();
       presentation::add_rule_no_checks(p, (**this).first, (**this).second);
-      _reconstructed_word_graph.presentation(std::move(p));
+      _reconstructed_word_graph.presentation_no_checks(std::move(p));
 
       std::ignore = _reconstructed_word_graph.process_definitions(start);
       return *this;
