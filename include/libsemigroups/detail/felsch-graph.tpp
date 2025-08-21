@@ -88,18 +88,13 @@ namespace libsemigroups {
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
     FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p) {
-#ifdef LIBSEMIGROUPS_DEBUG
-      // TODO(1) better to assert p.bad_alphabet_or_rules()
-      p.throw_if_bad_alphabet_or_rules();
-#endif
       init();
 
-      _presentation = p;
-      auto r        = (_presentation.contains_empty_word() ? 0 : 1);
-      auto c        = _presentation.alphabet().size();
-
+      auto r = (p.contains_empty_word() ? 0 : 1);
+      auto c = p.alphabet().size();
       WordGraphWithSources<Node>::init(r, c);
-      _felsch_tree.init(c);
+
+      presentation_no_checks(p);
       return *this;
     }
 
