@@ -34,6 +34,11 @@
 #include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGrap...
 
 namespace libsemigroups {
+
+  template <typename Graph, typename Definitions>
+  using DoRegisterDefs
+      = detail::felsch_graph::DoRegisterDefs<Graph, Definitions>;
+
   namespace todd_coxeter {
     [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
                                       size_t                    tries,
@@ -63,7 +68,7 @@ namespace libsemigroups {
             auto& wg = const_cast<detail::ToddCoxeterImpl::word_graph_type&>(
                 copy.current_word_graph());
             wg.merge_nodes_no_checks(c1, c2);
-            wg.process_coincidences<detail::RegisterDefs>();
+            wg.process_coincidences(DoRegisterDefs{wg});
             wg.process_definitions();
             copy.run_for(try_for);
           }
@@ -135,7 +140,7 @@ namespace libsemigroups {
         ++at;
         current = wg.detail::NodeManager<node_type>::next_active_node(current);
       }
-      wg.process_coincidences<detail::DoNotRegisterDefs>();
+      wg.process_coincidences();
       // TODO process_definitions
       if (reporting_enabled()) {
         report_no_prefix("{:+<90}\n", "");

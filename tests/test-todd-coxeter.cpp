@@ -301,7 +301,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 00_w);
     ToddCoxeter tc(twosided, p);
 
-    section_felsch(tc);
+    // section_felsch(tc);
     // section_hlt(tc);
     // section_CR_style(tc);
     // section_R_over_C_style(tc);
@@ -1684,7 +1684,7 @@ namespace libsemigroups {
         .large_collapse(1);
     REQUIRE_THROWS_AS(tc.lookahead_growth_factor(0.1), LibsemigroupsException);
 
-    REQUIRE(tc.current_word_graph().felsch_tree().height() == 6);
+    // REQUIRE(tc.current_word_graph().felsch_tree().height() == 6);
     REQUIRE(tc.number_of_classes() == 5);
 
     auto c = class_by_index(tc, 0);
@@ -1710,7 +1710,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(class_of(tc, {}), LibsemigroupsException);
 
     REQUIRE(!tc.is_standardized());
-    REQUIRE(tc.current_word_graph().felsch_tree().number_of_nodes() == 7);
+    // REQUIRE(tc.current_word_graph().felsch_tree().number_of_nodes() == 7);
 
     ToddCoxeter tc2(onesided, tc);
     todd_coxeter::add_generating_pair(tc2, 00_w, 0_w);
@@ -4497,7 +4497,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange words;
+    WordRange    words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

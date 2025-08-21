@@ -34,7 +34,7 @@ namespace libsemigroups {
       _ticker_running = false;
 
       // TODO(1) if &wg == &_word_graph, what then?
-      _word_graph = wg;
+      _word_graph = wg;  // FIXME use init
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();
       // FIXME(1) setting the setting in the next line, and adding a Felsch
@@ -123,12 +123,13 @@ namespace libsemigroups {
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      if (i >= _word_graph.number_of_nodes_active() - offset) {
+      if (i >= current_word_graph().number_of_nodes_active() - offset) {
         // We must standardize before doing this so that the index even makes
         // sense.
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
-                                _word_graph.number_of_nodes_active() - offset,
+                                current_word_graph().number_of_nodes_active()
+                                    - offset,
                                 i);
       }
       return current_word_of_no_checks(d_first, i);

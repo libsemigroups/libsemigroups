@@ -51,15 +51,16 @@
 namespace libsemigroups {
   namespace detail {
 
-    template <typename BaseGraph>
-    class NodeManagedGraph : public BaseGraph,
-                             public NodeManager<typename BaseGraph::node_type>,
+    template <typename Node>
+    class NodeManagedGraph : public WordGraphWithSources<Node>,
+                             public NodeManager<Node>,
                              public Reporter {
      public:
       ////////////////////////////////////////////////////////////////////////
       // Aliases - public
       ////////////////////////////////////////////////////////////////////////
 
+      using BaseGraph  = WordGraphWithSources<Node>;
       using node_type  = typename BaseGraph::node_type;
       using label_type = typename BaseGraph::label_type;
 
@@ -186,8 +187,8 @@ namespace libsemigroups {
         _coinc.emplace(x, y);
       }
 
-      template <bool RegisterDefs>
-      void process_coincidences();
+      template <typename Functor = Noop>
+      void process_coincidences(Functor&& = Noop{});
 
       void permute_nodes_no_checks(std::vector<node_type> const& p,
                                    std::vector<node_type> const& q) {

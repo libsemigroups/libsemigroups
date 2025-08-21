@@ -45,6 +45,17 @@
 
 namespace libsemigroups {
 
+  constexpr bool do_not_register_defs
+      = detail::felsch_graph::do_not_register_defs;
+
+  constexpr bool do_register_defs = detail::felsch_graph::do_register_defs;
+
+  template <typename Graph, typename Definitions>
+  using DoRegisterDefs
+      = detail::felsch_graph::DoRegisterDefs<Graph, Definitions>;
+
+  using DoNotRegisterDefs = Noop;
+
   namespace {
     constexpr auto const run_color = fmt::bg(fmt::terminal_color::white)
                                      | fmt::fg(fmt::terminal_color::black);
@@ -267,7 +278,7 @@ namespace libsemigroups {
             FelschGraph_::process_definition(d, incompat, pref_defs);
           }
         }
-        process_coincidences<RegisterDefs>();
+        process_coincidences(DoRegisterDefs(this));
       }
     }
 
@@ -316,6 +327,8 @@ namespace libsemigroups {
                                                    RuleIterator     first,
                                                    RuleIterator     last,
                                                    bool stop_early) {
+      using namespace felsch_graph;
+
       auto last_stop_early_check = std::chrono::high_resolution_clock::now();
       auto const old_number_of_killed    = number_of_nodes_killed();
       auto       killed_at_prev_interval = old_number_of_killed;
@@ -335,12 +348,13 @@ namespace libsemigroups {
         // NodeManager but the RuleIterators returned by them are invalidated
         // by any changes to the graph, such as those made by
         // felsch_graph::make_compatible.
-        felsch_graph::make_compatible<DoNotRegisterDefs>(
+        felsch_graph::make_compatible<do_not_register_defs>(
             *this, current, current + 1, first, last, incompat, prefdefs);
         // Using NoPreferredDefs is just a (more or less) arbitrary
         // choice, could allow the other choices here too (which works,
         // but didn't seem to be very useful).
-        process_coincidences<DoNotRegisterDefs>();
+        process_coincidences(DoNotRegisterDefs{});
+
         current = NodeManager<node_type>::next_active_node(current);
         stats().lookahead_position++;
         if (stop_early
@@ -960,14 +974,14 @@ namespace libsemigroups {
       auto const id    = current_word_graph().initial_node();
       if (save() || strategy() == options::strategy::felsch) {
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));
-          _word_graph.process_coincidences<RegisterDefs>();
+          _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
+          _word_graph.process_coincidences(DoRegisterDefs{_word_graph});
         }
       } else {
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<DoNotRegisterDefs>(
+          _word_graph.push_definition_hlt<do_not_register_defs>(
               id, *it, *(it + 1));
-          _word_graph.process_coincidences<DoNotRegisterDefs>();
+          _word_graph.process_coincidences(DoNotRegisterDefs{});
         }
       }
       if (strategy() == options::strategy::felsch && use_relations_in_extra()) {
@@ -975,8 +989,8 @@ namespace libsemigroups {
         last  = internal_presentation().rules.cend();
 
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));
-          _word_graph.process_coincidences<RegisterDefs>();
+          _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
+          _word_graph.process_coincidences(DoNotRegisterDefs{});
         }
       }
 
@@ -1039,7 +1053,7 @@ namespace libsemigroups {
       while (current != _word_graph.first_free_node() && !stopped()) {
         for (letter_type a = 0; a < n; ++a) {
           if (_word_graph.target_no_checks(current, a) == UNDEFINED) {
-            _word_graph.target_no_checks<RegisterDefs>(
+            _word_graph.target_no_checks<do_register_defs>(
                 current, a, _word_graph.new_node());
             _word_graph.process_definitions();
           }
@@ -1060,13 +1074,13 @@ namespace libsemigroups {
       while (current != _word_graph.first_free_node() && !stopped()) {
         if (!save()) {
           for (auto it = first; it < last; it += 2) {
-            _word_graph.push_definition_hlt<DoNotRegisterDefs>(
+            _word_graph.push_definition_hlt<do_not_register_defs>(
                 current, *it, *(it + 1));
-            _word_graph.process_coincidences<DoNotRegisterDefs>();
+            _word_graph.process_coincidences(DoNotRegisterDefs{});
           }
         } else {
           for (auto it = first; it < last; it += 2) {
-            _word_graph.push_definition_hlt<RegisterDefs>(
+            _word_graph.push_definition_hlt<do_register_defs>(
                 current, *it, *(it + 1));
             _word_graph.process_definitions();
           }
@@ -1491,116 +1505,118 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::report_progress_from_thread(bool divider) const {
-      LIBSEMIGROUPS_ASSERT(_state != state::none);
-      auto const active  = reporting_number_of_nodes_active();
-      auto const defined = reporting_number_of_nodes_defined();
-      auto const killed  = reporting_number_of_nodes_killed();
+      if (reporting_enabled()) {
+        LIBSEMIGROUPS_ASSERT(_state != state::none);
+        auto const active  = reporting_number_of_nodes_active();
+        auto const defined = reporting_number_of_nodes_defined();
+        auto const killed  = reporting_number_of_nodes_killed();
 
-      auto const active_diff1
-          = signed_group_digits(active - _stats.report_nodes_active_prev);
-      auto const killed_diff1
-          = signed_group_digits(killed - _stats.report_nodes_killed_prev);
-      auto const defined_diff1
-          = signed_group_digits(defined - _stats.report_nodes_defined_prev);
+        auto const active_diff1
+            = signed_group_digits(active - _stats.report_nodes_active_prev);
+        auto const killed_diff1
+            = signed_group_digits(killed - _stats.report_nodes_killed_prev);
+        auto const defined_diff1
+            = signed_group_digits(defined - _stats.report_nodes_defined_prev);
 
-      auto const active_diff2
-          = signed_group_digits(active - _stats.phase_nodes_active_at_start);
-      auto const killed_diff2
-          = signed_group_digits(killed - _stats.phase_nodes_killed_at_start);
-      auto const defined_diff2
-          = signed_group_digits(defined - _stats.phase_nodes_defined_at_start);
+        auto const active_diff2
+            = signed_group_digits(active - _stats.phase_nodes_active_at_start);
+        auto const killed_diff2
+            = signed_group_digits(killed - _stats.phase_nodes_killed_at_start);
+        auto const defined_diff2 = signed_group_digits(
+            defined - _stats.phase_nodes_defined_at_start);
 
-      if (divider) {
-        report_no_prefix(report_divider());
-      }
-      auto       rc = report_cell();
-      auto const X = _stats.run_index, Y = _stats.phase_index,
-                 Z = _stats.report_index;
-
-      rc("{}: {} | {} | {} | {}\n",
-         report_prefix(),
-         fmt::format(fmt::emphasis::underline,
-                     "{} {}.{}.{}",
-                     toupper(_state.load()),
-                     X,
-                     Y,
-                     Z),
-         underline("active"),
-         underline("killed"),
-         underline("defined"));
-      rc("{}: {} | {} | {} | {}\n",
-         report_prefix(),
-         "nodes",
-         group_digits(active),
-         group_digits(killed),
-         group_digits(defined));
-      // TODO could add rows with max. overall/run/phase./min. values,
-      if (Z > 0) {
-        rc("{}: {} | {} | {} | {}\n",
-           report_prefix(),
-           fmt::format("diff {}.{}.{}", X, Y, Z - 1),
-           active_diff1,
-           killed_diff1,
-           defined_diff1);
-        if (Z > 1) {
-          rc("{}: {} | {} | {} | {}\n",
-             report_prefix(),
-             fmt::format("diff {}.{}.0", X, Y),
-             active_diff2,
-             killed_diff2,
-             defined_diff2);
+        if (divider) {
+          report_no_prefix(report_divider());
         }
-        // TODO add diff from last phase of previous run.
-      }
-      rc("{}: {} | {} | {} | {}\n", report_prefix(), "edges", "?", "?", "?");
-      if (Z > 0) {
+        auto       rc = report_cell();
+        auto const X = _stats.run_index, Y = _stats.phase_index,
+                   Z = _stats.report_index;
+
         rc("{}: {} | {} | {} | {}\n",
            report_prefix(),
-           fmt::format("diff {}.{}.{}", X, Y, Z - 1),
-           "?",
-           "?",
-           "?");
-        if (Z > 1) {
+           fmt::format(fmt::emphasis::underline,
+                       "{} {}.{}.{}",
+                       toupper(_state.load()),
+                       X,
+                       Y,
+                       Z),
+           underline("active"),
+           underline("killed"),
+           underline("defined"));
+        rc("{}: {} | {} | {} | {}\n",
+           report_prefix(),
+           "nodes",
+           group_digits(active),
+           group_digits(killed),
+           group_digits(defined));
+        // TODO could add rows with max. overall/run/phase./min. values,
+        if (Z > 0) {
           rc("{}: {} | {} | {} | {}\n",
              report_prefix(),
-             fmt::format("diff {}.{}.0", X, Y),
+             fmt::format("diff {}.{}.{}", X, Y, Z - 1),
+             active_diff1,
+             killed_diff1,
+             defined_diff1);
+          if (Z > 1) {
+            rc("{}: {} | {} | {} | {}\n",
+               report_prefix(),
+               fmt::format("diff {}.{}.0", X, Y),
+               active_diff2,
+               killed_diff2,
+               defined_diff2);
+          }
+          // TODO add diff from last phase of previous run.
+        }
+        rc("{}: {} | {} | {} | {}\n", report_prefix(), "edges", "?", "?", "?");
+        if (Z > 0) {
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             fmt::format("diff {}.{}.{}", X, Y, Z - 1),
              "?",
              "?",
              "?");
+          if (Z > 1) {
+            rc("{}: {} | {} | {} | {}\n",
+               report_prefix(),
+               fmt::format("diff {}.{}.0", X, Y),
+               "?",
+               "?",
+               "?");
+          }
+          // TODO add diff from last phase of previous run.
         }
-        // TODO add diff from last phase of previous run.
+        add_timing_row(rc);
+        if (_state == state::lookahead && _stats.report_index != 0
+            && lookahead_style() == options::lookahead_style::hlt
+            && this_threads_id() != 0) {
+          // Don't call this in the main thread, because that's where we write
+          // after a lookahead, where this percentage is often wrong and
+          // superfluous.
+
+          // TODO progress report for Felsch lookahead
+
+          // It is difficult to get the exact value of the % complete due to
+          // multi-threading issues, hence we don't try, we just assume that
+          // nodes are uniformly randomly killed, leading to the following
+          // approximate progress . . .
+          auto const p = _word_graph.stats().lookahead_position.load();
+          auto const N = _word_graph.stats().lookahead_nodes_at_start.load();
+          auto const r = _word_graph.stats().lookahead_nodes_killed.load();
+          rc("{}: {} | {} \n",
+             report_prefix(),
+             "lookahead progress",
+             fmt::format("~{:.1f}%",
+                         (p - static_cast<double>(p * r) / N) * 100 / (N - r)));
+          // TODO ETA?
+        }
+
+        // TODO auto complete = 100 *
+        // static_cast<double>(_word_graph.stats().num_active_edges)
+        //                 / (this->number_of_nodes_active() * out_degree());
+        stats_report_stop();
+        // TODO remove next line
+        _word_graph.stats_check_point();
       }
-      add_timing_row(rc);
-      if (_state == state::lookahead && _stats.report_index != 0
-          && lookahead_style() == options::lookahead_style::hlt
-          && this_threads_id() != 0) {
-        // Don't call this in the main thread, because that's where we write
-        // after a lookahead, where this percentage is often wrong and
-        // superfluous.
-
-        // TODO progress report for Felsch lookahead
-
-        // It is difficult to get the exact value of the % complete due to
-        // multi-threading issues, hence we don't try, we just assume that
-        // nodes are uniformly randomly killed, leading to the following
-        // approximate progress . . .
-        auto const p = _word_graph.stats().lookahead_position.load();
-        auto const N = _word_graph.stats().lookahead_nodes_at_start.load();
-        auto const r = _word_graph.stats().lookahead_nodes_killed.load();
-        rc("{}: {} | {} \n",
-           report_prefix(),
-           "lookahead progress",
-           fmt::format("~{:.1f}%",
-                       (p - static_cast<double>(p * r) / N) * 100 / (N - r)));
-        // TODO ETA?
-      }
-
-      // TODO auto complete = 100 *
-      // static_cast<double>(_word_graph.stats().num_active_edges)
-      //                 / (this->number_of_nodes_active() * out_degree());
-      stats_report_stop();
-      // TODO remove next line
-      _word_graph.stats_check_point();
     }
 
     void ToddCoxeterImpl::add_timing_row(ReportCell<5>& rc) const {

@@ -247,13 +247,11 @@ namespace libsemigroups {
       };  // class Definitions
 
       class Graph
-          : public NodeManagedGraph<FelschGraph<uint32_t, Definitions>> {
-        using FelschGraph_      = FelschGraph<uint32_t, Definitions>;
-        using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
+          : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
+        using FelschGraph_
+            = FelschGraph<NodeManagedGraph<node_type>, Definitions>;
 
        public:
-        using node_type = typename NodeManagedGraph_::node_type;
-
         Graph()                        = default;
         Graph(Graph const&)            = default;
         Graph(Graph&&)                 = default;
@@ -261,20 +259,19 @@ namespace libsemigroups {
         Graph& operator=(Graph&&)      = default;
 
         Graph& operator=(WordGraph<node_type> const& wg) {
-          NodeManagedGraph_::operator=(wg);
+          FelschGraph_::operator=(wg);
           return *this;
         }
 
         using FelschGraph_::presentation;
         using FelschGraph_::target_no_checks;
-        using NodeManagedGraph_::NodeManagedGraph;
 
         Graph& init();
         Graph& init(Presentation<word_type>&& p);
 
         Graph& init(Presentation<word_type> const& p,
                     WordGraph<node_type> const&    wg) {
-          NodeManagedGraph_::operator=(wg);
+          FelschGraph_::operator=(wg);
           FelschGraph_::presentation_no_checks(p);
           return *this;
         }
@@ -355,11 +352,11 @@ namespace libsemigroups {
         _stats.report_index     = 0;
 
         _stats.phase_nodes_active_at_start
-            = _word_graph.number_of_nodes_active();
+            = current_word_graph().number_of_nodes_active();
         _stats.phase_nodes_killed_at_start
-            = _word_graph.number_of_nodes_killed();
+            = current_word_graph().number_of_nodes_killed();
         _stats.phase_nodes_defined_at_start
-            = _word_graph.number_of_nodes_defined();
+            = current_word_graph().number_of_nodes_defined();
         // TODO edges
       }
 
@@ -452,17 +449,17 @@ namespace libsemigroups {
 
       auto reporting_number_of_nodes_active() const {
         return Defer(_stats.report_nodes_active_prev,
-                     _word_graph.number_of_nodes_active());
+                     current_word_graph().number_of_nodes_active());
       }
 
       auto reporting_number_of_nodes_defined() const {
         return Defer(_stats.report_nodes_defined_prev,
-                     _word_graph.number_of_nodes_defined());
+                     current_word_graph().number_of_nodes_defined());
       }
 
       auto reporting_number_of_nodes_killed() const {
         return Defer(_stats.report_nodes_killed_prev,
-                     _word_graph.number_of_nodes_killed());
+                     current_word_graph().number_of_nodes_killed());
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -692,7 +689,7 @@ namespace libsemigroups {
       template <typename Time>
       void report_every(Time val) {
         CongruenceCommon::report_every(val);
-        _word_graph.report_every(val);
+        // current_word_graph().report_every(val); TODO handle this
       }
 
       [[nodiscard]] nanoseconds report_every() const noexcept {
@@ -1361,12 +1358,12 @@ namespace libsemigroups {
 #endif
 
       [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
-        return _word_graph.number_of_nodes_active();
+        return current_word_graph().number_of_nodes_active();
       }
 
       // not thread safe, don't call from reporting thread only the main one.
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
-        return _word_graph.number_of_edges_active();
+        return current_word_graph().number_of_edges_active();
       }
 
       // [[nodiscard]] bool empty() const {
@@ -1930,8 +1927,8 @@ namespace libsemigroups {
 
       [[nodiscard]] bool any_change() const {
         // TODO could do more here
-        return _word_graph.stats().prev_active_nodes
-               != _word_graph.number_of_nodes_active();
+        return current_word_graph().stats().prev_active_nodes
+               != current_word_graph().number_of_nodes_active();
       }
 
       ////////////////////////////////////////////////////////////////////////

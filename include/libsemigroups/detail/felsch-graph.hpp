@@ -56,9 +56,6 @@ namespace libsemigroups {
       };
     };
 
-    bool constexpr DoNotRegisterDefs = false;
-    bool constexpr RegisterDefs      = true;
-
     // This class exists so that both FelschGraph and ToddCoxeterImpl can use
     // the same settings/options without code duplication
     template <typename Subclass>
@@ -104,18 +101,17 @@ namespace libsemigroups {
       }
     };
 
-    template <typename Node, typename Definitions>
+    template <typename Graph, typename Definitions>
     class FelschGraph
-        : public WordGraphWithSources<Node>,
-          public FelschGraphSettings<FelschGraph<Node, Definitions>> {
+        : public Graph,
+          public FelschGraphSettings<FelschGraph<Graph, Definitions>> {
      private:
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - aliases - private
       ////////////////////////////////////////////////////////////////////////
 
-      using FelschGraph_          = FelschGraph<Node, Definitions>;
-      using FelschGraphSettings_  = FelschGraphSettings<FelschGraph_>;
-      using WordGraphWithSources_ = WordGraphWithSources<Node>;
+      using FelschGraph_         = FelschGraph<Graph, Definitions>;
+      using FelschGraphSettings_ = FelschGraphSettings<FelschGraph_>;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -124,19 +120,14 @@ namespace libsemigroups {
 
       using options = typename FelschGraphSettings_::options;
 
-      using word_graph_type = FelschGraph_;
-      using node_type       = Node;
-      using word_type       = word_type;
-      using label_type      = typename WordGraphWithSources_::label_type;
-      using size_type       = typename WordGraphWithSources_::size_type;
-      using word_iterator   = typename word_type::const_iterator;
+      using word_graph_type = Graph;
+      using node_type       = typename Graph::node_type;
+      using label_type      = typename Graph::label_type;
+      using size_type       = typename Graph::size_type;
 
       using Definition         = std::pair<node_type, label_type>;
       using NoPreferredDefs    = Noop;
       using StopIfIncompatible = ReturnFalse;
-
-      static constexpr bool RegisterDefs      = true;
-      static constexpr bool DoNotRegisterDefs = false;
 
      private:
       ////////////////////////////////////////////////////////////////////////
@@ -147,7 +138,6 @@ namespace libsemigroups {
 
       Definitions             _definitions;
       Presentation<word_type> _presentation;
-      WordGraph<node_type>*   _word_graph;  // not used
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -171,28 +161,17 @@ namespace libsemigroups {
 
       // This is *not* the same as init(p) since we only replace the
       // presentation but otherwise do not modify the graph, whereas init(p)
-      // returns this to the same state as FelschGraph(p). This is required say
-      // after calling init(WordGraph) so that the presentation is defined.
-      // Seems safer that if these are only used after construction/init from a
-      // word graph that these be one of the parameters of the constructor/init
-      // function so that they are coupled and it's not possible to get into a
-      // bad undefined position.
+      // returns this to the same state as FelschGraph(p).
       FelschGraph& presentation_no_checks(Presentation<word_type> const& p);
 
       ////////////////////////////////////////////////////////////////////////
-      // WordGraph + similar - mem. fns - public
+      // WordGraph - mem. fns - public
       ////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] word_graph_type const& word_graph() const noexcept {
-        return *_word_graph;
-      }
-
-      [[nodiscard]] word_graph_type& word_graph() noexcept {
-        return *_word_graph;
-      }
-
-      using WordGraph<Node>::out_degree;
-      using WordGraph<Node>::number_of_nodes;
+      using Graph::number_of_edges;
+      using Graph::number_of_nodes;
+      using Graph::out_degree;
+      using Graph::target_no_checks;
 
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - settings - public
@@ -232,10 +211,9 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       template <bool RegDefs = true>
-      void target_no_checks(node_type c, label_type x, node_type d) noexcept;
-
-      using WordGraphWithSources_::target;
-      using WordGraphWithSources_::target_no_checks;
+      FelschGraph& target_no_checks(node_type  s,
+                                    label_type a,
+                                    node_type  t) noexcept;
 
       void reduce_number_of_edges_to(size_type n);
 
@@ -257,13 +235,13 @@ namespace libsemigroups {
 
       template <bool RegDefs, typename Incompatible, typename PreferredDefs>
       [[nodiscard]] bool
-      merge_targets_of_paths_if_possible(node_type      u_node,
-                                         word_iterator  u_first,
-                                         word_iterator  u_last,
-                                         node_type      v_node,
-                                         word_iterator  v_first,
-                                         word_iterator  v_last,
-                                         Incompatible&  incompat,
+      merge_targets_of_paths_if_possible(node_type                 u_node,
+                                         word_type::const_iterator u_first,
+                                         word_type::const_iterator u_last,
+                                         node_type                 v_node,
+                                         word_type::const_iterator v_first,
+                                         word_type::const_iterator v_last,
+                                         Incompatible&             incompat,
                                          PreferredDefs& pref_defs) noexcept;
 
       ////////////////////////////////////////////////////////////////////////
@@ -362,6 +340,8 @@ namespace libsemigroups {
     };  // FelschGraph
 
     namespace felsch_graph {
+      constexpr static bool do_not_register_defs = false;
+      constexpr static bool do_register_defs     = true;
 
       // Check that [first_node, last_node) is compatible with [first_rule,
       // last_rule) or if there are edges missing in paths labelled by rules,
@@ -401,6 +381,28 @@ namespace libsemigroups {
             typename FelschGraph<Node, Definitions>::NoPreferredDefs());
       }
 
+      using DoNotRegisterDefs = Noop;
+
+      template <typename Graph, typename Definitions>
+      class DoRegisterDefs {
+        detail::FelschGraph<Graph, Definitions>* _felsch_graph;
+
+       public:
+        using node_type =
+            typename detail::FelschGraph<Graph, Definitions>::node_type;
+        using label_type =
+            typename detail::FelschGraph<Graph, Definitions>::label_type;
+
+        DoRegisterDefs(detail::FelschGraph<Graph, Definitions>& graph)
+            : _felsch_graph(&graph) {}
+
+        DoRegisterDefs(detail::FelschGraph<Graph, Definitions>* graph)
+            : _felsch_graph(graph) {}
+
+        void operator()(node_type s, label_type a) const {
+          _felsch_graph->definitions().emplace_back(s, a);
+        }
+      };
     }  // namespace felsch_graph
   }  // namespace detail
 }  // namespace libsemigroups

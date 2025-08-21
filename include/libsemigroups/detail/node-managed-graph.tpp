@@ -26,8 +26,8 @@ namespace libsemigroups {
     // Nested classes
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename BaseGraph>
-    struct NodeManagedGraph<BaseGraph>::CollectCoincidences {
+    template <typename Node>
+    struct NodeManagedGraph<Node>::CollectCoincidences {
       explicit CollectCoincidences(Coincidences& c) : _coinc(c) {}
 
       bool operator()(node_type x, node_type y) {
@@ -38,13 +38,13 @@ namespace libsemigroups {
       Coincidences& _coinc;
     };
 
-    template <typename BaseGraph>
-    struct NodeManagedGraph<BaseGraph>::Settings {
+    template <typename Node>
+    struct NodeManagedGraph<Node>::Settings {
       uint64_t large_collapse = 100'000;
     };
 
-    template <typename BaseGraph>
-    struct NodeManagedGraph<BaseGraph>::Stats {
+    template <typename Node>
+    struct NodeManagedGraph<Node>::Stats {
       std::atomic_uint64_t lookahead_nodes_at_start;
       std::atomic_uint64_t lookahead_nodes_killed;
       std::atomic_uint64_t lookahead_position;
@@ -91,8 +91,8 @@ namespace libsemigroups {
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>& NodeManagedGraph<BaseGraph>::init() {
+    template <typename Node>
+    NodeManagedGraph<Node>& NodeManagedGraph<Node>::init() {
       // FIXME this doesn't seem like enough is reset
       _coinc    = decltype(_coinc)();
       _settings = Settings();
@@ -100,9 +100,8 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>&
-    NodeManagedGraph<BaseGraph>::reserve(size_t n) {
+    template <typename Node>
+    NodeManagedGraph<Node>& NodeManagedGraph<Node>::reserve(size_t n) {
       size_t m = NodeManager<node_type>::node_capacity();
       if (n > m) {
         m = n - m;
@@ -112,35 +111,35 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>::NodeManagedGraph() = default;
+    template <typename Node>
+    NodeManagedGraph<Node>::NodeManagedGraph() = default;
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>::NodeManagedGraph(NodeManagedGraph const&)
+    template <typename Node>
+    NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph const&) = default;
+
+    template <typename Node>
+    NodeManagedGraph<Node>::NodeManagedGraph(NodeManagedGraph&&) = default;
+
+    template <typename Node>
+    NodeManagedGraph<Node>&
+    NodeManagedGraph<Node>::operator=(NodeManagedGraph const&)
         = default;
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>::NodeManagedGraph(NodeManagedGraph&&) = default;
-
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>&
-    NodeManagedGraph<BaseGraph>::operator=(NodeManagedGraph const&)
+    template <typename Node>
+    NodeManagedGraph<Node>&
+    NodeManagedGraph<Node>::operator=(NodeManagedGraph&&)
         = default;
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>&
-    NodeManagedGraph<BaseGraph>::operator=(NodeManagedGraph&&)
-        = default;
+    template <typename Node>
+    NodeManagedGraph<Node>::~NodeManagedGraph() = default;
 
-    template <typename BaseGraph>
-    NodeManagedGraph<BaseGraph>::~NodeManagedGraph() = default;
-
-    template <typename BaseGraph>
+    template <typename Node>
     template <typename OtherNode>
-    NodeManagedGraph<BaseGraph>&
-    NodeManagedGraph<BaseGraph>::operator=(WordGraph<OtherNode> const& wg) {
+    NodeManagedGraph<Node>&
+    NodeManagedGraph<Node>::operator=(WordGraph<OtherNode> const& wg) {
       init();
-      BaseGraph::operator=(wg);
+      // TODO use operator=
+      BaseGraph::init(wg);
       NodeManager<node_type>::add_active_nodes(
           WordGraph<node_type>::number_of_nodes() - 1);
       // TODO assert that number of nodes in NodeManager and BaseGraph are the
@@ -152,8 +151,8 @@ namespace libsemigroups {
     // Stats
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::stats_check_point() const {
+    template <typename Node>
+    void NodeManagedGraph<Node>::stats_check_point() const {
       _stats.prev_active_nodes
           = NodeManager<node_type>::number_of_nodes_active();
       _stats.prev_nodes_killed
@@ -166,9 +165,8 @@ namespace libsemigroups {
     // Accessors
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename BaseGraph>
-    uint64_t
-    NodeManagedGraph<BaseGraph>::number_of_edges_active() const noexcept {
+    template <typename Node>
+    uint64_t NodeManagedGraph<Node>::number_of_edges_active() const noexcept {
       // TODO replace with _stats.number_of_edges_active, when that works, or
       // maybe not?
       auto     current   = NodeManager<node_type>::initial_node();
@@ -184,9 +182,9 @@ namespace libsemigroups {
     // Modifiers
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename BaseGraph>
-    typename NodeManagedGraph<BaseGraph>::node_type
-    NodeManagedGraph<BaseGraph>::new_node() {
+    template <typename Node>
+    typename NodeManagedGraph<Node>::node_type
+    NodeManagedGraph<Node>::new_node() {
       if (NodeManager<node_type>::has_free_nodes()) {
         node_type const c = NodeManager<node_type>::new_active_node();
         // Clear the new node's row in each table
@@ -198,10 +196,10 @@ namespace libsemigroups {
       }
     }
 
-    template <typename BaseGraph>
+    template <typename Node>
     template <bool RegisterDefs>
-    std::pair<bool, typename NodeManagedGraph<BaseGraph>::node_type>
-    NodeManagedGraph<BaseGraph>::complete_path(
+    std::pair<bool, typename NodeManagedGraph<Node>::node_type>
+    NodeManagedGraph<Node>::complete_path(
         node_type                 c,
         word_type::const_iterator first,
         word_type::const_iterator last) noexcept {
@@ -224,9 +222,9 @@ namespace libsemigroups {
       return std::make_pair(result, c);
     }
 
-    template <typename BaseGraph>
-    template <bool RegisterDefs>
-    void NodeManagedGraph<BaseGraph>::process_coincidences() {
+    template <typename Node>
+    template <typename Functor>
+    void NodeManagedGraph<Node>::process_coincidences(Functor&& new_def) {
       if (_coinc.empty()) {
         return;
       }
@@ -241,19 +239,8 @@ namespace libsemigroups {
         if (min != max) {
           std::tie(min, max) = std::minmax({min, max});
           NodeManager<node_type>::union_nodes(min, max);
-          if constexpr (RegisterDefs) {
-            _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
-                min,
-                max,
-                [this](node_type n, letter_type x) {
-                  this->definitions().emplace_back(n, x);
-                },
-                incompat_func);
-          } else {
-            _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
-
-                min, max, Noop(), incompat_func);
-          }
+          _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
+              min, max, new_def, incompat_func);
         }
       }
 
@@ -303,9 +290,7 @@ namespace libsemigroups {
             _stats.num_active_edges++;
             auto d = NodeManager<node_type>::find_node(cx);
             if (cx != d) {
-              if constexpr (RegisterDefs) {
-                this->definitions().emplace_back(c, x);
-              }
+              new_def(c, x);
               WordGraph<node_type>::target_no_checks(c, x, d);
             }
             // Must re-add the source, even if we don't need to reset
@@ -319,9 +304,9 @@ namespace libsemigroups {
       // fmt::print("Position 2, total coincidences is {}\n", total_coinc);
     }
 
-    template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::swap_nodes_no_checks(node_type c,
-                                                           node_type d) {
+    template <typename Node>
+    void NodeManagedGraph<Node>::swap_nodes_no_checks(node_type c,
+                                                      node_type d) {
       LIBSEMIGROUPS_ASSERT(_coinc.empty());
       LIBSEMIGROUPS_ASSERT(c != NodeManager<node_type>::initial_node());
       LIBSEMIGROUPS_ASSERT(d != NodeManager<node_type>::initial_node());
@@ -345,8 +330,8 @@ namespace libsemigroups {
     // Reporting - public
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename BaseGraph>
-    void NodeManagedGraph<BaseGraph>::report_progress_from_thread() const {
+    template <typename Node>
+    void NodeManagedGraph<Node>::report_progress_from_thread() const {
       auto const active  = NodeManager<node_type>::number_of_nodes_active();
       auto const killed  = NodeManager<node_type>::number_of_nodes_killed();
       auto const defined = NodeManager<node_type>::number_of_nodes_defined();
@@ -408,9 +393,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     namespace node_managed_graph {
-      template <typename BaseGraph>
-      typename BaseGraph::node_type
-      random_active_node(NodeManagedGraph<BaseGraph> const& nmg) {
+      template <typename Node>
+      Node random_active_node(NodeManagedGraph<Node> const& nmg) {
         static std::random_device rd;
         static std::mt19937       g(rd());
 
