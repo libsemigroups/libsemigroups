@@ -88,8 +88,19 @@ namespace libsemigroups {
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
     FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p) {
+#ifdef LIBSEMIGROUPS_DEBUG
+      // TODO(1) better to assert p.bad_alphabet_or_rules()
+      p.throw_if_bad_alphabet_or_rules();
+#endif
+      init();
+
       _presentation = p;
-      return private_init_from_presentation();
+      auto r        = (_presentation.contains_empty_word() ? 0 : 1);
+      auto c        = _presentation.alphabet().size();
+
+      WordGraphWithSources<Node>::init(r, c);
+      _felsch_tree.init(c);
+      return *this;
     }
 
     template <typename Node, typename Definitions>
@@ -289,27 +300,6 @@ namespace libsemigroups {
       StopIfIncompatible incompat;
       NoPreferredDefs    pref_defs;
       return process_definitions(start, incompat, pref_defs);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // FelschGraph - constructors + initializers - private
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::private_init_from_presentation() {
-#ifdef LIBSEMIGROUPS_DEBUG
-      _presentation.throw_if_bad_alphabet_or_rules();
-#endif
-      size_t r = (_presentation.contains_empty_word() ? 0 : 1);
-      size_t c = _presentation.alphabet().size();
-
-      WordGraphWithSources<Node>::init(r, c);
-      FelschGraphSettings_::init();
-      _definitions.clear();
-      _felsch_tree.init(c);
-      _felsch_tree_initted = false;
-      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////

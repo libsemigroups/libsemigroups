@@ -142,8 +142,8 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - data members - private
       ////////////////////////////////////////////////////////////////////////
-      mutable detail::FelschTree _felsch_tree;
-      mutable bool               _felsch_tree_initted;
+      mutable FelschTree _felsch_tree;
+      mutable bool       _felsch_tree_initted;
 
       Definitions             _definitions;
       Presentation<word_type> _presentation;
@@ -214,7 +214,7 @@ namespace libsemigroups {
       [[nodiscard]] Presentation<word_type>& presentation() noexcept;
       Presentation<word_type> const&         presentation() const noexcept;
 
-      [[nodiscard]] detail::FelschTree const& felsch_tree() const {
+      [[nodiscard]] FelschTree const& felsch_tree() const {
         init_felsch_tree();
         return _felsch_tree;
       }
@@ -294,19 +294,13 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // FelschGraph - constructors + initializers - private
-      ////////////////////////////////////////////////////////////////////////
-
-      FelschGraph& private_init_from_presentation();
-
-      ////////////////////////////////////////////////////////////////////////
       // FelschGraph - accessors - private
       ////////////////////////////////////////////////////////////////////////
 
       void init_felsch_tree() const;
 
       // Non-const version for private use only
-      [[nodiscard]] detail::FelschTree& felsch_tree() {
+      [[nodiscard]] FelschTree& felsch_tree() {
         init_felsch_tree();
         return _felsch_tree;
       }
