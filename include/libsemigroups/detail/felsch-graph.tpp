@@ -78,21 +78,19 @@ namespace libsemigroups {
       return *this;
     }
 
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>::FelschGraph(
-        Presentation<word_type> const& p)
-        : FelschGraph() {
-      init(p);
-    }
+    // template <typename Node, typename Definitions>
+    // FelschGraph<Node, Definitions>::FelschGraph(
+    //     Presentation<word_type> const& p)
+    //     : FelschGraph() {
+    //   init(p);
+    // }
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
     FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p) {
       init();
-
-      auto r = (p.contains_empty_word() ? 0 : 1);
-      auto c = p.alphabet().size();
-      WordGraphWithSources<Node>::init(r, c);
+      WordGraphWithSources<Node>::init(p.contains_empty_word() ? 0 : 1,
+                                       p.alphabet().size());
 
       presentation_no_checks(p);
       return *this;

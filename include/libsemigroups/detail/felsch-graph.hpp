@@ -147,7 +147,7 @@ namespace libsemigroups {
 
       Definitions             _definitions;
       Presentation<word_type> _presentation;
-      WordGraph<node_type>*   _word_graph;
+      WordGraph<node_type>*   _word_graph;  // not used
 
      public:
       ////////////////////////////////////////////////////////////////////////
