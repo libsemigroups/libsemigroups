@@ -64,9 +64,7 @@ namespace libsemigroups {
     FelschGraph<Node, Definitions>::FelschGraph(
         Presentation<word_type> const& p)
         : FelschGraph() {
-      if (&_presentation != &p) {
-        _presentation = p;
-      }
+      _presentation = p;
       private_init_from_presentation();
     }
 
@@ -79,6 +77,10 @@ namespace libsemigroups {
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::~FelschGraph() = default;
+
+    ////////////////////////////////////////////////////////////////////////
+    // FelschGraph - setters - public
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&

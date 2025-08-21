@@ -163,7 +163,7 @@ namespace libsemigroups {
       FelschGraph& operator=(FelschGraph&&);
 
       FelschGraph& operator=(WordGraph<node_type> const& wg) {
-        // TODO use operator=
+        // TODO use operator= in the next line
         WordGraphWithSources<Node>::init(wg);
         return private_init_from_word_graph();
       }
