@@ -62,6 +62,23 @@ namespace libsemigroups {
         = default;
 
     template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::operator=(WordGraph<node_type> const& wg) {
+      init();
+      // TODO use operator= in the next line
+      WordGraphWithSources<Node>::init(wg);
+
+      for (auto s : WordGraph<Node>::nodes()) {
+        for (auto a : WordGraph<Node>::labels()) {
+          if (WordGraph<Node>::target_no_checks(s, a) != UNDEFINED) {
+            _definitions.emplace_back(s, a);
+          }
+        }
+      }
+      return *this;
+    }
+
+    template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::FelschGraph(
         Presentation<word_type> const& p)
         : FelschGraph() {
@@ -292,27 +309,6 @@ namespace libsemigroups {
       _definitions.clear();
       _felsch_tree.init(c);
       _felsch_tree_initted = false;
-      return *this;
-    }
-
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::private_init_from_word_graph() {
-      // Don't call init because we don't want to re-init WordGraphWithSources
-      FelschGraphSettings_::init();
-      _definitions.clear();
-      _felsch_tree.init(0);
-      _felsch_tree_initted = false;
-      _presentation.init();  // TODO should we set the alphabet of the
-                             // presentation?
-
-      for (auto n : WordGraph<Node>::nodes()) {
-        for (auto e : WordGraph<Node>::labels()) {
-          if (WordGraph<Node>::target_no_checks(n, e) != UNDEFINED) {
-            _definitions.emplace_back(n, e);
-          }
-        }
-      }
       return *this;
     }
 

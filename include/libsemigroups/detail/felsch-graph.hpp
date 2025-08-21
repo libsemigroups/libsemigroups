@@ -162,11 +162,7 @@ namespace libsemigroups {
       FelschGraph& operator=(FelschGraph const&);
       FelschGraph& operator=(FelschGraph&&);
 
-      FelschGraph& operator=(WordGraph<node_type> const& wg) {
-        // TODO use operator= in the next line
-        WordGraphWithSources<Node>::init(wg);
-        return private_init_from_word_graph();
-      }
+      FelschGraph& operator=(WordGraph<node_type> const& wg);
 
       explicit FelschGraph(Presentation<word_type> const& p);
       FelschGraph& init(Presentation<word_type> const& p);
@@ -302,7 +298,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       FelschGraph& private_init_from_presentation();
-      FelschGraph& private_init_from_word_graph();
 
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - accessors - private
