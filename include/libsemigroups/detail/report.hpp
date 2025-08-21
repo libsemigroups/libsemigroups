@@ -254,9 +254,9 @@ namespace libsemigroups {
   };
 
   namespace detail {
-    static inline void report_divider() {
-      report_no_prefix("{:+<32}\n", "");
-    }
+    // static inline void report_divider(size_t width = 32, char symbol = '+') {
+    //   report_no_prefix("{:{}<{}}\n", "", width, symbol);
+    // }
   }  // namespace detail
 }  // namespace libsemigroups
 

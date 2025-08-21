@@ -374,7 +374,7 @@ namespace libsemigroups {
       if (reporting_enabled()) {
         auto gd       = group_digits;
         auto interval = string_time(tc->lookahead_stop_early_interval());
-        report_divider();
+        report_no_prefix(report_divider());
         report_default("ToddCoxeter: too few nodes killed in last {} = "
                        "{}, stopping lookahead early!\n",
                        italic("i"),
@@ -463,6 +463,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl& ToddCoxeterImpl::init() {
       CongruenceCommon::init();
+      report_divider(fmt::format("{:+<32}\n", ""));
       report_prefix("ToddCoxeter");
       _finished = false;
       _forest.init();
@@ -529,6 +530,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind           knd,
                                            Presentation<word_type>&& p) {
+      // TODO reset stats!
       p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p);
       init();
@@ -567,6 +569,7 @@ namespace libsemigroups {
 
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind        knd,
                                            ToddCoxeterImpl const& tc) {
+      // TODO reset stats!
       if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
         LIBSEMIGROUPS_EXCEPTION(
             "incompatible types of congruence, found ({} / {}) but only "
@@ -853,7 +856,7 @@ namespace libsemigroups {
       time_point start_time;
       if (reporting_enabled()) {
         start_time = std::chrono::high_resolution_clock::now();
-        report_divider();
+        report_no_prefix(report_divider());
         report_default(
             "ToddCoxeter: {} standardizing the word graph, this might "
             "take a few moments!\n",
@@ -1173,7 +1176,7 @@ namespace libsemigroups {
 
     void ToddCoxeterImpl::report_after_phase(std::string_view what) const {
       if (reporting_enabled()) {
-        report_divider();
+        report_no_prefix(report_divider());
         // TODO remove the "what" argument and just use the _state instead
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
@@ -1292,7 +1295,7 @@ namespace libsemigroups {
           keys.insert(oln_key);
         }
 
-        report_divider();
+        report_no_prefix(report_divider());
         report_default("ToddCoxeter: {}\n",
                        fmt::format(phase_color,
                                    "LOOKAHEAD {}.{} STOP",
@@ -1326,7 +1329,7 @@ namespace libsemigroups {
           report_progress_from_thread();
         }
 
-        report_divider();
+        report_no_prefix(report_divider());
         report_default("{}: {} ({})\n",
                        report_prefix(),
                        fmt::format(run_color, "RUN {} STOP", _stats.run_index),
@@ -1384,6 +1387,7 @@ namespace libsemigroups {
            fmt::format("{} ({})",
                        string_time(_stats.run_felsch_phases_time),
                        percent_run_time_felsch));
+        // TODO improve this it's a bit confusing as is
 
         if (_stats.run_index != 0) {
           auto total_lookahead = _stats.all_lookahead_phases_time
@@ -1416,7 +1420,7 @@ namespace libsemigroups {
     void ToddCoxeterImpl::report_before_phase(std::string_view what,
                                               std::string_view info) const {
       if (reporting_enabled()) {
-        report_divider();
+        report_no_prefix(report_divider());
         report_default("ToddCoxeter: {}{}\n",
                        fmt::format(phase_color,
                                    "{} {}.{} START",
@@ -1507,7 +1511,7 @@ namespace libsemigroups {
           = signed_group_digits(defined - _stats.phase_nodes_defined_at_start);
 
       if (divider) {
-        report_divider();
+        report_no_prefix(report_divider());
       }
       auto       rc = report_cell();
       auto const X = _stats.run_index, Y = _stats.phase_index,
@@ -1570,10 +1574,11 @@ namespace libsemigroups {
       if (_state == state::lookahead && _stats.report_index != 0
           && lookahead_style() == options::lookahead_style::hlt
           && this_threads_id() != 0) {
-        // TODO progress report for Felsch lookahead
         // Don't call this in the main thread, because that's where we write
         // after a lookahead, where this percentage is often wrong and
         // superfluous.
+
+        // TODO progress report for Felsch lookahead
 
         // It is difficult to get the exact value of the % complete due to
         // multi-threading issues, hence we don't try, we just assume that

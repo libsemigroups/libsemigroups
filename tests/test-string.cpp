@@ -101,7 +101,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("string",
-                          "003",
+                          "004",
                           "detail::visible_length",
                           "[quick][string]") {
     REQUIRE(detail::visible_length(
