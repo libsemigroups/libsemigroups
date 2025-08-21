@@ -259,7 +259,6 @@ namespace libsemigroups {
         Graph(Graph&&)                 = default;
         Graph& operator=(Graph const&) = default;
         Graph& operator=(Graph&&)      = default;
-        // TODO(1) init()
 
         Graph& operator=(WordGraph<node_type> const& wg) {
           NodeManagedGraph_::operator=(wg);
@@ -271,9 +270,14 @@ namespace libsemigroups {
         using NodeManagedGraph_::NodeManagedGraph;
 
         Graph& init();
-        // TODO(1) corresponding constructors
-        // Graph& init(Presentation<word_type> const& p);
         Graph& init(Presentation<word_type>&& p);
+
+        Graph& init(Presentation<word_type> const& p,
+                    WordGraph<node_type> const&    wg) {
+          NodeManagedGraph_::operator=(wg);
+          FelschGraph_::presentation(p);
+          return *this;
+        }
 
         Graph& presentation_no_checks(Presentation<word_type> const& p);
 

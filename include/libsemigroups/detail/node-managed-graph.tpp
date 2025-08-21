@@ -143,6 +143,8 @@ namespace libsemigroups {
       BaseGraph::init(wg);
       NodeManager<node_type>::add_active_nodes(
           WordGraph<node_type>::number_of_nodes() - 1);
+      // TODO assert that number of nodes in NodeManager and BaseGraph are the
+      // same
       return *this;
     }
 
@@ -418,5 +420,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
