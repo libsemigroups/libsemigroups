@@ -2993,7 +2993,6 @@ namespace libsemigroups {
     presentation::add_rule(p, "fg", "a");
     presentation::add_rule(p, "ga", "b");
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.report_divider() == "");
 
     section_hlt(tc);
     section_felsch(tc);

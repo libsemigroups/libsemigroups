@@ -80,30 +80,28 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Definitions>
-    template <typename M>
-    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<M> const& ad)
+    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<Node> const& wg)
         : FelschGraph() {
-      init(ad);
+      init(wg);
     }
 
     template <typename Node, typename Definitions>
-    template <typename M>
     FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::init(WordGraph<M> const& ad) {
-      WordGraphWithSources<M>::init(ad);
+    FelschGraph<Node, Definitions>::init(WordGraph<Node> const& wg) {
+      WordGraphWithSources<Node>::init(wg);
       return private_init_from_word_graph();
     }
 
     template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<Node>&& ad)
+    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<Node>&& wg)
         : FelschGraph() {
-      init(std::move(ad));
+      init(std::move(wg));
     }
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::init(WordGraph<Node>&& ad) {
-      WordGraphWithSources<Node>::init(std::move(ad));
+    FelschGraph<Node, Definitions>::init(WordGraph<Node>&& wg) {
+      WordGraphWithSources<Node>::init(std::move(wg));
       return private_init_from_word_graph();
     }
 
