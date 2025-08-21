@@ -162,19 +162,8 @@ namespace libsemigroups {
       FelschGraph& operator=(FelschGraph const&);
       FelschGraph& operator=(FelschGraph&&);
 
-      FelschGraph(Presentation<word_type> const& p, WordGraph<Node> const&);
-      FelschGraph& init(Presentation<word_type> const& p,
-                        WordGraph<Node> const&);
-
-      FelschGraph(Presentation<word_type>&& p, WordGraph<Node>&&);
-      FelschGraph& init(Presentation<word_type>&& p, WordGraph<Node>&&);
-
       explicit FelschGraph(Presentation<word_type> const& p);
-
       FelschGraph& init(Presentation<word_type>&& p);
-
-      // TODO make into a version of operator=?
-      // Keep
       FelschGraph& init(WordGraph<Node> const& wg);
 
       ~FelschGraph();
