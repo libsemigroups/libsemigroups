@@ -62,8 +62,8 @@ namespace libsemigroups {
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::init(Presentation<word_type>&& p) {
-      _presentation = std::move(p);
+    FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p) {
+      _presentation = p;
       return private_init_from_presentation();
     }
 
@@ -77,7 +77,6 @@ namespace libsemigroups {
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::~FelschGraph() = default;
 
-    // TODO(2) this should be removed
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
     FelschGraph<Node, Definitions>::presentation(
@@ -86,21 +85,6 @@ namespace libsemigroups {
       size_t c      = _presentation.alphabet().size();
       if (c > out_degree()) {
         // Not sure this is required
-        WordGraph<Node>::add_to_out_degree(c - out_degree());
-      }
-      _felsch_tree.init(c);
-      _felsch_tree_initted = false;
-      return *this;
-    }
-
-    // TODO this should be removed
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::presentation(Presentation<word_type>&& p) {
-      // TODO avoid code dupl in constructors and init
-      _presentation = std::move(p);
-      size_t c      = _presentation.alphabet().size();
-      if (c > out_degree()) {
         WordGraph<Node>::add_to_out_degree(c - out_degree());
       }
       _felsch_tree.init(c);

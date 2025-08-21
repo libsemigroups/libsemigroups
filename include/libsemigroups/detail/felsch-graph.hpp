@@ -163,7 +163,10 @@ namespace libsemigroups {
       FelschGraph& operator=(FelschGraph&&);
 
       explicit FelschGraph(Presentation<word_type> const& p);
-      FelschGraph& init(Presentation<word_type>&& p);
+
+      FelschGraph& init(Presentation<word_type> const& p);
+
+      // TODO turn into operator=
       FelschGraph& init(WordGraph<Node> const& wg);
 
       ~FelschGraph();
@@ -176,9 +179,7 @@ namespace libsemigroups {
       // word graph that these be one of the parameters of the constructor/init
       // function so that they are coupled and it's not possible to get into a
       // bad undefined position.
-      // TODO remove and replace with an init(Presentation, WordGraph)
       FelschGraph& presentation(Presentation<word_type> const& p);
-      FelschGraph& presentation(Presentation<word_type>&& p);
 
       ////////////////////////////////////////////////////////////////////////
       // WordGraph + similar - mem. fns - public
