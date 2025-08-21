@@ -223,16 +223,16 @@ namespace libsemigroups {
       return *this;
     }
 
-    ToddCoxeterImpl::Graph&
-    ToddCoxeterImpl::Graph::init(Presentation<word_type> const& p) {
-      NodeManager<node_type>::clear();
-      FelschGraph_::init(p);
-      // TODO(1) shouldn't add nodes here because then there'll be more than
-      // there should be (i.e. NodeManager and FelschGraph_ will have
-      // different numbers of nodes
-      FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
-      return *this;
-    }
+    // ToddCoxeterImpl::Graph&
+    // ToddCoxeterImpl::Graph::init(Presentation<word_type> const& p) {
+    //   NodeManager<node_type>::clear();
+    //   FelschGraph_::init(p);
+    //   // TODO(1) shouldn't add nodes here because then there'll be more than
+    //   // there should be (i.e. NodeManager and FelschGraph_ will have
+    //   // different numbers of nodes
+    //   FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
+    //   return *this;
+    // }
 
     ToddCoxeterImpl::Graph&
     ToddCoxeterImpl::Graph::init(Presentation<word_type>&& p) {

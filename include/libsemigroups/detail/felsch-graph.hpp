@@ -131,15 +131,9 @@ namespace libsemigroups {
       using size_type       = typename WordGraphWithSources_::size_type;
       using word_iterator   = typename word_type::const_iterator;
 
-      using NoPreferredDefs = Noop;
-      using Definition      = std::pair<node_type, label_type>;
-
-      struct StopIfIncompatible {
-        template <typename... Args>
-        [[nodiscard]] constexpr bool operator()(Args...) const noexcept {
-          return false;
-        }
-      };
+      using Definition         = std::pair<node_type, label_type>;
+      using NoPreferredDefs    = Noop;
+      using StopIfIncompatible = ReturnFalse;
 
       static constexpr bool RegisterDefs      = true;
       static constexpr bool DoNotRegisterDefs = false;
@@ -168,31 +162,20 @@ namespace libsemigroups {
       FelschGraph& operator=(FelschGraph const&);
       FelschGraph& operator=(FelschGraph&&);
 
-      // TODO impl and remove all the constructors below
-      // FelschGraph(Presentation<word_type> const& p, WordGraph<Node> const&);
+      FelschGraph(Presentation<word_type> const& p, WordGraph<Node> const&);
+      FelschGraph& init(Presentation<word_type> const& p,
+                        WordGraph<Node> const&);
 
-      // FelschGraph& init(Presentation<word_type> const& p,
-      //                   WordGraph<Node> const&);
+      FelschGraph(Presentation<word_type>&& p, WordGraph<Node>&&);
+      FelschGraph& init(Presentation<word_type>&& p, WordGraph<Node>&&);
 
       explicit FelschGraph(Presentation<word_type> const& p);
-      FelschGraph& init(Presentation<word_type> const& p);
 
-      explicit FelschGraph(Presentation<word_type>&& p);
       FelschGraph& init(Presentation<word_type>&& p);
 
-      // TODO remove and replace with an init(Presentation, WordGraph)
-      explicit FelschGraph(WordGraph<Node> const& wg);
-
-      // TODO remove and replace with an init(Presentation, WordGraph)
+      // TODO make into a version of operator=?
+      // Keep
       FelschGraph& init(WordGraph<Node> const& wg);
-
-      // No point in having a general rvalue ref version since we can't actually
-      // use a word graph containing another type of node to initialise this.
-      // TODO remove and replace with an init(Presentation, WordGraph)
-      explicit FelschGraph(WordGraph<Node>&& wg);
-
-      // TODO remove and replace with an init(Presentation, WordGraph)
-      FelschGraph& init(WordGraph<Node>&& wg);
 
       ~FelschGraph();
 

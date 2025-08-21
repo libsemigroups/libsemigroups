@@ -52,24 +52,44 @@ namespace libsemigroups {
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>::FelschGraph(
-        Presentation<word_type> const& p)
+        Presentation<word_type> const& p,
+        WordGraph<Node> const&         wg)
         : FelschGraph() {
-      init(p);
+      init(p, wg);
     }
 
     template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p) {
+    FelschGraph<Node, Definitions>::init(Presentation<word_type> const& p,
+                                         WordGraph<Node> const&         wg) {
       if (&_presentation != &p) {
         _presentation = p;
       }
-      return private_init_from_presentation();
+      WordGraphWithSources<Node>::init(wg);
+      private_init_from_presentation();
+      return private_init_from_word_graph();
     }
 
     template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>::FelschGraph(Presentation<word_type>&& p)
+    FelschGraph<Node, Definitions>&
+    FelschGraph<Node, Definitions>::init(Presentation<word_type>&& p,
+                                         WordGraph<Node>&&         wg) {
+      if (&_presentation != &p) {
+        _presentation = std::move(p);
+      }
+      WordGraphWithSources<Node>::init(std::move(wg));
+      private_init_from_presentation();
+      return private_init_from_word_graph();
+    }
+
+    template <typename Node, typename Definitions>
+    FelschGraph<Node, Definitions>::FelschGraph(
+        Presentation<word_type> const& p)
         : FelschGraph() {
-      init(std::move(p));
+      if (&_presentation != &p) {
+        _presentation = p;
+      }
+      private_init_from_presentation();
     }
 
     template <typename Node, typename Definitions>
@@ -80,28 +100,9 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<Node> const& wg)
-        : FelschGraph() {
-      init(wg);
-    }
-
-    template <typename Node, typename Definitions>
     FelschGraph<Node, Definitions>&
     FelschGraph<Node, Definitions>::init(WordGraph<Node> const& wg) {
       WordGraphWithSources<Node>::init(wg);
-      return private_init_from_word_graph();
-    }
-
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>::FelschGraph(WordGraph<Node>&& wg)
-        : FelschGraph() {
-      init(std::move(wg));
-    }
-
-    template <typename Node, typename Definitions>
-    FelschGraph<Node, Definitions>&
-    FelschGraph<Node, Definitions>::init(WordGraph<Node>&& wg) {
-      WordGraphWithSources<Node>::init(std::move(wg));
       return private_init_from_word_graph();
     }
 

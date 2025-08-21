@@ -272,7 +272,7 @@ namespace libsemigroups {
 
         Graph& init();
         // TODO(1) corresponding constructors
-        Graph& init(Presentation<word_type> const& p);
+        // Graph& init(Presentation<word_type> const& p);
         Graph& init(Presentation<word_type>&& p);
 
         Graph& presentation_no_checks(Presentation<word_type> const& p);
