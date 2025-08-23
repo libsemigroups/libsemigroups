@@ -67,6 +67,7 @@ namespace libsemigroups {
 
   using literals::operator""_w;
   using detail::StaticVector1;
+  using std::string_literals::operator""s;
 
   struct LibsemigroupsException;  // forward decl
 
@@ -3307,6 +3308,43 @@ namespace libsemigroups {
     REQUIRE(presentation::to_report_string(p)
             == "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], "
                "∑(|u| + |v|) = 0\n");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "082",
+                          "throw_if_bad_inverses 2 args",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "adc"s),
+                          "invalid letter 'd', valid letters are \"abc\"");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::throw_if_bad_inverses(p, "bca"s),
+        "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "aac"s),
+                          "invalid inverses, the letter 'a' is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ac"s),
+                          "invalid number of inverses, expected 3 but found 2");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "083",
+                          "throw_if_bad_inverses 3 args",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ab"s));
+    REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ba"s));
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "bc"s, "ac"s),
+                          "invalid letter 'a', valid letters are \"bc\"");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "aa"s, "bb"s),
+                          "invalid alphabet \"aa\", duplicate letter 'a'!");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bb"s),
+                          "invalid inverses, the letter 'b' is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bac"s),
+                          "invalid number of inverses, expected 2 but found 3");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "abc"s, "ba"s),
+                          "invalid number of inverses, expected 3 but found 2");
   }
 
 }  // namespace libsemigroups

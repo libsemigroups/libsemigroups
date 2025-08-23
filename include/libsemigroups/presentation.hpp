@@ -785,30 +785,60 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief throw_if_bad_alphabet_or_rules if \p vals act as semigroup
-    //! inverses in \p p.
+    //! \brief Throws an exception if \p vals do not define valid inverses.
     //!
-    //! Check if the values in \p vals act as semigroup inverses for the letters
-    //! of the alphabet of \p p. Specifically, it checks that the \f$i\f$th
-    //! value in \p vals acts as an inverse for the \f$i\f$th value in
+    //! This function checks if the values in \p inverses are valid semigroup
+    //! inverses for `p.alphabet()`. Specifically, it checks that the \f$i\f$th
+    //! value in \p inverses is an inverse for the \f$i\f$th value in
     //! `p.alphabet()`.
     //!
     //! Let \f$x_i\f$ be the \f$i\f$th letter in `p.alphabet()`, and
-    //! suppose that \f$x_i=v_j\f$ is in the \f$j\f$th position of \p vals. This
-    //! function checks that \f$v_i = x_j\f$, and therefore that
-    //! \f$(x_i^{-1})^{-1} = x\f$.
+    //! let \f$y_i\f$ be the \f$i\f$th letter in \p inverses. Then this function
+    //! checks that:
+    //! * `p.alphabet()` and \p inverses contain the same letters;
+    //! * \p inverses are duplicate-free;
+    //! * if \f$x_i = y_j\f$, then \f$x_j = y_i\f$ and therefore that
+    //! \f$(x_i^{-1})^{-1} = x_i\f$.
     //!
-    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the arguments \p letters and \p inverses.
     //! \param p the presentation.
-    //! \param vals the values to check if the act as inverses.
+    //! \param inverses the proposed inverses for \p letters.
     //!
-    //! \throws Libsemigroups_Exception if any of the following apply:
-    //! * the length of \p vals is not the same as the length of `p.alphabet()`
-    //! * `p.throw_if_letter_not_in_alphabet(vals)` throws
-    //! * \p vals contains duplicate letters
-    //! * the values in \p vals do not serve as semigroup inverses.
-    template <typename Word>
-    void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals);
+    //! \throws Libsemigroups_Exception if any of the conditions listed above
+    //! do not hold.
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               inverses);
+
+    //! \brief Throws an exception if the argument \p inverses does not define
+    //! valid inverses for \p letters.
+    //!
+    //! This function checks if the values in \p inverses are valid semigroup
+    //! inverses for \p letters. Specifically, it
+    //! checks that the \f$i\f$th value in \p inverses is an inverse for the
+    //! \f$i\f$th value in `letters`.
+    //!
+    //! Let \f$x_i\f$ be the \f$i\f$th letter in \p letters, and
+    //! let \f$y_i\f$ be the \f$i\f$th letter in \p inverses. Then this function
+    //! checks that:
+    //! * \p letters and \p inverses contain the same letters;
+    //! * \p letters and \p inverses are duplicate-free;
+    //! * if \f$x_i = y_j\f$, then \f$x_j = y_i\f$ and therefore that
+    //! \f$(x_i^{-1})^{-1} = x_i\f$.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the arguments \p letters and \p inverses.
+    //! \param p the presentation.
+    //! \param letters the letters in the alphabet.
+    //! \param inverses the proposed inverses for \p letters.
+    //!
+    //! \throws Libsemigroups_Exception if any of the conditions listed above
+    //! do not hold.
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               letters,
+                               Word2 const&               inverses);
 
     //! \brief Return a representation of a presentation to appear in the
     //! reporting output.
