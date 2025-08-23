@@ -471,88 +471,7 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    void check_balance() {
-      Presentation<W> p;
-      p.contains_empty_word(true);
-      presentation::add_rule_no_checks(p, {1, 1, 1, 1, 1, 1, 1, 1}, {});
-      REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1, 1, 1, 1, 1}, {}}));
-      presentation::balance_no_checks(p, {1}, {1});
-      REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1}, {1, 1, 1, 1}}));
-
-      presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1, 1, 1, 1, 1});
-      presentation::balance_no_checks(p, {1}, {1});
-      REQUIRE(p.rules
-              == std::vector<W>(
-                  {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1}}));
-
-      presentation::add_rule_no_checks(p, {1, 1}, {});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1},
-                                 {}}));
-      presentation::balance_no_checks(p, {1}, {1});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1},
-                                 {}}));
-
-      presentation::add_rule_no_checks(
-          p, {1, 2, 2, 1}, {2, 1, 1, 1, 1, 1, 1, 1, 1, 2});
-      presentation::balance_no_checks(p, {2}, {1});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1},
-                                 {},
-                                 {1, 1, 1, 1, 1, 1, 1, 1},
-                                 {1, 1, 2, 2, 1, 1}}));
-      presentation::balance_no_checks(p, {1}, {3});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1},
-                                 {3},
-                                 {1, 1, 1, 1, 1, 1, 1},
-                                 {1, 1, 2, 2, 1, 1, 3}}));
-      presentation::add_rule_no_checks(p, {2, 1, 1, 1, 1, 1, 1, 2, 2, 2}, {});
-      presentation::balance_no_checks(p, {1, 2}, {3, 4});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {3},
-                                 {1},
-                                 {1, 1, 2, 2, 1, 1, 3},
-                                 {1, 1, 1, 1, 1, 1, 1},
-                                 {2, 1, 1, 1, 1},
-                                 {4, 4, 4, 3, 3}}));
-      presentation::add_rule_no_checks(p, {1, 2, 3, 1, 2, 4}, {});
-      presentation::balance_no_checks(p, {1, 2, 3}, {5, 6, 7});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {3},
-                                 {1},
-                                 {1, 1, 2, 2, 1, 1, 3},
-                                 {1, 1, 1, 1, 1, 1, 1},
-                                 {4, 4, 4, 3, 3},
-                                 {2, 1, 1, 1, 1},
-                                 {1, 2, 4},
-                                 {7, 6, 5}}));
-    }
+    void check_balance() {}
 
     template <typename W>
     void check_sort_each_rule() {
@@ -1514,15 +1433,97 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "023",
-                          "helpers balance_no_checks (all)",
-                          "[quick][presentation]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "023",
+                                   "helpers balance_no_checks (all)",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type) {
+    // TODO(1) Add StaticVector1<uint16_t, 10>. Can't do this until
+    // StaticVector1 has .front or . end
     auto rg = ReportGuard(false);
-    check_balance<word_type>();
-    // TODO(1) Can't do this until StaticVector1 has .front or . end
-    // check_balance<StaticVector1<uint16_t, 10>>();
-    check_balance<std::string>();
+    using W = TestType;
+
+    Presentation<W> p;
+    p.contains_empty_word(true);
+    presentation::add_rule_no_checks(p, {1, 1, 1, 1, 1, 1, 1, 1}, {});
+    REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1, 1, 1, 1, 1}, {}}));
+    presentation::balance_no_checks(p, {1}, {1});
+    REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1}, {1, 1, 1, 1}}));
+
+    presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1, 1, 1, 1, 1});
+    presentation::balance_no_checks(p, {1}, {1});
+    REQUIRE(p.rules
+            == std::vector<W>(
+                {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1}}));
+
+    presentation::add_rule_no_checks(p, {1, 1}, {});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1},
+                               {}}));
+    presentation::balance_no_checks(p, {1}, {1});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1},
+                               {}}));
+
+    presentation::add_rule_no_checks(
+        p, {1, 2, 2, 1}, {2, 1, 1, 1, 1, 1, 1, 1, 1, 2});
+    presentation::balance_no_checks(p, {2}, {1});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1},
+                               {},
+                               {1, 1, 1, 1, 1, 1, 1, 1},
+                               {1, 1, 2, 2, 1, 1}}));
+    presentation::balance_no_checks(p, {1}, {3});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1},
+                               {3},
+                               {1, 1, 1, 1, 1, 1, 1},
+                               {1, 1, 2, 2, 1, 1, 3}}));
+    presentation::add_rule_no_checks(p, {2, 1, 1, 1, 1, 1, 1, 2, 2, 2}, {});
+    presentation::balance_no_checks(p, {1, 2}, {3, 4});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {3},
+                               {1},
+                               {1, 1, 2, 2, 1, 1, 3},
+                               {1, 1, 1, 1, 1, 1, 1},
+                               {2, 1, 1, 1, 1},
+                               {4, 4, 4, 3, 3}}));
+    presentation::add_rule_no_checks(p, {1, 2, 3, 1, 2, 4}, {});
+    presentation::balance_no_checks(p, {1, 2, 3}, {5, 6, 7});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {3},
+                               {1},
+                               {1, 1, 2, 2, 1, 1, 3},
+                               {1, 1, 1, 1, 1, 1, 1},
+                               {4, 4, 4, 3, 3},
+                               {2, 1, 1, 1, 1},
+                               {1, 2, 4},
+                               {7, 6, 5}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
