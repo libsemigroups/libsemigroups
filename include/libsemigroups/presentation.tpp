@@ -310,8 +310,9 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word>
-    void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals) {
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               vals) {
       if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid number of inverses, expected {} but found {}",
@@ -322,7 +323,7 @@ namespace libsemigroups {
       // get a more meaningful exception message
       p.throw_if_letter_not_in_alphabet(vals.begin(), vals.end());
 
-      Word cpy = vals;
+      Word1 cpy = vals;
       std::sort(cpy.begin(), cpy.end());
       for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
         if (*it == *(it + 1)) {
@@ -347,6 +348,19 @@ namespace libsemigroups {
             break;
           }
         }
+      }
+    }
+
+    template <typename Word>
+    void throw_if_bad_inverses(Presentation<Word> const& p,
+                               Word const&               letters,
+                               Word const&               inverses) {
+      if (letters == p.alphabet()) {
+        throw_if_bad_inverses(p, inverses);
+      } else {
+        Presentation<Word> q;
+        q.alphabet(letters);
+        throw_if_bad_inverses(q, inverses);
       }
     }
 
