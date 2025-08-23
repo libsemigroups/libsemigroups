@@ -250,6 +250,41 @@ namespace libsemigroups {
     //! * \ref throw_if_bad_alphabet_or_rules
     Presentation& alphabet(word_type&& lphbt);
 
+    //! \brief Set the alphabet from string_view.
+    //!
+    //! This is an overload for \ref alphabet(word_type&&) to allow
+    //! std::string_view to be used for the parameter \p lphbt.
+    //!
+    //! \warning This function is only enabled if \ref word_type is std::string.
+    template <typename Return = Presentation&>
+    auto alphabet(std::string_view lphbt)
+        -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return&> {
+      return alphabet(std::string(lphbt));
+    }
+
+    //! \brief Set the alphabet from string literal.
+    //!
+    //! This is an overload for \ref alphabet(word_type&&) to allow
+    //! string literals to be used for the parameter \p lphbt.
+    //!
+    //! \warning This function is only enabled if \ref word_type is std::string.
+    template <typename Return = Presentation&>
+    auto alphabet(char const* lphbt)
+        -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return> {
+      return alphabet(std::string(lphbt));
+    }
+
+    //! \brief Set the alphabet from std::initializer_list.
+    //!
+    //! This is an overload for \ref alphabet(word_type&&) to allow
+    //! std::initializer_list to be used for the parameter \p lphbt.
+    // There's some weirdness with {0} being interpreted as a string_view, which
+    // means that the next overload is required
+    Presentation& alphabet(
+        std::initializer_list<typename word_type::value_type> const& lphbt) {
+      return alphabet(word_type(lphbt));
+    }
+
     //! \brief Set the alphabet to be the letters in the rules.
     //!
     //! Sets the alphabet to be the letters in \ref rules.
