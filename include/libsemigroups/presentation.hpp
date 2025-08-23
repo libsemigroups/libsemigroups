@@ -2200,6 +2200,8 @@ namespace libsemigroups {
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, for example, std::initializer_list to be used for the
     //! parameters \p letters and \p inverses.
+    // Note that this doesn't work when Word = std::string and so we also
+    // require an overload specifically taking initializer_list's too.
     template <typename Word>
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
@@ -2211,7 +2213,19 @@ namespace libsemigroups {
     //!
     //! This is an overload for
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow, string literals to be used for the parameters \p letters and
+    //! to allow std::string_view to be used for the parameters \p letters and
+    //! \p inverses.
+    inline void balance_no_checks(Presentation<std::string>& p,
+                                  std::string_view           letters,
+                                  std::string_view           inverses) {
+      balance_no_checks<std::string, std::string_view>(p, letters, inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow string literals to be used for the parameters \p letters and
     //! \p inverses.
     inline void balance_no_checks(Presentation<std::string>& p,
                                   char const*                letters,
@@ -2224,19 +2238,104 @@ namespace libsemigroups {
     //!
     //! This is an overload for
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow, std::string_view to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  std::string_view           letters,
-                                  std::string_view           inverses) {
-      balance_no_checks<std::string, std::string_view>(p, letters, inverses);
+    //! to allow std::initializer_list<char> to be used for the parameters
+    //! \p letters and \p inverses.
+    // There's some weirdness with {0} being interpreted as a string_view, which
+    // means that the next overload is required
+    inline void balance_no_checks(Presentation<std::string>&         p,
+                                  std::initializer_list<char> const& letters,
+                                  std::initializer_list<char> const& inverses) {
+      balance_no_checks(p, std::string(letters), std::string(inverses));
     }
 
-    // TODO(later) add balance that checks p contains empty word, no duplicate
-    // letters in alphabet, and inverses are valid.
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! See
+    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! for details about this function.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the words \p letters and \p inverses.
+    //! \param p the presentation.
+    //! \param letters the letters that can be replaced in the left-hand side.
+    //! \param inverses the inverses of the letters.
+    //!
+    //! \throws LibsemigroupsException if \ref throw_if_bad_alphabet_or_rules
+    //! throws.
+    //! \throws LibsemigroupsException if \ref throw_if_bad_inverses throws
+    //! when called with \p letters and \p inverses. This does not check that
+    //! the values in \p inverses are actually inverses for the values in
+    //! \p letters, and balances the relations as described in
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! assuming that this is the case.
+    template <typename Word1, typename Word2>
+    void balance(Presentation<Word1>& p,
+                 Word2 const&         letters,
+                 Word2 const&         inverses) {
+      p.throw_if_bad_alphabet_or_rules();
+      throw_if_bad_inverses(p, letters, inverses);
+
+      balance_no_checks(p, letters, inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow, for example, std::initializer_list to be used for the
+    //! parameters \p letters and \p inverses.
+    // Note that this doesn't work when Word = std::string and so we also
+    // require an overload specifically taking initializer_list's too.
+    template <typename Word>
+    void balance(Presentation<Word>& p,
+                 Word const&         letters,
+                 Word const&         inverses) {
+      balance<Word, Word>(p, letters, inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow std::string_view to be used for the parameters \p letters and
+    //! \p inverses.
+    inline void balance(Presentation<std::string>& p,
+                        std::string_view           letters,
+                        std::string_view           inverses) {
+      balance<std::string, std::string_view>(p, letters, inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow string literals to be used for the parameters \p letters and
+    //! \p inverses.
+    inline void balance(Presentation<std::string>& p,
+                        char const*                letters,
+                        char const*                inverses) {
+      balance(p, std::string_view(letters), std::string_view(inverses));
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow std::initializer_list<char> to be used for the parameters
+    //! \p letters and \p inverses.
+    // There's some weirdness with {0} being interpreted as a string_view, which
+    // means that the next overload is required
+    inline void balance(Presentation<std::string>&         p,
+                        std::initializer_list<char> const& letters,
+                        std::initializer_list<char> const& inverses) {
+      balance(p, std::string(letters), std::string(inverses));
+    }
 
     // TODO version of balance that only specified inverses, and uses the
     // alphabet as the letters
+
+    // TODO version that detects inverse rules in the presentation and uses
+    // those if possible
 
     //! \brief Add all cyclic permutations of a word as relators in a
     //! presentation.
@@ -2329,7 +2428,7 @@ namespace libsemigroups {
     //!
     //! This is an overload for
     //! \ref add_cyclic_conjugates(Presentation<Word1>&, Word2 const&)
-    //! to allow, string literals to be used for the parameters \p relator.
+    //! to allow string literals to be used for the parameters \p relator.
     inline void add_cyclic_conjugates(Presentation<std::string>& p,
                                       char const*                relator) {
       add_cyclic_conjugates<std::string, std::string_view>(
