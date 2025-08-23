@@ -2450,8 +2450,31 @@ namespace libsemigroups {
       balance(p, p.alphabet(), std::string(inverses));
     }
 
-    // TODO version that detects inverse rules in the presentation and uses
-    // those if possible
+    //! \brief Detect inverses and balance the length of the left-hand and
+    //! right-hand sides.
+    //!
+    //! This function calls
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! where the 2nd and 3rd arguments are deduced from the rules in the
+    //! presentation if possible as follows: the rules of the presentation
+    //! where one side has length 2 and the other has length 0 are detected.
+    //! For any such rule we remember that the first letter is the inverse of
+    //! the second and vice versa. If there are no such rules, then no changes
+    //! are made. If there are multiple different such rules and we deduce
+    //! conflicting values for the inverse of a letter, then an exception is
+    //! thrown.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    // There's no no_check version of this function because we need to try and
+    // detect the inverse and if we cannot we have to throw an exception.
+    template <typename Word>
+    void balance(Presentation<Word>& p);
 
     //! \brief Add all cyclic permutations of a word as relators in a
     //! presentation.

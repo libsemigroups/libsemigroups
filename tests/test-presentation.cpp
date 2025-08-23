@@ -1650,6 +1650,93 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "088",
+                          "helpers balance (1 arg)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+
+    p.rules = {"ab",
+               "",
+               "ba",
+               "",
+               "aaaaaaaaaaaaa",
+               "",
+               "bbbbbbbb",
+               "",
+               "cccccccccccc",
+               "cccccc",
+               "bbbbbbbbccccccaaaaccccaaaaaaa",
+               ""};
+
+    presentation::balance(p);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"ab",
+                                         "",
+                                         "ba",
+                                         "",
+                                         "aaaaaaa",
+                                         "bbbbbb",
+                                         "bbbb",
+                                         "aaaa",
+                                         "cccccccccccc",
+                                         "cccccc",
+                                         "bccccccaaaacccc",
+                                         "aaaaaaabbbbbbb"}));
+
+    p.rules = {"",
+               "ab",
+               "aaaaaaaaaaaaa",
+               "",
+               "bbbbbbbb",
+               "",
+               "ba",
+               "",
+               "cccccccccccc",
+               "cccccc",
+               "bbbbbbbbccccccaaaaccccaaaaaaa",
+               ""};
+    presentation::balance(p);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"ab",
+                                         "",
+                                         "aaaaaaa",
+                                         "bbbbbb",
+                                         "bbbb",
+                                         "aaaa",
+                                         "ba",
+                                         "",
+                                         "cccccccccccc",
+                                         "cccccc",
+                                         "bccccccaaaacccc",
+                                         "aaaaaaabbbbbbb"}));
+    p.rules = {"", "aa", "ba", ""};
+    // ba = 1 doesn't count because we are missing ab=1 also
+    REQUIRE_NOTHROW(presentation::balance(p));
+
+    p.rules = {"", "aa", "ba", "", "ab", ""};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p),
+        "the rules \"ba\" = \"\" (rule 1) and \"aa\" = \"\" (rule 0) yield the "
+        "conflicting values 'b' != 'a' for the inverse of 'a', please use the "
+        "2- or 3-argument version of this function to explicitly specify the "
+        "inverses");
+    p.rules = {"", "ab", "ba", "", "cb", "", "bc", ""};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p),
+        "the rules \"cb\" = \"\" (rule 2) and \"ab\" = \"\" (rule 0) yield the "
+        "conflicting values 'c' != 'a' for the inverse of 'b', please use the "
+        "2- or 3-argument version of this function to explicitly specify the "
+        "inverses");
+    p.rules = {"", "ab", "cb"};
+    REQUIRE_THROWS_AS(presentation::balance(p), LibsemigroupsException);
+
+    p.rules.clear();
+    p.contains_empty_word(false);
+    REQUIRE_NOTHROW(presentation::balance(p));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "024",
                           "helpers balance_no_checks (std::string)",
                           "[quick][presentation]") {
