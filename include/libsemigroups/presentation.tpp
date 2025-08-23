@@ -1100,6 +1100,62 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Word>
+    void balance(Presentation<Word>& p) {
+      p.throw_if_bad_alphabet_or_rules();
+      if (!p.contains_empty_word()) {
+        return;
+      }
+
+      using value_type = typename Word::value_type;
+      // values in this map are pairs <p> such that <p.first> is a found
+      // inverse for the key, and <p.second> is the index of the rule showing
+      // this.
+      std::unordered_map<value_type, std::pair<value_type, size_t>> map;
+
+      for (size_t pos = 0; pos != p.rules.size(); pos += 2) {
+        auto &lhs = p.rules[pos], &rhs = p.rules[pos + 1];
+        if (lhs.empty() && rhs.size() == 2) {
+          std::swap(lhs, rhs);
+        }
+        if (lhs.size() == 2 && rhs.empty()) {
+          if (!is_rule(p, {lhs[1], lhs[0]}, {})
+              && !is_rule(p, {}, {lhs[1], lhs[0]})) {
+            continue;
+          }
+          for (size_t i = 0; i != 2; ++i) {
+            auto letter = lhs[i], inverse = lhs[(i + 1) % 2];
+            auto [it, inserted] = map.emplace(letter, std::pair{inverse, pos});
+
+            if (!inserted && it->second.first != inverse) {
+              value_type alt_inverse = it->second.first;
+              size_t     alt_pos     = it->second.second;
+              LIBSEMIGROUPS_EXCEPTION(
+                  "the rules {} = {} (rule {}) and {} = {} (rule {}) yield "
+                  "the conflicting values {} != {} for the inverse of {}, "
+                  "please use the 2- or 3-argument version of this function "
+                  "to explicitly specify the inverses",
+                  detail::to_printable(lhs),
+                  detail::to_printable(rhs),
+                  pos / 2,
+                  detail::to_printable(p.rules[alt_pos]),
+                  detail::to_printable(p.rules[alt_pos + 1]),
+                  alt_pos / 2,
+                  detail::to_printable(inverse),
+                  detail::to_printable(alt_inverse),
+                  detail::to_printable(letter));
+            }
+          }
+        }
+      }
+      Word letters, inverses;
+      for (auto const& [key, val] : map) {
+        letters.push_back(key);
+        inverses.push_back(val.first);
+      }
+      balance_no_checks(p, letters, inverses);
+    }
+
     template <typename Word1, typename Word2>
     void add_cyclic_conjugates_no_checks(Presentation<Word1>& p,
                                          Word2 const&         relator) {
