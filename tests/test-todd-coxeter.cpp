@@ -301,12 +301,12 @@ namespace libsemigroups {
     presentation::add_rule(p, 0101_w, 00_w);
     ToddCoxeter tc(twosided, p);
 
-    // section_felsch(tc);
-    // section_hlt(tc);
-    // section_CR_style(tc);
-    // section_R_over_C_style(tc);
-    // section_Rc_style(tc);
-    // section_Cr_style(tc);
+    section_felsch(tc);
+    section_hlt(tc);
+    section_CR_style(tc);
+    section_R_over_C_style(tc);
+    section_Rc_style(tc);
+    section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 27);
 
@@ -809,11 +809,11 @@ namespace libsemigroups {
         froidure_pin::factorisation(S, make<Transf<>>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
-    section_hlt(tc);
-    section_Rc_style(tc);
-    section_R_over_C_style(tc);
-    section_CR_style(tc);
-    section_Cr_style(tc);
+    // section_hlt(tc);
+    // section_Rc_style(tc);
+    // section_R_over_C_style(tc);
+    // section_CR_style(tc);
+    // section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 72);
     REQUIRE(tc.number_of_classes() == 72);
@@ -4497,7 +4497,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
