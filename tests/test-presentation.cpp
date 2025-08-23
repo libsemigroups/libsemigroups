@@ -1539,6 +1539,27 @@ namespace libsemigroups {
                                {2, 2}}));
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "086",
+                                   "helpers balance_no_checks (2 args)",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type) {
+    // TODO
+    // TODO(1) Add StaticVector1<uint16_t, 10>. Can't do this until
+    // StaticVector1 has .front or . end
+    auto rg = ReportGuard(false);
+    using W = TestType;
+
+    Presentation<W> p;
+    p.contains_empty_word(true).alphabet({0});
+
+    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    REQUIRE(p.rules == std::vector<W>({{0, 0, 0, 0, 0, 0, 0, 0}, {}}));
+    presentation::balance_no_checks(p, {0});
+    REQUIRE(p.rules == std::vector<W>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "084",
                           "helpers balance (3 args, word_type)",
@@ -1590,6 +1611,42 @@ namespace libsemigroups {
     p.rules = {"aaaaaaaaa", "b"};
     presentation::balance(p, std::string_view("ab"), std::string_view("ba"));
     REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "087",
+                          "helpers balance (2 args, std::string)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab").contains_empty_word(true);
+
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance_no_checks(p, "ba");
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
+
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance_no_checks(p, std::string_view("ab"));
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "baaaa"}));
+
+    p.alphabet({0, 1}).contains_empty_word(true);
+    p.rules = {{
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+               },
+               {1}};
+    presentation::balance_no_checks(p, {0, 1});
+
+    REQUIRE(p.rules
+            == std::vector<std::string>({{0, 0, 0, 0, 0}, {1, 0, 0, 0, 0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
