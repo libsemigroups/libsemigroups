@@ -472,9 +472,6 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    void check_balance() {}
-
-    template <typename W>
     void check_sort_each_rule() {
       Presentation<W> p;
       p.rules.push_back(W({0, 1, 2, 1}));
@@ -1436,7 +1433,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
                                    "023",
-                                   "helpers balance_no_checks (all)",
+                                   "helpers balance_no_checks (3 args)",
                                    "[quick][presentation]",
                                    std::string,
                                    word_type) {
@@ -1525,6 +1522,74 @@ namespace libsemigroups {
                                {2, 1, 1, 1, 1},
                                {1, 2, 4},
                                {7, 6, 5}}));
+    p.alphabet({0, 1, 2});
+    p.rules = {{1, 1, 1, 1, 1, 1, 1, 1},
+               {},
+               {2, 2, 2, 1, 1, 1},
+               {},
+               {2, 2, 2, 2, 2},
+               {2, 2}};
+    presentation::balance_no_checks(p, {0, 1}, {1, 0});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {0, 0, 0, 0},
+                               {2, 2, 2},
+                               {0, 0, 0},
+                               {2, 2, 2, 2, 2},
+                               {2, 2}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "084",
+                          "helpers balance (3 args, word_type)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2).contains_empty_word(true);
+    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    presentation::balance(p, {0}, {0});
+    REQUIRE(p.rules == std::vector<word_type>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 0}, {0}),
+                          "invalid alphabet [0, 0], duplicate letter 0!");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0, 0}),
+                          "invalid inverses, the letter 0 is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0}),
+                          "invalid number of inverses, expected 2 but found 1");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {2, 1}, {1, 2}),
+                          "invalid letter 2, valid letters are [0, 1]");
+  }
+
+  // Separate test because exception messages are different
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "085",
+                          "helpers balance (3 args, std::string)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet({0, 1}).contains_empty_word(true);
+    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    presentation::balance(p, std::string(1, 0), std::string(1, 0));
+    REQUIRE(p.rules == std::vector<std::string>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 0}, {0}),
+                          "invalid alphabet (char values) [0, 0], duplicate "
+                          "letter (char with value) 0!");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p, {0, 1}, {0, 0}),
+        "invalid inverses, the letter (char with value) 0 is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0}),
+                          "invalid number of inverses, expected 2 but found 1");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {2, 1}, {1, 2}),
+                          "invalid letter (char with value) 2, valid letters "
+                          "are (char values) [0, 1]");
+    p.alphabet("ab").contains_empty_word(true);
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance(p, "ab", "ba");
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance(p, std::string_view("ab"), std::string_view("ba"));
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
