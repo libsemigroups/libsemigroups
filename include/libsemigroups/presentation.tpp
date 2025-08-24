@@ -1121,6 +1121,29 @@ namespace libsemigroups {
       add_cyclic_conjugates_no_checks(p, relator);
     }
 
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::iterator
+    find_rule_no_checks(Presentation<Word>& p,
+                        Word const&         lhs,
+                        Word const&         rhs) {
+      for (auto it = p.rules.begin(); it != p.rules.end(); it += 2) {
+        if (*it == lhs && *(it + 1) == rhs) {
+          return it;
+        }
+      }
+      return p.rules.end();
+    }
+
+    template <typename Word>
+    [[nodiscard]] size_t index_rule_no_checks(Presentation<Word> const& p,
+                                              Word const&               lhs,
+                                              Word const&               rhs) {
+      auto it = find_rule_no_checks(p, lhs, rhs);
+      if (it != p.rules.cend()) {
+        return std::distance(p.rules.begin(), it);
+      }
+      return UNDEFINED;
+    }
   }  // namespace presentation
 
   template <typename Word>
