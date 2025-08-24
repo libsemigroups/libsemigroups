@@ -3469,4 +3469,78 @@ namespace libsemigroups {
                           "invalid number of inverses, expected 3 but found 2");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "089",
+                          "is_rule (std::string)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    p.rules = {"aaa", "", "ba", "", "ba", "ab"};
+    REQUIRE(presentation::is_rule(p, "ba"s, "ab"s));
+    REQUIRE(!presentation::is_rule(p, "ba"s, "aa"s));
+    REQUIRE(!presentation::is_rule(p, "ba"s, "aa"s));
+    REQUIRE(presentation::is_rule(p, "aaa"s, ""s));
+    REQUIRE(!presentation::is_rule(p, ""s, "ba"s));
+
+    p.rules = {"aaa", "", "ba", "", "ba"};
+    REQUIRE_THROWS_AS(presentation::is_rule(p, ""s, ""s),
+                      LibsemigroupsException);
+    REQUIRE(presentation::is_rule_no_checks(p, "ba"s, ""s));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "090",
+                          "find_rule (std::string)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    p.rules = {"aaa", "", "ba", "", "ba", "ab"};
+
+    auto it = presentation::find_rule(p, "ba"s, "ab"s);
+    REQUIRE(std::distance(p.rules.begin(), it) == 4);
+
+    it = presentation::find_rule(p, "ba"s, "aa"s);
+    REQUIRE(it == p.rules.end());
+
+    it = presentation::find_rule(p, "aaa"s, ""s);
+    REQUIRE(std::distance(p.rules.begin(), it) == 0);
+
+    p.rules = {"aaa", "", "ba", "", "ba"};
+    REQUIRE_THROWS_AS(presentation::find_rule(p, ""s, ""s),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "091",
+                          "index_rule (std::string)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    p.rules = {"aaa", "", "ba", "", "ba", "ab"};
+
+    REQUIRE(presentation::index_rule(p, "ba"s, "ab"s) == 4);
+    REQUIRE(presentation::index_rule(p, "ba"s, "aa"s) == UNDEFINED);
+    REQUIRE(presentation::index_rule(p, "aaa"s, ""s) == 0);
+    REQUIRE(presentation::index_rule(p, ""s, "ba"s) == UNDEFINED);
+
+    p.rules = {"aaa", "", "ba", "", "ba"};
+    REQUIRE_THROWS_AS(presentation::index_rule(p, ""s, ""s),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "092",
+                          "index_rule (word_type)",
+                          "[quick][presentation]") {
+    Presentation<word_type> p;
+    p.alphabet(3).contains_empty_word(true);
+    p.rules = {000_w, ""_w, 10_w, ""_w, 10_w, 01_w};
+
+    REQUIRE(presentation::index_rule(p, 10_w, 01_w) == 4);
+    REQUIRE(presentation::index_rule(p, 10_w, 00_w) == UNDEFINED);
+    REQUIRE(presentation::index_rule(p, 000_w, ""_w) == 0);
+    REQUIRE(presentation::index_rule(p, ""_w, 10_w) == UNDEFINED);
+    REQUIRE(presentation::index_rule(p, {}, {1, 0}) == UNDEFINED);
+  }
+
 }  // namespace libsemigroups

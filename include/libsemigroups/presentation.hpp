@@ -41,11 +41,11 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"   // for Hash, EqualTo
-#include "constants.hpp"  // for Max, UNDEFINED, operator==
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "is_specialization_of.hpp"
-#include "order.hpp"       // for ShortLexCompare
+#include "adapters.hpp"              // for Hash, EqualTo
+#include "constants.hpp"             // for Max, UNDEFINED, operator==
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "is_specialization_of.hpp"  // for is_specialization_of
+#include "order.hpp"                 // for ShortLexCompare
 #include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
 #include "types.hpp"       // for word_type
 #include "ukkonen.hpp"     // for GreedyReduceHelper, Ukkonen
@@ -2578,6 +2578,184 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p has more than 49 generators.
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name);
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::iterator
+    find_rule_no_checks(Presentation<Word>& p,
+                        Word const&         lhs,
+                        Word const&         rhs);
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::iterator
+    find_rule(Presentation<Word>& p, Word const& lhs, Word const& rhs) {
+      p.throw_if_bad_alphabet_or_rules();
+      return find_rule_no_checks(p, lhs, rhs);
+    }
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::const_iterator
+    find_rule_no_checks(Presentation<Word> const& p,
+                        Word const&               lhs,
+                        Word const&               rhs) {
+      return find_rule_no_checks(const_cast<Presentation<Word>&>(p), lhs, rhs);
+    }
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::const_iterator
+    find_rule(Presentation<Word> const& p, Word const& lhs, Word const& rhs) {
+      return find_rule(const_cast<Presentation<Word>&>(p), lhs, rhs);
+    }
+
+    //! \brief Returns the index of a rule or \ref UNDEFINED.
+    //!
+    //! This function returns the minimum index \c i of \p lhs such that
+    //! `p.rules[i + 1]` equals \p rhs; or \ref UNDEFINED if there is not
+    //! such rule
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns The index of the rule or \ref UNDEFINED.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] size_t index_rule_no_checks(Presentation<Word> const& p,
+                                              Word const&               lhs,
+                                              Word const&               rhs);
+
+    //! \brief Returns the index of a rule or \ref UNDEFINED.
+    //!
+    //! This function returns the minimum index \c i of \p lhs such that
+    //! `p.rules[i + 1]` equals \p rhs; or \ref UNDEFINED if there is not
+    //! such rule
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns The index of the rule or \ref UNDEFINED.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] size_t index_rule(Presentation<Word> const& p,
+                                    Word const&               lhs,
+                                    Word const&               rhs) {
+      p.throw_if_bad_alphabet_or_rules();
+      return index_rule_no_checks(p, lhs, rhs);
+    }
+
+    //! \brief Check whether a rule belongs to a presentation.
+    //!
+    //! This function returns \c true if \p lhs and \p rhs form a rule in \p p.
+    //! That is if \p lhs occurs in an even index position in `p.rules` and
+    //! \p rhs is the next item in `p.rules`.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns Whether or not \p lhs and \p rhs form a rule in \p p.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] bool is_rule_no_checks(Presentation<Word> const& p,
+                                         Word const&               lhs,
+                                         Word const&               rhs) {
+      return find_rule_no_checks(p, lhs, rhs) != p.rules.end();
+    }
+
+    //! \brief Check whether a rule belongs to a presentation.
+    //!
+    //! This function returns \c true if \p lhs and \p rhs form a rule in \p p.
+    //! That is if \p lhs occurs in an even index position in `p.rules` and
+    //! \p rhs is the next item in `p.rules`.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns Whether or not \p lhs and \p rhs form a rule in \p p.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] bool is_rule(Presentation<Word> const& p,
+                               Word const&               lhs,
+                               Word const&               rhs) {
+      return find_rule(p, lhs, rhs) != p.rules.end();
+    }
 
   }  // namespace presentation
 
