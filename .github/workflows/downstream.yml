@@ -42,7 +42,7 @@ jobs:
       - name: Build libsemigroups . . .
         run: sudo make install -j4
       - name: Clone libsemigroups_pybind11 . . .
-        run: git clone "$URL" --depth 1 --branch v1
+        run: git clone "$URL" --depth 1 --branch main
       - name: Install prerequisites for libsemigroups_pybind11 . . .
         run: |
           cd libsemigroups_pybind11
