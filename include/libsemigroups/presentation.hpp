@@ -2312,7 +2312,7 @@ namespace libsemigroups {
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
     //! See
-    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! for details about this function.
     //!
     //! \tparam Word1 the type of the words in the presentation.
@@ -2321,11 +2321,11 @@ namespace libsemigroups {
     //! \param letters the letters that can be replaced in the left-hand side.
     //! \param inverses the inverses of the letters.
     //!
-    //! \throws LibsemigroupsException if \ref throw_if_bad_alphabet_or_rules
-    //! throws.
-    //! \throws LibsemigroupsException if \ref throw_if_bad_inverses throws
-    //! when called with \p letters and \p inverses. This does not check that
-    //! the values in \p inverses are actually inverses for the values in
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if \ref throw_if_bad_inverses throws when
+    //! called with \p letters and \p inverses. This does not check that the
+    //! values in \p inverses are actually inverses for the values in
     //! \p letters, and balances the relations as described in
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! assuming that this is the case.
