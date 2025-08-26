@@ -2162,6 +2162,48 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
+    //! \brief Detect inverses.
+    //!
+    //! This function tries to deduce any inverses defined by the rules of
+    //! presentation in the following way: the rules of the presentation
+    //! where one side has length 2 and the other has length 0 are detected.
+    //! For any such rule we remember that the first letter is the inverse of
+    //! the second and vice versa. If there are no such rules, then no changes
+    //! are made. If there are multiple different such rules and we deduce
+    //! conflicting values for the inverse of a letter, then an exception is
+    //! thrown.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param letters the word to store the letters with inverses.
+    //! \param inverses the word to store the inverses found.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    template <typename Word>
+    void try_detect_inverses(Presentation<Word>& p,
+                             Word&               letters,
+                             Word&               inverses);
+
+    //! \brief Detect inverses.
+    //!
+    //! This function constructs two \c Word objects to store the letters and
+    //! inverses, performs
+    //! \ref try_detect_inverses(Presentation<Word>&, Word&, Word&)
+    //! and then returns the result.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    template <typename Word>
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word>& p);
+
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
     //! This function first sorts the sides of each rules so that the larger
