@@ -80,6 +80,7 @@ namespace libsemigroups {
 
   using TCE     = detail::TCE;
   using options = detail::ToddCoxeterImpl::options;
+  using std::string_literals::operator""s;
 
   using namespace literals;
   using namespace rx;
@@ -4824,7 +4825,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "(ACac)^4"_p, "");
     presentation::add_rule(p, "BabAA"_p, "");
     presentation::add_rule(p, "(abc)^7"_p, "");
-    presentation::balance_no_checks(p, p.alphabet(), "ABCabc");
+    presentation::balance_no_checks(p, p.alphabet(), "ABCabc"s);
 
     ToddCoxeter tc(twosided, p);
     tc.strategy(options::strategy::felsch).use_relations_in_extra(true);

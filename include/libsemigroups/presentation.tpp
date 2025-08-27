@@ -310,8 +310,9 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word>
-    void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals) {
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               vals) {
       if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid number of inverses, expected {} but found {}",
@@ -322,7 +323,7 @@ namespace libsemigroups {
       // get a more meaningful exception message
       p.throw_if_letter_not_in_alphabet(vals.begin(), vals.end());
 
-      Word cpy = vals;
+      Word1 cpy(vals);
       std::sort(cpy.begin(), cpy.end());
       for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
         if (*it == *(it + 1)) {
@@ -347,6 +348,22 @@ namespace libsemigroups {
             break;
           }
         }
+      }
+    }
+
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               letters,
+                               Word2 const&               inverses) {
+      if (letters == p.alphabet()) {
+        throw_if_bad_inverses(p, inverses);
+      } else {
+        // Must check that letters is valid because it obviously is when we
+        // create q.
+        p.throw_if_letter_not_in_alphabet(letters.begin(), letters.end());
+        Presentation<Word1> q;
+        q.alphabet(letters);
+        throw_if_bad_inverses(q, inverses);
       }
     }
 
@@ -1083,6 +1100,72 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Word>
+    void balance(Presentation<Word>& p) {
+      p.throw_if_bad_alphabet_or_rules();
+      if (!p.contains_empty_word()) {
+        return;
+      }
+      auto [letters, inverses] = try_detect_inverses(p);
+      balance_no_checks(p, letters, inverses);
+    }
+
+    template <typename Word>
+    void try_detect_inverses(Presentation<Word>& p,
+                             Word&               letters,
+                             Word&               inverses) {
+      p.throw_if_bad_alphabet_or_rules();
+      using value_type = typename Word::value_type;
+      // values in this map are pairs <p> such that <p.first> is a found
+      // inverse for the key, and <p.second> is the index of the rule showing
+      // this.
+      std::unordered_map<value_type, std::pair<value_type, size_t>> map;
+
+      for (size_t pos = 0; pos != p.rules.size(); pos += 2) {
+        auto &lhs = p.rules[pos], &rhs = p.rules[pos + 1];
+        if (lhs.empty() && rhs.size() == 2) {
+          std::swap(lhs, rhs);
+        }
+        if (lhs.size() == 2 && rhs.empty()) {
+          auto letter = lhs[0], inverse = lhs[1];
+          auto [it, inserted] = map.emplace(letter, std::pair{inverse, pos});
+
+          if (!inserted && it->second.first != inverse) {
+            value_type alt_inverse = it->second.first;
+            size_t     alt_pos     = it->second.second;
+            LIBSEMIGROUPS_EXCEPTION(
+                "the rules {} = {} (rule {}) and {} = {} (rule {}) yield "
+                "the conflicting values {} != {} for the inverse of {}, "
+                "please use the 2- or 3-argument version of this function "
+                "to explicitly specify the inverses",
+                detail::to_printable(lhs),
+                detail::to_printable(rhs),
+                pos / 2,
+                detail::to_printable(p.rules[alt_pos]),
+                detail::to_printable(p.rules[alt_pos + 1]),
+                alt_pos / 2,
+                detail::to_printable(inverse),
+                detail::to_printable(alt_inverse),
+                detail::to_printable(letter));
+          }
+        }
+      }
+      for (auto const& [key, val] : map) {
+        if (map[val.first].first == key) {
+          letters.push_back(key);
+          inverses.push_back(val.first);
+        }
+      }
+    }
+
+    template <typename Word>
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word>& p) {
+      Word letters;
+      Word inverses;
+      try_detect_inverses(p, letters, inverses);
+      return {letters, inverses};
+    }
+
     template <typename Word1, typename Word2>
     void add_cyclic_conjugates_no_checks(Presentation<Word1>& p,
                                          Word2 const&         relator) {
@@ -1104,6 +1187,29 @@ namespace libsemigroups {
       add_cyclic_conjugates_no_checks(p, relator);
     }
 
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::iterator
+    find_rule_no_checks(Presentation<Word>& p,
+                        Word const&         lhs,
+                        Word const&         rhs) {
+      for (auto it = p.rules.begin(); it != p.rules.end(); it += 2) {
+        if (*it == lhs && *(it + 1) == rhs) {
+          return it;
+        }
+      }
+      return p.rules.end();
+    }
+
+    template <typename Word>
+    [[nodiscard]] size_t index_rule_no_checks(Presentation<Word> const& p,
+                                              Word const&               lhs,
+                                              Word const&               rhs) {
+      auto it = find_rule_no_checks(p, lhs, rhs);
+      if (it != p.rules.cend()) {
+        return std::distance(p.rules.begin(), it);
+      }
+      return UNDEFINED;
+    }
   }  // namespace presentation
 
   template <typename Word>

@@ -41,11 +41,11 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"   // for Hash, EqualTo
-#include "constants.hpp"  // for Max, UNDEFINED, operator==
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "is_specialization_of.hpp"
-#include "order.hpp"       // for ShortLexCompare
+#include "adapters.hpp"              // for Hash, EqualTo
+#include "constants.hpp"             // for Max, UNDEFINED, operator==
+#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
+#include "is_specialization_of.hpp"  // for is_specialization_of
+#include "order.hpp"                 // for ShortLexCompare
 #include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
 #include "types.hpp"       // for word_type
 #include "ukkonen.hpp"     // for GreedyReduceHelper, Ukkonen
@@ -249,6 +249,41 @@ namespace libsemigroups {
     //! * \ref throw_if_bad_rules
     //! * \ref throw_if_bad_alphabet_or_rules
     Presentation& alphabet(word_type&& lphbt);
+
+    //! \brief Set the alphabet from string_view.
+    //!
+    //! This is an overload for \ref alphabet(word_type&&) to allow
+    //! std::string_view to be used for the parameter \p lphbt.
+    //!
+    //! \warning This function is only enabled if \ref word_type is std::string.
+    template <typename Return = Presentation&>
+    auto alphabet(std::string_view lphbt)
+        -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return&> {
+      return alphabet(std::string(lphbt));
+    }
+
+    //! \brief Set the alphabet from string literal.
+    //!
+    //! This is an overload for \ref alphabet(word_type&&) to allow
+    //! string literals to be used for the parameter \p lphbt.
+    //!
+    //! \warning This function is only enabled if \ref word_type is std::string.
+    template <typename Return = Presentation&>
+    auto alphabet(char const* lphbt)
+        -> std::enable_if_t<std::is_same_v<std::string, word_type>, Return> {
+      return alphabet(std::string(lphbt));
+    }
+
+    //! \brief Set the alphabet from std::initializer_list.
+    //!
+    //! This is an overload for \ref alphabet(word_type&&) to allow
+    //! std::initializer_list to be used for the parameter \p lphbt.
+    // There's some weirdness with {0} being interpreted as a string_view, which
+    // means that the next overload is required
+    Presentation& alphabet(
+        std::initializer_list<typename word_type::value_type> const& lphbt) {
+      return alphabet(word_type(lphbt));
+    }
 
     //! \brief Set the alphabet to be the letters in the rules.
     //!
@@ -750,30 +785,60 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief throw_if_bad_alphabet_or_rules if \p vals act as semigroup
-    //! inverses in \p p.
+    //! \brief Throws an exception if \p vals do not define valid inverses.
     //!
-    //! Check if the values in \p vals act as semigroup inverses for the letters
-    //! of the alphabet of \p p. Specifically, it checks that the \f$i\f$th
-    //! value in \p vals acts as an inverse for the \f$i\f$th value in
+    //! This function checks if the values in \p inverses are valid semigroup
+    //! inverses for `p.alphabet()`. Specifically, it checks that the \f$i\f$th
+    //! value in \p inverses is an inverse for the \f$i\f$th value in
     //! `p.alphabet()`.
     //!
     //! Let \f$x_i\f$ be the \f$i\f$th letter in `p.alphabet()`, and
-    //! suppose that \f$x_i=v_j\f$ is in the \f$j\f$th position of \p vals. This
-    //! function checks that \f$v_i = x_j\f$, and therefore that
-    //! \f$(x_i^{-1})^{-1} = x\f$.
+    //! let \f$y_i\f$ be the \f$i\f$th letter in \p inverses. Then this function
+    //! checks that:
+    //! * `p.alphabet()` and \p inverses contain the same letters;
+    //! * \p inverses are duplicate-free;
+    //! * if \f$x_i = y_j\f$, then \f$x_j = y_i\f$ and therefore that
+    //! \f$(x_i^{-1})^{-1} = x_i\f$.
     //!
-    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the arguments \p letters and \p inverses.
     //! \param p the presentation.
-    //! \param vals the values to check if the act as inverses.
+    //! \param inverses the proposed inverses for \p letters.
     //!
-    //! \throws Libsemigroups_Exception if any of the following apply:
-    //! * the length of \p vals is not the same as the length of `p.alphabet()`
-    //! * `p.throw_if_letter_not_in_alphabet(vals)` throws
-    //! * \p vals contains duplicate letters
-    //! * the values in \p vals do not serve as semigroup inverses.
-    template <typename Word>
-    void throw_if_bad_inverses(Presentation<Word> const& p, Word const& vals);
+    //! \throws Libsemigroups_Exception if any of the conditions listed above
+    //! do not hold.
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               inverses);
+
+    //! \brief Throws an exception if the argument \p inverses does not define
+    //! valid inverses for \p letters.
+    //!
+    //! This function checks if the values in \p inverses are valid semigroup
+    //! inverses for \p letters. Specifically, it
+    //! checks that the \f$i\f$th value in \p inverses is an inverse for the
+    //! \f$i\f$th value in `letters`.
+    //!
+    //! Let \f$x_i\f$ be the \f$i\f$th letter in \p letters, and
+    //! let \f$y_i\f$ be the \f$i\f$th letter in \p inverses. Then this function
+    //! checks that:
+    //! * \p letters and \p inverses contain the same letters;
+    //! * \p letters and \p inverses are duplicate-free;
+    //! * if \f$x_i = y_j\f$, then \f$x_j = y_i\f$ and therefore that
+    //! \f$(x_i^{-1})^{-1} = x_i\f$.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the arguments \p letters and \p inverses.
+    //! \param p the presentation.
+    //! \param letters the letters in the alphabet.
+    //! \param inverses the proposed inverses for \p letters.
+    //!
+    //! \throws Libsemigroups_Exception if any of the conditions listed above
+    //! do not hold.
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               letters,
+                               Word2 const&               inverses);
 
     //! \brief Return a representation of a presentation to appear in the
     //! reporting output.
@@ -2097,6 +2162,48 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
+    //! \brief Detect inverses.
+    //!
+    //! This function tries to deduce any inverses defined by the rules of
+    //! presentation in the following way: the rules of the presentation
+    //! where one side has length 2 and the other has length 0 are detected.
+    //! For any such rule we remember that the first letter is the inverse of
+    //! the second and vice versa. If there are no such rules, then no changes
+    //! are made. If there are multiple different such rules and we deduce
+    //! conflicting values for the inverse of a letter, then an exception is
+    //! thrown.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param letters the word to store the letters with inverses.
+    //! \param inverses the word to store the inverses found.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    template <typename Word>
+    void try_detect_inverses(Presentation<Word>& p,
+                             Word&               letters,
+                             Word&               inverses);
+
+    //! \brief Detect inverses.
+    //!
+    //! This function constructs two \c Word objects to store the letters and
+    //! inverses, performs
+    //! \ref try_detect_inverses(Presentation<Word>&, Word&, Word&)
+    //! and then returns the result.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    template <typename Word>
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word>& p);
+
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
     //! This function first sorts the sides of each rules so that the larger
@@ -2135,6 +2242,8 @@ namespace libsemigroups {
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow, for example, std::initializer_list to be used for the
     //! parameters \p letters and \p inverses.
+    // Note that this doesn't work when Word = std::string and so we also
+    // require an overload specifically taking initializer_list's too.
     template <typename Word>
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
@@ -2144,34 +2253,157 @@ namespace libsemigroups {
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for
+    //! This function just calls
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow, string literals to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  char const*                letters,
-                                  char const*                inverses) {
-      balance_no_checks(
-          p, std::string_view(letters), std::string_view(inverses));
+    //! where the 2nd parameter is defined to be `p.alphabet()`.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param inverses the inverses of the letters.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function assumes that the semigroup defined by \p p is isomorphic
+    //! to a group, and that \p inverses are valid. However, this function does
+    //! no checks on its arguments. If the previous assumptions do not hold,
+    //! there is no guarantee the the semigroup \f$S\f$ defined by \p p before
+    //! this function is called will be isomorphic to the semigroup \f$S'\f$
+    //! defined by \p p after this function is called.
+    template <typename Word>
+    void balance_no_checks(Presentation<Word>& p, Word const& inverses) {
+      balance_no_checks(p, p.alphabet(), inverses);
     }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
     //! This is an overload for
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow, std::string_view to be used for the parameters \p letters and
+    //! to allow std::string_view to be used for the parameters \p letters and
     //! \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  std::string_view           letters,
-                                  std::string_view           inverses) {
+    //!
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
+    // clang-format on
+    inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
+                                                  std::string_view letters,
+                                                  std::string_view inverses) {
       balance_no_checks<std::string, std::string_view>(p, letters, inverses);
     }
 
-    // TODO(later) add balance that checks p contains empty word, no duplicate
-    // letters in alphabet, and inverses are valid.
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow string literals to be used for the parameters \p letters and
+    //! \p inverses.
+    //!
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
+    // clang-format on
+    inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
+                                                  char const* letters,
+                                                  char const* inverses) {
+      balance_no_checks(p, std::string(letters), std::string(inverses));
+    }
 
-    // TODO version of balance that only specified inverses, and uses the
-    // alphabet as the letters
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! See
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! for details about this function.
+    //!
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the words \p letters and \p inverses.
+    //! \param p the presentation.
+    //! \param letters the letters that can be replaced in the left-hand side.
+    //! \param inverses the inverses of the letters.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if \ref throw_if_bad_inverses throws when
+    //! called with \p letters and \p inverses. This does not check that the
+    //! values in \p inverses are actually inverses for the values in
+    //! \p letters, and balances the relations as described in
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! assuming that this is the case.
+    template <typename Word1, typename Word2>
+    void balance(Presentation<Word1>& p,
+                 Word2 const&         letters,
+                 Word2 const&         inverses) {
+      p.throw_if_bad_alphabet_or_rules();
+      throw_if_bad_inverses(p, letters, inverses);
+
+      balance_no_checks(p, letters, inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This function just calls
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! where the 2nd parameter is defined to be `p.alphabet()`.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param inverses the inverses of the letters.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if \ref throw_if_bad_inverses throws
+    //! when called with `p.alphabet()` and \p inverses. This function does not
+    //! check that the values in \p inverses are actually inverses for the
+    //! values in `p.alphabet()`, and balances the relations as described in
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! assuming that this is the case.
+    template <typename Word>
+    void balance(Presentation<Word>& p, Word const& inverses) {
+      throw_if_bad_inverses(p, p.alphabet(), inverses);
+      balance_no_checks(p, p.alphabet(), inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for
+    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow, for example, std::initializer_list to be used for the
+    //! parameters \p letters and \p inverses.
+    // Note that this doesn't work when Word = std::string and so we also
+    // require an overload specifically taking initializer_list's too.
+    template <typename Word>
+    void balance(Presentation<Word>& p,
+                 Word const&         letters,
+                 Word const&         inverses) {
+      balance<Word, Word>(p, letters, inverses);
+    }
+
+    //! \brief Detect inverses and balance the length of the left-hand and
+    //! right-hand sides.
+    //!
+    //! This function calls
+    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! where the 2nd and 3rd arguments are deduced from the rules in the
+    //! presentation if possible as follows: the rules of the presentation
+    //! where one side has length 2 and the other has length 0 are detected.
+    //! For any such rule we remember that the first letter is the inverse of
+    //! the second and vice versa. If there are no such rules, then no changes
+    //! are made. If there are multiple different such rules and we deduce
+    //! conflicting values for the inverse of a letter, then an exception is
+    //! thrown.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    // There's no no_check version of this function because we need to try and
+    // detect the inverse and if we cannot we have to throw an exception.
+    template <typename Word>
+    void balance(Presentation<Word>& p);
 
     //! \brief Add all cyclic permutations of a word as relators in a
     //! presentation.
@@ -2264,7 +2496,7 @@ namespace libsemigroups {
     //!
     //! This is an overload for
     //! \ref add_cyclic_conjugates(Presentation<Word1>&, Word2 const&)
-    //! to allow, string literals to be used for the parameters \p relator.
+    //! to allow string literals to be used for the parameters \p relator.
     inline void add_cyclic_conjugates(Presentation<std::string>& p,
                                       char const*                relator) {
       add_cyclic_conjugates<std::string, std::string_view>(
@@ -2298,6 +2530,184 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p has more than 49 generators.
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name);
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::iterator
+    find_rule_no_checks(Presentation<Word>& p,
+                        Word const&         lhs,
+                        Word const&         rhs);
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::iterator
+    find_rule(Presentation<Word>& p, Word const& lhs, Word const& rhs) {
+      p.throw_if_bad_alphabet_or_rules();
+      return find_rule_no_checks(p, lhs, rhs);
+    }
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::const_iterator
+    find_rule_no_checks(Presentation<Word> const& p,
+                        Word const&               lhs,
+                        Word const&               rhs) {
+      return find_rule_no_checks(const_cast<Presentation<Word>&>(p), lhs, rhs);
+    }
+
+    //! \brief Find a rule.
+    //!
+    //! This function returns an iterator `it` pointing at the first
+    //! occurrence of \p lhs in an even index position of `p.rules` such
+    //! that `it + 1` points at \p rhs.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns An iterator.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] typename std::vector<Word>::const_iterator
+    find_rule(Presentation<Word> const& p, Word const& lhs, Word const& rhs) {
+      return find_rule(const_cast<Presentation<Word>&>(p), lhs, rhs);
+    }
+
+    //! \brief Returns the index of a rule or \ref UNDEFINED.
+    //!
+    //! This function returns the minimum index \c i of \p lhs such that
+    //! `p.rules[i + 1]` equals \p rhs; or \ref UNDEFINED if there is not
+    //! such rule
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns The index of the rule or \ref UNDEFINED.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] size_t index_rule_no_checks(Presentation<Word> const& p,
+                                              Word const&               lhs,
+                                              Word const&               rhs);
+
+    //! \brief Returns the index of a rule or \ref UNDEFINED.
+    //!
+    //! This function returns the minimum index \c i of \p lhs such that
+    //! `p.rules[i + 1]` equals \p rhs; or \ref UNDEFINED if there is not
+    //! such rule
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns The index of the rule or \ref UNDEFINED.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] size_t index_rule(Presentation<Word> const& p,
+                                    Word const&               lhs,
+                                    Word const&               rhs) {
+      p.throw_if_bad_alphabet_or_rules();
+      return index_rule_no_checks(p, lhs, rhs);
+    }
+
+    //! \brief Check whether a rule belongs to a presentation.
+    //!
+    //! This function returns \c true if \p lhs and \p rhs form a rule in \p p.
+    //! That is if \p lhs occurs in an even index position in `p.rules` and
+    //! \p rhs is the next item in `p.rules`.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns Whether or not \p lhs and \p rhs form a rule in \p p.
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that \p p is properly defined, namely that the length of
+    //! `p.rules` is even. If the rule we are trying to find is not in
+    //! `p.rules`, then bad things might happen.
+    template <typename Word>
+    [[nodiscard]] bool is_rule_no_checks(Presentation<Word> const& p,
+                                         Word const&               lhs,
+                                         Word const&               rhs) {
+      return find_rule_no_checks(p, lhs, rhs) != p.rules.end();
+    }
+
+    //! \brief Check whether a rule belongs to a presentation.
+    //!
+    //! This function returns \c true if \p lhs and \p rhs form a rule in \p p.
+    //! That is if \p lhs occurs in an even index position in `p.rules` and
+    //! \p rhs is the next item in `p.rules`.
+    //!
+    //! \param p the presentation.
+    //! \param lhs the left-hand side of the rule.
+    //! \param rhs the right-hand side of the rule.
+    //!
+    //! \returns Whether or not \p lhs and \p rhs form a rule in \p p.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `p.throw_if_bad_alphabet_or_rules()` throws.
+    template <typename Word>
+    [[nodiscard]] bool is_rule(Presentation<Word> const& p,
+                               Word const&               lhs,
+                               Word const&               rhs) {
+      return find_rule(p, lhs, rhs) != p.rules.end();
+    }
 
   }  // namespace presentation
 

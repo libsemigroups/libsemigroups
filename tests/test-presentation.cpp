@@ -27,7 +27,6 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <string>            // for basic_string, operator==
-#include <string_view>       // for string_view
 #include <tuple>             // for _Swallow_assign, ignore
 #include <type_traits>       // for is_same, is_unsigned_v
 #include <unordered_map>     // for operator==, operator!=
@@ -67,6 +66,7 @@ namespace libsemigroups {
 
   using literals::operator""_w;
   using detail::StaticVector1;
+  using std::string_literals::operator""s;
 
   struct LibsemigroupsException;  // forward decl
 
@@ -468,90 +468,6 @@ namespace libsemigroups {
                                  {0},
                                  {1, 1, 2, 1},
                                  {0}}));
-    }
-
-    template <typename W>
-    void check_balance() {
-      Presentation<W> p;
-      p.contains_empty_word(true);
-      presentation::add_rule_no_checks(p, {1, 1, 1, 1, 1, 1, 1, 1}, {});
-      REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1, 1, 1, 1, 1}, {}}));
-      presentation::balance_no_checks(p, {1}, {1});
-      REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1}, {1, 1, 1, 1}}));
-
-      presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1, 1, 1, 1, 1});
-      presentation::balance_no_checks(p, {1}, {1});
-      REQUIRE(p.rules
-              == std::vector<W>(
-                  {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1}}));
-
-      presentation::add_rule_no_checks(p, {1, 1}, {});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1},
-                                 {}}));
-      presentation::balance_no_checks(p, {1}, {1});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1},
-                                 {}}));
-
-      presentation::add_rule_no_checks(
-          p, {1, 2, 2, 1}, {2, 1, 1, 1, 1, 1, 1, 1, 1, 2});
-      presentation::balance_no_checks(p, {2}, {1});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1},
-                                 {},
-                                 {1, 1, 1, 1, 1, 1, 1, 1},
-                                 {1, 1, 2, 2, 1, 1}}));
-      presentation::balance_no_checks(p, {1}, {3});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1},
-                                 {3},
-                                 {1, 1, 1, 1, 1, 1, 1},
-                                 {1, 1, 2, 2, 1, 1, 3}}));
-      presentation::add_rule_no_checks(p, {2, 1, 1, 1, 1, 1, 1, 2, 2, 2}, {});
-      presentation::balance_no_checks(p, {1, 2}, {3, 4});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {3},
-                                 {1},
-                                 {1, 1, 2, 2, 1, 1, 3},
-                                 {1, 1, 1, 1, 1, 1, 1},
-                                 {2, 1, 1, 1, 1},
-                                 {4, 4, 4, 3, 3}}));
-      presentation::add_rule_no_checks(p, {1, 2, 3, 1, 2, 4}, {});
-      presentation::balance_no_checks(p, {1, 2, 3}, {5, 6, 7});
-      REQUIRE(p.rules
-              == std::vector<W>({{1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {1, 1, 1, 1, 1},
-                                 {1, 1, 1, 1},
-                                 {3},
-                                 {1},
-                                 {1, 1, 2, 2, 1, 1, 3},
-                                 {1, 1, 1, 1, 1, 1, 1},
-                                 {4, 4, 4, 3, 3},
-                                 {2, 1, 1, 1, 1},
-                                 {1, 2, 4},
-                                 {7, 6, 5}}));
     }
 
     template <typename W>
@@ -1514,15 +1430,306 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "023",
+                                   "helpers balance_no_checks (3 args)",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type) {
+    // TODO(1) Add StaticVector1<uint16_t, 10>. Can't do this until
+    // StaticVector1 has .front or . end
+    auto rg = ReportGuard(false);
+    using W = TestType;
+
+    Presentation<W> p;
+    p.contains_empty_word(true);
+    presentation::add_rule_no_checks(p, {1, 1, 1, 1, 1, 1, 1, 1}, {});
+    REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1, 1, 1, 1, 1}, {}}));
+    presentation::balance_no_checks(p, {1}, {1});
+    REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1}, {1, 1, 1, 1}}));
+
+    presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1, 1, 1, 1, 1});
+    presentation::balance_no_checks(p, {1}, {1});
+    REQUIRE(p.rules
+            == std::vector<W>(
+                {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1}}));
+
+    presentation::add_rule_no_checks(p, {1, 1}, {});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1},
+                               {}}));
+    presentation::balance_no_checks(p, {1}, {1});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1},
+                               {}}));
+
+    presentation::add_rule_no_checks(
+        p, {1, 2, 2, 1}, {2, 1, 1, 1, 1, 1, 1, 1, 1, 2});
+    presentation::balance_no_checks(p, {2}, {1});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1},
+                               {},
+                               {1, 1, 1, 1, 1, 1, 1, 1},
+                               {1, 1, 2, 2, 1, 1}}));
+    presentation::balance_no_checks(p, {1}, {3});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1},
+                               {3},
+                               {1, 1, 1, 1, 1, 1, 1},
+                               {1, 1, 2, 2, 1, 1, 3}}));
+    presentation::add_rule_no_checks(p, {2, 1, 1, 1, 1, 1, 1, 2, 2, 2}, {});
+    presentation::balance_no_checks(p, {1, 2}, {3, 4});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {3},
+                               {1},
+                               {1, 1, 2, 2, 1, 1, 3},
+                               {1, 1, 1, 1, 1, 1, 1},
+                               {2, 1, 1, 1, 1},
+                               {4, 4, 4, 3, 3}}));
+    presentation::add_rule_no_checks(p, {1, 2, 3, 1, 2, 4}, {});
+    presentation::balance_no_checks(p, {1, 2, 3}, {5, 6, 7});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {1, 1, 1, 1, 1},
+                               {1, 1, 1, 1},
+                               {3},
+                               {1},
+                               {1, 1, 2, 2, 1, 1, 3},
+                               {1, 1, 1, 1, 1, 1, 1},
+                               {4, 4, 4, 3, 3},
+                               {2, 1, 1, 1, 1},
+                               {1, 2, 4},
+                               {7, 6, 5}}));
+    p.alphabet({0, 1, 2});
+    p.rules = {{1, 1, 1, 1, 1, 1, 1, 1},
+               {},
+               {2, 2, 2, 1, 1, 1},
+               {},
+               {2, 2, 2, 2, 2},
+               {2, 2}};
+    presentation::balance_no_checks(p, {0, 1}, {1, 0});
+    REQUIRE(p.rules
+            == std::vector<W>({{1, 1, 1, 1},
+                               {0, 0, 0, 0},
+                               {2, 2, 2},
+                               {0, 0, 0},
+                               {2, 2, 2, 2, 2},
+                               {2, 2}}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "086",
+                                   "helpers balance_no_checks (2 args)",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type) {
+    // TODO
+    // TODO(1) Add StaticVector1<uint16_t, 10>. Can't do this until
+    // StaticVector1 has .front or . end
+    auto rg = ReportGuard(false);
+    using W = TestType;
+
+    Presentation<W> p;
+    p.contains_empty_word(true).alphabet({0});
+
+    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    REQUIRE(p.rules == std::vector<W>({{0, 0, 0, 0, 0, 0, 0, 0}, {}}));
+    presentation::balance_no_checks(p, {0});
+    REQUIRE(p.rules == std::vector<W>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
+  }
+
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "023",
-                          "helpers balance_no_checks (all)",
+                          "084",
+                          "helpers balance (3 args, word_type)",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
-    check_balance<word_type>();
-    // TODO(1) Can't do this until StaticVector1 has .front or . end
-    // check_balance<StaticVector1<uint16_t, 10>>();
-    check_balance<std::string>();
+
+    Presentation<word_type> p;
+    p.alphabet(2).contains_empty_word(true);
+    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    presentation::balance(p, {0}, {0});
+    REQUIRE(p.rules == std::vector<word_type>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 0}, {0}),
+                          "invalid alphabet [0, 0], duplicate letter 0!");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0, 0}),
+                          "invalid inverses, the letter 0 is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0}),
+                          "invalid number of inverses, expected 2 but found 1");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {2, 1}, {1, 2}),
+                          "invalid letter 2, valid letters are [0, 1]");
+  }
+
+  // Separate test because exception messages are different
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "085",
+                          "helpers balance (3 args, std::string)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet({0, 1}).contains_empty_word(true);
+    presentation::add_rule(p, {0, 0, 0, 0, 0, 0, 0, 0}, {});
+    presentation::balance(p, std::string(1, 0), std::string(1, 0));
+    REQUIRE(p.rules == std::vector<std::string>({{0, 0, 0, 0}, {0, 0, 0, 0}}));
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 0}, {0}),
+                          "invalid alphabet (char values) [0, 0], duplicate "
+                          "letter (char with value) 0!");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p, {0, 1}, {0, 0}),
+        "invalid inverses, the letter (char with value) 0 is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {0, 1}, {0}),
+                          "invalid number of inverses, expected 2 but found 1");
+    REQUIRE_EXCEPTION_MSG(presentation::balance(p, {2, 1}, {1, 2}),
+                          "invalid letter (char with value) 2, valid letters "
+                          "are (char values) [0, 1]");
+    p.alphabet("ab").contains_empty_word(true);
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance(p, "ab"s, "ba"s);
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "087",
+                          "helpers balance (2 args, std::string)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab").contains_empty_word(true);
+
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance_no_checks(p, "ba"s);
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
+
+    p.rules = {"aaaaaaaaa", "b"};
+    presentation::balance_no_checks(p, "ab"s);
+    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "baaaa"}));
+
+    p.alphabet({0, 1}).contains_empty_word(true);
+    p.rules = {{
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+                   0,
+               },
+               {1}};
+    presentation::balance_no_checks(p, {0, 1});
+
+    REQUIRE(p.rules
+            == std::vector<std::string>({{0, 0, 0, 0, 0}, {1, 0, 0, 0, 0}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "088",
+                          "helpers balance (1 arg)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+
+    p.rules = {"ab",
+               "",
+               "ba",
+               "",
+               "aaaaaaaaaaaaa",
+               "",
+               "bbbbbbbb",
+               "",
+               "cccccccccccc",
+               "cccccc",
+               "bbbbbbbbccccccaaaaccccaaaaaaa",
+               ""};
+
+    presentation::balance(p);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"ab",
+                                         "",
+                                         "ba",
+                                         "",
+                                         "aaaaaaa",
+                                         "bbbbbb",
+                                         "bbbb",
+                                         "aaaa",
+                                         "cccccccccccc",
+                                         "cccccc",
+                                         "bccccccaaaacccc",
+                                         "aaaaaaabbbbbbb"}));
+
+    p.rules = {"",
+               "ab",
+               "aaaaaaaaaaaaa",
+               "",
+               "bbbbbbbb",
+               "",
+               "ba",
+               "",
+               "cccccccccccc",
+               "cccccc",
+               "bbbbbbbbccccccaaaaccccaaaaaaa",
+               ""};
+    presentation::balance(p);
+    REQUIRE(p.rules
+            == std::vector<std::string>({"ab",
+                                         "",
+                                         "aaaaaaa",
+                                         "bbbbbb",
+                                         "bbbb",
+                                         "aaaa",
+                                         "ba",
+                                         "",
+                                         "cccccccccccc",
+                                         "cccccc",
+                                         "bccccccaaaacccc",
+                                         "aaaaaaabbbbbbb"}));
+    p.rules = {"", "aa", "ba", ""};
+    // ba = 1 doesn't count because we are missing ab=1 also
+    REQUIRE_NOTHROW(presentation::balance(p));
+
+    p.rules = {"", "aa", "ba", "", "ab", ""};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p),
+        "the rules \"ab\" = \"\" (rule 2) and \"aa\" = \"\" (rule 0) yield the "
+        "conflicting values 'b' != 'a' for the inverse of 'a', please use the "
+        "2- or 3-argument version of this function to explicitly specify the "
+        "inverses");
+    p.rules = {"", "ab", "ba", "", "cb", "", "bc", ""};
+    REQUIRE_EXCEPTION_MSG(
+        presentation::balance(p),
+        "the rules \"bc\" = \"\" (rule 3) and \"ba\" = \"\" (rule 1) yield the "
+        "conflicting values 'c' != 'a' for the inverse of 'b', please use the "
+        "2- or 3-argument version of this function to explicitly specify the "
+        "inverses");
+    p.rules = {"", "ab", "cb"};
+    REQUIRE_THROWS_AS(presentation::balance(p), LibsemigroupsException);
+
+    p.rules.clear();
+    p.contains_empty_word(false);
+    REQUIRE_NOTHROW(presentation::balance(p));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -1533,18 +1740,18 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     presentation::add_rule_no_checks(p, "aaaaaaaa", "");
-    presentation::balance_no_checks(p, "a", "a");
+    presentation::balance_no_checks(p, "a"s, "a"s);
     presentation::add_rule_no_checks(p, "aaa", "aaaaaa");
-    presentation::balance_no_checks(p, "a", "a");
+    presentation::balance_no_checks(p, "a"s, "a"s);
     presentation::add_rule_no_checks(p, "aa", "");
-    presentation::balance_no_checks(p, "a", "a");
+    presentation::balance_no_checks(p, "a"s, "a"s);
     presentation::add_rule_no_checks(p, "abba", "baaaaaaaab");
-    presentation::balance_no_checks(p, "b", "a");
-    presentation::balance_no_checks(p, "a", "c");
+    presentation::balance_no_checks(p, "b"s, "a"s);
+    presentation::balance_no_checks(p, "a"s, "c"s);
     presentation::add_rule_no_checks(p, "baaaaaabbb", "");
-    presentation::balance_no_checks(p, "ab", "cd");
+    presentation::balance_no_checks(p, "ab"s, "cd"s);
     presentation::add_rule_no_checks(p, "abcabd", "");
-    presentation::balance_no_checks(p, "abc", "efg");
+    presentation::balance_no_checks(p, "abc"s, "efg"s);
     REQUIRE(p.rules
             == std::vector<std::string>(  // codespell:begin-ignore
                 {"aaaa",
@@ -3306,6 +3513,117 @@ namespace libsemigroups {
     REQUIRE(presentation::to_report_string(p)
             == "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], "
                "∑(|u| + |v|) = 0\n");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "082",
+                          "throw_if_bad_inverses 2 args",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "adc"s),
+                          "invalid letter 'd', valid letters are \"abc\"");
+    REQUIRE_EXCEPTION_MSG(
+        presentation::throw_if_bad_inverses(p, "bca"s),
+        "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "aac"s),
+                          "invalid inverses, the letter 'a' is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ac"s),
+                          "invalid number of inverses, expected 3 but found 2");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "083",
+                          "throw_if_bad_inverses 3 args",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ab"s));
+    REQUIRE_NOTHROW(presentation::throw_if_bad_inverses(p, "ab"s, "ba"s));
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "bc"s, "ac"s),
+                          "invalid letter 'a', valid letters are \"bc\"");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "aa"s, "bb"s),
+                          "invalid alphabet \"aa\", duplicate letter 'a'!");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bb"s),
+                          "invalid inverses, the letter 'b' is duplicated!");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bac"s),
+                          "invalid number of inverses, expected 2 but found 3");
+    REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "abc"s, "ba"s),
+                          "invalid number of inverses, expected 3 but found 2");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "089",
+                          "is_rule (std::string)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    p.rules = {"aaa", "", "ba", "", "ba", "ab"};
+    REQUIRE(presentation::is_rule(p, "ba"s, "ab"s));
+    REQUIRE(!presentation::is_rule(p, "ba"s, "aa"s));
+    REQUIRE(!presentation::is_rule(p, "ba"s, "aa"s));
+    REQUIRE(presentation::is_rule(p, "aaa"s, ""s));
+    REQUIRE(!presentation::is_rule(p, ""s, "ba"s));
+
+    p.rules = {"aaa", "", "ba", "", "ba"};
+    REQUIRE_THROWS_AS(presentation::is_rule(p, ""s, ""s),
+                      LibsemigroupsException);
+    REQUIRE(presentation::is_rule_no_checks(p, "ba"s, ""s));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "090",
+                          "find_rule (std::string)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    p.rules = {"aaa", "", "ba", "", "ba", "ab"};
+
+    auto it = presentation::find_rule(p, "ba"s, "ab"s);
+    REQUIRE(std::distance(p.rules.begin(), it) == 4);
+
+    it = presentation::find_rule(p, "ba"s, "aa"s);
+    REQUIRE(it == p.rules.end());
+
+    it = presentation::find_rule(p, "aaa"s, ""s);
+    REQUIRE(std::distance(p.rules.begin(), it) == 0);
+
+    p.rules = {"aaa", "", "ba", "", "ba"};
+    REQUIRE_THROWS_AS(presentation::find_rule(p, ""s, ""s),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "091",
+                          "index_rule (std::string)",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    p.rules = {"aaa", "", "ba", "", "ba", "ab"};
+
+    REQUIRE(presentation::index_rule(p, "ba"s, "ab"s) == 4);
+    REQUIRE(presentation::index_rule(p, "ba"s, "aa"s) == UNDEFINED);
+    REQUIRE(presentation::index_rule(p, "aaa"s, ""s) == 0);
+    REQUIRE(presentation::index_rule(p, ""s, "ba"s) == UNDEFINED);
+
+    p.rules = {"aaa", "", "ba", "", "ba"};
+    REQUIRE_THROWS_AS(presentation::index_rule(p, ""s, ""s),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "092",
+                          "index_rule (word_type)",
+                          "[quick][presentation]") {
+    Presentation<word_type> p;
+    p.alphabet(3).contains_empty_word(true);
+    p.rules = {000_w, ""_w, 10_w, ""_w, 10_w, 01_w};
+
+    REQUIRE(presentation::index_rule(p, 10_w, 01_w) == 4);
+    REQUIRE(presentation::index_rule(p, 10_w, 00_w) == UNDEFINED);
+    REQUIRE(presentation::index_rule(p, 000_w, ""_w) == 0);
+    REQUIRE(presentation::index_rule(p, ""_w, 10_w) == UNDEFINED);
+    REQUIRE(presentation::index_rule(p, {}, {1, 0}) == UNDEFINED);
   }
 
 }  // namespace libsemigroups
