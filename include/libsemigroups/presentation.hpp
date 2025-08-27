@@ -2282,21 +2282,15 @@ namespace libsemigroups {
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow std::string_view to be used for the parameters \p letters and
     //! \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  std::string_view           letters,
-                                  std::string_view           inverses) {
-      balance_no_checks<std::string, std::string_view>(p, letters, inverses);
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This is an overload for
-    //! \ref balance_no_checks(Presentation<Word>&, Word const&)
-    //! to allow std::string_view to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  std::string_view           inverses) {
-      balance_no_checks(p, std::string_view(p.alphabet()), inverses);
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
+    // clang-format on
+    inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
+                                                  std::string_view letters,
+                                                  std::string_view inverses) {
+      balance_no_checks<std::string, std::string_view>(p, letters, inverses);
     }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
@@ -2305,50 +2299,16 @@ namespace libsemigroups {
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! to allow string literals to be used for the parameters \p letters and
     //! \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  char const*                letters,
-                                  char const*                inverses) {
+    //!
+    // clang-format off
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
+    // clang-format on
+    inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
+                                                  char const* letters,
+                                                  char const* inverses) {
       balance_no_checks(
           p, std::string_view(letters), std::string_view(inverses));
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance_no_checks(Presentation<Word>&, Word const&)
-    //! to allow std::initializer_list<char> to be used for the parameters
-    //! \p letters and \p inverses.
-    inline void balance_no_checks(Presentation<std::string>& p,
-                                  char const*                inverses) {
-      balance_no_checks(
-          p, std::string_view(p.alphabet()), std::string_view(inverses));
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow std::initializer_list<char> to be used for the parameters
-    //! \p letters and \p inverses.
-    // There's some weirdness with {0} being interpreted as a string_view, which
-    // means that the next overload is required
-    inline void balance_no_checks(Presentation<std::string>&         p,
-                                  std::initializer_list<char> const& letters,
-                                  std::initializer_list<char> const& inverses) {
-      balance_no_checks(p, std::string(letters), std::string(inverses));
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance_no_checks(Presentation<Word>&, Word const&)
-    //! to allow std::initializer_list<char> to be used for the parameters
-    //! \p letters and \p inverses.
-    // There's some weirdness with {0} being interpreted as a string_view, which
-    // means that the next overload is required
-    inline void balance_no_checks(Presentation<std::string>&         p,
-                                  std::initializer_list<char> const& inverses) {
-      balance_no_checks(p, p.alphabet(), std::string(inverses));
     }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
@@ -2418,78 +2378,6 @@ namespace libsemigroups {
                  Word const&         letters,
                  Word const&         inverses) {
       balance<Word, Word>(p, letters, inverses);
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow std::string_view to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance(Presentation<std::string>& p,
-                        std::string_view           letters,
-                        std::string_view           inverses) {
-      balance<std::string, std::string_view>(p, letters, inverses);
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance(Presentation<Word>&, Word const&)
-    //! to allow std::string_view to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance(Presentation<std::string>& p,
-                        std::string_view           inverses) {
-      balance<std::string, std::string_view>(p, p.alphabet(), inverses);
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow string literals to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance(Presentation<std::string>& p,
-                        char const*                letters,
-                        char const*                inverses) {
-      balance(p, std::string_view(letters), std::string_view(inverses));
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow string literals to be used for the parameters \p letters and
-    //! \p inverses.
-    inline void balance(Presentation<std::string>& p, char const* inverses) {
-      balance(p, std::string_view(p.alphabet()), std::string_view(inverses));
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow std::initializer_list<char> to be used for the parameters
-    //! \p letters and \p inverses.
-    // There's some weirdness with {0} being interpreted as a string_view, which
-    // means that the next overload is required
-    inline void balance(Presentation<std::string>&         p,
-                        std::initializer_list<char> const& letters,
-                        std::initializer_list<char> const& inverses) {
-      balance(p, std::string(letters), std::string(inverses));
-    }
-
-    //! \brief Balance the length of the left-hand and right-hand sides.
-    //!
-    //! This is an overload for
-    //! \ref balance(Presentation<Word1>&, Word2 const&, Word2 const&)
-    //! to allow std::initializer_list<char> to be used for the parameters
-    //! \p letters and \p inverses.
-    // There's some weirdness with {0} being interpreted as a string_view, which
-    // means that the next overload is required
-    inline void balance(Presentation<std::string>&         p,
-                        std::initializer_list<char> const& inverses) {
-      balance(p, p.alphabet(), std::string(inverses));
     }
 
     //! \brief Detect inverses and balance the length of the left-hand and

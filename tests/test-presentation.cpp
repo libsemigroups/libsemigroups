@@ -27,7 +27,6 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <string>            // for basic_string, operator==
-#include <string_view>       // for string_view
 #include <tuple>             // for _Swallow_assign, ignore
 #include <type_traits>       // for is_same, is_unsigned_v
 #include <unordered_map>     // for operator==, operator!=
@@ -1606,10 +1605,7 @@ namespace libsemigroups {
                           "are (char values) [0, 1]");
     p.alphabet("ab").contains_empty_word(true);
     p.rules = {"aaaaaaaaa", "b"};
-    presentation::balance(p, "ab", "ba");
-    REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
-    p.rules = {"aaaaaaaaa", "b"};
-    presentation::balance(p, std::string_view("ab"), std::string_view("ba"));
+    presentation::balance(p, "ab"s, "ba"s);
     REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
   }
 
@@ -1623,11 +1619,11 @@ namespace libsemigroups {
     p.alphabet("ab").contains_empty_word(true);
 
     p.rules = {"aaaaaaaaa", "b"};
-    presentation::balance_no_checks(p, "ba");
+    presentation::balance_no_checks(p, "ba"s);
     REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "bbbbb"}));
 
     p.rules = {"aaaaaaaaa", "b"};
-    presentation::balance_no_checks(p, std::string_view("ab"));
+    presentation::balance_no_checks(p, "ab"s);
     REQUIRE(p.rules == std::vector<std::string>({"aaaaa", "baaaa"}));
 
     p.alphabet({0, 1}).contains_empty_word(true);
@@ -1744,18 +1740,18 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     presentation::add_rule_no_checks(p, "aaaaaaaa", "");
-    presentation::balance_no_checks(p, "a", "a");
+    presentation::balance_no_checks(p, "a"s, "a"s);
     presentation::add_rule_no_checks(p, "aaa", "aaaaaa");
-    presentation::balance_no_checks(p, "a", "a");
+    presentation::balance_no_checks(p, "a"s, "a"s);
     presentation::add_rule_no_checks(p, "aa", "");
-    presentation::balance_no_checks(p, "a", "a");
+    presentation::balance_no_checks(p, "a"s, "a"s);
     presentation::add_rule_no_checks(p, "abba", "baaaaaaaab");
-    presentation::balance_no_checks(p, "b", "a");
-    presentation::balance_no_checks(p, "a", "c");
+    presentation::balance_no_checks(p, "b"s, "a"s);
+    presentation::balance_no_checks(p, "a"s, "c"s);
     presentation::add_rule_no_checks(p, "baaaaaabbb", "");
-    presentation::balance_no_checks(p, "ab", "cd");
+    presentation::balance_no_checks(p, "ab"s, "cd"s);
     presentation::add_rule_no_checks(p, "abcabd", "");
-    presentation::balance_no_checks(p, "abc", "efg");
+    presentation::balance_no_checks(p, "abc"s, "efg"s);
     REQUIRE(p.rules
             == std::vector<std::string>(  // codespell:begin-ignore
                 {"aaaa",

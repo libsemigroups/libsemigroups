@@ -70,6 +70,7 @@ namespace libsemigroups {
 
   using word_graph_type = typename Sims1::word_graph_type;
   using node_type       = typename word_graph_type::node_type;
+  using std::string_literals::operator""s;
 
   using namespace literals;
 
@@ -3208,7 +3209,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Aba", "aab");
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    presentation::balance_no_checks(p, "abcABC", "ABCabc");
+    presentation::balance_no_checks(p, "abcABC"s, "ABCabc"s);
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aa");
     presentation::replace_word_with_new_generator(p, "aa");
