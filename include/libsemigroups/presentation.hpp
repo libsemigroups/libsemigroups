@@ -2307,8 +2307,7 @@ namespace libsemigroups {
     inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
                                                   char const* letters,
                                                   char const* inverses) {
-      balance_no_checks(
-          p, std::string_view(letters), std::string_view(inverses));
+      balance_no_checks(p, std::string(letters), std::string(inverses));
     }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
