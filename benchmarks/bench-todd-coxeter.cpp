@@ -36,7 +36,8 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 //
 namespace libsemigroups {
-  using literals::operator""_p;
+  using literals::            operator""_p;
+  using std::string_literals::operator""s;
   using strategy         = detail::ToddCoxeterImpl::options::strategy;
   using lookahead_extent = detail::ToddCoxeterImpl::options::lookahead_extent;
   using def_policy       = detail::ToddCoxeterImpl::options::def_policy;
@@ -1360,7 +1361,7 @@ namespace libsemigroups {
           p,
           "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
           "");
-      presentation::balance_no_checks(p, "abAB", "ABab");
+      presentation::balance_no_checks(p, "abAB"s, "ABab"s);
       presentation::sort_rules(p);
 
       emit_xml_presentation_tags(p, "SL219", 180);
