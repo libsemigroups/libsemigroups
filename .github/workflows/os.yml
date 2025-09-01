@@ -48,7 +48,7 @@ jobs:
     env:
       CHERE_INVOKING: 1
     steps:
-      - uses: gap-actions/setup-cygwin@v1
+      - uses: gap-actions/setup-cygwin@v2
       - uses: actions/checkout@v5
       - name: Configure . . .
         run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
