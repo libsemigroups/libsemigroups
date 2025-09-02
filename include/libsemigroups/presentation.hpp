@@ -2162,21 +2162,26 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
-    //! \brief Detect inverses.
+    //! \brief Try to detect group inverses.
     //!
-    //! This function tries to deduce any inverses defined by the rules of
-    //! presentation in the following way: the rules of the presentation
-    //! where one side has length 2 and the other has length 0 are detected.
-    //! For any such rule we remember that the first letter is the inverse of
-    //! the second and vice versa. If there are no such rules, then no changes
-    //! are made. If there are multiple different such rules and we deduce
-    //! conflicting values for the inverse of a letter, then an exception is
-    //! thrown.
+    //! This function tries to deduce group theoretic inverses defined by the
+    //! rules of the presentation \p p as following: the rules of the
+    //! presentation where one side has length 2 and the other has length 0 are
+    //! detected. For any such rule we remember that the first letter is a
+    //! possible inverse of the second. If rules of the form `ab=1` and `ba=1`
+    //! are detected, then \c a has inverse \c b and vice versa. If there are
+    //! multiple different such rules and we deduce conflicting values for the
+    //! inverse of a letter, then an exception is thrown.
+    //!
+    //! Those letters where an inverse is detected are pushed into the back of
+    //! the parameter \p letters, and the detected inverse is pushed into \p
+    //! inverses. The parameters \p letters and \p inverses are modified
+    //! in-place, and are not cleared before adding letters or their inverses.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
-    //! \param letters the word to store the letters with inverses.
-    //! \param inverses the word to store the inverses found.
+    //! \param letters the word to contain the letters with inverses.
+    //! \param inverses the word to contain the inverses found.
     //!
     //! \throws LibsemigroupsException if
     //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
@@ -2187,12 +2192,19 @@ namespace libsemigroups {
                              Word&               letters,
                              Word&               inverses);
 
-    //! \brief Detect inverses.
+    //! \brief Try to detect group inverses.
     //!
     //! This function constructs two \c Word objects to store the letters and
     //! inverses, performs
     //! \ref try_detect_inverses(Presentation<Word>&, Word&, Word&)
-    //! and then returns the result.
+    //! and then returns the result \c pair as a std::pair where:
+    //!
+    //! * `pair.first` is the list of letters such that an inverse was
+    //! detected;
+    //! * `pair.second` is the list of inverses of the letters in `pair.first`
+    //! (where the letter in position \c i is the inverse of `pair.first[i]`,
+    //! and vice versa).
+    //!
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
@@ -2385,13 +2397,7 @@ namespace libsemigroups {
     //! This function calls
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! where the 2nd and 3rd arguments are deduced from the rules in the
-    //! presentation if possible as follows: the rules of the presentation
-    //! where one side has length 2 and the other has length 0 are detected.
-    //! For any such rule we remember that the first letter is the inverse of
-    //! the second and vice versa. If there are no such rules, then no changes
-    //! are made. If there are multiple different such rules and we deduce
-    //! conflicting values for the inverse of a letter, then an exception is
-    //! thrown.
+    //! using \ref try_detect_inverses.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
