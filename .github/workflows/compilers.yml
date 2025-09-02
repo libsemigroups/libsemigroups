@@ -94,7 +94,10 @@ jobs:
           echo "LD_LIBRARY_PATH=$MAMBA_ROOT_PREFIX/envs/builder/lib:/usr/local/lib" >> $GITHUB_ENV
           echo "PATH=$MAMBA_ROOT_PREFIX/envs/builder/bin:$PATH" >> $GITHUB_ENV
       - name: Compiler info . . .
-        run: ${{ matrix.sys.compiler }} --version
+        run: |
+          ${{ matrix.sys.compiler }} --version
+          ld -v
+
       - name: Configure . . .
         run: |
           ./autogen.sh
