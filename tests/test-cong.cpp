@@ -1373,4 +1373,16 @@ namespace libsemigroups {
                "letters, 1 rule, and length 10> with 1 gen. pair, 4 runners>");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "040",
+                          "obviously infinite",
+                          "[quick][cong]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "bab", "ba");
+    Congruence c(twosided, p);
+    REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
+  }
+
 }  // namespace libsemigroups
