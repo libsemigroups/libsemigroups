@@ -2270,4 +2270,22 @@ namespace libsemigroups {
                "with 7 letters, 2 rules, and length 10> with small overlap "
                "class +∞>");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "047",
+                          "is_obviously_infinite respects generating pairs",
+                          "[quick][kambites]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.contains_empty_word(true).alphabet(2);
+    presentation::add_rule(p, 01_w, {});
+
+    REQUIRE(is_obviously_infinite(p));
+
+    Kambites k(twosided, p);
+    REQUIRE(is_obviously_infinite(k));
+    kambites::add_generating_pair(k, 111_w, {});
+    REQUIRE(!is_obviously_infinite(k));
+  }
 }  // namespace libsemigroups

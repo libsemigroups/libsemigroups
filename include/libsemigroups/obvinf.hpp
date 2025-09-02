@@ -614,7 +614,13 @@ namespace libsemigroups {
     if (k.finished() && k.small_overlap_class() >= 3) {
       return true;
     }
-    if (is_obviously_infinite(k.presentation())) {
+    auto const&         p = k.presentation();
+    IsObviouslyInfinite ioi(p.alphabet().size());
+    ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules_no_checks(p.alphabet(),
+                            k.internal_generating_pairs().cbegin(),
+                            k.internal_generating_pairs().cend());
+    if (ioi.result()) {
       return true;
     }
     return k.small_overlap_class() >= 3;
