@@ -2276,16 +2276,29 @@ namespace libsemigroups {
                           "is_obviously_infinite respects generating pairs",
                           "[quick][kambites]") {
     auto rg = ReportGuard(false);
+    {
+      Presentation<word_type> p;
+      p.contains_empty_word(true).alphabet(2);
+      presentation::add_rule(p, 01_w, {});
 
-    Presentation<word_type> p;
-    p.contains_empty_word(true).alphabet(2);
-    presentation::add_rule(p, 01_w, {});
+      REQUIRE(is_obviously_infinite(p));
 
-    REQUIRE(is_obviously_infinite(p));
+      Kambites k(twosided, p);
+      REQUIRE(is_obviously_infinite(k));
+      kambites::add_generating_pair(k, 111_w, {});
+      REQUIRE(!is_obviously_infinite(k));
+    }
+    {
+      Presentation<std::string> p;
+      p.contains_empty_word(true).alphabet("ab");
+      presentation::add_rule(p, "ab", "");
 
-    Kambites k(twosided, p);
-    REQUIRE(is_obviously_infinite(k));
-    kambites::add_generating_pair(k, 111_w, {});
-    REQUIRE(!is_obviously_infinite(k));
+      REQUIRE(is_obviously_infinite(p));
+
+      Kambites k(twosided, p);
+      REQUIRE(is_obviously_infinite(k));
+      kambites::add_generating_pair(k, "bbb", "");
+      REQUIRE(!is_obviously_infinite(k));
+    }
   }
 }  // namespace libsemigroups
