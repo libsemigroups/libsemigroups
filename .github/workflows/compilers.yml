@@ -87,6 +87,7 @@ jobs:
             libtool
             pkg-config
             compiler-rt
+            ld64
             ${{ matrix.sys.package }}
       - name: "Set environment variables . . ."
         run: |
