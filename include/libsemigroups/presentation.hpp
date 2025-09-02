@@ -2299,9 +2299,10 @@ namespace libsemigroups {
     // NOLINTNEXTLINE(whitespace/line_length)
     //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
     // clang-format on
-    inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
-                                                  std::string_view letters,
-                                                  std::string_view inverses) {
+    static inline void balance_no_checks
+        [[deprecated]] (Presentation<std::string>& p,
+                        std::string_view           letters,
+                        std::string_view           inverses) {
       balance_no_checks<std::string, std::string_view>(p, letters, inverses);
     }
 
@@ -2316,9 +2317,10 @@ namespace libsemigroups {
     // NOLINTNEXTLINE(whitespace/line_length)
     //! \deprecated_alias_warning{balance_no_checks(Presentation<Word>&, Word const&, Word const&)}
     // clang-format on
-    inline void balance_no_checks [[deprecated]] (Presentation<std::string>& p,
-                                                  char const* letters,
-                                                  char const* inverses) {
+    static inline void balance_no_checks
+        [[deprecated]] (Presentation<std::string>& p,
+                        char const*                letters,
+                        char const*                inverses) {
       balance_no_checks(p, std::string(letters), std::string(inverses));
     }
 
