@@ -43,11 +43,11 @@ namespace libsemigroups {
 
   namespace {
     long double factorial(size_t n) {
-      if (n == 0) {
+      if (n <= 1) {
         return 1;
       }
       long double result = 1;
-      for (uint64_t i = 1; i != n; ++i) {
+      for (uint64_t i = 2; i < n + 1; ++i) {
         result *= i;
       }
       return result;
