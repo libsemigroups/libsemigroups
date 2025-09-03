@@ -179,7 +179,8 @@ namespace libsemigroups {
     //! When this occurs this exception is thrown.
     //!
     //! \note This function is based on Sage's `random_element` method for the
-    //! `SetPartitions` class.
+    //! [SetPartitions](https://github.com/sagemath/sage/blob/4cdd703f8b3b061d7f51676ef1a1aa0ba4140c9f/src/sage/combinat/set_partition.py#L2753)
+    //! class.
     void uniform_random(Bipartition& x);
 
     //! \brief Returns a random bipartition of specified degree.
@@ -199,7 +200,7 @@ namespace libsemigroups {
     //! When this occurs this exception is thrown.
     //!
     //! \note This function is based on Sage's `random_element` method for the
-    //! `SetPartitions` class.
+    //! [SetPartitions](https://github.com/sagemath/sage/blob/4cdd703f8b3b061d7f51676ef1a1aa0ba4140c9f/src/sage/combinat/set_partition.py#L2753)
     Bipartition uniform_random(size_t deg);
 
     //! \brief Replace the contents of a bipartition with a random bipartition.

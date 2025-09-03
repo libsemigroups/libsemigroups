@@ -381,7 +381,7 @@ namespace libsemigroups {
       static std::random_device rd;
       static std::mt19937       mt(rd());
 
-      auto const c = M_E * bell_number(N);
+      long double const c = M_E * bell_number(N);
       if (std::isnan(c)) {
         LIBSEMIGROUPS_EXCEPTION(
             "the degree ({}) of the argument <x> (a bipartition) is too large, "
@@ -391,7 +391,6 @@ namespace libsemigroups {
       std::discrete_distribution<uint64_t> g(
           4 * N, 0, 4 * N, [&N, &c](long double m) -> long double {
             long double num = std::pow(m, N);
-
             long double den = c * factorial(m);
             if (std::isnan(num) || std::isnan(den) || std::isnan(num / den)) {
               LIBSEMIGROUPS_EXCEPTION("the degree ({}) of the argument <x> (a "
@@ -402,7 +401,7 @@ namespace libsemigroups {
             return num / den;
           });
 
-      auto                                    M = g(mt);
+      auto                                    M = g(mt) - 1;
       std::uniform_int_distribution<uint32_t> dist(0, M);
 
       uint32_t              next = 0;

@@ -594,12 +594,21 @@ namespace libsemigroups {
     REQUIRE(x.degree() == 10);
     REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
 
-    std::unordered_set<Bipartition, Hash<Bipartition>> map;
+    std::unordered_map<Bipartition, size_t, Hash<Bipartition>> map;
 
     for (size_t i = 0; i < 3417; ++i) {
-      map.emplace(bipartition::random(3));
+      auto [it, _] = map.emplace(bipartition::random(3), 0);
+      it->second++;
     }
-    REQUIRE(map.size() >= 200);
+    REQUIRE(map.size() == 203);
+
+    // std::vector<size_t> occur(map.size(), 0);
+    // std::transform(map.begin(), map.end(), occur.begin(), [](auto const&
+    // pair) {
+    //   return pair.second;
+    // });
+    // std::sort(occur.begin(), occur.end());
+    // REQUIRE(occur == std::vector<size_t>());
 
     REQUIRE_NOTHROW(bipartition::random(0));
     REQUIRE(bipartition::random(0) == Bipartition());
@@ -626,7 +635,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < 82'138; ++i) {
       map.emplace(bipartition::random(4));
     }
-    REQUIRE(map.size() > 4'100);
+    REQUIRE(map.size() == 4'140);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
