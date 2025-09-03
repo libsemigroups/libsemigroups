@@ -388,8 +388,16 @@ namespace libsemigroups {
             "please use random(x) instead",
             N / 2);
       }
-      std::discrete_distribution<uint64_t> g(
-          4 * N, 0, 4 * N, [&N, &c](long double m) -> long double {
+
+      // Construct a distribution over the sample space X = {0, 1, ..., 4N - 1}
+      // where the probability of selecting m in X is given by (m^N)/(cm!)
+      std::vector<long double> weights(4 * N);
+      std::iota(std::begin(weights), std::end(weights), 0);
+      std::transform(
+          std::cbegin(weights),
+          std::cend(weights),
+          std::begin(weights),
+          [&N, &c](long double m) -> long double {
             long double num = std::pow(m, N);
             long double den = c * factorial(m);
             if (std::isnan(num) || std::isnan(den) || std::isnan(num / den)) {
@@ -400,6 +408,8 @@ namespace libsemigroups {
             }
             return num / den;
           });
+      std::discrete_distribution<uint64_t> g(std::begin(weights),
+                                             std::end(weights));
 
       auto                                    M = g(mt) - 1;
       std::uniform_int_distribution<uint32_t> dist(0, M);
