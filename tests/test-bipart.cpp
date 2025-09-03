@@ -46,6 +46,57 @@ namespace libsemigroups {
       return result;
     }
 
+    // The upper quantile should be calculated using some quantile Chi-squared
+    // function which, to JDE's knowledge, isn't readily available in C++.
+    // In R, use:
+    // > qchisq(0.99, df)
+    // to calculate a 99% quantile where df is one less than the total number
+    // of bipartitions of the given degree.
+    //
+    // We specify the expected number of times each bipartition should appear
+    // rather than the number of samples to generate because the validity of the
+    // test is weakend if the expected number is too small.
+    //
+    // The Chi squared statistic is Σ((O_i - E)^2/E) where:
+    // O_i = Number of occurrences of the ith bipartition
+    // E = expected
+    //
+    // Reject the hypothesis that our distribution is uniform (i.e. fail the
+    // test) if the test statistic is larger than upper_quantile.
+    void test_uniform_bipartition(size_t  deg,
+                                  size_t  num_total_bipartitions,
+                                  float_t upper_quantile,
+                                  float_t expected = 20) {
+      // Perform the sampling
+      size_t num_trials = expected * num_total_bipartitions;
+      std::unordered_map<Bipartition, size_t, Hash<Bipartition>> map;
+
+      for (size_t i = 0; i < num_trials; ++i) {
+        ++map[bipartition::uniform_random(deg)];
+      }
+
+      // Calculate the test statistic
+      float_t statistic               = 0;
+      float_t correction              = 0;
+      size_t  nr_unfound_bipartitions = num_total_bipartitions - map.size();
+
+      if (expected < 10) {
+        // Perform Yates's continuity correction
+        correction = 0.5;
+      }
+
+      for (const auto& [bip, count] : map) {
+        float_t difference = std::abs(count - expected) - correction;
+        statistic += (difference * difference / expected);
+      }
+
+      statistic
+          += nr_unfound_bipartitions
+             * ((expected - correction) * (expected - correction) / expected);
+
+      REQUIRE(statistic < upper_quantile);
+    }
+
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "000", "empty blocks", "[quick]") {
@@ -646,6 +697,25 @@ namespace libsemigroups {
         bipartition::uniform_random(1000),
         "the degree (1000) of the argument <x> (a bipartition) is too large, "
         "please use random(x) instead");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "022",
+                          "uniform_random chi-squared test x1",
+                          "[standard][bipart]") {
+    // The third parameter here is a 99th percentile for the chi squared
+    // distribution with 1, 14, 202 and 1439 degrees of freedom respectively.
+    test_uniform_bipartition(1, 2, 6.634897, 500);
+    test_uniform_bipartition(2, 15, 29.14124, 500);
+    test_uniform_bipartition(3, 203, 251.6773, 500);
+    test_uniform_bipartition(4, 4140, 4353.596, 30);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "023",
+                          "uniform_random chi-squared test x2",
+                          "[extreme][bipart]") {
+    test_uniform_bipartition(5, 115'975, 117'097.3, 10);
   }
 
 }  // namespace libsemigroups
