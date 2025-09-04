@@ -247,6 +247,9 @@ namespace libsemigroups {
 
   template <typename Word>
   uint64_t Congruence<Word>::number_of_classes() {
+    if (is_obviously_infinite(*this)) {
+      return POSITIVE_INFINITY;
+    }
     run();
     auto winner_kind = _runner_kinds[_race.winner_index()];
     if (winner_kind == RunnerKind::TC) {

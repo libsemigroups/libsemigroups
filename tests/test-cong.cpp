@@ -538,6 +538,9 @@ namespace libsemigroups {
     // non-trivial classes.
     // REQUIRE(cong.number_of_non_trivial_classes() == 0);
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+    // cong hasn't started yet, because the presentation is obviously infinite.
+    REQUIRE(!cong.started());
+    cong.run();
     REQUIRE(cong.has<KnuthBendix<std::string>>());
     REQUIRE(
         knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix<std::string>>(),
@@ -1350,6 +1353,8 @@ namespace libsemigroups {
     REQUIRE(c.has<ToddCoxeter<std::string>>());
     REQUIRE(c.has<Kambites<std::string>>());
     REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(!c.started());
+    c.run();
     REQUIRE(c.number_of_runners() == 1);
     REQUIRE(!c.has<ToddCoxeter<std::string>>());
     REQUIRE(!c.has<Kambites<std::string>>());
@@ -1371,6 +1376,18 @@ namespace libsemigroups {
     REQUIRE(to_human_readable_repr(cong)
             == "<2-sided Congruence over <semigroup presentation with 7 "
                "letters, 1 rule, and length 10> with 1 gen. pair, 4 runners>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "040",
+                          "obviously infinite",
+                          "[quick][cong]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "bab", "ba");
+    Congruence c(twosided, p);
+    REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
   }
 
 }  // namespace libsemigroups
