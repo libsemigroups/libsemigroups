@@ -125,11 +125,6 @@ namespace libsemigroups {
 
     template <size_t C>
     void ReportCell<C>::emit() {
-      auto fmt = [](auto&&... args) {
-        report_no_lock_no_prefix(
-            fmt_default(std::forward<decltype(args)>(args)...));
-      };
-
       for (size_t i = 0; i < _rows.size(); ++i) {
         for (size_t j = 1; j < C + 1; ++j) {
           auto pad
@@ -141,26 +136,16 @@ namespace libsemigroups {
           }
         }
       }
+      auto fmt = [](auto&&... args) {
+        report_no_lock_no_prefix(
+            fmt_default(std::forward<decltype(args)>(args)...));
+      };
+      // lock the report mutex so the whole table is printed before anything
+      // else (from another thread)
       std::lock_guard lock(report_mutex());
-      if (_divider_before) {
-        // TODO remove use add_divider
-        report_no_lock_no_prefix("{:+<32}\n", "");
-      }
       for (size_t i = 0; i < _rows.size(); ++i) {
-        if (!_rows[i].empty()
-            && static_cast<size_t>(
-                   std::count(_rows[i][0].begin(), _rows[i][0].end(), '+'))
-                   == _rows[i][0].size()) {
-          // TODO remove this clause, and just put exactly what is desired into
-          // each row.
-          report_no_lock_no_prefix("{}\n", _rows[i][0]);
-        } else {
-          std::apply(fmt, _rows[i]);
-        }
+        std::apply(fmt, _rows[i]);
       }
-      // if (_divider_after) {
-      //   report_no_prefix(std::string(line_width(), _divider_char) + "\n");
-      // }
     }
   }  // namespace detail
 }  // namespace libsemigroups

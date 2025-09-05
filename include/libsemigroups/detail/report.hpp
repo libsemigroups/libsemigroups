@@ -46,8 +46,6 @@ namespace libsemigroups {
 
     bool is_report_suppressed_for(std::string_view);
 
-    [[nodiscard]] std::string& last_reported_line_var();
-
     // This class provides a thread-safe means of calling a function every
     // second in a detached thread. The purpose of this class is so that the
     // TickerImpl, which contains the data required by the function to be
@@ -93,19 +91,10 @@ namespace libsemigroups {
       using Row = std::array<std::string, C + 1>;
       std::array<Align, C + 1>  _align;
       std::array<size_t, C + 1> _col_widths;
-      bool                      _divider_after;
-      bool                      _divider_before;
-      char                      _divider_char;
       std::vector<Row>          _rows;
 
      public:
-      ReportCell()
-          : _align(),
-            _col_widths(),
-            _divider_after(false),
-            _divider_before(false),
-            _divider_char('+'),
-            _rows() {
+      ReportCell() : _align(), _col_widths(), _rows() {
         _align.fill(Align::right);
         _col_widths.fill(0);
       }
@@ -161,22 +150,6 @@ namespace libsemigroups {
 
       [[nodiscard]] size_t line_width() const;
 
-      // TODO rm
-      ReportCell& divider_after(bool val) {
-        _divider_after = val;
-        return *this;
-      }
-
-      // TODO rm
-      ReportCell& divider_before(bool val) {
-        _divider_before = val;
-        return *this;
-      }
-
-      void add_divider() {
-        operator()(std::string(32, '+'));
-      }
-
      private:
       void emit();
     };  // ReportCell
@@ -194,16 +167,16 @@ namespace libsemigroups {
   }
 
   //! No doc
+  std::mutex& report_mutex();
+
+  //! No doc
   // This function is provided to allow multiple lines of output to block other
   // lines from being interspersed, by first locking the report_mutex.
   template <typename... Args>
   void report_no_lock_no_prefix(std::string_view sv, Args&&... args) {
     auto line = fmt::format(sv, std::forward<Args>(args)...);
-    detail::last_reported_line_var() = line;
     fmt::print("{}", line);
   }
-
-  std::mutex& report_mutex();
 
   //! No doc
   template <typename... Args>
@@ -229,10 +202,6 @@ namespace libsemigroups {
       report_no_prefix(fmt_default(sv, std::forward<Args>(args)...));
     }
   }
-
-  //! No doc
-  // TODO rm
-  [[nodiscard]] std::string const& last_reported_line();
 
   //! \ingroup core_classes_group
   //!
