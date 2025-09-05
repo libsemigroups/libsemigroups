@@ -338,6 +338,7 @@ namespace libsemigroups {
         uint64_t run_num_lookahead_phases = 0;
 
         std::atomic_uint64_t lookahead_nodes_at_start;
+        std::atomic_uint64_t lookahead_nodes_killed;
       };
 
       // TODO move into Stats, also impl PhaseStats() which does this at
@@ -474,18 +475,18 @@ namespace libsemigroups {
       // 2. ToddCoxeterImpl - data members - private
       ////////////////////////////////////////////////////////////////////////
 
-      bool                                   _finished;
-      Forest                                 _forest;
+      bool   _finished;
+      Forest _forest;
+      // std::mutex                             _mtx;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
 
       // _state must be atomic to avoid the situation where the ticker
       // function is called concurrently with a new lookahead starting
       std::atomic<state> _state;
+      Stats              _stats;  // TODO add to constructors
       bool               _ticker_running;
       Graph              _word_graph;
-
-      Stats _stats;  // TODO add to constructors
 
      public:
       using word_graph_type = Graph;

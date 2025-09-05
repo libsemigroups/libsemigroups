@@ -1585,16 +1585,15 @@ namespace libsemigroups {
              "edges",
              group_digits(active_edges),
              fmt::format("{:.1f}%", 100 * complete(active_edges)));
+          auto percent_complete
+              = complete(current_word_graph().number_of_edges_active());
           if (Z > 0) {
             auto const active_diff1
                 = active_edges - _stats.report_edges_active_prev;
-            auto percent_complete
-                = complete(current_word_graph().number_of_edges_active());
             float const complete_diff1
                 = 100
                   * (percent_complete
                      - static_cast<float>(_stats.report_complete_prev));
-            _stats.report_complete_prev = percent_complete;
 
             rc("{}: {} | {} | {} | {}\n",
                report_prefix(),
@@ -1619,6 +1618,7 @@ namespace libsemigroups {
                              complete_diff2));
             }
           }
+          _stats.report_complete_prev = percent_complete;
         }
         add_timing_row(rc);
         if (_state == state::lookahead && _stats.report_index != 0
@@ -1636,7 +1636,7 @@ namespace libsemigroups {
           // approximate progress . . .
           auto const p = _word_graph.stats().lookahead_position.load();
           auto const N = _stats.lookahead_nodes_at_start.load();
-          auto const r = _word_graph.stats().lookahead_nodes_killed.load();
+          auto const r = _stats.lookahead_nodes_killed.load();
           rc("{}: {} | {} \n",
              report_prefix(),
              "lookahead progress",
@@ -1708,7 +1708,7 @@ namespace libsemigroups {
       }
 
       _stats.lookahead_nodes_at_start = _word_graph.number_of_nodes_active();
-      _word_graph.stats().lookahead_nodes_killed = 0;
+      _stats.lookahead_nodes_killed   = 0;
 
       size_t num_killed_by_me = 0;
       if (lookahead_style() == options::lookahead_style::hlt) {

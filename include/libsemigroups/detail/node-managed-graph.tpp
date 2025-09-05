@@ -45,7 +45,6 @@ namespace libsemigroups {
 
     template <typename Node>
     struct NodeManagedGraph<Node>::Stats {
-      std::atomic_uint64_t lookahead_nodes_killed;
       std::atomic_uint64_t lookahead_position;
       std::atomic_uint64_t num_edges_active;
       std::atomic_uint64_t prev_active_nodes;   // TODO rm?
@@ -54,8 +53,7 @@ namespace libsemigroups {
       uint64_t             report_number;
 
       Stats()
-          : lookahead_nodes_killed(),
-            lookahead_position(),
+          : lookahead_position(),
             num_edges_active(0),
             prev_active_nodes(),
             prev_nodes_killed(),
@@ -63,8 +61,7 @@ namespace libsemigroups {
             report_number(0) {}
 
       Stats(Stats const& that)
-          : lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-            lookahead_position(that.lookahead_position.load()),
+          : lookahead_position(that.lookahead_position.load()),
             num_edges_active(that.num_edges_active.load()),
             prev_active_nodes(that.prev_active_nodes.load()),
             prev_nodes_killed(that.prev_nodes_killed.load()),
@@ -72,13 +69,12 @@ namespace libsemigroups {
             report_number(that.report_number) {}
 
       Stats& operator=(Stats const& that) {
-        lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-        lookahead_position     = that.lookahead_position.load();
-        prev_active_nodes      = that.prev_active_nodes.load();
-        prev_nodes_killed      = that.prev_nodes_killed.load();
-        prev_nodes_defined     = that.prev_nodes_defined.load();
-        num_edges_active       = that.num_edges_active.load();
-        report_number          = that.report_number;
+        lookahead_position = that.lookahead_position.load();
+        prev_active_nodes  = that.prev_active_nodes.load();
+        prev_nodes_killed  = that.prev_nodes_killed.load();
+        prev_nodes_defined = that.prev_nodes_defined.load();
+        num_edges_active   = that.num_edges_active.load();
+        report_number      = that.report_number;
         return *this;
       }
     };
@@ -332,11 +328,10 @@ namespace libsemigroups {
 
     template <typename Node>
     void NodeManagedGraph<Node>::report_progress_from_thread() const {
+      // TODO move to Stephen and revert to previous version
       auto const active  = NodeManager<node_type>::number_of_nodes_active();
       auto const killed  = NodeManager<node_type>::number_of_nodes_killed();
       auto const defined = NodeManager<node_type>::number_of_nodes_defined();
-
-      _stats.lookahead_nodes_killed += killed - _stats.prev_nodes_killed;
 
       auto const active_diff
           = signed_group_digits(active - _stats.prev_active_nodes);
