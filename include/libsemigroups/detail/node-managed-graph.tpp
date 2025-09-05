@@ -45,20 +45,22 @@ namespace libsemigroups {
 
     template <typename Node>
     struct NodeManagedGraph<Node>::Stats {
-      std::atomic_uint64_t lookahead_nodes_at_start;
+      std::atomic_uint64_t lookahead_nodes_at_start;  // TODO rm?
       std::atomic_uint64_t lookahead_nodes_killed;
       std::atomic_uint64_t lookahead_position;
-      std::atomic_uint64_t num_active_edges;
-      std::atomic_uint64_t prev_active_nodes;
-      std::atomic_uint64_t prev_nodes_killed;
-      std::atomic_uint64_t prev_nodes_defined;
+      std::atomic_uint64_t num_edges_active;
+      std::atomic_uint64_t num_edges_killed;
+      std::atomic_uint64_t num_edges_defined;
+      std::atomic_uint64_t prev_active_nodes;   // TODO rm?
+      std::atomic_uint64_t prev_nodes_killed;   // TODO rm?
+      std::atomic_uint64_t prev_nodes_defined;  // TODO rm?
       uint64_t             report_number;
 
       Stats()
           : lookahead_nodes_at_start(),
             lookahead_nodes_killed(),
             lookahead_position(),
-            num_active_edges(0),
+            num_edges_active(0),
             prev_active_nodes(),
             prev_nodes_killed(),
             prev_nodes_defined(),
@@ -68,7 +70,7 @@ namespace libsemigroups {
           : lookahead_nodes_at_start(that.lookahead_nodes_at_start.load()),
             lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
             lookahead_position(that.lookahead_position.load()),
-            num_active_edges(that.num_active_edges.load()),
+            num_edges_active(that.num_edges_active.load()),
             prev_active_nodes(that.prev_active_nodes.load()),
             prev_nodes_killed(that.prev_nodes_killed.load()),
             prev_nodes_defined(that.prev_nodes_defined.load()),
@@ -81,7 +83,7 @@ namespace libsemigroups {
         prev_active_nodes        = that.prev_active_nodes.load();
         prev_nodes_killed        = that.prev_nodes_killed.load();
         prev_nodes_defined       = that.prev_nodes_defined.load();
-        num_active_edges         = that.num_active_edges.load();
+        num_edges_active         = that.num_edges_active.load();
         report_number            = that.report_number;
         return *this;
       }
@@ -239,7 +241,7 @@ namespace libsemigroups {
         if (min != max) {
           std::tie(min, max) = std::minmax({min, max});
           NodeManager<node_type>::union_nodes(min, max);
-          _stats.num_active_edges -= BaseGraph::merge_nodes_no_checks(
+          _stats.num_edges_active -= BaseGraph::merge_nodes_no_checks(
               min, max, new_def, incompat_func);
         }
       }
@@ -280,14 +282,14 @@ namespace libsemigroups {
         c = NodeManager<node_type>::next_active_node(c);
       }
 
-      _stats.num_active_edges = 0;
+      _stats.num_edges_active = 0;
       c                       = NodeManager<node_type>::initial_node();
 
       while (c != NodeManager<node_type>::first_free_node()) {
         for (letter_type x = 0; x < out_degree(); ++x) {
           auto cx = target_no_checks(c, x);
           if (cx != UNDEFINED) {
-            _stats.num_active_edges++;
+            _stats.num_edges_active++;
             auto d = NodeManager<node_type>::find_node(cx);
             if (cx != d) {
               new_def(c, x);
@@ -382,7 +384,7 @@ namespace libsemigroups {
          "?");
       rc("{}: {} | {} | {} | {}\n", report_prefix(), "diff X.0", "?", "?", "?");
 
-      // TODO auto complete = 100 * static_cast<double>(_stats.num_active_edges)
+      // TODO auto complete = 100 * static_cast<double>(_stats.num_edges_active)
       //                 / (this->number_of_nodes_active() * out_degree());
       _stats.report_number++;
       stats_check_point();

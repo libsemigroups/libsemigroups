@@ -310,18 +310,16 @@ namespace libsemigroups {
         time_point run_start_time;
 
         uint64_t   phase_index;
-        uint64_t   phase_edges_defined_at_start;
-        uint64_t   phase_edges_killed_at_start;
         uint64_t   phase_edges_active_at_start;
+        float      phase_complete_at_start;
         uint64_t   phase_nodes_defined_at_start;
         uint64_t   phase_nodes_killed_at_start;
         uint64_t   phase_nodes_active_at_start;
         time_point phase_start_time;
 
         mutable uint64_t report_index;
-        mutable uint64_t report_edges_defined_prev;
-        mutable uint64_t report_edges_killed_prev;
         mutable uint64_t report_edges_active_prev;
+        mutable float    report_complete_prev;
         mutable uint64_t report_nodes_defined_prev;
         mutable uint64_t report_nodes_killed_prev;
         mutable uint64_t report_nodes_active_prev;
@@ -357,7 +355,11 @@ namespace libsemigroups {
             = current_word_graph().number_of_nodes_killed();
         _stats.phase_nodes_defined_at_start
             = current_word_graph().number_of_nodes_defined();
-        // TODO edges
+
+        _stats.phase_edges_active_at_start
+            = current_word_graph().stats().num_edges_active;
+        _stats.phase_complete_at_start
+            = complete(current_word_graph().stats().num_edges_active);
       }
 
       // TODO move into Stats
@@ -422,18 +424,18 @@ namespace libsemigroups {
       // only when the Defer object goes out of scope. Useful in reporting when
       // we want to do something with an old value, then update the data member
       // of Stats.
+      template <typename POD>
       struct Defer {
-        uint64_t& receiver;
-        uint64_t  val;
+        POD& receiver;
+        POD  val;
 
-        Defer(uint64_t& receiver, uint64_t val)
-            : receiver(receiver), val(val) {}
+        Defer(POD& receiver, POD val) : receiver(receiver), val(val) {}
 
         ~Defer() {
           receiver = val;
         }
 
-        operator uint64_t() const {
+        operator POD() const {
           return val;
         }
 
@@ -442,14 +444,23 @@ namespace libsemigroups {
           return static_cast<int64_t>(val);
         }
 
-        int64_t operator-(uint64_t that) const {
+        int64_t operator-(POD that) const {
           return val - that;
         }
       };
 
+      template <typename POD>
+      Defer(POD&, std::atomic<POD>) -> Defer<POD>;
+
       auto reporting_number_of_nodes_active() const {
         return Defer(_stats.report_nodes_active_prev,
                      current_word_graph().number_of_nodes_active());
+      }
+
+      auto reporting_number_of_edges_active() const {
+        return Defer(_stats.report_edges_active_prev,
+                     // FIXME use the stats data member here instead
+                     current_word_graph().number_of_edges_active());
       }
 
       auto reporting_number_of_nodes_defined() const {
@@ -1364,6 +1375,19 @@ namespace libsemigroups {
       // not thread safe, don't call from reporting thread only the main one.
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
         return current_word_graph().number_of_edges_active();
+      }
+
+      [[nodiscard]] float complete() const noexcept {
+        auto num_edges = current_word_graph().stats().num_edges_active.load();
+        return complete(num_edges);
+      }
+
+      // TODO make private
+      [[nodiscard]] float complete(int64_t num_edges) const noexcept {
+        auto num_nodes = current_word_graph().number_of_nodes_active();
+        return float(num_edges)
+               / (static_cast<uint64_t>(num_nodes)
+                  * current_word_graph().out_degree());
       }
 
       // [[nodiscard]] bool empty() const {

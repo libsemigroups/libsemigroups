@@ -153,16 +153,16 @@ namespace libsemigroups {
     template <typename Graph, typename Definitions>
     template <bool RegDefs>
     FelschGraph<Graph, Definitions>&
-    FelschGraph<Graph, Definitions>::target_no_checks(node_type  c,
-                                                      label_type x,
-                                                      node_type  d) noexcept {
-      LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
-      LIBSEMIGROUPS_ASSERT(x < out_degree());
-      LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
+    FelschGraph<Graph, Definitions>::target_no_checks(node_type  s,
+                                                      label_type a,
+                                                      node_type  t) noexcept {
+      LIBSEMIGROUPS_ASSERT(s < number_of_nodes());
+      LIBSEMIGROUPS_ASSERT(a < out_degree());
+      LIBSEMIGROUPS_ASSERT(t < number_of_nodes());
       if constexpr (RegDefs) {
-        _definitions.emplace_back(c, x);
+        _definitions.emplace_back(s, a);
       }
-      Graph::target_no_checks(c, x, d);
+      Graph::target_no_checks(s, a, t);
       return *this;
     }
 

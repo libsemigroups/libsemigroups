@@ -25,8 +25,9 @@
 #include <string_view>  // for basic_string_view
 #include <tuple>        // for tie
 
-#include "libsemigroups/constants.hpp"     // for operator==, operator!=
-#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/constants.hpp"  // for operator==, operator!=
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/string.hpp"
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEP...
 #include "libsemigroups/forest.hpp"        // for Forest
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
@@ -1510,83 +1511,108 @@ namespace libsemigroups {
     void ToddCoxeterImpl::report_progress_from_thread(bool divider) const {
       if (reporting_enabled()) {
         LIBSEMIGROUPS_ASSERT(_state != state::none);
-        auto const active  = reporting_number_of_nodes_active();
-        auto const defined = reporting_number_of_nodes_defined();
-        auto const killed  = reporting_number_of_nodes_killed();
-
-        auto const active_diff1
-            = signed_group_digits(active - _stats.report_nodes_active_prev);
-        auto const killed_diff1
-            = signed_group_digits(killed - _stats.report_nodes_killed_prev);
-        auto const defined_diff1
-            = signed_group_digits(defined - _stats.report_nodes_defined_prev);
-
-        auto const active_diff2
-            = signed_group_digits(active - _stats.phase_nodes_active_at_start);
-        auto const killed_diff2
-            = signed_group_digits(killed - _stats.phase_nodes_killed_at_start);
-        auto const defined_diff2 = signed_group_digits(
-            defined - _stats.phase_nodes_defined_at_start);
-
-        if (divider) {
-          report_no_prefix(report_divider());
-        }
-        auto       rc = report_cell();
+        auto       rc           = report_cell();
+        auto       active_nodes = reporting_number_of_nodes_active();
         auto const X = _stats.run_index, Y = _stats.phase_index,
                    Z = _stats.report_index;
+        {
+          // TODO split into separate function
+          auto defined = reporting_number_of_nodes_defined();
+          auto killed  = reporting_number_of_nodes_killed();
 
-        rc("{}: {} | {} | {} | {}\n",
-           report_prefix(),
-           fmt::format(fmt::emphasis::underline,
-                       "{} {}.{}.{}",
-                       toupper(_state.load()),
-                       X,
-                       Y,
-                       Z),
-           underline("active"),
-           underline("killed"),
-           underline("defined"));
-        rc("{}: {} | {} | {} | {}\n",
-           report_prefix(),
-           "nodes",
-           group_digits(active),
-           group_digits(killed),
-           group_digits(defined));
-        // TODO could add rows with max. overall/run/phase./min. values,
-        if (Z > 0) {
+          auto const active_diff1 = signed_group_digits(
+              active_nodes - _stats.report_nodes_active_prev);
+          auto const killed_diff1
+              = signed_group_digits(killed - _stats.report_nodes_killed_prev);
+          auto const defined_diff1
+              = signed_group_digits(defined - _stats.report_nodes_defined_prev);
+
+          auto const active_diff2 = signed_group_digits(
+              active_nodes - _stats.phase_nodes_active_at_start);
+          auto const killed_diff2 = signed_group_digits(
+              killed - _stats.phase_nodes_killed_at_start);
+          auto const defined_diff2 = signed_group_digits(
+              defined - _stats.phase_nodes_defined_at_start);
+
+          if (divider) {
+            report_no_prefix(report_divider());
+          }
+
           rc("{}: {} | {} | {} | {}\n",
              report_prefix(),
-             fmt::format("diff {}.{}.{}", X, Y, Z - 1),
-             active_diff1,
-             killed_diff1,
-             defined_diff1);
-          if (Z > 1) {
+             fmt::format(fmt::emphasis::underline,
+                         "{} {}.{}.{}",
+                         toupper(_state.load()),
+                         X,
+                         Y,
+                         Z),
+             underline("active"),
+             underline("killed"),
+             underline("defined"));
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             "nodes",
+             group_digits(active_nodes),
+             group_digits(killed),
+             group_digits(defined));
+          // TODO could add rows with max. overall/run/phase./min. values,
+          if (Z > 0) {
             rc("{}: {} | {} | {} | {}\n",
                report_prefix(),
-               fmt::format("diff {}.{}.0", X, Y),
-               active_diff2,
-               killed_diff2,
-               defined_diff2);
+               fmt::format("diff {}.{}.{}", X, Y, Z - 1),
+               active_diff1,
+               killed_diff1,
+               defined_diff1);
+            if (Z > 1) {
+              rc("{}: {} | {} | {} | {}\n",
+                 report_prefix(),
+                 fmt::format("diff {}.{}.0", X, Y),
+                 active_diff2,
+                 killed_diff2,
+                 defined_diff2);
+            }
           }
-          // TODO add diff from last phase of previous run.
         }
-        rc("{}: {} | {} | {} | {}\n", report_prefix(), "edges", "?", "?", "?");
-        if (Z > 0) {
+        {
+          // TODO split into separate function
+          auto active_edges = reporting_number_of_edges_active();
           rc("{}: {} | {} | {} | {}\n",
              report_prefix(),
-             fmt::format("diff {}.{}.{}", X, Y, Z - 1),
-             "?",
-             "?",
-             "?");
-          if (Z > 1) {
+             "",
+             underline("active"),
+             underline("% complete"));
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             "edges",
+             group_digits(active_edges),
+             fmt::format("{:.1f}%", 100 * complete(active_edges)));
+          if (Z > 0) {
+            auto const active_diff1
+                = active_edges - _stats.report_edges_active_prev;
+            auto percent_complete
+                = complete(current_word_graph().number_of_edges_active());
+            float const complete_diff1
+                = 100
+                  * (percent_complete
+                     - static_cast<float>(_stats.report_complete_prev));
+            _stats.report_complete_prev = percent_complete;
+
             rc("{}: {} | {} | {} | {}\n",
                report_prefix(),
-               fmt::format("diff {}.{}.0", X, Y),
-               "?",
-               "?",
-               "?");
+               fmt::format("diff {}.{}.{}", X, Y, Z - 1),
+               signed_group_digits(active_diff1),
+               fmt::format("{}{:.1f}%",
+                           complete_diff1 >= 0 ? "+" : "",
+                           complete_diff1));
+            if (Z > 1) {
+              rc("{}: {} | {} | {} | {}\n",
+                 report_prefix(),
+                 fmt::format("diff {}.{}.0", X, Y),
+                 "?",
+                 "?",
+                 "?");
+            }
           }
-          // TODO add diff from last phase of previous run.
         }
         add_timing_row(rc);
         if (_state == state::lookahead && _stats.report_index != 0
@@ -1613,9 +1639,6 @@ namespace libsemigroups {
           // TODO ETA?
         }
 
-        // TODO auto complete = 100 *
-        // static_cast<double>(_word_graph.stats().num_active_edges)
-        //                 / (this->number_of_nodes_active() * out_degree());
         stats_report_stop();
         // TODO remove next line
         _word_graph.stats_check_point();
