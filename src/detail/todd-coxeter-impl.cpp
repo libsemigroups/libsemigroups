@@ -361,7 +361,7 @@ namespace libsemigroups {
         process_coincidences(DoNotRegisterDefs{});
 
         current = NodeManager<node_type>::next_active_node(current);
-        stats().lookahead_position++;
+        tc->_stats.lookahead_position++;
         if (stop_early
             && delta(last_stop_early_check)
                    > tc->lookahead_stop_early_interval()) {
@@ -1635,7 +1635,7 @@ namespace libsemigroups {
           // multi-threading issues, hence we don't try, we just assume that
           // nodes are uniformly randomly killed, leading to the following
           // approximate progress . . .
-          auto const p = _word_graph.stats().lookahead_position.load();
+          auto const p = _stats.lookahead_position.load();
           auto const N = _stats.lookahead_nodes_at_start.load();
           auto const r = _stats.lookahead_nodes_killed.load();
           rc("{}: {} | {} \n",
@@ -1699,13 +1699,12 @@ namespace libsemigroups {
       if (lookahead_extent() == options::lookahead_extent::partial) {
         // Start lookahead from the node after _current
         current = _word_graph.next_active_node(_word_graph.cursor());
-        _word_graph.stats().lookahead_position
-            = _word_graph.position_of_node(current);
+        _stats.lookahead_position = _word_graph.position_of_node(current);
       } else {
         LIBSEMIGROUPS_ASSERT(lookahead_extent()
                              == options::lookahead_extent::full);
-        current                                = _word_graph.initial_node();
-        _word_graph.stats().lookahead_position = 0;
+        current                   = _word_graph.initial_node();
+        _stats.lookahead_position = 0;
       }
 
       _stats.lookahead_nodes_at_start = _word_graph.number_of_nodes_active();

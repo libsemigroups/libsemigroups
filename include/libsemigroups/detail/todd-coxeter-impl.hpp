@@ -339,6 +339,7 @@ namespace libsemigroups {
 
         std::atomic_uint64_t lookahead_nodes_at_start;
         std::atomic_uint64_t lookahead_nodes_killed;
+        std::atomic_uint64_t lookahead_position;
       };
 
       // TODO move into Stats, also impl PhaseStats() which does this at

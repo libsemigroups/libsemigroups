@@ -45,7 +45,6 @@ namespace libsemigroups {
 
     template <typename Node>
     struct NodeManagedGraph<Node>::Stats {
-      std::atomic_uint64_t lookahead_position;
       std::atomic_uint64_t num_edges_active;
       std::atomic_uint64_t prev_active_nodes;   // TODO rm?
       std::atomic_uint64_t prev_nodes_killed;   // TODO rm?
@@ -53,23 +52,20 @@ namespace libsemigroups {
       uint64_t             report_number;
 
       Stats()
-          : lookahead_position(),
-            num_edges_active(0),
+          : num_edges_active(0),
             prev_active_nodes(),
             prev_nodes_killed(),
             prev_nodes_defined(),
             report_number(0) {}
 
       Stats(Stats const& that)
-          : lookahead_position(that.lookahead_position.load()),
-            num_edges_active(that.num_edges_active.load()),
+          : num_edges_active(that.num_edges_active.load()),
             prev_active_nodes(that.prev_active_nodes.load()),
             prev_nodes_killed(that.prev_nodes_killed.load()),
             prev_nodes_defined(that.prev_nodes_defined.load()),
             report_number(that.report_number) {}
 
       Stats& operator=(Stats const& that) {
-        lookahead_position = that.lookahead_position.load();
         prev_active_nodes  = that.prev_active_nodes.load();
         prev_nodes_killed  = that.prev_nodes_killed.load();
         prev_nodes_defined = that.prev_nodes_defined.load();
