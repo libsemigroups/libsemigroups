@@ -34,7 +34,7 @@ namespace libsemigroups {
       _ticker_running = false;
 
       // TODO(1) if &wg == &_word_graph, what then?
-      _word_graph = wg;  // FIXME use init
+      _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();
       // FIXME(1) setting the setting in the next line, and adding a Felsch

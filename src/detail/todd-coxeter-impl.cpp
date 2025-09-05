@@ -85,6 +85,10 @@ namespace libsemigroups {
       return fmt::format(fmt::emphasis::underline, "{}", var);
     }
 
+    std::string underline(std::string const& var) {
+      return fmt::format(fmt::emphasis::underline, "{}", var);
+    }
+
     template <typename Thing>
     std::string toupper(Thing const& thing) {
       auto result = fmt::format("{}", thing);
@@ -1351,29 +1355,18 @@ namespace libsemigroups {
         auto rc = report_cell();
         rc("{}: {} | {} | {} | {}\n",
            report_prefix(),
-           underline("# phases"),
-           "lookahead",
-           "hlt",
-           "felsch");
+           underline(fmt::format("run {}", _stats.run_index)),
+           underline("lookahead"),
+           underline("hlt"),
+           underline("felsch"));
         rc("{}: {} | {} | {} | {}\n",
            report_prefix(),
-           fmt::format("run {}", _stats.run_index),
+           "num. phases",
            group_digits(_stats.run_num_lookahead_phases),
            group_digits(_stats.run_num_hlt_phases),
            group_digits(_stats.run_num_felsch_phases));
-        if (_stats.run_index > 0) {
-          rc("{}: {} | {} | {} | {}\n",
-             report_prefix(),
-             "total",
-             group_digits(_stats.all_num_lookahead_phases
-                          + _stats.run_num_lookahead_phases),
-             group_digits(_stats.all_num_hlt_phases
-                          + _stats.run_num_hlt_phases),
-             group_digits(_stats.all_num_felsch_phases
-                          + _stats.run_num_felsch_phases));
-        }
+
         auto this_run_time = delta(_stats.run_start_time);
-        add_timing_row(rc);
 
         auto percent_run_time_lookahead = to_percent(
             _stats.run_lookahead_phases_time.count(), this_run_time.count());
@@ -1384,26 +1377,35 @@ namespace libsemigroups {
 
         rc("{}: {} | {} | {} | {}\n",
            report_prefix(),
-           "",
-           "lookahead",
-           "hlt",
-           "felsch");
-
-        rc("{}: {} | {} | {} | {}\n",
-           report_prefix(),
-           fmt::format("run {}", _stats.run_index),
+           "time spent in",
            fmt::format("{} ({})",
                        string_time(_stats.run_lookahead_phases_time),
                        percent_run_time_lookahead),
            fmt::format("{} ({})",
                        string_time(_stats.run_hlt_phases_time),
                        percent_run_time_hlt),
+           // TODO in [059] this percentage shows as 36% but nothing else seems
+           // to be done, so should surely be 100%
            fmt::format("{} ({})",
                        string_time(_stats.run_felsch_phases_time),
                        percent_run_time_felsch));
-        // TODO improve this it's a bit confusing as is
+        if (_stats.run_index > 0) {
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             underline("all runs"),
+             underline("lookahead"),
+             underline("hlt"),
+             underline("felsch"));
+          rc("{}: {} | {} | {} | {}\n",
+             report_prefix(),
+             "num. phases ",
+             group_digits(_stats.all_num_lookahead_phases
+                          + _stats.run_num_lookahead_phases),
+             group_digits(_stats.all_num_hlt_phases
+                          + _stats.run_num_hlt_phases),
+             group_digits(_stats.all_num_felsch_phases
+                          + _stats.run_num_felsch_phases));
 
-        if (_stats.run_index != 0) {
           auto total_lookahead = _stats.all_lookahead_phases_time
                                  + _stats.run_lookahead_phases_time;
           auto total_hlt
@@ -1419,7 +1421,7 @@ namespace libsemigroups {
 
           rc("{}: {} | {} | {} | {}\n",
              report_prefix(),
-             "total",
+             "time spent in",
              fmt::format("{} ({})",
                          string_time(total_lookahead),
                          percent_total_lookahead),
@@ -1427,6 +1429,7 @@ namespace libsemigroups {
              fmt::format(
                  "{} ({})", string_time(total_felsch), percent_total_felsch));
         }
+        add_timing_row(rc);
         // TODO(1) time spent process_definitions, process_coincidences?
       }
     }
