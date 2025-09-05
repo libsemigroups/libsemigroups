@@ -150,6 +150,11 @@ namespace libsemigroups {
   // Reporting
   ////////////////////////////////////////////////////////////////////////
 
+  std::mutex& report_mutex() {
+    static std::mutex mtx;
+    return mtx;
+  }
+
   bool reporting_enabled() noexcept {
     return report_data.report();
   }

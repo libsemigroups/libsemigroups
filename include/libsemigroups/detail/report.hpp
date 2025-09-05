@@ -194,15 +194,23 @@ namespace libsemigroups {
   }
 
   //! No doc
+  // This function is provided to allow multiple lines of output to block other
+  // lines from being interspersed, by first locking the report_mutex.
+  template <typename... Args>
+  void report_no_lock_no_prefix(std::string_view sv, Args&&... args) {
+    auto line = fmt::format(sv, std::forward<Args>(args)...);
+    detail::last_reported_line_var() = line;
+    fmt::print("{}", line);
+  }
+
+  std::mutex& report_mutex();
+
+  //! No doc
   template <typename... Args>
   void report_no_prefix(std::string_view sv, Args&&... args) {
-    static std::mutex mtx;
-
     if (reporting_enabled()) {
-      std::lock_guard<std::mutex> lg(mtx);
-      auto line = fmt::format(sv, std::forward<Args>(args)...);
-      detail::last_reported_line_var() = line;
-      fmt::print("{}", line);
+      std::lock_guard<std::mutex> lg(report_mutex());
+      report_no_lock_no_prefix(sv, std::forward<Args>(args)...);
     }
   }
 
@@ -228,8 +236,8 @@ namespace libsemigroups {
 
   //! \ingroup core_classes_group
   //!
-  //! \brief Struct for specifying whether or not to report about an algorithm's
-  //! performance.
+  //! \brief Struct for specifying whether or not to report about an
+  //! algorithm's performance.
   //!
   //! This struct can be used to enable printing of some information during
   //! various of the computation in `libsemigroups`. Reporting is enabled (or
@@ -254,7 +262,8 @@ namespace libsemigroups {
   };
 
   namespace detail {
-    // static inline void report_divider(size_t width = 32, char symbol = '+') {
+    // static inline void report_divider(size_t width = 32, char symbol = '+')
+    // {
     //   report_no_prefix("{:{}<{}}\n", "", width, symbol);
     // }
   }  // namespace detail

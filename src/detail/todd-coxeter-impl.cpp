@@ -1510,7 +1510,8 @@ namespace libsemigroups {
     void ToddCoxeterImpl::report_progress_from_thread(bool divider) const {
       if (reporting_enabled()) {
         LIBSEMIGROUPS_ASSERT(_state != state::none);
-        auto       rc           = report_cell();
+        auto rc = report_cell();
+
         auto       active_nodes = reporting_number_of_nodes_active();
         auto const X = _stats.run_index, Y = _stats.phase_index,
                    Z = _stats.report_index;

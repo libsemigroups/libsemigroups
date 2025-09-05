@@ -475,12 +475,10 @@ namespace libsemigroups {
       // 2. ToddCoxeterImpl - data members - private
       ////////////////////////////////////////////////////////////////////////
 
-      bool   _finished;
-      Forest _forest;
-      // std::mutex                             _mtx;
+      bool                                   _finished;
+      Forest                                 _forest;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
-
       // _state must be atomic to avoid the situation where the ticker
       // function is called concurrently with a new lookahead starting
       std::atomic<state> _state;

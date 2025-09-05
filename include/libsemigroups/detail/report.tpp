@@ -117,6 +117,7 @@ namespace libsemigroups {
     template <size_t C>
     size_t ReportCell<C>::line_width() const {
       auto fmt = [](auto&&... args) {
+        // TODO use fmt_default
         return fmt::format(std::forward<decltype(args)>(args)...).size();
       };
       return std::apply(fmt, _rows[0]) + 3;
@@ -125,7 +126,8 @@ namespace libsemigroups {
     template <size_t C>
     void ReportCell<C>::emit() {
       auto fmt = [](auto&&... args) {
-        report_default(std::forward<decltype(args)>(args)...);
+        report_no_lock_no_prefix(
+            fmt_default(std::forward<decltype(args)>(args)...));
       };
 
       for (size_t i = 0; i < _rows.size(); ++i) {
@@ -139,16 +141,19 @@ namespace libsemigroups {
           }
         }
       }
+      std::lock_guard lock(report_mutex());
       if (_divider_before) {
         // TODO remove use add_divider
-        report_no_prefix("{:+<32}\n", "");
+        report_no_lock_no_prefix("{:+<32}\n", "");
       }
       for (size_t i = 0; i < _rows.size(); ++i) {
         if (!_rows[i].empty()
             && static_cast<size_t>(
                    std::count(_rows[i][0].begin(), _rows[i][0].end(), '+'))
                    == _rows[i][0].size()) {
-          report_no_prefix("{}\n", _rows[i][0]);
+          // TODO remove this clause, and just put exactly what is desired into
+          // each row.
+          report_no_lock_no_prefix("{}\n", _rows[i][0]);
         } else {
           std::apply(fmt, _rows[i]);
         }
