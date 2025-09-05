@@ -17,7 +17,7 @@
 //
 
 // This file contains the declaration for a class to manage nodes for
-// ToddCoxeterDigraph instances.
+// NodeManagedGraph instances.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
@@ -36,28 +36,81 @@
 
 namespace libsemigroups {
   namespace detail {
-    template <typename NodeType>
+    template <typename Node>
     class NodeManager {
      public:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - typedefs - public
       ////////////////////////////////////////////////////////////////////////
 
-      //! Type of nodes
-      using node_type = NodeType;
+      using node_type = Node;
       using Perm      = std::vector<node_type>;
 
+      ////////////////////////////////////////////////////////////////////////
+      // NodeManager - data - protected
+      ////////////////////////////////////////////////////////////////////////
+     protected:
+      node_type _current;
+      node_type _current_la;
+
+      ////////////////////////////////////////////////////////////////////////
+      // NodeManager - data - private
+      ////////////////////////////////////////////////////////////////////////
+     private:
+      static constexpr node_type _id_node = 0;
+
+      std::vector<node_type>         _bckwd;
+      node_type                      _first_free_node;
+      std::vector<node_type>         _forwd;
+      float                          _growth_factor;
+      mutable std::vector<node_type> _ident;
+      node_type                      _last_active_node;
+
+      struct Stats {
+        std::atomic_uint64_t num_nodes_active;
+        std::atomic_uint64_t num_nodes_defined;
+        std::atomic_uint64_t num_nodes_killed;
+
+        Stats()
+            : num_nodes_active(1), num_nodes_defined(1), num_nodes_killed(0) {}
+
+        Stats(Stats const& that)
+            : num_nodes_active(that.num_nodes_active.load()),
+              num_nodes_defined(that.num_nodes_defined.load()),
+              num_nodes_killed(that.num_nodes_killed.load()) {}
+
+        Stats(Stats&& that)
+            : num_nodes_active(that.num_nodes_active.load()),
+              num_nodes_defined(that.num_nodes_defined.load()),
+              num_nodes_killed(that.num_nodes_killed.load()) {}
+
+        Stats& operator=(Stats const& that) {
+          num_nodes_active  = that.num_nodes_active.load();
+          num_nodes_defined = that.num_nodes_defined.load();
+          num_nodes_killed  = that.num_nodes_killed.load();
+          return *this;
+        }
+
+        Stats& operator=(Stats&& that) {
+          num_nodes_active  = that.num_nodes_active.load();
+          num_nodes_defined = that.num_nodes_defined.load();
+          num_nodes_killed  = that.num_nodes_killed.load();
+          return *this;
+        }
+      } _stats;
+
+     public:
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - constructors + destructor - public
       ////////////////////////////////////////////////////////////////////////
 
       NodeManager();
 
-      NodeManager(NodeManager const&) = default;
-      NodeManager(NodeManager&&)      = default;
+      NodeManager(NodeManager const& that);
+      NodeManager(NodeManager&&) = default;
 
-      NodeManager& operator=(NodeManager const&) = default;
-      NodeManager& operator=(NodeManager&&)      = default;
+      NodeManager& operator=(NodeManager const& that);
+      NodeManager& operator=(NodeManager&&) = default;
 
       ~NodeManager();
 
@@ -73,101 +126,37 @@ namespace libsemigroups {
         return _current_la;
       }
 
-      //! Returns the current node capacity of the graph.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
+      node_type const& lookahead_cursor() const {
+        return _current_la;
+      }
+
       // std::vector::size is noexcept
       inline size_t node_capacity() const noexcept {
         return _forwd.size();
       }
 
-      //! Returns the first inactive node.
-      //!
-      //! \returns A value of type NodeManager::node_type
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
       inline node_type first_free_node() const noexcept {
         return _first_free_node;
       }
 
-      //! Check if there are any inactive nodes.
-      //!
-      //! \returns A value of type \c bool.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
       inline bool has_free_nodes() const noexcept {
         return _first_free_node != UNDEFINED;
       }
 
-      //! Check if the given node is active or not.
-      //!
-      //! \param c the to check.
-      //!
-      //! \returns A value of type \c bool.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
       // not noexcept since std::vector::operator[] isn't.
       inline bool is_active_node(node_type c) const {
         LIBSEMIGROUPS_ASSERT(c < _ident.size() || c == UNDEFINED);
         return c != UNDEFINED && _ident[c] == c;
       }
 
-      //! Check if the given node is valid.
-      //!
-      //! \param c the node to check.
-      //!
-      //! \returns A value of type \c bool.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
+      [[nodiscard]] size_t position_of_node(node_type n) const;
+
       inline bool is_valid_node(node_type c) const noexcept {
         return c < _forwd.size();
       }
 
-      //! Returns the next active node after the given node.
-      //!
-      //! \param c the node.
-      //!
-      //! \returns A value of type NodeManager::node_type
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
       // not noexcept since std::vector::operator[] isn't.
       inline node_type next_active_node(node_type c) const {
-        LIBSEMIGROUPS_ASSERT(is_active_node(c));
         return _forwd[c];
       }
 
@@ -183,80 +172,20 @@ namespace libsemigroups {
         return rx::end(ActiveNodesRange(this));
       }
 
-      //! Returns the number of active nodes.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
-      inline size_t number_of_nodes_active() const noexcept {
-        return _active;
+      inline uint64_t number_of_nodes_active() const noexcept {
+        return _stats.num_nodes_active;
       }
 
-      //! Returns the total number of nodes defined so far.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
-      inline size_t number_of_nodes_defined() const noexcept {
-        return _defined;
+      inline uint64_t number_of_nodes_defined() const noexcept {
+        return _stats.num_nodes_defined;
       }
 
-      //! Returns the total number of nodes that have been killed so far.
-      //!
-      //! \returns A value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
-      //!
-      //! \par Parameters
-      //! (None)
-      inline size_t number_of_nodes_killed() const noexcept {
-        return _nodes_killed;
+      inline uint64_t number_of_nodes_killed() const noexcept {
+        return _stats.num_nodes_killed;
       }
 
-      //! Set the value of the growth factor setting.
-      //!
-      //! This setting is used to determine the factor by which the number of
-      //! nodes in the table is increased, when more nodes are required.
-      //!
-      //! The default value of this setting is \c 2.0.
-      //!
-      //! \param val the new value of the setting.
-      //!
-      //! \returns A reference to \c *this.
-      //!
-      //! \throws LibsemigroupsException if \p val is less than \c 1.0.
-      //!
-      //! \complexity
-      //! Constant
       NodeManager& growth_factor(float val);
 
-      //! The current value of the growth factor setting.
-      //!
-      //! \returns A value of type \c float.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
       float growth_factor() const noexcept {
         return _growth_factor;
       }
@@ -320,10 +249,6 @@ namespace libsemigroups {
         return _id_node;
       }
 
-      static constexpr node_type _id_node = 0;
-      node_type                  _current;
-      node_type                  _current_la;
-
      private:
       struct ActiveNodesRange {
         using output_type = node_type;
@@ -361,26 +286,6 @@ namespace libsemigroups {
       ActiveNodesRange active_nodes() const {
         return ActiveNodesRange(this);
       }
-
-     private:
-      ////////////////////////////////////////////////////////////////////////
-      // NodeManager - data - private
-      ////////////////////////////////////////////////////////////////////////
-
-      // Stats
-      size_t _active;
-      size_t _defined;
-      size_t _nodes_killed;
-
-      // Settings
-      float _growth_factor;
-
-      // Data
-      std::vector<node_type>         _bckwd;
-      node_type                      _first_free_node;
-      std::vector<node_type>         _forwd;
-      mutable std::vector<node_type> _ident;
-      node_type                      _last_active_node;
 
 #ifdef LIBSEMIGROUPS_DEBUG
 

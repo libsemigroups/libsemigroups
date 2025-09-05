@@ -76,6 +76,8 @@ namespace libsemigroups {
       ~Ticker();
     };
 
+    enum class Align : uint8_t { left, right };
+
     // This object is a helper for formatting information reported by various
     // classes in libsemigroups such as ToddCoxeterImpl, KnuthBendixImpl, etc.
     //
@@ -87,19 +89,20 @@ namespace libsemigroups {
     class ReportCell {
      private:
       using Row = std::array<std::string, C + 1>;
-
+      std::array<Align, C + 1>  _align;
       std::array<size_t, C + 1> _col_widths;
       std::vector<Row>          _rows;
 
      public:
-      ReportCell() : _col_widths(), _rows() {
+      ReportCell() : _align(), _col_widths(), _rows() {
+        _align.fill(Align::right);
         _col_widths.fill(0);
       }
 
-      ReportCell(ReportCell const&)            = delete;
-      ReportCell(ReportCell&&)                 = delete;
-      ReportCell& operator=(ReportCell const&) = delete;
-      ReportCell& operator=(ReportCell&&)      = delete;
+      ReportCell(ReportCell const&)            = default;
+      ReportCell(ReportCell&&)                 = default;
+      ReportCell& operator=(ReportCell const&) = default;
+      ReportCell& operator=(ReportCell&&)      = default;
 
       ~ReportCell() {
         emit();
@@ -118,6 +121,22 @@ namespace libsemigroups {
         return *this;
       }
 
+      ReportCell& align(size_t col, Align val) noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        _align[col + 1] = val;
+        return *this;
+      }
+
+      ReportCell& align(Align val) noexcept {
+        _align.fill(val);
+        return *this;
+      }
+
+      Align align(size_t col) const noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        return _align[col + 1];
+      }
+
       // Insert a row using a format string and arguments
       template <typename... Args>
       void operator()(std::string_view fmt_str, Args&&... args);
@@ -130,11 +149,10 @@ namespace libsemigroups {
       }
 
      private:
-      size_t line_width() const;
-
       void emit();
     };  // ReportCell
-  }     // namespace detail
+
+  }  // namespace detail
 
   //! No doc
   bool reporting_enabled() noexcept;
@@ -147,13 +165,23 @@ namespace libsemigroups {
   }
 
   //! No doc
+  std::mutex& report_mutex();
+
+  //! No doc
+  // This function is provided to allow multiple lines of output to block other
+  // lines from being interspersed, by first locking the report_mutex.
+  template <typename... Args>
+  void report_no_lock_no_prefix(std::string_view sv, Args&&... args) {
+    auto line = fmt::format(sv, std::forward<Args>(args)...);
+    fmt::print("{}", line);
+  }
+
+  //! No doc
   template <typename... Args>
   void report_no_prefix(std::string_view sv, Args&&... args) {
-    static std::mutex mtx;
-
     if (reporting_enabled()) {
-      std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(sv, std::forward<Args>(args)...);
+      std::lock_guard<std::mutex> lg(report_mutex());
+      report_no_lock_no_prefix(sv, std::forward<Args>(args)...);
     }
   }
 
@@ -173,17 +201,10 @@ namespace libsemigroups {
     }
   }
 
-  //! No doc
-  static inline void
-  report_elapsed_time(std::string_view                    prefix,
-                      libsemigroups::detail::Timer const& tmr) {
-    report_default("{} elapsed time {}", prefix, tmr);
-  }
-
   //! \ingroup core_classes_group
   //!
-  //! \brief Struct for specifying whether or not to report about an algorithm's
-  //! performance.
+  //! \brief Struct for specifying whether or not to report about an
+  //! algorithm's performance.
   //!
   //! This struct can be used to enable printing of some information during
   //! various of the computation in `libsemigroups`. Reporting is enabled (or
@@ -206,6 +227,13 @@ namespace libsemigroups {
     explicit SuppressReportFor(std::string_view);
     ~SuppressReportFor();
   };
+
+  namespace detail {
+    // static inline void report_divider(size_t width = 32, char symbol = '+')
+    // {
+    //   report_no_prefix("{:{}<{}}\n", "", width, symbol);
+    // }
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "report.tpp"

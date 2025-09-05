@@ -77,6 +77,9 @@ namespace libsemigroups {
     std::string string_time(nanoseconds x) {
       using units = std::tuple<years, months, weeks, days, hours, minutes>;
 
+      if (x.count() == 0) {
+        return "-";
+      }
       std::string s;
       std::apply(
           [&](auto... args) {
@@ -99,5 +102,14 @@ namespace libsemigroups {
       }
       return s;
     }
+
+    std::string now_string() {
+      auto now = std::chrono::system_clock::now();
+      return fmt::format(
+          "{:%Y-%m-%d}T{:%H:%M:%S}",
+          now,
+          std::chrono::time_point_cast<std::chrono::seconds>(now));
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
