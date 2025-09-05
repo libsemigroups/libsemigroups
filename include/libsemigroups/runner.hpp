@@ -337,7 +337,7 @@ namespace libsemigroups {
     //!
     //! \note This function is not thread-safe.
     // Not noexcept because std::string::operator= isn't
-    // TODO deprecate
+    // TODO(1) deprecate
     Reporter& report_divider(std::string const& val) {
       _divider = val;
       return *this;
@@ -354,7 +354,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \note This function is thread-safe.
-    // TODO deprecate
+    // TODO(1) deprecate
     [[nodiscard]] std::string const& report_divider() const noexcept {
       return _divider;
     }
