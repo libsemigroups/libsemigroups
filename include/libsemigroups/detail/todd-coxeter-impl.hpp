@@ -342,8 +342,6 @@ namespace libsemigroups {
         std::atomic_uint64_t lookahead_position;
       };
 
-      // TODO move into Stats, also impl PhaseStats() which does this at
-      // construction, and phase_stop at destruction
       void stats_phase_start() {
         _stats.phase_start_time = std::chrono::high_resolution_clock::now();
         _stats.report_index     = 0;
@@ -361,7 +359,6 @@ namespace libsemigroups {
             = complete(current_word_graph().number_of_edges_active());
       }
 
-      // TODO move into Stats
       void stats_phase_stop() {
         _stats.phase_index++;
 
@@ -386,12 +383,10 @@ namespace libsemigroups {
         }
       }
 
-      // TODO move into Stats
       void stats_report_stop() const {
         _stats.report_index++;
       }
 
-      // TODO move into Stats?
       void stats_run_start() {
         _stats.phase_index = 0;
 
@@ -405,7 +400,6 @@ namespace libsemigroups {
         _stats.run_lookahead_phases_time = std::chrono::nanoseconds(0);
       }
 
-      // TODO move into Stats?
       void stats_run_stop() {
         _stats.run_index++;
 
@@ -458,7 +452,6 @@ namespace libsemigroups {
 
       auto reporting_number_of_edges_active() const {
         return Defer(_stats.report_edges_active_prev,
-                     // FIXME use the stats data member here instead
                      current_word_graph().number_of_edges_active());
       }
 
