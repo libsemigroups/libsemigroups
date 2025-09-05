@@ -18,7 +18,7 @@ jobs:
       CONFIG_FLAGS: --disable-hpcombi --disable-popcnt --disable-clzll
       URL: https://github.com/libsemigroups/libsemigroups_pybind11.git
       LD_LIBRARY_PATH: /usr/local/lib/
-    name: libsemigroups_pybind11 / v1 branch
+    name: libsemigroups_pybind11 / main branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout libsemigroups
