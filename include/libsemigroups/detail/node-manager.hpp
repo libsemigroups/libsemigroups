@@ -36,7 +36,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    template <typename NodeType>
+    template <typename Node>
     class NodeManager {
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       //! Type of nodes
-      using node_type = NodeType;
+      using node_type = Node;
       using Perm      = std::vector<node_type>;
 
       ////////////////////////////////////////////////////////////////////////
@@ -68,34 +68,34 @@ namespace libsemigroups {
       node_type                      _last_active_node;
 
       struct Stats {
-        // TODO these should have better names
-        std::atomic_uint64_t active;
-        std::atomic_uint64_t defined;
-        std::atomic_uint64_t nodes_killed;
+        std::atomic_uint64_t num_nodes_active;
+        std::atomic_uint64_t num_nodes_defined;
+        std::atomic_uint64_t num_nodes_killed;
 
-        Stats() : active(1), defined(1), nodes_killed(0) {}
+        Stats()
+            : num_nodes_active(1), num_nodes_defined(1), num_nodes_killed(0) {}
 
         Stats(Stats const& that)
-            : active(that.active.load()),
-              defined(that.defined.load()),
-              nodes_killed(that.nodes_killed.load()) {}
+            : num_nodes_active(that.num_nodes_active.load()),
+              num_nodes_defined(that.num_nodes_defined.load()),
+              num_nodes_killed(that.num_nodes_killed.load()) {}
 
         Stats(Stats&& that)
-            : active(that.active.load()),
-              defined(that.defined.load()),
-              nodes_killed(that.nodes_killed.load()) {}
+            : num_nodes_active(that.num_nodes_active.load()),
+              num_nodes_defined(that.num_nodes_defined.load()),
+              num_nodes_killed(that.num_nodes_killed.load()) {}
 
         Stats& operator=(Stats const& that) {
-          active       = that.active.load();
-          defined      = that.defined.load();
-          nodes_killed = that.nodes_killed.load();
+          num_nodes_active  = that.num_nodes_active.load();
+          num_nodes_defined = that.num_nodes_defined.load();
+          num_nodes_killed  = that.num_nodes_killed.load();
           return *this;
         }
 
         Stats& operator=(Stats&& that) {
-          active       = that.active.load();
-          defined      = that.defined.load();
-          nodes_killed = that.nodes_killed.load();
+          num_nodes_active  = that.num_nodes_active.load();
+          num_nodes_defined = that.num_nodes_defined.load();
+          num_nodes_killed  = that.num_nodes_killed.load();
           return *this;
         }
       } _stats;
@@ -107,32 +107,10 @@ namespace libsemigroups {
 
       NodeManager();
 
-      // TODO to tpp
-      NodeManager(NodeManager const& that)
-          : _bckwd(that._bckwd),
-            _first_free_node(that._first_free_node),
-            _forwd(that._forwd),
-            _growth_factor(that._growth_factor),
-            _ident(that._ident),
-            _last_active_node(that._last_active_node),
-            _stats(that._stats) {}
-
-      // TODO expand
+      NodeManager(NodeManager const& that);
       NodeManager(NodeManager&&) = default;
 
-      // TODO to tpp
-      NodeManager& operator=(NodeManager const& that) {
-        _bckwd            = that._bckwd;
-        _first_free_node  = that._first_free_node;
-        _forwd            = that._forwd;
-        _growth_factor    = that._growth_factor;
-        _ident            = that._ident;
-        _last_active_node = that._last_active_node;
-        _stats            = that._stats;
-        return *this;
-      }
-
-      // TODO expand
+      NodeManager& operator=(NodeManager const& that);
       NodeManager& operator=(NodeManager&&) = default;
 
       ~NodeManager();
@@ -201,7 +179,7 @@ namespace libsemigroups {
         return c < _forwd.size();
       }
 
-      //! Returns the next active node after the given node.
+      //! Returns the next num_nodes_active node after the given node.
       //!
       //! \param c the node.
       //!
@@ -230,15 +208,15 @@ namespace libsemigroups {
       }
 
       inline uint64_t number_of_nodes_active() const noexcept {
-        return _stats.active;
+        return _stats.num_nodes_active;
       }
 
       inline uint64_t number_of_nodes_defined() const noexcept {
-        return _stats.defined;
+        return _stats.num_nodes_defined;
       }
 
       inline uint64_t number_of_nodes_killed() const noexcept {
-        return _stats.nodes_killed;
+        return _stats.num_nodes_killed;
       }
 
       //! Set the value of the growth factor setting.
