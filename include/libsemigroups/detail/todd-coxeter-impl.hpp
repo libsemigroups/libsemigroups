@@ -357,9 +357,9 @@ namespace libsemigroups {
             = current_word_graph().number_of_nodes_defined();
 
         _stats.phase_edges_active_at_start
-            = current_word_graph().stats().num_edges_active;
+            = current_word_graph().number_of_edges_active();
         _stats.phase_complete_at_start
-            = complete(current_word_graph().stats().num_edges_active);
+            = complete(current_word_graph().number_of_edges_active());
       }
 
       // TODO move into Stats
@@ -1374,20 +1374,12 @@ namespace libsemigroups {
 
       // not thread safe, don't call from reporting thread only the main one.
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
+        // TODO rm, this isn't required
         return current_word_graph().number_of_edges_active();
       }
 
       [[nodiscard]] float complete() const noexcept {
-        auto num_edges = current_word_graph().stats().num_edges_active.load();
-        return complete(num_edges);
-      }
-
-      // TODO make private
-      [[nodiscard]] float complete(int64_t num_edges) const noexcept {
-        auto num_nodes = current_word_graph().number_of_nodes_active();
-        return float(num_edges)
-               / (static_cast<uint64_t>(num_nodes)
-                  * current_word_graph().out_degree());
+        return complete(current_word_graph().number_of_edges_active());
       }
 
       // [[nodiscard]] bool empty() const {
@@ -1932,7 +1924,7 @@ namespace libsemigroups {
 
       void run_impl() override;
 
-      bool finished_impl() const override {
+      [[nodiscard]] bool finished_impl() const override {
         return _finished;
       }
 
@@ -1953,6 +1945,13 @@ namespace libsemigroups {
         // TODO could do more here
         return current_word_graph().stats().prev_active_nodes
                != current_word_graph().number_of_nodes_active();
+      }
+
+      [[nodiscard]] float complete(int64_t num_edges) const noexcept {
+        auto num_nodes = current_word_graph().number_of_nodes_active();
+        return float(num_edges)
+               / (static_cast<uint64_t>(num_nodes)
+                  * current_word_graph().out_degree());
       }
 
       ////////////////////////////////////////////////////////////////////////

@@ -49,8 +49,6 @@ namespace libsemigroups {
       std::atomic_uint64_t lookahead_nodes_killed;
       std::atomic_uint64_t lookahead_position;
       std::atomic_uint64_t num_edges_active;
-      std::atomic_uint64_t num_edges_killed;
-      std::atomic_uint64_t num_edges_defined;
       std::atomic_uint64_t prev_active_nodes;   // TODO rm?
       std::atomic_uint64_t prev_nodes_killed;   // TODO rm?
       std::atomic_uint64_t prev_nodes_defined;  // TODO rm?
@@ -169,6 +167,7 @@ namespace libsemigroups {
 
     template <typename Node>
     uint64_t NodeManagedGraph<Node>::number_of_edges_active() const noexcept {
+      return _stats.num_edges_active;
       // TODO replace with _stats.number_of_edges_active, when that works, or
       // maybe not?
       auto     current   = NodeManager<node_type>::initial_node();
@@ -217,7 +216,7 @@ namespace libsemigroups {
       for (; it < last; ++it) {
         LIBSEMIGROUPS_ASSERT(target_no_checks(c, *it) == UNDEFINED);
         node_type d = new_node();
-        BaseGraph::template target_no_checks<RegisterDefs>(c, *it, d);
+        target_no_checks(c, *it, d);
         result = true;
         c      = d;
       }
@@ -247,6 +246,8 @@ namespace libsemigroups {
       }
 
       if (_coinc.empty()) {
+        LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+                             == count_number_of_edges_active());
         return;
       }
 
@@ -303,7 +304,8 @@ namespace libsemigroups {
         }
         c = NodeManager<node_type>::next_active_node(c);
       }
-      // fmt::print("Position 2, total coincidences is {}\n", total_coinc);
+      LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+                           == count_number_of_edges_active());
     }
 
     template <typename Node>
@@ -384,8 +386,6 @@ namespace libsemigroups {
          "?");
       rc("{}: {} | {} | {} | {}\n", report_prefix(), "diff X.0", "?", "?", "?");
 
-      // TODO auto complete = 100 * static_cast<double>(_stats.num_edges_active)
-      //                 / (this->number_of_nodes_active() * out_degree());
       _stats.report_number++;
       stats_check_point();
     }

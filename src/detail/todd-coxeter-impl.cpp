@@ -110,7 +110,7 @@ namespace libsemigroups {
     namespace {
       ReportCell<5> report_cell() {
         ReportCell<5> rc;
-        rc.min_width(12).min_width(0, 0).align(1, Align::left);
+        rc.min_width(12).min_width(0, 0).min_width(1, 23).align(1, Align::left);
         return rc;
       }
     }  // namespace
@@ -1495,7 +1495,6 @@ namespace libsemigroups {
                        // TODO(1) add more nuance when not using hlt/felsch
                        strategy());
         if (_stats.run_index > 0) {
-          // TODO report_progress_from_thread
           report_times();
         }
 
@@ -1605,12 +1604,19 @@ namespace libsemigroups {
                            complete_diff1 >= 0 ? "+" : "",
                            complete_diff1));
             if (Z > 1) {
+              auto const active_diff2 = signed_group_digits(
+                  active_edges - _stats.phase_edges_active_at_start);
+              float const complete_diff2
+                  = 100
+                    * (percent_complete
+                       - static_cast<float>(_stats.phase_complete_at_start));
               rc("{}: {} | {} | {} | {}\n",
                  report_prefix(),
                  fmt::format("diff {}.{}.0", X, Y),
-                 "?",
-                 "?",
-                 "?");
+                 active_diff2,
+                 fmt::format("{}{:.1f}%",
+                             complete_diff2 >= 0 ? "+" : "",
+                             complete_diff2));
             }
           }
         }

@@ -97,6 +97,16 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       using BaseGraph::out_degree;
+
+      NodeManagedGraph& target_no_checks(node_type  s,
+                                         label_type a,
+                                         node_type  t) noexcept {
+        _stats.num_edges_active += (t != UNDEFINED);
+        WordGraphWithSources<Node>::target_no_checks(s, a, t);
+        LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
+                             == count_number_of_edges_active());
+        return *this;
+      }
       using BaseGraph::target_no_checks;
 
       using NodeManager<node_type>::cursor;
@@ -121,6 +131,7 @@ namespace libsemigroups {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
+        _stats.num_edges_active += wg.number_of_edges();
       }
 
       template <typename OtherNode>
@@ -130,6 +141,7 @@ namespace libsemigroups {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
+        _stats.num_edges_active += wg.number_of_edges();
         return *this;
       }
 
@@ -179,6 +191,16 @@ namespace libsemigroups {
 
       // 100% not thread safe
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept;
+
+      [[nodiscard]] uint64_t count_number_of_edges_active() const noexcept {
+        auto     current   = NodeManager<node_type>::initial_node();
+        uint64_t num_edges = 0;
+        while (current != NodeManager<node_type>::first_free_node()) {
+          num_edges += WordGraph<node_type>::number_of_edges_no_checks(current);
+          current = NodeManager<node_type>::next_active_node(current);
+        }
+        return num_edges;
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // Modifiers
