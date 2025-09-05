@@ -699,10 +699,13 @@ namespace libsemigroups {
         "please use random(x) instead");
   }
 
+  // We would expect this test to fail about ~4% of the time due to the nature
+  // of the statistical test being used, but this is too flaky to include in the
+  // CI
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
                           "022",
                           "uniform_random chi-squared test x1",
-                          "[standard][bipart]") {
+                          "[fail][bipart]") {
     // The third parameter here is a 99th percentile for the chi squared
     // distribution with 1, 14, 202 and 1439 degrees of freedom respectively.
     test_uniform_bipartition(1, 2, 6.634897, 500);
@@ -711,10 +714,13 @@ namespace libsemigroups {
     test_uniform_bipartition(4, 4140, 4353.596, 30);
   }
 
+  // We would expect this test to fail about ~1% of the time due to the nature
+  // of the statistical test being used, but this is too flaky to include in the
+  // CI
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
                           "023",
                           "uniform_random chi-squared test x2",
-                          "[extreme][bipart]") {
+                          "[fail][bipart]") {
     test_uniform_bipartition(5, 115'975, 117'097.3, 10);
   }
 
