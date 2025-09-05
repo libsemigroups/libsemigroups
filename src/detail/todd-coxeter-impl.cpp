@@ -1635,7 +1635,7 @@ namespace libsemigroups {
           // nodes are uniformly randomly killed, leading to the following
           // approximate progress . . .
           auto const p = _word_graph.stats().lookahead_position.load();
-          auto const N = _word_graph.stats().lookahead_nodes_at_start.load();
+          auto const N = _stats.lookahead_nodes_at_start.load();
           auto const r = _word_graph.stats().lookahead_nodes_killed.load();
           rc("{}: {} | {} \n",
              report_prefix(),
@@ -1707,8 +1707,7 @@ namespace libsemigroups {
         _word_graph.stats().lookahead_position = 0;
       }
 
-      _word_graph.stats().lookahead_nodes_at_start
-          = _word_graph.number_of_nodes_active();
+      _stats.lookahead_nodes_at_start = _word_graph.number_of_nodes_active();
       _word_graph.stats().lookahead_nodes_killed = 0;
 
       size_t num_killed_by_me = 0;

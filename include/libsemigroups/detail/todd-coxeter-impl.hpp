@@ -300,13 +300,8 @@ namespace libsemigroups {
 
       struct Stats {
         using time_point = std::chrono::high_resolution_clock::time_point;
-        // TODO make the values here atomic?
 
-        // TODO required?
-        uint64_t   run_defined_at_start;  // TODO use
         uint64_t   run_index = 0;
-        uint64_t   run_killed_at_start;  // TODO use
-        uint64_t   run_nodes_at_start;   // TODO use
         time_point run_start_time;
 
         uint64_t   phase_index;
@@ -341,6 +336,8 @@ namespace libsemigroups {
         uint64_t run_num_hlt_phases       = 0;
         uint64_t run_num_felsch_phases    = 0;
         uint64_t run_num_lookahead_phases = 0;
+
+        std::atomic_uint64_t lookahead_nodes_at_start;
       };
 
       // TODO move into Stats, also impl PhaseStats() which does this at

@@ -45,7 +45,6 @@ namespace libsemigroups {
 
     template <typename Node>
     struct NodeManagedGraph<Node>::Stats {
-      std::atomic_uint64_t lookahead_nodes_at_start;  // TODO rm?
       std::atomic_uint64_t lookahead_nodes_killed;
       std::atomic_uint64_t lookahead_position;
       std::atomic_uint64_t num_edges_active;
@@ -55,8 +54,7 @@ namespace libsemigroups {
       uint64_t             report_number;
 
       Stats()
-          : lookahead_nodes_at_start(),
-            lookahead_nodes_killed(),
+          : lookahead_nodes_killed(),
             lookahead_position(),
             num_edges_active(0),
             prev_active_nodes(),
@@ -65,8 +63,7 @@ namespace libsemigroups {
             report_number(0) {}
 
       Stats(Stats const& that)
-          : lookahead_nodes_at_start(that.lookahead_nodes_at_start.load()),
-            lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
+          : lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
             lookahead_position(that.lookahead_position.load()),
             num_edges_active(that.num_edges_active.load()),
             prev_active_nodes(that.prev_active_nodes.load()),
@@ -75,14 +72,13 @@ namespace libsemigroups {
             report_number(that.report_number) {}
 
       Stats& operator=(Stats const& that) {
-        lookahead_nodes_at_start = that.lookahead_nodes_at_start.load();
-        lookahead_nodes_killed   = that.lookahead_nodes_killed.load();
-        lookahead_position       = that.lookahead_position.load();
-        prev_active_nodes        = that.prev_active_nodes.load();
-        prev_nodes_killed        = that.prev_nodes_killed.load();
-        prev_nodes_defined       = that.prev_nodes_defined.load();
-        num_edges_active         = that.num_edges_active.load();
-        report_number            = that.report_number;
+        lookahead_nodes_killed = that.lookahead_nodes_killed.load();
+        lookahead_position     = that.lookahead_position.load();
+        prev_active_nodes      = that.prev_active_nodes.load();
+        prev_nodes_killed      = that.prev_nodes_killed.load();
+        prev_nodes_defined     = that.prev_nodes_defined.load();
+        num_edges_active       = that.num_edges_active.load();
+        report_number          = that.report_number;
         return *this;
       }
     };
