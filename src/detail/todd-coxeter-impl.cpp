@@ -1512,13 +1512,17 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(_state != state::none);
         auto rc = report_cell();
 
-        auto       active_nodes = reporting_number_of_nodes_active();
+        auto active_nodes = current_word_graph().number_of_nodes_active();
+        set_on_destruct(_stats.report_nodes_active_prev) = active_nodes;
+
         auto const X = _stats.run_index, Y = _stats.phase_index,
                    Z = _stats.report_index;
         {
           // TODO split into separate function
-          auto defined = reporting_number_of_nodes_defined();
-          auto killed  = reporting_number_of_nodes_killed();
+          auto defined = current_word_graph().number_of_nodes_defined();
+          set_on_destruct(_stats.report_nodes_defined_prev) = defined;
+          auto killed = current_word_graph().number_of_nodes_killed();
+          set_on_destruct(_stats.report_nodes_killed_prev) = killed;
 
           auto const active_diff1 = signed_group_digits(
               active_nodes - _stats.report_nodes_active_prev);
@@ -1575,7 +1579,8 @@ namespace libsemigroups {
         }
         {
           // TODO split into separate function
-          auto active_edges = reporting_number_of_edges_active();
+          auto active_edges = current_word_graph().number_of_edges_active();
+          set_on_destruct(_stats.report_edges_active_prev) = active_edges;
           rc("{}: {} | {} | {} | {}\n",
              report_prefix(),
              "",

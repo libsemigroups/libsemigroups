@@ -417,53 +417,21 @@ namespace libsemigroups {
       // only when the Defer object goes out of scope. Useful in reporting when
       // we want to do something with an old value, then update the data member
       // of Stats.
-      template <typename POD>
-      struct Defer {
-        POD& receiver;
-        POD  val;
+      class set_on_destruct {
+        uint64_t& _receiver;
+        uint64_t  _val;
 
-        Defer(POD& receiver, POD val) : receiver(receiver), val(val) {}
+       public:
+        set_on_destruct(uint64_t& receiver) : _receiver(receiver) {}
 
-        ~Defer() {
-          receiver = val;
+        void operator=(uint64_t val) {
+          _val = val;
         }
 
-        operator POD() const {
-          return val;
-        }
-
-        // TODO needed?
-        operator int64_t() const {
-          return static_cast<int64_t>(val);
-        }
-
-        int64_t operator-(POD that) const {
-          return val - that;
+        ~set_on_destruct() {
+          _receiver = _val;
         }
       };
-
-      template <typename POD>
-      Defer(POD&, std::atomic<POD>) -> Defer<POD>;
-
-      auto reporting_number_of_nodes_active() const {
-        return Defer(_stats.report_nodes_active_prev,
-                     current_word_graph().number_of_nodes_active());
-      }
-
-      auto reporting_number_of_edges_active() const {
-        return Defer(_stats.report_edges_active_prev,
-                     current_word_graph().number_of_edges_active());
-      }
-
-      auto reporting_number_of_nodes_defined() const {
-        return Defer(_stats.report_nodes_defined_prev,
-                     current_word_graph().number_of_nodes_defined());
-      }
-
-      auto reporting_number_of_nodes_killed() const {
-        return Defer(_stats.report_nodes_killed_prev,
-                     current_word_graph().number_of_nodes_killed());
-      }
 
       ////////////////////////////////////////////////////////////////////////
       // 2. ToddCoxeterImpl - data members - private
