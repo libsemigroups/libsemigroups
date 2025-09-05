@@ -148,8 +148,6 @@ namespace libsemigroups {
         operator()(fmt_str, f(args)...);
       }
 
-      [[nodiscard]] size_t line_width() const;
-
      private:
       void emit();
     };  // ReportCell
