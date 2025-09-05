@@ -94,7 +94,7 @@ namespace libsemigroups {
           _stats() {}
 
     template <typename Node>
-    NodeManager<Node>::(NodeManager const& that)
+    NodeManager<Node>::NodeManager(NodeManager const& that)
         : _bckwd(that._bckwd),
           _first_free_node(that._first_free_node),
           _forwd(that._forwd),
@@ -104,11 +104,34 @@ namespace libsemigroups {
           _stats(that._stats) {}
 
     template <typename Node>
-    NodeManager<Node>& NodeManager<Node>::operator=(NodeManager const& that);
+    NodeManager<Node>& NodeManager<Node>::operator=(NodeManager const& that) {
+      _bckwd            = that._bckwd;
+      _first_free_node  = that._first_free_node;
+      _forwd            = that._forwd;
+      _growth_factor    = that._growth_factor;
+      _ident            = that._ident;
+      _last_active_node = that._last_active_node;
+      _stats            = that._stats;
+      return *this;
+    }
 
     template <typename Node>
     NodeManager<Node>::~NodeManager() = default;
 
+    template <typename Node>
+    [[nodiscard]] size_t
+    NodeManager<Node>::position_of_node(node_type n) const {
+      if (!is_active_node(n)) {
+        return UNDEFINED;
+      }
+      auto   current = initial_node();
+      size_t pos     = 0;
+      while (current != n) {
+        current = _forwd[current];
+        pos++;
+      }
+      return pos;
+    }
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::growth_factor(float val) {
       if (val < 1.0) {

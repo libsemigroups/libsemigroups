@@ -17,7 +17,7 @@
 //
 
 // This file contains the declaration for a class to manage nodes for
-// ToddCoxeterDigraph instances.
+// NodeManagedGraph instances.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
@@ -43,7 +43,6 @@ namespace libsemigroups {
       // NodeManager - typedefs - public
       ////////////////////////////////////////////////////////////////////////
 
-      //! Type of nodes
       using node_type = Node;
       using Perm      = std::vector<node_type>;
 
@@ -150,46 +149,12 @@ namespace libsemigroups {
         return c != UNDEFINED && _ident[c] == c;
       }
 
-      // TODO to tpp
-      [[nodiscard]] size_t position_of_node(node_type n) const {
-        if (!is_active_node(n)) {
-          return UNDEFINED;
-        }
-        auto   current = initial_node();
-        size_t pos     = 0;
-        while (current != n) {
-          current = _forwd[current];
-          pos++;
-        }
-        return pos;
-      }
+      [[nodiscard]] size_t position_of_node(node_type n) const;
 
-      //! Check if the given node is valid.
-      //!
-      //! \param c the node to check.
-      //!
-      //! \returns A value of type \c bool.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
       inline bool is_valid_node(node_type c) const noexcept {
         return c < _forwd.size();
       }
 
-      //! Returns the next num_nodes_active node after the given node.
-      //!
-      //! \param c the node.
-      //!
-      //! \returns A value of type NodeManager::node_type
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      //!
-      //! \complexity
-      //! Constant
       // not noexcept since std::vector::operator[] isn't.
       inline node_type next_active_node(node_type c) const {
         return _forwd[c];
@@ -219,32 +184,8 @@ namespace libsemigroups {
         return _stats.num_nodes_killed;
       }
 
-      //! Set the value of the growth factor setting.
-      //!
-      //! This setting is used to determine the factor by which the number of
-      //! nodes in the table is increased, when more nodes are required.
-      //!
-      //! The default value of this setting is \c 2.0.
-      //!
-      //! \param val the new value of the setting.
-      //!
-      //! \returns A reference to \c *this.
-      //!
-      //! \throws LibsemigroupsException if \p val is less than \c 1.0.
-      //!
-      //! \complexity
-      //! Constant
       NodeManager& growth_factor(float val);
 
-      //! The current value of the growth factor setting.
-      //!
-      //! \returns A value of type \c float.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant
       float growth_factor() const noexcept {
         return _growth_factor;
       }
