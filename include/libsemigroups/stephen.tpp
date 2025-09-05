@@ -22,8 +22,7 @@ namespace libsemigroups {
 
   template <typename PresentationType>
   class Stephen<PresentationType>::StephenGraph
-      : public detail::NodeManagedGraph<
-            detail::WordGraphWithSources<uint32_t>> {
+      : public detail::NodeManagedGraph<uint32_t> {
     using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
 
    public:
@@ -64,7 +63,7 @@ namespace libsemigroups {
         auto inverse_target = target_no_checks(to, ll);
         if (inverse_target != UNDEFINED && inverse_target != from) {
           merge_nodes_no_checks(from, inverse_target);
-          process_coincidences<detail::DoNotRegisterDefs>();
+          process_coincidences();
           return;
         }
         WordGraphWithSources_::target_no_checks(to, ll, from);
@@ -218,7 +217,7 @@ namespace libsemigroups {
     size_t const N = _word_graph.number_of_nodes_active();
     _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
     _word_graph.merge_nodes_no_checks(accept_state(), that.initial_state() + N);
-    _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
+    _word_graph.process_coincidences();
     _accept_state = UNDEFINED;
     _finished     = false;
     _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
@@ -339,8 +338,7 @@ namespace libsemigroups {
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.merge_nodes_no_checks(u_end, v_end);
-              _word_graph
-                  .template process_coincidences<detail::DoNotRegisterDefs>();
+              _word_graph.process_coincidences();
             }
             --it;
           } else {
@@ -366,8 +364,7 @@ namespace libsemigroups {
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
-                _word_graph
-                    .template process_coincidences<detail::DoNotRegisterDefs>();
+                _word_graph.process_coincidences();
               }
             } else {
               --it;
