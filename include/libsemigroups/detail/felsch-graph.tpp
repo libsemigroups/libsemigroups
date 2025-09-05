@@ -69,7 +69,7 @@ namespace libsemigroups {
     FelschGraph<Graph, Definitions>&
     FelschGraph<Graph, Definitions>::operator=(WordGraph<node_type> const& wg) {
       init();
-      WordGraphWithSources<node_type>::init(wg);
+      Graph::init(wg);
 
       for (auto s : Graph::nodes()) {
         for (auto a : Graph::labels()) {

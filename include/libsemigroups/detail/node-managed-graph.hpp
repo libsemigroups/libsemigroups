@@ -115,13 +115,22 @@ namespace libsemigroups {
       NodeManagedGraph& operator=(NodeManagedGraph&&);
       ~NodeManagedGraph();
 
-      // TODO corresponding init
       template <typename OtherNode>
-      explicit NodeManagedGraph(WordGraph<OtherNode> const& ad)
-          : BaseGraph(ad), NodeManager<node_type>() {
+      explicit NodeManagedGraph(WordGraph<OtherNode> const& wg)
+          : BaseGraph(wg), NodeManager<node_type>() {
         // NodeManager always has one node active
         NodeManager<node_type>::add_active_nodes(
             WordGraph<node_type>::number_of_nodes() - 1);
+      }
+
+      template <typename OtherNode>
+      NodeManagedGraph& init(WordGraph<OtherNode> const& wg) {
+        init();
+        BaseGraph::init(wg);
+        // NodeManager always has one node active
+        NodeManager<node_type>::add_active_nodes(
+            WordGraph<node_type>::number_of_nodes() - 1);
+        return *this;
       }
 
       template <typename OtherNode>
