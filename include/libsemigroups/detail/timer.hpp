@@ -30,6 +30,8 @@ namespace libsemigroups {
     // primarily intended for testing purposes
     std::string string_time(std::chrono::nanoseconds elapsed);
 
+    std::string now_string();
+
     template <typename Unit>
     std::string string_time(Unit elapsed) {
       using std::chrono::duration_cast;

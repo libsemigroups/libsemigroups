@@ -57,9 +57,9 @@ namespace libsemigroups {
       _standardized   = Order::none;
       _ticker_running = false;
 
-      _word_graph = wg;  // FIXME this doesn't seem to reset _word_graph
+      // FIXME this doesn't seem to reset _word_graph
       // properly, in particular, the node managed part isn't reset.
-      _word_graph.presentation(p);  // this does not throw when p is invalid
+      _word_graph.init(p, wg);  // this does not throw when p is invalid
       copy_settings_into_graph();
       return *this;
     }
@@ -123,12 +123,13 @@ namespace libsemigroups {
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      if (i >= _word_graph.number_of_nodes_active() - offset) {
+      if (i >= current_word_graph().number_of_nodes_active() - offset) {
         // We must standardize before doing this so that the index even makes
         // sense.
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
-                                _word_graph.number_of_nodes_active() - offset,
+                                current_word_graph().number_of_nodes_active()
+                                    - offset,
                                 i);
       }
       return current_word_of_no_checks(d_first, i);
