@@ -300,5 +300,51 @@ namespace libsemigroups {
         }
       }
     }
-  }  // namespace detail
+    namespace aho_corasick_impl {
+      [[nodiscard]] Dot dot(AhoCorasickImpl const& ac) {
+        auto to_word = [](word_type const& w) {
+          if (w.empty()) {
+            return std::string("&#949;");
+          }
+          std::string result;
+          for (auto a : w) {
+            result += std::to_string(a);
+          }
+          return result;
+        };
+
+        Dot result;
+        result.kind(Dot::Kind::digraph).add_attr("node [shape=\"box\"]");
+
+        word_type w;
+        for (auto index : ac.node_indices()) {
+          w.clear();
+          ac.signature_no_checks(std::back_inserter(w), index);
+          auto& node = result.add_node(index).add_attr("label", to_word(w));
+          if (ac.node_no_checks(index).terminal()) {
+            node.add_attr("peripheries", "2");
+          }
+        }
+
+        for (auto index : ac.node_indices()) {
+          for (size_t label = 0; label < ac.alphabet_size(); ++label) {
+            auto child = ac.child_no_checks(index, label);
+            if (child != UNDEFINED) {
+              result
+                  .add_edge(index, child)
+                  // FIXME(1) proper fix
+                  .add_attr("color",
+                            result.colors[label % result.colors.size()])
+                  .add_attr("label", label);
+            }
+          }
+          result.add_edge(index, ac.suffix_link_no_checks(index))
+              .add_attr("color", "black")
+              .add_attr("style", "dashed")
+              .add_attr("constraint", "false");
+        }
+        return result;
+      }
+    }  // namespace aho_corasick_impl
+  }    // namespace detail
 }  // namespace libsemigroups
