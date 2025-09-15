@@ -5536,7 +5536,7 @@ namespace libsemigroups {
   //!    x\otimes y =
   //!    \begin{cases}
   //!    \min\{x + y, T\}   & \text{if } x \neq \infty\text{ and }y \neq
-  //!    \infty \\ \mbox
+  //!    \infty \\ \mbox{}
   //!    \infty & \text{if } x = \infty \text{ or }y = \infty;
   //!    \end{cases}
   //! \f]
