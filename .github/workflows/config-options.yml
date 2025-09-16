@@ -67,7 +67,7 @@ jobs:
           - ""
         exclude:
           - external-backward: ""
-          - external-fmt: ""
+            external-fmt: ""
             external-eigen: ""
     env:
       CXX: ccache g++
