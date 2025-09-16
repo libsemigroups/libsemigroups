@@ -267,7 +267,7 @@
 // On Darwin, backtrace can back-trace or "walk" the stack using the following
 // libraries:
 //
-#define BACKWARD_HAS_UNWIND 1
+// #define BACKWARD_HAS_UNWIND 1
 //  - unwind comes from libgcc, but I saw an equivalent inside clang itself.
 //  - with unwind, the stacktrace is as accurate as it can possibly be, since
 //  this is used by the C++ runtime in gcc/clang for stack unwinding on
@@ -312,7 +312,7 @@
 // The default is:
 // #define BACKWARD_HAS_BACKTRACE_SYMBOL == 1
 //
-#if defined(BACKWARD_HAS_BACKTRACE_SYMBOL) && BACKWARD_HAS_BACKTRACE_SYMBOL == 1
+#if BACKWARD_HAS_BACKTRACE_SYMBOL == 1
 #else
 #undef BACKWARD_HAS_BACKTRACE_SYMBOL
 #define BACKWARD_HAS_BACKTRACE_SYMBOL 1
@@ -325,8 +325,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#if defined(BACKWARD_HAS_BACKTRACE) && (BACKWARD_HAS_BACKTRACE == 1) \
-    || (BACKWARD_HAS_BACKTRACE_SYMBOL == 1)
+#if (BACKWARD_HAS_BACKTRACE == 1) || (BACKWARD_HAS_BACKTRACE_SYMBOL == 1)
 #include <execinfo.h>
 #endif
 #endif  // defined(BACKWARD_SYSTEM_DARWIN)
@@ -407,7 +406,7 @@ extern "C" uintptr_t _Unwind_GetIPInfo(_Unwind_Context*, int*);
 
 #endif  // BACKWARD_HAS_UNWIND == 1
 
-#if defined(BACKWARD_HAS_LIBUNWIND) && BACKWARD_HAS_LIBUNWIND == 1
+#if BACKWARD_HAS_LIBUNWIND == 1
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>
 #endif  // BACKWARD_HAS_LIBUNWIND == 1
@@ -783,7 +782,10 @@ namespace backward {
     size_t thread_id() const {
       return 0;
     }
-    void skip_n_firsts(size_t) {}
+    void         skip_n_firsts(size_t) {}
+    void* const* begin() const {
+      return nullptr;
+    }
   };
 
   class StackTraceImplBase {
@@ -1012,7 +1014,7 @@ namespace backward {
 
       if (context()) {
         ucontext_t* uctx = reinterpret_cast<ucontext_t*>(context());
-#ifdef REG_RIP          // x86_64
+#ifdef REG_RIP              // x86_64
         if (uctx->uc_mcontext.gregs[REG_RIP]
             == reinterpret_cast<greg_t>(error_addr())) {
           uctx->uc_mcontext.gregs[REG_RIP]
@@ -1022,7 +1024,7 @@ namespace backward {
             = reinterpret_cast<void*>(uctx->uc_mcontext.gregs[REG_RIP]);
         ++index;
         ctx = *reinterpret_cast<unw_context_t*>(uctx);
-#elif defined(REG_EIP)  // x86_32
+#elif defined(REG_EIP)      // x86_32
         if (uctx->uc_mcontext.gregs[REG_EIP]
             == reinterpret_cast<greg_t>(error_addr())) {
           uctx->uc_mcontext.gregs[REG_EIP]
@@ -1032,7 +1034,7 @@ namespace backward {
             = reinterpret_cast<void*>(uctx->uc_mcontext.gregs[REG_EIP]);
         ++index;
         ctx    = *reinterpret_cast<unw_context_t*>(uctx);
-#elif defined(__arm__)
+#elif defined(__arm__)      // clang libunwind/arm
         // libunwind uses its own context type for ARM unwinding.
         // Copy the registers from the signal handler's context so we can
         // unwind
@@ -1062,6 +1064,25 @@ namespace backward {
               = uctx->uc_mcontext.arm_lr - sizeof(unsigned long);
         }
         _stacktrace[index] = reinterpret_cast<void*>(ctx.regs[UNW_ARM_R15]);
+        ++index;
+#elif defined(__aarch64__)  // gcc libunwind/arm64
+        unw_getcontext(&ctx);
+        // If the IP is the same as the crash address we have a bad function
+        // dereference The caller's address is pointed to by the link pointer,
+        // so we dereference that value and set it to be the next frame's IP.
+        if (uctx->uc_mcontext.pc
+            == reinterpret_cast<__uint64_t>(error_addr())) {
+          uctx->uc_mcontext.pc = uctx->uc_mcontext.regs[UNW_TDEP_IP];
+        }
+
+        // 29 general purpose registers
+        for (int i = UNW_AARCH64_X0; i <= UNW_AARCH64_X28; i++) {
+          ctx.uc_mcontext.regs[i] = uctx->uc_mcontext.regs[i];
+        }
+        ctx.uc_mcontext.sp            = uctx->uc_mcontext.sp;
+        ctx.uc_mcontext.pc            = uctx->uc_mcontext.pc;
+        ctx.uc_mcontext.fault_address = uctx->uc_mcontext.fault_address;
+        _stacktrace[index] = reinterpret_cast<void*>(ctx.uc_mcontext.pc);
         ++index;
 #elif defined(__APPLE__) && defined(__x86_64__)
         unw_getcontext(&ctx);
@@ -1098,11 +1119,11 @@ namespace backward {
         _stacktrace[index] = reinterpret_cast<void*>(ctx.data[16]);
         ++index;
 #elif defined(__APPLE__)
-        unw_getcontext(&ctx);
-        // TODO: Convert the ucontext_t to libunwind's unw_context_t like
-        // we do in 64 bits
-        if (ctx.uc_mcontext->__ss.__eip
-            == reinterpret_cast<greg_t>(error_addr())) {
+        unw_getcontext(&ctx)
+            // TODO: Convert the ucontext_t to libunwind's unw_context_t like
+            // we do in 64 bits
+            if (ctx.uc_mcontext->__ss.__eip
+                == reinterpret_cast<greg_t>(error_addr())) {
           ctx.uc_mcontext->__ss.__eip = ctx.uc_mcontext->__ss.__esp;
         }
         _stacktrace[index]
@@ -1250,10 +1271,18 @@ namespace backward {
       s.AddrStack.Mode = AddrModeFlat;
       s.AddrFrame.Mode = AddrModeFlat;
       s.AddrPC.Mode = AddrModeFlat;
-#ifdef _M_X64
+#if defined(_M_X64)
       s.AddrPC.Offset = ctx_->Rip;
       s.AddrStack.Offset = ctx_->Rsp;
       s.AddrFrame.Offset = ctx_->Rbp;
+#elif defined(_M_ARM64)
+      s.AddrPC.Offset    = ctx_->Pc;
+      s.AddrStack.Offset = ctx_->Sp;
+      s.AddrFrame.Offset = ctx_->Fp;
+#elif defined(_M_ARM)
+      s.AddrPC.Offset    = ctx_->Pc;
+      s.AddrStack.Offset = ctx_->Sp;
+      s.AddrFrame.Offset = ctx_->R11;
 #else
       s.AddrPC.Offset    = ctx_->Eip;
       s.AddrStack.Offset = ctx_->Esp;
@@ -1261,8 +1290,12 @@ namespace backward {
 #endif
 
       if (!machine_type_) {
-#ifdef _M_X64
+#if defined(_M_X64)
         machine_type_ = IMAGE_FILE_MACHINE_AMD64;
+#elif defined(_M_ARM64)
+        machine_type_ = IMAGE_FILE_MACHINE_ARM64;
+#elif defined(_M_ARM)
+        machine_type_ = IMAGE_FILE_MACHINE_ARMNT;
 #else
         machine_type_ = IMAGE_FILE_MACHINE_I386;
 #endif
@@ -4502,6 +4535,8 @@ namespace backward {
 #elif defined(__mips__)
       error_addr = reinterpret_cast<void*>(
           reinterpret_cast<struct sigcontext*>(&uctx->uc_mcontext)->sc_pc);
+#elif defined(__APPLE__) && defined(__POWERPC__)
+      error_addr = reinterpret_cast<void*>(uctx->uc_mcontext->__ss.__srr0);
 #elif defined(__ppc__) || defined(__powerpc) || defined(__powerpc__) \
     || defined(__POWERPC__)
       error_addr = reinterpret_cast<void*>(uctx->uc_mcontext.regs->nip);
@@ -4513,6 +4548,8 @@ namespace backward {
       error_addr = reinterpret_cast<void*>(uctx->uc_mcontext->__ss.__rip);
 #elif defined(__APPLE__)
       error_addr = reinterpret_cast<void*>(uctx->uc_mcontext->__ss.__eip);
+#elif defined(__loongarch__)
+      error_addr = reinterpret_cast<void*>(uctx->uc_mcontext.__pc);
 #else
 #warning ":/ sorry, ain't know no nothing none not of your architecture!"
 #endif
