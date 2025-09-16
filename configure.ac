@@ -116,35 +116,13 @@ AS_IF([test "x$compile_warnings" = "xyes"],
        -Wold-style-cast])
    AC_SUBST([WARNING_CXXFLAGS])])
 
-########################################
-# backward
-########################################
-
-AC_MSG_CHECKING([whether to enable backward mode])
-
-# Check if --enable-backward or --disable-backward was specified, and provide
-# the help string for the flag. If a flag was specified, set the value of
-# backward accordingly. Otherwise, if a flag was not specified, set backward to
-# yes.
-AC_ARG_ENABLE([backward],
-    [AS_HELP_STRING([--disable-backward], [disable backward])],
-    [case "${enableval}" in
-        yes) backward=yes ;;
-        no)  backward=no ;;
-        *) AC_MSG_ERROR([bad value ${enableval} for --enable-backward]) ;;
-    esac],
-    [backward=yes]
-  )
-AC_MSG_RESULT([$backward])
-
-AS_IF([test "x$backward" = "xyes"], [
-  AC_CHECK_HEADER(execinfo.h,
-    [AC_DEFINE([BACKWARD_ENABLED], [1], [define if building with backward-cpp enabled])],
-    [AC_MSG_WARN([backward enabled but execinfo.h not found, disabling backward!])])
-])
 
 # Check if code coverage mode is enabled
 AX_CODE_COVERAGE()
+
+# Check if the vendored backward should be used or not, or if backward should be
+# disabled altogether
+AX_CHECK_BACKWARD()
 
 # Check if HPCombi is enable, and available
 AX_CHECK_HPCOMBI()

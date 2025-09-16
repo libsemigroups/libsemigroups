@@ -26,6 +26,8 @@ else
 AM_CPPFLAGS = -DNDEBUG
 endif
 
+AM_CPPFLAGS += $(BACKWARD_CPPFLAGS)
+
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
 AM_CXXFLAGS += $(CODE_COVERAGE_CXXFLAGS)
 
@@ -193,8 +195,13 @@ magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magi
 rxrangesincludedir = $(includedir)/libsemigroups/rx
 rxrangesinclude_HEADERS = third_party/rx-ranges/include/rx/ranges.hpp
 
+## Define backwardincludedir outside the conditional
+## LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD because it is used by
+## uninstall-hook
 backwardcppincludedir = $(includedir)/libsemigroups/backward-cpp
+if LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD
 backwardcppinclude_HEADERS=third_party/backward-cpp/backward.hpp
+endif
 
 ## Define hpcombiincludedir outside the conditional
 ## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by
