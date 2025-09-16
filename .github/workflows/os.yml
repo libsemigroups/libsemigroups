@@ -148,3 +148,43 @@ jobs:
             ./autogen.sh && ./configure
             make test_all -j4
             ./test_all "[quick]"
+  FreeBSD:
+    name: FreeBSD
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Test in FreeBSD
+        uses: vmactions/freebsd-vm@v1
+        with:
+          usesh: true
+          prepare: |
+            pkg install -y autoconf automake libtool
+          run: |
+            ./autogen.sh
+            ./configure
+            make -j4
+            make test_all -j4
+            ./test_all [quick]
+  OpenBSD:
+    name: OpenBSD
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+      AUTOCONF_VERSION: 2.72
+      AUTOMAKE_VERSION: 1.17
+    steps:
+      - uses: actions/checkout@v5
+      - name: Test in OpenBSD
+        uses: vmactions/openbsd-vm@v1
+        with:
+          envs: "AUTOCONF_VERSION AUTOMAKE_VERSION"
+          usesh: true
+          prepare: |
+            pkg_add autoconf-2.72p0 automake-1.17 libtool
+          run: |
+            ./autogen.sh
+            ./configure
+            make -j4
+            make test_all -j4
+            ./test_all [quick]
