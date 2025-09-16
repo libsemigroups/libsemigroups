@@ -45,22 +45,25 @@ To build `libsemigroups` from a release archive:
 In addition to the usual `autoconf` configuration options, the following
 configuration options are available for `libsemigroups`:
 
-| Option                     | Description                                        |
-| -------------------------- | -------------------------------------------------- |
-| \--enable-code-coverage    | enable code coverage support (default=no)          |
-| \--enable-compile-warnings | enable compiler warnings (default=no)              |
-| \--enable-debug            | enable debug mode (default=no)                     |
-| \--enable-eigen            | enable `eigen` (default=yes)                       |
-| \--enable-hpcombi          | enable `HPCombi` (default=yes)                     |
-| \--with-external-fmt       | do not use the included copy of fmt (default=no)   |
-| \--with-external-eigen     | do not use the included copy of eigen (default=no) |
-| \--disable-popcnt          | do not use \_\_builtin_popcountl (default=yes)     |
-| \--disable-clzll           | do not use \_\_builtin_clzll (default=yes)         |
+| Option                     | Description                                             |
+| -------------------------- | ------------------------------------------------------- |
+| \--enable-backward         | enable `backward` for better stack traces (default=yes) |
+| \--enable-code-coverage    | enable code coverage support (default=no)               |
+| \--enable-compile-warnings | enable compiler warnings (default=no)                   |
+| \--enable-debug            | enable debug mode (default=no)                          |
+| \--enable-eigen            | enable `eigen` (default=yes)                            |
+| \--enable-hpcombi          | enable `HPCombi` (default=yes)                          |
+| \--with-external-backward  | do not use the included copy of backward (default=no)   |
+| \--with-external-fmt       | do not use the included copy of fmt (default=no)        |
+| \--with-external-eigen     | do not use the included copy of eigen (default=no)      |
+| \--disable-popcnt          | do not use \_\_builtin_popcountl (default=yes)          |
+| \--disable-clzll           | do not use \_\_builtin_clzll (default=yes)              |
 
 Debug mode significantly degrades the performance of `libsemigroups`. Note that
 the flags `--enable-eigen` and `--with-external-eigen` are independent of each
 other, and so both flags should be included to enable `eigen` and use an
-external `eigen`.
+external `eigen`. The same is true of `--enable-backward` and
+`--with-external-backward`.
 
 ## Make install
 
