@@ -43,6 +43,8 @@ AC_DEFUN([AX_CHECK_BACKWARD], [
       )
       CPPFLAGS="$TMP_CPPFLAGS"
     else
+    # The next variable becomes the preprocessor macro LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD
+      AC_DEFINE([WITH_INTERNAL_BACKWARD], [1], [define if building with the vendored backward])
       AC_SUBST(BACKWARD_CFLAGS, ['-I$(srcdir)/third_party/backward-cpp/'])
     fi
     AC_SUBST([BACKWARD_CPPFLAGS])

@@ -34,7 +34,11 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
+#ifdef LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD
 #include "backward-cpp/backward.hpp"  // for StackTrace, TraceResolver, Reso...
+#else
+#include "backward.hpp"  // for StackTrace, TraceResolver, Reso...
+#endif
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
