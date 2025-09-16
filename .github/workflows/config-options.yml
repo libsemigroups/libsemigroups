@@ -51,7 +51,7 @@ jobs:
 
   external-deps:
     timeout-minutes: 45
-    name: ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -75,7 +75,7 @@ jobs:
       CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
       PKG_CONFIG_PATH: /home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/
       LD_LIBRARY_PATH: /home/runner/micromamba/envs/libsemigroups/lib
-      BACKWARD_CPPFLAGS: -I/home/runner/micromamba/envs/libsemigroups/lib
+      BACKWARD_CPPFLAGS: -I/home/runner/micromamba/envs/libsemigroups/include
     steps:
       - uses: actions/checkout@v5
       - name: Setup ccache . . .
