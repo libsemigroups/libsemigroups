@@ -51,11 +51,14 @@ jobs:
 
   external-deps:
     timeout-minutes: 45
-    name: ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        external-backward:
+          - --with-external-backward
+          - ""
         external-fmt:
           - --with-external-fmt
           - ""
@@ -63,14 +66,16 @@ jobs:
           - --with-external-eigen
           - ""
         exclude:
-          - external-fmt: ""
+          - external-backward: ""
+            external-fmt: ""
             external-eigen: ""
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
-      CONFIGFLAGS: ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+      CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
       PKG_CONFIG_PATH: /home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/
       LD_LIBRARY_PATH: /home/runner/micromamba/envs/libsemigroups/lib
+      BACKWARD_CPPFLAGS: -I/home/runner/micromamba/envs/libsemigroups/include
     steps:
       - uses: actions/checkout@v5
       - name: Setup ccache . . .
@@ -89,15 +94,7 @@ jobs:
           ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" $CONFIGFLAGS
       - name: Build libsemigroups . . .
         run: make -j4
-      - name: Build and run tests for eigen
-        if: ${{ matrix.external-fmt == '' }}
-        run: |
-          make test_obvinf test_word_graph test_cong -j4
-          ./test_cong [quick]
-          ./test_obvinf [quick]
-          ./test_word_graph [quick]
       - name: Build and run all quick tests . . .
-        if: ${{ matrix.external-fmt != '' }}
         run: |
           make test_all -j4
           ./test_all [quick]
