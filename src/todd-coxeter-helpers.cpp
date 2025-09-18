@@ -78,13 +78,19 @@ namespace libsemigroups {
     }
 
     void perform_lookbehind(detail::ToddCoxeterImpl& tc) {
+      if (tc.kind() == congruence_kind::onesided
+          && !tc.internal_generating_pairs().empty()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument <tc> (ToddCoxeter) must be a 2-sided congruence")
+      }
+
       using word_graph_type = detail::ToddCoxeterImpl::word_graph_type;
       using node_type       = word_graph_type::node_type;
       using detail::group_digits;
 
       auto& wg = const_cast<word_graph_type&>(tc.current_word_graph());
 
-      auto current = wg.cursor();
+      auto current = wg.initial_node();
 
       word_type w1, w2;
 
@@ -125,7 +131,7 @@ namespace libsemigroups {
         if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
           node_type other = word_graph::follow_path_no_checks(
               wg, wg.initial_node(), w2.begin(), w2.end());
-          if (other != UNDEFINED) {
+          if (other != UNDEFINED && other != current) {
             ++found;
             wg.merge_nodes_no_checks(current, other);
           }

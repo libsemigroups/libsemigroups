@@ -21,6 +21,8 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
+#include "libsemigroups/todd-coxeter-helpers.hpp"
+#include "libsemigroups/types.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
@@ -4525,7 +4527,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -5211,6 +5213,24 @@ namespace libsemigroups {
     val = 0;
     REQUIRE_THROWS_AS(tc.run_until([&val]() { return val++ > 10; }),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "126",
+                          "perform_lookbehind exception",
+                          "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+
+    ToddCoxeter tc(congruence_kind::onesided, p);
+    REQUIRE_NOTHROW(todd_coxeter::perform_lookbehind(tc));
+    todd_coxeter::add_generating_pair(tc, 01_w, 10_w);
+    REQUIRE_THROWS_AS(todd_coxeter::perform_lookbehind(tc),
+                      LibsemigroupsException);
+    tc.init(congruence_kind::twosided, p);
+    todd_coxeter::add_generating_pair(tc, 01_w, 10_w);
+    REQUIRE_NOTHROW(todd_coxeter::perform_lookbehind(tc));
   }
 
 }  // namespace libsemigroups
