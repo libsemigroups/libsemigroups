@@ -59,22 +59,24 @@ namespace libsemigroups {
     st.load_here();
     backward::TraceResolver tr;
     tr.load_stacktrace(st);
-    for (size_t i = st.size() - 1; i-- > 0;) {
-      backward::ResolvedTrace trace = tr.resolve(st[i]);
-      size_t                  pos   = trace.object_function.find("(");
-      if (pos == std::string::npos) {
-        continue;
+    if (st.size() > 0) {
+      for (size_t i = st.size() - 1; i-- > 0;) {
+        backward::ResolvedTrace trace = tr.resolve(st[i]);
+        size_t                  pos   = trace.object_function.find("(");
+        if (pos == std::string::npos) {
+          continue;
+        }
+        std::string func(trace.object_function.begin(),
+                         trace.object_function.begin() + pos);
+        if (func.find("Catch") != std::string::npos
+            || func.find("C_A_T_C_H") != std::string::npos
+            || func.find("LibsemigroupsException") != std::string::npos
+            || func.find("pybind11") != std::string::npos
+            || func.find("libsemigroups") == std::string::npos) {
+          continue;
+        }
+        full_msg += "#" + std::to_string(i - 1) + " " + func + "\n";
       }
-      std::string func(trace.object_function.begin(),
-                       trace.object_function.begin() + pos);
-      if (func.find("Catch") != std::string::npos
-          || func.find("C_A_T_C_H") != std::string::npos
-          || func.find("LibsemigroupsException") != std::string::npos
-          || func.find("pybind11") != std::string::npos
-          || func.find("libsemigroups") == std::string::npos) {
-        continue;
-      }
-      full_msg += "#" + std::to_string(i - 1) + " " + func + "\n";
     }
     full_msg = "Simplified stack trace (most recent call last):\n" + full_msg;
     full_msg
