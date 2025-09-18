@@ -210,14 +210,16 @@ namespace libsemigroups {
         // TODO(1) this is a bit fishy
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      node_type const s = current_word_graph().initial_node();
-      if (finished()) {  // TODO(1) can we do anything if complete()?
+      if (finished()
+          || (kind() == congruence_kind::onesided
+              && !internal_generating_pairs().empty())) {
         return current_word_of_no_checks(
             d_first, current_index_of_no_checks(first, last));
       }
 
-      word_type u(first, last);
-      auto      v_begin = u.begin();
+      node_type const s = current_word_graph().initial_node();
+      word_type       u(first, last);
+      auto            v_begin = u.begin();
 
       while (v_begin != u.end()) {
         auto [t, old_end] = word_graph::last_node_on_path_no_checks(
