@@ -150,7 +150,7 @@ The following tools may be useful for developers of ``libsemigroups``.
 ~~~~~~~~~~~~~~~~
 
 The codebase of ``libsemigroups`` is formatted using using version ``15`` of
-`clang-format<https://releases.llvm.org/15.0.0/tools/clang/docs/ClangFormat.html>`_,
+`clang-format <https://releases.llvm.org/15.0.0/tools/clang/docs/ClangFormat.html>`_,
 and adherence to this standard is checked as part of all pull requests.
 
 To install this locally on a Debian-like system with root access, you may be
@@ -181,9 +181,9 @@ This should be done sparingly and with good reason.
 ~~~~~~~~~~~
 
 As well as checking formatting, the codebase of ``libsemigroups`` is linted
-using `cpplint<https://github.com/cpplint/cpplint>`_ as part of every pull
+using `cpplint <https://github.com/cpplint/cpplint>`_ as part of every pull
 request. Instructions on how to install locally can be found on their
-`installation page<https://github.com/cpplint/cpplint?tab=readme-ov-file#installation>`_.
+`installation page <https://github.com/cpplint/cpplint?tab=readme-ov-file#installation>`_.
 
 Certain lines can be spared from the linter in the following way
 
@@ -203,7 +203,7 @@ Certain lines can be spared from the linter in the following way
 
 where ``category`` is the type of linter error to ignore. The names of these
 categories can be found in the
-`source code<https://github.com/cpplint/cpplint/blob/e50a4ae01985273a1b15efd1d4540f764c878976/cpplint.py#L300>`_,
+`source code <https://github.com/cpplint/cpplint/blob/e50a4ae01985273a1b15efd1d4540f764c878976/cpplint.py#L300>`_,
 but it is probably easier to try linting, and then quote the error that is spat
 out.
 
@@ -215,8 +215,8 @@ good reason.
 
 As part of every pull request, the codebase of ``libsemigroups`` is checked for
 spelling mistakes using
-`codespell<https://github.com/codespell-project/codespell>`_. Instructions on how
-to install this locally can be found on their `installation page<https://github.com/codespell-project/codespell?tab=readme-ov-file#installation>`_.
+`codespell <https://github.com/codespell-project/codespell>`_. Instructions on how
+to install this locally can be found on their `installation page <https://github.com/codespell-project/codespell?tab=readme-ov-file#installation>`_.
 
 Sometimes, false positives may get thrown, especially when writing maths or
 names. Therefore, ``codespell`` can be disabled using
