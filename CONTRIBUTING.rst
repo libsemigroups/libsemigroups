@@ -8,9 +8,11 @@ If you are checking out the ``libsemigroups`` git repo, then the following steps
 are required to build the documentation:
 
 1. Install doxygen (using homebrew or apt-get)
-2. Check out the doxygen-awesome-css/ submodule of ``libsemigroups`` using::
+2. Check out the doxygen-awesome-css/ submodule of ``libsemigroups`` using:
 
-   git submodule update --init --recursive
+.. code-block:: console
+
+  git submodule update --init --recursive
 
 3. Type ``make doc``
 
@@ -152,7 +154,7 @@ and adherence to this standard is checked as part of all pull requests.
 To install this locally on a Debian-like system with root access, you may be
 able to run:
 
-.. code-block::console
+.. code-block:: console
 
   apt install clang-format-15
 
@@ -161,13 +163,13 @@ if you want to use two lines to construct a vector that represents a 2x2 matrix,
 even though it would fit on one line. Automatic formatting can be disabled using
 the comment
 
-.. code-block::cpp
+.. code-block:: cpp
 
   // clang-format off
 
 and then, importantly, reenabled using the comment
 
-.. code-block::cpp
+.. code-block:: cpp
 
   // clang-format on
 
@@ -183,7 +185,7 @@ request. Instructions on how to install locally can be found on their
 
 Certain lines can be spared from the linter in the following way
 
-.. code-block::cpp
+.. code-block:: cpp
 
   void some_offending_line_of_code(); // NOLINT(category)
 
@@ -217,13 +219,13 @@ to install this locally can be found on their `installation page<https://github.
 Sometimes, false positives may get thrown, especially when writing maths or
 names. Therefore, ``codespell`` can be disabled using
 
-.. code-block::cpp
+.. code-block:: cpp
 
   // codespell:begin-ignore
 
 and then reenabled using
 
-.. code-block::cpp
+.. code-block:: cpp
 
   // codespell:end-ignore
 
