@@ -136,3 +136,96 @@ Making a release
 A ***bugfix release*** is one of the form ``x.y.z -> x.y.z+1``, and
 a ***non-bugfix release*** is one of the form ``x.y.z -> x+1.y.z`` or
 ``x.y+1.z``.
+
+Tools for developers
+--------------------
+
+The following tools may be useful for developers of ``libsemigroups``.
+
+``clang-format``
+~~~~~~~~~~~~~~~~
+
+The codebase of ``libsemigroups`` is formatted using using version ``15`` of
+`clang-format<https://releases.llvm.org/15.0.0/tools/clang/docs/ClangFormat.html>`_,
+and adherence to this standard is checked as part of all pull requests.
+
+To install this locally on a Debian-like system with root access, you may be
+able to run:
+
+.. code-block::console
+
+  apt install clang-format-15
+
+In some cases, it may be desirable to disable automatic formatting; for example,
+if you want to use two lines to construct a vector that represents a 2x2 matrix,
+even though it would fit on one line. Automatic formatting can be disabled using
+the comment
+
+.. code-block::cpp
+
+  // clang-format off
+
+and then, importantly, reenabled using the comment
+
+.. code-block::cpp
+
+  // clang-format on
+
+This should be done sparingly and with good reason.
+
+``cpplint``
+~~~~~~~~~~~
+
+As well as checking formatting, the codebase of ``libsemigroups`` is linted
+using `cpplint<https://github.com/cpplint/cpplint>`_ as part of every pull
+request. Instructions on how to install locally can be found on their
+`installation page<https://github.com/cpplint/cpplint?tab=readme-ov-file#installation>`_.
+
+Certain lines can be spared from the linter in the following way
+
+.. code-block::cpp
+
+  void some_offending_line_of_code(); // NOLINT(category)
+
+  // NOLINTNEXTLINE(category)
+  class SomeOtherOffendingLineOfCode;
+
+  // NOLINTBEGIN(category)
+  auto some_offending_thing({
+    "that", "spans",
+    "several", "lines"
+  });
+  // NOLINTEND
+
+where ``category`` is the type of linter error to ignore. The names of these
+categories can be found in the
+`source code<https://github.com/cpplint/cpplint/blob/e50a4ae01985273a1b15efd1d4540f764c878976/cpplint.py#L300>`_,
+but it is probably easier to try linting, and then quote the error that is spat
+out.
+
+As with ``clang-format``, disabling the linter should be done sparingly and with
+good reason.
+
+``codespell``
+~~~~~~~~~~~~~
+
+As part of every pull request, the codebase of ``libsemigroups`` is checked for
+spelling mistakes using
+`codespell<https://github.com/codespell-project/codespell>`_. Instructions on how
+to install this locally can be found on their `installation page<https://github.com/codespell-project/codespell?tab=readme-ov-file#installation>`_.
+
+Sometimes, false positives may get thrown, especially when writing maths or
+names. Therefore, ``codespell`` can be disabled using
+
+.. code-block::cpp
+
+  // codespell:begin-ignore
+
+and then reenabled using
+
+.. code-block::cpp
+
+  // codespell:end-ignore
+
+If the issue is more widespread than a few lines of code, then the offending
+word(s) can be added to the ``ignore-words-list`` of the ``.codespellrc`` file.
