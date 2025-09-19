@@ -14,9 +14,6 @@ are required to build the documentation:
 
 3. Type ``make doc``
 
-See the `manual <https://libsemigroups.readthedocs.io/en/latest/install.html>`_
-for details of how to do this.
-
 Naming conventions
 ------------------
 
@@ -139,11 +136,3 @@ Making a release
 A ***bugfix release*** is one of the form ``x.y.z -> x.y.z+1``, and
 a ***non-bugfix release*** is one of the form ``x.y.z -> x+1.y.z`` or
 ``x.y+1.z``.
-
-Use the script `etc/release-libsemigroups.py`.
-
-References
-----------
-
-- <https://conda.io/docs/build_tutorials.html>
-- <https://github.com/conda/conda-recipes>
