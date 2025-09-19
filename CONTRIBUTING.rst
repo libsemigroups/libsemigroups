@@ -169,7 +169,7 @@ the comment
 
   // clang-format off
 
-and then, importantly, reenabled using the comment
+and then, importantly, re-enabled using the comment
 
 .. code-block:: cpp
 
@@ -225,7 +225,7 @@ names. Therefore, ``codespell`` can be disabled using
 
   // codespell:begin-ignore
 
-and then reenabled using
+and then re-enabled using
 
 .. code-block:: cpp
 
