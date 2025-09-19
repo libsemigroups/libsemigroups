@@ -81,6 +81,7 @@ Some more conventions:
 
 * The documentation for each function may contain the following section
   indicators in the following order:
+
   #. ``\tparam``
   #. ``\param``
   #. ``\return``
@@ -89,6 +90,7 @@ Some more conventions:
   #. ``\note``
   #. ``\warning``
   #. ``\sa``
+  
   This can be checked by running ``etc/check_doc_order.py``.
 
 Debugging and valgrinding
