@@ -8,7 +8,7 @@ If you are checking out the ``libsemigroups`` git repo, then the following steps
 are required to build the documentation:
 
 1. Install doxygen (using homebrew or apt-get)
-2. Check out the doxygen-awesome-css/ submodule using::
+2. Check out the doxygen-awesome-css/ submodule of ``libsemigroups`` using::
 
    git submodule update --init --recursive
 
