@@ -521,6 +521,8 @@
     <tab type="usergroup" visible="yes" url="@ref todd_coxeter_group" title="Todd-Coxeter">
       <tab type="usergroup" visible="yes" url="@ref todd_coxeter_class_group"
         title="The ToddCoxeter class">
+        <tab type="usergroup" visible="yes" url="@ref md_todd-coxeter-report"
+          title="Instrumenting Todd-Coxeter"/>
         <tab type="usergroup" visible="yes" url="@ref todd_coxeter_class_mem_types_group"
           title="Member types">
           <tab type="user" visible="yes" url="@ref libsemigroups::ToddCoxeter::options"
