@@ -190,13 +190,6 @@ namespace libsemigroups {
     }
   }
 
-  //! No doc
-  static inline void
-  report_elapsed_time(std::string_view                    prefix,
-                      libsemigroups::detail::Timer const& tmr) {
-    report_default("{} elapsed time {}", prefix, tmr);
-  }
-
   //! \ingroup core_classes_group
   //!
   //! \brief Struct for specifying whether or not to report about an algorithm's
