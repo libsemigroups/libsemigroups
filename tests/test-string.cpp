@@ -99,4 +99,13 @@ namespace libsemigroups {
     REQUIRE(detail::group_digits(-12'000'000) == "-12,000,000");
     REQUIRE(detail::group_digits(-123'000'000) == "-123,000,000");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("string",
+                          "004",
+                          "detail::visible_length",
+                          "[quick][string]") {
+    REQUIRE(detail::visible_length(
+                "\U0000001b[1m\U0000001b[30m\U0000001b[47mRUN X.Y\U0000001b[0m")
+            == 7);
+  }
 }  // namespace libsemigroups
