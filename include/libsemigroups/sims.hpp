@@ -1269,7 +1269,7 @@ namespace libsemigroups {
 
         // TODO(1) (Sims1) ensure that _felsch_graph's settings are
         // properly initialised
-        FelschGraph<word_type, node_type, std::vector<Definition>>
+        FelschGraph<WordGraphWithSources<uint32_t>, std::vector<Definition>>
             _felsch_graph;
 
         // This mutex does nothing for iterator, only does something for
@@ -1557,7 +1557,8 @@ namespace libsemigroups {
     friend class sims::const_cgp_iterator;
 
     using felsch_graph_type
-        = detail::FelschGraph<word_type, node_type, std::vector<Definition>>;
+        = detail::FelschGraph<detail::WordGraphWithSources<uint32_t>,
+                              std::vector<Definition>>;
 
    public:
     //! Default constructor

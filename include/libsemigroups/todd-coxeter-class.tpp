@@ -1,4 +1,3 @@
-//
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2025 James D. Mitchell
 //
@@ -19,7 +18,6 @@
 // This file contains out-of-line ToddCoxeter mem fn templates.
 
 namespace libsemigroups {
-
   template <typename Word>
   ToddCoxeter<Word>::~ToddCoxeter() = default;
 
@@ -53,7 +51,7 @@ namespace libsemigroups {
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
     ToddCoxeterImpl::init(knd, wg);
-    _presentation = to<Presentation<Word>>(current_word_graph().presentation());
+    _presentation = to<Presentation<Word>>(internal_presentation());
     _generating_pairs.clear();
     return *this;
   }

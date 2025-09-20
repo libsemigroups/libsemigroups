@@ -22,8 +22,7 @@ namespace libsemigroups {
 
   template <typename PresentationType>
   class Stephen<PresentationType>::StephenGraph
-      : public detail::NodeManagedGraph<
-            detail::WordGraphWithSources<uint32_t>> {
+      : public detail::NodeManagedGraph<uint32_t> {
     using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
 
    public:
@@ -64,7 +63,7 @@ namespace libsemigroups {
         auto inverse_target = target_no_checks(to, ll);
         if (inverse_target != UNDEFINED && inverse_target != from) {
           merge_nodes_no_checks(from, inverse_target);
-          process_coincidences<detail::DoNotRegisterDefs>();
+          process_coincidences();
           return;
         }
         WordGraphWithSources_::target_no_checks(to, ll, from);
@@ -125,7 +124,9 @@ namespace libsemigroups {
         _presentation(std::make_shared<PresentationType>()),
         _word(),
         _word_graph() {
+    report_prefix("Stephen");
     _word_graph.report_prefix("Stephen");
+    report_divider(fmt::format("{:+<32}\n", ""));
   }
 
   template <typename PresentationType>
@@ -136,6 +137,7 @@ namespace libsemigroups {
     _presentation->init();
     _word.clear();
     _word_graph.init();
+    report_prefix("Stephen");
     _word_graph.report_prefix("Stephen");
   }
 
@@ -218,7 +220,7 @@ namespace libsemigroups {
     size_t const N = _word_graph.number_of_nodes_active();
     _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
     _word_graph.merge_nodes_no_checks(accept_state(), that.initial_state() + N);
-    _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
+    _word_graph.process_coincidences();
     _accept_state = UNDEFINED;
     _finished     = false;
     _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
@@ -242,45 +244,85 @@ namespace libsemigroups {
   }
 
   template <typename PresentationType>
-  void Stephen<PresentationType>::report_before_run() {
+  void Stephen<PresentationType>::report_before_run() const {
     if (reporting_enabled()) {
-      report_no_prefix("{:+<95}\n", "");
+      report_no_prefix(report_divider());
       report_default("Stephen: STARTING . . .\n");
-      report_no_prefix("{:+<95}\n", "");
-      using detail::group_digits;
-      auto shortest_short = presentation::shortest_rule_length(presentation());
-      auto longest_short  = presentation::longest_rule_length(presentation());
-      report_default("Stephen: |w| = {}, |A| = {}, |R| = {}, "
-                     "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+      report_default("Stephen: |w| = {}, {}",
                      word().size(),
-                     presentation().alphabet().size(),
-                     group_digits(presentation().rules.size() / 2),
-                     shortest_short,
-                     longest_short,
-                     group_digits(presentation::length(presentation())));
+                     presentation::to_report_string(presentation()));
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Reporting
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename PresentationType>
+  void Stephen<PresentationType>::report_after_run() const {
+    if (reporting_enabled()) {
+      using detail::group_digits;
+      report_no_prefix(report_divider());
+      report_default("Stephen: found word graph with |V| = {} and |E| = {}\n",
+                     group_digits(_word_graph.number_of_nodes_active()),
+                     group_digits(_word_graph.number_of_edges()));
+
+      report_default("Stephen: STOPPING -- {}\n",
+                     finished() ? "finished" : string_why_we_stopped());
     }
   }
 
   template <typename PresentationType>
-  void Stephen<PresentationType>::report_after_run() {
-    if (reporting_enabled()) {
-      report_no_prefix("{:-<95}\n", "");
-      using detail::group_digits;
-      report_default(
-          "Stephen: Computed word graph with |V| = {} and |E| = {}\n",
-          group_digits(_word_graph.number_of_nodes_active()),
-          group_digits(_word_graph.number_of_edges()));
-      report_no_prefix("{:+<95}\n", "");
+  void Stephen<PresentationType>::report_progress_from_thread() const {
+    using detail::group_digits;
+    using detail::signed_group_digits;
+    using detail::string_time;
 
-      report_default("Stephen: STOPPING -- ");
+    auto run_time = delta(start_time());
 
-      if (finished()) {
-        report_no_prefix("finished!\n");
-      } else {
-        report_why_we_stopped();
-      }
-      report_no_prefix("{:+<95}\n", "");
-    }
+    auto const active  = _word_graph.number_of_nodes_active();
+    auto const killed  = _word_graph.number_of_nodes_killed();
+    auto const defined = _word_graph.number_of_nodes_defined();
+
+    auto const& stats = _word_graph.stats();
+    auto const  active_diff
+        = signed_group_digits(active - stats.prev_active_nodes);
+    auto const killed_diff
+        = signed_group_digits(killed - stats.prev_nodes_killed);
+    auto const defined_diff
+        = signed_group_digits(defined - stats.prev_nodes_defined);
+
+    auto const mean_killed
+        = group_digits(std::pow(10, 9) * static_cast<double>(killed)
+                       / run_time.count())
+          + "/s";
+    auto const mean_defined
+        = group_digits(std::pow(10, 9) * static_cast<double>(defined)
+                       / run_time.count())
+          + "/s";
+
+    std::string_view const line1
+        = "{}: nodes {} (active) | {} (killed) | {} (defined)\n";
+
+    detail::ReportCell<4> rc;
+    rc.min_width(11).min_width(0, report_prefix().size());
+    report_no_prefix(report_divider());
+    rc(line1,
+       report_prefix(),
+       group_digits(active),
+       group_digits(killed),
+       group_digits(defined));
+    rc("{}: diff  {} (active) | {} (killed) | {} (defined)\n",
+       report_prefix(),
+       active_diff,
+       killed_diff,
+       defined_diff);
+    rc("{}: time  {} (total)  | {} (killed) | {} (defined)\n",
+       report_prefix(),
+       string_time(run_time),
+       mean_killed,
+       mean_defined);
+    _word_graph.stats_check_point();
   }
 
   template <typename PresentationType>
@@ -290,11 +332,11 @@ namespace libsemigroups {
 
     report_before_run();
     if (reporting_enabled()) {
-      // TODO(2): Thread sanitizer reports some sort of race condition here. Its
-      // not really an issue since its just reporting, but would be nice to
-      // silence the sanitizer. ToddCoxeter seems to do the same thing and no
-      // sanitizer issues there, so what gives?
-      detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
+      // TODO(2): Thread sanitizer reports some sort of race condition here.
+      // It's not really an issue since its just reporting, but would be nice
+      // to silence the sanitizer. ToddCoxeter seems to do the same thing and
+      // no sanitizer issues there, so what gives?
+      detail::Ticker t([this]() { report_progress_from_thread(); });
       really_run_impl();
     } else {
       really_run_impl();
@@ -339,8 +381,7 @@ namespace libsemigroups {
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.merge_nodes_no_checks(u_end, v_end);
-              _word_graph
-                  .template process_coincidences<detail::DoNotRegisterDefs>();
+              _word_graph.process_coincidences();
             }
             --it;
           } else {
@@ -366,8 +407,7 @@ namespace libsemigroups {
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
-                _word_graph
-                    .template process_coincidences<detail::DoNotRegisterDefs>();
+                _word_graph.process_coincidences();
               }
             } else {
               --it;
