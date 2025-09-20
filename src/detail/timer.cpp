@@ -77,6 +77,9 @@ namespace libsemigroups {
     std::string string_time(nanoseconds x) {
       using units = std::tuple<years, months, weeks, days, hours, minutes>;
 
+      if (x.count() == 0) {
+        return "-";
+      }
       std::string s;
       std::apply(
           [&](auto... args) {
