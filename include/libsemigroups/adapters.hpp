@@ -86,6 +86,13 @@ namespace libsemigroups {
     constexpr void operator()(Args...) const noexcept {}
   };
 
+  struct ReturnFalse {
+    template <typename... Args>
+    [[nodiscard]] constexpr bool operator()(Args...) const noexcept {
+      return false;
+    }
+  };
+
   //! \brief Adapter for the complexity of multiplication.
   //!
   //! Defined in `adapters.hpp`.
