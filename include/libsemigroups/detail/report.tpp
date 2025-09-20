@@ -112,14 +112,6 @@ namespace libsemigroups {
     }
 
     template <size_t C>
-    size_t ReportCell<C>::line_width() const {
-      auto fmt = [](auto&&... args) {
-        return fmt::format(std::forward<decltype(args)>(args)...).size();
-      };
-      return std::apply(fmt, _rows[0]) + 3;
-    }
-
-    template <size_t C>
     void ReportCell<C>::emit() {
       auto fmt = [](auto&&... args) {
         report_default(std::forward<decltype(args)>(args)...);

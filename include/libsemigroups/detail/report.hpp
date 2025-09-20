@@ -149,8 +149,6 @@ namespace libsemigroups {
       }
 
      private:
-      size_t line_width() const;
-
       void emit();
     };  // ReportCell
   }     // namespace detail
