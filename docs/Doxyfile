@@ -1020,7 +1020,8 @@ INPUT                  = "../include/libsemigroups" \
                          "install.md" \
                          "changelog-v1.md" \
                          "changelog-v2.md" \
-                         "changelog-v3.md" 
+                         "changelog-v3.md" \
+                         "todd-coxeter-report.md"
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses
