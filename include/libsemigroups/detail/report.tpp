@@ -22,9 +22,11 @@
 namespace libsemigroups {
 
   namespace detail {
+
     ////////////////////////////////////////////////////////////////////////
     // TickerImpl
     ////////////////////////////////////////////////////////////////////////
+
     class Ticker::TickerImpl {
       using nanoseconds = std::chrono::nanoseconds;
 
@@ -114,9 +116,6 @@ namespace libsemigroups {
 
     template <size_t C>
     void ReportCell<C>::emit() {
-      auto fmt = [](auto&&... args) {
-        report_default(std::forward<decltype(args)>(args)...);
-      };
       for (size_t i = 0; i < _rows.size(); ++i) {
         for (size_t j = 1; j < C + 1; ++j) {
           auto pad
@@ -128,7 +127,13 @@ namespace libsemigroups {
           }
         }
       }
-      report_no_prefix("{:-<{}}\n", "", line_width());
+      auto fmt = [](auto&&... args) {
+        report_no_lock_no_prefix(
+            fmt_default(std::forward<decltype(args)>(args)...));
+      };
+      // lock the report mutex so the whole table is printed before anything
+      // else (from another thread)
+      std::lock_guard lock(report_mutex());
       for (size_t i = 0; i < _rows.size(); ++i) {
         std::apply(fmt, _rows[i]);
       }
