@@ -19,6 +19,9 @@
 #ifndef LIBSEMIGROUPS_DETAIL_GUARD_HPP_
 #define LIBSEMIGROUPS_DETAIL_GUARD_HPP_
 
+#include "libsemigroups/is_specialization_of.hpp"
+#include <atomic>  // for std::atomic
+
 namespace libsemigroups {
   namespace detail {
     // A simple class for ensuring that a value is set back to its value at the
@@ -40,12 +43,25 @@ namespace libsemigroups {
         _value = new_value;
       }
 
+      template <typename Value>
+      Guard(Thing& value, Value new_value)
+          : _old_value(value.load()), _value(value) {
+        _value = new_value;
+      }
+
       explicit Guard(Thing& value) : _old_value(value), _value(value) {}
 
       ~Guard() {
-        _value = _old_value;
+        if constexpr (is_specialization_of_v<Thing, std::atomic>) {
+          _value = _old_value.load();
+        } else {
+          _value = _old_value;
+        }
       }
     };
+
+    template <typename Thing>
+    Guard(Thing& value, typename Thing::value_type new_value) -> Guard<Thing>;
 
   }  // namespace detail
 }  // namespace libsemigroups
