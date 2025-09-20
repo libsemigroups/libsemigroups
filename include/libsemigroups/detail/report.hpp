@@ -99,10 +99,10 @@ namespace libsemigroups {
         _col_widths.fill(0);
       }
 
-      ReportCell(ReportCell const&)            = delete;
-      ReportCell(ReportCell&&)                 = delete;
-      ReportCell& operator=(ReportCell const&) = delete;
-      ReportCell& operator=(ReportCell&&)      = delete;
+      ReportCell(ReportCell const&)            = default;
+      ReportCell(ReportCell&&)                 = default;
+      ReportCell& operator=(ReportCell const&) = default;
+      ReportCell& operator=(ReportCell&&)      = default;
 
       ~ReportCell() {
         emit();
