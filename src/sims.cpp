@@ -574,6 +574,9 @@ namespace libsemigroups {
     template <typename Sims1or2>
     bool
     SimsBase<Sims1or2>::IteratorBase::try_define(PendingDef const& current) {
+      using detail::felsch_graph::do_register_defs;
+      using detail::felsch_graph::make_compatible;
+
       // Try to make the definition represented by PendingDef, returns false
       // if it wasn't possible, and true if it was.
       LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
@@ -595,7 +598,7 @@ namespace libsemigroups {
       // WordGraph
       size_type start = _felsch_graph.definitions().size();
 
-      _felsch_graph.target_no_checks(
+      _felsch_graph.register_target_no_checks(
           current.source, current.generator, current.target);
 
       auto first = _sims1or2->included_pairs().cbegin();
@@ -604,8 +607,9 @@ namespace libsemigroups {
         if (!_felsch_graph.process_definitions(start)) {
           return false;
         }
+
         start = _felsch_graph.definitions().size();
-        if (!felsch_graph::make_compatible<RegisterDefs>(
+        if (!make_compatible<do_register_defs>(
                 _felsch_graph, 0, 1, first, last)) {
           return false;
         }
@@ -1167,6 +1171,8 @@ namespace libsemigroups {
   Sims2::iterator_base::~iterator_base() = default;
 
   bool Sims2::iterator_base::try_define(PendingDef const& current) {
+    using detail::felsch_graph::do_register_defs;
+    using detail::felsch_graph::make_compatible;
     LIBSEMIGROUPS_ASSERT(current.target < current.num_nodes);
     LIBSEMIGROUPS_ASSERT(current.num_nodes <= maximum_number_of_classes());
 
@@ -1184,7 +1190,7 @@ namespace libsemigroups {
     // That the graph is compatible at 0 with include is checked in
     // Sims1::iterator_base::try_define.
     if (num_nodes > 1
-        && (!detail::felsch_graph::make_compatible<detail::RegisterDefs>(
+        && (!make_compatible<do_register_defs>(
                 _felsch_graph, 1, num_nodes, first, last)
             || !_felsch_graph.process_definitions(start))) {
       // Seems to be important to check included_pairs() first then
@@ -1216,7 +1222,7 @@ namespace libsemigroups {
       auto first2 = _2_sided_include->begin(current.num_edges);
       auto last2  = _2_sided_include->end(current.num_edges);
       start       = _felsch_graph.definitions().size();
-      if (!detail::felsch_graph::make_compatible<detail::RegisterDefs>(
+      if (!make_compatible<do_register_defs>(
               _felsch_graph,
               0,
               _felsch_graph.number_of_active_nodes(),
@@ -1401,7 +1407,7 @@ namespace libsemigroups {
                 = _reconstructed_word_graph.target_no_checks(_source, _gen);
             LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
             if (target2 == UNDEFINED) {
-              _reconstructed_word_graph.target_no_checks(
+              _reconstructed_word_graph.register_target_no_checks(
                   _source, _gen, target1);
               if (_tree.parent_no_checks(target1) == UNDEFINED
                   && target1 > _source) {
@@ -1461,7 +1467,7 @@ namespace libsemigroups {
       // Copy wasteful
       auto p = _reconstructed_word_graph.presentation();
       presentation::add_rule_no_checks(p, (**this).first, (**this).second);
-      _reconstructed_word_graph.presentation(std::move(p));
+      _reconstructed_word_graph.presentation_no_checks(std::move(p));
 
       std::ignore = _reconstructed_word_graph.process_definitions(start);
       return *this;
