@@ -107,7 +107,8 @@ namespace libsemigroups {
       static_assert(sizeof...(args) <= C);
       _rows.push_back(Row({std::string(fmt_str), std::forward<Args>(args)...}));
       for (size_t i = 0; i < _rows.back().size(); ++i) {
-        _col_widths[i] = std::max(_col_widths[i], _rows.back()[i].size());
+        _col_widths[i]
+            = std::max(_col_widths[i], visible_length(_rows.back()[i]));
       }
     }
 
