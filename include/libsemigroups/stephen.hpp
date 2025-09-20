@@ -411,16 +411,24 @@ namespace libsemigroups {
     void append_no_checks(Stephen<PresentationType>& that);
 
    private:
-    void report_before_run();
-    void report_after_run();
+    ////////////////////////////////////////////////////////////////////////
+    // Reporting
+    ////////////////////////////////////////////////////////////////////////
+
+    void report_after_run() const;
+    void report_before_run() const;
+    void report_progress_from_thread() const;
 
     Stephen& init_after_presentation_set();
-    void     throw_if_presentation_empty(presentation_type const& p) const {
+
+    void throw_if_presentation_empty(presentation_type const& p) const {
       if (p.alphabet().empty()) {
         LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
       }
     }
+
     void throw_if_not_ready() const;
+
     void init_word_graph_from_word_no_checks() {
       _word_graph.init(presentation());
       _word_graph.report_prefix("Stephen");

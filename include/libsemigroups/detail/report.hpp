@@ -151,7 +151,8 @@ namespace libsemigroups {
      private:
       void emit();
     };  // ReportCell
-  }     // namespace detail
+
+  }  // namespace detail
 
   //! No doc
   bool reporting_enabled() noexcept;
@@ -202,8 +203,8 @@ namespace libsemigroups {
 
   //! \ingroup core_classes_group
   //!
-  //! \brief Struct for specifying whether or not to report about an algorithm's
-  //! performance.
+  //! \brief Struct for specifying whether or not to report about an
+  //! algorithm's performance.
   //!
   //! This struct can be used to enable printing of some information during
   //! various of the computation in `libsemigroups`. Reporting is enabled (or
