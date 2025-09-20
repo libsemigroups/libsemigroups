@@ -18,7 +18,6 @@
 
 // This file contains the implementation of the KBE class.
 
-#include <iterator>
 namespace libsemigroups {
   namespace detail {
 
