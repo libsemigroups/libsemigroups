@@ -124,6 +124,8 @@ namespace libsemigroups {
       return count;
     }
 
+    size_t visible_length(std::string_view s);
+
     // Returns a string representing an object of type \c T.
     template <typename T>
     std::string to_string(T const& n) {

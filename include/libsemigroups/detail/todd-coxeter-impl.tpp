@@ -33,13 +33,15 @@ namespace libsemigroups {
       _standardized   = Order::none;
       _ticker_running = false;
 
-      // TODO(1) if &wg == &_word_graph, what then?
+      // TODO(1) if &wg == &_word_graph, what then? Should be handled in
+      // Graph::operator=
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();
       // FIXME(1) setting the setting in the next line, and adding a Felsch
       // runner to the word graph version of Congruence leads to an incorrect
       // answer for the extreme test in congruence def_max(POSITIVE_INFINITY);
+      report_prefix("ToddCoxeter");
       return *this;
     }
 
@@ -57,10 +59,11 @@ namespace libsemigroups {
       _standardized   = Order::none;
       _ticker_running = false;
 
-      _word_graph = wg;  // FIXME this doesn't seem to reset _word_graph
+      // FIXME(1) this doesn't seem to reset _word_graph
       // properly, in particular, the node managed part isn't reset.
-      _word_graph.presentation(p);  // this does not throw when p is invalid
+      _word_graph.init(p, wg);  // this does not throw when p is invalid
       copy_settings_into_graph();
+      report_prefix("ToddCoxeter");
       return *this;
     }
 
@@ -123,12 +126,13 @@ namespace libsemigroups {
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      if (i >= _word_graph.number_of_nodes_active() - offset) {
+      if (i >= current_word_graph().number_of_nodes_active() - offset) {
         // We must standardize before doing this so that the index even makes
         // sense.
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
-                                _word_graph.number_of_nodes_active() - offset,
+                                current_word_graph().number_of_nodes_active()
+                                    - offset,
                                 i);
       }
       return current_word_of_no_checks(d_first, i);
@@ -210,14 +214,16 @@ namespace libsemigroups {
         // TODO(1) this is a bit fishy
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
-      node_type const s = current_word_graph().initial_node();
-      if (finished()) {  // TODO(1) can we do anything if complete()?
+      if (finished()
+          || (kind() == congruence_kind::onesided
+              && !internal_generating_pairs().empty())) {
         return current_word_of_no_checks(
             d_first, current_index_of_no_checks(first, last));
       }
 
-      word_type u(first, last);
-      auto      v_begin = u.begin();
+      node_type const s = current_word_graph().initial_node();
+      word_type       u(first, last);
+      auto            v_begin = u.begin();
 
       while (v_begin != u.end()) {
         auto [t, old_end] = word_graph::last_node_on_path_no_checks(

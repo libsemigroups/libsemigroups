@@ -1665,6 +1665,10 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
+    // TODO(1) add a version of this function with one that returns a float
+    // representing the proportion of the nodes in the range that are compatible
+    // with the rules. Don't replace the current version because it can return
+    // early knowing that it isn't compatible.
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
