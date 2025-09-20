@@ -56,6 +56,10 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
 #endif
       }
+
+      size_t unicode_length(char c) {
+        return ((c & 0xc0) != 0x80);
+      }
     }  // namespace
 
     std::string group_digits(int64_t num) {
@@ -70,6 +74,39 @@ namespace libsemigroups {
         return "-" + group_digits(static_cast<uint64_t>(-num));
       }
       return "+" + group_digits(static_cast<uint64_t>(num));
+    }
+
+    size_t visible_length(std::string_view s) {
+      size_t count = 0;
+
+      for (std::size_t i = 0; i < s.size();) {
+        unsigned char c = static_cast<unsigned char>(s[i]);
+        if (c == 0x1B) {  // ESC
+          // Skip the ESC
+          ++i;
+          if (i < s.size() && s[i] == '[') {
+            // CSI sequence: skip until a letter in @A-Za-z~
+            ++i;
+            while (i < s.size()) {
+              unsigned char d = static_cast<unsigned char>(s[i]);
+              if (d >= '@' && d <= '~') {  // final byte
+                ++i;
+                break;
+              }
+              ++i;
+            }
+          } else {
+            // Some other escape sequence: skip next char
+            if (i < s.size())
+              ++i;
+          }
+        } else {
+          // visible character
+          count += unicode_length(c);
+          ++i;
+        }
+      }
+      return count;
     }
   }  // namespace detail
 }  // namespace libsemigroups
