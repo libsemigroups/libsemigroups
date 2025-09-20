@@ -34,6 +34,11 @@
 #include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGrap...
 
 namespace libsemigroups {
+
+  using DoRegisterDefs = detail::felsch_graph::DoRegisterDefs<
+      detail::NodeManagedGraph<detail::ToddCoxeterImpl::Graph::node_type>,
+      detail::ToddCoxeterImpl::Definitions>;
+
   namespace todd_coxeter {
     [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
                                       size_t                    tries,
@@ -60,10 +65,10 @@ namespace libsemigroups {
                  && !copy.finished()) {
             auto  c1 = random_active_node(copy.current_word_graph());
             auto  c2 = random_active_node(copy.current_word_graph());
-            auto& wg = const_cast<detail::ToddCoxeterImpl::word_graph_type&>(
+            auto& wg = const_cast<detail::ToddCoxeterImpl::Graph&>(
                 copy.current_word_graph());
             wg.merge_nodes_no_checks(c1, c2);
-            wg.process_coincidences<detail::RegisterDefs>();
+            wg.process_coincidences(DoRegisterDefs(wg));
             wg.process_definitions();
             copy.run_for(try_for);
           }
@@ -77,14 +82,32 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
+    // TODO(1) improve this to use the reporting from the ToddCoxeterImpl
+    // itself, and to periodically process coincidences when a certain number
+    // are discovered.
+    // TODO(1) write a more general version that takes a function as 2nd
+    // argument that takes a single argument (a word) and returns another
+    // equivalent word in the congruence represented by the ToddCoxeter. We
+    // could then, for example, use a KnuthBendix to rewrite the words, in case
+    // that provided any collapse in the graph. This would then mean we could
+    // possibly rewrite prefixes of words in the onesided case, so we could lift
+    // the restriction at the start of the function.
     void perform_lookbehind(detail::ToddCoxeterImpl& tc) {
+      if (tc.kind() == congruence_kind::onesided
+          && !tc.internal_generating_pairs().empty()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument <tc> (ToddCoxeter) must be a 2-sided congruence")
+      } else if (!tc.started()) {
+        return;
+      }
+
       using word_graph_type = detail::ToddCoxeterImpl::word_graph_type;
       using node_type       = word_graph_type::node_type;
       using detail::group_digits;
 
       auto& wg = const_cast<word_graph_type&>(tc.current_word_graph());
 
-      auto current = wg.cursor();
+      auto current = wg.initial_node();
 
       word_type w1, w2;
 
@@ -95,6 +118,8 @@ namespace libsemigroups {
       uint64_t num_nodes_before_lookbehind = wg.number_of_nodes_active();
 
       if (reporting_enabled()) {
+        // TODO(1) update to be more like the reporting coming from ToddCoxeter
+        // itself
         report_no_prefix("{:+<90}\n", "");
         report_default("ToddCoxeter: performing lookbehind at "
                        "{} ({} active nodes) . . .\n",
@@ -109,6 +134,8 @@ namespace libsemigroups {
         if (reporting_enabled()) {
           if (delta(tc.last_report()) > std::chrono::seconds(1)) {
             tc.reset_last_report();
+            // TODO(1) update to be more like the reporting coming from
+            // ToddCoxeter itself
             report_default(
                 "ToddCoxeter: at {} of {} found {} pairs of distinct "
                 "nodes so far\n",
@@ -125,7 +152,7 @@ namespace libsemigroups {
         if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
           node_type other = word_graph::follow_path_no_checks(
               wg, wg.initial_node(), w2.begin(), w2.end());
-          if (other != UNDEFINED) {
+          if (other != UNDEFINED && other != current) {
             ++found;
             wg.merge_nodes_no_checks(current, other);
           }
@@ -133,7 +160,8 @@ namespace libsemigroups {
         ++at;
         current = wg.detail::NodeManager<node_type>::next_active_node(current);
       }
-      wg.process_coincidences<detail::DoNotRegisterDefs>();
+      wg.process_coincidences();
+      // TODO(1) process_definitions?
       if (reporting_enabled()) {
         report_no_prefix("{:+<90}\n", "");
         report_default("ToddCoxeter: lookabehind complete with    |{:>12} "
