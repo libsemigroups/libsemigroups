@@ -164,13 +164,23 @@ namespace libsemigroups {
   }
 
   //! No doc
+  std::mutex& report_mutex();
+
+  //! No doc
+  // This function is provided to allow multiple lines of output to block other
+  // lines from being interspersed, by first locking the report_mutex.
+  template <typename... Args>
+  void report_no_lock_no_prefix(std::string_view sv, Args&&... args) {
+    auto line = fmt::format(sv, std::forward<Args>(args)...);
+    fmt::print("{}", line);
+  }
+
+  //! No doc
   template <typename... Args>
   void report_no_prefix(std::string_view sv, Args&&... args) {
-    static std::mutex mtx;
-
     if (reporting_enabled()) {
-      std::lock_guard<std::mutex> lg(mtx);
-      fmt::print(sv, std::forward<Args>(args)...);
+      std::lock_guard<std::mutex> lg(report_mutex());
+      report_no_lock_no_prefix(sv, std::forward<Args>(args)...);
     }
   }
 
