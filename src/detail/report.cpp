@@ -119,6 +119,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   namespace detail {
+
     t_id thread_id(std::thread::id t) {
       return thread_id_manager.tid(t);
     }
@@ -144,6 +145,11 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // Reporting
   ////////////////////////////////////////////////////////////////////////
+
+  std::mutex& report_mutex() {
+    static std::mutex mtx;
+    return mtx;
+  }
 
   bool reporting_enabled() noexcept {
     return report_data.report();
