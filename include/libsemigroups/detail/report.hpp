@@ -76,6 +76,8 @@ namespace libsemigroups {
       ~Ticker();
     };
 
+    enum class Align : uint8_t { left, right };
+
     // This object is a helper for formatting information reported by various
     // classes in libsemigroups such as ToddCoxeterImpl, KnuthBendixImpl, etc.
     //
@@ -87,12 +89,13 @@ namespace libsemigroups {
     class ReportCell {
      private:
       using Row = std::array<std::string, C + 1>;
-
+      std::array<Align, C + 1>  _align;
       std::array<size_t, C + 1> _col_widths;
       std::vector<Row>          _rows;
 
      public:
-      ReportCell() : _col_widths(), _rows() {
+      ReportCell() : _align(), _col_widths(), _rows() {
+        _align.fill(Align::right);
         _col_widths.fill(0);
       }
 
@@ -116,6 +119,22 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(col < C);
         _col_widths[col + 1] = val;
         return *this;
+      }
+
+      ReportCell& align(size_t col, Align val) noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        _align[col + 1] = val;
+        return *this;
+      }
+
+      ReportCell& align(Align val) noexcept {
+        _align.fill(val);
+        return *this;
+      }
+
+      Align align(size_t col) const noexcept {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        return _align[col + 1];
       }
 
       // Insert a row using a format string and arguments

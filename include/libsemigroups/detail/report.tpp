@@ -126,10 +126,13 @@ namespace libsemigroups {
       };
       for (size_t i = 0; i < _rows.size(); ++i) {
         for (size_t j = 1; j < C + 1; ++j) {
-          _rows[i][j]
-              = std::string(_col_widths[j] - unicode_string_length(_rows[i][j]),
-                            ' ')
-                + _rows[i][j];
+          auto pad
+              = std::string(_col_widths[j] - visible_length(_rows[i][j]), ' ');
+          if (_align[j] == Align::right) {
+            _rows[i][j] = pad + _rows[i][j];
+          } else {
+            _rows[i][j] += pad;
+          }
         }
       }
       report_no_prefix("{:-<{}}\n", "", line_width());
