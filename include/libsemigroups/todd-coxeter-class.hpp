@@ -71,6 +71,9 @@ namespace libsemigroups {
   //! [ACE](https://staff.itee.uq.edu.au/havas/) by George Havas and Colin
   //! Ramsay.
   //!
+  //! For information about the output printed by a ToddCoxeter instance during
+  //! a congruence enumeration, see \ref todd-coxeter-report.md "this page".
+  //!
   //! \sa congruence_kind and tril.
   //!
   //! \par Example 1
