@@ -162,11 +162,9 @@ namespace libsemigroups {
         report_default("{}: running for approx. {}\n",
                        report_prefix(),
                        detail::string_time(val));
-        emit_divider();
       } else {
         report_default("{}: running until finished, with no time limit\n",
                        report_prefix());
-        emit_divider();
         run();
         return;
       }
@@ -197,18 +195,23 @@ namespace libsemigroups {
     }
   }
 
-  void Runner::report_why_we_stopped() const {
-    // NOTE: Also no dividers here because we can call emit_divider in any code
-    // calling this function
+  std::string Runner::string_why_we_stopped() const {
+    // Checking finished can be expensive, so we don't
     if (dead()) {
-      report_default("{}: killed!\n", report_prefix());
+      return "killed!";
     } else if (timed_out()) {
       // TODO(1) include the amount of time that we ran for
-      report_default("{}: timed out!\n", report_prefix());
+      return "timed out!";
     } else if (stopped_by_predicate()) {
-      report_default("{}: stopped by predicate!\n", report_prefix());
+      return "stopped by predicate!";
     }
-    // Checking finished can be expensive, so we don't
+    return "";
+  }
+
+  void Runner::report_why_we_stopped() const {
+    // NOTE: Also no dividers here because we can call emit_divider in any
+    // code calling this function
+    report_default("{}: {}\n", report_prefix(), string_why_we_stopped());
   }
 
   [[nodiscard]] bool Runner::finished() const {
