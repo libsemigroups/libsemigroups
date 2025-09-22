@@ -2174,8 +2174,8 @@ namespace libsemigroups {
     //! inverse of a letter, then an exception is thrown.
     //!
     //! Those letters where an inverse is detected are pushed into the back of
-    //! the parameter \p letters, and the detected inverse is pushed into \p
-    //! inverses. The parameters \p letters and \p inverses are modified
+    //! the parameter \p letters, and the detected inverse is pushed into
+    //! \p inverses. The parameters \p letters and \p inverses are modified
     //! in-place, and are not cleared before adding letters or their inverses.
     //!
     //! \tparam Word the type of the words in the presentation.
