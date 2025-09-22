@@ -242,5 +242,43 @@ namespace libsemigroups {
       return to_gap_string(v4::to<Presentation<word_type>>(p), var_name, func);
     }
 
+    std::string to_ace_string(Presentation<std::string> const& p) {
+      p.throw_if_alphabet_has_duplicates();
+      if (std::any_of(
+              p.alphabet().cbegin(),
+              p.alphabet().cend(),
+              [](auto const& letter) { return !std::islower(letter); })) {
+        LIBSEMIGROUPS_EXCEPTION("expected at most alphabet to consist only of "
+                                "lowercase letters, found \"{}\"!",
+                                p.alphabet());
+      }
+
+      // TODO if any of the letters in the alphabet are capitals, then
+      // try_detect_inverses and work from there
+      std::string result;
+      result += fmt::format(
+          "Group: {};\n",
+          fmt::join(p.alphabet().begin(), p.alphabet().end(), ", "));
+      result += "wo: 4g; # workspace size, adjust as necessary\n";
+      result += "Rel: ";
+      auto sep = "";
+      for (auto it_even = p.rules.begin(); it_even != p.rules.end();
+           it_even += 2) {
+        auto it_odd = it_even + 1;
+        result += sep;
+        if (!it_even->empty() && !it_odd->empty()) {
+          result += fmt::format("{}={}", *it_even, *it_odd);
+        } else if (!it_even->empty()) {
+          result += fmt::format("{}", *it_even);
+        } else if (!it_odd->empty()) {
+          result += fmt::format("{}", *it_odd);
+        }
+        sep = ", ";
+      }
+      result += ";\nMess: 100000; # message frequency, adjust as necessary\n";
+      result += "End;";
+      return result;
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups
