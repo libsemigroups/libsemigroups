@@ -1159,6 +1159,10 @@ EXCLUDE_PATTERNS       =
 # ANamespace::AClass, ANamespace::*Test
 
 EXCLUDE_SYMBOLS        = libsemigroups::ukkonen::detail* \
+                         libsemigroups::detail::MatrixDynamicDim \
+                         libsemigroups::detail::MatrixCommon \
+                         libsemigroups::detail::RowViewCommon \
+                         libsemigroups::detail::SimsBase \
                          libsemigroups::detail::group_digits \
                          *KBE* \
                          *TCE* \
