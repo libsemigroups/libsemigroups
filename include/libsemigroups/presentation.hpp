@@ -3151,6 +3151,28 @@ namespace libsemigroups {
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name = "S");
 
+    //! \brief Return the code that would create a presentation to be used with
+    //! ACE.
+    //!
+    //! This function returns the string of ACE input that could be used to
+    //! create an object with the same alphabet and rules as \p p.
+    //!
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if `p.throw_if_alphabet_has_duplicates()`
+    //! throws.
+    //! \throws LibsemigroupsException if any of the letters in the alphabet of
+    //! \p p are not lowercase.
+    //!
+    //! \note ACE assumes that presentations are group presentations, where the
+    //! the alphabet consists of lowercase letters, and inverses correspond to
+    //! the equivalent uppercase letters. Therefore, a valid ACE presentation
+    //! may not be a valid libsemigroups presentation; for example, it is
+    //! possible for relations in an ACE presentation to contain uppercase
+    //! letters that are not explicitly named as generators, as long as their
+    //! lowercase counterparts are listed as generators.
+    std::string to_ace_string(Presentation<std::string> const& p);
+
     //! \brief Find a rule.
     //!
     //! This function returns an iterator `it` pointing at the first

@@ -3900,4 +3900,78 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "097",
+                          "to_ace_string",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    p.contains_empty_word(true);
+    presentation::add_rule_no_checks(p, "aBCbac", "");
+    presentation::add_rule_no_checks(p, "bACbaacA", "");
+    presentation::add_rule_no_checks(p, "accAABab", "");
+    REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b, c;
+wo: 4g; # workspace size, adjust as necessary
+Rel: aBCbac, bACbaacA, accAABab;
+Mess: 100000; # message frequency, adjust as necessary
+End;)xxx");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "098",
+                          "Higman-Sims to_ace_string",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    using literals::operator""_p;
+
+    presentation::add_rule_no_checks(p, "a^2"_p, "");
+    presentation::add_rule_no_checks(p, "b^5"_p, "");
+    presentation::add_rule_no_checks(p, "(ab)^11"_p, "");
+    presentation::add_rule_no_checks(p, "(ab^2)^10"_p, "");
+    presentation::add_rule_no_checks(p, "(a,b)^5"_p, "");
+    presentation::add_rule_no_checks(p, "(a,b^2)^6"_p, "");
+    presentation::add_rule_no_checks(p, "(a,bab)^3"_p, "");
+    presentation::add_rule_no_checks(
+        p, "ababab^2aBaB^2aBab^2abab(aB^2)^4"_p, "");
+    presentation::add_rule_no_checks(
+        p, "ab(ab^2(aB^2)^2)^2ab^2abab^2(aBab^2)^2"_p, "");
+    presentation::add_rule_no_checks(
+        p, "abab(ab^2)^2ab(aB)^2ab(ab^2)^2ababaB^2aBaB^2"_p, "");
+    presentation::add_rule_no_checks(p, "(ababab^2aBaB^2ababaB)^2"_p, "");
+    presentation::add_rule_no_checks(
+        p, "(ababab^2)^2ababaBabab(ab^2)^3ababaB"_p, "");
+    presentation::add_rule_no_checks(
+        p, "ab(abab^2)^3ababab^2aBabaB^2abaBab^2"_p, "");
+
+    REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
+wo: 4g; # workspace size, adjust as necessary
+Rel: aa, bbbbb, ababababababababababab, abbabbabbabbabbabbabbabbabbabb, ABabABabABabABabABab, ABBabbABBabbABBabbABBabbABBabbABBabb, ABABababABABababABABabab, abababbaBaBBaBabbababaBBaBBaBBaBB, ababbaBBaBBabbaBBaBBabbababbaBabbaBabb, abababbabbabaBaBababbabbababaBBaBaBB, abababbaBaBBababaBabababbaBaBBababaB, abababbabababbababaBabababbabbabbababaB, abababbababbababbabababbaBabaBBabaBabb;
+Mess: 100000; # message frequency, adjust as necessary
+End;)xxx");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "099",
+                          "Mathieu M11 ace_string",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    using literals::operator""_p;
+
+    presentation::add_rule_no_checks(p, "a^2"_p, "");
+    presentation::add_rule_no_checks(p, "b^4"_p, "");
+    presentation::add_rule_no_checks(p, "(ab)^11"_p, "");
+    presentation::add_rule_no_checks(p, "(ab^2)^6"_p, "");
+    presentation::add_rule_no_checks(p, "ababaBabab^2aBabaBaB"_p, "");
+
+    REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
+wo: 4g; # workspace size, adjust as necessary
+Rel: aa, bbbb, ababababababababababab, abbabbabbabbabbabb, ababaBababbaBabaBaB;
+Mess: 100000; # message frequency, adjust as necessary
+End;)xxx");
+  }
+
 }  // namespace libsemigroups
