@@ -4,22 +4,22 @@
 
 This is a minor release that does the following:
 
- * Add a `to_human_readable_repr` for the `Action` class by @james-d-mitchell in
-   https://github.com/libsemigroups/libsemigroups/pull/777
- * Update the `to_human_readable_repr` of the `Congruence` class to be more
-   consistent with the `KnuthBendix` and `ToddCoxeter` classes by
-   @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/778
- * Mark `IsBipartition`, `IsPBR`, `IsPresentation`, `IsInversePresentation` and
-   `IsWordGraph` as deprecated, to be favoured by `is_specialization_of` by
-   @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/771
+- Add a `to_human_readable_repr` for the `Action` class by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/777
+- Update the `to_human_readable_repr` of the `Congruence` class to be more
+  consistent with the `KnuthBendix` and `ToddCoxeter` classes by
+  [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/778
+- Mark `IsBipartition`, `IsPBR`, `IsPresentation`, `IsInversePresentation` and
+  `IsWordGraph` as deprecated, to be favoured by `is_specialization_of` by
+  [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/771
 
 ## v3.1.2 (released 29/07/2025)
 
 This is a minor release fixing some more issues that were introduced in v3.1.0.
 Namely:
 
-* Remove remaining occurrences of ``std::basic_string<uint8_t>`` by
-  @joseph-edwards in
+- Remove remaining occurrences of `std::basic_string<uint8_t>` by
+  [\@joseph-edwards] in
   https://github.com/libsemigroups/libsemigroups/pull/772
 
 ## v3.1.1 (released 28/07/2025)
@@ -33,56 +33,56 @@ exception is thrown.
 
 This release contains a number of bugfixes, and other improvements. In
 particular, the performance of the Todd-Coxeter and Knuth-Bendix algorithms has
-been improved. 
+been improved.
 
-* Add presentation for the `abacus_jones_monoid` by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/711
-* Fix issue 557 by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/717
-* Alphabetise Low Index menu section by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/719
-* Throw if bad degree by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/723
-* word-graph: group digits in WordGraph repr by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/725
-* word-graph: fix last_node_on_path doc by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/727
-* Fix transf corner cases by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/724
-* Make `check_doxygen_line_breaks.py` compatible with Python 3.9 by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/728
-* Fix greedy presentation issue by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/726
-* action: fix add_seed issue by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/729
-* Update doxygen-awesome by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/732
-* build: properly set `FMT_HEADER_ONLY` by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/733
-* to: fix `to<Presentation>(kb)` by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/731
-* Add more `Sims` benchmarks and improve benchmarking infrastructure by @reiniscirpons in https://github.com/libsemigroups/libsemigroups/pull/715
-* ToddCoxeter fixes by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/730
-* Prevent bad accesses of empty containers by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/737
-* exception: default visibility by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/736
-* konieczny: reference returned by add_generator/s by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/738
-* Fix return types by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/739
-* Use group_digits in all to_human_readable_repr by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/741
-* kbe: make it easier to use in python bindings by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/740
-* Update my coordinates in README.md by @dimpase in https://github.com/libsemigroups/libsemigroups/pull/742
-* Update the v2 changelog for v2.7.4 by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/744
-* Look behind by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/745
-* todd-coxeter: doc fixes by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/746
-* Todd coxeter redefine by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/747
-* print: split into separate file by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/748
-* multi-view: implement from MultiStringView by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/749
-* Presentation updates by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/751
-* Template `ToWord` by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/750
-* Add AhoCorasickImpl with strong alphabet constraints by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/752
-* Knuth bendix performance improvements by @james-d-mitchell in https://github.com/libsemigroups/libsemigroups/pull/753
-* Reorganise the doc by @Joseph-Edwards in https://github.com/libsemigroups/libsemigroups/pull/755
+- Add presentation for the `abacus_jones_monoid` by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/711
+- Fix issue 557 by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/717
+- Alphabetise Low Index menu section by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/719
+- Throw if bad degree by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/723
+- word-graph: group digits in WordGraph repr by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/725
+- word-graph: fix last_node_on_path doc by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/727
+- Fix transf corner cases by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/724
+- Make `check_doxygen_line_breaks.py` compatible with Python 3.9 by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/728
+- Fix greedy presentation issue by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/726
+- action: fix add_seed issue by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/729
+- Update doxygen-awesome by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/732
+- build: properly set `FMT_HEADER_ONLY` by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/733
+- to: fix `to<Presentation>(kb)` by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/731
+- Add more `Sims` benchmarks and improve benchmarking infrastructure by [\@reiniscirpons] in https://github.com/libsemigroups/libsemigroups/pull/715
+- ToddCoxeter fixes by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/730
+- Prevent bad accesses of empty containers by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/737
+- exception: default visibility by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/736
+- konieczny: reference returned by add_generator/s by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/738
+- Fix return types by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/739
+- Use group_digits in all to_human_readable_repr by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/741
+- kbe: make it easier to use in python bindings by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/740
+- Update my coordinates in README.md by \@dimpase in https://github.com/libsemigroups/libsemigroups/pull/742
+- Update the v2 changelog for v2.7.4 by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/744
+- Look behind by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/745
+- todd-coxeter: doc fixes by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/746
+- Todd coxeter redefine by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/747
+- print: split into separate file by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/748
+- multi-view: implement from MultiStringView by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/749
+- Presentation updates by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/751
+- Template `ToWord` by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/750
+- Add AhoCorasickImpl with strong alphabet constraints by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/752
+- Knuth bendix performance improvements by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/753
+- Reorganise the doc by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/755
 
 ## v3.0.3 (released 09/04/2025)
 
 This is a minor release fixing some issues in the previous v3 releases. Namely:
 
-* failure to compile with (the not yet released) gcc-15
+- failure to compile with (the not yet released) gcc-15
   https://github.com/libsemigroups/libsemigroups/issues/557
 
 ## v3.0.2 (released 01/04/2025)
 
 This is a minor release fixing some issues in the previous v3 releases. Namely:
 
-* Fix issue in `SimsRefinerIdeals` by @james-d-mitchell in
+- Fix issue in `SimsRefinerIdeals` by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/710
-* Konieczny: fix typos in `to_human_readable_repr` by @james-d-mitchell in
+- Konieczny: fix typos in `to_human_readable_repr` by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/714
 
 ## v3.0.1 (released 26/03/2025)
@@ -125,7 +125,7 @@ Perhaps the biggest changes are:
   \ref libsemigroups::Sims1, \ref libsemigroups::Sims2, \ref libsemigroups::Stephen):
 
   - have a common set of constructors, primarily from \ref libsemigroups::Presentation objects;
-  - can be instantiated with any type of words (usually \ref libsemigroups::word_type  or
+  - can be instantiated with any type of words (usually \ref libsemigroups::word_type or
     `std::string`);
   - it is now possible to use \ref knuth_bendix_group to compute one-sided congruences;
   - it is now possible to use \ref todd_coxeter_group to compute monoid as well as
@@ -134,7 +134,7 @@ Perhaps the biggest changes are:
   - a significant amount of functionality has been added to \ref
     libsemigroups::Sims1 (for one-sided low index congruences), and \ref
     libsemigroups::Sims2 (for two-sided low index congruences) has also been
-    added. 
+    added.
   - the class template \ref libsemigroups::InversePresentation for finitely
     presented inverse semigroups and monoids was introduced, and can be used as
     the input to \ref libsemigroups::Stephen, which, in this case, implements
@@ -147,12 +147,12 @@ Perhaps the biggest changes are:
   inconsistencies and opportunities for confusion. As a consequence, there are
   only two values in \ref libsemigroups::congruence_kind `onesided` and
   `twosided`, where `onesided` always means right. Left congruences can be
-  computed as right congruences of the dual semigroup or monoid; 
+  computed as right congruences of the dual semigroup or monoid;
 
 - the class `ActionDigraph` has been renamed `WordGraph` for consistency with
-  the mathematical literature; 
+  the mathematical literature;
 
-- some functionality that used to be in `ActionDigraph` has been move 
+- some functionality that used to be in `ActionDigraph` has been move
   into the classes \ref libsemigroups::Gabow and \ref libsemigroups::Paths for ease
   of use;
 
@@ -166,7 +166,7 @@ Perhaps the biggest changes are:
 
 - throughout the library, functions with the suffix `_no_checks` do not check
   their arguments are valid; while those without this suffix will throw an
-  exception if their arguments are invalid; 
+  exception if their arguments are invalid;
 
 - conversion from one `libsemigroups` type to another is now exclusively via
   the function template \ref to_group "to". Previously, these were entangled in
@@ -178,7 +178,7 @@ Perhaps the biggest changes are:
   do perform checks, are available using the \ref make_group "make" function.
   The \ref make_group "make" function also provides some alternate convenience
   constructors that only use the public member functions of the underlying
-  class; 
+  class;
 
 - the documentation is now generated solely by [Doxygen] and
   [doxygen-awesome-css];
@@ -203,3 +203,6 @@ improved, some deprecated (or now unnecessary) functionality was removed.
 
 [doxygen]: https://www.doxygen.nl
 [doxygen-awesome-css]: https://github.com/jothepro/doxygen-awesome-css
+[\@james-d-mitchell]: https://github.com/james-d-mitchell
+[\@joseph-edwards]: https://github.com/joseph-edwards
+[\@reiniscirpons]: https://github.com/reiniscirpons
