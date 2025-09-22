@@ -1321,8 +1321,10 @@ namespace libsemigroups {
     //!
     //! \tparam U  either \ref Row, \ref StaticRowView,
     // clang-format off
-    //! \ref DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)", //NOLINT()
-    //! or \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)". //NOLINT()
+    // NOLINTNEXTLINE(whitespace/line_length)
+    //! \ref DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)",
+    //! or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)".
     // clang-format on
     //!
     //! \param that \ref Row, \ref StaticRowView,
