@@ -1663,7 +1663,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators
     //! and 0-relations (i.e. it has not been initialised).
-    uint64_t number_of_congruences(size_t n);
+    uint64_t number_of_congruences(size_type n) const;
 
     //! \brief Apply a unary predicate to every one-sided congruence with at
     //! most a given number of classes.
@@ -1907,7 +1907,7 @@ namespace libsemigroups {
     Sims2& init();
 
     //! \copydoc Sims1::number_of_congruences
-    uint64_t number_of_congruences(size_t n);
+    uint64_t number_of_congruences(size_type n) const;
 
     //! \copydoc Sims1::for_each
     void for_each(size_type                                   n,
