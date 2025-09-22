@@ -1464,8 +1464,12 @@ namespace libsemigroups {
   // DynamicRowViews - static arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  // Doxygen needs to ignore this so that the actual implementation of
+  // DynamicRowView gets documented.
   template <typename... Args>
   class DynamicRowView;
+#endif
 
   //! \anchor DynamicRowViewStaticArith
   //!
