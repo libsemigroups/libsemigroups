@@ -5,7 +5,7 @@ are described below. These scripts are written in such a way that it is possible
 to use some of the functions in an interactive terminal, in the case that the
 scripts don't offer precisely what is wanted.
 
-## `generate-test-times.sh`
+## `generate-test-times.py`
 
 This script (in its simplest invocation) takes a `libsemigroups` test executable
 and some `Catch2` tags, and uses `hyperfine` to record the times of those tests.
@@ -16,30 +16,22 @@ used to run the test.
 The full options are:
 
 ```
-./tests/run-times/scripts/generate-test-times.sh -h
-A script for timing libsemigroups tests. The output of this script is written to
-"results/<DATE>-<COMMIT_HASH>-<ARCHITECTURE>-<TEST_COMMAND>.json".
+./tests/run-times/scripts/generate-test-times.py -h
+usage: generate-test-times.py [-h] [--max MAX] test_executable tags
 
-Usage:
-    generate-test-times.sh -h
-    generate-test-times.sh [-M] <test-executable> [<tags>]
+A script for timing libsemigroups tests.
+The output of this script is written to results/<DATE>-<COMMIT_HASH>-<ARCHITECTURE>-<TEST_COMMAND>.json
 
-Arguments:
-    <test-executable>
-            The path to the test executable that hyperfine should benchmark
-    <tags> (optional)
-            The tags that dictate which tests should be run. If no tags are
-            specified, then all tests are run.
+positional arguments:
+  test_executable  The path to the test executable that hyperfine should benchmark
+  tags             The tags that dictate which tests should be run. If no tags are specified, then all tests are run.
 
-Options:
-    -h
-            Display this message
-    -M <NUM>
-            Perform at most NUM runs for each command. By default, there is no
-            limit.
+options:
+  -h, --help       show this help message and exit
+  --max MAX        Perform at most MAX runs for each command. By default, there is no limit and hyperfine will decide.
 
-Example:
-    generate-test-times.sh ./test_knuth_bendix "[quick]"
+example:
+generate-test-times.py --max=5 ./test_knuth_bendix "[quick]"
 ```
 
 ## `markdown.py`
