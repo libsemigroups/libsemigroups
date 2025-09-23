@@ -5194,4 +5194,20 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "126",
+                          "reduce_no_run_no_checks on unstarted",
+                          "[todd-coxeter][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(2).contains_empty_word(true);
+
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 1111_w, 1_w);
+    presentation::add_rule(p, 0101_w, 00_w);
+    ToddCoxeter tc(onesided, p);
+    todd_coxeter::add_generating_pair(tc, 01_w, 10_w);
+
+    REQUIRE(todd_coxeter::reduce_no_run_no_checks(tc, 0101_w) == 0101_w);
+  }
+
 }  // namespace libsemigroups

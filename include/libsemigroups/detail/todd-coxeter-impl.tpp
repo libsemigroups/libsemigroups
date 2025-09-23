@@ -98,6 +98,7 @@ namespace libsemigroups {
     OutputIterator
     ToddCoxeterImpl::current_word_of_no_checks(OutputIterator d_first,
                                                index_type     i) const {
+      LIBSEMIGROUPS_ASSERT(i != UNDEFINED);
       if (!is_standardized()) {
         // We must standardize here o/w there's no bijection between the numbers
         // 0, ..., n - 1 on to the nodes of the word graph.
@@ -106,6 +107,7 @@ namespace libsemigroups {
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
+
       size_t const offset
           = (internal_presentation().contains_empty_word() ? 0 : 1);
 
@@ -217,8 +219,11 @@ namespace libsemigroups {
       if (finished()
           || (kind() == congruence_kind::onesided
               && !internal_generating_pairs().empty())) {
-        return current_word_of_no_checks(
-            d_first, current_index_of_no_checks(first, last));
+        index_type pos = current_index_of_no_checks(first, last);
+        if (pos == UNDEFINED) {
+          return std::copy(first, last, d_first);
+        }
+        return current_word_of_no_checks(d_first, pos);
       }
 
       node_type const s = current_word_graph().initial_node();
