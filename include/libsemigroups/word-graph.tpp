@@ -24,99 +24,6 @@
 namespace libsemigroups {
 
   //////////////////////////////////////////////////////////////////////////////
-  // Helper functions which cannot be moved
-  //////////////////////////////////////////////////////////////////////////////
-
-  namespace word_graph {
-
-    // not noexcept because it throws an exception!
-    // Two node types so we can use this function with literal integers in the
-    // tests.
-    template <typename Node1, typename Node2>
-    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v) {
-      static_assert(sizeof(Node2) <= sizeof(Node1));
-
-      if (static_cast<Node1>(v) >= wg.number_of_nodes()) {
-        LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
-                                "in the range [0, {}), got {}",
-                                wg.number_of_nodes(),
-                                v);
-      }
-    }
-
-    template <typename Node, typename Iterator1, typename Iterator2>
-    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
-                                     Iterator1              first,
-                                     Iterator2              last) {
-      for (auto it = first; it != last; ++it) {
-        word_graph::throw_if_node_out_of_bounds(wg, *it);
-      }
-    }
-
-    template <typename Node>
-    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg) {
-      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
-    }
-
-    template <typename Node, typename Iterator>
-    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
-                                           Iterator               first,
-                                           Iterator               last) {
-      for (auto it = first; it != last; ++it) {
-        auto s = *it;
-        for (auto [a, t] : wg.labels_and_targets(s)) {
-          if (t != UNDEFINED && t >= wg.number_of_nodes()) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "target out of bounds, the edge with source {} and label {} "
-                "has target {}, but expected value in the range [0, {})",
-                s,
-                a,
-                t,
-                wg.number_of_nodes());
-          }
-        }
-      }
-    }
-
-    // not noexcept because it throws an exception!
-    template <typename Node>
-    void
-    throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
-                                 typename WordGraph<Node>::label_type lbl) {
-      if (lbl >= wg.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
-                                "the range [0, {}), got {}",
-                                wg.out_degree(),
-                                lbl);
-      }
-    }
-
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      word_type const&       word) {
-      throw_if_label_out_of_bounds(wg, word.cbegin(), word.cend());
-    }
-
-    template <typename Node, typename Iterator>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      Iterator               first,
-                                      Iterator               last) {
-      std::for_each(first, last, [&wg](letter_type a) {
-        throw_if_label_out_of_bounds(wg, a);
-      });
-    }
-
-    template <typename Node, typename Container>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const&        wg,
-                                      std::vector<word_type> const& rules) {
-      std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
-        throw_if_label_out_of_bounds(wg, w);
-      });
-    }
-
-  }  // namespace word_graph
-
-  //////////////////////////////////////////////////////////////////////////////
   // Member functions
   //////////////////////////////////////////////////////////////////////////////
 
@@ -488,5 +395,98 @@ namespace libsemigroups {
     word_graph::throw_if_node_out_of_bounds(*this, n);
     return labels_and_targets_no_checks(n);
   }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Helper functions which cannot be moved
+  //////////////////////////////////////////////////////////////////////////////
+
+  namespace word_graph {
+
+    // not noexcept because it throws an exception!
+    // Two node types so we can use this function with literal integers in the
+    // tests.
+    template <typename Node1, typename Node2>
+    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+
+      if (static_cast<Node1>(v) >= wg.number_of_nodes()) {
+        LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
+                                "in the range [0, {}), got {}",
+                                wg.number_of_nodes(),
+                                v);
+      }
+    }
+
+    template <typename Node, typename Iterator1, typename Iterator2>
+    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
+                                     Iterator1              first,
+                                     Iterator2              last) {
+      for (auto it = first; it != last; ++it) {
+        word_graph::throw_if_node_out_of_bounds(wg, *it);
+      }
+    }
+
+    template <typename Node>
+    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg) {
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    }
+
+    template <typename Node, typename Iterator>
+    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
+                                           Iterator               first,
+                                           Iterator               last) {
+      for (auto it = first; it != last; ++it) {
+        auto s = *it;
+        for (auto [a, t] : wg.labels_and_targets(s)) {
+          if (t != UNDEFINED && t >= wg.number_of_nodes()) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "target out of bounds, the edge with source {} and label {} "
+                "has target {}, but expected value in the range [0, {})",
+                s,
+                a,
+                t,
+                wg.number_of_nodes());
+          }
+        }
+      }
+    }
+
+    // not noexcept because it throws an exception!
+    template <typename Node>
+    void
+    throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
+                                 typename WordGraph<Node>::label_type lbl) {
+      if (lbl >= wg.out_degree()) {
+        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
+                                "the range [0, {}), got {}",
+                                wg.out_degree(),
+                                lbl);
+      }
+    }
+
+    template <typename Node>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                      word_type const&       word) {
+      throw_if_label_out_of_bounds(wg, word.cbegin(), word.cend());
+    }
+
+    template <typename Node, typename Iterator>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                      Iterator               first,
+                                      Iterator               last) {
+      std::for_each(first, last, [&wg](letter_type a) {
+        throw_if_label_out_of_bounds(wg, a);
+      });
+    }
+
+    template <typename Node, typename Container>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const&        wg,
+                                      std::vector<word_type> const& rules) {
+      std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
+        throw_if_label_out_of_bounds(wg, w);
+      });
+    }
+
+  }  // namespace word_graph
 
 }  // namespace libsemigroups
