@@ -357,16 +357,30 @@ namespace libsemigroups {
     void NodeManager<Node>::clear() {
       _stats.num_nodes_killed += (_stats.num_nodes_active - 1);
       _stats.num_nodes_active = 1;
+      compact(1);
+    }
+
+    // Make the first number_of_active_nodes() the active nodes.
+    template <typename Node>
+    void NodeManager<Node>::compact() {
+      compact(number_of_nodes_active());
+    }
+
+    // Reduce the active nodes to the first N nodes.
+    template <typename Node>
+    void NodeManager<Node>::compact(size_t N) {
+      LIBSEMIGROUPS_ASSERT(N != 0);
       std::iota(_forwd.begin(), _forwd.end() - 1, 1);
       _forwd.back() = UNDEFINED;
       std::iota(_bckwd.begin() + 1, _bckwd.end(), 0);
-      std::fill(_ident.begin(), _ident.end(), 0);
-      if (_forwd.size() > 1) {
-        _first_free_node = 1;
+      std::iota(_ident.begin(), _ident.begin() + N, 0);
+      std::fill(_ident.begin() + N, _ident.end(), 0);
+      if (_forwd.size() > N) {
+        _first_free_node = N;
       } else {
         _first_free_node = UNDEFINED;
       }
-      _last_active_node = 0;
+      _last_active_node = N - 1;
       _current          = _id_node;
       _current_la       = _id_node;
     }

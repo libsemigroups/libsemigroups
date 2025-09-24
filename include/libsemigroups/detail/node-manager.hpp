@@ -236,10 +236,11 @@ namespace libsemigroups {
       // TODO rename -> permute_nodes_no_checks
       void apply_permutation(Perm p);
 
+      void clear();
+      void compact();
+
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
-
-      void clear();
 
       ////////////////////////////////////////////////////////////////////////
       // NodeManager - data - protected
@@ -250,6 +251,8 @@ namespace libsemigroups {
       }
 
      private:
+      void compact(size_t N);
+
       struct ActiveNodesRange {
         using output_type = node_type;
 

@@ -112,25 +112,23 @@ namespace libsemigroups {
         std::vector<node_type> const& q,
         size_t                        m) {
       // p : new -> old, q = p ^ -1
-      node_type c = 0;
       // Permute all the values in the _table, and pre-images, that relate
-      // to active cosets
-      while (c < m) {
-        for (auto x : WordGraph<Node>::labels()) {
-          node_type i = WordGraph<Node>::target_no_checks(p[c], x);
+      // to active nodes
+      size_t const n = out_degree();
+      for (node_type s = 0; s < m; ++s) {
+        for (label_type a = 0; a < n; ++a) {
+          node_type t = WordGraph<Node>::target_no_checks(p[s], a);
           WordGraph<Node>::target_no_checks(
-              p[c], x, (i == UNDEFINED ? i : q[i]));
-          i = _preim_init.get(p[c], x);
-          _preim_init.set(p[c], x, (i == UNDEFINED ? i : q[i]));
-          i = _preim_next.get(p[c], x);
-          _preim_next.set(p[c], x, (i == UNDEFINED ? i : q[i]));
+              p[s], a, (t == UNDEFINED ? t : q[t]));
+          t = _preim_init.get(p[s], a);
+          _preim_init.set(p[s], a, (t == UNDEFINED ? t : q[t]));
+          t = _preim_next.get(p[s], a);
+          _preim_next.set(p[s], a, (t == UNDEFINED ? t : q[t]));
         }
-        c++;
       }
       // Permute the rows themselves
-      WordGraph<Node>::apply_row_permutation(p);
-      _preim_init.apply_row_permutation(p);
-      _preim_next.apply_row_permutation(p);
+      detail::dynamic_array2::apply_row_permutation_no_checks(
+          p, this->_dynamic_array_2, _preim_init, _preim_next);
     }
 
     template <typename Node>

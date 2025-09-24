@@ -125,6 +125,24 @@ namespace libsemigroups {
     using const_iterator_targets =
         typename detail::DynamicArray2<Node>::const_iterator;
 
+   protected:
+    ////////////////////////////////////////////////////////////////////////
+    // WordGraph - data members - protected
+    ////////////////////////////////////////////////////////////////////////
+
+    mutable detail::DynamicArray2<Node> _dynamic_array_2;
+
+   private:
+    ////////////////////////////////////////////////////////////////////////
+    // WordGraph - data members - private
+    ////////////////////////////////////////////////////////////////////////
+
+    size_type _degree;
+    size_type _nr_nodes;
+    // TODO(1) remove when WordGraphView is implemented
+    size_type _num_active_nodes;
+
+   public:
     ////////////////////////////////////////////////////////////////////////
     // WordGraph - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
@@ -1180,7 +1198,7 @@ namespace libsemigroups {
     // These are currently undocumented, because they are hard to use correctly,
     // shouldn't p and q be actual permutation objects?
 
-    // requires access to apply_row_permutation so can't be helper
+    // requires access to _dynamic_array_2 so can't be helper
     WordGraph& permute_nodes_no_checks(std::vector<node_type> const& p,
                                        std::vector<node_type> const& q,
                                        size_t                        m);
@@ -1189,26 +1207,13 @@ namespace libsemigroups {
                                        std::vector<node_type> const& q) {
       return permute_nodes_no_checks(p, q, p.size());
     }
-#endif
 
-   protected:
-    // from WordGraphWithSources
-    template <typename S>
-    void apply_row_permutation(S const& p) {
-      _dynamic_array_2.apply_row_permutation(p);
+    WordGraph& standardize(std::vector<node_type> const& p,
+                           std::vector<node_type> const& q) {
+      return permute_nodes_no_checks(p, q, p.size());
     }
-
-   private:
-    ////////////////////////////////////////////////////////////////////////
-    // WordGraph - data members - private
-    ////////////////////////////////////////////////////////////////////////
-
-    size_type _degree;
-    size_type _nr_nodes;
-    // TODO(1) remove when WordGraphView is implemented
-    size_type                           _num_active_nodes;
-    mutable detail::DynamicArray2<Node> _dynamic_array_2;
-  };
+#endif
+  };  // WordGraph
 
   //! \ingroup word_graph_group
   //!
