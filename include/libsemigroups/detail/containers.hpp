@@ -294,24 +294,6 @@ namespace libsemigroups {
                          _vec.begin() + (j * number_of_cols));
       }
 
-      // The following is adapted from http://bit.ly/2X4xPlK
-      // TODO(later) 1. make this a non-member function
-      //             2. should perform checks that p actually permutes the
-      //                given row
-      // Not noexcept because std::vector::operator[] isn't
-      void apply_row_permutation(std::vector<T> p) {
-        for (size_type i = 0; i < p.size(); i++) {
-          size_type current = i;
-          while (i != p[current]) {
-            size_type next = p[current];
-            swap_rows(current, next);
-            p[current] = current;
-            current    = next;
-          }
-          p[current] = current;
-        }
-      }
-
       void clear() noexcept {
         _nr_unused_cols += _nr_used_cols;
         _nr_used_cols = 0;
@@ -802,6 +784,25 @@ namespace libsemigroups {
     template <typename T, typename A>
     DynamicArray2<T, A>& DynamicArray2<T, A>::operator=(DynamicArray2&&)
         = default;
+
+    namespace dynamic_array2 {
+      // The following is adapted from http://bit.ly/2X4xPlK
+      // TODO(1): a checks version
+      // Not noexcept because std::vector::operator[] isn't
+      template <typename T, typename... Args>
+      void apply_row_permutation_no_checks(std::vector<T> p, Args&&... args) {
+        for (size_t start = 0; start < p.size(); ++start) {
+          size_t current = start;
+          while (start != p[current]) {
+            size_t next = p[current];
+            (std::forward<Args>(args).swap_rows(next, current), ...);
+            p[current] = current;
+            current    = next;
+          }
+          p[current] = current;
+        }
+      }
+    }  // namespace dynamic_array2
 
     // StaticVector1 wraps an array, providing it with some of the syntax of
     // std::vector.

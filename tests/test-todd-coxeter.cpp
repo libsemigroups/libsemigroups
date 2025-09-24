@@ -4736,6 +4736,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     tc.lower_bound(17'971'200).strategy(options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 17'971'200);
+    tc.standardize(Order::shortlex);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
