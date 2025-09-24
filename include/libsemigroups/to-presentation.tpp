@@ -188,4 +188,19 @@ namespace libsemigroups {
     result.inverses_no_checks(std::move(invs));
     return result;
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Kambites -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Result, typename Word>
+  auto to(Kambites<Word>& c) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>,
+      Result> {
+    if constexpr (std::is_same_v<typename Result::word_type, Word>) {
+      return c.presentation();
+    } else {
+      return to<Result>(c.presentation());
+    }
+  }
 }  // namespace libsemigroups

@@ -32,6 +32,7 @@
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/kambites-class.hpp"   // for Kambites
 #include "libsemigroups/presentation.hpp"     // for Presentation, change_...
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
@@ -421,7 +422,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -455,7 +456,7 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("hijkl");
@@ -491,7 +492,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -521,6 +522,27 @@ namespace libsemigroups {
                 "77"_w, "58"_w,  "79"_w,  "66"_w, "85"_w,  "58"_w, "86"_w,
                 "55"_w, "88"_w,  "69"_w,  "96"_w, "69"_w,  "97"_w, "66"_w,
                 "99"_w, "57"_w,  "557"_w, "69"_w, "669"_w, "558"_w});
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "025",
+                          "from Congruence<Word>",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    Kambites k(congruence_kind::twosided, p);
+    REQUIRE(to<Presentation<word_type>>(k) == p);
+    REQUIRE(to<Presentation<std::string>>(k).rules
+            == std::vector<std::string>(
+                {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
+    // TODO add Kambites<std::string> example.
   }
 
 }  // namespace libsemigroups
