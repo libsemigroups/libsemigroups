@@ -1212,10 +1212,6 @@ namespace libsemigroups {
 
   // WordGraph - Exception helpers
   namespace word_graph {
-<<<<<<< HEAD
-
-=======
->>>>>>> 836eb16e (moved helpers - all tests pass)
     //! \brief Throws if the target of any edge is out of bounds.
     //!
     //! This function throws if any target of any edge in \p wg is out of
