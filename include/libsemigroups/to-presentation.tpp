@@ -194,13 +194,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Result, typename Word>
-  auto to(Kambites<Word>& c) -> std::enable_if_t<
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>,
       Result> {
     if constexpr (std::is_same_v<typename Result::word_type, Word>) {
-      return c.presentation();
+      return k.presentation();
     } else {
-      return to<Result>(c.presentation());
+      return to<Result>(k.presentation());
     }
   }
 }  // namespace libsemigroups

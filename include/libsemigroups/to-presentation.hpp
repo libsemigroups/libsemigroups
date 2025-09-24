@@ -462,13 +462,42 @@ namespace libsemigroups {
 #endif
 
   ////////////////////////////////////////////////////////////////////////
-  // Congruence -> Presentation
+  // Kambites -> Presentation
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup to_presentation_group
   //!
+  //! \brief Make a presentation from a kambites
+  //!
+  //! Defined in `to-presentation.hpp`
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(k);
+  //! \endcode
+  //!
+  //! This function returns the Presentation object used to construct/initialise
+  //! the Kambites object (if any).
+  //!
+  //! When `typename Result::word_type` and `Word` are not the same, this
+  //! function uses Presentation -> Presentation to return a presentation
+  //! equivalent to the object used to construct or initialise the
+  //! Kambites object (if any) but of a different type (for example, can be used
+  //! to convert from `std::string` to \ref word_type).
+  //!
+  //! If the word representations are the same, the function returns the const
+  //! reference to the presentation used to construct or initialise the
+  //! Kambites object (if any) via `k.presentation()`.
+  //!
+  //! \tparam Result the return type, also used for SFINAE, should be
+  //! \c Presentation<T> for some type \c T.
+  //! \tparam Word the type of the words in the input Kambites.
+  //! \param k the Kambites object from which to obtain the rules.
+  //!
+  //! \returns A value of type `Presentation<Word>`.
   template <typename Result, typename Word>
-  auto to(Kambites<Word>& c) -> std::enable_if_t<
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>,
       Result>;
 
