@@ -477,18 +477,17 @@ namespace libsemigroups {
   //! to<Presentation<Word>>(k);
   //! \endcode
   //!
-  //! This function returns the Presentation object used to construct/initialise
-  //! the Kambites object (if any).
+  //! There are two versions of this function:
   //!
-  //! When `typename Result::word_type` and `Word` are not the same, this
+  //! 1. When `typename Result::word_type` and `Word` are not the same, this
   //! function uses `to<Presentation<typename Result::word_type>` to return a
   //! presentation equivalent to the object used to construct or initialise the
   //! Kambites object (if any) but of a different type (for example, can be used
   //! to convert from `std::string` to \ref word_type).
   //!
-  //! If the word representations are the same, the function returns a copy of
-  //! the presentation used to construct or initialise the Kambites object (if
-  //! any) via `k.presentation()`.
+  //! 2. If the word representations are the same, the function returns a
+  //! reference to the presentation used to construct or initialise the Kambites
+  //! object (if any) via `k.presentation()`.
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
@@ -498,8 +497,21 @@ namespace libsemigroups {
   //! \returns A value of type `Presentation<Word>`.
   template <typename Result, typename Word>
   auto to(Kambites<Word>& k) -> std::enable_if_t<
-      std::is_same_v<Presentation<typename Result::word_type>, Result>,
-      Result>;
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result> {
+    return to<Result>(k.presentation());
+  }
+
+  // This function is documented above because Doxygen conflates these two
+  // functions
+  template <typename Result, typename Word>
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && std::is_same_v<typename Result::word_type, Word>,
+      Result const&> {
+    return k.presentation();
+  }
 
 }  // namespace libsemigroups
 
