@@ -422,7 +422,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -456,7 +456,7 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("hijkl");
@@ -492,7 +492,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -528,7 +528,7 @@ namespace libsemigroups {
                           "025",
                           "from Kambites<Word>",
                           "[quick][to_presentation]") {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
