@@ -526,7 +526,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
                           "025",
-                          "from Congruence<Word>",
+                          "from Kambites<Word>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
     Presentation<word_type> p;
@@ -542,7 +542,15 @@ namespace libsemigroups {
     REQUIRE(to<Presentation<std::string>>(k).rules
             == std::vector<std::string>(
                 {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
-    // TODO add Kambites<std::string> example.
+
+    Presentation<std::string> p_str;
+    p_str.alphabet("abc");
+    presentation::add_rule(p_str, "aa", "b");
+    presentation::add_rule(p_str, "bb", "c");
+    presentation::add_rule(p_str, "cc", "a");
+
+    Kambites<std::string> k_str(congruence_kind::twosided, p_str);
+    REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
   }
 
 }  // namespace libsemigroups
