@@ -8,6 +8,8 @@ import os
 import platform
 import re
 import subprocess
+import shutil
+import sys
 
 ###########################################################
 # CLI arguments
@@ -50,12 +52,24 @@ args = parser.parse_args()
 # Main program                                             #
 ############################################################
 
+if not shutil.which(args.test_executable):
+    if args.test_executable.startswith("./"):
+        make_name = args.test_executable[2:]
+    else:
+        make_name = args.test_executable
+
+    sys.exit(
+        f"Can't find `{args.test_executable}`, did you forget to `make {make_name}`?"
+    )
+
 # Construct the output file
 date = f"{datetime.datetime.now():%Y_%m_%d_%H_%M_%S}"
 hash = git.Repo(search_parent_directories=True).git.rev_parse("HEAD", short=8)
 arch = platform.machine()
 command = os.path.basename(args.test_executable)
 output_file = f"tests/run-times/results/{date}-{hash}-{arch}-{command}.json"
+
+print(f"Trying to write to {output_file} . . .")
 
 # Find the the tags of the tests to run and separate by commas
 raw_tags = subprocess.run(
@@ -78,10 +92,15 @@ hyperfine_args = [
 if args.max:
     hyperfine_args.insert(1, f"--max-runs={args.max}")
 
-# Run the specified tests and export to json file.
-hyperfine_result = subprocess.run(hyperfine_args)
+try:
+    # Run the specified tests and export to json file.
+    hyperfine_result = subprocess.run(hyperfine_args)
+except KeyboardInterrupt:
+    print(f"KeyboardInterrupt: removing {output_file} . . .")
+    os.remove(output_file)
+    sys.exit(1)
 
 if hyperfine_result.returncode == 0:
-    print(f"Writing results to {output_file} . . .")
+    print("SUCCESS!")
 else:
-    print(f"Failure whilst running {hyperfine_result.args}")
+    print(f"Failure whilst running {hyperfine_result.args}, ")
