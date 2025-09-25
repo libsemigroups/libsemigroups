@@ -336,7 +336,8 @@ namespace libsemigroups {
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
       while (current != NodeManager<node_type>::first_free_node()
-             && (!stop_early || !tc->stopped())) {
+             && (!stop_early || (tc->running() && !tc->stopped())
+                 || !tc->running())) {
         // If stop_early and tc->stopped(), then we exit this loop.
         // O/w we continue, this is because _finished is sometimes set before we
         // are really finished, which is something that should be fixed at some
@@ -1787,6 +1788,10 @@ namespace libsemigroups {
       }
       report_after_lookahead(old_lookahead_next);
       stats_phase_stop();
+      if (!running()) {
+        report_after_run();
+        stats_run_stop();
+      }
     }
 
     void ToddCoxeterImpl::hlt_lookahead(bool stop_early) {
@@ -1833,7 +1838,7 @@ namespace libsemigroups {
       size_t const n       = _word_graph.out_degree();
 
       while (current != _word_graph.first_free_node()
-             && (!stop_early || !stopped())) {
+             && (!stop_early || (running() && !stopped()) || !running())) {
         // See the comment in make_compatible about why we have !stop_early
         // here. This might never be used but is here for consistency.
         _word_graph.definitions().clear();
