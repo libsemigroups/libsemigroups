@@ -25,7 +25,8 @@
 #include <cstddef>    // for size_t
 #include <stdexcept>  // for runtime_error
 
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp"  // for WordGraph helpers
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 namespace libsemigroups {
 

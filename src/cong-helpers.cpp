@@ -41,6 +41,7 @@
 #include "libsemigroups/todd-coxeter-class.hpp"    // for ToddCoxeter<word_type>
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for index_of
 #include "libsemigroups/types.hpp"                 // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"    // for WordGraph helpers
 #include "libsemigroups/word-graph.hpp"            // for WordGraph::WordGr...
 #include "libsemigroups/word-range.hpp"            // for ToString, ToWord
 

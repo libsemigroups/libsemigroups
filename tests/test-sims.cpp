@@ -56,6 +56,7 @@
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"     // for WordGraph Helpers
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 
 #include "libsemigroups/detail/eigen.hpp"           // for DenseBase::row
