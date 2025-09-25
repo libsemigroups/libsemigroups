@@ -87,6 +87,12 @@ args = parser.parse_args()
 
 
 def main():
+    if args.base_file in args.comparison_files:
+        raise ValueError(
+            "Expected the base_file and the list of comparison files to be disjoint. Found the "
+            f"file {args.base_file} in both. "
+        )
+
     # Find the tests with significantly different runtimes
     df = to_mean_time_comparison_df(args.base_file, *args.comparison_files)
     sig_tests = significantly_different_times(df, args.factor).index
