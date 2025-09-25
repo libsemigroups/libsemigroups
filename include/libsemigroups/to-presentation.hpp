@@ -481,14 +481,14 @@ namespace libsemigroups {
   //! the Kambites object (if any).
   //!
   //! When `typename Result::word_type` and `Word` are not the same, this
-  //! function uses Presentation -> Presentation to return a presentation
-  //! equivalent to the object used to construct or initialise the
+  //! function uses `to<Presentation<typename Result::word_type>` to return a
+  //! presentation equivalent to the object used to construct or initialise the
   //! Kambites object (if any) but of a different type (for example, can be used
   //! to convert from `std::string` to \ref word_type).
   //!
-  //! If the word representations are the same, the function returns the const
-  //! reference to the presentation used to construct or initialise the
-  //! Kambites object (if any) via `k.presentation()`.
+  //! If the word representations are the same, the function returns a copy of
+  //! the presentation used to construct or initialise the Kambites object (if
+  //! any) via `k.presentation()`.
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
