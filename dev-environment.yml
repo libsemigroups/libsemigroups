@@ -1,0 +1,21 @@
+name: libsemigroups_dev
+
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - python>=3.13
+  - bs4
+  - clang-format-15
+  - codespell
+  - cpplint
+  - gitpython
+  - matplotlib
+  - numpy
+  - pandas
+  - pip
+  - rich
+  - seaborn
+  - pip:
+      - accepts
