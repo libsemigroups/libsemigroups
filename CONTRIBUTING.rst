@@ -144,7 +144,17 @@ a ***non-bugfix release*** is one of the form ``x.y.z -> x+1.y.z`` or
 Tools for developers
 --------------------
 
-The following tools may be useful for developers of ``libsemigroups``.
+The following tools may be useful for developers of ``libsemigroups``. Their use
+is explained in the following sections, and all of them cen be installed in a
+conda/mamba environment by running
+
+.. code-block:: console
+
+  source etc/make-dev-environment.sh
+
+This script requires a conda-flavoured package manager. A good choice is
+``mamba``, and instructions on how to install it can be found on the
+`mamba installation page <https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html>`_.
 
 ``clang-format``
 ~~~~~~~~~~~~~~~~
