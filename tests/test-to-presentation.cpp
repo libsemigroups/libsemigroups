@@ -549,8 +549,10 @@ namespace libsemigroups {
     presentation::add_rule(p_str, "bb", "c");
     presentation::add_rule(p_str, "cc", "a");
 
-    Kambites<std::string> k_str(congruence_kind::twosided, p_str);
+    Kambites k_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
+    REQUIRE(to<Presentation<word_type>>(k_str)
+            == to<Presentation<word_type>>(p_str));
   }
 
 }  // namespace libsemigroups
