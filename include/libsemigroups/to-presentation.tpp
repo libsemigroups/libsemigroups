@@ -188,4 +188,11 @@ namespace libsemigroups {
     result.inverses_no_checks(std::move(invs));
     return result;
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Kambites -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
+  // Implemented in hpp file because very short
+
 }  // namespace libsemigroups

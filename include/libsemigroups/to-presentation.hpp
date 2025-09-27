@@ -451,7 +451,7 @@ namespace libsemigroups {
   // FIXME(1) this is the same hack as elsewhere because Doxygen conflates
   // functions with trailing return type but the same name and signature.
   template <template <typename...> typename Thing, typename Word>
-  auto to(Presentation<Word> cont& p) -> std::enable_if_t<
+  auto to(Presentation<Word> const& p) -> std::enable_if_t<
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>>;
 #else
@@ -460,6 +460,58 @@ namespace libsemigroups {
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>>;
 #endif
+
+  ////////////////////////////////////////////////////////////////////////
+  // Kambites -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a kambites
+  //!
+  //! Defined in `to-presentation.hpp`
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(k);
+  //! \endcode
+  //!
+  //! There are two versions of this function:
+  //!
+  //! 1. When `typename Result::word_type` and `Word` are not the same, this
+  //! function uses `to<Presentation<typename Result::word_type>` to return a
+  //! presentation equivalent to the object used to construct or initialise the
+  //! Kambites object (if any) but of a different type (for example, can be used
+  //! to convert from `std::string` to \ref word_type).
+  //!
+  //! 2. If the word representations are the same, the function returns a
+  //! reference to the presentation used to construct or initialise the Kambites
+  //! object (if any) via `k.presentation()`.
+  //!
+  //! \tparam Result the return type, also used for SFINAE, should be
+  //! \c Presentation<T> for some type \c T.
+  //! \tparam Word the type of the words in the input Kambites.
+  //! \param k the Kambites object from which to obtain the rules.
+  //!
+  //! \returns A value of type `Presentation<Word>`.
+  template <typename Result, typename Word>
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result> {
+    return to<Result>(k.presentation());
+  }
+
+  // This function is documented above because Doxygen conflates these two
+  // functions
+  template <typename Result, typename Word>
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && std::is_same_v<typename Result::word_type, Word>,
+      Result const&> {
+    return k.presentation();
+  }
 
 }  // namespace libsemigroups
 
