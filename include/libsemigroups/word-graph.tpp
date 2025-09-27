@@ -89,7 +89,7 @@ namespace libsemigroups {
           }
         }
         if (result) {
-          wg.permute_nodes_no_checks(p, q);
+          wg.standardize(p, q);
         }
         return result;
       }
@@ -139,7 +139,9 @@ namespace libsemigroups {
             s = f.parent(s);
           }
         }
-        wg.permute_nodes_no_checks(p, q);
+        if (result) {
+          wg.standardize(p, q);
+        }
         return result;
       }
 
@@ -246,7 +248,9 @@ namespace libsemigroups {
             new_generator = true;
           }
         }
-        wg.permute_nodes_no_checks(p, q);
+        if (result) {
+          wg.standardize(p, q);
+        }
         return result;
       }
 
@@ -1107,17 +1111,19 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraph<Node>::WordGraph(size_type m, size_type n)
-      : _degree(n),
+      : _dynamic_array_2(n, m, UNDEFINED),
+        _degree(n),
         _nr_nodes(m),
-        _num_active_nodes(),
-        _dynamic_array_2(_degree, _nr_nodes, UNDEFINED) {}
+        _num_active_nodes() {}
 
   template <typename Node>
   WordGraph<Node>& WordGraph<Node>::init(size_type m, size_type n) {
+    // Protected
+    _dynamic_array_2.reshape(n, m);
+    // Private
     _degree           = n;
     _nr_nodes         = m;
     _num_active_nodes = 0;
-    _dynamic_array_2.reshape(n, m);
     remove_all_targets();
     return *this;
   }
@@ -1326,15 +1332,14 @@ namespace libsemigroups {
                                            std::vector<node_type> const& q,
                                            size_t                        m) {
     // p : new -> old, q = p ^ -1: old -> new
-    node_type i = 0;
-    while (i < m) {
-      for (auto [a, t] : labels_and_targets_no_checks(p[i])) {
-        target_no_checks(p[i], a, (t == UNDEFINED ? t : q[t]));
+    for (node_type s = 0; s < m; ++s) {
+      for (auto [a, t] : labels_and_targets_no_checks(p[s])) {
+        target_no_checks(p[s], a, (t == UNDEFINED ? t : q[t]));
       }
-      i++;
     }
     // Permute the rows themselves
-    apply_row_permutation(p);
+    detail::dynamic_array2::apply_row_permutation_no_checks(p,
+                                                            _dynamic_array_2);
     return *this;
   }
 

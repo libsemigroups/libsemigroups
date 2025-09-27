@@ -216,6 +216,13 @@ namespace libsemigroups {
       template <typename Functor = Noop>
       void process_coincidences(Functor&& = Noop{});
 
+      void standardize(std::vector<node_type> const& p,
+                       std::vector<node_type> const& q) {
+        BaseGraph::permute_nodes_no_checks(
+            p, q, NodeManager<node_type>::number_of_nodes_active());
+        NodeManager<node_type>::compact();
+      }
+
       void permute_nodes_no_checks(std::vector<node_type> const& p,
                                    std::vector<node_type> const& q) {
         BaseGraph::permute_nodes_no_checks(

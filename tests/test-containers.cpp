@@ -1472,20 +1472,18 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
                             "039",
-                            "apply_row_permutation",
+                            "apply_row_permutation_no_checks",
                             "[containers][quick]") {
       DynamicArray2<size_t> rv = DynamicArray2<size_t>(3, 10);
       for (size_t i = 0; i < 10; i++) {
         std::fill(rv.begin_row(i), rv.end_row(i), i);
       }
       std::vector<size_t> p = {1, 2, 3, 4, 5, 6, 7, 0, 9, 8};
-      // copy p, since the apply_row_permutation method modifies p.
-      std::vector<size_t> q = p;
-      rv.apply_row_permutation(p);
+      dynamic_array2::apply_row_permutation_no_checks(p, rv);
 
       for (size_t i = 0; i < 10; i++) {
-        REQUIRE(std::all_of(rv.begin_row(i), rv.end_row(i), [&q, &i](size_t x) {
-          return x == q[i];
+        REQUIRE(std::all_of(rv.begin_row(i), rv.end_row(i), [&p, &i](size_t x) {
+          return x == p[i];
         }));
       }
     }
