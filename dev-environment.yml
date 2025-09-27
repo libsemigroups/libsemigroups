@@ -6,12 +6,18 @@ channels:
 
 dependencies:
   - python>=3.13
+  - autoconf
+  - automake
   - bs4
+  - ccache
   - clang-format-15
   - codespell
   - cpplint
   - doxygen
   - gitpython
+  - graphviz
+  - libtool
+  - lxml
   - matplotlib
   - numpy
   - pandas
