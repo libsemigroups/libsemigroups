@@ -1663,7 +1663,7 @@ namespace libsemigroups {
       //! qualifies as a "large" collapse can be specified using
       //! \ref ToddCoxeter::large_collapse.
       //!
-      //! \returns The number of large collapes.
+      //! \returns The number of large collapses.
       //!
       //! \exceptions
       //! \noexcept
