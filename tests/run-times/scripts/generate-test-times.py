@@ -71,11 +71,13 @@ output_file = f"tests/run-times/results/{date}-{hash}-{arch}-{command}.json"
 
 print(f"Trying to write to {output_file} . . .")
 
-# Find the the tags of the tests to run and separate by commas
+# Find the the tags of the tests to run and separate by commas. Each test has a
+# unique LIBSEMIGROUPS_TEST_PREFIX of the form classname number, e.g.
+# Action 000. This value is used to identify the tests.
 raw_tags = subprocess.run(
     [args.test_executable, args.tags, "--list-tags"], capture_output=True
 )
-tags = re.findall(r"(?<=LIBSEMIGROUPS_TEST_NUM=)\d+", str(raw_tags.stdout))
+tags = re.findall(r"(?<=\[LIBSEMIGROUPS_TEST_PREFIX=).+? \d+(?=\])", str(raw_tags.stdout))
 tag_string = ",".join(tags)
 
 # Construct the call to hyperfine
