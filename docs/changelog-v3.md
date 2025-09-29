@@ -1,5 +1,30 @@
 # Changelog - version 3
 
+## v3.2.0 (released 29/09/2025)
+
+This release contains a number of improvements, bug fixes, and a small number
+of new features:
+
+- Balance presentation by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/785
+- `is_obviously_infinite(Kambites)` respects generating pairs by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/791
+- Check `is_obviously_infinite` before running in `Congruence::number_of_classes` by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/790
+- Bipartition benchmarks by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/759
+- Add an option to compile with external backward by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/798
+- Add CI jobs for OpenBSD and FreeBSD by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/799
+- Use the latest version of backward by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/797
+- Update the contributing guide by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/802
+- Fix some issues in the doc by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/807
+- Improve reporting for Todd-Coxeter by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/754
+- todd-coxeter: fix bug in reduce by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/808
+- todd-coxeter: fix some reporting issues by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/813
+- word-graph: improve standardization performance by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/811
+- todd-coxeter: fix typo in doc by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/818
+- to-presentation: add Kambites -> Presentation by [\@jswent] in https://github.com/libsemigroups/libsemigroups/pull/812
+
+## New Contributors
+
+- [\@jswent] made their first contribution in https://github.com/libsemigroups/libsemigroups/pull/812
+
 ## v3.1.3 (released 12/08/2025)
 
 This is a minor release that does the following:
@@ -123,7 +148,6 @@ Perhaps the biggest changes are:
   finitely presented semigroups and monoids (\ref congruence_group , \ref
   kambites_group, \ref knuth_bendix_group, \ref todd_coxeter_group,
   \ref libsemigroups::Sims1, \ref libsemigroups::Sims2, \ref libsemigroups::Stephen):
-
   - have a common set of constructors, primarily from \ref libsemigroups::Presentation objects;
   - can be instantiated with any type of words (usually \ref libsemigroups::word_type or
     `std::string`);
@@ -186,7 +210,6 @@ Perhaps the biggest changes are:
 - compiling with [fmt](https://github.com/fmtlib/fmt) enabled is now required;
 
 - `libsemigroups` now vendors and uses copies of:
-
   - [magic_enum](https://github.com/Neargye/magic_enum) for static reflection for
     enums;
   - [rx-ranges](https://github.com/simonask/rx-ranges) the minimalist ranges

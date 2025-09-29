@@ -36,6 +36,7 @@
   contributed the implementation of the Konieczny and
   Lallement-McFadden algorithm, to the Todd-Coxeter implementation,
   and to BMat8s.
+- Jake Swent (jws20@st-andrews.ac.uk) contributed to the `to` function.
 - [Nicolas Thiéry](http://nicolas.thiery.name/)
   (<nthiery@users.sf.net>) contributed to the build system, packaging
   `libsemigroups` via conda, the python bindings and many helpful
