@@ -918,6 +918,7 @@ test_all_SOURCES += tests/test-gabow.cpp
 test_all_SOURCES += tests/test-hpcombi.cpp
 test_all_SOURCES += tests/test-iterator.cpp
 test_all_SOURCES += tests/test-kambites.cpp
+test_all_SOURCES += tests/test-kbe.cpp
 test_all_SOURCES += tests/test-knuth-bendix-1.cpp
 test_all_SOURCES += tests/test-knuth-bendix-2.cpp
 test_all_SOURCES += tests/test-knuth-bendix-3.cpp
