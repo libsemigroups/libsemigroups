@@ -148,9 +148,7 @@ namespace libsemigroups {
       REQUIRE(kb.confluent());
 
       auto x = KBE(kb, 0);
-      REQUIRE(x.word(kb) == 0_w);
-      REQUIRE(x.string(kb)
-              == std::string(1, kb.presentation().letter_no_checks(0)));
+      REQUIRE(x.word() == 0_w);
     }
   }  // namespace detail
 }  // namespace libsemigroups
