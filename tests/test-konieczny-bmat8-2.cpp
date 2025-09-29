@@ -545,7 +545,7 @@ namespace libsemigroups {
                                           {0, 0, 1, 0, 0},
                                           {0, 0, 0, 1, 0},
                                           {0, 0, 0, 0, 1}})});
-    T.run_for(std::chrono::milliseconds(500));
+    T.run_until([&T]() { return T.current_number_of_D_classes() > 0; });
     REQUIRE(T.current_number_of_D_classes() > 0);
 
     T.run();
