@@ -835,7 +835,6 @@ EXTRA_PROGRAMS += test_iterator
 EXTRA_PROGRAMS += test_kambites
 EXTRA_PROGRAMS += test_kbe
 EXTRA_PROGRAMS += test_knuth_bendix
-EXTRA_PROGRAMS += test_knuth_bendix
 EXTRA_PROGRAMS += test_konieczny
 EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_multi_view
