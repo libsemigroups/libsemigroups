@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -290,14 +288,15 @@ $(function(){initNavTree('classlibsemigroups_1_1_froidure_pin_base.html',''); in
   <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#adc6e5733fc3c22f0a7b2914188c49c90">state</a> enum name</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#a594d2415bdab68a608d9a57fd0074b93">stopped</a>() const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#aed4430b9c8f0307071e559e0ab97d51e">stopped_by_predicate</a>() const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#a8bafa8a45b0b2aa863a9b752f8a696d8">success</a>() const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#aff5c8c95349ddca8f6b8547617b76d43">suffix</a>(element_index_type pos) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a7c612f00ca2a814e512ebf612223a451">suffix_no_checks</a>(element_index_type pos) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#abc17efe04d096d1711b9440ec9797c63">throw_if_any_generator_index_out_of_range</a>(Iterator1 first, Iterator2 last) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ab6ab50de6dd0be70516356fa77b92817">throw_if_element_index_out_of_range</a>(element_index_type i) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#adaf492d296f1b836969aa4ce5d513f2b">throw_if_generator_index_out_of_range</a>(generator_index_type i) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_reporter.html#ab74c13f5b7b51f82790f058b9b7d7394">time_point</a> typedef</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_reporter.html">Reporter</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#acceb4f54a07cf7fd6562b46f33e7a1e5">timed_out</a>() const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>string_why_we_stopped</b>() const (defined in <a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a>)</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#a8bafa8a45b0b2aa863a9b752f8a696d8">success</a>() const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#aff5c8c95349ddca8f6b8547617b76d43">suffix</a>(element_index_type pos) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a7c612f00ca2a814e512ebf612223a451">suffix_no_checks</a>(element_index_type pos) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#abc17efe04d096d1711b9440ec9797c63">throw_if_any_generator_index_out_of_range</a>(Iterator1 first, Iterator2 last) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ab6ab50de6dd0be70516356fa77b92817">throw_if_element_index_out_of_range</a>(element_index_type i) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#adaf492d296f1b836969aa4ce5d513f2b">throw_if_generator_index_out_of_range</a>(generator_index_type i) const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classlibsemigroups_1_1_reporter.html#ab74c13f5b7b51f82790f058b9b7d7394">time_point</a> typedef</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_reporter.html">Reporter</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html#acceb4f54a07cf7fd6562b46f33e7a1e5">timed_out</a>() const</td><td class="entry"><a class="el" href="classlibsemigroups_1_1_runner.html">Runner</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -1,7 +1,7 @@
 <map id="Stephen&lt; PresentationType &gt;" name="Stephen&lt; PresentationType &gt;">
-<area shape="rect" id="Node000001" title="For constructing the word graph of left factors of a word in an f.p. semigroup." alt="" coords="5,152,200,177"/>
-<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="71,79,135,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,118,105,152,100,152,100,118"/>
-<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting." alt="" coords="67,5,139,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="105,44,105,79,100,79,100,44"/>
+<area shape="rect" id="Node000001" title="For constructing the word graph of left factors of a word in an f.p. semigroup." alt="" coords="5,153,200,178"/>
+<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="71,79,134,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,120,105,152,100,152,100,120"/>
+<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting." alt="" coords="67,5,138,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="105,46,105,79,100,79,100,46"/>
 </map>

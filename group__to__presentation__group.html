@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -367,6 +365,7 @@ template&lt;typename Result, typename Word&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Make an inverse presentation from a presentation.</p>
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(p, func);</div>
@@ -392,7 +391,31 @@ template&lt;typename Result, typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>Result</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>typename Result::word_type</code> and <code>Word</code> are not the same and <code>p.throw_if_bad_alphabet_or_rules()</code> throws. If <code>typename Result::word_type</code> and <code>Word</code> are the same, then this function is <code>noexcept</code>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>typename Result::word_type</code> and <code>Word</code> are not the same and <code>p.throw_if_bad_alphabet_or_rules()</code> throws. If <code>typename Result::word_type</code> and <code>Word</code> are the same, then this function is <code>noexcept</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;InversePresentation&gt;</a>(p);</div>
+</div><!-- fragment --><p>This function returns an inverse presentation with rules equivalent to those of the input presentation, but over a normalised alphabet. If the alphabet of <code class="param">p</code> is \(\{a_0, a_1, \dots, a_{n-1}\}\), then the alphabet of the returned inverse presentation will be \(\{0, 1, \dots, n-1, n, \dots, 2n-1\}\), where the inverse of letter \(i\) is the letter \(i + n\, (\text{mod }2n)\).</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>used for SFINAE, must be <a class="el" href="classlibsemigroups_1_1_inverse_presentation.html" title="For an implementation of inverse presentations for semigroups or monoids.">InversePresentation</a>. </td></tr>
+    <tr><td class="paramname">Word</td><td>the type of the words in the input presentation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the input presentation.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_inverse_presentation.html" title="For an implementation of inverse presentations for semigroups or monoids.">InversePresentation</a>&lt;Word&gt;</code>.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>p.throw_if_bad_alphabet_or_rules()</code> throws. </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,7 +1,7 @@
 <map id="Action&lt; Element, Point, Func, Traits, LeftOrRight &gt;" name="Action&lt; Element, Point, Func, Traits, LeftOrRight &gt;">
-<area shape="rect" id="Node000001" title="Class for generating the action of a semigroup." alt="" coords="5,152,188,192"/>
-<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="65,79,129,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,118,99,152,94,152,94,118"/>
-<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting." alt="" coords="61,5,133,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,44,99,79,94,79,94,44"/>
+<area shape="rect" id="Node000001" title="Class for generating the action of a semigroup." alt="" coords="5,153,188,193"/>
+<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="65,79,128,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,120,99,152,94,152,94,120"/>
+<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting." alt="" coords="61,5,132,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,46,99,79,94,79,94,46"/>
 </map>

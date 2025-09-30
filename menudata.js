@@ -318,6 +318,7 @@ var menudata={children:[
 {text:"Stephen helper functions",url:"namespacelibsemigroups_1_1stephen.html"}]},
 {text:"Todd-Coxeter",url:"group__todd__coxeter__group.html",children:[
 {text:"The ToddCoxeter class",url:"group__todd__coxeter__class__group.html",children:[
+{text:"Instrumenting Todd-Coxeter",url:"md_todd-coxeter-report.html"},
 {text:"Member types",url:"group__todd__coxeter__class__mem__types__group.html",children:[
 {text:"The options nested struct",url:"structlibsemigroups_1_1_todd_coxeter_1_1options.html"}]},
 {text:"Constructors + Initializers",url:"group__todd__coxeter__class__init__group.html"},

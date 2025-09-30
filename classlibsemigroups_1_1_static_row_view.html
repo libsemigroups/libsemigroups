@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -222,7 +220,7 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>iterator</b> = typen
 <tr class="memdesc:a7436fc9c9fd0970a206a9983300ec027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for const iterators pointing at entries of a matrix.    <br /></td></tr>
 <tr class="separator:a7436fc9c9fd0970a206a9983300ec027"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeff5547c8ab5c93bb9d144a207559d29" id="r_aeff5547c8ab5c93bb9d144a207559d29"><td class="memItemLeft" align="right" valign="top"><a id="aeff5547c8ab5c93bb9d144a207559d29" name="aeff5547c8ab5c93bb9d144a207559d29"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>matrix_type</b> = typename <a class="el" href="classlibsemigroups_1_1_static_matrix.html">RowViewCommon::matrix_type</a></td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>matrix_type</b> = typename RowViewCommon::matrix_type</td></tr>
 <tr class="memdesc:aeff5547c8ab5c93bb9d144a207559d29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the type of the underlying matrix. <br /></td></tr>
 <tr class="separator:aeff5547c8ab5c93bb9d144a207559d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf6bdf817a40b57138c6217590b2bd3f" id="r_aaf6bdf817a40b57138c6217590b2bd3f"><td class="memItemLeft" align="right" valign="top"><a id="aaf6bdf817a40b57138c6217590b2bd3f" name="aaf6bdf817a40b57138c6217590b2bd3f"></a>
@@ -822,7 +820,7 @@ template&lt;typename U&gt; </div>
 <p>Lexicographical comparison of rows.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">U</td><td>either <a class="el" href="#aaf6bdf817a40b57138c6217590b2bd3f">Row</a>, <a class="el" href="classlibsemigroups_1_1_static_row_view.html">StaticRowView</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicRowViewStaticArith">DynamicRowView (compile-time arithmetic)</a>, //NOLINT() or <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html#DynamicRowViewDynamicArith">DynamicRowView (run-time arithmetic)</a>. //NOLINT() </td></tr>
+    <tr><td class="paramname">U</td><td>either <a class="el" href="#aaf6bdf817a40b57138c6217590b2bd3f">Row</a>, <a class="el" href="classlibsemigroups_1_1_static_row_view.html">StaticRowView</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicRowViewStaticArith">DynamicRowView (compile-time arithmetic)</a>, or <a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html#DynamicRowViewDynamicArith">DynamicRowView (run-time arithmetic)</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1057,7 +1055,7 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/<a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></li>
+<li>/Users/jdm3/libsemigroups/include/libsemigroups/<a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

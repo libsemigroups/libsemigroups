@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -200,7 +198,7 @@ $(function(){initNavTree('group__intmat__group.html',''); initResizable(true); }
 <div class="line"><a class="code hl_typedef" href="#ga16f734cc9005d43ad45625dbf4fa53a0">IntMat&lt;3&gt;</a> m;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix</span></div>
 <div class="line"><a class="code hl_typedef" href="#ga16f734cc9005d43ad45625dbf4fa53a0">IntMat&lt;&gt;</a>  m(4, 4);</div>
-<div class="ttc" id="agroup__intmat__group_html_ga16f734cc9005d43ad45625dbf4fa53a0"><div class="ttname"><a href="#ga16f734cc9005d43ad45625dbf4fa53a0">libsemigroups::IntMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicIntMat&lt; Scalar &gt;, StaticIntMat&lt; R, C, Scalar &gt; &gt; IntMat</div><div class="ttdoc">Alias template for integer matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4290</div></div>
+<div class="ttc" id="agroup__intmat__group_html_ga16f734cc9005d43ad45625dbf4fa53a0"><div class="ttname"><a href="#ga16f734cc9005d43ad45625dbf4fa53a0">libsemigroups::IntMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicIntMat&lt; Scalar &gt;, StaticIntMat&lt; R, C, Scalar &gt; &gt; IntMat</div><div class="ttdoc">Alias template for integer matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4296</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -263,9 +261,9 @@ template&lt;typename Scalar&gt; </div>
 <div class="line">                                      <a class="code hl_struct" href="structlibsemigroups_1_1_integer_zero.html">IntegerZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                      <a class="code hl_struct" href="structlibsemigroups_1_1_integer_one.html">IntegerOne&lt;Scalar&gt;</a>,</div>
 <div class="line">                                      Scalar&gt;</div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_one.html">libsemigroups::IntegerOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4216</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_prod.html">libsemigroups::IntegerProd</a></div><div class="ttdoc">Function object for multiplication in the ring of integers.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4163</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4191</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_one.html">libsemigroups::IntegerOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4222</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_prod.html">libsemigroups::IntegerProd</a></div><div class="ttdoc">Function object for multiplication in the ring of integers.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4169</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4197</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of dynamic integer matrices where the dimensions of the matrices can be defined at run time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -293,8 +291,8 @@ template&lt;size_t R = 0, size_t C = R, typename Scalar = int&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> std::conditional_t&lt;R == 0 || C == 0,</div>
 <div class="line">                                    <a class="code hl_typedef" href="#ga9f8f36b1f0ca400e327b8fbee16527bb">DynamicIntMat&lt;Scalar&gt;</a>,</div>
 <div class="line">                                    <a class="code hl_typedef" href="#gac358b826dceb5fc1e298d25dddf34167">StaticIntMat&lt;R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__intmat__group_html_ga9f8f36b1f0ca400e327b8fbee16527bb"><div class="ttname"><a href="#ga9f8f36b1f0ca400e327b8fbee16527bb">libsemigroups::DynamicIntMat</a></div><div class="ttdeci">DynamicMatrix&lt; IntegerPlus&lt; Scalar &gt;, IntegerProd&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, Scalar &gt; DynamicIntMat</div><div class="ttdoc">Alias for dynamic integer matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4242</div></div>
-<div class="ttc" id="agroup__intmat__group_html_gac358b826dceb5fc1e298d25dddf34167"><div class="ttname"><a href="#gac358b826dceb5fc1e298d25dddf34167">libsemigroups::StaticIntMat</a></div><div class="ttdeci">StaticMatrix&lt; IntegerPlus&lt; Scalar &gt;, IntegerProd&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, R, C, Scalar &gt; StaticIntMat</div><div class="ttdoc">Alias for static integer matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4265</div></div>
+<div class="ttc" id="agroup__intmat__group_html_ga9f8f36b1f0ca400e327b8fbee16527bb"><div class="ttname"><a href="#ga9f8f36b1f0ca400e327b8fbee16527bb">libsemigroups::DynamicIntMat</a></div><div class="ttdeci">DynamicMatrix&lt; IntegerPlus&lt; Scalar &gt;, IntegerProd&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, Scalar &gt; DynamicIntMat</div><div class="ttdoc">Alias for dynamic integer matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4248</div></div>
+<div class="ttc" id="agroup__intmat__group_html_gac358b826dceb5fc1e298d25dddf34167"><div class="ttname"><a href="#gac358b826dceb5fc1e298d25dddf34167">libsemigroups::StaticIntMat</a></div><div class="ttdeci">StaticMatrix&lt; IntegerPlus&lt; Scalar &gt;, IntegerProd&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, R, C, Scalar &gt; StaticIntMat</div><div class="ttdoc">Alias for static integer matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4271</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for integer matrices.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -328,7 +326,7 @@ template&lt;size_t R, size_t C, typename Scalar&gt; </div>
 <div class="line">                                    R,</div>
 <div class="line">                                    C,</div>
 <div class="line">                                    Scalar&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1859</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1865</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of static integer matrices where the dimensions of the matrices can be defined at compile time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

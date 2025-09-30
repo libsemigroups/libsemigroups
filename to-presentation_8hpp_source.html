@@ -18,7 +18,7 @@
       content="https://github.com/libsemigroups/libsemigroups"
     />
     <!-- END opengraph metadata -->
-<title>libsemigroups: /home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/to-presentation.hpp Source File</title>
+<title>libsemigroups: /Users/jdm3/libsemigroups/include/libsemigroups/to-presentation.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -331,7 +329,7 @@ $(function(){initNavTree('to-presentation_8hpp_source.html',''); initResizable(t
 <div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span>  <span class="comment">// FIXME(1) this is the same hack as elsewhere because Doxygen conflates</span></div>
 <div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>  <span class="comment">// functions with trailing return type but the same name and signature.</span></div>
 <div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Thing, <span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00454" name="l00454"></a><span class="lineno"><a class="line" href="group__to__inverse__presentation__group.html#gac3659298d7b525dbf2b7140ce6773ab2">  454</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> cont&amp; p) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>  <span class="keyword">auto</span> <a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to</a>(<a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp; p) -&gt; std::enable_if_t&lt;</div>
 <div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span>      std::is_same_v&lt;InversePresentation&lt;Word&gt;, Thing&lt;Word&gt;&gt;,</div>
 <div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>      <a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a>&gt;;</div>
 <div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span><span class="preprocessor">#else</span></div>
@@ -340,14 +338,36 @@ $(function(){initNavTree('to-presentation_8hpp_source.html',''); initResizable(t
 <div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span>      std::is_same_v&lt;InversePresentation&lt;Word&gt;, Thing&lt;Word&gt;&gt;,</div>
 <div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span>      <a class="code hl_class" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation&lt;Word&gt;</a>&gt;;</div>
 <div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span> </div>
-<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span> </div>
-<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span><span class="preprocessor">#include &quot;to-presentation.tpp&quot;</span></div>
-<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span> </div>
-<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_PRESENTATION_HPP_</span></div>
+<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span></div>
+<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>  <span class="comment">// Kambites -&gt; Presentation</span></div>
+<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span></div>
+<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
+<div class="foldopen" id="foldopen00499" data-start="{" data-end="}">
+<div class="line"><a id="l00499" name="l00499"></a><span class="lineno"><a class="line" href="group__to__froidure__pin__group.html#gad6324051450cbfb3d711117608524fe3">  499</a></span>  <span class="keyword">auto</span> <a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to</a>(Kambites&lt;Word&gt;&amp; k) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;</div>
+<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>          &amp;&amp; !std::is_same_v&lt;typename Result::word_type, Word&gt;,</div>
+<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>      Result&gt; {</div>
+<div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Result&gt;</a>(k.presentation());</div>
+<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>  }</div>
+</div>
+<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span> </div>
+<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>  <span class="comment">// This function is documented above because Doxygen conflates these two</span></div>
+<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>  <span class="comment">// functions</span></div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>  <span class="keyword">auto</span> <a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to</a>(Kambites&lt;Word&gt;&amp; k) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>      std::is_same_v&lt;Presentation&lt;typename Result::word_type&gt;, Result&gt;</div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>          &amp;&amp; std::is_same_v&lt;typename Result::word_type, Word&gt;,</div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>      Result <span class="keyword">const</span>&amp;&gt; {</div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>    <span class="keywordflow">return</span> k.presentation();</div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>  }</div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span> </div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span> </div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span><span class="preprocessor">#include &quot;to-presentation.tpp&quot;</span></div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span> </div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_TO_PRESENTATION_HPP_</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin_base.html">libsemigroups::FroidurePinBase</a></div><div class="ttdoc">Base class for FroidurePin containing non-element specific data and member functions.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:66</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_inverse_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_inverse_presentation.html">libsemigroups::InversePresentation</a></div><div class="ttdoc">For an implementation of inverse presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:2318</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_inverse_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_inverse_presentation.html">libsemigroups::InversePresentation</a></div><div class="ttdoc">For an implementation of inverse presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:2736</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1words_html_a7a783c2cd32ccb72e625974bb952181b"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">libsemigroups::words::human_readable_letter</a></div><div class="ttdeci">Word::value_type human_readable_letter(size_t i)</div><div class="ttdoc">Returns a character by index in human readable order.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2131</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>

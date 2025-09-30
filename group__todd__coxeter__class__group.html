@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -195,6 +193,7 @@ $(function(){initNavTree('group__todd__coxeter__class__group.html',''); initResi
 <p>Defined in <code><a class="el" href="todd-coxeter-class_8hpp_source.html">todd-coxeter-class.hpp</a></code>.</p>
 <p>This class contains an implementation of the Todd-Coxeter algorithm for computing 1-sided (right), and 2-sided congruences on a semigroup or monoid.</p>
 <p>In this documentation we use the term "congruence enumeration" to mean the execution of (any version of) the Todd-Coxeter algorithm. Some of the features of this class were inspired by similar features in <a href="https://staff.itee.uq.edu.au/havas/">ACE</a> by George Havas and Colin Ramsay.</p>
+<p>For information about the output printed by a ToddCoxeter instance during a congruence enumeration, see <a class="el" href="md_todd-coxeter-report.html">this page</a>.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42" title="Enum to indicate the sided-ness of a congruence.">congruence_kind</a> and <a class="el" href="group__types__group.html#gae214dc6594738d449fb4483859d58932" title="Enum to indicate true, false or not currently knowable.">tril</a>.</dd></dl>
 <dl class="section user"><dt>Example 1</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
 <div class="line">p.alphabet(2);</div>
@@ -208,7 +207,7 @@ $(function(){initNavTree('group__todd__coxeter__class__group.html',''); initResi
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__todd__coxeter__class__group_html_ga85d089a95e53c442b0d970877c8d8942"><div class="ttname"><a href="#ga85d089a95e53c442b0d970877c8d8942">libsemigroups::ToddCoxeter</a></div><div class="ttdeci">ToddCoxeter(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; ToddCoxeter&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a123c05d62f2de99971d13bdb90425f1c"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a123c05d62f2de99971d13bdb90425f1c">libsemigroups::congruence_kind::onesided</a></div><div class="ttdeci">@ onesided</div><div class="ttdoc">Value representing a one-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:69</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:842</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:907</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section user"><dt>Example 2</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
 <div class="line">p.alphabet(4);</div>

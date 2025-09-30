@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -196,7 +194,7 @@ struct libsemigroups::One&lt; Element, typename &gt;</div><p>Specialisations of 
 <li><code>Element operator()(T const&amp;) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also). This could be implemented as: <div class="fragment"><div class="line">Element operator()(Element <span class="keyword">const</span>&amp; x) <span class="keyword">const</span> <span class="keyword">noexcept</span> {</div>
 <div class="line">  <span class="keywordflow">return</span> this-&gt;operator()(<a class="code hl_struct" href="structlibsemigroups_1_1_degree.html">Degree&lt;Element&gt;</a>()(x));</div>
 <div class="line">}</div>
-<div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:159</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:166</div></div>
 </div><!-- fragment --></li>
 </ol>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -225,10 +223,10 @@ struct libsemigroups::One&lt; Element, typename &gt;</div><p>Specialisations of 
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:246</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:253</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/<a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></li>
+<li>/Users/jdm3/libsemigroups/include/libsemigroups/<a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

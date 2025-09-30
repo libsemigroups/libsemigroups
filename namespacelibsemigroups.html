@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -341,6 +339,12 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_dynamic_p_transf.html">DynamicPTransf</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Partial transformations with dynamic degree.  <a href="classlibsemigroups_1_1_dynamic_p_transf.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html">DynamicRowView&lt; PlusOp, ProdOp, ZeroOp, OneOp, Scalar &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#aaf6bdf817a40b57138c6217590b2bd3f" title="Alias for the type of a row in the underlying matrix.">Row</a> view class for <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicMatrixStaticArith">DynamicMatrix (compile-time arithmetic)</a>.  <a href="classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html">DynamicRowView&lt; Semiring, Scalar &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html#aaf6bdf817a40b57138c6217590b2bd3f" title="Alias for the type of a row in the underlying matrix.">Row</a> view class for <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_semiring_00_01_scalar_01_4.html#DynamicMatrixDynamicArith">DynamicMatrix (run-time arithmetic)</a>.  <a href="classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1_equal_to.html">EqualTo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adapter for testing equality.  <a href="structlibsemigroups_1_1_equal_to.html#details">More...</a><br /></td></tr>
@@ -1310,7 +1314,7 @@ template&lt;typename... Args&gt; </td></tr>
 <tr class="separator:gac45428e66af642debdce517039f0371c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0563d75bc8821cfeff7a928b1b87601f" id="r_ga0563d75bc8821cfeff7a928b1b87601f"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:ga0563d75bc8821cfeff7a928b1b87601f"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a>&lt; Return, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__word__graph__group.html#ga0563d75bc8821cfeff7a928b1b87601f">make</a> (size_t num_nodes, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::node_type &gt; &gt; const &amp;targets)</td></tr>
-<tr class="memdesc:ga0563d75bc8821cfeff7a928b1b87601f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.    //NOLINT()  <br /></td></tr>
+<tr class="memdesc:ga0563d75bc8821cfeff7a928b1b87601f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a word graph from a number of nodes and targets.     <br /></td></tr>
 <tr class="separator:ga0563d75bc8821cfeff7a928b1b87601f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8400485cec52d367b17f529c2b3d3f22" id="r_ga8400485cec52d367b17f529c2b3d3f22"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Thing, typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt; </td></tr>
 <tr class="memitem:ga8400485cec52d367b17f529c2b3d3f22"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt;, Thing&lt; Element, Traits &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_konieczny.html">Konieczny</a>&lt; Element, Traits &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__make__konieczny__group.html#ga8400485cec52d367b17f529c2b3d3f22">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Element &gt; const &amp;gens)</td></tr>
@@ -1548,10 +1552,15 @@ template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:a3ad68607810e16a29cee56c8416f918f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>report_default</b> (std::string_view sv, Args &amp;&amp;... args)</td></tr>
 <tr class="memdesc:a3ad68607810e16a29cee56c8416f918f"><td class="mdescLeft">&#160;</td><td class="mdescRight">No doc. <br /></td></tr>
 <tr class="separator:a3ad68607810e16a29cee56c8416f918f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4734226746c162ed6027131cb362a82c" id="r_a4734226746c162ed6027131cb362a82c"><td class="memItemLeft" align="right" valign="top"><a id="a4734226746c162ed6027131cb362a82c" name="a4734226746c162ed6027131cb362a82c"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>report_elapsed_time</b> (std::string_view prefix, libsemigroups::detail::Timer const &amp;tmr)</td></tr>
-<tr class="memdesc:a4734226746c162ed6027131cb362a82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">No doc. <br /></td></tr>
-<tr class="separator:a4734226746c162ed6027131cb362a82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd9475e7fcce545b70e0ee6edad7bbf0" id="r_abd9475e7fcce545b70e0ee6edad7bbf0"><td class="memItemLeft" align="right" valign="top"><a id="abd9475e7fcce545b70e0ee6edad7bbf0" name="abd9475e7fcce545b70e0ee6edad7bbf0"></a>
+<a class="elRef" href="http://en.cppreference.com/w/cpp/thread/mutex.html">std::mutex</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>report_mutex</b> ()</td></tr>
+<tr class="memdesc:abd9475e7fcce545b70e0ee6edad7bbf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">No doc. <br /></td></tr>
+<tr class="separator:abd9475e7fcce545b70e0ee6edad7bbf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68bb6ea2ef075df4f97d5d318cc79242" id="r_a68bb6ea2ef075df4f97d5d318cc79242"><td class="memTemplParams" colspan="2"><a id="a68bb6ea2ef075df4f97d5d318cc79242" name="a68bb6ea2ef075df4f97d5d318cc79242"></a>
+template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a68bb6ea2ef075df4f97d5d318cc79242"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>report_no_lock_no_prefix</b> (std::string_view sv, Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a68bb6ea2ef075df4f97d5d318cc79242"><td class="mdescLeft">&#160;</td><td class="mdescRight">No doc. <br /></td></tr>
+<tr class="separator:a68bb6ea2ef075df4f97d5d318cc79242"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab87fe0105a66cb92cdf1283037ce1910" id="r_ab87fe0105a66cb92cdf1283037ce1910"><td class="memTemplParams" colspan="2"><a id="ab87fe0105a66cb92cdf1283037ce1910" name="ab87fe0105a66cb92cdf1283037ce1910"></a>
 template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:ab87fe0105a66cb92cdf1283037ce1910"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>report_no_prefix</b> (std::string_view sv, Args &amp;&amp;... args)</td></tr>
@@ -1702,10 +1711,6 @@ template&lt;typename Result, typename Rewriter, typename ReductionOrder&gt; </td
 <tr class="memitem:ga15e06776b837cffe48141b28f41e62aa"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__to__presentation__group.html#ga15e06776b837cffe48141b28f41e62aa">to</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, Func &amp;&amp;f) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</td></tr>
 <tr class="memdesc:ga15e06776b837cffe48141b28f41e62aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a different type of presentation.  <br /></td></tr>
 <tr class="separator:ga15e06776b837cffe48141b28f41e62aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac3659298d7b525dbf2b7140ce6773ab2" id="r_gac3659298d7b525dbf2b7140ce6773ab2"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </td></tr>
-<tr class="memitem:gac3659298d7b525dbf2b7140ce6773ab2"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__to__inverse__presentation__group.html#gac3659298d7b525dbf2b7140ce6773ab2">to</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; cont &amp;p) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation</a>&lt; Word &gt;, Thing&lt; Word &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation</a>&lt; Word &gt; &gt;</td></tr>
-<tr class="memdesc:gac3659298d7b525dbf2b7140ce6773ab2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make an inverse presentation from a presentation.  <br /></td></tr>
-<tr class="separator:gac3659298d7b525dbf2b7140ce6773ab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8f5b48660708a57be5a1f27784d71d0d" id="r_ga8f5b48660708a57be5a1f27784d71d0d"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Node&gt; </td></tr>
 <tr class="memitem:ga8f5b48660708a57be5a1f27784d71d0d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__to__froidure__pin__group.html#ga8f5b48660708a57be5a1f27784d71d0d">to</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; typename Result::element_type &gt;, Result &gt;, Result &gt;</td></tr>
 <tr class="memdesc:ga8f5b48660708a57be5a1f27784d71d0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object to a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object.  <br /></td></tr>

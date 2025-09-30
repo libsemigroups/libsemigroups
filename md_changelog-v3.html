@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -189,19 +187,44 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id=" v320-released-30092025"></a>
+ v3.2.0 (released 30/09/2025)</h1>
+<p>This release contains a number of improvements, bug fixes, and a small number of new features:</p>
+<ul>
+<li>Balance presentation by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/785">https://github.com/libsemigroups/libsemigroups/pull/785</a></li>
+<li><code>is_obviously_infinite(Kambites)</code> respects generating pairs by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/791">https://github.com/libsemigroups/libsemigroups/pull/791</a></li>
+<li>Check <code>is_obviously_infinite</code> before running in <code>Congruence::number_of_classes</code> by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/790">https://github.com/libsemigroups/libsemigroups/pull/790</a></li>
+<li>Bipartition benchmarks by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/759">https://github.com/libsemigroups/libsemigroups/pull/759</a></li>
+<li>Add an option to compile with external backward by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/798">https://github.com/libsemigroups/libsemigroups/pull/798</a></li>
+<li>Add CI jobs for OpenBSD and FreeBSD by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/799">https://github.com/libsemigroups/libsemigroups/pull/799</a></li>
+<li>Use the latest version of backward by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/797">https://github.com/libsemigroups/libsemigroups/pull/797</a></li>
+<li>Update the contributing guide by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/802">https://github.com/libsemigroups/libsemigroups/pull/802</a></li>
+<li>Fix some issues in the doc by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/807">https://github.com/libsemigroups/libsemigroups/pull/807</a></li>
+<li>Improve reporting for Todd-Coxeter by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/754">https://github.com/libsemigroups/libsemigroups/pull/754</a></li>
+<li>todd-coxeter: fix bug in reduce by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/808">https://github.com/libsemigroups/libsemigroups/pull/808</a></li>
+<li>todd-coxeter: fix some reporting issues by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/813">https://github.com/libsemigroups/libsemigroups/pull/813</a></li>
+<li>word-graph: improve standardization performance by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/811">https://github.com/libsemigroups/libsemigroups/pull/811</a></li>
+<li>todd-coxeter: fix typo in doc by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/818">https://github.com/libsemigroups/libsemigroups/pull/818</a></li>
+<li>to-presentation: add Kambites -&gt; Presentation by [@jswent] in <a href="https://github.com/libsemigroups/libsemigroups/pull/812">https://github.com/libsemigroups/libsemigroups/pull/812</a></li>
+</ul>
+<h1><a class="anchor" id="new-contributors"></a>
+New Contributors</h1>
+<ul>
+<li>[@jswent] made their first contribution in <a href="https://github.com/libsemigroups/libsemigroups/pull/812">https://github.com/libsemigroups/libsemigroups/pull/812</a></li>
+</ul>
 <h1><a class="anchor" id="v313-released-12082025"></a>
 v3.1.3 (released 12/08/2025)</h1>
 <p>This is a minor release that does the following:</p>
 <ul>
-<li>Add a <code>to_human_readable_repr</code> for the <code>Action</code> class by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/777">https://github.com/libsemigroups/libsemigroups/pull/777</a></li>
-<li>Update the <code>to_human_readable_repr</code> of the <code>Congruence</code> class to be more consistent with the <code>KnuthBendix</code> and <code>ToddCoxeter</code> classes by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/778">https://github.com/libsemigroups/libsemigroups/pull/778</a></li>
-<li>Mark <code>IsBipartition</code>, <code>IsPBR</code>, <code>IsPresentation</code>, <code>IsInversePresentation</code> and <code>IsWordGraph</code> as deprecated, to be favoured by <code>is_specialization_of</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/771">https://github.com/libsemigroups/libsemigroups/pull/771</a></li>
+<li>Add a <code>to_human_readable_repr</code> for the <code>Action</code> class by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/777">https://github.com/libsemigroups/libsemigroups/pull/777</a></li>
+<li>Update the <code>to_human_readable_repr</code> of the <code>Congruence</code> class to be more consistent with the <code>KnuthBendix</code> and <code>ToddCoxeter</code> classes by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/778">https://github.com/libsemigroups/libsemigroups/pull/778</a></li>
+<li>Mark <code>IsBipartition</code>, <code>IsPBR</code>, <code>IsPresentation</code>, <code>IsInversePresentation</code> and <code>IsWordGraph</code> as deprecated, to be favoured by <code>is_specialization_of</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/771">https://github.com/libsemigroups/libsemigroups/pull/771</a></li>
 </ul>
 <h1><a class="anchor" id="v312-released-29072025"></a>
 v3.1.2 (released 29/07/2025)</h1>
 <p>This is a minor release fixing some more issues that were introduced in v3.1.0. Namely:</p>
 <ul>
-<li>Remove remaining occurrences of <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::basic_string</a>&lt;uint8_t&gt;</code> by @joseph-edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/772">https://github.com/libsemigroups/libsemigroups/pull/772</a></li>
+<li>Remove remaining occurrences of <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::basic_string</a>&lt;uint8_t&gt;</code> by <a href="https://github.com/joseph-edwards">@joseph-edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/772">https://github.com/libsemigroups/libsemigroups/pull/772</a></li>
 </ul>
 <h1><a class="anchor" id="v311-released-28072025"></a>
 v3.1.1 (released 28/07/2025)</h1>
@@ -210,39 +233,39 @@ v3.1.1 (released 28/07/2025)</h1>
 v3.1.0 (released 19/07/2025)</h1>
 <p>This release contains a number of bugfixes, and other improvements. In particular, the performance of the Todd-Coxeter and Knuth-Bendix algorithms has been improved.</p>
 <ul>
-<li>Add presentation for the <code>abacus_jones_monoid</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/711">https://github.com/libsemigroups/libsemigroups/pull/711</a></li>
-<li>Fix issue 557 by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/717">https://github.com/libsemigroups/libsemigroups/pull/717</a></li>
-<li>Alphabetise Low Index menu section by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/719">https://github.com/libsemigroups/libsemigroups/pull/719</a></li>
-<li>Throw if bad degree by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/723">https://github.com/libsemigroups/libsemigroups/pull/723</a></li>
-<li>word-graph: group digits in WordGraph repr by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/725">https://github.com/libsemigroups/libsemigroups/pull/725</a></li>
-<li>word-graph: fix last_node_on_path doc by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/727">https://github.com/libsemigroups/libsemigroups/pull/727</a></li>
-<li>Fix transf corner cases by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/724">https://github.com/libsemigroups/libsemigroups/pull/724</a></li>
-<li>Make <code>check_doxygen_line_breaks.py</code> compatible with Python 3.9 by @Joseph-Edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/728">https://github.com/libsemigroups/libsemigroups/pull/728</a></li>
-<li>Fix greedy presentation issue by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/726">https://github.com/libsemigroups/libsemigroups/pull/726</a></li>
-<li>action: fix add_seed issue by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/729">https://github.com/libsemigroups/libsemigroups/pull/729</a></li>
-<li>Update doxygen-awesome by @Joseph-Edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/732">https://github.com/libsemigroups/libsemigroups/pull/732</a></li>
-<li>build: properly set <code>FMT_HEADER_ONLY</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/733">https://github.com/libsemigroups/libsemigroups/pull/733</a></li>
-<li>to: fix <code>to&lt;Presentation&gt;(kb)</code> by @Joseph-Edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/731">https://github.com/libsemigroups/libsemigroups/pull/731</a></li>
-<li>Add more <code>Sims</code> benchmarks and improve benchmarking infrastructure by @reiniscirpons in <a href="https://github.com/libsemigroups/libsemigroups/pull/715">https://github.com/libsemigroups/libsemigroups/pull/715</a></li>
-<li>ToddCoxeter fixes by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/730">https://github.com/libsemigroups/libsemigroups/pull/730</a></li>
-<li>Prevent bad accesses of empty containers by @Joseph-Edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/737">https://github.com/libsemigroups/libsemigroups/pull/737</a></li>
-<li>exception: default visibility by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/736">https://github.com/libsemigroups/libsemigroups/pull/736</a></li>
-<li>konieczny: reference returned by add_generator/s by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/738">https://github.com/libsemigroups/libsemigroups/pull/738</a></li>
-<li>Fix return types by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/739">https://github.com/libsemigroups/libsemigroups/pull/739</a></li>
-<li>Use group_digits in all to_human_readable_repr by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/741">https://github.com/libsemigroups/libsemigroups/pull/741</a></li>
-<li>kbe: make it easier to use in python bindings by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/740">https://github.com/libsemigroups/libsemigroups/pull/740</a></li>
+<li>Add presentation for the <code>abacus_jones_monoid</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/711">https://github.com/libsemigroups/libsemigroups/pull/711</a></li>
+<li>Fix issue 557 by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/717">https://github.com/libsemigroups/libsemigroups/pull/717</a></li>
+<li>Alphabetise Low Index menu section by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/719">https://github.com/libsemigroups/libsemigroups/pull/719</a></li>
+<li>Throw if bad degree by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/723">https://github.com/libsemigroups/libsemigroups/pull/723</a></li>
+<li>word-graph: group digits in WordGraph repr by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/725">https://github.com/libsemigroups/libsemigroups/pull/725</a></li>
+<li>word-graph: fix last_node_on_path doc by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/727">https://github.com/libsemigroups/libsemigroups/pull/727</a></li>
+<li>Fix transf corner cases by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/724">https://github.com/libsemigroups/libsemigroups/pull/724</a></li>
+<li>Make <code>check_doxygen_line_breaks.py</code> compatible with Python 3.9 by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/728">https://github.com/libsemigroups/libsemigroups/pull/728</a></li>
+<li>Fix greedy presentation issue by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/726">https://github.com/libsemigroups/libsemigroups/pull/726</a></li>
+<li>action: fix add_seed issue by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/729">https://github.com/libsemigroups/libsemigroups/pull/729</a></li>
+<li>Update doxygen-awesome by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/732">https://github.com/libsemigroups/libsemigroups/pull/732</a></li>
+<li>build: properly set <code>FMT_HEADER_ONLY</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/733">https://github.com/libsemigroups/libsemigroups/pull/733</a></li>
+<li>to: fix <code>to&lt;Presentation&gt;(kb)</code> by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/731">https://github.com/libsemigroups/libsemigroups/pull/731</a></li>
+<li>Add more <code>Sims</code> benchmarks and improve benchmarking infrastructure by <a href="https://github.com/reiniscirpons">@reiniscirpons</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/715">https://github.com/libsemigroups/libsemigroups/pull/715</a></li>
+<li>ToddCoxeter fixes by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/730">https://github.com/libsemigroups/libsemigroups/pull/730</a></li>
+<li>Prevent bad accesses of empty containers by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/737">https://github.com/libsemigroups/libsemigroups/pull/737</a></li>
+<li>exception: default visibility by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/736">https://github.com/libsemigroups/libsemigroups/pull/736</a></li>
+<li>konieczny: reference returned by add_generator/s by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/738">https://github.com/libsemigroups/libsemigroups/pull/738</a></li>
+<li>Fix return types by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/739">https://github.com/libsemigroups/libsemigroups/pull/739</a></li>
+<li>Use group_digits in all to_human_readable_repr by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/741">https://github.com/libsemigroups/libsemigroups/pull/741</a></li>
+<li>kbe: make it easier to use in python bindings by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/740">https://github.com/libsemigroups/libsemigroups/pull/740</a></li>
 <li>Update my coordinates in README.md by @dimpase in <a href="https://github.com/libsemigroups/libsemigroups/pull/742">https://github.com/libsemigroups/libsemigroups/pull/742</a></li>
-<li>Update the v2 changelog for v2.7.4 by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/744">https://github.com/libsemigroups/libsemigroups/pull/744</a></li>
-<li>Look behind by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/745">https://github.com/libsemigroups/libsemigroups/pull/745</a></li>
-<li>todd-coxeter: doc fixes by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/746">https://github.com/libsemigroups/libsemigroups/pull/746</a></li>
-<li>Todd coxeter redefine by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/747">https://github.com/libsemigroups/libsemigroups/pull/747</a></li>
-<li>print: split into separate file by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/748">https://github.com/libsemigroups/libsemigroups/pull/748</a></li>
-<li>multi-view: implement from MultiStringView by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/749">https://github.com/libsemigroups/libsemigroups/pull/749</a></li>
-<li>Presentation updates by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/751">https://github.com/libsemigroups/libsemigroups/pull/751</a></li>
-<li>Template <code>ToWord</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/750">https://github.com/libsemigroups/libsemigroups/pull/750</a></li>
-<li>Add AhoCorasickImpl with strong alphabet constraints by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/752">https://github.com/libsemigroups/libsemigroups/pull/752</a></li>
-<li>Knuth bendix performance improvements by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/753">https://github.com/libsemigroups/libsemigroups/pull/753</a></li>
-<li>Reorganise the doc by @Joseph-Edwards in <a href="https://github.com/libsemigroups/libsemigroups/pull/755">https://github.com/libsemigroups/libsemigroups/pull/755</a></li>
+<li>Update the v2 changelog for v2.7.4 by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/744">https://github.com/libsemigroups/libsemigroups/pull/744</a></li>
+<li>Look behind by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/745">https://github.com/libsemigroups/libsemigroups/pull/745</a></li>
+<li>todd-coxeter: doc fixes by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/746">https://github.com/libsemigroups/libsemigroups/pull/746</a></li>
+<li>Todd coxeter redefine by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/747">https://github.com/libsemigroups/libsemigroups/pull/747</a></li>
+<li>print: split into separate file by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/748">https://github.com/libsemigroups/libsemigroups/pull/748</a></li>
+<li>multi-view: implement from MultiStringView by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/749">https://github.com/libsemigroups/libsemigroups/pull/749</a></li>
+<li>Presentation updates by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/751">https://github.com/libsemigroups/libsemigroups/pull/751</a></li>
+<li>Template <code>ToWord</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/750">https://github.com/libsemigroups/libsemigroups/pull/750</a></li>
+<li>Add AhoCorasickImpl with strong alphabet constraints by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/752">https://github.com/libsemigroups/libsemigroups/pull/752</a></li>
+<li>Knuth bendix performance improvements by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/753">https://github.com/libsemigroups/libsemigroups/pull/753</a></li>
+<li>Reorganise the doc by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/755">https://github.com/libsemigroups/libsemigroups/pull/755</a></li>
 </ul>
 <h1><a class="anchor" id="v303-released-09042025"></a>
 v3.0.3 (released 09/04/2025)</h1>
@@ -254,8 +277,8 @@ v3.0.3 (released 09/04/2025)</h1>
 v3.0.2 (released 01/04/2025)</h1>
 <p>This is a minor release fixing some issues in the previous v3 releases. Namely:</p>
 <ul>
-<li>Fix issue in <code>SimsRefinerIdeals</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/710">https://github.com/libsemigroups/libsemigroups/pull/710</a></li>
-<li>Konieczny: fix typos in <code>to_human_readable_repr</code> by @james-d-mitchell in <a href="https://github.com/libsemigroups/libsemigroups/pull/714">https://github.com/libsemigroups/libsemigroups/pull/714</a></li>
+<li>Fix issue in <code>SimsRefinerIdeals</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/710">https://github.com/libsemigroups/libsemigroups/pull/710</a></li>
+<li>Konieczny: fix typos in <code>to_human_readable_repr</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/714">https://github.com/libsemigroups/libsemigroups/pull/714</a></li>
 </ul>
 <h1><a class="anchor" id="v301-released-26032025"></a>
 v3.0.1 (released 26/03/2025)</h1>

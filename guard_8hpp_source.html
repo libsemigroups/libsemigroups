@@ -18,7 +18,7 @@
       content="https://github.com/libsemigroups/libsemigroups"
     />
     <!-- END opengraph metadata -->
-<title>libsemigroups: /home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/detail/guard.hpp Source File</title>
+<title>libsemigroups: /Users/jdm3/libsemigroups/include/libsemigroups/detail/guard.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -209,37 +207,54 @@ $(function(){initNavTree('guard_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#ifndef LIBSEMIGROUPS_DETAIL_GUARD_HPP_</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#define LIBSEMIGROUPS_DETAIL_GUARD_HPP_</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a> {</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>  <span class="keyword">namespace </span>detail {</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="comment">// A simple class for ensuring that a value is set back to its value at the</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="comment">// time of the creation of the Guard. Probably should only be used with POD</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="comment">// types for Thing.</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing&gt;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keyword">class </span>Guard {</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>      Thing  _old_value;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>      Thing&amp; _value;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>     <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>      Guard()                        = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>      Guard(Guard <span class="keyword">const</span>&amp;)            = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>      Guard(Guard&amp;&amp;)                 = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>      Guard&amp; operator=(Guard <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>      Guard&amp; operator=(Guard&amp;&amp;)      = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>      Guard(Thing&amp; value, Thing new_value) : _old_value(value), _value(value) {</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        _value = new_value;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>      }</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>      <span class="keyword">explicit</span> Guard(Thing&amp; value) : _old_value(value), _value(value) {}</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>      ~Guard() {</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        _value = _old_value;</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      }</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    };</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>  }  <span class="comment">// namespace detail</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_GUARD_HPP_</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;libsemigroups/is_specialization_of.hpp&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;atomic&gt;</span>  <span class="comment">// for std::atomic</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a> {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <span class="keyword">namespace </span>detail {</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="comment">// A simple class for ensuring that a value is set back to its value at the</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="comment">// time of the creation of the Guard. Probably should only be used with POD</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="comment">// types for Thing.</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing&gt;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keyword">class </span>Guard {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>      Thing  _old_value;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>      Thing&amp; _value;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>     <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>      Guard()                        = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>      Guard(Guard <span class="keyword">const</span>&amp;)            = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>      Guard(Guard&amp;&amp;)                 = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>      Guard&amp; operator=(Guard <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>      Guard&amp; operator=(Guard&amp;&amp;)      = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>      Guard(Thing&amp; value, Thing new_value) : _old_value(value), _value(value) {</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        _value = new_value;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>      }</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>      <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Value&gt;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      Guard(Thing&amp; value, Value new_value)</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>          : _old_value(value.load()), _value(value) {</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        _value = new_value;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      <span class="keyword">explicit</span> Guard(Thing&amp; value) : _old_value(value), _value(value) {}</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>      ~Guard() {</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<a class="code hl_variable" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;Thing, std::atomic&gt;</a>) {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>          _value = _old_value.load();</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>          _value = _old_value;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        }</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>      }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    };</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing&gt;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    Guard(Thing&amp; value, <span class="keyword">typename</span> Thing::value_type new_value) -&gt; Guard&lt;Thing&gt;;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  }  <span class="comment">// namespace detail</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_GUARD_HPP_</span></div>
+<div class="ttc" id="agroup__types__group_html_ga1188c878628c9ce9037f1fb10ad0158f"><div class="ttname"><a href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">libsemigroups::is_specialization_of_v</a></div><div class="ttdeci">constexpr bool is_specialization_of_v</div><div class="ttdoc">Helper variable template for is_specialization_of.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:83</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

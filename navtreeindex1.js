@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"structlibsemigroups_1_1_lambda_3_01_mat_00_01_container_01_4.html":[10,2,3],
 "structlibsemigroups_1_1_lambda_value.html":[10,0,7],
 "structlibsemigroups_1_1_lambda_value_3_01_b_mat8_01_4.html":[10,3,7],
 "structlibsemigroups_1_1_lambda_value_3_01_h_p_combi_1_1_b_mat8_01_4.html":[10,5,17],
@@ -57,7 +58,7 @@ var NAVTREEINDEX1 =
 "structlibsemigroups_1_1_smallest_integer.html":[21,0],
 "structlibsemigroups_1_1_swap.html":[10,1,6],
 "structlibsemigroups_1_1_swap_3_01_t_p_transf16_subclass_00_01std_1_1enable__if__t_3_01std_1_1is_dbd89545857f7e9f53ff2b2b6e997e30.html":[10,5,32],
-"structlibsemigroups_1_1_todd_coxeter_1_1options.html":[38,0,0,0],
+"structlibsemigroups_1_1_todd_coxeter_1_1options.html":[38,0,1,0],
 "structlibsemigroups_1_1_ukkonen_1_1_node.html":[17,0,0],
 "structlibsemigroups_1_1_ukkonen_1_1_state.html":[17,0,1]
 };

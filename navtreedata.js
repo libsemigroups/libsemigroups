@@ -606,7 +606,8 @@ var NAVTREE =
   'group__todd__coxeter__group.html',
   [['The ToddCoxeter class',
     'group__todd__coxeter__class__group.html',
-    [['Member types',
+    [['Instrumenting Todd-Coxeter', 'md_todd-coxeter-report.html', None],
+     ['Member types',
       'group__todd__coxeter__class__mem__types__group.html',
       [['The options nested struct',
         'structlibsemigroups_1_1_todd_coxeter_1_1options.html',
@@ -635,7 +636,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_HEADING_",
-"structlibsemigroups_1_1_lambda_value.html"
+"structlibsemigroups_1_1_lambda_3_01_mat_00_01_container_01_4.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

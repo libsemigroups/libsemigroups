@@ -1,9 +1,9 @@
 <map id="FroidurePin&lt; Element, Traits &gt;" name="FroidurePin&lt; Element, Traits &gt;">
-<area shape="rect" id="Node000001" title="Class implementing the Froidure&#45;Pin algorithm." alt="" coords="5,225,157,265"/>
-<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_froidure_pin_base.html" title="Base class for FroidurePin containing non&#45;element specific data and member functions." alt="" coords="22,152,141,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,191,84,225,79,225,79,191"/>
-<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="49,79,113,104"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="84,118,84,152,79,152,79,118"/>
+<area shape="rect" id="Node000001" title="Class implementing the Froidure&#45;Pin algorithm." alt="" coords="5,226,157,267"/>
+<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1_froidure_pin_base.html" title="Base class for FroidurePin containing non&#45;element specific data and member functions." alt="" coords="22,153,140,178"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,194,84,226,78,226,78,194"/>
+<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm." alt="" coords="49,79,113,105"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="84,120,84,152,78,152,78,120"/>
 <area shape="rect" id="Node000004" href="$classlibsemigroups_1_1_reporter.html" title="Collection of values related to reporting." alt="" coords="45,5,117,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="84,44,84,79,79,79,79,44"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="84,46,84,79,78,79,78,46"/>
 </map>

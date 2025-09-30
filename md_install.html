@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -198,16 +196,16 @@ Installing with conda</h1>
 From the sources</h1>
 <p>Building <code>libsemigroups</code> from the source files requires a C++ compiler supporting the C++17 standard, <code>autoconf</code>, and <code>automake</code>. Building the documentation from source has some additional requirements that are detailed in the section <a class="el" href="#building-the-documentation">Building the documentation</a>.</p>
 <h2><a class="anchor" id="from-the-github-repo"></a>
-From the github repo</h2>
-<p>To build <code>libsemigroups</code> from the github repository: </p><pre class="fragment">git clone https://github.com/libsemigroups/libsemigroups
+From the GitHub repo</h2>
+<p>To build <code>libsemigroups</code> from the GitHub repository: </p><pre class="fragment">git clone https://github.com/libsemigroups/libsemigroups
 cd libsemigroups
 ./autogen.sh &amp;&amp; ./configure &amp;&amp; make -j8 &amp;&amp; sudo make install
 </pre><h2><a class="anchor" id="from-a-release-archive"></a>
 From a release archive</h2>
-<p>To build <code>libsemigroups</code> from a release archive: </p><pre class="fragment">curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.1.3.tar.gz
-tar -xf libsemigroups-3.1.3.tar.gz
-rm -f libsemigroups-3.1.3.tar.gz
-cd libsemigroups-3.1.3
+<p>To build <code>libsemigroups</code> from a release archive: </p><pre class="fragment">curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.2.0.tar.gz
+tar -xf libsemigroups-3.2.0.tar.gz
+rm -f libsemigroups-3.2.0.tar.gz
+cd libsemigroups-3.2.0
 ./configure &amp;&amp; make -j8 &amp;&amp; sudo make install
 </pre><h1><a class="anchor" id="configuration-options"></a>
 Configuration options</h1>
@@ -216,15 +214,19 @@ Configuration options</h1>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Option   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">--enable-backward   </td><td class="markdownTableBodyNone">enable <code>backward</code> for better stack traces (default=yes)    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">--enable-code-coverage   </td><td class="markdownTableBodyNone">enable code coverage support (default=no)    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">--enable-compile-warnings   </td><td class="markdownTableBodyNone">enable compiler warnings (default=no)    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">--enable-debug   </td><td class="markdownTableBodyNone">enable debug mode (default=no)    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">--enable-eigen   </td><td class="markdownTableBodyNone">enable <code>eigen</code> (default=yes)    </td></tr>
+<td class="markdownTableBodyNone">--enable-debug   </td><td class="markdownTableBodyNone">enable debug mode (default=no)    </td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">--enable-eigen   </td><td class="markdownTableBodyNone">enable <code>eigen</code> (default=yes)    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">--enable-hpcombi   </td><td class="markdownTableBodyNone">enable <code>HPCombi</code> (default=yes)    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">--with-external-backward   </td><td class="markdownTableBodyNone">do not use the included copy of backward (default=no)    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">--with-external-fmt   </td><td class="markdownTableBodyNone">do not use the included copy of fmt (default=no)    </td></tr>
 <tr class="markdownTableRowOdd">
@@ -234,7 +236,7 @@ Configuration options</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">--disable-clzll   </td><td class="markdownTableBodyNone">do not use __builtin_clzll (default=yes)   </td></tr>
 </table>
-<p>Debug mode significantly degrades the performance of <code>libsemigroups</code>. Note that the flags <code>--enable-eigen</code> and <code>--with-external-eigen</code> are independent of each other, and so both flags should be included to enable <code>eigen</code> and use an external <code>eigen</code>.</p>
+<p>Debug mode significantly degrades the performance of <code>libsemigroups</code>. Note that the flags <code>--enable-eigen</code> and <code>--with-external-eigen</code> are independent of each other, and so both flags should be included to enable <code>eigen</code> and use an external <code>eigen</code>. The same is true of <code>--enable-backward</code> and <code>--with-external-backward</code>.</p>
 <h1><a class="anchor" id="make-install"></a>
 Make install</h1>
 <p>By default, <code>make install</code> installs the library and its <code>pkg-config</code> configuration into <code>/usr/local</code>. One can also specify another install location, say, <code>/foo/bar</code>, by calling <code>./configure</code> with parameter <code>--prefix</code>, e.g. <code>./configure --prefix=/foo/bar</code>. This might be useful if <code>sudo</code> is not available.</p>
@@ -245,7 +247,8 @@ Make install</h1>
 Building the documentation</h1>
 <p>To build the documentation, a version of <code>doxygen</code> is required. Instructions on how to do this can be found on Doxygen's <a href="https://www.doxygen.nl/manual/install.html">Installation page</a>.</p>
 <p>Then, it ought to be possible to just run <code>make doc</code> in the <code>libsemigroups</code> directory, and the documentation will be generated.</p>
-<h1><a class="anchor" id="issues-1"></a>
+<p>Note that, if you are building the documentation having cloned <code>libsemigroups</code> from the GitHub repo, it is also necessary to check out the doxygen-awesome-css/ submodule using: </p><pre class="fragment">git submodule update --init --recursive
+</pre><h1><a class="anchor" id="issues-1"></a>
 Issues</h1>
 <p>If you find any problems with <code>libsemigroups</code>, or have any suggestions for features that you'd like to see, please use the <a href="https://github.com/libsemigroups/libsemigroups/issues">issue tracker</a>. </p>
 </div></div><!-- contents -->

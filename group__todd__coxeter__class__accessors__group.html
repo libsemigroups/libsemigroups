@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -196,6 +194,9 @@ $(function(){initNavTree('group__todd__coxeter__class__accessors__group.html',''
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga0f48810d6d32178d2cd24758e0cc3793" id="r_ga0f48810d6d32178d2cd24758e0cc3793"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0f48810d6d32178d2cd24758e0cc3793">complete</a> () const noexcept</td></tr>
+<tr class="memdesc:ga0f48810d6d32178d2cd24758e0cc3793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the proportion of edges defined in the active part of the word graph.  <br /></td></tr>
+<tr class="separator:ga0f48810d6d32178d2cd24758e0cc3793"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga137b18bc5a2b7b5f1a83364594e17f90" id="r_ga137b18bc5a2b7b5f1a83364594e17f90"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga137b18bc5a2b7b5f1a83364594e17f90">current_spanning_tree</a> () const noexcept</td></tr>
 <tr class="memdesc:ga137b18bc5a2b7b5f1a83364594e17f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current possible spanning tree of the underlying word graph.  <br /></td></tr>
 <tr class="separator:ga137b18bc5a2b7b5f1a83364594e17f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,6 +209,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7a9b1c5ef8c4cbc76d5859aeff6e8af6" id="r_ga7a9b1c5ef8c4cbc76d5859aeff6e8af6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga7a9b1c5ef8c4cbc76d5859aeff6e8af6">is_standardized</a> (<a class="el" href="group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405">Order</a> val) const</td></tr>
 <tr class="memdesc:ga7a9b1c5ef8c4cbc76d5859aeff6e8af6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the word graph is currently standardized with respect to a given order.  <br /></td></tr>
 <tr class="separator:ga7a9b1c5ef8c4cbc76d5859aeff6e8af6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a0646a62106e1c6a2114bd4a5bda3b0" id="r_ga7a0646a62106e1c6a2114bd4a5bda3b0"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga7a0646a62106e1c6a2114bd4a5bda3b0">number_of_edges_active</a> () const noexcept</td></tr>
+<tr class="memdesc:ga7a0646a62106e1c6a2114bd4a5bda3b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of edges in the active part of the current word graph.  <br /></td></tr>
+<tr class="separator:ga7a0646a62106e1c6a2114bd4a5bda3b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac8ac6ca023933ee166be6a4b381fb785" id="r_gac8ac6ca023933ee166be6a4b381fb785"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gac8ac6ca023933ee166be6a4b381fb785">number_of_large_collapses</a> () const noexcept</td></tr>
+<tr class="memdesc:gac8ac6ca023933ee166be6a4b381fb785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of large collapses that have occurred.  <br /></td></tr>
+<tr class="separator:gac8ac6ca023933ee166be6a4b381fb785"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2ece699d31c498c5b09521cadbd22934" id="r_ga2ece699d31c498c5b09521cadbd22934"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga2ece699d31c498c5b09521cadbd22934">number_of_nodes_active</a> () const noexcept</td></tr>
+<tr class="memdesc:ga2ece699d31c498c5b09521cadbd22934"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of nodes in the active part of the current word graph.  <br /></td></tr>
+<tr class="separator:ga2ece699d31c498c5b09521cadbd22934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga28552809b1b7752efd3f7a4079fa7908" id="r_ga28552809b1b7752efd3f7a4079fa7908"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga28552809b1b7752efd3f7a4079fa7908">spanning_tree</a> ()</td></tr>
 <tr class="memdesc:ga28552809b1b7752efd3f7a4079fa7908"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the spanning tree of the underlying word graph.  <br /></td></tr>
 <tr class="separator:ga28552809b1b7752efd3f7a4079fa7908"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -219,6 +229,34 @@ Functions</h2></td></tr>
 <tr class="separator:ga578996798b323ef80025617a3b672968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga0f48810d6d32178d2cd24758e0cc3793" name="ga0f48810d6d32178d2cd24758e0cc3793"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0f48810d6d32178d2cd24758e0cc3793">&#9670;&#160;</a></span>complete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float complete </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns the proportion (as a float) of the edges defined. This value is <a class="el" href="#ga7a0646a62106e1c6a2114bd4a5bda3b0">number_of_edges_active</a> divided by <a class="el" href="#ga2ece699d31c498c5b09521cadbd22934">number_of_nodes_active</a> multiplied by <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb">out_degree</a> applied to <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>The proportion of edges defined in the active part of <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+
+</div>
+</div>
 <a id="ga137b18bc5a2b7b5f1a83364594e17f90" name="ga137b18bc5a2b7b5f1a83364594e17f90"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga137b18bc5a2b7b5f1a83364594e17f90">&#9670;&#160;</a></span>current_spanning_tree()</h2>
 
@@ -274,7 +312,10 @@ Functions</h2></td></tr>
 <p>The <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> returned by this function may be in a rather complicated state. No guarantees are given: about the values of the active nodes (i.e. they may be any non-negative integers in any order); that the number of nodes (including those that are inactive) should coincide with the number of active nodes; that the graph is complete; or that the graph is compatible with the relations of the <a class="el" href="namespacelibsemigroups_1_1presentation.html">presentation</a> or with the <a class="el" href="group__todd__coxeter__class__intf__group.html#ga6e00c073b6a6ca21099ec31d1d036fd9">generating_pairs</a>.</p>
 <p>The functions <a class="el" href="group__todd__coxeter__class__mod__group.html#ga819c46ec43f099a4bc5d357f99ece71b">standardize(Order)</a> and <a class="el" href="group__todd__coxeter__class__mod__group.html#ga5f16304f80b6fb253c7b0ead3e16dd18">shrink_to_fit</a> can be used to modify the returned word graph in-place to have (possibly) more reasonable characteristics.</p>
 <dl class="section return"><dt>Returns</dt><dd>A const reference to the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga2ece699d31c498c5b09521cadbd22934" title="Return the number of nodes in the active part of the current word graph.">number_of_nodes_active</a> </dd>
+<dd>
+<a class="el" href="#ga7a0646a62106e1c6a2114bd4a5bda3b0" title="Return the number of edges in the active part of the current word graph.">number_of_edges_active</a> </dd></dl>
 
 </div>
 </div>
@@ -321,6 +362,88 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the current word graph is standardized with respect to a given order.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga7a0646a62106e1c6a2114bd4a5bda3b0" name="ga7a0646a62106e1c6a2114bd4a5bda3b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7a0646a62106e1c6a2114bd4a5bda3b0">&#9670;&#160;</a></span>number_of_edges_active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t number_of_edges_active </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns the number of edges in the active part of the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>. Recall that <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> can grow and shrink drastically during a congruence enumeration. As such to avoid unnecessary memory allocations, where possible, the nodes in the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "recycled" leading to the situation where some of the nodes in <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "active" and others are "inactive". In other words, the "active" nodes correspond to the part of the word graph that actually represents the classes of the congruence we are trying to enumerate; and the "inactive" nodes are only there to be "recycled" into "active" nodes if they are required later on.</p>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+
+</div>
+</div>
+<a id="gac8ac6ca023933ee166be6a4b381fb785" name="gac8ac6ca023933ee166be6a4b381fb785"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac8ac6ca023933ee166be6a4b381fb785">&#9670;&#160;</a></span>number_of_large_collapses()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t number_of_large_collapses </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns the number of "large" collapses that have occurred in the graph during any run of a ToddCoxeter instance. What qualifies as a "large" collapse can be specified using <a class="el" href="group__todd__coxeter__class__settings__group.html#gaeb4bbf4d9fb2afbe745bdb65ac8e628b">large_collapse</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>The number of large collapses.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+
+</div>
+</div>
+<a id="ga2ece699d31c498c5b09521cadbd22934" name="ga2ece699d31c498c5b09521cadbd22934"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2ece699d31c498c5b09521cadbd22934">&#9670;&#160;</a></span>number_of_nodes_active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t number_of_nodes_active </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns the number of nodes in the active part of the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>. Recall that <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> can grow and shrink drastically during a congruence enumeration. As such to avoid unnecessary memory allocations, where possible, the nodes in the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "recycled" leading to the situation where some of the nodes in <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "active" and others are "inactive". In other words, the "active" nodes correspond to the part of the word graph that actually represents the classes of the congruence we are trying to enumerate; and the "inactive" nodes are only there to be "recycled" into "active" nodes if they are required later on.</p>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
 
 </div>
 </div>

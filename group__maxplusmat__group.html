@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -200,7 +198,7 @@ $(function(){initNavTree('group__maxplusmat__group.html',''); initResizable(true
 <div class="line"><a class="code hl_typedef" href="#gaaaf182592194d5c6e66ebf4a22cbaeac">MaxPlusMat&lt;3&gt;</a> m;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix</span></div>
 <div class="line"><a class="code hl_typedef" href="#gaaaf182592194d5c6e66ebf4a22cbaeac">MaxPlusMat&lt;&gt;</a>  m(4, 4);</div>
-<div class="ttc" id="agroup__maxplusmat__group_html_gaaaf182592194d5c6e66ebf4a22cbaeac"><div class="ttname"><a href="#gaaaf182592194d5c6e66ebf4a22cbaeac">libsemigroups::MaxPlusMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicMaxPlusMat&lt; Scalar &gt;, StaticMaxPlusMat&lt; R, C, Scalar &gt; &gt; MaxPlusMat</div><div class="ttdoc">Alias template for max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4589</div></div>
+<div class="ttc" id="agroup__maxplusmat__group_html_gaaaf182592194d5c6e66ebf4a22cbaeac"><div class="ttname"><a href="#gaaaf182592194d5c6e66ebf4a22cbaeac">libsemigroups::MaxPlusMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicMaxPlusMat&lt; Scalar &gt;, StaticMaxPlusMat&lt; R, C, Scalar &gt; &gt; MaxPlusMat</div><div class="ttdoc">Alias template for max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4595</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -260,9 +258,9 @@ template&lt;typename Scalar&gt; </div>
 <div class="line">                                          <a class="code hl_struct" href="structlibsemigroups_1_1_max_plus_zero.html">MaxPlusZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                          <a class="code hl_struct" href="structlibsemigroups_1_1_integer_zero.html">IntegerZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                          Scalar&gt;</div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4191</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_max_plus_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_prod.html">libsemigroups::MaxPlusProd</a></div><div class="ttdoc">Function object for multiplication in the max-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4481</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_max_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_zero.html">libsemigroups::MaxPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the max-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4518</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4197</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_max_plus_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_prod.html">libsemigroups::MaxPlusProd</a></div><div class="ttdoc">Function object for multiplication in the max-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4487</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_max_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_zero.html">libsemigroups::MaxPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the max-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4524</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of dynamic max-plus matrices where the dimensions of the matrices can be defined at run time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -290,8 +288,8 @@ template&lt;size_t R = 0, size_t C = R, typename Scalar = int&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> std::conditional_t&lt;R == 0 || C == 0,</div>
 <div class="line">                                        <a class="code hl_typedef" href="#ga649effe1b36c0cfa3cd24c00e84134eb">DynamicMaxPlusMat&lt;Scalar&gt;</a>,</div>
 <div class="line">                                        <a class="code hl_typedef" href="#ga4315eb6238d3f254676424eda5123e33">StaticMaxPlusMat&lt;R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__maxplusmat__group_html_ga4315eb6238d3f254676424eda5123e33"><div class="ttname"><a href="#ga4315eb6238d3f254676424eda5123e33">libsemigroups::StaticMaxPlusMat</a></div><div class="ttdeci">StaticMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusProd&lt; Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMaxPlusMat</div><div class="ttdoc">Alias for static max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4565</div></div>
-<div class="ttc" id="agroup__maxplusmat__group_html_ga649effe1b36c0cfa3cd24c00e84134eb"><div class="ttname"><a href="#ga649effe1b36c0cfa3cd24c00e84134eb">libsemigroups::DynamicMaxPlusMat</a></div><div class="ttdeci">DynamicMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusProd&lt; Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMaxPlusMat</div><div class="ttdoc">Alias for dynamic max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4546</div></div>
+<div class="ttc" id="agroup__maxplusmat__group_html_ga4315eb6238d3f254676424eda5123e33"><div class="ttname"><a href="#ga4315eb6238d3f254676424eda5123e33">libsemigroups::StaticMaxPlusMat</a></div><div class="ttdeci">StaticMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusProd&lt; Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMaxPlusMat</div><div class="ttdoc">Alias for static max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4571</div></div>
+<div class="ttc" id="agroup__maxplusmat__group_html_ga649effe1b36c0cfa3cd24c00e84134eb"><div class="ttname"><a href="#ga649effe1b36c0cfa3cd24c00e84134eb">libsemigroups::DynamicMaxPlusMat</a></div><div class="ttdeci">DynamicMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusProd&lt; Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMaxPlusMat</div><div class="ttdoc">Alias for dynamic max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4552</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for max-plus matrices.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -325,7 +323,7 @@ template&lt;size_t R, size_t C, typename Scalar&gt; </div>
 <div class="line">                                        R,</div>
 <div class="line">                                        C,</div>
 <div class="line">                                        Scalar&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1859</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1865</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for static max-plus matrices whose arithmetic and dimensions are defined at compile-time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

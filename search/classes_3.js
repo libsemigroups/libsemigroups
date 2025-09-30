@@ -25,5 +25,7 @@ var searchData=
   ['dynamicmatrix_3c_20plusop_2c_20prodop_2c_20zeroop_2c_20oneop_2c_20scalar_20_3e_22',['DynamicMatrix&lt; PlusOp, ProdOp, ZeroOp, OneOp, Scalar &gt;',['../classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html',1,'libsemigroups']]],
   ['dynamicmatrix_3c_20semiring_2c_20scalar_20_3e_23',['DynamicMatrix&lt; Semiring, Scalar &gt;',['../classlibsemigroups_1_1_dynamic_matrix_3_01_semiring_00_01_scalar_01_4.html',1,'libsemigroups']]],
   ['dynamicptransf_24',['DynamicPTransf',['../classlibsemigroups_1_1_dynamic_p_transf.html',1,'libsemigroups']]],
-  ['dynarray_25',['dynarray',['http://en.cppreference.com/w/cpp/container/dynarray.html',1,'std']]]
+  ['dynamicrowview_3c_20plusop_2c_20prodop_2c_20zeroop_2c_20oneop_2c_20scalar_20_3e_25',['DynamicRowView&lt; PlusOp, ProdOp, ZeroOp, OneOp, Scalar &gt;',['../classlibsemigroups_1_1_dynamic_row_view_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html',1,'libsemigroups']]],
+  ['dynamicrowview_3c_20semiring_2c_20scalar_20_3e_26',['DynamicRowView&lt; Semiring, Scalar &gt;',['../classlibsemigroups_1_1_dynamic_row_view_3_01_semiring_00_01_scalar_01_4.html',1,'libsemigroups']]],
+  ['dynarray_27',['dynarray',['http://en.cppreference.com/w/cpp/container/dynarray.html',1,'std']]]
 ];

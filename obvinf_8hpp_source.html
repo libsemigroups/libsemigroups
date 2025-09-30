@@ -18,7 +18,7 @@
       content="https://github.com/libsemigroups/libsemigroups"
     />
     <!-- END opengraph metadata -->
-<title>libsemigroups: /home/joseph/Dev/Comp_Maths/testing/libsemigroups/include/libsemigroups/obvinf.hpp Source File</title>
+<title>libsemigroups: /Users/jdm3/libsemigroups/include/libsemigroups/obvinf.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -489,35 +487,41 @@ $(function(){initNavTree('obvinf_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>    <span class="keywordflow">if</span> (k.<a class="code hl_function" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">finished</a>() &amp;&amp; k.<a class="code hl_function" href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">small_overlap_class</a>() &gt;= 3) {</div>
 <div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>    }</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">is_obviously_infinite</a>(k.<a class="code hl_function" href="group__kambites__class__intf__group.html#ga8c3df1e9e22a0c058b92ac9eb074e3b7">presentation</a>())) {</div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>    }</div>
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>    <span class="keywordflow">return</span> k.<a class="code hl_function" href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">small_overlap_class</a>() &gt;= 3;</div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>  }</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>    <span class="keyword">auto</span> <span class="keyword">const</span>&amp;         p = k.<a class="code hl_function" href="group__kambites__class__intf__group.html#ga8c3df1e9e22a0c058b92ac9eb074e3b7">presentation</a>();</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>    <a class="code hl_class" href="classlibsemigroups_1_1_is_obviously_infinite.html">IsObviouslyInfinite</a> ioi(p.alphabet().size());</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>    ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#a116e1d4ec151b7b9e5fc19c47cb282bd">add_rules_no_checks</a>(p.alphabet(), p.rules.cbegin(), p.rules.cend());</div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>    ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#a116e1d4ec151b7b9e5fc19c47cb282bd">add_rules_no_checks</a>(p.alphabet(),</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                            k.internal_generating_pairs().<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/container/vector/begin.html">cbegin</a>(),</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>                            k.internal_generating_pairs().<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/container/vector/end.html">cend</a>());</div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>    <span class="keywordflow">if</span> (ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#af6f3f5eade04da7d46203c139e9d4ac5">result</a>()) {</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>    }</div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>    <span class="keywordflow">return</span> k.<a class="code hl_function" href="group__kambites__class__accessors__group.html#ga56dd096be18eea3064633353bf5d65d7">small_overlap_class</a>() &gt;= 3;</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>  }</div>
 </div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span></div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Rewriter, <span class="keyword">typename</span> ReductionOrder&gt;</div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>  <span class="keywordtype">bool</span></div>
-<div class="foldopen" id="foldopen00646" data-start="{" data-end="}">
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno"><a class="line" href="group__obvinf__group.html#ga63f80b0ae0680a4a8b8ee5362e1f4233">  646</a></span>  <a class="code hl_function" href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">is_obviously_infinite</a>(detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&amp; kb) {</div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>    <span class="keywordflow">if</span> (kb.<a class="code hl_function" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">finished</a>()) {</div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>      <span class="keywordflow">return</span> !<a class="code hl_function" href="namespacelibsemigroups_1_1word__graph.html#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(kb.<a class="code hl_function" href="group__knuth__bendix__class__accessors__group.html#ga6c8cf4b4bdc60d00991e65992e62d50b">gilman_graph</a>());</div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>    }</div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>    <span class="keyword">auto</span> <span class="keyword">const</span>&amp; p = kb.internal_presentation();</div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    <span class="keywordflow">if</span> (p.alphabet().empty()) {</div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>    }</div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>    <a class="code hl_class" href="classlibsemigroups_1_1_is_obviously_infinite.html">IsObviouslyInfinite</a> ioi(p.alphabet().size());</div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>    ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#a116e1d4ec151b7b9e5fc19c47cb282bd">add_rules_no_checks</a>(p.alphabet(), p.rules.cbegin(), p.rules.cend());</div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#a116e1d4ec151b7b9e5fc19c47cb282bd">add_rules_no_checks</a>(p.alphabet(),</div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>                            kb.internal_generating_pairs().<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/container/vector/begin.html">cbegin</a>(),</div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>                            kb.internal_generating_pairs().<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/container/vector/end.html">cend</a>());</div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>    <span class="keywordflow">return</span> ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#af6f3f5eade04da7d46203c139e9d4ac5">result</a>();</div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>  }</div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span></div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Rewriter, <span class="keyword">typename</span> ReductionOrder&gt;</div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>  <span class="keywordtype">bool</span></div>
+<div class="foldopen" id="foldopen00652" data-start="{" data-end="}">
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno"><a class="line" href="group__obvinf__group.html#ga63f80b0ae0680a4a8b8ee5362e1f4233">  652</a></span>  <a class="code hl_function" href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">is_obviously_infinite</a>(detail::KnuthBendixImpl&lt;Rewriter, ReductionOrder&gt;&amp; kb) {</div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>    <span class="keywordflow">if</span> (kb.<a class="code hl_function" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">finished</a>()) {</div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>      <span class="keywordflow">return</span> !<a class="code hl_function" href="namespacelibsemigroups_1_1word__graph.html#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(kb.<a class="code hl_function" href="group__knuth__bendix__class__accessors__group.html#ga6c8cf4b4bdc60d00991e65992e62d50b">gilman_graph</a>());</div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>    }</div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    <span class="keyword">auto</span> <span class="keyword">const</span>&amp; p = kb.internal_presentation();</div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>    <span class="keywordflow">if</span> (p.alphabet().empty()) {</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>      <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>    }</div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    <a class="code hl_class" href="classlibsemigroups_1_1_is_obviously_infinite.html">IsObviouslyInfinite</a> ioi(p.alphabet().size());</div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>    ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#a116e1d4ec151b7b9e5fc19c47cb282bd">add_rules_no_checks</a>(p.alphabet(), p.rules.cbegin(), p.rules.cend());</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#a116e1d4ec151b7b9e5fc19c47cb282bd">add_rules_no_checks</a>(p.alphabet(),</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>                            kb.internal_generating_pairs().<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/container/vector/begin.html">cbegin</a>(),</div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>                            kb.internal_generating_pairs().<a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/container/vector/end.html">cend</a>());</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>    <span class="keywordflow">return</span> ioi.<a class="code hl_function" href="classlibsemigroups_1_1_is_obviously_infinite.html#af6f3f5eade04da7d46203c139e9d4ac5">result</a>();</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>  }</div>
 </div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span> </div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_OBVINF_HPP_</span></div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span> </div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_OBVINF_HPP_</span></div>
 <div class="ttc" id="aaccumulate_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/accumulate.html">std::accumulate</a></div><div class="ttdeci">T accumulate(T... args)</div></div>
 <div class="ttc" id="aassign_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/assign.html">std::basic_string::assign</a></div><div class="ttdeci">T assign(T... args)</div></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
@@ -541,7 +545,7 @@ $(function(){initNavTree('obvinf_8hpp_source.html',''); initResizable(true); });
 <div class="ttc" id="aclasslibsemigroups_1_1_is_obviously_infinite_html_af6f3f5eade04da7d46203c139e9d4ac5"><div class="ttname"><a href="classlibsemigroups_1_1_is_obviously_infinite.html#af6f3f5eade04da7d46203c139e9d4ac5">libsemigroups::IsObviouslyInfinite::result</a></div><div class="ttdeci">bool result() const</div><div class="ttdoc">Returns whether or not the finitely presented semigroup or monoid is obviously infinite.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_is_obviously_infinite_html_af999a5e5f1ff05210a863c5563e4fb6b"><div class="ttname"><a href="classlibsemigroups_1_1_is_obviously_infinite.html#af999a5e5f1ff05210a863c5563e4fb6b">libsemigroups::IsObviouslyInfinite::operator=</a></div><div class="ttdeci">IsObviouslyInfinite &amp; operator=(IsObviouslyInfinite &amp;&amp;)=delete</div><div class="ttdoc">Deleted.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_a198d5db68cd73451d94cb58d8f7603e6"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#a198d5db68cd73451d94cb58d8f7603e6">libsemigroups::Presentation::throw_if_bad_alphabet_or_rules</a></div><div class="ttdeci">void throw_if_bad_alphabet_or_rules() const</div><div class="ttdoc">Check if the alphabet and rules are valid.</div><div class="ttdef"><b>Definition</b> presentation.hpp:604</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_a198d5db68cd73451d94cb58d8f7603e6"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#a198d5db68cd73451d94cb58d8f7603e6">libsemigroups::Presentation::throw_if_bad_alphabet_or_rules</a></div><div class="ttdeci">void throw_if_bad_alphabet_or_rules() const</div><div class="ttdoc">Check if the alphabet and rules are valid.</div><div class="ttdef"><b>Definition</b> presentation.hpp:639</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_aa2e0dc1c8b76f66456509b229cb263f1"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#aa2e0dc1c8b76f66456509b229cb263f1">libsemigroups::Presentation::rules</a></div><div class="ttdeci">std::vector&lt; word_type &gt; rules</div><div class="ttdoc">Data member holding the rules of the presentation.</div><div class="ttdef"><b>Definition</b> presentation.hpp:132</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_ac21a91e92a664a0ac48d99643f62fd6a"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#ac21a91e92a664a0ac48d99643f62fd6a">libsemigroups::Presentation::alphabet</a></div><div class="ttdeci">word_type const &amp; alphabet() const noexcept</div><div class="ttdoc">Return the alphabet of the presentation.</div><div class="ttdef"><b>Definition</b> presentation.hpp:184</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_ac99d2bdd0870fd2ca0e546d5117e83c0"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#ac99d2bdd0870fd2ca0e546d5117e83c0">libsemigroups::Presentation::letter_type</a></div><div class="ttdeci">typename word_type::value_type letter_type</div><div class="ttdoc">Type of the letters in the words that constitute the rules of a Presentation object.</div><div class="ttdef"><b>Definition</b> presentation.hpp:110</div></div>

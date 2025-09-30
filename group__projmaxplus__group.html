@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -203,7 +201,7 @@ $(function(){initNavTree('group__projmaxplus__group.html',''); initResizable(tru
 <div class="line"><a class="code hl_typedef" href="#ga0b57f171a348bc0895fbb25bb39c1b4e">ProjMaxPlusMat&lt;3&gt;</a> m;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix</span></div>
 <div class="line"><a class="code hl_typedef" href="#ga0b57f171a348bc0895fbb25bb39c1b4e">ProjMaxPlusMat&lt;&gt;</a>  m(4, 4);</div>
-<div class="ttc" id="agroup__projmaxplus__group_html_ga0b57f171a348bc0895fbb25bb39c1b4e"><div class="ttname"><a href="#ga0b57f171a348bc0895fbb25bb39c1b4e">libsemigroups::ProjMaxPlusMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicProjMaxPlusMat&lt; Scalar &gt;, StaticProjMaxPlusMat&lt; R, C, Scalar &gt; &gt; ProjMaxPlusMat</div><div class="ttdoc">Alias template for projective max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7027</div></div>
+<div class="ttc" id="agroup__projmaxplus__group_html_ga0b57f171a348bc0895fbb25bb39c1b4e"><div class="ttname"><a href="#ga0b57f171a348bc0895fbb25bb39c1b4e">libsemigroups::ProjMaxPlusMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicProjMaxPlusMat&lt; Scalar &gt;, StaticProjMaxPlusMat&lt; R, C, Scalar &gt; &gt; ProjMaxPlusMat</div><div class="ttdoc">Alias template for projective max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7033</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
@@ -269,8 +267,8 @@ template&lt;size_t R = 0, size_t C = R, typename Scalar = int&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> std::conditional_t&lt;R == 0 || C == 0,</div>
 <div class="line">                                            <a class="code hl_typedef" href="#ga17b3edb2165a4b92dfc80161f89bafa3">DynamicProjMaxPlusMat&lt;Scalar&gt;</a>,</div>
 <div class="line">                                            <a class="code hl_typedef" href="#ga8fe34985512f7265139a4dcff06aa8ca">StaticProjMaxPlusMat&lt;R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__projmaxplus__group_html_ga17b3edb2165a4b92dfc80161f89bafa3"><div class="ttname"><a href="#ga17b3edb2165a4b92dfc80161f89bafa3">libsemigroups::DynamicProjMaxPlusMat</a></div><div class="ttdeci">detail::ProjMaxPlusMat&lt; DynamicMaxPlusMat&lt; Scalar &gt; &gt; DynamicProjMaxPlusMat</div><div class="ttdoc">Alias for dynamic projective max-plus matrices with run-time dimensions.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7010</div></div>
-<div class="ttc" id="agroup__projmaxplus__group_html_ga8fe34985512f7265139a4dcff06aa8ca"><div class="ttname"><a href="#ga8fe34985512f7265139a4dcff06aa8ca">libsemigroups::StaticProjMaxPlusMat</a></div><div class="ttdeci">detail::ProjMaxPlusMat&lt; StaticMaxPlusMat&lt; R, C, Scalar &gt; &gt; StaticProjMaxPlusMat</div><div class="ttdoc">Alias for static projective max-plus matrices with compile-time arithmetic and dimensions.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6996</div></div>
+<div class="ttc" id="agroup__projmaxplus__group_html_ga17b3edb2165a4b92dfc80161f89bafa3"><div class="ttname"><a href="#ga17b3edb2165a4b92dfc80161f89bafa3">libsemigroups::DynamicProjMaxPlusMat</a></div><div class="ttdeci">detail::ProjMaxPlusMat&lt; DynamicMaxPlusMat&lt; Scalar &gt; &gt; DynamicProjMaxPlusMat</div><div class="ttdoc">Alias for dynamic projective max-plus matrices with run-time dimensions.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7016</div></div>
+<div class="ttc" id="agroup__projmaxplus__group_html_ga8fe34985512f7265139a4dcff06aa8ca"><div class="ttname"><a href="#ga8fe34985512f7265139a4dcff06aa8ca">libsemigroups::StaticProjMaxPlusMat</a></div><div class="ttdeci">detail::ProjMaxPlusMat&lt; StaticMaxPlusMat&lt; R, C, Scalar &gt; &gt; StaticProjMaxPlusMat</div><div class="ttdoc">Alias for static projective max-plus matrices with compile-time arithmetic and dimensions.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7002</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for projective max-plus matrices.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

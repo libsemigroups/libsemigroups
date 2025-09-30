@@ -51,8 +51,6 @@ window.MathJax = {
 </script>
 <script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
-<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="custom.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -69,7 +67,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.1.3</span>
+   &#160;<span id="projectnumber">v3.2.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -1555,11 +1553,11 @@ template&lt;typename Word&gt; </div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, <span class="stringliteral">&quot;aafdcdbaeefacddbbdeabbdea&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line">ToddCoxeter tc(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>.twosided, p);</div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_ab206e03bcd28bba4d8cdbaffba18b5bc"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#ab206e03bcd28bba4d8cdbaffba18b5bc">libsemigroups::Presentation::contains_empty_word</a></div><div class="ttdeci">bool contains_empty_word() const noexcept</div><div class="ttdoc">Return whether the empty word is a valid relation word.</div><div class="ttdef"><b>Definition</b> presentation.hpp:504</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_ab206e03bcd28bba4d8cdbaffba18b5bc"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#ab206e03bcd28bba4d8cdbaffba18b5bc">libsemigroups::Presentation::contains_empty_word</a></div><div class="ttdeci">bool contains_empty_word() const noexcept</div><div class="ttdoc">Return whether the empty word is a valid relation word.</div><div class="ttdef"><b>Definition</b> presentation.hpp:539</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html_ac21a91e92a664a0ac48d99643f62fd6a"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html#ac21a91e92a664a0ac48d99643f62fd6a">libsemigroups::Presentation::alphabet</a></div><div class="ttdeci">word_type const &amp; alphabet() const noexcept</div><div class="ttdoc">Return the alphabet of the presentation.</div><div class="ttdef"><b>Definition</b> presentation.hpp:184</div></div>
 <div class="ttc" id="agroup__types__group_html_gaefc0b002795e4a0b5db2a5c04078aa42"><div class="ttname"><a href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">libsemigroups::congruence_kind</a></div><div class="ttdeci">congruence_kind</div><div class="ttdoc">Enum to indicate the sided-ness of a congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:67</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_ad39a6ad8b9694fb7e1ea3dc518a8cde6"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#ad39a6ad8b9694fb7e1ea3dc518a8cde6">libsemigroups::presentation::add_inverse_rules</a></div><div class="ttdeci">void add_inverse_rules(Presentation&lt; Word &gt; &amp;p, Word const &amp;vals, typename Presentation&lt; Word &gt;::letter_type e=UNDEFINED)</div><div class="ttdoc">Add rules for inverses.</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:842</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:907</div></div>
 </div><!-- fragment --><p>Then running <code class="param">tc</code> will simply grow the underlying word graph until your computer runs out of memory. The authors of <code>libsemigroups</code> were not able to find any combination of the many settings for <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> where running <code class="param">tc</code> returned an answer. We also tried with GAP and ACE but neither of these seemed able to return an answer either. But doing the following:</p>
 <div class="fragment"><div class="line">tc.lookahead_extent(options::lookahead_extent::full)</div>
 <div class="line">    .lookahead_style(options::lookahead_style::felsch);</div>
@@ -1577,7 +1575,13 @@ template&lt;typename Word&gt; </div>
 </div><!-- fragment --><p>returns the correct answer in about 22 seconds (on a 2024 Macbook Pro M4 Pro).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tc</td><td>the <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> instance. </td></tr>
+    <tr><td class="paramname">tc</td><td>the <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> instance.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">tc</code> is a one-sided congruence and has any generating pairs (because in this case <a class="el" href="#gac3f6c69246202c8926af64b75c8b9707">perform_lookbehind</a> does nothing but still might take some time to run). </td></tr>
   </table>
   </dd>
 </dl>
