@@ -451,7 +451,7 @@ namespace libsemigroups {
   // FIXME(1) this is the same hack as elsewhere because Doxygen conflates
   // functions with trailing return type but the same name and signature.
   template <template <typename...> typename Thing, typename Word>
-  auto to(Presentation<Word> const& p) -> std::enable_if_t<
+  auto to(Presentation<Word> cont& p) -> std::enable_if_t<
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>>;
 #else
