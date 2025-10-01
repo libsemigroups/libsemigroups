@@ -28,14 +28,15 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/constants.hpp"        // for operator!=, operator==
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/kambites-class.hpp"   // for Kambites
-#include "libsemigroups/presentation.hpp"     // for Presentation, change_...
-#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/types.hpp"            // for word_type, congruence_kind
+#include "libsemigroups/bipart.hpp"              // for Bipartition
+#include "libsemigroups/constants.hpp"           // for operator!=, operator==
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin
+#include "libsemigroups/kambites-class.hpp"      // for Kambites
+#include "libsemigroups/presentation.hpp"        // for Presentation, change_...
+#include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
+#include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
+#include "libsemigroups/types.hpp"  // for word_type, congruence_kind
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
@@ -552,6 +553,37 @@ namespace libsemigroups {
     Kambites k_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
     REQUIRE(to<Presentation<word_type>>(k_str)
+            == to<Presentation<word_type>>(p_str));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "026",
+                          "from ToddCoxeter<Word>",
+                          "[quick][to_presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(to<Presentation<word_type>>(tc) == p);
+    REQUIRE(to<Presentation<std::string>>(tc).rules
+            == std::vector<std::string>(
+                {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
+
+    Presentation<std::string> p_str;
+    p_str.alphabet("abc");
+    presentation::add_rule(p_str, "aa", "b");
+    presentation::add_rule(p_str, "bb", "c");
+    presentation::add_rule(p_str, "cc", "a");
+
+    ToddCoxeter tc_str(congruence_kind::twosided, p_str);
+    REQUIRE(to<Presentation<std::string>>(tc_str) == p_str);
+    REQUIRE(to<Presentation<word_type>>(tc_str)
             == to<Presentation<word_type>>(p_str));
   }
 

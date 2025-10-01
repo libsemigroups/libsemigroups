@@ -33,6 +33,12 @@
 // TODO(1): Make as many of these functions const as possible
 namespace libsemigroups {
 
+  template <typename>
+  class Kambites;  // forward decl
+
+  template <typename>
+  class ToddCoxeter;  // forward decl
+
   //! \defgroup to_presentation_group to<Presentation>
   //!
   //! This file contains documentation for creating semigroup and monoid
@@ -511,6 +517,58 @@ namespace libsemigroups {
           && std::is_same_v<typename Result::word_type, Word>,
       Result const&> {
     return k.presentation();
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a todd-coxeter
+  //!
+  //! Defined in `to-presentation.hpp`
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(tc);
+  //! \endcode
+  //!
+  //! There are two versions of this function:
+  //!
+  //! 1. When `typename Result::word_type` and `Word` are not the same, this
+  //! function uses `to<Presentation<typename Result::word_type>` to return a
+  //! presentation equivalent to the object used to construct or initialise the
+  //! ToddCoxeter object (if any) but of a different type (for example, can be
+  //! used to convert from `std::string` to \ref word_type).
+  //!
+  //! 2. If the word representations are the same, the function returns a
+  //! reference to the presentation used to construct or initialise the
+  //! ToddCoxeter object (if any) via `tc.presentation()`.
+  //!
+  //! \tparam Result the return type, also used for SFINAE, should be
+  //! \c Presentation<T> for some type \c T.
+  //! \tparam Word the type of the words in the input ToddCoxeter.
+  //! \param tc the ToddCoxeter object from which to obtain the rules.
+  //!
+  //! \returns A value of type `Presentation<Word>`.
+  template <typename Result, typename Word>
+  auto to(ToddCoxeter<Word>& tc) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result> {
+    return to<Result>(tc.presentation());
+  }
+
+  // This function is documented above because Doxygen conflates these two
+  // functions
+  template <typename Result, typename Word>
+  auto to(ToddCoxeter<Word>& tc) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && std::is_same_v<typename Result::word_type, Word>,
+      Result const&> {
+    return tc.presentation();
   }
 
 }  // namespace libsemigroups
