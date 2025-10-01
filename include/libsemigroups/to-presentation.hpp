@@ -39,6 +39,9 @@ namespace libsemigroups {
   template <typename>
   class ToddCoxeter;  // forward decl
 
+  template <typename>
+  class Stephen;  // forward decl
+
   //! \defgroup to_presentation_group to<Presentation>
   //!
   //! This file contains documentation for creating semigroup and monoid
@@ -569,6 +572,40 @@ namespace libsemigroups {
           && std::is_same_v<typename Result::word_type, Word>,
       Result const&> {
     return tc.presentation();
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Stephen -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a stephen
+  //!
+  //! Defined in `to-presentation.hpp`
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(s);
+  //! \endcode
+  //!
+  //! This function uses `to<Presentation<typename Result::word_type>` to return
+  //! a presentation equivalent to the object used to construct or initialise
+  //! the Stephen object (if any) but of a different type (for example, can be
+  //! used to convert from \ref word_type to `std::string`).
+  //!
+  //! \tparam Result the return type, also used for SFINAE, should be
+  //! \c Presentation<T> for some type \c T.
+  //! \tparam PresentationType the type of the presentation in the input
+  //! Stephen. \param s the Stephen object from which to obtain the rules.
+  //!
+  //! \returns A value of type `Presentation<typename Result::word_type>`.
+  template <typename Result, typename PresentationType>
+  auto to(Stephen<PresentationType>& s) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>,
+      Result> {
+    return to<Result>(s.presentation());
   }
 
 }  // namespace libsemigroups
