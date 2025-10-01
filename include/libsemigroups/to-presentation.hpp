@@ -504,6 +504,16 @@ namespace libsemigroups {
   //! \param k the Kambites object from which to obtain the rules.
   //!
   //! \returns A value of type `Presentation<Word>`.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  // FIXME(1) this is the same hack as elsewhere (deliberately introducing a
+  // typo) because Doxygen conflates functions with trailing return type but the
+  // same name and signature.
+  template <typename Result, typename Word>
+  auto to(Kambtes<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result>;
+#else
   template <typename Result, typename Word>
   auto to(Kambites<Word>& k) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>
@@ -521,6 +531,7 @@ namespace libsemigroups {
       Result const&> {
     return k.presentation();
   }
+#endif
 
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter -> Presentation
@@ -556,6 +567,16 @@ namespace libsemigroups {
   //! \param tc the ToddCoxeter object from which to obtain the rules.
   //!
   //! \returns A value of type `Presentation<Word>`.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  // FIXME(1) this is the same hack as elsewhere (deliberately introducing a
+  // typo) because Doxygen conflates functions with trailing return type but the
+  // same name and signature.
+  template <typename Result, typename Word>
+  auto to(ToddCoxter<Word>& tc) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result>;
+#else
   template <typename Result, typename Word>
   auto to(ToddCoxeter<Word>& tc) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>
@@ -573,6 +594,7 @@ namespace libsemigroups {
       Result const&> {
     return tc.presentation();
   }
+#endif
 
   ////////////////////////////////////////////////////////////////////////
   // Stephen -> Presentation
