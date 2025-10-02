@@ -2202,10 +2202,14 @@ namespace libsemigroups {
     // REQUIRE(presentation::length(p) == 8'515);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
+    while (tc.complete() < 0.60) {
+      tc.run_for(std::chrono::seconds(1));
+      todd_coxeter::perform_lookbehind(tc);
+    }
 
     // TODO(1) should be some interplay between lookahead_min and
-    // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be greater
-    // than lookahead_next, maybe?
+    // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be
+    // greater than lookahead_next, maybe?
     tc.lookahead_min(2'500'000)
         .lookahead_growth_factor(1.2)
         .lookahead_stop_early_ratio(0.1);

@@ -198,6 +198,10 @@ namespace libsemigroups {
       // 100% not thread safe
       [[nodiscard]] uint64_t count_number_of_edges_active() const noexcept;
 
+      [[nodiscard]] size_t number_of_coincidences() const noexcept {
+        return _coinc.size();
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // Modifiers
       ////////////////////////////////////////////////////////////////////////
