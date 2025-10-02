@@ -1450,7 +1450,6 @@ namespace libsemigroups {
 
     ToddCoxeter tc2(onesided, tc1);
     tc2.lookahead_next(1);
-    tc2.report_every(1);
     todd_coxeter::add_generating_pair(tc2, 0_w, 00_w);
 
     section_hlt(tc2);

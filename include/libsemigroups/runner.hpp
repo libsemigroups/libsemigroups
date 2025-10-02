@@ -186,7 +186,9 @@ namespace libsemigroups {
     //!
     //! \sa
     //! report_every(Time)
-    Reporter& report_every(nanoseconds val) noexcept {
+    //!
+    //! \deprecated_alias_warning
+    [[deprecated]] Reporter& report_every(nanoseconds val) noexcept {
       _last_report          = std::chrono::high_resolution_clock::now();
       _report_time_interval = val;
       return *this;
@@ -210,8 +212,10 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \note This function is not thread-safe.
+    //!
+    //! \deprecated_alias_warning
     template <typename Time>
-    Reporter& report_every(Time t) noexcept {
+    [[deprecated]] Reporter& report_every(Time t) noexcept {
       return report_every(nanoseconds(t));
     }
 
@@ -224,7 +228,9 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \note This function is thread-safe.
-    [[nodiscard]] nanoseconds report_every() const noexcept {
+    //!
+    //! \deprecated_alias_warning
+    [[deprecated]] [[nodiscard]] nanoseconds report_every() const noexcept {
       return _report_time_interval;
     }
 
