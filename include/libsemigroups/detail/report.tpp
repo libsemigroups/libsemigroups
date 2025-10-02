@@ -96,6 +96,9 @@ namespace libsemigroups {
       if (_ticker_impl != nullptr) {
         LIBSEMIGROUPS_EXCEPTION("the Ticker is already in use!");
       }
+      // In this case we are really starting the ticker after a period of time,
+      // so we call the func so we don't wait 2 seconds for the output.
+      func();
       _ticker_impl = new TickerImpl(std::forward<Func>(func), time);
     }
 
