@@ -2204,8 +2204,9 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     while (tc.complete() < 0.60) {
       tc.run_for(std::chrono::seconds(1));
-      todd_coxeter::perform_lookbehind(tc);
+      tc.perform_lookbehind();
     }
+    tc.strategy(options::strategy::hlt);
 
     // TODO(1) should be some interplay between lookahead_min and
     // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be
@@ -2369,14 +2370,13 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
 
     tc.lookahead_extent(options::lookahead_extent::full)
-        .lookahead_style(options::lookahead_style::hlt)
-        .large_collapse(1'000'000'000);
+        .lookahead_style(options::lookahead_style::hlt);
 
     REQUIRE(!is_obviously_infinite(tc));
     tc.run_until([&tc]() -> bool {
       return tc.current_word_graph().number_of_nodes_active() >= 12'000'000;
     });
-    todd_coxeter::perform_lookbehind(tc);
+    tc.perform_lookbehind();
 
     REQUIRE(tc.number_of_classes() == 1);
   }
