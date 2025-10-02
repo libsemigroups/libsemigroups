@@ -216,7 +216,10 @@ namespace libsemigroups {
     //! \deprecated_alias_warning
     template <typename Time>
     [[deprecated]] Reporter& report_every(Time t) noexcept {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       return report_every(nanoseconds(t));
+#pragma GCC diagnostic pop
     }
 
     //! \brief Get the minimum elapsed time between reports.
