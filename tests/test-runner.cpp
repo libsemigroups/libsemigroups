@@ -235,6 +235,8 @@ namespace libsemigroups {
       auto        rg = ReportGuard(false);
       TestRunner1 tr;
       REQUIRE(!tr.report());
+      // We include this deprecated function so that we can still test tr.report
+      // without increasing the runtime of this test to one second.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       tr.report_every(std::chrono::milliseconds(10));
