@@ -22,6 +22,7 @@
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
 #include <chrono>
+#include <iterator>
 #include <string_view>  // for basic_string_view
 #include <tuple>        // for tie
 
@@ -114,7 +115,7 @@ namespace libsemigroups {
     namespace {
       ReportCell<5> report_cell() {
         ReportCell<5> rc;
-        rc.min_width(12).min_width(0, 0).min_width(1, 23).align(1, Align::left);
+        rc.min_width(12).min_width(0, 0).min_width(1, 16).align(1, Align::left);
         return rc;
       }
     }  // namespace
@@ -1870,79 +1871,20 @@ namespace libsemigroups {
       _ticker_running = old_ticker_running;
     }
 
-    // TODO(1) write a more general version that takes a function as 2nd
-    // argument that takes a single argument (a word) and returns another
-    // equivalent word in the congruence represented by the ToddCoxeter. We
-    // could then, for example, use a KnuthBendix to rewrite the words, in case
-    // that provided any collapse in the graph. This would then mean we could
-    // possibly rewrite prefixes of words in the onesided case, so we could lift
-    // the restriction at the start of the function.
     ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind() {
+      using iterator       = std::back_insert_iterator<word_type>;
+      using const_iterator = word_type::const_iterator;
       if (kind() == congruence_kind::onesided
           && !internal_generating_pairs().empty()) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected a 2-sided ToddCoxeter instance, or a 1-sided ToddCoxeter "
             "instance with 0 generating pairs")
-      } else if (_word_graph.number_of_nodes_active() == 1) {
-        return *this;
       }
-      if (!running()) {
-        stats_run_start();
-        report_before_run();
-      }
-      stats_phase_start();
-
-      Guard guard(_state, state::lookbehind);
-      report_before_phase();
-
-      bool       old_ticker_running = _ticker_running;
-      time_point start_time         = std::chrono::high_resolution_clock::now();
-      Ticker     ticker;
-
-      word_type w1, w2;
-
-      node_type& current = _word_graph.lookahead_cursor();
-      current            = _word_graph.initial_node();
-      size_t N           = _word_graph.number_of_nodes_active();
-      standardize(Order::shortlex);
-
-      while (!finished() && current < N) {
-        for (; current < N; ++current) {
-          w1.clear();
-          w2.clear();
-          _forest.path_from_root_no_checks(std::back_inserter(w1), current);
-          reduce_no_run_no_checks(
-              std::back_inserter(w2), w1.cbegin(), w1.cend());
-          if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
-            node_type other = word_graph::follow_path_no_checks(
-                _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
-            if (other != UNDEFINED && other != current) {
-              _word_graph.merge_nodes_no_checks(current, other);
-            }
-          }
-          if (_word_graph.number_of_coincidences() >= large_collapse()) {
-            break;
-          }
-        }
-        if (current != N) {
-          if (!_ticker_running && reporting_enabled()
-              && delta(start_time) >= std::chrono::milliseconds(500)) {
-            _ticker_running = true;
-            ticker([this]() { report_progress_from_thread(ye_print_divider); });
-          }
-          _word_graph.process_coincidences();
-          N = _word_graph.number_of_nodes_active();
-          standardize(Order::shortlex);
-        }
-      }
-      report_after_phase();
-      stats_phase_stop();
-      if (!running()) {
-        report_after_run();
-        stats_run_stop();
-      }
-      _ticker_running = old_ticker_running;
-      return *this;
+      auto collapser =
+          [this](iterator d_first, const_iterator first, const_iterator last) {
+            reduce_no_run_no_checks(d_first, first, last);
+          };
+      return perform_lookbehind(collapser);
     }
   }  // namespace detail
 }  // namespace libsemigroups

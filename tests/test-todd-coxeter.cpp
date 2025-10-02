@@ -2201,10 +2201,18 @@ namespace libsemigroups {
     // presentation::greedy_reduce_length(p);
     // REQUIRE(presentation::length(p) == 8'515);
 
+    KnuthBendix kb(congruence_kind::twosided, p);
+    kb.run_for(std::chrono::seconds(1));
+
+    auto collapser = [&kb](auto d_first, auto first, auto last) {
+      return kb.reduce_no_run_no_checks(d_first, first, last);
+    };
+
     ToddCoxeter tc(congruence_kind::twosided, p);
     while (tc.complete() < 0.60) {
       tc.run_for(std::chrono::seconds(1));
       tc.perform_lookbehind();
+      tc.perform_lookbehind(collapser);
     }
     tc.strategy(options::strategy::hlt);
 
@@ -3879,11 +3887,22 @@ namespace libsemigroups {
               == tril::TRUE);
     }
     tc.run_until([&tc]() {
-      return tc.current_word_graph().number_of_nodes_active()
-             > 1.5 * 10'200'960;
+      return tc.current_word_graph().number_of_nodes_active() > 3 * 10'200'960;
     });
+    KnuthBendix kb(congruence_kind::twosided, p);
+    kb.run_for(std::chrono::seconds(1));
+
+    for (size_t i = 0; i < tc.number_of_nodes_active(); ++i) {
+      auto w = todd_coxeter::word_of(tc, i);
+      REQUIRE(w == knuth_bendix::reduce_no_run(kb, w));
+    }
+
+    auto collapser = [&kb](auto d_first, auto first, auto last) {
+      return kb.reduce_no_run_no_checks(d_first, first, last);
+    };
+    tc.perform_lookbehind(collapser);
+
     // todd_coxeter::perform_lookbehind(tc);
-    tc.large_collapse(POSITIVE_INFINITY);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {

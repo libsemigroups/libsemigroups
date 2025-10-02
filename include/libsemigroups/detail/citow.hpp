@@ -121,6 +121,94 @@ namespace libsemigroups {
       }
     };  // class citow
 
+    //
+    template <typename Thing, typename Iterator>
+    class cifrw {
+     protected:
+      Iterator     _it;
+      Thing const* _ptr;
+
+     public:
+      using internal_iterator_type = Iterator;
+      using value_type      = typename Thing::native_word_type::value_type;
+      using reference       = value_type;
+      using const_reference = value_type;
+      using const_pointer   = value_type const*;
+      using pointer         = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      cifrw(Thing const* tc, Iterator it) : _it(it), _ptr(tc) {}
+
+      reference operator*() const {
+        return _ptr->presentation().letter_no_checks(*_it);
+      }
+
+      // TODO(1) operator-> ??
+
+      bool operator==(cifrw const& that) const noexcept {
+        return _it == that._it;
+      }
+
+      bool operator!=(cifrw const& that) const noexcept {
+        return _it != that._it;
+      }
+
+      bool operator<=(cifrw const& that) const noexcept {
+        return _it <= that._it;
+      }
+
+      bool operator>=(cifrw const& that) const noexcept {
+        return _it >= that._it;
+      }
+
+      bool operator<(cifrw const& that) const noexcept {
+        return _it < that._it;
+      }
+
+      bool operator>(cifrw const& that) const noexcept {
+        return _it > that._it;
+      }
+
+      cifrw& operator++() {
+        ++_it;
+        return *this;
+      }
+
+      cifrw& operator+=(size_type val) noexcept {
+        _it += val;
+        return *this;
+      }
+
+      cifrw operator+(size_type val) const noexcept {
+        cifrw result(*this);
+        result += val;
+        return result;
+      }
+
+      cifrw& operator--() {
+        --_it;
+        return *this;
+      }
+
+      cifrw& operator-=(size_type val) noexcept {
+        _it -= val;
+        return *this;
+      }
+
+      cifrw operator-(size_type val) const noexcept {
+        cifrw result(*this);
+        result -= val;
+        return result;
+      }
+
+      [[nodiscard]] Iterator get() const noexcept {
+        return _it;
+      }
+    };  // class cifrw
+
     // itow only differs from citow in the dereference member function
     // returning a (non-const) reference. A proxy is returned instead which
     // permits assignment to an output iterator.
@@ -176,11 +264,69 @@ namespace libsemigroups {
       }
     };  // class itow
 
+    template <typename Thing, typename Iterator>
+    class ifrw : public cifrw<Thing, Iterator> {
+      // Proxy class for reference to the returned values
+      class proxy_ref {
+       private:
+        Iterator     _it;
+        Thing const* _ptr;
+
+       public:
+        // Constructor from Thing and iterator
+        proxy_ref(Thing const* tc, Iterator it) noexcept : _it(it), _ptr(tc) {}
+
+        // Assignment operator to allow setting the value via the proxy
+        Iterator operator=(letter_type i) noexcept {
+          *_it = _ptr->presentation().index_no_checks(i);
+          return _it;
+        }
+
+        // Conversion operator to obtain the letter corresponding to the
+        // letter_type
+        [[nodiscard]] operator letter_type() const noexcept {
+          return _ptr->presentation().letter_no_checks(*_it);
+        }
+      };  // class proxy_ref
+
+     public:
+      using internal_iterator_type = Iterator;
+      using value_type             = letter_type;
+      using reference              = proxy_ref;
+      using const_reference        = value_type;
+
+      // TODO(1) use proxy for pointers too?
+      using const_pointer = value_type const*;
+      using pointer       = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      using cifrw<Thing, Iterator>::cifrw;
+
+      reference operator*() {
+        return reference(this->_ptr, this->_it);
+      }
+
+      // TODO(1) probably require more of these
+      ifrw& operator++() {
+        cifrw<Thing, Iterator>::operator++();
+        return *this;
+      }
+    };  // class itow
+
     template <typename Iterator, typename Thing>
     citow(Thing const*, Iterator) -> citow<Thing, Iterator>;
 
     template <typename Iterator, typename Thing>
+    cifrw(Thing const*, Iterator) -> cifrw<Thing, Iterator>;
+
+    template <typename Iterator, typename Thing>
     itow(Thing const*, Iterator) -> itow<Thing, Iterator>;
+
+    template <typename Iterator, typename Thing>
+    ifrw(Thing const*, Iterator) -> ifrw<Thing, Iterator>;
 
   }  // namespace detail
 }  // namespace libsemigroups

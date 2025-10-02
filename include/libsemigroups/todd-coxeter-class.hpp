@@ -1273,10 +1273,27 @@ namespace libsemigroups {
     }
 
     //! @}
+
+    // TODO doc
+    template <typename Func>
+    ToddCoxeter& perform_lookbehind(Func&& collapser) {
+      // TODO add static assert that collapser is invocable, with right number
+      // of args
+      auto collapser_wrap
+          = [&collapser, this](auto d_first, auto first, auto last) {
+              return collapser(detail::ifrw(this, d_first),
+                               detail::cifrw(this, first),
+                               detail::cifrw(this, last));
+            };
+      ToddCoxeterImpl::perform_lookbehind(collapser_wrap);
+      return *this;
+    }
+
+    using ToddCoxeterImpl::perform_lookbehind;
   };  // class ToddCoxeter
 
   //! \ingroup todd_coxeter_class_group
-  //
+  //!
   //! \brief Deduction guide.
   //!
   //! Defined in `todd-coxeter-class.hpp`.

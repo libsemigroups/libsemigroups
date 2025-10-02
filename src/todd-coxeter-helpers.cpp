@@ -82,5 +82,9 @@ namespace libsemigroups {
       report_default("failed to show non-triviality!\n");
       return tril::unknown;
     }
+
+    void perform_lookbehind(detail::ToddCoxeterImpl& tc) {
+      tc.perform_lookbehind();
+    }
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

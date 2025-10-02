@@ -49,6 +49,7 @@
 
 #include "cong-common-class.hpp"        // for Congruen...
 #include "felsch-graph.hpp"             // for FelschGraph
+#include "guard.hpp"                    // for Guard
 #include "node-managed-graph.hpp"       // for NodeMana...
 #include "node-manager.hpp"             // for NodeMana...
 #include "word-graph-with-sources.hpp"  // for WordGrap...
@@ -364,6 +365,9 @@ namespace libsemigroups {
             _stats.run_num_lookahead_phases++;
             _stats.run_lookahead_phases_time += delta(_stats.phase_start_time);
             break;
+          }
+          case state::lookbehind: {
+            // intentional fall through, not currently collecting stats here
           }
           default: {
             break;
@@ -1731,6 +1735,10 @@ namespace libsemigroups {
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
       void perform_lookahead(bool stop_early);
+
+      // TODO doc
+      template <typename Func>
+      ToddCoxeterImpl& perform_lookbehind(Func&&);
 
       // TODO doc
       ToddCoxeterImpl& perform_lookbehind();
