@@ -247,5 +247,70 @@ namespace libsemigroups {
       }
       return std::copy(u.begin(), u.end(), d_first);
     }
+    // TODO implement stop_early, example 097 is good example for why this is
+    // needed
+    template <typename Func>
+    ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind(Func&& collapser) {
+      if (_word_graph.number_of_nodes_active() == 1) {
+        // Can't collapse anything in this case
+        return *this;
+      }
+      if (!running()) {
+        stats_run_start();
+        report_before_run();
+      }
+      stats_phase_start();
+
+      Guard guard(_state, state::lookbehind);
+      report_before_phase();
+
+      bool       old_ticker_running = _ticker_running;
+      time_point start_time         = std::chrono::high_resolution_clock::now();
+      Ticker     ticker;
+
+      word_type w1, w2;
+
+      node_type& current = _word_graph.lookahead_cursor();
+      current            = _word_graph.initial_node();
+      size_t N           = _word_graph.number_of_nodes_active();
+      standardize(Order::shortlex);
+
+      while (!finished() && current < N) {
+        for (; current < N; ++current) {
+          w1.clear();
+          w2.clear();
+          _forest.path_from_root_no_checks(std::back_inserter(w1), current);
+          collapser(std::back_inserter(w2), w1.begin(), w1.end());
+          if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
+            node_type other = word_graph::follow_path_no_checks(
+                _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
+            if (other != UNDEFINED && other != current) {
+              _word_graph.merge_nodes_no_checks(current, other);
+            }
+          }
+          if (_word_graph.number_of_coincidences() >= large_collapse()) {
+            break;
+          }
+        }
+        if (current != N) {
+          if (!_ticker_running && reporting_enabled()
+              && delta(start_time) >= std::chrono::milliseconds(500)) {
+            _ticker_running = true;
+            ticker([this]() { report_progress_from_thread(true); });
+          }
+          _word_graph.process_coincidences();
+          N = _word_graph.number_of_nodes_active();
+          standardize(Order::shortlex);
+        }
+      }
+      report_after_phase();
+      stats_phase_stop();
+      if (!running()) {
+        report_after_run();
+        stats_run_stop();
+      }
+      _ticker_running = old_ticker_running;
+      return *this;
+    }
   }  // namespace detail
 }  // namespace libsemigroups
