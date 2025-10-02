@@ -728,11 +728,17 @@ namespace libsemigroups {
       // This is documented in Reporter, so we don't duplicate the doc here.
       template <typename Time>
       [[deprecated]] void report_every(Time val) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         CongruenceCommon::report_every(val);
+#pragma GCC diagnostic pop
       }
 
       [[deprecated]] [[nodiscard]] nanoseconds report_every() const noexcept {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         return Reporter::report_every();
+#pragma GCC diagnostic pop
       }
 #endif
 
