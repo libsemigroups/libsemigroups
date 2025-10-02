@@ -547,7 +547,6 @@ namespace libsemigroups {
     REQUIRE((o.range() | rx::to_vector()) == std::vector<uint8_t>({0}));
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
-    o.report_every(std::chrono::nanoseconds(10));
 
     REQUIRE(o.current_size() == 1);
     REQUIRE(o.size() == 8);

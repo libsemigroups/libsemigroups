@@ -607,7 +607,6 @@ namespace libsemigroups {
     REQUIRE(S.finished());
     S.run();
     stephen::set_word(S, to_word("abbbddbcbcbc"));  // resets
-    S.report_every(std::chrono::microseconds(10));
 
     S.run();
 

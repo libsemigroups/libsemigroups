@@ -310,7 +310,8 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\"" \
                          "ref_kambites=\ref kambites_class_group \"Kambites\"" \
                          "ref_congruence=\ref congruence_class_group \"Congruence\"" \
-                         "deprecated_alias_warning{1}=\warning This alias is deprecated and will be removed from `libsemigroups` in v4, please use `\1` instead."
+                         "deprecated_alias_warning{1}=\warning This alias is deprecated and will be removed from `libsemigroups` in v4, please use `\1` instead."\
+                         "deprecated_alias_warning=\warning This alias is deprecated and will be removed from `libsemigroups` in v4."
 
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources

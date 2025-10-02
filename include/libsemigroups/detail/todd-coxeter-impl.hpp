@@ -727,11 +727,11 @@ namespace libsemigroups {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // This is documented in Reporter, so we don't duplicate the doc here.
       template <typename Time>
-      void report_every(Time val) {
+      [[deprecated]] void report_every(Time val) {
         CongruenceCommon::report_every(val);
       }
 
-      [[nodiscard]] nanoseconds report_every() const noexcept {
+      [[deprecated]] [[nodiscard]] nanoseconds report_every() const noexcept {
         return Reporter::report_every();
       }
 #endif
