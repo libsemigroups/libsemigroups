@@ -179,7 +179,7 @@ namespace libsemigroups {
         };
       };  // struct options
 
-      enum class state : uint8_t { none, hlt, felsch, lookahead };
+      enum class state : uint8_t { none, hlt, felsch, lookahead, lookbehind };
 
       using node_type        = typename WordGraph<uint32_t>::node_type;
       using index_type       = node_type;
@@ -1726,6 +1726,9 @@ namespace libsemigroups {
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
       void perform_lookahead(bool stop_early);
+
+      // TODO doc
+      ToddCoxeterImpl& perform_lookbehind();
 
       ////////////////////////////////////////////////////////////////////////
       // 11. ToddCoxeterImpl - word -> index
