@@ -870,7 +870,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p tc is a one-sided congruence and
     //! has any generating pairs (because in this case \ref perform_lookbehind
     //! does nothing but still might take some time to run).
-    void perform_lookbehind(detail::ToddCoxeterImpl& tc);
+    [[deprecated]] void perform_lookbehind(detail::ToddCoxeterImpl& tc);
 
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - redundant_rule

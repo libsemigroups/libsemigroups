@@ -50,6 +50,7 @@
 
 #include "cong-common-class.hpp"        // for Congruen...
 #include "felsch-graph.hpp"             // for FelschGraph
+#include "guard.hpp"                    // for Guard
 #include "node-managed-graph.hpp"       // for NodeMana...
 #include "node-manager.hpp"             // for NodeMana...
 #include "word-graph-with-sources.hpp"  // for WordGrap...
@@ -177,9 +178,12 @@ namespace libsemigroups {
           discard_all_if_no_space,
           unlimited
         };
+
+        constexpr static bool stop_early        = true;
+        constexpr static bool do_not_stop_early = false;
       };  // struct options
 
-      enum class state : uint8_t { none, hlt, felsch, lookahead };
+      enum class state : uint8_t { none, hlt, felsch, lookahead, lookbehind };
 
       using node_type        = typename WordGraph<uint32_t>::node_type;
       using index_type       = node_type;
@@ -366,6 +370,9 @@ namespace libsemigroups {
             _stats.run_lookahead_phases_time += delta(_stats.phase_start_time);
             break;
           }
+          case state::lookbehind: {
+            // intentional fall through, not currently collecting stats here
+          }
           default: {
             break;
           }
@@ -495,7 +502,7 @@ namespace libsemigroups {
                              node_type&       current,
                              Iterator         first,
                              Iterator         last,
-                             bool             stop_early);
+                             bool             should_stop_early);
 
        private:
         void report_lookahead_stop_early(ToddCoxeterImpl* tc,
@@ -1733,6 +1740,13 @@ namespace libsemigroups {
       //! lookahead early if too few nodes are killed.
       void perform_lookahead(bool stop_early);
 
+      // TODO doc
+      template <typename Func>
+      ToddCoxeterImpl& perform_lookbehind(Func&&, bool);
+
+      // TODO doc
+      ToddCoxeterImpl& perform_lookbehind(bool);
+
       ////////////////////////////////////////////////////////////////////////
       // 11. ToddCoxeterImpl - word -> index
       ////////////////////////////////////////////////////////////////////////
@@ -2071,7 +2085,7 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] bool lookahead_stop_early(
-          bool                                            stop_early,
+          bool                                            should_stop_early,
           std::chrono::high_resolution_clock::time_point& last_stop_early_check,
           uint64_t& killed_at_prev_interval);
 
@@ -2123,8 +2137,8 @@ namespace libsemigroups {
       static constexpr bool StopEarly      = true;
       static constexpr bool DoNotStopEarly = false;
 
-      void hlt_lookahead(bool stop_early);
-      void felsch_lookahead(bool stop_early);
+      void hlt_lookahead(bool should_stop_early);
+      void felsch_lookahead(bool should_stop_early);
     };  // class ToddCoxeterImpl
 
   }  // namespace detail
