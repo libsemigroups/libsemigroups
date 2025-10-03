@@ -1276,7 +1276,7 @@ namespace libsemigroups {
 
     // TODO doc
     template <typename Func>
-    ToddCoxeter& perform_lookbehind(Func&& collapser) {
+    ToddCoxeter& perform_lookbehind(Func&& collapser, bool should_stop_early) {
       // TODO add static assert that collapser is invocable, with right number
       // of args
       auto collapser_wrap
@@ -1285,7 +1285,7 @@ namespace libsemigroups {
                                detail::cifrw(this, first),
                                detail::cifrw(this, last));
             };
-      ToddCoxeterImpl::perform_lookbehind(collapser_wrap);
+      ToddCoxeterImpl::perform_lookbehind(collapser_wrap, should_stop_early);
       return *this;
     }
 

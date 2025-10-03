@@ -250,11 +250,14 @@ namespace libsemigroups {
     // TODO implement stop_early, example 097 is good example for why this is
     // needed
     template <typename Func>
-    ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind(Func&& collapser) {
+    ToddCoxeterImpl&
+    ToddCoxeterImpl::perform_lookbehind(Func&& collapser,
+                                        bool   should_stop_early) {
       if (_word_graph.number_of_nodes_active() == 1) {
         // Can't collapse anything in this case
         return *this;
       }
+
       if (!running()) {
         stats_run_start();
         report_before_run();
@@ -263,6 +266,9 @@ namespace libsemigroups {
 
       Guard guard(_state, state::lookbehind);
       report_before_phase();
+
+      auto const old_number_of_killed    = _word_graph.number_of_nodes_killed();
+      auto       killed_at_prev_interval = old_number_of_killed;
 
       bool       old_ticker_running = _ticker_running;
       time_point start_time         = std::chrono::high_resolution_clock::now();
@@ -274,6 +280,9 @@ namespace libsemigroups {
       current            = _word_graph.initial_node();
       size_t N           = _word_graph.number_of_nodes_active();
       standardize(Order::shortlex);
+
+      // Do the next line after standardize
+      auto last_stop_early_check = std::chrono::high_resolution_clock::now();
 
       while (!finished() && current < N) {
         for (; current < N; ++current) {
@@ -288,19 +297,28 @@ namespace libsemigroups {
               _word_graph.merge_nodes_no_checks(current, other);
             }
           }
-          if (_word_graph.number_of_coincidences() >= large_collapse()) {
+          if (_word_graph.number_of_coincidences() >= large_collapse()
+              || lookahead_stop_early(should_stop_early,
+                                      last_stop_early_check,
+                                      killed_at_prev_interval)) {
             break;
           }
         }
-        if (current != N) {
-          if (!_ticker_running && reporting_enabled()
-              && delta(start_time) >= std::chrono::milliseconds(500)) {
-            _ticker_running = true;
-            ticker([this]() { report_progress_from_thread(true); });
-          }
+        if (current >= N && !_ticker_running && reporting_enabled()
+            && delta(start_time) >= std::chrono::milliseconds(500)) {
+          _ticker_running = true;
+          ticker([this]() { report_progress_from_thread(true); });
+        }
+        if (_word_graph.number_of_coincidences() < large_collapse()) {
           _word_graph.process_coincidences();
-          N = _word_graph.number_of_nodes_active();
-          standardize(Order::shortlex);
+          break;
+        }
+        standardize(Order::shortlex);
+        N = _word_graph.number_of_nodes_active();
+        if (lookahead_stop_early(should_stop_early,
+                                 last_stop_early_check,
+                                 killed_at_prev_interval)) {
+          break;
         }
       }
       report_after_phase();

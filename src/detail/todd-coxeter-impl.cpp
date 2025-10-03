@@ -325,7 +325,7 @@ namespace libsemigroups {
                                                  node_type&       current,
                                                  RuleIterator     first,
                                                  RuleIterator     last,
-                                                 bool             stop_early) {
+                                                 bool should_stop_early) {
       auto last_stop_early_check = std::chrono::high_resolution_clock::now();
       auto const old_number_of_killed    = number_of_nodes_killed();
       auto       killed_at_prev_interval = old_number_of_killed;
@@ -338,9 +338,9 @@ namespace libsemigroups {
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
       while (current != NodeManager<node_type>::first_free_node()
-             && (!stop_early || (tc->running() && !tc->stopped())
+             && (!should_stop_early || (tc->running() && !tc->stopped())
                  || !tc->running())) {
-        // If stop_early and tc->stopped(), then we exit this loop.
+        // If should_stop_early and tc->stopped(), then we exit this loop.
         // O/w we continue, this is because _finished is sometimes set before we
         // are really finished, which is something that should be fixed at some
         // point (see for example CR_style).
@@ -360,8 +360,9 @@ namespace libsemigroups {
 
         current = NodeManager<node_type>::next_active_node(current);
         tc->_stats.lookahead_position++;
-        if (tc->lookahead_stop_early(
-                stop_early, last_stop_early_check, killed_at_prev_interval)) {
+        if (tc->lookahead_stop_early(should_stop_early,
+                                     last_stop_early_check,
+                                     killed_at_prev_interval)) {
           break;
         }
         if (!tc->_ticker_running && reporting_enabled()
@@ -1724,7 +1725,11 @@ namespace libsemigroups {
     // ToddCoxeterImpl - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
+    void ToddCoxeterImpl::perform_lookahead(bool should_stop_early) {
+      if (_word_graph.number_of_nodes_active() == 1) {
+        // Can't collapse anything in this case
+        return;
+      }
       if (!running()) {
         stats_run_start();
         report_before_run();
@@ -1749,11 +1754,11 @@ namespace libsemigroups {
       _stats.lookahead_nodes_killed = 0;
 
       if (lookahead_style() == options::lookahead_style::hlt) {
-        hlt_lookahead(stop_early);
+        hlt_lookahead(should_stop_early);
       } else {
         LIBSEMIGROUPS_ASSERT(lookahead_style()
                              == options::lookahead_style::felsch);
-        felsch_lookahead(stop_early);
+        felsch_lookahead(should_stop_early);
       }
 
       size_t const num_nodes          = _word_graph.number_of_nodes_active();
@@ -1803,10 +1808,10 @@ namespace libsemigroups {
     }
 
     bool ToddCoxeterImpl::lookahead_stop_early(
-        bool                                            stop_early,
+        bool                                            should_stop_early,
         std::chrono::high_resolution_clock::time_point& last_stop_early_check,
         uint64_t& killed_at_prev_interval) {
-      if (stop_early
+      if (should_stop_early
           && delta(last_stop_early_check) > lookahead_stop_early_interval()) {
         size_t killed_last_interval
             = current_word_graph().number_of_nodes_killed()
@@ -1825,15 +1830,15 @@ namespace libsemigroups {
       return false;
     }
 
-    void ToddCoxeterImpl::hlt_lookahead(bool stop_early) {
+    void ToddCoxeterImpl::hlt_lookahead(bool should_stop_early) {
       _word_graph.make_compatible(this,
                                   _word_graph.lookahead_cursor(),
                                   internal_presentation().rules.cbegin(),
                                   internal_presentation().rules.cend(),
-                                  stop_early);
+                                  should_stop_early);
     }
 
-    void ToddCoxeterImpl::felsch_lookahead(bool stop_early) {
+    void ToddCoxeterImpl::felsch_lookahead(bool should_stop_early) {
       auto last_stop_early_check = std::chrono::high_resolution_clock::now();
       auto const old_number_of_killed    = _word_graph.number_of_nodes_killed();
       auto       killed_at_prev_interval = old_number_of_killed;
@@ -1845,10 +1850,12 @@ namespace libsemigroups {
       node_type&   current = _word_graph.lookahead_cursor();
       size_t const n       = _word_graph.out_degree();
 
-      while (current != _word_graph.first_free_node()
-             && (!stop_early || (running() && !stopped()) || !running())) {
-        // See the comment in make_compatible about why we have !stop_early
-        // here. This might never be used but is here for consistency.
+      while (
+          current != _word_graph.first_free_node()
+          && (!should_stop_early || (running() && !stopped()) || !running())) {
+        // See the comment in make_compatible about why we have
+        // !should_stop_early here. This might never be used but is here for
+        // consistency.
         _word_graph.definitions().clear();
         for (size_t a = 0; a < n; ++a) {
           _word_graph.definitions().emplace_back(current, a);
@@ -1856,8 +1863,9 @@ namespace libsemigroups {
         _word_graph.process_definitions();
         current = _word_graph.next_active_node(current);
         _stats.lookahead_position++;
-        if (lookahead_stop_early(
-                stop_early, last_stop_early_check, killed_at_prev_interval)) {
+        if (lookahead_stop_early(should_stop_early,
+                                 last_stop_early_check,
+                                 killed_at_prev_interval)) {
           break;
         }
         if (!_ticker_running && reporting_enabled()
@@ -1871,7 +1879,8 @@ namespace libsemigroups {
       _ticker_running = old_ticker_running;
     }
 
-    ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind() {
+    ToddCoxeterImpl&
+    ToddCoxeterImpl::perform_lookbehind(bool should_stop_early) {
       using iterator       = std::back_insert_iterator<word_type>;
       using const_iterator = word_type::const_iterator;
       if (kind() == congruence_kind::onesided
@@ -1884,7 +1893,7 @@ namespace libsemigroups {
           [this](iterator d_first, const_iterator first, const_iterator last) {
             reduce_no_run_no_checks(d_first, first, last);
           };
-      return perform_lookbehind(collapser);
+      return perform_lookbehind(collapser, should_stop_early);
     }
   }  // namespace detail
 }  // namespace libsemigroups

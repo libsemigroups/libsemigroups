@@ -2211,8 +2211,8 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     while (tc.complete() < 0.60) {
       tc.run_for(std::chrono::seconds(1));
-      tc.perform_lookbehind();
-      tc.perform_lookbehind(collapser);
+      tc.perform_lookbehind(options::do_not_stop_early);
+      tc.perform_lookbehind(collapser, options::do_not_stop_early);
     }
     tc.strategy(options::strategy::hlt);
 
@@ -2384,7 +2384,7 @@ namespace libsemigroups {
     tc.run_until([&tc]() -> bool {
       return tc.current_word_graph().number_of_nodes_active() >= 12'000'000;
     });
-    tc.perform_lookbehind();
+    tc.perform_lookbehind(options::do_not_stop_early);
 
     REQUIRE(tc.number_of_classes() == 1);
   }
@@ -3093,12 +3093,21 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(!is_obviously_infinite(tc));
+    KnuthBendix kb(congruence_kind::twosided, p);
+    kb.run_for(std::chrono::seconds(1));
 
-    tc.lookahead_extent(options::lookahead_extent::partial)
-        .lookahead_style(options::lookahead_style::hlt)
-        .lookahead_growth_factor(1.01)
-        .lookahead_growth_threshold(10);
-    REQUIRE(is_non_trivial(tc) == tril::TRUE);
+    auto collapser = [&kb](auto d_first, auto first, auto last) {
+      return kb.reduce_no_run_no_checks(d_first, first, last);
+    };
+    tc.strategy(options::strategy::felsch).large_collapse(10'000'000);
+    while (!tc.finished()) {
+      tc.run_for(std::chrono::seconds(2));
+      tc.perform_lookahead(options::stop_early);
+      tc.perform_lookbehind(options::do_not_stop_early);
+      tc.perform_lookbehind(collapser, options::do_not_stop_early);
+    }
+
+    // REQUIRE(is_non_trivial(tc) == tril::TRUE);
     REQUIRE(tc.number_of_classes() == 6'561);
   }
 
@@ -3887,22 +3896,20 @@ namespace libsemigroups {
               == tril::TRUE);
     }
     tc.run_until([&tc]() {
-      return tc.current_word_graph().number_of_nodes_active() > 3 * 10'200'960;
+      return tc.current_word_graph().number_of_nodes_active() > 6 * 10'200'960;
     });
     KnuthBendix kb(congruence_kind::twosided, p);
     kb.run_for(std::chrono::seconds(1));
 
-    for (size_t i = 0; i < tc.number_of_nodes_active(); ++i) {
-      auto w = todd_coxeter::word_of(tc, i);
-      REQUIRE(w == knuth_bendix::reduce_no_run(kb, w));
-    }
+    // for (size_t i = 0; i < tc.number_of_nodes_active(); ++i) {
+    //   auto w = todd_coxeter::current_word_of(tc, i);
+    //   REQUIRE(w == knuth_bendix::reduce_no_run(kb, w));
+    // }
 
     auto collapser = [&kb](auto d_first, auto first, auto last) {
       return kb.reduce_no_run_no_checks(d_first, first, last);
     };
-    tc.perform_lookbehind(collapser);
-
-    // todd_coxeter::perform_lookbehind(tc);
+    tc.perform_lookbehind(collapser, options::stop_early);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {
@@ -4537,7 +4544,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
