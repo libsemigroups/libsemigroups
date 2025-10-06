@@ -69,7 +69,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     KnuthBendix kb(congruence_kind::twosided,
-                   to<Presentation<std::string>>(chinese_monoid(3)));
+                   v4::to<Presentation<std::string>>(chinese_monoid(3)));
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules
@@ -117,7 +117,7 @@ namespace libsemigroups {
                             121_w,
                             221_w,
                             212_w}));
-    auto p = to<Presentation<std::string>>(plactic_monoid(3));
+    auto p = v4::to<Presentation<std::string>>(plactic_monoid(3));
     REQUIRE(p.rules
             == std::vector<std::string>({"bac",
                                          "bca",

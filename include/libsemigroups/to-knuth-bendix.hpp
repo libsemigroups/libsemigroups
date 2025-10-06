@@ -19,10 +19,23 @@
 #ifndef LIBSEMIGROUPS_TO_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_TO_KNUTH_BENDIX_HPP_
 
-#include "knuth-bendix.hpp"
+#include <type_traits>
+
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "presentation.hpp"        // for Presentation
+#include "to-presentation.hpp"     // for to<Presentation>
 
 namespace libsemigroups {
+
+  ////////////////////////////////////////////////////////////////////////
+  // Forward decls
+  ////////////////////////////////////////////////////////////////////////
+
   class FroidurePinBase;
+
+  template <typename Word>
+  class ToddCoxeter;
+
   enum class congruence_kind;
 
   //! \defgroup to_knuth_bendix_group to<KnuthBendix>

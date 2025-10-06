@@ -34,9 +34,8 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "presentation.hpp"     // for Presentation
-#include "to-presentation.hpp"  // for to<Presentation>
-#include "types.hpp"            // for congruence_kind
+#include "presentation.hpp"  // for Presentation
+#include "types.hpp"         // for congruence_kind
 
 #include "detail/citow.hpp"              // for detail::citow and detail::itow
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon

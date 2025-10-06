@@ -16,44 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/cong-helpers.hpp"
-
-#include <algorithm>      // for max, remove_if
-#include <cctype>         // for isprint
-#include <chrono>         // for duration_cast
-#include <iterator>       // for back_inserter, begin
-#include <list>           // for operator!=
-#include <memory>         // for static_pointer_cast
-#include <tuple>          // for tie
-#include <unordered_map>  // for operator==
-#include <utility>        // for forward, move
-
-#include "libsemigroups/cong-class.hpp"  // for Congruence
-#include "libsemigroups/constants.hpp"   // for operator==, opera...
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXC...
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/knuth-bendix-helpers.hpp"  // for non_trivial_classes
-#include "libsemigroups/obvinf.hpp"                // for is_obviously_infi...
-#include "libsemigroups/paths.hpp"                 // for number_of_paths
-#include "libsemigroups/presentation.hpp"          // for add_rule, longest...
-#include "libsemigroups/ranges.hpp"                // for operator|, iterat...
-#include "libsemigroups/to-presentation.hpp"       // for to<Presentation>
-#include "libsemigroups/todd-coxeter-class.hpp"    // for ToddCoxeter<word_type>
-#include "libsemigroups/todd-coxeter-helpers.hpp"  // for index_of
-#include "libsemigroups/types.hpp"                 // for word_type
-#include "libsemigroups/word-graph.hpp"            // for WordGraph::WordGr...
-#include "libsemigroups/word-range.hpp"            // for ToString, ToWord
-
-#include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceInterfa...
-#include "libsemigroups/detail/fmt.hpp"                // for format, print
-#include "libsemigroups/detail/iterator.hpp"           // for operator+
-#include "libsemigroups/detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
-#include "libsemigroups/detail/path-iterators.hpp"  // for const_pstilo_iter...
-#include "libsemigroups/detail/report.hpp"          // for report_default
-#include "libsemigroups/detail/rewriters.hpp"       // for RewriteTrie
-#include "libsemigroups/detail/string.hpp"          // for group_digits, sig...
-#include "libsemigroups/detail/timer.hpp"           // for string_time
-
 namespace libsemigroups {
 
   namespace congruence_common {

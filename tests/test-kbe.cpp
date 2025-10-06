@@ -25,6 +25,7 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/transf.hpp"           // for Transf<>
 #include "libsemigroups/word-range.hpp"       // for literals
 
