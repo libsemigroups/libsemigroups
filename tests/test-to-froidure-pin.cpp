@@ -30,6 +30,7 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
@@ -151,7 +152,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ef", "dg");
     check_from_ke(p);
     check_from_ke<std::string, detail::MultiView<std::string>>(p);
-    check_from_ke<word_type>(to<Presentation<word_type>>(p));
+    check_from_ke<word_type>(v4::to<Presentation<word_type>>(p));
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
@@ -167,7 +168,7 @@ namespace libsemigroups {
         (check_from_ke<std::string, detail::MultiView<std::string>>(p)),
         LibsemigroupsException);
     REQUIRE_THROWS_AS(
-        (check_from_ke<word_type>(to<Presentation<word_type>>(p))),
+        (check_from_ke<word_type>(v4::to<Presentation<word_type>>(p))),
         LibsemigroupsException);
   }
 

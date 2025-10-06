@@ -2998,6 +2998,78 @@ namespace libsemigroups {
   template <typename Word>
   std::string to_human_readable_repr(InversePresentation<Word> const& p);
 
+  namespace v4 {
+    ////////////////////////////////////////////////////////////////////////
+    // Presentation + function -> Presentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word, typename Func>
+    auto to(Presentation<Word> const& p, Func&& f) -> std::enable_if_t<
+        std::is_same_v<Presentation<typename Result::word_type>, Result>,
+        Result>;
+
+    ////////////////////////////////////////////////////////////////////////
+    // InversePresentation + function -> InversePresentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word, typename Func>
+    auto to(InversePresentation<Word> const& ip, Func&& f) -> std::enable_if_t<
+        std::is_same_v<InversePresentation<typename Result::word_type>, Result>,
+        Result>;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Presentation -> Presentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word>
+    auto to(Presentation<Word> const& p) -> std::enable_if_t<
+        std::is_same_v<Presentation<typename Result::word_type>, Result>
+            && !std::is_same_v<typename Result::word_type, Word>,
+        Result>;
+
+    // This function is documented above because Doxygen conflates these two
+    // functions.
+    template <typename Result, typename Word>
+    auto to(Presentation<Word> const& p) noexcept
+        -> std::enable_if_t<std::is_same_v<Presentation<Word>, Result>,
+                            Result const&> {
+      return p;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // InversePresentation -> InversePresentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word>
+    auto to(InversePresentation<Word> const& ip) noexcept -> std::enable_if_t<
+        std::is_same_v<InversePresentation<typename Result::word_type>, Result>
+            && !std::is_same_v<Word, typename Result::word_type>,
+        Result> {
+      using WordOutput = typename Result::word_type;
+      return v4::to<InversePresentation<WordOutput>>(ip, [&ip](auto val) {
+        return words::human_readable_letter<WordOutput>(ip.index(val));
+      });
+    }
+
+    // This function is documented above because Doxygen conflates these two
+    // functions.
+    template <typename Result, typename Word>
+    auto to(InversePresentation<Word> const& ip) noexcept
+        -> std::enable_if_t<std::is_same_v<InversePresentation<Word>, Result>,
+                            Result const&> {
+      return ip;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Presentation -> InversePresentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <template <typename...> typename Thing, typename Word>
+    auto to(Presentation<Word> const& p) -> std::enable_if_t<
+        std::is_same_v<InversePresentation<Word>, Thing<Word>>,
+        InversePresentation<Word>>;
+  }  // namespace v4
+
   namespace detail {
 
     class GreedyReduceHelper {

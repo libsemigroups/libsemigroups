@@ -1254,4 +1254,120 @@ namespace libsemigroups {
     // TODO should throw if index is out of bounds
     return _inverses[Presentation<Word>::index(x)];
   }
+
+  namespace v4 {
+    ////////////////////////////////////////////////////////////////////////
+    // Presentation + function -> Presentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word, typename Func>
+    auto to(Presentation<Word> const& p, Func&& f) -> std::enable_if_t<
+        std::is_same_v<Presentation<typename Result::word_type>, Result>,
+        Result> {
+      using WordOutput = typename Result::word_type;
+
+      static_assert(
+          std::is_invocable_v<std::decay_t<Func>,
+                              typename Presentation<Word>::letter_type>);
+
+      // Must call p.throw_if_bad_alphabet_or_rules otherwise f(val) may
+      // segfault if val is not in the alphabet
+      p.throw_if_bad_alphabet_or_rules();
+
+      Result result;
+      result.contains_empty_word(p.contains_empty_word());
+      WordOutput new_alphabet;
+      new_alphabet.resize(p.alphabet().size());
+      std::transform(
+          p.alphabet().cbegin(), p.alphabet().cend(), new_alphabet.begin(), f);
+      // TODO(1) use alphabet_no_checks when it is implemented
+      result.alphabet(new_alphabet);
+      WordOutput rel;
+      for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
+        rel.resize(it->size());
+        std::transform(it->cbegin(), it->cend(), rel.begin(), f);
+        result.rules.push_back(std::move(rel));
+        rel.clear();
+      }
+      return result;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // InversePresentation + function -> InversePresentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word, typename Func>
+    auto to(InversePresentation<Word> const& ip, Func&& f) -> std::enable_if_t<
+        std::is_same_v<InversePresentation<typename Result::word_type>, Result>,
+        Result> {
+      static_assert(
+          std::is_invocable_v<std::decay_t<Func>,
+                              typename Presentation<Word>::letter_type>);
+      using WordOutput = typename Result::word_type;
+
+      ip.throw_if_letter_not_in_alphabet(ip.inverses().begin(),
+                                         ip.inverses().end());
+      InversePresentation<WordOutput> result(
+          std::move(v4::to<Presentation<WordOutput>>(ip, f)));
+
+      WordOutput new_inverses;
+      new_inverses.resize(ip.inverses().size());
+      std::transform(ip.inverses().cbegin(),
+                     ip.inverses().cend(),
+                     new_inverses.begin(),
+                     f);
+      // TODO(1) should move new_inverses into result
+      result.inverses_no_checks(new_inverses);
+      return result;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Presentation -> Presentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Result, typename Word>
+    auto to(Presentation<Word> const& p) -> std::enable_if_t<
+        std::is_same_v<Presentation<typename Result::word_type>, Result>
+            && !std::is_same_v<typename Result::word_type, Word>,
+        Result> {
+      using WordOutput = typename Result::word_type;
+      return v4::to<Result>(p, [&p](auto val) {
+        return words::human_readable_letter<WordOutput>(p.index(val));
+      });
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // InversePresentation -> InversePresentation
+    ////////////////////////////////////////////////////////////////////////
+
+    // Implemented in hpp file because very short
+
+    ////////////////////////////////////////////////////////////////////////
+    // Presentation -> InversePresentation
+    ////////////////////////////////////////////////////////////////////////
+
+    template <template <typename...> typename Thing, typename Word>
+    auto to(Presentation<Word> const& p) -> std::enable_if_t<
+        std::is_same_v<InversePresentation<Word>, Thing<Word>>,
+        InversePresentation<Word>> {
+      InversePresentation<Word> result(p);
+      presentation::normalize_alphabet(
+          result);  // calls p.throw_if_bad_alphabet_or_rules
+      result.alphabet(2 * result.alphabet().size());
+      auto invs = result.alphabet();
+
+      // The below pragma exists to suppress the false-positive warnings
+      // produced by g++ 13.2.0
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+      std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
+#pragma GCC diagnostic pop
+      result.inverses_no_checks(std::move(invs));
+      return result;
+    }
+
+  }  // namespace v4
+
 }  // namespace libsemigroups

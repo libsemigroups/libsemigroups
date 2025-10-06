@@ -28,6 +28,7 @@
 #include "libsemigroups/kambites.hpp"         // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/transf.hpp"           // for LeastTransf
 #include "libsemigroups/types.hpp"            // for tril etc
 #include "libsemigroups/word-range.hpp"       // for number_of_words

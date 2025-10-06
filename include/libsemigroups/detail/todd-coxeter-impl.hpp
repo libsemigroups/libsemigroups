@@ -37,16 +37,15 @@
 #include <utility>   // for move, pair
 #include <vector>    // for vector
 
-#include "libsemigroups/constants.hpp"        // for operator!=
-#include "libsemigroups/debug.hpp"            // for LIBSEMIG...
-#include "libsemigroups/forest.hpp"           // for Forest
-#include "libsemigroups/order.hpp"            // for Order
-#include "libsemigroups/presentation.hpp"     // for Presenta...
-#include "libsemigroups/ranges.hpp"           // for operator|
-#include "libsemigroups/runner.hpp"           // for Reporter
-#include "libsemigroups/to-presentation.hpp"  // for to_prese...
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/constants.hpp"     // for operator!=
+#include "libsemigroups/debug.hpp"         // for LIBSEMIG...
+#include "libsemigroups/forest.hpp"        // for Forest
+#include "libsemigroups/order.hpp"         // for Order
+#include "libsemigroups/presentation.hpp"  // for Presenta...
+#include "libsemigroups/ranges.hpp"        // for operator|
+#include "libsemigroups/runner.hpp"        // for Reporter
+#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
 
 #include "cong-common-class.hpp"        // for Congruen...
 #include "felsch-graph.hpp"             // for FelschGraph

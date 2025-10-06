@@ -40,15 +40,14 @@
 #include <utility>           // for get, move, swap, make_pair
 #include <vector>            // for vector, swap
 
-#include "constants.hpp"        // for UNDEFINED, operator==
-#include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "order.hpp"            // for lexicographical_compare
-#include "presentation.hpp"     // for operator!=, Presentation
-#include "to-presentation.hpp"  // for to<Presentation>
-#include "types.hpp"            // for tril, congruence_kind
-#include "ukkonen.hpp"          // for maximal_piece_prefix_no...
-#include "word-range.hpp"       // for operator+=, operator+
+#include "constants.hpp"     // for UNDEFINED, operator==
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "order.hpp"         // for lexicographical_compare
+#include "presentation.hpp"  // for operator!=, Presentation
+#include "types.hpp"         // for tril, congruence_kind
+#include "ukkonen.hpp"       // for maximal_piece_prefix_no...
+#include "word-range.hpp"    // for operator+=, operator+
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for format

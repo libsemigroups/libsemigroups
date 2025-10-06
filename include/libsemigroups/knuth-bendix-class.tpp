@@ -68,7 +68,8 @@ namespace libsemigroups {
             p.alphabet().size());
       }
     }
-    KnuthBendixImpl_::init(knd, to<Presentation<string_type>>(p, [&p](auto x) {
+    KnuthBendixImpl_::init(knd,
+                           v4::to<Presentation<string_type>>(p, [&p](auto x) {
                              return p.index_no_checks(x);
                            }));
     _extra_letter_added = false;

@@ -34,7 +34,7 @@ namespace libsemigroups {
                                              Presentation<Word>&& p) {
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to<Presentation> throws in the next line if p isn't valid
-      ToddCoxeterImpl::init(knd, to<Presentation<word_type>>(p));
+      ToddCoxeterImpl::init(knd, v4::to<Presentation<word_type>>(p));
       _presentation = std::move(p);
     } else {
       p.throw_if_bad_alphabet_or_rules();
@@ -51,7 +51,7 @@ namespace libsemigroups {
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
     ToddCoxeterImpl::init(knd, wg);
-    _presentation = to<Presentation<Word>>(internal_presentation());
+    _presentation = v4::to<Presentation<Word>>(internal_presentation());
     _generating_pairs.clear();
     return *this;
   }
@@ -63,7 +63,7 @@ namespace libsemigroups {
                                              WordGraph<Node> const&    wg) {
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to<Presentation> throws in the next line if p isn't valid
-      ToddCoxeterImpl::init(knd, to<Presentation<word_type>>(p), wg);
+      ToddCoxeterImpl::init(knd, v4::to<Presentation<word_type>>(p), wg);
       _presentation = p;
     } else {
       p.throw_if_bad_alphabet_or_rules();

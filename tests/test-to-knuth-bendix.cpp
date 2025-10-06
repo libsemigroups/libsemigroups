@@ -22,12 +22,14 @@
 #include "libsemigroups/word-range.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/to-knuth-bendix.hpp"  // for to<Presentation>
-#include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin
+#include "libsemigroups/presentation.hpp"        // for Presentation
+#include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "libsemigroups/to-knuth-bendix.hpp"     // for to<Presentation>
+#include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"              // for Transf
+#include "libsemigroups/types.hpp"               // for word_type
 
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
 #include "libsemigroups/detail/rewriters.hpp"  // for RewriteFromLeft, Rewri...

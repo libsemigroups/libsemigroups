@@ -16,8 +16,8 @@
 
 // The purpose of this file is to test the ToddCoxeter class.
 
-#include <chrono>
-#include <cstdlib>   // for what?
+#include <chrono>    // for chrono::seconds
+#include <cstdlib>   // for ?
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
@@ -29,6 +29,7 @@
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
 #include "libsemigroups/gabow.hpp"                  // for Gabow
+#include "libsemigroups/knuth-bendix.hpp"           // for KnuthBendix
 #include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
 #include "libsemigroups/presentation-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/presentation.hpp"           // for Presentation
