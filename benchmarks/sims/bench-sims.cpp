@@ -1278,7 +1278,7 @@ namespace libsemigroups {
   }
 
   TEST_CASE("full transf. monoid 2-sided", "[full_transf_2_sided]") {
-    using literals::operator""_p;
+    using literals::    operator""_p;
     auto                rg    = ReportGuard(false);
     std::vector<size_t> sizes = {0, 0, 4, 27, 256, 3125};
     std::vector<size_t> num   = {0, 0, 4, 7, 11, 14};

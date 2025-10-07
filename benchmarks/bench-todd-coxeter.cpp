@@ -36,7 +36,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 //
 namespace libsemigroups {
-  using literals::operator""_p;
+  using literals::            operator""_p;
   using std::string_literals::operator""s;
   using strategy         = detail::ToddCoxeterImpl::options::strategy;
   using lookahead_extent = detail::ToddCoxeterImpl::options::lookahead_extent;
