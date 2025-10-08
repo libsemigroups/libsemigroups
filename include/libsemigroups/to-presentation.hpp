@@ -31,6 +31,8 @@
 #include "word-range.hpp"          // for human_readable...
 
 // TODO(1): Make as many of these functions const as possible
+// TODO(1): Remove the intentional typos from doxygen declarations once
+//          issue doxygen issue #11787 is merged into release
 namespace libsemigroups {
 
   template <typename>
@@ -212,7 +214,7 @@ namespace libsemigroups {
 
   //! \ingroup to_presentation_group
   //!
-  //! \brief Make a presentation from a kambites
+  //! \brief Make a presentation from a \ref_kambites
   //!
   //! Defined in `to-presentation.hpp`
   //!
