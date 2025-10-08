@@ -28,9 +28,8 @@
 
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
-#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-range.hpp"       // for human_readable_letter
+#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word-range.hpp"    // for human_readable_letter
 
 #include "libsemigroups/detail/fmt.hpp"  // for format
 
@@ -226,7 +225,7 @@ namespace libsemigroups {
 
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name) {
-      return to_gap_string(to<Presentation<word_type>>(p), var_name);
+      return to_gap_string(v4::to<Presentation<word_type>>(p), var_name);
     }
 
   }  // namespace presentation

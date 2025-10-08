@@ -892,7 +892,7 @@ namespace libsemigroups {
         presentation::add_rule(p, "b^23"_p, "b");
         presentation::add_rule(p, "ab^11ab^2"_p, "bba");
       }
-      return to<Presentation<word_type>>(p);
+      return v4::to<Presentation<word_type>>(p);
     }
 
     auto       rg = ReportGuard();

@@ -87,9 +87,6 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("Reporter", "000", "Code coverage", "[quick]") {
       Reporter r;
       REQUIRE(!r.report());
-      REQUIRE(r.report_every() == std::chrono::seconds(1));
-      r.report_every(std::chrono::seconds(2));
-      REQUIRE(r.report_every() == std::chrono::seconds(2));
       REQUIRE_NOTHROW(r.last_report());
       r.reset_last_report();
       REQUIRE(delta(r.last_report()) < std::chrono::seconds(1));
@@ -97,26 +94,20 @@ namespace libsemigroups {
       REQUIRE(r.report_prefix() == "Banana");
       r.init();
       REQUIRE(r.report_prefix() == "");
-      REQUIRE(r.report_every() == std::chrono::seconds(1));
       r.report_prefix("Banana");
-      r.report_every(std::chrono::seconds(32));
 
       Reporter s;
       s = r;
       REQUIRE(s.report_prefix() == "Banana");
-      REQUIRE(s.report_every() == std::chrono::seconds(32));
       REQUIRE(s.last_report() == r.last_report());
       s.init();
       REQUIRE(s.report_prefix() == "");
-      REQUIRE(s.report_every() == std::chrono::seconds(1));
 
       Reporter t(std::move(r));
       REQUIRE(t.report_prefix() == "Banana");
-      REQUIRE(t.report_every() == std::chrono::seconds(32));
 
       t = std::move(s);
       REQUIRE(t.report_prefix() == "");
-      REQUIRE(t.report_every() == std::chrono::seconds(1));
 
       s.report_divider("666");
       REQUIRE(s.report_divider() == "666");
@@ -244,7 +235,12 @@ namespace libsemigroups {
       auto        rg = ReportGuard(false);
       TestRunner1 tr;
       REQUIRE(!tr.report());
+      // We include this deprecated function so that we can still test tr.report
+      // without increasing the runtime of this test to one second.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       tr.report_every(std::chrono::milliseconds(10));
+#pragma GCC diagnostic pop
       tr.run_for(std::chrono::milliseconds(20));
       REQUIRE(tr.report());
     }

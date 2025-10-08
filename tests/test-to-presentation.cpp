@@ -28,16 +28,14 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"              // for Bipartition
-#include "libsemigroups/constants.hpp"           // for operator!=, operator==
-#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin
-#include "libsemigroups/kambites-class.hpp"      // for Kambites
-#include "libsemigroups/presentation.hpp"        // for Presentation, change_...
-#include "libsemigroups/stephen.hpp"             // for Stephen
-#include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
-#include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
-#include "libsemigroups/types.hpp"  // for word_type, congruence_kind
+#include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/constants.hpp"        // for operator!=, operator==
+#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
+#include "libsemigroups/kambites-class.hpp"   // for Kambites
+#include "libsemigroups/presentation.hpp"     // for Presentation, change_...
+#include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
+#include "libsemigroups/types.hpp"            // for word_type, congruence_kind
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
@@ -155,7 +153,7 @@ namespace libsemigroups {
     }
     p.throw_if_bad_alphabet_or_rules();
 
-    Presentation<W2> q = to<Presentation<W2>>(p);
+    Presentation<W2> q = v4::to<Presentation<W2>>(p);
     REQUIRE(q.contains_empty_word());
 
     if constexpr (std::is_same_v<W2, std::string>) {
@@ -179,7 +177,7 @@ namespace libsemigroups {
     p.throw_if_bad_alphabet_or_rules();
 
     // Check two conversions gets you back to where you started
-    REQUIRE(p == to<Presentation<W1>>(q));
+    REQUIRE(p == v4::to<Presentation<W1>>(q));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
@@ -211,7 +209,7 @@ namespace libsemigroups {
     auto f1 = [&p](auto val) {
       return words::human_readable_letter<W2>(p.index(val) + 7);
     };
-    Presentation<W2> q = to<Presentation<W2>>(p, f1);
+    Presentation<W2> q = v4::to<Presentation<W2>>(p, f1);
     REQUIRE(q.contains_empty_word());
     if constexpr (std::is_same_v<W2, std::string>) {
       REQUIRE(q.alphabet() == "hij");
@@ -223,7 +221,7 @@ namespace libsemigroups {
     q.throw_if_bad_alphabet_or_rules();
 
     auto             f2 = [&p](auto val) { return p.index(val); };
-    Presentation<W2> r  = to<Presentation<W2>>(p, f2);
+    Presentation<W2> r  = v4::to<Presentation<W2>>(p, f2);
     REQUIRE(r.contains_empty_word());
     REQUIRE(r.alphabet() == W2({0, 1, 2}));
     REQUIRE(r.rules == std::vector<W2>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
@@ -243,13 +241,14 @@ namespace libsemigroups {
     // intentionally bad
     REQUIRE_THROWS_AS(p.throw_if_bad_alphabet_or_rules(),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(to<Presentation<std::string>>(p), LibsemigroupsException);
+    REQUIRE_THROWS_AS(v4::to<Presentation<std::string>>(p),
+                      LibsemigroupsException);
 
     p.alphabet_from_rules();
     REQUIRE(p.alphabet() == word_type({0, 1, 2}));
     p.throw_if_bad_alphabet_or_rules();
     REQUIRE(p.contains_empty_word());
-    auto q = to<Presentation<std::string>>(p);
+    auto q = v4::to<Presentation<std::string>>(p);
     presentation::change_alphabet(q, "abc");
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
@@ -257,19 +256,20 @@ namespace libsemigroups {
     q.throw_if_bad_alphabet_or_rules();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
-                          "018",
-                          "use human readable alphabet for to<Presentation>",
-                          "[quick][presentation]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "to<Presentation>",
+      "018",
+      "use human readable alphabet for v4::to<Presentation>",
+      "[quick][presentation]") {
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);
     presentation::add_rule(p, {0, 1}, {});
 
-    auto q = to<Presentation<std::string>>(p);
+    auto q = v4::to<Presentation<std::string>>(p);
     REQUIRE(q.alphabet() == "ab");
     REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
-    q = to<Presentation<std::string>>(p);
+    q = v4::to<Presentation<std::string>>(p);
     presentation::change_alphabet(q, "xy");
     REQUIRE(q.alphabet() == "xy");
     REQUIRE(q.rules == std::vector<std::string>({"xy", ""}));
@@ -304,7 +304,7 @@ namespace libsemigroups {
     }
     ip.throw_if_bad_alphabet_or_rules();
 
-    auto iq = to<InversePresentation<W2>>(ip);
+    auto iq = v4::to<InversePresentation<W2>>(ip);
     REQUIRE(iq.contains_empty_word());
 
     if constexpr (std::is_same_v<W2, std::string>) {
@@ -333,10 +333,10 @@ namespace libsemigroups {
 
     // Check two conversions gets you back to where you
     // started
-    REQUIRE(ip == to<InversePresentation<W1>>(iq));
+    REQUIRE(ip == v4::to<InversePresentation<W1>>(iq));
 
     auto                    f  = [&ip](auto val) { return ip.index(val) + 3; };
-    InversePresentation<W2> ir = to<InversePresentation<W2>>(ip, f);
+    InversePresentation<W2> ir = v4::to<InversePresentation<W2>>(ip, f);
     REQUIRE(ir.contains_empty_word());
     REQUIRE(ir.alphabet() == W2({3, 4, 5}));
     REQUIRE(ir.rules == std::vector<W2>({{3, 4, 5}, {3, 4}, {3, 4, 5}, {}}));
@@ -363,7 +363,7 @@ namespace libsemigroups {
     }
     p.throw_if_bad_alphabet_or_rules();
 
-    InversePresentation<TestType> ip = to<InversePresentation>(p);
+    InversePresentation<TestType> ip = v4::to<InversePresentation>(p);
     REQUIRE(!ip.contains_empty_word());
     if constexpr (std::is_same_v<TestType, std::string>) {
       REQUIRE(ip.alphabet() == "abcdef");
@@ -379,9 +379,9 @@ namespace libsemigroups {
     {
       Presentation<std::vector<uint16_t>> q;
       q.alphabet(32768);
-      REQUIRE_NOTHROW(to<InversePresentation>(q));
+      REQUIRE_NOTHROW(v4::to<InversePresentation>(q));
       q.alphabet(32769);
-      REQUIRE_THROWS(to<InversePresentation>(q));
+      REQUIRE_THROWS(v4::to<InversePresentation>(q));
     }
   }
 
@@ -424,7 +424,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -458,7 +458,7 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("hijkl");
@@ -494,7 +494,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -530,7 +530,7 @@ namespace libsemigroups {
                           "025",
                           "from Kambites<Word>",
                           "[quick][to_presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -554,14 +554,14 @@ namespace libsemigroups {
     Kambites k_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
     REQUIRE(to<Presentation<word_type>>(k_str)
-            == to<Presentation<word_type>>(p_str));
+            == v4::to<Presentation<word_type>>(p_str));
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
                           "026",
                           "from ToddCoxeter<Word>",
                           "[quick][to_presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -592,7 +592,7 @@ namespace libsemigroups {
                           "027",
                           "from Stephen<Presentation<Word>>",
                           "[quick][to_presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);

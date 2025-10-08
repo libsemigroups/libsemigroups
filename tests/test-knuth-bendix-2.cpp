@@ -1636,7 +1636,7 @@ namespace libsemigroups {
     presentation::add_idempotent_rules_no_checks(p, p.alphabet());
 
     KnuthBendix<std::string, TestType> kb(twosided,
-                                          to<Presentation<std::string>>(p));
+                                          v4::to<Presentation<std::string>>(p));
     kb.run();
 
     REQUIRE(knuth_bendix::reduce(kb, "cbda") == "bcda");

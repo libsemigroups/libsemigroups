@@ -37,16 +37,15 @@
 #include <utility>   // for move, pair
 #include <vector>    // for vector
 
-#include "libsemigroups/constants.hpp"        // for operator!=
-#include "libsemigroups/debug.hpp"            // for LIBSEMIG...
-#include "libsemigroups/forest.hpp"           // for Forest
-#include "libsemigroups/order.hpp"            // for Order
-#include "libsemigroups/presentation.hpp"     // for Presenta...
-#include "libsemigroups/ranges.hpp"           // for operator|
-#include "libsemigroups/runner.hpp"           // for Reporter
-#include "libsemigroups/to-presentation.hpp"  // for to_prese...
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/constants.hpp"     // for operator!=
+#include "libsemigroups/debug.hpp"         // for LIBSEMIG...
+#include "libsemigroups/forest.hpp"        // for Forest
+#include "libsemigroups/order.hpp"         // for Order
+#include "libsemigroups/presentation.hpp"  // for Presenta...
+#include "libsemigroups/ranges.hpp"        // for operator|
+#include "libsemigroups/runner.hpp"        // for Reporter
+#include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
 
 #include "cong-common-class.hpp"        // for Congruen...
 #include "felsch-graph.hpp"             // for FelschGraph
@@ -727,12 +726,18 @@ namespace libsemigroups {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // This is documented in Reporter, so we don't duplicate the doc here.
       template <typename Time>
-      void report_every(Time val) {
+      [[deprecated]] void report_every(Time val) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         CongruenceCommon::report_every(val);
+#pragma GCC diagnostic pop
       }
 
-      [[nodiscard]] nanoseconds report_every() const noexcept {
+      [[deprecated]] [[nodiscard]] nanoseconds report_every() const noexcept {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         return Reporter::report_every();
+#pragma GCC diagnostic pop
       }
 #endif
 

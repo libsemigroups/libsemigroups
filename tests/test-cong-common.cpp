@@ -47,6 +47,7 @@
 #include "libsemigroups/ranges.hpp"                // for ranges
 #include "libsemigroups/runner.hpp"                // for delta
 #include "libsemigroups/to-froidure-pin.hpp"       // for to<FroidurePin>
+#include "libsemigroups/to-presentation.hpp"       // for to<Presentation>
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for normal_forms, ind...
 #include "libsemigroups/transf.hpp"                // for Transf
 #include "libsemigroups/types.hpp"                 // for word_type, tril

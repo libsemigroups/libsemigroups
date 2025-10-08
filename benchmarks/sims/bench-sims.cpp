@@ -581,7 +581,7 @@ namespace libsemigroups {
 
     // REQUIRE(presentation::to_gap_string(p, "G") == "");
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
+    S.presentation(v4::to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
 
     BENCHMARK("libsemigroups (1 thread)") {
       REQUIRE(S.number_of_threads(1).number_of_congruences(50) == 1'747);
@@ -634,7 +634,7 @@ namespace libsemigroups {
 
     // REQUIRE(presentation::to_gap_string(p, "G") == "");
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
+    S.presentation(v4::to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
 
     for (auto nr_threads : {1, 2, 4, 8}) {
       BENCHMARK(fmt::format("libsemigroups ({} thread{})",
@@ -664,7 +664,7 @@ namespace libsemigroups {
 
     // REQUIRE(presentation::to_gap_string(p, "G") == "");
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p))
+    S.presentation(v4::to<Presentation<word_type>>(p))
         .add_pruner(conj_pruner)
         .long_rule_length(17);
     // REQUIRE(S.presentation().rules == std::vector<word_type>());
@@ -718,7 +718,7 @@ namespace libsemigroups {
     REQUIRE(presentation::to_gap_string(p, "G") == "");
     Sims1 S;
 
-    S.presentation(to<Presentation<word_type>>(p))
+    S.presentation(v4::to<Presentation<word_type>>(p))
         .add_pruner(conj_pruner)
         .idle_thread_restarts(256);
 
@@ -758,7 +758,7 @@ namespace libsemigroups {
     // REQUIRE(presentation::to_gap_string(p, "G") == "");
 
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p))
+    S.presentation(v4::to<Presentation<word_type>>(p))
         .add_pruner(conj_pruner)
         .long_rule_length(62);
 
@@ -794,7 +794,7 @@ namespace libsemigroups {
     // REQUIRE(presentation::to_gap_string(p, "G") == "");
 
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
+    S.presentation(v4::to<Presentation<word_type>>(p)).add_pruner(conj_pruner);
 
     for (auto nr_threads : {1, 2, 4, 8}) {
       BENCHMARK(fmt::format("libsemigroups ({} thread{})",
@@ -818,7 +818,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p));
+    S.presentation(v4::to<Presentation<word_type>>(p));
     BENCHMARK("1 thread") {
       REQUIRE(S.number_of_threads(1).number_of_congruences(10) == 1);
     };
@@ -921,7 +921,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p));
+    S.presentation(v4::to<Presentation<word_type>>(p));
     REQUIRE(S.number_of_threads(4).number_of_congruences(2) == 4);
   }
 
@@ -1002,7 +1002,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
 
     Sims1 S;
-    S.presentation(to<Presentation<word_type>>(p));
+    S.presentation(v4::to<Presentation<word_type>>(p));
 
     BENCHMARK("1 thread") {
       REQUIRE(S.number_of_threads(1).number_of_congruences(12) == 6);
@@ -1321,7 +1321,7 @@ namespace libsemigroups {
       Sims2 S;
       BENCHMARK(
           fmt::format("n = {}, index {}, threads 1", n, sizes[n]).c_str()) {
-        S.init(to<Presentation<word_type>>(p));
+        S.init(v4::to<Presentation<word_type>>(p));
         REQUIRE(S.number_of_threads(1).number_of_congruences(sizes[n])
                 == num[n]);
       };
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
       Sims2  S;
       BENCHMARK(
           fmt::format("n = {}, index {}, threads 1", n, sizes[n]).c_str()) {
-        S.init(to<Presentation<word_type>>(p));
+        S.init(v4::to<Presentation<word_type>>(p));
         REQUIRE(S.number_of_threads(1).number_of_congruences(sizes[n])
                 == num[n]);
       };
