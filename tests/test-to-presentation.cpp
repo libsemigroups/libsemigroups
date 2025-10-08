@@ -34,7 +34,9 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/kambites-class.hpp"   // for Kambites
 #include "libsemigroups/presentation.hpp"     // for Presentation, change_...
+#include "libsemigroups/stephen.hpp"          // for Stephen
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
+#include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
@@ -424,7 +426,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -458,7 +460,7 @@ namespace libsemigroups {
                           "from KnuthBendix<std::string>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("hijkl");
@@ -494,7 +496,7 @@ namespace libsemigroups {
                           "from KnuthBendix<word_type>",
                           "[quick][to_presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet("56789"_w);
@@ -530,7 +532,7 @@ namespace libsemigroups {
                           "025",
                           "from Kambites<Word>",
                           "[quick][to_presentation]") {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -561,7 +563,7 @@ namespace libsemigroups {
                           "026",
                           "from ToddCoxeter<Word>",
                           "[quick][to_presentation]") {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);
@@ -585,14 +587,14 @@ namespace libsemigroups {
     ToddCoxeter tc_str(congruence_kind::twosided, p_str);
     REQUIRE(to<Presentation<std::string>>(tc_str) == p_str);
     REQUIRE(to<Presentation<word_type>>(tc_str)
-            == to<Presentation<word_type>>(p_str));
+            == v4::to<Presentation<word_type>>(p_str));
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
                           "027",
                           "from Stephen<Presentation<Word>>",
                           "[quick][to_presentation]") {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet("56789"_w);
     presentation::add_rule(p, "56"_w, "7"_w);

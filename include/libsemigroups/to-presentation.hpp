@@ -320,7 +320,7 @@ namespace libsemigroups {
       std::is_same_v<Presentation<typename Result::word_type>, Result>
           && !std::is_same_v<typename Result::word_type, Word>,
       Result> {
-    return to<Result>(tc.presentation());
+    return v4::to<Result>(tc.presentation());
   }
 
   // This function is documented above because Doxygen conflates these two
@@ -366,7 +366,7 @@ namespace libsemigroups {
   auto to(Stephen<PresentationType>& s) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>,
       Result> {
-    return to<Result>(s.presentation());
+    return v4::to<Result>(s.presentation());
   }
 
   ////////////////////////////////////////////////////////////////////////
