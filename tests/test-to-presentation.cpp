@@ -34,7 +34,9 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/kambites-class.hpp"   // for Kambites
 #include "libsemigroups/presentation.hpp"     // for Presentation, change_...
+#include "libsemigroups/stephen.hpp"          // for Stephen
 #include "libsemigroups/to-presentation.hpp"  // for v4::to<Presentation>
+#include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for word_type, congruence_kind
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
@@ -555,6 +557,57 @@ namespace libsemigroups {
     REQUIRE(to<Presentation<std::string>>(k_str) == p_str);
     REQUIRE(to<Presentation<word_type>>(k_str)
             == v4::to<Presentation<word_type>>(p_str));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "026",
+                          "from ToddCoxeter<Word>",
+                          "[quick][to_presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(to<Presentation<word_type>>(tc) == p);
+    REQUIRE(to<Presentation<std::string>>(tc).rules
+            == std::vector<std::string>(
+                {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
+
+    Presentation<std::string> p_str;
+    p_str.alphabet("abc");
+    presentation::add_rule(p_str, "aa", "b");
+    presentation::add_rule(p_str, "bb", "c");
+    presentation::add_rule(p_str, "cc", "a");
+
+    ToddCoxeter tc_str(congruence_kind::twosided, p_str);
+    REQUIRE(to<Presentation<std::string>>(tc_str) == p_str);
+    REQUIRE(to<Presentation<word_type>>(tc_str)
+            == v4::to<Presentation<word_type>>(p_str));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "027",
+                          "from Stephen<Presentation<Word>>",
+                          "[quick][to_presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    Stephen s(p);
+    REQUIRE(to<Presentation<word_type>>(s) == p);
+    REQUIRE(to<Presentation<std::string>>(s).rules
+            == std::vector<std::string>(
+                {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
   }
 
 }  // namespace libsemigroups
