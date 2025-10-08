@@ -489,10 +489,11 @@ namespace libsemigroups {
   //! There are two versions of this function:
   //!
   //! 1. When `typename Result::word_type` and `Word` are not the same, this
-  //! function uses `to<Presentation<typename Result::word_type>` to return a
-  //! presentation equivalent to the object used to construct or initialise the
-  //! Kambites object (if any) but of a different type (for example, can be used
-  //! to convert from `std::string` to \ref word_type).
+  //! function calls `to<Presentation<typename Result::word_type>` on
+  //! `k.presentation()` to return a presentation equivalent to the object used
+  //! to construct or initialise the Kambites object (if any) but of a different
+  //! type (for example, can be used to convert from `std::string` to \ref
+  //! word_type).
   //!
   //! 2. If the word representations are the same, the function returns a
   //! reference to the presentation used to construct or initialise the Kambites
@@ -539,7 +540,7 @@ namespace libsemigroups {
 
   //! \ingroup to_presentation_group
   //!
-  //! \brief Make a presentation from a todd-coxeter
+  //! \brief Make a presentation from a \ref_todd_coxeter object.
   //!
   //! Defined in `to-presentation.hpp`
   //!
@@ -552,10 +553,11 @@ namespace libsemigroups {
   //! There are two versions of this function:
   //!
   //! 1. When `typename Result::word_type` and `Word` are not the same, this
-  //! function uses `to<Presentation<typename Result::word_type>` to return a
-  //! presentation equivalent to the object used to construct or initialise the
-  //! ToddCoxeter object (if any) but of a different type (for example, can be
-  //! used to convert from `std::string` to \ref word_type).
+  //! function calls `to<Presentation<typename Result::word_type>` on
+  //! `tc.presentation()` to return a presentation equivalent to the object used
+  //! to construct or initialise the ToddCoxeter object (if any) but of a
+  //! different type (for example, can be used to convert from `std::string` to
+  //! \ref word_type).
   //!
   //! 2. If the word representations are the same, the function returns a
   //! reference to the presentation used to construct or initialise the
@@ -602,20 +604,21 @@ namespace libsemigroups {
 
   //! \ingroup to_presentation_group
   //!
-  //! \brief Make a presentation from a stephen
+  //! \brief Make a presentation from a Stephen object.
   //!
   //! Defined in `to-presentation.hpp`
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<Presentation<Word>>(s);
+  //! to<Presentation<std::string>>(s);
   //! \endcode
   //!
-  //! This function uses `to<Presentation<typename Result::word_type>` to return
-  //! a presentation equivalent to the object used to construct or initialise
-  //! the Stephen object (if any) but of a different type (for example, can be
-  //! used to convert from \ref word_type to `std::string`).
+  //! This function calls `to<Presentation<typename Result::word_type>` on
+  //! `s.presentation()` to return a presentation equivalent to the object used
+  //! to construct or initialise the Stephen object (if any) but of a different
+  //! type (for example, can be used to convert from \ref word_type to
+  //! `std::string`).
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
