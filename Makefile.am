@@ -129,6 +129,8 @@ pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-view.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-view.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-helpers.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-helpers.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
@@ -750,6 +752,7 @@ libsemigroups_la_SOURCES += src/sims.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-helpers.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-graph.cpp
+libsemigroups_la_SOURCES += src/word-graph-helpers.cpp
 libsemigroups_la_SOURCES += src/word-range.cpp
 
 libsemigroups_la_SOURCES += src/detail/aho-corasick-impl.cpp
