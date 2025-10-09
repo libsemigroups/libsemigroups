@@ -1049,7 +1049,7 @@ namespace libsemigroups {
 
     template <typename Node>
     std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
-      os << to_input_string(wg, "{", "{}", "}");
+      os << v4::to_input_string(wg, "{", "{}", "}");
       return os;
     }
 
