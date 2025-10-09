@@ -19,12 +19,14 @@
 #include <algorithm>  // for uniform_int_distribution
 #include <cstddef>    // for size_t
 #include <iostream>   // for std::cout
+#include <random>
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
 
-#include "libsemigroups/paths.hpp"       // for Paths etc
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/paths.hpp"            // for Paths etc
+#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/word-graph-view.hpp"  // for WordGraphView
+#include "libsemigroups/word-graph.hpp"       // for WordGraph
 
 namespace libsemigroups {
   // Old function for comparison with iterators
@@ -170,6 +172,41 @@ namespace libsemigroups {
     ad.target(5, 0, 4);
     ad.target(5, 1, 5);
     return ad;
+  }
+
+  template <typename Node>
+  bool is_strictly_cyclic(WordGraph<Node> const& wg) {
+    using node_type = typename WordGraphView<Node>::node_type;
+    auto const N    = wg.number_of_nodes();
+
+    if (N == 0) {
+      return true;
+    }
+
+    std::vector<bool> seen(N, false);
+    std::stack<Node>  stack;
+
+    for (node_type m = 0; m < N; ++m) {
+      stack.push(m);
+      size_t count = 0;
+      while (!stack.empty()) {
+        auto n = stack.top();
+        stack.pop();
+        if (!seen[n]) {
+          seen[n] = true;
+          if (++count == N) {
+            return true;
+          }
+          for (auto t : wg.targets_no_checks(n)) {
+            if (t < N) {
+              stack.push(t);
+            }
+          }
+        }
+      }
+      std::fill(seen.begin(), seen.end(), false);
+    }
+    return false;
   }
 
   TEST_CASE("const_pilo_iterator x 1", "[quick][000]") {
@@ -340,5 +377,20 @@ namespace libsemigroups {
         }
       }
     }
+  }
+
+  TEST_CASE(
+      "Is strictly cyclic on 200,000 node random graph with out_degree 100"
+      "comparing WordGraphView to WordGraph",
+      "[standard][008]") {
+    std::mt19937      mt;
+    WordGraph<size_t> wg     = WordGraph<size_t>::random(200'000, 100, mt);
+    bool              cyclic = is_strictly_cyclic(wg);
+    BENCHMARK("is_strictly_cyclic without WordGraphView wrapper") {
+      REQUIRE(is_strictly_cyclic(wg) == cyclic);
+    };
+    BENCHMARK("is_strictly_cyclic using WordGraphView") {
+      REQUIRE(word_graph::is_strictly_cyclic(wg) == cyclic);
+    };
   }
 }  // namespace libsemigroups
