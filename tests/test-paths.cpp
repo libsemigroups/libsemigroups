@@ -105,16 +105,16 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "001", "#1", "[quick]") {
     using namespace rx;
 
-    auto wg = make<WordGraph<size_t>>(9,
-                                      {{1, 2, UNDEFINED},
-                                       {},
-                                       {3, 4, 6},
-                                       {},
-                                       {UNDEFINED, 5},
-                                       {},
-                                       {UNDEFINED, 7},
-                                       {8},
-                                       {}});
+    auto wg = v4::make<WordGraph<size_t>>(9,
+                                          {{1, 2, UNDEFINED},
+                                           {},
+                                           {3, 4, 6},
+                                           {},
+                                           {UNDEFINED, 5},
+                                           {},
+                                           {UNDEFINED, 7},
+                                           {8},
+                                           {}});
 
     Paths p(wg);
     p.order(Order::shortlex).source(2).min(3).max(4);
@@ -177,7 +177,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "003", "#2", "[quick]") {
     using namespace rx;
 
-    WordGraph<size_t> wg = make<WordGraph<size_t>>(
+    WordGraph<size_t> wg = v4::make<WordGraph<size_t>>(
         15, {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12}, {13, 14}});
 
     Paths p(wg);
@@ -288,7 +288,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "004", "#3", "[quick][no-valgrind]") {
     using namespace rx;
-    auto wg = make<WordGraph<size_t>>(
+    auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
 
     std::vector expected = {01_w,
@@ -460,7 +460,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "006", "#5", "[quick][no-valgrind]") {
     using namespace rx;
-    auto wg = make<WordGraph<size_t>>(
+    auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
 
     std::vector expected = {01_w,
@@ -500,13 +500,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "007", "#6", "[quick]") {
     using namespace rx;
-    auto wg = make<WordGraph<size_t>>(6,
-                                      {{1, 2, UNDEFINED},
-                                       {2, 0, 3},
-                                       {UNDEFINED, UNDEFINED, 3},
-                                       {4},
-                                       {UNDEFINED, 5},
-                                       {3}});
+    auto wg = v4::make<WordGraph<size_t>>(6,
+                                          {{1, 2, UNDEFINED},
+                                           {2, 0, 3},
+                                           {UNDEFINED, UNDEFINED, 3},
+                                           {4},
+                                           {UNDEFINED, 5},
+                                           {3}});
 
     Paths p(wg);
     p.order(Order::shortlex).source(0).min(0).max(10);
@@ -546,13 +546,13 @@ namespace libsemigroups {
                           "008",
                           "path iterators corner cases",
                           "[quick]") {
-    auto wg = make<WordGraph<size_t>>(6,
-                                      {{1, 2, UNDEFINED},
-                                       {2, 0, 3},
-                                       {UNDEFINED, UNDEFINED, 3},
-                                       {4},
-                                       {UNDEFINED, 5},
-                                       {3}});
+    auto wg = v4::make<WordGraph<size_t>>(6,
+                                          {{1, 2, UNDEFINED},
+                                           {2, 0, 3},
+                                           {UNDEFINED, UNDEFINED, 3},
+                                           {4},
+                                           {UNDEFINED, 5},
+                                           {3}});
 
     REQUIRE_THROWS_AS(cbegin_pstilo(wg, 1, 6), LibsemigroupsException);
     REQUIRE_THROWS_AS(cbegin_pstilo(wg, 6, 1), LibsemigroupsException);
@@ -585,7 +585,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "009", "pstilo corner case", "[quick]") {
     using namespace rx;
-    auto wg = make<WordGraph<size_t>>(5, {{2, 1}, {}, {3}, {4}, {2}});
+    auto wg = v4::make<WordGraph<size_t>>(5, {{2, 1}, {}, {3}, {4}, {2}});
 
     // Tests the case then there is only a single path, but if we would have
     // used pilo (i.e. not use the reachability check that is in pstilo),
@@ -649,7 +649,7 @@ namespace libsemigroups {
                           "011",
                           "number_of_paths acyclic word graph",
                           "[quick][no-valgrind]") {
-    auto wg = make<WordGraph<size_t>>(
+    auto wg = v4::make<WordGraph<size_t>>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
 
     REQUIRE(v4::word_graph::is_acyclic(wg));
@@ -884,7 +884,7 @@ namespace libsemigroups {
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
     // std::cout << v4::word_graph::detail::to_string(wg);
-    auto wg = make<WordGraph<size_t>>(
+    auto wg = v4::make<WordGraph<size_t>>(
         10,
         {{9, 1, 6, 3, 7, 2, 2, 8, 1, 4, 3, 1, 7, 9, 4, 7, 8, 9, 6, 9},
          {8, 2, 5, 7, 9, 0, 2, 4, 0, 3, 2, 7, 2, 7, 6, 6, 5, 4, 6, 3},
@@ -932,13 +932,13 @@ namespace libsemigroups {
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto wg = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << v4::word_graph::detail::to_string(wg);
-    auto wg = make<WordGraph<size_t>>(6,
-                                      {{0, 3, 4},
-                                       {2, 1, 4},
-                                       {4, 3, 4},
-                                       {0, 1, UNDEFINED},
-                                       {UNDEFINED, 3, 3},
-                                       {4, UNDEFINED, 2}});
+    auto wg = v4::make<WordGraph<size_t>>(6,
+                                          {{0, 3, 4},
+                                           {2, 1, 4},
+                                           {4, 3, 4},
+                                           {0, 1, UNDEFINED},
+                                           {UNDEFINED, 3, 3},
+                                           {4, UNDEFINED, 2}});
 
     REQUIRE(wg.number_of_edges() == 15);
 
