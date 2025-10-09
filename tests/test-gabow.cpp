@@ -337,7 +337,7 @@ namespace libsemigroups {
                           "010",
                           "reverse_spanning_forest",
                           "[quick][gabow]") {
-    auto wg = make<WordGraph<size_t>>(
+    auto wg = v4::make<WordGraph<size_t>>(
         5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
     Gabow scc(wg);
     REQUIRE(scc.number_of_components() == 1);
@@ -349,7 +349,7 @@ namespace libsemigroups {
                           "011",
                           "to_human_readable_repr",
                           "[quick][gabow]") {
-    auto wg = make<WordGraph<size_t>>(
+    auto wg = v4::make<WordGraph<size_t>>(
         5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
     Gabow scc(wg);
     REQUIRE(to_human_readable_repr(scc)
