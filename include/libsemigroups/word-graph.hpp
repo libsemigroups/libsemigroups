@@ -2920,8 +2920,8 @@ namespace libsemigroups {
   //! \note This function will be moved from the header `word-graph.hpp`
   //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
   template <typename Node>
-  [[deprecated]] std::ostream& operator<<(std::ostream&          os,
-                                          WordGraph<Node> const& wg);
+  // TODO 0: This should be deprecated, but this was causing JDE issues
+  std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
 
   //! \defgroup make_word_graph_group make<WordGraph>
   //! \ingroup word_graph_group
