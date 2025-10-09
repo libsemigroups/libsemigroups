@@ -85,7 +85,7 @@ namespace libsemigroups {
   //! * \ref forest::dot(Forest const&)
   //! * \ref stephen::dot(Stephen<PresentationType>&)
   //! * \ref ukkonen::dot(Ukkonen const&)
-  //! * \ref word_graph::dot(WordGraph<Node> const&)
+  //! * \ref v4::word_graph::dot(WordGraph<Node> const&)
   //!
   //! [DOT]: https://www.graphviz.org/doc/info/lang.html
   //! [Graphviz]: https://www.graphviz.org

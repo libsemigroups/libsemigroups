@@ -45,6 +45,7 @@
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for add_generating_pair
 #include "libsemigroups/transf.hpp"                // for Transf, validate
 #include "libsemigroups/types.hpp"                 // for congruence_kind
+#include "libsemigroups/word-graph-helpers.hpp"    // for word_graph, Joiner
 #include "libsemigroups/word-graph.hpp"            // for follow_path_no_...
 
 #include "libsemigroups/detail/felsch-graph.hpp"  // for FelschGraph
@@ -197,9 +198,9 @@ namespace libsemigroups {
       node_type root  = 0;
 
       for (auto it = first; it != last; it += 2) {
-        auto l = word_graph::follow_path_no_checks(wg, root, *it);
+        auto l = v4::word_graph::follow_path_no_checks(wg, root, *it);
         if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(wg, root, *(it + 1));
+          auto r = v4::word_graph::follow_path_no_checks(wg, root, *(it + 1));
           if (l == r) {
             return false;
           }
@@ -660,7 +661,7 @@ namespace libsemigroups {
       auto first = _sims1or2->cbegin_long_rules();
       auto last  = _sims1or2->presentation().rules.cend();
 
-      bool result = word_graph::is_compatible_no_checks(
+      bool result = v4::word_graph::is_compatible_no_checks(
           _felsch_graph,
           _felsch_graph.cbegin_nodes(),
           _felsch_graph.cbegin_nodes() + M,
@@ -1375,7 +1376,7 @@ namespace libsemigroups {
           _relation({}, {}),
           _tree(ptr->number_of_active_nodes()),
           _word_graph(ptr) {
-      // if (!word_graph::is_complete(*ptr,
+      // if (!v4::word_graph::is_complete(*ptr,
       //                              ptr->cbegin_nodes(),
       //                              ptr->cbegin_nodes()
       //                                  + ptr->number_of_active_nodes())) {
@@ -1546,8 +1547,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(knuth_bendix::currently_contains_no_checks(kb, u, v)
                            != tril::unknown);
       if (knuth_bendix::currently_contains_no_checks(kb, u, v) == tril::FALSE) {
-        auto beta
-            = word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend());
+        auto beta = v4::word_graph::follow_path_no_checks(
+            wg, 0, u.cbegin(), u.cend());
         if (sink == UNDEFINED) {
           sink = beta;
         } else if (sink != beta) {
@@ -1565,7 +1566,7 @@ namespace libsemigroups {
       auto const N     = wg.number_of_active_nodes();
       auto       first = wg.cbegin_nodes();
       auto       last  = wg.cbegin_nodes() + N;
-      if (word_graph::is_complete(wg, first, last)) {
+      if (v4::word_graph::is_complete(wg, first, last)) {
         return false;
       }
     }
@@ -1603,9 +1604,9 @@ namespace libsemigroups {
     for (auto it = first; it != last; it += 2) {
       bool this_rule_compatible = true;
       for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
-        auto l = word_graph::follow_path_no_checks(wg, n, *it);
+        auto l = v4::word_graph::follow_path_no_checks(wg, n, *it);
         if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          auto r = v4::word_graph::follow_path_no_checks(wg, n, *(it + 1));
           if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
             this_rule_compatible = false;
             break;

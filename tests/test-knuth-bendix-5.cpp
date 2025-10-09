@@ -44,16 +44,17 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator!=, operator==
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
-#include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
-#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/word-range.hpp"       // for operator""_w
+#include "libsemigroups/constants.hpp"           // for operator!=, operator==
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix
+#include "libsemigroups/presentation.hpp"        // for Presentation
+#include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
+#include "libsemigroups/transf.hpp"              // for Transf
+#include "libsemigroups/types.hpp"               // for word_type, letter_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-range.hpp"          // for operator""_w
 
 #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
@@ -237,7 +238,7 @@ namespace libsemigroups {
     copy.remove_label_no_checks(2);
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 62);
-    REQUIRE(word_graph::is_acyclic(copy, source));
+    REQUIRE(v4::word_graph::is_acyclic(copy, source));
 
     Paths paths(copy);
     REQUIRE(paths.min(1).source(source).count() == 72);
@@ -428,12 +429,12 @@ namespace libsemigroups {
     REQUIRE(source == 34);
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 51);
-    REQUIRE(word_graph::is_acyclic(copy, source));
+    REQUIRE(v4::word_graph::is_acyclic(copy, source));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(source).count() == 69);
 
-    auto nrset = word_graph::nodes_reachable_from(copy, source);
+    auto nrset = v4::word_graph::nodes_reachable_from(copy, source);
     auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
     std::sort(nrvec.begin(), nrvec.end());
     source = std::distance(nrvec.begin(),
@@ -480,7 +481,7 @@ namespace libsemigroups {
     auto copy = kb.gilman_graph();
     REQUIRE(copy.out_degree() == 2);
     REQUIRE(copy.number_of_nodes() == 45);
-    REQUIRE(word_graph::is_acyclic(copy, 0));
+    REQUIRE(v4::word_graph::is_acyclic(copy, 0));
 
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(0).count() == 69);

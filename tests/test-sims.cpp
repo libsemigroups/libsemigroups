@@ -56,6 +56,7 @@
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 
 #include "libsemigroups/detail/eigen.hpp"           // for DenseBase::row
@@ -79,7 +80,7 @@ namespace libsemigroups {
     template <typename P>
     void check_include(P const& p, std::vector<word_type> const& e, size_t n) {
       auto foo = [&e](auto const& wg) {
-        using word_graph::follow_path_no_checks;
+        using v4::word_graph::follow_path_no_checks;
         for (auto it = e.cbegin(); it != e.cend(); it += 2) {
           if (follow_path_no_checks(wg, 0, *it)
               != follow_path_no_checks(wg, 0, *(it + 1))) {
@@ -222,12 +223,12 @@ namespace libsemigroups {
       std::atomic<size_t> count = 0;
       SF.presentation(F);
       SF.for_each(index, [&p, &count](auto const& wg) {
-        count += word_graph::is_compatible(wg,
-                                           wg.cbegin_nodes(),
-                                           wg.cbegin_nodes()
-                                               + wg.number_of_active_nodes(),
-                                           p.rules.cbegin(),
-                                           p.rules.cend());
+        count += v4::word_graph::is_compatible(
+            wg,
+            wg.cbegin_nodes(),
+            wg.cbegin_nodes() + wg.number_of_active_nodes(),
+            p.rules.cbegin(),
+            p.rules.cend());
       });
       REQUIRE(count == expected);
     }
@@ -298,8 +299,8 @@ namespace libsemigroups {
       Sims1 S;
       REQUIRE(S.presentation(p).number_of_congruences(5) == 9);
       for (auto it = S.cbegin(5); it != S.cend(5); ++it) {
-        REQUIRE(word_graph::follow_path_no_checks(*it, 0, 1010_w)
-                == word_graph::follow_path_no_checks(*it, 0, {0}));
+        REQUIRE(v4::word_graph::follow_path_no_checks(*it, 0, 1010_w)
+                == v4::word_graph::follow_path_no_checks(*it, 0, {0}));
       }
       S.for_each(5,
                  [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
@@ -959,8 +960,8 @@ namespace libsemigroups {
       for (auto it = first; it != last; it += 2) {
         bool this_rule_compatible = true;
         for (auto n : wg.nodes()) {
-          auto l = word_graph::follow_path_no_checks(wg, n, *it);
-          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          auto l = v4::word_graph::follow_path_no_checks(wg, n, *it);
+          auto r = v4::word_graph::follow_path_no_checks(wg, n, *(it + 1));
           if (l != r) {
             this_rule_compatible = false;
             break;
@@ -1086,7 +1087,7 @@ namespace libsemigroups {
 
     // auto d = MinimalRepOrc().presentation(p).target_size(105).word_graph();
     // REQUIRE(d.number_of_nodes() == 22);
-    // REQUIRE(word_graph::is_strictly_cyclic(d));
+    // REQUIRE(v4::word_graph::is_strictly_cyclic(d));
     // REQUIRE(
     //     d
     //     == make<WordGraph<uint32_t>>(
@@ -1540,7 +1541,7 @@ namespace libsemigroups {
 
     REQUIRE(T.number_of_long_rules() == 0);
     T.for_each(3, [&](auto const& wg) {
-      num += word_graph::is_compatible_no_checks(
+      num += v4::word_graph::is_compatible_no_checks(
           wg,
           wg.cbegin_nodes(),
           wg.cbegin_nodes() + wg.number_of_active_nodes(),
@@ -1556,16 +1557,16 @@ namespace libsemigroups {
     REQUIRE(rules.size() == 18);
     S.for_each(3, [&](auto const& wg) {
       REQUIRE(wg.out_degree() == 6);
-      num += word_graph::is_compatible_no_checks(
+      num += v4::word_graph::is_compatible_no_checks(
                  wg,
                  wg.cbegin_nodes(),
                  wg.cbegin_nodes() + wg.number_of_active_nodes(),
                  rules.cbegin(),
                  S.cbegin_long_rules())
-             && word_graph::is_complete(wg,
-                                        wg.cbegin_nodes(),
-                                        wg.cbegin_nodes()
-                                            + wg.number_of_active_nodes());
+             && v4::word_graph::is_complete(wg,
+                                            wg.cbegin_nodes(),
+                                            wg.cbegin_nodes()
+                                                + wg.number_of_active_nodes());
     });
     REQUIRE(S.presentation().rules == p.rules);
     REQUIRE(num == 14);
@@ -1577,15 +1578,15 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(3) == 14);
     S.for_each(3, [&](auto const& wg) {
       REQUIRE(wg.out_degree() == 6);
-      num += word_graph::is_compatible_no_checks(wg,
-                                                 wg.cbegin_nodes(),
-                                                 wg.cend_nodes(),
-                                                 rules.cbegin(),
-                                                 S.cbegin_long_rules())
-             && word_graph::is_complete(wg,
-                                        wg.cbegin_nodes(),
-                                        wg.cbegin_nodes()
-                                            + wg.number_of_active_nodes());
+      num += v4::word_graph::is_compatible_no_checks(wg,
+                                                     wg.cbegin_nodes(),
+                                                     wg.cend_nodes(),
+                                                     rules.cbegin(),
+                                                     S.cbegin_long_rules())
+             && v4::word_graph::is_complete(wg,
+                                            wg.cbegin_nodes(),
+                                            wg.cbegin_nodes()
+                                                + wg.number_of_active_nodes());
     });
     REQUIRE(num == 14);
   }
@@ -1710,7 +1711,7 @@ namespace libsemigroups {
             std::thread::hardware_concurrency());
     auto d = mro.word_graph();
     REQUIRE(d.number_of_nodes() == 11);
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
     auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 19);
@@ -1738,7 +1739,7 @@ namespace libsemigroups {
         = MinimalRepOrc().presentation(p).target_size(203).number_of_threads(4);
     d = mro.word_graph();
 
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
     auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == 203);
     // The actual digraph obtained is non-deterministic because we just take
@@ -1799,7 +1800,7 @@ namespace libsemigroups {
 
       auto d = orc.word_graph();
       REQUIRE(orc.target_size() == sizes[n]);
-      REQUIRE(word_graph::is_strictly_cyclic(d));
+      REQUIRE(v4::word_graph::is_strictly_cyclic(d));
       auto S = to<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == sizes[n]);
@@ -1848,7 +1849,7 @@ namespace libsemigroups {
 
     auto d = MinimalRepOrc().presentation(p).target_size(720).word_graph();
     REQUIRE(d.number_of_nodes() == 6);
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1863,7 +1864,7 @@ namespace libsemigroups {
                  .number_of_threads(2)
                  .target_size(17)
                  .word_graph();
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
     auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == 16);
     REQUIRE(d.number_of_nodes() == 7);
@@ -1903,7 +1904,7 @@ namespace libsemigroups {
                      .target_size(m * n + 1)
                      .number_of_threads(std::thread::hardware_concurrency())
                      .word_graph();
-        REQUIRE(word_graph::is_strictly_cyclic(d));
+        REQUIRE(v4::word_graph::is_strictly_cyclic(d));
         auto S = to<FroidurePin<Transf<0, node_type>>>(d);
         REQUIRE(S.size() == m * n);
         REQUIRE(d.number_of_nodes() == results[m][n]);
@@ -2013,7 +2014,7 @@ namespace libsemigroups {
                  .target_size(1)
                  .word_graph();
     REQUIRE(d.number_of_nodes() == 1);
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -2026,7 +2027,7 @@ namespace libsemigroups {
     size_t const n  = 5;
     auto         p  = presentation::examples::rectangular_band(1, n);
     auto d = MinimalRepOrc().presentation(p).target_size(n).word_graph();
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
     auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == n);
     REQUIRE(d.number_of_nodes() == 5);
@@ -2048,7 +2049,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 5);
     auto p = to<Presentation<word_type>>(S);
     auto d = MinimalRepOrc().presentation(p).target_size(5).word_graph();
-    REQUIRE(word_graph::is_strictly_cyclic(d));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(d));
     REQUIRE(d.number_of_nodes() == 4);
     REQUIRE(d
             == make<WordGraph<uint32_t>>(
@@ -2066,7 +2067,7 @@ namespace libsemigroups {
                                         {0, 1, 2, 3, 0},
                                         {4, 4, 4, 4, 4}});
 
-    REQUIRE(!word_graph::is_strictly_cyclic(dd));
+    REQUIRE(!v4::word_graph::is_strictly_cyclic(dd));
     REQUIRE(dd.number_of_nodes() == 5);
     auto U = to<FroidurePin<Transf<5>>>(dd);
     REQUIRE(U.size() == 5);
@@ -2090,7 +2091,7 @@ namespace libsemigroups {
         auto result = *it;
         result.induced_subgraph_no_checks(1, result.number_of_active_nodes());
         result.number_of_active_nodes(result.number_of_active_nodes() - 1);
-        if (word_graph::is_strictly_cyclic(result)) {
+        if (v4::word_graph::is_strictly_cyclic(result)) {
           strictly_cyclic_count++;
         } else {
           REQUIRE(W.generator(0) == Transf<0, node_type>({3, 0, 2, 3, 4}));
@@ -2790,7 +2791,7 @@ namespace libsemigroups {
                    .number_of_threads(1)
                    .target_size(5)
                    .word_graph();
-      REQUIRE(word_graph::is_strictly_cyclic(d));
+      REQUIRE(v4::word_graph::is_strictly_cyclic(d));
       auto S = to<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == 5);
@@ -4306,14 +4307,14 @@ namespace libsemigroups {
     //                                             {3, 3, 3, 3, 3, 1}});
     //  REQUIRE(sims::is_right_congruence(p, wg_expected));
 
-    // REQUIRE(word_graph::is_complete(
+    // REQUIRE(v4::word_graph::is_complete(
     //     wg_found, wg_found.cbegin_nodes(), wg_found.cbegin_nodes() + 4));
     // auto i = 0;
     // //    static_assert(::libsemigroups::detail::HasLessEqual<, >::value);
     // // REQUIRE(pp.rules == std::vector<word_type>());
     // for (auto it = pp.rules.cbegin(); it < pp.rules.cend(); it += 2) {
     //   fmt::print("i = {}\n", i);
-    //   REQUIRE(word_graph::is_compatible_no_checks(wg_found,
+    //   REQUIRE(v4::word_graph::is_compatible_no_checks(wg_found,
     //                                     wg_found.cbegin_nodes(),
     //                                     wg_found.cbegin_nodes() + 4,
     //                                     it,

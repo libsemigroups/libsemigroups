@@ -23,10 +23,11 @@
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
 
-#include "libsemigroups/paths.hpp"            // for Paths etc
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph-view.hpp"  // for WordGraphView
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/paths.hpp"               // for Paths etc
+#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-graph-view.hpp"     // for WordGraphView
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 namespace libsemigroups {
   // Old function for comparison with iterators
@@ -353,7 +354,7 @@ namespace libsemigroups {
           // WordGraph::random, andso this benchmark doesn't really make sense
           // any more
           auto ad = WordGraph<size_t>::random(M, N);
-          word_graph::add_cycle_no_checks(
+          v4::word_graph::add_cycle_no_checks(
               ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
@@ -390,7 +391,7 @@ namespace libsemigroups {
       REQUIRE(is_strictly_cyclic(wg) == cyclic);
     };
     BENCHMARK("is_strictly_cyclic using WordGraphView") {
-      REQUIRE(word_graph::is_strictly_cyclic(wg) == cyclic);
+      REQUIRE(v4::word_graph::is_strictly_cyclic(wg) == cyclic);
     };
   }
 }  // namespace libsemigroups

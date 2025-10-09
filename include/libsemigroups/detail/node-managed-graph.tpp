@@ -195,7 +195,7 @@ namespace libsemigroups {
       word_type::const_iterator it;
 
       std::tie(c, it)
-          = word_graph::last_node_on_path_no_checks(*this, c, first, last);
+          = v4::word_graph::last_node_on_path_no_checks(*this, c, first, last);
 
       bool result = false;
       for (; it < last; ++it) {

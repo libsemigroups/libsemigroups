@@ -43,6 +43,7 @@
 #include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxeter
 #include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 #include "libsemigroups/word-range.hpp"             // for ToWord
 
@@ -174,12 +175,12 @@ namespace libsemigroups {
 
     word_type w = 1101_w;
 
-    REQUIRE(word_graph::last_node_on_path_no_checks(
+    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
                 s.word_graph(), 0, w.begin(), w.end())
                 .first
             == 5);
     w = 110010_w;
-    REQUIRE(word_graph::last_node_on_path_no_checks(
+    REQUIRE(v4::word_graph::last_node_on_path_no_checks(
                 s.word_graph(), 0, w.begin(), w.end())
                 .first
             == 5);
@@ -389,11 +390,11 @@ namespace libsemigroups {
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 10},
                  {7}}));
     auto rule = p.rules[0];
-    auto m    = word_graph::last_node_on_path(
+    auto m    = v4::word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
     rule   = p.rules[1];
-    auto n = word_graph::last_node_on_path(
+    auto n = v4::word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
     REQUIRE(m != UNDEFINED);
@@ -1109,7 +1110,7 @@ namespace libsemigroups {
     stephen::set_word(S, to_word("aBbcABAabCc")).run();
 
     REQUIRE(S.accept_state() == 4);
-    REQUIRE(word_graph::follow_path(S.word_graph(), 0, S.word()) == 4);
+    REQUIRE(v4::word_graph::follow_path(S.word_graph(), 0, S.word()) == 4);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
 
@@ -1448,8 +1449,9 @@ namespace libsemigroups {
     stephen::set_word(s, 1217_w);
     s.run();
 
-    REQUIRE(word_graph::last_node_on_path(s.word_graph(), 0, 1217_w).first
-            == word_graph::last_node_on_path(s.word_graph(), 0, 7121_w).first);
+    REQUIRE(
+        v4::word_graph::last_node_on_path(s.word_graph(), 0, 1217_w).first
+        == v4::word_graph::last_node_on_path(s.word_graph(), 0, 7121_w).first);
     REQUIRE(stephen::accepts(s, 7121_w));
   }
 
@@ -1477,7 +1479,7 @@ namespace libsemigroups {
     REQUIRE(T.word_graph().number_of_nodes() == 7);
     S *= T;
     REQUIRE(S.word_graph().number_of_nodes() == 14);
-    // fmt::print("{}", word_graph::dot(S.word_graph()));
+    // fmt::print("{}", v4::word_graph::dot(S.word_graph()));
     REQUIRE(!S.finished());
     S.run();
     REQUIRE(S.finished());

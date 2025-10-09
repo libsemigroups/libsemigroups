@@ -52,9 +52,10 @@
 #include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/paths.hpp"         // for Paths
 #include "libsemigroups/presentation-examples.hpp"  // for partition_monoid
-#include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/word-range.hpp"    // for Inner, StringRange, to_str...
+#include "libsemigroups/presentation.hpp"        // for add_rule, Presentation
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
+#include "libsemigroups/word-range.hpp"  // for Inner, StringRange, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
@@ -423,7 +424,7 @@ namespace libsemigroups {
     auto& ad = kb.gilman_graph();
     REQUIRE(ad.number_of_nodes() == 6'021);
     REQUIRE(ad.number_of_edges() == 7'435);
-    REQUIRE(word_graph::is_acyclic(ad));
+    REQUIRE(v4::word_graph::is_acyclic(ad));
     REQUIRE(number_of_paths(ad, 0, 0, 100) == 10'752);
   }
 

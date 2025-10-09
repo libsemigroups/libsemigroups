@@ -28,15 +28,16 @@
 #include <utility>  // for make_pair
 #include <vector>   // for vector
 
-#include "constants.hpp"     // for Max, UNDEFINED
-#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "dot.hpp"           // for Dot
-#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "paths.hpp"         // for Paths
-#include "presentation.hpp"  // for Presentation
-#include "runner.hpp"        // for Runner
-#include "types.hpp"         // for word_type
-#include "word-graph.hpp"    // for WordGraph
+#include "constants.hpp"           // for Max, UNDEFINED
+#include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"                 // for Dot
+#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "paths.hpp"               // for Paths
+#include "presentation.hpp"        // for Presentation
+#include "runner.hpp"              // for Runner
+#include "types.hpp"               // for word_type
+#include "word-graph-helpers.hpp"  // for word_graph
+#include "word-graph.hpp"          // for WordGraph
 
 #include "detail/felsch-graph.hpp"             // for DoNotReg...
 #include "detail/node-managed-graph.hpp"       // for NodeMana...
@@ -446,7 +447,7 @@ namespace libsemigroups {
     }
 
     void standardize() {
-      word_graph::standardize(_word_graph);
+      v4::word_graph::standardize(_word_graph);
       _word_graph.induced_subgraph_no_checks(
           0, _word_graph.number_of_nodes_active());
     }
