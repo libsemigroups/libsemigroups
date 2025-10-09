@@ -73,7 +73,7 @@ namespace libsemigroups {
                                                 Iterator2 last) const {
       node_type c = current_word_graph().initial_node();
 
-      c = word_graph::follow_path_no_checks(
+      c = v4::word_graph::follow_path_no_checks(
           current_word_graph(), c, first, last);
       // c is in the range 1, ..., number_of_cosets_active() because 0
       // represents the identity coset, and does not correspond to an element,
@@ -231,7 +231,7 @@ namespace libsemigroups {
       auto            v_begin = u.begin();
 
       while (v_begin != u.end()) {
-        auto [t, old_end] = word_graph::last_node_on_path_no_checks(
+        auto [t, old_end] = v4::word_graph::last_node_on_path_no_checks(
             current_word_graph(), s, v_begin, u.end());
 
         if (!std::equal(std::reverse_iterator(old_end),

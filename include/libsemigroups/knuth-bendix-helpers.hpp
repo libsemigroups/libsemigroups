@@ -38,6 +38,7 @@
 #include "presentation.hpp"         // for Presentation
 #include "ranges.hpp"               // for seq, input_range_ite...
 #include "types.hpp"                // for congruence_kind, wor...
+#include "word-graph-helpers.hpp"   // for word_graph
 #include "word-graph.hpp"           // for WordGraph
 #include "word-range.hpp"           // for ToString
 

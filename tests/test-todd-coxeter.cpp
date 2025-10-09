@@ -40,6 +40,7 @@
 #include "libsemigroups/to-todd-coxeter.hpp"        // for ??
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
+#include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 #include "libsemigroups/word-range.hpp"             // for operator"" _w
 
@@ -158,27 +159,27 @@ namespace libsemigroups {
     void check_complete_compatible(ToddCoxeter<Word>& tc) {
       auto const& p  = tc.internal_presentation();
       auto const& wg = tc.word_graph();
-      REQUIRE(word_graph::is_complete(
+      REQUIRE(v4::word_graph::is_complete(
           wg, wg.cbegin_active_nodes(), wg.cend_active_nodes()));
-      REQUIRE(word_graph::is_compatible_no_checks(wg,
-                                                  wg.cbegin_active_nodes(),
-                                                  wg.cend_active_nodes(),
-                                                  p.rules.cbegin(),
-                                                  p.rules.cend()));
+      REQUIRE(v4::word_graph::is_compatible_no_checks(wg,
+                                                      wg.cbegin_active_nodes(),
+                                                      wg.cend_active_nodes(),
+                                                      p.rules.cbegin(),
+                                                      p.rules.cend()));
       tc.shrink_to_fit();
-      REQUIRE(word_graph::is_complete(
+      REQUIRE(v4::word_graph::is_complete(
           wg, wg.cbegin_active_nodes(), wg.cend_active_nodes()));
-      REQUIRE(word_graph::is_compatible_no_checks(wg,
-                                                  wg.cbegin_active_nodes(),
-                                                  wg.cend_active_nodes(),
-                                                  p.rules.cbegin(),
-                                                  p.rules.cend()));
+      REQUIRE(v4::word_graph::is_compatible_no_checks(wg,
+                                                      wg.cbegin_active_nodes(),
+                                                      wg.cend_active_nodes(),
+                                                      p.rules.cbegin(),
+                                                      p.rules.cend()));
     }
 
     template <typename Word>
     void check_standardize(ToddCoxeter<Word>& tc) {
       using namespace rx;
-      using word_graph::follow_path_no_checks;
+      using v4::word_graph::follow_path_no_checks;
 
       using node_type = typename ToddCoxeter<Word>::node_type;
       Order old_val   = tc.standardization_order();
@@ -232,7 +233,7 @@ namespace libsemigroups {
         std::unordered_map<node_type, word_type> map;
 
         for (auto const& w : words) {
-          node_type t = word_graph::follow_path_no_checks(
+          node_type t = v4::word_graph::follow_path_no_checks(
               tc.current_word_graph(), 0, w);
           if (t != 0) {
             auto ww = w;
@@ -935,11 +936,11 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, {1}) == index_of(tc, {2}));
     REQUIRE(tc.word_graph().number_of_nodes() == 7);
     REQUIRE(tc.word_graph().target(0, 0) == 1);
-    auto        pred = word_graph::ancestors_of_no_checks(tc.word_graph(), 1);
+    auto pred = v4::word_graph::ancestors_of_no_checks(tc.word_graph(), 1);
     std::vector result(pred.begin(), pred.end());
     std::sort(result.begin(), result.end());
     REQUIRE(result == std::vector<uint32_t>({0, 1, 2, 3, 4, 5, 6}));
-    auto desc = word_graph::nodes_reachable_from(tc.word_graph(), 1);
+    auto desc = v4::word_graph::nodes_reachable_from(tc.word_graph(), 1);
     result.assign(desc.begin(), desc.end());
     std::sort(result.begin(), result.end());
     REQUIRE(result == std::vector<uint32_t>({1, 2, 3, 4, 5, 6}));
@@ -1563,22 +1564,22 @@ namespace libsemigroups {
     tc.strategy(options::strategy::felsch);
     REQUIRE(tc.strategy() == options::strategy::felsch);
     auto const& d = tc.current_word_graph();
-    REQUIRE(!word_graph::is_complete(
+    REQUIRE(!v4::word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible_no_checks(d,
-                                                d.cbegin_active_nodes(),
-                                                d.cend_active_nodes(),
-                                                p.rules.cbegin(),
-                                                p.rules.cend()));
+    REQUIRE(v4::word_graph::is_compatible_no_checks(d,
+                                                    d.cbegin_active_nodes(),
+                                                    d.cend_active_nodes(),
+                                                    p.rules.cbegin(),
+                                                    p.rules.cend()));
     REQUIRE(tc.number_of_classes() == 1);
     REQUIRE((normal_forms(tc) | to_vector()) == std::vector<word_type>({0_w}));
-    REQUIRE(word_graph::is_complete(
+    REQUIRE(v4::word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible_no_checks(d,
-                                                d.cbegin_active_nodes(),
-                                                d.cend_active_nodes(),
-                                                p.rules.cbegin(),
-                                                p.rules.cend()));
+    REQUIRE(v4::word_graph::is_compatible_no_checks(d,
+                                                    d.cbegin_active_nodes(),
+                                                    d.cend_active_nodes(),
+                                                    p.rules.cbegin(),
+                                                    p.rules.cend()));
 
     ToddCoxeter copy(tc);
     REQUIRE(copy.presentation().rules == p.rules);
@@ -1587,13 +1588,13 @@ namespace libsemigroups {
     REQUIRE(copy.number_of_classes() == 1);
 
     auto const& dd = copy.current_word_graph();
-    REQUIRE(word_graph::is_complete(
+    REQUIRE(v4::word_graph::is_complete(
         dd, dd.cbegin_active_nodes(), dd.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible_no_checks(dd,
-                                                dd.cbegin_active_nodes(),
-                                                dd.cend_active_nodes(),
-                                                p.rules.cbegin(),
-                                                p.rules.cend()));
+    REQUIRE(v4::word_graph::is_compatible_no_checks(dd,
+                                                    dd.cbegin_active_nodes(),
+                                                    dd.cend_active_nodes(),
+                                                    p.rules.cbegin(),
+                                                    p.rules.cend()));
     REQUIRE(tc.current_word_graph() == copy.current_word_graph());
   }
 
@@ -1662,11 +1663,11 @@ namespace libsemigroups {
     tc.init(twosided, p);
 
     auto const& d = tc.current_word_graph();
-    REQUIRE(word_graph::is_compatible_no_checks(d,
-                                                d.cbegin_active_nodes(),
-                                                d.cend_active_nodes(),
-                                                p.rules.cbegin(),
-                                                p.rules.cend()));
+    REQUIRE(v4::word_graph::is_compatible_no_checks(d,
+                                                    d.cbegin_active_nodes(),
+                                                    d.cend_active_nodes(),
+                                                    p.rules.cbegin(),
+                                                    p.rules.cend()));
     tc.strategy(options::strategy::CR);
     size_t x = 0;
     REQUIRE_THROWS_AS(tc.run_until([&x] { return x > 4; }),
@@ -3210,10 +3211,10 @@ namespace libsemigroups {
 
     REQUIRE(H.number_of_classes() == 16'384);
 
-    REQUIRE(word_graph::is_reachable(H.word_graph(), 0, 0));
-    REQUIRE(word_graph::ancestors_of_no_checks(H.word_graph(), 0).size()
+    REQUIRE(v4::word_graph::is_reachable(H.word_graph(), 0, 0));
+    REQUIRE(v4::word_graph::ancestors_of_no_checks(H.word_graph(), 0).size()
             == 16'384);
-    REQUIRE(!word_graph::is_acyclic(H.word_graph(), 0, 0));
+    REQUIRE(!v4::word_graph::is_acyclic(H.word_graph(), 0, 0));
 
     // The following no longer works
     // REQUIRE(class_of(H, "").size_hint() == POSITIVE_INFINITY);
@@ -4920,11 +4921,11 @@ namespace libsemigroups {
     tc.standardize(Order::shortlex);
     // Have to standardize or otherwise what we are about to do below
     // makes no sense
-    // REQUIRE(word_graph::is_standardized(tc.current_word_graph()));
+    // REQUIRE(v4::word_graph::is_standardized(tc.current_word_graph()));
     REQUIRE(!tc.finished());
 
     auto const& wg    = tc.current_word_graph();
-    auto        set   = word_graph::nodes_reachable_from(wg, 0);
+    auto        set   = v4::word_graph::nodes_reachable_from(wg, 0);
     auto        nodes = std::vector<uint32_t>(set.begin(), set.end());
     std::sort(nodes.begin(), nodes.end());
     REQUIRE(!nodes.empty());

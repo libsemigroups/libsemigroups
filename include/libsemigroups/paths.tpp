@@ -34,7 +34,7 @@ namespace libsemigroups {
                                      size_t                  max) {
       if (min >= max) {
         return 0;
-      } else if (word_graph::is_complete(wg)) {
+      } else if (v4::word_graph::is_complete(wg)) {
         // every edge is defined, and so the graph is not acyclic, and so the
         // number of words labelling paths is just the number of words
         if (max == POSITIVE_INFINITY) {
@@ -46,7 +46,7 @@ namespace libsemigroups {
         }
       }
       // Some edges are not defined ...
-      if (!word_graph::is_acyclic(wg, source) && max == POSITIVE_INFINITY) {
+      if (!v4::word_graph::is_acyclic(wg, source) && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
@@ -59,9 +59,9 @@ namespace libsemigroups {
                                      Node2                   target,
                                      size_t                  min,
                                      size_t                  max) {
-      if (min >= max || !word_graph::is_reachable(wg, source, target)) {
+      if (min >= max || !v4::word_graph::is_reachable(wg, source, target)) {
         return 0;
-      } else if (!word_graph::is_acyclic(wg, source, target)
+      } else if (!v4::word_graph::is_acyclic(wg, source, target)
                  && max == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
       }
@@ -73,7 +73,7 @@ namespace libsemigroups {
                                     Node2                   source,
                                     size_t                  min,
                                     size_t                  max) {
-      auto am = word_graph::adjacency_matrix(wg);
+      auto am = v4::word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 #if defined(__GNUC__) && !defined(__clang__)
@@ -127,13 +127,13 @@ namespace libsemigroups {
                            wg.cend_targets(source),
                            [&wg, source](auto n) {
                              return n != UNDEFINED
-                                    && word_graph::is_reachable(
+                                    && v4::word_graph::is_reachable(
                                         wg, n, static_cast<Node1>(source));
                            })) {
           return true;
         } else if (source != target
-                   && word_graph::is_reachable(wg, source, target)
-                   && word_graph::is_reachable(wg, target, source)) {
+                   && v4::word_graph::is_reachable(wg, source, target)
+                   && v4::word_graph::is_reachable(wg, target, source)) {
           return true;
         }
       }
@@ -146,13 +146,13 @@ namespace libsemigroups {
                                     Node2                   target,
                                     size_t                  min,
                                     size_t                  max) {
-      if (!word_graph::is_reachable(wg, source, target)) {
+      if (!v4::word_graph::is_reachable(wg, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
       } else if (number_of_paths_special(wg, source, target, min, max)) {
         return POSITIVE_INFINITY;
       }
-      auto am = word_graph::adjacency_matrix(wg);
+      auto am = v4::word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 #if defined(__GNUC__) && !defined(__clang__)
@@ -199,7 +199,7 @@ namespace libsemigroups {
                                      Node2                   source,
                                      size_t                  min,
                                      size_t                  max) {
-      auto topo = word_graph::topological_sort(wg, source);
+      auto topo = v4::word_graph::topological_sort(wg, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -248,7 +248,7 @@ namespace libsemigroups {
                                      Node2                   target,
                                      size_t                  min,
                                      size_t                  max) {
-      auto topo = word_graph::topological_sort(wg, source);
+      auto topo = v4::word_graph::topological_sort(wg, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -317,7 +317,7 @@ namespace libsemigroups {
     // acyclicity anyway.
     // TODO(2): could use algorithm::dfs in some cases.
     word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-    auto topo = word_graph::topological_sort(wg, source);
+    auto topo = v4::word_graph::topological_sort(wg, source);
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
       // reachable from source, contains cycles, and so there are infinitely
@@ -349,11 +349,11 @@ namespace libsemigroups {
                                              Node2                   source,
                                              size_t                  min,
                                              size_t                  max) {
-    if (min >= max || word_graph::is_complete(wg)) {
+    if (min >= max || v4::word_graph::is_complete(wg)) {
       return paths::algorithm::trivial;
     }
 
-    auto topo = word_graph::topological_sort(wg, source);
+    auto topo = v4::word_graph::topological_sort(wg, source);
     if (topo.empty()) {
       // Can't topologically sort, so the digraph contains cycles, and so
       // there are infinitely many words labelling paths.
@@ -406,11 +406,11 @@ namespace libsemigroups {
                                              Node2                   target,
                                              size_t                  min,
                                              size_t                  max) {
-    bool acyclic = word_graph::is_acyclic(wg, source, target);
-    if (min >= max || !word_graph::is_reachable(wg, source, target)
+    bool acyclic = v4::word_graph::is_acyclic(wg, source, target);
+    if (min >= max || !v4::word_graph::is_reachable(wg, source, target)
         || (!acyclic && max == POSITIVE_INFINITY)) {
       return paths::algorithm::trivial;
-    } else if (acyclic && word_graph::is_acyclic(wg, source)) {
+    } else if (acyclic && v4::word_graph::is_acyclic(wg, source)) {
       return paths::algorithm::acyclic;
     } else if (wg.number_of_edges() < detail::magic_number(wg.number_of_nodes())
                                           * wg.number_of_nodes()) {

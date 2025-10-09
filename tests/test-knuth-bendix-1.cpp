@@ -49,16 +49,17 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
-#include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/constants.hpp"           // for operator==, operator!=
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix, normal_f...
+#include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
+#include "libsemigroups/paths.hpp"               // for Paths
+#include "libsemigroups/presentation.hpp"        // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"              // for equal
+#include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -467,7 +468,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 9);
     REQUIRE(wg.number_of_edges() == 13);
-    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
 
     auto fp = to<FroidurePin>(kb);
     fp.enumerate(100);
@@ -527,7 +528,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 232);
     REQUIRE(wg.number_of_edges() == 265);
-    REQUIRE(word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(13);
     REQUIRE(paths.count() == 336);
@@ -558,7 +559,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 8);
     REQUIRE(wg.number_of_edges() == 11);
-    REQUIRE(word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(5);
     REQUIRE(paths.count() == 12);
@@ -584,7 +585,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 7);
     REQUIRE(wg.number_of_edges() == 17);
-    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(10);
     REQUIRE(paths.count() == 13'044);

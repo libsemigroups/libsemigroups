@@ -29,11 +29,12 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "ranges.hpp"      // for rx/ranges
-#include "types.hpp"       // for word_type etc
-#include "word-graph.hpp"  // for is_acyclic
-#include "word-range.hpp"  // for ToWord
+#include "config.hpp"              // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "ranges.hpp"              // for rx/ranges
+#include "types.hpp"               // for word_type etc
+#include "word-graph-helpers.hpp"  // for word_graph
+#include "word-graph.hpp"          // for is_acyclic
+#include "word-range.hpp"          // for ToWord
 
 #include "detail/eigen.hpp"  // for eigen
 #include "detail/uf.hpp"     // for Duf
@@ -651,7 +652,7 @@ namespace libsemigroups {
   bool
   is_obviously_infinite(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
     if (kb.finished()) {
-      return !word_graph::is_acyclic(kb.gilman_graph());
+      return !v4::word_graph::is_acyclic(kb.gilman_graph());
     }
     auto const& p = kb.internal_presentation();
     if (p.alphabet().empty()) {

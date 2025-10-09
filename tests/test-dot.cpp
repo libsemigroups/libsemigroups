@@ -22,9 +22,10 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/dot.hpp"         // for Dot
-#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
-#include "libsemigroups/word-graph.hpp"  // for WordGraph, word_graph
+#include "libsemigroups/dot.hpp"                 // for Dot
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "libsemigroups/ranges.hpp"  // for Ranges
 
@@ -35,7 +36,7 @@ namespace libsemigroups {
                           "edge attributes",
                           "[dot][quick]") {
     auto      wg    = make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
-    const Dot d     = word_graph::dot(wg);
+    const Dot d     = v4::word_graph::dot(wg);
     auto      edges = d.edges();
     REQUIRE(edges.size() == 6);
     REQUIRE(edges[0].head == "0");
@@ -57,7 +58,7 @@ namespace libsemigroups {
                           "node attributes",
                           "[dot][quick]") {
     auto      wg    = make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
-    const Dot d     = word_graph::dot(wg);
+    const Dot d     = v4::word_graph::dot(wg);
     auto      nodes = d.nodes() | to_vector();
     REQUIRE((nodes.size()) == 3);
     REQUIRE(nodes[0].attrs
@@ -73,7 +74,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "002", "dot attributes", "[dot][quick]") {
     auto wg = make<WordGraph<size_t>>(3, {{0, 1}, {1, 0}, {2, 2}});
-    Dot  d  = word_graph::dot(wg);
+    Dot  d  = v4::word_graph::dot(wg);
     d.add_attr("node [shape=circle]");
     REQUIRE(d.attrs()
             == std::map<std::string, std::string>{{"node [shape=circle]", ""}});

@@ -539,10 +539,11 @@ namespace libsemigroups {
                          Iterator2                  last_node,
                          word_type const&           lhs,
                          word_type const&           rhs) {
-        throw_if_node_out_of_bounds(wg, first_node, last_node);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, first_node, last_node);
         // TODO(1) be better to use follow_path in is_compatible_no_checks
-        throw_if_label_out_of_bounds(wg, lhs);
-        throw_if_label_out_of_bounds(wg, rhs);
+        libsemigroups::word_graph::throw_if_label_out_of_bounds(wg, lhs);
+        libsemigroups::word_graph::throw_if_label_out_of_bounds(wg, rhs);
         return is_compatible_no_checks(wg, first_node, last_node, lhs, rhs);
       }
 
@@ -584,7 +585,8 @@ namespace libsemigroups {
       bool is_complete(WordGraphView<Node> const& wg,
                        Iterator1                  first_node,
                        Iterator2                  last_node) {
-        throw_if_node_out_of_bounds(wg, first_node, last_node);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, first_node, last_node);
         return is_complete_no_checks(wg, first_node, last_node);
       }
 
@@ -657,8 +659,10 @@ namespace libsemigroups {
                         Node2                       source,
                         Node2                       target) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(source));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(target));
         return is_reachable_no_checks(wg, source, target);
       }
 
@@ -693,7 +697,8 @@ namespace libsemigroups {
       template <typename Node1, typename Node2>
       bool is_acyclic(WordGraphView<Node1> const& wg, Node2 source) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(source));
         auto const        N = wg.number_of_nodes();
         std::stack<Node1> stck;
         stck.push(source);
@@ -714,8 +719,10 @@ namespace libsemigroups {
                       Node2                       source,
                       Node2                       target) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(source));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(target));
         if (!is_reachable(wg, source, target)) {
           return true;
         }
@@ -829,7 +836,8 @@ namespace libsemigroups {
       std::unordered_set<Node1>
       nodes_reachable_from(WordGraphView<Node1> const& wg, Node2 source) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(source));
         return nodes_reachable_from_no_checks(wg, source);
       }
 
@@ -879,7 +887,8 @@ namespace libsemigroups {
       std::unordered_set<Node1> ancestors_of(WordGraphView<Node1> const& wg,
                                              Node2 target) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(
+            wg, static_cast<Node1>(target));
         return ancestors_of_no_checks(wg, target);
       }
 
@@ -891,7 +900,7 @@ namespace libsemigroups {
         static_assert(sizeof(Node1) <= sizeof(size_t));
         static_assert(sizeof(Node2) <= sizeof(Node1));
 
-        throw_if_node_out_of_bounds(wg, from);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(wg, from);
 
         if constexpr (::libsemigroups::detail::HasLessEqual<Iterator,
                                                             Iterator>::value) {
@@ -962,7 +971,7 @@ namespace libsemigroups {
                         Node2                       from,
                         Iterator                    first,
                         Iterator                    last) {
-        throw_if_node_out_of_bounds(wg, from);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(wg, from);
 
         static_assert(sizeof(Node2) <= sizeof(Node1));
         auto         it   = first;
@@ -1025,10 +1034,10 @@ namespace libsemigroups {
                     WordGraph<Node> const& y,
                     Node                   first,
                     Node                   last) {
-        throw_if_node_out_of_bounds(x, first);
-        throw_if_node_out_of_bounds(x, last - 1);
-        throw_if_node_out_of_bounds(y, first);
-        throw_if_node_out_of_bounds(y, last - 1);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(x, first);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(x, last - 1);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(y, first);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(y, last - 1);
         return equal_to_no_checks(x, y, first, last);
       }
 
@@ -1460,7 +1469,7 @@ namespace libsemigroups {
                          Node2                       root,
                          Forest&                     f) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
-        throw_if_node_out_of_bounds(wg, root);
+        libsemigroups::word_graph::throw_if_node_out_of_bounds(wg, root);
         return spanning_tree_no_checks(wg, root, f);
       }
 
@@ -1486,10 +1495,11 @@ namespace libsemigroups {
     std::string to_human_readable_repr(WordGraph<Node> const& wg) {
       // TODO(2) could be more elaborate, include complete, etc
       // TODO(2) number_of_edges can be a bit slow
-      return fmt::format("<WordGraph with {} nodes, {} edges, & out-degree {}>",
-                         detail::group_digits(wg.number_of_nodes()),
-                         detail::group_digits(wg.number_of_edges()),
-                         wg.out_degree());
+      return fmt::format(
+          "<WordGraph with {} nodes, {} edges, & out-degree {}>",
+          libsemigroups::detail::group_digits(wg.number_of_nodes()),
+          libsemigroups::detail::group_digits(wg.number_of_edges()),
+          wg.out_degree());
     }
 
     template <typename Node>

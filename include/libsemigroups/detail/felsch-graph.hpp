@@ -33,9 +33,10 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "libsemigroups/adapters.hpp"      // for Noop
-#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/adapters.hpp"            // for Noop
+#include "libsemigroups/debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/presentation.hpp"        // for Presentation
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 
 #include "felsch-tree.hpp"              // for FelschTree
 #include "word-graph-with-sources.hpp"  // for WordGraphWithSources

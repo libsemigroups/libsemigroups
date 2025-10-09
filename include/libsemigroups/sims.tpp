@@ -109,12 +109,12 @@ namespace libsemigroups {
       auto       first = wg.cbegin_nodes();
       auto       last  = wg.cbegin_nodes() + N;
 
-      if (!word_graph::is_complete(wg, first, last)
-          || !word_graph::is_compatible_no_checks(
+      if (!v4::word_graph::is_complete(wg, first, last)
+          || !v4::word_graph::is_compatible_no_checks(
               wg, first, last, p.rules.cbegin(), p.rules.cend())) {
         return false;
       }
-      auto norf = word_graph::nodes_reachable_from(wg, 0);
+      auto norf = v4::word_graph::nodes_reachable_from(wg, 0);
       return std::all_of(
           norf.begin(), norf.end(), [&N](auto n) { return n < N; });
     }
@@ -137,7 +137,7 @@ namespace libsemigroups {
       auto       last  = wg.cbegin_nodes() + N;
 
       for (auto const& rule : right_generating_pairs(p, wg)) {
-        if (!word_graph::is_compatible_no_checks(
+        if (!v4::word_graph::is_compatible_no_checks(
                 wg, first, last, rule.first, rule.second)) {
           return false;
         }
@@ -186,7 +186,7 @@ namespace libsemigroups {
 
       ToddCoxeter<word_type> tc;
 
-      auto   tree = word_graph::spanning_tree(wg, 0);
+      auto   tree = v4::word_graph::spanning_tree(wg, 0);
       size_t N    = wg.number_of_active_nodes();
       // TODO(1) avoid allocating wx + wy every time in these loops
       for (Node x = 0; x < N - 1; ++x) {
@@ -264,7 +264,7 @@ namespace libsemigroups {
       for (auto it = first; it != last; ++it) {
         auto copy = *it;
         copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
-        Dot dot_graph = word_graph::dot(copy);
+        Dot dot_graph = v4::word_graph::dot(copy);
         dot_graph.name(std::to_string(index++));
         result.add_subgraph(std::move(dot_graph));
       }

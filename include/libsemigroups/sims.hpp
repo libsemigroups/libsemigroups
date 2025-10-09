@@ -74,7 +74,7 @@
 #include "runner.hpp"        // for delta, Reporter
 #include "todd-coxeter.hpp"  // for ToddCoxeter
 #include "types.hpp"         // for word_type, relation_type, congruence_kind
-#include "word-graph.hpp"    // for Joiner, WordGraph
+#include "word-graph.hpp"    // for WordGraph
 
 #include "detail/felsch-graph.hpp"    // for FelschGraph
 #include "detail/fmt.hpp"             // for format, print
