@@ -780,12 +780,12 @@ namespace libsemigroups {
     WordGraph<uint32_t> wg(0, 1);
     v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    REQUIRE(to_input_string(wg) == "5, {{4294967295}, {2}, {3}, {4}, {0}}");
-    REQUIRE(to_input_string(wg, "v4::make<WordGraph<uint32_t>>(", "[]", ")")
+    REQUIRE(v4::to_input_string(wg) == "5, {{4294967295}, {2}, {3}, {4}, {0}}");
+    REQUIRE(v4::to_input_string(wg, "v4::make<WordGraph<uint32_t>>(", "[]", ")")
             == "v4::make<WordGraph<uint32_t>>(5, [[4294967295], [2], [3], [4], "
                "[0]])");
     v4::word_graph::add_cycle(wg, 1000);
-    REQUIRE(to_human_readable_repr(wg)
+    REQUIRE(v4::to_human_readable_repr(wg)
             == "<WordGraph with 1,005 nodes, 1,004 edges, & out-degree 1>");
   }
 

@@ -1482,7 +1482,10 @@ namespace libsemigroups {
 
   template <typename Node>
   std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     os << to_input_string(wg, "{", "{}", "}");
+#pragma GCC diagnostic pop
     return os;
   }
 
