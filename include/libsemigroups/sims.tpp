@@ -215,7 +215,7 @@ namespace libsemigroups {
       std::vector<WordGraph_> graphs(first, last);
       size_t const            n = graphs.size();
 
-      Joiner hk;
+      v4::Joiner hk;
 
       BMat<> mat1(n, n);
 

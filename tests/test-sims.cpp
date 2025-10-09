@@ -185,8 +185,8 @@ namespace libsemigroups {
       using WordGraph_ = std::decay_t<decltype(*first)>;
       std::vector<WordGraph_> graphs(first, last);
       size_t const            n = graphs.size();
-      Joiner                  joiner;
-      Meeter                  meeter;
+      v4::Joiner              joiner;
+      v4::Meeter              meeter;
       WordGraph_              tmp;
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {

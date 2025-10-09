@@ -328,7 +328,10 @@ namespace libsemigroups {
     wg.target(2, 0, 2);
 
     std::ostringstream oss;
-    oss << wg;
+    // This seems silly, but JDE couldn't figure out a way to get this to work.
+    // Tried "using v4::operator<<;" but that didn't work for "operator is
+    // ambiguous" reasons.
+    v4::operator<<(oss, wg);
     REQUIRE(oss.str()
             == "{3, {{1, 18446744073709551615}, {0, 18446744073709551615}, {2, "
                "18446744073709551615}}}");
@@ -666,7 +669,7 @@ namespace libsemigroups {
         v4::make<WordGraph<size_t>>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
     WordGraph<size_t> y = x;
 
-    Joiner join;
+    v4::Joiner join;
 
     WordGraph<size_t> xy;
     join(xy, x, y);
@@ -676,7 +679,7 @@ namespace libsemigroups {
     REQUIRE(join(x, y) == x);
     REQUIRE(join(y, x) == x);
 
-    Meeter meet;
+    v4::Meeter meet;
     meet(xy, x, y);
     REQUIRE(xy == x);
     REQUIRE(xy == y);
@@ -694,7 +697,7 @@ namespace libsemigroups {
 
     WordGraph<size_t> xy;
 
-    Joiner join;
+    v4::Joiner join;
     xy = join(x, y);
     REQUIRE(x != y);
     REQUIRE(xy == v4::make<WordGraph<size_t>>(2, {{1, 1, 1}, {1, 1, 1}}));
@@ -713,7 +716,7 @@ namespace libsemigroups {
 
     WordGraph<size_t> xy;
 
-    Meeter meet;
+    v4::Meeter meet;
     meet(xy, x, y);
 
     REQUIRE(
@@ -741,15 +744,15 @@ namespace libsemigroups {
     REQUIRE(v4::word_graph::number_of_nodes_reachable_from(x, 0) == 3);
     REQUIRE(v4::word_graph::number_of_nodes_reachable_from(y, 0) == 2);
 
-    Meeter meet;
-    auto   xy = meet(x, y);
+    v4::Meeter meet;
+    auto       xy = meet(x, y);
     REQUIRE(
         xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
     v4::word_graph::standardize(xy);
     REQUIRE(
         xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
 
-    Joiner join;
+    v4::Joiner join;
     join(xy, x, y);
     REQUIRE(xy == v4::make<WordGraph<size_t>>(1, {{0, 0}}));
   }
@@ -758,7 +761,7 @@ namespace libsemigroups {
     WordGraph<uint32_t> wg(0, 1);
     v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    Joiner join;
+    v4::Joiner join;
     REQUIRE(join(wg, wg) == v4::make<WordGraph<uint32_t>>(1, {{UNDEFINED}}));
   }
 
@@ -766,7 +769,7 @@ namespace libsemigroups {
     WordGraph<uint32_t> wg(0, 1);
     v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    Meeter meet;
+    v4::Meeter meet;
     REQUIRE(meet(wg, wg) == v4::make<WordGraph<uint32_t>>(1, {{UNDEFINED}}));
   }
 
