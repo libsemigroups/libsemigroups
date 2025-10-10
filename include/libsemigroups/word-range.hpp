@@ -2511,9 +2511,10 @@ namespace libsemigroups {
         if (!it.second) {
           // Strong exception guarantee
           std::swap(_old_alphabet_map, _alphabet_map);
-          LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
-                                  detail::to_printable(alphabet),
-                                  detail::to_printable(alphabet[l]));
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid alphabet {}, duplicate letter {}!",
+              libsemigroups::detail::to_printable(alphabet),
+              libsemigroups::detail::to_printable(alphabet[l]));
         }
       }
       return *this;
@@ -2561,8 +2562,8 @@ namespace libsemigroups {
             LIBSEMIGROUPS_EXCEPTION(
                 "invalid letter {} in the 2nd argument (input word), "
                 "expected letters in the alphabet {}!",
-                detail::to_printable(c),
-                detail::to_printable(alphabet()));
+                libsemigroups::detail::to_printable(c),
+                libsemigroups::detail::to_printable(alphabet()));
           }
         }
       }

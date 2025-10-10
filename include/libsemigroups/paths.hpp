@@ -34,15 +34,16 @@
 #include <variant>      // for visit, variant
 #include <vector>       // for vector, allocator
 
-#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
-#include "constants.hpp"   // for Max, UNDEFINED, Positive...
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "order.hpp"       // for order
-#include "ranges.hpp"      // for is_input_range
-#include "types.hpp"       // for word_type
-#include "word-graph.hpp"  // for WordGraph
-#include "word-range.hpp"  // for number_of_words
+#include "config.hpp"              // for LIBSEMIGROUPS_EIGEN_ENA...
+#include "constants.hpp"           // for Max, UNDEFINED, Positive...
+#include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "order.hpp"               // for order
+#include "ranges.hpp"              // for is_input_range
+#include "types.hpp"               // for word_type
+#include "word-graph-helpers.hpp"  // for word_graph
+#include "word-graph.hpp"          // for WordGraph
+#include "word-range.hpp"          // for number_of_words
 
 #include "detail/containers.hpp"      // for DynamicArray2
 #include "detail/path-iterators.hpp"  // for default_postfix_increment
@@ -259,7 +260,7 @@ namespace libsemigroups {
                                    size_t                  min = 0,
                                    size_t max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!word_graph::is_reachable(wg, source, target)) {
+    if (!v4::word_graph::is_reachable(wg, source, target)) {
       return cend_pstilo(wg);
     }
     return detail::const_pstilo_iterator<Node1>(&wg, source, target, min, max);
@@ -331,7 +332,7 @@ namespace libsemigroups {
                                     size_t                  min = 0,
                                     size_t max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!word_graph::is_reachable(wg, source, target)) {
+    if (!v4::word_graph::is_reachable(wg, source, target)) {
       return cend_pstislo(wg);
     }
     return detail::const_pstislo_iterator<Node1>(&wg, source, target, min, max);
@@ -422,7 +423,7 @@ namespace libsemigroups {
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the word graph.
-  // Not noexcept because word_graph::topological_sort is not.
+  // Not noexcept because v4::word_graph::topological_sort is not.
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,
@@ -508,7 +509,7 @@ namespace libsemigroups {
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the word graph.
-  // Not noexcept because word_graph::topological_sort isn't
+  // Not noexcept because v4::word_graph::topological_sort isn't
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,

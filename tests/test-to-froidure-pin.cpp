@@ -51,7 +51,7 @@ namespace libsemigroups {
                           "from WordGraph",
                           "[quick]") {
     auto rg = ReportGuard(false);
-    auto wg = make<WordGraph<uint8_t>>(
+    auto wg = v4::make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     auto T = to<FroidurePin<Transf<5>>>(wg);
@@ -69,7 +69,7 @@ namespace libsemigroups {
                           "from WordGraph (exceptions)",
                           "[quick]") {
     auto rg = ReportGuard(false);
-    auto wg = make<WordGraph<uint8_t>>(
+    auto wg = v4::make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
     REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 10, 0)),

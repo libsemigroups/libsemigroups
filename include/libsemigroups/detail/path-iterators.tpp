@@ -303,7 +303,7 @@ namespace libsemigroups {
       if (_can_reach_target.empty()) {
         _can_reach_target.resize(_word_graph->number_of_nodes(), false);
         auto ancestors
-            = word_graph::ancestors_of_no_checks(*_word_graph, _target);
+            = v4::word_graph::ancestors_of_no_checks(*_word_graph, _target);
         std::for_each(ancestors.begin(), ancestors.end(), [this](auto n) {
           _can_reach_target[n] = true;
         });
