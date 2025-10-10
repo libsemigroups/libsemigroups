@@ -2770,6 +2770,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - non-member functions
     //////////////////////////////////////////////////////////////////////////
+    // TODO(1) Add equivalents for WordGraphView
 
     //! \ingroup word_graph_group
     //! Output the edges of a wordGraph to a stream.
