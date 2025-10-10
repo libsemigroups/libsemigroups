@@ -98,8 +98,8 @@ namespace libsemigroups {
 
       //! \brief Returns the adjacency matrix of a word graph view.
       //!
-      //! This function returns the adjacency matrix of the word graph view \p
-      //! wg. The type of the returned matrix depends on whether or not
+      //! This function returns the adjacency matrix of the word graph view
+      //! \p wg. The type of the returned matrix depends on whether or not
       //! `libsemigroups` is compiled with [eigen][] enabled. The returned
       //! matrix has the number of edges with source \c s and target \c t in the
       //! `(s, t)`-entry.
@@ -771,9 +771,9 @@ namespace libsemigroups {
       //! a range of nodes.
       //!
       //! This function returns \c true if the word graph view \p wg is
-      //! compatible with the relations in the range \p first_rule to \p
-      //! last_rule at every node in the range from \p first_node to \p
-      //! last_node. This means that the paths with given sources that are
+      //! compatible with the relations in the range \p first_rule to
+      //! \p last_rule at every node in the range from \p first_node to
+      //! \p last_node. This means that the paths with given sources that are
       //! labelled by one side of a relation leads to the same node as the path
       //! labelled by the other side of the relation.
       //!
@@ -879,9 +879,9 @@ namespace libsemigroups {
       //! a range of nodes.
       //!
       //! This function returns \c true if the word graph view \p wg is
-      //! compatible with the relations in the range \p first_rule to \p
-      //! last_rule at every node in the range from \p first_node to \p
-      //! last_node. This means that the paths with given sources that are
+      //! compatible with the relations in the range \p first_rule to
+      //! \p last_rule at every node in the range from \p first_node to
+      //! \p last_node. This means that the paths with given sources that are
       //! labelled by one side of a relation leads to the same node as the path
       //! labelled by the other side of the relation.
       //!
@@ -1158,6 +1158,7 @@ namespace libsemigroups {
             WordGraphView<Node>(wg), first_node, last_node, lhs, rhs);
       }
 
+      /*
       //! \brief Check if a word graph or word graph view is compatible with
       //! some relations at a range of nodes.
       //!
@@ -1201,45 +1202,46 @@ namespace libsemigroups {
       //! greater than or equal to WordGraph::out_degree).
       //!
       //! \note This function ignores out of bound targets in \p wg (if any).
-      // TODO(0): Remove or delete
-      // template <typename WordGraphType,
-      //           typename Iterator1,
-      //           typename Iterator2,
-      //           typename Iterator3,
-      //           typename = std::enable_if_t<
-      //               std::is_same_v<WordGraphType,
-      //                              WordGraph<typename
-      //                              WordGraphType::node_type>>
-      //               || std::is_same_v<
-      //                   WordGraphType,
-      //                   WordGraphView<typename WordGraphType::node_type>>>>
-      // bool is_compatible(WordGraphType const& wg,
-      //                    Iterator1            first_node,
-      //                    Iterator2            last_node,
-      //                    Iterator3            first_rule,
-      //                    Iterator3            last_rule) {
-      //   if constexpr (std::is_same_v<
-      //                     WordGraphType,
-      //                     WordGraph<typename WordGraphType::node_type>>) {
-      //     return is_compatible(
-      //         static_cast<WordGraph<typename WordGraphType::node_type>
-      //         const&>(
-      //             wg),
-      //         first_node,
-      //         last_node,
-      //         first_rule,
-      //         last_rule);
-      //   } else {
-      //     return is_compatible(
-      //         static_cast<
-      //             WordGraphView<typename WordGraphType::node_type>
-      //             const&>(wg),
-      //         first_node,
-      //         last_node,
-      //         first_rule,
-      //         last_rule);
-      //   }
-      // }
+      TODO(0): Remove or delete
+      template <typename WordGraphType,
+                typename Iterator1,
+                typename Iterator2,
+                typename Iterator3,
+                typename = std::enable_if_t<
+                    std::is_same_v<WordGraphType,
+                                   WordGraph<typename
+                                   WordGraphType::node_type>>
+                    || std::is_same_v<
+                        WordGraphType,
+                        WordGraphView<typename WordGraphType::node_type>>>>
+      bool is_compatible(WordGraphType const& wg,
+                         Iterator1            first_node,
+                         Iterator2            last_node,
+                         Iterator3            first_rule,
+                         Iterator3            last_rule) {
+        if constexpr (std::is_same_v<
+                          WordGraphType,
+                          WordGraph<typename WordGraphType::node_type>>) {
+          return is_compatible(
+              static_cast<WordGraph<typename WordGraphType::node_type>
+              const&>(
+                  wg),
+              first_node,
+              last_node,
+              first_rule,
+              last_rule);
+        } else {
+          return is_compatible(
+              static_cast<
+                  WordGraphView<typename WordGraphType::node_type>
+                  const&>(wg),
+              first_node,
+              last_node,
+              first_rule,
+              last_rule);
+        }
+      }
+      */
 
       //! \brief Check if every node in a range has exactly
       //! WordGraphView::out_degree out-edges.
@@ -1490,8 +1492,8 @@ namespace libsemigroups {
 
       //! \brief Check if there is a path from one node to another.
       //!
-      //! This function returns \c true if there is a path from the node \p
-      //! source to the node \p target in the word graph view \p wg.
+      //! This function returns \c true if there is a path from the node
+      //! \p source to the node \p target in the word graph view \p wg.
       //!
       //! \tparam Node1 the type of the nodes in the WordGraphView.
       //!
@@ -1545,8 +1547,8 @@ namespace libsemigroups {
 
       //! \brief Check if there is a path from one node to another.
       //!
-      //! This function returns \c true if there is a path from the node \p
-      //! source to the node \p target in the word graph \p wg.
+      //! This function returns \c true if there is a path from the nod
+      //! \p source to the node \p target in the word graph \p wg.
       //!
       //! \tparam Node1 the type of the nodes in the WordGraph.
       //!
@@ -1601,8 +1603,8 @@ namespace libsemigroups {
 
       //! \brief Check if there is a path from one node to another.
       //!
-      //! This function returns \c true if there is a path from the node \p
-      //! source to the node \p target in the word graph view \p wg.
+      //! This function returns \c true if there is a path from the node
+      //! \p source to the node \p target in the word graph view \p wg.
       //!
       //! \tparam Node1 the type of the nodes in the WordGraphView.
       //!
@@ -1638,8 +1640,8 @@ namespace libsemigroups {
 
       //! \brief Check if there is a path from one node to another.
       //!
-      //! This function returns \c true if there is a path from the node \p
-      //! source to the node \p target in the word graph \p wg.
+      //! This function returns \c true if there is a path from the node
+      //! \p source to the node \p target in the word graph \p wg.
       //!
       //! \tparam Node1 the type of the nodes in the WordGraph.
       //!
@@ -2552,8 +2554,8 @@ namespace libsemigroups {
       //! \param val the order to use for standardization.
       //!
       //! \returns
-      //! A std::pair the first entry of which is \c true if the word graph \p
-      //! wg is modified by this function (i.e. it was not standardized
+      //! A std::pair the first entry of which is \c true if the word graph
+      //! \p wg is modified by this function (i.e. it was not standardized
       //! already), and
       //! \c false otherwise. The second entry is a Forest object containing a
       //! spanning tree for \p wg.
@@ -3102,8 +3104,8 @@ namespace libsemigroups {
       //!
       //! This function replaces the contents of the word graph \p xy with the
       //! join/meet of the word graphs \p x and \p y. This function is the same
-      //! as the 5-argument variant but it uses \c 0 as the root node in both \p
-      //! x and \p y.
+      //! as the 5-argument variant but it uses \c 0 as the root node in both
+      //! \p x and \p y.
       //!
       //! \tparam Node the type of the nodes in the word graphs which are
       //! parameters to this function.
@@ -3229,8 +3231,8 @@ namespace libsemigroups {
       //! initial node \p xroot and accept state every node, is a subset of the
       //! corresponding language in \p y. This version of the function is
       //! similar to the 6-argument overload, except that here we must compute
-      //! the number of nodes in \p x and \p y reachable from \p xroot and \p
-      //! yroot, respectively.
+      //! the number of nodes in \p x and \p y reachable from \p xroot and
+      //! \p yroot, respectively.
       //!
       //! \tparam Node1 the type of the nodes in the word graphs which are
       //! parameters to this function.
