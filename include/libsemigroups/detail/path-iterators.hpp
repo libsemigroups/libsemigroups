@@ -25,9 +25,9 @@
 #include <type_traits>  // for integral_constant<>::value
 #include <vector>       // for vector, vector<>::const...
 
-#include "libsemigroups/constants.hpp"        // for UNDEFINED, Undefined
-#include "libsemigroups/detail/iterator.hpp"  // for default_postfix_increment
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/constants.hpp"           // for UNDEFINED, Undefined
+#include "libsemigroups/detail/iterator.hpp"     // for default_postfix_incre...
+#include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"
 
