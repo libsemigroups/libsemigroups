@@ -78,14 +78,16 @@ namespace libsemigroups {
     WordGraph<Node> const* _graph;
     node_type              _start;
     node_type              _end;
-    constexpr node_type    to_graph(node_type n) const noexcept {
+
+    constexpr node_type to_graph(node_type n) const noexcept {
       if (n == UNDEFINED) {
         // LCOV does not recognise this as being called,
         // but it is definitely called in test-word-graph-view.cpp[015]
         return UNDEFINED;
       }
       return n + _start;
-    };
+    }
+
     constexpr node_type to_view(node_type n) const noexcept {
       if (n == UNDEFINED) {
         return UNDEFINED;
@@ -179,8 +181,6 @@ namespace libsemigroups {
     template <typename OtherNode>
     WordGraphView<OtherNode>& init(WordGraph<OtherNode> const& that);
 
-    // TODO check if this destructor should destruct the underlying graph as
-    // well
     ~WordGraphView() = default;
 
     //! \brief The number of nodes that this view ranges over.
