@@ -217,4 +217,33 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(make<Forest>({UNDEFINED, 0, 1}, {1, UNDEFINED, 0}),
                       LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "009", "max_label helper", "[quick]") {
+    Forest f = test_forest1();
+    REQUIRE(forest::max_label(f) == 4);
+
+    f.set_parent_and_label(9, 10, 666);
+    REQUIRE(forest::max_label(f) == 666);
+
+    f.init();
+    REQUIRE(forest::max_label(f) == UNDEFINED);
+    f.add_nodes(1);
+
+    REQUIRE(forest::max_label(f) == UNDEFINED);
+    f.add_nodes(10);
+    REQUIRE(forest::max_label(f) == UNDEFINED);
+
+    f.init();
+    f.add_nodes(2);
+    f.set_parent_and_label(0, 1, 4);
+    REQUIRE(forest::max_label(f) == 4);
+    f.set_parent_and_label(0, 0, 0);
+    REQUIRE(forest::max_label(f) == 0);
+
+    f.init();
+    f.add_nodes(12);
+    f.set_parent_and_label(4, 5, 12);
+    REQUIRE(forest::max_label(f) == 12);
+  }
+
 }  // namespace libsemigroups

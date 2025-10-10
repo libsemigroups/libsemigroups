@@ -192,6 +192,23 @@ namespace libsemigroups {
       }
       return length;
     }
+
+    [[nodiscard]] Forest::label_type max_label(Forest const& f) {
+      if (!f.empty()) {
+        Forest::label_type max               = 0;
+        bool               any_label_defined = false;
+        for (auto const& label : f.labels()) {
+          if (label != UNDEFINED && label >= max) {
+            any_label_defined = true;
+            max               = label;
+          }
+        }
+        if (any_label_defined) {
+          return max;
+        }
+      }
+      return UNDEFINED;
+    }
   }  // namespace forest
 
 }  // namespace libsemigroups
