@@ -31,6 +31,17 @@
 #include "detail/int-range.hpp"  // for IntRange
 
 namespace libsemigroups {
+  //! \ingroup word_graph_group
+  //!
+  //! \brief non-owning view over a specified range of WordGraph nodes.
+  //!
+  //! Defined in `word-graph-view.hpp`.
+  //!
+  //! This class provides a wrapper around WordGraph to allow a non-owning view
+  //! over a specified range of WordGraph nodes.
+  //!
+  //! \tparam Node the type of the nodes in the word graph, must be an unsigned
+  //! integer type.
   template <typename Node>
   class WordGraphView {
    public:
@@ -40,20 +51,26 @@ namespace libsemigroups {
         std::is_unsigned<Node>(),
         "the template parameter Node must be an unsigned integral type!");
 
-    using node_type  = Node;
-    using label_type = Node;
-    using size_type  = std::size_t;
+    //! \brief The type of nodes in a word graph.
+    using node_type = Node;
 
-    //! The type of an iterator pointing to the nodes of the word graph view.
+    //! \brief The type of edge labels in a word graph.
+    using label_type = Node;
+
+    //! \brief Unsigned integer type.
+    using size_type = std::size_t;
+
+    //! \brief The type of an iterator pointing to the nodes of the word graph
+    //! view.
     using const_iterator_nodes =
         typename detail::IntRange<Node>::const_iterator;
 
-    //! The type of a reverse iterator pointing to the nodes of a word graph
-    //! view.
+    //! \brief The type of a reverse iterator pointing to the nodes of a word
+    //! graph view.
     using const_reverse_iterator_nodes =
         typename detail::IntRange<Node>::const_reverse_iterator;
 
-    //! The type of an iterator pointing to the targets of a node.
+    //! \brief The type of an iterator pointing to the targets of a node.
     using const_iterator_targets =
         typename detail::DynamicArray2<Node>::const_iterator;
 
@@ -89,25 +106,37 @@ namespace libsemigroups {
     }
 
    public:
-    //! \brief Construct from an existing WordGraphView
-    //! \param graph underlying WordGraphView object
+    //! \brief Construct from a WordGraph and range of nodes.
+    //!
+    //! This function is used to construct a WordGraphView from a WordGraph over
+    //! the range of nodes from \p start to \p end.
+    //!
+    //! \param graph underlying WordGraph object.
+    //! \param start the first node in the range.
+    //! \param end one beyond the last node in the range.
     WordGraphView(WordGraph<Node> const& graph, size_type start, size_type end);
 
-    //! \brief Construct from an existing WordGraphView
-    //! \param graph underlying WordGraphView object
+    //! \brief Construct from a WordGraph.
+    //!
+    //! This function is used to construct a WordGraphView from a WordGraph over
+    //! all of the nodes in \p graph.
+    //!
+    //! \param graph underlying WordGraph object.
     explicit WordGraphView(WordGraph<Node> const& graph);
 
-    //! \brief Copy constructor
+    //! \brief Default copy constructor.
     WordGraphView(WordGraphView<Node> const&) = default;
 
-    //! \brief Move constructor
+    //! \brief Default move constructor.
     WordGraphView(WordGraphView<Node>&&) = default;
 
-    //! \brief Construct from WordGraph with another node type.
+    //! \brief Construct from a WordGraph with another node type.
     //!
     //! This function can be used to construct a WordGraphView<Node> as a copy
     //! of a WordGraphView<OtherNode> so long as `sizeof(OtherNode) <=
     //! sizeof(Node)`.
+    //!
+    //! \tparam OtherNode the type of the nodes of \p that.
     //!
     //! \param that the word graph view to copy.
     //!
@@ -116,14 +145,37 @@ namespace libsemigroups {
     template <typename OtherNode>
     WordGraphView(WordGraphView<OtherNode> const& that);
 
-    //! \brief Construct empty object for future assignment
+    //! \brief Construct empty object for future assignment.
     WordGraphView();
 
-    //! \brief Reshape this view over the same graph
+    //! \brief Reshape this view over the same graph.
+    //!
+    //! This function is used to reshape \c this to be a view over the range
+    //! from \p start to \p end.
+    //!
+    //! \param start the first node in the range.
+    //! \param end one beyond the last node in the range.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     WordGraphView& init(size_type start, size_type end);
 
     //! \brief Reassign this view to a different graph, keeping the same
-    //! dimensions
+    //! shape.
+    //!
+    //! This function is used to change the underling WordGraph of a
+    //! WordGraphView, whilst keeping the same range of nodes.
+    //!
+    //! \tparam OtherNode the type of the nodes of \p that.
+    //!
+    //! \param that the new WordGraph.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename OtherNode>
     WordGraphView<OtherNode>& init(WordGraph<OtherNode> const& that);
 
@@ -131,32 +183,75 @@ namespace libsemigroups {
     // well
     ~WordGraphView() = default;
 
-    //! \brief The number of nodes that this view ranges over (_end -
-    //! _start)
+    //! \brief The number of nodes that this view ranges over.
+    //!
     //! \returns
+    //! The number of nodes in in the view.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] size_type number_of_nodes() const noexcept {
       return _end - _start;
     }
 
+    //! \brief The number of edges in the underlying graph.
+    //!
+    //! \returns
+    //! The number of edges in in the underlying graph.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! The same as \ref WordGraph::number_of_edges
+    //!
+    //! \sa WordGraph::number_of_edges
     [[nodiscard]] size_type number_of_edges() const noexcept {
       return _graph->number_of_edges();
     }
-
-    //! \brief The start node in the underlying graph
+    //! \brief The index in the underlying graph of the first node in the view.
+    //!
+    //! \returns
+    //! The index of the node.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] node_type start_node() const noexcept {
       return _start;
     }
 
-    //! \brief The end node in the underlying graph
+    //! \brief The index in the underlying graph of one beyond the final node in
+    //! the view.
+    //!
+    //! \returns
+    //! The index of the node.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] node_type end_node() const noexcept {
       return _end;
     }
 
-    //! \brief Returns the out degree
+    //! \brief Returns the out degree.
     //!
-    //! This function returns the number of edge labels in the word graph
+    //! This function returns the number of edge labels in the word graph.
     //!
-    //! \returns The number of edge labels, type \c size_type
+    //! \returns The number of edge labels, type \c size_type.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] size_type out_degree() const noexcept;
 
     //! \brief Returns a random access iterator pointing at the first node of
@@ -178,7 +273,7 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a random access iterator pointing one past the last node
-    //! of the range of this word graph view
+    //! of the range of this word graph view.
     //!
     //! This function returns a random access iterator pointing one beyond the
     //! last node in the word graph.
@@ -199,8 +294,8 @@ namespace libsemigroups {
     //! the edge with label \p 0 incident to a given node.
     //!
     //! This function returns a random access iterator pointing at the
-    //! target of the edge with label \c 0 incident to the source node \p
-    //! source. This target might equal \ref UNDEFINED.
+    //! target of the edge with label \c 0 incident to the source node
+    //! \p source. This target might equal \ref UNDEFINED.
     //!
     //! \param source the source node in the word graph.
     //!
@@ -219,8 +314,8 @@ namespace libsemigroups {
     //! the edge with label \p 0 incident to a given node.
     //!
     //! This function returns a random access iterator pointing at the
-    //! target of the edge with label \c 0 incident to the source node \p
-    //! source. This target might equal \ref UNDEFINED.
+    //! target of the edge with label \c 0 incident to the source node
+    //! \p source. This target might equal \ref UNDEFINED.
     //!
     //! \param source a node in the word graph.
     //!
@@ -339,21 +434,37 @@ namespace libsemigroups {
       return to_view(_graph->targets_no_checks(translated));
     }
 
-    //! \brief Returns a range object containing pairs consisting of edge
-    //! labels and target nodes.
+    //! \brief Get the next target of an edge incident to a given node that
+    //! doesn't equal \ref UNDEFINED.
     //!
-    //! This function returns a range object containing all the edge labels and
-    //! targets of edges with source \p source.
+    //! This function returns the next target of an edge with label greater
+    //! than or equal to \p a that is incident to the node \p s.
     //!
-    //! \param source the source node.
+    //! If `target(s, b)` equals \ref UNDEFINED for every value \c b in the
+    //! range \f$[a, n)\f$, where \f$n\f$ is the return value of out_degree()
+    //! then \c x.first and \c x.second equal \ref UNDEFINED.
     //!
-    //! \returns A range object.
+    //! \param s the node.
+    //! \param a the label.
+    //!
+    //! \returns
+    //! Returns a std::pair
+    //! \c x where:
+    //! 1. \c x.first is adjacent to \p s via an edge labelled
+    //!    \c x.second; and
+    //! 2. \c x.second is the minimum value in the range \f$[a, n)\f$ such that
+    //!    `target(s, x.second)` is not equal to \ref UNDEFINED
+    //!    where \f$n\f$ is the return value of out_degree();
+    //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
     //! \exceptions
     //! \noexcept
     //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
+    //!
     //! \warning
-    //! This function performs no checks whatsoever and assumes that \p source
+    //! This function performs no checks whatsoever and assumes that \p s
     //! is a valid node of the word graph (i.e. it is not greater than or equal
     //! to \ref number_of_nodes).
     [[nodiscard]] std::pair<label_type, node_type>
@@ -382,8 +493,8 @@ namespace libsemigroups {
     //!    where \f$n\f$ is the return value of out_degree();
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
-    //! \throws LibsemigroupsException if \p s does not represent a node in \c
-    //! this, or \p a is not a valid edge label.
+    //! \throws LibsemigroupsException if \p s does not represent a node in
+    //! \c this, or \p a is not a valid edge label.
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
@@ -404,7 +515,7 @@ namespace libsemigroups {
     //! \returns A range object.
     //!
     //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
-    //! greater than or equal to \ref number_of_nodes)
+    //! greater than or equal to \ref number_of_nodes).
     [[nodiscard]] auto targets(node_type source) const;
 
     //! \brief Returns a range object containing pairs consisting of edge
@@ -442,16 +553,25 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p source is out of bounds.
     [[nodiscard]] auto labels_and_targets(node_type source) const;
 
-    //! \brief Compares two word graph views to see if they are equal
+    //! \brief Compares two word graph views to see if they are equal.
     //!
     //! This operator compares two views over two (not necessarily the same)
-    //! word graph objects to see if the views are equal
+    //! word graph objects to see if the views are equal.
+    //!
+    //! \param that the WordGraphView to compare with.
+    //!
     //! \returns True if this and that have the same number of nodes, out
-    //! degree, and range over nodes with identical values and targets
+    //! degree, and range over nodes with identical values and targets.
     [[nodiscard]] bool operator==(WordGraphView const& that) const;
 
-    //! \brief Compares two word graph views to see if they are not equal
-    //! \returns True if this and that are not equal by \c ==
+    //! \brief Compares two word graph views to see if they are not equal.
+    //!
+    //! This operator compares two views over two (not necessarily the same)
+    //! word graph objects to see if the views are not equal.
+    //!
+    //! \param that the WordGraphView to compare with.
+    //!
+    //! \returns True if this and that are not equal by \c ==.
     [[nodiscard]] bool operator!=(WordGraphView const& that) const {
       return !operator==(that);
     }
@@ -464,15 +584,14 @@ namespace libsemigroups {
     //! \param source the node.
     //! \param a the label.
     //!
-    //! \returns
-    //! Returns the node adjacent to \p source via the edge labelled \p a, or
+    //! \returns the node adjacent to \p source via the edge labelled \p a, or
     //! \ref UNDEFINED; both are values of type \ref node_type.
-    //!
-    //! \complexity
-    //! Constant.
     //!
     //! \throws LibsemigroupsException if \p source or \p a is not
     //! valid.
+    //!
+    //! \complexity
+    //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const;
 
@@ -488,11 +607,11 @@ namespace libsemigroups {
     //! Returns the node adjacent to \p source via the edge labelled \p a, or
     //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \throws LibsemigroupsException if \p source or \p a is not
     //! valid.
+    //!
+    //! \complexity
+    //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target_no_checks(node_type  source,
                                              label_type a) const;
@@ -631,10 +750,21 @@ namespace libsemigroups {
                                      Iterator2                  last);
 
     //! \brief Creates a word graph from a corresponding view, copying only the
-    //! nodes contained within the view. Will throw \c LibsemigroupsException if
-    //! the underlying graph had edges which crossed the boundaries of the view
+    //! nodes contained within the view.
+    //!
+    //! This function creates a word graph from a corresponding view, copying
+    //! only the nodes contained within the view.
+    //!
+    //! \tparam Node the type of node in the WordGraph.
+    //!
+    //! \param view the WordGraphView to construct the graph from.
+    //!
+    //! \returns The corresponding WordGraph<Node>.
+    //!
+    //! \throws LibsemigroupsException if the underlying graph has edges which
+    //! crossed the boundaries of the view.
     template <typename Node>
-    WordGraph<Node> graph_from_view(WordGraph<Node> const& view);
+    WordGraph<Node> graph_from_view(WordGraphView<Node> const& view);
   }  // namespace word_graph
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"

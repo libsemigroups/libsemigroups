@@ -1341,13 +1341,13 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning No checks are performed to ensure that the arguments
     //! are valid.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node>
     [[deprecated]] [[nodiscard]] bool
     equal_to_no_checks(WordGraph<Node> const& x,
@@ -1378,12 +1378,13 @@ namespace libsemigroups {
     //! in \p x or not a node in \p y; or if `last - 1` is not a node in \p or
     //! not a node in \p y.
     //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     template <typename Node>
     [[deprecated]] [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
                                                WordGraph<Node> const& y,
@@ -1421,10 +1422,11 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! Linear in the distance between \p first and \p last.
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     template <typename Node1, typename Node2, typename Iterator>
     [[deprecated]] [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
                                                    Node2    source,
@@ -1459,10 +1461,10 @@ namespace libsemigroups {
     //! \par Complexity
     //! Linear in the length of \p path.
     //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     // TODO(2) example
     // not noexcept because WordGraph::target isn't
     template <typename Node1, typename Node2>
@@ -1497,13 +1499,13 @@ namespace libsemigroups {
     //! \complexity
     //! At worst the distance from \p first to \p last.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning
     //! No checks on the arguments of this function are performed.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2, typename Iterator>
     [[deprecated]] [[nodiscard]] Node1
     follow_path_no_checks(WordGraph<Node1> const& wg,
@@ -1535,13 +1537,13 @@ namespace libsemigroups {
     //! \complexity
     //! At worst the length of \p path.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning
     //! No checks on the arguments of this function are performed.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] Node1
     follow_path_no_checks(WordGraph<Node1> const& wg,
@@ -1584,10 +1586,10 @@ namespace libsemigroups {
     //! word_graph::is_acyclic(wg); // returns false
     //! \endcode
     //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     // Not noexcept because detail::is_acyclic isn't
     template <typename Node>
     [[deprecated]] [[nodiscard]] bool is_acyclic(WordGraph<Node> const& wg);
@@ -1637,10 +1639,10 @@ namespace libsemigroups {
     //! word_graph::is_acyclic(wg, 3); // returns true
     //! \endcode
     //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     // Not noexcept because detail::is_acyclic isn't
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg,
@@ -1676,10 +1678,10 @@ namespace libsemigroups {
     //! WordGraph objects the number of edges is always at most \f$mk\f$
     //! where \f$k\f$ is the \ref WordGraph::out_degree.
     //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     // Not noexcept because detail::is_acyclic isn't
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg,
@@ -1723,13 +1725,13 @@ namespace libsemigroups {
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning
     //! No checks on the arguments of this function are performed.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     // TODO(1) add a version of this function with one that returns a float
     // representing the proportion of the nodes in the range that are compatible
     // with the rules. Don't replace the current version because it can return
@@ -1787,10 +1789,10 @@ namespace libsemigroups {
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
-    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa WordGraph::operator== for a comparison of two entire word graphs.
     template <
         typename Node,
         typename Iterator1,
@@ -1833,12 +1835,12 @@ namespace libsemigroups {
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning This function does not check that its arguments are valid.
     //!
     //! \sa WordGraph::operator== for a comparison of two entire word graphs.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node, typename Iterator1, typename Iterator2>
     [[deprecated]] bool is_compatible_no_checks(WordGraph<Node> const& wg,
                                                 Iterator1        first_node,
@@ -1921,10 +1923,10 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
     //! out_degree().
     //!
-    //! \warning No checks are performed on the arguments.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \warning No checks are performed on the arguments.
     template <typename Node, typename Iterator1, typename Iterator2>
     [[deprecated]] [[nodiscard]] bool
     is_complete_no_checks(WordGraph<Node> const& wg,
@@ -2054,6 +2056,9 @@ namespace libsemigroups {
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning No checks are performed on the arguments.
     //!
     //! \par Example
@@ -2070,9 +2075,6 @@ namespace libsemigroups {
     //! word_graph::is_reachable_no_checks(wg, 2, 3); // returns true
     //! word_graph::is_reachable_no_checks(wg, 3, 2); // returns false
     //! \endcode
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] bool
     is_reachable_no_checks(WordGraph<Node1> const& wg,
@@ -2179,14 +2181,14 @@ namespace libsemigroups {
     //! \complexity
     //! At worst the distance from \p first to \p last.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning
     //! No checks on the arguments of this function are performed, it is
     //! assumed that \p source is a node in the word graph \p wg; and that the
     //! letters in the word described by \p first and \p last belong to the
     //! range \c 0 to WordGraph::out_degree.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2, typename Iterator>
     [[deprecated]] [[nodiscard]] std::pair<Node1, Iterator>
     last_node_on_path_no_checks(WordGraph<Node1> const& wg,
@@ -2245,14 +2247,14 @@ namespace libsemigroups {
     //! \complexity
     //! At worst the distance from `w.size()`.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning
     //! No checks on the arguments of this function are performed, it is
     //! assumed that \p source is a node in the word graph \p wg; and that the
     //! letters in the word described by \p first and \p last belong to the
     //! range \c 0 to WordGraph::out_degree.
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] std::pair<Node1, word_type::const_iterator>
     last_node_on_path_no_checks(WordGraph<Node1> const& wg,
@@ -2368,12 +2370,12 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning The arguments are not checked, and in particular it is assumed
     //! that \p source is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source);
@@ -2396,12 +2398,12 @@ namespace libsemigroups {
     //! \returns A std::unordered_set consisting of all the nodes in the word
     //! graph \p wg that can reach \p target.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning The arguments are not checked, and in particular it is assumed
     //! that \p target is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] std::unordered_set<Node1>
     ancestors_of_no_checks(WordGraph<Node1> const& wg, Node2 target);
@@ -2450,12 +2452,12 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning The arguments are not checked, and in particular it is assumed
     //! that \p source is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] size_t
     number_of_nodes_reachable_from_no_checks(WordGraph<Node1> const& wg,
@@ -2509,12 +2511,12 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning The arguments are not checked, and in particular it is assumed
     //! that \p root is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] void spanning_tree_no_checks(WordGraph<Node1> const& wg,
                                                 Node2                   root,
@@ -2563,12 +2565,12 @@ namespace libsemigroups {
     //! \note If any target of any edge in the word graph \p wg that is out of
     //! bounds, then this is ignored by this function.
     //!
+    //! \note This function will be moved from the header `word-graph.hpp`
+    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
     //! \warning The arguments are not checked, and in particular it is assumed
     //! that \p root is a node of \p wg (i.e. less than
     //! WordGraph::number_of_nodes).
-    //!
-    //! \note This function will be moved from the header `word-graph.hpp`
-    //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] Forest
     spanning_tree_no_checks(WordGraph<Node1> const& wg, Node2 root);
@@ -2675,11 +2677,11 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p val is not one of: Order::none,
     //! Order::shortlex, Order::lex or Order::recursive.
     //!
-    //! \sa
-    //! \ref standardize.
-    //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
+    //!
+    //! \sa
+    //! \ref standardize.
     template <typename Node>
     [[deprecated]] bool is_standardized(WordGraph<Node> const& wg,
                                         Order val = Order::shortlex);
