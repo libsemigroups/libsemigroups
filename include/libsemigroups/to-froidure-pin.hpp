@@ -52,8 +52,9 @@ namespace libsemigroups {
   //!
   //! \image html to-table.svg width=60%
   //!
-  //! A tick indicates that this conversion is implemented, and a cross
-  //! that it is not yet implemented.
+  //! A tick indicates that this conversion is implemented; a cross
+  //! that it is not yet implemented; and a dash indicates that no meaningful
+  //! conversion could be implemented.
   //!
   //! See the following for more details:
   //! * \ref to_cong_group
@@ -62,6 +63,7 @@ namespace libsemigroups {
   //! * \ref to_knuth_bendix_group
   //! * \ref to_presentation_group
   //! * \ref to_todd_coxeter_group
+  //! * \ref to_word_graph_group
 
   //! \defgroup to_froidure_pin_group to<FroidurePin>
   //! \ingroup froidure_pin_group

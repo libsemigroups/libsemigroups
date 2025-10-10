@@ -386,6 +386,7 @@
         title="WordGraph helper functions" />
       <tab type="user" visible="yes" url="@ref make_forest_group" title="make<Forest>" />
       <tab type="user" visible="yes" url="@ref make_word_graph_group" title="make<WordGraph>" />
+      <tab type="user" visible="yes" url="@ref to_word_graph_group" title="to<WordGraph>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
       <tab type="user" visible="yes" url="@ref libsemigroups::StringRange"
