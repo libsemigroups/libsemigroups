@@ -784,6 +784,20 @@ namespace libsemigroups {
       f.throw_if_node_out_of_bounds(n);
       return is_root_no_checks(f, n);
     }
+
+    //! \brief Returns the maximum label of any edge in a Forest.
+    //!
+    //! This function returns the maximum label of any edge in the Forest \p f
+    //! or \ref UNDEFINED if there are no edges.
+    //!
+    //! \param f the Forest.
+    //!
+    //! \returns The maximum label or \ref UNDEFINED.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] Forest::label_type max_label(Forest const& f);
+
   }  // namespace forest
 }  // namespace libsemigroups
 
