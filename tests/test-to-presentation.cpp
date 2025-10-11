@@ -29,6 +29,7 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
+#include "libsemigroups/cong.hpp"             // for Congruence
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
@@ -608,6 +609,116 @@ namespace libsemigroups {
     REQUIRE(to<Presentation<std::string>>(s).rules
             == std::vector<std::string>(
                 {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "028",
+                          "from Congruence<word_type> (twosided)",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    // Test 1: Congruence<word_type> -> Presentation<word_type> (same type)
+    Presentation<word_type> p;
+    p.alphabet("56789"_w);
+    presentation::add_rule(p, "56"_w, "7"_w);
+    presentation::add_rule(p, "67"_w, "8"_w);
+    presentation::add_rule(p, "78"_w, "9"_w);
+    presentation::add_rule(p, "89"_w, "5"_w);
+    presentation::add_rule(p, "95"_w, "6"_w);
+
+    Congruence c(congruence_kind::twosided, p);
+
+    // Should return by const reference when word types match
+    REQUIRE(to<Presentation<word_type>>(c) == p);
+    REQUIRE(&to<Presentation<word_type>>(c) == &c.presentation());
+
+    // Test 2: Congruence<word_type> -> Presentation<std::string> (convert)
+    auto q = to<Presentation<std::string>>(c);
+    REQUIRE(q.alphabet() == "abcde");
+    REQUIRE(q.rules
+            == std::vector<std::string>(
+                {"ab", "c", "bc", "d", "cd", "e", "de", "a", "ea", "b"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<std::string>>",
+                          "029",
+                          "from Congruence<std::string> (twosided)",
+                          "[quick][to_presentation]") {
+    auto rg = ReportGuard(false);
+
+    // Test 1: Congruence<std::string> -> Presentation<std::string> (same type)
+    Presentation<std::string> p_str;
+    p_str.alphabet("abc");
+    presentation::add_rule(p_str, "aa", "b");
+    presentation::add_rule(p_str, "bb", "c");
+    presentation::add_rule(p_str, "cc", "a");
+
+    Congruence c_str(congruence_kind::twosided, p_str);
+
+    // Should return by const reference when word types match
+    REQUIRE(to<Presentation<std::string>>(c_str) == p_str);
+    REQUIRE(&to<Presentation<std::string>>(c_str) == &c_str.presentation());
+
+    // Test 2: Congruence<std::string> -> Presentation<word_type> (convert)
+    using literals::operator""_w;
+    auto            q = to<Presentation<word_type>>(c_str);
+    REQUIRE(q == v4::to<Presentation<word_type>>(p_str));
+    REQUIRE(q.alphabet() == 012_w);
+    REQUIRE(q.rules
+            == std::vector<word_type>({00_w, 1_w, 11_w, 2_w, 22_w, 0_w}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "030",
+                          "from Congruence<word_type> (onesided)",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 0_w, 11_w);
+    presentation::reverse(p);
+
+    Congruence cong(congruence_kind::onesided, p);
+
+    // Should return by const reference when word types match
+    REQUIRE(to<Presentation<word_type>>(cong) == p);
+    REQUIRE(&to<Presentation<word_type>>(cong) == &cong.presentation());
+
+    // Should convert to std::string
+    auto q = to<Presentation<std::string>>(cong);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"aaa", "a", "a", "bb"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
+                          "031",
+                          "from Congruence with generating pairs",
+                          "[quick][to_presentation]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 01_w, ""_w);
+
+    Congruence cong(congruence_kind::twosided, p);
+    congruence_common::add_generating_pair(cong, 000_w, ""_w);
+
+    // Presentation should not include generating pairs, only original rules
+    REQUIRE(to<Presentation<word_type>>(cong) == p);
+    REQUIRE(to<Presentation<word_type>>(cong).rules.size() == 2);
+    REQUIRE(to<Presentation<word_type>>(cong).contains_empty_word());
+
+    // Should convert to std::string
+    auto q = to<Presentation<std::string>>(cong);
+    REQUIRE(q.alphabet() == "ab");
+    REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
+    REQUIRE(q.contains_empty_word());
   }
 
 }  // namespace libsemigroups
