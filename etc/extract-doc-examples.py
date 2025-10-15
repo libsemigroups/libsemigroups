@@ -98,6 +98,7 @@ def extract_code_blocks(file_path):
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
             in_code_block = False
+            ignore_this_block = False
             current_block = []
 
             for line_num, line in enumerate(file, 1):
@@ -123,7 +124,7 @@ def extract_code_blocks(file_path):
                                 file_path
                             }:{line_num}"
                         )
-                    else:
+                    elif not ignore_this_block:
                         code_blocks.append(
                             {
                                 "content": "\n".join(current_block),
@@ -131,18 +132,32 @@ def extract_code_blocks(file_path):
                             }
                         )
                     in_code_block = False
+                    ignore_this_block = False
                     current_block = []
                     continue
 
                 if in_code_block:
                     if "using namespace libsemigroups" in line:
                         continue
-                    current_block.append(line)
+
+                    # If line contains non-executable statements,
+                    # skip this block.
+                    if "\\skip-test" in line:
+                        ignore_this_block = True
+                        current_block = []
+                        __bold(
+                            f"Note: Example code block skipped in {file_path} at line {
+                                line_num
+                            }"
+                        )
+                        continue
+
+                    if not ignore_this_block:
+                        current_block.append(line)
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(
-                    f"Warning: Unclosed code block at end of file {file_path}")
+                __error(f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
