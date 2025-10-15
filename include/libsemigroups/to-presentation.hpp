@@ -379,7 +379,7 @@ namespace libsemigroups {
   auto to(Congrence<Word>& c) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>
           && !std::is_same_v<typename Result::word_type, Word>,
-      Result>
+      Result>;
 #else
   template <typename Result, typename Word>
   auto to(Congruence<Word>& c) -> std::enable_if_t<
