@@ -337,6 +337,70 @@ namespace libsemigroups {
 #endif
 
   ////////////////////////////////////////////////////////////////////////
+  // Congruence -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a \ref_congruence
+  //!
+  //! Defined in `to-presentation.hpp`
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(c);
+  //! \endcode
+  //!
+  //! There are two versions of this function:
+  //!
+  //! 1. When `typename Result::word_type` and `Word` are not the same, this
+  //! function calls `to<Presentation<typename Result::word_type>` on
+  //! `c.presentation()` to return a presentation equivalent to the object used
+  //! to construct or initialise the Congruence object (if any) but of a
+  //! different type (for example, can be used to convert from `std::string` to
+  //! \ref word_type).
+  //!
+  //! 2. If the word representations are the same, the function returns a
+  //! reference to the presentation used to construct or initialise the
+  //! Congruence object (if any) via `c.presentation()`.
+  //!
+  //! \tparam Result the return type, also used for SFINAE, should be
+  //! \c Presentation<T> for some type \c T.
+  //! \tparam Word the type of the words in the input Congruence.
+  //! \param c the Congruence object from which to obtain the rules.
+  //!
+  //! \returns A value of type `Presentation<Word>`.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  // FIXME(1) this is the same hack as elsewhere (deliberately introducing a
+  // typo) because Doxygen conflates functions with trailing return type but the
+  // same name and signature.
+  template <typename Result, typename Word>
+  auto to(Congrence<Word>& c) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result>;
+#else
+  template <typename Result, typename Word>
+  auto to(Congruence<Word>& c) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result> {
+    return v4::to<Result>(c.presentation());
+  }
+
+  // This function is documented above because Doxygen conflates these two
+  // functions
+  template <typename Result, typename Word>
+  auto to(Congruence<Word>& c) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && std::is_same_v<typename Result::word_type, Word>,
+      Result const&> {
+    return c.presentation();
+  }
+#endif
+
+  ////////////////////////////////////////////////////////////////////////
   // Stephen -> Presentation
   ////////////////////////////////////////////////////////////////////////
 
@@ -411,8 +475,8 @@ namespace libsemigroups {
   //! `Presentation<Word>::letter_type`. If this is not true, then template
   //! substitution will fail.
   //!
-  //! \note This function will be moved from the header `to-presentation.hpp`
-  //! to `presentation.hpp` in v4 of libsemigroups.
+  //! \note This function will be moved from the header
+  //! `to-presentation.hpp` to `presentation.hpp` in v4 of libsemigroups.
   template <typename Result, typename Word, typename Func>
   [[deprecated]] auto to(Presentation<Word> const& p, Func&& f)
       -> std::enable_if_t<
