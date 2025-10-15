@@ -75,8 +75,8 @@ namespace libsemigroups {
   std::pair<typename WordGraphView<Node>::label_type,
             typename WordGraphView<Node>::node_type>
   WordGraphView<Node>::next_label_and_target(node_type s, label_type a) const {
-    word_graph::throw_if_node_out_of_bounds(*this, s);
-    word_graph::throw_if_label_out_of_bounds(*this, a);
+    throw_if_node_out_of_bounds(s);
+    throw_if_label_out_of_bounds(a);
     node_type                        translated = to_graph(s);
     std::pair<node_type, label_type> result
         = _graph->next_label_and_target_no_checks(translated, a);
@@ -109,53 +109,54 @@ namespace libsemigroups {
     }
   }
 
-  namespace word_graph {
-
-    template <typename Node1, typename Node2>
-    void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wgv, Node2 n) {
-      static_assert(sizeof(Node2) <= sizeof(Node1));
-      if (static_cast<Node1>(n) < 0
-          || static_cast<Node1>(n) >= wgv.end_node() - wgv.start_node()) {
-        LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
-                                "in the range [{}, {}), got {}",
-                                0,
-                                wgv.end_node() - wgv.start_node(),
-                                n);
-      }
+  template <typename Node>
+  template <typename Node2>
+  void WordGraphView<Node>::throw_if_node_out_of_bounds(Node2 n) const {
+    static_assert(sizeof(Node2) <= sizeof(Node));
+    if (static_cast<Node>(n) < 0
+        || static_cast<Node>(n) >= end_node() - start_node()) {
+      LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
+                              "in the range [{}, {}), got {}",
+                              0,
+                              end_node() - start_node(),
+                              n);
     }
+  }
 
-    template <typename Node, typename Iterator>
-    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wg,
-                                           Iterator                   first,
-                                           Iterator                   last) {
-      for (auto it = first; it != last; ++it) {
-        auto s = *it;
-        for (auto [a, t] : wg.labels_and_targets(s)) {
-          if (t != UNDEFINED && t >= wg.number_of_nodes()) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "target out of bounds, the edge with source {} and label {} "
-                "has target {}, but expected value in the range [0, {})",
-                s,
-                a,
-                t,
-                wg.number_of_nodes());
-          }
+  template <typename Node>
+  template <typename Iterator>
+  void
+  WordGraphView<Node>::throw_if_any_target_out_of_bounds(Iterator first,
+                                                         Iterator last) const {
+    for (auto it = first; it != last; ++it) {
+      auto s = *it;
+      for (auto [a, t] : labels_and_targets(s)) {
+        if (t != UNDEFINED && t >= number_of_nodes()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "target out of bounds, the edge with source {} and label {} "
+              "has target {}, but expected value in the range [0, {})",
+              s,
+              a,
+              t,
+              number_of_nodes());
         }
       }
     }
+  }
 
-    // not noexcept because it throws an exception!
-    template <typename Node>
-    void
-    throw_if_label_out_of_bounds(WordGraphView<Node> const&           wg,
-                                 typename WordGraph<Node>::label_type lbl) {
-      if (lbl >= wg.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
-                                "the range [0, {}), got {}",
-                                wg.out_degree(),
-                                lbl);
-      }
+  // not noexcept because it throws an exception!
+  template <typename Node>
+  void WordGraphView<Node>::throw_if_label_out_of_bounds(
+      typename WordGraph<Node>::label_type lbl) const {
+    if (lbl >= out_degree()) {
+      LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
+                              "the range [0, {}), got {}",
+                              out_degree(),
+                              lbl);
     }
+  }
+
+  namespace word_graph {
 
     template <typename Node>
     WordGraph<Node> graph_from_view(WordGraphView<Node> const& view) {

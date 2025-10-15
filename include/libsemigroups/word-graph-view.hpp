@@ -96,6 +96,10 @@ namespace libsemigroups {
     }
 
    public:
+    //////////////////////////////////////////////////////////////////////////
+    // Constructors + initialisers
+    //////////////////////////////////////////////////////////////////////////
+
     //! \brief Construct from a WordGraph and range of nodes.
     //!
     //! This function is used to construct a WordGraphView from a WordGraph over
@@ -115,12 +119,6 @@ namespace libsemigroups {
     //! \param graph underlying WordGraph object.
     explicit WordGraphView(WordGraph<Node> const& graph)
         : _graph(&graph), _start(0), _end(graph.number_of_nodes()) {}
-
-    //! \brief Default copy constructor.
-    WordGraphView(WordGraphView<Node> const&) = default;
-
-    //! \brief Default move constructor.
-    WordGraphView(WordGraphView<Node>&&) = default;
 
     //! \brief Construct from a WordGraph with another node type.
     //!
@@ -143,6 +141,14 @@ namespace libsemigroups {
 
     //! \brief Construct empty object for future assignment.
     WordGraphView() : _graph(nullptr), _start(), _end() {}
+
+    //! \brief Default copy constructor.
+    WordGraphView(WordGraphView<Node> const&) = default;
+
+    //! \brief Default move constructor.
+    WordGraphView(WordGraphView<Node>&&) = default;
+
+    ~WordGraphView() = default;
 
     //! \brief Reshape this view over the same graph.
     //!
@@ -183,7 +189,9 @@ namespace libsemigroups {
       return this;
     }
 
-    ~WordGraphView() = default;
+    //////////////////////////////////////////////////////////////////////////
+    // Member functions
+    //////////////////////////////////////////////////////////////////////////
 
     //! \brief The number of nodes that this view ranges over.
     //!
@@ -312,7 +320,7 @@ namespace libsemigroups {
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] auto cbegin_targets(node_type source) const {
-      word_graph::throw_if_node_out_of_bounds(*this, source);
+      throw_if_node_out_of_bounds(source);
       return rx::begin(targets_no_checks(source));
     }
 
@@ -363,7 +371,7 @@ namespace libsemigroups {
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] auto cend_targets(node_type source) const {
-      word_graph::throw_if_node_out_of_bounds(*this, source);
+      throw_if_node_out_of_bounds(source);
       return rx::end(targets_no_checks(source));
     }
 
@@ -526,7 +534,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
     //! greater than or equal to \ref number_of_nodes).
     [[nodiscard]] auto targets(node_type source) const {
-      word_graph::throw_if_node_out_of_bounds(*this, source);
+      throw_if_node_out_of_bounds(source);
       node_type translated = to_graph(source);
       return to_view(_graph->targets_no_checks(translated));
     }
@@ -565,31 +573,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p source is out of bounds.
     [[nodiscard]] auto labels_and_targets(node_type source) const {
-      word_graph::throw_if_node_out_of_bounds(*this, source);
+      throw_if_node_out_of_bounds(source);
       return rx::enumerate(targets_no_checks(source));
-    }
-
-    //! \brief Compares two word graph views to see if they are equal.
-    //!
-    //! This operator compares two views over two (not necessarily the same)
-    //! word graph objects to see if the views are equal.
-    //!
-    //! \param that the WordGraphView to compare with.
-    //!
-    //! \returns True if this and that have the same number of nodes, out
-    //! degree, and range over nodes with identical values and targets.
-    [[nodiscard]] bool operator==(WordGraphView const& that) const;
-
-    //! \brief Compares two word graph views to see if they are not equal.
-    //!
-    //! This operator compares two views over two (not necessarily the same)
-    //! word graph objects to see if the views are not equal.
-    //!
-    //! \param that the WordGraphView to compare with.
-    //!
-    //! \returns True if this and that are not equal by \c ==.
-    [[nodiscard]] bool operator!=(WordGraphView const& that) const {
-      return !operator==(that);
     }
 
     //! \brief Get the target of the edge with given source node and label.
@@ -610,8 +595,8 @@ namespace libsemigroups {
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const {
-      word_graph::throw_if_node_out_of_bounds(*this, source);
-      word_graph::throw_if_label_out_of_bounds(*this, a);
+      throw_if_node_out_of_bounds(source);
+      throw_if_label_out_of_bounds(a);
       return target_no_checks(source, a);
     }
 
@@ -638,159 +623,171 @@ namespace libsemigroups {
       node_type translated = to_graph(source);
       return to_view(_graph->target_no_checks(translated, a));
     }
-  };
 
-  namespace word_graph {
+    //////////////////////////////////////////////////////////////////////////
+    // Operators
+    //////////////////////////////////////////////////////////////////////////
+
+    //! \brief Compares two word graph views to see if they are equal.
+    //!
+    //! This operator compares two views over two (not necessarily the same)
+    //! word graph objects to see if the views are equal.
+    //!
+    //! \param that the WordGraphView to compare with.
+    //!
+    //! \returns True if this and that have the same number of nodes, out
+    //! degree, and range over nodes with identical values and targets.
+    [[nodiscard]] bool operator==(WordGraphView const& that) const;
+
+    //! \brief Compares two word graph views to see if they are not equal.
+    //!
+    //! This operator compares two views over two (not necessarily the same)
+    //! word graph objects to see if the views are not equal.
+    //!
+    //! \param that the WordGraphView to compare with.
+    //!
+    //! \returns True if this and that are not equal by \c ==.
+    [[nodiscard]] bool operator!=(WordGraphView const& that) const {
+      return !operator==(that);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Validation
+    //////////////////////////////////////////////////////////////////////////
+
     //! \brief Throws if the target of any edge is out of bounds.
     //!
-    //! This function throws if any target of any edge in \p wg is out of
-    //! bounds (i.e. is greater than or equal to WordGraph::number_of_nodes,
+    //! This function throws if any target of any edge is out of
+    //! bounds (i.e. is greater than or equal to \ref number_of_nodes,
     //! and not equal to \ref UNDEFINED).
     //!
-    //! \tparam Node the type of the nodes in \p wg.
-    //!
-    //! \param wg the word graph to check.
-    //!
-    //! \throws LibsemigroupsException if any target of any edge in \p wg is
-    //! greater than or equal to WordGraph::number_of_nodes and not equal to
-    //! \ref UNDEFINED.
-    template <typename Node>
-    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wg) {
-      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    //! \throws LibsemigroupsException if any target of any edge is greater than
+    //! or equal to \ref number_of_nodes and not equal to \ref UNDEFINED.
+    void throw_if_any_target_out_of_bounds() const {
+      throw_if_any_target_out_of_bounds(cbegin_nodes(), cend_nodes());
     }
 
     //! \brief Throws if the target of any edge with source in a given range is
     //! out of bounds.
     //!
-    //! This function throws if any target of any edge in \p wg whose source is
+    //! This function throws if any target of any edge whose source is
     //! in the range defined by \p first and \p last is out of bounds (i.e. is
-    //! greater than or equal to WordGraph::number_of_nodes, and not equal to
+    //! greater than or equal to \ref number_of_nodes, and not equal to
     //! \ref UNDEFINED).
     //!
-    //! \tparam Node the type of the nodes in \p wg.
     //! \tparam Iterator the type of the 2nd and 3rd arguments.
     //!
-    //! \param wg the word graph to check.
     //! \param first iterator pointing at the first node to check.
     //! \param last iterator pointing one beyond the last node to check.
     //!
-    //! \throws LibsemigroupsException if any target of any edge in \p wg with
+    //! \throws LibsemigroupsException if any target of any edge with
     //! source in the range \p first to \p last is greater than or equal to
-    //! WordGraph::number_of_nodes and not equal to \ref UNDEFINED.
+    //! \ref number_of_nodes and not equal to \ref UNDEFINED.
     //!
     //! \throws LibsemigroupsException if any node in the range \p first to
-    //! \p last is out of bounds (i.e. not a node of \p wg).
-    template <typename Node, typename Iterator>
-    void throw_if_any_target_out_of_bounds(WordGraphView<Node> const& wg,
-                                           Iterator                   first,
-                                           Iterator                   last);
+    //! \p last is out of bounds.
+    template <typename Iterator>
+    void throw_if_any_target_out_of_bounds(Iterator first, Iterator last) const;
 
     //! \brief Throws if a label is out of bounds.
     //!
     //! This function throws if the label \p a is out of bounds, i.e. it is
-    //! greater than or equal to `wg.out_degree()`.
+    //! greater than or equal to \ref out_degree.
     //!
-    //! \tparam Node the type of the nodes in \p wg.
-    //!
-    //! \param wg the word graph.
     //! \param a the label to check.
     //!
     //! \throws LibsemigroupsException if the label \p a is out of bounds.
     // not noexcept because it throws an exception!
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraphView<Node> const&           wg,
-                                      typename WordGraph<Node>::label_type a);
+    void
+    throw_if_label_out_of_bounds(typename WordGraph<Node>::label_type a) const;
 
-    //! \brief Throws if a label is out of bounds.
+    //! \brief Throws if word contains labels that are out of bounds.
     //!
     //! This function throws if any of the letters in \p word are out of bounds,
-    //! i.e. if they are greater than or equal to `wg.out_degree()`.
+    //! i.e. if they are greater than or equal to \ref out_degree.
     //!
-    //! \tparam Node the type of the nodes in \p wg.
-    //!
-    //! \param wg the word graph.
     //! \param word the word to check.
     //!
     //! \throws LibsemigroupsException if any value in \p word is out of
     //! bounds.
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraphView<Node> const& wg,
-                                      word_type const&           word) {
-      throw_if_label_out_of_bounds(wg, word.cbegin(), word.cend());
+    void throw_if_label_out_of_bounds(word_type const& word) const {
+      throw_if_label_out_of_bounds(word.cbegin(), word.cend());
     }
 
-    //! \brief Throws if a label is out of bounds.
+    //! \brief Throws if range constains labels that are out of bounds.
     //!
     //! This function throws if any of the letters in the word defined by
     //! \p first and \p last is out of bounds, i.e. if they are greater than or
-    //! equal to `wg.out_degree()`.
+    //! equal to \ref out_degree.
     //!
-    //! \tparam Node the type of the nodes in \p wg.
     //! \tparam Iterator the type of the arguments \p first and \p last.
     //!
-    //! \param wg the word graph.
     //! \param first iterator pointing at the first letter to check.
     //! \param last iterator pointing one beyond the last letter to check.
     //!
-    //! \throws LibsemigroupsException if any value in the word word defined by
+    //! \throws LibsemigroupsException if any value in the word defined by
     //! \p first and \p last is out of bounds.
-    template <typename Node, typename Iterator>
-    void throw_if_label_out_of_bounds(WordGraphView<Node> const& wg,
-                                      Iterator                   first,
-                                      Iterator                   last) {
-      std::for_each(first, last, [&wg](letter_type a) {
-        throw_if_label_out_of_bounds(wg, a);
+    template <typename Iterator>
+    void throw_if_label_out_of_bounds(Iterator first, Iterator last) const {
+      std::for_each(first, last, [this](letter_type a) {
+        this->throw_if_label_out_of_bounds(a);
       });
     }
 
-    template <typename Node>
-    void throw_if_label_out_of_bounds(WordGraphView<Node> const&    wg,
-                                      std::vector<word_type> const& rules) {
-      std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
-        throw_if_label_out_of_bounds(wg, w);
+    //! \brief Throws if any of the labels in vector of words is out of bounds.
+    //!
+    //! This function throws if any of the letters in any of the words in
+    //! \p rules are out of bounds, i.e. if they are greater than or
+    //! equal to \ref out_degree.
+    //!
+    //! \param rules the vector of words to check.
+    //!
+    //! \throws LibsemigroupsException if any value in any of the words in
+    //! \p rules are out of bounds.
+    void
+    throw_if_label_out_of_bounds(std::vector<word_type> const& rules) const {
+      std::for_each(rules.cbegin(), rules.cend(), [this](word_type const& w) {
+        throw_if_label_out_of_bounds(w);
       });
     }
 
     //! \brief Throws if a node is out of bounds.
     //!
     //! This function throws if the node \p n is out of bounds
-    //! i.e. if it is greater than or equal to `wg.number_of_nodes()`.
+    //! i.e. if it is greater than or equal to \ref number_of_nodes.
     //!
-    //! \tparam Node1 the node type of the word graph.
     //! \tparam Node2 the type of the node \p n.
     //!
-    //! \param wg the word graph.
     //! \param n the node to check.
     //!
     //! \throws LibsemigroupsException if \p n is out of bounds.
     // not noexcept because it throws an exception!
-    template <typename Node1, typename Node2>
-    void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
+    template <typename Node2>
+    void throw_if_node_out_of_bounds(Node2 n) const;
 
     //! \brief Throws if any node in a range is out of bounds.
     //!
-    //! This function throws if any node in the range from \p first to \p last
-    //! is out of bounds i.e. if they are greater than or equal to
-    //! `wg.number_of_nodes()`.
+    //! This function throws if any node in the range from \p first to
+    //! \p last is out of bounds i.e. if they are greater than or equal to
+    //! \ref number_of_nodes.
     //!
-    //! \tparam Node the node type of the word graph.
     //! \tparam Iterator the type of the parameters \p first and \p last.
     //!
-    //! \param wg the word graph.
     //! \param first an iterator pointing at the first node to check.
     //! \param last an iterator pointing one beyond the last node to check.
     //!
     //! \throws LibsemigroupsException if any node in the range \p first to
     //! \p last is out of bounds.
     // not noexcept because it throws an exception!
-    template <typename Node, typename Iterator1, typename Iterator2>
-    void throw_if_node_out_of_bounds(WordGraphView<Node> const& wg,
-                                     Iterator1                  first,
-                                     Iterator2                  last) {
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_node_out_of_bounds(Iterator1 first, Iterator2 last) const {
       for (auto it = first; it != last; ++it) {
-        word_graph::throw_if_node_out_of_bounds(wg, *it);
+        throw_if_node_out_of_bounds(*it);
       }
     }
+  };
+
+  namespace word_graph {
 
     //! \brief Creates a word graph from a corresponding view, copying only the
     //! nodes contained within the view.
