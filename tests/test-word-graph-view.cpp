@@ -114,15 +114,14 @@ namespace libsemigroups {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE_THROWS_AS(v.target(0, 7), LibsemigroupsException);
-    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(v, 15),
+    REQUIRE_THROWS_AS(v.throw_if_label_out_of_bounds(15),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(word_graph::throw_if_node_out_of_bounds(v, 15),
+    REQUIRE_THROWS_AS(v.throw_if_node_out_of_bounds(15),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(word_graph::throw_if_node_out_of_bounds(
-                          v, g.cbegin_nodes(), g.cbegin_nodes() + 7),
-                      LibsemigroupsException);
-    word_graph::throw_if_node_out_of_bounds(
-        v, g.cbegin_nodes(), g.cbegin_nodes() + 2);
+    REQUIRE_THROWS_AS(
+        v.throw_if_node_out_of_bounds(g.cbegin_nodes(), g.cbegin_nodes() + 7),
+        LibsemigroupsException);
+    v.throw_if_node_out_of_bounds(g.cbegin_nodes(), g.cbegin_nodes() + 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
