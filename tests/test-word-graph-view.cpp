@@ -54,19 +54,35 @@ namespace libsemigroups {
                           "002",
                           "equality operator",
                           "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    WordGraph<size_t> g1(10, 6);
-    WordGraph<size_t> g2(10, 5);
-    g2.target(2, 3, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    WordGraphView<size_t> v1(g, 2, 5);
-    WordGraphView<size_t> v2(g, 2, 6);
-    WordGraphView<size_t> v3(g1, 2, 5);
-    WordGraphView<size_t> v4(g2, 2, 5);
-    REQUIRE(v1 == v);
-    REQUIRE(v2 != v);
-    REQUIRE(v3 != v);
-    REQUIRE(v4 != v);
+    WordGraph<size_t>     g1(10, 5);
+    WordGraphView<size_t> v1(g1, 2, 5);
+
+    // Same graph over same range.
+    REQUIRE(WordGraphView<size_t>(g1, 2, 5) == v1);
+
+    // Not equal since the views have different numbers of nodes
+    REQUIRE(WordGraphView<size_t>(g1, 2, 6) != v1);
+
+    // Equal because the views are isomorphic
+    REQUIRE(WordGraphView<size_t>(g1, 3, 6) == v1);
+
+    WordGraph<size_t> g2(10, 6);
+
+    // Not equal because the views have different out-degree
+    REQUIRE(WordGraphView<size_t>(g2, 2, 5) != v1);
+
+    WordGraph<size_t> g3(10, 5);
+    g3.target(2, 0, 4);
+
+    // Not equal because the edges are not the same
+    REQUIRE(WordGraphView<size_t>(g3, 2, 5) != v1);
+
+    WordGraph<size_t> g4(10, 5);
+    g4.target(7, 0, 8);
+
+    // Equal because the views are isomorphic, despite the underlying graphs
+    // being non-isomorphic.
+    REQUIRE(WordGraphView<size_t>(g4, 2, 5) == v1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "003", "copy ctor", "[quick]") {
