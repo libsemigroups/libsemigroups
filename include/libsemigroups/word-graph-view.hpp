@@ -210,7 +210,15 @@ namespace libsemigroups {
     //!
     //! \sa WordGraph::number_of_edges
     [[nodiscard]] size_type number_of_edges() const noexcept {
-      return _graph->number_of_edges();
+      size_t count = 0;
+      for (auto s : nodes()) {
+        for (auto t : targets_no_checks(s)) {
+          if (t != UNDEFINED) {
+            count++;
+          }
+        }
+      }
+      return count;
     }
     //! \brief The index in the underlying graph of the first node in the view.
     //!
