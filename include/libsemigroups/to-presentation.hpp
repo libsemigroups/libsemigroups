@@ -342,33 +342,33 @@ namespace libsemigroups {
 
   //! \ingroup to_presentation_group
   //!
-  //! \brief Make a presentation from a \ref_kambites
+  //! \brief Make a presentation from a \ref_congruence
   //!
   //! Defined in `to-presentation.hpp`
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<Presentation<Word>>(k);
+  //! to<Presentation<Word>>(c);
   //! \endcode
   //!
   //! There are two versions of this function:
   //!
   //! 1. When `typename Result::word_type` and `Word` are not the same, this
   //! function calls `to<Presentation<typename Result::word_type>` on
-  //! `k.presentation()` to return a presentation equivalent to the object used
-  //! to construct or initialise the Kambites object (if any) but of a different
-  //! type (for example, can be used to convert from `std::string` to \ref
-  //! word_type).
+  //! `c.presentation()` to return a presentation equivalent to the object used
+  //! to construct or initialise the Congruence object (if any) but of a
+  //! different type (for example, can be used to convert from `std::string` to
+  //! \ref word_type).
   //!
   //! 2. If the word representations are the same, the function returns a
-  //! reference to the presentation used to construct or initialise the Kambites
-  //! object (if any) via `k.presentation()`.
+  //! reference to the presentation used to construct or initialise the
+  //! Congruence object (if any) via `c.presentation()`.
   //!
   //! \tparam Result the return type, also used for SFINAE, should be
   //! \c Presentation<T> for some type \c T.
-  //! \tparam Word the type of the words in the input Kambites.
-  //! \param k the Kambites object from which to obtain the rules.
+  //! \tparam Word the type of the words in the input Congruence.
+  //! \param c the Congruence object from which to obtain the rules.
   //!
   //! \returns A value of type `Presentation<Word>`.
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
