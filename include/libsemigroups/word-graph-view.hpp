@@ -185,7 +185,7 @@ namespace libsemigroups {
     template <typename OtherNode>
     WordGraphView<OtherNode>& init(WordGraph<OtherNode> const& that) {
       static_assert(sizeof(OtherNode) <= sizeof(Node));
-      _graph = that;
+      _graph = &that;
       return this;
     }
 
