@@ -664,10 +664,9 @@ namespace libsemigroups {
     using literals::operator""_w;
     auto            q = to<Presentation<word_type>>(c_str);
     REQUIRE(q == v4::to<Presentation<word_type>>(p_str));
-    REQUIRE(q.alphabet() == "012"_w);
+    REQUIRE(q.alphabet() == 012_w);
     REQUIRE(q.rules
-            == std::vector<word_type>(
-                {"00"_w, "1"_w, "11"_w, "2"_w, "22"_w, "0"_w}));
+            == std::vector<word_type>({00_w, 1_w, 11_w, 2_w, 22_w, 0_w}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation<word_type>>",
