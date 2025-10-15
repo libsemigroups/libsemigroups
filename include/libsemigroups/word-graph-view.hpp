@@ -101,7 +101,7 @@ namespace libsemigroups {
              | rx::transform([this](auto elem) { return this->to_view(elem); });
     }
 
-    void to_view(std::pair<node_type, label_type>& in) const {
+    void to_view(std::pair<label_type, node_type>& in) const {
       // this is designed to operate on pairs of <label, node>
       // so does not modify the first element
       in.second = to_view(in.second);
