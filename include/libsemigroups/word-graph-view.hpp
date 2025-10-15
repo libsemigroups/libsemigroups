@@ -139,7 +139,9 @@ namespace libsemigroups {
       init(that);
     }
 
-    //! \brief Construct empty object for future assignment.
+    //! \brief Default constructor.
+    //!
+    //! Default constructs an uninitialised WordGraphView.
     WordGraphView() : _graph(nullptr), _start(), _end() {}
 
     //! \brief Default copy constructor.
