@@ -6,12 +6,14 @@
 
 \newcommand{\cmark}{\cellcolor{green!25}\ding{51}}  % Check mark
 \newcommand{\xmark}{\cellcolor{red!25}\ding{55}}
+\newcommand{\na}{\cellcolor{blue!25}{$-$}}
 
 \begin{document}
 
-\begin{tabular}{l|c|c|c|c|c|c|c|c|c|c|c|c}
+\begin{tabular}{l|c|c|c|c|c|c|c|c|c|c|c|c|c}
   &
   \rotatebox{90}{\texttt{Congruence}}          &
+  \rotatebox{90}{\texttt{Forest}}              &
   \rotatebox{90}{\texttt{FroidurePin}}         &
   \rotatebox{90}{\texttt{InversePresentation}} &
   \rotatebox{90}{\texttt{Kambites}}            &
@@ -23,26 +25,38 @@
   \rotatebox{90}{\texttt{ToddCoxeter}}
   \\
   \midrule
-  \texttt{to<Congruence>}                      & \xmark & \cmark &
-  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark \\\hline
-  \texttt{to<FroidurePin>}                     & \cmark & \xmark &
-  \xmark & \cmark & \cmark & \cmark & \xmark & \xmark & \xmark & \cmark \\\hline
-  \texttt{to<InversePresentation>}             & \xmark & \xmark &
-  \cmark & \xmark & \xmark & \xmark & \cmark & \xmark & \xmark & \xmark \\\hline
-  \texttt{to<Kambites>}                        & \xmark & \xmark &
-  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark \\\hline
-  \texttt{to<KnuthBendix>}                     & \xmark & \cmark &
-  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \cmark \\\hline
-  \texttt{to<Konieczny>}                       & \xmark & \xmark &
-  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark \\\hline
-  \texttt{to<Presentation>}                    & \xmark & \cmark &
-  \xmark & \cmark & \cmark & \xmark & \cmark & \xmark & \cmark & \cmark \\\hline
-  \texttt{to<SchreierSims>}                    & \xmark & \xmark &
-  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark \\\hline
-  \texttt{to<Stephen>}                         & \xmark & \xmark &
-  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark \\\hline
-  \texttt{to<ToddCoxeter>}                     & \xmark & \cmark &
+  \texttt{to<Congruence>}                      & \xmark & \na & \cmark &
+  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark &
+  \xmark \\\hline
+  \texttt{to<FroidurePin>}                     & \cmark & \na & \xmark &
+  \xmark & \cmark & \cmark & \cmark & \xmark & \xmark & \xmark &
+  \cmark \\\hline
+  \texttt{to<InversePresentation>}             & \xmark & \na &  \xmark &
+  \cmark & \xmark & \xmark & \xmark & \cmark & \xmark & \xmark &
+  \xmark \\\hline
+  \texttt{to<Kambites>}                        & \xmark & \na & \xmark &
+  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark &
+  \xmark \\\hline
+  \texttt{to<KnuthBendix>}                     & \xmark & \na & \cmark &
+  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark &
+  \cmark \\\hline
+  \texttt{to<Konieczny>}                       & \xmark &  \na &\xmark &
+  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark &
+  \xmark \\\hline
+  \texttt{to<Presentation>}                    & \xmark &  \na &\cmark &
+  \xmark & \cmark & \cmark & \xmark & \cmark & \xmark & \cmark &
+  \cmark \\\hline
+  \texttt{to<SchreierSims>}                    & \xmark &  \na &\xmark &
+  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark &
+  \xmark \\\hline
+  \texttt{to<Stephen>}                         & \xmark & \na & \xmark &
+  \xmark & \xmark & \xmark & \xmark & \xmark & \xmark & \xmark &
+  \xmark \\\hline
+  \texttt{to<ToddCoxeter>}                     & \xmark &  \na &\cmark &
   \xmark & \xmark & \cmark & \xmark & \xmark & \xmark & \xmark & \xmark \\
+  \hline
+  \texttt{to<WordGraph>}                     & \na & \cmark &
+  \na & \na & \na & \na & \na & \na & \na & \na & \na \\
 \end{tabular}
 % \cmark = implemented, \xmark = not yet implemented, -
 % = not applicable

@@ -203,7 +203,7 @@ namespace libsemigroups {
 
     //! \brief Returns the number of nodes in the forest.
     //!
-    //! Returns the number of nodes in the forest.
+    //! This function returns the number of nodes in the forest.
     //!
     //! \returns
     //! A `size_t`.
@@ -299,9 +299,9 @@ namespace libsemigroups {
 
     //! \brief Returns a const reference to the vector of parents.
     //!
-    //! Returns a const reference to the vector of parents in the Forest. The
-    //! value in position \c i of this vector is the parent of node \c i. If the
-    //! parent equals UNDEFINED, then node \c i is a root node.
+    //! This function returns a const reference to the vector of parents in the
+    //! Forest. The value in position \c i of this vector is the parent of node
+    //! \c i. If the parent equals UNDEFINED, then node \c i is a root node.
     //!
     //! \returns
     //! A std::vector<node_type>.
@@ -317,10 +317,10 @@ namespace libsemigroups {
 
     //! \brief Returns a const reference to the vector of edge labels.
     //!
-    //! Returns a const reference to the vector of edge labels in the Forest.
-    //! The value in position \c i of this vector is the label of the edge from
-    //! the parent of node \c i to \c i. If the parent equals UNDEFINED, then
-    //! node \c i is a root node.
+    //! This function returns a const reference to the vector of edge labels in
+    //! the Forest. The value in position \c i of this vector is the label of
+    //! the edge from the parent of node \c i to \c i. If the parent equals
+    //! UNDEFINED, then node \c i is a root node.
     //!
     //! \returns
     //! A std::vector<label_type>.
@@ -784,6 +784,20 @@ namespace libsemigroups {
       f.throw_if_node_out_of_bounds(n);
       return is_root_no_checks(f, n);
     }
+
+    //! \brief Returns the maximum label of any edge in a Forest.
+    //!
+    //! This function returns the maximum label of any edge in the Forest \p f
+    //! or \ref UNDEFINED if there are no edges.
+    //!
+    //! \param f the Forest.
+    //!
+    //! \returns The maximum label or \ref UNDEFINED.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] Forest::label_type max_label(Forest const& f);
+
   }  // namespace forest
 }  // namespace libsemigroups
 
