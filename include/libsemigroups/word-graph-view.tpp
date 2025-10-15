@@ -87,6 +87,9 @@ namespace libsemigroups {
   template <typename Node>
   bool WordGraphView<Node>::operator==(WordGraphView const& that) const {
     {
+      if (_graph == that._graph && _start == that._start && _end == that._end) {
+        return true;
+      }
       if (number_of_nodes() != that.number_of_nodes()) {
         return false;
       }
