@@ -93,10 +93,10 @@ namespace libsemigroups {
       if (out_degree() != that.out_degree()) {
         return false;
       }
-      auto this_node = this->cbegin_nodes();
+      auto this_node = cbegin_nodes();
       auto that_node = that.cbegin_nodes();
-      while (this_node < this->cend_nodes()) {
-        for (label_type a = 0; a < this->out_degree(); ++a) {
+      while (this_node < cend_nodes()) {
+        for (label_type a = 0; a < out_degree(); ++a) {
           if (target_no_checks(*this_node, a)
               != that.target_no_checks(*that_node, a)) {
             return false;

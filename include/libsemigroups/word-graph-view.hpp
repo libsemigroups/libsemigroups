@@ -185,7 +185,7 @@ namespace libsemigroups {
     template <typename OtherNode>
     WordGraphView<OtherNode>& init(WordGraph<OtherNode> const& that) {
       static_assert(sizeof(OtherNode) <= sizeof(Node));
-      this->_graph = that;
+      _graph = that;
       return this;
     }
 
@@ -747,7 +747,7 @@ namespace libsemigroups {
     void
     throw_if_label_out_of_bounds(std::vector<word_type> const& rules) const {
       std::for_each(rules.cbegin(), rules.cend(), [this](word_type const& w) {
-        throw_if_label_out_of_bounds(w);
+        this->throw_if_label_out_of_bounds(w);
       });
     }
 
