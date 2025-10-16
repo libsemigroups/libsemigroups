@@ -317,4 +317,23 @@ namespace libsemigroups {
     REQUIRE(v.end_node() == 7);
     REQUIRE(v.target(0, 0) == 1);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "017", "init", "[quick]") {
+    WordGraph<size_t> g(10, 5);
+    g.target(3, 0, 4);
+    g.target(4, 0, 3);
+    WordGraphView<size_t> v1;
+    WordGraphView<size_t> v2(g);
+    v1.init(g);
+    REQUIRE(v1 == v2);
+
+    WordGraphView<size_t> v3(g, 2, 5);
+    v1.init(g, 2, 5);
+    REQUIRE(v1 == v3);
+
+    WordGraphView<size_t> v4;
+    v1.init();
+    REQUIRE(v1 == v4);
+  }
+
 }  // namespace libsemigroups

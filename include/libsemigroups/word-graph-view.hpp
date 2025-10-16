@@ -111,6 +111,30 @@ namespace libsemigroups {
     WordGraphView(WordGraph<Node> const& graph, size_type start, size_type end)
         : _graph(&graph), _start(start), _end(end) {}
 
+    //! \brief Re-initialize the view to be a view over \p graph over the range
+    //! \p start to \p end.
+    //!
+    //! This function puts a view into the state that it would have been
+    //! in if it had just been newly constructed with the same parameters
+    //! \p graph, \p \start and \p end.
+    //!
+    //! \param graph underlying WordGraph object.
+    //! \param start the first node in the range.
+    //! \param end one beyond the last node in the range.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WordGraphView& init(WordGraph<Node> const& graph,
+                        size_type              start,
+                        size_type              end) {
+      _graph = &graph;
+      _start = start;
+      _end   = end;
+      return *this;
+    }
+
     //! \brief Construct from a WordGraph.
     //!
     //! This function is used to construct a WordGraphView from a WordGraph over
@@ -119,6 +143,20 @@ namespace libsemigroups {
     //! \param graph underlying WordGraph object.
     explicit WordGraphView(WordGraph<Node> const& graph)
         : _graph(&graph), _start(0), _end(graph.number_of_nodes()) {}
+
+    //! \brief Re-initialize the view to be a view over \p graph.
+    //!
+    //! This function puts a view into the state that it would have been
+    //! in if it had just been newly constructed with the same parameters
+    //! \p graph.
+    //!
+    //! \param graph underlying WordGraph object.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WordGraphView& init(WordGraph<Node> const& graph) {
+      return init(graph, 0, graph.number_of_nodes());
+    }
 
     //! \brief Construct from a WordGraph with another node type.
     //!
@@ -132,17 +170,32 @@ namespace libsemigroups {
     //!
     //! \note Any edge with target \ref UNDEFINED in \p that will have target
     //! `static_cast<Node>(UNDEFINED)` in the constructed word graph.
-    template <typename OtherNode>
-    WordGraphView(WordGraphView<OtherNode> const& that)
-        : WordGraphView(that.number_of_nodes(), that.out_degree()) {
-      static_assert(sizeof(OtherNode) <= sizeof(Node));
-      init(that);
-    }
+    // TODO(1) Fix and add an init version, or delete. JDE couldn't see how to
+    // do this without modifying that._graph.
+    // template <typename OtherNode>
+    // WordGraphView(WordGraphView<OtherNode> const& that){
+    //   static_assert(sizeof(OtherNode) <= sizeof(Node));
+    //   init(that._graph, that.start(), that.end());
+    // }
 
     //! \brief Default constructor.
     //!
     //! Default constructs an uninitialised WordGraphView.
     WordGraphView() : _graph(nullptr), _start(), _end() {}
+
+    //! \brief Re-initialize the view as if it had been default constructed.
+    //!
+    //! This function puts a view into the state that it would have been
+    //! in if it had just been newly default constructed.
+    //! \exceptions
+    //!
+    //! \no_libsemigroups_except
+    WordGraphView& init() {
+      _graph = nullptr;
+      _start = 0;
+      _end   = 0;
+      return *this;
+    }
 
     //! \brief Default copy constructor.
     WordGraphView(WordGraphView<Node> const&) = default;
@@ -157,6 +210,10 @@ namespace libsemigroups {
     WordGraphView& operator=(WordGraphView<Node>&&) = default;
 
     ~WordGraphView() = default;
+
+    //////////////////////////////////////////////////////////////////////////
+    // Member functions
+    //////////////////////////////////////////////////////////////////////////
 
     //! \brief Reshape this view over the same graph.
     //!
@@ -175,31 +232,6 @@ namespace libsemigroups {
       _end   = end;
       return *this;
     }
-
-    //! \brief Reassign this view to a different graph, keeping the same
-    //! shape.
-    //!
-    //! This function is used to change the underling WordGraph of a
-    //! WordGraphView, whilst keeping the same range of nodes.
-    //!
-    //! \tparam OtherNode the type of the nodes of \p that.
-    //!
-    //! \param that the new WordGraph.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    template <typename OtherNode>
-    WordGraphView<OtherNode>& init(WordGraph<OtherNode> const& that) {
-      static_assert(sizeof(OtherNode) <= sizeof(Node));
-      _graph = &that;
-      return this;
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // Member functions
-    //////////////////////////////////////////////////////////////////////////
 
     //! \brief The number of nodes that this view ranges over.
     //!
