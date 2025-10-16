@@ -133,7 +133,7 @@ namespace libsemigroups {
                                                          Iterator last) const {
     for (auto it = first; it != last; ++it) {
       auto s = *it;
-      for (auto [a, t] : labels_and_targets(s)) {
+      for (auto [a, t] : labels_and_targets_no_checks(s)) {
         if (t != UNDEFINED && t >= number_of_nodes()) {
           LIBSEMIGROUPS_EXCEPTION(
               "target out of bounds, the edge with source {} and label {} "
@@ -166,12 +166,12 @@ namespace libsemigroups {
       WordGraph<Node> result
           = WordGraph<Node>(view.number_of_nodes(), view.out_degree());
       for (auto node : rx::iterator_range(view.nodes())) {
-        for (auto label_target : view.labels_and_targets(node)) {
+        for (auto label_target : view.labels_and_targets_no_checks(node)) {
           auto target = std::get<1>(label_target);
           if (target == UNDEFINED) {
             continue;
           }
-          result.target(
+          result.target_no_checks(
               node, std::get<0>(label_target), std::get<1>(label_target));
         }
       }
