@@ -150,6 +150,12 @@ namespace libsemigroups {
     //! \brief Default move constructor.
     WordGraphView(WordGraphView<Node>&&) = default;
 
+    //! \brief Default copy assignment.
+    WordGraphView& operator=(WordGraphView<Node> const&) = default;
+
+    //! \brief Default move assignment.
+    WordGraphView& operator=(WordGraphView<Node>&&) = default;
+
     ~WordGraphView() = default;
 
     //! \brief Reshape this view over the same graph.

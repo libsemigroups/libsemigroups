@@ -30,7 +30,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "000",
-                          "empty constructor and entire graph",
+                          "default constructor and entire graph",
                           "[quick]") {
     WordGraphView<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
@@ -85,20 +85,38 @@ namespace libsemigroups {
     REQUIRE(WordGraphView<size_t>(g4, 2, 5) == v1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "003", "copy ctor", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "003",
+                          "copy constructor + assignment",
+                          "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
-    WordGraphView<size_t> v1 = v;
+    WordGraphView<size_t> v1(v);
+    WordGraphView<size_t> v2;
+    v2 = v;
     REQUIRE(v1.number_of_nodes() == v.number_of_nodes());
     REQUIRE(v1 == v);
+    REQUIRE(v2.number_of_nodes() == v.number_of_nodes());
+    REQUIRE(v2 == v);
+    REQUIRE(v1.number_of_nodes() == v2.number_of_nodes());
+    REQUIRE(v1 == v2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "004", "move ctor", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "004",
+                          "move constructor + assignment",
+                          "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     WordGraphView<size_t> v1(std::move(v));
+    WordGraphView<size_t> v2;
+    v2 = std::move(v);
     REQUIRE(v1.number_of_nodes() == v.number_of_nodes());
     REQUIRE(v1 == v);
+    REQUIRE(v2.number_of_nodes() == v.number_of_nodes());
+    REQUIRE(v2 == v);
+    REQUIRE(v1.number_of_nodes() == v2.number_of_nodes());
+    REQUIRE(v1 == v2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
