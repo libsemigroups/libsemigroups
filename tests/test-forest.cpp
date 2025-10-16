@@ -15,15 +15,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "libsemigroups/presentation.hpp"
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include <algorithm>  // for reverse
+#include <cstddef>    // for size_t
+#include <string>     // for basic_string, operator==
+#include <tuple>      // for get
+#include <utility>    // for move
+#include <vector>     // for vector, operator==
 
-#include "libsemigroups/forest.hpp"  // for Forest
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for SourceLineInfo, operat...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/constants.hpp"   // for UNDEFINED, operator==
+#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
+#include "libsemigroups/forest.hpp"      // for Forest, to_human_reada...
+#include "libsemigroups/ranges.hpp"      // for zip
+#include "libsemigroups/types.hpp"       // for word_type
+#include "libsemigroups/word-graph.hpp"  // for WordGraph::target, Wor...
+#include "libsemigroups/word-range.hpp"  // for operator""_w
+
+#include "libsemigroups/detail/iterator.hpp"  // for operator+
+
+#include "word-graph-test-common.hpp"  // for binary_tree
 
 namespace libsemigroups {
+  using literals::operator""_w;
+
   struct LibsemigroupsException;
 
   namespace {
@@ -222,7 +240,7 @@ namespace libsemigroups {
     Forest f = test_forest1();
     REQUIRE(forest::max_label(f) == 4);
 
-    f.set_parent_and_label(9, 10, 666);
+    f.set_parent_and_label(10, 9, 666);
     REQUIRE(forest::max_label(f) == 666);
 
     f.init();
@@ -237,7 +255,7 @@ namespace libsemigroups {
     f.add_nodes(2);
     f.set_parent_and_label(0, 1, 4);
     REQUIRE(forest::max_label(f) == 4);
-    f.set_parent_and_label(0, 0, 0);
+    f.set_parent_and_label(0, 1, 0);
     REQUIRE(forest::max_label(f) == 0);
 
     f.init();
@@ -246,4 +264,43 @@ namespace libsemigroups {
     REQUIRE(forest::max_label(f) == 12);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Forest", "010", "is_forest", "[quick]") {
+    Forest f = make<Forest>(
+        {UNDEFINED, 4, 0, 0, UNDEFINED, 3, 8, 1, 1, 12, 12, 8, 3},
+        {UNDEFINED, 0, 0, 1, UNDEFINED, 0, 1, 1, 0, 0, 1, 0, 1});
+
+    REQUIRE(forest::is_forest(f));
+
+    REQUIRE_EXCEPTION_MSG(f.set_parent_and_label(0, 10, 1),
+                          "defining the parent of node 0 to be 10 creates a "
+                          "cycle [0, 10, ..., 3] (length 4)");
+
+    REQUIRE_THROWS_AS(make<Forest>({1, 0}, {0, 0}), LibsemigroupsException);
+
+    f.init();
+    f.add_nodes(2);
+    f.set_parent_and_label_no_checks(0, 1, 0);
+    f.set_parent_and_label_no_checks(1, 0, 0);
+
+    REQUIRE(!forest::is_forest(f));
+
+    f = word_graph::spanning_tree(binary_tree(16), 0);
+    Forest copy(f);
+    REQUIRE(forest::is_forest(f));
+
+    REQUIRE_EXCEPTION_MSG(f.set_parent_and_label(0, 2000, 1),
+                          "defining the parent of node 0 to be 2000 creates a "
+                          "cycle [0, 2000, ..., 2] (length 11)");
+    REQUIRE(f == copy);  // Check exception guarantee
+
+    REQUIRE_EXCEPTION_MSG(f.set_parent_and_label(0, 0, 0),
+                          "a node cannot be its own parent, attempted to set 0 "
+                          "as the parent of 0");
+    REQUIRE(f == copy);  // Check exception guarantee
+    f.set_parent_and_label_no_checks(0, 0, 0);
+
+    REQUIRE_EXCEPTION_MSG(
+        f.throw_if_not_acyclic(),
+        "the Forest object contains the loop [0] and is invalid");
+  }
 }  // namespace libsemigroups

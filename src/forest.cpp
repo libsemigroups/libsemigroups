@@ -18,18 +18,15 @@
 
 #include "libsemigroups/forest.hpp"
 
-#include <algorithm>         // for fill
-#include <cstddef>           // for size_t
-#include <initializer_list>  // for initializer_list
-#include <iosfwd>            // for ostream
-#include <vector>            // for vector, allocator, operator==
+#include <algorithm>  // for fill, count
+#include <cstddef>    // for size_t
+#include <vector>     // for vector
 
-#include "libsemigroups/bipart.hpp"
-#include "libsemigroups/constants.hpp"  // for Max, operator!=, operator==
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"      // for word_type
-
-#include "libsemigroups/detail/string.hpp"  // for operator<<
+#include "libsemigroups/constants.hpp"      // for operator!=, UNDEFINED
+#include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/string.hpp"  // for group_digits
+#include "libsemigroups/exception.hpp"      // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/types.hpp"          // for word_type
 
 namespace libsemigroups {
 
@@ -131,6 +128,74 @@ namespace libsemigroups {
     }
   }
 
+  void Forest::throw_if_not_acyclic(node_type new_node,
+                                    node_type new_parent) const {
+    size_t const        not_yet_seen = number_of_nodes();
+    std::vector<size_t> seen(number_of_nodes(), not_yet_seen);
+    size_t              current = 0;
+
+    for (Forest::node_type m = 0; m != number_of_nodes(); ++m) {
+      auto      n = m;
+      node_type p;
+      size_t    length = 0;
+      while (n != UNDEFINED && seen[n] == not_yet_seen) {
+        seen[n] = current;
+        p       = n;
+        n       = parent(n);
+        length++;
+      }
+      if (n != UNDEFINED && seen[n] == current) {
+        std::string cycle;
+        if (length == 1) {
+          cycle = fmt::format("loop [{}]", n);
+        } else if (length == 2) {
+          cycle = fmt::format("cycle [{}, {}]", n, parent(n));
+        } else {
+          cycle = fmt::format(
+              "cycle [{}, {}, ..., {}] (length {})", n, parent(n), p, length);
+        }
+        if (new_node != UNDEFINED && new_parent != UNDEFINED) {
+          LIBSEMIGROUPS_EXCEPTION("defining the parent of node {} to be {} "
+                                  "creates a {}",
+                                  new_node,
+                                  new_parent,
+                                  cycle);
+        } else {
+          LIBSEMIGROUPS_EXCEPTION("the Forest object contains the {}"
+                                  " and is invalid",
+                                  cycle);
+        }
+      }
+      current++;
+    }
+  }
+
+  Forest& Forest::set_parent_and_label(node_type  node,
+                                       node_type  parent,
+                                       label_type gen) {
+    throw_if_node_out_of_bounds(node);
+    throw_if_node_out_of_bounds(parent);
+
+    if (parent == node) {
+      LIBSEMIGROUPS_EXCEPTION("a node cannot be its own parent, attempted to "
+                              "set {} as the parent of {}",
+                              parent,
+                              node);
+    }
+
+    node_type  previous_parent = parent_no_checks(node);
+    label_type previous_label  = label_no_checks(node);
+    set_parent_and_label_no_checks(node, parent, gen);
+
+    try {
+      throw_if_not_acyclic(node, parent);
+    } catch (LibsemigroupsException const& e) {
+      set_parent_and_label_no_checks(node, previous_parent, previous_label);
+      throw e;
+    }
+    return *this;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Forest helpers
   ////////////////////////////////////////////////////////////////////////
@@ -139,12 +204,20 @@ namespace libsemigroups {
     void path_to_root_no_checks(Forest const&     f,
                                 word_type&        w,
                                 Forest::node_type i) {
+      // The next check is a bit too heavy weight, so commented out. Leaving it
+      // here in case of thinking about doing this again in the future
+      // LIBSEMIGROUPS_ASSERT(is_forest(f));
+      LIBSEMIGROUPS_ASSERT(i < f.number_of_nodes());
       f.path_to_root_no_checks(std::back_inserter(w), i);
     }
 
     void path_from_root_no_checks(Forest const&     f,
                                   word_type&        w,
                                   Forest::node_type i) {
+      // The next check is a bit too heavy weight, so commented out. Leaving it
+      // here in case of thinking about doing this again in the future
+      // LIBSEMIGROUPS_ASSERT(is_forest(f));
+      LIBSEMIGROUPS_ASSERT(i < f.number_of_nodes());
       f.path_from_root_no_checks(std::back_inserter(w), i);
     }
 
@@ -161,11 +234,13 @@ namespace libsemigroups {
     }
 
     void path_to_root(Forest const& f, word_type& w, Forest::node_type i) {
+      f.throw_if_not_acyclic();
       f.throw_if_node_out_of_bounds(i);
       path_to_root_no_checks(f, w, i);
     }
 
     void path_from_root(Forest const& f, word_type& w, Forest::node_type i) {
+      f.throw_if_not_acyclic();
       f.throw_if_node_out_of_bounds(i);
       path_from_root_no_checks(f, w, i);
     }
@@ -184,6 +259,9 @@ namespace libsemigroups {
     }
 
     size_t depth_no_checks(Forest const& f, Forest::node_type i) {
+      // The next check is a bit too heavy weight, so commented out. Leaving it
+      // here in case of thinking about doing this again in the future
+      // LIBSEMIGROUPS_ASSERT(is_forest(f));
       LIBSEMIGROUPS_ASSERT(i < f.number_of_nodes());
       size_t length = 0;
       for (; f.parent_no_checks(i) != UNDEFINED; ++length) {
@@ -209,6 +287,25 @@ namespace libsemigroups {
       }
       return UNDEFINED;
     }
-  }  // namespace forest
 
+    bool is_forest(Forest const& f) {
+      size_t const        not_yet_seen = f.number_of_nodes();
+      std::vector<size_t> seen(f.number_of_nodes(), not_yet_seen);
+      size_t              current = 0;
+
+      for (Forest::node_type m = 0; m != f.number_of_nodes(); ++m) {
+        auto n = m;
+        while (n != UNDEFINED && seen[n] == not_yet_seen) {
+          seen[n] = current;
+          n       = f.parent(n);
+        }
+        if (n != UNDEFINED && seen[n] == current) {
+          return false;
+        }
+        current++;
+      }
+      return true;
+    }
+
+  }  // namespace forest
 }  // namespace libsemigroups

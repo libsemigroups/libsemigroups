@@ -23,6 +23,9 @@ namespace libsemigroups {
 
   template <typename Iterator>
   Iterator Forest::path_to_root_no_checks(Iterator d_first, node_type i) const {
+    // The next check is a bit too heavy weight, so commented out. Leaving it
+    // here in case of thinking about doing this again in the future
+    // LIBSEMIGROUPS_ASSERT(is_forest(f));
     LIBSEMIGROUPS_ASSERT(i < _parent.size());
     LIBSEMIGROUPS_ASSERT(i < _edge_label.size());
     auto it = d_first;
@@ -37,6 +40,9 @@ namespace libsemigroups {
   template <typename Iterator>
   Iterator Forest::path_from_root_no_checks(Iterator  d_first,
                                             node_type i) const {
+    // The next check is a bit too heavy weight, so commented out. Leaving it
+    // here in case of thinking about doing this again in the future
+    // LIBSEMIGROUPS_ASSERT(is_forest(f));
     LIBSEMIGROUPS_ASSERT(i < _parent.size());
     LIBSEMIGROUPS_ASSERT(i < _edge_label.size());
     auto const j = parent_no_checks(i);

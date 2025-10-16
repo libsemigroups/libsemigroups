@@ -19,16 +19,19 @@
 #ifndef LIBSEMIGROUPS_FOREST_HPP_
 #define LIBSEMIGROUPS_FOREST_HPP_
 
-#include <algorithm>         // for fill
-#include <cstddef>           // for size_t
+#include <cstddef>           // for size_t, ptrdiff_t
+#include <cstdint>           // for uint32_t
 #include <initializer_list>  // for initializer_list
-#include <iterator>          // for begin, end
-#include <vector>            // for vector, allocator, operator==
+#include <iterator>          // for forward_iterator_tag
+#include <string>            // for string, basic_string
+#include <vector>            // for vector, operator==
 
-#include "constants.hpp"  // for Undefined, Max, UNDEFINED, operator!=
+#include "constants.hpp"  // for UNDEFINED, operator!=, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for word_type, enable_if_is_same
+
+#include "detail/fmt.hpp"  // for formatter, string_view
 
 namespace libsemigroups {
   //! \ingroup word_graph_group
@@ -50,6 +53,10 @@ namespace libsemigroups {
     //! Alias for the type of edge labels in a forest.
     using label_type = uint32_t;
 
+   private:
+    void throw_if_not_acyclic(node_type node, node_type parent) const;
+
+   public:
     //! \brief Constructs a forest with \p n nodes.
     //!
     //! Constructs a forest with \p n nodes, that is initialised so that the
@@ -86,6 +93,15 @@ namespace libsemigroups {
     Forest& operator=(Forest&&) = default;
 
     ~Forest();
+
+    //! \brief Throw an exception if the Forest is not acyclic.
+    //!
+    //! This function throws a descriptive exception if a Forest instance is not
+    //! well-defined, i.e. if it is not acyclic. See \ref forest::is_forest for
+    //! more details.
+    void throw_if_not_acyclic() const {
+      throw_if_not_acyclic(UNDEFINED, UNDEFINED);
+    }
 
     //! \brief Compare Forest objects for equality.
     //!
@@ -168,6 +184,9 @@ namespace libsemigroups {
     Forest& set_parent_and_label_no_checks(node_type  node,
                                            node_type  parent,
                                            label_type gen) {
+      LIBSEMIGROUPS_ASSERT(node < number_of_nodes() || node == UNDEFINED);
+      LIBSEMIGROUPS_ASSERT(parent < number_of_nodes() || parent == UNDEFINED);
+
       _parent[node]     = parent;
       _edge_label[node] = gen;
       return *this;
@@ -186,20 +205,18 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p node or \p parent exceeds
     //! number_of_nodes().
+    //! \throws LibsemigroupsException if \p node equals \p parent.
+    //! \throws LibsemigroupsException if adding \p parent as the parent of
+    //! \p node would result in a cycle.
     //!
     //! \complexity
     //! Constant
     //!
     //! \note The value of \p gen can be arbitrary, and so this argument is
     //! never checked.
-    // not noexcept because std::vector::operator[] isn't.
     Forest& set_parent_and_label(node_type  node,
                                  node_type  parent,
-                                 label_type gen) {
-      throw_if_node_out_of_bounds(node);
-      throw_if_node_out_of_bounds(parent);
-      return set_parent_and_label_no_checks(node, parent, gen);
-    }
+                                 label_type gen);
 
     //! \brief Returns the number of nodes in the forest.
     //!
@@ -232,7 +249,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant
-    // not noexcept because std::vector::operator[] isn't.
     [[nodiscard]] node_type parent(node_type i) const {
       throw_if_node_out_of_bounds(i);
       return _parent[i];
@@ -253,6 +269,7 @@ namespace libsemigroups {
     //! Constant
     //!
     //! \warning No checks are performed on the arguments of this function.
+    // not noexcept because std::vector::operator[] isn't.
     [[nodiscard]] node_type parent_no_checks(node_type i) const {
       return _parent[i];
     }
@@ -511,7 +528,7 @@ namespace libsemigroups {
       throw_if_node_out_of_bounds(n);
       return cend_path_to_root_no_checks(n);
     }
-  };
+  };  // class Forest
 
   //! \defgroup make_forest_group make<Forest>
   //! \ingroup word_graph_group
@@ -797,6 +814,23 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     [[nodiscard]] Forest::label_type max_label(Forest const& f);
+
+    //! \brief Check whether a Forest object is well-defined.
+    //!
+    //! This function returns \c true if the Forest \p f is well-defined,
+    //! meaning that it contains no cycles. It is not possible to create a
+    //! Forest with cycles using \ref Forest::set_parent_and_label (which will
+    //! throw if such a cycle is introduced), but it is possible using
+    //! Forest with cycles using \ref Forest::set_parent_and_label_no_checks.
+    //!
+    //! \param f the Forest
+    //! \returns Whether or not \p f is valid.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa \ref Forest::throw_if_not_acyclic
+    [[nodiscard]] bool is_forest(Forest const& f);
 
   }  // namespace forest
 }  // namespace libsemigroups
