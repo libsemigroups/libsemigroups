@@ -47,6 +47,16 @@ namespace libsemigroups {
 
   template <typename Node>
   [[nodiscard]] typename WordGraphView<Node>::size_type
+  WordGraphView<Node>::number_of_nodes() const noexcept {
+    if (_end > _start) {
+      return _end - _start;
+    } else {
+      return 0;
+    }
+  }
+
+  template <typename Node>
+  [[nodiscard]] typename WordGraphView<Node>::size_type
   WordGraphView<Node>::number_of_edges() const noexcept {
     size_t count = 0;
     for (auto s : nodes()) {

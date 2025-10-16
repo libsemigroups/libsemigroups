@@ -281,9 +281,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    [[nodiscard]] size_type number_of_nodes() const noexcept {
-      return _end - _start;
-    }
+    [[nodiscard]] size_type number_of_nodes() const noexcept;
 
     //! \brief The number of edges in the underlying graph.
     //!

@@ -372,7 +372,23 @@ namespace libsemigroups {
     REQUIRE(v.number_of_edges() == 10);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "019", "accessors", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "019",
+                          "number_of_nodes",
+                          "[quick]") {
+    WordGraph<size_t>     g(10, 5);
+    WordGraphView<size_t> v(g);
+
+    REQUIRE(v.number_of_nodes() == 10);
+    v.reshape(2, 5);
+    REQUIRE(v.number_of_nodes() == 3);
+    v.reshape(3, 3);
+    REQUIRE(v.number_of_nodes() == 0);
+    v.reshape(3, 2);
+    REQUIRE(v.number_of_nodes() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "020", "accessors", "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g);
 
@@ -382,7 +398,7 @@ namespace libsemigroups {
     REQUIRE(v.word_graph() == &g);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "020", "modifiers", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "021", "modifiers", "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g);
     // Note that there are no checks done when setting the start and end nodes
