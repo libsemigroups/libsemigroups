@@ -332,12 +332,13 @@ namespace libsemigroups {
     //!
     //! \returns The number of edge labels, type \c size_type.
     //!
-    //! \exceptions
-    //! \noexcept
+    //! \throws LibsemigroupsException if the underlying WordGraph is not
+    //! defined.
     //!
     //! \complexity
     //! Constant.
-    [[nodiscard]] size_type out_degree() const noexcept {
+    [[nodiscard]] size_type out_degree() const {
+      throw_if_graph_is_nullptr();
       return _graph->out_degree();
     }
 
@@ -518,9 +519,10 @@ namespace libsemigroups {
     //!
     //! \returns A range object.
     //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] auto labels() const noexcept {
+    //! \throws LibsemigroupsException if the underlying WordGraph is not
+    //! defined
+    [[nodiscard]] auto labels() const {
+      throw_if_graph_is_nullptr();
       return _graph->labels();
     }
 
@@ -557,9 +559,11 @@ namespace libsemigroups {
     //! \returns A range object.
     //!
     //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
-    //! greater than or equal to \ref number_of_nodes).
+    //! greater than or equal to \ref number_of_nodes), or if the underlying
+    //! WordGraph is not defined.
     [[nodiscard]] auto targets(node_type source) const {
       throw_if_node_out_of_bounds(source);
+      throw_if_graph_is_nullptr();
       return targets_no_checks(source);
     }
 
@@ -622,8 +626,12 @@ namespace libsemigroups {
     //!    where \f$n\f$ is the return value of out_degree();
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
-    //! \throws LibsemigroupsException if \p s does not represent a node in
-    //! \c this, or \p a is not a valid edge label.
+    //! \throws LibsemigroupsException if:
+    //! - \p s does not represent a node in \c this;
+    //! - \p a is not a valid edge label;
+    //! - at least one of the targets of an edge in \c this does not represent a
+    //!   node in this; or
+    //! - the underlying WordGraph is not defined.
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
@@ -631,11 +639,7 @@ namespace libsemigroups {
     //! \sa next_label_and_target_no_checks.
     // Not noexcept because next_label_and_target_no_checks is not
     [[nodiscard]] std::pair<label_type, node_type>
-    next_label_and_target(node_type s, label_type a) const {
-      throw_if_node_out_of_bounds(s);
-      throw_if_label_out_of_bounds(a);
-      return next_label_and_target_no_checks(s, a);
-    }
+    next_label_and_target(node_type s, label_type a) const;
 
     //! \brief Returns a range object containing pairs consisting of edge
     //! labels and target nodes.
@@ -711,7 +715,7 @@ namespace libsemigroups {
     //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
     //! \throws LibsemigroupsException if \p source or \p a is not
-    //! valid.
+    //! valid, or if the underlying WordGraph is not defined.
     //!
     //! \complexity
     //! Constant.
@@ -719,6 +723,7 @@ namespace libsemigroups {
     [[nodiscard]] node_type target(node_type source, label_type a) const {
       throw_if_node_out_of_bounds(source);
       throw_if_label_out_of_bounds(a);
+      throw_if_graph_is_nullptr();
       return target_no_checks(source, a);
     }
 
@@ -881,6 +886,13 @@ namespace libsemigroups {
     void throw_if_node_out_of_bounds(Iterator1 first, Iterator2 last) const {
       for (auto it = first; it != last; ++it) {
         throw_if_node_out_of_bounds(*it);
+      }
+    }
+
+   private:
+    void throw_if_graph_is_nullptr() const {
+      if (_graph == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION("the underlying WordGraph is not defined");
       }
     }
   };

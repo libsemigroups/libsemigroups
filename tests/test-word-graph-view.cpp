@@ -35,6 +35,13 @@ namespace libsemigroups {
                           "[quick]") {
     WordGraphView<size_t> v;
     REQUIRE(v.number_of_nodes() == 0);
+    v.reshape(2, 3);
+    REQUIRE_THROWS(v.out_degree());
+    REQUIRE_THROWS(v.labels());
+    REQUIRE_THROWS(v.target(2, 0));
+    REQUIRE_THROWS(v.targets(2));
+    REQUIRE_THROWS(v.next_label_and_target(2, 0));
+    REQUIRE(v.word_graph() == nullptr);
     WordGraph<size_t>     g1(10, 5);
     WordGraphView<size_t> v1(g1);
     REQUIRE(g1.number_of_nodes() == v1.number_of_nodes());
@@ -120,10 +127,7 @@ namespace libsemigroups {
     REQUIRE(v1 == v2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "005",
-                          "test offset correct",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "005", "target", "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 3, 5);
     g.target(3, 4, 5);
@@ -133,7 +137,7 @@ namespace libsemigroups {
   }
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "006",
-                          "test target(s, a) throws correctly",
+                          "target throws correctly",
                           "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 3, 5);
@@ -142,10 +146,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(v.target(5, 3), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "007",
-                          "test label and node bounds checking throws",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "007", "exceptions", "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     REQUIRE_THROWS_AS(v.target(0, 7), LibsemigroupsException);
@@ -159,10 +160,7 @@ namespace libsemigroups {
     v.throw_if_node_out_of_bounds(g.cbegin_nodes(), g.cbegin_nodes() + 2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "008",
-                          "test cbegin_targets",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "008", "cbegin_targets", "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 0, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -173,10 +171,7 @@ namespace libsemigroups {
     REQUIRE(*(v.cbegin_targets(0)) == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "009",
-                          "test cend_targets",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "009", "cend_targets", "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 4, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -196,10 +191,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "010",
-                          "test nodes() range",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "010", "nodes", "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 4, 5);
     WordGraphView<size_t> v(g, 2, 5);
@@ -212,10 +204,7 @@ namespace libsemigroups {
     REQUIRE(i == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "011",
-                          "test labels is same as graph labels",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "011", "labels", "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
     auto                  v_labels = v.labels();
@@ -274,7 +263,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "014",
-                          "graph from view",
+                          "graph_from_view",
                           "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
@@ -294,7 +283,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "015",
-                          "test to_graph for undefined",
+                          "to_graph for UNDEFINED",
                           "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
