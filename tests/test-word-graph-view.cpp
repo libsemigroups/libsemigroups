@@ -33,8 +33,8 @@ namespace libsemigroups {
                           "000",
                           "default constructor and entire graph",
                           "[quick]") {
-    WordGraphView<size_t> g;
-    REQUIRE(g.number_of_nodes() == 0);
+    WordGraphView<size_t> v;
+    REQUIRE(v.number_of_nodes() == 0);
     WordGraph<size_t>     g1(10, 5);
     WordGraphView<size_t> v1(g1);
     REQUIRE(g1.number_of_nodes() == v1.number_of_nodes());
