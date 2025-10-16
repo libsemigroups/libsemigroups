@@ -166,13 +166,11 @@ namespace libsemigroups {
       WordGraph<Node> result
           = WordGraph<Node>(view.number_of_nodes(), view.out_degree());
       for (auto node : rx::iterator_range(view.nodes())) {
-        for (auto label_target : view.labels_and_targets_no_checks(node)) {
-          auto target = std::get<1>(label_target);
+        for (auto [label, target] : view.labels_and_targets_no_checks(node)) {
           if (target == UNDEFINED) {
             continue;
           }
-          result.target_no_checks(
-              node, std::get<0>(label_target), std::get<1>(label_target));
+          result.target_no_checks(node, label, target);
         }
       }
       // LCOV identifies the blank line after this as not being covered for some
