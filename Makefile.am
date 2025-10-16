@@ -127,12 +127,12 @@ pkginclude_HEADERS += include/libsemigroups/transf.tpp
 pkginclude_HEADERS += include/libsemigroups/types.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
-pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
-pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
-pkginclude_HEADERS += include/libsemigroups/word-graph-view.hpp
-pkginclude_HEADERS += include/libsemigroups/word-graph-view.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-helpers.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph-helpers.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph-view.tpp
+pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
+pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
 pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
