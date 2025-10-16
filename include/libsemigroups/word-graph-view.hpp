@@ -170,7 +170,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WordGraphView& init(size_type start, size_type end) {
+    WordGraphView& reshape(size_type start, size_type end) {
       _start = start;
       _end   = end;
       return *this;

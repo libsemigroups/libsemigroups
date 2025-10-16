@@ -303,4 +303,18 @@ namespace libsemigroups {
     REQUIRE(v.target_no_checks(0, 0) == UNDEFINED);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "016", "reshape", "[quick]") {
+    WordGraph<size_t> g(10, 5);
+    g.target(3, 0, 4);
+    WordGraphView<size_t> v(g, 2, 5);
+    REQUIRE(v.number_of_nodes() == 3);
+    REQUIRE(v.start_node() == 2);
+    REQUIRE(v.end_node() == 5);
+    REQUIRE(v.target(1, 0) == 2);
+    v.reshape(3, 7);
+    REQUIRE(v.number_of_nodes() == 4);
+    REQUIRE(v.start_node() == 3);
+    REQUIRE(v.end_node() == 7);
+    REQUIRE(v.target(0, 0) == 1);
+  }
 }  // namespace libsemigroups
