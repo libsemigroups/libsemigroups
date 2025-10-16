@@ -1025,6 +1025,7 @@ namespace libsemigroups {
                     WordGraph<Node> const& y,
                     Node                   first,
                     Node                   last) {
+        // TODO(v4) Remove the libsemigroups prefix
         libsemigroups::word_graph::throw_if_node_out_of_bounds(x, first);
         libsemigroups::word_graph::throw_if_node_out_of_bounds(x, last - 1);
         libsemigroups::word_graph::throw_if_node_out_of_bounds(y, first);
@@ -1078,6 +1079,8 @@ namespace libsemigroups {
                                                       WordGraph<Node1> const& y,
                                                       Node2 yroot) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
+
+        // TODO(v4) Remove the libsemigroups prefix
         libsemigroups::word_graph::throw_if_node_out_of_bounds(x, xroot);
         libsemigroups::word_graph::throw_if_node_out_of_bounds(y, yroot);
         if (x.out_degree() != y.out_degree()) {
@@ -1091,6 +1094,7 @@ namespace libsemigroups {
         // implementational details. Basically if x has a target that's out of
         // bounds, then this might be confused for a node in y, and lead to
         // incorrect answers. So best just check this here.
+        // TODO(v4) Remove the libsemigroups prefix
         libsemigroups::word_graph::throw_if_any_target_out_of_bounds(x);
         libsemigroups::word_graph::throw_if_any_target_out_of_bounds(y);
       }
@@ -1486,6 +1490,7 @@ namespace libsemigroups {
     std::string to_human_readable_repr(WordGraph<Node> const& wg) {
       // TODO(2) could be more elaborate, include complete, etc
       // TODO(2) number_of_edges can be a bit slow
+      // TODO(v4) Remove the libsemigroups prefix
       return fmt::format(
           "<WordGraph with {} nodes, {} edges, & out-degree {}>",
           libsemigroups::detail::group_digits(wg.number_of_nodes()),

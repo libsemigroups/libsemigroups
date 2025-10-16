@@ -2978,6 +2978,7 @@ namespace libsemigroups {
     // deduced from the argument.
     class Joiner : public detail::JoinerMeeterCommon<Joiner> {
      private:
+      // TODO(v4) Remove the libsemigroups prefix
       libsemigroups::detail::Duf<>              _uf;
       std::stack<std::pair<uint64_t, uint64_t>> _stck;
       std::vector<uint64_t>                     _lookup;
