@@ -96,17 +96,17 @@ namespace libsemigroups {
       if (out_degree() != that.out_degree()) {
         return false;
       }
-      auto this_node = cbegin_nodes();
-      auto that_node = that.cbegin_nodes();
-      while (this_node < cend_nodes()) {
+      auto this_source = cbegin_nodes();
+      auto that_source = that.cbegin_nodes();
+      while (this_source < cend_nodes()) {
         for (label_type a = 0; a < out_degree(); ++a) {
-          if (target_no_checks(*this_node, a)
-              != that.target_no_checks(*that_node, a)) {
+          if (target_no_checks(*this_source, a)
+              != that.target_no_checks(*that_source, a)) {
             return false;
           }
         }
-        ++this_node;
-        ++that_node;
+        ++this_source;
+        ++that_source;
       }
       return true;
     }
@@ -165,12 +165,12 @@ namespace libsemigroups {
     WordGraph<Node> graph_from_view(WordGraphView<Node> const& view) {
       WordGraph<Node> result
           = WordGraph<Node>(view.number_of_nodes(), view.out_degree());
-      for (auto node : rx::iterator_range(view.nodes())) {
-        for (auto [label, target] : view.labels_and_targets_no_checks(node)) {
+      for (auto source : rx::iterator_range(view.nodes())) {
+        for (auto [label, target] : view.labels_and_targets_no_checks(source)) {
           if (target == UNDEFINED) {
             continue;
           }
-          result.target_no_checks(node, label, target);
+          result.target_no_checks(source, label, target);
         }
       }
       // LCOV identifies the blank line after this as not being covered for some
