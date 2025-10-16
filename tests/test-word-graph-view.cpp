@@ -20,10 +20,11 @@
 #include <utility>  // for std::move
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "libsemigroups/word-graph.hpp"
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/word-graph-helpers.hpp"
 #include "libsemigroups/word-graph-view.hpp"
+#include "libsemigroups/word-graph.hpp"
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -334,6 +335,41 @@ namespace libsemigroups {
     WordGraphView<size_t> v4;
     v1.init();
     REQUIRE(v1 == v4);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "018",
+                          "number_of_edges",
+                          "[quick]") {
+    WordGraph<size_t> g(10, 5);
+    v4::word_graph::add_cycle_no_checks(
+        g, g.cbegin_nodes(), g.cbegin_nodes() + 5);
+    v4::word_graph::add_cycle_no_checks(
+        g, g.cbegin_nodes() + 5, g.cend_nodes());
+    REQUIRE(g.number_of_edges() == 10);
+
+    WordGraphView<size_t> v(g);
+
+    for (size_t i = 0; i < 4; ++i) {
+      v.reshape(i, i + 1);
+      REQUIRE(v.number_of_edges() == 1);
+      v.reshape(i + 5, i + 6);
+      REQUIRE(v.number_of_edges() == 1);
+    }
+
+    v.reshape(4, 6);
+    REQUIRE_THROWS(v.throw_if_any_target_out_of_bounds());
+    // We might expect this to be 0, since there is no edge between 4 and 5.
+    // However, since there is an edge from 4 to 0, and from 5 to 6, we get a
+    // count of 2.
+    REQUIRE(v.number_of_edges() == 2);
+
+    v.reshape(0, 5);
+    REQUIRE(v.number_of_edges() == 5);
+    v.reshape(5, 10);
+    REQUIRE(v.number_of_edges() == 5);
+    v.reshape(0, 10);
+    REQUIRE(v.number_of_edges() == 10);
   }
 
 }  // namespace libsemigroups
