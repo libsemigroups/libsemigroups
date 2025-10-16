@@ -170,7 +170,7 @@ namespace libsemigroups {
     auto targets = v.cbegin_targets(0);
     REQUIRE(*targets == 3);
     REQUIRE_THROWS_AS(v.cbegin_targets(7), LibsemigroupsException);
-    REQUIRE(*(v.cbegin_targets_no_checks(0)) == 3);
+    REQUIRE(*(v.cbegin_targets(0)) == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
@@ -227,17 +227,14 @@ namespace libsemigroups {
     REQUIRE(i == 5);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "012",
-                          "targets_no_checks",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "012", "targets", "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
     g.target(2, 2, 6);
     g.target(2, 3, 4);
     WordGraphView<size_t> v(g, 2, 5);
     size_t                i = 0;
-    for (auto target : v.targets_no_checks(0)) {
+    for (auto target : v.targets(0)) {
       if (i == 0) {
         REQUIRE(target == UNDEFINED);
       }
@@ -301,7 +298,7 @@ namespace libsemigroups {
                           "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g, 2, 5);
-    REQUIRE(v.target_no_checks(0, 0) == UNDEFINED);
+    REQUIRE(v.target(0, 0) == UNDEFINED);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "016", "reshape", "[quick]") {

@@ -82,19 +82,6 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  std::pair<typename WordGraphView<Node>::label_type,
-            typename WordGraphView<Node>::node_type>
-  WordGraphView<Node>::next_label_and_target(node_type s, label_type a) const {
-    throw_if_node_out_of_bounds(s);
-    throw_if_label_out_of_bounds(a);
-    node_type                        translated = to_graph(s);
-    std::pair<node_type, label_type> result
-        = _graph->next_label_and_target_no_checks(translated, a);
-    to_view(result);
-    return result;
-  }
-
-  template <typename Node>
   bool WordGraphView<Node>::operator==(WordGraphView const& that) const {
     {
       if (_graph == that._graph && _start == that._start && _end == that._end) {

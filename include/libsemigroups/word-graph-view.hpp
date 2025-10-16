@@ -404,29 +404,6 @@ namespace libsemigroups {
     //! target of the edge with label \c 0 incident to the source node
     //! \p source. This target might equal \ref UNDEFINED.
     //!
-    //! \param source the source node in the word graph.
-    //!
-    //! \returns
-    //! A \ref const_iterator_targets.
-    //!
-    //! \throws LibsemigroupsException if \p source is out of range (i.e.
-    //! greater than or equal to \ref number_of_nodes).
-    //!
-    //! \complexity
-    //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds isn't
-    [[nodiscard]] auto cbegin_targets(node_type source) const {
-      throw_if_node_out_of_bounds(source);
-      return rx::begin(targets_no_checks(source));
-    }
-
-    //! \brief Returns a random access iterator pointing at the target of
-    //! the edge with label \p 0 incident to a given node.
-    //!
-    //! This function returns a random access iterator pointing at the
-    //! target of the edge with label \c 0 incident to the source node
-    //! \p source. This target might equal \ref UNDEFINED.
-    //!
     //! \param source a node in the word graph.
     //!
     //! \returns
@@ -448,14 +425,14 @@ namespace libsemigroups {
       return rx::begin(targets_no_checks(source));
     }
 
-    //! \brief Returns a random access iterator pointing one beyond the target
-    //! of the edge with label `out_degree() - 1` incident to a given node.
+    //! \brief Returns a random access iterator pointing at the target of
+    //! the edge with label \p 0 incident to a given node.
     //!
-    //! This function returns a random access iterator pointing one beyond the
-    //! target of the edge with label `out_degree() - 1` incident to the source
-    //! node \p source. This target might equal \ref UNDEFINED.
+    //! This function returns a random access iterator pointing at the
+    //! target of the edge with label \c 0 incident to the source node
+    //! \p source. This target might equal \ref UNDEFINED.
     //!
-    //! \param source a node in the word graph.
+    //! \param source the source node in the word graph.
     //!
     //! \returns
     //! A \ref const_iterator_targets.
@@ -466,11 +443,10 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds isn't
-    [[nodiscard]] auto cend_targets(node_type source) const {
+    [[nodiscard]] auto cbegin_targets(node_type source) const {
       throw_if_node_out_of_bounds(source);
-      return rx::end(targets_no_checks(source));
+      return cbegin_targets_no_checks(source);
     }
-
     //! \brief Returns a random access iterator pointing one beyond the target
     //! of the edge with label `out_degree() - 1` incident to a given node.
     //!
@@ -496,6 +472,29 @@ namespace libsemigroups {
     //! \ref cend_targets.
     [[nodiscard]] auto cend_targets_no_checks(node_type source) const noexcept {
       return rx::end(targets_no_checks(source));
+    }
+
+    //! \brief Returns a random access iterator pointing one beyond the target
+    //! of the edge with label `out_degree() - 1` incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! target of the edge with label `out_degree() - 1` incident to the source
+    //! node \p source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e.
+    //! greater than or equal to \ref number_of_nodes).
+    //!
+    //! \complexity
+    //! Constant.
+    // Not noexcept because throw_if_node_out_of_bounds isn't
+    [[nodiscard]] auto cend_targets(node_type source) const {
+      throw_if_node_out_of_bounds(source);
+      return cend_targets_no_checks(source);
     }
 
     //! \brief Returns a range object containing all nodes in a word graph.
@@ -545,6 +544,23 @@ namespace libsemigroups {
     [[nodiscard]] auto targets_no_checks(node_type source) const noexcept {
       node_type translated = to_graph(source);
       return to_view(_graph->targets_no_checks(translated));
+    }
+
+    //! \brief Returns a range object containing all the targets of edges with
+    //! a given source.
+    //!
+    //! This function returns a range object containing all the targets of
+    //! edges with source \p source.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A range object.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
+    //! greater than or equal to \ref number_of_nodes).
+    [[nodiscard]] auto targets(node_type source) const {
+      throw_if_node_out_of_bounds(source);
+      return targets_no_checks(source);
     }
 
     //! \brief Get the next target of an edge incident to a given node that
@@ -615,24 +631,10 @@ namespace libsemigroups {
     //! \sa next_label_and_target_no_checks.
     // Not noexcept because next_label_and_target_no_checks is not
     [[nodiscard]] std::pair<label_type, node_type>
-    next_label_and_target(node_type s, label_type a) const;
-
-    //! \brief Returns a range object containing all the targets of edges with
-    //! a given source.
-    //!
-    //! This function returns a range object containing all the targets of
-    //! edges with source \p source.
-    //!
-    //! \param source the source node.
-    //!
-    //! \returns A range object.
-    //!
-    //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
-    //! greater than or equal to \ref number_of_nodes).
-    [[nodiscard]] auto targets(node_type source) const {
-      throw_if_node_out_of_bounds(source);
-      node_type translated = to_graph(source);
-      return to_view(_graph->targets_no_checks(translated));
+    next_label_and_target(node_type s, label_type a) const {
+      throw_if_node_out_of_bounds(s);
+      throw_if_label_out_of_bounds(a);
+      return next_label_and_target_no_checks(s, a);
     }
 
     //! \brief Returns a range object containing pairs consisting of edge
@@ -670,30 +672,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p source is out of bounds.
     [[nodiscard]] auto labels_and_targets(node_type source) const {
       throw_if_node_out_of_bounds(source);
-      return rx::enumerate(targets_no_checks(source));
-    }
-
-    //! \brief Get the target of the edge with given source node and label.
-    //!
-    //! This function returns the target of the edge with source node \p source
-    //! and label \p a.
-    //!
-    //! \param source the node.
-    //! \param a the label.
-    //!
-    //! \returns the node adjacent to \p source via the edge labelled \p a, or
-    //! \ref UNDEFINED; both are values of type \ref node_type.
-    //!
-    //! \throws LibsemigroupsException if \p source or \p a is not
-    //! valid.
-    //!
-    //! \complexity
-    //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds/label aren't
-    [[nodiscard]] node_type target(node_type source, label_type a) const {
-      throw_if_node_out_of_bounds(source);
-      throw_if_label_out_of_bounds(a);
-      return target_no_checks(source, a);
+      return labels_and_targets_no_checks(source);
     }
 
     //! \brief Get the target of the edge with given source node and label.
@@ -718,6 +697,29 @@ namespace libsemigroups {
                                              label_type a) const {
       node_type translated = to_graph(source);
       return to_view(_graph->target_no_checks(translated, a));
+    }
+
+    //! \brief Get the target of the edge with given source node and label.
+    //!
+    //! This function returns the target of the edge with source node \p source
+    //! and label \p a.
+    //!
+    //! \param source the node.
+    //! \param a the label.
+    //!
+    //! \returns the node adjacent to \p source via the edge labelled \p a, or
+    //! \ref UNDEFINED; both are values of type \ref node_type.
+    //!
+    //! \throws LibsemigroupsException if \p source or \p a is not
+    //! valid.
+    //!
+    //! \complexity
+    //! Constant.
+    // Not noexcept because throw_if_node_out_of_bounds/label aren't
+    [[nodiscard]] node_type target(node_type source, label_type a) const {
+      throw_if_node_out_of_bounds(source);
+      throw_if_label_out_of_bounds(a);
+      return target_no_checks(source, a);
     }
 
     //////////////////////////////////////////////////////////////////////////
