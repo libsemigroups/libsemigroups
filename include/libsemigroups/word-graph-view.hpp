@@ -212,7 +212,7 @@ namespace libsemigroups {
     ~WordGraphView() = default;
 
     //////////////////////////////////////////////////////////////////////////
-    // Member functions
+    // Modifiers
     //////////////////////////////////////////////////////////////////////////
 
     //! \brief Reshape this view over the same graph.
@@ -227,11 +227,49 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WordGraphView& reshape(size_type start, size_type end) {
+    WordGraphView& reshape(node_type start, node_type end) {
       _start = start;
       _end   = end;
       return *this;
     }
+
+    //! \brief Set the index in the underlying graph of the first node in the
+    //! view.
+    //!
+    //! \param start the new index of the first node in the view.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    WordGraphView& start_node(node_type start) noexcept {
+      _start = start;
+      return *this;
+    }
+
+    //! \brief Set the index in the underlying graph of one beyond the last node
+    //! in the view.
+    //!
+    //! \param end the new index of one beyond the last node in the view.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    WordGraphView& end_node(node_type end) noexcept {
+      _end = end;
+      return *this;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Accessors
+    //////////////////////////////////////////////////////////////////////////
 
     //! \brief The number of nodes that this view ranges over.
     //!
@@ -304,6 +342,26 @@ namespace libsemigroups {
     [[nodiscard]] size_type out_degree() const noexcept {
       return _graph->out_degree();
     }
+
+    //! \brief Returns a const pointer to the underlying \ref WordGraph.
+    //!
+    //! This function returns a const pointer to the underlying \ref WordGraph
+    //! over which the view is defined
+    //!
+    //! \returns The underlying \ref WordGraph.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] WordGraph<Node> const* word_graph() const noexcept {
+      return _graph;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Nodes, targets and labels
+    //////////////////////////////////////////////////////////////////////////
 
     //! \brief Returns a random access iterator pointing at the first node of
     //! the word graph.
