@@ -367,6 +367,8 @@ namespace libsemigroups {
     //! into \p d_first.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    //
+    //! \sa forest::PathsToRoots
     template <typename Iterator>
     Iterator path_to_root_no_checks(Iterator d_first, node_type i) const;
 
@@ -385,6 +387,8 @@ namespace libsemigroups {
     //! into \p d_first.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    //!
+    //! \sa forest::PathsFromRoots
     template <typename Iterator>
     Iterator path_from_root_no_checks(Iterator d_first, node_type i) const;
 
@@ -644,6 +648,8 @@ namespace libsemigroups {
     //! \param n the node.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    //!
+    //! \sa PathsFromRoots
     void path_from_root_no_checks(Forest const&     f,
                                   word_type&        w,
                                   Forest::node_type n);
@@ -660,6 +666,8 @@ namespace libsemigroups {
     //! \returns The word labelling the path from a root node to \p n.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    //!
+    //! \sa PathsToRoots
     [[nodiscard]] word_type path_to_root_no_checks(Forest const&     f,
                                                    Forest::node_type n);
 
@@ -675,6 +683,8 @@ namespace libsemigroups {
     //! \returns The word labelling the path from a root node to \p n.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    //!
+    //! \sa PathsFromRoots
     [[nodiscard]] word_type path_from_root_no_checks(Forest const&     f,
                                                      Forest::node_type n);
 
@@ -690,6 +700,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p n is greater than or equal to
     //! \ref Forest::number_of_nodes.
+    //!
+    //! \sa PathsToRoots
     void path_to_root(Forest const& f, word_type& w, Forest::node_type n);
 
     //! \brief Modifies \p w to contain the labels of the edges on the path
@@ -704,6 +716,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p n is greater than or equal to
     //! \ref Forest::number_of_nodes.
+    //!
+    //! \sa PathsFromRoots
     void path_from_root(Forest const& f, word_type& w, Forest::node_type n);
 
     //! \brief Returns a word containing the labels of the edges on the path
@@ -719,6 +733,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p n is greater than or equal to
     //! \ref Forest::number_of_nodes.
+    //!
+    //! \sa PathsToRoots
     [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type n);
 
     //! \brief Returns a word containing the labels of the edges on the path
@@ -734,6 +750,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p n is greater than or equal to
     //! \ref Forest::number_of_nodes.
+    //!
+    //! \sa PathsFromRoots
     [[nodiscard]] word_type path_from_root(Forest const&     f,
                                            Forest::node_type n);
 
@@ -830,8 +848,456 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \sa \ref Forest::throw_if_not_acyclic
+    //! \sa Forest::throw_if_not_acyclic
     [[nodiscard]] bool is_forest(Forest const& f);
+
+    namespace detail {
+      //! So that doc is generated
+      //!
+      //! Generate doc please doxygen.
+      class PathsFromToRootsCommon {
+       public:
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+        // We don't document these because we have to redeclare them in
+        // PathsFromRoots and PathsToRoots anyway.
+        using size_type   = typename std::vector<word_type>::size_type;
+        using output_type = word_type const&;
+        using node_type   = Forest::node_type;
+        static constexpr bool is_finite     = true;
+        static constexpr bool is_idempotent = true;
+#endif
+
+       protected:
+        node_type              _current_node;
+        word_type              _current_path;
+        std::vector<size_type> _depths;
+        Forest const*          _forest;
+        word_type              _visited;
+
+        // Lazily compute depth of a node in the tree
+        size_type depth(node_type n);
+
+       public:
+        //! \brief Deleted.
+        //!
+        //! A Forest object is required to construct or initialise a
+        //! PathsFromToRootsCommon object.
+        PathsFromToRootsCommon() = delete;
+
+        //! Default copy constructor.
+        PathsFromToRootsCommon(PathsFromToRootsCommon const&) = default;
+
+        //! Default move constructor.
+        PathsFromToRootsCommon(PathsFromToRootsCommon&&) = default;
+
+        //! Default copy assignment operator.
+        PathsFromToRootsCommon& operator=(PathsFromToRootsCommon const&)
+            = default;
+
+        //! Default move assignment operator.
+        PathsFromToRootsCommon& operator=(PathsFromToRootsCommon&&) = default;
+
+        //! \brief Construct from a Forest.
+        //!
+        //! This function constructs a new PathsFromToRootsCommon for the Forest
+        //! \p f. The newly constructed object does not copy \p f and is not
+        //! valid if \p f is destroyed.
+        //!
+        //! \param f the Forest.
+        //!
+        //! \exceptions
+        //! \no_libsemigroups_except
+        explicit PathsFromToRootsCommon(Forest const& f);
+
+        //! \brief Re-initialize from a Forest.
+        //!
+        //! This function re-initializes a PathsFromToRootsCommon so that its
+        //! underlying Forest object is \p f. This puts the
+        //! PathsFromToRootsCommon object back into the same state it would have
+        //! been in if it had been newly constructed from \p f.
+        //!
+        //! \param f the Forest.
+        //!
+        //! \exceptions
+        //! \no_libsemigroups_except
+        PathsFromToRootsCommon& init(Forest const& f);
+
+        //! \brief Get the current target of the path.
+        //!
+        //! This function returns the current target of the path returned by
+        //! \ref get.
+        //!
+        //! \returns The target of the current path.
+        //!
+        //! \exceptions
+        //! \noexcept
+        [[nodiscard]] node_type target() const noexcept {
+          return _current_node;
+        }
+
+        //! \brief Returns a reference to the current path.
+        //!
+        //! This function returns a const reference to the current path from the
+        //! root of the tree containing \ref target to \ref target.
+        //!
+        //! \returns A const reference to the current path.
+        //!
+        //! \exceptions
+        //! \noexcept
+        [[nodiscard]] output_type get() const noexcept {
+          return _current_path;
+        }
+
+        //! \brief Check if the range is exhausted.
+        //!
+        //! This function returns \c true if there are no more paths in the
+        //! range, and \c false otherwise.
+        //!
+        //! \returns Whether or not the range is exhausted.
+        [[nodiscard]] bool at_end() const noexcept {
+          return _forest->empty()
+                 || _current_node >= _forest->number_of_nodes();
+        }
+
+        //! \brief Get the size of the range.
+        //!
+        //! This function returns the number of paths in the range. The output
+        //! is identical to that of \ref count, and is
+        //! included for compatibility with [rx::ranges][].
+        //!
+        //! [rx::ranges]: https://github.com/simonask/rx-ranges
+        //!
+        //! \returns the number of paths in the range.
+        [[nodiscard]] size_type size_hint() const noexcept {
+          if (at_end()) {
+            return 0;
+          }
+          return _forest->number_of_nodes() - _current_node;
+        }
+
+        //! \brief Get the size of the range.
+        //!
+        //! This function returns the number of paths in the range.
+        //!
+        //! \returns the number of paths in the range.
+        [[nodiscard]] size_type count() const noexcept {
+          return size_hint();
+        }
+
+        //! \brief Returns the underlying Forest object.
+        //!
+        //! This function returns the Forest object used to constructor or
+        //! initialise a PathsFromToRootsCommon object.
+        //!
+        //! \returns A const reference to a Forest object.
+        //!
+        //! \exceptions
+        //! \noexcept
+        [[nodiscard]] Forest const& forest() const noexcept {
+          return *_forest;
+        }
+      };  // class PathsFromToRootsCommonRoots
+    }     // namespace detail
+
+    //! \brief Range for iterating through paths in a Forest.
+    //!
+    //! \hideinheritancegraph
+    //!
+    //! Defined in `forest.hpp`.
+    //!
+    //! This class represents a range object that facilitates iterating
+    //! through the paths from the roots in a Forest object to every node.
+    //! These nodes are taken in numerical order, so the first value returned
+    //! by \ref get is the word from a root to node \c 0, after \ref next is
+    //! called, \ref get returns the word from a root to node \c 1, and so on.
+    //!
+    //! The point of this class is to permit more efficient iteration over
+    //! many paths in a Forest object than
+    //! \ref Forest::path_from_root_no_checks (and its associated helper
+    //! functions). \ref Forest::path_from_root_no_checks traverses the Forest
+    //! from the given node to the root of its tree. If the path from nodes
+    //! \c m and \c n to the root of their tree share a long common prefix, then
+    //! this prefix will be traversed twice in two calls to
+    //! \ref Forest::path_from_root_no_checks. PathsFromRoots avoids this by
+    //! finding the least common ancestor of \c m and \c n, so that the prefix
+    //! is not re-traversed. This works best when the nodes in the Forest are
+    //! specified in a sensible order (such as via a depth-first or
+    //! breadth-first traversal).
+    //!
+    //! So that the PathsFromRoots class can be used efficiently with the
+    //! functionality of [rx::ranges][], the usual naming conventions in
+    //! `libsemigroups` are not used for the member functions:
+    //! * \ref get
+    //! * \ref next
+    //! * \ref at_end
+    //! * \ref size_hint
+    //! * \ref count
+    //!
+    //! of PathsFromRoots. In particular, none of these member functions check
+    //! their arguments, but they do not have the suffix `_no_checks`.
+    //!
+    //! [rx::ranges]: https://github.com/simonask/rx-ranges
+    class PathsFromRoots : public detail::PathsFromToRootsCommon {
+      using detail::PathsFromToRootsCommon::depth;
+
+     public:
+      //! Alias for the size type.
+      using size_type = typename std::vector<word_type>::size_type;
+
+      //! The type of the output of a PathsFromRoots object.
+      using output_type = word_type const&;
+
+      //! The type of nodes in the underlying Forest.
+      using node_type = Forest::node_type;
+
+      //! Value indicating that the range is finite.
+      static constexpr bool is_finite = true;
+
+      //! Value indicating that if get() is called twice on a PathsFromRoots
+      //! object that is not changed between the two calls, then the return
+      //! value of get() is the same both times.
+      static constexpr bool is_idempotent = true;
+
+      using detail::PathsFromToRootsCommon::at_end;
+      using detail::PathsFromToRootsCommon::count;
+      using detail::PathsFromToRootsCommon::forest;
+      using detail::PathsFromToRootsCommon::get;
+      using detail::PathsFromToRootsCommon::init;
+      using detail::PathsFromToRootsCommon::PathsFromToRootsCommon;
+      using detail::PathsFromToRootsCommon::size_hint;
+      using detail::PathsFromToRootsCommon::target;
+
+      //! \brief Advance to the next path in the range.
+      //!
+      //! Advance to the current path in the range. If \ref Paths::at_end
+      //! returns \c true, then this function does nothing.
+      void next();
+
+      //! \brief Skip a number of paths in the range.
+      //!
+      //! This function skips \p n paths in the range. If \p n is \c 1, then
+      //! this is the same as calling \ref next. If \p n is \c 0, then this
+      //! function does nothing.
+      //!
+      //! \param n the number of paths to skip.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      PathsFromRoots& skip_n(size_type n);
+
+      //! \brief Returns an input iterator pointing to the first word in the
+      //! range.
+      //!
+      //! This function returns an input iterator pointing to the first word
+      //! in a PathsFromRoots object.
+      //!
+      //! \returns An input iterator.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \note The return type of \ref end might be different from the return
+      //! type of \ref begin.
+      //!
+      //! \warning
+      //! If using a PathsFromRoots object \c paths in a range-based
+      //! for-loop such as:
+      //! \code for (auto const& path : paths) {
+      //!   ...
+      //! }
+      //! \endcode
+      //! the object \c paths is copied, and so will be constant inside the
+      //! for-loop. For example, in
+      //! \code
+      //! for (auto const& path : paths) {
+      //!   auto t = paths.target();
+      //! }
+      //! \endcode
+      //! The value of \c t will be constant, even though the value of \c path
+      //! may change.
+      //!
+      //! \sa \ref end.
+      // This can't go in the base class because the base class has no "next"
+      // mem fn and so rx::begin/end don't compile.
+      [[nodiscard]] auto begin() noexcept {
+        return rx::begin(*this);
+      }
+
+      //! \brief Returns an input iterator pointing one beyond the last word
+      //! in the range.
+      //!
+      //! This function returns an input iterator pointing one beyond the last
+      //! word in a PathsFromRoots object.
+      //!
+      //! \returns An input iterator.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \note The return type of \ref end might be different from the return
+      //! type of \ref begin.
+      //!
+      //! \warning Please read the warning in \ref begin.
+      //!
+      //! \sa \ref begin.
+      // This can't go in the base class because the base class has no "next"
+      // mem fn and so rx::begin/end don't compile.
+      [[nodiscard]] auto end() noexcept {
+        return rx::end(*this);
+      }
+    };  // class PathsFromRoots
+
+    //! \brief Range for iterating through paths in a Forest.
+    //!
+    //! \hideinheritancegraph
+    //!
+    //! Defined in `forest.hpp`.
+    //!
+    //! This class represents a range object that facilitates iterating
+    //! through the paths from every node to the root of its subtree in a Forest
+    //! object. These nodes are taken in numerical order, so the first value
+    //! returned by \ref get is the word to a root from node \c 0, after
+    //! \ref next is called, \ref get returns the word to a root from node \c 1,
+    //! and so on.
+    //!
+    //! The point of this class is to permit more efficient iteration over many
+    //! paths in a Forest object than \ref Forest::path_to_root_no_checks (and
+    //! its associated helper functions). \ref Forest::path_to_root_no_checks
+    //! traverses the Forest from the given node to the root of its tree. If the
+    //! path from nodes \c m and \c n to the root of their tree share a long
+    //! common suffix, then this suffix will be traversed twice in two calls to
+    //! \ref Forest::path_to_root_no_checks. PathsToRoots avoids this by finding
+    //! the least common ancestor of \c m and \c n, so that the suffix is not
+    //! re-traversed. This works best when the nodes in the Forest are specified
+    //! in a sensible order (such as via a depth-first or breadth-first
+    //! traversal).
+    //!
+    //! So that the PathsToRoots class can be used efficiently with the
+    //! functionality of [rx::ranges][], the usual naming conventions in
+    //! `libsemigroups` are not used for the member functions:
+    //! * \ref get
+    //! * \ref next
+    //! * \ref at_end
+    //! * \ref size_hint
+    //! * \ref count
+    //!
+    //! of PathsToRoots. In particular, none of these member functions check
+    //! their arguments, but they do not have the suffix `_no_checks`.
+    //!
+    //! [rx::ranges]: https://github.com/simonask/rx-ranges
+    class PathsToRoots : public detail::PathsFromToRootsCommon {
+      using detail::PathsFromToRootsCommon::depth;
+
+     public:
+      //! Alias for the size type.
+      using size_type = typename std::vector<word_type>::size_type;
+
+      //! The type of the output of a PathsToRoots object.
+      using output_type = word_type const&;
+
+      //! The type of nodes in the underlying Forest.
+      using node_type = Forest::node_type;
+
+      //! Value indicating that the range is finite.
+      static constexpr bool is_finite = true;
+
+      //! Value indicating that if get() is called twice on a PathsToRoots
+      //! object that is not changed between the two calls, then the return
+      //! value of get() is the same both times.
+      static constexpr bool is_idempotent = true;
+
+      using detail::PathsFromToRootsCommon::at_end;
+      using detail::PathsFromToRootsCommon::count;
+      using detail::PathsFromToRootsCommon::forest;
+      using detail::PathsFromToRootsCommon::get;
+      using detail::PathsFromToRootsCommon::init;
+      using detail::PathsFromToRootsCommon::PathsFromToRootsCommon;
+      using detail::PathsFromToRootsCommon::size_hint;
+      using detail::PathsFromToRootsCommon::target;
+
+      //! \brief Advance to the next path in the range.
+      //!
+      //! This function advances to the current path in the range. If \ref
+      //! Paths::at_end returns \c true, then this function does nothing.
+      void next();
+
+      //! \brief Skip a number of paths in the range.
+      //!
+      //! This function skips \p n paths in the range. If \p n is \c 1, then
+      //! this is the same as calling \ref next. If \p n is \c 0, then this
+      //! function does nothing.
+      //!
+      //! \param n the number of paths to skip.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      PathsToRoots& skip_n(size_type n);
+
+      //! \brief Returns an input iterator pointing to the first word in the
+      //! range.
+      //!
+      //! This function returns an input iterator pointing to the first word
+      //! in a PathsToRoots object.
+      //!
+      //! \returns An input iterator.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \note The return type of \ref end might be different from the return
+      //! type of \ref begin.
+      //!
+      //! \warning
+      //! If using a PathsToRoots object \c paths in a range-based
+      //! for-loop such as:
+      //! \code for (auto const& path : paths) {
+      //!   ...
+      //! }
+      //! \endcode
+      //! the object \c paths is copied, and so will be constant inside the
+      //! for-loop. For example, in
+      //! \code
+      //! for (auto const& path : paths) {
+      //!   auto t = paths.target();
+      //! }
+      //! \endcode
+      //! The value of \c t will be constant, even though the value of \c path
+      //! may change.
+      //!
+      //! \sa \ref end.
+      // This can't go in the base class because the base class has no "next"
+      // mem fn and so rx::begin/end don't compile.
+      [[nodiscard]] auto begin() noexcept {
+        return rx::begin(*this);
+      }
+
+      //! \brief Returns an input iterator pointing one beyond the last word
+      //! in the range.
+      //!
+      //! This function returns an input iterator pointing one beyond the last
+      //! word in a PathsToRoots object.
+      //!
+      //! \returns An input iterator.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \note The return type of \ref end might be different from the return
+      //! type of \ref begin.
+      //!
+      //! \warning Please read the warning in \ref begin.
+      //!
+      //! \sa \ref begin.
+      // This can't go in the base class because the base class has no "next"
+      // mem fn and so rx::begin/end don't compile.
+      [[nodiscard]] auto end() noexcept {
+        return rx::end(*this);
+      }
+    };  // class PathsToRoots
 
     //! \brief Returns a \ref Dot object representing a Forest.
     //!
@@ -847,17 +1313,17 @@ namespace libsemigroups {
     //!
     //! This function returns a \ref Dot object representing the Forest
     //! \p f. If \p labels is not empty, then each node is labelled with the
-    //! path from that node to the root of its tree with each letter replaced by
-    //! the string in the corresponding position of \p labels. If \p labels is
-    //! empty, then the nodes are not labelled by their paths.
+    //! path from that node to the root of its tree with each letter replaced
+    //! by the string in the corresponding position of \p labels. If \p labels
+    //! is empty, then the nodes are not labelled by their paths.
     //!
     //! \param f the Forest.
     //! \param labels substitute for each edge label.
     //!
     //! \returns A \ref Dot object.
     //!
-    //! \throws LibsemigroupsException if the size of \p labels is not the same
-    //! as the \ref max_label plus one.
+    //! \throws LibsemigroupsException if the size of \p labels is not the
+    //! same as the \ref max_label plus one.
     Dot dot(Forest const& f, std::vector<std::string> const& labels);
 
   }  // namespace forest
@@ -876,8 +1342,8 @@ namespace fmt {
     //! The intention is to provide a string representation that could be
     //! used to reconstruct the libsemigroups::Forest object. For a more
     //! human readable representation see
-    //! \ref libsemigroups::to_human_readable_repr(libsemigroups::Forest const&)
-    //! "to_human_readable_repr".
+    //! \ref libsemigroups::to_human_readable_repr(libsemigroups::Forest
+    //! const&) "to_human_readable_repr".
     //!
     //! \tparam FormatContext the type of the context provided in the second
     //! argument.
