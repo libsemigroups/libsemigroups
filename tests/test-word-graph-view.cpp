@@ -222,24 +222,10 @@ namespace libsemigroups {
     g.target(2, 2, 6);
     g.target(2, 3, 4);
     WordGraphView<size_t> v(g, 2, 5);
+    std::vector<size_t>   expected_targets({UNDEFINED, 3, 4, 2, UNDEFINED});
     size_t                i = 0;
     for (auto target : v.targets(0)) {
-      if (i == 0) {
-        REQUIRE(target == UNDEFINED);
-      }
-      if (i == 1) {
-        REQUIRE(target == 3);
-      }
-      if (i == 2) {
-        REQUIRE(target == 4);
-      }
-      if (i == 3) {
-        REQUIRE(target == 2);
-      }
-      if (i == 4) {
-        REQUIRE(target == UNDEFINED);
-      }
-      i++;
+      REQUIRE(target == expected_targets[i++]);
     }
   }
 
@@ -397,6 +383,25 @@ namespace libsemigroups {
     v.end_node(4);
     REQUIRE(v.start_node() == 4);
     REQUIRE(v.end_node() == 4);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "022",
+                          "labels_and_targets",
+                          "[quick]") {
+    WordGraph<size_t> g(10, 5);
+    g.target(2, 1, 5);
+    g.target(2, 2, 6);
+    g.target(2, 3, 4);
+    WordGraphView<size_t> v(g, 2, 5);
+    std::vector<size_t>   expected_labels({0, 1, 2, 3, 4});
+    std::vector<size_t>   expected_targets({UNDEFINED, 3, 4, 2, UNDEFINED});
+    size_t                i = 0;
+    for (auto [label, target] : v.labels_and_targets(0)) {
+      REQUIRE(label == expected_labels[i]);
+      REQUIRE(target == expected_targets[i]);
+      ++i;
+    }
   }
 
 }  // namespace libsemigroups
