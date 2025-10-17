@@ -399,3 +399,17 @@ if __name__ == "__main__":
         "./html/group__knuth__bendix__class__settings__group.html",
         substitute(r"\bKnuthBendixImpl\b", "KnuthBendix"),
     )
+    modify_in_place(
+        "./html/classlibsemigroups_1_1forest_1_1_paths_from_roots.html",
+        substitute(
+            r"\bPathsFromToRootsCommon\b",
+            '<a href="./classlibsemigroups_1_1forest_1_1_paths_from_roots.html">PathsFromRoots</a>',
+        ),
+    )
+    modify_in_place(
+        "./html/classlibsemigroups_1_1forest_1_1_paths_to_roots.html",
+        substitute(
+            r"\bPathsFromToRootsCommon\b",
+            '<a href="./classlibsemigroups_1_1forest_1_1_paths_to_roots.html">PathsToRoots</a>',
+        ),
+    )

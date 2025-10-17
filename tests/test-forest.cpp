@@ -17,27 +17,16 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include <algorithm>  // for reverse
-#include <cstddef>    // for size_t
-#include <string>     // for basic_string, operator==
-#include <tuple>      // for get
-#include <utility>    // for move
-#include <vector>     // for vector, operator==
+#include <cstddef>  // for size_t
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for SourceLineInfo, operat...
+#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"   // for UNDEFINED, operator==
-#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
-#include "libsemigroups/forest.hpp"      // for Forest, to_human_reada...
-#include "libsemigroups/ranges.hpp"      // for zip
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-graph.hpp"  // for WordGraph::target, Wor...
-#include "libsemigroups/word-range.hpp"  // for operator""_w
+#include "word-graph-test-common.hpp"
 
-#include "libsemigroups/detail/iterator.hpp"  // for operator+
-
-#include "word-graph-test-common.hpp"  // for binary_tree
+#include "libsemigroups/forest.hpp"  // for Forest
+#include "libsemigroups/presentation.hpp"
+#include "libsemigroups/to-word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -394,5 +383,179 @@ namespace libsemigroups {
   11 -> 8  [color="#00ff00"]
   12 -> 3  [color="#ff00ff"]
 })vogon");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "012", "PathsFromRoots x 1", "[quick]") {
+    Forest f = make<Forest>({UNDEFINED, 0, 1, 1, 0, 4, 4, 6},
+                            {UNDEFINED, 0, 0, 1, 1, 1, 0, 0});
+
+    REQUIRE(f.number_of_nodes() == 8);
+
+    auto paths = forest::PathsFromRoots(f);
+    REQUIRE(paths.size_hint() == 8);
+
+    REQUIRE((paths | rx::to_vector())
+            == std::vector({{}, 0_w, 00_w, 01_w, 1_w, 11_w, 10_w, 100_w}));
+
+    f = make<Forest>({UNDEFINED, 4, 0, 0, UNDEFINED, 3, 8, 1, 1, 12, 12, 8, 3},
+                     {UNDEFINED, 0, 0, 1, UNDEFINED, 0, 1, 1, 0, 0, 1, 0, 1});
+
+    paths.init(f);
+
+    REQUIRE((paths | rx::to_vector())
+            == std::vector({{},
+                            0_w,
+                            0_w,
+                            1_w,
+                            {},
+                            10_w,
+                            001_w,
+                            01_w,
+                            00_w,
+                            110_w,
+                            111_w,
+                            000_w,
+                            11_w}));
+    REQUIRE(equal(paths.skip_n(0), paths));
+    REQUIRE((paths.skip_n(1) | rx::to_vector())
+            == std::vector({0_w,
+                            0_w,
+                            1_w,
+                            {},
+                            10_w,
+                            001_w,
+                            01_w,
+                            00_w,
+                            110_w,
+                            111_w,
+                            000_w,
+                            11_w}));
+    paths.init(f);  // skip_n(1) in the previous REQUIRE changes paths in-place
+    REQUIRE(
+        (paths.skip_n(5) | rx::to_vector())
+        == std::vector({10_w, 001_w, 01_w, 00_w, 110_w, 111_w, 000_w, 11_w}));
+    REQUIRE((paths.skip_n(10) | rx::to_vector()) == std::vector<word_type>());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "013", "PathsFromRoots x 2", "[quick]") {
+    Forest f     = test_forest1();
+    auto   paths = forest::PathsFromRoots(f);
+    REQUIRE(paths.size_hint() == 100);
+    REQUIRE(paths.get() == word_type());
+    REQUIRE(paths.get() == word_type());
+
+    while (!paths.at_end()) {
+      auto const& path = paths.get();
+      auto        t    = paths.target();
+      auto        expected
+          = word_type(f.cbegin_path_to_root(t), f.cend_path_to_root(t));
+      std::reverse(expected.begin(), expected.end());
+      REQUIRE(std::pair(t, path) == std::pair(t, expected));
+      paths.next();
+    }
+    REQUIRE(&paths.forest() == &f);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest",
+                          "014",
+                          "PathsFromRoots -- corner cases",
+                          "[quick]") {
+    Forest f;
+    auto   paths = forest::PathsFromRoots(f);
+    REQUIRE(paths.size_hint() == 0);
+    REQUIRE(paths.at_end());
+    REQUIRE_NOTHROW(paths.next());
+    REQUIRE(paths.get() == ""_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "015", "PathsToRoots x 1", "[quick]") {
+    Forest f = make<Forest>({UNDEFINED, 0, 1, 1, 0, 4, 4, 6},
+                            {UNDEFINED, 0, 0, 1, 1, 1, 0, 0});
+
+    REQUIRE(f.number_of_nodes() == 8);
+
+    auto paths = forest::PathsToRoots(f);
+    REQUIRE(paths.size_hint() == 8);
+
+    REQUIRE((paths | rx::to_vector())
+            == std::vector({{}, 0_w, 00_w, 10_w, 1_w, 11_w, 01_w, 001_w}));
+
+    f = make<Forest>({UNDEFINED, 4, 0, 0, UNDEFINED, 3, 8, 1, 1, 12, 12, 8, 3},
+                     {UNDEFINED, 0, 0, 1, UNDEFINED, 0, 1, 1, 0, 0, 1, 0, 1});
+
+    // REQUIRE(forest::dot(f).to_string() == "");
+    paths.init(f);
+
+    REQUIRE((paths | rx::to_vector())
+            == std::vector({{},
+                            0_w,
+                            0_w,
+                            1_w,
+                            {},
+                            01_w,
+                            100_w,
+                            10_w,
+                            00_w,
+                            011_w,
+                            111_w,
+                            000_w,
+                            11_w}));
+
+    REQUIRE(equal(paths.skip_n(0), paths));
+
+    REQUIRE((paths.skip_n(1) | rx::to_vector())
+            == std::vector({0_w,
+                            0_w,
+                            1_w,
+                            {},
+                            01_w,
+                            100_w,
+                            10_w,
+                            00_w,
+                            011_w,
+                            111_w,
+                            000_w,
+                            11_w}));
+    paths.init(f);  // skip_n(1) in the previous REQUIRE changes paths in-place
+    REQUIRE(
+        (paths.skip_n(5) | rx::to_vector())
+        == std::vector({01_w, 100_w, 10_w, 00_w, 011_w, 111_w, 000_w, 11_w}));
+    REQUIRE((paths.skip_n(10) | rx::to_vector()) == std::vector<word_type>());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "016", "PathsToRoots x 2", "[quick]") {
+    Forest f     = test_forest1();
+    auto   paths = forest::PathsToRoots(f);
+    REQUIRE(paths.size_hint() == 100);
+    REQUIRE(paths.get() == word_type());
+    REQUIRE(paths.get() == word_type());
+
+    std::vector<word_type> expecteds;
+
+    while (!paths.at_end()) {
+      auto const& path = paths.get();
+      auto        t    = paths.target();
+      auto        expected
+          = word_type(f.cbegin_path_to_root(t), f.cend_path_to_root(t));
+      REQUIRE(std::pair(t, path) == std::pair(t, expected));
+      expecteds.push_back(expected);
+      paths.next();
+    }
+    REQUIRE(&paths.forest() == &f);
+    for (auto const& [i, path] : rx::enumerate(paths)) {
+      REQUIRE(path == expecteds[i]);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest",
+                          "017",
+                          "PathsToRoots -- corner cases",
+                          "[quick]") {
+    Forest f;
+    auto   paths = forest::PathsToRoots(f);
+    REQUIRE(paths.size_hint() == 0);
+    REQUIRE(paths.at_end());
+    REQUIRE_NOTHROW(paths.next());
+    REQUIRE(paths.get() == ""_w);
   }
 }  // namespace libsemigroups

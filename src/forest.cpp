@@ -307,6 +307,191 @@ namespace libsemigroups {
       return true;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // detail::PathsFromToRootsCommon class
+    ////////////////////////////////////////////////////////////////////////
+
+    namespace detail {
+      PathsFromToRootsCommon::size_type
+      PathsFromToRootsCommon::depth(node_type n) {
+        while (!is_root_no_checks(*_forest, n) && _depths[n] == UNDEFINED) {
+          _visited.push_back(n);
+          n = _forest->parent(n);
+        }
+        if (is_root_no_checks(*_forest, n)) {
+          _depths[n] = 0;
+        }
+        auto known_depth = _depths[n];
+        while (!_visited.empty()) {
+          n          = _visited.back();
+          _depths[n] = ++known_depth;
+          _visited.pop_back();
+        }
+        return _depths[n];
+      }
+
+      PathsFromToRootsCommon::PathsFromToRootsCommon(Forest const& forest)
+          : _current_node(0),
+            _current_path(),
+            _depths(forest.number_of_nodes(),
+                    static_cast<size_type>(UNDEFINED)),
+            _forest(&forest),
+            _visited() {
+        LIBSEMIGROUPS_ASSERT(forest::is_forest(*_forest));
+      }
+
+      PathsFromToRootsCommon&
+      PathsFromToRootsCommon::init(Forest const& forest) {
+        _current_node = 0;
+        _current_path.clear();
+        _depths.resize(forest.number_of_nodes(),
+                       static_cast<size_type>(UNDEFINED));
+        _forest = &forest;
+        LIBSEMIGROUPS_ASSERT(forest::is_forest(*_forest));
+        return *this;
+      }
+    }  // namespace detail
+
+    ////////////////////////////////////////////////////////////////////////
+    // PathsFromRoots class
+    ////////////////////////////////////////////////////////////////////////
+
+    void PathsFromRoots::next() {
+      if (at_end()) {
+        return;
+      }
+      auto next_node = _current_node + 1;
+      if (_current_node < _forest->number_of_nodes() - 1) {
+        auto   next_anc = next_node, current_anc = _current_node;
+        size_t pos = _current_path.size() - 1;
+
+        // We aim to find the least (youngest) common ancestor of
+        // _current_node and next_node so that we can reuse the prefix of the
+        // _current_path. We start by equalising the depth.
+        if (depth(next_anc) > depth(current_anc)) {
+          // _current_path will have more letters when complete for
+          // next_node, so we resize
+          _current_path.resize(_current_path.size() + depth(next_anc)
+                               - depth(current_anc));
+          // We insert the word path from next_node to next_anc into
+          // _current_path from the back to the front, because we are reading
+          // it in reverse.
+          size_t i = _current_path.size();
+          do {
+            _current_path[--i] = _forest->label_no_checks(next_anc);
+            next_anc           = _forest->parent_no_checks(next_anc);
+          } while (depth(next_anc) > depth(current_anc));
+        } else if (depth(current_anc) > depth(next_anc)) {
+          // _current_path will have fewer letters when complete for
+          // next_node, so we erase
+          _current_path.erase(_current_path.end() - depth(current_anc)
+                                  + depth(next_anc),
+                              _current_path.end());
+          pos -= depth(current_anc) - depth(next_anc);
+          do {
+            current_anc = _forest->parent_no_checks(current_anc);
+          } while (depth(current_anc) > depth(next_anc));
+        }
+
+        while (current_anc != next_anc
+               && !is_root_no_checks(*_forest, current_anc)) {
+          _current_path[pos--] = _forest->label_no_checks(next_anc);
+          current_anc          = _forest->parent_no_checks(current_anc);
+          next_anc             = _forest->parent_no_checks(next_anc);
+        }
+        LIBSEMIGROUPS_ASSERT(_current_path.size() == depth(next_node));
+      }
+      _current_node = next_node;
+    }
+
+    PathsFromRoots& PathsFromRoots::skip_n(size_type n) {
+      if (n == 1) {
+        next();
+      } else if (n != 0) {
+        _current_node += n;
+        _current_path.clear();
+        if (!at_end()) {
+          // Can't use next here because it assumes that _current_path
+          // contains the path to (_current_node - 1) which it does not.
+          _forest->path_from_root_no_checks(std::back_inserter(_current_path),
+                                            _current_node);
+        }
+      }
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // PathsToRoots class
+    ////////////////////////////////////////////////////////////////////////
+
+    void PathsToRoots::next() {
+      if (at_end()) {
+        return;
+      }
+      auto next_node = _current_node + 1;
+      if (_current_node < _forest->number_of_nodes() - 1) {
+        auto   next_anc = next_node, current_anc = _current_node;
+        size_t pos = 0;
+
+        // We aim to find the least (youngest) common ancestor of
+        // _current_node and next_node so that we can reuse the prefix of
+        // the _current_path. We start by equalising the depth.
+        if (depth(next_anc) > depth(current_anc)) {
+          // _current_path will have more letters when complete for
+          // next_node, so we resize
+          size_t old_size = _current_path.size();
+          _current_path.resize(old_size + depth(next_anc) - depth(current_anc));
+          std::copy(_current_path.begin(),
+                    _current_path.begin() + old_size,
+                    _current_path.begin() + depth(next_anc)
+                        - depth(current_anc));
+          // We insert the word path from next_node to next_anc into
+          // _current_path from the front to the back.
+          do {
+            _current_path[pos++] = _forest->label_no_checks(next_anc);
+            next_anc             = _forest->parent_no_checks(next_anc);
+          } while (depth(next_anc) > depth(current_anc));
+        } else if (depth(current_anc) > depth(next_anc)) {
+          // _current_path will have fewer letters when complete for
+          // next_node, so we erase
+          _current_path.erase(_current_path.begin(),
+                              _current_path.begin() + depth(current_anc)
+                                  - depth(next_anc));
+          do {
+            current_anc = _forest->parent_no_checks(current_anc);
+          } while (depth(current_anc) > depth(next_anc));
+        }
+        while (current_anc != next_anc
+               && !is_root_no_checks(*_forest, current_anc)) {
+          _current_path[pos++] = _forest->label_no_checks(next_anc);
+          current_anc          = _forest->parent_no_checks(current_anc);
+          next_anc             = _forest->parent_no_checks(next_anc);
+        }
+        LIBSEMIGROUPS_ASSERT(_current_path.size() == depth(next_node));
+      }
+      _current_node = next_node;
+    }
+
+    PathsToRoots& PathsToRoots::skip_n(size_type n) {
+      if (n == 1) {
+        next();
+      } else if (n != 0) {
+        _current_node += n;
+        _current_path.clear();
+        if (!at_end()) {
+          // Can't use next here because it assumes that _current_path
+          // contains the path to (_current_node - 1) which it does not.
+          _forest->path_to_root_no_checks(std::back_inserter(_current_path),
+                                          _current_node);
+        }
+      }
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // dot functions
+    ////////////////////////////////////////////////////////////////////////
+
     Dot dot(Forest const& f) {
       std::vector<std::string> labels;
       size_t const             N = forest::max_label(f) + 1;
@@ -334,7 +519,7 @@ namespace libsemigroups {
         auto& node = result.add_node(n).add_attr("shape", "box");
         if (!labels.empty()) {
           std::string label;
-          if (!forest::is_root(f, n)) {
+          if (!forest::is_root_no_checks(f, n)) {
             auto first = f.cbegin_path_to_root_no_checks(n),
                  last  = f.cend_path_to_root_no_checks(n);
             for (auto it = first; it != last; ++it) {
@@ -347,7 +532,7 @@ namespace libsemigroups {
         }
       }
       for (Forest::node_type n = 0; n < f.number_of_nodes(); ++n) {
-        if (!forest::is_root(f, n)) {
+        if (!forest::is_root_no_checks(f, n)) {
           result.add_edge(n, f.parent_no_checks(n))
               .add_attr(
                   "color",
