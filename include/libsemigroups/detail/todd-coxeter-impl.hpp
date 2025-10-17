@@ -1981,7 +1981,6 @@ namespace libsemigroups {
       //! the output word.
       //!
       //! \throws LibsemigroupsException if \p i is out of bounds.
-      //!
       template <typename Iterator>
       Iterator word_of_no_checks(Iterator d_first, index_type i) {
         run();
