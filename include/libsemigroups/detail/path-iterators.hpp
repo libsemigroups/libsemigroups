@@ -95,14 +95,7 @@ namespace libsemigroups {
         return &_edges;
       }
 
-      // TODO(1) to tpp
-      [[nodiscard]] node_type target() const noexcept {
-        if (!_nodes.empty()) {
-          return _nodes.back();
-        } else {
-          return UNDEFINED;
-        }
-      }
+      [[nodiscard]] node_type target() const noexcept;
 
       // prefix - not noexcept because std::vector::push_back isn't
       const_pilo_iterator const& operator++();
