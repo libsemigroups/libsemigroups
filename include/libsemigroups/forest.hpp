@@ -223,7 +223,7 @@ namespace libsemigroups {
     //! This function returns the number of nodes in the forest.
     //!
     //! \returns
-    //! A `size_t`.
+    //! The number of nodes.
     //!
     //! \exceptions
     //! \noexcept
