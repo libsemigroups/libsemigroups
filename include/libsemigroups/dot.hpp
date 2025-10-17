@@ -28,11 +28,10 @@
 #include <vector>       // for vector
 
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/bipart.hpp"
-#include "ranges.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"     // for ?
 
 #include "detail/fmt.hpp"     // for format
-#include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
 
