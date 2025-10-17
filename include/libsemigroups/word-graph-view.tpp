@@ -45,15 +45,54 @@ namespace libsemigroups {
     return n - _start;
   }
 
+  //////////////////////////////////////////////////////////////////////////
+  // Constructors + initialisers
+  //////////////////////////////////////////////////////////////////////////
+
   template <typename Node>
-  [[nodiscard]] typename WordGraphView<Node>::size_type
-  WordGraphView<Node>::number_of_nodes() const noexcept {
-    if (_end > _start) {
-      return _end - _start;
-    } else {
-      return 0;
-    }
+  WordGraphView<Node>& WordGraphView<Node>::init(WordGraph<Node> const& graph,
+                                                 size_type              start,
+                                                 size_type              end) {
+    LIBSEMIGROUPS_ASSERT(start <= end);
+    LIBSEMIGROUPS_ASSERT(end <= graph.number_of_nodes());
+    _graph = &graph;
+    _start = start;
+    _end   = end;
+    return *this;
   }
+
+  //////////////////////////////////////////////////////////////////////////
+  // Modifiers
+  //////////////////////////////////////////////////////////////////////////
+
+  template <typename Node>
+  WordGraphView<Node>& WordGraphView<Node>::reshape(node_type start,
+                                                    node_type end) {
+#ifdef LIBSEMIGROUPS_DEBUG
+    if (_graph != nullptr) {
+      LIBSEMIGROUPS_ASSERT(end <= _graph->number_of_nodes());
+    }
+    LIBSEMIGROUPS_ASSERT(start <= end);
+#endif
+    _start = start;
+    _end   = end;
+    return *this;
+  }
+
+  template <typename Node>
+  WordGraphView<Node>& WordGraphView<Node>::end_node(node_type end) {
+#ifdef LIBSEMIGROUPS_DEBUG
+    if (_graph != nullptr) {
+      LIBSEMIGROUPS_ASSERT(end <= _graph->number_of_nodes());
+    }
+#endif
+    _end = end;
+    return *this;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // Accessors
+  //////////////////////////////////////////////////////////////////////////
 
   template <typename Node>
   [[nodiscard]] typename WordGraphView<Node>::size_type
@@ -91,6 +130,10 @@ namespace libsemigroups {
     return next_label_and_target_no_checks(s, a);
   }
 
+  //////////////////////////////////////////////////////////////////////////
+  // Operators
+  //////////////////////////////////////////////////////////////////////////
+
   template <typename Node>
   bool WordGraphView<Node>::operator==(WordGraphView const& that) const {
     {
@@ -118,6 +161,10 @@ namespace libsemigroups {
       return true;
     }
   }
+
+  //////////////////////////////////////////////////////////////////////////
+  // Validation
+  //////////////////////////////////////////////////////////////////////////
 
   template <typename Node>
   template <typename Node2>

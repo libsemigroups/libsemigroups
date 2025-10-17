@@ -25,9 +25,11 @@
 #include <type_traits>  // for is_integral
 #include <utility>      // for pair
 
-#include "detail/containers.hpp"
+#include "config.hpp"      // for LIBSEMIGROUPS_DEBUG
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
 #include "word-graph.hpp"  // for word_graph pointer
 
+#include "detail/containers.hpp"
 #include "detail/int-range.hpp"  // for IntRange
 
 namespace libsemigroups {
@@ -109,7 +111,10 @@ namespace libsemigroups {
     //! \param start the first node in the range.
     //! \param end one beyond the last node in the range.
     WordGraphView(WordGraph<Node> const& graph, size_type start, size_type end)
-        : _graph(&graph), _start(start), _end(end) {}
+        : _graph(&graph), _start(start), _end(end) {
+      LIBSEMIGROUPS_ASSERT(start <= end);
+      LIBSEMIGROUPS_ASSERT(end <= graph.number_of_nodes());
+    }
 
     //! \brief Re-initialize the view to be a view over \p graph over the range
     //! \p start to \p end.
@@ -128,12 +133,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     WordGraphView& init(WordGraph<Node> const& graph,
                         size_type              start,
-                        size_type              end) {
-      _graph = &graph;
-      _start = start;
-      _end   = end;
-      return *this;
-    }
+                        size_type              end);
 
     //! \brief Construct from a WordGraph.
     //!
@@ -181,7 +181,7 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Default constructs an uninitialised WordGraphView.
-    WordGraphView() : _graph(nullptr), _start(), _end() {}
+    WordGraphView() : _graph(nullptr), _start(0), _end(0) {}
 
     //! \brief Re-initialize the view as if it had been default constructed.
     //!
@@ -227,11 +227,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    WordGraphView& reshape(node_type start, node_type end) {
-      _start = start;
-      _end   = end;
-      return *this;
-    }
+    WordGraphView& reshape(node_type start, node_type end);
 
     //! \brief Set the index in the underlying graph of the first node in the
     //! view.
@@ -245,7 +241,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    WordGraphView& start_node(node_type start) noexcept {
+    WordGraphView& start_node(node_type start) {
+      LIBSEMIGROUPS_ASSERT(start <= _end);
       _start = start;
       return *this;
     }
@@ -262,10 +259,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    WordGraphView& end_node(node_type end) noexcept {
-      _end = end;
-      return *this;
-    }
+    WordGraphView& end_node(node_type end);
 
     //////////////////////////////////////////////////////////////////////////
     // Accessors
@@ -281,7 +275,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    [[nodiscard]] size_type number_of_nodes() const noexcept;
+    [[nodiscard]] size_type number_of_nodes() const noexcept {
+      return _end - _start;
+    }
 
     //! \brief The number of edges in the underlying graph.
     //!

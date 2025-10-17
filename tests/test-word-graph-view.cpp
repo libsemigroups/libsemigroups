@@ -370,8 +370,6 @@ namespace libsemigroups {
     REQUIRE(v.number_of_nodes() == 3);
     v.reshape(3, 3);
     REQUIRE(v.number_of_nodes() == 0);
-    v.reshape(3, 2);
-    REQUIRE(v.number_of_nodes() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "020", "accessors", "[quick]") {
@@ -387,17 +385,18 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView", "021", "modifiers", "[quick]") {
     WordGraph<size_t>     g(10, 5);
     WordGraphView<size_t> v(g);
-    // Note that there are no checks done when setting the start and end nodes
 
     v.reshape(2, 5);
     REQUIRE(v.start_node() == 2);
     REQUIRE(v.end_node() == 5);
 
-    v.start_node(20);
-    REQUIRE(v.start_node() == 20);
+    v.start_node(4);
+    REQUIRE(v.start_node() == 4);
+    REQUIRE(v.end_node() == 5);
 
-    v.end_node(1);
-    REQUIRE(v.end_node() == 1);
+    v.end_node(4);
+    REQUIRE(v.start_node() == 4);
+    REQUIRE(v.end_node() == 4);
   }
 
 }  // namespace libsemigroups
