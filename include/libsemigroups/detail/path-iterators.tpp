@@ -98,6 +98,15 @@ namespace libsemigroups {
     }
 
     template <typename Node>
+    Node const_pilo_iterator<Node>::target() const noexcept {
+      if (!_nodes.empty()) {
+        return _nodes.back();
+      } else {
+        return UNDEFINED;
+      }
+    }
+
+    template <typename Node>
     void const_pilo_iterator<Node>::swap(const_pilo_iterator& that) noexcept {
       std::swap(_edges, that._edges);
       std::swap(_word_graph, that._word_graph);
