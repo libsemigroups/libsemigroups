@@ -120,14 +120,6 @@ namespace libsemigroups {
       size_t const offset
           = (internal_presentation().contains_empty_word() ? 0 : 1);
 
-      if (!is_standardized()) {
-        // We must standardize here o/w there's no bijection between the numbers
-        // 0, ..., n - 1 on to the nodes of the word graph.
-        // Or worse, there's no guarantee that _forest is populated or is a
-        // spanning tree of the current word graph
-        // TODO(1) bit fishy here too
-        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
-      }
       if (i >= current_word_graph().number_of_nodes_active() - offset) {
         // We must standardize before doing this so that the index even makes
         // sense.
@@ -136,6 +128,14 @@ namespace libsemigroups {
                                 current_word_graph().number_of_nodes_active()
                                     - offset,
                                 i);
+      }
+      if (!is_standardized()) {
+        // We must standardize here o/w there's no bijection between the numbers
+        // 0, ..., n - 1 on to the nodes of the word graph.
+        // Or worse, there's no guarantee that _forest is populated or is a
+        // spanning tree of the current word graph
+        // TODO(1) bit fishy here too
+        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
       return current_word_of_no_checks(d_first, i);
     }
