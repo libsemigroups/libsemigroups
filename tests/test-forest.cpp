@@ -303,4 +303,96 @@ namespace libsemigroups {
         f.throw_if_not_acyclic(),
         "the Forest object contains the loop [0] and is invalid");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Forest", "011", "dot", "[quick]") {
+    Forest f = make<Forest>(
+        {UNDEFINED, 4, 0, 0, UNDEFINED, 3, 8, 1, 1, 12, 12, 8, 3},
+        {UNDEFINED, 0, 0, 1, UNDEFINED, 0, 1, 1, 0, 0, 1, 0, 1});
+
+    REQUIRE(forest::dot(f).to_string() == R"vogon(digraph Forest {
+  rankdir="BT"
+  0  [label="0: ε", shape="box"]
+  1  [label="1: 0", shape="box"]
+  10  [label="10: 111", shape="box"]
+  11  [label="11: 000", shape="box"]
+  12  [label="12: 11", shape="box"]
+  2  [label="2: 0", shape="box"]
+  3  [label="3: 1", shape="box"]
+  4  [label="4: ε", shape="box"]
+  5  [label="5: 01", shape="box"]
+  6  [label="6: 100", shape="box"]
+  7  [label="7: 10", shape="box"]
+  8  [label="8: 00", shape="box"]
+  9  [label="9: 011", shape="box"]
+  1 -> 4  [color="#00ff00"]
+  2 -> 0  [color="#00ff00"]
+  3 -> 0  [color="#ff00ff"]
+  5 -> 3  [color="#00ff00"]
+  6 -> 8  [color="#ff00ff"]
+  7 -> 1  [color="#ff00ff"]
+  8 -> 1  [color="#00ff00"]
+  9 -> 12  [color="#00ff00"]
+  10 -> 12  [color="#ff00ff"]
+  11 -> 8  [color="#00ff00"]
+  12 -> 3  [color="#ff00ff"]
+})vogon");
+
+    REQUIRE(forest::dot(f, {"a", "b"}).to_string() == R"vogon(digraph Forest {
+  rankdir="BT"
+  0  [label="0: ε", shape="box"]
+  1  [label="1: a", shape="box"]
+  10  [label="10: bbb", shape="box"]
+  11  [label="11: aaa", shape="box"]
+  12  [label="12: bb", shape="box"]
+  2  [label="2: a", shape="box"]
+  3  [label="3: b", shape="box"]
+  4  [label="4: ε", shape="box"]
+  5  [label="5: ab", shape="box"]
+  6  [label="6: baa", shape="box"]
+  7  [label="7: ba", shape="box"]
+  8  [label="8: aa", shape="box"]
+  9  [label="9: abb", shape="box"]
+  1 -> 4  [color="#00ff00"]
+  2 -> 0  [color="#00ff00"]
+  3 -> 0  [color="#ff00ff"]
+  5 -> 3  [color="#00ff00"]
+  6 -> 8  [color="#ff00ff"]
+  7 -> 1  [color="#ff00ff"]
+  8 -> 1  [color="#00ff00"]
+  9 -> 12  [color="#00ff00"]
+  10 -> 12  [color="#ff00ff"]
+  11 -> 8  [color="#00ff00"]
+  12 -> 3  [color="#ff00ff"]
+})vogon");
+
+    REQUIRE_THROWS_AS(forest::dot(f, {"a", "b", "c"}), LibsemigroupsException);
+
+    REQUIRE(forest::dot(f, {}).to_string() == R"vogon(digraph Forest {
+  rankdir="BT"
+  0  [shape="box"]
+  1  [shape="box"]
+  10  [shape="box"]
+  11  [shape="box"]
+  12  [shape="box"]
+  2  [shape="box"]
+  3  [shape="box"]
+  4  [shape="box"]
+  5  [shape="box"]
+  6  [shape="box"]
+  7  [shape="box"]
+  8  [shape="box"]
+  9  [shape="box"]
+  1 -> 4  [color="#00ff00"]
+  2 -> 0  [color="#00ff00"]
+  3 -> 0  [color="#ff00ff"]
+  5 -> 3  [color="#00ff00"]
+  6 -> 8  [color="#ff00ff"]
+  7 -> 1  [color="#ff00ff"]
+  8 -> 1  [color="#00ff00"]
+  9 -> 12  [color="#00ff00"]
+  10 -> 12  [color="#ff00ff"]
+  11 -> 8  [color="#00ff00"]
+  12 -> 3  [color="#ff00ff"]
+})vogon");
+  }
 }  // namespace libsemigroups

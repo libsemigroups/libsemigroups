@@ -28,6 +28,7 @@
 
 #include "constants.hpp"  // for UNDEFINED, operator!=, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"        // for Dot
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for word_type, enable_if_is_same
 
@@ -831,6 +832,33 @@ namespace libsemigroups {
     //!
     //! \sa \ref Forest::throw_if_not_acyclic
     [[nodiscard]] bool is_forest(Forest const& f);
+
+    //! \brief Returns a \ref Dot object representing a Forest.
+    //!
+    //! This function returns a \ref Dot object representing the Forest
+    //! \p f.
+    //!
+    //! \param f the Forest.
+    //!
+    //! \returns A \ref Dot object.
+    [[nodiscard]] Dot dot(Forest const& f);
+
+    //! \brief Returns a \ref Dot object representing a Forest.
+    //!
+    //! This function returns a \ref Dot object representing the Forest
+    //! \p f. If \p labels is not empty, then each node is labelled with the
+    //! path from that node to the root of its tree with each letter replaced by
+    //! the string in the corresponding position of \p labels. If \p labels is
+    //! empty, then the nodes are not labelled by their paths.
+    //!
+    //! \param f the Forest.
+    //! \param labels substitute for each edge label.
+    //!
+    //! \returns A \ref Dot object.
+    //!
+    //! \throws LibsemigroupsException if the size of \p labels is not the same
+    //! as the \ref max_label plus one.
+    Dot dot(Forest const& f, std::vector<std::string> const& labels);
 
   }  // namespace forest
 }  // namespace libsemigroups

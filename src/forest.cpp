@@ -307,5 +307,55 @@ namespace libsemigroups {
       return true;
     }
 
+    Dot dot(Forest const& f) {
+      std::vector<std::string> labels;
+      size_t const             N = forest::max_label(f) + 1;
+      for (size_t i = 0; i < N; ++i) {
+        labels.emplace_back(fmt::format("{}", i));
+      }
+      return dot(f, labels);
+    }
+
+    Dot dot(Forest const& f, std::vector<std::string> const& labels) {
+      static std::string const empty = "\u03B5";
+
+      if (!labels.empty() && labels.size() != forest::max_label(f) + 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument <labels> (a vector of strings) must have "
+            "length {} or 0, but found {}",
+            forest::max_label(f),
+            labels.size());
+      }
+      Dot result;
+      result.add_attr("rankdir", "BT");
+      result.name("Forest").kind(Dot::Kind::digraph);
+
+      for (Forest::node_type n = 0; n < f.number_of_nodes(); ++n) {
+        auto& node = result.add_node(n).add_attr("shape", "box");
+        if (!labels.empty()) {
+          std::string label;
+          if (!forest::is_root(f, n)) {
+            auto first = f.cbegin_path_to_root_no_checks(n),
+                 last  = f.cend_path_to_root_no_checks(n);
+            for (auto it = first; it != last; ++it) {
+              label += labels.at(*it);
+            }
+          } else {
+            label = empty;
+          }
+          node.add_attr("label", fmt::format("{}: {}", n, label));
+        }
+      }
+      for (Forest::node_type n = 0; n < f.number_of_nodes(); ++n) {
+        if (!forest::is_root(f, n)) {
+          result.add_edge(n, f.parent_no_checks(n))
+              .add_attr(
+                  "color",
+                  result.colors[f.label_no_checks(n) % result.colors.size()]);
+        }
+      }
+      return result;
+    }
+
   }  // namespace forest
 }  // namespace libsemigroups
