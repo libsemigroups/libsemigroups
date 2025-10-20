@@ -17,7 +17,7 @@
 //
 
 #include <cstddef>  // for size_t
-#include <utility>  // for std::move
+#include <utility>  // for std::move, std::ignore
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
@@ -34,8 +34,8 @@ namespace libsemigroups {
                           "default constructor and entire graph",
                           "[quick]") {
     WordGraphView<size_t> v;
-    REQUIRE(v.number_of_nodes() == 0);
-    v.reshape(2, 3);
+    REQUIRE_THROWS(v.number_of_nodes() == 0);
+    REQUIRE_THROWS(v.reshape(2, 3));
     REQUIRE_THROWS(v.out_degree());
     REQUIRE_THROWS(v.labels());
     REQUIRE_THROWS(v.target(2, 0));
@@ -383,6 +383,10 @@ namespace libsemigroups {
     v.end_node(4);
     REQUIRE(v.start_node() == 4);
     REQUIRE(v.end_node() == 4);
+
+    REQUIRE_THROWS(v.reshape(5, 2));
+    REQUIRE(v.start_node() == 4);
+    REQUIRE(v.end_node() == 4);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
@@ -402,6 +406,53 @@ namespace libsemigroups {
       REQUIRE(target == expected_targets[i]);
       ++i;
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "023",
+                          "exception messages",
+                          "[quick]") {
+    WordGraphView<size_t> v;
+    REQUIRE_EXCEPTION_MSG(std::ignore = v.out_degree(),
+                          "the underlying WordGraph is not defined");
+
+    WordGraph<size_t> g(10, 5);
+    v.init(g);
+    REQUIRE_EXCEPTION_MSG(
+        v.start_node(11),
+        "invalid start value, expected values in the range [0, 10], got 11");
+
+    REQUIRE_EXCEPTION_MSG(
+        v.end_node(11),
+        "invalid end value, expected values in the range [0, 10], got 11");
+
+    v.start_node(3);
+    v.end_node(7);
+
+    REQUIRE_EXCEPTION_MSG(
+        v.start_node(8),
+        "invalid range, expected start <= end, got start = 8 and end = 7");
+
+    REQUIRE_EXCEPTION_MSG(
+        v.end_node(2),
+        "invalid range, expected start <= end, got start = 3 and end = 2");
+
+    g.target(4, 0, 5);
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = v.target(4, 0),
+        "node value out of bounds, expected value in the range [0, 4), got 4");
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = v.target(0, 6),
+        "label value out of bounds, expected value in the range [0, 5), got 6");
+
+    REQUIRE_NOTHROW(v.throw_if_any_target_out_of_bounds());
+    v.end_node(5);
+    REQUIRE_EXCEPTION_MSG(
+        v.throw_if_any_target_out_of_bounds(),
+        "target out of bounds, the edge with source 1 and label 0 has target "
+        "2, but expected value in the range [0, 2)");
   }
 
 }  // namespace libsemigroups
