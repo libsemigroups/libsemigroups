@@ -159,26 +159,6 @@ namespace libsemigroups {
       return init(graph, 0, graph.number_of_nodes());
     }
 
-    //! \brief Construct from a WordGraph with another node type.
-    //!
-    //! This function can be used to construct a WordGraphView<Node> as a copy
-    //! of a WordGraphView<OtherNode> so long as `sizeof(OtherNode) <=
-    //! sizeof(Node)`.
-    //!
-    //! \tparam OtherNode the type of the nodes of \p that.
-    //!
-    //! \param that the word graph view to copy.
-    //!
-    //! \note Any edge with target \ref UNDEFINED in \p that will have target
-    //! `static_cast<Node>(UNDEFINED)` in the constructed word graph.
-    // TODO(1) Fix and add an init version, or delete. JDE couldn't see how to
-    // do this without modifying that._graph.
-    // template <typename OtherNode>
-    // WordGraphView(WordGraphView<OtherNode> const& that){
-    //   static_assert(sizeof(OtherNode) <= sizeof(Node));
-    //   init(that._graph, that.start(), that.end());
-    // }
-
     //! \brief Default constructor.
     //!
     //! Default constructs an uninitialised WordGraphView.
