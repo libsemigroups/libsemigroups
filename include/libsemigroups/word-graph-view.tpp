@@ -85,7 +85,8 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  WordGraphView<Node>& WordGraphView<Node>::end_node_no_checks(node_type end) {
+  WordGraphView<Node>&
+  WordGraphView<Node>::end_node_no_checks(node_type end) noexcept {
     LIBSEMIGROUPS_ASSERT(_graph != nullptr);
     LIBSEMIGROUPS_ASSERT(end <= _graph->number_of_nodes());
     LIBSEMIGROUPS_ASSERT(end >= _start);

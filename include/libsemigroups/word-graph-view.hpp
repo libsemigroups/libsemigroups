@@ -252,7 +252,7 @@ namespace libsemigroups {
     //! \warning
     //! This function performs no checks whatsoever and assumes that \p start
     //! is less than or equal to \c end_node().
-    WordGraphView& start_node_no_checks(node_type start) {
+    WordGraphView& start_node_no_checks(node_type start) noexcept {
       LIBSEMIGROUPS_ASSERT(start <= _end);
       _start = start;
       return *this;
@@ -290,7 +290,7 @@ namespace libsemigroups {
     //! \warning
     //! This function performs no checks whatsoever and assumes that
     //! `start_node() <= end <= number_of_nodes()`.
-    WordGraphView& end_node_no_checks(node_type end);
+    WordGraphView& end_node_no_checks(node_type end) noexcept;
 
     //! \brief Set the index in the underlying graph of one beyond the last node
     //! in the view.
@@ -413,7 +413,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    [[nodiscard]] size_type out_degree_no_checks() const {
+    [[nodiscard]] size_type out_degree_no_checks() const noexcept {
       return _graph->out_degree();
     }
 
@@ -729,7 +729,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    [[nodiscard]] auto labels_no_checks() const {
+    [[nodiscard]] auto labels_no_checks() const noexcept {
       return _graph->labels();
     }
 
@@ -772,7 +772,7 @@ namespace libsemigroups {
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
     //! \exceptions
-    //! \noexcept
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
