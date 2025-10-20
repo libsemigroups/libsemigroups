@@ -338,7 +338,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     [[nodiscard]] size_type number_of_nodes() const {
       throw_if_invalid_view();
       return number_of_nodes_no_checks();
@@ -367,7 +367,7 @@ namespace libsemigroups {
     //! Linear in `number_of_nodes() * out_degree()`
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     [[nodiscard]] size_type number_of_edges() const {
       throw_if_invalid_view();
       return number_of_edges_no_checks();
@@ -430,7 +430,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     [[nodiscard]] size_type out_degree() const {
       throw_if_graph_is_nullptr();
       return out_degree_no_checks();
@@ -490,7 +490,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     const_iterator_nodes cbegin_nodes() const {
       throw_if_invalid_view();
       return cbegin_nodes_no_checks();
@@ -529,7 +529,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     [[nodiscard]] const_iterator_nodes cend_nodes() const {
       throw_if_invalid_view();
       return cend_nodes_no_checks();
@@ -559,7 +559,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \c this is in an invalid state.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     [[nodiscard]] auto nodes() const {
       throw_if_invalid_view();
       return nodes_no_checks();
@@ -613,7 +613,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] auto cbegin_targets(node_type source) const {
       throw_if_invalid_view();
@@ -667,7 +667,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] auto cend_targets(node_type source) const {
       throw_if_invalid_view();
@@ -712,7 +712,7 @@ namespace libsemigroups {
     //! invalid state.
     //!
     //! \sa
-    //! throw_if_invalid_view
+    //! throw_if_invalid_view.
     [[nodiscard]] auto targets(node_type source) const {
       throw_if_invalid_view();
       throw_if_node_out_of_bounds(source);
