@@ -27,9 +27,10 @@ namespace libsemigroups {
     namespace word_graph {
 
       template <typename Node>
+      // TODO rename to _no_checks and add a checks version?
       [[nodiscard]] bool is_strictly_cyclic(WordGraphView<Node> const& wg) {
         using node_type = typename WordGraphView<Node>::node_type;
-        auto const N    = wg.number_of_nodes();
+        auto const N    = wg.number_of_nodes_no_checks();
 
         if (N == 0) {
           return true;
@@ -63,10 +64,11 @@ namespace libsemigroups {
 
       namespace detail {
         template <typename Node>
+        // TODO rename to _no_checks and add a checks version?
         bool is_shortlex_standardized(WordGraphView<Node> const& wg) {
           Node current_max_node = 0;
 
-          for (auto s : wg.nodes()) {
+          for (auto s : wg.nodes_no_checks()) {
             for (auto t : wg.targets_no_checks(s)) {
               if (t != UNDEFINED) {
                 if (t > current_max_node) {
@@ -299,8 +301,8 @@ namespace libsemigroups {
                         Node&                      next_preorder_num,
                         std::vector<Node>&         postorder,
                         Node&                      next_postorder_num) {
-          size_t const M = wg.out_degree();
-          size_t const N = wg.number_of_nodes();
+          size_t const M = wg.out_degree_no_checks();
+          size_t const N = wg.number_of_nodes_no_checks();
           Node         v;
           while (!stck.empty()) {
             v = stck.top();
@@ -370,7 +372,7 @@ namespace libsemigroups {
                 return false;
               }
             }
-          } while (e < wg.out_degree());
+          } while (e < wg.out_degree_no_checks());
           // => all descendants of m were explored, and no cycles were found
           // => backtrack
           seen[m] = 1;
@@ -406,7 +408,7 @@ namespace libsemigroups {
         void init_adjacency_matrix(
             WordGraphView<Node> const&                             wg,
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& mat) {
-          size_t const N = wg.number_of_nodes();
+          size_t const N = wg.number_of_nodes_no_checks();
           mat.resize(N, N);
           mat.fill(0);
         }
@@ -423,7 +425,7 @@ namespace libsemigroups {
         template <typename Node>
         void init_adjacency_matrix(WordGraphView<Node> const& wg,
                                    IntMat<0, 0, int64_t>&     mat) {
-          size_t const N = wg.number_of_nodes();
+          size_t const N = wg.number_of_nodes_no_checks();
           mat            = IntMat<0, 0, int64_t>(N, N);
           std::fill(mat.begin(), mat.end(), 0);
         }
@@ -569,7 +571,7 @@ namespace libsemigroups {
                                  Iterator1                  first_node,
                                  Iterator2                  last_node) {
         using label_type = typename WordGraph<Node>::label_type;
-        size_t const n   = wg.out_degree();
+        size_t const n   = wg.out_degree_no_checks();
         for (auto it = first_node; it != last_node; ++it) {
           for (label_type a = 0; a < n; ++a) {
             if (wg.target_no_checks(*it, a) == UNDEFINED) {
@@ -590,13 +592,13 @@ namespace libsemigroups {
 
       template <typename Node>
       bool is_connected(WordGraphView<Node> const& wg) {
-        auto const N = wg.number_of_nodes();
+        auto const N = wg.number_of_nodes_no_checks();
         if (N == 0) {
           return true;
         }
 
         ::libsemigroups::detail::Duf<> uf(N);
-        for (auto s : wg.nodes()) {
+        for (auto s : wg.nodes_no_checks()) {
           for (auto t : wg.targets_no_checks(s)) {
             if (t < N) {
               uf.unite(s, t);
@@ -618,11 +620,11 @@ namespace libsemigroups {
         label_type             edge = 0;
         std::stack<Node1>      nodes;
         std::stack<label_type> edges;
-        std::vector<bool>      seen(wg.number_of_nodes(), false);
+        std::vector<bool>      seen(wg.number_of_nodes_no_checks(), false);
         nodes.push(source);
         seen[source] = true;
 
-        size_t const N = wg.number_of_nodes();
+        size_t const N = wg.number_of_nodes_no_checks();
 
         do {
           Node1 node;
@@ -667,14 +669,14 @@ namespace libsemigroups {
         if (word_graph::is_complete(wg)) {
           return false;
         }
-        auto const        N = wg.number_of_nodes();
+        auto const        N = wg.number_of_nodes_no_checks();
         std::stack<Node>  stck;
         std::vector<Node> preorder(N, N);
         Node              next_preorder_num = 0;
         std::vector<Node> postorder(N, N);
         Node              next_postorder_num = 0;
 
-        for (auto m : wg.nodes()) {
+        for (auto m : wg.nodes_no_checks()) {
           if (preorder[m] == N) {
             stck.push(m);
             if (!detail::is_acyclic(wg,
@@ -694,7 +696,7 @@ namespace libsemigroups {
       bool is_acyclic(WordGraphView<Node1> const& wg, Node2 source) {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         wg.throw_if_node_out_of_bounds(static_cast<Node1>(source));
-        auto const        N = wg.number_of_nodes();
+        auto const        N = wg.number_of_nodes_no_checks();
         std::stack<Node1> stck;
         stck.push(source);
         std::vector<Node1> preorder(N, N);
@@ -719,7 +721,7 @@ namespace libsemigroups {
         if (!is_reachable(wg, source, target)) {
           return true;
         }
-        auto const        N = wg.number_of_nodes();
+        auto const        N = wg.number_of_nodes_no_checks();
         std::stack<Node1> stck;
         stck.push(source);
         std::vector<Node1> preorder(N, N);
@@ -728,7 +730,7 @@ namespace libsemigroups {
         Node1              next_postorder_num = 0;
 
         auto ancestors = ancestors_of_no_checks(wg, target);
-        for (auto n : wg.nodes()) {
+        for (auto n : wg.nodes_no_checks()) {
           if (ancestors.count(n) == 0) {
             preorder[n] = N + 1;
           }
@@ -748,11 +750,11 @@ namespace libsemigroups {
           return order;
         }
 
-        size_t const             N = wg.number_of_nodes();
+        size_t const             N = wg.number_of_nodes_no_checks();
         detail::stack_type<Node> stck;
         std::vector<uint8_t>     seen(N, 0);
 
-        for (auto m : wg.nodes()) {
+        for (auto m : wg.nodes_no_checks()) {
           if (seen[m] == 0) {
             stck.emplace(m, 0);
             if (!detail::topological_sort(wg, stck, seen, order)) {
@@ -763,7 +765,7 @@ namespace libsemigroups {
             }
           }
         }
-        LIBSEMIGROUPS_ASSERT(order.size() == wg.number_of_nodes());
+        LIBSEMIGROUPS_ASSERT(order.size() == wg.number_of_nodes_no_checks());
         return order;
       }
 
@@ -775,7 +777,7 @@ namespace libsemigroups {
         if (word_graph::is_complete(wg)) {
           return order;
         }
-        size_t const              N = wg.number_of_nodes();
+        size_t const              N = wg.number_of_nodes_no_checks();
         detail::stack_type<Node1> stck;
         std::vector<uint8_t>      seen(N, 0);
 
@@ -790,7 +792,7 @@ namespace libsemigroups {
         Mat mat;
         detail::init_adjacency_matrix(wg, mat);
 
-        for (auto s : wg.nodes()) {
+        for (auto s : wg.nodes_no_checks()) {
           for (auto t : wg.targets_no_checks(s)) {
             if (t != UNDEFINED) {
               mat(s, t) += 1;
@@ -809,7 +811,7 @@ namespace libsemigroups {
         std::stack<Node1>         stack;
         stack.push(source);
 
-        size_t const N = wg.number_of_nodes();
+        size_t const N = wg.number_of_nodes_no_checks();
 
         while (!stack.empty()) {
           Node1 n = stack.top();
@@ -839,8 +841,8 @@ namespace libsemigroups {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         using label_type = typename WordGraph<Node1>::label_type;
 
-        size_t const N = wg.number_of_nodes();
-        size_t const M = wg.out_degree();
+        size_t const N = wg.number_of_nodes_no_checks();
+        size_t const M = wg.out_degree_no_checks();
 
         // Reverse the WordGraph and then just find the nodes reachable from
         // target in the reversed graph. Since the reverse of a WordGraph is no
@@ -899,11 +901,11 @@ namespace libsemigroups {
             return from;
           }
         }
-        size_t const N = wg.number_of_nodes();
+        size_t const N = wg.number_of_nodes_no_checks();
 
         for (auto it = first; it != last && static_cast<size_t>(from) < N;
              ++it) {
-          from = wg.target(from, *it);
+          from = wg.target_no_checks(from, *it);
         }
         if (static_cast<size_t>(from) >= N) {
           return UNDEFINED;
@@ -924,7 +926,7 @@ namespace libsemigroups {
             return from;
           }
         }
-        size_t const N = wg.number_of_nodes();
+        size_t const N = wg.number_of_nodes_no_checks();
         for (auto it = first; it != last && static_cast<size_t>(from) < N;
              ++it) {
           from = wg.target_no_checks(from, *it);
@@ -968,7 +970,7 @@ namespace libsemigroups {
         auto         it   = first;
         Node1        prev = from;
         Node1        to   = from;
-        size_t const n    = wg.out_degree();
+        size_t const n    = wg.out_degree_no_checks();
         for (; it < last && to != UNDEFINED; ++it) {
           prev = to;
           if (*it >= n) {
@@ -1007,10 +1009,10 @@ namespace libsemigroups {
       Dot dot(WordGraphView<Node> const& wg) {
         Dot result;
         result.name("WordGraph").kind(Dot::Kind::digraph);
-        for (auto n : wg.nodes()) {
+        for (auto n : wg.nodes_no_checks()) {
           result.add_node(n).add_attr("shape", "box");
         }
-        for (auto n : wg.nodes()) {
+        for (auto n : wg.nodes_no_checks()) {
           for (auto [a, m] : wg.labels_and_targets_no_checks(n)) {
             if (m != UNDEFINED) {
               result.add_edge(n, m).add_attr("color", result.colors[a]);
@@ -1438,7 +1440,7 @@ namespace libsemigroups {
         static_assert(sizeof(Node2) <= sizeof(Node1));
         using node_type = typename WordGraphView<Node1>::node_type;
         f.init(1);
-        size_t const N = wg.number_of_nodes();
+        size_t const N = wg.number_of_nodes_no_checks();
 
         std::queue<node_type> queue;
         queue.push(static_cast<node_type>(root));

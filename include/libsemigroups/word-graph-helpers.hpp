@@ -1443,8 +1443,16 @@ namespace libsemigroups {
       //! \complexity
       //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
       template <typename Node>
-      [[nodiscard]] bool is_complete(WordGraphView<Node> const& wg) noexcept {
-        return wg.number_of_edges() == wg.number_of_nodes() * wg.out_degree();
+      [[nodiscard]] bool
+      is_complete_no_checks(WordGraphView<Node> const& wg) noexcept {
+        return wg.number_of_edges_no_checks()
+               == wg.number_of_nodes_no_checks() * wg.out_degree_no_checks();
+      }
+
+      template <typename Node>
+      [[nodiscard]] bool is_complete(WordGraphView<Node> const& wg) {
+        wg.throw_if_invalid_view();
+        return is_complete_no_checks(wg);
       }
 
       //! \brief Check if every node has exactly WordGraph::out_degree
