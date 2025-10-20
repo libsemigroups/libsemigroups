@@ -1156,26 +1156,6 @@ namespace libsemigroups {
       throw_if_endpoints_wrong_order(start, end);
     }
   };
-
-  namespace word_graph {
-
-    //! \brief Creates a word graph from a corresponding view, copying only the
-    //! nodes contained within the view.
-    //!
-    //! This function creates a word graph from a corresponding view, copying
-    //! only the nodes contained within the view.
-    //!
-    //! \tparam Node the type of node in the WordGraph.
-    //!
-    //! \param view the WordGraphView to construct the graph from.
-    //!
-    //! \returns The corresponding WordGraph<Node>.
-    //!
-    //! \throws LibsemigroupsException if the underlying graph has edges which
-    //! crossed the boundaries of the view.
-    template <typename Node>
-    WordGraph<Node> graph_from_view(WordGraphView<Node> const& view);
-  }  // namespace word_graph
 }  // namespace libsemigroups
 #include "word-graph-view.tpp"
 

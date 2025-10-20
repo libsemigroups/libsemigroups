@@ -23,8 +23,9 @@
 
 #include <type_traits>  // for is_same_v, enable_if_t
 
-#include "forest.hpp"      // for Forest
-#include "word-graph.hpp"  // for WordGraph
+#include "forest.hpp"           // for Forest
+#include "word-graph-view.hpp"  // for WordGraphView
+#include "word-graph.hpp"       // for WordGraph
 
 namespace libsemigroups {
   //! \defgroup to_word_graph_group to<WordGraph>
@@ -68,6 +69,40 @@ namespace libsemigroups {
   auto to(Forest const& f)
       -> std::enable_if_t<std::is_same_v<Result<int>, WordGraph<int>>,
                           WordGraph<Forest::node_type>>;
+
+  //! \ingroup to_word_graph_group
+  //!
+  //! \brief Convert a WordGraphView to a WordGraph.
+  //!
+  //! Defined in \c to-word-graph.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<WordGraph>(view);
+  //! \endcode
+  //!
+  //! where \p view is a WordGraphView object. The returned WordGraph only
+  //! contains those nodes and edges that are covered by \p view.
+  //!
+  //! \tparam Result used for SFINAE. Should be WordGraph.
+  //!
+  //! \param view the WordGraphView instance to convert.
+  //!
+  //! \returns A WordGraph instance isomorphic to the WordGraph covered by the
+  //! view.
+  //!
+  //! \throws LibsemigroupsException if view is in an invalid state, or if the
+  //! underlying graph has edges which crossed the boundaries of the view.
+  //!
+  //! \sa
+  //! WordGraphView::throw_if_invalid_view and
+  //! WordGraphView::throw_if_any_target_out_of_bounds.
+  template <template <typename...> typename Result, typename Node>
+  auto to(WordGraphView<Node> const& view)
+      -> std::enable_if_t<std::is_same_v<Result<Node>, WordGraph<Node>>,
+                          WordGraph<Node>>;
+  ;
 }  // namespace libsemigroups
 
 #include "to-word-graph.tpp"

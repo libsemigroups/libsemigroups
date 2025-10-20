@@ -271,24 +271,4 @@ namespace libsemigroups {
     }
   }
 
-  namespace word_graph {
-
-    template <typename Node>
-    WordGraph<Node> graph_from_view(WordGraphView<Node> const& view) {
-      WordGraph<Node> result = WordGraph<Node>(view.number_of_nodes_no_checks(),
-                                               view.out_degree_no_checks());
-      for (auto source : rx::iterator_range(view.nodes_no_checks())) {
-        for (auto [label, target] : view.labels_and_targets_no_checks(source)) {
-          if (target == UNDEFINED) {
-            continue;
-          }
-          result.target_no_checks(source, label, target);
-        }
-      }
-      // LCOV identifies the blank line after this as not being covered for some
-      // reason
-      return result;
-    }
-
-  }  // namespace word_graph
 }  // namespace libsemigroups

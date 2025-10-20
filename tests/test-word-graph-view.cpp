@@ -22,6 +22,7 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/to-word-graph.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"
 #include "libsemigroups/word-graph-view.hpp"
 #include "libsemigroups/word-graph.hpp"
@@ -247,10 +248,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(v.next_label_and_target(0, 6), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "014",
-                          "graph_from_view",
-                          "[quick]") {
+  // TODO(0) Move this into test-to-word-graph.cpp
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "014", "to<WordGraph>", "[quick]") {
     WordGraph<size_t> g(10, 5);
     g.target(2, 1, 5);
     g.target(2, 2, 6);
@@ -260,7 +259,7 @@ namespace libsemigroups {
     g1.target(0, 1, 3);
     g1.target(0, 2, 4);
     g1.target(0, 3, 2);
-    WordGraph<size_t>     from_view = word_graph::graph_from_view(v);
+    WordGraph<size_t>     from_view = to<WordGraph>(v);
     WordGraphView<size_t> from_graph
         = WordGraphView<size_t>(from_view, 0, from_view.number_of_nodes());
     REQUIRE(from_graph == v);
