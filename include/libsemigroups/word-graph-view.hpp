@@ -122,7 +122,7 @@ namespace libsemigroups {
     //!
     //! This function puts a view into the state that it would have been
     //! in if it had just been newly constructed with the same parameters
-    //! \p graph, \p \start and \p end.
+    //! \p graph, \p start and \p end.
     //!
     //! \param graph underlying WordGraph object.
     //! \param start the first node in the range.
@@ -228,8 +228,28 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and assumes that \p start
+    //! is less than or equal to \p end, and that both values are in the range
+    //! `[0, number_of_nodes()]`
     WordGraphView& reshape_no_checks(node_type start, node_type end);
 
+    //! \brief Reshape this view over the same graph.
+    //!
+    //! This function is used to reshape \c this to be a view over the range
+    //! from \p start to \p end.
+    //!
+    //! \param start the first node in the range.
+    //! \param end one beyond the last node in the range.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if:
+    //! - the underlying \ref WordGraph is not defined;
+    //! - `start > number_of_nodes()`;
+    //! - `end > number_of_nodes()`; or
+    //! - `start > end`.
     WordGraphView& reshape(node_type start, node_type end) {
       throw_if_graph_is_nullptr();
       throw_if_invalid_range(start, end);
@@ -248,12 +268,30 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and assumes that \p start
+    //! is less than or equal to \c end_node().
     WordGraphView& start_node_no_checks(node_type start) {
       LIBSEMIGROUPS_ASSERT(start <= _end);
       _start = start;
       return *this;
     }
 
+    //! \brief Set the index in the underlying graph of the first node in the
+    //! view.
+    //!
+    //! \param start the new index of the first node in the view.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if:
+    //! - the underlying \ref WordGraph is not defined;
+    //! - `start > number_of_nodes()`; or
+    //! - `start > end_node()`.
+    //!
+    //! \complexity
+    //! Constant.
     WordGraphView& start_node(node_type start);
 
     //! \brief Set the index in the underlying graph of one beyond the last node
@@ -268,8 +306,26 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and assumes that
+    //! `start_node() <= end <= number_of_nodes()`.
     WordGraphView& end_node_no_checks(node_type end);
 
+    //! \brief Set the index in the underlying graph of one beyond the last node
+    //! in the view.
+    //!
+    //! \param end the new index of one beyond the last node in the view.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if:
+    //! - the underlying \ref WordGraph is not defined;
+    //! - `end > number_of_nodes()`; or
+    //! - `end < start_node()`.
+    //!
+    //! \complexity
+    //! Constant.
     WordGraphView& end_node(node_type end);
 
     //////////////////////////////////////////////////////////////////////////
@@ -291,6 +347,18 @@ namespace libsemigroups {
       return _end - _start;
     }
 
+    //! \brief The number of nodes that this view ranges over.
+    //!
+    //! \returns
+    //! The number of nodes in in the view.
+    //!
+    //! \throws LibsemigroupsException if \c this is in an invalid state.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     [[nodiscard]] size_type number_of_nodes() const {
       throw_if_invalid_view();
       return number_of_nodes_no_checks();
@@ -305,11 +373,21 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \complexity
-    //! The same as \ref WordGraph::number_of_edges
-    //!
-    //! \sa WordGraph::number_of_edges
+    //! Linear in `number_of_nodes() * out_degree()`
     [[nodiscard]] size_type number_of_edges_no_checks() const noexcept;
 
+    //! \brief The number of edges in the underlying graph.
+    //!
+    //! \returns
+    //! The number of edges in in the underlying graph.
+    //!
+    //! \throws LibsemigroupsException if \c this is in an invalid state.
+    //!
+    //! \complexity
+    //! Linear in `number_of_nodes() * out_degree()`
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     [[nodiscard]] size_type number_of_edges() const {
       throw_if_invalid_view();
       return number_of_edges_no_checks();
@@ -350,8 +428,8 @@ namespace libsemigroups {
     //!
     //! \returns The number of edge labels, type \c size_type.
     //!
-    //! \throws LibsemigroupsException if the underlying WordGraph is not
-    //! defined.
+    //! \exception
+    //! \noexcept
     //!
     //! \complexity
     //! Constant.
@@ -359,6 +437,20 @@ namespace libsemigroups {
       return _graph->out_degree();
     }
 
+    //! \brief Returns the out degree.
+    //!
+    //! This function returns the number of edge labels in the word graph.
+    //!
+    //! \returns The number of edge labels, type \c size_type.
+    //!
+    //! \throws LibsemigroupsException if the underlying WordGraph is not
+    //! defined.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     [[nodiscard]] size_type out_degree() const {
       throw_if_graph_is_nullptr();
       return out_degree_no_checks();
@@ -403,6 +495,22 @@ namespace libsemigroups {
           .cbegin();
     }
 
+    //! \brief Returns a random access iterator pointing at the first node of
+    //! the word graph.
+    //!
+    //! This function returns a random access iterator pointing at the first
+    //! in the range of this word graph view.
+    //!
+    //! \returns
+    //! An \ref const_iterator_nodes.
+    //!
+    //! \throws LibsemigroupsException if \c this is in an invalid state.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     const_iterator_nodes cbegin_nodes() const {
       throw_if_invalid_view();
       return cbegin_nodes_no_checks();
@@ -426,6 +534,22 @@ namespace libsemigroups {
       return detail::IntRange<node_type>(0, number_of_nodes_no_checks()).cend();
     }
 
+    //! \brief Returns a random access iterator pointing one past the last node
+    //! of the range of this word graph view.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! last node in the word graph.
+    //!
+    //! \returns
+    //! An \ref const_iterator_nodes.
+    //!
+    //! \throws LibsemigroupsException if \c this is in an invalid state.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     [[nodiscard]] const_iterator_nodes cend_nodes() const {
       throw_if_invalid_view();
       return cend_nodes_no_checks();
@@ -445,6 +569,17 @@ namespace libsemigroups {
                                 cend_nodes_no_checks());
     }
 
+    //! \brief Returns a range object containing all nodes in a word graph.
+    //!
+    //! This function returns a range object containing all the nodes in a
+    //! word graph view
+    //!
+    //! \returns A range object.
+    //!
+    //! \throws LibsemigroupsException if \c this is in an invalid state.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     [[nodiscard]] auto nodes() const {
       throw_if_invalid_view();
       return nodes_no_checks();
@@ -491,10 +626,14 @@ namespace libsemigroups {
     //! A \ref const_iterator_targets.
     //!
     //! \throws LibsemigroupsException if \p source is out of range (i.e.
-    //! greater than or equal to \ref number_of_nodes).
+    //! greater than or equal to \ref number_of_nodes), or if if \c this is in
+    //! an invalid state.
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] auto cbegin_targets(node_type source) const {
       throw_if_invalid_view();
@@ -541,10 +680,14 @@ namespace libsemigroups {
     //! A \ref const_iterator_targets.
     //!
     //! \throws LibsemigroupsException if \p source is out of range (i.e.
-    //! greater than or equal to \ref number_of_nodes).
+    //! greater than or equal to \ref number_of_nodes), of if \c this is in an
+    //! invalid state.
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] auto cend_targets(node_type source) const {
       throw_if_invalid_view();
@@ -585,8 +728,11 @@ namespace libsemigroups {
     //! \returns A range object.
     //!
     //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
-    //! greater than or equal to \ref number_of_nodes), or if the underlying
-    //! WordGraph is not defined.
+    //! greater than or equal to \ref number_of_nodes), or if \c this is in an
+    //! invalid state.
+    //!
+    //! \sa
+    //! throw_if_invalid_view
     [[nodiscard]] auto targets(node_type source) const {
       throw_if_invalid_view();
       throw_if_node_out_of_bounds(source);
@@ -601,12 +747,22 @@ namespace libsemigroups {
     //!
     //! \returns A range object.
     //!
-    //! \throws LibsemigroupsException if the underlying WordGraph is not
-    //! defined
+    //! \exception
+    //! \noexcept
     [[nodiscard]] auto labels_no_checks() const {
       return _graph->labels();
     }
 
+    //! \brief Returns a range object containing all labels of edges in a word
+    //! graph.
+    //!
+    //! This function returns a range object containing all the labels of edges
+    //! in a word graph.
+    //!
+    //! \returns A range object.
+    //!
+    //! \throws LibsemigroupsException if the underlying WordGraph is not
+    //! defined.
     [[nodiscard]] auto labels() const {
       throw_if_graph_is_nullptr();
       return labels_no_checks();
@@ -672,6 +828,7 @@ namespace libsemigroups {
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
     //! \throws LibsemigroupsException if:
+    //! - \c this is in an invalid state;
     //! - \p s does not represent a node in \c this;
     //! - \p a is not a valid edge label;
     //! - at least one of the targets of an edge in \c this does not represent a
@@ -681,7 +838,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
     //!
-    //! \sa next_label_and_target_no_checks.
+    //! \sa next_label_and_target_no_checks, throw_if_invalid_view.
     // Not noexcept because next_label_and_target_no_checks is not
     [[nodiscard]] std::pair<label_type, node_type>
     next_label_and_target(node_type s, label_type a) const;
@@ -718,7 +875,11 @@ namespace libsemigroups {
     //!
     //! \returns A range object.
     //!
-    //! \throws LibsemigroupsException if \p source is out of bounds.
+    //! \throws LibsemigroupsException if \p source is out of bounds, or if
+    //! \c this is in an invalid state.
+    //!
+    //! \sa
+    //! throw_if_invalid_view.
     [[nodiscard]] auto labels_and_targets(node_type source) const {
       throw_if_invalid_view();
       throw_if_node_out_of_bounds(source);
@@ -737,8 +898,8 @@ namespace libsemigroups {
     //! Returns the node adjacent to \p source via the edge labelled \p a, or
     //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
-    //! \throws LibsemigroupsException if \p source or \p a is not
-    //! valid.
+    //! \exception
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Constant.
@@ -761,10 +922,13 @@ namespace libsemigroups {
     //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
     //! \throws LibsemigroupsException if \p source or \p a is not
-    //! valid, or if the underlying WordGraph is not defined.
+    //! valid, or if \c this is in an invalid state.
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \sa
+    //! throw_if_invalid_view.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const;
 
@@ -772,6 +936,15 @@ namespace libsemigroups {
     // Operators
     //////////////////////////////////////////////////////////////////////////
 
+    //! \brief Compares two word graph views to see if they are equal.
+    //!
+    //! This function compares two views over two (not necessarily the same)
+    //! word graph objects to see if the views are equal.
+    //!
+    //! \param that the WordGraphView to compare with.
+    //!
+    //! \returns True if this and that have the same number of nodes, out
+    //! degree, and range over nodes with identical values and targets.
     [[nodiscard]] bool equal_to_no_checks(WordGraphView const& that) const;
 
     //! \brief Compares two word graph views to see if they are equal.
@@ -783,8 +956,22 @@ namespace libsemigroups {
     //!
     //! \returns True if this and that have the same number of nodes, out
     //! degree, and range over nodes with identical values and targets.
+    //!
+    //! \throws LibsemigroupsException if either \c this or \p that are in
+    //! invalid states.
+    //!
+    //! \sa
+    //! throw_if_invalid_view.
     [[nodiscard]] bool operator==(WordGraphView const& that) const;
 
+    //! \brief Compares two word graph views to see if they are not equal.
+    //!
+    //! This operator compares two views over two (not necessarily the same)
+    //! word graph objects to see if the views are not equal.
+    //!
+    //! \param that the WordGraphView to compare with.
+    //!
+    //! \returns True if this and that are not equal by \c ==.
     [[nodiscard]] bool not_equal_to_no_checks(WordGraphView const& that) const {
       return !equal_to_no_checks(that);
     }
@@ -797,6 +984,12 @@ namespace libsemigroups {
     //! \param that the WordGraphView to compare with.
     //!
     //! \returns True if this and that are not equal by \c ==.
+    //!
+    //! \throws LibsemigroupsException if either \c this or \p that are in
+    //! invalid states.
+    //!
+    //! \sa
+    //! throw_if_invalid_view.
     [[nodiscard]] bool operator!=(WordGraphView const& that) const {
       return !operator==(that);
     }
@@ -937,11 +1130,29 @@ namespace libsemigroups {
       }
     }
 
+    //! \brief Throws if the range specifed by `[start_node(), end_node()]` is
+    //! invalid.
+    //!
+    //! This function throws if:
+    //! - `start_node() > number_of_nodes()`;
+    //! - `end_node() > number_of_nodes()`; or
+    //! - `start_node() > end_node()`.
+    //!
+    //! \throws LibsemigroupsException if any the range is invalid.
     void throw_if_invalid_range() const {
       throw_if_invalid_range(_start, _end);
     }
 
-    // Define valid
+    //! \brief Throws if the \c this is in an invalid state.
+    //!
+    //! This function throws if:
+    //! - the underling WordGraph is not defined; or
+    //! - the range `[start_node(), end_node()]` is invalid.
+    //!
+    //! \throws LibsemigroupsException if any \c this is invalid.
+    //!
+    //! \sa
+    //! throw_if_invalid_range.
     void throw_if_invalid_view() const {
       throw_if_graph_is_nullptr();
       throw_if_invalid_range();
