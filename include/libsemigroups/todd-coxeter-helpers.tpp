@@ -121,15 +121,29 @@ namespace libsemigroups {
   namespace congruence_common {
     template <typename Word>
     auto normal_forms(ToddCoxeter<Word>& tc) {
-      // TODO(1) avoid allocations here.
-      // To do this we'll have to make a custom range object that stores a
-      // word_type _word that gets updated by calls to
-      // tc.word_of_no_checks(std::back_inserter(_word), i);
+      using rx::operator|;
 
-      return rx::seq() | rx::take(tc.number_of_classes())
-             | rx::transform([&tc](auto i) {
-                 return todd_coxeter::word_of_no_checks(tc, i);
-               });
+      tc.run();
+      if (!tc.is_standardized()) {
+        tc.standardize(Order::shortlex);
+      }
+      if constexpr (std::is_same_v<Word, word_type>) {
+        auto result = forest::PathsFromRoots(tc.current_spanning_tree());
+        if (!tc.presentation().contains_empty_word()) {
+          result = result | rx::skip_n(1);
+        }
+        return result;
+      } else {
+        // This is not as generic as before because we assume either word_type
+        // or std::string.
+        static_assert(std::is_same_v<Word, std::string>);
+        auto result = forest::PathsFromRoots(tc.current_spanning_tree())
+                      | ToString(tc.presentation().alphabet());
+        if (!tc.presentation().contains_empty_word()) {
+          result = result | rx::skip_n(1);
+        }
+        return result;
+      }
     }
 
     template <typename Word, typename Range, typename>
