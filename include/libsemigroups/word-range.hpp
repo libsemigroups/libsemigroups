@@ -1460,6 +1460,10 @@ namespace libsemigroups {
     [[nodiscard]] constexpr size_t size_hint() const noexcept {
       return _input.size_hint();
     }
+
+    [[nodiscard]] constexpr size_t count() const noexcept {
+      return _input.count();
+    }
   };
 
   // NOTE: This is a terrible hack to avoid compiler warnings. Maybe remove in
