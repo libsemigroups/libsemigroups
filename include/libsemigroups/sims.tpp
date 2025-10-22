@@ -190,9 +190,11 @@ namespace libsemigroups {
       size_t N    = wg.number_of_active_nodes();
       // TODO(1) avoid allocating wx + wy every time in these loops
       for (Node x = 0; x < N - 1; ++x) {
+        // TODO replace with PathsToRoots object
         auto wx = forest::path_to_root_no_checks(tree, x);
         std::reverse(wx.begin(), wx.end());
         for (Node y = x + 1; y < N; ++y) {
+          // TODO replace with PathsToRoots object
           auto wy = forest::path_to_root_no_checks(tree, y);
           std::reverse(wy.begin(), wy.end());
           auto copy = wg;
