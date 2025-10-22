@@ -48,6 +48,8 @@
 
 namespace libsemigroups {
 
+  using rx::operator|;
+
   using todd_coxeter::class_by_index;
   using todd_coxeter::class_of;
   using todd_coxeter::contains;
@@ -266,9 +268,6 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(2) this seems a bit slow, it could be faster if we didn't repeatedly
-    // re-traverse the forest, and we didn't repeatedly copy the word returned
-    // by "index_of_to_word"
     template <typename Word>
     void check_normal_forms(ToddCoxeter<Word>& tc, size_t i) {
       tc.standardize(Order::shortlex);
@@ -333,6 +332,8 @@ namespace libsemigroups {
     REQUIRE((c | rx::take(3)
              | all_of([&tc](auto const& w) { return index_of(tc, w) == 1; })));
     check_normal_forms(tc, tc.number_of_classes());
+
+    REQUIRE(normal_forms(tc).count() == tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -385,6 +386,9 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, word_of(tc, 4)) == 4);
     REQUIRE(index_of(tc, 01_w) == 3);
     REQUIRE(LexicographicalCompare()(001_w, 01_w));
+
+    // REQUIRE((normal_forms(tc) | rx::to_vector()) ==
+    // std::vector<word_type>());
 
     REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare{}));
 
@@ -3417,6 +3421,7 @@ namespace libsemigroups {
     section_Rc_style(H);
 
     REQUIRE(H.number_of_classes() == 480);
+    REQUIRE(normal_forms(H).count() == H.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -4152,7 +4157,7 @@ namespace libsemigroups {
 
       if (n <= 6) {
         std::vector<uint64_t> length = {};
-        for (auto&& nf : normal_forms(tc)) {
+        for (auto const& nf : normal_forms(tc)) {
           while (nf.size() >= length.size()) {
             length.push_back(0);
           }
