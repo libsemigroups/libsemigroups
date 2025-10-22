@@ -528,6 +528,9 @@ namespace libsemigroups {
     REQUIRE(move.count() == 25);
     REQUIRE(move.alphabet_size() == 2);
 
+    auto thing = move | rx::skip_n(10);
+    REQUIRE(thing.count() == move.count() - 10);
+
     WordRange more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
