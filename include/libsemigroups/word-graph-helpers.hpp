@@ -2630,7 +2630,7 @@ namespace libsemigroups {
       //! Order::shortlex, Order::lex or Order::recursive.
       //!
       //! \sa
-      //! \ref standardize.
+      //! standardize.
       template <typename Node>
       bool is_standardized(WordGraphView<Node> const& wg,
                            Order                      val = Order::shortlex);
@@ -2650,7 +2650,7 @@ namespace libsemigroups {
       //! Order::shortlex, Order::lex or Order::recursive.
       //!
       //! \sa
-      //! \ref standardize.
+      //! standardize.
       template <typename Node>
       bool is_standardized(WordGraph<Node> const& wg,
                            Order                  val = Order::shortlex) {
