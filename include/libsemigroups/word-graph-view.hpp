@@ -1038,7 +1038,7 @@ namespace libsemigroups {
       throw_if_label_out_of_bounds(word.cbegin(), word.cend());
     }
 
-    //! \brief Throws if range constains labels that are out of bounds.
+    //! \brief Throws if range contains labels that are out of bounds.
     //!
     //! This function throws if any of the letters in the word defined by
     //! \p first and \p last is out of bounds, i.e. if they are greater than or
@@ -1110,7 +1110,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Throws if the range specifed by `[start_node(), end_node()]` is
+    //! \brief Throws if the range specified by `[start_node(), end_node()]` is
     //! invalid.
     //!
     //! This function throws if:
