@@ -49,16 +49,17 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_f...
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
-#include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/constants.hpp"           // for operator==, operator!=
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix, normal_f...
+#include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
+#include "libsemigroups/paths.hpp"               // for Paths
+#include "libsemigroups/presentation.hpp"        // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"              // for equal
+#include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -467,7 +468,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 9);
     REQUIRE(wg.number_of_edges() == 13);
-    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
 
     auto fp = to<FroidurePin>(kb);
     fp.enumerate(100);
@@ -527,7 +528,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 232);
     REQUIRE(wg.number_of_edges() == 265);
-    REQUIRE(word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(13);
     REQUIRE(paths.count() == 336);
@@ -558,7 +559,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 8);
     REQUIRE(wg.number_of_edges() == 11);
-    REQUIRE(word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(5);
     REQUIRE(paths.count() == 12);
@@ -584,7 +585,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     REQUIRE(wg.number_of_nodes() == 7);
     REQUIRE(wg.number_of_edges() == 17);
-    REQUIRE(!word_graph::is_acyclic(wg));
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
     paths.source(0).min(0).max(10);
     REQUIRE(paths.count() == 13'044);
@@ -945,7 +946,7 @@ namespace libsemigroups {
 
     KnuthBendix<word_type, TestType> kb1(twosided, p);
 
-    WordGraph test_wg1 = make<WordGraph<size_t>>(
+    WordGraph test_wg1 = v4::make<WordGraph<size_t>>(
         6,
         {{1, 2, 3, 4, 5},
          {},
@@ -962,7 +963,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 1_w, 2_w);
     KnuthBendix<word_type, TestType> kb2(twosided, p);
 
-    WordGraph test_wg2 = make<WordGraph<size_t>>(
+    WordGraph test_wg2 = v4::make<WordGraph<size_t>>(
         5,
         {{1, 2, UNDEFINED, 3, 4},
          {},
@@ -1162,51 +1163,51 @@ namespace libsemigroups {
     REQUIRE(kb1.gilman_graph().number_of_nodes() == 16);
 
     WordGraph test_wg1
-        = make<WordGraph<size_t>>(16,
-                                  {{3,
-                                    1,
-                                    UNDEFINED,
-                                    2,
-                                    UNDEFINED,
-                                    UNDEFINED,
-                                    UNDEFINED,
-                                    UNDEFINED,
-                                    UNDEFINED,
-                                    UNDEFINED,
-                                    UNDEFINED},
-                                   {6, UNDEFINED, UNDEFINED, 12},
-                                   {7, UNDEFINED},
-                                   {4, 5, UNDEFINED, 9},
-                                   {},
-                                   {8},
-                                   {UNDEFINED, 11},
-                                   {UNDEFINED, 14, UNDEFINED, 15},
-                                   {},
-                                   {10},
-                                   {UNDEFINED, 14},
-                                   {},
-                                   {13},
-                                   {UNDEFINED}});
+        = v4::make<WordGraph<size_t>>(16,
+                                      {{3,
+                                        1,
+                                        UNDEFINED,
+                                        2,
+                                        UNDEFINED,
+                                        UNDEFINED,
+                                        UNDEFINED,
+                                        UNDEFINED,
+                                        UNDEFINED,
+                                        UNDEFINED,
+                                        UNDEFINED},
+                                       {6, UNDEFINED, UNDEFINED, 12},
+                                       {7, UNDEFINED},
+                                       {4, 5, UNDEFINED, 9},
+                                       {},
+                                       {8},
+                                       {UNDEFINED, 11},
+                                       {UNDEFINED, 14, UNDEFINED, 15},
+                                       {},
+                                       {10},
+                                       {UNDEFINED, 14},
+                                       {},
+                                       {13},
+                                       {UNDEFINED}});
     REQUIRE(equal(knuth_bendix::normal_forms(kb1),
                   normal_forms_from_word_graph(kb1, test_wg1)));
 
     presentation::add_rule_no_checks(p, {1}, {3});
     KnuthBendix<word_type, TestType> kb2(twosided, p);
 
-    WordGraph test_wg2 = make<WordGraph<size_t>>(4,
-                                                 {{2,
-                                                   1,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED,
-                                                   UNDEFINED},
-                                                  {},
-                                                  {3}});
+    WordGraph test_wg2 = v4::make<WordGraph<size_t>>(4,
+                                                     {{2,
+                                                       1,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED,
+                                                       UNDEFINED},
+                                                      {},
+                                                      {3}});
 
     REQUIRE(equal(knuth_bendix::normal_forms(kb2),
                   normal_forms_from_word_graph(kb2, test_wg2)));

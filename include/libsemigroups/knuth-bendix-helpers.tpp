@@ -188,7 +188,7 @@ namespace libsemigroups {
       // in g1 but not g2. Hence we require the `filter` in the next
       // expression.
       auto words = (paths.source(0) | rx::filter([&g2](word_type const& path) {
-                      return word_graph::last_node_on_path(
+                      return v4::word_graph::last_node_on_path(
                                  g2, 0, path.cbegin(), path.cend())
                                  .second
                              != path.cend();

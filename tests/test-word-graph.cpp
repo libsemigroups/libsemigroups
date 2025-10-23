@@ -25,10 +25,11 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for add_clique etc
 
-#include "libsemigroups/forest.hpp"      // for Forest
-#include "libsemigroups/paths.hpp"       // for cbegin_pilo
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/word-range.hpp"  // for literals, WordRange
+#include "libsemigroups/forest.hpp"              // for Forest
+#include "libsemigroups/paths.hpp"               // for cbegin_pilo
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
+#include "libsemigroups/word-range.hpp"          // for literals, WordRange
 
 #include "libsemigroups/detail/string.hpp"  // for detail::to_string
 
@@ -62,7 +63,7 @@ namespace libsemigroups {
                           "002",
                           "constructor with empty targets",
                           "[quick][word-graph]") {
-    auto wg = make<WordGraph<size_t>>(10, {});
+    auto wg = v4::make<WordGraph<size_t>>(10, {});
     REQUIRE(wg.number_of_nodes() == 10);
     REQUIRE(wg.number_of_edges() == 0);
     REQUIRE(wg.out_degree() == 0);
@@ -107,7 +108,7 @@ namespace libsemigroups {
     g.add_to_out_degree(10);
     REQUIRE(g.out_degree() == 41);
     REQUIRE(g.number_of_nodes() == 17);
-    REQUIRE(!word_graph::is_complete(g));
+    REQUIRE(!v4::word_graph::is_complete(g));
 
     for (size_t i = 0; i < 17; ++i) {
       for (size_t j = 0; j < 10; ++j) {
@@ -164,7 +165,7 @@ namespace libsemigroups {
                           "[quick][word-graph]") {
     auto g1 = WordGraph<size_t>();
     g1.add_to_out_degree(1);
-    word_graph::add_cycle(g1, 10);
+    v4::word_graph::add_cycle(g1, 10);
 
     // Copy constructor
     auto g2(g1);
@@ -229,21 +230,21 @@ namespace libsemigroups {
                           "random/random_acyclic exceptions",
                           "[quick][no-valgrind]") {
     // Too few nodes
-    REQUIRE_THROWS_AS(word_graph::random_acyclic<size_t>(0, 0),
+    REQUIRE_THROWS_AS(v4::word_graph::random_acyclic<size_t>(0, 0),
                       LibsemigroupsException);
     // Out degree too low
     REQUIRE_NOTHROW(WordGraph<size_t>::random(2, 0));
 
-    REQUIRE_THROWS_AS(word_graph::random_acyclic<size_t>(2, 0),
+    REQUIRE_THROWS_AS(v4::word_graph::random_acyclic<size_t>(2, 0),
                       LibsemigroupsException);
-    REQUIRE_NOTHROW(word_graph::random_acyclic<size_t>(2, 2));
-    auto wg = word_graph::random_acyclic<size_t>(2, 2);
-    REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::is_connected(wg));
+    REQUIRE_NOTHROW(v4::word_graph::random_acyclic<size_t>(2, 2));
+    auto wg = v4::word_graph::random_acyclic<size_t>(2, 2);
+    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::is_connected(wg));
     for (size_t i = 0; i < 1000; ++i) {
-      wg = word_graph::random_acyclic<size_t>(10, 10);
-      REQUIRE(word_graph::is_acyclic(wg));
-      REQUIRE(word_graph::is_connected(wg));
+      wg = v4::word_graph::random_acyclic<size_t>(10, 10);
+      REQUIRE(v4::word_graph::is_acyclic(wg));
+      REQUIRE(v4::word_graph::is_connected(wg));
     }
   }
 
@@ -282,7 +283,7 @@ namespace libsemigroups {
     wg.target(2, 0, 0);
 
     wg.induced_subgraph_no_checks(0, 2);
-    REQUIRE(wg == make<WordGraph<size_t>>(2, {{1, UNDEFINED}, {0}}));
+    REQUIRE(wg == v4::make<WordGraph<size_t>>(2, {{1, UNDEFINED}, {0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -297,8 +298,9 @@ namespace libsemigroups {
     wg.target(2, 0, 0);
 
     wg.remove_target_no_checks(0, 0);  // remove edge from 0 labelled 0
-    REQUIRE(wg
-            == make<WordGraph<size_t>>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
+    REQUIRE(
+        wg
+        == v4::make<WordGraph<size_t>>(3, {{UNDEFINED, UNDEFINED}, {0}, {0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -314,7 +316,7 @@ namespace libsemigroups {
 
     // swap edge from 0 labelled 0 with edge from 1 labelled 0
     wg.swap_targets_no_checks(0, 1, 0);
-    REQUIRE(wg == make<WordGraph<size_t>>(3, {{0, UNDEFINED}, {1}, {2}}));
+    REQUIRE(wg == v4::make<WordGraph<size_t>>(3, {{0, UNDEFINED}, {1}, {2}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "017", "operator<<", "[quick]") {
@@ -326,7 +328,10 @@ namespace libsemigroups {
     wg.target(2, 0, 2);
 
     std::ostringstream oss;
-    oss << wg;
+    // This seems silly, but JDE couldn't figure out a way to get this to work.
+    // Tried "using v4::operator<<;" but that didn't work for "operator is
+    // ambiguous" reasons.
+    v4::operator<<(oss, wg);
     REQUIRE(oss.str()
             == "{3, {{1, 18446744073709551615}, {0, 18446744073709551615}, {2, "
                "18446744073709551615}}}");
@@ -341,8 +346,8 @@ namespace libsemigroups {
     wg.add_to_out_degree(1);
     wg.target(0, 0, 1);
     wg.target(1, 0, 0);
-    REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg).empty());
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -353,8 +358,8 @@ namespace libsemigroups {
     wg.add_nodes(1);
     wg.add_to_out_degree(1);
     wg.target(0, 0, 0);
-    REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg).empty());
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -367,8 +372,9 @@ namespace libsemigroups {
     wg.add_to_out_degree(2);
     wg.target(0, 0, 1);
     wg.target(0, 1, 1);
-    REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg) == std::vector<node_type>({1, 0}));
+    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg)
+            == std::vector<node_type>({1, 0}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -386,8 +392,8 @@ namespace libsemigroups {
         }
       }
     }
-    REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg).empty());
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -407,8 +413,9 @@ namespace libsemigroups {
     for (size_t i = n / 2; i < n - 1; ++i) {
       wg.target(i, 0, i + 1);
     }
-    REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg).size() == wg.number_of_nodes());
+    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).size()
+            == wg.number_of_nodes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -428,8 +435,8 @@ namespace libsemigroups {
     for (size_t i = n / 2; i < n - 1; ++i) {
       wg.target(i, 0, i + 1);
     }
-    REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg).size() == n);
+    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).size() == n);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -444,17 +451,17 @@ namespace libsemigroups {
     for (size_t i = 0; i < n - 1; ++i) {
       wg.target(i, i % 2, i + 1);
     }
-    word_graph::add_cycle(wg, 100);
+    v4::word_graph::add_cycle(wg, 100);
 
     REQUIRE(std::all_of(
         wg.cbegin_nodes(), wg.cbegin_nodes() + 100, [&wg](node_type const& v) {
-          return word_graph::is_acyclic(wg, v);
+          return v4::word_graph::is_acyclic(wg, v);
         }));
 
-    REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::is_acyclic(wg, 10, 20));
-    REQUIRE(!word_graph::is_acyclic(wg, 100, 120));
-    REQUIRE(word_graph::is_acyclic(wg, 10, 120));
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::is_acyclic(wg, 10, 20));
+    REQUIRE(!v4::word_graph::is_acyclic(wg, 100, 120));
+    REQUIRE(v4::word_graph::is_acyclic(wg, 10, 120));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -468,18 +475,19 @@ namespace libsemigroups {
     wg.target(0, 0, 1);
     wg.target(1, 0, 0);
     wg.target(2, 0, 3);
-    REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::topological_sort(wg).empty());
-    REQUIRE(!word_graph::is_acyclic(wg, 0));
-    REQUIRE(word_graph::topological_sort(wg, 0).empty());
-    REQUIRE(!word_graph::is_acyclic(wg, 1));
-    REQUIRE(word_graph::topological_sort(wg, 1).empty());
+    REQUIRE(!v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).empty());
+    REQUIRE(!v4::word_graph::is_acyclic(wg, 0));
+    REQUIRE(v4::word_graph::topological_sort(wg, 0).empty());
+    REQUIRE(!v4::word_graph::is_acyclic(wg, 1));
+    REQUIRE(v4::word_graph::topological_sort(wg, 1).empty());
 
-    REQUIRE(word_graph::is_acyclic(wg, 2));
-    REQUIRE(word_graph::topological_sort(wg, 2)
+    REQUIRE(v4::word_graph::is_acyclic(wg, 2));
+    REQUIRE(v4::word_graph::topological_sort(wg, 2)
             == std::vector<node_type>({3, 2}));
-    REQUIRE(word_graph::is_acyclic(wg, 3));
-    REQUIRE(word_graph::topological_sort(wg, 3) == std::vector<node_type>({3}));
+    REQUIRE(v4::word_graph::is_acyclic(wg, 3));
+    REQUIRE(v4::word_graph::topological_sort(wg, 3)
+            == std::vector<node_type>({3}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -499,13 +507,13 @@ namespace libsemigroups {
     for (size_t i = n / 2; i < n - 1; ++i) {
       wg.target(i, 0, i + 1);
     }
-    REQUIRE(!word_graph::is_reachable(wg, 1, 10));
-    REQUIRE(word_graph::is_reachable(wg, 10, 1));
-    REQUIRE_THROWS_AS(word_graph::is_reachable(wg, 20, 1),
+    REQUIRE(!v4::word_graph::is_reachable(wg, 1, 10));
+    REQUIRE(v4::word_graph::is_reachable(wg, 10, 1));
+    REQUIRE_THROWS_AS(v4::word_graph::is_reachable(wg, 20, 1),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(word_graph::is_reachable(wg, 1, 20),
+    REQUIRE_THROWS_AS(v4::word_graph::is_reachable(wg, 1, 20),
                       LibsemigroupsException);
-    REQUIRE(word_graph::is_reachable(wg, 1, 1));
+    REQUIRE(v4::word_graph::is_reachable(wg, 1, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -521,8 +529,8 @@ namespace libsemigroups {
     }
     for (auto it1 = wg.cbegin_nodes(); it1 < wg.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < wg.cend_nodes(); ++it2) {
-        REQUIRE(word_graph::is_reachable(wg, *it1, *it2));
-        REQUIRE(!word_graph::is_reachable(wg, *it2, *it1));
+        REQUIRE(v4::word_graph::is_reachable(wg, *it1, *it2));
+        REQUIRE(!v4::word_graph::is_reachable(wg, *it2, *it1));
       }
     }
   }
@@ -533,11 +541,11 @@ namespace libsemigroups {
                           "[quick][no-valgrind]") {
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
-    word_graph::add_cycle(wg, 100);
+    v4::word_graph::add_cycle(wg, 100);
     for (auto it1 = wg.cbegin_nodes(); it1 < wg.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < wg.cend_nodes(); ++it2) {
-        REQUIRE(word_graph::is_reachable(wg, *it1, *it2));
-        REQUIRE(word_graph::is_reachable(wg, *it2, *it1));
+        REQUIRE(v4::word_graph::is_reachable(wg, *it1, *it2));
+        REQUIRE(v4::word_graph::is_reachable(wg, *it2, *it1));
       }
     }
   }
@@ -549,13 +557,13 @@ namespace libsemigroups {
     WordGraph<size_t> wg = clique(20);
     for (auto it1 = wg.cbegin_nodes(); it1 < wg.cend_nodes(); ++it1) {
       for (auto it2 = it1 + 1; it2 < wg.cend_nodes(); ++it2) {
-        REQUIRE(word_graph::is_reachable(wg, *it1, *it2));
-        REQUIRE(word_graph::is_reachable(wg, *it2, *it1));
+        REQUIRE(v4::word_graph::is_reachable(wg, *it1, *it2));
+        REQUIRE(v4::word_graph::is_reachable(wg, *it2, *it1));
       }
     }
-    REQUIRE(word_graph::is_complete(wg));
-    REQUIRE(word_graph::topological_sort(wg).empty());
-    REQUIRE(word_graph::topological_sort(wg, 0).empty());
+    REQUIRE(v4::word_graph::is_complete(wg));
+    REQUIRE(v4::word_graph::topological_sort(wg).empty());
+    REQUIRE(v4::word_graph::topological_sort(wg, 0).empty());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -564,8 +572,8 @@ namespace libsemigroups {
                           "[quick]") {
     WordGraph<size_t> wg = chain(20);
     for (auto it = cbegin_pilo(wg, 0); it != cend_pilo(wg); ++it) {
-      REQUIRE(word_graph::follow_path(wg, 0, *it) == it.target());
-      REQUIRE(word_graph::follow_path_no_checks(wg, 0, *it) == it.target());
+      REQUIRE(v4::word_graph::follow_path(wg, 0, *it) == it.target());
+      REQUIRE(v4::word_graph::follow_path_no_checks(wg, 0, *it) == it.target());
     }
   }
 
@@ -586,13 +594,13 @@ namespace libsemigroups {
     word_type         chain = {};
     for (size_t i = 0; i < 19; ++i) {
       chain.push_back(0);
-      REQUIRE(word_graph::last_node_on_path_no_checks(
+      REQUIRE(v4::word_graph::last_node_on_path_no_checks(
                   wg, 0, chain.cbegin(), chain.cend())
                   .first
               == i + 1);
     }
     chain.push_back(0);
-    auto p = word_graph::last_node_on_path_no_checks(
+    auto p = v4::word_graph::last_node_on_path_no_checks(
         wg, 0, chain.cbegin(), chain.cend());
     REQUIRE(p.first == 19);
     REQUIRE(p.second == chain.cend() - 1);
@@ -604,12 +612,15 @@ namespace libsemigroups {
             == "{6, {{1}, {2}, {3}, {4}, {5}, {18446744073709551615}}}");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "034", "make<WordGraph>", "[quick]") {
-    auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "034",
+                          "v4::make<WordGraph>",
+                          "[quick]") {
+    auto wg = v4::make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(detail::to_string(wg)
             == "{5, {{0, 0}, {1, 1}, {2, 255}, {3, 3}, {255, 255}}}");
     REQUIRE_THROWS_AS(
-        make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
+        v4::make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1, 1}, {2}, {3, 3}}),
         LibsemigroupsException);
     wg = WordGraph<uint8_t>(5, 2);
     REQUIRE(
@@ -618,47 +629,47 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "035", "is_connected", "[quick]") {
-    auto wg = make<WordGraph<size_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    REQUIRE(!word_graph::is_connected(wg));
+    auto wg = v4::make<WordGraph<size_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    REQUIRE(!v4::word_graph::is_connected(wg));
     wg = chain(1'000);
-    REQUIRE(word_graph::is_connected(wg));
+    REQUIRE(v4::word_graph::is_connected(wg));
     REQUIRE(wg.number_of_nodes() == 1'000);
-    word_graph::add_cycle(wg, 100);
+    v4::word_graph::add_cycle(wg, 100);
     REQUIRE(wg.number_of_nodes() == 1'100);
 
-    REQUIRE(!word_graph::is_connected(wg));
+    REQUIRE(!v4::word_graph::is_connected(wg));
     wg.add_to_out_degree(1);
     wg.target(0, 1, 1'000);
-    REQUIRE(word_graph::is_connected(wg));
+    REQUIRE(v4::word_graph::is_connected(wg));
     wg = WordGraph<size_t>();
-    REQUIRE(word_graph::is_connected(wg));
+    REQUIRE(v4::word_graph::is_connected(wg));
   }
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "036",
                           "is_strictly_cyclic",
                           "[quick][no-valgrind]") {
-    auto wg = make<WordGraph<size_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    REQUIRE(!word_graph::is_strictly_cyclic(wg));
+    auto wg = v4::make<WordGraph<size_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    REQUIRE(!v4::word_graph::is_strictly_cyclic(wg));
     wg = chain(1'000);
-    REQUIRE(word_graph::is_strictly_cyclic(wg));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(wg));
     REQUIRE(wg.number_of_nodes() == 1'000);
-    word_graph::add_cycle(wg, 100);
+    v4::word_graph::add_cycle(wg, 100);
     REQUIRE(wg.number_of_nodes() == 1'100);
 
-    REQUIRE(!word_graph::is_strictly_cyclic(wg));
+    REQUIRE(!v4::word_graph::is_strictly_cyclic(wg));
     wg.add_to_out_degree(1);
     wg.target(0, 1, 1'000);
-    REQUIRE(word_graph::is_strictly_cyclic(wg));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(wg));
     wg = WordGraph<size_t>();
-    REQUIRE(word_graph::is_strictly_cyclic(wg));
+    REQUIRE(v4::word_graph::is_strictly_cyclic(wg));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "037", "Joiner x 1", "[quick]") {
     WordGraph<size_t> x(
-        make<WordGraph<size_t>>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
+        v4::make<WordGraph<size_t>>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
     WordGraph<size_t> y = x;
 
-    Joiner join;
+    v4::Joiner join;
 
     WordGraph<size_t> xy;
     join(xy, x, y);
@@ -668,7 +679,7 @@ namespace libsemigroups {
     REQUIRE(join(x, y) == x);
     REQUIRE(join(y, x) == x);
 
-    Meeter meet;
+    v4::Meeter meet;
     meet(xy, x, y);
     REQUIRE(xy == x);
     REQUIRE(xy == y);
@@ -679,17 +690,17 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "038", "Joiner x 2", "[quick]") {
     WordGraph<size_t> x(
-        make<WordGraph<size_t>>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}}));
+        v4::make<WordGraph<size_t>>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}}));
 
     WordGraph<size_t> y(
-        make<WordGraph<size_t>>(3, {{1, 1, 2}, {1, 1, 2}, {1, 1, 2}}));
+        v4::make<WordGraph<size_t>>(3, {{1, 1, 2}, {1, 1, 2}, {1, 1, 2}}));
 
     WordGraph<size_t> xy;
 
-    Joiner join;
+    v4::Joiner join;
     xy = join(x, y);
     REQUIRE(x != y);
-    REQUIRE(xy == make<WordGraph<size_t>>(2, {{1, 1, 1}, {1, 1, 1}}));
+    REQUIRE(xy == v4::make<WordGraph<size_t>>(2, {{1, 1, 1}, {1, 1, 1}}));
     REQUIRE(join.is_subrelation(x, xy));
     REQUIRE(join.is_subrelation(y, xy));
   }
@@ -698,60 +709,68 @@ namespace libsemigroups {
     // These word graphs were taken from the lattice of
     // 2-sided congruences of the free semigroup with 2
     // generators.
-    WordGraph<size_t> x(make<WordGraph<size_t>>(3, {{1, 2}, {1, 1}, {2, 2}}));
-    WordGraph<size_t> y(make<WordGraph<size_t>>(3, {{1, 2}, {1, 1}, {1, 1}}));
+    WordGraph<size_t> x(
+        v4::make<WordGraph<size_t>>(3, {{1, 2}, {1, 1}, {2, 2}}));
+    WordGraph<size_t> y(
+        v4::make<WordGraph<size_t>>(3, {{1, 2}, {1, 1}, {1, 1}}));
 
     WordGraph<size_t> xy;
 
-    Meeter meet;
+    v4::Meeter meet;
     meet(xy, x, y);
 
-    REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {1, 1}, {3, 3}, {3, 3}}));
+    REQUIRE(
+        xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {1, 1}, {3, 3}, {3, 3}}));
 
-    y = make<WordGraph<size_t>>(3, {{1, 2}, {2, 2}, {2, 2}});
+    y = v4::make<WordGraph<size_t>>(3, {{1, 2}, {2, 2}, {2, 2}});
 
     meet(xy, x, y);
-    REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
+    REQUIRE(
+        xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
-    word_graph::standardize(xy);
-    REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
+    v4::word_graph::standardize(xy);
+    REQUIRE(
+        xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
     x = xy;
     meet(xy, x, y);
-    REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
+    REQUIRE(
+        xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "040", "Meeter x 2", "[quick]") {
-    auto x = make<WordGraph<size_t>>(5, {{1, 0}, {1, 2}, {1, 2}});
-    auto y = make<WordGraph<size_t>>(5, {{0, 1}, {0, 1}});
-    REQUIRE(word_graph::number_of_nodes_reachable_from(x, 0) == 3);
-    REQUIRE(word_graph::number_of_nodes_reachable_from(y, 0) == 2);
+    auto x = v4::make<WordGraph<size_t>>(5, {{1, 0}, {1, 2}, {1, 2}});
+    auto y = v4::make<WordGraph<size_t>>(5, {{0, 1}, {0, 1}});
+    REQUIRE(v4::word_graph::number_of_nodes_reachable_from(x, 0) == 3);
+    REQUIRE(v4::word_graph::number_of_nodes_reachable_from(y, 0) == 2);
 
-    Meeter meet;
-    auto   xy = meet(x, y);
-    REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
-    word_graph::standardize(xy);
-    REQUIRE(xy == make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
+    v4::Meeter meet;
+    auto       xy = meet(x, y);
+    REQUIRE(
+        xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
+    v4::word_graph::standardize(xy);
+    REQUIRE(
+        xy == v4::make<WordGraph<size_t>>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
 
-    Joiner join;
+    v4::Joiner join;
     join(xy, x, y);
-    REQUIRE(xy == make<WordGraph<size_t>>(1, {{0, 0}}));
+    REQUIRE(xy == v4::make<WordGraph<size_t>>(1, {{0, 0}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "041", "Joiner incomplete", "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
-    word_graph::add_cycle(wg, 5);
+    v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    Joiner join;
-    REQUIRE(join(wg, wg) == make<WordGraph<uint32_t>>(1, {{UNDEFINED}}));
+    v4::Joiner join;
+    REQUIRE(join(wg, wg) == v4::make<WordGraph<uint32_t>>(1, {{UNDEFINED}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "042", "Meeter incomplete", "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
-    word_graph::add_cycle(wg, 5);
+    v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    Meeter meet;
-    REQUIRE(meet(wg, wg) == make<WordGraph<uint32_t>>(1, {{UNDEFINED}}));
+    v4::Meeter meet;
+    REQUIRE(meet(wg, wg) == v4::make<WordGraph<uint32_t>>(1, {{UNDEFINED}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
@@ -759,20 +778,20 @@ namespace libsemigroups {
                           "WordGraph to_input_string",
                           "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
-    word_graph::add_cycle(wg, 5);
+    v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    REQUIRE(to_input_string(wg) == "5, {{4294967295}, {2}, {3}, {4}, {0}}");
-    REQUIRE(
-        to_input_string(wg, "make<WordGraph<uint32_t>>(", "[]", ")")
-        == "make<WordGraph<uint32_t>>(5, [[4294967295], [2], [3], [4], [0]])");
-    word_graph::add_cycle(wg, 1000);
-    REQUIRE(to_human_readable_repr(wg)
+    REQUIRE(v4::to_input_string(wg) == "5, {{4294967295}, {2}, {3}, {4}, {0}}");
+    REQUIRE(v4::to_input_string(wg, "v4::make<WordGraph<uint32_t>>(", "[]", ")")
+            == "v4::make<WordGraph<uint32_t>>(5, [[4294967295], [2], [3], [4], "
+               "[0]])");
+    v4::word_graph::add_cycle(wg, 1000);
+    REQUIRE(v4::to_human_readable_repr(wg)
             == "<WordGraph with 1,005 nodes, 1,004 edges, & out-degree 1>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "045", "hash_value", "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
-    word_graph::add_cycle(wg, 5);
+    v4::word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
     REQUIRE_NOTHROW(wg.hash_value());
   }

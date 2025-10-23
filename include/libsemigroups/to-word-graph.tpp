@@ -31,4 +31,25 @@ namespace libsemigroups {
     }
     return result;
   }
+
+  template <template <typename...> typename Result, typename Node>
+  auto to(WordGraphView<Node> const& view)
+      -> std::enable_if_t<std::is_same_v<Result<Node>, WordGraph<Node>>,
+                          WordGraph<Node>> {
+    view.throw_if_invalid_view();
+    view.throw_if_any_target_out_of_bounds();
+    WordGraph<Node> result = WordGraph<Node>(view.number_of_nodes_no_checks(),
+                                             view.out_degree_no_checks());
+    for (auto source : rx::iterator_range(view.nodes_no_checks())) {
+      for (auto [label, target] : view.labels_and_targets_no_checks(source)) {
+        if (target == UNDEFINED) {
+          continue;
+        }
+        result.target_no_checks(source, label, target);
+      }
+    }
+    // LCOV identifies the blank line after this as not being covered for some
+    // reason
+    return result;
+  }
 }  // namespace libsemigroups

@@ -729,7 +729,7 @@ namespace libsemigroups {
           auto        src  = _gilman_graph.target_no_checks(0, octo);
           LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
           _gilman_graph.remove_label_no_checks(octo);
-          auto nodes = word_graph::nodes_reachable_from(_gilman_graph, src);
+          auto nodes = v4::word_graph::nodes_reachable_from(_gilman_graph, src);
           LIBSEMIGROUPS_ASSERT(std::find(nodes.cbegin(), nodes.cend(), src)
                                != nodes.cend());
           // This is a bit awkward, it exists to ensure

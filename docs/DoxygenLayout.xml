@@ -379,6 +379,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="The Meeter class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Paths" title="The Paths class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="The WordGraph class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WordGraphView" title="The WordGraphView class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::forest"
         title="Forest helper functions" />
       <tab type="user" visible="yes" url="@ref libsemigroups::paths" title="Paths helper functions" />
