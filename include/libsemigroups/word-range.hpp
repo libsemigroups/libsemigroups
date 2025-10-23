@@ -418,7 +418,6 @@ namespace libsemigroups {
     // For some reason, there needs to be two doxygen comment lines here for
     // this to render.
     //! Value indicating that the range is finite.
-    //!
     static constexpr bool is_finite = true;  // This may not always be true
 
     //! Value indicating that if get() is called twice on a WordRange object
@@ -1460,6 +1459,10 @@ namespace libsemigroups {
 
     [[nodiscard]] constexpr size_t size_hint() const noexcept {
       return _input.size_hint();
+    }
+
+    [[nodiscard]] constexpr size_t count() const noexcept {
+      return _input.count();
     }
   };
 
