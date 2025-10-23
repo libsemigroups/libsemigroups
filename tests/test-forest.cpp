@@ -24,9 +24,14 @@
 
 #include "word-graph-test-common.hpp"
 
-#include "libsemigroups/forest.hpp"  // for Forest
-#include "libsemigroups/presentation.hpp"
-#include "libsemigroups/to-word-graph.hpp"  // for WordGraph
+#include "libsemigroups/constants.hpp"           // for UNDEFINED, operator==
+#include "libsemigroups/exception.hpp"           // for LibsemigroupsException
+#include "libsemigroups/forest.hpp"              // for Forest, to_human_re...
+#include "libsemigroups/ranges.hpp"              // for zip
+#include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for spanning_tree
+#include "libsemigroups/word-graph.hpp"          // for WordGraph::target, ...
+#include "libsemigroups/word-range.hpp"          // for operator""_w
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -273,7 +278,7 @@ namespace libsemigroups {
 
     REQUIRE(!forest::is_forest(f));
 
-    f = word_graph::spanning_tree(binary_tree(16), 0);
+    f = v4::word_graph::spanning_tree(binary_tree(16), 0);
     Forest copy(f);
     REQUIRE(forest::is_forest(f));
 

@@ -19,7 +19,8 @@
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/to-word-graph.hpp"
-#include "word-graph-test-common.hpp"  // for binary_tree
+#include "libsemigroups/word-graph-helpers.hpp"  // for spanning_tree
+#include "word-graph-test-common.hpp"            // for binary_tree
 
 namespace libsemigroups {
 
@@ -27,7 +28,7 @@ namespace libsemigroups {
     using node_type = Forest::node_type;
 
     WordGraph wg = binary_tree<node_type>(5);
-    Forest    f  = word_graph::spanning_tree(wg, 0);
+    Forest    f  = v4::word_graph::spanning_tree(wg, 0);
     REQUIRE(to<WordGraph>(f) == wg);
   }
 }  // namespace libsemigroups
