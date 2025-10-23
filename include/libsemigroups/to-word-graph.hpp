@@ -102,7 +102,6 @@ namespace libsemigroups {
   auto to(WordGraphView<Node> const& view)
       -> std::enable_if_t<std::is_same_v<Result<Node>, WordGraph<Node>>,
                           WordGraph<Node>>;
-  ;
 }  // namespace libsemigroups
 
 #include "to-word-graph.tpp"
