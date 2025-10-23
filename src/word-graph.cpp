@@ -22,6 +22,9 @@
 
 namespace libsemigroups {
 
+  // TODO(v4) delete this file
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   Meeter::Meeter()                         = default;
   Meeter::Meeter(Meeter const&)            = default;
   Meeter::Meeter(Meeter&&)                 = default;
@@ -37,4 +40,5 @@ namespace libsemigroups {
   Joiner& Joiner::operator=(Joiner&&)      = default;
 
   Joiner::~Joiner() = default;
+#pragma GCC diagnostic pop
 }  // namespace libsemigroups

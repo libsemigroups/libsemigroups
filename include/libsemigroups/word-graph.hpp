@@ -3110,7 +3110,10 @@ namespace libsemigroups {
   // specify the types of the nodes when constructing one of these objects.
   // Instead every member function has a template parameter Node, which is
   // deduced from the argument.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   class [[deprecated]] Joiner : public detail::JoinerMeeterCommon<Joiner> {
+#pragma GCC diagnostic pop
    private:
     detail::Duf<>                             _uf;
     std::stack<std::pair<uint64_t, uint64_t>> _stck;
@@ -3521,10 +3524,13 @@ namespace libsemigroups {
     bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y);
 
 #else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     using detail::JoinerMeeterCommon<Joiner>::call_no_checks;
     using detail::JoinerMeeterCommon<Joiner>::operator();
     using detail::JoinerMeeterCommon<Joiner>::is_subrelation_no_checks;
     using detail::JoinerMeeterCommon<Joiner>::is_subrelation;
+#pragma GCC diagnostic pop
 #endif
   };  // Joiner
 
@@ -3544,7 +3550,10 @@ namespace libsemigroups {
   //! \note This class will be moved from the header `word-graph.hpp`
   //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
   // Class for forming the meet of two word graphs
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   class [[deprecated]] Meeter : public detail::JoinerMeeterCommon<Meeter> {
+#pragma GCC diagnostic pop
    private:
     using node_type = std::pair<uint64_t, uint64_t>;
 
@@ -3705,10 +3714,13 @@ namespace libsemigroups {
     template <typename Node>
     bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y);
 #else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     using detail::JoinerMeeterCommon<Meeter>::call_no_checks;
     using detail::JoinerMeeterCommon<Meeter>::operator();
     using detail::JoinerMeeterCommon<Meeter>::is_subrelation_no_checks;
     using detail::JoinerMeeterCommon<Meeter>::is_subrelation;
+#pragma GCC diagnostic pop
 #endif
   };  // class Meeter
 
