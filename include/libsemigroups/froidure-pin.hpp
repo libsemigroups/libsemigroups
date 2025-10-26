@@ -134,6 +134,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct Complexity<int> {
   //!   constexpr size_t operator()(int) const noexcept {
@@ -171,15 +172,17 @@ namespace libsemigroups {
   //!     xy = x * y;
   //!   }
   //! };
-  //!
+  //! \endcode
+  //! \code
+  //!  using namespace froidure_pin;
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
-  //! S.number_of_idempotents()  // 1
+  //! S.number_of_idempotents();  // 1
   //! *S.cbegin();        // 2
   //!
   //! FroidurePin<uint8_t> T({2, 3});
-  //! T.size()                      // 130
-  //! T.number_of_idempotents()     // 2
+  //! T.size();                      // 130
+  //! T.number_of_idempotents();     // 2
   //! *T.cbegin_idempotents();      // 0
   //! *T.cbegin_idempotents() + 1;  // 1
   //! \endcode
@@ -313,7 +316,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data - private
@@ -1383,8 +1386,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-            std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>
+        && noexcept(std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,

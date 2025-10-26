@@ -73,6 +73,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<Word>>(fp);
   //! \endcode
   //!
@@ -113,6 +114,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<WordOut>>(kb);
   //! \endcode
   //!
@@ -161,31 +163,32 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<Presentation>(kb);
-  //! \endcode
-  //!
-  //! This function constructs and returns a Presentation object using the
-  //! currently active rules of \p kb.
-  //!
-  //! No enumeration of the argument \p kb is performed, so it might be the
-  //! case that the resulting presentation does not define the same
-  //! semigroup/monoid as \p kb. To ensure that the resulting presentation
-  //! defines the same semigroup as \p kb, run \ref KnuthBendix::run (or any
-  //! other function that fully enumerates \p kb) prior to calling this
-  //! function.
-  //!
-  //! \tparam Thing used for SFINAE, must be Presentation.
-  //! \tparam Word the type of the rules in the presentation of the
-  //! \ref_knuth_bendix object \p kb.
-  //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
-  //! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
-  //!
-  //! \param kb the \ref_knuth_bendix object from which to obtain the rules.
-  //!
-  //! \returns An object of type \c Presentation<Word>.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
+//! \skip-test
+//! to<Presentation>(kb);
+//! \endcode
+//!
+//! This function constructs and returns a Presentation object using the
+//! currently active rules of \p kb.
+//!
+//! No enumeration of the argument \p kb is performed, so it might be the
+//! case that the resulting presentation does not define the same
+//! semigroup/monoid as \p kb. To ensure that the resulting presentation
+//! defines the same semigroup as \p kb, run \ref KnuthBendix::run (or any
+//! other function that fully enumerates \p kb) prior to calling this
+//! function.
+//!
+//! \tparam Thing used for SFINAE, must be Presentation.
+//! \tparam Word the type of the rules in the presentation of the
+//! \ref_knuth_bendix object \p kb.
+//! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
+//! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
+//!
+//! \param kb the \ref_knuth_bendix object from which to obtain the rules.
+//!
+//! \returns An object of type \c Presentation<Word>.
+//!
+//! \exceptions
+//! \no_libsemigroups_except
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   // FIXME(1) this is the same hack as elsewhere (deliberately introducing a
   // typo) because Doxygen conflates functions with trailing return type but the
@@ -221,6 +224,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<Word>>(k);
   //! \endcode
   //!
@@ -449,6 +453,7 @@ namespace libsemigroups {
   //! follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<Word>>(p, func);
   //! \endcode
   //!
@@ -500,6 +505,7 @@ namespace libsemigroups {
   //! follows:
   //!
   //! \code
+  //! \skip-test
   //! to<InversePresentation<Word>>(p, func);
   //! \endcode
   //!
@@ -552,6 +558,7 @@ namespace libsemigroups {
   //! follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<Word>>(p, func);
   //! \endcode
   //!
@@ -619,6 +626,7 @@ namespace libsemigroups {
   //! follows:
   //!
   //! \code
+  //! \skip-test
   //! to<InversePresentation<Word>>(ip);
   //! \endcode
   //!
@@ -687,24 +695,25 @@ namespace libsemigroups {
   //! follows:
   //!
   //! \code
-  //! to<InversePresentation>(p);
-  //! \endcode
-  //!
-  //! This function returns an inverse presentation with rules equivalent to
-  //! those of the input presentation, but over a normalised alphabet. If the
-  //! alphabet of \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the
-  //! alphabet of the returned inverse presentation will be
-  //! \f$\{0, 1, \dots, n-1, n, \dots, 2n-1\}\f$, where the inverse of letter
-  //! \f$i\f$ is the letter \f$i + n\, (\text{mod }2n)\f$.
-  //!
-  //! \tparam Thing used for SFINAE, must be InversePresentation.
-  //! \tparam Word the type of the words in the input presentation.
-  //! \param p the input presentation.
-  //!
-  //! \returns A value of type `InversePresentation<Word>`.
-  //!
-  //! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
-  //! throws.
+//! \skip-test
+//! to<InversePresentation>(p);
+//! \endcode
+//!
+//! This function returns an inverse presentation with rules equivalent to
+//! those of the input presentation, but over a normalised alphabet. If the
+//! alphabet of \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the
+//! alphabet of the returned inverse presentation will be
+//! \f$\{0, 1, \dots, n-1, n, \dots, 2n-1\}\f$, where the inverse of letter
+//! \f$i\f$ is the letter \f$i + n\, (\text{mod }2n)\f$.
+//!
+//! \tparam Thing used for SFINAE, must be InversePresentation.
+//! \tparam Word the type of the words in the input presentation.
+//! \param p the input presentation.
+//!
+//! \returns A value of type `InversePresentation<Word>`.
+//!
+//! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
+//! throws.
 //!
 //! \note This function will be moved from the header `to-presentation.hpp` to
 //! `presentation.hpp` in v4 of libsemigroups.

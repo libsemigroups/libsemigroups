@@ -146,7 +146,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! Presentation<word_type> p;
-  //! p.alphabet(2)
+  //! p.alphabet(2);
   //! presentation::add_rule(p, {0, 1}, {});
   //! Congruence cong(congruence_kind::twosided, p);
   //! is_obviously_infinite(cong);  // true

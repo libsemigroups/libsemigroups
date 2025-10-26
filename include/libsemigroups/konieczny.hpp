@@ -1905,6 +1905,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! make<Konieczny>(gens);
   //! \endcode
   //!
@@ -1949,6 +1950,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! make<Konieczny>(gens);
   //! \endcode
   //!

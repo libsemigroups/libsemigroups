@@ -354,8 +354,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -984,7 +983,7 @@ namespace libsemigroups {
       //! * \ref literals
       [[nodiscard]] word_type operator()(From const& input) const {
         word_type output;
-                  operator()(output, input);
+        operator()(output, input);
         return output;
       }
 
@@ -1359,7 +1358,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] std::string operator()(word_type const& input) const {
       std::string output;
-                  operator()(output, input);
+      operator()(output, input);
       return output;
     }
 
@@ -1384,7 +1383,7 @@ namespace libsemigroups {
     operator()(std::initializer_list<Int> input) const {
       static_assert(std::is_integral_v<Int>);
       word_type copy(input.begin(), input.end());
-      return    operator()(copy);
+      return operator()(copy);
     }
 
     template <typename InputRange>
@@ -2008,6 +2007,7 @@ namespace libsemigroups {
   //! in a compact form.
   //! \par Example
   //! \code
+  //! \skip-test
   //! 012_w      // same as word_type({0, 1, 2})
   //! "abc"_w    // also same as word_type({0, 1, 2})
   //! "(ab)^3"_p // same as "ababab"
@@ -2089,6 +2089,7 @@ namespace libsemigroups {
   //! in a compact form.
   //! \par Example
   //! \code
+  //! \skip-test
   //! using namespace words;
   //! pow("a", 5)            // same as "aaaaa"
   //! 01_w + 2               // same as 012_w
@@ -2305,11 +2306,11 @@ namespace libsemigroups {
     //! \par Examples
     //! \code
     //! using namespace words;
-    //! word_type w = 012345_w
-    //! prod(w, 0, 5, 2)              // {0, 2, 4}
-    //! prod(w, 1, 9, 2)              // {1, 3, 5, 1}
-    //! prod("abcde", 4, 1, -1)       // "edc"
-    //! prod({"aba", "xyz"}, 0, 4, 1) // "abaxyzabaxyz"
+    //! word_type w = 012345_w;
+    //! prod(w, 0, 5, 2);              // {0, 2, 4}
+    //! prod(w, 1, 9, 2);              // {1, 3, 5, 1}
+    //! prod("abcde", 4, 1, -1);       // "edc"
+    //! prod({"aba", "xyz"}, 0, 4, 1); // "abaxyzabaxyz"
     //! \endcode
     template <typename Container, typename Word = Container>
     Word prod(Container const& elts, int first, int last, int step = 1);

@@ -861,7 +861,7 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //! Presentation<std::string> p;
-    //! presentation::to_report_string(p)
+    //! presentation::to_report_string(p);
     //! // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
     //! \endcode
     template <typename Word>

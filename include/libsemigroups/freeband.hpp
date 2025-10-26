@@ -76,7 +76,7 @@ namespace libsemigroups {
   //! freeband_equal_to({0, 1, 2, 3, 2, 1, 0},
   //!                   {0, 1, 2, 3, 2, 3, 2, 1, 0}); // true
   //! freeband_equal_to({1, 2, 3}, {0, 1, 2}); // false
-  //! freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10}) // true
+  //! freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10}); // true
   //! freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
   //!                   {4, 3, 2, 1, 0, 4, 3, 2, 1, 0}); // false
   //! freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2}); // true

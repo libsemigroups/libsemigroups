@@ -99,6 +99,8 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! word_type x = random_word(5, 10);
+  //! word_type y = random_word(5, 10);
   //! std::lexicographical_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
@@ -133,8 +135,10 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! word_type x = random_word(5, 10);
+  //! word_type y = random_word(5, 10);
   //! lexicographical_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
   template <typename T>
   bool lexicographical_compare(T* const x, T* const y) {
@@ -263,6 +267,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! template <typename T, typename S>
   //! bool shortlex_compare(T const& first1,
   //!                       T const& last1,
@@ -308,6 +313,8 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! word_type x = random_word(5, 10);
+  //! word_type y = random_word(5, 10);
   //! shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
@@ -343,8 +350,10 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! word_type x = random_word(5, 10);
+  //! word_type y = random_word(5, 10);
   //! shortlex_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
   //!
   //! \sa
@@ -479,6 +488,8 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! word_type x = random_word(5, 10);
+  //! word_type y = random_word(5, 10);
   //! recursive_path_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
@@ -512,8 +523,10 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! word_type x = random_word(5, 10);
+  //! word_type y = random_word(5, 10);
   //! recursive_path_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
   //!
   //! \sa

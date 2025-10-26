@@ -58,6 +58,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<KnuthBendix<Word, Rewriter>>(knd, fpb);
   //! \endcode
   //!
@@ -93,6 +94,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<KnuthBendix>(knd, tc);
   //! \endcode
   //!
@@ -128,6 +130,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<KnuthBendix<Word, Rewriter>>(knd, tc);
   //! \endcode
   //!
