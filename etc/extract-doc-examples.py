@@ -51,6 +51,7 @@ def __parse_args() -> argparse.Namespace:
         python3 extract_code.py <folder>    <-- Process specific folder
         Flags:
         -r | Process folder recursively
+        -e | Exclude the following files
         """,
     )
 
@@ -69,7 +70,14 @@ def __parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--version", action="version", version="Code Block Extractor 1.0"
+        "-e",
+        "--exclude",
+        nargs="+",
+        help="Files to exclude from docs code example colleciton",
+    )
+
+    parser.add_argument(
+        "--version", action="version", version="Example Code Block Capture 1.0.0"
     )
 
     args = parser.parse_args()
@@ -165,7 +173,7 @@ def extract_code_blocks(file_path):
     return code_blocks
 
 
-def process_folder(folder_path, recursive=False):
+def process_folder(folder_path, recursive=False, exclude=[]):
     """
     Process all files in a folder to find code examples.
 
@@ -210,7 +218,15 @@ def process_folder(folder_path, recursive=False):
 
             for file_path in sorted(files):
                 # Extract example code
-                code_blocks = extract_code_blocks(file_path)
+                if (Path(file_path).name in exclude) or (file_path in exclude):
+                    code_blocks = []
+                    __bold(
+                        f"Note: Excluded {
+                            file_path
+                        } from example code block extraction."
+                    )
+                else:
+                    code_blocks = extract_code_blocks(file_path)
 
                 # Write to cpp test file
                 if code_blocks:
@@ -246,7 +262,7 @@ def process_folder(folder_path, recursive=False):
 
 def main():
     args = __parse_args()
-    process_folder(args.folder_path, args.recursive)
+    process_folder(args.folder_path, args.recursive, args.exclude)
 
 
 if __name__ == "__main__":
