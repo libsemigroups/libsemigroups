@@ -122,20 +122,21 @@ namespace libsemigroups {
     struct Range {
       using output_type = typename InputRange::output_type;
 
-      // TODO(1) this is probably not correct, should depend on InputRange
-      static constexpr bool is_finite = rx::is_finite_v<InputRange>;
-      // TODO(1) this is probably not correct, should depend on InputRange
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
       static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-      bool                _at_end;
-      InputRange          _input;
-      mutable output_type _val;
-      mutable bool        _val_set;
+      bool                      _at_end;
+      InputRange                _input;
+      std::decay_t<output_type> _val;
+      bool                      _val_set;
 
       explicit constexpr Range(InputRange&& input) noexcept
           : _at_end(false), _input(std::move(input)), _val(), _val_set(false) {}
 
-      [[nodiscard]] output_type get() const noexcept;
+      explicit constexpr Range(InputRange const& input) noexcept
+          : _at_end(false), _input(input), _val(), _val_set(false) {}
+
+      [[nodiscard]] output_type get() noexcept;
 
       constexpr void next() noexcept {
         _at_end = true;
