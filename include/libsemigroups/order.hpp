@@ -550,6 +550,58 @@ namespace libsemigroups {
     }
   };
 
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wtshortlex_compare_no_checks(T const&                   first1,
+                                    T const&                   last1,
+                                    T const&                   first2,
+                                    T const&                   last2,
+                                    std::vector<size_t> const& weights) {
+    size_t weight1 = 0;
+    for (auto it = first1; it != last1; ++it) {
+      weight1 += weights[*it];
+    }
+
+    size_t weight2 = 0;
+    for (auto it = first2; it != last2; ++it) {
+      weight2 += weights[*it];
+    }
+
+    if (weight1 != weight2) {
+      return weight1 < weight2;
+    }
+
+    return shortlex_compare(first1, last1, first2, last2);
+  }
+
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wtshortlex_compare_no_checks(T const&                   x,
+                                    T const&                   y,
+                                    std::vector<size_t> const& weights) {
+    return wtshortlex_compare_no_checks(
+        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  }
+
+  template <typename T>
+  bool wtshortlex_compare_no_checks(T* const                   x,
+                                    T* const                   y,
+                                    std::vector<size_t> const& weights) {
+    return wtshortlex_compare_no_checks(
+        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  }
+
+  struct WtShortLexCompareNoChecks {
+    explicit WtShortLexCompareNoChecks(std::vector<size_t> const& weights)
+        : _weights(weights) {}
+
+    template <typename T>
+    bool operator()(T const& x, T const& y) const {
+      return wtshortlex_compare_no_checks(x, y, _weights);
+    }
+
+   private:
+    std::vector<size_t> const& _weights;
+  };
+
   // end orders_group
   //! @}
 
