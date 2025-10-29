@@ -27,7 +27,7 @@ namespace libsemigroups {
 
   template <typename InputRange>
   typename Random::Range<InputRange>::output_type
-  Random::Range<InputRange>::get() const noexcept {
+  Random::Range<InputRange>::get() noexcept {
     LIBSEMIGROUPS_ASSERT(!_input.at_end() && !_at_end);
 
     static std::random_device rd;

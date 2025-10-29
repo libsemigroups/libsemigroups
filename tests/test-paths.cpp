@@ -1052,4 +1052,12 @@ namespace libsemigroups {
                "with source 0, target 1, length in [1, 13)>");
     REQUIRE(p.count() == 6);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Paths", "021", "operator | Random()", "[quick]") {
+    auto  wg = v4::make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
+    Paths p(wg);
+    p.source(0).max(10);
+    REQUIRE(p.count() == 1023);
+    REQUIRE_NOTHROW((p | Random()).get());
+  }
 }  // namespace libsemigroups
