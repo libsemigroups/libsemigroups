@@ -1482,7 +1482,10 @@ namespace libsemigroups {
 
   template <typename Node>
   std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     os << to_input_string(wg, "{", "{}", "}");
+#pragma GCC diagnostic pop
     return os;
   }
 
@@ -1512,6 +1515,8 @@ namespace libsemigroups {
   }
 
   namespace detail {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     template <typename Subclass>
     template <typename Node1, typename Node2>
     void
@@ -1519,6 +1524,7 @@ namespace libsemigroups {
                                                     Node2 xroot,
                                                     WordGraph<Node1> const& y,
                                                     Node2 yroot) {
+#pragma GCC diagnostic pop
       static_assert(sizeof(Node2) <= sizeof(Node1));
       word_graph::throw_if_node_out_of_bounds(x, xroot);
       word_graph::throw_if_node_out_of_bounds(y, yroot);
@@ -1537,6 +1543,8 @@ namespace libsemigroups {
       word_graph::throw_if_any_target_out_of_bounds(y);
     }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     template <typename Subclass>
     template <typename Node>
     void JoinerMeeterCommon<Subclass>::call_no_checks(WordGraph<Node>&       xy,
@@ -1544,6 +1552,7 @@ namespace libsemigroups {
                                                       Node xroot,
                                                       WordGraph<Node> const& y,
                                                       Node yroot) {
+#pragma GCC diagnostic pop
       // TODO(1) could be improved by reusing the data used by
       // number_of_nodes_reachable_from.
       static_cast<Subclass&>(*this).call_no_checks(
@@ -1556,6 +1565,8 @@ namespace libsemigroups {
           yroot);
     }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     template <typename Subclass>
     template <typename Node1, typename Node2>
     bool JoinerMeeterCommon<Subclass>::is_subrelation_no_checks(
@@ -1563,6 +1574,7 @@ namespace libsemigroups {
         Node2                   xroot,
         WordGraph<Node1> const& y,
         Node2                   yroot) {
+#pragma GCC diagnostic pop
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return static_cast<Subclass&>(*this).is_subrelation_no_checks(
           x,

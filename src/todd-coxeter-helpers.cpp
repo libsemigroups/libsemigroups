@@ -23,9 +23,10 @@
 #include <string_view>  // for basic_st...
 #include <tuple>        // for tie
 
-#include "libsemigroups/constants.hpp"  // for operator!=
-#include "libsemigroups/obvinf.hpp"     // for is_obvio...
-#include "libsemigroups/types.hpp"      // for tril
+#include "libsemigroups/constants.hpp"           // for operator!=
+#include "libsemigroups/obvinf.hpp"              // for is_obvio...
+#include "libsemigroups/types.hpp"               // for tril
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 
 #include "libsemigroups/detail/felsch-graph.hpp"        // for Register...
 #include "libsemigroups/detail/node-managed-graph.hpp"  // for random_a...
@@ -150,7 +151,7 @@ namespace libsemigroups {
         tc.reduce_no_run_no_checks(
             std::back_inserter(w2), w1.cbegin(), w1.cend());
         if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
-          node_type other = word_graph::follow_path_no_checks(
+          node_type other = v4::word_graph::follow_path_no_checks(
               wg, wg.initial_node(), w2.begin(), w2.end());
           if (other != UNDEFINED && other != current) {
             ++found;

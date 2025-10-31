@@ -35,6 +35,7 @@
 #include "libsemigroups/presentation.hpp"  // for Presentation, length
 #include "libsemigroups/runner.hpp"        // for Runner::run_until
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
+#include "libsemigroups/word-graph.hpp"    // for follow_path_no_...
 
 #include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "libsemigroups/detail/felsch-graph.hpp"       // for DoNotRegisterDefs
@@ -859,7 +860,7 @@ namespace libsemigroups {
       }
       _forest.init();
       _forest.add_nodes(_word_graph.number_of_nodes_active());
-      bool result   = word_graph::standardize(_word_graph, _forest, val);
+      bool result   = v4::word_graph::standardize(_word_graph, _forest, val);
       _standardized = val;
       report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
                      val,
@@ -996,7 +997,7 @@ namespace libsemigroups {
         if (_word_graph.definitions().any_skipped()) {
           auto const& d = current_word_graph();
           if (d.number_of_nodes_active() != lower_bound()
-              || !word_graph::is_complete(
+              || !v4::word_graph::is_complete(
                   d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
             SettingsGuard guard(this);
             lookahead_extent(options::lookahead_extent::full);

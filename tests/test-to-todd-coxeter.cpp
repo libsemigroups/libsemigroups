@@ -21,6 +21,7 @@
 
 #include "libsemigroups/to-todd-coxeter.hpp"  // for to<ToddCoxeter>
 #include "libsemigroups/transf.hpp"
+#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -147,7 +148,8 @@ namespace libsemigroups {
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     REQUIRE(tc.number_of_classes() == 21);
     auto const& wg = tc.current_word_graph();
-    REQUIRE(word_graph::is_compatible_no_checks(wg,
+    REQUIRE(
+        v4::word_graph::is_compatible_no_checks(wg,
                                                 wg.cbegin_active_nodes(),
                                                 wg.cend_active_nodes(),
                                                 tc.generating_pairs().cbegin(),

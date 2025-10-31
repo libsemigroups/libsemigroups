@@ -181,7 +181,7 @@ namespace libsemigroups {
     auto const& d = tc.current_word_graph();
     if (tc.finished()
         || (d.number_of_nodes() != 0
-            && word_graph::is_complete(
+            && v4::word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes()))) {
       // TODO(1) Check thoroughly that this works as intended.
       // Without the check on the number of nodes, this doesn't work as expected

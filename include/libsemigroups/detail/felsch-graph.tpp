@@ -247,7 +247,7 @@ namespace libsemigroups {
         a = UNDEFINED;
       } else {
         LIBSEMIGROUPS_ASSERT(u_first < u_last);
-        x = word_graph::follow_path_no_checks(
+        x = v4::word_graph::follow_path_no_checks(
             *this, u_node, u_first, u_last - 1);
         if (x == UNDEFINED) {
           return true;
@@ -264,7 +264,7 @@ namespace libsemigroups {
         b = UNDEFINED;
       } else {
         LIBSEMIGROUPS_ASSERT(v_first < v_last);
-        y = word_graph::follow_path_no_checks(
+        y = v4::word_graph::follow_path_no_checks(
             *this, v_node, v_first, v_last - 1);
         if (y == UNDEFINED) {
           return true;
@@ -438,7 +438,7 @@ namespace libsemigroups {
             auto        j = (i % 2 == 0 ? *it + 1 : *it - 1);
             auto const& u = _presentation.rules[i];
             auto const& v = _presentation.rules[j];
-            // LIBSEMIGROUPS_ASSERT(word_graph::follow_path_no_checks(
+            // LIBSEMIGROUPS_ASSERT(v4::word_graph::follow_path_no_checks(
             //                         *this,
             //                         first_source_no_checks(c, x),
             //                         u.cbegin(),
@@ -463,7 +463,7 @@ namespace libsemigroups {
               continue;
             }
 
-            node_type y = word_graph::follow_path_no_checks(
+            node_type y = v4::word_graph::follow_path_no_checks(
                 *this, root, u_first, u_last);
             LIBSEMIGROUPS_ASSERT(u_first <= u_last || y == root);
             if (y == UNDEFINED) {

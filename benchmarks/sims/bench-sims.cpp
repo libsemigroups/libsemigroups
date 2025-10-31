@@ -40,6 +40,7 @@
 #include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/types.hpp"                  // for word_type etc
+#include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 
 namespace libsemigroups {
   namespace {
@@ -1052,8 +1053,8 @@ namespace libsemigroups {
       for (auto it = first; it != last; it += 2) {
         bool this_rule_compatible = true;
         for (auto n : wg.nodes()) {
-          auto l = word_graph::follow_path_no_checks(wg, n, *it);
-          auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+          auto l = v4::word_graph::follow_path_no_checks(wg, n, *it);
+          auto r = v4::word_graph::follow_path_no_checks(wg, n, *(it + 1));
           if (l != r) {
             this_rule_compatible = false;
             break;

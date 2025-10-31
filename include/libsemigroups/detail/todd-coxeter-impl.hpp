@@ -1235,9 +1235,9 @@ namespace libsemigroups {
       //! classes of the congruence represented by a  \ref_todd_coxeter
       //! instance. If the number of active nodes becomes at least the value
       //! of the argument, and the word graph is complete (
-      //! \ref word_graph::is_complete returns \c true), then the enumeration
-      //! is terminated. When the given bound is equal to the number of
-      //! classes, this may prevent following the paths labelled by relations
+      //! \ref word_graph::is_complete returns \c true), then the
+      //! enumeration is terminated. When the given bound is equal to the number
+      //! of classes, this may prevent following the paths labelled by relations
       //! at many nodes when there is no possibility of finding coincidences.
       //!
       //! The default value is \ref UNDEFINED.

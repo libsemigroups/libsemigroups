@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2025 James D. Mitchell
+// Copyright (C) 2025 Joseph Edwards
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,27 +18,25 @@
 
 // This file contains the implementations of some things from word-graph.hpp.
 
-#include "libsemigroups/word-graph.hpp"
+#include "libsemigroups/word-graph-helpers.hpp"
 
 namespace libsemigroups {
+  namespace v4 {
 
-  // TODO(v4) delete this file
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  Meeter::Meeter()                         = default;
-  Meeter::Meeter(Meeter const&)            = default;
-  Meeter::Meeter(Meeter&&)                 = default;
-  Meeter& Meeter::operator=(Meeter const&) = default;
-  Meeter& Meeter::operator=(Meeter&&)      = default;
+    Meeter::Meeter()                         = default;
+    Meeter::Meeter(Meeter const&)            = default;
+    Meeter::Meeter(Meeter&&)                 = default;
+    Meeter& Meeter::operator=(Meeter const&) = default;
+    Meeter& Meeter::operator=(Meeter&&)      = default;
 
-  Meeter::~Meeter() = default;
+    Meeter::~Meeter() = default;
 
-  Joiner::Joiner()                         = default;
-  Joiner::Joiner(Joiner const&)            = default;
-  Joiner::Joiner(Joiner&&)                 = default;
-  Joiner& Joiner::operator=(Joiner const&) = default;
-  Joiner& Joiner::operator=(Joiner&&)      = default;
+    Joiner::Joiner()                         = default;
+    Joiner::Joiner(Joiner const&)            = default;
+    Joiner::Joiner(Joiner&&)                 = default;
+    Joiner& Joiner::operator=(Joiner const&) = default;
+    Joiner& Joiner::operator=(Joiner&&)      = default;
 
-  Joiner::~Joiner() = default;
-#pragma GCC diagnostic pop
+    Joiner::~Joiner() = default;
+  }  // namespace v4
 }  // namespace libsemigroups

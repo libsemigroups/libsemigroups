@@ -27,11 +27,12 @@
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
 
-#include "constants.hpp"   // for UNDEFINED
-#include "ranges.hpp"      // for iterator_range
-#include "runner.hpp"      // for Runner
-#include "types.hpp"       // for word_type, generator_index_type, tril
-#include "word-graph.hpp"  // for WordGraph
+#include "constants.hpp"           // for UNDEFINED
+#include "ranges.hpp"              // for iterator_range
+#include "runner.hpp"              // for Runner
+#include "types.hpp"               // for word_type, generator_index_type, tril
+#include "word-graph-helpers.hpp"  // for word_graph
+#include "word-graph.hpp"          // for WordGraph
 
 #include "detail/containers.hpp"  // for DynamicArray2
 
@@ -1832,7 +1833,7 @@ namespace libsemigroups {
       }
     }
     element_index_type s = position_of_generator_no_checks(*first);
-    return word_graph::follow_path_no_checks(
+    return v4::word_graph::follow_path_no_checks(
         current_right_cayley_graph(), s, first + 1, last);
   }
 
