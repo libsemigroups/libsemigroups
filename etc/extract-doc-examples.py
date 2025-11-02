@@ -24,18 +24,6 @@ HEADER_TEXT = """// libsemigroups - C++ library for semigroups and monoids
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>           // for size_t
-#include <cstdint>           // for uint64_t, uint8_t
-#include <initializer_list>  // for initializer_list
-#include <limits>            // for numeric_limits
-#include <string>            // for basic_string
-#include <string_view>       // for string_view
-#include <type_traits>       // for enable_if_t
-#include <unordered_map>     // for vector, operator==
-#include <utility>           // for forward
-#include <variant>           // for visit, operator==
-#include <vector>            // for vector, operator==
-
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "libsemigroups/libsemigroups.hpp"  // for *
 #include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
@@ -179,7 +167,8 @@ def extract_code_blocks(file_path):
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(f"Warning: Unclosed code block at end of file {file_path}")
+                __error(
+                    f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
@@ -276,7 +265,8 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
 def main():
     args = __parse_args()
-    process_folder(args.folder_path, args.recursive, args.exclude)
+    exclude = args.exclude if not args.exclude is None else []
+    process_folder(args.folder_path, args.recursive, exclude)
 
 
 if __name__ == "__main__":

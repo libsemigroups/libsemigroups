@@ -174,6 +174,7 @@ namespace libsemigroups {
   //! };
   //! \endcode
   //! \code
+  //! \skip-test  This is closer to a style guide.
   //!  using namespace froidure_pin;
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
