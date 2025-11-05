@@ -551,6 +551,45 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Compare two objects of the same type using the weighted short-lex
+  //! ordering without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! Compare two objects of the same type using the weighted short-lex
+  //! ordering. The weight of a word is computed by adding up the weights of
+  //! the generators in the word. Heavier words come later in the ordering than
+  //! all lighter words. Amongst words of equal weight, short-lex ordering is
+  //! used.
+  //!
+  //! \tparam T the type of iterators to the first object to be compared.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //! \param weights vector of weights where the ith index corresponds to the
+  //! weight of the ith generator in the alphabet.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! weighted short-lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \exceptions
+  //! Throws if std::lexicographical_compare does.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
+  //! and \p first1, and \f$m\f$ is the distance between \p last2 and \p
+  //! first2.
+  //!
+  //! \warning
+  //! It is not checked that the generators in the ranges are valid indices into
+  //! the weights vector.
+  //!
+  //! \sa
+  //! \ref wtshortlex_compare(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool wtshortlex_compare_no_checks(T const&                   first1,
                                     T const&                   last1,
@@ -574,6 +613,45 @@ namespace libsemigroups {
     return shortlex_compare(first1, last1, first2, last2);
   }
 
+  //! \brief Compare two objects of the same type using
+  //! \ref wtshortlex_compare_no_checks without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! Compare two objects of the same type using
+  //! \ref wtshortlex_compare_no_checks.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //! \param weights vector of weights where the ith index corresponds to the
+  //! weight of the ith generator in the alphabet.
+  //!
+  //! \returns The boolean value \c true if \p x is weighted short-lex less
+  //! than \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T
+  //! const&, std::vector<size_t> const&).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
+  //! is the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wtshortlex_compare_no_checks(
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //! \endcode
+  //!
+  //! \warning
+  //! It is not checked that the generators in \p x and \p y are valid indices
+  //! into the weights vector.
+  //!
+  //! \sa
+  //! \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool wtshortlex_compare_no_checks(T const&                   x,
                                     T const&                   y,
@@ -582,6 +660,45 @@ namespace libsemigroups {
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
 
+  //! \brief Compare two objects via their pointers using
+  //! \ref wtshortlex_compare_no_checks without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! Compare two objects via their pointers using
+  //! \ref wtshortlex_compare_no_checks.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //! \param weights vector of weights where the ith index corresponds to the
+  //! weight of the ith generator in the alphabet.
+  //!
+  //! \returns The boolean value \c true if \p x points to a word weighted
+  //! short-lex less than the word pointed to by \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T
+  //! const&, std::vector<size_t> const&).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
+  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wtshortlex_compare_no_checks(
+  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  //! \endcode
+  //!
+  //! \warning
+  //! It is not checked that the generators are valid indices into the weights
+  //! vector.
+  //!
+  //! \sa
+  //! \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
   template <typename T>
   bool wtshortlex_compare_no_checks(T* const                   x,
                                     T* const                   y,
@@ -590,10 +707,52 @@ namespace libsemigroups {
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
 
+  //! \brief A stateful struct with binary call operator using
+  //! \ref wtshortlex_compare_no_checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateful struct with binary call operator using
+  //! \ref wtshortlex_compare_no_checks. This struct stores a reference to a
+  //! weights vector and can be used as a template parameter for standard
+  //! library containers or algorithms that require a comparison functor.
+  //!
+  //! \sa
+  //! wtshortlex_compare_no_checks(T const&, T const&, std::vector<size_t>
+  //! const&)
   struct WtShortLexCompareNoChecks {
+    //! \brief Construct from weights vector.
+    //!
+    //! \param weights vector of weights where the ith index corresponds to
+    //! the weight of the ith generator in the alphabet.
     explicit WtShortLexCompareNoChecks(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref wtshortlex_compare_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref wtshortlex_compare_no_checks.
+    //!
+    //! \tparam T the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted short-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! See wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+    //! std::vector<size_t> const&).
+    //!
+    //! \complexity
+    //! See wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+    //! std::vector<size_t> const&).
+    //!
+    //! \warning
+    //! It is not checked that the generators are valid indices into the weights
+    //! vector.
     template <typename T>
     bool operator()(T const& x, T const& y) const {
       return wtshortlex_compare_no_checks(x, y, _weights);
@@ -603,6 +762,46 @@ namespace libsemigroups {
     std::vector<size_t> const& _weights;
   };
 
+  //! \brief Compare two objects of the same type using the weighted short-lex
+  //! ordering and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! Compare two objects of the same type using the weighted short-lex
+  //! ordering. The weight of a word is computed by adding up the weights of
+  //! the generators in the word. Heavier words come later in the ordering than
+  //! all lighter words. Amongst words of equal weight, short-lex ordering is
+  //! used.
+  //!
+  //! After checking that all generators in both ranges are valid indices into
+  //! the weights vector, this function performs the same as
+  //! `wtshortlex_compare_no_checks(first1, last1, first2, last2, weights)`.
+  //!
+  //! \tparam T the type of iterators to the first object to be compared.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //! \param weights vector of weights where the ith index corresponds to the
+  //! weight of the ith generator in the alphabet.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! weighted short-lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \throws LibsemigroupsException if any generator in either range is not a
+  //! valid index into the weights vector (i.e., if any generator is greater
+  //! than or equal to `weights.size()`).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
+  //! and \p first1, and \f$m\f$ is the distance between \p last2 and \p
+  //! first2.
+  //!
+  //! \sa
+  //! \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool wtshortlex_compare(T const&                   first1,
                           T const&                   last1,
@@ -614,7 +813,7 @@ namespace libsemigroups {
     for (auto it = first1; it != last1; ++it) {
       if (static_cast<size_t>(*it) >= alphabet_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter {}, valid letters are in range [0, {})",
+            "invalid generator {}, valid generators are in range [0, {})",
             static_cast<size_t>(*it),
             alphabet_size);
       }
@@ -623,7 +822,7 @@ namespace libsemigroups {
     for (auto it = first2; it != last2; ++it) {
       if (static_cast<size_t>(*it) >= alphabet_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter {}, valid letters are in range [0, {})",
+            "invalid generator {}, valid generators are in range [0, {})",
             static_cast<size_t>(*it),
             alphabet_size);
       }
@@ -632,6 +831,43 @@ namespace libsemigroups {
     return wtshortlex_compare_no_checks(first1, last1, first2, last2, weights);
   }
 
+  //! \brief Compare two objects of the same type using \ref wtshortlex_compare
+  //! and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! Compare two objects of the same type using \ref wtshortlex_compare.
+  //!
+  //! After checking that all generators in both objects are valid indices into
+  //! the weights vector, this function performs the same as
+  //! `wtshortlex_compare_no_checks(x, y, weights)`.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //! \param weights vector of weights where the ith index corresponds to the
+  //! weight of the ith generator in the alphabet.
+  //!
+  //! \returns The boolean value \c true if \p x is weighted short-lex less
+  //! than \p y, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any generator in \p x or \p y is not a
+  //! valid index into the weights vector.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
+  //! is the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wtshortlex_compare(
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //! \endcode
+  //!
+  //! \sa
+  //! \ref wtshortlex_compare(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool wtshortlex_compare(T const&                   x,
                           T const&                   y,
@@ -640,6 +876,43 @@ namespace libsemigroups {
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
 
+  //! \brief Compare two objects via their pointers using
+  //! \ref wtshortlex_compare and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! Compare two objects via their pointers using \ref wtshortlex_compare.
+  //!
+  //! After checking that all generators are valid indices into the weights
+  //! vector, this function performs the same as
+  //! `wtshortlex_compare_no_checks(x, y, weights)`.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //! \param weights vector of weights where the ith index corresponds to the
+  //! weight of the ith generator in the alphabet.
+  //!
+  //! \returns The boolean value \c true if \p x points to a word weighted
+  //! short-lex less than the word pointed to by \p y, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any generator is not a valid index into
+  //! the weights vector.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
+  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wtshortlex_compare(
+  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  //! \endcode
+  //!
+  //! \sa
+  //! \ref wtshortlex_compare(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
   template <typename T>
   bool wtshortlex_compare(T* const                   x,
                           T* const                   y,
@@ -648,10 +921,46 @@ namespace libsemigroups {
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
 
+  //! \brief A stateful struct with binary call operator using
+  //! \ref wtshortlex_compare.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateful struct with binary call operator using
+  //! \ref wtshortlex_compare. This struct stores a reference to a weights
+  //! vector and can be used as a template parameter for standard library
+  //! containers or algorithms that require a comparison functor.
+  //!
+  //! \sa
+  //! wtshortlex_compare(T const&, T const&, std::vector<size_t> const&)
   struct WtShortLexCompare {
+    //! \brief Construct from weights vector.
+    //!
+    //! \param weights vector of weights where the ith index corresponds to
+    //! the weight of the ith generator in the alphabet.
     explicit WtShortLexCompare(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref wtshortlex_compare.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref wtshortlex_compare.
+    //!
+    //! \tparam T the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted short-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if any generator is not a valid index
+    //! into the weights vector.
+    //!
+    //! \complexity
+    //! See wtshortlex_compare(T const&, T const&, T const&, T const&,
+    //! std::vector<size_t> const&).
     template <typename T>
     bool operator()(T const& x, T const& y) const {
       return wtshortlex_compare(x, y, _weights);
