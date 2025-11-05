@@ -73,7 +73,4 @@ jobs:
       - name: Run tests with valgrind . . .
         run: |
           valgrind --version
-          unbuffer libtool --mode=execute valgrind --leak-check=full ./test_all "[quick][exclude:no-valgrind]" 2>&1 | tee valgrind.log
-          echo
-          ( ! grep -i "Invalid" valgrind.log )
-          ( ! grep -E "lost: [^0]" valgrind.log )
+          unbuffer libtool --mode=execute valgrind --leak-check=full --error-exitcode=1 ./test_all "[quick][exclude:no-valgrind]"
