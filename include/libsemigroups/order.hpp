@@ -26,6 +26,7 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
+#include "exception.hpp"
 #include "ranges.hpp"  // for shortlex_compare
 
 #include "ranges.hpp"
@@ -596,6 +597,64 @@ namespace libsemigroups {
     template <typename T>
     bool operator()(T const& x, T const& y) const {
       return wtshortlex_compare_no_checks(x, y, _weights);
+    }
+
+   private:
+    std::vector<size_t> const& _weights;
+  };
+
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wtshortlex_compare(T const&                   first1,
+                          T const&                   last1,
+                          T const&                   first2,
+                          T const&                   last2,
+                          std::vector<size_t> const& weights) {
+    size_t const alphabet_size = weights.size();
+
+    for (auto it = first1; it != last1; ++it) {
+      if (static_cast<size_t>(*it) >= alphabet_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter {}, valid letters are in range [0, {})",
+            static_cast<size_t>(*it),
+            alphabet_size);
+      }
+    }
+
+    for (auto it = first2; it != last2; ++it) {
+      if (static_cast<size_t>(*it) >= alphabet_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid letter {}, valid letters are in range [0, {})",
+            static_cast<size_t>(*it),
+            alphabet_size);
+      }
+    }
+
+    return wtshortlex_compare_no_checks(first1, last1, first2, last2, weights);
+  }
+
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wtshortlex_compare(T const&                   x,
+                          T const&                   y,
+                          std::vector<size_t> const& weights) {
+    return wtshortlex_compare(
+        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  }
+
+  template <typename T>
+  bool wtshortlex_compare(T* const                   x,
+                          T* const                   y,
+                          std::vector<size_t> const& weights) {
+    return wtshortlex_compare(
+        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  }
+
+  struct WtShortLexCompare {
+    explicit WtShortLexCompare(std::vector<size_t> const& weights)
+        : _weights(weights) {}
+
+    template <typename T>
+    bool operator()(T const& x, T const& y) const {
+      return wtshortlex_compare(x, y, _weights);
     }
 
    private:
