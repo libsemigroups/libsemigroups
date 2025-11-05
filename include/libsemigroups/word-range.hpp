@@ -1046,6 +1046,7 @@ namespace libsemigroups {
       //!
       //! \par Example
       //! \code
+      //! using namespace rx;
       //!  StringRange strings;
       //!  strings.alphabet("ab").first("a").last("bbbb");
       //!  auto words = (strings | ToWord("ba"));
@@ -1397,6 +1398,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
+    //! using namespace rx;
     //! WordRange words;
     //! words.alphabet_size(1).min(0).max(10);
     //!

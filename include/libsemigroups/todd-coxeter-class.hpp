@@ -77,6 +77,8 @@ namespace libsemigroups {
   //!
   //! \par Example 1
   //! \code
+  //! using options = detail::ToddCoxeterImpl::options;
+  //!
   //! Presentation<word_type> p;
   //! p.alphabet(2);
   //! presentation::add_rule(p, 00_w, 0_w);
@@ -84,12 +86,17 @@ namespace libsemigroups {
   //! ToddCoxeter tc(congruence_kind::onesided, p);
   //! tc.strategy(options::strategy::felsch);
   //! tc.number_of_classes();
-  //! tc.contains(0000_w, 00_w);
-  //! tc.index_of(0000_w);
+  //!
+  //! auto w1 = 0000_w;
+  //! auto w2 = 00_w;
+  //! todd_coxeter::contains(tc, w1, w2);
+  //! todd_coxeter::index_of(tc, w1);
   //! \endcode
   //!
   //! \par Example 2
   //! \code
+  //! using options = detail::ToddCoxeterImpl::options;
+  //!
   //! Presentation<word_type> p;
   //! p.alphabet(4);
   //! presentation::add_rule(p, 00_w, 0_w);
@@ -108,9 +115,9 @@ namespace libsemigroups {
   //! tc.strategy(options::strategy::hlt)
   //!    .lookahead_extent(options::lookahead_extent::partial)
   //!    .save(false);
-  //! tc.number_of_classes()  // 10'752
-  //! tc.standardize(order::recursive);
-  //! normal_forms(tc) | rx::take(10) | rx::to_vector()
+  //! tc.number_of_classes();  // 10'752
+  //! tc.standardize(Order::recursive);
+  //! todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
   //! // {0_w,
   //! //  1_w,
   //! //  2_w,
@@ -121,8 +128,8 @@ namespace libsemigroups {
   //! //  221_w,
   //! //  212_w,
   //! //  2121_w}
-  //! tc.standardize(order::lex);
-  //! normal_forms(tc) | rx::take(10) | rx::to_vector()
+  //! tc.standardize(Order::lex);
+  //! todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
   //! // {0_w,
   //! //  01_w,
   //! //  012_w,

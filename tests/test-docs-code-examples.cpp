@@ -223,114 +223,118 @@ LIBSEMIGROUPS_TEST_CASE("docs", "9", "konieczny.hpp", "[docs][quick]") {
 
 // matrix.hpp: Line 1964
 LIBSEMIGROUPS_TEST_CASE("docs", "10", "matrix.hpp", "[docs][quick]") {
-      Mat m({{1, 1}, {0, 0}});
+     using Mat = BMat8;
+  Mat m({{1, 1}, {0, 0}});
 }
 
-// matrix.hpp: Line 2866
+// matrix.hpp: Line 2867
 LIBSEMIGROUPS_TEST_CASE("docs", "11", "matrix.hpp", "[docs][quick]") {
-     Mat m(2, 3); // construct a 2 x 3 matrix
+     using Mat = IntMat<>;
+ Mat m(2, 3); // construct a 2 x 3 matrix
 }
 
-// matrix.hpp: Line 2888
+// matrix.hpp: Line 2890
 LIBSEMIGROUPS_TEST_CASE("docs", "12", "matrix.hpp", "[docs][quick]") {
-     Mat m({1, 1, 0, 0});
+     using Mat = BMat<>;
+ Mat m({1, 1, 0, 0});
 }
 
-// matrix.hpp: Line 2910
+// matrix.hpp: Line 2913
 LIBSEMIGROUPS_TEST_CASE("docs", "13", "matrix.hpp", "[docs][quick]") {
-     Mat m({{1, 1}, {0, 0}});
+     using Mat = IntMat<>;
+ Mat m({{1, 1}, {0, 0}});
 }
 
-// matrix.hpp: Line 3814
+// matrix.hpp: Line 3818
 LIBSEMIGROUPS_TEST_CASE("docs", "14", "matrix.hpp", "[docs][quick]") {
      // default construct an uninitialized 3 x 3 static matrix
- BMat<3> m;
+ BMat<3> m3;
  // construct an uninitialized 4 x 4 dynamic matrix
- BMat<> m(4, 4);
+ BMat<> m4(4, 4);
 }
 
-// matrix.hpp: Line 4121
+// matrix.hpp: Line 4125
 LIBSEMIGROUPS_TEST_CASE("docs", "15", "matrix.hpp", "[docs][quick]") {
      // default construct an uninitialized 3 x 3 static matrix
- IntMat<3> m;
+ IntMat<3> m3;
  // construct an uninitialized 4 x 4 dynamic matrix
- IntMat<>  m(4, 4);
+ IntMat<>  m4(4, 4);
 }
 
-// matrix.hpp: Line 4411
+// matrix.hpp: Line 4415
 LIBSEMIGROUPS_TEST_CASE("docs", "16", "matrix.hpp", "[docs][quick]") {
      // default construct an uninitialized 3 x 3 static matrix
- MaxPlusMat<3> m;
+ MaxPlusMat<3> m3;
  // construct an uninitialized 4 x 4 dynamic matrix
- MaxPlusMat<>  m(4, 4);
+ MaxPlusMat<>  m4(4, 4);
 }
 
-// matrix.hpp: Line 4720
+// matrix.hpp: Line 4724
 LIBSEMIGROUPS_TEST_CASE("docs", "17", "matrix.hpp", "[docs][quick]") {
      // default construct an uninitialized 3 x 3 static matrix
- MinPlusMat<3> m;
+ MinPlusMat<3> m3;
  // construct an uninitialized 4 x 4 dynamic matrix
- MinPlusMat<> m(4, 4);
+ MinPlusMat<> m4(4, 4);
 }
 
-// matrix.hpp: Line 5039
+// matrix.hpp: Line 5043
 LIBSEMIGROUPS_TEST_CASE("docs", "18", "matrix.hpp", "[docs][quick]") {
      // construct an uninitialized 3 x 3 static matrix with threshold 11
- MaxPlusTruncMat<11, 3> m;
+ MaxPlusTruncMat<11, 3> m3_11;
  // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
- MaxPlusTruncMat<11> m(4, 4);
+ MaxPlusTruncMat<11> m4_11(4, 4);
  // construct a truncated max-plus semiring with threshold 11
- MaxPlusTruncSemiring sr(11);
+ MaxPlusTruncSemiring sr_11(11);
  // construct an uninitialized 5 x 5 dynamic matrix with threshold 11
  // (defined at run time)
- MaxPlusTruncMat<>  m(sr, 5, 5);
+ MaxPlusTruncMat<>  m5_11(&sr_11, 5, 5);
 }
 
-// matrix.hpp: Line 5520
+// matrix.hpp: Line 5524
 LIBSEMIGROUPS_TEST_CASE("docs", "19", "matrix.hpp", "[docs][quick]") {
      // construct an uninitialized 3 x 3 static matrix with threshold 11
- MinPlusTruncMat<11, 3> m;
+ MinPlusTruncMat<11, 3> m3_11;
  // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
- MinPlusTruncMat<11> m(4, 4);
+ MinPlusTruncMat<11> m4_11(4, 4);
  // construct a truncated min-plus semiring with threshold 11
- MinPlusTruncSemiring sr(11);
+ MinPlusTruncSemiring sr_11(11);
  // construct an uninitialized 5 x 5 dynamic matrix with threshold 11
  // (defined at run time)
- MinPlusTruncMat<>  m(sr, 5, 5);
+ MinPlusTruncMat<>  m5_11(&sr_11, 5, 5);
 }
 
-// matrix.hpp: Line 6006
+// matrix.hpp: Line 6010
 LIBSEMIGROUPS_TEST_CASE("docs", "20", "matrix.hpp", "[docs][quick]") {
      // construct an uninitialized 3 x 3 static matrix with threshold
  // 11, period 2
- NTPMat<11, 2, 3> m;
+ NTPMat<11, 2, 3> m3_11_2;
  // construct an uninitialized 4 x 4 dynamic matrix with threshold 11,
  // period 2
- NTPMat<11, 2> m(4, 4);
+ NTPMat<11, 2> m4_11_2(4, 4);
  // construct an ntp semiring with threshold 11, period 2
- NTPSemiring sr(11, 2);
+ NTPSemiring<> sr_11_2(11, 2);
  // construct an uninitialized 5 x 5 dynamic matrix with threshold 11,
  // period 2
- NTPMat<> m(sr, 5, 5);
+ NTPMat<> m_5_11_2(&sr_11_2, 5, 5);
 }
 
-// matrix.hpp: Line 6984
+// matrix.hpp: Line 6988
 LIBSEMIGROUPS_TEST_CASE("docs", "21", "matrix.hpp", "[docs][quick]") {
      // default construct an uninitialized 3 x 3 static matrix
- ProjMaxPlusMat<3> m;
+ ProjMaxPlusMat<3> m3;
  // construct an uninitialized 4 x 4 dynamic matrix
- ProjMaxPlusMat<>  m(4, 4);
+ ProjMaxPlusMat<>  m4(4, 4);
 }
 
-// matrix.hpp: Line 7149
+// matrix.hpp: Line 7153
 LIBSEMIGROUPS_TEST_CASE("docs", "22", "matrix.hpp", "[docs][quick]") {
-     auto x == make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
- 1}}));
+     auto x = make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
+ 1}});
  // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
  matrix::pow(x, 100);
 }
 
-// matrix.hpp: Line 7897
+// matrix.hpp: Line 7901
 LIBSEMIGROUPS_TEST_CASE("docs", "23", "matrix.hpp", "[docs][quick]") {
      auto x = make<BMat<>>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
  matrix::row_space_size(x); // returns 7
@@ -413,20 +417,27 @@ LIBSEMIGROUPS_TEST_CASE("docs", "32", "schreier-sims.hpp", "[docs][quick]") {
 
 // todd-coxeter-class.hpp: Line 80
 LIBSEMIGROUPS_TEST_CASE("docs", "33", "todd-coxeter-class.hpp", "[docs][quick]") {
-     Presentation<word_type> p;
+     using options = detail::ToddCoxeterImpl::options;
+
+ Presentation<word_type> p;
  p.alphabet(2);
  presentation::add_rule(p, 00_w, 0_w);
  presentation::add_rule(p, 0_w, 1_w);
  ToddCoxeter tc(congruence_kind::onesided, p);
  tc.strategy(options::strategy::felsch);
  tc.number_of_classes();
- tc.contains(0000_w, 00_w);
- tc.index_of(0000_w);
+
+ auto w1 = 0000_w;
+ auto w2 = 00_w;
+ todd_coxeter::contains(tc, w1, w2);
+ todd_coxeter::index_of(tc, w1);
 }
 
-// todd-coxeter-class.hpp: Line 93
+// todd-coxeter-class.hpp: Line 98
 LIBSEMIGROUPS_TEST_CASE("docs", "34", "todd-coxeter-class.hpp", "[docs][quick]") {
-     Presentation<word_type> p;
+     using options = detail::ToddCoxeterImpl::options;
+
+ Presentation<word_type> p;
  p.alphabet(4);
  presentation::add_rule(p, 00_w, 0_w);
  presentation::add_rule(p, 10_w, 1_w);
@@ -444,9 +455,9 @@ LIBSEMIGROUPS_TEST_CASE("docs", "34", "todd-coxeter-class.hpp", "[docs][quick]")
  tc.strategy(options::strategy::hlt)
     .lookahead_extent(options::lookahead_extent::partial)
     .save(false);
- tc.number_of_classes()  // 10'752
- tc.standardize(order::recursive);
- normal_forms(tc) | rx::take(10) | rx::to_vector()
+ tc.number_of_classes();  // 10'752
+ tc.standardize(Order::recursive);
+ todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
  // {0_w,
  //  1_w,
  //  2_w,
@@ -457,8 +468,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "34", "todd-coxeter-class.hpp", "[docs][quick]")
  //  221_w,
  //  212_w,
  //  2121_w}
- tc.standardize(order::lex);
- normal_forms(tc) | rx::take(10) | rx::to_vector()
+ tc.standardize(Order::lex);
+ todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
  // {0_w,
  //  01_w,
  //  012_w,
@@ -471,95 +482,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "34", "todd-coxeter-class.hpp", "[docs][quick]")
  //  0121212121_w};
 }
 
-// todd-coxeter-helpers.hpp: Line 95
-LIBSEMIGROUPS_TEST_CASE("docs", "35", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.current_index_of_no_checks(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 118
-LIBSEMIGROUPS_TEST_CASE("docs", "36", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.current_index_of(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 141
-LIBSEMIGROUPS_TEST_CASE("docs", "37", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.index_of_no_checks(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 164
-LIBSEMIGROUPS_TEST_CASE("docs", "38", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.index_of(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 186
-LIBSEMIGROUPS_TEST_CASE("docs", "39", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.current_index_of_no_checks(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 211
-LIBSEMIGROUPS_TEST_CASE("docs", "40", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.current_index_of(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 236
-LIBSEMIGROUPS_TEST_CASE("docs", "41", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.index_of_no_checks(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 261
-LIBSEMIGROUPS_TEST_CASE("docs", "42", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.index_of(std::begin(w), std::end(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 285
-LIBSEMIGROUPS_TEST_CASE("docs", "43", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.current_index_of_no_checks(w, w + std::strlen(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 307
-LIBSEMIGROUPS_TEST_CASE("docs", "44", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.current_index_of(w, w + std::strlen(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 329
-LIBSEMIGROUPS_TEST_CASE("docs", "45", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.index_of_no_checks(w, w + std::strlen(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 351
-LIBSEMIGROUPS_TEST_CASE("docs", "46", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.index_of(w, w + std::strlen(w));
-}
-
-// todd-coxeter-helpers.hpp: Line 834
-LIBSEMIGROUPS_TEST_CASE("docs", "47", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     Presentation<std::string> p;
- p.alphabet("abcdef");
- p.contains_empty_word(true);
- presentation::add_inverse_rules(p, "defabc");
- presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
- presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
- presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
- ToddCoxeter tc(congruence_kind.twosided, p);
-}
-
-// todd-coxeter-helpers.hpp: Line 852
-LIBSEMIGROUPS_TEST_CASE("docs", "48", "todd-coxeter-helpers.hpp", "[docs][quick]") {
-     tc.lookahead_extent(options::lookahead_extent::full)
-     .lookahead_style(options::lookahead_style::felsch);
-
- tc.run_for(std::chrono::seconds(1));
- tc.perform_lookahead(true);
-
- todd_coxeter::perform_lookbehind(tc);
- tc.run_for(std::chrono::seconds(1));
- todd_coxeter::perform_lookbehind(tc);
- tc.perform_lookahead(true);
- tc.number_of_classes(); // returns 1
-}
-
 // word-graph.hpp: Line 1540
-LIBSEMIGROUPS_TEST_CASE("docs", "49", "word-graph.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "35", "word-graph.hpp", "[docs][quick]") {
      WordGraph<size_t> wg;
  wg.add_nodes(2);
  wg.add_to_out_degree(1);
@@ -569,7 +493,7 @@ LIBSEMIGROUPS_TEST_CASE("docs", "49", "word-graph.hpp", "[docs][quick]") {
 }
 
 // word-graph.hpp: Line 1583
-LIBSEMIGROUPS_TEST_CASE("docs", "50", "word-graph.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "36", "word-graph.hpp", "[docs][quick]") {
      WordGraph<size_t> wg;
  wg.add_nodes(4);
  wg.add_to_out_degree(1);
@@ -584,7 +508,7 @@ LIBSEMIGROUPS_TEST_CASE("docs", "50", "word-graph.hpp", "[docs][quick]") {
 }
 
 // word-graph.hpp: Line 1973
-LIBSEMIGROUPS_TEST_CASE("docs", "51", "word-graph.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "37", "word-graph.hpp", "[docs][quick]") {
      WordGraph<size_t> wg;
  wg.add_nodes(4);
  wg.add_to_out_degree(1);
@@ -599,34 +523,34 @@ LIBSEMIGROUPS_TEST_CASE("docs", "51", "word-graph.hpp", "[docs][quick]") {
 }
 
 // word-graph.hpp: Line 2053
-LIBSEMIGROUPS_TEST_CASE("docs", "52", "word-graph.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "38", "word-graph.hpp", "[docs][quick]") {
      auto wg = make<WordGraph<uint8_t>>(
      5, {{0, 0}, {1, 1}, {2}, {3, 3}});
  word_graph::is_strictly_cyclic(wg);  // returns false
 }
 
 // word-graph.hpp: Line 2793
-LIBSEMIGROUPS_TEST_CASE("docs", "53", "word-graph.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "39", "word-graph.hpp", "[docs][quick]") {
      // Construct a word graph with 5 nodes and 10 edges (7 specified)
  make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
 }
 
 // word-range.hpp: Line 183
-LIBSEMIGROUPS_TEST_CASE("docs", "54", "word-range.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "40", "word-range.hpp", "[docs][quick]") {
      std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
                         cend_wilo(2, 3, {0}, {1, 1, 1}));
  // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
 }
 
 // word-range.hpp: Line 253
-LIBSEMIGROUPS_TEST_CASE("docs", "55", "word-range.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "41", "word-range.hpp", "[docs][quick]") {
      std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
                         cend_wislo(2,  {0}, {0, 0, 0}));
  // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
 }
 
 // word-range.hpp: Line 313
-LIBSEMIGROUPS_TEST_CASE("docs", "56", "word-range.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "42", "word-range.hpp", "[docs][quick]") {
      WordRange words;
  words.order(Order::shortlex)  // words in shortlex order
       .alphabet_size(2)        // on 2 letters
@@ -635,7 +559,7 @@ LIBSEMIGROUPS_TEST_CASE("docs", "56", "word-range.hpp", "[docs][quick]") {
 }
 
 // word-range.hpp: Line 761
-LIBSEMIGROUPS_TEST_CASE("docs", "57", "word-range.hpp", "[docs][quick]") {
+LIBSEMIGROUPS_TEST_CASE("docs", "43", "word-range.hpp", "[docs][quick]") {
      ToWord toword("bac");
  toword("bac");        // returns {0, 1, 2}
  toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
@@ -645,8 +569,9 @@ LIBSEMIGROUPS_TEST_CASE("docs", "57", "word-range.hpp", "[docs][quick]") {
 }
 
 // word-range.hpp: Line 1050
-LIBSEMIGROUPS_TEST_CASE("docs", "58", "word-range.hpp", "[docs][quick]") {
-      StringRange strings;
+LIBSEMIGROUPS_TEST_CASE("docs", "44", "word-range.hpp", "[docs][quick]") {
+     using namespace rx;
+  StringRange strings;
   strings.alphabet("ab").first("a").last("bbbb");
   auto words = (strings | ToWord("ba"));
   // contains the words
@@ -657,8 +582,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "58", "word-range.hpp", "[docs][quick]") {
   //  0001_w}));
 }
 
-// word-range.hpp: Line 1150
-LIBSEMIGROUPS_TEST_CASE("docs", "59", "word-range.hpp", "[docs][quick]") {
+// word-range.hpp: Line 1151
+LIBSEMIGROUPS_TEST_CASE("docs", "45", "word-range.hpp", "[docs][quick]") {
      ToString tostring("bac");
  tostring(word_type({1, 0, 2}));                 // returns "abc"
  tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2}));  // returns "baabaabc"
@@ -667,9 +592,10 @@ LIBSEMIGROUPS_TEST_CASE("docs", "59", "word-range.hpp", "[docs][quick]") {
  tostring(word_type({1, 0, 2}));                 // returns "bac"
 }
 
-// word-range.hpp: Line 1401
-LIBSEMIGROUPS_TEST_CASE("docs", "60", "word-range.hpp", "[docs][quick]") {
-     WordRange words;
+// word-range.hpp: Line 1402
+LIBSEMIGROUPS_TEST_CASE("docs", "46", "word-range.hpp", "[docs][quick]") {
+     using namespace rx;
+ WordRange words;
  words.alphabet_size(1).min(0).max(10);
 
  auto strings = (words | ToString("a"));
@@ -678,8 +604,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "60", "word-range.hpp", "[docs][quick]") {
  // "aaaaaaaa", "aaaaaaaaa"};
 }
 
-// word-range.hpp: Line 1594
-LIBSEMIGROUPS_TEST_CASE("docs", "61", "word-range.hpp", "[docs][quick]") {
+// word-range.hpp: Line 1596
+LIBSEMIGROUPS_TEST_CASE("docs", "47", "word-range.hpp", "[docs][quick]") {
      StringRange strings;
  strings.order(Order::shortlex) // strings in shortlex order
         .alphabet("ab")         // on 2 letters
@@ -687,8 +613,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "61", "word-range.hpp", "[docs][quick]") {
         .max(5);                // to 5
 }
 
-// word-range.hpp: Line 2305
-LIBSEMIGROUPS_TEST_CASE("docs", "62", "word-range.hpp", "[docs][quick]") {
+// word-range.hpp: Line 2307
+LIBSEMIGROUPS_TEST_CASE("docs", "48", "word-range.hpp", "[docs][quick]") {
      using namespace words;
  word_type w = 012345_w;
  prod(w, 0, 5, 2);              // {0, 2, 4}

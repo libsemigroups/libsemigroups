@@ -1524,8 +1524,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -1961,6 +1961,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
+    //! using Mat = BMat8;
     //!  Mat m({{1, 1}, {0, 0}});
     //! \endcode
     explicit StaticMatrix(
@@ -2780,9 +2781,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -2863,6 +2864,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
+    //! using Mat = IntMat<>;
     //! Mat m(2, 3); // construct a 2 x 3 matrix
     //! \endcode
     DynamicMatrix(size_t r, size_t c) : MatrixDynamicDim(r, c), MatrixCommon() {
@@ -2885,6 +2887,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
+    //! using Mat = BMat<>;
     //! Mat m({1, 1, 0, 0});
     //! \endcode
     explicit DynamicMatrix(std::initializer_list<scalar_type> const& c)
@@ -2907,6 +2910,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
+    //! using Mat = IntMat<>;
     //! Mat m({{1, 1}, {0, 0}});
     //! \endcode
     explicit DynamicMatrix(
@@ -3812,9 +3816,9 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! BMat<3> m;
+  //! BMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
-  //! BMat<> m(4, 4);
+  //! BMat<> m4(4, 4);
   //! \endcode
 
   //! \ingroup bmat_group
@@ -4119,9 +4123,9 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! IntMat<3> m;
+  //! IntMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
-  //! IntMat<>  m(4, 4);
+  //! IntMat<>  m4(4, 4);
   //! \endcode
 
   //! \ingroup intmat_group
@@ -4409,9 +4413,9 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! MaxPlusMat<3> m;
+  //! MaxPlusMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
-  //! MaxPlusMat<>  m(4, 4);
+  //! MaxPlusMat<>  m4(4, 4);
   //! \endcode
 
   //! \ingroup maxplusmat_group
@@ -4718,9 +4722,9 @@ namespace libsemigroups {
   //!
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! MinPlusMat<3> m;
+  //! MinPlusMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
-  //! MinPlusMat<> m(4, 4);
+  //! MinPlusMat<> m4(4, 4);
   //! \endcode
 
   //! \ingroup minplusmat_group
@@ -5037,14 +5041,14 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // construct an uninitialized 3 x 3 static matrix with threshold 11
-  //! MaxPlusTruncMat<11, 3> m;
+  //! MaxPlusTruncMat<11, 3> m3_11;
   //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
-  //! MaxPlusTruncMat<11> m(4, 4);
+  //! MaxPlusTruncMat<11> m4_11(4, 4);
   //! // construct a truncated max-plus semiring with threshold 11
-  //! MaxPlusTruncSemiring sr(11);
+  //! MaxPlusTruncSemiring sr_11(11);
   //! // construct an uninitialized 5 x 5 dynamic matrix with threshold 11
   //! // (defined at run time)
-  //! MaxPlusTruncMat<>  m(sr, 5, 5);
+  //! MaxPlusTruncMat<>  m5_11(&sr_11, 5, 5);
   //! \endcode
 
   //! \ingroup maxplustruncmat_group
@@ -5518,14 +5522,14 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // construct an uninitialized 3 x 3 static matrix with threshold 11
-  //! MinPlusTruncMat<11, 3> m;
+  //! MinPlusTruncMat<11, 3> m3_11;
   //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
-  //! MinPlusTruncMat<11> m(4, 4);
+  //! MinPlusTruncMat<11> m4_11(4, 4);
   //! // construct a truncated min-plus semiring with threshold 11
-  //! MinPlusTruncSemiring sr(11);
+  //! MinPlusTruncSemiring sr_11(11);
   //! // construct an uninitialized 5 x 5 dynamic matrix with threshold 11
   //! // (defined at run time)
-  //! MinPlusTruncMat<>  m(sr, 5, 5);
+  //! MinPlusTruncMat<>  m5_11(&sr_11, 5, 5);
   //! \endcode
 
   //! \ingroup minplustruncmat_group
@@ -6005,15 +6009,15 @@ namespace libsemigroups {
   //! \code
   //! // construct an uninitialized 3 x 3 static matrix with threshold
   //! // 11, period 2
-  //! NTPMat<11, 2, 3> m;
+  //! NTPMat<11, 2, 3> m3_11_2;
   //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11,
   //! // period 2
-  //! NTPMat<11, 2> m(4, 4);
+  //! NTPMat<11, 2> m4_11_2(4, 4);
   //! // construct an ntp semiring with threshold 11, period 2
-  //! NTPSemiring sr(11, 2);
+  //! NTPSemiring<> sr_11_2(11, 2);
   //! // construct an uninitialized 5 x 5 dynamic matrix with threshold 11,
   //! // period 2
-  //! NTPMat<> m(sr, 5, 5);
+  //! NTPMat<> m_5_11_2(&sr_11_2, 5, 5);
   //! \endcode
 
   namespace detail {
@@ -6678,7 +6682,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -6982,9 +6986,9 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! ProjMaxPlusMat<3> m;
+  //! ProjMaxPlusMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
-  //! ProjMaxPlusMat<>  m(4, 4);
+  //! ProjMaxPlusMat<>  m4(4, 4);
   //! \endcode
 
   //! \ingroup projmaxplus_group
@@ -7146,8 +7150,8 @@ namespace libsemigroups {
     //! \par Example
     //!
     //! \code
-    //! auto x == make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
-    //! 1}}));
+    //! auto x = make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
+    //! 1}});
     //! // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
     //! matrix::pow(x, 100);
     //! \endcode

@@ -92,6 +92,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -115,6 +116,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.current_index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -138,6 +140,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -161,6 +164,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -183,6 +187,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -208,6 +213,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.current_index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -233,6 +239,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -258,6 +265,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
@@ -282,6 +290,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.current_index_of_no_checks(w, w + std::strlen(w));
     //! \endcode
     //!
@@ -304,6 +313,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.current_index_of(w, w + std::strlen(w));
     //! \endcode
     //!
@@ -326,6 +336,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.index_of_no_checks(w, w + std::strlen(w));
     //! \endcode
     //!
@@ -348,6 +359,7 @@ namespace libsemigroups {
     //!
     //! This function just calls
     //! \code
+    //! \skip-test
     //! tc.index_of(w, w + std::strlen(w));
     //! \endcode
     //!
@@ -831,6 +843,10 @@ namespace libsemigroups {
     //! Neumann for the trivial group:
     //!
     //! \code
+    //! \skip-test
+    //! \\ TODO : Long running test. Check if meant to be this slow?
+    //!
+    //! using options = detail::ToddCoxeterImpl::options;
     //! Presentation<std::string> p;
     //! p.alphabet("abcdef");
     //! p.contains_empty_word(true);
@@ -838,17 +854,8 @@ namespace libsemigroups {
     //! presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
     //! presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
     //! presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
-    //! ToddCoxeter tc(congruence_kind.twosided, p);
-    //! \endcode
+    //! ToddCoxeter tc(congruence_kind::twosided, p);
     //!
-    //! Then running \p tc will simply grow the underlying word graph until
-    //! your computer runs out of memory. The authors of ``libsemigroups`` were
-    //! not able to find any combination of the many settings for
-    //! \ref_todd_coxeter where running \p tc returned an answer. We also tried
-    //! with GAP and ACE but neither of these seemed able to return an answer
-    //! either. But doing the following:
-    //!
-    //! \code
     //! tc.lookahead_extent(options::lookahead_extent::full)
     //!     .lookahead_style(options::lookahead_style::felsch);
     //!
@@ -861,9 +868,14 @@ namespace libsemigroups {
     //! tc.perform_lookahead(true);
     //! tc.number_of_classes(); // returns 1
     //! \endcode
+    //!!
+    //! Running \p tc will simply grow the underlying word graph until
+    //! your computer runs out of memory. The authors of ``libsemigroups`` were
+    //! not able to find any combination of the many settings for
+    //! \ref_todd_coxeter where running \p tc returned an answer. We also tried
+    //! with GAP and ACE but neither of these seemed able to return an answer
+    //! either. But doing the following:
     //!
-    //! returns the correct answer in about 22 seconds (on a 2024 Macbook Pro M4
-    //! Pro).
     //!
     //! \param tc the  \ref_todd_coxeter instance.
     //!
