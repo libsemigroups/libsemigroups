@@ -558,7 +558,7 @@ namespace libsemigroups {
   //!
   //! Compare two objects of the same type using the weighted short-lex
   //! ordering. The weight of a word is computed by adding up the weights of
-  //! the generators in the word. Heavier words come later in the ordering than
+  //! the letters in the word. Heavier words come later in the ordering than
   //! all lighter words. Amongst words of equal weight, short-lex ordering is
   //! used.
   //!
@@ -569,7 +569,7 @@ namespace libsemigroups {
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
   //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith generator in the alphabet.
+  //! weight of the ith letter in the alphabet.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted short-lex less than the range `[first2, last2)`, and \c false
@@ -584,7 +584,7 @@ namespace libsemigroups {
   //! first2.
   //!
   //! \warning
-  //! It is not checked that the generators in the ranges are valid indices into
+  //! It is not checked that the letters in the ranges are valid indices into
   //! the weights vector.
   //!
   //! \sa
@@ -626,7 +626,7 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith generator in the alphabet.
+  //! weight of the ith letter in the alphabet.
   //!
   //! \returns The boolean value \c true if \p x is weighted short-lex less
   //! than \p y, and \c false otherwise.
@@ -646,7 +646,7 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \warning
-  //! It is not checked that the generators in \p x and \p y are valid indices
+  //! It is not checked that the letters in \p x and \p y are valid indices
   //! into the weights vector.
   //!
   //! \sa
@@ -673,7 +673,7 @@ namespace libsemigroups {
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
   //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith generator in the alphabet.
+  //! weight of the ith letter in the alphabet.
   //!
   //! \returns The boolean value \c true if \p x points to a word weighted
   //! short-lex less than the word pointed to by \p y, and \c false otherwise.
@@ -693,7 +693,7 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \warning
-  //! It is not checked that the generators are valid indices into the weights
+  //! It is not checked that the letters are valid indices into the weights
   //! vector.
   //!
   //! \sa
@@ -724,7 +724,7 @@ namespace libsemigroups {
     //! \brief Construct from weights vector.
     //!
     //! \param weights vector of weights where the ith index corresponds to
-    //! the weight of the ith generator in the alphabet.
+    //! the weight of the ith letter in the alphabet.
     explicit WtShortLexCompareNoChecks(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
@@ -751,7 +751,7 @@ namespace libsemigroups {
     //! std::vector<size_t> const&).
     //!
     //! \warning
-    //! It is not checked that the generators are valid indices into the weights
+    //! It is not checked that the letters are valid indices into the weights
     //! vector.
     template <typename T>
     bool operator()(T const& x, T const& y) const {
@@ -769,11 +769,11 @@ namespace libsemigroups {
   //!
   //! Compare two objects of the same type using the weighted short-lex
   //! ordering. The weight of a word is computed by adding up the weights of
-  //! the generators in the word. Heavier words come later in the ordering than
+  //! the letters in the word. Heavier words come later in the ordering than
   //! all lighter words. Amongst words of equal weight, short-lex ordering is
   //! used.
   //!
-  //! After checking that all generators in both ranges are valid indices into
+  //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
   //! `wtshortlex_compare_no_checks(first1, last1, first2, last2, weights)`.
   //!
@@ -784,14 +784,14 @@ namespace libsemigroups {
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
   //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith generator in the alphabet.
+  //! weight of the ith letter in the alphabet.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted short-lex less than the range `[first2, last2)`, and \c false
   //! otherwise.
   //!
-  //! \throws LibsemigroupsException if any generator in either range is not a
-  //! valid index into the weights vector (i.e., if any generator is greater
+  //! \throws LibsemigroupsException if any letter in either range is not a
+  //! valid index into the weights vector (i.e., if any letter is greater
   //! than or equal to `weights.size()`).
   //!
   //! \complexity
@@ -813,7 +813,7 @@ namespace libsemigroups {
     for (auto it = first1; it != last1; ++it) {
       if (static_cast<size_t>(*it) >= alphabet_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid generator {}, valid generators are in range [0, {})",
+            "invalid letter {}, valid letters are in range [0, {})",
             static_cast<size_t>(*it),
             alphabet_size);
       }
@@ -822,7 +822,7 @@ namespace libsemigroups {
     for (auto it = first2; it != last2; ++it) {
       if (static_cast<size_t>(*it) >= alphabet_size) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid generator {}, valid generators are in range [0, {})",
+            "invalid letter {}, valid letters are in range [0, {})",
             static_cast<size_t>(*it),
             alphabet_size);
       }
@@ -838,7 +838,7 @@ namespace libsemigroups {
   //!
   //! Compare two objects of the same type using \ref wtshortlex_compare.
   //!
-  //! After checking that all generators in both objects are valid indices into
+  //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
   //! `wtshortlex_compare_no_checks(x, y, weights)`.
   //!
@@ -847,12 +847,12 @@ namespace libsemigroups {
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
   //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith generator in the alphabet.
+  //! weight of the ith letter in the alphabet.
   //!
   //! \returns The boolean value \c true if \p x is weighted short-lex less
   //! than \p y, and \c false otherwise.
   //!
-  //! \throws LibsemigroupsException if any generator in \p x or \p y is not a
+  //! \throws LibsemigroupsException if any letter in \p x or \p y is not a
   //! valid index into the weights vector.
   //!
   //! \complexity
@@ -883,7 +883,7 @@ namespace libsemigroups {
   //!
   //! Compare two objects via their pointers using \ref wtshortlex_compare.
   //!
-  //! After checking that all generators are valid indices into the weights
+  //! After checking that all letters are valid indices into the weights
   //! vector, this function performs the same as
   //! `wtshortlex_compare_no_checks(x, y, weights)`.
   //!
@@ -892,12 +892,12 @@ namespace libsemigroups {
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
   //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith generator in the alphabet.
+  //! weight of the ith letter in the alphabet.
   //!
   //! \returns The boolean value \c true if \p x points to a word weighted
   //! short-lex less than the word pointed to by \p y, and \c false otherwise.
   //!
-  //! \throws LibsemigroupsException if any generator is not a valid index into
+  //! \throws LibsemigroupsException if any letter is not a valid index into
   //! the weights vector.
   //!
   //! \complexity
@@ -937,7 +937,7 @@ namespace libsemigroups {
     //! \brief Construct from weights vector.
     //!
     //! \param weights vector of weights where the ith index corresponds to
-    //! the weight of the ith generator in the alphabet.
+    //! the weight of the ith letter in the alphabet.
     explicit WtShortLexCompare(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
@@ -955,7 +955,7 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted short-lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any generator is not a valid index
+    //! \throws LibsemigroupsException if any letter is not a valid index
     //! into the weights vector.
     //!
     //! \complexity
