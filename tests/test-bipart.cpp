@@ -668,7 +668,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
                           "019",
                           "random x 2",
-                          "[quick][bipart]") {
+                          "[quick][bipart][no-valgrind]") {
     std::unordered_set<Bipartition, Hash<Bipartition>> map;
     for (size_t i = 0; i < 1000; ++i) {
       map.emplace(bipartition::random(100));
@@ -680,7 +680,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Bipartition",
                           "020",
                           "random x 3",
-                          "[quick][bipart]") {
+                          "[quick][bipart][no-valgrind]") {
     std::unordered_set<Bipartition, Hash<Bipartition>> map;
 
     for (size_t i = 0; i < 82'138; ++i) {

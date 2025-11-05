@@ -1299,7 +1299,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "037",
                           "congruence over smalloverlap",
-                          "[quick][cong]") {
+                          "[quick][cong][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
