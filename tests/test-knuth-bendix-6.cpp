@@ -467,7 +467,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "143",
                                    "process pending rules x2",
-                                   "[quick][knuth-bendix]",
+                                   "[quick][knuth-bendix][no-valgrind]",
                                    KNUTH_BENDIX_TYPES) {
     Presentation<word_type> p;
     p.alphabet(2);
