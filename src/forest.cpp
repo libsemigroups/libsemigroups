@@ -508,7 +508,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "the 2nd argument <labels> (a vector of strings) must have "
             "length {} or 0, but found {}",
-            forest::max_label(f),
+            forest::max_label(f) + 1,
             labels.size());
       }
       Dot result;
