@@ -53,7 +53,7 @@ jobs:
       - name: Building libsemigroups_pybind11 . . .
         run: |
           cd libsemigroups_pybind11
-          sudo -H pip3 install .
+          pip3 install .
       - name: Running libsemigroups_pybind11 tests. . .
         run: |
           cd libsemigroups_pybind11
