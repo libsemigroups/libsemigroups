@@ -543,4 +543,21 @@ namespace libsemigroups {
     }
 
   }  // namespace forest
+
+  std::string to_human_readable_repr(forest::PathsToRoots const& ptr,
+                                     std::string const&          sep) {
+    return fmt::format("<forest{}PathsToRoots in {} with current target {}>",
+                       sep,
+                       to_human_readable_repr(ptr.forest()),
+                       ptr.target());
+  }
+
+  std::string to_human_readable_repr(forest::PathsFromRoots const& pfr,
+                                     std::string const&            sep) {
+    return fmt::format("<forest{}PathsFromRoots in {} with current target {}>",
+                       sep,
+                       to_human_readable_repr(pfr.forest()),
+                       pfr.target());
+  }
+
 }  // namespace libsemigroups
