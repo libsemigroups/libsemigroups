@@ -1327,6 +1327,35 @@ namespace libsemigroups {
     Dot dot(Forest const& f, std::vector<std::string> const& labels);
 
   }  // namespace forest
+
+  //! \brief Return a human readable representation of a PathsToRoots object.
+  //!
+  //! Return a human readable representation of a PathsToRoots object.
+  //!
+  //! \param ptr the PathsToRoots object.
+  //! \param sep separator to use between \c forest and \c PathsToRoots
+  //! (default: `"::"`).
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string
+  to_human_readable_repr(forest::PathsToRoots const& ptr,
+                         std::string const&          sep = "::");
+
+  //! \brief Return a human readable representation of a PathsFromRoots object.
+  //!
+  //! Return a human readable representation of a PathsFromRoots object.
+  //!
+  //! \param pfr the PathsFromRoots object.
+  //! \param sep separator to use between \c forest and \c PathsFromRoots
+  //! (default: `"::"`).
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string
+  to_human_readable_repr(forest::PathsFromRoots const& pfr,
+                         std::string const&            sep = "::");
+
 }  // namespace libsemigroups
 
 namespace fmt {
