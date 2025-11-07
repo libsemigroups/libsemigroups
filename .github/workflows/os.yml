@@ -69,7 +69,7 @@ jobs:
       matrix:
         os:
           - { image_name: macos-latest, arch: arm }
-          - { image_name: macos-13, arch: x86 }
+          - { image_name: macos-15-intel, arch: x86 }
     env:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
