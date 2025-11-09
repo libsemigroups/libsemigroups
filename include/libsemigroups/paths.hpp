@@ -19,7 +19,10 @@
 // This file contains declarations related to iterating through paths in an
 // WordGraph.
 
-// TODO(2) check code coverage
+// TODO(2):
+// * check code coverage
+// * the function number_of_paths_algorithm and number_of_paths don't match
+// each other in terms of when they throw exceptions.
 
 #ifndef LIBSEMIGROUPS_PATHS_HPP_
 #define LIBSEMIGROUPS_PATHS_HPP_
@@ -59,9 +62,9 @@ namespace libsemigroups {
     enum class algorithm {
       //! Use a depth-first-search.
       dfs = 0,
-      //! Use the adjacency matrix and matrix multiplication
+      //! Use the adjacency matrix and matrix multiplication.
       matrix,
-      //! Use a dynamic programming approach for acyclic word graphs
+      //! Use a dynamic programming approach for acyclic word graphs.
       acyclic,
       //! Try to utilise some corner cases.
       trivial,
