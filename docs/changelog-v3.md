@@ -1,5 +1,42 @@
 # Changelog - version 3
 
+## v3.3.0 (released 12/12/2025)
+
+This is a minor release with a number of improvements and new features:
+
+- Deprecate `report_every` by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/826
+- to-presentation: move present. to present. back to present.hpp by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/828
+- benchmarks: for Rewriters by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/829
+- to-presentation: add ToddCoxeter, Stephen -> Presentation by [\@jswent] in https://github.com/libsemigroups/libsemigroups/pull/823
+- Update `Forest` doc by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/831
+- Forest add `max_label` helper by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/830
+- Implement `to<WordGraph>` by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/832
+- forest: add validation by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/835
+- Forest dot function by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/836
+- Forest paths by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/837
+- to-presentation: add Cong -> Presentation by [\@jswent] in https://github.com/libsemigroups/libsemigroups/pull/834
+- Add word graph view and refactor word graph helper functions by [\@nadim-]241 in https://github.com/libsemigroups/libsemigroups/pull/722
+- ranges: fix Random by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/838
+- forest: fix off by 1 in exception by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/845
+- forest: add `to_human_readable_repr` for `PathsFrom/ToRoots` by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/847
+- paths: add missing full stops by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/849
+- Update `presentation::examples` references and docstrings by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/851
+- hpcombi: bump version to 1.1.0 by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/854
+- Refactor some transformations code to better support HPCombi in the python bindings by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/855
+- hpcombi: fix inconsistencies by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/861
+- hpcombi: bump version to 1.1.1 by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/862
+- Initialise `p` in `throw_if_is_acyclic` by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/864
+- Refactor and fix issues with Path iterators by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/865
+- Add weighted shortlex by [\@jswent] in https://github.com/libsemigroups/libsemigroups/pull/839
+- Add weighted lexicographical compare by [\@jswent] in https://github.com/libsemigroups/libsemigroups/pull/867
+- Add "manual examples" to test file : 0.1.0 by [\@josh-dev-things] in https://github.com/libsemigroups/libsemigroups/pull/859
+- Fix `recursive_path_compare` for empty strings by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/869
+
+## New Contributors
+
+- [\@nadim-]241 made their first contribution in https://github.com/libsemigroups/libsemigroups/pull/722
+- [\@josh-dev-things] made their first contribution in https://github.com/libsemigroups/libsemigroups/pull/859
+
 ## v3.2.0 (released 30/09/2025)
 
 This release contains a number of improvements, bug fixes, and a small number

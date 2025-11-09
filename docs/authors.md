@@ -17,6 +17,8 @@
 - [Florent Hivert](https://www.lri.fr/~hivert/)
   (<Florent.Hivert@lri.fr>) contributed many helpful ideas to
   `libsemigroups`, and `HPCombi`.
+- Josh James-lee (<jjl21@st-andrews.ac.uk> contributed the code necessary to
+  test the Doxygen code examples.
 - [Max Horn](https://math.rptu.de/en/wgs/agag/people/head/prof-dr-max-horn)
   (<max@quendi.de>) contributed some fixes.
 - [Jerry James](http://www.jamezone.org/) (<loganjerry@gmail.com>)
@@ -32,11 +34,13 @@
   (<dima@pasechnik.info>) contributed to the build system.
 - Chris Russell contributed some tests for finitely presented
   semigroups.
+- Nadim Searight contributed the `WordGraphView` functionality.
 - [Finn Smith](https://flsmith.github.io) (<fls3@st-andrews.ac.uk>)
   contributed the implementation of the Konieczny and
   Lallement-McFadden algorithm, to the Todd-Coxeter implementation,
   and to BMat8s.
-- Jake Swent (jws20@st-andrews.ac.uk) contributed to the `to` function.
+- Jake Swent (<jws20@st-andrews.ac.uk>) contributed to the `to` function, and the
+  reduction orderings code.
 - [Nicolas Thiéry](http://nicolas.thiery.name/)
   (<nthiery@users.sf.net>) contributed to the build system, packaging
   `libsemigroups` via conda, the python bindings and many helpful

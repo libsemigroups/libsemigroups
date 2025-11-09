@@ -33,5 +33,5 @@ abstract: >-
   algorithms for computing finite, and finitely presented,
   semigroups and monoids.
 license: GPL-3.0
-version: 3.2.0
-date-released: "2025-09-30"
+version: 3.3.0
+date-released: "2025-12-12"
