@@ -755,7 +755,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref throw_if_not_normalized.
     template <typename Word>
-    bool is_normalized(Presentation<Word> const& p);
+    [[nodiscard]] bool is_normalized(Presentation<Word> const& p);
 
     //! \brief Check rules against the alphabet of \p p.
     //!
@@ -865,7 +865,7 @@ namespace libsemigroups {
     //! // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
     //! \endcode
     template <typename Word>
-    std::string to_report_string(Presentation<Word> const& p);
+    [[nodiscard]] std::string to_report_string(Presentation<Word> const& p);
 
     //! \brief Add a rule to the presentation by reference.
     //!
@@ -2204,7 +2204,6 @@ namespace libsemigroups {
     //! * `pair.second` is the list of inverses of the letters in `pair.first`
     //! (where the letter in position \c i is the inverse of `pair.first[i]`,
     //! and vice versa).
-    //!
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
