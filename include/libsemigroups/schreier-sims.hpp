@@ -167,7 +167,7 @@ namespace libsemigroups {
   //!  using Perm = decltype(S)::element_type;
   //!  S.add_generator(Perm({1, 0, 2, 3, 4}));
   //!  S.add_generator(Perm({1, 2, 3, 4, 0}));
-  //!  S.size(); // 120
+  //!  S.size(); //-> 120
   //!  \endcode
   template <size_t N,
             typename Point   = typename SmallestInteger<N>::type,
@@ -933,10 +933,9 @@ namespace libsemigroups {
 
     bool internal_equal_to(internal_const_element_type x,
                            internal_const_element_type y) const
-        noexcept(noexcept(
-            EqualTo()(this->to_external_const(x),
-                      this->to_external_const(
-                          y)) && noexcept(this->to_external_const(x)))) {
+        noexcept(noexcept(EqualTo()(this->to_external_const(x),
+                                    this->to_external_const(y))
+                          && noexcept(this->to_external_const(x)))) {
       return EqualTo()(this->to_external_const(x), this->to_external_const(y));
     }
 

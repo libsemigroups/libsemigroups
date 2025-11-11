@@ -77,7 +77,7 @@ namespace libsemigroups {
   //!              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!              16));
   //! o.reserve(70000);
-  //! o.size();  // returns 65536
+  //! o.size();  //-> 65536
   //! \endcode
 
   //! \ingroup types_group
@@ -161,8 +161,8 @@ namespace libsemigroups {
   //!               {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!               16));
   //! o.reserve(70000);
-  //! o.size(); // 65536
-  //! o.scc().number_of_components(); // 17
+  //! o.size(); //-> 65536
+  //! o.scc().number_of_components(); //-> 17
   //! \endcode
   //!
   //! \par Complexity

@@ -79,11 +79,11 @@ namespace libsemigroups {
   //!
   //! KnuthBendix kb(congruence_kind::twosided, p);
   //!
-  //! !kb.confluent();              // true
+  //! !kb.confluent();              //-> true
   //! kb.run();
-  //! kb.number_of_active_rules();  // 8
-  //! kb.confluent();               // true
-  //! kb.number_of_classes();       // POSITIVE_INFINITY
+  //! kb.number_of_active_rules();  //-> 8
+  //! kb.confluent();               //-> true
+  //! kb.number_of_classes();       //-> POSITIVE_INFINITY
   //! \endcode
   //!
   //! \warning At present it is only possible to create KnuthBendix objects from

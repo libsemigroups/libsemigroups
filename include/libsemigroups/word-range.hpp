@@ -758,11 +758,11 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //! ToWord toword("bac");
-    //! toword("bac");        // returns {0, 1, 2}
-    //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
+    //! toword("bac");       //->std::vector<unsigned long>{0,1,2}
+    //! toword("bababbbcbc");//->std::vector<unsigned long>{0,1,0,1,0,0,0,2,0,2}
     //!
     //! toword.init();
-    //! toword("bac");        // returns {1, 0, 2}
+    //! toword("bac");        //-> std::vector<unsigned long>{1, 0, 2}
     //! \endcode
     // TODO (later) a version that takes a word_type, so that we can permute the
     // letters in a word
@@ -1148,11 +1148,11 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! ToString tostring("bac");
-  //! tostring(word_type({1, 0, 2}));                 // returns "abc"
-  //! tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2}));  // returns "baabaabc"
+  //! tostring(word_type({1, 0, 2}));                 //-> "abc"
+  //! tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2}));  //-> "baabaabc"
   //!
   //! tostring.init();
-  //! tostring(word_type({1, 0, 2}));                 // returns "bac"
+  //! tostring(word_type({1, 0, 2}));                 //-> "bac"
   //! \endcode
   class ToString {
    public:

@@ -151,7 +151,7 @@ namespace libsemigroups {
   //! Congruence cong(congruence_kind::twosided, p);
   //! is_obviously_infinite(cong);  // true
   //! congruence_common::add_generating_pair(cong, {0, 0, 0}, {});
-  //! cong.number_of_classes(); // 3
+  //! cong.number_of_classes(); //-> 3
   //! \endcode
   template <typename Word>
   class Congruence : public detail::CongruenceCommon,

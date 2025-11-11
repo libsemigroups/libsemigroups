@@ -1583,7 +1583,7 @@ namespace libsemigroups {
     //! wg.add_to_out_degree(1);
     //! wg.target(0, 0, 1);
     //! wg.target(1, 0, 0);
-    //! word_graph::is_acyclic(wg); // returns false
+    //! word_graph::is_acyclic(wg); //-> false
     //! \endcode
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
@@ -1632,11 +1632,11 @@ namespace libsemigroups {
     //! wg.target(0, 0, 1);
     //! wg.target(1, 0, 0);
     //! wg.target(2, 0, 3);
-    //! word_graph::is_acyclic(wg); // returns false
-    //! word_graph::is_acyclic(wg, 0); // returns false
-    //! word_graph::is_acyclic(wg, 1); // returns false
-    //! word_graph::is_acyclic(wg, 2); // returns true
-    //! word_graph::is_acyclic(wg, 3); // returns true
+    //! word_graph::is_acyclic(wg); //-> false
+    //! word_graph::is_acyclic(wg, 0); //-> false
+    //! word_graph::is_acyclic(wg, 1); //-> false
+    //! word_graph::is_acyclic(wg, 2); //-> true
+    //! word_graph::is_acyclic(wg, 3); //-> true
     //! \endcode
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
@@ -2069,11 +2069,11 @@ namespace libsemigroups {
     //! wg.target(0, 1, 0);
     //! wg.target(1, 0, 0);
     //! wg.target(2, 3, 0);
-    //! word_graph::is_reachable_no_checks(wg, 0, 1); // returns true
-    //! word_graph::is_reachable_no_checks(wg, 1, 0); // returns true
-    //! word_graph::is_reachable_no_checks(wg, 1, 2); // returns false
-    //! word_graph::is_reachable_no_checks(wg, 2, 3); // returns true
-    //! word_graph::is_reachable_no_checks(wg, 3, 2); // returns false
+    //! word_graph::is_reachable_no_checks(wg, 0, 1); //-> true
+    //! word_graph::is_reachable_no_checks(wg, 1, 0); //-> true
+    //! word_graph::is_reachable_no_checks(wg, 1, 2); //-> false
+    //! word_graph::is_reachable_no_checks(wg, 2, 3); //-> true
+    //! word_graph::is_reachable_no_checks(wg, 3, 2); //-> false
     //! \endcode
     template <typename Node1, typename Node2>
     [[deprecated]] [[nodiscard]] bool
@@ -2149,7 +2149,7 @@ namespace libsemigroups {
     //! \code
     //! auto wg = make<WordGraph<uint8_t>>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    //! word_graph::is_strictly_cyclic(wg);  // returns false
+    //! word_graph::is_strictly_cyclic(wg);  //-> false
     //! \endcode
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
@@ -2962,7 +2962,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
-  //! make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+  //! auto wg = make<WordGraph<uint8_t>>(5,{{0, 0},{1, 1},{2},{3, 3}});
   //! \endcode
   //!
   //! \note This function will be moved from the header `word-graph.hpp`
@@ -3055,7 +3055,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -3090,7 +3090,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.

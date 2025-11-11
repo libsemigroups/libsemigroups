@@ -88,7 +88,7 @@ namespace libsemigroups {
   //! auto wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
   //! Paths p(wg);
   //! p.source(0).max(10);
-  //! p.count();            // returns 1023
+  //! p.count();            //-> 1023
   //! // (p | Random()).get(); // returns random path in p (Pipe operator not
   //! // implemented for Paths?)
   //! \endcode

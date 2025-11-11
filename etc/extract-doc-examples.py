@@ -162,13 +162,29 @@ def extract_code_blocks(file_path):
                         )
                         continue
 
+                    # If line contains a function call with a return value
+                    # labelled by '//-> <value>'
+                    # where <value> ::= <number> | <string>
+                    if "//->" in line:
+                        parts = line.split("//->")
+                        function_call = parts[0].strip().strip(";")
+                        function_returns = parts[1].strip()
+
+                        #  validate format of return
+                        #  TODO: This
+
+                        #  Add require value eq
+                        current_block.append(
+                            f"  REQUIRE({function_call} == {function_returns});"
+                        )
+                        continue
+
                     if not ignore_this_block:
                         current_block.append(line)
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(
-                    f"Warning: Unclosed code block at end of file {file_path}")
+                __error(f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")

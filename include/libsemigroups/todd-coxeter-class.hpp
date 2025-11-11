@@ -85,12 +85,12 @@ namespace libsemigroups {
   //! presentation::add_rule(p, 0_w, 1_w);
   //! ToddCoxeter tc(congruence_kind::onesided, p);
   //! tc.strategy(options::strategy::felsch);
-  //! tc.number_of_classes();
+  //! tc.number_of_classes(); //-> 1
   //!
   //! auto w1 = 0000_w;
   //! auto w2 = 00_w;
-  //! todd_coxeter::contains(tc, w1, w2);
-  //! todd_coxeter::index_of(tc, w1);
+  //! todd_coxeter::contains(tc, w1, w2); //-> true
+  //! todd_coxeter::index_of(tc, w1); //-> 0
   //! \endcode
   //!
   //! \par Example 2
@@ -115,7 +115,7 @@ namespace libsemigroups {
   //! tc.strategy(options::strategy::hlt)
   //!    .lookahead_extent(options::lookahead_extent::partial)
   //!    .save(false);
-  //! tc.number_of_classes();  // 10'752
+  //! tc.number_of_classes();  //-> 10752
   //! tc.standardize(Order::recursive);
   //! todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
   //! // {0_w,
