@@ -2065,14 +2065,14 @@ namespace libsemigroups {
     //! \code
     //! WordGraph<size_t> wg;
     //! wg.add_nodes(4);
-    //! wg.add_to_out_degree(1);
+    //! wg.add_to_out_degree(4);
     //! wg.target(0, 1, 0);
     //! wg.target(1, 0, 0);
     //! wg.target(2, 3, 0);
-    //! word_graph::is_reachable_no_checks(wg, 0, 1); //-> true
+    //! word_graph::is_reachable_no_checks(wg, 0, 1); //-> false
     //! word_graph::is_reachable_no_checks(wg, 1, 0); //-> true
     //! word_graph::is_reachable_no_checks(wg, 1, 2); //-> false
-    //! word_graph::is_reachable_no_checks(wg, 2, 3); //-> true
+    //! word_graph::is_reachable_no_checks(wg, 2, 3); //-> false
     //! word_graph::is_reachable_no_checks(wg, 3, 2); //-> false
     //! \endcode
     template <typename Node1, typename Node2>

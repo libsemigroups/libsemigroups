@@ -3816,7 +3816,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! BMat<3> m3;
+  //! [[maybe_unused]] BMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
   //! BMat<> m4(4, 4);
   //! \endcode
@@ -4123,7 +4123,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! IntMat<3> m3;
+  //! [[maybe_unused]] IntMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
   //! IntMat<>  m4(4, 4);
   //! \endcode
@@ -4413,7 +4413,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! MaxPlusMat<3> m3;
+  //! [[maybe_unused]] MaxPlusMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
   //! MaxPlusMat<>  m4(4, 4);
   //! \endcode
@@ -4722,7 +4722,7 @@ namespace libsemigroups {
   //!
   //! \code
   //! // default construct an uninitialized 3 x 3 static matrix
-  //! MinPlusMat<3> m3;
+  //! [[maybe_unused]] MinPlusMat<3> m3;
   //! // construct an uninitialized 4 x 4 dynamic matrix
   //! MinPlusMat<> m4(4, 4);
   //! \endcode
@@ -5041,7 +5041,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // construct an uninitialized 3 x 3 static matrix with threshold 11
-  //! MaxPlusTruncMat<11, 3> m3_11;
+  //! [[maybe_unused]] MaxPlusTruncMat<11, 3> m3_11;
   //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
   //! MaxPlusTruncMat<11> m4_11(4, 4);
   //! // construct a truncated max-plus semiring with threshold 11
@@ -5522,7 +5522,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // construct an uninitialized 3 x 3 static matrix with threshold 11
-  //! MinPlusTruncMat<11, 3> m3_11;
+  //! [[maybe_unused]] MinPlusTruncMat<11, 3> m3_11;
   //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
   //! MinPlusTruncMat<11> m4_11(4, 4);
   //! // construct a truncated min-plus semiring with threshold 11
@@ -6009,7 +6009,7 @@ namespace libsemigroups {
   //! \code
   //! // construct an uninitialized 3 x 3 static matrix with threshold
   //! // 11, period 2
-  //! NTPMat<11, 2, 3> m3_11_2;
+  //! [[maybe_unused]] NTPMat<11, 2, 3> m3_11_2;
   //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11,
   //! // period 2
   //! NTPMat<11, 2> m4_11_2(4, 4);

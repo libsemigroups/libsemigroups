@@ -1,10 +1,13 @@
-import os
+"""
+Automated code block extraction from documentation for testing.
+"""
+
 import sys
 import argparse
 from pathlib import Path
 
 ########################################################################
-# CONSTANTS
+# Constants
 ########################################################################
 
 HEADER_TEXT = """// libsemigroups - C++ library for semigroups and monoids
@@ -32,7 +35,7 @@ using namespace libsemigroups::literals;
 """
 
 ########################################################################
-# INTERNAL
+# Internal
 ########################################################################
 
 
@@ -52,8 +55,8 @@ def __parse_args() -> argparse.Namespace:
         Examples:
         python3 extract_code.py <folder>    <-- Process specific folder
         Flags:
-        -r | Process folder recursively
-        -e | Exclude the following files
+        -r          | Process folder recursively
+        -e <files > | Exclude the following files
         """,
     )
 
@@ -79,7 +82,10 @@ def __parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--version", action="version", version="Example Code Block Capture 1.0.0"
+        "-v",
+        "--version",
+        action="version",
+        version="Documentation Code Block Extraction 0.1.0",
     )
 
     args = parser.parse_args()
@@ -88,7 +94,7 @@ def __parse_args() -> argparse.Namespace:
 
 
 ########################################################################
-# CODE BLOCK EXTRACTION
+# Code block extraction
 ########################################################################
 
 
@@ -116,6 +122,7 @@ def extract_code_blocks(file_path):
                 line = line.removeprefix("//!")
                 line = line.rstrip("\n\r")
 
+                # Code Block Open
                 if "\\code" in line:
                     if in_code_block:
                         __error(
@@ -127,6 +134,7 @@ def extract_code_blocks(file_path):
                     current_block = []
                     continue
 
+                #  Code Block Close
                 if "\\endcode" in line:
                     if not in_code_block:
                         __error(
@@ -190,6 +198,11 @@ def extract_code_blocks(file_path):
         print(f"Error reading file {file_path}: {e}")
 
     return code_blocks
+
+
+########################################################################
+# File Iteration
+########################################################################
 
 
 def process_folder(folder_path, recursive=False, exclude=[]):
@@ -275,7 +288,7 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
 
 ########################################################################
-# MAIN
+# Main
 #########################################################################
 
 

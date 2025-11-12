@@ -99,9 +99,11 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! word_type x = random_word(5, 10);
-  //! word_type y = random_word(5, 10);
-  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());//->true
+  //! word_type x = 1101_w;
+  //! word_type y = 1001_w;
+  //!
+  //! // x > y
+  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());//->false
   //! \endcode
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool lexicographical_compare(T const& x, T const& y) {
@@ -134,8 +136,9 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! word_type x = random_word(5, 10);
-  //! word_type y = random_word(5, 10);
+  //! word_type x = 0001_w;
+  //! word_type y = 0010_w;
+  //! // x < y
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());//->true
   //! \endcode
   template <typename T>

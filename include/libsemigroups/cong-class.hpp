@@ -147,7 +147,9 @@ namespace libsemigroups {
   //! \code
   //! Presentation<word_type> p;
   //! p.alphabet(2);
+  //! p.contains_empty_word(true);
   //! presentation::add_rule(p, {0, 1}, {});
+  //!
   //! Congruence cong(congruence_kind::twosided, p);
   //! is_obviously_infinite(cong);  // true
   //! congruence_common::add_generating_pair(cong, {0, 0, 0}, {});
