@@ -530,7 +530,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Presentation<word_type>`.
     //!
-    //! \throws LibsemigroupsException if `n < 2`.
+    //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> plactic_monoid_Knu70(size_t n);
 
     //! \brief A presentation for a rectangular band.
