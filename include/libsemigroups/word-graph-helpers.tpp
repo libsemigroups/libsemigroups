@@ -288,6 +288,12 @@ namespace libsemigroups {
           return result;
         }
 
+        template <typename Graph>
+        bool wreath_standardize(Graph& wg, Forest& f) {
+          // TODO: implement wreath standardization
+          return false;
+        }
+
         // Helper function for the two versions of is_acyclic below.
         // Not noexcept because std::stack::emplace isn't
         // This function does not really need to exist any longer, since
@@ -464,6 +470,8 @@ namespace libsemigroups {
             return detail::lex_standardize(wg, f);
           case Order::recursive:
             return detail::recursive_standardize(wg, f);
+          case Order::wreath:
+            return detail::wreath_standardize(wg, f);
           default:
             return false;
         }
@@ -478,6 +486,7 @@ namespace libsemigroups {
             return detail::is_shortlex_standardized(wg);
           case Order::lex:
           case Order::recursive:
+          case Order::wreath:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
         }
