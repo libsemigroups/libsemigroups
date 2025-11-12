@@ -79,7 +79,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 3);
     REQUIRE(S.number_of_idempotents() == 1);
     REQUIRE(std::vector(S.cbegin_sorted(), S.cend_sorted())
-            == std::vector({make<Transf16>({}),
+            == std::vector({make<Transf16>({0, 1, 2}),
                             make<Transf16>({1, 2, 0}),
                             make<Transf16>({2, 0, 1})}));
   }
@@ -343,7 +343,10 @@ namespace libsemigroups {
     REQUIRE(S.size() == 16777216);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("HPCombi", "014", "exceptions", "[quick][hpcombi]") {
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "014",
+                          "Transf16 exceptions",
+                          "[quick][hpcombi]") {
     REQUIRE_THROWS_AS(
         make<Transf16>({1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}),
         LibsemigroupsException);
@@ -354,5 +357,12 @@ namespace libsemigroups {
         make<Transf16>({17, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 17}),
         LibsemigroupsException);
   }
+
+  // LIBSEMIGROUPS_TEST_CASE("HPCombi",
+  //                         "015",
+  //                         "Perm16 exceptions",
+  //                         "[quick][hpcombi]") {
+  //   auto x = make<Perm16>({1, 0, 3, 255});
+  // }
 }  // namespace libsemigroups
 #endif

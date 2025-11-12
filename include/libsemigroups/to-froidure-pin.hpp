@@ -25,6 +25,7 @@
 
 #include "cong-class.hpp"          // for Congruence
 #include "froidure-pin.hpp"        // for FroidurePin
+#include "is-transf.hpp"           // for detail::throw_if_not_transf
 #include "kambites-class.hpp"      // for Kambites
 #include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "konieczny.hpp"           // for Konieczny

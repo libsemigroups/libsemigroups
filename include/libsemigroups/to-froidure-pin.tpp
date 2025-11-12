@@ -218,7 +218,7 @@ namespace libsemigroups {
       for (size_t s = last - first; s < x.degree(); ++s) {
         x[s] = s;
       }
-      throw_if_image_value_out_of_range(x);
+      detail::throw_if_not_transf(x.begin(), x.end(), x.degree());
       result.add_generator(x);
     }
     return result;

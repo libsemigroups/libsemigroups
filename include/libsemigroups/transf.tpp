@@ -25,22 +25,22 @@ namespace libsemigroups {
 
     template <typename Scalar, typename Container>
     void validate(PTransfBase<Scalar, Container> const& f) {
-      throw_if_image_value_out_of_range(f);
+      throw_if_not_ptransf(f.begin(), f.end(), f.degree());
     }
 
     template <size_t N, typename Scalar>
     void validate(Transf<N, Scalar> const& f) {
-      throw_if_image_value_out_of_range(f);
+      throw_if_not_transf(f.begin(), f.end(), f.degree());
     }
 
     template <size_t N, typename Scalar>
     void validate(PPerm<N, Scalar> const& f) {
-      throw_if_not_pperm(f);
+      throw_if_not_pperm(f.begin(), f.end(), f.degree());
     }
 
     template <size_t N, typename Scalar>
     void validate(Perm<N, Scalar> const& f) {
-      throw_if_not_perm(f);
+      throw_if_not_perm(f.begin(), f.end(), f.degree());
     }
   }  // namespace detail
 
@@ -52,7 +52,14 @@ namespace libsemigroups {
   template <typename Point, typename Container>
   template <typename Subclass, typename OtherContainer>
   Subclass PTransfBase<Point, Container>::make(OtherContainer&& cont) {
-    throw_if_bad_args(cont);
+    if constexpr (detail::is_array_v<container_type>) {
+      if (cont.size() != std::tuple_size_v<container_type>) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "incorrect container size, expected {}, found {}",
+            std::tuple_size_v<container_type>,
+            cont.size());
+      }
+    }
 
 #pragma GCC diagnostic push
 #if defined(__GNUC__) && !defined(__clang__)
@@ -86,20 +93,6 @@ namespace libsemigroups {
       std::fill(c.begin() + N, c.end(), val);
     } else {
       c.resize(N, val);
-    }
-  }
-
-  // STATIC
-  template <typename Point, typename Container>
-  template <typename T>
-  void PTransfBase<Point, Container>::throw_if_bad_args(T const& cont) {
-    if constexpr (detail::is_array_v<container_type>) {
-      if (cont.size() != std::tuple_size_v<container_type>) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "incorrect container size, expected {}, found {}",
-            std::tuple_size_v<container_type>,
-            cont.size());
-      }
     }
   }
 
@@ -179,63 +172,23 @@ namespace libsemigroups {
     }
   }
 
-  template <size_t N, typename Scalar>
-  void detail::throw_if_bad_args(std::vector<Scalar> const& dom,
-                                 std::vector<Scalar> const& ran,
-                                 size_t                     deg) {
-    if (N != 0 && deg != N) {
-      // Sanity check that the final argument is compatible with the
-      // template param N, if we have a static pperm
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd argument is not valid, expected {}, found {}", N, deg);
-    } else if (dom.size() != ran.size()) {
-      // The next 2 checks just verify that we can safely run the
-      // constructor that uses *this[dom[i]] = im[i] for i = 0, ...,
-      // dom.size() - 1.
-      LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch, domain has "
-                              "size {} but range has size {}",
-                              dom.size(),
-                              ran.size());
-    } else if (!(dom.empty()
-                 || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "domain value out of bounds, found {}, must be less than {}",
-          *std::max_element(dom.cbegin(), dom.cend()),
-          deg);
-    }
-    std::unordered_map<Scalar, size_t> seen;
-    detail::throw_if_duplicates(dom.cbegin(), dom.cend(), seen);
-    detail::throw_if_duplicates(ran.cbegin(), ran.cend(), seen);
-
-    auto it = std::find(dom.cbegin(), dom.cend(), UNDEFINED);
-    if (it != dom.cend()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument (domain) must not contain UNDEFINED, but found "
-          "UNDEFINED (= {}) in position {}",
-          static_cast<Scalar>(UNDEFINED),
-          std::distance(dom.cbegin(), it));
-    }
-    it = std::find(ran.cbegin(), ran.cend(), UNDEFINED);
-    if (it != ran.cend()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (range) must not contain UNDEFINED, but found "
-          "UNDEFINED (= {}) in position {}",
-          static_cast<Scalar>(UNDEFINED),
-          std::distance(ran.cbegin(), it));
-    }
-    // NOTE: it is ok if deg >= max. value of Scalar, but then necessary that
-    // the values in <dom> and <ran> are less than (max. value of Scalar) - 1.
-  }
-
   template <typename Return>
   std::enable_if_t<IsPPerm<Return>, Return>
   make(std::vector<typename Return::point_type> const& dom,
        std::vector<typename Return::point_type> const& ran,
        size_t const                                    M) {
-    detail::throw_if_bad_args(dom, ran, M);
-    Return result(dom, ran, M);
-    throw_if_not_pperm(result);
-    return result;
+    detail::throw_if_not_pperm(
+        dom.cbegin(), dom.cend(), ran.cbegin(), ran.cend(), M);
+    if constexpr (IsStatic<Return>) {
+      size_t const N = std::tuple_size_v<typename Return::container_type>;
+      if (N != 0 && M != N) {
+        // Sanity check that the final argument is compatible with the
+        // template param N, if we have a static pperm
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 3rd argument is not valid, expected {}, found {}", N, M);
+      }
+    }
+    return Return(dom, ran, M);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -507,6 +460,23 @@ namespace libsemigroups {
                          braces[1]);
     }
   }  // namespace detail
+
+  template <typename Scalar, typename Container>
+  void
+  throw_if_image_value_out_of_range(PTransfBase<Scalar, Container> const& f) {
+    size_t const M = f.degree();
+    for (auto const& val : f) {
+      // the type of "val" is an unsigned int, and so we don't check for val
+      // being less than 0
+      if (val >= M && val != UNDEFINED) {
+        LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
+                                "[{}, {}), found {}",
+                                0,
+                                M,
+                                val);
+      }
+    }
+  }
 
   template <size_t N, typename Scalar>
   std::string to_input_string(Transf<N, Scalar> const& x,

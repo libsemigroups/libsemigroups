@@ -23,8 +23,6 @@
 // * benchmarks
 // * add some tests for PTransf themselves
 // * allocator
-// * implement is_transformation(Iterator, Iterator) etc to avoid code
-// duplication with hpcombi.hpp
 
 #ifndef LIBSEMIGROUPS_TRANSF_HPP_
 #define LIBSEMIGROUPS_TRANSF_HPP_
@@ -52,6 +50,7 @@
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
 #include "hpcombi.hpp"               // for HPCombi::Transf16
+#include "is-transf.hpp"             // for throw_if_not_perm etc
 #include "is_specialization_of.hpp"  // for is_specialization_of
 #include "types.hpp"                 // for SmallestInteger
 
@@ -697,9 +696,6 @@ namespace libsemigroups {
     }
 
    private:
-    template <typename T>
-    static void throw_if_bad_args(T const& cont);
-
     Container _container;
   };
 
@@ -957,23 +953,11 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in degree().
-  // TODO(1) to tpp
+  //!
+  //! \deprecated_warning{function}
   template <typename Scalar, typename Container>
-  void
-  throw_if_image_value_out_of_range(PTransfBase<Scalar, Container> const& f) {
-    size_t const M = f.degree();
-    for (auto const& val : f) {
-      // the type of "val" is an unsigned int, and so we don't check for val
-      // being less than 0
-      if (val >= M && val != UNDEFINED) {
-        LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
-                                "[{}, {}), found {}",
-                                0,
-                                M,
-                                val);
-      }
-    }
-  }
+  [[deprecated]] void
+  throw_if_image_value_out_of_range(PTransfBase<Scalar, Container> const& f);
 
   ////////////////////////////////////////////////////////////////////////
   // Transf
@@ -1112,8 +1096,11 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in \c f.degree().
+  //!
+  //! \deprecated_warning{function}
   template <size_t N, typename Scalar>
-  void throw_if_image_value_out_of_range(Transf<N, Scalar> const& f);
+  [[deprecated]] void
+  throw_if_image_value_out_of_range(Transf<N, Scalar> const& f);
 
   ////////////////////////////////////////////////////////////////////////
   // make<Transf>
@@ -1302,13 +1289,6 @@ namespace libsemigroups {
   };
 
   namespace detail {
-    template <
-        size_t N        = 0,
-        typename Scalar = std::
-            conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-    void throw_if_bad_args(std::vector<Scalar> const& dom,
-                           std::vector<Scalar> const& ran,
-                           size_t                     deg = N);
 
     ////////////////////////////////////////////////////////////////////////
     // PPerm helpers
@@ -1357,10 +1337,12 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in \c f.degree().
+  //!
+  //! \deprecated_warning{function}
   template <size_t N, typename Scalar>
-  void throw_if_not_pperm(PPerm<N, Scalar> const& f) {
+  [[deprecated]] void throw_if_not_pperm(PPerm<N, Scalar> const& f) {
     throw_if_image_value_out_of_range(f);
-    detail::throw_if_duplicates(f.begin(), f.end());
+    detail::throw_if_duplicates(f.begin(), f.end(), "image");
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1594,10 +1576,12 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in \c f.degree().
+  //!
+  //! \deprecated_warning{function}
   template <size_t N, typename Scalar>
-  auto throw_if_not_perm(Perm<N, Scalar> const& f) {
+  [[deprecated]] void throw_if_not_perm(Perm<N, Scalar> const& f) {
     throw_if_image_value_out_of_range(f);
-    detail::throw_if_duplicates(f.begin(), f.end());
+    detail::throw_if_duplicates(f.begin(), f.end(), "image");
   }
 
   ////////////////////////////////////////////////////////////////////////

@@ -19,6 +19,8 @@
 // This file contains the struct is_specialization_of and the alias
 // is_specialization_of_v.
 
+// TODO(v4): rename this file to use "-" and not "_" for consistency!
+
 #ifndef LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_
 #define LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_
 
