@@ -721,12 +721,22 @@ namespace libsemigroups {
   //! wtshortlex_compare_no_checks(T const&, T const&, std::vector<size_t>
   //! const&)
   struct WtShortLexCompareNoChecks {
-    //! \brief Construct from weights vector.
+    //! \brief Construct from weights vector by reference.
     //!
     //! \param weights vector of weights where the ith index corresponds to
     //! the weight of the ith letter in the alphabet.
     explicit WtShortLexCompareNoChecks(std::vector<size_t> const& weights)
         : _weights(weights) {}
+
+    //! \brief Construct from weights vector by rvalue.
+    //!
+    //! \param weights vector of weights where the ith index corresponds to
+    //! the weight of the ith letter in the alphabet.
+    //!
+    //! This constructor uses `std::move` to transfer ownership of the vector
+    //! without copying its contents.
+    explicit WtShortLexCompareNoChecks(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
 
     //! \brief Call operator that compares \p x and \p y using
     //! \ref wtshortlex_compare_no_checks.
@@ -759,7 +769,7 @@ namespace libsemigroups {
     }
 
    private:
-    std::vector<size_t> const& _weights;
+    std::vector<size_t> _weights;
   };
 
   //! \brief Compare two objects of the same type using the weighted short-lex
@@ -934,12 +944,22 @@ namespace libsemigroups {
   //! \sa
   //! wtshortlex_compare(T const&, T const&, std::vector<size_t> const&)
   struct WtShortLexCompare {
-    //! \brief Construct from weights vector.
+    //! \brief Construct from weights vector by reference.
     //!
     //! \param weights vector of weights where the ith index corresponds to
     //! the weight of the ith letter in the alphabet.
     explicit WtShortLexCompare(std::vector<size_t> const& weights)
         : _weights(weights) {}
+
+    //! \brief Construct from weights vector by rvalue.
+    //!
+    //! \param weights vector of weights where the ith index corresponds to
+    //! the weight of the ith letter in the alphabet.
+    //!
+    //! This constructor uses `std::move` to transfer ownership of the vector
+    //! without copying its contents.
+    explicit WtShortLexCompare(std::vector<size_t>&& weights)
+        : _weights(std::move(weights)) {}
 
     //! \brief Call operator that compares \p x and \p y using
     //! \ref wtshortlex_compare.
@@ -967,7 +987,7 @@ namespace libsemigroups {
     }
 
    private:
-    std::vector<size_t> const& _weights;
+    std::vector<size_t> _weights;
   };
 
   // end orders_group
