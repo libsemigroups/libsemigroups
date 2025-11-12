@@ -329,9 +329,9 @@ namespace libsemigroups {
                                    Transf<8>,
                                    Transf<>) {
     auto rg = ReportGuard(true);
-    auto S  = make<FroidurePin>({make<Transf16>({1, 2, 3, 4, 5, 6, 7, 0}),
-                                 make<Transf16>({1, 0, 2, 3, 4, 5, 6, 7}),
-                                 make<Transf16>({0, 1, 2, 3, 4, 5, 6, 0})});
+    auto S  = make<FroidurePin>({make<TestType>({1, 2, 3, 4, 5, 6, 7, 0}),
+                                 make<TestType>({1, 0, 2, 3, 4, 5, 6, 7}),
+                                 make<TestType>({0, 1, 2, 3, 4, 5, 6, 0})});
     // 1. including the next line makes this test run extremely slowly
     // (20/09/2019) under clang.
     // 2. Without the next line this is no faster than the next test.
