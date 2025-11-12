@@ -77,7 +77,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using std::lexicographical_compare.
+  //! This function compares two objects of the same type using
+  //! std::lexicographical_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -110,7 +111,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects via their pointers using std::lexicographical_compare.
+  //! This function compares two objects via their pointers using
+  //! std::lexicographical_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -236,8 +238,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using the short-lex reduction
-  //! ordering.
+  //! This function compares two objects of the same type using the short-lex
+  //! reduction ordering.
   //!
   //! \tparam T the type of iterators to the first object to be compared.
   //!
@@ -284,7 +286,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using \ref shortlex_compare.
+  //! This function compares two objects of the same type using \ref
+  //! shortlex_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -318,7 +321,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects via their pointers using \ref shortlex_compare.
+  //! This function compares two objects via their pointers using \ref
+  //! shortlex_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -390,8 +394,9 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using the recursive path
-  //! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24).
+  //! This function compares two objects of the same type using the recursive
+  //! path comparison described in \cite Jantzen2012aa (Definition 1.2.14, page
+  //! 24).
   //!
   //! If \f$u, v\in X ^ {*}\f$, \f$u \neq v\f$, and \f$u = a'u\f$,
   //! \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in X ^ {*}\f$, then
@@ -456,7 +461,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using \ref recursive_path_compare.
+  //! This function compares two objects of the same type using \ref
+  //! recursive_path_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -487,7 +493,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects via their pointers using \ref recursive_path_compare.
+  //! This function compares two objects via their pointers using \ref
+  //! recursive_path_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -556,11 +563,12 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using the weighted short-lex
-  //! ordering. The weight of a word is computed by adding up the weights of
-  //! the letters in the word. Heavier words come later in the ordering than
-  //! all lighter words. Amongst words of equal weight, short-lex ordering is
-  //! used.
+  //! This function compares two objects of the same type using the weighted
+  //! short-lex ordering. The weight of a word is computed by adding up the
+  //! weights of the letters in the word, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
+  //! Heavier words come later in the ordering than all lighter words. Amongst
+  //! words of equal weight, short-lex ordering is used.
   //!
   //! \tparam T the type of iterators to the first object to be compared.
   //!
@@ -568,8 +576,7 @@ namespace libsemigroups {
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith letter in the alphabet.
+  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted short-lex less than the range `[first2, last2)`, and \c false
@@ -618,15 +625,15 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using
-  //! \ref wtshortlex_compare_no_checks.
+  //! This function compares two objects of the same type using
+  //! \ref wtshortlex_compare_no_checks, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith letter in the alphabet.
+  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted short-lex less
   //! than \p y, and \c false otherwise.
@@ -665,15 +672,15 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects via their pointers using
-  //! \ref wtshortlex_compare_no_checks.
+  //! This function compares two objects via their pointers using
+  //! \ref wtshortlex_compare_no_checks, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
-  //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith letter in the alphabet.
+  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x points to a word weighted
   //! short-lex less than the word pointed to by \p y, and \c false otherwise.
@@ -723,18 +730,21 @@ namespace libsemigroups {
   struct WtShortLexCompareNoChecks {
     //! \brief Construct from weights vector by reference.
     //!
-    //! \param weights vector of weights where the ith index corresponds to
-    //! the weight of the ith letter in the alphabet.
+    //! Constructs a comparison object that stores a copy of the provided
+    //! weights vector, where the ith index corresponds to the weight of the
+    //! ith letter in the alphabet.
+    //!
+    //! \param weights the weights vector.
     explicit WtShortLexCompareNoChecks(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
     //! \brief Construct from weights vector by rvalue.
     //!
-    //! \param weights vector of weights where the ith index corresponds to
-    //! the weight of the ith letter in the alphabet.
+    //! Constructs a comparison object that takes ownership of the provided
+    //! weights vector, where the ith index corresponds to the weight of the
+    //! ith letter in the alphabet.
     //!
-    //! This constructor uses `std::move` to transfer ownership of the vector
-    //! without copying its contents.
+    //! \param weights the weights vector.
     explicit WtShortLexCompareNoChecks(std::vector<size_t>&& weights)
         : _weights(std::move(weights)) {}
 
@@ -777,11 +787,12 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using the weighted short-lex
-  //! ordering. The weight of a word is computed by adding up the weights of
-  //! the letters in the word. Heavier words come later in the ordering than
-  //! all lighter words. Amongst words of equal weight, short-lex ordering is
-  //! used.
+  //! This function compares two objects of the same type using the weighted
+  //! short-lex ordering. The weight of a word is computed by adding up the
+  //! weights of the letters in the word, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
+  //! Heavier words come later in the ordering than all lighter words. Amongst
+  //! words of equal weight, short-lex ordering is used.
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
@@ -793,8 +804,7 @@ namespace libsemigroups {
   //! \param last1 ending iterator of first object for comparison.
   //! \param first2 beginning iterator of second object for comparison.
   //! \param last2 ending iterator of second object for comparison.
-  //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith letter in the alphabet.
+  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is
   //! weighted short-lex less than the range `[first2, last2)`, and \c false
@@ -846,7 +856,9 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects of the same type using \ref wtshortlex_compare.
+  //! This function compares two objects of the same type using \ref
+  //! wtshortlex_compare, where the ith index of the weights vector corresponds
+  //! to the weight of the ith letter in the alphabet.
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
@@ -856,8 +868,7 @@ namespace libsemigroups {
   //!
   //! \param x const reference to the first object for comparison.
   //! \param y const reference to the second object for comparison.
-  //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith letter in the alphabet.
+  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x is weighted short-lex less
   //! than \p y, and \c false otherwise.
@@ -891,7 +902,9 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! Compare two objects via their pointers using \ref wtshortlex_compare.
+  //! This function compares two objects via their pointers using \ref
+  //! wtshortlex_compare, where the ith index of the weights vector corresponds
+  //! to the weight of the ith letter in the alphabet.
   //!
   //! After checking that all letters are valid indices into the weights
   //! vector, this function performs the same as
@@ -901,8 +914,7 @@ namespace libsemigroups {
   //!
   //! \param x pointer to the first object for comparison.
   //! \param y pointer to the second object for comparison.
-  //! \param weights vector of weights where the ith index corresponds to the
-  //! weight of the ith letter in the alphabet.
+  //! \param weights the weights vector.
   //!
   //! \returns The boolean value \c true if \p x points to a word weighted
   //! short-lex less than the word pointed to by \p y, and \c false otherwise.
@@ -946,18 +958,21 @@ namespace libsemigroups {
   struct WtShortLexCompare {
     //! \brief Construct from weights vector by reference.
     //!
-    //! \param weights vector of weights where the ith index corresponds to
-    //! the weight of the ith letter in the alphabet.
+    //! Constructs a comparison object that stores a copy of the provided
+    //! weights vector, where the ith index corresponds to the weight of the
+    //! ith letter in the alphabet.
+    //!
+    //! \param weights the weights vector.
     explicit WtShortLexCompare(std::vector<size_t> const& weights)
         : _weights(weights) {}
 
     //! \brief Construct from weights vector by rvalue.
     //!
-    //! \param weights vector of weights where the ith index corresponds to
-    //! the weight of the ith letter in the alphabet.
+    //! Constructs a comparison object that takes ownership of the provided
+    //! weights vector, where the ith index corresponds to the weight of the
+    //! ith letter in the alphabet.
     //!
-    //! This constructor uses `std::move` to transfer ownership of the vector
-    //! without copying its contents.
+    //! \param weights the weights vector.
     explicit WtShortLexCompare(std::vector<size_t>&& weights)
         : _weights(std::move(weights)) {}
 
