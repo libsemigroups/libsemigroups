@@ -134,6 +134,20 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type> alternating_group_Moo97(size_t n);
 
+    //! \brief A presentation for the Braid group.
+    //!
+    //! This function returns a monoid presentation defining the Braid group
+    //! with \p n - 1 generators, as described in Section 3, Theorem 1 of
+    //! \cite Artin1925aa (German), and Equation (1.2) of \cite Birman2005aa
+    //! (English).
+    //!
+    //! \param n the degree, or equivalently the number of generators plus \c 1.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 3`.
+    [[nodiscard]] Presentation<word_type> braid_group_Art25(size_t n);
+
     //! \brief A presentation for the Brauer monoid.
     //!
     //! This function returns a monoid presentation defining the Brauer monoid
@@ -1388,18 +1402,19 @@ namespace libsemigroups {
       return abacus_jones_monoid_AJP25(n, d);
     }
 
-    //! \brief A presentation for the Braid group.
+    //! \copydoc braid_group_Art25
     //!
-    //! This function returns a monoid presentation defining the Braid group
-    //! with \p n - 1 generators, as described in Equation (2) of
-    //! \cite Birman2005aa.
+    //! \note
+    //! This function performs exactly the same as `braid_group_Art25`, and
+    //! exists as a convenience function for when a presentation for the braid
+    //! group is required, but the relations of the presentation are not
+    //! important.
     //!
-    //! \param n the degree, or equivalently the number of generators plus \c 1.
-    //!
-    //! \returns A value of type `Presentation<word_type>`.
-    //!
-    //! \throws LibsemigroupsException if `n < 3`.
-    [[nodiscard]] Presentation<word_type> braid_group(size_t n);
+    //! \sa
+    //! `braid_group_Art25`.
+    [[nodiscard]] inline Presentation<word_type> braid_group(size_t n) {
+      return braid_group_Art25(n);
+    }
 
     //! @}
 

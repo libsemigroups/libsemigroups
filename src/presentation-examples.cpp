@@ -2043,7 +2043,7 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> braid_group(size_t n) {
+    Presentation<word_type> braid_group_Art25(size_t n) {
       using words::pow;
       using words::operator+;
       if (n < 3) {
