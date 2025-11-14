@@ -5,8 +5,8 @@
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.8.0
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi/third_party
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.0/include
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.0/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
 AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
@@ -214,21 +214,23 @@ endif
 ## uninstall-hook
 hpcombiincludedir = $(includedir)/libsemigroups/hpcombi
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
-hpcombiinclude_HEADERS =  third_party/HPCombi/include/hpcombi/arch.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/bmat8.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/bmat8_impl.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/builder.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/debug.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/epu8.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/epu8_impl.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/hpcombi.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/perm16.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/perm16_impl.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/perm_generic.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/perm_generic_impl.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/power.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/vect16.hpp
-hpcombiinclude_HEADERS += third_party/HPCombi/include/hpcombi/vect_generic.hpp
+hpcombiinclude_HEADERS =  third_party/HPCombi-1.1.0/include/hpcombi/arch.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/bmat16.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/bmat16_impl.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/bmat8.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/bmat8_impl.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/builder.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/debug.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/epu8.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/epu8_impl.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/hpcombi.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/perm16.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/perm16_impl.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/perm_generic.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/perm_generic_impl.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/power.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/vect16.hpp
+hpcombiinclude_HEADERS += third_party/HPCombi-1.1.0/include/hpcombi/vect_generic.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 hpcombisimdearmincludedir = $(includedir)/libsemigroups/hpcombi/simde/arm
@@ -236,30 +238,30 @@ hpcombisimdemipsincludedir = $(includedir)/libsemigroups/hpcombi/simde/mips
 hpcombisimdewasmincludedir = $(includedir)/libsemigroups/hpcombi/simde/wasm
 hpcombisimdex86includedir = $(includedir)/libsemigroups/hpcombi/simde/x86
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
-hpcombisimdearminclude_HEADERS =  third_party/HPCombi/third_party/simde/arm/neon.h
-hpcombisimdearminclude_HEADERS += third_party/HPCombi/third_party/simde/arm/sve.h
+hpcombisimdearminclude_HEADERS =  third_party/HPCombi-1.1.0/third_party/simde/arm/neon.h
+hpcombisimdearminclude_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/arm/sve.h
 
-hpcombisimdemipsinclude_HEADERS = third_party/HPCombi/third_party/simde/mips/msa.h
+hpcombisimdemipsinclude_HEADERS = third_party/HPCombi-1.1.0/third_party/simde/mips/msa.h
 
-hpcombisimdewasminclude_HEADERS =  third_party/HPCombi/third_party/simde/wasm/relaxed-simd.h
-hpcombisimdewasminclude_HEADERS += third_party/HPCombi/third_party/simde/wasm/simd128.h
+hpcombisimdewasminclude_HEADERS =  third_party/HPCombi-1.1.0/third_party/simde/wasm/relaxed-simd.h
+hpcombisimdewasminclude_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/wasm/simd128.h
 
-hpcombisimdex86include_HEADERS =  third_party/HPCombi/third_party/simde/x86/avx.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/avx2.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/avx512.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/clmul.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/f16c.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/fma.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/gfni.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/mmx.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/sse.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/sse2.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/sse3.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/sse4.1.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/sse4.2.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/ssse3.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/svml.h
-hpcombisimdex86include_HEADERS += third_party/HPCombi/third_party/simde/x86/xop.h
+hpcombisimdex86include_HEADERS =  third_party/HPCombi-1.1.0/third_party/simde/x86/avx.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/avx2.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/avx512.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/clmul.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/f16c.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/fma.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/gfni.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/mmx.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/sse.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/sse2.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/sse3.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/sse4.1.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/sse4.2.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/ssse3.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/svml.h
+hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.0/third_party/simde/x86/xop.h
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 ## Define fmtincludedir outside the conditional
@@ -793,7 +795,7 @@ EXTRA_DIST += docs
 EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
-EXTRA_DIST += third_party/HPCombi/HPCOMBI_VERSION
+EXTRA_DIST += third_party/HPCombi-1.1.0/HPCOMBI_VERSION
 EXTRA_DIST += third_party/Catch2-3.8.0/catch_amalgamated.cpp
 EXTRA_DIST += third_party/Catch2-3.8.0/catch_amalgamated.hpp
 EXTRA_DIST += tests/bmat-data.hpp
