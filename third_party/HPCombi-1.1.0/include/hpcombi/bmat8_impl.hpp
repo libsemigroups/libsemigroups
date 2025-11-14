@@ -114,6 +114,16 @@ inline void BMat8::set(size_t i, size_t j, bool val) noexcept {
     _data ^= (-val ^ _data) & BIT_MASK[8 * i + j];
 }
 
+inline std::array<std::array<bool, 8>, 8> BMat8::to_array() const noexcept {
+    uint64_t a = to_int();
+    std::array<std::array<bool, 8>, 8> res;
+    for (int i = 0; i < 64; i++) {
+        res[7 - i / 8][7 - i % 8] = a % 2;
+        a >>= 1;
+    }
+    return res;
+}
+
 inline BMat8::BMat8(std::vector<std::vector<bool>> const &mat) {
     HPCOMBI_ASSERT(mat.size() <= 8);
     HPCOMBI_ASSERT(0 < mat.size());
@@ -141,6 +151,8 @@ inline BMat8 BMat8::random() {
 }
 
 inline BMat8 BMat8::random(size_t const dim) {
+    // TODO : Instead of nulling all the cols/rows one by one, one could do
+    // that at once with the proper mask
     HPCOMBI_ASSERT(0 < dim && dim <= 8);
     BMat8 bm = BMat8::random();
     for (size_t i = dim; i < 8; ++i) {
@@ -148,6 +160,16 @@ inline BMat8 BMat8::random(size_t const dim) {
         bm._data &= ~COL_MASK[i];
     }
     return bm;
+}
+
+inline BMat8 BMat8::transpose_naive() const noexcept {
+    uint64_t res = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            res = (res << 1) | (*this)(j, i);
+        }
+    }
+    return BMat8(res);
 }
 
 inline BMat8 BMat8::transpose() const noexcept {
@@ -221,6 +243,34 @@ inline BMat8 BMat8::mult_transpose(BMat8 const &that) const noexcept {
     }
     return BMat8(simde_mm_extract_epi64(data, 0) |
                  simde_mm_extract_epi64(data, 1));
+}
+
+inline BMat8 BMat8::mult_naive(BMat8 const &that) const noexcept {
+    uint64_t a = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            a <<= 1;
+            for (int k = 0; k < 8; k++) {
+                a |= ((*this)(i, k) & that(k, j));
+            }
+        }
+    }
+    return BMat8(a);
+}
+
+inline BMat8 BMat8::mult_naive_array(BMat8 const &that) const noexcept {
+    std::array<std::array<bool, 8>, 8> tab1 = to_array(),
+                                       tab2 = that.to_array();
+    uint64_t a = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            a <<= 1;
+            for (int k = 0; k < 8; k++) {
+                a |= tab1[i][k] & tab2[k][j];
+            }
+        }
+    }
+    return BMat8(a);
 }
 
 inline epu8 BMat8::row_space_basis_internal() const noexcept {

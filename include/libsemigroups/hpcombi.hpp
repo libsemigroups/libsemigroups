@@ -26,15 +26,24 @@
 // is defined, if so specified at during configure.
 #include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
+// TODO fix the warnings in HPCombi that these suppressions are hear to
+// silence.
 #if defined(LIBSEMIGROUPS_HPCOMBI_ENABLED)
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #endif
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wbitwise-instead-of-logical"
+#endif
 #include "hpcombi/hpcombi.hpp"  // for HPCombi::Perm16, ...
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #include <type_traits>    // for decay_t etc

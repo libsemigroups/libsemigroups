@@ -3,7 +3,7 @@
 //    Copyright (C) 2018-2024 James Mitchell <jdm3@st-andrews.ac.uk>          //
 //    Copyright (C) 2018-2024 Florent Hivert <Florent.Hivert@lisn.fr>,        //
 //                                                                            //
-//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
+//  This file is part of HP-Combi <https://github.com//HPCombi>               //
 //                                                                            //
 //  HP-Combi is free software: you can redistribute it and/or modify it       //
 //  under the terms of the GNU General Public License as published by the     //
@@ -136,7 +136,7 @@ class BMat8 {
     //!
     //! This method sets the (\p i, \p j)th entry of \c this to \p val.
     //! Uses the bit twiddle for setting bits found
-    //! <a href=http://graphics.stanford.edu/~seander/bithacks>here</a>.
+    //! <a href=http://graphics.stanford.edu/~seander/bithacks.html>here</a>.
     void set(size_t i, size_t j, bool val) noexcept;
 
     //! Returns the integer representation of \c this.
@@ -145,6 +145,25 @@ class BMat8 {
     //! BMat8 as a sequence of 64 bits (reading rows left to right,
     //! from top to bottom) and then this sequence as an unsigned int.
     uint64_t to_int() const noexcept { return _data; }
+
+    //! Returns the array representation of \c this.
+    //!
+    //! Returns a two dimensional 8 x 8 array representing the matrix.
+    std::array<std::array<bool, 8>, 8> to_array() const noexcept;
+
+    //! Returns the bitwise or between \c this and \p that
+    //!
+    //! This method perform the bitwise operator on the matrices and
+    //! returns the result as a BMat8
+    BMat8 operator|(BMat8 const &that) const noexcept {
+        return BMat8(to_int() | that.to_int());
+    }
+
+    //! Returns the transpose of \c this.
+    //!
+    //! Returns the standard matrix transpose of a BMat8.
+    //! Uses a naive technique, by simply iterating through all entries
+    BMat8 transpose_naive() const noexcept;
 
     //! Returns the transpose of \c this
     //!
@@ -186,6 +205,21 @@ class BMat8 {
     BMat8 operator*(BMat8 const &that) const noexcept {
         return mult_transpose(that.transpose());
     }
+
+    //! Returns the matrix product of \c this and \p that
+    //!
+    //! This method returns the standard matrix product (over the
+    //! boolean semiring) of two BMat8 objects. It performs the most naive
+    //! approach by simply iterating through all entries using the access
+    //! operator of BMat8
+    BMat8 mult_naive(BMat8 const &that) const noexcept;
+
+    //! Returns the matrix product of \c this and \p that
+    //!
+    //! This method returns the standard matrix product (over the
+    //! boolean semiring) of two BMat8 objects. It performs the most naive
+    //! approach by simply iterating through all entries using array conversion.
+    BMat8 mult_naive_array(BMat8 const &that) const noexcept;
 
     //! Returns a canonical basis of the row space of \c this
     //!

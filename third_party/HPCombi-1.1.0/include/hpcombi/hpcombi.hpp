@@ -25,6 +25,7 @@ and also debug.hpp, epu8.hpp, etc.*/
 #define HPCOMBI_HPCOMBI_HPP_
 
 #include "bmat8.hpp"
+#include "bmat16.hpp"
 #include "debug.hpp"
 #include "epu8.hpp"
 #include "perm16.hpp"
