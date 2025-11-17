@@ -129,16 +129,14 @@ namespace libsemigroups {
                           "003",
                           "exceptions (static)",
                           "[quick][transf]") {
-    // FIXME these tests only test dynamic, unlike the description suggests
-    REQUIRE_NOTHROW(make<Transf<>>({0}));
-    REQUIRE_THROWS_AS(make<Transf<>>({1}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(make<Transf<>>({1}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Transf<1>>({1}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Transf<1>>({1}), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(make<Transf<>>({0, 1, 2}));
+    REQUIRE_NOTHROW(make<Transf<3>>({0, 1, 2}));
 
-    REQUIRE_THROWS_AS(make<Transf<>>({1, 2, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<Transf<3>>({1, 2, 3}), LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(make<Transf<>>({UNDEFINED, UNDEFINED, UNDEFINED}),
+    REQUIRE_THROWS_AS(make<Transf<3>>({UNDEFINED, UNDEFINED, UNDEFINED}),
                       LibsemigroupsException);
   }
 
