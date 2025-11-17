@@ -46,22 +46,22 @@
 #pragma clang diagnostic pop
 #endif
 
-#include <type_traits>    // for decay_t etc
-#include <unordered_map>  // for unordered_map
+#include <algorithm>         // for max_element
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint8_t
+#include <initializer_list>  // for begin, end, initializer_list
+#include <numeric>           // for iota
+#include <string_view>       // for basic_string_view
+#include <type_traits>       // for is_base_of_v, enable_if_t, is_int...
+#include <unordered_map>     // for swap, unordered_map
+#include <utility>           // for forward, move
+#include <vector>            // for vector
 
-#include "adapters.hpp"              // for Complexity, Degree, ...
-#include "constants.hpp"             // for UNDEFINED
-#include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
-#include "is_specialization_of.hpp"  // for is_specialization_of_v
-#include "is_transf.hpp"             // for throw_if_not_ptransf etc
-#include "types.hpp"                 // for enable_if_is_same
-
-#else
-#include <type_traits>    // for decay_t etc
-#include <unordered_map>  // for unordered_map
-
+#include "adapters.hpp"   // for Complexity, Degree, ...
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "is_transf.hpp"  // for throw_if_not_ptransf etc
+#include "types.hpp"      // for enable_if_is_same
 #endif
 
 namespace libsemigroups {
@@ -408,7 +408,7 @@ namespace libsemigroups {
     //! \brief Does nothing.
     //!
     //! Does nothing.
-    inline void operator()(HPCombi::BMat8 const&) const noexcept {}
+    inline void operator()(HPCombi::BMat8 const&, size_t) const noexcept {}
   };
 
   //! \brief Specialization of the One adapter for `HPCombi::BMat8`.
@@ -842,6 +842,186 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
+  // Konieczny adapters - PTransf16
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \brief Specialization of the ImageRightAction adapter for
+  //! `HPCombi::PTransf16`.
+  //!
+  //! Defined in `hpcombi.hpp`.
+  //!
+  //! Specialization of the ImageRightAction adapter for `HPCombi::PTransf16`.
+  //!
+  //! \sa ImageRightAction.
+  template <>
+  struct ImageRightAction<HPCombi::PTransf16, HPCombi::PTransf16> {
+    //! \brief Store the image of \p x under the right action of \p y.
+    //!
+    //! Modifies \p res in-place to hold the image of \p pt under the right
+    //! action of \p x.
+    void operator()(HPCombi::PTransf16&       res,
+                    HPCombi::PTransf16 const& pt,
+                    HPCombi::PTransf16 const& x) const noexcept {
+      // Note that this is the opposite of what's stated above because
+      // composition is the wrong way around in HPCombi
+      res = (x * pt).left_one();
+    }
+  };
+
+  //! \brief Specialization of the ImageLeftAction adapter for
+  //! `HPCombi::PTransf16`.
+  //!
+  //! Defined in `hpcombi.hpp`.
+  //!
+  //! Specialization of the ImageLeftAction adapter for `HPCombi::PTransf16`.
+  //!
+  //! \sa ImageLeftAction.
+  template <>
+  struct ImageLeftAction<HPCombi::PTransf16, HPCombi::Vect16> {
+    //! \brief Store image of \p x under the left action of \p y.
+    //!
+    //! Modifies \p res in-place to hold the image of \p x under the left
+    //! action of \p y.
+    // We cannot use "right_one" here because in HPCombi, right_one for a
+    // partial transformation is not an L-class invariant unfortunately.
+    void operator()(HPCombi::Vect16&          res,
+                    HPCombi::PTransf16 const& x,
+                    HPCombi::Vect16 const&    y) const noexcept {
+      HPCombi::Vect16 buf  = {0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff};
+      size_t          next = 0;
+      for (size_t i = 0; i < 16; ++i) {
+        if (y[i] != 0xff && x[y[i]] != 0xff) {
+          if (buf[x[y[i]]] == 0xff) {
+            buf[x[y[i]]] = next++;
+          }
+          res[i] = buf[x[y[i]]];
+        } else {
+          res[i] = 0xff;
+        }
+      }
+    }
+  };
+
+  //! \brief Specialization of the LambdaValue adapter for
+  //! `HPCombi::PTransf16`.
+  //!
+  //! Specialization of the LambdaValue adapter for instances of
+  //! `HPCombi::PTransf16`.
+  //!
+  //! \sa LambdaValue
+  template <>
+  struct LambdaValue<HPCombi::PTransf16> {
+    //! \brief The type of Lambda values.
+    //!
+    //! The type of Lambda values for PTransf16 is PTransf16; this provides an
+    //! efficient representation of image sets.
+    using type = HPCombi::PTransf16;
+  };
+
+  //! \brief Specialization of the RhoValue adapter for `HPCombi::PTransf16`.
+  //!
+  //! Specialization of the RhoValue adapter for instances of
+  //! `HPCombi::PTransf16`.
+  //!
+  //! \sa RhoValue
+  template <>
+  struct RhoValue<HPCombi::PTransf16> {
+    //! \brief The type of Rho value for `HPCombi::PTransf16`.
+    //!
+    //! The type of Rho values for PTransf16 is a Vect16; this provides
+    //! an efficient representation of the kernel.
+    using type = HPCombi::Vect16;
+  };
+
+  //! \brief Specialization of the Lambda adapter for `HPCombi::PTransf16`.
+  //!
+  //! Defined in `hpcombi.hpp`.
+  //!
+  //! Specialization of the Lambda adapter for `HPCombi::PTransf16`.
+  //!
+  //! \sa ImageRightAction, Lambda.
+  template <>
+  struct Lambda<HPCombi::PTransf16, HPCombi::PTransf16> {
+    //! \brief Stores the identity function on the image of \p x.
+    //!
+    //! Modifies \p res in-place to store the identity function on the image
+    //! of
+    //! \p x.
+    //! \exceptions
+    //! \noexcept
+    void operator()(HPCombi::PTransf16&       res,
+                    HPCombi::PTransf16 const& x) const noexcept {
+      // This is the opposite of what might be expected because multiplication
+      // is the wrong way around in HPCombi
+      res = x.left_one();
+    }
+  };
+
+  //! \brief Specialization of the Rho adapter for `HPCombi::PTransf16`.
+  //!
+  //! Defined in `hpcombi.hpp`.
+  //!
+  //! Specialization of the Lambda adapter for `HPCombi::PTransf16`.
+  //!
+  //! \sa ImageLeftAction.
+  template <>
+  struct Rho<HPCombi::PTransf16, HPCombi::Vect16> {
+    //! \brief Stores the kernel of \p x.
+    //!
+    //! Modifies \p res in-place to store the kernel of \p x.
+    //!
+    //! \exceptions
+    //! \noexcept
+    void operator()(HPCombi::Vect16&          res,
+                    HPCombi::PTransf16 const& x) const noexcept {
+      // This is the opposite of what might be expected because multiplication
+      // is the wrong way around in HPCombi
+      HPCombi::Vect16 buf  = {0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff,
+                              0xff};
+      size_t          next = 0;
+      for (size_t i = 0; i < 16; ++i) {
+        if (x[i] != 0xff) {
+          if (buf[x[i]] == 0xff) {
+            buf[x[i]] = next++;
+          }
+          res[i] = buf[x[i]];
+        } else {
+          res[i] = 0xff;
+        }
+      }
+    }
+  };
+
+  ////////////////////////////////////////////////////////////////////////
   // Konieczny adapters - generic
   ////////////////////////////////////////////////////////////////////////
 
@@ -896,8 +1076,10 @@ namespace libsemigroups {
   make(Container&& cont) {
     detail::throw_if_too_big(cont);
     detail::throw_if_not_ptransf(std::begin(cont), std::end(cont), 16);
-    return detail::make_hpcombi_ptransf<HPCombi::PTransf16>(
+    auto result = detail::make_hpcombi_ptransf<HPCombi::PTransf16>(
         std::forward<Container>(cont), 255);
+    LIBSEMIGROUPS_ASSERT(result.validate());
+    return result;
   }
 
   //! \ingroup make_transf_group
@@ -927,9 +1109,11 @@ namespace libsemigroups {
   make(Container&& cont) {
     detail::throw_if_too_big(cont);
     detail::throw_if_not_transf(std::begin(cont), std::end(cont), 16);
-    auto pad = cont.size() == 0 ? 0 : *(std::begin(cont) + cont.size() - 1);
-    return detail::make_hpcombi_ptransf<HPCombi::Transf16>(
+    auto pad    = cont.size() == 0 ? 0 : *(std::begin(cont) + cont.size() - 1);
+    auto result = detail::make_hpcombi_ptransf<HPCombi::Transf16>(
         std::forward<Container>(cont), pad);
+    LIBSEMIGROUPS_ASSERT(result.validate());
+    return result;
   }
 
   //! \ingroup make_perm_group
@@ -958,8 +1142,7 @@ namespace libsemigroups {
   [[nodiscard]] enable_if_is_same<Return, HPCombi::Perm16>
   make(Container&& cont) {
     detail::throw_if_too_big(cont);
-    detail::throw_if_not_transf(std::begin(cont), std::end(cont), 16);
-    detail::throw_if_duplicates(std::begin(cont), std::end(cont), "image");
+    detail::throw_if_not_perm(std::begin(cont), std::end(cont), 16);
     HPCombi::Perm16 result;
     size_t          i = 0;
     for (; i < cont.size(); ++i) {
@@ -967,6 +1150,7 @@ namespace libsemigroups {
       result[i] = *(cont.begin() + i);
     }
     std::iota(result.begin() + cont.size(), result.end(), cont.size());
+    LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
   }
 
@@ -996,10 +1180,10 @@ namespace libsemigroups {
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
   make(Container&& cont) {
     detail::throw_if_too_big(cont);
-    detail::throw_if_not_ptransf(std::begin(cont), std::end(cont), 16);
-    detail::throw_if_duplicates(std::begin(cont), std::end(cont), "image");
-
-    return detail::make_hpcombi_ptransf<HPCombi::PPerm16>(cont, 255);
+    detail::throw_if_not_pperm(std::begin(cont), std::end(cont), 16);
+    auto result = detail::make_hpcombi_ptransf<HPCombi::PPerm16>(cont, 255);
+    LIBSEMIGROUPS_ASSERT(result.validate());
+    return result;
   }
 
   //! \ingroup make_transf_group
@@ -1025,7 +1209,7 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of \p dom.
-  // TODO is this duplicated from elsewhere
+  // TODO is this duplicated from elsewhere,
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PTransf16>
   make(std::vector<uint8_t> const& dom,
@@ -1040,19 +1224,19 @@ namespace libsemigroups {
                               dom.size(),
                               ran.size());
     } else if (!(dom.empty()
-                 || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
+                 || deg > *std::max_element(std::begin(dom), std::end(dom)))) {
       LIBSEMIGROUPS_EXCEPTION(
           "domain value out of bounds, found {}, must be less than {}",
-          *std::max_element(dom.cbegin(), dom.cend()),
+          *std::max_element(std::begin(dom), std::end(dom)),
           deg);
     } else if (!(ran.empty()
-                 || deg > *std::max_element(ran.cbegin(), ran.cend()))) {
+                 || deg > *std::max_element(std::begin(ran), std::end(ran)))) {
       LIBSEMIGROUPS_EXCEPTION(
           "image value out of bounds, found {}, must be less than {}",
-          *std::max_element(ran.cbegin(), ran.cend()),
+          *std::max_element(std::begin(ran), std::end(ran)),
           deg);
     }
-    detail::throw_if_duplicates(dom.cbegin(), dom.cend(), "domain");
+    detail::throw_if_duplicates(std::begin(dom), std::end(dom), "domain");
     HPCombi::PTransf16 result(dom, ran, deg);
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
@@ -1086,30 +1270,8 @@ namespace libsemigroups {
   make(std::vector<uint8_t> const& dom,
        std::vector<uint8_t> const& ran,
        size_t                      deg = 16) {
-    if (deg > 16) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd argument is not valid, expected <=16, found {}", deg);
-    } else if (dom.size() != ran.size()) {
-      LIBSEMIGROUPS_EXCEPTION("domain and image size mismatch, domain has "
-                              "size {} but image has size {}",
-                              dom.size(),
-                              ran.size());
-    } else if (!(dom.empty()
-                 || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "domain value out of bounds, found {}, must be less than {}",
-          *std::max_element(dom.cbegin(), dom.cend()),
-          deg);
-    } else if (!(ran.empty()
-                 || deg > *std::max_element(ran.cbegin(), ran.cend()))) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "image value out of bounds, found {}, must be less than {}",
-          *std::max_element(ran.cbegin(), ran.cend()),
-          deg);
-    }
-    std::unordered_map<uint8_t, size_t> seen;
-    detail::throw_if_duplicates(dom.cbegin(), dom.cend(), seen, "domain");
-    detail::throw_if_duplicates(ran.cbegin(), ran.cend(), seen, "image");
+    detail::throw_if_not_pperm(
+        dom.begin(), dom.end(), ran.begin(), ran.end(), 16);
     HPCombi::PPerm16 result(dom, ran, deg);
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;

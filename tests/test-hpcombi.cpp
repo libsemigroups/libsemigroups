@@ -26,6 +26,7 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/action.hpp"
 #include "libsemigroups/exception.hpp"
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
@@ -34,6 +35,7 @@
 #include "libsemigroups/detail/int-range.hpp"  // for detail::IntRange
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
 
+// TODO remove this
 using namespace HPCombi;
 
 const uint8_t FF = 0xFF;
@@ -141,6 +143,20 @@ namespace libsemigroups {
         y
         == Renner0Element(
             {FF, FF, FF, FF, FF, FF, FF, FF, 8, 9, 10, 11, 12, 13, 14, 15}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("HPCombi",
+                                   "015",
+                                   "IncreaseDegree",
+                                   "[quick][hpcombi]",
+                                   Perm16,
+                                   PPerm16,
+                                   Transf16,
+                                   PTransf16) {
+    auto x = TestType({0, 2, 1, 4, 5, 3});
+    REQUIRE(x.size() == 16);
+    IncreaseDegree<TestType>{}(x, 11'212);
+    REQUIRE(x.size() == 16);
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
@@ -358,11 +374,123 @@ namespace libsemigroups {
         LibsemigroupsException);
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("HPCombi",
-  //                         "015",
-  //                         "Perm16 exceptions",
-  //                         "[quick][hpcombi]") {
-  //   auto x = make<Perm16>({1, 0, 3, 255});
-  // }
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "016",
+                          "Complexity<BMat8>",
+                          "[quick][hpcombi]") {
+    REQUIRE(Complexity<BMat8>{}(BMat8()) == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "018",
+                          "Degree<BMat8>",
+                          "[quick][hpcombi]") {
+    REQUIRE(Degree<BMat8>{}(BMat8()) == 8);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "019",
+                          "IncreaseDegree<BMat8>",
+                          "[quick][hpcombi]") {
+    BMat8 x;
+    REQUIRE(Degree<BMat8>{}(x) == 8);
+    IncreaseDegree<BMat8>{}(x, 11'212);
+    REQUIRE(Degree<BMat8>{}(x) == 8);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi", "020", "One<BMat8>", "[quick][hpcombi]") {
+    BMat8 x;
+    BMat8 id({{1, 0, 0, 0, 0, 0, 0, 0},
+              {0, 1, 0, 0, 0, 0, 0, 0},
+              {0, 0, 1, 0, 0, 0, 0, 0},
+              {0, 0, 0, 1, 0, 0, 0, 0},
+              {0, 0, 0, 0, 1, 0, 0, 0},
+              {0, 0, 0, 0, 0, 1, 0, 0},
+              {0, 0, 0, 0, 0, 0, 1, 0},
+              {0, 0, 0, 0, 0, 0, 0, 1}});
+
+    REQUIRE(One<BMat8>{}(x) == id);
+    REQUIRE(One<BMat8>{}(4) == id);
+    REQUIRE(One<BMat8>{}(8) == id);
+    REQUIRE(One<BMat8>{}(16) == id);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "021",
+                          "Product<BMat8>",
+                          "[quick][hpcombi]") {
+    BMat8 x(3230294132);
+    BMat8 y(2195952830);
+    BMat8 xy;
+    Product<BMat8>{}(xy, x, y);
+    REQUIRE(xy == x * y);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "022",
+                          "ImageRightAction<BMat8>",
+                          "[quick][hpcombi]") {
+    BMat8 pt(3230294132);
+    BMat8 x(2195952830);
+    BMat8 res;
+    ImageRightAction<BMat8, BMat8>{}(res, pt, x);
+    REQUIRE(res == (pt * x).row_space_basis());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "023",
+                          "ImageLeftAction<BMat8>",
+                          "[quick][hpcombi]") {
+    BMat8 pt(3230294132);
+    BMat8 x(2195952830);
+    BMat8 res;
+    ImageLeftAction<BMat8, BMat8>{}(res, pt, x);
+    REQUIRE(res == (x * pt).col_space_basis());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "024",
+                          "Inverse<BMat8>",
+                          "[quick][hpcombi]") {
+    BMat8 x(2195952830);
+    REQUIRE(Inverse<BMat8>{}(x) == x.transpose());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "025",
+                          "RightAction<PTransf16, PTransf16>",
+                          "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
+    RightAction<HPCombi::PTransf16,
+                HPCombi::PTransf16,
+                ImageRightAction<HPCombi::PTransf16, HPCombi::PTransf16>>
+        o;
+    o.add_seed(HPCombi::PTransf16::one());
+    o.add_generator(make<HPCombi::PTransf16>({1, 0, 2, 3, 4}));
+    o.add_generator(make<HPCombi::PTransf16>({1, 2, 3, 4, 0}));
+    o.add_generator(make<HPCombi::PTransf16>({0, 0, 2, 3, 4}));
+
+    REQUIRE(o.size() == 32);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("HPCombi",
+                          "026",
+                          "LeftAction<PTransf16, PTransf16>",
+                          "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
+    LeftAction<HPCombi::PTransf16,
+               HPCombi::PTransf16,
+               ImageLeftAction<HPCombi::PTransf16, HPCombi::Vect16>>
+        o;
+    o.add_seed(HPCombi::PTransf16::one());
+    o.add_generator(make<HPCombi::PTransf16>({1, 0, 2, 3, 4}));
+    o.add_generator(make<HPCombi::PTransf16>({1, 2, 3, 4, 0}));
+    o.add_generator(make<HPCombi::PTransf16>({0, 0, 2, 3, 4}));
+
+    REQUIRE(o.size() == 53);
+  }
+
+  // TODO more
+
 }  // namespace libsemigroups
 #endif
