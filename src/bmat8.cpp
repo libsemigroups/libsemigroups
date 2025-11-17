@@ -251,13 +251,15 @@ namespace libsemigroups {
           "the 2nd argument (braces) must have size 2, found {}",
           braces.size());
     }
-    auto        lbrace = braces[0], rbrace = braces[1];
-    std::string result = fmt::format("BMat8({0}", lbrace);
 
     auto n = bmat8::minimum_dim(x);
     if (n == 0) {
       return "BMat8(0)";
     }
+
+    auto lbrace = braces[0], rbrace = braces[1];
+
+    std::string result = fmt::format("BMat8({0}", lbrace);
     std::string rindent;
     for (size_t r = 0; r < n; ++r) {
       result += fmt::format("{}{}", rindent, lbrace);
