@@ -17,6 +17,7 @@
 //
 
 // TODO check the doc, return values and parameters are missing in some cases.
+// TODO constexpr where possible
 
 // This file contains declarations of specializations of the class adapters in
 // adapters.hpp for the element types in HPCombi.
@@ -40,7 +41,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wbitwise-instead-of-logical"
 #endif
-#include "hpcombi/hpcombi.hpp"  // for HPCombi::Perm16, ...
+#include "hpcombi/hpcombi.hpp"  // for `HPCombi::Perm16`, ...
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
@@ -70,7 +71,13 @@
     || defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
 namespace libsemigroups {
 
+  //! \defgroup hpcombi_group HPCombi
+  //!
+  //! This page contains links to the documentation of the parts of
+  //! \libsemigroups related to \hpcombi.
+
   //! \defgroup adapters_hpcombi_group Adapters for HPCombi
+  //! \ingroup hpcombi_group
   //!
   //! This page contains the documentation of the functionality in
   //! \libsemigroups that adapts the types in \hpcombi for use with the
@@ -87,6 +94,8 @@ namespace libsemigroups {
   //! Specialization of the Complexity adapter for subclasses of
   //! `HPCombi::PTransf16`.
   //!
+  //! \tparam Thing a derived class of `HPCombi::PTransf16`.
+  //!
   //! \sa Complexity.
   template <typename Thing>
   struct Complexity<
@@ -100,7 +109,7 @@ namespace libsemigroups {
     //!
     //! \param x an instance of a derived class of `HPCombi::PTransf16`.
     //!
-    //! \returns The complexity of multiplication `0`.
+    //! \returns The complexity of multiplication, constant with value `0`.
     //!
     //! \exceptions
     //! \noexcept
@@ -117,6 +126,8 @@ namespace libsemigroups {
   //! Specialization of the Degree adapter for subclasses of
   //! `HPCombi::PTransf16`.
   //!
+  //! \tparam Thing a derived class of `HPCombi::PTransf16`.
+  //!
   //! \sa Degree.
   template <typename Thing>
   struct Degree<
@@ -126,9 +137,14 @@ namespace libsemigroups {
     //!
     //! Returns 16.
     //!
+    //! \param x an instance of a derived class of `HPCombi::PTransf16`.
+    //!
+    //! \returns The degree, which is always `16`.
+    //!
     //! \exceptions
     //! \noexcept
-    constexpr size_t operator()(Thing const&) const noexcept {
+    constexpr size_t operator()(Thing const& x) const noexcept {
+      (void) x;
       return 16;
     }
   };
@@ -140,36 +156,52 @@ namespace libsemigroups {
   //! Specialization of the One adapter for subclasses of
   //! `HPCombi::PTransf16`.
   //!
+  //! \tparam Thing a derived class of `HPCombi::PTransf16`.
+  //!
   //! \sa One.
   template <typename Thing>
   struct One<Thing,
              std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, Thing>>> {
-    //! \brief Returns the identity for `HPCombi::PTransf16`.
+    //! \brief Returns the identity for a derived class of `HPCombi::PTransf16`.
     //!
-    //! Returns the identity for `HPCombi::PTransf16`.
+    //! Returns the identity \p Thing.
+    //!
+    //! \param n unused, for interface consistency only (defaults to `0`).
+    //!
+    //! \returns The identity of type \p Thing.
     //!
     //! \exceptions
     //! \noexcept
-    Thing operator()(size_t = 0) const noexcept {
+    Thing operator()(size_t n = 0) const noexcept {
+      (void) n;
       return Thing::one();
     }
-    //! \brief Returns the identity for `HPCombi::PTransf16`.
+
+    //! \brief Returns the identity for a derived class of `HPCombi::PTransf16`.
     //!
-    //! Returns the identity for `HPCombi::PTransf16`.
+    //! Returns the identity \p Thing.
+    //!
+    //! \param x unused, for interface consistency only.
+    //!
+    //! \returns The identity of type \p Thing.
     //!
     //! \exceptions
     //! \noexcept
-    Thing operator()(Thing const&) const noexcept {
+    Thing operator()(Thing const& x) const noexcept {
+      (void) x;
       return Thing::one();
     }
   };
 
-  //! \brief Specialisation of the Product adapter for `HPCombi::PTransf16`.
+  //! \brief Specialisation of the Product adapter for derived classes of
+  //! `HPCombi::PTransf16`.
   //!
   //! Defined in `hpcombi.hpp`.
   //!
   //! Specialization of the Product adapter for subclasses of
   //! `HPCombi::PTransf16`.
+  //!
+  //! \tparam Thing a derived class of `HPCombi::PTransf16`.
   //!
   //! \note \hpcombi implements composition of functions from right to left,
   //! whereas \libsemigroups assumes composition is left to right.
@@ -183,12 +215,18 @@ namespace libsemigroups {
     //!
     //! Modifies \p xy in-place to be the product of \p x and \p y.
     //!
+    //! \param xy the \p Thing to hold the product.
+    //! \param x the first \p Thing to multiply.
+    //! \param y the \p Thing to multiply \p x by.
+    //! \param deg unused, for interface consistency only (defaults to `0`).
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(Thing&       xy,
                     Thing const& x,
                     Thing const& y,
-                    size_t = 0) const noexcept {
+                    size_t       deg = 0) const noexcept {
+      (void) deg;
       xy = y * x;
     }
   };
@@ -200,6 +238,8 @@ namespace libsemigroups {
   //! Specialization of the Swap adapter for subclasses of
   //! `HPCombi::PTransf16`.
   //!
+  //! \tparam Thing a derived class of `HPCombi::PTransf16`.
+  //!
   //! \sa Swap.
   template <typename Thing>
   struct Swap<Thing,
@@ -207,6 +247,9 @@ namespace libsemigroups {
     //! \brief Swap \p x and \p y.
     //!
     //! Swap \p x and \p y using std::swap.
+    //!
+    //! \param x the first \p Thing to swap.
+    //! \param y the \p Thing to swap \p x with.
     //!
     //! \exceptions
     //! \noexcept
@@ -220,8 +263,8 @@ namespace libsemigroups {
   //!
   //! Defined in `hpcombi.hpp`.
   //!
-  //! Specialization of the IncreaseDegree adapter for
-  //! `HPCombi::PTransf16` and derived classes.
+  //! Specialization of the IncreaseDegree adapter for `HPCombi::PTransf16` and
+  //! derived classes.
   //!
   //! \tparam Thing the type.
   //!
@@ -232,8 +275,17 @@ namespace libsemigroups {
       std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, Thing>>> {
     //! \brief Does nothing.
     //!
-    //! Does nothing.
-    inline constexpr void operator()(Thing const&, size_t) const noexcept {}
+    //! Does nothing since `HPCombi` types are of fixed degree.
+    //!
+    //! \param x the Thing to increase the degree of (unused!).
+    //! \param n the amount to increase the degree by (unused!).
+    //!
+    //! \exceptions
+    //! \noexcept
+    inline constexpr void operator()(Thing const& x, size_t n) const noexcept {
+      (void) x;
+      (void) n;
+    }
   };
 
   //! \brief Specialization of the Inverse adapter for `HPCombi::PTransf16`.
@@ -249,6 +301,10 @@ namespace libsemigroups {
     //!
     //! Returns the inverse of \p x.
     //!
+    //! \param x the permutation.
+    //!
+    //! \returns The inverse of \p x.
+    //!
     //! \exceptions
     //! \noexcept
     HPCombi::Perm16 operator()(HPCombi::Perm16 const& x) const noexcept {
@@ -263,6 +319,8 @@ namespace libsemigroups {
   //!
   //! Specialization of the  ImageRightAction for `HPCombi::Perm16`.
   //!
+  //! \tparam Int the type of the points being acted on.
+  //!
   //! \sa ImageRightAction.
   template <typename Int>
   struct ImageRightAction<HPCombi::Perm16,
@@ -270,22 +328,41 @@ namespace libsemigroups {
                           std::enable_if_t<std::is_integral_v<Int>>> {
     //! \brief Stores the image of \p pt under \p p.
     //!
-    //! Modifies \p res in-place to store the image of \p pt under \p p in
-    //! \p res.
+    //! Modifies \p res in-place to store the image of \p pt under \p p.
+    //!
+    //! \param res the value to hold the output.
+    //! \param pt the point.
+    //! \param x the permutation.
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \warning No checks are performed on \p pt, but it should be in the range
+    //! \f$[0, 15)\f$.
     void operator()(Int&                   res,
                     Int const&             pt,
-                    HPCombi::Perm16 const& p) const noexcept {
+                    HPCombi::Perm16 const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(pt < 16);
-      res = static_cast<Int>(p[pt]);
+      res = static_cast<Int>(x[pt]);
     }
 
-    //! Returns the image of \p pt under \p p.
-    Int operator()(Int const& pt, HPCombi::Perm16 const& p) const noexcept {
+    //! \brief Stores the image of \p pt under \p p.
+    //!
+    //! This function returns the image of \p pt under \p p.
+    //!
+    //! \param pt the point.
+    //! \param x the permutation.
+    //!
+    //! \returns The image of \p pt under \p x.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning No checks are performed on \p pt, but it should be in the range
+    //! \f$[0, 15)\f$.
+    Int operator()(Int const& pt, HPCombi::Perm16 const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(pt < 16);
-      return p[pt];
+      return x[pt];
     }
   };
 
@@ -301,16 +378,19 @@ namespace libsemigroups {
   struct ImageRightAction<HPCombi::PPerm16, HPCombi::PPerm16> {
     //! \brief Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
     //!
-    //! Modifies \p res in-place to store the idempotent \f$(xy) ^ {-1}xy\f$
-    //! in
-    //! \p res.
+    //! Modifies \p res in-place to store the idempotent \f$(yx) ^ {-1}yx\f$ in
+    //! \p res where \f$y\f$ is \p pt.
+    //!
+    //! \param res the value to hold the output.
+    //! \param pt the point being acted upon.
+    //! \param x the partial permutation that is acting.
     //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PPerm16&       res,
-                    HPCombi::PPerm16 const& x,
-                    HPCombi::PPerm16 const& y) const noexcept {
-      res = (y * x).left_one();
+                    HPCombi::PPerm16 const& pt,
+                    HPCombi::PPerm16 const& x) const noexcept {
+      res = (x * pt).left_one();
     }
   };
 
@@ -326,15 +406,19 @@ namespace libsemigroups {
   struct ImageLeftAction<HPCombi::PPerm16, HPCombi::PPerm16> {
     //! \brief Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res.
     //!
-    //! Modifies res in-place to store the idempotent \f$xy(xy) ^ {-1}\f$ in
-    //! \p res.
+    //! Modifies \p res in-place to store the idempotent \f$xy(xy) ^ {-1}\f$ in
+    //! \p res where \f$y\f$ is \p pt.
+    //!
+    //! \param res the value to hold the output.
+    //! \param pt the point being acted upon.
+    //! \param x the partial permutation that is acting.
     //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PPerm16&       res,
-                    HPCombi::PPerm16 const& x,
-                    HPCombi::PPerm16 const& y) const noexcept {
-      res = (x * y).right_one();
+                    HPCombi::PPerm16 const& pt,
+                    HPCombi::PPerm16 const& x) const noexcept {
+      res = (pt * x).right_one();
     }
   };
 
@@ -350,8 +434,18 @@ namespace libsemigroups {
   struct Complexity<HPCombi::BMat8> {
     //! \brief Returns 0.
     //!
-    //! Returns 0; `HPCombi::BMat8` multiplication is constant complexity.
-    constexpr inline size_t operator()(HPCombi::BMat8 const&) const noexcept {
+    //! This function returns a value that is used to determine the complexity
+    //! of multiplication of `HPCombi::BMat8` objects. Since \hpcombi types
+    //! have extremely fast multiplication this function returns `0`.
+    //!
+    //! \param x the boolean matrix.
+    //!
+    //! \returns The complexity of multiplication, constant with value `0`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    constexpr inline size_t operator()(HPCombi::BMat8 const& x) const noexcept {
+      (void) x;
       return 0;
     }
   };
@@ -367,8 +461,16 @@ namespace libsemigroups {
   struct Degree<HPCombi::BMat8> {
     //! \brief Returns 8.
     //!
-    //! Returns 8; all `HPCombi::BMat8`s have degree 8.
-    constexpr inline size_t operator()(HPCombi::BMat8 const&) const noexcept {
+    //! Returns 8.
+    //!
+    //! \param x the boolean matrix.
+    //!
+    //! \returns The degree, which is always `8`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    constexpr inline size_t operator()(HPCombi::BMat8 const& x) const noexcept {
+      (void) x;
       return 8;
     }
   };
@@ -386,8 +488,17 @@ namespace libsemigroups {
   struct IncreaseDegree<HPCombi::BMat8> {
     //! \brief Does nothing.
     //!
-    //! Does nothing.
-    inline void operator()(HPCombi::BMat8 const&, size_t) const noexcept {}
+    //! Does nothing since `HPCombi` types are of fixed degree.
+    //!
+    //! \param x the boolean matrix to increase the degree of (unused!).
+    //! \param n the amount to increase the degree by (unused!).
+    //!
+    //! \exceptions
+    //! \noexcept
+    inline void operator()(HPCombi::BMat8 const& x, size_t n) const noexcept {
+      (void) x;
+      (void) n;
+    }
   };
 
   //! \brief Specialization of the One adapter for `HPCombi::BMat8`.
@@ -399,17 +510,34 @@ namespace libsemigroups {
   //! \sa One.
   template <>
   struct One<HPCombi::BMat8> {
-    //! \brief Returns \p x.one().
+    //! \brief Returns the identity `HPCombi::BMat8`.
     //!
-    //! Returns \p x.one()
-    inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
-      return x.one();
-    }
-    //! \brief Returns `HPCombi::BMat8::one`.
+    //! Returns the identity `HPCombi::BMat8`.
     //!
-    //! Returns `HPCombi::BMat8::one`
-    inline HPCombi::BMat8 operator()(size_t = 0) const noexcept {
+    //! \param n unused, for interface consistency only (defaults to `0`).
+    //!
+    //! \returns The identity of type `HPCombi::BMat8`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    inline HPCombi::BMat8 operator()(size_t n = 0) const noexcept {
+      (void) n;
       return HPCombi::BMat8::one();
+    }
+
+    //! \brief Returns the identity `HPCombi::BMat8`.
+    //!
+    //! Returns the identity `HPCombi::BMat8`.
+    //!
+    //! \param x unused, for interface consistency only.
+    //!
+    //! \returns The identity of type `HPCombi::BMat8`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
+      (void) x;
+      return x.one();
     }
   };
 
@@ -422,13 +550,22 @@ namespace libsemigroups {
   //! \sa Product.
   template <>
   struct Product<HPCombi::BMat8> {
-    //! \brief Changes \p xy in-place to hold the product of \p x and \p y.
+    //! \brief Modifies \p xy in-place to be the product of \p x and \p y.
     //!
-    //! Changes \p xy in-place to hold the product of \p x and \p y
+    //! Modifies \p xy in-place to be the product of \p x and \p y.
+    //!
+    //! \param xy the `HPCombi::BMat8` to hold the product.
+    //! \param x the first `HPCombi::BMat8` to multiply.
+    //! \param y the `HPCombi::BMat8` to multiply \p x by.
+    //! \param deg unused, for interface consistency only (defaults to `0`).
+    //!
+    //! \exceptions
+    //! \noexcept
     inline void operator()(HPCombi::BMat8&       xy,
                            HPCombi::BMat8 const& x,
                            HPCombi::BMat8 const& y,
-                           size_t = 0) const noexcept {
+                           size_t                deg = 0) const noexcept {
+      (void) deg;
       xy = x * y;
     }
   };
@@ -442,6 +579,7 @@ namespace libsemigroups {
   //! `HPCombi::BMat8`.
   //!
   //! \sa ImageRightAction.
+  // HERE in doc review
   template <>
   struct ImageRightAction<HPCombi::BMat8, HPCombi::BMat8> {
     //! \brief Store the image of \p pt under the right action of \p x.
@@ -498,7 +636,7 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Konieczny adapters - HPCombi::BMat8
+  // Konieczny adapters - `HPCombi::BMat8`
   ////////////////////////////////////////////////////////////////////////
 
   //! \brief Specialization of the LambdaValue adapter for `HPCombi::BMat8`.
@@ -588,7 +726,7 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Konieczny adapters - HPCombi::PPerm16
+  // Konieczny adapters - `HPCombi::PPerm16`
   ////////////////////////////////////////////////////////////////////////
 
   //! \brief Specialization of the LambdaValue adapter for `HPCombi::PPerm16`.
@@ -928,19 +1066,21 @@ namespace libsemigroups {
 
   //! @}
 
-  // TODO collect this into an HPCombi group
-  // TODO add tests
+  //! \defgroup make_hpcombi_group The \`make\` function for HPCombi
+  //! \ingroup hpcombi_group
+  //!
+  //! This page contains documentation for the `make` function overloads for
+  //! safely constructing \hpcombi types.
 
-  //! \ingroup make_transf_group
+  //! \ingroup make_hpcombi_group
   //!
   //! \brief Construct a `HPCombi::PTransf16` from universal reference and
   //! check.
   //!
-  //! Constructs a HPCombi::PTransf16 initialized using the container \p cont
+  //! Constructs a `HPCombi::PTransf16` initialized using the container \p cont
   //! as follows: the image of the point \c i under the transformation is the
   //! value in position \c i of the container \p cont.
   //!
-  //! \tparam Return the return type. Must by HPCombi::PTransf16.
   //! \tparam Container type of the container.
   //!
   //! \param cont the container.
@@ -953,20 +1093,24 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of the container \p cont.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PTransf16>
   make(Container&& cont);
+#else
+  template <typename Container>
+  [[nodiscard]] HPCombi::PTransf16 make<HPCombi::PTransf16>(Container&& cont);
+#endif
 
-  //! \ingroup make_transf_group
+  //! \ingroup make_hpcombi_group
   //!
-  //! \brief Construct a HPCombi::Transf16 from universal reference and
+  //! \brief Construct a `HPCombi::Transf16` from universal reference and
   //! check.
   //!
-  //! Constructs a HPCombi::Transf16 initialized using the container \p cont
+  //! Constructs a `HPCombi::Transf16` initialized using the container \p cont
   //! as follows: the image of the point \c i under the transformation is the
   //! value in position \c i of the container \p cont.
   //!
-  //! \tparam Return the return type. Must by HPCombi::Transf16.
   //! \tparam Container type of the container.
   //!
   //! \param cont the container.
@@ -979,20 +1123,24 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of the container \p cont.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::Transf16>
   make(Container&& cont);
+#else
+  template <typename Container>
+  [[nodiscard]] HPCombi::Transf16 make<HPCombi::Transf16>(Container&& cont);
+#endif
 
-  //! \ingroup make_perm_group
+  //! \ingroup make_hpcombi_group
   //!
-  //! \brief Construct a HPCombi::Perm16 from universal reference and
+  //! \brief Construct a `HPCombi::Perm16` from universal reference and
   //! check.
   //!
-  //! Constructs a HPCombi::Perm16 initialized using the container \p cont as
+  //! Constructs a `HPCombi::Perm16` initialized using the container \p cont as
   //! follows: the image of the point \c i under the permutation is the
   //! value in position \c i of the container \p cont.
   //!
-  //! \tparam Return the return type. Must by HPCombi::Perm16.
   //! \tparam Container type of the container.
   //!
   //! \param cont the container.
@@ -1005,19 +1153,23 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of the container \p cont.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::Perm16>
   make(Container&& cont);
+#else
+  template <typename Container>
+  [[nodiscard]] HPCombi::Perm16 make<HPCombi::Perm16>(Container&& cont);
+#endif
 
-  //! \ingroup make_pperm_group
+  //! \ingroup make_hpcombi_group
   //!
-  //! \brief Construct a HPCombi::PPerm16 from container and check.
+  //! \brief Construct a `HPCombi::PPerm16` from container and check.
   //!
-  //! Constructs a HPCombi::PPerm16 initialized using the container \p cont as
+  //! Constructs a `HPCombi::PPerm16` initialized using the container \p cont as
   //! follows: the image of the point \c i under the partial perm is the
   //! value in position \c i of the container \p cont.
   //!
-  //! \tparam Return the return type. Must by HPCombi::PPerm16.
   //! \tparam Container type of the container.
   //!
   //! \param cont the container.
@@ -1031,11 +1183,16 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of the container \p cont.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
   make(Container&& cont);
+#else
+  template <typename Container>
+  [[nodiscard]] HPCombi::PPerm16 make<HPCombi::PPerm16>(Container&& cont);
+#endif
 
-  //! \ingroup make_transf_group
+  //! \ingroup make_hpcombi_group
   //!
   //! \brief Construct a `HPCombi::PTransf16` from domain, range, and degree,
   //! and check.
@@ -1043,8 +1200,6 @@ namespace libsemigroups {
   //! Constructs a partial transformation of degree \p deg such that
   //! `f[dom[i]] = ran[i]` for all \c i and which is `0xFF` on every other
   //! value in the range \f$[0, M)\f$.
-  //!
-  //! \tparam Return the return type, must be HPCombi::PTransf16.
   //!
   //! \param dom the domain.
   //! \param ran the range.
@@ -1058,22 +1213,28 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of \p dom.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PTransf16>
   make(std::vector<uint8_t> const& dom,
        std::vector<uint8_t> const& ran,
        size_t                      deg = 16);
+#else
+  [[nodiscard]] HPCombi::PTransf16
+  make<HPCombi::PTransf16>(std::vector<uint8_t> const& dom,
+                           std::vector<uint8_t> const& ran,
+                           size_t                      deg = 16);
+#endif
 
-  //! \ingroup make_pperm_group
+  //! \ingroup make_hpcombi_group
   //!
-  //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
+  //! \brief Construct a `HPCombi::PPerm16` from domain, range, and degree, and
   //! check.
   //!
   //! Constructs a partial perm of degree \p deg such that `f[dom[i]] =
   //! ran[i]` for all \c i and which is `0xFF` on every other value in the
   //! range \f$[0, deg)\f$.
   //!
-  //! \tparam Return the return type, must be HPCombi::PPerm16.
   //!
   //! \param dom the domain.
   //! \param ran the range.
@@ -1087,22 +1248,29 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of \p dom.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
   make(std::vector<uint8_t> const& dom,
        std::vector<uint8_t> const& ran,
        size_t                      deg = 16);
+#else
+  [[nodiscard]] HPCombi::PPerm16
+  make<HPCombi::PPerm16>(std::vector<uint8_t> const& dom,
+                         std::vector<uint8_t> const& ran,
+                         size_t                      deg = 16);
+#endif
 
-  //! \ingroup make_pperm_group
+  //! \ingroup make_hpcombi_group
   //!
-  //! \brief Construct a HPCombi::PPerm16 from domain, range, and degree, and
+  //! \brief Construct a `HPCombi::PPerm16` from domain, range, and degree, and
   //! check.
   //!
   //! Constructs a partial perm of degree \p M such that
   //! `f[dom[i]] = ran[i]` for all \c i and which is `0xFF` on every other
   //! value in the range \f$[0, M)\f$.
   //!
-  //! \tparam Return the return type, must be HPCombi::PPerm16.
+  //! \tparam Int the type of the integers in the initializer lists.
   //!
   //! \param dom the domain.
   //! \param ran the range.
@@ -1116,6 +1284,7 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of \p dom.
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Return, typename Int>
   [[nodiscard]] enable_if_is_same<Return, HPCombi::PPerm16>
   make(std::initializer_list<Int> dom,
@@ -1125,17 +1294,27 @@ namespace libsemigroups {
                         std::vector<uint8_t>(ran.begin(), ran.end()),
                         M);
   }
+#else
+  template <typename Int>
+  [[nodiscard]] HPCombi::PPerm16
+  make<HPCombi::PPerm16>(std::initializer_list<Int> const& dom,
+                         std::initializer_list<Int> const& ran,
+                         size_t                            M = 16);
+#endif
 
-  //! \ingroup make_transf_group
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  // We omit the doc for this version because the return type is awful and ruins
+  // the rest of the doc in the table at the top of the page.
+  //! \ingroup make_hpcombi_group
   //!
-  //! \brief Construct a HPCombi::Transf16 from universal reference and
-  //! check.
+  //! \brief Construct a derived class of `HPCombi::PTransf16` from universal
+  //! reference and check.
   //!
-  //! Constructs a HPCombi::Transf16 initialized using the container \p cont
-  //! as follows: the image of the point \c i under the transformation is the
-  //! value in position \c i of the container \p cont.
+  //! Constructs a derived class of `HPCombi::Transf16` initialized using the
+  //! container \p cont as follows: the image of the point \c i under the
+  //! transformation is the value in position \c i of the container \p cont.
   //!
-  //! \tparam Return the return type. Must by HPCombi::Transf16.
+  //! \tparam Return the return type. Must be derived from `HPCombi::PTransf16`.
   //!
   //! \param cont the container.
   //!
@@ -1153,6 +1332,7 @@ namespace libsemigroups {
   make(std::initializer_list<uint8_t>&& cont) {
     return make<Return, std::initializer_list<uint8_t>>(std::move(cont));
   }
+#endif
 
 }  // namespace libsemigroups
 

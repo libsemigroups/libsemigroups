@@ -816,6 +816,7 @@ namespace libsemigroups {
   //! * \ref make_bipart_group
   //! * \ref make_forest_group
   //! * \ref make_froidure_pin_group
+  //! * \ref make_hpcombi_group "make<HPCombi>"
   //! * \ref make_konieczny_group
   //! * \ref make_matrix_group
   //! * \ref make_pbr_group
