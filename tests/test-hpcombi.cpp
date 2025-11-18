@@ -510,8 +510,10 @@ namespace libsemigroups {
                           "024",
                           "Inverse<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
-    HPCombi::BMat8 x(2195952830);
+    HPCombi::BMat8 x({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}});
     REQUIRE(Inverse<HPCombi::BMat8>{}(x) == x.transpose());
+    REQUIRE(x * Inverse<HPCombi::BMat8>{}(x)
+            == HPCombi::BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
