@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO check the doc
+// TODO check the doc, return values and parameters are missing in some cases.
 
 // This file contains declarations of specializations of the class adapters in
 // adapters.hpp for the element types in HPCombi.
@@ -73,9 +73,9 @@ namespace libsemigroups {
   //! \defgroup adapters_hpcombi_group Adapters for HPCombi
   //!
   //! This page contains the documentation of the functionality in
-  //! `libsemigroups` that adapts the types in `HPCombi` for use with the
+  //! \libsemigroups that adapts the types in \hpcombi for use with the
   //! algorithms in libsemigroups. The functionality in this section is only
-  //! available if libsemigroups is compiled with `HPCombi` support enabled.
+  //! available if libsemigroups is compiled with \hpcombi support enabled.
   //!
   //! @{
 
@@ -94,11 +94,18 @@ namespace libsemigroups {
       std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, Thing>>> {
     //! \brief Returns 0.
     //!
-    //! Returns 0.
+    //! This function returns a value that is used to determine the complexity
+    //! of multiplication of elements of type \p Thing. Since \hpcombi types
+    //! have extremely fast multiplication this function returns `0`.
+    //!
+    //! \param x an instance of a derived class of `HPCombi::PTransf16`.
+    //!
+    //! \returns The complexity of multiplication `0`.
     //!
     //! \exceptions
     //! \noexcept
-    constexpr size_t operator()(Thing const&) const noexcept {
+    constexpr size_t operator()(Thing const& x) const noexcept {
+      (void) x;
       return 0;
     }
   };
@@ -164,8 +171,8 @@ namespace libsemigroups {
   //! Specialization of the Product adapter for subclasses of
   //! `HPCombi::PTransf16`.
   //!
-  //! \note `HPCombi` implements composition of functions from left to right,
-  //! whereas `libsemigroups` assumes composition is right to left.
+  //! \note \hpcombi implements composition of functions from right to left,
+  //! whereas \libsemigroups assumes composition is left to right.
   //!
   //! \sa Product.
   template <typename Thing>
@@ -855,9 +862,9 @@ namespace libsemigroups {
   struct Lambda<HPCombi::PTransf16, HPCombi::PTransf16> {
     //! \brief Stores the identity function on the image of \p x.
     //!
-    //! Modifies \p res in-place to store the identity function on the image
-    //! of
+    //! Modifies \p res in-place to store the identity function on the image of
     //! \p x.
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PTransf16&       res,
@@ -891,11 +898,11 @@ namespace libsemigroups {
   // Konieczny adapters - generic
   ////////////////////////////////////////////////////////////////////////
 
-  //! \brief Specialization of the Rank adapter for `HPCombi` types.
+  //! \brief Specialization of the Rank adapter for \hpcombi types.
   //!
   //! Defined in `hpcombi.hpp`.
   //!
-  //! Specialization of the Rank adapter for `HPCombi` types.
+  //! Specialization of the Rank adapter for \hpcombi types.
   template <typename T>
   struct Rank<T,
               std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, T>,
