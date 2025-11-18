@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(v4): delete this file it's no longer necessary
+
 #ifndef LIBSEMIGROUPS_DEPRECATED_HPP_
 #define LIBSEMIGROUPS_DEPRECATED_HPP_
 
