@@ -314,6 +314,8 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "deprecated_alias_warning=\warning This alias is deprecated and will be removed from `libsemigroups` in v4."
 
 ALIASES += "deprecated_warning{1}=\warning This \1 is deprecated and will be removed from `libsemigroups` in v4."
+ALIASES += "hpcombi=<a href=\"https://libsemigroups.github.io/HPCombi/\">HPCombi</a>"
+ALIASES += "libsemigroups=<a href=\"https://libsemigroups.github.io/libsemigroups/\">libsemigroups</a>"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
