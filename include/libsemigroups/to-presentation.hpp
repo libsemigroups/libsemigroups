@@ -230,8 +230,8 @@ namespace libsemigroups {
   //! function calls `to<Presentation<typename Result::word_type>` on
   //! `k.presentation()` to return a presentation equivalent to the object used
   //! to construct or initialise the Kambites object (if any) but of a different
-  //! type (for example, can be used to convert from `std::string` to \ref
-  //! word_type).
+  //! type (for example, this function can be used to convert from `std::string`
+  //! to \ref word_type).
   //!
   //! 2. If the word representations are the same, the function returns a
   //! reference to the presentation used to construct or initialise the Kambites

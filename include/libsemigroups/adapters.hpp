@@ -331,7 +331,7 @@ namespace libsemigroups {
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature
-  //! `void operator()(Point& res, Element const& x, Point const& pt) const`
+  //! `void operator()(Point& res,  Point const& pt, Element const& x) const`
   //! (possibly `noexcept`, `inline` and/or `constexpr` also).
   //!
   //! The call operator should change \p res in-place to contain the image of

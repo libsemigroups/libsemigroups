@@ -2191,7 +2191,8 @@ namespace libsemigroups {
   //! \sa ImageLeftAction.
   template <size_t N, typename Scalar>
   struct ImageLeftAction<PPerm<N, Scalar>, PPerm<N, Scalar>> {
-    //! Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res.
+    //! Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res where \f$y\f$ if
+    //! \p pt.
     void operator()(PPerm<N, Scalar>&       res,
                     PPerm<N, Scalar> const& pt,
                     PPerm<N, Scalar> const& x) const noexcept {

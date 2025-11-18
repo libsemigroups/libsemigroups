@@ -1219,8 +1219,8 @@ namespace libsemigroups {
 
       //! \brief Advance to the next path in the range.
       //!
-      //! This function advances to the current path in the range. If \ref
-      //! Paths::at_end returns \c true, then this function does nothing.
+      //! This function advances to the current path in the range. If
+      //! \ref Paths::at_end returns \c true, then this function does nothing.
       void next();
 
       //! \brief Skip a number of paths in the range.
