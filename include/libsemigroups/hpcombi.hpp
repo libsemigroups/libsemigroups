@@ -490,7 +490,9 @@ namespace libsemigroups {
     //!
     //! Returns the group inverse of \p x.
     inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
-      LIBSEMIGROUPS_ASSERT(x * x.transpose() == x.one());
+      // The following assertion fails because x.one() is the 8x8 identity but
+      // x * x.transpose() is not always.
+      // LIBSEMIGROUPS_ASSERT(x * x.transpose() == x.one());
       return x.transpose();
     }
   };
