@@ -24,6 +24,7 @@
 #define LIBSEMIGROUPS_ORDER_HPP_
 
 #include <cstddef>  // for size_t
+#include <numeric>  // for accumulate
 #include <vector>   // for vector
 
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
@@ -603,15 +604,15 @@ namespace libsemigroups {
                                      T const&                   first2,
                                      T const&                   last2,
                                      std::vector<size_t> const& weights) {
-    size_t weight1 = 0;
-    for (auto it = first1; it != last1; ++it) {
-      weight1 += weights[*it];
-    }
+    size_t weight1 = std::accumulate(
+        first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
+          return sum + weights[letter];
+        });
 
-    size_t weight2 = 0;
-    for (auto it = first2; it != last2; ++it) {
-      weight2 += weights[*it];
-    }
+    size_t weight2 = std::accumulate(
+        first2, last2, size_t(0), [&weights](size_t sum, auto letter) {
+          return sum + weights[letter];
+        });
 
     if (weight1 != weight2) {
       return weight1 < weight2;
@@ -830,23 +831,25 @@ namespace libsemigroups {
                            std::vector<size_t> const& weights) {
     size_t const alphabet_size = weights.size();
 
-    for (auto it = first1; it != last1; ++it) {
-      if (static_cast<size_t>(*it) >= alphabet_size) {
+    std::accumulate(first1, last1, 0, [&alphabet_size](int, auto letter) {
+      if (static_cast<size_t>(letter) >= alphabet_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid letter {}, valid letters are in range [0, {})",
-            static_cast<size_t>(*it),
+            static_cast<size_t>(letter),
             alphabet_size);
       }
-    }
+      return 0;
+    });
 
-    for (auto it = first2; it != last2; ++it) {
-      if (static_cast<size_t>(*it) >= alphabet_size) {
+    std::accumulate(first2, last2, 0, [&alphabet_size](int, auto letter) {
+      if (static_cast<size_t>(letter) >= alphabet_size) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid letter {}, valid letters are in range [0, {})",
-            static_cast<size_t>(*it),
+            static_cast<size_t>(letter),
             alphabet_size);
       }
-    }
+      return 0;
+    });
 
     return wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights);
   }
