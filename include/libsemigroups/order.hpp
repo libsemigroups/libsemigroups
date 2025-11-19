@@ -892,8 +892,8 @@ namespace libsemigroups {
   //! \warning
   //! When should_check is false, the call operator does not check that letters
   //! are valid indices into the weights vector. Use the constructor with
-  //! should_check set to true, or call the call_checks member function, to
-  //! enable validation.
+  //! should_check set to `WtShortLexCompare::doCheck`, or call the call_checks
+  //! member function, to enable validation.
   //!
   //! \sa
   //! wt_shortlex_compare(T const&, T const&, std::vector<size_t> const&)
@@ -906,7 +906,7 @@ namespace libsemigroups {
     //! \brief Constant to disable validity checks.
     static constexpr bool noCheck = false;
 
-    //! \brief Construct from weights vector and should_check flag by reference.
+    //! \brief Construct from weights vector reference and specify should_check.
     //!
     //! Constructs a comparison object that stores a copy of the provided
     //! weights vector, where the ith index corresponds to the weight of the
@@ -919,7 +919,7 @@ namespace libsemigroups {
     WtShortLexCompare(std::vector<size_t> const& weights, bool should_check)
         : _weights(weights), _should_check(should_check) {}
 
-    //! \brief Construct from weights vector and should_check flag by rvalue.
+    //! \brief Construct from weights vector by rvalue and specify should_check.
     //!
     //! Constructs a comparison object that takes ownership of the provided
     //! weights vector, where the ith index corresponds to the weight of the
