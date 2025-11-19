@@ -4,6 +4,8 @@ Automated code block extraction from documentation for testing.
 
 import sys
 import argparse
+import subprocess
+import re
 from pathlib import Path
 
 ########################################################################
@@ -34,6 +36,7 @@ HEADER_TEXT = """// libsemigroups - C++ library for semigroups and monoids
 using namespace libsemigroups::literals;
 """
 
+TEST_FILEPATH = "./tests/test-docs-code-examples.cpp"
 ########################################################################
 # Internal
 ########################################################################
@@ -183,7 +186,8 @@ def extract_code_blocks(file_path):
 
                         #  Add require value eq
                         current_block.append(
-                            f"  REQUIRE({function_call} == {function_returns});"
+                            f"  REQUIRE({function_call} == {
+                                function_returns});"
                         )
                         continue
 
@@ -192,7 +196,8 @@ def extract_code_blocks(file_path):
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(f"Warning: Unclosed code block at end of file {file_path}")
+                __error(
+                    f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
@@ -244,7 +249,7 @@ def process_folder(folder_path, recursive=False, exclude=[]):
     total_blocks = 0
 
     try:
-        with open("./tests/test-docs-code-examples.cpp", "w") as testfile:
+        with open(TEST_FILEPATH, "w") as testfile:
             testfile.write(f"{HEADER_TEXT}\n")
             testfile.write("namespace libsemigroups {\n")  # Open namespace
 
@@ -266,7 +271,9 @@ def process_folder(folder_path, recursive=False, exclude=[]):
                         testfile.write(
                             f'// {file_path.relative_to(folder)}: Line {
                                 block["start_line"]
-                            }\nLIBSEMIGROUPS_TEST_CASE("docs", "{total_blocks}", "{
+                            }\nLIBSEMIGROUPS_TEST_CASE("docs", "{
+                                "{:03}".format(total_blocks)
+                            }", "{
                                 file_path.relative_to(folder)
                             }", "[docs][quick]") {{\n'
                         )
@@ -288,6 +295,52 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
 
 ########################################################################
+# File Formatting
+#########################################################################
+
+
+def check_clang_format_version() -> bool:
+    """Check that clang-format@15 is installed."""
+    try:
+        res = subprocess.run(
+            ["clang-format", "--version"], capture_output=True, text=True, check=True
+        )
+        version_check = re.search(r"version\s+(\d+)", res.stdout)
+
+        if not version_check:
+            __error("Could not match clang-format --version")
+            return False
+
+        ver = int(version_check.group(1))
+
+        if ver != 15:
+            __error("clang-format@15 is required")
+            return False
+        else:
+            return True
+    except FileNotFoundError:
+        __error("clang-format@15 is not installed")
+        return False
+    except subprocess.CalledProcessError as e:
+        __error(f"clang-format --version error: {e}")
+        return False
+
+
+def format_file(filepath):
+    if not check_clang_format_version():
+        __error("Unable to format file, see clang-format related error")
+        return
+
+    try:
+        subprocess.run(["clang-format", "-i", filepath], check=True)
+        print(f"\n Formatted {filepath}")
+    except subprocess.CalledProcessError as e:
+        __error(f"Failed to format file {filepath} : {e}")
+    except FileNotFoundError:
+        __error(f"Could not find file {filepath} to format")
+
+
+########################################################################
 # Main
 #########################################################################
 
@@ -296,6 +349,8 @@ def main():
     args = __parse_args()
     exclude = args.exclude if not args.exclude is None else []
     process_folder(args.folder_path, args.recursive, exclude)
+    format_file(TEST_FILEPATH)
+    print("\n Docs code block extraction completed successfully. Exiting.")
 
 
 if __name__ == "__main__":
