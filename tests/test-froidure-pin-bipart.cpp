@@ -16,8 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
-#include <vector>   // for vector
+#include <cstddef>   // for size_t
+#include <iostream>  // for cout, endl // TODO(2): remove this include
+#include <vector>    // for vector
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
@@ -230,5 +231,4 @@ namespace libsemigroups {
     }
     REQUIRE_THROWS_AS(S.is_idempotent(10), LibsemigroupsException);
   }
-
 }  // namespace libsemigroups

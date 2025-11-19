@@ -611,7 +611,8 @@ namespace libsemigroups {
         return 0;
       }
 
-     protected:
+      // TODO: expose correct iterators
+     public:
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       ////////////////////////////////////////////////////////////////////////
       // DClass - iterators - protected

@@ -174,6 +174,14 @@ namespace libsemigroups {
       return result;
     }
 
+    Blocks identity_blocks(size_t degree) {
+      auto ret = Blocks(degree);
+      for (size_t i = 0; i < degree; ++i) {
+        ret.block_no_checks(i, i);
+        ret.is_transverse_block_no_checks(i, true);
+      }
+      return ret;
+    }
   }  // namespace blocks
 
   [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
@@ -629,6 +637,8 @@ namespace libsemigroups {
       }
       _vector[i] = lookup[j];
     }
+
+    invalidate_cache();
   }
 
   uint32_t Bipartition::number_of_blocks() const {
@@ -727,4 +737,31 @@ namespace libsemigroups {
     return right_blocks_no_checks();
   }
 
+  void Bipartition::invalidate_cache() const {
+    this->_nr_blocks      = UNDEFINED;
+    this->_nr_left_blocks = UNDEFINED;
+    this->_trans_blocks_lookup.clear();
+    this->_rank = UNDEFINED;
+  }
+
+  Bipartition bipartition::block_projection(Blocks const& blocks) {
+    std::vector<uint32_t> vector(blocks.cbegin(), blocks.cend());
+    vector.reserve(2 * blocks.degree());
+
+    std::vector<uint32_t> lookup;
+    lookup.assign(blocks.number_of_blocks(), UNDEFINED);
+    uint32_t next = blocks.number_of_blocks();
+    for (size_t i = 0; i < blocks.degree(); ++i) {
+      if (blocks.is_transverse_block_no_checks(blocks[i])) {
+        vector.push_back(vector[i]);
+      } else {
+        if (lookup[blocks[i]] == UNDEFINED) {
+          lookup[blocks[i]] = next++;
+        }
+        vector.push_back(lookup[blocks[i]]);
+      }
+    }
+    Bipartition result(std::move(vector));
+    return result;
+  }
 }  // namespace libsemigroups
