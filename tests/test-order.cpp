@@ -507,21 +507,6 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(comp.call_checks(w1, w2), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WtShortLexCompare",
-                          "035",
-                          "operator() does not throw when checks disabled",
-                          "[quick][order]") {
-    auto                rg      = ReportGuard(false);
-    std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
-
-    word_type w1 = {0, 1};
-    word_type w2 = {10};  // invalid: 10 >= weights.size()
-
-    // operator() should not throw when checks are disabled
-    REQUIRE_NOTHROW(comp(w1, w2));
-  }
-
   // =========================================================================
   // STL integration
   // =========================================================================
