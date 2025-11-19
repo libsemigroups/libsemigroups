@@ -890,10 +890,10 @@ namespace libsemigroups {
   //! library containers or algorithms that require a comparison functor.
   //!
   //! \warning
-  //! By default, the call operator does not check that letters are valid
-  //! indices into the weights vector. Use the constructor with should_check
-  //! set to true, or call the call_checks member function, to enable
-  //! validation.
+  //! When should_check is false, the call operator does not check that letters
+  //! are valid indices into the weights vector. Use the constructor with
+  //! should_check set to true, or call the call_checks member function, to
+  //! enable validation.
   //!
   //! \sa
   //! wt_shortlex_compare(T const&, T const&, std::vector<size_t> const&)
