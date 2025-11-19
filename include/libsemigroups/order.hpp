@@ -595,14 +595,14 @@ namespace libsemigroups {
   //! the weights vector.
   //!
   //! \sa
-  //! \ref wtshortlex_compare(T const&, T const&, T const&, T const&,
+  //! \ref wt_shortlex_compare(T const&, T const&, T const&, T const&,
   //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
-  bool wtshortlex_compare_no_checks(T const&                   first1,
-                                    T const&                   last1,
-                                    T const&                   first2,
-                                    T const&                   last2,
-                                    std::vector<size_t> const& weights) {
+  bool wt_shortlex_compare_no_checks(T const&                   first1,
+                                     T const&                   last1,
+                                     T const&                   first2,
+                                     T const&                   last2,
+                                     std::vector<size_t> const& weights) {
     size_t weight1 = 0;
     for (auto it = first1; it != last1; ++it) {
       weight1 += weights[*it];
@@ -621,12 +621,12 @@ namespace libsemigroups {
   }
 
   //! \brief Compare two objects of the same type using
-  //! \ref wtshortlex_compare_no_checks without checks.
+  //! \ref wt_shortlex_compare_no_checks without checks.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using
-  //! \ref wtshortlex_compare_no_checks, where the ith index of the weights
+  //! \ref wt_shortlex_compare_no_checks, where the ith index of the weights
   //! vector corresponds to the weight of the ith letter in the alphabet.
   //!
   //! \tparam T the type of the objects to be compared.
@@ -639,7 +639,7 @@ namespace libsemigroups {
   //! than \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T
+  //! See \ref wt_shortlex_compare_no_checks(T const&, T const&, T const&, T
   //! const&, std::vector<size_t> const&).
   //!
   //! \complexity
@@ -648,7 +648,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! wtshortlex_compare_no_checks(
+  //! wt_shortlex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
   //!
@@ -657,23 +657,23 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! \ref wt_shortlex_compare_no_checks(T const&, T const&, T const&, T const&,
   //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
-  bool wtshortlex_compare_no_checks(T const&                   x,
-                                    T const&                   y,
-                                    std::vector<size_t> const& weights) {
-    return wtshortlex_compare_no_checks(
+  bool wt_shortlex_compare_no_checks(T const&                   x,
+                                     T const&                   y,
+                                     std::vector<size_t> const& weights) {
+    return wt_shortlex_compare_no_checks(
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
 
   //! \brief Compare two objects via their pointers using
-  //! \ref wtshortlex_compare_no_checks without checks.
+  //! \ref wt_shortlex_compare_no_checks without checks.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects via their pointers using
-  //! \ref wtshortlex_compare_no_checks, where the ith index of the weights
+  //! \ref wt_shortlex_compare_no_checks, where the ith index of the weights
   //! vector corresponds to the weight of the ith letter in the alphabet.
   //!
   //! \tparam T the type of the objects to be compared.
@@ -686,7 +686,7 @@ namespace libsemigroups {
   //! short-lex less than the word pointed to by \p y, and \c false otherwise.
   //!
   //! \exceptions
-  //! See \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T
+  //! See \ref wt_shortlex_compare_no_checks(T const&, T const&, T const&, T
   //! const&, std::vector<size_t> const&).
   //!
   //! \complexity
@@ -695,7 +695,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! wtshortlex_compare_no_checks(
+  //! wt_shortlex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
   //!
@@ -704,28 +704,28 @@ namespace libsemigroups {
   //! vector.
   //!
   //! \sa
-  //! \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! \ref wt_shortlex_compare_no_checks(T const&, T const&, T const&, T const&,
   //! std::vector<size_t> const&).
   template <typename T>
-  bool wtshortlex_compare_no_checks(T* const                   x,
-                                    T* const                   y,
-                                    std::vector<size_t> const& weights) {
-    return wtshortlex_compare_no_checks(
+  bool wt_shortlex_compare_no_checks(T* const                   x,
+                                     T* const                   y,
+                                     std::vector<size_t> const& weights) {
+    return wt_shortlex_compare_no_checks(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
 
   //! \brief A stateful struct with binary call operator using
-  //! \ref wtshortlex_compare_no_checks.
+  //! \ref wt_shortlex_compare_no_checks.
   //!
   //! Defined in `order.hpp`.
   //!
   //! A stateful struct with binary call operator using
-  //! \ref wtshortlex_compare_no_checks. This struct stores a reference to a
+  //! \ref wt_shortlex_compare_no_checks. This struct stores a reference to a
   //! weights vector and can be used as a template parameter for standard
   //! library containers or algorithms that require a comparison functor.
   //!
   //! \sa
-  //! wtshortlex_compare_no_checks(T const&, T const&, std::vector<size_t>
+  //! wt_shortlex_compare_no_checks(T const&, T const&, std::vector<size_t>
   //! const&)
   struct WtShortLexCompareNoChecks {
     //! \brief Construct from weights vector by reference.
@@ -749,10 +749,10 @@ namespace libsemigroups {
         : _weights(std::move(weights)) {}
 
     //! \brief Call operator that compares \p x and \p y using
-    //! \ref wtshortlex_compare_no_checks.
+    //! \ref wt_shortlex_compare_no_checks.
     //!
     //! Call operator that compares \p x and \p y using
-    //! \ref wtshortlex_compare_no_checks.
+    //! \ref wt_shortlex_compare_no_checks.
     //!
     //! \tparam T the type of the objects to be compared.
     //!
@@ -763,19 +763,19 @@ namespace libsemigroups {
     //! than \p y, and \c false otherwise.
     //!
     //! \exceptions
-    //! See wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
-    //! std::vector<size_t> const&).
+    //! See wt_shortlex_compare_no_checks(T const&, T const&, T const&, T
+    //! const&, std::vector<size_t> const&).
     //!
     //! \complexity
-    //! See wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
-    //! std::vector<size_t> const&).
+    //! See wt_shortlex_compare_no_checks(T const&, T const&, T const&, T
+    //! const&, std::vector<size_t> const&).
     //!
     //! \warning
     //! It is not checked that the letters are valid indices into the weights
     //! vector.
     template <typename T>
     bool operator()(T const& x, T const& y) const {
-      return wtshortlex_compare_no_checks(x, y, _weights);
+      return wt_shortlex_compare_no_checks(x, y, _weights);
     }
 
    private:
@@ -796,7 +796,7 @@ namespace libsemigroups {
   //!
   //! After checking that all letters in both ranges are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wtshortlex_compare_no_checks(first1, last1, first2, last2, weights)`.
+  //! `wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights)`.
   //!
   //! \tparam T the type of iterators to the first object to be compared.
   //!
@@ -820,14 +820,14 @@ namespace libsemigroups {
   //! first2.
   //!
   //! \sa
-  //! \ref wtshortlex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! \ref wt_shortlex_compare_no_checks(T const&, T const&, T const&, T const&,
   //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
-  bool wtshortlex_compare(T const&                   first1,
-                          T const&                   last1,
-                          T const&                   first2,
-                          T const&                   last2,
-                          std::vector<size_t> const& weights) {
+  bool wt_shortlex_compare(T const&                   first1,
+                           T const&                   last1,
+                           T const&                   first2,
+                           T const&                   last2,
+                           std::vector<size_t> const& weights) {
     size_t const alphabet_size = weights.size();
 
     for (auto it = first1; it != last1; ++it) {
@@ -848,21 +848,21 @@ namespace libsemigroups {
       }
     }
 
-    return wtshortlex_compare_no_checks(first1, last1, first2, last2, weights);
+    return wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights);
   }
 
-  //! \brief Compare two objects of the same type using \ref wtshortlex_compare
+  //! \brief Compare two objects of the same type using \ref wt_shortlex_compare
   //! and check validity.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects of the same type using \ref
-  //! wtshortlex_compare, where the ith index of the weights vector corresponds
+  //! wt_shortlex_compare, where the ith index of the weights vector corresponds
   //! to the weight of the ith letter in the alphabet.
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
-  //! `wtshortlex_compare_no_checks(x, y, weights)`.
+  //! `wt_shortlex_compare_no_checks(x, y, weights)`.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -882,33 +882,33 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! wtshortlex_compare(
+  //! wt_shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
   //!
   //! \sa
-  //! \ref wtshortlex_compare(T const&, T const&, T const&, T const&,
+  //! \ref wt_shortlex_compare(T const&, T const&, T const&, T const&,
   //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
-  bool wtshortlex_compare(T const&                   x,
-                          T const&                   y,
-                          std::vector<size_t> const& weights) {
-    return wtshortlex_compare(
+  bool wt_shortlex_compare(T const&                   x,
+                           T const&                   y,
+                           std::vector<size_t> const& weights) {
+    return wt_shortlex_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
 
   //! \brief Compare two objects via their pointers using
-  //! \ref wtshortlex_compare and check validity.
+  //! \ref wt_shortlex_compare and check validity.
   //!
   //! Defined in `order.hpp`.
   //!
   //! This function compares two objects via their pointers using \ref
-  //! wtshortlex_compare, where the ith index of the weights vector corresponds
+  //! wt_shortlex_compare, where the ith index of the weights vector corresponds
   //! to the weight of the ith letter in the alphabet.
   //!
   //! After checking that all letters are valid indices into the weights
   //! vector, this function performs the same as
-  //! `wtshortlex_compare_no_checks(x, y, weights)`.
+  //! `wt_shortlex_compare_no_checks(x, y, weights)`.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -928,33 +928,33 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! wtshortlex_compare(
+  //! wt_shortlex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
   //!
   //! \sa
-  //! \ref wtshortlex_compare(T const&, T const&, T const&, T const&,
+  //! \ref wt_shortlex_compare(T const&, T const&, T const&, T const&,
   //! std::vector<size_t> const&).
   template <typename T>
-  bool wtshortlex_compare(T* const                   x,
-                          T* const                   y,
-                          std::vector<size_t> const& weights) {
-    return wtshortlex_compare(
+  bool wt_shortlex_compare(T* const                   x,
+                           T* const                   y,
+                           std::vector<size_t> const& weights) {
+    return wt_shortlex_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
 
   //! \brief A stateful struct with binary call operator using
-  //! \ref wtshortlex_compare.
+  //! \ref wt_shortlex_compare.
   //!
   //! Defined in `order.hpp`.
   //!
   //! A stateful struct with binary call operator using
-  //! \ref wtshortlex_compare. This struct stores a reference to a weights
+  //! \ref wt_shortlex_compare. This struct stores a reference to a weights
   //! vector and can be used as a template parameter for standard library
   //! containers or algorithms that require a comparison functor.
   //!
   //! \sa
-  //! wtshortlex_compare(T const&, T const&, std::vector<size_t> const&)
+  //! wt_shortlex_compare(T const&, T const&, std::vector<size_t> const&)
   struct WtShortLexCompare {
     //! \brief Construct from weights vector by reference.
     //!
@@ -977,10 +977,10 @@ namespace libsemigroups {
         : _weights(std::move(weights)) {}
 
     //! \brief Call operator that compares \p x and \p y using
-    //! \ref wtshortlex_compare.
+    //! \ref wt_shortlex_compare.
     //!
     //! Call operator that compares \p x and \p y using
-    //! \ref wtshortlex_compare.
+    //! \ref wt_shortlex_compare.
     //!
     //! \tparam T the type of the objects to be compared.
     //!
@@ -994,11 +994,11 @@ namespace libsemigroups {
     //! into the weights vector.
     //!
     //! \complexity
-    //! See wtshortlex_compare(T const&, T const&, T const&, T const&,
+    //! See wt_shortlex_compare(T const&, T const&, T const&, T const&,
     //! std::vector<size_t> const&).
     template <typename T>
     bool operator()(T const& x, T const& y) const {
-      return wtshortlex_compare(x, y, _weights);
+      return wt_shortlex_compare(x, y, _weights);
     }
 
    private:
