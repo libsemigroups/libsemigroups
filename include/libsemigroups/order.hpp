@@ -26,8 +26,8 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "exception.hpp"
-#include "ranges.hpp"  // for shortlex_compare
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"     // for shortlex_compare
 
 #include "ranges.hpp"
 
@@ -286,8 +286,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects of the same type using \ref
-  //! shortlex_compare.
+  //! This function compares two objects of the same type using
+  //! \ref shortlex_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -321,8 +321,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects via their pointers using \ref
-  //! shortlex_compare.
+  //! This function compares two objects via their pointers using
+  //! \ref shortlex_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -461,8 +461,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects of the same type using \ref
-  //! recursive_path_compare.
+  //! This function compares two objects of the same type using
+  //! \ref recursive_path_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
@@ -493,8 +493,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects via their pointers using \ref
-  //! recursive_path_compare.
+  //! This function compares two objects via their pointers using
+  //! \ref recursive_path_compare.
   //!
   //! \tparam T the type of the objects to be compared.
   //!
