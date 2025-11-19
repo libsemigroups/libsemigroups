@@ -902,6 +902,8 @@ EXTRA_PROGRAMS += bench_forest
 EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_kambites
 EXTRA_PROGRAMS += bench_konieczny
+EXTRA_PROGRAMS += bench_konieczny_twisted_bipart
+EXTRA_PROGRAMS += bench_konieczny_paper_misc
 EXTRA_PROGRAMS += bench_multi_view
 EXTRA_PROGRAMS += bench_rewriters
 EXTRA_PROGRAMS += bench_sims
@@ -1359,6 +1361,12 @@ bench_kambites_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
 bench_konieczny_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+
+bench_konieczny_twisted_bipart_SOURCES =  benchmarks/bench-konieczny-twisted-bipart.cpp
+bench_konieczny_twisted_bipart_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+
+bench_konieczny_paper_misc_SOURCES =  benchmarks/bench-konieczny-paper-misc.cpp
+bench_konieczny_paper_misc_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_multi_view_SOURCES =  benchmarks/bench-multi-view.cpp
 bench_multi_view_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
