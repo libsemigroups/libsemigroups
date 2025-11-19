@@ -84,6 +84,49 @@ namespace libsemigroups {
           return true;
         }
 
+        template <typename Node>
+        bool is_wreath_standardized(WordGraphView<Node> const& wg) {
+          using node_type = typename WordGraphView<Node>::node_type;
+
+          auto const N = wg.number_of_nodes_no_checks();
+          if (N == 0) {
+            return true;
+          }
+
+          auto const nr_reachable = number_of_nodes_reachable_from(wg, 0);
+          if (nr_reachable <= 1) {
+            return true;
+          }
+
+          std::vector<bool>      seen(N, false);
+          std::vector<node_type> next_node(wg.out_degree_no_checks(), 0);
+          node_type              max_seen = 0;
+
+          seen[0] = true;
+
+        restart:
+          for (letter_type x = 0; x < wg.out_degree_no_checks(); ++x) {
+            while (next_node[x] <= max_seen) {
+              node_type const s = next_node[x];
+              ++next_node[x];
+
+              node_type const t = wg.target_no_checks(s, x);
+              if (t < N && !seen[t]) {
+                if (t != max_seen + 1) {
+                  return false;
+                }
+                seen[t] = true;
+                ++max_seen;
+                if (static_cast<size_t>(max_seen + 1) == nr_reachable) {
+                  return true;
+                }
+                goto restart;
+              }
+            }
+          }
+          return static_cast<size_t>(max_seen + 1) == nr_reachable;
+        }
+
         // For best performance ensure that <f> has the correct number of nodes
         // when calling this function.
         template <typename Graph>
@@ -290,8 +333,73 @@ namespace libsemigroups {
 
         template <typename Graph>
         bool wreath_standardize(Graph& wg, Forest& f) {
-          // TODO: implement wreath standardization
-          return false;
+          LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
+          LIBSEMIGROUPS_ASSERT(f.number_of_nodes() != 0);
+
+          using node_type = typename Graph::node_type;
+
+          auto const N          = wg.number_of_nodes();
+          auto const nr_letters = wg.out_degree();
+          auto const max_t      = static_cast<node_type>(
+              number_of_nodes_reachable_from(wg, 0) - 1);
+
+          std::vector<node_type> p(N, 0);
+          std::iota(p.begin(), p.end(), 0);
+          std::vector<node_type> q(p);
+          std::vector<node_type> next_node(nr_letters, 0);
+
+          node_type max_seen = 0;
+          bool      result   = false;
+
+          auto swap_if_necessary
+              = [&wg, &f, &p, &q, &result](
+                    node_type const s, node_type& t, letter_type const x) {
+                  node_type r = wg.target_no_checks(p[s], x);
+                  if (r < wg.number_of_nodes()) {
+                    r = q[r];
+                    if (r > t) {
+                      ++t;
+                      if (t >= f.number_of_nodes()) {
+                        f.add_nodes(1);
+                      }
+                      if (r > t) {
+                        std::swap(p[t], p[r]);
+                        std::swap(q[p[t]], q[p[r]]);
+                        result = true;
+                      }
+                      f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
+                      return true;
+                    }
+                  }
+                  return false;
+                };
+
+          if (max_seen < max_t) {
+            // Follow Sims' WREATH_STND literally: each letter keeps its own
+            // cursor, and every discovery restarts the sweep from the first
+            // letter so earlier frontier words are handled first.
+          restart:
+            for (letter_type x = 0; x < nr_letters; ++x) {
+              while (next_node[x] <= max_seen) {
+                node_type const s = next_node[x];
+                ++next_node[x];
+
+                if (swap_if_necessary(s, max_seen, x)) {
+                  if (max_seen == max_t) {
+                    goto done;
+                  }
+                  goto restart;
+                }
+              }
+            }
+          }
+
+        done:
+          LIBSEMIGROUPS_ASSERT(max_seen == max_t);
+          if (result) {
+            wg.standardize(p, q);
+          }
+          return result;
         }
 
         // Helper function for the two versions of is_acyclic below.
@@ -484,9 +592,10 @@ namespace libsemigroups {
             return true;
           case Order::shortlex:
             return detail::is_shortlex_standardized(wg);
+          case Order::wreath:
+            return detail::is_wreath_standardized(wg);
           case Order::lex:
           case Order::recursive:
-          case Order::wreath:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
         }
