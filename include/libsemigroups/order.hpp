@@ -715,74 +715,6 @@ namespace libsemigroups {
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
 
-  //! \brief A stateful struct with binary call operator using
-  //! \ref wt_shortlex_compare_no_checks.
-  //!
-  //! Defined in `order.hpp`.
-  //!
-  //! A stateful struct with binary call operator using
-  //! \ref wt_shortlex_compare_no_checks. This struct stores a reference to a
-  //! weights vector and can be used as a template parameter for standard
-  //! library containers or algorithms that require a comparison functor.
-  //!
-  //! \sa
-  //! wt_shortlex_compare_no_checks(T const&, T const&, std::vector<size_t>
-  //! const&)
-  struct WtShortLexCompareNoChecks {
-    //! \brief Construct from weights vector by reference.
-    //!
-    //! Constructs a comparison object that stores a copy of the provided
-    //! weights vector, where the ith index corresponds to the weight of the
-    //! ith letter in the alphabet.
-    //!
-    //! \param weights the weights vector.
-    explicit WtShortLexCompareNoChecks(std::vector<size_t> const& weights)
-        : _weights(weights) {}
-
-    //! \brief Construct from weights vector by rvalue.
-    //!
-    //! Constructs a comparison object that takes ownership of the provided
-    //! weights vector, where the ith index corresponds to the weight of the
-    //! ith letter in the alphabet.
-    //!
-    //! \param weights the weights vector.
-    explicit WtShortLexCompareNoChecks(std::vector<size_t>&& weights)
-        : _weights(std::move(weights)) {}
-
-    //! \brief Call operator that compares \p x and \p y using
-    //! \ref wt_shortlex_compare_no_checks.
-    //!
-    //! Call operator that compares \p x and \p y using
-    //! \ref wt_shortlex_compare_no_checks.
-    //!
-    //! \tparam T the type of the objects to be compared.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is weighted short-lex less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! See wt_shortlex_compare_no_checks(T const&, T const&, T const&, T
-    //! const&, std::vector<size_t> const&).
-    //!
-    //! \complexity
-    //! See wt_shortlex_compare_no_checks(T const&, T const&, T const&, T
-    //! const&, std::vector<size_t> const&).
-    //!
-    //! \warning
-    //! It is not checked that the letters are valid indices into the weights
-    //! vector.
-    template <typename T>
-    bool operator()(T const& x, T const& y) const {
-      return wt_shortlex_compare_no_checks(x, y, _weights);
-    }
-
-   private:
-    std::vector<size_t> _weights;
-  };
-
   //! \brief Compare two objects of the same type using the weighted short-lex
   //! ordering and check validity.
   //!
@@ -947,43 +879,99 @@ namespace libsemigroups {
   }
 
   //! \brief A stateful struct with binary call operator using
-  //! \ref wt_shortlex_compare.
+  //! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks.
   //!
   //! Defined in `order.hpp`.
   //!
   //! A stateful struct with binary call operator using
-  //! \ref wt_shortlex_compare. This struct stores a reference to a weights
-  //! vector and can be used as a template parameter for standard library
-  //! containers or algorithms that require a comparison functor.
+  //! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks,
+  //! depending on the value of should_check. This struct stores a copy of a
+  //! weights vector and can be used as a template parameter for standard
+  //! library containers or algorithms that require a comparison functor.
+  //!
+  //! \warning
+  //! By default, the call operator does not check that letters are valid
+  //! indices into the weights vector. Use the constructor with should_check
+  //! set to true, or call the call_checks member function, to enable
+  //! validation.
   //!
   //! \sa
   //! wt_shortlex_compare(T const&, T const&, std::vector<size_t> const&)
+  //! wt_shortlex_compare_no_checks(T const&, T const&, std::vector<size_t>
+  //! const&)
   struct WtShortLexCompare {
-    //! \brief Construct from weights vector by reference.
+    //! \brief Constant to enable validity checks.
+    static constexpr bool doCheck = true;
+
+    //! \brief Constant to disable validity checks.
+    static constexpr bool noCheck = false;
+
+    //! \brief Construct from weights vector and should_check flag by reference.
     //!
     //! Constructs a comparison object that stores a copy of the provided
     //! weights vector, where the ith index corresponds to the weight of the
-    //! ith letter in the alphabet.
+    //! ith letter in the alphabet. The should_check parameter determines
+    //! whether the call operator will validate that letters are valid indices.
     //!
     //! \param weights the weights vector.
-    explicit WtShortLexCompare(std::vector<size_t> const& weights)
-        : _weights(weights) {}
+    //! \param should_check if true, the call operator will check validity; if
+    //! false, it will not.
+    WtShortLexCompare(std::vector<size_t> const& weights, bool should_check)
+        : _weights(weights), _should_check(should_check) {}
 
-    //! \brief Construct from weights vector by rvalue.
+    //! \brief Construct from weights vector and should_check flag by rvalue.
     //!
     //! Constructs a comparison object that takes ownership of the provided
     //! weights vector, where the ith index corresponds to the weight of the
-    //! ith letter in the alphabet.
+    //! ith letter in the alphabet. The should_check parameter determines
+    //! whether the call operator will validate that letters are valid indices.
     //!
     //! \param weights the weights vector.
-    explicit WtShortLexCompare(std::vector<size_t>&& weights)
-        : _weights(std::move(weights)) {}
+    //! \param should_check if true, the call operator will check validity; if
+    //! false, it will not.
+    WtShortLexCompare(std::vector<size_t>&& weights, bool should_check)
+        : _weights(std::move(weights)), _should_check(should_check) {}
 
-    //! \brief Call operator that compares \p x and \p y using
-    //! \ref wt_shortlex_compare.
+    //! \brief Call operator that compares \p x and \p y using either
+    //! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks.
     //!
     //! Call operator that compares \p x and \p y using
-    //! \ref wt_shortlex_compare.
+    //! \ref wt_shortlex_compare (if should_check is true) or
+    //! \ref wt_shortlex_compare_no_checks (if should_check is false).
+    //!
+    //! \tparam T the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted short-lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if should_check is true and any letter
+    //! is not a valid index into the weights vector.
+    //!
+    //! \complexity
+    //! See wt_shortlex_compare(T const&, T const&, T const&, T const&,
+    //! std::vector<size_t> const&) or wt_shortlex_compare_no_checks(T const&,
+    //! T const&, T const&, T const&, std::vector<size_t> const&).
+    //!
+    //! \warning
+    //! If should_check is false, it is not checked that the letters are valid
+    //! indices into the weights vector.
+    template <typename T>
+    bool operator()(T const& x, T const& y) const {
+      if (_should_check) {
+        return wt_shortlex_compare(x, y, _weights);
+      } else {
+        return wt_shortlex_compare_no_checks(x, y, _weights);
+      }
+    }
+
+    //! \brief Call operator that always performs validity checks.
+    //!
+    //! This member function always uses \ref wt_shortlex_compare to compare
+    //! \p x and \p y, regardless of the value of should_check. Use this when
+    //! you want to ensure validation is performed.
     //!
     //! \tparam T the type of the objects to be compared.
     //!
@@ -1000,12 +988,13 @@ namespace libsemigroups {
     //! See wt_shortlex_compare(T const&, T const&, T const&, T const&,
     //! std::vector<size_t> const&).
     template <typename T>
-    bool operator()(T const& x, T const& y) const {
+    bool call_checks(T const& x, T const& y) const {
       return wt_shortlex_compare(x, y, _weights);
     }
 
    private:
     std::vector<size_t> _weights;
+    bool                _should_check;
   };
 
   // end orders_group
