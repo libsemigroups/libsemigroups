@@ -100,7 +100,7 @@ namespace libsemigroups {
                        0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1});  // true
   }
 
-  // froidure-pin-base.hpp: Line 1337
+  // froidure-pin-base.hpp: Line 1338
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "004",
                           "froidure-pin-base.hpp",
@@ -134,7 +134,7 @@ namespace libsemigroups {
     //  {{3, 3}, {3}}}
   }
 
-  // froidure-pin-base.hpp: Line 1441
+  // froidure-pin-base.hpp: Line 1442
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "005",
                           "froidure-pin-base.hpp",
@@ -489,7 +489,7 @@ namespace libsemigroups {
     //  0121212121_w};
   }
 
-  // word-graph.hpp: Line 1540
+  // word-graph.hpp: Line 1581
   LIBSEMIGROUPS_TEST_CASE("docs", "035", "word-graph.hpp", "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
@@ -499,7 +499,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(wg) == false);
   }
 
-  // word-graph.hpp: Line 1583
+  // word-graph.hpp: Line 1629
   LIBSEMIGROUPS_TEST_CASE("docs", "036", "word-graph.hpp", "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
@@ -514,7 +514,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(wg, 3) == true);
   }
 
-  // word-graph.hpp: Line 1973
+  // word-graph.hpp: Line 2066
   LIBSEMIGROUPS_TEST_CASE("docs", "037", "word-graph.hpp", "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
@@ -529,13 +529,13 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_reachable_no_checks(wg, 3, 2) == false);
   }
 
-  // word-graph.hpp: Line 2053
+  // word-graph.hpp: Line 2150
   LIBSEMIGROUPS_TEST_CASE("docs", "038", "word-graph.hpp", "[docs][quick]") {
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(word_graph::is_strictly_cyclic(wg) == false);
   }
 
-  // word-graph.hpp: Line 2793
+  // word-graph.hpp: Line 2964
   LIBSEMIGROUPS_TEST_CASE("docs", "039", "word-graph.hpp", "[docs][quick]") {
     // Construct a word graph with 5 nodes and 10 edges (7 specified)
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
@@ -565,7 +565,7 @@ namespace libsemigroups {
         .max(5);                 // to 5
   }
 
-  // word-range.hpp: Line 761
+  // word-range.hpp: Line 760
   LIBSEMIGROUPS_TEST_CASE("docs", "043", "word-range.hpp", "[docs][quick]") {
     ToWord toword("bac");
     REQUIRE(toword("bac") == std::vector<unsigned long>{0, 1, 2});
@@ -576,7 +576,7 @@ namespace libsemigroups {
     REQUIRE(toword("bac") == std::vector<unsigned long>{1, 0, 2});
   }
 
-  // word-range.hpp: Line 1050
+  // word-range.hpp: Line 1049
   LIBSEMIGROUPS_TEST_CASE("docs", "044", "word-range.hpp", "[docs][quick]") {
     using namespace rx;
     StringRange strings;
@@ -590,7 +590,7 @@ namespace libsemigroups {
     //  0001_w}));
   }
 
-  // word-range.hpp: Line 1151
+  // word-range.hpp: Line 1150
   LIBSEMIGROUPS_TEST_CASE("docs", "045", "word-range.hpp", "[docs][quick]") {
     ToString tostring("bac");
     REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
@@ -600,7 +600,7 @@ namespace libsemigroups {
     REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
   }
 
-  // word-range.hpp: Line 1402
+  // word-range.hpp: Line 1401
   LIBSEMIGROUPS_TEST_CASE("docs", "046", "word-range.hpp", "[docs][quick]") {
     using namespace rx;
     WordRange words;
@@ -612,7 +612,7 @@ namespace libsemigroups {
     // "aaaaaaaa", "aaaaaaaaa"};
   }
 
-  // word-range.hpp: Line 1596
+  // word-range.hpp: Line 1599
   LIBSEMIGROUPS_TEST_CASE("docs", "047", "word-range.hpp", "[docs][quick]") {
     StringRange strings;
     strings
@@ -622,7 +622,7 @@ namespace libsemigroups {
         .max(5);                 // to 5
   }
 
-  // word-range.hpp: Line 2307
+  // word-range.hpp: Line 2310
   LIBSEMIGROUPS_TEST_CASE("docs", "048", "word-range.hpp", "[docs][quick]") {
     using namespace words;
     word_type w = 012345_w;

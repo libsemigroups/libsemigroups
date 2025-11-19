@@ -289,6 +289,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<Word>>(tc);
   //! \endcode
   //!
@@ -353,6 +354,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<Word>>(c);
   //! \endcode
   //!
@@ -417,6 +419,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<Presentation<std::string>>(s);
   //! \endcode
   //!
