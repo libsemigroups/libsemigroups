@@ -37,6 +37,10 @@ using namespace libsemigroups::literals;
 """
 
 TEST_FILEPATH = "./tests/test-docs-code-examples.cpp"
+
+# For files that should always be skipped, e.g. those in the
+# v4 namespace
+SKIP_ALWAYS = ["word-graph-helpers.hpp"]
 ########################################################################
 # Internal
 ########################################################################
@@ -347,7 +351,12 @@ def format_file(filepath):
 
 def main():
     args = __parse_args()
-    exclude = args.exclude if not args.exclude is None else []
+
+    # Files to exlucde from code block captrue
+    exclude = SKIP_ALWAYS
+    if args.exclude is not None:
+        exclude.append(args.exclude)
+
     process_folder(args.folder_path, args.recursive, exclude)
     format_file(TEST_FILEPATH)
     print("\n Docs code block extraction completed successfully. Exiting.")
