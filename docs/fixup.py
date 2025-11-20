@@ -282,7 +282,7 @@ def fix_menu_4(data: str) -> tuple[str, bool]:
         result, count = regex.subn(
             r"""if (link == "_HEADING_") {
   node.labelSpan.role = "heading";
-  node.labelSpan.appendChild(node.label);
+  node.labelSpan.appendChild(htmlToNode(text));
   po.getChildrenUL().appendChild(node.li);
 } else {
   \1 a = document.createElement("a");
@@ -335,7 +335,7 @@ def fix_pages_1(data: str) -> tuple[str, bool]:
     Fixed by deleting the `<h2 class="groupheader">Detailed Description</h2>` element.
     """
     result, count = re.subn(
-        r'(?s:<h2\s+class\s*=\s*"groupheader"\s*>\s*Detailed\s*Description\s*</h2>)',
+        r'(?s:<h2\s+(id\s*=\s*"header-details"\s)?+class\s*=\s*"groupheader"\s*>\s*Detailed\s*Description\s*</h2>)',
         r"",
         data,
     )
