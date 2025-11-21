@@ -123,15 +123,14 @@ namespace libsemigroups {
     REQUIRE(S.contains(make<HPCombi::PTransf16>({1, 0, 2, 3, 4})));
     REQUIRE(S.contains(make<HPCombi::PTransf16>({1, 2, 3, 4, 0})));
     REQUIRE(S.contains(make<HPCombi::PTransf16>({0, 0, 2, 3, 4})));
-    REQUIRE(!S.contains(make<HPCombi::PTransf16>({1, 0, 2, 3, 4, 5})));
-    REQUIRE(!S.contains(make<HPCombi::PTransf16>({1, 2, 3, 4, 0, 5})));
+    REQUIRE(!S.contains(make<HPCombi::PTransf16>({1, 2, 3, 4, 5, 0})));
     REQUIRE(!S.contains(make<HPCombi::PTransf16>({0, 0, 2, 3, 4, 1})));
 
     REQUIRE_THROWS_AS(
-        S.D_class_of_element(make<HPCombi::PTransf16>({1, 0, 2, 3, 4, 5})),
+        S.D_class_of_element(make<HPCombi::PTransf16>({1, 0, 2, 3, 4, 0xFF})),
         LibsemigroupsException);
     REQUIRE_THROWS_AS(
-        S.D_class_of_element(make<HPCombi::PTransf16>({1, 2, 3, 4, 0, 5})),
+        S.D_class_of_element(make<HPCombi::PTransf16>({1, 2, 3, 4, 0, 0xFF})),
         LibsemigroupsException);
     REQUIRE_THROWS_AS(
         S.D_class_of_element(make<HPCombi::PTransf16>({0, 0, 2, 3, 4, 1})),

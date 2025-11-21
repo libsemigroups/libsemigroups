@@ -32,7 +32,7 @@ namespace libsemigroups {
     }
 
     template <typename Thing, typename Container>
-    Thing make_hpcombi_ptransf(Container const& cont, uint8_t pad) {
+    Thing make_hpcombi_ptransf(Container const& cont) {
       LIBSEMIGROUPS_ASSERT(cont.size() <= 16);
       Thing  result;
       size_t i = 0;
@@ -40,9 +40,7 @@ namespace libsemigroups {
         // Next line is so that this function works with initializer_list
         result[i] = *(cont.begin() + i);
       }
-      for (; i < 16; ++i) {
-        result[i] = pad;
-      }
+      std::iota(result.begin() + cont.size(), result.end(), cont.size());
       return result;
     }
   }  // namespace detail
@@ -52,7 +50,7 @@ namespace libsemigroups {
     detail::throw_if_too_big(cont);
     detail::throw_if_not_ptransf(std::begin(cont), std::end(cont), 16);
     auto result = detail::make_hpcombi_ptransf<HPCombi::PTransf16>(
-        std::forward<Container>(cont), 255);
+        std::forward<Container>(cont));
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
   }
@@ -73,9 +71,8 @@ namespace libsemigroups {
   enable_if_is_same<Return, HPCombi::Transf16> make(Container&& cont) {
     detail::throw_if_too_big(cont);
     detail::throw_if_not_transf(std::begin(cont), std::end(cont), 16);
-    auto pad    = cont.size() == 0 ? 0 : *(std::begin(cont) + cont.size() - 1);
     auto result = detail::make_hpcombi_ptransf<HPCombi::Transf16>(
-        std::forward<Container>(cont), pad);
+        std::forward<Container>(cont));
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
   }
@@ -84,13 +81,8 @@ namespace libsemigroups {
   enable_if_is_same<Return, HPCombi::Perm16> make(Container&& cont) {
     detail::throw_if_too_big(cont);
     detail::throw_if_not_perm(std::begin(cont), std::end(cont), 16);
-    HPCombi::Perm16 result;
-    size_t          i = 0;
-    for (; i < cont.size(); ++i) {
-      // Next line is so that this function works with initializer_list
-      result[i] = *(cont.begin() + i);
-    }
-    std::iota(result.begin() + cont.size(), result.end(), cont.size());
+    auto result = detail::make_hpcombi_ptransf<HPCombi::Perm16>(
+        std::forward<Container>(cont));
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
   }
@@ -99,7 +91,7 @@ namespace libsemigroups {
   enable_if_is_same<Return, HPCombi::PPerm16> make(Container&& cont) {
     detail::throw_if_too_big(cont);
     detail::throw_if_not_pperm(std::begin(cont), std::end(cont), 16);
-    auto result = detail::make_hpcombi_ptransf<HPCombi::PPerm16>(cont, 255);
+    auto result = detail::make_hpcombi_ptransf<HPCombi::PPerm16>(cont);
     LIBSEMIGROUPS_ASSERT(result.validate());
     return result;
   }
