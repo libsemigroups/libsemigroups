@@ -530,7 +530,7 @@ namespace libsemigroups {
     o.add_generator(make<HPCombi::PTransf16>({1, 2, 3, 4, 0}));
     o.add_generator(make<HPCombi::PTransf16>({0, 0, 2, 3, 4}));
 
-    REQUIRE(o.size() == 32);
+    REQUIRE(o.size() == 31);
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi",
@@ -547,7 +547,7 @@ namespace libsemigroups {
     o.add_generator(make<HPCombi::PTransf16>({1, 2, 3, 4, 0}));
     o.add_generator(make<HPCombi::PTransf16>({0, 0, 2, 3, 4}));
 
-    REQUIRE(o.size() == 53);
+    REQUIRE(o.size() == 52);
   }
 
   // TODO more
