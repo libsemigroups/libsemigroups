@@ -37,16 +37,9 @@
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wbitwise-instead-of-logical"
-#endif
 #include "hpcombi/hpcombi.hpp"  // for `HPCombi::Perm16`, ...
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
 #endif
 
 #include <algorithm>         // for max_element
