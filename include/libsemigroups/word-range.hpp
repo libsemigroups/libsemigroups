@@ -758,11 +758,11 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //! ToWord toword("bac");
-    //! toword("bac");       //->std::vector<unsigned long>{0,1,2}
-    //! toword("bababbbcbc");//->std::vector<unsigned long>{0,1,0,1,0,0,0,2,0,2}
+    //! toword("bac");       //-> 012_w
+    //! toword("bababbbcbc");//-> 0101000202_w
     //!
     //! toword.init();
-    //! toword("bac");        //-> std::vector<unsigned long>{1, 0, 2}
+    //! toword("bac");        //-> 102_w
     //! \endcode
     // TODO (later) a version that takes a word_type, so that we can permute the
     // letters in a word
@@ -1398,7 +1398,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! using namespace rx;
+    //! using rx::operator|;
     //! WordRange words;
     //! words.alphabet_size(1).min(0).max(10);
     //!
