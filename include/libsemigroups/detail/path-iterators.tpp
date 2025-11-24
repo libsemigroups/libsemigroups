@@ -175,8 +175,6 @@ namespace libsemigroups {
         : _it(), _max(max) {
       if (min <= max) {
         _it = const_pilo_iterator(ptr, source, min, min);
-      } else {
-        _it = const_pilo_iterator<Node>();  // end
       }
     }
 
@@ -254,7 +252,7 @@ namespace libsemigroups {
         size_type              min,
         size_type              max)
         : _can_reach_target(),
-          _edge(UNDEFINED),
+          _edge(0),
           _edges(),
           _min(min),
           _max(max),
@@ -268,15 +266,35 @@ namespace libsemigroups {
     }
 
     template <typename Node>
+    const_pstilo_iterator<Node>&
+    const_pstilo_iterator<Node>::init(WordGraph<Node> const* ptr,
+                                      node_type              source,
+                                      node_type              target,
+                                      size_type              min,
+                                      size_type              max) {
+      _edge = 0;
+      _edges.clear();
+      _min   = min;
+      _max   = max;
+      _nodes = {source};
+      if (ptr != _word_graph || target != _target) {
+        _can_reach_target.clear();
+        _target     = target;
+        _word_graph = ptr;
+      }
+      if (_min != 0 || source != _target) {
+        ++(*this);
+      }
+      return *this;
+    }
+
+    template <typename Node>
     const_pstilo_iterator<Node> const&
     const_pstilo_iterator<Node>::operator++() {
       if (_nodes.empty()) {
         return *this;
-      } else if (_edge == UNDEFINED) {
-        // first call
-        _edge = 0;
-        init_can_reach_target();
       }
+      init_can_reach_target();
 
       do {
         node_type next;
@@ -317,6 +335,7 @@ namespace libsemigroups {
     template <typename Node>
     void
     const_pstilo_iterator<Node>::swap(const_pstilo_iterator& that) noexcept {
+      // TODO _can_reach_target is missing, also sort
       std::swap(_edges, that._edges);
       std::swap(_word_graph, that._word_graph);
       std::swap(_edge, that._edge);
@@ -354,9 +373,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
-    const_pstislo_iterator<Node>::~const_pstislo_iterator() = default;
-
-    template <typename Node>
     const_pstislo_iterator<Node>::const_pstislo_iterator(
         const_pstislo_iterator const&)
         = default;
@@ -380,32 +396,59 @@ namespace libsemigroups {
         = default;
 
     template <typename Node>
+    const_pstislo_iterator<Node>::const_pstislo_iterator(
+        WordGraph<node_type> const* ptr,
+        node_type                   source,
+        node_type                   target,
+        size_type                   min,
+        size_type                   max)
+        : _it(), _max(max), _num(0) {
+      if (min <= max) {
+        _num = v4::paths::number_of_paths(*ptr, source, target, min, max);
+        if (_num == 0) {
+          return;
+        }
+        auto last = const_pstilo_iterator<node_type>();
+        _it       = const_pstilo_iterator(ptr, source, target, min, min);
+        // TODO(1) optimize to avoid this, by simply computing the distance from
+        // source to target (could use is_reachable)
+        while (_it == last && min <= max) {
+          _it.init(ptr, source, target, min, min);
+          ++min;
+        }
+        if (min > max) {
+          _it = last;
+        }
+      }
+    }
+
+    template <typename Node>
+    const_pstislo_iterator<Node>::~const_pstislo_iterator() = default;
+
+    template <typename Node>
     const_pstislo_iterator<Node> const&
     const_pstislo_iterator<Node>::operator++() {
-      // FIXME(1) the following is a hack to avoid the situation where there are
-      // only finitely many paths from _source to _target but there are
-      // infinitely many paths rooted at _source. Without the hack this function
-      // will run forever in such situations. The fixme is to remove the hack
-      // and to properly implement pislo (not using pilo) and pstislo iterators
-      // (analogous to pstilo iterator).
-      if (_count == 0) {
-        _it = _end;
+      if (_num == 0) {
+        return *this;
+      } else if (_num == 1) {
+        --_num;
+        _it = const_pstilo_iterator<node_type>();
         return *this;
       }
-
-      if (_it.target() != UNDEFINED) {
-        ++_it;
-
-        while (_it.target() != _target && _it != _end) {
-          ++_it;
-        }
-        if (_it == _end) {
-          _target = UNDEFINED;
-        }
+      node_type const src    = source();
+      node_type const trgt   = target();
+      size_type       length = _it->size();
+      ++_it;
+      auto last = const_pstilo_iterator<node_type>();
+      if (_it == last) {
+        // TODO(1) optimize to avoid this, by simply computing the distance from
+        // source to target (could use is_reachable)
+        do {
+          ++length;
+          _it.init(&_it.word_graph(), src, trgt, length, length);
+        } while (_it == last && length < _max);
       }
-      if (_count != POSITIVE_INFINITY) {
-        _count--;
-      }
+      _num--;
       return *this;
     }
 

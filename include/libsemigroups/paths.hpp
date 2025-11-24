@@ -358,9 +358,8 @@ namespace libsemigroups {
   // not noexcept because cend_pislo isn't
   template <typename Node>
   [[nodiscard]] auto cend_pstislo(WordGraph<Node> const& wg) {
-    // TODO remove params if possible
-    return detail::const_pstislo_iterator<Node>(
-        &wg, UNDEFINED, UNDEFINED, 1, 0);
+    // TODO deprecate the one arg version and implement the 0-arg version
+    return detail::const_pstislo_iterator<Node>();
   }
 
   //! \relates Paths

@@ -1186,7 +1186,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "025", "issue #842 --- bad max", "[quick]") {
     auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
     REQUIRE((Paths(wg).source(0).target(0).max(4) | rx::to_vector())
-            == std::vector({0_w,
+            == std::vector({""_w,
+                            0_w,
                             00_w,
                             10_w,
                             000_w,
@@ -1199,13 +1200,46 @@ namespace libsemigroups {
                             1010_w}));
   }
 
-  // TODO fix this!
-  // LIBSEMIGROUPS_TEST_CASE("Paths",
-  //                         "026",
-  //                         "issue #841 --- missing path",
-  //                         "[quick]") {
-  //   auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
-  //   REQUIRE(Paths(wg).source(0).target(0).max(4).get() == ""_w);
-  // }
+  LIBSEMIGROUPS_TEST_CASE("Paths",
+                          "026",
+                          "issue #841 --- missing path",
+                          "[quick]") {
+    auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
+    REQUIRE(Paths(wg).source(0).target(0).max(4).get() == ""_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Paths", "027", "pislo + pstislo", "[quick]") {
+    auto wg = v4::make<WordGraph<uint32_t>>(
+        11,
+        {{1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+         {2, 3},
+         {4},
+         {UNDEFINED, UNDEFINED, 5},
+         {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 6},
+         {UNDEFINED, UNDEFINED, UNDEFINED, 7, 8},
+         {9},
+         {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 10},
+         {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 10},
+         {7}});
+
+    REQUIRE(std::vector(cbegin_pislo(wg, 0), cend_pislo(wg))
+            == std::vector<word_type>({{},
+                                       0_w,
+                                       00_w,
+                                       01_w,
+                                       000_w,
+                                       012_w,
+                                       0004_w,
+                                       0123_w,
+                                       0124_w,
+                                       00040_w,
+                                       01236_w,
+                                       01245_w,
+                                       000400_w,
+                                       0004006_w}));
+    REQUIRE(std::distance(cbegin_pstislo(wg, 0, 10), cend_pstislo(wg)) == 3);
+    REQUIRE(std::vector(cbegin_pstislo(wg, 0, 10), cend_pstislo(wg))
+            == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
+  }
 
 }  // namespace libsemigroups
