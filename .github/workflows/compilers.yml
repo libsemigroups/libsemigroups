@@ -27,7 +27,7 @@ jobs:
           - { compiler: clang++, version: 18 }
           - { compiler: clang++, version: 19 }
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -68,7 +68,7 @@ jobs:
           - { package: gxx, compiler: g++, os: ubuntu-latest }
           - { package: clangxx, compiler: clang++, os: macOS-latest }
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:

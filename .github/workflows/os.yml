@@ -13,7 +13,7 @@ jobs:
         shell: alpine.sh {0}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: jirutka/setup-alpine@v1
         with:
           branch: v3.15
@@ -48,7 +48,7 @@ jobs:
     env:
       CHERE_INVOKING: 1
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: cygwin/cygwin-install-action@v6
         with:
           packages: gcc-g++,libtool,autoconf,automake
@@ -70,7 +70,7 @@ jobs:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -101,7 +101,7 @@ jobs:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -134,7 +134,7 @@ jobs:
       GH_ACTIONS_TEST_PROG: test_all
       GH_ACTIONS_TEST_TAGS: "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Running the quick tests in libsemigroups-docker-x86-32-base docker container . . .
         run: |
           ci/launch-docker-container.sh
@@ -142,7 +142,7 @@ jobs:
     name: Ubuntu-arm
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -162,7 +162,7 @@ jobs:
     name: Ubuntu-aarch64
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: uraimo/run-on-arch-action@v3
         with:
           arch: aarch64
@@ -180,7 +180,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Test in FreeBSD
         uses: vmactions/freebsd-vm@v1
         with:
@@ -201,7 +201,7 @@ jobs:
       AUTOCONF_VERSION: 2.72
       AUTOMAKE_VERSION: 1.17
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Test in OpenBSD
         uses: vmactions/openbsd-vm@v1
         with:
