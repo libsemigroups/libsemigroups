@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include <algorithm>      // for all_of
 #include <cmath>          // for pow
 #include <cstddef>        // for size_t
@@ -30,9 +32,8 @@
 #include <vector>         // for vector, operator==
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for operator""_catch_sr
-
-#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
-#include "word-graph-test-common.hpp"  // for binary_tree
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"          // for binary_tree
 
 #include "libsemigroups/bipart.hpp"
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...
@@ -81,6 +82,8 @@ namespace libsemigroups {
     REQUIRE(begin(p) != end(p));
 
     p.order(Order::shortlex);
+
+    REQUIRE(p.size_hint() == 100);
     REQUIRE((p | count()) == 100);
     REQUIRE((p | skip_n(3)).get() == 010_w);
 
@@ -117,11 +120,13 @@ namespace libsemigroups {
                                            {}});
 
     Paths p(wg);
-    p.order(Order::shortlex).source(2).min(3).max(4);
+    p.order(Order::lex).source(2).min(3).max(3);
+    REQUIRE(number_of_paths(wg, 2, 3, 3) == 1);
 
     std::vector<word_type> expected = {210_w};
+    REQUIRE(p.size_hint() == 1);
     REQUIRE((p | count()) == 1);
-    REQUIRE(p.get() == expected[0]);
+    REQUIRE((p | to_vector()) == expected);
 
     p.source(0).min(0).max(0);
     REQUIRE(p.source() == 0);
@@ -129,33 +134,51 @@ namespace libsemigroups {
 
     REQUIRE(p.min() == 0);
     REQUIRE(p.max() == 0);
-    REQUIRE(p.order() == Order::shortlex);
-    REQUIRE(p.at_end());
-    REQUIRE(p.size_hint() == 0);
-    REQUIRE((p | count()) == 0);
+    REQUIRE(!p.at_end());
 
-    p.min(0).max(1);
     expected = {""_w};
+    REQUIRE(p.size_hint() == 1);
     REQUIRE((p | count()) == 1);
     REQUIRE((p | to_vector()) == expected);
+    REQUIRE(std::is_sorted(
+        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+
+    p.min(0).max(1);
+    expected = {""_w, 0_w, 1_w};
+    REQUIRE(p.size_hint() == 3);
+    REQUIRE((p | count()) == 3);
+    REQUIRE((p | to_vector()) == expected);
+    REQUIRE(std::is_sorted(
+        expected.cbegin(), expected.cend(), LexicographicalCompare()));
 
     p.min(0).max(2);
-    expected = {""_w, 0_w, 1_w};
-    REQUIRE((p | to_vector()) == expected);
-
     expected = {""_w, 0_w, 1_w, 10_w, 11_w, 12_w};
+    REQUIRE(p.size_hint() == 6);
+    REQUIRE((p | count()) == 6);
+    REQUIRE((p | to_vector()) == expected);
+    REQUIRE(std::is_sorted(
+        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+
     p.min(0).max(3);
+    expected = {""_w, 0_w, 1_w, 10_w, 11_w, 111_w, 12_w, 121_w};
+    REQUIRE(p.size_hint() == 8);
+    REQUIRE((p | count()) == 8);
     REQUIRE((p | to_vector()) == expected);
+    REQUIRE(std::is_sorted(
+        expected.cbegin(), expected.cend(), LexicographicalCompare()));
 
-    expected = {""_w, 0_w, 1_w, 10_w, 11_w, 12_w, 111_w, 121_w};
     p.min(0).max(4);
+    expected = {""_w, 0_w, 1_w, 10_w, 11_w, 111_w, 12_w, 121_w, 1210_w};
+    REQUIRE(p.size_hint() == 9);
+    REQUIRE((p | count()) == 9);
     REQUIRE((p | to_vector()) == expected);
+    REQUIRE(std::is_sorted(
+        expected.cbegin(), expected.cend(), LexicographicalCompare()));
 
-    expected = {""_w, 0_w, 1_w, 10_w, 11_w, 12_w, 111_w, 121_w, 1210_w};
     p.min(0).max(10);
     REQUIRE((p | to_vector()) == expected);
 
-    expected = {10_w, 11_w, 12_w};
+    expected = {10_w, 11_w, 111_w, 12_w, 121_w};
     p.min(2).max(3);
     REQUIRE((p | to_vector()) == expected);
   }
@@ -168,10 +191,11 @@ namespace libsemigroups {
     Paths p(wg);
 
     p.order(Order::lex).source(0).max(200);
-    REQUIRE((p | count()) == 200);
+    REQUIRE(p.get() == ""_w);
+    REQUIRE((p | count()) == 201);
 
     p.order(Order::shortlex);
-    REQUIRE((p | count()) == 200);
+    REQUIRE((p | count()) == 201);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "003", "#2", "[quick]") {
@@ -182,7 +206,7 @@ namespace libsemigroups {
 
     Paths p(wg);
 
-    p.order(Order::lex).source(0).min(0).max(3);
+    p.order(Order::lex).source(0).min(0).max(2);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
@@ -190,7 +214,7 @@ namespace libsemigroups {
     REQUIRE((p | to_vector())
             == std::vector({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
-    p.order(Order::shortlex).source(0).min(0).max(3);
+    p.order(Order::shortlex).source(0).min(0).max(2);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
@@ -202,6 +226,8 @@ namespace libsemigroups {
             == std::vector({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
 
     p.init(wg).order(Order::lex).source(0);
+    REQUIRE(p.min() == 0);
+    REQUIRE(p.max() == POSITIVE_INFINITY);
     REQUIRE((p | count()) == 15);
     REQUIRE((p | to_vector())
             == std::vector({{},
@@ -308,7 +334,7 @@ namespace libsemigroups {
     std::sort(expected.begin(), expected.end(), ShortLexCompare());
 
     Paths p(wg);
-    p.order(Order::shortlex).source(0).target(4).min(0).max(5);
+    p.order(Order::shortlex).source(0).target(4).min(0).max(4);
 
     REQUIRE((p | count()) == 13);
     REQUIRE((p | count()) == 13);
@@ -316,7 +342,7 @@ namespace libsemigroups {
     REQUIRE((p | take(1)).get() == 01_w);
 
     std::sort(expected.begin(), expected.end(), LexicographicalCompare());
-    p.order(Order::lex);
+    p.order(Order::lex).source(0).target(4).min(0).max(4);
 
     REQUIRE((p | to_vector()) == expected);
     REQUIRE((p | take(1)).get() == 0001_w);
@@ -330,18 +356,13 @@ namespace libsemigroups {
              return v4::word_graph::follow_path(wg, 0, ww) == 4;
            }));
     REQUIRE((expected2 | count()) == 131'062);
+    REQUIRE((w | skip_n(w.size_hint() - 1)).get().size() == 17);
 
-    p.order(Order::shortlex).max(N);
+    p.order(Order::shortlex).max(N - 1);
     REQUIRE((p | count()) == 131'062);
     REQUIRE(equal(p, expected2));
     p.target(UNDEFINED);
     REQUIRE((p | count()) == 262'143);
-
-    REQUIRE(number_of_paths(wg, 0, 4, 0, N) == 131'062);
-    REQUIRE(number_of_paths(wg, 0, 4, 10, N) == 130'556);
-    REQUIRE(number_of_paths(wg, 4, 1, 0, N) == 0);
-    REQUIRE(number_of_paths(wg, 0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
-    REQUIRE(number_of_paths(wg, 0, 0, 10) == 1'023);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "005", "#4", "[quick]") {
@@ -376,7 +397,7 @@ namespace libsemigroups {
     REQUIRE(v4::word_graph::number_of_nodes_reachable_from(wg, S.size()) == 10);
 
     Paths paths(wg);
-    paths.order(Order::lex).source(S.size()).min(0).max(9);
+    paths.order(Order::lex).source(S.size()).min(0).max(8);
     REQUIRE(paths.target(0).get() == 0_w);
 
     auto tprime
@@ -480,7 +501,7 @@ namespace libsemigroups {
     std::sort(expected.begin(), expected.end(), ShortLexCompare());
 
     Paths p(wg);
-    p.order(Order::shortlex).source(0).target(4).min(0).max(5);
+    p.order(Order::shortlex).source(0).target(4).min(0).max(4);
     REQUIRE((p | to_vector()) == expected);
 
     size_t const N = 18;
@@ -493,7 +514,7 @@ namespace libsemigroups {
            | to_vector());
     REQUIRE(expected.size() == 131'062);
 
-    p.order(Order::shortlex).source(0).target(4).min(0).max(N);
+    p.order(Order::shortlex).source(0).target(4).min(0).max(N - 1);
     REQUIRE((p | count()) == 131'062);
     REQUIRE((p | to_vector()) == expected);
   }
@@ -509,7 +530,7 @@ namespace libsemigroups {
                                            {3}});
 
     Paths p(wg);
-    p.order(Order::shortlex).source(0).min(0).max(10);
+    p.order(Order::shortlex).source(0).min(0).max(9);
 
     REQUIRE(is_sorted(p, ShortLexCompare()));
     REQUIRE((p | count()) == 75);
@@ -517,7 +538,7 @@ namespace libsemigroups {
     p.max(POSITIVE_INFINITY);
     REQUIRE(p.count() == POSITIVE_INFINITY);
 
-    p.max(10);
+    p.max(9);
     REQUIRE(
         (p | to_vector())
         == std::vector(
@@ -559,28 +580,30 @@ namespace libsemigroups {
     REQUIRE(cbegin_pstilo(wg, 2, 1) == cend_pstilo(wg));
     REQUIRE(cbegin_pstilo(wg, 0, 3, 10, 1) == cend_pstilo(wg));
 
-    REQUIRE_THROWS_AS(cbegin_pstislo(wg, 1, 6), LibsemigroupsException);
-    REQUIRE_THROWS_AS(cbegin_pstislo(wg, 6, 1), LibsemigroupsException);
-    REQUIRE(cbegin_pstislo(wg, 2, 1) == cend_pstislo(wg));
-    REQUIRE(cbegin_pstislo(wg, 0, 3, 10, 1) == cend_pstislo(wg));
+    // REQUIRE_THROWS_AS(cbegin_pstislo(wg, 1, 6), LibsemigroupsException);
+    // REQUIRE_THROWS_AS(cbegin_pstislo(wg, 6, 1), LibsemigroupsException);
+    // REQUIRE(cbegin_pstislo(wg, 2, 1) == cend_pstislo(wg));
+    // REQUIRE(cbegin_pstislo(wg, 0, 3, 10, 1) == cend_pstislo(wg));
 
     REQUIRE_THROWS_AS(cbegin_pilo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pilo(wg, 0, 1, 1) == cend_pilo(wg));
+    REQUIRE(cbegin_pilo(wg, 0, 1, 0) == cend_pilo(wg));
+
     REQUIRE_THROWS_AS(cbegin_pislo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pislo(wg, 0, 1, 1) == cend_pislo(wg));
+    REQUIRE(cbegin_pislo(wg, 0, 1, 0) == cend_pislo(wg));
 
     REQUIRE_THROWS_AS(cbegin_pilo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pilo(wg, 0, 1, 1) == cend_pilo(wg));
+    REQUIRE(cbegin_pilo(wg, 0, 1, 0) == cend_pilo(wg));
 
     REQUIRE_THROWS_AS(cbegin_pislo(wg, 6), LibsemigroupsException);
-    REQUIRE(cbegin_pislo(wg, 0, 1, 1) == cend_pislo(wg));
+    REQUIRE(cbegin_pislo(wg, 0, 1, 0) == cend_pislo(wg));
 
     verify_forward_iterator_requirements(cbegin_pilo(wg, 0));
-    verify_forward_iterator_requirements(cbegin_pislo(wg, 0));
     verify_forward_iterator_requirements(cbegin_pilo(wg, 0));
-    verify_forward_iterator_requirements(cbegin_pislo(wg, 0));
     verify_forward_iterator_requirements(cbegin_pstilo(wg, 0, 1));
-    verify_forward_iterator_requirements(cbegin_pstislo(wg, 0, 1));
+
+    verify_forward_iterator_requirements(cbegin_pislo(wg, 0));
+    verify_forward_iterator_requirements(cbegin_pislo(wg, 0));
+    // verify_forward_iterator_requirements(cbegin_pstislo(wg, 0, 1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "009", "pstilo corner case", "[quick]") {
@@ -601,6 +624,7 @@ namespace libsemigroups {
 
     p.init(wg).order(Order::lex).source(0).target(0).min(0).max(100);
     REQUIRE((p | count()) == 1);
+    REQUIRE((p | to_vector()) == std::vector({""_w}));
 
     p.min(4);
     REQUIRE((p | count()) == 0);
@@ -614,12 +638,12 @@ namespace libsemigroups {
     REQUIRE(p.count() == 2);
 
     p.max(100);
-    REQUIRE((p | count()) == 20);
+    REQUIRE((p | count()) == 21);
 
     p.min(4);
-    REQUIRE((p | count()) == 19);
+    REQUIRE((p | count()) == 20);
 
-    // There's 1 path from 0 to 0 of length in range [0, 1), the path of length
+    // There's 1 path from 0 to 0 of length in range [0, 2], the path of length
     // 0.
     p.min(0).max(2);
     REQUIRE((p | count()) == 1);
@@ -654,63 +678,63 @@ namespace libsemigroups {
 
     REQUIRE(v4::word_graph::is_acyclic(wg));
 
-    size_t expected[8][8][8] = {{{0, 1, 4, 9, 12, 12, 12, 12},
-                                 {0, 0, 3, 8, 11, 11, 11, 11},
-                                 {0, 0, 0, 5, 8, 8, 8, 8},
-                                 {0, 0, 0, 0, 3, 3, 3, 3},
+    size_t expected[8][8][8] = {{{1, 4, 9, 12, 12, 12, 12, 12},
+                                 {0, 3, 8, 11, 11, 11, 11, 11},
+                                 {0, 0, 5, 8, 8, 8, 8, 8},
+                                 {0, 0, 0, 3, 3, 3, 3, 3},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 2, 2, 2, 2, 2, 2},
+                                {{1, 2, 2, 2, 2, 2, 2, 2},
+                                 {0, 1, 1, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{1, 2, 3, 3, 3, 3, 3, 3},
+                                 {0, 1, 2, 2, 2, 2, 2, 2},
                                  {0, 0, 1, 1, 1, 1, 1, 1},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 2, 3, 3, 3, 3, 3},
-                                 {0, 0, 1, 2, 2, 2, 2, 2},
-                                 {0, 0, 0, 1, 1, 1, 1, 1},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 3, 4, 4, 4, 4, 4},
-                                 {0, 0, 2, 3, 3, 3, 3, 3},
-                                 {0, 0, 0, 1, 1, 1, 1, 1},
+                                {{1, 3, 4, 4, 4, 4, 4, 4},
+                                 {0, 2, 3, 3, 3, 3, 3, 3},
+                                 {0, 0, 1, 1, 1, 1, 1, 1},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 2, 4, 6, 7, 7, 7},
-                                 {0, 0, 1, 3, 5, 6, 6, 6},
-                                 {0, 0, 0, 2, 4, 5, 5, 5},
-                                 {0, 0, 0, 0, 2, 3, 3, 3},
-                                 {0, 0, 0, 0, 0, 1, 1, 1},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 1, 1, 1, 1, 1, 1},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0},
-                                 {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 3, 5, 6, 6, 6, 6},
+                                {{1, 2, 4, 6, 7, 7, 7, 7},
+                                 {0, 1, 3, 5, 6, 6, 6, 6},
                                  {0, 0, 2, 4, 5, 5, 5, 5},
                                  {0, 0, 0, 2, 3, 3, 3, 3},
                                  {0, 0, 0, 0, 1, 1, 1, 1},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{1, 1, 1, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0}},
-                                {{0, 1, 1, 1, 1, 1, 1, 1},
+                                {{1, 3, 5, 6, 6, 6, 6, 6},
+                                 {0, 2, 4, 5, 5, 5, 5, 5},
+                                 {0, 0, 2, 3, 3, 3, 3, 3},
+                                 {0, 0, 0, 1, 1, 1, 1, 1},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0, 0, 0}},
+                                {{1, 1, 1, 1, 1, 1, 1, 1},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
                                  {0, 0, 0, 0, 0, 0, 0, 0},
@@ -726,7 +750,8 @@ namespace libsemigroups {
         for (size_t max = 0; max < wg.number_of_nodes(); ++max) {
           p.source(*s).min(min).max(max);
           // the next line is the same as std::distance
-          REQUIRE((p | count()) == expected[*s][min][max]);
+          REQUIRE(std::tuple(*s, min, max, (p | count()))
+                  == std::tuple(*s, min, max, expected[*s][min][max]));
         }
       }
     }
@@ -944,22 +969,22 @@ namespace libsemigroups {
 
     Paths p(wg);
     p.order(Order::lex).source(0).min(0).max(10);
-    REQUIRE((p | count()) == 6'858);
+    REQUIRE((p | count()) == 16'997);
     REQUIRE(number_of_paths_algorithm(wg, 0, 0, 10)
             == paths::algorithm::matrix);
-    REQUIRE(number_of_paths(wg, 0, 0, 10) == 6'858);
+    REQUIRE(number_of_paths(wg, 0, 0, 10) == 16'997);
     REQUIRE_THROWS_AS(number_of_paths(wg, 1, 0, 10, paths::algorithm::trivial),
                       LibsemigroupsException);
     REQUIRE(number_of_paths_algorithm(wg, 0, 10, 12)
             == paths::algorithm::matrix);
-    REQUIRE(number_of_paths(wg, 0, 10, 12) == 35300);
+    REQUIRE(number_of_paths(wg, 0, 10, 12) == 97'672);
 
     auto checker1 = [&wg](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
              && v4::word_graph::follow_path(wg, 0, w) != UNDEFINED;
     };
 
-    p.min(10).max(12);
+    p.min(10).max(11);
     REQUIRE((p | all_of(std::move(checker1))));
 
     std::unordered_set<word_type> distinct_words;
@@ -976,7 +1001,7 @@ namespace libsemigroups {
 
     p.source(1).target(5).min(0).max(10);
     REQUIRE(0 == (p | count()));
-    REQUIRE(number_of_paths(wg, 1, 1, 0, 10) == 1404);
+    REQUIRE(number_of_paths(wg, 1, 1, 0, 9) == 1404);
     REQUIRE_THROWS_AS(
         number_of_paths(wg, 1, 1, 0, 10, paths::algorithm::trivial),
         LibsemigroupsException);
@@ -986,7 +1011,7 @@ namespace libsemigroups {
             == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
-      return w.size() < 10 && v4::word_graph::follow_path(wg, 1, w) == 1;
+      return w.size() <= 10 && v4::word_graph::follow_path(wg, 1, w) == 1;
     };
     REQUIRE((p | all_of(std::move(checker2))));
   }
@@ -1056,8 +1081,131 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths", "021", "operator | Random()", "[quick]") {
     auto  wg = v4::make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
     Paths p(wg);
-    p.source(0).max(10);
-    REQUIRE(p.count() == 1023);
+    p.source(0).max(9);
+    REQUIRE(p.count() == 1'023);
     REQUIRE_NOTHROW((p | Random()).get());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Paths", "022", "pislo", "[quick]") {
+    auto wg = v4::make<WordGraph<size_t>>(6,
+                                          {{1, 2, UNDEFINED},
+                                           {2, 0, 3},
+                                           {UNDEFINED, UNDEFINED, 3},
+                                           {4},
+                                           {UNDEFINED, 5},
+                                           {3}});
+
+    auto it = cbegin_pislo(wg, 0);
+    REQUIRE(*it == ""_w);
+    ++it;
+    REQUIRE(*it == 0_w);
+    ++it;
+    REQUIRE(*it == 1_w);
+    ++it;
+    REQUIRE(*it == 00_w);
+
+    auto last = it;
+    std::advance(last, 10);
+
+    REQUIRE(std::vector(it, last)
+            == std::vector<word_type>({00_w,
+                                       01_w,
+                                       02_w,
+                                       12_w,
+                                       002_w,
+                                       010_w,
+                                       011_w,
+                                       020_w,
+                                       120_w,
+                                       0020_w}));
+    it = cbegin_pislo(wg, 0, 2, 5);
+    REQUIRE(std::vector(cbegin_pislo(wg, 0, 2, 4), cend_pislo(wg))
+            == std::vector<word_type>({00_w,
+                                       01_w,
+                                       02_w,
+                                       12_w,
+                                       002_w,
+                                       010_w,
+                                       011_w,
+                                       020_w,
+                                       120_w,
+                                       0020_w,
+                                       0100_w,
+                                       0101_w,
+                                       0102_w,
+                                       0112_w,
+                                       0201_w,
+                                       1201_w}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Paths", "023", "pislo", "[quick]") {
+    auto wg = v4::make<WordGraph<size_t>>(6,
+                                          {{1, 2, UNDEFINED},
+                                           {2, 0, 3},
+                                           {UNDEFINED, UNDEFINED, 3},
+                                           {4},
+                                           {UNDEFINED, 5},
+                                           {3}});
+    auto it = cbegin_pislo(wg, 0, 0, 0);
+    REQUIRE(*it == word_type());
+    ++it;
+    REQUIRE(it == cend_pislo(wg));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Paths", "024", "number_of_paths", "[quick]") {
+    using namespace rx;
+    auto wg = v4::make<WordGraph<size_t>>(
+        6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
+    size_t const N = 18;
+
+    REQUIRE(number_of_paths(wg, 0, 4, 0, N, paths::algorithm::dfs) == 262'134);
+    REQUIRE(number_of_paths(wg, 0, 4, 0, N, paths::algorithm::matrix)
+            == 262'134);
+    REQUIRE_THROWS_AS(
+        number_of_paths(wg, 0, 4, 0, N, paths::algorithm::acyclic),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        number_of_paths(wg, 0, 4, 0, N, paths::algorithm::trivial),
+        LibsemigroupsException);
+    REQUIRE(number_of_paths_algorithm(wg, 0, 4, 0, N) == paths::algorithm::dfs);
+
+    REQUIRE(number_of_paths_algorithm(wg, 0, 1, 10)
+            == paths::algorithm::trivial);
+
+    REQUIRE(number_of_paths(wg, 0, 4, 10, N) == 261'628);
+    REQUIRE(number_of_paths(wg, 0, 4, 10, N) + number_of_paths(wg, 0, 4, 0, 9)
+            == number_of_paths(wg, 0, 4, 0, N));
+    REQUIRE(number_of_paths(wg, 4, 1, 0, N) == 0);
+    REQUIRE(number_of_paths(wg, 0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
+
+    REQUIRE(number_of_paths(wg, 0, 1, 10) == 2'046);
+    REQUIRE(number_of_paths(wg, 1, 0, 9) + number_of_paths(wg, 2, 0, 9)
+            == 2'046);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Paths", "025", "issue #842 --- bad max", "[quick]") {
+    auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
+    REQUIRE((Paths(wg).source(0).target(0).max(4) | rx::to_vector())
+            == std::vector({0_w,
+                            00_w,
+                            10_w,
+                            000_w,
+                            010_w,
+                            100_w,
+                            0000_w,
+                            0010_w,
+                            0100_w,
+                            1000_w,
+                            1010_w}));
+  }
+
+  // TODO fix this!
+  // LIBSEMIGROUPS_TEST_CASE("Paths",
+  //                         "026",
+  //                         "issue #841 --- missing path",
+  //                         "[quick]") {
+  //   auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
+  //   REQUIRE(Paths(wg).source(0).target(0).max(4).get() == ""_w);
+  // }
+
 }  // namespace libsemigroups

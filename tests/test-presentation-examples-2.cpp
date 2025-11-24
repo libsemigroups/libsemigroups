@@ -89,7 +89,7 @@ namespace libsemigroups {
                                          "bcb",
                                          "ccb",
                                          "cbc"}));
-    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(10).count() == 1'176);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(9).count() == 1'176);
   }
 
   // Note that the alphabet order matters here, if the lhs of the first
@@ -170,7 +170,7 @@ namespace libsemigroups {
     //                                    {"cbcba", "cbacb"},
     //                                    {"cbaca", "cacba"}}));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-    REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(5).count() == 70);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(4).count() == 70);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Example",
@@ -180,7 +180,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, stylic_monoid(4));
     // REQUIRE(kb.number_of_classes() == 51);
-    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 50);
+    REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == 50);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Example",
@@ -201,9 +201,9 @@ namespace libsemigroups {
     } while (std::next_permutation(letters.begin(), letters.end()));
     REQUIRE(map.size() == 4);
 
-    REQUIRE(knuth_bendix::normal_forms(kb).min(3).max(4).count() == 19);  // 19
+    REQUIRE(knuth_bendix::normal_forms(kb).min(3).max(3).count() == 19);  // 19
     REQUIRE(
-        (knuth_bendix::normal_forms(kb).min(3).max(4) | rx::to_vector()).size()
+        (knuth_bendix::normal_forms(kb).min(3).max(3) | rx::to_vector()).size()
         == 19);
   }
 

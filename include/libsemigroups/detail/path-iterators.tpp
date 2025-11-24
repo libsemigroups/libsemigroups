@@ -21,8 +21,6 @@
 
 namespace libsemigroups {
   namespace detail {
-    template <typename Node>
-    const_pilo_iterator<Node>::~const_pilo_iterator() = default;
 
     template <typename Node>
     const_pilo_iterator<Node>::const_pilo_iterator(const_pilo_iterator const&)
@@ -57,13 +55,14 @@ namespace libsemigroups {
           _min(min),
           _max(max),
           _nodes() {
-      if (_min < _max) {
-        _nodes.push_back(source);
-        if (_min != 0) {
-          ++(*this);
-        }
+      _nodes.push_back(source);
+      if (_min != 0) {
+        ++(*this);
       }
     }
+
+    template <typename Node>
+    const_pilo_iterator<Node>::~const_pilo_iterator() = default;
 
     template <typename Node>
     const_pilo_iterator<Node> const& const_pilo_iterator<Node>::operator++() {
@@ -78,7 +77,7 @@ namespace libsemigroups {
         node_type next;
         std::tie(_edge, next) = _word_graph->next_label_and_target_no_checks(
             _nodes.back(), _edge);
-        if (next != UNDEFINED && _edges.size() < _max - 1) {
+        if (next != UNDEFINED && _edges.size() < _max) {
           _nodes.push_back(next);
           _edges.push_back(_edge);
           _edge = 0;
@@ -129,15 +128,12 @@ namespace libsemigroups {
                   "forward iterator requires destructible");
 
     template <typename Node>
-    const_pislo_iterator<Node>::~const_pislo_iterator() = default;
+    const_pislo_iterator<Node>::const_pislo_iterator() = default;
 
     template <typename Node>
     const_pislo_iterator<Node>::const_pislo_iterator(
         const_pislo_iterator const&)
         = default;
-
-    template <typename Node>
-    const_pislo_iterator<Node>::const_pislo_iterator() = default;
 
     template <typename Node>
     const_pislo_iterator<Node>&
@@ -159,24 +155,27 @@ namespace libsemigroups {
         Node                                           source,
         typename const_pislo_iterator<Node>::size_type min,
         typename const_pislo_iterator<Node>::size_type max)
-        : _length(min >= max ? UNDEFINED : min),
+        : _length(min > max ? UNDEFINED : min),
           _it(),
           _max(max),
           _source(source) {
       if (_length != UNDEFINED) {
-        _it = cbegin_pilo(*ptr, source, _length, _length + 1);
+        _it = cbegin_pilo(*ptr, source, _length, _length);
       } else {
         _it = cend_pilo(*ptr);
       }
     }
 
     template <typename Node>
+    const_pislo_iterator<Node>::~const_pislo_iterator() = default;
+
+    template <typename Node>
     const_pislo_iterator<Node> const& const_pislo_iterator<Node>::operator++() {
       ++_it;
       if (_it == cend_pilo(_it.word_graph())) {
-        if (_length < _max - 1) {
+        if (_length < _max) {
           ++_length;
-          _it = cbegin_pilo(_it.word_graph(), _source, _length, _length + 1);
+          _it = cbegin_pilo(_it.word_graph(), _source, _length, _length);
           if (_it == cend_pilo(_it.word_graph())) {
             _length = UNDEFINED;
           }
@@ -246,8 +245,8 @@ namespace libsemigroups {
           _max(max),
           _nodes(),
           _target(target) {
-      if (_min < _max) {
-        _nodes.push_back(source);
+      _nodes.push_back(source);
+      if (_min != 0 || source != _target) {
         ++(*this);
       }
     }
@@ -261,18 +260,13 @@ namespace libsemigroups {
         // first call
         _edge = 0;
         init_can_reach_target();
-        if (_min == 0 && _nodes.front() == _target) {
-          // special case if the source == target, and we allow words of
-          // length 0, then we return the empty word here.
-          return *this;
-        }
       }
 
       do {
         node_type next;
         std::tie(_edge, next) = _word_graph->next_label_and_target_no_checks(
             _nodes.back(), _edge);
-        if (next != UNDEFINED && _edges.size() < _max - 1) {
+        if (next != UNDEFINED && _edges.size() < _max) {
           // Avoid infinite loops when we can never reach _target
           if (_can_reach_target[next]) {
             _nodes.push_back(next);
@@ -385,6 +379,7 @@ namespace libsemigroups {
       }
       return *this;
     }
+
     static_assert(
         std::is_default_constructible<const_pstislo_iterator<size_t>>::value,
         "forward iterator requires default-constructible");
