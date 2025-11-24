@@ -257,13 +257,14 @@ namespace libsemigroups {
       const_pstilo_iterator(const_pstilo_iterator&&) noexcept;
       const_pstilo_iterator& operator=(const_pstilo_iterator const&);
       const_pstilo_iterator& operator=(const_pstilo_iterator&&) noexcept;
-      ~const_pstilo_iterator();
 
       const_pstilo_iterator(WordGraph<Node> const* ptr,
                             node_type              source,
                             node_type              target,
                             size_type              min,
                             size_type              max);
+
+      ~const_pstilo_iterator();
 
       // noexcept because comparison of std::vector<node_type> is noexcept
       // because comparison of node_type's is noexcept
@@ -286,6 +287,8 @@ namespace libsemigroups {
         return &_edges;
       }
 
+      [[nodiscard]] node_type source() const noexcept;
+
       [[nodiscard]] node_type target() const noexcept {
         return _target;
       }
@@ -301,6 +304,10 @@ namespace libsemigroups {
       }
 
       void swap(const_pstilo_iterator& that) noexcept;
+
+      [[nodiscard]] WordGraph<Node> const& word_graph() const noexcept {
+        return *_word_graph;
+      }
 
      private:
       void init_can_reach_target();
