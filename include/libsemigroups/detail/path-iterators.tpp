@@ -172,10 +172,7 @@ namespace libsemigroups {
         Node                                           source,
         typename const_pislo_iterator<Node>::size_type min,
         typename const_pislo_iterator<Node>::size_type max)
-        : _length(min > max ? UNDEFINED : min),
-          _it(),
-          _max(max),
-          _source(source) {
+        : _length(min > max ? UNDEFINED : min), _it(), _max(max) {
       if (_length != UNDEFINED) {
         _it = const_pilo_iterator(ptr, source, _length, _length);
       } else {
@@ -188,12 +185,12 @@ namespace libsemigroups {
 
     template <typename Node>
     const_pislo_iterator<Node> const& const_pislo_iterator<Node>::operator++() {
+      node_type const src = source();
       ++_it;
       if (_it == const_pilo_iterator<Node>()) {
         if (_length < _max) {
           ++_length;
-          _it = const_pilo_iterator(
-              &_it.word_graph(), source(), _length, _length);
+          _it = const_pilo_iterator(&_it.word_graph(), src, _length, _length);
           if (_it == const_pilo_iterator<Node>()) {
             _length = UNDEFINED;
           }
@@ -209,7 +206,6 @@ namespace libsemigroups {
       std::swap(_length, that._length);
       std::swap(_it, that._it);
       std::swap(_max, that._max);
-      std::swap(_source, that._source);
     }
 
     static_assert(
