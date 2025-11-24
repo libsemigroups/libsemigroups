@@ -135,8 +135,8 @@ namespace libsemigroups {
     size_t              current = 0;
 
     for (Forest::node_type m = 0; m != number_of_nodes(); ++m) {
-      auto      n = m;
-      node_type p;
+      auto      n      = m;
+      node_type p      = UNDEFINED;
       size_t    length = 0;
       while (n != UNDEFINED && seen[n] == not_yet_seen) {
         seen[n] = current;
