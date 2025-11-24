@@ -22,8 +22,9 @@
 using namespace libsemigroups::literals;
 
 namespace libsemigroups {
-  // action.hpp: Line 60
+  // action.hpp: Line 59
   LIBSEMIGROUPS_TEST_CASE("docs", "000", "action.hpp", "[docs][quick]") {
+    using namespace libsemigroups;
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
@@ -46,8 +47,9 @@ namespace libsemigroups {
     REQUIRE(o.size() == 65536);
   }
 
-  // action.hpp: Line 143
+  // action.hpp: Line 142
   LIBSEMIGROUPS_TEST_CASE("docs", "001", "action.hpp", "[docs][quick]") {
+    using namespace libsemigroups;
     auto rg = ReportGuard(true);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
@@ -85,8 +87,9 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 3);
   }
 
-  // freeband.hpp: Line 76
+  // freeband.hpp: Line 75
   LIBSEMIGROUPS_TEST_CASE("docs", "003", "freeband.hpp", "[docs][quick]") {
+    using namespace libsemigroups;
     freeband_equal_to({0, 1, 2, 3, 2, 1, 0},
                       {0, 1, 2, 3, 2, 3, 2, 1, 0});               // true
     freeband_equal_to({1, 2, 3}, {0, 1, 2});                      // false
@@ -173,13 +176,12 @@ namespace libsemigroups {
                           "006",
                           "is_specialization_of.hpp",
                           "[docs][quick]") {
-    using iso_1 = is_specialization_of<std::vector<int>, std::vector>;
-    REQUIRE(iso_1::value == true);
-    using iso_2 = is_specialization_of<std::vector<int>, std::unordered_map>;
-    REQUIRE(iso_2::value == false);
+    REQUIRE(is_specialization_of_v<std::vector<int>, std::vector> == true);
+    REQUIRE(is_specialization_of_v<std::vector<int>, std::unordered_map>
+            == false);
   }
 
-  // is_specialization_of.hpp: Line 76
+  // is_specialization_of.hpp: Line 73
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "007",
                           "is_specialization_of.hpp",
@@ -213,8 +215,9 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  // konieczny.hpp: Line 70
+  // konieczny.hpp: Line 69
   LIBSEMIGROUPS_TEST_CASE("docs", "009", "konieczny.hpp", "[docs][quick]") {
+    using namespace libsemigroups;
     auto S = make<Konieczny>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -342,73 +345,25 @@ namespace libsemigroups {
     matrix::row_space_size(x);  // returns 7
   }
 
-  // order.hpp: Line 98
-  LIBSEMIGROUPS_TEST_CASE("docs", "024", "order.hpp", "[docs][quick]") {
-    word_type x = 1101_w;
-    word_type y = 1001_w;
-
-    // x > y
-    REQUIRE(lexicographical_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend())
-            == false);
-  }
-
-  // order.hpp: Line 134
-  LIBSEMIGROUPS_TEST_CASE("docs", "025", "order.hpp", "[docs][quick]") {
-    word_type x = 0001_w;
-    word_type y = 0010_w;
-    // x < y
-    REQUIRE(lexicographical_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend())
-            == true);
-  }
-
-  // order.hpp: Line 311
-  LIBSEMIGROUPS_TEST_CASE("docs", "026", "order.hpp", "[docs][quick]") {
-    word_type x = random_word(5, 10);
-    word_type y = random_word(5, 10);
-    shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  // order.hpp: Line 347
-  LIBSEMIGROUPS_TEST_CASE("docs", "027", "order.hpp", "[docs][quick]") {
-    word_type x = random_word(5, 10);
-    word_type y = random_word(5, 10);
-    shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  // order.hpp: Line 483
-  LIBSEMIGROUPS_TEST_CASE("docs", "028", "order.hpp", "[docs][quick]") {
-    word_type x = random_word(5, 10);
-    word_type y = random_word(5, 10);
-    recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
-  // order.hpp: Line 517
-  LIBSEMIGROUPS_TEST_CASE("docs", "029", "order.hpp", "[docs][quick]") {
-    word_type x = random_word(5, 10);
-    word_type y = random_word(5, 10);
-    recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  }
-
   // presentation.hpp: Line 863
-  LIBSEMIGROUPS_TEST_CASE("docs", "030", "presentation.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "024", "presentation.hpp", "[docs][quick]") {
     Presentation<std::string> p;
     presentation::to_report_string(p);
     // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
   }
 
   // ranges.hpp: Line 87
-  LIBSEMIGROUPS_TEST_CASE("docs", "031", "ranges.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "025", "ranges.hpp", "[docs][quick]") {
     using rx::operator|;
     auto      wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
     Paths     p(wg);
     p.source(0).max(10);
     REQUIRE(p.count() == 1023);
-    // (p | Random()).get(); // returns random path in p (Pipe operator not
-    // implemented for Paths?)
+    (p | Random()).get();
   }
 
   // schreier-sims.hpp: Line 166
-  LIBSEMIGROUPS_TEST_CASE("docs", "032", "schreier-sims.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "026", "schreier-sims.hpp", "[docs][quick]") {
     SchreierSims<5> S;
     using Perm = decltype(S)::element_type;
     S.add_generator(Perm({1, 0, 2, 3, 4}));
@@ -418,7 +373,7 @@ namespace libsemigroups {
 
   // todd-coxeter-class.hpp: Line 80
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "033",
+                          "027",
                           "todd-coxeter-class.hpp",
                           "[docs][quick]") {
     using options = detail::ToddCoxeterImpl::options;
@@ -431,15 +386,13 @@ namespace libsemigroups {
     tc.strategy(options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 1);
 
-    auto w1 = 0000_w;
-    auto w2 = 00_w;
-    REQUIRE(todd_coxeter::contains(tc, w1, w2) == true);
-    REQUIRE(todd_coxeter::index_of(tc, w1) == 0);
+    REQUIRE(todd_coxeter::contains(tc, 0000_w, 00_w) == true);
+    REQUIRE(todd_coxeter::index_of(tc, 0000_w) == 0);
   }
 
-  // todd-coxeter-class.hpp: Line 98
+  // todd-coxeter-class.hpp: Line 96
   LIBSEMIGROUPS_TEST_CASE("docs",
-                          "034",
+                          "028",
                           "todd-coxeter-class.hpp",
                           "[docs][quick]") {
     using options = detail::ToddCoxeterImpl::options;
@@ -490,7 +443,7 @@ namespace libsemigroups {
   }
 
   // word-graph.hpp: Line 1581
-  LIBSEMIGROUPS_TEST_CASE("docs", "035", "word-graph.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "029", "word-graph.hpp", "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(1);
@@ -500,7 +453,7 @@ namespace libsemigroups {
   }
 
   // word-graph.hpp: Line 1629
-  LIBSEMIGROUPS_TEST_CASE("docs", "036", "word-graph.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "030", "word-graph.hpp", "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
     wg.add_to_out_degree(1);
@@ -515,7 +468,7 @@ namespace libsemigroups {
   }
 
   // word-graph.hpp: Line 2066
-  LIBSEMIGROUPS_TEST_CASE("docs", "037", "word-graph.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "031", "word-graph.hpp", "[docs][quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(4);
     wg.add_to_out_degree(4);
@@ -530,33 +483,33 @@ namespace libsemigroups {
   }
 
   // word-graph.hpp: Line 2150
-  LIBSEMIGROUPS_TEST_CASE("docs", "038", "word-graph.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "032", "word-graph.hpp", "[docs][quick]") {
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(word_graph::is_strictly_cyclic(wg) == false);
   }
 
   // word-graph.hpp: Line 2964
-  LIBSEMIGROUPS_TEST_CASE("docs", "039", "word-graph.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "033", "word-graph.hpp", "[docs][quick]") {
     // Construct a word graph with 5 nodes and 10 edges (7 specified)
     auto wg = make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   }
 
   // word-range.hpp: Line 183
-  LIBSEMIGROUPS_TEST_CASE("docs", "040", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "034", "word-range.hpp", "[docs][quick]") {
     std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
                            cend_wilo(2, 3, {0}, {1, 1, 1}));
     // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
   }
 
   // word-range.hpp: Line 253
-  LIBSEMIGROUPS_TEST_CASE("docs", "041", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "035", "word-range.hpp", "[docs][quick]") {
     std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
                            cend_wislo(2, {0}, {0, 0, 0}));
     // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
   }
 
   // word-range.hpp: Line 313
-  LIBSEMIGROUPS_TEST_CASE("docs", "042", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "036", "word-range.hpp", "[docs][quick]") {
     WordRange words;
     words
         .order(Order::shortlex)  // words in shortlex order
@@ -566,19 +519,18 @@ namespace libsemigroups {
   }
 
   // word-range.hpp: Line 760
-  LIBSEMIGROUPS_TEST_CASE("docs", "043", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "037", "word-range.hpp", "[docs][quick]") {
     ToWord toword("bac");
-    REQUIRE(toword("bac") == std::vector<unsigned long>{0, 1, 2});
-    REQUIRE(toword("bababbbcbc")
-            == std::vector<unsigned long>{0, 1, 0, 1, 0, 0, 0, 2, 0, 2});
+    REQUIRE(toword("bac") == 012_w);
+    REQUIRE(toword("bababbbcbc") == 0101000202_w);
 
     toword.init();
-    REQUIRE(toword("bac") == std::vector<unsigned long>{1, 0, 2});
+    REQUIRE(toword("bac") == 102_w);
   }
 
   // word-range.hpp: Line 1049
-  LIBSEMIGROUPS_TEST_CASE("docs", "044", "word-range.hpp", "[docs][quick]") {
-    using namespace rx;
+  LIBSEMIGROUPS_TEST_CASE("docs", "038", "word-range.hpp", "[docs][quick]") {
+    using rx::  operator|;
     StringRange strings;
     strings.alphabet("ab").first("a").last("bbbb");
     auto words = (strings | ToWord("ba"));
@@ -591,7 +543,7 @@ namespace libsemigroups {
   }
 
   // word-range.hpp: Line 1150
-  LIBSEMIGROUPS_TEST_CASE("docs", "045", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "039", "word-range.hpp", "[docs][quick]") {
     ToString tostring("bac");
     REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
     REQUIRE(tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2})) == "baabaabc");
@@ -601,8 +553,8 @@ namespace libsemigroups {
   }
 
   // word-range.hpp: Line 1401
-  LIBSEMIGROUPS_TEST_CASE("docs", "046", "word-range.hpp", "[docs][quick]") {
-    using namespace rx;
+  LIBSEMIGROUPS_TEST_CASE("docs", "040", "word-range.hpp", "[docs][quick]") {
+    using rx::operator|;
     WordRange words;
     words.alphabet_size(1).min(0).max(10);
 
@@ -613,7 +565,7 @@ namespace libsemigroups {
   }
 
   // word-range.hpp: Line 1599
-  LIBSEMIGROUPS_TEST_CASE("docs", "047", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "041", "word-range.hpp", "[docs][quick]") {
     StringRange strings;
     strings
         .order(Order::shortlex)  // strings in shortlex order
@@ -623,7 +575,7 @@ namespace libsemigroups {
   }
 
   // word-range.hpp: Line 2310
-  LIBSEMIGROUPS_TEST_CASE("docs", "048", "word-range.hpp", "[docs][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("docs", "042", "word-range.hpp", "[docs][quick]") {
     using namespace words;
     word_type w = 012345_w;
     prod(w, 0, 5, 2);               // {0, 2, 4}

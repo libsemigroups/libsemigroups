@@ -2093,10 +2093,10 @@ namespace libsemigroups {
   //! \code
   //! \skip-test
   //! using namespace words;
-  //! pow("a", 5)            // same as "aaaaa"
-  //! 01_w + 2               // same as 012_w
-  //! 01_w + 01_w            // same as 0101_w
-  //! prod(0123_w, 0, 16, 3) // same as 032103_w
+  //! pow("a", 5)            //-> "aaaaa"
+  //! 01_w + 2               //-> 012_w
+  //! 01_w + 01_w            //-> 0101_w
+  //! prod(0123_w, 0, 16, 3) //-> 032103_w
   //! \endcode
   namespace words {
 

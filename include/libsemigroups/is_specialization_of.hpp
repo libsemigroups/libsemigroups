@@ -43,11 +43,8 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! using iso_1= is_specialization_of<std::vector<int>, std::vector>;
-  //! iso_1::value; //-> true
-  //! using iso_2 = is_specialization_of<std::vector<int>,std::unordered_map>;
-  //! iso_2::value; //-> false
-  //!
+  //! is_specialization_of_v<std::vector<int>, std::vector>; //-> true
+  //! is_specialization_of_v<std::vector<int>,std::unordered_map>; //-> false
   //! \endcode
   //!
   //! \note The template parameters of \p Primary must be types, so, for

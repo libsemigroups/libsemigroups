@@ -87,10 +87,8 @@ namespace libsemigroups {
   //! tc.strategy(options::strategy::felsch);
   //! tc.number_of_classes(); //-> 1
   //!
-  //! auto w1 = 0000_w;
-  //! auto w2 = 00_w;
-  //! todd_coxeter::contains(tc, w1, w2); //-> true
-  //! todd_coxeter::index_of(tc, w1); //-> 0
+  //! todd_coxeter::contains(tc, 0000_w, 00_w); //-> true
+  //! todd_coxeter::index_of(tc, 0000_w); //-> 0
   //! \endcode
   //!
   //! \par Example 2

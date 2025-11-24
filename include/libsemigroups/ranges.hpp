@@ -89,8 +89,7 @@ namespace libsemigroups {
   //! Paths p(wg);
   //! p.source(0).max(10);
   //! p.count();            //-> 1023
-  //! // (p | Random()).get(); // returns random path in p (Pipe operator not
-  //! // implemented for Paths?)
+  //! (p | Random()).get();
   //! \endcode
   // TODO(2) this should be able to emit any number of random items not only
   // one.
