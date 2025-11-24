@@ -295,7 +295,7 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules.size() / 2 == 8);
-    auto nf = knuth_bendix::normal_forms(kb).min(1).max(10);
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(9);
     REQUIRE(nf.count() == 1'175);
   }
 

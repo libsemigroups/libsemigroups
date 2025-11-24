@@ -136,12 +136,12 @@ namespace libsemigroups {
   //!
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
-  //!
+  //
   //! \sa cbegin_pilo
   // not noexcept because constructors of const_pilo_iterator aren't
   template <typename Node>
-  [[nodiscard]] auto cend_pilo(WordGraph<Node> const& wg) {
-    return detail::const_pilo_iterator<Node>(&wg, 0, 0, 0);
+  [[nodiscard]] auto cend_pilo(WordGraph<Node> const&) {
+    return detail::const_pilo_iterator<Node>();
   }
 
   //! \relates Paths
@@ -210,9 +210,10 @@ namespace libsemigroups {
   //!
   //! \sa cbegin_pislo
   // not noexcept because detail::const_pislo_iterator constructors aren't
+  // TODO deprecate the 1 arg version and just give no args
   template <typename Node>
-  [[nodiscard]] auto cend_pislo(WordGraph<Node> const& wg) {
-    return detail::const_pislo_iterator<Node>(&wg, UNDEFINED, 0, 0);
+  [[nodiscard]] auto cend_pislo(WordGraph<Node> const&) {
+    return detail::const_pislo_iterator<Node>();
   }
 
   //! \relates Paths
@@ -281,8 +282,9 @@ namespace libsemigroups {
   //! \sa cbegin_pstilo
   // not noexcept because detail::const_pstilo_iterator constructors aren't
   template <typename Node>
-  [[nodiscard]] auto cend_pstilo(WordGraph<Node> const& wg) {
-    return detail::const_pstilo_iterator<Node>(&wg, 0, 0, 0, 0);
+  [[nodiscard]] auto cend_pstilo(WordGraph<Node> const&) {
+    // TODO deprecate the one arg version and implement the 0-arg version
+    return detail::const_pstilo_iterator<Node>();
   }
 
   //! \relates Paths
@@ -356,8 +358,9 @@ namespace libsemigroups {
   // not noexcept because cend_pislo isn't
   template <typename Node>
   [[nodiscard]] auto cend_pstislo(WordGraph<Node> const& wg) {
+    // TODO remove params if possible
     return detail::const_pstislo_iterator<Node>(
-        &wg, UNDEFINED, UNDEFINED, 0, 0);
+        &wg, UNDEFINED, UNDEFINED, 1, 0);
   }
 
   //! \relates Paths

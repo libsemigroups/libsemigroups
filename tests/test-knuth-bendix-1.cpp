@@ -118,7 +118,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(is_obviously_infinite(kb));
 
-    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(4);
 
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
@@ -150,7 +150,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(is_obviously_infinite(kb));
-    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(4);
 
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
@@ -187,10 +187,10 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(2) | to_vector())
+    REQUIRE((nf.min(1).max(1) | to_vector())
             == std::vector<std::string>({"0", "2"}));
 
-    REQUIRE((nf.min(1).max(12) | to_vector())
+    REQUIRE((nf.min(1).max(11) | to_vector())
             == std::vector<std::string>({"0",
                                          "2",
                                          "22",
@@ -233,7 +233,7 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb);
 
-    REQUIRE((nf.min(0).max(5) | to_vector())
+    REQUIRE((nf.min(0).max(4) | to_vector())
             == std::vector<std::string>(
                 {"",     "0",    "1",    "00",   "01",   "10",   "11",
                  "001",  "010",  "011",  "100",  "101",  "110",  "0010",
@@ -269,7 +269,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(5) | to_vector())
+    REQUIRE((nf.min(0).max(4) | to_vector())
             == std::vector<std::string>(  // codespell:end-ignore
                 {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
                  "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
@@ -286,7 +286,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "005",
                                    "Example 5.1 in Sims (infinite) x 2",
-
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
     auto rg = ReportGuard(false);
@@ -306,7 +305,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(5) | to_vector())
+    REQUIRE((nf.min(0).max(4) | to_vector())
             == std::vector<std::string>(
                 {"",     "a",    "A",    "b",    "B",    "aa",   "ab",
                  "aB",   "AA",   "Ab",   "AB",   "bb",   "BB",   "aaa",
@@ -432,7 +431,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::reduce(kb, "ccc") == "");
     REQUIRE(kb.number_of_classes() == 168);
 
-    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(4);
     REQUIRE((nf | to_vector())
             == std::vector<std::string>(
                 {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
@@ -476,11 +475,11 @@ namespace libsemigroups {
     auto expected = froidure_pin::current_normal_forms(fp);
 
     Paths paths(wg);
-    paths.source(0).min(1).max(fp.current_max_word_length() + 1);
+    paths.source(0).min(1).max(fp.current_max_word_length());
 
     REQUIRE(equal(expected, paths));
 
-    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(4);
     REQUIRE((nf | to_vector())
             == std::vector<std::string>(
                 {"0",    "1",    "2",    "00",   "01",   "10",   "11",
@@ -587,7 +586,7 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_edges() == 17);
     REQUIRE(!v4::word_graph::is_acyclic(wg));
     Paths paths(wg);
-    paths.source(0).min(0).max(10);
+    paths.source(0).min(0).max(9);
     REQUIRE(paths.count() == 13'044);
   }
 

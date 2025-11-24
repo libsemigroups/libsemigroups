@@ -26,10 +26,11 @@
 #include <vector>       // for vector, vector<>::const...
 
 #include "libsemigroups/constants.hpp"           // for UNDEFINED, Undefined
-#include "libsemigroups/detail/iterator.hpp"     // for default_postfix_incre...
 #include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
-#include "libsemigroups/word-graph.hpp"
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
+
+#include "libsemigroups/detail/iterator.hpp"  // for default_postfix_incre...
 
 #ifndef LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 #define LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
@@ -129,6 +130,7 @@ namespace libsemigroups {
     class const_pislo_iterator {
      public:
       using node_type       = Node;
+      using label_type      = typename WordGraph<Node>::label_type;
       using value_type      = word_type;
       using size_type       = typename std::vector<value_type>::size_type;
       using difference_type = typename std::vector<value_type>::difference_type;
@@ -157,6 +159,7 @@ namespace libsemigroups {
       const_pislo_iterator& operator=(const_pislo_iterator const&);
 
       const_pislo_iterator& operator=(const_pislo_iterator&&);
+
       ~const_pislo_iterator();
 
       const_pislo_iterator(WordGraph<node_type> const* ptr,
@@ -200,7 +203,7 @@ namespace libsemigroups {
       }
 
       void swap(const_pislo_iterator& that) noexcept;
-    };
+    };  // class const_pislo_iterator
 
     template <typename Node>
     inline void swap(const_pislo_iterator<Node>& x,
@@ -288,7 +291,7 @@ namespace libsemigroups {
 
      private:
       void init_can_reach_target();
-    };
+    };  // class const_pstilo_iterator
 
     template <typename Node>
     inline void swap(const_pstilo_iterator<Node>& x,
@@ -375,7 +378,7 @@ namespace libsemigroups {
         std::swap(_target, that._target);
         std::swap(_end, that._end);
       }
-    };
+    };  // class const_pstislo_iterator
 
     template <typename Node>
     inline void swap(const_pstislo_iterator<Node>& x,
