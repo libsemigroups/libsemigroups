@@ -26,6 +26,7 @@
 #include <vector>       // for vector, vector<>::const...
 
 #include "libsemigroups/constants.hpp"           // for UNDEFINED, Undefined
+#include "libsemigroups/num-paths.hpp"           // for number_of_paths
 #include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
@@ -34,6 +35,8 @@
 
 #ifndef LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 #define LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
+
+// TODO noexcept consistency on constructors
 
 namespace libsemigroups {
   namespace detail {
@@ -160,13 +163,9 @@ namespace libsemigroups {
       // constructors for detail::const_pilo_iterator are not.
 
       const_pislo_iterator();
-
       const_pislo_iterator(const_pislo_iterator const&);
-
       const_pislo_iterator(const_pislo_iterator&&);
-
       const_pislo_iterator& operator=(const_pislo_iterator const&);
-
       const_pislo_iterator& operator=(const_pislo_iterator&&);
 
       const_pislo_iterator(WordGraph<node_type> const* ptr,
@@ -264,6 +263,15 @@ namespace libsemigroups {
                             size_type              min,
                             size_type              max);
 
+      // WARNING Do not use this unless the object has already been
+      // constructed using the 5-arg constructor above, o/w possible undefined
+      // behaviour will occur.
+      const_pstilo_iterator& init(WordGraph<Node> const* ptr,
+                                  node_type              source,
+                                  node_type              target,
+                                  size_type              min,
+                                  size_type              max);
+
       ~const_pstilo_iterator();
 
       // noexcept because comparison of std::vector<node_type> is noexcept
@@ -337,10 +345,9 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
      private:
-      size_t                             _count;
-      detail::const_pislo_iterator<Node> _it;
-      node_type                          _target;
-      detail::const_pislo_iterator<Node> _end;  // TODO(2) remove?
+      detail::const_pstilo_iterator<Node> _it;
+      size_type                           _max;
+      size_type                           _num;
 
      public:
       const_pstislo_iterator();
@@ -349,24 +356,16 @@ namespace libsemigroups {
       const_pstislo_iterator& operator=(const_pstislo_iterator const&);
       const_pstislo_iterator& operator=(const_pstislo_iterator&&);
 
-      ~const_pstislo_iterator();
-
       const_pstislo_iterator(WordGraph<node_type> const* ptr,
                              node_type                   source,
                              node_type                   target,
                              size_type                   min,
-                             size_type                   max)
-          : _count(source == UNDEFINED
-                       ? 0
-                       : number_of_paths(*ptr, source, target, min, max)),
-            _it(ptr, source, min, max),
-            _target(target),
-            // TODO remove
-            _end(cend_pislo(*ptr)) {
-        operator++();
-      }
+                             size_type                   max);
 
-      // noexcept because comparison of detail::const_pilo_iterator is noexcept
+      ~const_pstislo_iterator();
+
+      // noexcept because comparison of detail::const_pilo_iterator is
+      // noexcept
       [[nodiscard]] bool
       operator==(const_pstislo_iterator const& that) const noexcept {
         return _it == that._it;
@@ -386,8 +385,12 @@ namespace libsemigroups {
         return &(*_it);
       }
 
+      [[nodiscard]] node_type source() const noexcept {
+        return _it.source();
+      }
+
       [[nodiscard]] node_type target() const noexcept {
-        return _target;
+        return _it.target();
       }
 
       // prefix
@@ -400,8 +403,8 @@ namespace libsemigroups {
 
       void swap(const_pstislo_iterator& that) noexcept {
         std::swap(_it, that._it);
-        std::swap(_target, that._target);
-        std::swap(_end, that._end);
+        std::swap(_max, that._max);
+        std::swap(_num, that._num);
       }
     };  // class const_pstislo_iterator
 
