@@ -305,6 +305,15 @@ namespace libsemigroups {
     }
 
     template <typename Node>
+    Node const_pstilo_iterator<Node>::source() const noexcept {
+      if (!_nodes.empty()) {
+        return _nodes.front();
+      } else {
+        return UNDEFINED;
+      }
+    }
+
+    template <typename Node>
     void
     const_pstilo_iterator<Node>::swap(const_pstilo_iterator& that) noexcept {
       std::swap(_edges, that._edges);
