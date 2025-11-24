@@ -22,6 +22,10 @@
 namespace libsemigroups {
   namespace detail {
 
+    ////////////////////////////////////////////////////////////////////////
+    // pilo = Paths In Lex Order
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename Node>
     const_pilo_iterator<Node>::const_pilo_iterator(const_pilo_iterator const&)
         = default;
@@ -97,6 +101,15 @@ namespace libsemigroups {
     }
 
     template <typename Node>
+    Node const_pilo_iterator<Node>::source() const noexcept {
+      if (!_nodes.empty()) {
+        return _nodes.front();
+      } else {
+        return UNDEFINED;
+      }
+    }
+
+    template <typename Node>
     Node const_pilo_iterator<Node>::target() const noexcept {
       if (!_nodes.empty()) {
         return _nodes.back();
@@ -126,6 +139,10 @@ namespace libsemigroups {
                   "forward iterator requires copy-assignable");
     static_assert(std::is_destructible<const_pilo_iterator<size_t>>::value,
                   "forward iterator requires destructible");
+
+    ////////////////////////////////////////////////////////////////////////
+    // pislo = Paths In Short-Lex Order
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
     const_pislo_iterator<Node>::const_pislo_iterator() = default;
@@ -160,9 +177,9 @@ namespace libsemigroups {
           _max(max),
           _source(source) {
       if (_length != UNDEFINED) {
-        _it = cbegin_pilo(*ptr, source, _length, _length);
+        _it = const_pilo_iterator(ptr, source, _length, _length);
       } else {
-        _it = cend_pilo(*ptr);
+        _it = const_pilo_iterator<Node>();  // end
       }
     }
 
@@ -172,11 +189,12 @@ namespace libsemigroups {
     template <typename Node>
     const_pislo_iterator<Node> const& const_pislo_iterator<Node>::operator++() {
       ++_it;
-      if (_it == cend_pilo(_it.word_graph())) {
+      if (_it == const_pilo_iterator<Node>()) {
         if (_length < _max) {
           ++_length;
-          _it = cbegin_pilo(_it.word_graph(), _source, _length, _length);
-          if (_it == cend_pilo(_it.word_graph())) {
+          _it = const_pilo_iterator(
+              &_it.word_graph(), source(), _length, _length);
+          if (_it == const_pilo_iterator<Node>()) {
             _length = UNDEFINED;
           }
         } else {
@@ -204,6 +222,10 @@ namespace libsemigroups {
                   "forward iterator requires copy-assignable");
     static_assert(std::is_destructible<const_pislo_iterator<size_t>>::value,
                   "forward iterator requires destructible");
+
+    ////////////////////////////////////////////////////////////////////////
+    // pstilo = Paths Source Target In Lex Order
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
     const_pstilo_iterator<Node>::const_pstilo_iterator() noexcept = default;
@@ -323,6 +345,10 @@ namespace libsemigroups {
                   "forward iterator requires copy-assignable");
     static_assert(std::is_destructible<const_pstilo_iterator<size_t>>::value,
                   "forward iterator requires destructible");
+
+    ////////////////////////////////////////////////////////////////////////
+    // pstislo = Paths Source Target In Short-Lex Order
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
     const_pstislo_iterator<Node>::~const_pstislo_iterator() = default;

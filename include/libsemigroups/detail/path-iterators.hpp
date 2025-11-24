@@ -38,7 +38,7 @@
 namespace libsemigroups {
   namespace detail {
     ////////////////////////////////////////////////////////////////////////
-    // pilo = Path And (terminal) Node In Lex Order
+    // pilo = Paths In Lex Order
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
@@ -97,6 +97,7 @@ namespace libsemigroups {
         return &_edges;
       }
 
+      [[nodiscard]] node_type source() const noexcept;
       [[nodiscard]] node_type target() const noexcept;
 
       // prefix - not noexcept because std::vector::push_back isn't
@@ -120,12 +121,22 @@ namespace libsemigroups {
       x.swap(y);
     }
 
+    template <typename Node>
+    const_pilo_iterator(WordGraph<Node> const*, Node, size_t, size_t)
+        -> const_pilo_iterator<Node>;
+
+    ////////////////////////////////////////////////////////////////////////
+    // pislo = Paths In Short-Lex Order
+    ////////////////////////////////////////////////////////////////////////
+
     // Note that while the complexity of this is bad, it repeatedly does depth
     // first searches, and so will examine every node and edge of the graph
     // multiple times (if u -a-> v belongs to a path of length 10, then it will
     // be traversed 10 times). But the performance of this iterator is
-    // dominated by memory allocation (when creating
-    // iterators, at least), and so this doesn't seem that bad.
+    // dominated by memory allocation (when creating iterators, at least), and
+    // so this doesn't seem that bad. Benchmarking the other obvious approach
+    // revealed that using a queue was approximately 3 times slower, so we stick
+    // with this approach.
     template <typename Node>
     class const_pislo_iterator {
      public:
@@ -160,12 +171,12 @@ namespace libsemigroups {
 
       const_pislo_iterator& operator=(const_pislo_iterator&&);
 
-      ~const_pislo_iterator();
-
       const_pislo_iterator(WordGraph<node_type> const* ptr,
                            node_type                   source,
                            size_type                   min,
                            size_type                   max);
+
+      ~const_pislo_iterator();
 
       // noexcept because comparison of detail::const_pilo_iterator is noexcept
       [[nodiscard]] bool
@@ -185,6 +196,10 @@ namespace libsemigroups {
 
       [[nodiscard]] const_pointer operator->() const noexcept {
         return &(*_it);
+      }
+
+      [[nodiscard]] node_type source() const noexcept {
+        return _source;
       }
 
       [[nodiscard]] node_type target() const noexcept {
@@ -211,7 +226,10 @@ namespace libsemigroups {
       x.swap(y);
     }
 
-    // PSTILO = Path Source Target In Lex Order
+    ////////////////////////////////////////////////////////////////////////
+    // pstilo = Paths Source Target In Lex Order
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename Node>
     class const_pstilo_iterator {
      public:
@@ -299,6 +317,10 @@ namespace libsemigroups {
       x.swap(y);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // pstislo = Paths Source Target In Short-Lex Order
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename Node>
     class const_pstislo_iterator {
      public:
@@ -337,6 +359,7 @@ namespace libsemigroups {
                        : number_of_paths(*ptr, source, target, min, max)),
             _it(ptr, source, min, max),
             _target(target),
+            // TODO remove
             _end(cend_pislo(*ptr)) {
         operator++();
       }
