@@ -155,7 +155,6 @@ namespace libsemigroups {
       size_type                         _length;
       detail::const_pilo_iterator<Node> _it;
       size_type                         _max;
-      node_type                         _source;
 
      public:
       // None of the constructors are noexcept because the corresponding
@@ -199,13 +198,10 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] node_type source() const noexcept {
-        return _source;
+        return _it.source();
       }
 
       [[nodiscard]] node_type target() const noexcept {
-        if (_it == cend_pilo(_it.word_graph()) && _length == UNDEFINED) {
-          return UNDEFINED;
-        }
         return _it.target();
       }
 
