@@ -172,9 +172,9 @@ namespace libsemigroups {
         Node                                           source,
         typename const_pislo_iterator<Node>::size_type min,
         typename const_pislo_iterator<Node>::size_type max)
-        : _length(min > max ? UNDEFINED : min), _it(), _max(max) {
-      if (_length != UNDEFINED) {
-        _it = const_pilo_iterator(ptr, source, _length, _length);
+        : _it(), _max(max) {
+      if (min <= max) {
+        _it = const_pilo_iterator(ptr, source, min, min);
       } else {
         _it = const_pilo_iterator<Node>();  // end
       }
@@ -185,17 +185,15 @@ namespace libsemigroups {
 
     template <typename Node>
     const_pislo_iterator<Node> const& const_pislo_iterator<Node>::operator++() {
-      node_type const src = source();
+      node_type const src    = source();
+      size_type       length = _it->size();
       ++_it;
+      // if _it is at the end of the range of paths in lex order of the current
+      // length.
       if (_it == const_pilo_iterator<Node>()) {
-        if (_length < _max) {
-          ++_length;
-          _it = const_pilo_iterator(&_it.word_graph(), src, _length, _length);
-          if (_it == const_pilo_iterator<Node>()) {
-            _length = UNDEFINED;
-          }
-        } else {
-          _length = UNDEFINED;
+        if (length < _max) {
+          ++length;
+          _it = const_pilo_iterator(&_it.word_graph(), src, length, length);
         }
       }
       return *this;
@@ -203,7 +201,6 @@ namespace libsemigroups {
 
     template <typename Node>
     void const_pislo_iterator<Node>::swap(const_pislo_iterator& that) noexcept {
-      std::swap(_length, that._length);
       std::swap(_it, that._it);
       std::swap(_max, that._max);
     }
