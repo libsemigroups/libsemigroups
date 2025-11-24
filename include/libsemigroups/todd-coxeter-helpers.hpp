@@ -868,7 +868,7 @@ namespace libsemigroups {
     //! tc.perform_lookahead(true);
     //! tc.number_of_classes(); // returns 1
     //! \endcode
-    //!!
+    //!
     //! Running \p tc will simply grow the underlying word graph until
     //! your computer runs out of memory. The authors of ``libsemigroups`` were
     //! not able to find any combination of the many settings for

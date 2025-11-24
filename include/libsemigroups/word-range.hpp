@@ -1046,7 +1046,7 @@ namespace libsemigroups {
       //!
       //! \par Example
       //! \code
-      //! using namespace rx;
+      //! using rx::operator|;
       //!  StringRange strings;
       //!  strings.alphabet("ab").first("a").last("bbbb");
       //!  auto words = (strings | ToWord("ba"));
@@ -2010,9 +2010,9 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! \skip-test
-  //! 012_w      // same as word_type({0, 1, 2})
-  //! "abc"_w    // also same as word_type({0, 1, 2})
-  //! "(ab)^3"_p // same as "ababab"
+  //! 012_w      //-> word_type({0, 1, 2})
+  //! "abc"_w    //-> word_type({0, 1, 2})
+  //! "(ab)^3"_p //-> "ababab"
   //! \endcode
   namespace literals {
     //! \anchor literal_operator_w

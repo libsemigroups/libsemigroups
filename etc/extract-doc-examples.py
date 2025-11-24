@@ -85,7 +85,7 @@ def __parse_args() -> argparse.Namespace:
         "-e",
         "--exclude",
         nargs="+",
-        help="Files to exclude from docs code example colleciton",
+        help="Files to exclude from docs code example collection",
     )
 
     parser.add_argument(
@@ -162,8 +162,6 @@ def extract_code_blocks(file_path):
                     continue
 
                 if in_code_block:
-                    if "using namespace libsemigroups" in line:
-                        continue
 
                     # If line contains non-executable statements,
                     # skip this block.
