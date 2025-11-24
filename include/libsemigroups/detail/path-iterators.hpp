@@ -152,7 +152,6 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
      private:
-      size_type                         _length;
       detail::const_pilo_iterator<Node> _it;
       size_type                         _max;
 
@@ -180,7 +179,7 @@ namespace libsemigroups {
       // noexcept because comparison of detail::const_pilo_iterator is noexcept
       [[nodiscard]] bool
       operator==(const_pislo_iterator const& that) const noexcept {
-        return _length == that._length && _it == that._it;
+        return _it == that._it;
       }
 
       // noexcept because operator== is noexcept
