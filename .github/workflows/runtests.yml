@@ -24,7 +24,7 @@ jobs:
       matrix:
         compiler: [clang++, g++]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: test
         run: |
           echo ${{ github.event_name }}
@@ -61,7 +61,7 @@ jobs:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -85,7 +85,7 @@ jobs:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: 3.13
