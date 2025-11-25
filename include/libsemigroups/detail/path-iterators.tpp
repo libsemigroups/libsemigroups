@@ -53,12 +53,12 @@ namespace libsemigroups {
                                                    Node      source,
                                                    size_type min,
                                                    size_type max)
-        : _edges(),
-          _word_graph(ptr),
-          _edge(UNDEFINED),
+        : _edge(UNDEFINED),
+          _edges(),
           _min(min),
           _max(max),
-          _nodes() {
+          _nodes(),
+          _word_graph(ptr) {
       _nodes.push_back(source);
       if (_min != 0) {
         ++(*this);
@@ -253,13 +253,14 @@ namespace libsemigroups {
         node_type              target,
         size_type              min,
         size_type              max)
-        : _edges({}),
-          _word_graph(ptr),
+        : _can_reach_target(),
           _edge(UNDEFINED),
+          _edges(),
           _min(min),
           _max(max),
           _nodes(),
-          _target(target) {
+          _target(target),
+          _word_graph(ptr) {
       _nodes.push_back(source);
       if (_min != 0 || source != _target) {
         ++(*this);
