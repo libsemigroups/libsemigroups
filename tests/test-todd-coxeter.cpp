@@ -3224,13 +3224,13 @@ namespace libsemigroups {
     // REQUIRE(class_of(H, "").size_hint() == POSITIVE_INFINITY);
     REQUIRE((class_of(H, "") | rx::take(50) | rx::to_vector())
             == std::vector<std::string>(
-                {"aA",   "bc",   "bB",   "cC",   "Aa",   "Bb",   "Cc",   "CB",
-                 "aaAA", "abBA", "acCA", "aAaA", "aAbc", "aAbB", "aAcC", "aAAa",
-                 "aABb", "aACc", "aACB", "aBbA", "aCcA", "baAc", "baAB", "bbBc",
-                 "bbBB", "bcaA", "bcbc", "bcbB", "bccC", "bcAa", "bcBb", "bcCc",
-                 "bcCB", "bAac", "bAaB", "bBaA", "bBbc", "bBbB", "bBcC", "bBAa",
-                 "bBBb", "bBCc", "bBCB", "bCcc", "bCcB", "caAC", "cbBC", "ccCC",
-                 "cAaC", "cBbC"}));
+                {"",     "aA",   "bc",   "bB",   "cC",   "Aa",   "Bb",   "Cc",
+                 "CB",   "aaAA", "abBA", "acCA", "aAaA", "aAbc", "aAbB", "aAcC",
+                 "aAAa", "aABb", "aACc", "aACB", "aBbA", "aCcA", "baAc", "baAB",
+                 "bbBc", "bbBB", "bcaA", "bcbc", "bcbB", "bccC", "bcAa", "bcBb",
+                 "bcCc", "bcCB", "bAac", "bAaB", "bBaA", "bBbc", "bBbB", "bBcC",
+                 "bBAa", "bBBb", "bBCc", "bBCB", "bCcc", "bCcB", "caAC", "cbBC",
+                 "ccCC", "cAaC"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
