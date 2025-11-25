@@ -183,7 +183,7 @@ namespace libsemigroups {
     //  {{3, 3}, {3}}}
   }
 
-  // is_specialization_of.hpp: Line 44
+  // is_specialization_of.hpp: Line 46
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "006",
                           "is_specialization_of.hpp",
@@ -193,7 +193,7 @@ namespace libsemigroups {
             == false);
   }
 
-  // is_specialization_of.hpp: Line 73
+  // is_specialization_of.hpp: Line 75
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "007",
                           "is_specialization_of.hpp",
