@@ -26,7 +26,7 @@
 #include <vector>       // for vector, vector<>::const...
 
 #include "libsemigroups/constants.hpp"           // for UNDEFINED, Undefined
-#include "libsemigroups/num-paths.hpp"           // for number_of_paths
+#include "libsemigroups/paths-count.hpp"         // for paths::count
 #include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph

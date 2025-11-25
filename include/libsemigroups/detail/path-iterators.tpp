@@ -404,7 +404,7 @@ namespace libsemigroups {
         size_type                   max)
         : _it(), _max(max), _num(0) {
       if (min <= max) {
-        _num = v4::paths::number_of_paths(*ptr, source, target, min, max);
+        _num = v4::paths::count(*ptr, source, target, min, max);
         if (_num == 0) {
           return;
         }

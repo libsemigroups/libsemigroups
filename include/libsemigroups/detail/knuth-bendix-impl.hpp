@@ -49,6 +49,7 @@
 #include "libsemigroups/debug.hpp"               // for LIBSEMIGROUPS_...
 #include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
 #include "libsemigroups/order.hpp"               // for ShortLexCompare
+#include "libsemigroups/paths-count.hpp"         // for paths::count
 #include "libsemigroups/presentation.hpp"        // for operator!=
 #include "libsemigroups/ranges.hpp"              // for count, iterato...
 #include "libsemigroups/types.hpp"               // for congruence_kind
