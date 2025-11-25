@@ -23,9 +23,10 @@
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
 
-#include <cstddef>  // for size_t
-#include <numeric>  // for accumulate
-#include <vector>   // for vector
+#include <algorithm>  // for std::find_if
+#include <cstddef>    // for size_t
+#include <numeric>    // for accumulate
+#include <vector>     // for vector
 
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "ranges.hpp"     // for shortlex_compare
@@ -763,25 +764,29 @@ namespace libsemigroups {
                            std::vector<size_t> const& weights) {
     size_t const alphabet_size = weights.size();
 
-    std::accumulate(first1, last1, 0, [&alphabet_size](int, auto letter) {
-      if (static_cast<size_t>(letter) >= alphabet_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter {}, valid letters are in range [0, {})",
-            static_cast<size_t>(letter),
-            alphabet_size);
-      }
-      return 0;
+    auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
+      return static_cast<size_t>(letter) >= alphabet_size;
     });
+    if (it1 != last1) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "letter value out of bounds, expected value in [0, {}), found {} in "
+          "position {}",
+          alphabet_size,
+          static_cast<size_t>(*it1),
+          std::distance(first1, it1));
+    }
 
-    std::accumulate(first2, last2, 0, [&alphabet_size](int, auto letter) {
-      if (static_cast<size_t>(letter) >= alphabet_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid letter {}, valid letters are in range [0, {})",
-            static_cast<size_t>(letter),
-            alphabet_size);
-      }
-      return 0;
+    auto const it2 = std::find_if(first2, last2, [&alphabet_size](auto letter) {
+      return static_cast<size_t>(letter) >= alphabet_size;
     });
+    if (it2 != last2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "letter value out of bounds, expected value in [0, {}), found {} in "
+          "position {}",
+          alphabet_size,
+          static_cast<size_t>(*it2),
+          std::distance(first2, it2));
+    }
 
     return wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights);
   }
