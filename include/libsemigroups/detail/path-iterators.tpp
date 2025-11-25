@@ -120,12 +120,12 @@ namespace libsemigroups {
 
     template <typename Node>
     void const_pilo_iterator<Node>::swap(const_pilo_iterator& that) noexcept {
-      std::swap(_edges, that._edges);
-      std::swap(_word_graph, that._word_graph);
       std::swap(_edge, that._edge);
+      std::swap(_edges, that._edges);
       std::swap(_min, that._min);
       std::swap(_max, that._max);
       std::swap(_nodes, that._nodes);
+      std::swap(_word_graph, that._word_graph);
     }
 
     // Assert that the forward iterator requirements are met
@@ -335,14 +335,14 @@ namespace libsemigroups {
     template <typename Node>
     void
     const_pstilo_iterator<Node>::swap(const_pstilo_iterator& that) noexcept {
-      // TODO _can_reach_target is missing, also sort
-      std::swap(_edges, that._edges);
-      std::swap(_word_graph, that._word_graph);
+      std::swap(_can_reach_target, that._can_reach_target);
       std::swap(_edge, that._edge);
+      std::swap(_edges, that._edges);
       std::swap(_min, that._min);
       std::swap(_max, that._max);
       std::swap(_nodes, that._nodes);
       std::swap(_target, that._target);
+      std::swap(_word_graph, that._word_graph);
     }
 
     template <typename Node>
