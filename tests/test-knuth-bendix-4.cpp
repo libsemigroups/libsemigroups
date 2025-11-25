@@ -421,11 +421,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 1'026);
     REQUIRE(kb.number_of_classes() == 10'752);
 
-    auto& ad = kb.gilman_graph();
-    REQUIRE(ad.number_of_nodes() == 6'021);
-    REQUIRE(ad.number_of_edges() == 7'435);
-    REQUIRE(v4::word_graph::is_acyclic(ad));
-    REQUIRE(number_of_paths(ad, 0, 0, 100) == 10'752);
+    auto& wg = kb.gilman_graph();
+    REQUIRE(wg.number_of_nodes() == 6'021);
+    REQUIRE(wg.number_of_edges() == 7'435);
+    REQUIRE(v4::word_graph::is_acyclic(wg));
+    REQUIRE(v4::paths::count(wg, 0, 0, 100) == 10'752);
   }
 
   ////////////////////////////////////////////////////////////////////////

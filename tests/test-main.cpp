@@ -43,12 +43,12 @@ CATCH_REGISTER_ENUM(libsemigroups::tril,
                     libsemigroups::tril::FALSE,
                     libsemigroups::tril::unknown);
 
-CATCH_REGISTER_ENUM(libsemigroups::paths::algorithm,
-                    libsemigroups::paths::algorithm::dfs,
-                    libsemigroups::paths::algorithm::matrix,
-                    libsemigroups::paths::algorithm::acyclic,
-                    libsemigroups::paths::algorithm::automatic,
-                    libsemigroups::paths::algorithm::trivial)
+CATCH_REGISTER_ENUM(libsemigroups::v4::paths::algorithm,
+                    libsemigroups::v4::paths::algorithm::dfs,
+                    libsemigroups::v4::paths::algorithm::matrix,
+                    libsemigroups::v4::paths::algorithm::acyclic,
+                    libsemigroups::v4::paths::algorithm::automatic,
+                    libsemigroups::v4::paths::algorithm::trivial)
 
 CATCH_REGISTER_ENUM(libsemigroups::Runner::state,
                     libsemigroups::Runner::state::never_run,

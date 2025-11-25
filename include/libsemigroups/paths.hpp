@@ -42,6 +42,7 @@
 #include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
 #include "order.hpp"               // for order
+#include "paths-count.hpp"         // for algorithm
 #include "ranges.hpp"              // for is_input_range
 #include "types.hpp"               // for word_type
 #include "word-graph-helpers.hpp"  // for word_graph
@@ -58,20 +59,8 @@ namespace libsemigroups {
   //!
   //! This namespace contains helper functions for the Paths class.
   namespace paths {
-    //! An enum for specifying the algorithm to the functions number_of_paths().
-    enum class algorithm {
-      //! Use a depth-first-search.
-      dfs = 0,
-      //! Use the adjacency matrix and matrix multiplication.
-      matrix,
-      //! Use a dynamic programming approach for acyclic word graphs.
-      acyclic,
-      //! Try to utilise some corner cases.
-      trivial,
-      //! The function number_of_paths() tries to decide which algorithm is
-      //! best.
-      automatic
-    };
+    //! \copydoc v4::paths::algorithm
+    using algorithm [[deprecated]] = v4::paths::algorithm;
   }  // namespace paths
 
   //! \relates Paths
@@ -375,12 +364,13 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Constant
+  //!
+  //! \warning This function is deprecated, it will be moved into the `paths`
+  //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
   template <typename Node1, typename Node2>
-  [[nodiscard]] paths::algorithm
+  [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg, Node2 source) noexcept {
-    (void) wg;
-    (void) source;
-    return paths::algorithm::acyclic;
+    return v4::paths::count_algorithm(wg, source);
   }
 
   //! \relates Paths
@@ -398,15 +388,21 @@ namespace libsemigroups {
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the word graph.
   //!
-  //! \note If `libsemigroups` is compiled with the flag `--enable-eigen`, then
-  //! this function makes use of the Eigen library for linear algebra (see
+  //! \note If `libsemigroups` is compiled with the flag `--enable-eigen`,
+  //! then this function makes use of the Eigen library for linear algebra
+  //! (see
   //! \cite Guennebaud2010aa).
   //!
-  //! \warning If the number of paths exceeds 2 ^ 64, then return value of
-  //! this function will not be correct.
+  //! \warning If the number of paths exceeds \f$2 ^{64}-1\f$, then the return
+  //! value of this function will not be correct.
+  //!
+  //! \deprecated This function is deprecated, it will be moved into the `paths`
+  //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
   template <typename Node1, typename Node2>
-  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
-                                         Node2                   source);
+  [[deprecated]] [[nodiscard]] uint64_t
+  number_of_paths(WordGraph<Node1> const& wg, Node2 source) {
+    return v4::paths::count(wg, source);
+  }
 
   //! \relates Paths
   //! Returns the paths::algorithm used by number_of_paths().
@@ -428,13 +424,18 @@ namespace libsemigroups {
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the word graph.
+  //!
+  //! \deprecated This function is deprecated, it will be moved into the `paths`
+  //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
   // Not noexcept because v4::word_graph::topological_sort is not.
   template <typename Node1, typename Node2>
-  [[nodiscard]] paths::algorithm
+  [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,
                             Node2                   source,
                             size_t                  min,
-                            size_t                  max);
+                            size_t                  max) {
+    return v4::paths::count_algorithm(wg, source, min, max);
+  }
 
   //! \relates Paths
   //! Returns the number of paths starting at a given node with length in a
@@ -457,22 +458,18 @@ namespace libsemigroups {
   //! \complexity
   //! The complexity depends on the value of \p lgrthm as follows:
   //! * paths::algorithm::dfs: \f$O(r)\f$ where \f$r\f$ is the number of paths
-  //! in
-  //!   the word graph starting at \p source
+  //!   in the word graph starting at \p source
   //! * paths::algorithm::matrix: at worst \f$O(n ^ 3 k)\f$ where \f$n\f$ is the
   //!   number of nodes and \f$k\f$ equals \p max.
   //! * paths::algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the
-  //! number
-  //!   of nodes and \f$m\f$ is the out-degree of the word graph (only valid if
-  //!   the subgraph induced by the nodes reachable from \p source is
+  //!   number of nodes and \f$m\f$ is the out-degree of the word graph (only
+  //!   valid if the subgraph induced by the nodes reachable from \p source is
   //!   acyclic)
   //! * paths::algorithm::trivial: at worst \f$O(nm)\f$ where \f$n\f$ is the
-  //! number
-  //!   of nodes and \f$m\f$ is the out-degree of the word graph (only valid in
-  //!   some circumstances)
+  //!   number of nodes and \f$m\f$ is the out-degree of the word graph (only
+  //!   valid in some circumstances)
   //! * paths::algorithm::automatic: attempts to select the fastest algorithm of
-  //! the
-  //!   preceding algorithms and then applies that.
+  //!   the preceding algorithms and then applies that.
   //!
   //! \note If `libsemigroups` is compiled with the flag `--enable-eigen`, then
   //! this function makes use of the Eigen library for linear algebra (see
@@ -481,16 +478,21 @@ namespace libsemigroups {
   //! \warning If \p lgrthm is paths::algorithm::automatic, then it is not
   //! always the case that the fastest algorithm is used.
   //!
-  //! \warning If the number of paths exceeds 2 ^ 64, then return value of
-  //! this function will not be correct.
+  //! \warning If the number of paths exceeds \f$2^{64}-1\f$, then the return
+  //! value of this function will not be correct.
+  //!
+  //! \deprecated This function is deprecated, it will be moved into the `paths`
+  //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
   // not noexcept for example detail::number_of_paths_trivial can throw
   template <typename Node1, typename Node2>
-  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
-                                         Node2                   source,
-                                         size_t                  min,
-                                         size_t                  max,
-                                         paths::algorithm        lgrthm
-                                         = paths::algorithm::automatic);
+  [[deprecated]] [[nodiscard]] uint64_t number_of_paths(
+      WordGraph<Node1> const& wg,
+      Node2                   source,
+      size_t                  min,
+      size_t                  max,
+      v4::paths::algorithm    lgrthm = v4::paths::algorithm::automatic) {
+    return v4::paths::count(wg, source, min, max, lgrthm);
+  }
 
   //! \relates Paths
   //!
@@ -514,14 +516,19 @@ namespace libsemigroups {
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
   //! is the out-degree of the word graph.
+  //!
+  //! \deprecated This function is deprecated, it will be moved into the `paths`
+  //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
   // Not noexcept because v4::word_graph::topological_sort isn't
   template <typename Node1, typename Node2>
-  [[nodiscard]] paths::algorithm
+  [[deprecated]] [[nodiscard]] paths::algorithm
   number_of_paths_algorithm(WordGraph<Node1> const& wg,
                             Node2                   source,
                             Node2                   target,
                             size_t                  min,
-                            size_t                  max);
+                            size_t                  max) {
+    return v4::paths::count_algorithm(wg, source, target, min, max);
+  }
 
   //! \relates Paths
   //!
@@ -565,17 +572,22 @@ namespace libsemigroups {
   //! \warning If \p lgrthm is paths::algorithm::automatic, then it is not
   //! always the case that the fastest algorithm is used.
   //!
-  //! \warning If the number of paths exceeds 2 ^ 64, then return value of
-  //! this function will not be correct.
+  //! \warning If the number of paths exceeds \f$2^{64}-1\f$, then the return
+  //! value of this function will not be correct.
+  //!
+  //! \deprecated This function is deprecated, it will be moved into the `paths`
+  //! namespace in the file `paths-count.hpp` in `libsemigroups` v4.
   // not noexcept because cbegin_pstilo isn't
   template <typename Node1, typename Node2>
-  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
-                                         Node2                   source,
-                                         Node2                   target,
-                                         size_t                  min,
-                                         size_t                  max,
-                                         paths::algorithm        lgrthm
-                                         = paths::algorithm::automatic);
+  [[deprecated]] [[nodiscard]] uint64_t number_of_paths(
+      WordGraph<Node1> const& wg,
+      Node2                   source,
+      Node2                   target,
+      size_t                  min,
+      size_t                  max,
+      v4::paths::algorithm    lgrthm = v4::paths::algorithm::automatic) {
+    return v4::paths::count(wg, source, target, min, max, lgrthm);
+  }
 
   //! \ingroup word_graph_group
   //!

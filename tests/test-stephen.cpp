@@ -390,7 +390,6 @@ namespace libsemigroups {
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 10},
                  {7}}));
 
-    REQUIRE(word_graph::dot(S.word_graph()).to_string() == "");
     auto rule = p.rules[0];
     auto m    = v4::word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())

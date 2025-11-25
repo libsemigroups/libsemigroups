@@ -121,7 +121,7 @@ namespace libsemigroups {
 
     Paths p(wg);
     p.order(Order::lex).source(2).min(3).max(3);
-    REQUIRE(number_of_paths(wg, 2, 3, 3) == 1);
+    REQUIRE(v4::paths::count(wg, 2, 3, 3) == 1);
 
     std::vector<word_type> expected = {210_w};
     REQUIRE(p.size_hint() == 1);
@@ -651,27 +651,27 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "010",
-                          "number_of_paths corner cases",
+                          "v4::paths::count corner cases",
                           "[quick]") {
     WordGraph<size_t> wg;
-    REQUIRE_THROWS_AS(number_of_paths(wg, 0, 0, POSITIVE_INFINITY),
+    REQUIRE_THROWS_AS(v4::paths::count(wg, 0, 0, POSITIVE_INFINITY),
                       LibsemigroupsException);
     size_t const n = 20;
     wg.add_to_out_degree(1);
     v4::word_graph::add_cycle(wg, n);
-    REQUIRE(number_of_paths(wg, 10) == POSITIVE_INFINITY);
-    REQUIRE(number_of_paths_algorithm(wg, 10, 10, 0, POSITIVE_INFINITY)
-            == paths::algorithm::trivial);
-    REQUIRE(number_of_paths(wg, 10, 10, 0, POSITIVE_INFINITY)
+    REQUIRE(v4::paths::count(wg, 10) == POSITIVE_INFINITY);
+    REQUIRE(v4::paths::count_algorithm(wg, 10, 10, 0, POSITIVE_INFINITY)
+            == v4::paths::algorithm::trivial);
+    REQUIRE(v4::paths::count(wg, 10, 10, 0, POSITIVE_INFINITY)
             == POSITIVE_INFINITY);
     wg = chain(n);
-    REQUIRE(number_of_paths(wg, 10) == 10);
-    REQUIRE(number_of_paths(wg, 19) == 1);
+    REQUIRE(v4::paths::count(wg, 10) == 10);
+    REQUIRE(v4::paths::count(wg, 19) == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "011",
-                          "number_of_paths acyclic word graph",
+                          "v4::paths::count acyclic word graph",
                           "[quick][no-valgrind]") {
     auto wg = v4::make<WordGraph<size_t>>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
@@ -759,7 +759,7 @@ namespace libsemigroups {
     for (auto s = wg.cbegin_nodes(); s != wg.cend_nodes(); ++s) {
       for (size_t min = 0; min < wg.number_of_nodes(); ++min) {
         for (size_t max = 0; max < wg.number_of_nodes(); ++max) {
-          REQUIRE(number_of_paths(wg, *s, min, max) == expected[*s][min][max]);
+          REQUIRE(v4::paths::count(wg, *s, min, max) == expected[*s][min][max]);
           p.source(*s).min(min).max(max);
           REQUIRE(p.count() == expected[*s][min][max]);
         }
@@ -770,7 +770,7 @@ namespace libsemigroups {
     p.source(0).target(3).min(0).max(2);
     REQUIRE((p | to_vector()) == std::vector({0_w, 2_w}));
 
-    REQUIRE(number_of_paths(wg, 0, 3, 0, 2, paths::algorithm::acyclic)
+    REQUIRE(v4::paths::count(wg, 0, 3, 0, 2, v4::paths::algorithm::acyclic)
             == (p | count()));
 
     for (auto s = wg.cbegin_nodes(); s != wg.cend_nodes(); ++s) {
@@ -778,7 +778,7 @@ namespace libsemigroups {
         for (size_t min = 0; min < N; ++min) {
           for (size_t max = min; max < N; ++max) {
             p.source(*s).target(*t).min(min).max(max);
-            REQUIRE(number_of_paths(wg, *s, *t, min, max) == (p | count()));
+            REQUIRE(v4::paths::count(wg, *s, *t, min, max) == (p | count()));
           }
         }
       }
@@ -790,7 +790,7 @@ namespace libsemigroups {
   // Instruments)
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "012",
-                          "number_of_paths binary tree",
+                          "v4::paths::count binary tree",
                           "[quick][no-valgrind]") {
     using node_type = WordGraph<size_t>::node_type;
     size_t const n  = 6;
@@ -798,7 +798,7 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(v4::word_graph::is_acyclic(wg));
-    REQUIRE(number_of_paths(wg, 0) == std::pow(2, n) - 1);
+    REQUIRE(v4::paths::count(wg, 0) == std::pow(2, n) - 1);
 
     Paths p(wg);
     p.order(Order::lex);
@@ -807,15 +807,15 @@ namespace libsemigroups {
       for (node_type min = 0; min < n; ++min) {
         for (size_t max = min; max < n; ++max) {
           p.source(*s).min(min).max(max);
-          REQUIRE(number_of_paths(wg, *s, min, max) == (p | count()));
+          REQUIRE(v4::paths::count(wg, *s, min, max) == (p | count()));
         }
       }
     }
-    REQUIRE(number_of_paths_algorithm(wg, 0, 1, 0, 1)
-            == paths::algorithm::acyclic);
+    REQUIRE(v4::paths::count_algorithm(wg, 0, 1, 0, 1)
+            == v4::paths::algorithm::acyclic);
 
     p.source(0).target(1).min(0).max(1);
-    REQUIRE(number_of_paths(wg, 0, 1, 0, 1) == (p | count()));
+    REQUIRE(v4::paths::count(wg, 0, 1, 0, 1) == (p | count()));
     REQUIRE(p.count() == (p | count()));
 
     for (auto s = wg.cbegin_nodes(); s != wg.cend_nodes(); ++s) {
@@ -823,7 +823,7 @@ namespace libsemigroups {
         for (node_type min = 0; min < n; ++min) {
           for (size_t max = min; max < n; ++max) {
             p.source(*s).target(*t).min(min).max(max);
-            REQUIRE(number_of_paths(wg, *s, *t, min, max) == (p | count()));
+            REQUIRE(v4::paths::count(wg, *s, *t, min, max) == (p | count()));
           }
         }
       }
@@ -832,30 +832,30 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "013",
-                          "number_of_paths large binary tree",
+                          "v4::paths::count large binary tree",
                           "[quick][no-valgrind]") {
     size_t const n  = 20;
     WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
     REQUIRE(wg.number_of_edges() == std::pow(2, n) - 2);
     REQUIRE(v4::word_graph::is_acyclic(wg));
-    REQUIRE(number_of_paths_algorithm(wg, 0) == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0) == std::pow(2, n) - 1);
+    REQUIRE(v4::paths::count_algorithm(wg, 0) == v4::paths::algorithm::acyclic);
+    REQUIRE(v4::paths::count(wg, 0) == std::pow(2, n) - 1);
 
     // The following tests for code coverage
     wg.target(19, 0, 0);
-    REQUIRE(
-        number_of_paths(wg, 0, 0, 0, POSITIVE_INFINITY, paths::algorithm::dfs)
-        == POSITIVE_INFINITY);
+    REQUIRE(v4::paths::count(
+                wg, 0, 0, 0, POSITIVE_INFINITY, v4::paths::algorithm::dfs)
+            == POSITIVE_INFINITY);
     // 0 not reachable from 10
-    REQUIRE(number_of_paths(
-                wg, 10, 0, 0, POSITIVE_INFINITY, paths::algorithm::matrix)
+    REQUIRE(v4::paths::count(
+                wg, 10, 0, 0, POSITIVE_INFINITY, v4::paths::algorithm::matrix)
             == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "014",
-                          "number_of_paths 400 node cycle word graph",
+                          "v4::paths::count 400 node cycle word graph",
                           "[quick]") {
     size_t const      n = 400;
     WordGraph<size_t> wg(n, 1);
@@ -864,12 +864,12 @@ namespace libsemigroups {
     REQUIRE(v4::word_graph::is_reachable(wg, 1, 0));
     REQUIRE(v4::word_graph::is_reachable(wg, 0, 1));
     REQUIRE(v4::word_graph::is_reachable(wg, 0, 0));
-    REQUIRE(number_of_paths(wg, 0, 0, 401) != 0);
+    REQUIRE(v4::paths::count(wg, 0, 0, 401) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "015",
-                          "number_of_paths 10 node acyclic word graph",
+                          "v4::paths::count 10 node acyclic word graph",
                           "[quick]") {
     // size_t const n  = 10;
     // auto wg = WordGraph<size_t>::random_acyclic(n, 20, n,
@@ -893,17 +893,18 @@ namespace libsemigroups {
     REQUIRE(v4::word_graph::is_acyclic(wg));
     REQUIRE(!v4::word_graph::is_complete(wg));
 
-    REQUIRE(number_of_paths_algorithm(wg, 0, 0, 16)
-            == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0, 0, 30) == 9);
-    REQUIRE(number_of_paths(wg, 1, 0, 10, paths::algorithm::acyclic) == 6);
-    REQUIRE(number_of_paths(wg, 1, 0, 10, paths::algorithm::matrix) == 6);
-    REQUIRE(number_of_paths(wg, 1, 9, 0, 10, paths::algorithm::matrix) == 3);
+    REQUIRE(v4::paths::count_algorithm(wg, 0, 0, 16)
+            == v4::paths::algorithm::acyclic);
+    REQUIRE(v4::paths::count(wg, 0, 0, 30) == 9);
+    REQUIRE(v4::paths::count(wg, 1, 0, 10, v4::paths::algorithm::acyclic) == 6);
+    REQUIRE(v4::paths::count(wg, 1, 0, 10, v4::paths::algorithm::matrix) == 6);
+    REQUIRE(v4::paths::count(wg, 1, 9, 0, 10, v4::paths::algorithm::matrix)
+            == 3);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "016",
-                          "number_of_paths node word graph",
+                          "v4::paths::count node word graph",
                           "[quick][no-valgrind]") {
     size_t const n = 10;
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,
@@ -924,26 +925,27 @@ namespace libsemigroups {
     REQUIRE(!v4::word_graph::is_acyclic(wg));
     REQUIRE(v4::word_graph::is_complete(wg));
 
-    REQUIRE(number_of_paths_algorithm(wg, 0) == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0) == POSITIVE_INFINITY);
-    REQUIRE_THROWS_AS(number_of_paths(wg, 0, 0, 10, paths::algorithm::acyclic),
-                      LibsemigroupsException);
+    REQUIRE(v4::paths::count_algorithm(wg, 0) == v4::paths::algorithm::acyclic);
+    REQUIRE(v4::paths::count(wg, 0) == POSITIVE_INFINITY);
     REQUIRE_THROWS_AS(
-        number_of_paths(wg, 1, 9, 0, 10, paths::algorithm::acyclic),
+        v4::paths::count(wg, 0, 0, 10, v4::paths::algorithm::acyclic),
+        LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        v4::paths::count(wg, 1, 9, 0, 10, v4::paths::algorithm::acyclic),
         LibsemigroupsException);
 
     wg = binary_tree(n);
-    REQUIRE(number_of_paths_algorithm(wg, 0) == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 0) == 1023);
+    REQUIRE(v4::paths::count_algorithm(wg, 0) == v4::paths::algorithm::acyclic);
+    REQUIRE(v4::paths::count(wg, 0) == 1023);
 
     v4::word_graph::add_cycle(wg, n);
     wg.target(0, 0, n + 1);
     REQUIRE(!v4::word_graph::is_acyclic(wg));
     REQUIRE(!v4::word_graph::is_complete(wg));
-    REQUIRE(number_of_paths(wg, 1) == 511);
-    REQUIRE(number_of_paths_algorithm(wg, 1, 0, POSITIVE_INFINITY)
-            == paths::algorithm::acyclic);
-    REQUIRE(number_of_paths(wg, 1, 0, POSITIVE_INFINITY) == 511);
+    REQUIRE(v4::paths::count(wg, 1) == 511);
+    REQUIRE(v4::paths::count_algorithm(wg, 1, 0, POSITIVE_INFINITY)
+            == v4::paths::algorithm::acyclic);
+    REQUIRE(v4::paths::count(wg, 1, 0, POSITIVE_INFINITY) == 511);
     REQUIRE(v4::word_graph::topological_sort(wg).empty());
     REQUIRE(*std::find_if(wg.cbegin_nodes(), wg.cend_nodes(), [&wg](size_t m) {
       return v4::word_graph::topological_sort(wg, m).empty();
@@ -952,7 +954,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "017",
-                          "number_of_paths (matrix)",
+                          "v4::paths::count (matrix)",
                           "[quick][no-valgrind]") {
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto wg = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
@@ -970,14 +972,15 @@ namespace libsemigroups {
     Paths p(wg);
     p.order(Order::lex).source(0).min(0).max(10);
     REQUIRE((p | count()) == 16'997);
-    REQUIRE(number_of_paths_algorithm(wg, 0, 0, 10)
-            == paths::algorithm::matrix);
-    REQUIRE(number_of_paths(wg, 0, 0, 10) == 16'997);
-    REQUIRE_THROWS_AS(number_of_paths(wg, 1, 0, 10, paths::algorithm::trivial),
-                      LibsemigroupsException);
-    REQUIRE(number_of_paths_algorithm(wg, 0, 10, 12)
-            == paths::algorithm::matrix);
-    REQUIRE(number_of_paths(wg, 0, 10, 12) == 97'672);
+    REQUIRE(v4::paths::count_algorithm(wg, 0, 0, 10)
+            == v4::paths::algorithm::matrix);
+    REQUIRE(v4::paths::count(wg, 0, 0, 10) == 16'997);
+    REQUIRE_THROWS_AS(
+        v4::paths::count(wg, 1, 0, 10, v4::paths::algorithm::trivial),
+        LibsemigroupsException);
+    REQUIRE(v4::paths::count_algorithm(wg, 0, 10, 12)
+            == v4::paths::algorithm::matrix);
+    REQUIRE(v4::paths::count(wg, 0, 10, 12) == 97'672);
 
     auto checker1 = [&wg](word_type const& w) {
       return 10 <= w.size() && w.size() < 12
@@ -995,19 +998,19 @@ namespace libsemigroups {
     REQUIRE(distinct_words.size() == 35'300);
     REQUIRE((p | count()) == 35'300);
 
-    REQUIRE(number_of_paths_algorithm(wg, 1, 5, 0, 10)
-            == paths::algorithm::trivial);
-    REQUIRE(number_of_paths(wg, 1, 5, 0, 10) == 0);
+    REQUIRE(v4::paths::count_algorithm(wg, 1, 5, 0, 10)
+            == v4::paths::algorithm::trivial);
+    REQUIRE(v4::paths::count(wg, 1, 5, 0, 10) == 0);
 
     p.source(1).target(5).min(0).max(10);
     REQUIRE(0 == (p | count()));
-    REQUIRE(number_of_paths(wg, 1, 1, 0, 9) == 1404);
+    REQUIRE(v4::paths::count(wg, 1, 1, 0, 9) == 1404);
     REQUIRE_THROWS_AS(
-        number_of_paths(wg, 1, 1, 0, 10, paths::algorithm::trivial),
+        v4::paths::count(wg, 1, 1, 0, 10, v4::paths::algorithm::trivial),
         LibsemigroupsException);
 
     p.source(1).target(1).min(0).max(10);
-    REQUIRE(number_of_paths(wg, 1, 1, 0, 10)
+    REQUIRE(v4::paths::count(wg, 1, 1, 0, 10)
             == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
@@ -1018,7 +1021,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "018",
-                          "number_of_paths (matrix)",
+                          "v4::paths::count (matrix)",
                           "[quick]") {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
@@ -1026,10 +1029,11 @@ namespace libsemigroups {
     wg.target(0, 0, 1);
     wg.target(1, 0, 0);
 
-    REQUIRE(number_of_paths(
-                wg, 0, 1, 0, POSITIVE_INFINITY, paths::algorithm::matrix)
+    REQUIRE(v4::paths::count(
+                wg, 0, 1, 0, POSITIVE_INFINITY, v4::paths::algorithm::matrix)
             == POSITIVE_INFINITY);
-    REQUIRE(number_of_paths(wg, 0, 1, 0, 10, paths::algorithm::matrix) == 5);
+    REQUIRE(v4::paths::count(wg, 0, 1, 0, 10, v4::paths::algorithm::matrix)
+            == 5);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
@@ -1152,34 +1156,36 @@ namespace libsemigroups {
     REQUIRE(it == cend_pislo(wg));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Paths", "024", "number_of_paths", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Paths", "024", "v4::paths::count", "[quick]") {
     using namespace rx;
     auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
     size_t const N = 18;
 
-    REQUIRE(number_of_paths(wg, 0, 4, 0, N, paths::algorithm::dfs) == 262'134);
-    REQUIRE(number_of_paths(wg, 0, 4, 0, N, paths::algorithm::matrix)
+    REQUIRE(v4::paths::count(wg, 0, 4, 0, N, v4::paths::algorithm::dfs)
+            == 262'134);
+    REQUIRE(v4::paths::count(wg, 0, 4, 0, N, v4::paths::algorithm::matrix)
             == 262'134);
     REQUIRE_THROWS_AS(
-        number_of_paths(wg, 0, 4, 0, N, paths::algorithm::acyclic),
+        v4::paths::count(wg, 0, 4, 0, N, v4::paths::algorithm::acyclic),
         LibsemigroupsException);
     REQUIRE_THROWS_AS(
-        number_of_paths(wg, 0, 4, 0, N, paths::algorithm::trivial),
+        v4::paths::count(wg, 0, 4, 0, N, v4::paths::algorithm::trivial),
         LibsemigroupsException);
-    REQUIRE(number_of_paths_algorithm(wg, 0, 4, 0, N) == paths::algorithm::dfs);
+    REQUIRE(v4::paths::count_algorithm(wg, 0, 4, 0, N)
+            == v4::paths::algorithm::dfs);
 
-    REQUIRE(number_of_paths_algorithm(wg, 0, 1, 10)
-            == paths::algorithm::trivial);
+    REQUIRE(v4::paths::count_algorithm(wg, 0, 1, 10)
+            == v4::paths::algorithm::trivial);
 
-    REQUIRE(number_of_paths(wg, 0, 4, 10, N) == 261'628);
-    REQUIRE(number_of_paths(wg, 0, 4, 10, N) + number_of_paths(wg, 0, 4, 0, 9)
-            == number_of_paths(wg, 0, 4, 0, N));
-    REQUIRE(number_of_paths(wg, 4, 1, 0, N) == 0);
-    REQUIRE(number_of_paths(wg, 0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
+    REQUIRE(v4::paths::count(wg, 0, 4, 10, N) == 261'628);
+    REQUIRE(v4::paths::count(wg, 0, 4, 10, N) + v4::paths::count(wg, 0, 4, 0, 9)
+            == v4::paths::count(wg, 0, 4, 0, N));
+    REQUIRE(v4::paths::count(wg, 4, 1, 0, N) == 0);
+    REQUIRE(v4::paths::count(wg, 0, 0, POSITIVE_INFINITY) == POSITIVE_INFINITY);
 
-    REQUIRE(number_of_paths(wg, 0, 1, 10) == 2'046);
-    REQUIRE(number_of_paths(wg, 1, 0, 9) + number_of_paths(wg, 2, 0, 9)
+    REQUIRE(v4::paths::count(wg, 0, 1, 10) == 2'046);
+    REQUIRE(v4::paths::count(wg, 1, 0, 9) + v4::paths::count(wg, 2, 0, 9)
             == 2'046);
   }
 
