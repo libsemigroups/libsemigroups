@@ -5205,6 +5205,7 @@ namespace libsemigroups {
                           "126",
                           "reduce_no_run_no_checks on unstarted",
                           "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2).contains_empty_word(true);
 
@@ -5217,4 +5218,43 @@ namespace libsemigroups {
     REQUIRE(todd_coxeter::reduce_no_run_no_checks(tc, 0101_w) == 0101_w);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "127",
+                          "perf issue in class_by_index",
+                          "[quick]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "bbbb", "b");
+    presentation::add_rule(p, "bbbb", "b");
+    presentation::add_rule(p, "aaa", "a");
+    presentation::add_rule(p, "abab", "aa");
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+
+    auto c = todd_coxeter::class_by_index(tc, 0);
+    REQUIRE(
+        (c | rx::take(20) | rx::to_vector())
+        == std::vector<std::string>(
+            {"b",
+             "bbbb",
+             "bbbbbbb",
+             "bbbbbbbbbb",
+             "bbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}));
+  }
 }  // namespace libsemigroups
