@@ -56,12 +56,12 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
      private:
-      value_type             _edges;
-      WordGraph<Node> const* _word_graph;
       label_type             _edge;
+      value_type             _edges;
       size_t                 _min;
       size_t                 _max;
       std::vector<node_type> _nodes;
+      WordGraph<Node> const* _word_graph;
 
      public:
       const_pilo_iterator() noexcept;
@@ -243,13 +243,13 @@ namespace libsemigroups {
       // TODO(1) maybe try replacing _can_reach_target with std::unordered_set,
       // then we can use the output of ancestors_of directly
       std::vector<bool>      _can_reach_target;
-      value_type             _edges;
-      WordGraph<Node> const* _word_graph;
       label_type             _edge;
+      value_type             _edges;
       size_t                 _min;
       size_t                 _max;
       std::vector<node_type> _nodes;
       node_type              _target;
+      WordGraph<Node> const* _word_graph;
 
      public:
       const_pstilo_iterator() noexcept;
