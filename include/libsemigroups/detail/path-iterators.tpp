@@ -53,12 +53,7 @@ namespace libsemigroups {
                                                    Node      source,
                                                    size_type min,
                                                    size_type max)
-        : _edge(UNDEFINED),
-          _edges(),
-          _min(min),
-          _max(max),
-          _nodes(),
-          _word_graph(ptr) {
+        : _edge(0), _edges(), _min(min), _max(max), _nodes(), _word_graph(ptr) {
       _nodes.push_back(source);
       if (_min != 0) {
         ++(*this);
@@ -72,9 +67,6 @@ namespace libsemigroups {
     const_pilo_iterator<Node> const& const_pilo_iterator<Node>::operator++() {
       if (_nodes.empty()) {
         return *this;
-      } else if (_edge == UNDEFINED) {
-        // first call
-        _edge = 0;
       }
 
       do {
