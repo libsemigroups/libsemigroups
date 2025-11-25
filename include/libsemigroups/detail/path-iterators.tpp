@@ -145,11 +145,16 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
-    const_pislo_iterator<Node>::const_pislo_iterator() = default;
+    const_pislo_iterator<Node>::const_pislo_iterator() noexcept = default;
 
     template <typename Node>
     const_pislo_iterator<Node>::const_pislo_iterator(
         const_pislo_iterator const&)
+        = default;
+
+    template <typename Node>
+    const_pislo_iterator<Node>::const_pislo_iterator(
+        const_pislo_iterator&&) noexcept
         = default;
 
     template <typename Node>
@@ -159,11 +164,7 @@ namespace libsemigroups {
 
     template <typename Node>
     const_pislo_iterator<Node>&
-    const_pislo_iterator<Node>::operator=(const_pislo_iterator&&)
-        = default;
-
-    template <typename Node>
-    const_pislo_iterator<Node>::const_pislo_iterator(const_pislo_iterator&&)
+    const_pislo_iterator<Node>::operator=(const_pislo_iterator&&) noexcept
         = default;
 
     template <typename Node>
@@ -373,12 +374,17 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Node>
+    const_pstislo_iterator<Node>::const_pstislo_iterator() noexcept = default;
+
+    template <typename Node>
     const_pstislo_iterator<Node>::const_pstislo_iterator(
         const_pstislo_iterator const&)
         = default;
 
     template <typename Node>
-    const_pstislo_iterator<Node>::const_pstislo_iterator() = default;
+    const_pstislo_iterator<Node>::const_pstislo_iterator(
+        const_pstislo_iterator&&) noexcept
+        = default;
 
     template <typename Node>
     const_pstislo_iterator<Node>&
@@ -387,12 +393,7 @@ namespace libsemigroups {
 
     template <typename Node>
     const_pstislo_iterator<Node>&
-    const_pstislo_iterator<Node>::operator=(const_pstislo_iterator&&)
-        = default;
-
-    template <typename Node>
-    const_pstislo_iterator<Node>::const_pstislo_iterator(
-        const_pstislo_iterator&&)
+    const_pstislo_iterator<Node>::operator=(const_pstislo_iterator&&) noexcept
         = default;
 
     template <typename Node>

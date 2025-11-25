@@ -36,8 +36,6 @@
 #ifndef LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 #define LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 
-// TODO noexcept consistency on constructors
-
 namespace libsemigroups {
   namespace detail {
     ////////////////////////////////////////////////////////////////////////
@@ -162,11 +160,11 @@ namespace libsemigroups {
       // None of the constructors are noexcept because the corresponding
       // constructors for detail::const_pilo_iterator are not.
 
-      const_pislo_iterator();
+      const_pislo_iterator() noexcept;
       const_pislo_iterator(const_pislo_iterator const&);
-      const_pislo_iterator(const_pislo_iterator&&);
+      const_pislo_iterator(const_pislo_iterator&&) noexcept;
       const_pislo_iterator& operator=(const_pislo_iterator const&);
-      const_pislo_iterator& operator=(const_pislo_iterator&&);
+      const_pislo_iterator& operator=(const_pislo_iterator&&) noexcept;
 
       const_pislo_iterator(WordGraph<node_type> const* ptr,
                            node_type                   source,
@@ -350,11 +348,11 @@ namespace libsemigroups {
       size_type                           _num;
 
      public:
-      const_pstislo_iterator();
+      const_pstislo_iterator() noexcept;
       const_pstislo_iterator(const_pstislo_iterator const&);
-      const_pstislo_iterator(const_pstislo_iterator&&);
+      const_pstislo_iterator(const_pstislo_iterator&&) noexcept;
       const_pstislo_iterator& operator=(const_pstislo_iterator const&);
-      const_pstislo_iterator& operator=(const_pstislo_iterator&&);
+      const_pstislo_iterator& operator=(const_pstislo_iterator&&) noexcept;
 
       const_pstislo_iterator(WordGraph<node_type> const* ptr,
                              node_type                   source,
