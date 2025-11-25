@@ -214,9 +214,8 @@ namespace libsemigroups {
   }  // namespace
 
   TEST_CASE("const_pilo_iterator x 1", "[quick][000][pilo]") {
-    using node_type = size_t;
-    auto   wg       = test_word_graph();
-    size_t N        = 20;
+    auto   wg = test_word_graph();
+    size_t N  = 19;
 
     BENCHMARK("const_pilo_iterator") {
       std::vector<word_type> v(cbegin_pilo(wg, 0, 0, N), cend_pilo(wg));
@@ -224,25 +223,7 @@ namespace libsemigroups {
     };
 
     BENCHMARK("free function for comparison with const_pilo_iterator") {
-      std::pair<std::vector<word_type>, std::vector<node_type>> v
-          = paths_in_lex_order(wg, 0, 0, N);
-      REQUIRE(v.first.size() == 1'048'575);
-    };
-  }
-
-  TEST_CASE("const_pilo_iterator x 2", "[quick][001][pilo]") {
-    using node_type = size_t;
-    auto   wg       = test_word_graph();
-    size_t N        = 20;
-
-    BENCHMARK("const_pilo_iterator") {
-      std::vector<word_type> v(cbegin_pilo(wg, 0, 0, N), cend_pilo(wg));
-      REQUIRE(v.size() == 1'048'575);
-    };
-
-    BENCHMARK("free function for comparison with const_pilo_iterator") {
-      std::pair<std::vector<word_type>, std::vector<node_type>> v
-          = paths_in_lex_order(wg, 0, 0, N);
+      auto v = paths_in_lex_order(wg, 0, 0, N + 1);
       REQUIRE(v.first.size() == 1'048'575);
     };
   }
@@ -251,13 +232,14 @@ namespace libsemigroups {
     auto   wg = test_word_graph();
     size_t N  = 20;
 
-    BENCHMARK("const_pstilo_iterator") {
-      std::vector<word_type> v(cbegin_pstilo(wg, 0, 4, 0, N), cend_pstilo(wg));
+    BENCHMARK("free function for comparison with const_pstilo_iterator") {
+      std::vector<word_type> v = paths_in_lex_order2(wg, 0, 4, 0, N);
       REQUIRE(v.size() == 524'277);
     };
 
-    BENCHMARK("free function for comparison with const_pstilo_iterator") {
-      std::vector<word_type> v = paths_in_lex_order2(wg, 0, 4, 0, N);
+    BENCHMARK("const_pstilo_iterator") {
+      std::vector<word_type> v(cbegin_pstilo(wg, 0, 4, 0, N - 1),
+                               cend_pstilo(wg));
       REQUIRE(v.size() == 524'277);
     };
   }
@@ -265,11 +247,11 @@ namespace libsemigroups {
   TEST_CASE("number_of_paths", "[quick][003]") {
     auto wg = test_word_graph();
     BENCHMARK("number_of_paths (uses pstilo)") {
-      REQUIRE(number_of_paths(wg, 0, 4, 0, 24) == 8'388'595);
+      REQUIRE(v4::paths::count(wg, 0, 4, 0, 23) == 8'388'595);
     };
 
     BENCHMARK("number of paths (via pilo)") {
-      auto     first = cbegin_pilo(wg, 0, 0, 24);
+      auto     first = cbegin_pilo(wg, 0, 0, 23);
       auto     last  = cend_pilo(wg);
       uint64_t count = 0;
 
@@ -305,53 +287,33 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("const_pislo_iterator x 2", "[quick][005][pislo]") {
-    using node_type = size_t;
-    auto   wg       = test_word_graph();
-    size_t N        = 19;
-
-    BENCHMARK("const_pislo_iterator") {
-      std::vector<word_type> v(cbegin_pislo(wg, 0, 0, N), cend_pislo(wg));
-      REQUIRE(v.size() == 1'048'575);
-    };
-
-    BENCHMARK("free function for comparison with const_pislo_iterator") {
-      std::pair<std::vector<word_type>, std::vector<node_type>> v
-          = paths_in_shortlex_order(wg, 0, 0, N);
-      REQUIRE(v.first.size() == 1'048'575);
-    };
-
-    BENCHMARK("const_pilo_iterator for comparison with const_pislo_iterator") {
-      std::vector<word_type> v(cbegin_pilo(wg, 0, 0, N), cend_pilo(wg));
-      REQUIRE(v.size() == 1'048'575);
-    };
-  }
-
   TEST_CASE("const_pstislo_iterator", "[quick][006]") {
     auto   wg = test_word_graph();
     size_t N  = 20;
 
     BENCHMARK("const_pstislo_iterator") {
-      std::vector<word_type> v(cbegin_pstislo(wg, 0, 4, 0, N),
+      std::vector<word_type> v(cbegin_pstislo(wg, 0, 4, 0, N - 1),
                                cend_pstislo(wg));
       REQUIRE(v.size() == 524'277);
     };
 
     BENCHMARK(
         "const_pstilo_iterator for comparison with const_pstislo_iterator") {
-      std::vector<word_type> v(cbegin_pstilo(wg, 0, 4, 0, N), cend_pstilo(wg));
+      std::vector<word_type> v(cbegin_pstilo(wg, 0, 4, 0, N - 1),
+                               cend_pstilo(wg));
       REQUIRE(v.size() == 524'277);
     };
   }
 
   // Best with a sample size of 1
   TEST_CASE("number_of_paths matrix vs dfs", "[standard][007]") {
-    using algorithm = paths::algorithm;
+    using algorithm = v4::paths::algorithm;
     std::mt19937 mt;
     for (size_t M = 100; M < 1'000; M += 100) {
       std::uniform_int_distribution<size_t> source(0, M - 1);
       for (size_t N = 10; N < 20; N += 5) {
-        for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
+        for (size_t nr_edges = 0;
+             nr_edges <= v4::paths::detail::magic_number(M) * M;
              nr_edges += 500) {
           // TODO for v3 we remove the nr_edges parameter from
           // WordGraph::random, and so this benchmark doesn't really make sense
@@ -362,19 +324,19 @@ namespace libsemigroups {
           std::string m = std::to_string(wg.number_of_edges());
           size_t      w = source(mt);
           uint64_t    expected
-              = number_of_paths(wg, w, 0, 16, algorithm::automatic);
+              = v4::paths::count(wg, w, 0, 16, algorithm::automatic);
           BENCHMARK("algorithm::matrix: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(number_of_paths(wg, w, 0, 16, algorithm::matrix)
+            REQUIRE(v4::paths::count(wg, w, 0, 16, algorithm::matrix)
                     == expected);
           };
           BENCHMARK("algorithm::dfs: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(number_of_paths(wg, w, 0, 16, algorithm::dfs) == expected);
+            REQUIRE(v4::paths::count(wg, w, 0, 16, algorithm::dfs) == expected);
           };
           BENCHMARK("algorithm::automatic: " + std::to_string(M) + " nodes, "
                     + std::to_string(N) + " out-degree, " + m + " edges") {
-            REQUIRE(number_of_paths(wg, w, 0, 16, algorithm::automatic)
+            REQUIRE(v4::paths::count(wg, w, 0, 16, algorithm::automatic)
                     == expected);
           };
           std::cout << std::endl << std::string(72, '#') << std::endl;
