@@ -73,17 +73,29 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! using namespace libsemigroups;
-  //! freeband_equal_to({0, 1, 2, 3, 2, 1, 0},
-  //!                   {0, 1, 2, 3, 2, 3, 2, 1, 0}); // true
-  //! freeband_equal_to({1, 2, 3}, {0, 1, 2}); // false
-  //! freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10}); // true
-  //! freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
-  //!                   {4, 3, 2, 1, 0, 4, 3, 2, 1, 0}); // false
-  //! freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2}); // true
-  //! freeband_equal_to({0, 1, 2, 3, 0, 1},
+  //!
+  //! bool example = freeband_equal_to({0, 1, 2, 3, 2, 1, 0},
+  //!                   {0, 1, 2, 3, 2, 3, 2, 1, 0});
+  //! example; //-> true
+  //!
+  //! example = freeband_equal_to({1, 2, 3}, {0, 1, 2});
+  //! example; //-> false
+  //!
+  //! example = freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10});
+  //! example; //-> true
+  //!
+  //! example = freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
+  //!                   {4, 3, 2, 1, 0, 4, 3, 2, 1, 0});
+  //! example; //-> false
+  //!
+  //! example = freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2});
+  //! example; //-> true
+  //!
+  //! example = freeband_equal_to({0, 1, 2, 3, 0, 1},
   //!                   {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
   //!                    0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
-  //!                    0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1}); // true
+  //!                    0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1});
+  //! example; //-> true
   //! \endcode
   bool freeband_equal_to(word_type const& x, word_type const& y);
 

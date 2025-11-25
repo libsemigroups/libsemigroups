@@ -90,17 +90,29 @@ namespace libsemigroups {
   // freeband.hpp: Line 75
   LIBSEMIGROUPS_TEST_CASE("docs", "003", "freeband.hpp", "[docs][quick]") {
     using namespace libsemigroups;
-    freeband_equal_to({0, 1, 2, 3, 2, 1, 0},
-                      {0, 1, 2, 3, 2, 3, 2, 1, 0});               // true
-    freeband_equal_to({1, 2, 3}, {0, 1, 2});                      // false
-    freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10});  // true
-    freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
-                      {4, 3, 2, 1, 0, 4, 3, 2, 1, 0});    // false
-    freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2});  // true
-    freeband_equal_to({0, 1, 2, 3, 0, 1},
-                      {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
-                       0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
-                       0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1});  // true
+
+    bool example
+        = freeband_equal_to({0, 1, 2, 3, 2, 1, 0}, {0, 1, 2, 3, 2, 3, 2, 1, 0});
+    REQUIRE(example == true);
+
+    example = freeband_equal_to({1, 2, 3}, {0, 1, 2});
+    REQUIRE(example == false);
+
+    example = freeband_equal_to({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10});
+    REQUIRE(example == true);
+
+    example = freeband_equal_to({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},
+                                {4, 3, 2, 1, 0, 4, 3, 2, 1, 0});
+    REQUIRE(example == false);
+
+    example = freeband_equal_to({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2});
+    REQUIRE(example == true);
+
+    example = freeband_equal_to({0, 1, 2, 3, 0, 1},
+                                {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,
+                                 0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,
+                                 0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1});
+    REQUIRE(example == true);
   }
 
   // froidure-pin-base.hpp: Line 1338
@@ -518,7 +530,7 @@ namespace libsemigroups {
         .max(5);                 // to 5
   }
 
-  // word-range.hpp: Line 760
+  // word-range.hpp: Line 761
   LIBSEMIGROUPS_TEST_CASE("docs", "037", "word-range.hpp", "[docs][quick]") {
     ToWord toword("bac");
     REQUIRE(toword("bac") == 012_w);
@@ -528,7 +540,7 @@ namespace libsemigroups {
     REQUIRE(toword("bac") == 102_w);
   }
 
-  // word-range.hpp: Line 1049
+  // word-range.hpp: Line 1050
   LIBSEMIGROUPS_TEST_CASE("docs", "038", "word-range.hpp", "[docs][quick]") {
     using rx::  operator|;
     StringRange strings;
@@ -542,7 +554,7 @@ namespace libsemigroups {
     //  0001_w}));
   }
 
-  // word-range.hpp: Line 1150
+  // word-range.hpp: Line 1151
   LIBSEMIGROUPS_TEST_CASE("docs", "039", "word-range.hpp", "[docs][quick]") {
     ToString tostring("bac");
     REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
@@ -552,7 +564,7 @@ namespace libsemigroups {
     REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
   }
 
-  // word-range.hpp: Line 1401
+  // word-range.hpp: Line 1402
   LIBSEMIGROUPS_TEST_CASE("docs", "040", "word-range.hpp", "[docs][quick]") {
     using rx::operator|;
     WordRange words;
@@ -564,7 +576,7 @@ namespace libsemigroups {
     // "aaaaaaaa", "aaaaaaaaa"};
   }
 
-  // word-range.hpp: Line 1599
+  // word-range.hpp: Line 1600
   LIBSEMIGROUPS_TEST_CASE("docs", "041", "word-range.hpp", "[docs][quick]") {
     StringRange strings;
     strings
@@ -574,7 +586,7 @@ namespace libsemigroups {
         .max(5);                 // to 5
   }
 
-  // word-range.hpp: Line 2310
+  // word-range.hpp: Line 2311
   LIBSEMIGROUPS_TEST_CASE("docs", "042", "word-range.hpp", "[docs][quick]") {
     using namespace words;
     word_type w = 012345_w;
