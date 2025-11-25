@@ -99,7 +99,7 @@ namespace libsemigroups::v4::paths {
       uint64_t const N     = wg.number_of_nodes();
       auto           acc   = matrix::pow(am, min);
       uint64_t       total = 0;
-      for (size_t i = min; i < max; ++i) {
+      for (size_t i = min; i <= max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
                                        acc.cbegin() + source * N + N,
                                        static_cast<uint64_t>(0));
