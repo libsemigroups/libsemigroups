@@ -125,11 +125,18 @@ namespace libsemigroups {
   //!
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
-  //
+  //!
+  //! \tparam Node the type of the nodes in \p wg.
+  //!
+  //! \param wg the WordGraph (used to resolve the template parameter \p Node).
+  //!
+  //! \returns An iterator point one beyond the last path in \p wg.
+  //!
   //! \sa cbegin_pilo
   // not noexcept because constructors of const_pilo_iterator aren't
   template <typename Node>
-  [[nodiscard]] auto cend_pilo(WordGraph<Node> const&) {
+  [[nodiscard]] auto cend_pilo(WordGraph<Node> const& wg) {
+    (void) wg;
     return detail::const_pilo_iterator<Node>();
   }
 
@@ -197,11 +204,18 @@ namespace libsemigroups {
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
   //!
+  //! \tparam Node the type of the nodes in \p wg.
+  //!
+  //! \param wg the WordGraph (used to resolve the template parameter \p Node).
+  //!
+  //! \returns An iterator point one beyond the last path in \p wg.
+  //!
+  //!
   //! \sa cbegin_pislo
   // not noexcept because detail::const_pislo_iterator constructors aren't
-  // TODO deprecate the 1 arg version and just give no args
   template <typename Node>
-  [[nodiscard]] auto cend_pislo(WordGraph<Node> const&) {
+  [[nodiscard]] auto cend_pislo(WordGraph<Node> const& wg) {
+    (void) wg;
     return detail::const_pislo_iterator<Node>();
   }
 
@@ -225,10 +239,10 @@ namespace libsemigroups {
   //!        \ref POSITIVE_INFINITY).
   //!
   //! \returns
-  //! An iterator \c it of type \c detail::const_pstilo_iterator pointing to a
-  //! \ref word_type consisting of the edge labels of the first
-  //! path (in lexicographical order) from the node \p source to the node
-  //! \p target with length in the range \f$[min, max)\f$ (if any).
+  //! An iterator \c it pointing to a \ref word_type consisting of the edge
+  //! labels of the first path (in lexicographical order) from the node
+  //! \p source to the node \p target with length in the range \f$[min, max)\f$
+  //! (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node
   //! in the word graph.
@@ -268,11 +282,17 @@ namespace libsemigroups {
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
   //!
+  //! \tparam Node the type of the nodes in \p wg.
+  //!
+  //! \param wg the WordGraph (used to resolve the template parameter \p Node).
+  //!
+  //! \returns An iterator point one beyond the last path in \p wg.
+  //!
   //! \sa cbegin_pstilo
   // not noexcept because detail::const_pstilo_iterator constructors aren't
   template <typename Node>
-  [[nodiscard]] auto cend_pstilo(WordGraph<Node> const&) {
-    // TODO deprecate the one arg version and implement the 0-arg version
+  [[nodiscard]] auto cend_pstilo(WordGraph<Node> const& wg) {
+    (void) wg;
     return detail::const_pstilo_iterator<Node>();
   }
 
@@ -343,11 +363,17 @@ namespace libsemigroups {
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
   //!
+  //! \tparam Node the type of the nodes in \p wg.
+  //!
+  //! \param wg the WordGraph (used to resolve the template parameter \p Node).
+  //!
+  //! \returns An iterator point one beyond the last path in \p wg.
+  //!
   //! \sa cbegin_pstislo
   // not noexcept because cend_pislo isn't
   template <typename Node>
   [[nodiscard]] auto cend_pstislo(WordGraph<Node> const& wg) {
-    // TODO deprecate the one arg version and implement the 0-arg version
+    (void) wg;
     return detail::const_pstislo_iterator<Node>();
   }
 
