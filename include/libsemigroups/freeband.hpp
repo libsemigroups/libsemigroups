@@ -72,8 +72,6 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! using namespace libsemigroups;
-  //!
   //! bool example = freeband_equal_to({0, 1, 2, 3, 2, 1, 0},
   //!                   {0, 1, 2, 3, 2, 3, 2, 1, 0});
   //! example; //-> true

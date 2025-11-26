@@ -29,6 +29,10 @@ HEADER_TEXT = """// libsemigroups - C++ library for semigroups and monoids
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wunused-result"
+
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "libsemigroups/libsemigroups.hpp"  // for *
 #include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
@@ -187,8 +191,7 @@ def extract_code_blocks(file_path):
 
                         #  Add require value eq
                         current_block.append(
-                            f"  REQUIRE({function_call} == {
-                                function_returns});"
+                            f"  REQUIRE({function_call} == {function_returns});"
                         )
                         continue
 
@@ -197,8 +200,7 @@ def extract_code_blocks(file_path):
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(
-                    f"Warning: Unclosed code block at end of file {file_path}")
+                __error(f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
@@ -287,6 +289,9 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
             # Close namespace
             testfile.write("\n}  // namespace libsemigroups\n")
+
+            #  Pragma Pop
+            testfile.write("#pragma GCC diagnostic pop\n")
     except IOError as e:
         print(f"Could not write to test file: {e}")
 

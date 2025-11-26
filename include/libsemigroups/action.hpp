@@ -56,7 +56,6 @@ namespace libsemigroups {
   //! See also ImageLeftAction and ImageRightAction.
   //!
   //! \code
-  //! using namespace libsemigroups;
   //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
   //! o;
   //! o.add_seed(PPerm<16>::one(16));
@@ -139,7 +138,6 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! using namespace libsemigroups;
   //! auto rg = ReportGuard(true);
   //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
   //! o;

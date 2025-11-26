@@ -15,6 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wunused-result"
+
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "libsemigroups/libsemigroups.hpp"  // for *
 #include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
@@ -27,7 +31,6 @@ namespace libsemigroups {
                           "000",
                           "./include/libsemigroups/action.hpp:59",
                           "[docs][quick]") {
-    using namespace libsemigroups;
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
@@ -50,12 +53,11 @@ namespace libsemigroups {
     REQUIRE(o.size() == 65536);
   }
 
-  // action.hpp: Line 142
+  // action.hpp: Line 141
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "001",
-                          "./include/libsemigroups/action.hpp:142",
+                          "./include/libsemigroups/action.hpp:141",
                           "[docs][quick]") {
-    using namespace libsemigroups;
     auto rg = ReportGuard(true);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
@@ -101,8 +103,6 @@ namespace libsemigroups {
                           "003",
                           "./include/libsemigroups/freeband.hpp:75",
                           "[docs][quick]") {
-    using namespace libsemigroups;
-
     bool example
         = freeband_equal_to({0, 1, 2, 3, 2, 1, 0}, {0, 1, 2, 3, 2, 3, 2, 1, 0});
     REQUIRE(example == true);
@@ -244,7 +244,6 @@ namespace libsemigroups {
                           "009",
                           "./include/libsemigroups/konieczny.hpp:69",
                           "[docs][quick]") {
-    using namespace libsemigroups;
     auto S = make<Konieczny>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -705,3 +704,4 @@ namespace libsemigroups {
   }
 
 }  // namespace libsemigroups
+#pragma GCC diagnostic pop
