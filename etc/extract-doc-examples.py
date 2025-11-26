@@ -187,7 +187,8 @@ def extract_code_blocks(file_path):
 
                         #  Add require value eq
                         current_block.append(
-                            f"  REQUIRE({function_call} == {function_returns});"
+                            f"  REQUIRE({function_call} == {
+                                function_returns});"
                         )
                         continue
 
@@ -196,7 +197,8 @@ def extract_code_blocks(file_path):
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(f"Warning: Unclosed code block at end of file {file_path}")
+                __error(
+                    f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
@@ -272,9 +274,9 @@ def process_folder(folder_path, recursive=False, exclude=[]):
                                 block["start_line"]
                             }\nLIBSEMIGROUPS_TEST_CASE("docs", "{
                                 "{:03}".format(total_blocks)
-                            }", "{
+                            }", "./include/libsemigroups/{
                                 file_path.relative_to(folder)
-                            }", "[docs][quick]") {{\n'
+                            }:{block["start_line"]}", "[docs][quick]") {{\n'
                         )
                         if block["content"].strip():
                             testfile.write("    " + block["content"])
