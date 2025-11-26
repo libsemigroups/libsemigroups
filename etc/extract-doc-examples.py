@@ -162,7 +162,6 @@ def extract_code_blocks(file_path):
                     continue
 
                 if in_code_block:
-
                     # If line contains non-executable statements,
                     # skip this block.
                     if "\\skip-test" in line:
@@ -188,8 +187,7 @@ def extract_code_blocks(file_path):
 
                         #  Add require value eq
                         current_block.append(
-                            f"  REQUIRE({function_call} == {
-                                function_returns});"
+                            f"  REQUIRE({function_call} == {function_returns});"
                         )
                         continue
 
@@ -198,8 +196,7 @@ def extract_code_blocks(file_path):
 
             # discard unclosed code blocks
             if in_code_block and current_block:
-                __error(
-                    f"Warning: Unclosed code block at end of file {file_path}")
+                __error(f"Warning: Unclosed code block at end of file {file_path}")
 
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
@@ -286,7 +283,8 @@ def process_folder(folder_path, recursive=False, exclude=[]):
                         testfile.write("\n}\n\n")
                         total_blocks += 1
 
-            testfile.write("\n}")  # Close namespace
+            # Close namespace
+            testfile.write("\n}  // namespace libsemigroups\n")
     except IOError as e:
         print(f"Could not write to test file: {e}")
 
@@ -356,7 +354,7 @@ def main():
         exclude.append(args.exclude)
 
     process_folder(args.folder_path, args.recursive, exclude)
-    format_file(TEST_FILEPATH)
+    #  format_file(TEST_FILEPATH)
     print("\n Docs code block extraction completed successfully. Exiting.")
 
 
