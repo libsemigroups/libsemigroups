@@ -23,7 +23,7 @@
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
 
-#include <algorithm>  // for std::find_if
+#include <algorithm>  // for std::find_if, std::lexicographical_compare
 #include <cstddef>    // for size_t
 #include <numeric>    // for accumulate
 #include <vector>     // for vector
@@ -1043,10 +1043,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool wt_lex_compare_no_checks(T const&                   first1,
-                                 T const&                   last1,
-                                 T const&                   first2,
-                                 T const&                   last2,
-                                 std::vector<size_t> const& weights) {
+                                T const&                   last1,
+                                T const&                   first2,
+                                T const&                   last2,
+                                std::vector<size_t> const& weights) {
     size_t weight1 = std::accumulate(
         first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
           return sum + weights[letter];
@@ -1105,8 +1105,8 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool wt_lex_compare_no_checks(T const&                   x,
-                                 T const&                   y,
-                                 std::vector<size_t> const& weights) {
+                                T const&                   y,
+                                std::vector<size_t> const& weights) {
     return wt_lex_compare_no_checks(
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
@@ -1152,8 +1152,8 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename T>
   bool wt_lex_compare_no_checks(T* const                   x,
-                                 T* const                   y,
-                                 std::vector<size_t> const& weights) {
+                                T* const                   y,
+                                std::vector<size_t> const& weights) {
     return wt_lex_compare_no_checks(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -1275,8 +1275,7 @@ namespace libsemigroups {
   bool wt_lex_compare(T const&                   x,
                       T const&                   y,
                       std::vector<size_t> const& weights) {
-    return wt_lex_compare(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+    return wt_lex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
 
   //! \brief Compare two objects via their pointers using
