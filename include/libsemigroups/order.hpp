@@ -589,8 +589,8 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
-  //! and \p first1, and \f$m\f$ is the distance between \p last2 and \p
-  //! first2.
+  //! and \p first1, and \f$m\f$ is the distance between \p last2 and
+  //! \p first2.
   //!
   //! \warning
   //! It is not checked that the letters in the ranges are valid indices into
@@ -750,8 +750,8 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
-  //! and \p first1, and \f$m\f$ is the distance between \p last2 and \p
-  //! first2.
+  //! and \p first1, and \f$m\f$ is the distance between \p last2 and
+  //! \p first2.
   //!
   //! \sa
   //! \ref wt_shortlex_compare_no_checks(T const&, T const&, T const&, T const&,
@@ -796,9 +796,9 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects of the same type using \ref
-  //! wt_shortlex_compare, where the ith index of the weights vector corresponds
-  //! to the weight of the ith letter in the alphabet.
+  //! This function compares two objects of the same type using
+  //! \ref wt_shortlex_compare, where the ith index of the weights vector
+  //! corresponds to the weight of the ith letter in the alphabet.
   //!
   //! After checking that all letters in both objects are valid indices into
   //! the weights vector, this function performs the same as
@@ -842,9 +842,9 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects via their pointers using \ref
-  //! wt_shortlex_compare, where the ith index of the weights vector corresponds
-  //! to the weight of the ith letter in the alphabet.
+  //! This function compares two objects via their pointers using
+  //! \ref wt_shortlex_compare, where the ith index of the weights vector
+  //! corresponds to the weight of the ith letter in the alphabet.
   //!
   //! After checking that all letters are valid indices into the weights
   //! vector, this function performs the same as
