@@ -23,7 +23,7 @@
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
 
-#include <algorithm>  // for std::find_if
+#include <algorithm>  // for std::find_if, std::lexicographical_compare
 #include <cstddef>    // for size_t
 #include <numeric>    // for accumulate
 #include <vector>     // for vector
@@ -995,6 +995,447 @@ namespace libsemigroups {
     template <typename T>
     bool call_checks(T const& x, T const& y) const {
       return wt_shortlex_compare(x, y, _weights);
+    }
+
+   private:
+    std::vector<size_t> _weights;
+    bool                _should_check;
+  };
+
+  //! \brief Compare two objects of the same type using the weighted lex
+  //! ordering without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using the weighted
+  //! lex ordering. The weight of a word is computed by adding up the
+  //! weights of the letters in the word, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
+  //! Heavier words come later in the ordering than all lighter words. Amongst
+  //! words of equal weight, lexicographic ordering is used.
+  //!
+  //! \tparam T the type of iterators to the first object to be compared.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //! \param weights the weights vector.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! weighted lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \exceptions
+  //! Throws if std::lexicographical_compare does.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
+  //! and \p first1, and \f$m\f$ is the distance between \p last2 and \p
+  //! first2.
+  //!
+  //! \warning
+  //! It is not checked that the letters in the ranges are valid indices into
+  //! the weights vector.
+  //!
+  //! \sa
+  //! \ref wt_lex_compare(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wt_lex_compare_no_checks(T const&                   first1,
+                                T const&                   last1,
+                                T const&                   first2,
+                                T const&                   last2,
+                                std::vector<size_t> const& weights) {
+    size_t weight1 = std::accumulate(
+        first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
+          return sum + weights[letter];
+        });
+
+    size_t weight2 = std::accumulate(
+        first2, last2, size_t(0), [&weights](size_t sum, auto letter) {
+          return sum + weights[letter];
+        });
+
+    if (weight1 != weight2) {
+      return weight1 < weight2;
+    }
+
+    return std::lexicographical_compare(first1, last1, first2, last2);
+  }
+
+  //! \brief Compare two objects of the same type using
+  //! \ref wt_lex_compare_no_checks without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using
+  //! \ref wt_lex_compare_no_checks, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //! \param weights the weights vector.
+  //!
+  //! \returns The boolean value \c true if \p x is weighted lex less
+  //! than \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref wt_lex_compare_no_checks(T const&, T const&, T const&, T
+  //! const&, std::vector<size_t> const&).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
+  //! is the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wt_lex_compare_no_checks(
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //! \endcode
+  //!
+  //! \warning
+  //! It is not checked that the letters in \p x and \p y are valid indices
+  //! into the weights vector.
+  //!
+  //! \sa
+  //! \ref wt_lex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wt_lex_compare_no_checks(T const&                   x,
+                                T const&                   y,
+                                std::vector<size_t> const& weights) {
+    return wt_lex_compare_no_checks(
+        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  }
+
+  //! \brief Compare two objects via their pointers using
+  //! \ref wt_lex_compare_no_checks without checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects via their pointers using
+  //! \ref wt_lex_compare_no_checks, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //! \param weights the weights vector.
+  //!
+  //! \returns The boolean value \c true if \p x points to a word weighted
+  //! lex less than the word pointed to by \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref wt_lex_compare_no_checks(T const&, T const&, T const&, T
+  //! const&, std::vector<size_t> const&).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
+  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wt_lex_compare_no_checks(
+  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  //! \endcode
+  //!
+  //! \warning
+  //! It is not checked that the letters are valid indices into the weights
+  //! vector.
+  //!
+  //! \sa
+  //! \ref wt_lex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
+  template <typename T>
+  bool wt_lex_compare_no_checks(T* const                   x,
+                                T* const                   y,
+                                std::vector<size_t> const& weights) {
+    return wt_lex_compare_no_checks(
+        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  }
+
+  //! \brief Compare two objects of the same type using the weighted lex
+  //! ordering and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using the weighted
+  //! lex ordering. The weight of a word is computed by adding up the
+  //! weights of the letters in the word, where the ith index of the weights
+  //! vector corresponds to the weight of the ith letter in the alphabet.
+  //! Heavier words come later in the ordering than all lighter words. Amongst
+  //! words of equal weight, lexicographic ordering is used.
+  //!
+  //! After checking that all letters in both ranges are valid indices into
+  //! the weights vector, this function performs the same as
+  //! `wt_lex_compare_no_checks(first1, last1, first2, last2, weights)`.
+  //!
+  //! \tparam T the type of iterators to the first object to be compared.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //! \param weights the weights vector.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! weighted lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in either range is not a
+  //! valid index into the weights vector (i.e., if any letter is greater
+  //! than or equal to `weights.size()`).
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the distance between \p last1
+  //! and \p first1, and \f$m\f$ is the distance between \p last2 and \p
+  //! first2.
+  //!
+  //! \sa
+  //! \ref wt_lex_compare_no_checks(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wt_lex_compare(T const&                   first1,
+                      T const&                   last1,
+                      T const&                   first2,
+                      T const&                   last2,
+                      std::vector<size_t> const& weights) {
+    size_t const alphabet_size = weights.size();
+
+    auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
+      return static_cast<size_t>(letter) >= alphabet_size;
+    });
+    if (it1 != last1) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "letter value out of bounds, expected value in [0, {}), found {} in "
+          "position {}",
+          alphabet_size,
+          static_cast<size_t>(*it1),
+          std::distance(first1, it1));
+    }
+
+    auto const it2 = std::find_if(first2, last2, [&alphabet_size](auto letter) {
+      return static_cast<size_t>(letter) >= alphabet_size;
+    });
+    if (it2 != last2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "letter value out of bounds, expected value in [0, {}), found {} in "
+          "position {}",
+          alphabet_size,
+          static_cast<size_t>(*it2),
+          std::distance(first2, it2));
+    }
+
+    return wt_lex_compare_no_checks(first1, last1, first2, last2, weights);
+  }
+
+  //! \brief Compare two objects of the same type using \ref wt_lex_compare
+  //! and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using \ref
+  //! wt_lex_compare, where the ith index of the weights vector corresponds
+  //! to the weight of the ith letter in the alphabet.
+  //!
+  //! After checking that all letters in both objects are valid indices into
+  //! the weights vector, this function performs the same as
+  //! `wt_lex_compare_no_checks(x, y, weights)`.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //! \param weights the weights vector.
+  //!
+  //! \returns The boolean value \c true if \p x is weighted lex less
+  //! than \p y, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter in \p x or \p y is not a
+  //! valid index into the weights vector.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of \p x and \f$m\f$
+  //! is the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wt_lex_compare(
+  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  //! \endcode
+  //!
+  //! \sa
+  //! \ref wt_lex_compare(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  bool wt_lex_compare(T const&                   x,
+                      T const&                   y,
+                      std::vector<size_t> const& weights) {
+    return wt_lex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+  }
+
+  //! \brief Compare two objects via their pointers using
+  //! \ref wt_lex_compare and check validity.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects via their pointers using \ref
+  //! wt_lex_compare, where the ith index of the weights vector corresponds
+  //! to the weight of the ith letter in the alphabet.
+  //!
+  //! After checking that all letters are valid indices into the weights
+  //! vector, this function performs the same as
+  //! `wt_lex_compare_no_checks(x, y, weights)`.
+  //!
+  //! \tparam T the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //! \param weights the weights vector.
+  //!
+  //! \returns The boolean value \c true if \p x points to a word weighted
+  //! lex less than the word pointed to by \p y, and \c false otherwise.
+  //!
+  //! \throws LibsemigroupsException if any letter is not a valid index into
+  //! the weights vector.
+  //!
+  //! \complexity
+  //! At most \f$O(n + m)\f$ where \f$n\f$ is the length of the word pointed
+  //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code
+  //! wt_lex_compare(
+  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  //! \endcode
+  //!
+  //! \sa
+  //! \ref wt_lex_compare(T const&, T const&, T const&, T const&,
+  //! std::vector<size_t> const&).
+  template <typename T>
+  bool wt_lex_compare(T* const                   x,
+                      T* const                   y,
+                      std::vector<size_t> const& weights) {
+    return wt_lex_compare(
+        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+  }
+
+  //! \brief A stateful struct with binary call operator using
+  //! \ref wt_lex_compare or \ref wt_lex_compare_no_checks.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateful struct with binary call operator using
+  //! \ref wt_lex_compare or \ref wt_lex_compare_no_checks,
+  //! depending on the value of should_check. This struct stores a copy of a
+  //! weights vector and can be used as a template parameter for standard
+  //! library containers or algorithms that require a comparison functor.
+  //!
+  //! \warning
+  //! When should_check is false, the call operator does not check that letters
+  //! are valid indices into the weights vector. Use the constructor with
+  //! should_check set to `WtLexCompare::doCheck`, or call the call_checks
+  //! member function, to enable validation.
+  //!
+  //! \sa
+  //! wt_lex_compare(T const&, T const&, std::vector<size_t> const&)
+  //! wt_lex_compare_no_checks(T const&, T const&, std::vector<size_t>
+  //! const&)
+  struct WtLexCompare {
+    //! \brief Constant to enable validity checks.
+    static constexpr bool doCheck = true;
+
+    //! \brief Constant to disable validity checks.
+    static constexpr bool noCheck = false;
+
+    //! \brief Construct from weights vector reference and specify should_check.
+    //!
+    //! Constructs a comparison object that stores a copy of the provided
+    //! weights vector, where the ith index corresponds to the weight of the
+    //! ith letter in the alphabet. The should_check parameter determines
+    //! whether the call operator will validate that letters are valid indices.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if true, the call operator will check validity; if
+    //! false, it will not.
+    WtLexCompare(std::vector<size_t> const& weights, bool should_check)
+        : _weights(weights), _should_check(should_check) {}
+
+    //! \brief Construct from weights vector by rvalue and specify should_check.
+    //!
+    //! Constructs a comparison object that takes ownership of the provided
+    //! weights vector, where the ith index corresponds to the weight of the
+    //! ith letter in the alphabet. The should_check parameter determines
+    //! whether the call operator will validate that letters are valid indices.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if true, the call operator will check validity; if
+    //! false, it will not.
+    WtLexCompare(std::vector<size_t>&& weights, bool should_check)
+        : _weights(std::move(weights)), _should_check(should_check) {}
+
+    //! \brief Call operator that compares \p x and \p y using either
+    //! \ref wt_lex_compare or \ref wt_lex_compare_no_checks.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref wt_lex_compare (if should_check is true) or
+    //! \ref wt_lex_compare_no_checks (if should_check is false).
+    //!
+    //! \tparam T the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if should_check is true and any letter
+    //! is not a valid index into the weights vector.
+    //!
+    //! \complexity
+    //! See wt_lex_compare(T const&, T const&, T const&, T const&,
+    //! std::vector<size_t> const&) or wt_lex_compare_no_checks(T const&,
+    //! T const&, T const&, T const&, std::vector<size_t> const&).
+    //!
+    //! \warning
+    //! If should_check is false, it is not checked that the letters are valid
+    //! indices into the weights vector.
+    template <typename T>
+    bool operator()(T const& x, T const& y) const {
+      if (_should_check) {
+        return wt_lex_compare(x, y, _weights);
+      } else {
+        return wt_lex_compare_no_checks(x, y, _weights);
+      }
+    }
+
+    //! \brief Call operator that always performs validity checks.
+    //!
+    //! This member function always uses \ref wt_lex_compare to compare
+    //! \p x and \p y, regardless of the value of should_check. Use this when
+    //! you want to ensure validation is performed.
+    //!
+    //! \tparam T the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is weighted lex less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if any letter is not a valid index
+    //! into the weights vector.
+    //!
+    //! \complexity
+    //! See wt_lex_compare(T const&, T const&, T const&, T const&,
+    //! std::vector<size_t> const&).
+    template <typename T>
+    bool call_checks(T const& x, T const& y) const {
+      return wt_lex_compare(x, y, _weights);
     }
 
    private:
