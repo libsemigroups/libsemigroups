@@ -508,7 +508,7 @@ namespace libsemigroups {
   //! \param y pointer to the second object for comparison.
   //!
   //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with respect to the recursive path
+  //! than the value pointed to by \p y with r to the recursive path
   //! ordering, and \c false otherwise.
   //!
   //! \exceptions
@@ -655,6 +655,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -702,6 +703,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
@@ -827,6 +829,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -873,6 +876,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
@@ -1097,6 +1101,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -1144,6 +1149,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
@@ -1269,6 +1275,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -1314,6 +1321,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
