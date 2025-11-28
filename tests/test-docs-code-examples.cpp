@@ -432,7 +432,7 @@ namespace libsemigroups {
     auto      wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
     Paths     p(wg);
     p.source(0).max(10);
-    REQUIRE(p.count() == 1023);
+    REQUIRE(p.count() == 2047);
     (p | Random()).get();
   }
 

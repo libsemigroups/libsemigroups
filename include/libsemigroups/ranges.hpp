@@ -88,7 +88,7 @@ namespace libsemigroups {
   //! auto wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
   //! Paths p(wg);
   //! p.source(0).max(10);
-  //! p.count();            //-> 1023
+  //! p.count();            //-> 2047
   //! (p | Random()).get();
   //! \endcode
   // TODO(2) this should be able to emit any number of random items not only
