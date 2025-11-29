@@ -28,8 +28,11 @@
 #include "libsemigroups/exception.hpp"      // for LibsemigroupsException
 #include "libsemigroups/order.hpp"          // for wt_shortlex_compare*
 #include "libsemigroups/types.hpp"          // for word_type
+#include "libsemigroups/word-range.hpp"     // for operator ""_w
 
 namespace libsemigroups {
+
+  using namespace literals;
 
   // =========================================================================
   // Basic functionality - wt_shortlex_compare_no_checks
@@ -570,4 +573,31 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
+  // =========================================================================
+  // Recursive Path Compare
+  // =========================================================================
+
+  LIBSEMIGROUPS_TEST_CASE("recursive_path_compare",
+                          "034",
+                          "empty word",
+                          "[quick][order]") {
+    word_type w1(12_w);
+    word_type w2{};
+
+    REQUIRE(!recursive_path_compare(w1, w1));
+    REQUIRE(recursive_path_compare(w2, w1));
+    REQUIRE(!recursive_path_compare(w1, w2));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RecursivePathCompare",
+                          "035",
+                          "empty word",
+                          "[quick][order]") {
+    word_type w1(12_w);
+    word_type w2{};
+
+    REQUIRE(!RecursivePathCompare{}(w1, w1));
+    REQUIRE(RecursivePathCompare{}(w2, w1));
+    REQUIRE(!RecursivePathCompare{}(w1, w2));
+  }
 }  // namespace libsemigroups
