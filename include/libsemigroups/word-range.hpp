@@ -759,11 +759,11 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //! ToWord toword("bac");
-    //! toword("bac");        // returns {0, 1, 2}
-    //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
+    //! toword("bac");       //-> 012_w
+    //! toword("bababbbcbc");//-> 0101000202_w
     //!
     //! toword.init();
-    //! toword("bac");        // returns {1, 0, 2}
+    //! toword("bac");        //-> 102_w
     //! \endcode
     // TODO (later) a version that takes a word_type, so that we can permute the
     // letters in a word
@@ -1047,6 +1047,7 @@ namespace libsemigroups {
       //!
       //! \par Example
       //! \code
+      //! using rx::operator|;
       //!  StringRange strings;
       //!  strings.alphabet("ab").first("a").last("bbbb");
       //!  auto words = (strings | ToWord("ba"));
@@ -1148,11 +1149,11 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! ToString tostring("bac");
-  //! tostring(word_type({1, 0, 2}));                 // returns "abc"
-  //! tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2}));  // returns "baabaabc"
+  //! tostring(word_type({1, 0, 2}));                 //-> "abc"
+  //! tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2}));  //-> "baabaabc"
   //!
   //! tostring.init();
-  //! tostring(word_type({1, 0, 2}));                 // returns "bac"
+  //! tostring(word_type({1, 0, 2}));                 //-> "bac"
   //! \endcode
   class ToString {
    public:
@@ -1398,6 +1399,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
+    //! using rx::operator|;
     //! WordRange words;
     //! words.alphabet_size(1).min(0).max(10);
     //!
@@ -2008,9 +2010,10 @@ namespace libsemigroups {
   //! in a compact form.
   //! \par Example
   //! \code
-  //! 012_w      // same as word_type({0, 1, 2})
-  //! "abc"_w    // also same as word_type({0, 1, 2})
-  //! "(ab)^3"_p // same as "ababab"
+  //! \skip-test
+  //! 012_w      //-> word_type({0, 1, 2})
+  //! "abc"_w    //-> word_type({0, 1, 2})
+  //! "(ab)^3"_p //-> "ababab"
   //! \endcode
   namespace literals {
     //! \anchor literal_operator_w
@@ -2089,11 +2092,12 @@ namespace libsemigroups {
   //! in a compact form.
   //! \par Example
   //! \code
+  //! \skip-test
   //! using namespace words;
-  //! pow("a", 5)            // same as "aaaaa"
-  //! 01_w + 2               // same as 012_w
-  //! 01_w + 01_w            // same as 0101_w
-  //! prod(0123_w, 0, 16, 3) // same as 032103_w
+  //! pow("a", 5)            //-> "aaaaa"
+  //! 01_w + 2               //-> 012_w
+  //! 01_w + 01_w            //-> 0101_w
+  //! prod(0123_w, 0, 16, 3) //-> 032103_w
   //! \endcode
   namespace words {
 
@@ -2305,11 +2309,11 @@ namespace libsemigroups {
     //! \par Examples
     //! \code
     //! using namespace words;
-    //! word_type w = 012345_w
-    //! prod(w, 0, 5, 2)              // {0, 2, 4}
-    //! prod(w, 1, 9, 2)              // {1, 3, 5, 1}
-    //! prod("abcde", 4, 1, -1)       // "edc"
-    //! prod({"aba", "xyz"}, 0, 4, 1) // "abaxyzabaxyz"
+    //! word_type w = 012345_w;
+    //! prod(w, 0, 5, 2);              // {0, 2, 4}
+    //! prod(w, 1, 9, 2);              // {1, 3, 5, 1}
+    //! prod("abcde", 4, 1, -1);       // "edc"
+    //! prod({"aba", "xyz"}, 0, 4, 1); // "abaxyzabaxyz"
     //! \endcode
     template <typename Container, typename Word = Container>
     Word prod(Container const& elts, int first, int last, int step = 1);

@@ -828,6 +828,7 @@ EXTRA_PROGRAMS += test_cong_all
 EXTRA_PROGRAMS += test_cong_common
 EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
+EXTRA_PROGRAMS += test_docs_code_examples
 EXTRA_PROGRAMS += test_dot
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
@@ -920,6 +921,7 @@ test_all_SOURCES += tests/test-cong-common.cpp
 test_all_SOURCES += tests/test-cong.cpp
 test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
+test_all_SOURCES += tests/test-docs-code-examples.cpp
 test_all_SOURCES += tests/test-dot.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
@@ -1038,6 +1040,10 @@ test_constants_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
 test_containers_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+
+test_docs_code_examples_SOURCES =  tests/test-docs-code-examples.cpp
+test_docs_code_examples_SOURCES += tests/test-main.cpp
+test_docs_code_examples_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_dot_SOURCES =  tests/test-dot.cpp
 test_dot_SOURCES += tests/test-main.cpp
@@ -1436,3 +1442,20 @@ lint:
 doc:
 	@echo "Running doxygen . . ."
 	@etc/make-doc.sh
+
+doc-test:
+	@echo "Running code example extraction script . . ."
+	python3 ./etc/extract-doc-examples.py ./include/libsemigroups/ -r
+	@echo "Formatting test-docs-code-examples.cpp . . ."
+	clang-format -i tests/test-docs-code-examples.cpp
+	@echo "Compiling . . ."
+	@if make test_docs_code_examples -s -j8 2>&1; then \
+		echo ""; \
+		echo "Running test_docs_code_examples . . ."; \
+		./test_docs_code_examples; \
+	else \
+		echo ""; \
+		echo "Compilation failed"; \
+		exit 1; \
+	fi
+	@echo ""

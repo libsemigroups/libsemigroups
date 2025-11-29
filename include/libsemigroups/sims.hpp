@@ -2250,7 +2250,9 @@ namespace libsemigroups {
     //! returned (with `0` nodes and `0` edges).
     //!
     //! The algorithm implemented by this function repeatedly runs:
-    //! \code RepOrc(*this)
+    //! \code
+    //!   \skip-test
+    //!   RepOrc(*this)
     //!     .min_nodes(1)
     //!     .max_nodes(best)
     //!     .target_size(target_size())

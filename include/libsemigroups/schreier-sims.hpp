@@ -167,7 +167,7 @@ namespace libsemigroups {
   //!  using Perm = decltype(S)::element_type;
   //!  S.add_generator(Perm({1, 0, 2, 3, 4}));
   //!  S.add_generator(Perm({1, 2, 3, 4, 0}));
-  //!  S.size(); // 120
+  //!  S.size(); //-> 120
   //!  \endcode
   template <size_t N,
             typename Point   = typename SmallestInteger<N>::type,

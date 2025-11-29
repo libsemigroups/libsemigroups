@@ -66,7 +66,6 @@ namespace libsemigroups {
   //! currently have a maximum degree of 64 when used in Konieczny.
   //!
   //! \code
-  //!  using namespace libsemigroups;
   //!  auto S = make<Konieczny>({
   //!     BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
   //!     BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -1905,6 +1904,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! make<Konieczny>(gens);
   //! \endcode
   //!
@@ -1949,6 +1949,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! make<Konieczny>(gens);
   //! \endcode
   //!

@@ -55,6 +55,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<WordGraph>(f);
   //! \endcode
   //!
@@ -79,6 +80,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
+  //! \skip-test
   //! to<WordGraph>(view);
   //! \endcode
   //!

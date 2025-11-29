@@ -99,8 +99,8 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! std::lexicographical_compare(
-  //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \skip-test
+  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \endcode
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool lexicographical_compare(T const& x, T const& y) {
@@ -133,8 +133,8 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
-  //! lexicographical_compare(
-  //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \skip-test
+  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \endcode
   template <typename T>
   bool lexicographical_compare(T* const x, T* const y) {
@@ -263,6 +263,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! template <typename T, typename S>
   //! bool shortlex_compare(T const& first1,
   //!                       T const& last1,
@@ -308,6 +309,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
@@ -343,6 +345,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! shortlex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
   //! \endcode
@@ -479,6 +482,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! recursive_path_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
   //! \endcode
@@ -504,7 +508,7 @@ namespace libsemigroups {
   //! \param y pointer to the second object for comparison.
   //!
   //! \returns The boolean value \c true if the value pointed to by \p x is less
-  //! than the value pointed to by \p y with respect to the recursive path
+  //! than the value pointed to by \p y with r to the recursive path
   //! ordering, and \c false otherwise.
   //!
   //! \exceptions
@@ -512,6 +516,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! recursive_path_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
   //! \endcode
@@ -650,6 +655,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -697,6 +703,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
@@ -822,6 +829,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -868,6 +876,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_shortlex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
@@ -1092,6 +1101,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -1139,6 +1149,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode
@@ -1264,6 +1275,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   //! \endcode
@@ -1309,6 +1321,7 @@ namespace libsemigroups {
   //!
   //! \par Possible Implementation
   //! \code
+  //! \skip-test
   //! wt_lex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   //! \endcode

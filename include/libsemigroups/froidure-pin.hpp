@@ -134,6 +134,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct Complexity<int> {
   //!   constexpr size_t operator()(int) const noexcept {
@@ -171,15 +172,18 @@ namespace libsemigroups {
   //!     xy = x * y;
   //!   }
   //! };
-  //!
+  //! \endcode
+  //! \code
+  //! \skip-test  This is closer to a style guide.
+  //!  using namespace froidure_pin;
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
-  //! S.number_of_idempotents()  // 1
+  //! S.number_of_idempotents();  // 1
   //! *S.cbegin();        // 2
   //!
   //! FroidurePin<uint8_t> T({2, 3});
-  //! T.size()                      // 130
-  //! T.number_of_idempotents()     // 2
+  //! T.size();                      // 130
+  //! T.number_of_idempotents();     // 2
   //! *T.cbegin_idempotents();      // 0
   //! *T.cbegin_idempotents() + 1;  // 1
   //! \endcode

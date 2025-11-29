@@ -1352,7 +1352,7 @@ namespace libsemigroups {
     //!                        {0, 0, 0, 1},
     //!                        {0, 0, 0, 1},
     //!                        {0, 0, 0, 1}}));
-    //! S.size(); // 4
+    //! S.size(); //-> 4
     //! std::vector<relation_type>(S.cbegin_rules(), S.cend_rules());
     //! // {{{0, 0}, {0}},
     //! //  {{0, 1}, {1}},
@@ -1456,7 +1456,7 @@ namespace libsemigroups {
     //!                        {0, 0, 0, 1},
     //!                        {0, 0, 0, 1},
     //!                        {0, 0, 0, 1}}));
-    //! S.size(); // 4
+    //! S.size(); //-> 4
     //! std::vector<relation_type>(S.cbegin_rules(), S.cend_rules());
     //! // {{{0, 0}, {0}},
     //! //  {{0, 1}, {1}},

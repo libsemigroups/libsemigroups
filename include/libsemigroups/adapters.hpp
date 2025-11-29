@@ -117,6 +117,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct Complexity<KBE> {
   //!   constexpr size_t operator()(KBE const&) const noexcept {
@@ -155,6 +156,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct Degree<BMat8> {
   //!   constexpr inline size_t operator()(BMat8 const&) const noexcept {
@@ -193,6 +195,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <typename Integral>
   //! struct IncreaseDegree<
   //!     Integral,
@@ -220,6 +223,7 @@ namespace libsemigroups {
   //! 2. `Element operator()(T const&) const` (possibly `noexcept`,
   //!    `inline` and/or `constexpr` also). This could be implemented as:
   //!    \code
+  //!    \skip-test
   //!    Element operator()(Element const& x) const noexcept {
   //!      return this->operator()(Degree<Element>()(x));
   //!    }
@@ -236,6 +240,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <typename T>
   //! struct One<
   //!     T,
@@ -279,6 +284,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct Product<size_t> {
   //!   void operator()(size_t& xy, size_t x, size_t y, size_t = 0) const
@@ -314,6 +320,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct Inverse<BMat8> {
   //!   inline BMat8 operator()(BMat8 const& x) const noexcept {
@@ -346,6 +353,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct ImageLeftAction<BMat8, BMat8> {
   //!   void operator()(BMat8& res, BMat8 pt, BMat8 x) const noexcept {
@@ -388,6 +396,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
+  //! \skip-test
   //! template <>
   //! struct ImageLeftAction<BMat8, BMat8> {
   //!   void operator()(BMat8& res, BMat8 pt, BMat8 x) const noexcept {

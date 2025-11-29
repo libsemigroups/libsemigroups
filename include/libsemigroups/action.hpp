@@ -56,10 +56,9 @@ namespace libsemigroups {
   //! See also ImageLeftAction and ImageRightAction.
   //!
   //! \code
-  //! using namespace libsemigroups;
   //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
   //! o;
-  //! o.add_seed(PPerm<16>::identity(16));
+  //! o.add_seed(PPerm<16>::one(16));
   //! o.add_generator(
   //!    PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
@@ -77,7 +76,7 @@ namespace libsemigroups {
   //!              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!              16));
   //! o.reserve(70000);
-  //! o.size();  // returns 65536
+  //! o.size();  //-> 65536
   //! \endcode
 
   //! \ingroup types_group
@@ -139,11 +138,10 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! using namespace libsemigroups;
   //! auto rg = ReportGuard(true);
   //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
   //! o;
-  //! o.add_seed(PPerm<16>::identity(16));
+  //! o.add_seed(PPerm<16>::one(16));
   //! o.add_generator(
   //!     PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!               {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
@@ -161,8 +159,8 @@ namespace libsemigroups {
   //!               {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!               16));
   //! o.reserve(70000);
-  //! o.size(); // 65536
-  //! o.scc().number_of_components(); // 17
+  //! o.size(); //-> 65536
+  //! o.scc().number_of_components(); //-> 17
   //! \endcode
   //!
   //! \par Complexity
