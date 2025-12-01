@@ -596,8 +596,8 @@ namespace libsemigroups {
     word_type w1(12_w);
     word_type w2{};
 
-    REQUIRE(!RecursivePathCompare{}(w1, w1));
-    REQUIRE(RecursivePathCompare{}(w2, w1));
-    REQUIRE(!RecursivePathCompare{}(w1, w2));
+    REQUIRE(!RecursivePathCompare()(w1, w1));
+    REQUIRE(RecursivePathCompare()(w2, w1));
+    REQUIRE(!RecursivePathCompare()(w1, w2));
   }
 }  // namespace libsemigroups
