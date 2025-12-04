@@ -13,7 +13,7 @@ from pathlib import Path
 ########################################################################
 
 HEADER_TEXT = """// libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-2025 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2025 Josh James-lee
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
