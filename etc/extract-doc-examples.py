@@ -309,7 +309,7 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 def main():
     args = __parse_args()
 
-    # Files to exlucde from code block captrue
+    # Files to exclude from code block capture
     exclude = SKIP_ALWAYS
     if args.exclude is not None:
         exclude.append(args.exclude)
