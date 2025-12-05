@@ -1447,7 +1447,7 @@ doc-test:
 	@echo "Running code example extraction script . . ."
 	python3 ./etc/extract-doc-examples.py ./include/libsemigroups/ -r
 	@echo "Formatting test-docs-code-examples.cpp . . ."
-	clang-format -i tests/test-docs-code-examples.cpp
+	clang-format-15 -i tests/test-docs-code-examples.cpp
 	@echo "Compiling . . ."
 	@if make test_docs_code_examples -s -j8 2>&1; then \
 		echo ""; \
