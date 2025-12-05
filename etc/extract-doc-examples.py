@@ -302,52 +302,6 @@ def process_folder(folder_path, recursive=False, exclude=[]):
 
 
 ########################################################################
-# File Formatting
-#########################################################################
-
-
-def check_clang_format_version() -> bool:
-    """Check that clang-format@15 is installed."""
-    try:
-        res = subprocess.run(
-            ["clang-format", "--version"], capture_output=True, text=True, check=True
-        )
-        version_check = re.search(r"version\s+(\d+)", res.stdout)
-
-        if not version_check:
-            __error("Could not match clang-format --version")
-            return False
-
-        ver = int(version_check.group(1))
-
-        if ver != 15:
-            __error("clang-format@15 is required")
-            return False
-        else:
-            return True
-    except FileNotFoundError:
-        __error("clang-format@15 is not installed")
-        return False
-    except subprocess.CalledProcessError as e:
-        __error(f"clang-format --version error: {e}")
-        return False
-
-
-def format_file(filepath):
-    if not check_clang_format_version():
-        __error("Unable to format file, see clang-format related error")
-        return
-
-    try:
-        subprocess.run(["clang-format", "-i", filepath], check=True)
-        print(f"\n Formatted {filepath}")
-    except subprocess.CalledProcessError as e:
-        __error(f"Failed to format file {filepath} : {e}")
-    except FileNotFoundError:
-        __error(f"Could not find file {filepath} to format")
-
-
-########################################################################
 # Main
 #########################################################################
 
@@ -361,7 +315,6 @@ def main():
         exclude.append(args.exclude)
 
     process_folder(args.folder_path, args.recursive, exclude)
-    #  format_file(TEST_FILEPATH)
     print("\n Docs code block extraction completed successfully. Exiting.")
 
 
