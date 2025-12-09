@@ -304,7 +304,7 @@ def main():
         exclude.append(args.exclude)
 
     process_folder(args.folder_path, args.recursive, exclude)
-    print("\n Docs code block extraction completed successfully. Exiting.")
+    print("\nDocs code block extraction completed successfully. Exiting.")
 
 
 if __name__ == "__main__":
