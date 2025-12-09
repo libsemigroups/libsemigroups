@@ -48,10 +48,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Congruence<Word>>(knd, fpb, wg);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! Congruence object using the WordGraph \p wg (which should be either

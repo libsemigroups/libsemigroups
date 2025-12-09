@@ -2009,12 +2009,11 @@ namespace libsemigroups {
   //! This namespace contains some functions for creating \ref word_type objects
   //! in a compact form.
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! 012_w      //-> word_type({0, 1, 2})
   //! "abc"_w    //-> word_type({0, 1, 2})
   //! "(ab)^3"_p //-> "ababab"
-  //! \endcode
+  //! \end_code_no_test
   namespace literals {
     //! \anchor literal_operator_w
     //! \brief Literal for defining \ref word_type over integers less than 10.
@@ -2091,14 +2090,13 @@ namespace libsemigroups {
   //! This namespace contains some functions for creating \ref word_type objects
   //! in a compact form.
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! using namespace words;
   //! pow("a", 5)            //-> "aaaaa"
   //! 01_w + 2               //-> 012_w
   //! 01_w + 01_w            //-> 0101_w
   //! prod(0123_w, 0, 16, 3) //-> 032103_w
-  //! \endcode
+  //! \end_code_no_test
   namespace words {
 
     //! \brief Returns the index of a character in human readable order.

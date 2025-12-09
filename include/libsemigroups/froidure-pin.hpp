@@ -133,8 +133,7 @@ namespace libsemigroups {
   //! \sa FroidurePinTraits and FroidurePinBase.
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct Complexity<int> {
   //!   constexpr size_t operator()(int) const noexcept {
@@ -172,9 +171,8 @@ namespace libsemigroups {
   //!     xy = x * y;
   //!   }
   //! };
-  //! \endcode
-  //! \code
-  //! \skip-test  This is closer to a style guide.
+  //! \end_code_no_test
+  //! \code_no_test
   //!  using namespace froidure_pin;
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
@@ -186,7 +184,7 @@ namespace libsemigroups {
   //! T.number_of_idempotents();     // 2
   //! *T.cbegin_idempotents();      // 0
   //! *T.cbegin_idempotents() + 1;  // 1
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename Traits = FroidurePinTraits<Element>>
   class FroidurePin : private detail::BruidhinnTraits<Element>,
                       public FroidurePinBase {

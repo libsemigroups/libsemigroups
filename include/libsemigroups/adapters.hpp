@@ -116,15 +116,14 @@ namespace libsemigroups {
   //! * FroidurePinTraits
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct Complexity<KBE> {
   //!   constexpr size_t operator()(KBE const&) const noexcept {
   //!     return LIMIT_MAX;
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename = void>
   struct Complexity;
 
@@ -155,15 +154,14 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct Degree<BMat8> {
   //!   constexpr inline size_t operator()(BMat8 const&) const noexcept {
   //!     return 8;
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename = void>
   struct Degree;
 
@@ -194,8 +192,7 @@ namespace libsemigroups {
   //! * FroidurePinTraits
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <typename Integral>
   //! struct IncreaseDegree<
   //!     Integral,
@@ -204,7 +201,7 @@ namespace libsemigroups {
   //!   void operator()(Integral&, size_t) const noexcept {
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename = void>
   struct IncreaseDegree;
 
@@ -222,12 +219,11 @@ namespace libsemigroups {
   //!
   //! 2. `Element operator()(T const&) const` (possibly `noexcept`,
   //!    `inline` and/or `constexpr` also). This could be implemented as:
-  //!    \code
-  //!    \skip-test
+  //!    \code_no_test
   //!    Element operator()(Element const& x) const noexcept {
   //!      return this->operator()(Degree<Element>()(x));
   //!    }
-  //!    \endcode
+  //!    \end_code_no_test
   //!
   //! \tparam Element the type of the elements of a semigroup.
   //!
@@ -239,8 +235,7 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <typename T>
   //! struct One<
   //!     T,
@@ -253,7 +248,7 @@ namespace libsemigroups {
   //!     return T::one();
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename = void>
   struct One;
 
@@ -283,8 +278,7 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct Product<size_t> {
   //!   void operator()(size_t& xy, size_t x, size_t y, size_t = 0) const
@@ -292,7 +286,7 @@ namespace libsemigroups {
   //!     xy = x * y;
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename = void>
   struct Product;
 
@@ -319,8 +313,7 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct Inverse<BMat8> {
   //!   inline BMat8 operator()(BMat8 const& x) const noexcept {
@@ -328,7 +321,7 @@ namespace libsemigroups {
   //!     return x.transpose();
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename = void>
   struct Inverse;
 
@@ -352,15 +345,14 @@ namespace libsemigroups {
   //! The third template parameter exists for SFINAE.
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct ImageLeftAction<BMat8, BMat8> {
   //!   void operator()(BMat8& res, BMat8 pt, BMat8 x) const noexcept {
   //!     res = (x * pt).col_space_basis();
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename Point, typename = void>
   struct ImageLeftAction;
 
@@ -395,15 +387,14 @@ namespace libsemigroups {
   //! * SchreierSimsTraits (in form (2))
   //!
   //! \par Example
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <>
   //! struct ImageLeftAction<BMat8, BMat8> {
   //!   void operator()(BMat8& res, BMat8 pt, BMat8 x) const noexcept {
   //!     res = (x * pt).row_space_basis();
   //!   }
   //! };
-  //! \endcode
+  //! \end_code_no_test
   template <typename Element, typename Point, typename = void>
   struct ImageRightAction;
 
