@@ -429,8 +429,8 @@ namespace libsemigroups {
                           "./include/libsemigroups/ranges.hpp:87",
                           "[docs][quick]") {
     using rx::operator|;
-    auto  wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
-    Paths p(wg);
+    auto      wg = make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
+    Paths     p(wg);
     p.source(0).max(10);
     REQUIRE(p.count() == 2047);
     (p | Random()).get();
@@ -637,7 +637,7 @@ namespace libsemigroups {
                           "038",
                           "./include/libsemigroups/word-range.hpp:1050",
                           "[docs][quick]") {
-    using rx::operator|;
+    using rx::  operator|;
     StringRange strings;
     strings.alphabet("ab").first("a").last("bbbb");
     auto words = (strings | ToWord("ba"));
