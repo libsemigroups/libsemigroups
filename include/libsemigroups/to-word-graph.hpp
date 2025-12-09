@@ -54,10 +54,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<WordGraph>(f);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p f is a Forest object. The returned WordGraph object is
   //! isomorphic as a graph to \p f.
@@ -79,10 +78,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<WordGraph>(view);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p view is a WordGraphView object. The returned WordGraph only
   //! contains those nodes and edges that are covered by \p view.

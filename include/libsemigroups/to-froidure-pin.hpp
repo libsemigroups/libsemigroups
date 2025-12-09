@@ -88,10 +88,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<FroidurePin>(cong);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p cong is a Congruence object. The returned FroidurePin object is
   //! isomorphic to the quotient of the underlying semigroup or monoid of
@@ -121,10 +120,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<FroidurePin>(k);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p k is a Kambites instance. The returned FroidurePin object is
   //! isomorphic to the quotient semigroup or monoid represented by \p k.
@@ -160,10 +158,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<FroidurePin>(kb);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p kb is a \ref_knuth_bendix instance. The returned FroidurePin
   //! object is isomorphic to the quotient semigroup or monoid represented by
@@ -195,10 +192,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<FroidurePin>(k);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p k is a \ref Konieczny instance. The returned FroidurePin
   //! object is isomorphic to the semigroup or monoid represented by
@@ -229,10 +225,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<FroidurePin>(kb);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! where \p kb is a \ref_todd_coxeter instance. The returned FroidurePin
   //! object is isomorphic to the quotient semigroup or monoid represented by
@@ -270,10 +265,9 @@ namespace libsemigroups {
   //! Unlike the other functions on this page, this function should be invoked
   //! as follows (for example):
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<FroidurePin<Transf<>>(wg, 0, 10);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! In other words, the type of the elements of the FroidurePin object should
   //! be explicitly specified. This type must implement `operator[]` and each

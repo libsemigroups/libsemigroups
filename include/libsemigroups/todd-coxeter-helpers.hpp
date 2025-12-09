@@ -91,10 +91,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::current_index_of_no_checks for details.
     //!
@@ -115,10 +114,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.current_index_of(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See \ref ToddCoxeter::current_index_of for details.
     //!
@@ -139,10 +137,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.index_of_no_checks(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::index_of_no_checks for details.
     //!
@@ -163,10 +160,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.index_of(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See \ref ToddCoxeter::index_of for details.
     //!
@@ -186,10 +182,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::current_index_of_no_checks for details.
     //!
@@ -212,10 +207,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.current_index_of(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See \ref ToddCoxeter::current_index_of for details.
     //!
@@ -238,10 +232,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.index_of_no_checks(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See \ref ToddCoxeter::index_of_no_checks for details.
     //!
@@ -264,10 +257,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.index_of(std::begin(w), std::end(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See \ref ToddCoxeter::index_of for details.
     //!
@@ -289,10 +281,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.current_index_of_no_checks(w, w + std::strlen(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::current_index_of_no_checks for details.
     //!
@@ -312,10 +303,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.current_index_of(w, w + std::strlen(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::current_index_of for details.
     //!
@@ -335,10 +325,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.index_of_no_checks(w, w + std::strlen(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::index_of_no_checks for details.
     //!
@@ -358,10 +347,9 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! tc.index_of(w, w + std::strlen(w));
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! See ToddCoxeter::index_of for details.
     //!
@@ -842,8 +830,7 @@ namespace libsemigroups {
     //! For example, if we take the following monoid presentation of B. H.
     //! Neumann for the trivial group:
     //!
-    //! \code
-    //! \skip-test
+    //! \code_no_test
     //! \\ TODO : Long running test. Check if meant to be this slow?
     //!
     //! using options = detail::ToddCoxeterImpl::options;
@@ -867,7 +854,7 @@ namespace libsemigroups {
     //! todd_coxeter::perform_lookbehind(tc);
     //! tc.perform_lookahead(true);
     //! tc.number_of_classes(); // returns 1
-    //! \endcode
+    //! \end_code_no_test
     //!
     //! Running \p tc will simply grow the underlying word graph until
     //! your computer runs out of memory. The authors of ``libsemigroups`` were

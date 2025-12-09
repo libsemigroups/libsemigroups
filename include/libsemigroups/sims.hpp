@@ -2250,14 +2250,13 @@ namespace libsemigroups {
     //! returned (with `0` nodes and `0` edges).
     //!
     //! The algorithm implemented by this function repeatedly runs:
-    //! \code
-    //!   \skip-test
+    //! \code_no_test
     //!   RepOrc(*this)
     //!     .min_nodes(1)
     //!     .max_nodes(best)
     //!     .target_size(target_size())
     //!     .word_graph();
-    //! \endcode
+    //! \end_code_no_test
     //! where `best` is initially \ref target_size, until the returned
     //! WordGraph is empty, and then the penultimate WordGraph is returned
     //! (if any).

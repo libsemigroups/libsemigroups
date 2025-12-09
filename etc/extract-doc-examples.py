@@ -4,7 +4,6 @@ Automated code block extraction from documentation for testing.
 
 import sys
 import argparse
-import subprocess
 import re
 from pathlib import Path
 
@@ -45,6 +44,11 @@ TEST_FILEPATH = "./tests/test-docs-code-examples.cpp"
 # For files that should always be skipped, e.g. those in the
 # v4 namespace
 SKIP_ALWAYS = ["word-graph-helpers.hpp"]
+
+# Code blocks marked with "\code" should be captured, but ones marked with
+# "\code_no_test" should not
+OPEN_COMMENT = re.compile(r"\\code(?!_no_test)")
+CLOSE_COMMENT = re.compile(r"\\endcode(?!_no_test)")
 ########################################################################
 # Internal
 ########################################################################
@@ -125,7 +129,6 @@ def extract_code_blocks(file_path):
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
             in_code_block = False
-            ignore_this_block = False
             current_block = []
 
             for line_num, line in enumerate(file, 1):
@@ -134,7 +137,7 @@ def extract_code_blocks(file_path):
                 line = line.rstrip("\n\r")
 
                 # Code Block Open
-                if "\\code" in line:
+                if re.search(OPEN_COMMENT, line):
                     if in_code_block:
                         __error(
                             f"Warning: Found \\code while already in code block at {
@@ -146,14 +149,14 @@ def extract_code_blocks(file_path):
                     continue
 
                 #  Code Block Close
-                if "\\endcode" in line:
+                if re.search(CLOSE_COMMENT, line):
                     if not in_code_block:
                         __error(
                             f"Warning: Found \\endcode without matching \\code at {
                                 file_path
                             }:{line_num}"
                         )
-                    elif not ignore_this_block:
+                    else:
                         code_blocks.append(
                             {
                                 "content": "\n".join(current_block),
@@ -161,23 +164,10 @@ def extract_code_blocks(file_path):
                             }
                         )
                     in_code_block = False
-                    ignore_this_block = False
                     current_block = []
                     continue
 
                 if in_code_block:
-                    # If line contains non-executable statements,
-                    # skip this block.
-                    if "\\skip-test" in line:
-                        ignore_this_block = True
-                        current_block = []
-                        __bold(
-                            f"Note: Example code block skipped in {file_path} at line {
-                                line_num
-                            }"
-                        )
-                        continue
-
                     # If line contains a function call with a return value
                     # labelled by '//-> <value>'
                     # where <value> ::= <number> | <string>
@@ -195,8 +185,7 @@ def extract_code_blocks(file_path):
                         )
                         continue
 
-                    if not ignore_this_block:
-                        current_block.append(line)
+                    current_block.append(line)
 
             # discard unclosed code blocks
             if in_code_block and current_block:

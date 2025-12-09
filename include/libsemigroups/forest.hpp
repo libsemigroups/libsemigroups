@@ -1104,20 +1104,18 @@ namespace libsemigroups {
       //! \warning
       //! If using a PathsFromRoots object \c paths in a range-based
       //! for-loop such as:
-      //! \code
-      //! \skip-test
+      //! \code_no_test
       //! for (auto const& path : paths) {
       //!   ...
       //! }
-      //! \endcode
+      //! \end_code_no_test
       //! the object \c paths is copied, and so will be constant inside the
       //! for-loop. For example, in
-      //! \code
-      //! \skip-test
+      //! \code_no_test
       //! for (auto const& path : paths) {
       //!   auto t = paths.target();
       //! }
-      //! \endcode
+      //! \end_code_no_test
       //! The value of \c t will be constant, even though the value of \c path
       //! may change.
       //!
@@ -1257,20 +1255,18 @@ namespace libsemigroups {
       //! \warning
       //! If using a PathsToRoots object \c paths in a range-based
       //! for-loop such as:
-      //! \code
-      //! \skip-test
+      //! \code_no_test
       //! for (auto const& path : paths) {
       //!   ...
       //! }
-      //! \endcode
+      //! \end_code_no_test
       //! the object \c paths is copied, and so will be constant inside the
       //! for-loop. For example, in
-      //! \code
-      //! \skip-test
+      //! \code_no_test
       //! for (auto const& path : paths) {
       //!   auto t = paths.target();
       //! }
-      //! \endcode
+      //! \end_code_no_test
       //! The value of \c t will be constant, even though the value of \c path
       //! may change.
       //!

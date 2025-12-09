@@ -57,10 +57,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<KnuthBendix<Word, Rewriter>>(knd, fpb);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! \ref_knuth_bendix object using the presentation obtained using
@@ -93,10 +92,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<KnuthBendix>(knd, tc);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function converts the \ref_todd_coxeter object \p tc into a
   //! \ref_knuth_bendix object using ToddCoxeter::presentation.
@@ -129,10 +127,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<KnuthBendix<Word, Rewriter>>(knd, tc);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function converts the \ref_todd_coxeter object \p tc into a
   //! \ref_knuth_bendix object using ToddCoxeter::presentation.

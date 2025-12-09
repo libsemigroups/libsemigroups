@@ -72,10 +72,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<Word>>(fp);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function constructs and returns a Presentation object using the
   //! rules of a FroidurePin object, accessed via FroidurePin::cbegin_rules and
@@ -113,10 +112,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<WordOut>>(kb);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function constructs and returns a `Presentation<WordOut>` object
   //! using the currently active rules of \p kb.
@@ -162,10 +160,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-//! \skip-test
+  //! \code_no_test
 //! to<Presentation>(kb);
-//! \endcode
+//! \end_code_no_test
 //!
 //! This function constructs and returns a Presentation object using the
 //! currently active rules of \p kb.
@@ -223,10 +220,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<Word>>(k);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! There are two versions of this function:
   //!
@@ -288,10 +284,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<Word>>(tc);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! There are two versions of this function:
   //!
@@ -353,10 +348,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<Word>>(c);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! There are two versions of this function:
   //!
@@ -418,10 +412,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<std::string>>(s);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function calls `to<Presentation<typename Result::word_type>` on
   //! `s.presentation()` to return a presentation equivalent to the object used
@@ -455,10 +448,9 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as
   //! follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<Word>>(p, func);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function returns a presentation equivalent to the input
   //! presentation but of a different type (for example, can be used to
@@ -507,10 +499,9 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as
   //! follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<InversePresentation<Word>>(p, func);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function returns an inverse presentation equivalent to the input
   //! inverse presentation but of a different type (for example, can be used
@@ -560,10 +551,9 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as
   //! follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<Presentation<Word>>(p, func);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! There are 2 versions of this function:
   //!
@@ -628,10 +618,9 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as
   //! follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<InversePresentation<Word>>(ip);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! There are 2 versions of this function:
   //!
@@ -697,10 +686,9 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as
   //! follows:
   //!
-  //! \code
-//! \skip-test
+  //! \code_no_test
 //! to<InversePresentation>(p);
-//! \endcode
+//! \end_code_no_test
 //!
 //! This function returns an inverse presentation with rules equivalent to
 //! those of the input presentation, but over a normalised alphabet. If the

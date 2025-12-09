@@ -58,10 +58,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-//! \skip-test
+  //! \code_no_test
 //! to<ToddCoxeter<Word>>(knd, fpb, wg);
-//! \endcode
+//! \end_code_no_test
 //!
 //! This function converts the \ref FroidurePin object \p fpb into a
 //! \ref_todd_coxeter object using the WordGraph \p wg (which should be either
@@ -109,10 +108,9 @@ namespace libsemigroups {
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! to<ToddCoxeter>(kb);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! This function converts the \ref_knuth_bendix object \p kb into a
   //! \ref_todd_coxeter object using the right Cayley graph of the semigroup

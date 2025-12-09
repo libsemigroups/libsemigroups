@@ -98,10 +98,9 @@ namespace libsemigroups {
   //! See std::lexicographical_compare.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
-  //! \endcode
+  //! \end_code_no_test
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool lexicographical_compare(T const& x, T const& y) {
     return std::lexicographical_compare(
@@ -132,10 +131,9 @@ namespace libsemigroups {
   //! See std::lexicographical_compare.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
-  //! \endcode
+  //! \end_code_no_test
   template <typename T>
   bool lexicographical_compare(T* const x, T* const y) {
     return std::lexicographical_compare(
@@ -262,8 +260,7 @@ namespace libsemigroups {
   //! \p last1 and \p first1, and the distance between \p last2 and \p first2.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! template <typename T, typename S>
   //! bool shortlex_compare(T const& first1,
   //!                       T const& last1,
@@ -274,7 +271,7 @@ namespace libsemigroups {
   //!              && std::lexicographical_compare
   //!                   (first1, last1, first2, last2));
   //! }
-  //! \endcode
+  //! \end_code_no_test
   template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool shortlex_compare(T const& first1,
                         T const& last1,
@@ -308,11 +305,10 @@ namespace libsemigroups {
   //! the length of \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref shortlex_compare(T const&, T const&, T const&, T const&).
@@ -344,11 +340,10 @@ namespace libsemigroups {
   //! pointed to by \p x and the length of word pointed to by \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! shortlex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref shortlex_compare(T const&, T const&, T const&, T const&).
@@ -491,11 +486,10 @@ namespace libsemigroups {
   //! \noexcept
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! recursive_path_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend());
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref recursive_path_compare(T const&, T, T const&, T)
@@ -525,11 +519,10 @@ namespace libsemigroups {
   //! \noexcept
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! recursive_path_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend());
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref recursive_path_compare(T const&, T, T const&, T)
@@ -664,11 +657,10 @@ namespace libsemigroups {
   //! is the length of \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_shortlex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \warning
   //! It is not checked that the letters in \p x and \p y are valid indices
@@ -712,11 +704,10 @@ namespace libsemigroups {
   //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_shortlex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \warning
   //! It is not checked that the letters are valid indices into the weights
@@ -838,11 +829,10 @@ namespace libsemigroups {
   //! is the length of \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_shortlex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref wt_shortlex_compare(T const&, T const&, T const&, T const&,
@@ -885,11 +875,10 @@ namespace libsemigroups {
   //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_shortlex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref wt_shortlex_compare(T const&, T const&, T const&, T const&,
@@ -1110,11 +1099,10 @@ namespace libsemigroups {
   //! is the length of \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_lex_compare_no_checks(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \warning
   //! It is not checked that the letters in \p x and \p y are valid indices
@@ -1158,11 +1146,10 @@ namespace libsemigroups {
   //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_lex_compare_no_checks(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \warning
   //! It is not checked that the letters are valid indices into the weights
@@ -1284,11 +1271,10 @@ namespace libsemigroups {
   //! is the length of \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_lex_compare(
   //!   x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref wt_lex_compare(T const&, T const&, T const&, T const&,
@@ -1330,11 +1316,10 @@ namespace libsemigroups {
   //! to by \p x and \f$m\f$ is the length of word pointed to by \p y.
   //!
   //! \par Possible Implementation
-  //! \code
-  //! \skip-test
+  //! \code_no_test
   //! wt_lex_compare(
   //!   x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
-  //! \endcode
+  //! \end_code_no_test
   //!
   //! \sa
   //! \ref wt_lex_compare(T const&, T const&, T const&, T const&,
