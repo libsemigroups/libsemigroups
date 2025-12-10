@@ -6,6 +6,19 @@ import json
 from pathlib import Path
 import pandas as pd
 from .process_data import join_means
+import gzip
+
+
+# TODO return type
+def read_json_file(file_name: str):
+    """Read a json file or json.gz file and return its contents."""
+
+    if file_name.endswith(".gz"):
+        with gzip.open(file_name) as f:
+            return json.load(f)
+    else:
+        with open(file_name, encoding="utf-8") as f:
+            return json.load(f)
 
 
 def to_time_records(file_name, restrict=None):
@@ -15,8 +28,7 @@ def to_time_records(file_name, restrict=None):
     command will appear more than once
     """
     records = []
-    with open(file_name, encoding="utf-8") as f:
-        results = json.load(f)["results"]
+    results = read_json_file(file_name)["results"]
     for record in results:
         current_command = record["command"]
         # Only store commands specified in restrict (provided restrict is specified)
@@ -31,8 +43,7 @@ def to_df(file_name):
     """Returns a DataFrame where each record corresponds to a test that was run,
     and the columns are the headers in the json file <file_name>
     """
-    with open(file_name, encoding="utf-8") as f:
-        records = json.load(f)["results"]
+    records = read_json_file(file_name)["results"]
     return pd.DataFrame(records).set_index("command")
 
 
