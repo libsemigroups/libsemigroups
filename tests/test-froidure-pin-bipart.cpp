@@ -231,4 +231,70 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(S.is_idempotent(10), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("TLCodeComparison",
+                          "042",
+                          "product_bipartition",
+                          "[quick][TlCode]") {
+    FroidurePin<Bipartition> S;
+    froidure_pin::add_generators(
+        S,
+        {make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, 2}, {-1, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, 3}, {-2, -3}, {4, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, 4}, {-3, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, -3}, {4, 5}, {-4, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, -3}, {-4, 4}, {5, 6}, {-5, -6}})});
+
+    S.run();
+    for (auto const& x : S) {
+      for (auto const& y : S) {
+        for (auto const& z : S) {
+          REQUIRE(x * (y * z) == (x * y) * z);
+        }
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("TLCodeComparison",
+                          "043",
+                          "product_bipartition",
+                          "[quick][TlCode]") {
+    FroidurePin<Bipartition> S;
+    froidure_pin::add_generators(
+        S,
+        {make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, 2}, {-1, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, 3}, {-2, -3}, {4, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, 4}, {-3, -4}, {5, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, -3}, {4, 5}, {-4, -5}, {6, -6}}),
+         make<Bipartition>(
+             {{1, -1}, {2, -2}, {3, -3}, {-4, 4}, {5, 6}, {-5, -6}})});
+
+    S.run();
+    Bipartition a, b;
+    for (auto const& x : S) {
+      for (auto const& y : S) {
+        for (auto const& z : S) {
+          b.product_inplace_no_checks(y, z);
+          a.product_inplace_no_checks(x, b);
+
+          b.product_inplace_no_checks(x, y);
+          b.product_inplace_no_checks(b, z);
+          REQUIRE(a == b);
+        }
+      }
+    }
+  }
+
 }  // namespace libsemigroups
