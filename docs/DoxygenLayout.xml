@@ -328,6 +328,10 @@
         title="RecursivePathCompare" />
       <tab type="user" visible="yes" url="@ref libsemigroups::ShortLexCompare"
         title="ShortLexCompare" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WtLexCompare"
+        title="WtLexCompare" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WtShortLexCompare"
+        title="WtShortLexCompare" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
