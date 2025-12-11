@@ -17,10 +17,9 @@
 //
 
 // TODO
+// * iwyu
 // * tpp file and out of line
 // * dry it out
-// * iwyu
-// * nodiscard
 // * noexcept
 
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
@@ -106,7 +105,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool lexicographical_compare(Thing const& x, Thing const& y) {
+  [[nodiscard]] bool lexicographical_compare(Thing const& x, Thing const& y) {
     return std::lexicographical_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
@@ -139,7 +138,7 @@ namespace libsemigroups {
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \end_code_no_test
   template <typename Thing>
-  bool lexicographical_compare(Thing* const x, Thing* const y) {
+  [[nodiscard]] bool lexicographical_compare(Thing* const x, Thing* const y) {
     return std::lexicographical_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
@@ -178,7 +177,7 @@ namespace libsemigroups {
     //! \complexity
     //! See std::lexicographical_compare.
     template <typename Thing>
-    bool operator()(Thing const& x, Thing const& y) const {
+    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       return lexicographical_compare(x, y);
     }
 
@@ -203,8 +202,8 @@ namespace libsemigroups {
     //! See std::lexicographical_compare.
     // TODO(v4) is this really necessary?
     template <typename T>
-    bool operator()(std::initializer_list<T> x,
-                    std::initializer_list<T> y) const {
+    [[nodiscard]] bool operator()(std::initializer_list<T> x,
+                                  std::initializer_list<T> y) const {
       return std::lexicographical_compare(
           x.begin(), x.end(), y.begin(), y.end());
     }
@@ -233,10 +232,10 @@ namespace libsemigroups {
     //! See std::lexicographical_compare.
     // TODO(v4) remove this?
     template <typename Iterator>
-    bool operator()(Iterator first1,
-                    Iterator last1,
-                    Iterator first2,
-                    Iterator last2) const {
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
       return std::lexicographical_compare(first1, last1, first2, last2);
     }
   };
@@ -282,10 +281,10 @@ namespace libsemigroups {
   //! \end_code_no_test
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  bool shortlex_compare(Iterator first1,
-                        Iterator last1,
-                        Iterator first2,
-                        Iterator last2) {
+  [[nodiscard]] bool shortlex_compare(Iterator first1,
+                                      Iterator last1,
+                                      Iterator first2,
+                                      Iterator last2) {
     return (last1 - first1) < (last2 - first2)
            || ((last1 - first1) == (last2 - first2)
                && std::lexicographical_compare(first1, last1, first2, last2));
@@ -323,7 +322,7 @@ namespace libsemigroups {
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool shortlex_compare(Thing const& x, Thing const& y) {
+  [[nodiscard]] bool shortlex_compare(Thing const& x, Thing const& y) {
     return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -358,7 +357,7 @@ namespace libsemigroups {
   //! \sa
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
   template <typename Thing>
-  bool shortlex_compare(Thing* const x, Thing* const y) {
+  [[nodiscard]] bool shortlex_compare(Thing* const x, Thing* const y) {
     return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -394,7 +393,7 @@ namespace libsemigroups {
     //! \complexity
     //! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
     template <typename Thing>
-    bool operator()(Thing const& x, Thing const& y) const {
+    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       return shortlex_compare(x, y);
     }
   };
@@ -437,10 +436,10 @@ namespace libsemigroups {
   //! the variants of \ref shortlex_compare and std::lexicographical_compare.
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  bool recursive_path_compare(Iterator first1,
-                              Iterator last1,
-                              Iterator first2,
-                              Iterator last2) noexcept {
+  [[nodiscard]] bool recursive_path_compare(Iterator first1,
+                                            Iterator last1,
+                                            Iterator first2,
+                                            Iterator last2) noexcept {
     if (first2 == last2) {
       // Empty word is not bigger than every word
       return false;
@@ -504,7 +503,8 @@ namespace libsemigroups {
   //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool recursive_path_compare(Thing const& x, Thing const& y) noexcept {
+  [[nodiscard]] bool recursive_path_compare(Thing const& x,
+                                            Thing const& y) noexcept {
     return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -537,7 +537,8 @@ namespace libsemigroups {
   //! \sa
   //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   template <typename Thing>
-  bool recursive_path_compare(Thing* const x, Thing* const y) noexcept {
+  [[nodiscard]] bool recursive_path_compare(Thing* const x,
+                                            Thing* const y) noexcept {
     return recursive_path_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
@@ -573,7 +574,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <typename Thing>
-    bool operator()(Thing const& x, Thing const& y) const noexcept {
+    [[nodiscard]] bool operator()(Thing const& x,
+                                  Thing const& y) const noexcept {
       return recursive_path_compare(x, y);
     }
   };
@@ -619,11 +621,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  bool wt_shortlex_compare_no_checks(Iterator                   first1,
-                                     Iterator                   last1,
-                                     Iterator                   first2,
-                                     Iterator                   last2,
-                                     std::vector<size_t> const& weights) {
+  [[nodiscard]] bool
+  wt_shortlex_compare_no_checks(Iterator                   first1,
+                                Iterator                   last1,
+                                Iterator                   first2,
+                                Iterator                   last2,
+                                std::vector<size_t> const& weights) {
     size_t weight1 = std::accumulate(
         first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
           return sum + weights[letter];
@@ -682,9 +685,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool wt_shortlex_compare_no_checks(Thing const&               x,
-                                     Thing const&               y,
-                                     std::vector<size_t> const& weights) {
+  [[nodiscard]] bool
+  wt_shortlex_compare_no_checks(Thing const&               x,
+                                Thing const&               y,
+                                std::vector<size_t> const& weights) {
     return wt_shortlex_compare_no_checks(
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
@@ -729,9 +733,10 @@ namespace libsemigroups {
   //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  bool wt_shortlex_compare_no_checks(Thing* const               x,
-                                     Thing* const               y,
-                                     std::vector<size_t> const& weights) {
+  [[nodiscard]] bool
+  wt_shortlex_compare_no_checks(Thing* const               x,
+                                Thing* const               y,
+                                std::vector<size_t> const& weights) {
     return wt_shortlex_compare_no_checks(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -778,11 +783,11 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  bool wt_shortlex_compare(Iterator                   first1,
-                           Iterator                   last1,
-                           Iterator                   first2,
-                           Iterator                   last2,
-                           std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_shortlex_compare(Iterator                   first1,
+                                         Iterator                   last1,
+                                         Iterator                   first2,
+                                         Iterator                   last2,
+                                         std::vector<size_t> const& weights) {
     size_t const alphabet_size = weights.size();
 
     auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
@@ -852,9 +857,9 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool wt_shortlex_compare(Thing const&               x,
-                           Thing const&               y,
-                           std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_shortlex_compare(Thing const&               x,
+                                         Thing const&               y,
+                                         std::vector<size_t> const& weights) {
     return wt_shortlex_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
@@ -898,9 +903,9 @@ namespace libsemigroups {
   //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  bool wt_shortlex_compare(Thing* const               x,
-                           Thing* const               y,
-                           std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_shortlex_compare(Thing* const               x,
+                                         Thing* const               y,
+                                         std::vector<size_t> const& weights) {
     return wt_shortlex_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -1044,7 +1049,7 @@ namespace libsemigroups {
     //! If the constructor parameter \c should_check is \c false, it is not
     //! checked that the letters are valid indices into the weights vector.
     template <typename Thing>
-    bool operator()(Thing const& x, Thing const& y) const {
+    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       if (_should_check) {
         return wt_shortlex_compare(x, y, _weights);
       } else {
@@ -1074,7 +1079,7 @@ namespace libsemigroups {
     //! See wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator,
     //! Iterator, std::vector<size_t> const&)
     template <typename Thing>
-    bool call_no_checks(Thing const& x, Thing const& y) const {
+    [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_shortlex_compare_no_checks(x, y, _weights);
     }
 
@@ -1089,7 +1094,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa should_check(bool)
-    bool should_check() const noexcept {
+    [[nodiscard]] bool should_check() const noexcept {
       return _should_check;
     }
 
@@ -1121,7 +1126,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    std::vector<size_t> const& weights() const noexcept {
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
 
@@ -1187,11 +1192,12 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  bool wt_lex_compare_no_checks(Iterator                   first1,
-                                Iterator                   last1,
-                                Iterator                   first2,
-                                Iterator                   last2,
-                                std::vector<size_t> const& weights) {
+  [[nodiscard]] bool
+  wt_lex_compare_no_checks(Iterator                   first1,
+                           Iterator                   last1,
+                           Iterator                   first2,
+                           Iterator                   last2,
+                           std::vector<size_t> const& weights) {
     size_t weight1 = std::accumulate(
         first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
           return sum + weights[letter];
@@ -1250,9 +1256,10 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool wt_lex_compare_no_checks(Thing const&               x,
-                                Thing const&               y,
-                                std::vector<size_t> const& weights) {
+  [[nodiscard]] bool
+  wt_lex_compare_no_checks(Thing const&               x,
+                           Thing const&               y,
+                           std::vector<size_t> const& weights) {
     return wt_lex_compare_no_checks(
         x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
@@ -1297,9 +1304,10 @@ namespace libsemigroups {
   //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  bool wt_lex_compare_no_checks(Thing* const               x,
-                                Thing* const               y,
-                                std::vector<size_t> const& weights) {
+  [[nodiscard]] bool
+  wt_lex_compare_no_checks(Thing* const               x,
+                           Thing* const               y,
+                           std::vector<size_t> const& weights) {
     return wt_lex_compare_no_checks(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -1346,11 +1354,11 @@ namespace libsemigroups {
   //! std::vector<size_t> const&)
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  bool wt_lex_compare(Iterator                   first1,
-                      Iterator                   last1,
-                      Iterator                   first2,
-                      Iterator                   last2,
-                      std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_lex_compare(Iterator                   first1,
+                                    Iterator                   last1,
+                                    Iterator                   first2,
+                                    Iterator                   last2,
+                                    std::vector<size_t> const& weights) {
     size_t const alphabet_size = weights.size();
 
     auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
@@ -1420,9 +1428,9 @@ namespace libsemigroups {
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  bool wt_lex_compare(Thing const&               x,
-                      Thing const&               y,
-                      std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_lex_compare(Thing const&               x,
+                                    Thing const&               y,
+                                    std::vector<size_t> const& weights) {
     return wt_lex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
   }
 
@@ -1465,9 +1473,9 @@ namespace libsemigroups {
   //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
-  bool wt_lex_compare(Thing* const               x,
-                      Thing* const               y,
-                      std::vector<size_t> const& weights) {
+  [[nodiscard]] bool wt_lex_compare(Thing* const               x,
+                                    Thing* const               y,
+                                    std::vector<size_t> const& weights) {
     return wt_lex_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
   }
@@ -1607,7 +1615,7 @@ namespace libsemigroups {
     //! If the constructor parameter \c should_check is \c false, it is not
     //! checked that the letters are valid indices into the weights vector.
     template <typename Thing>
-    bool operator()(Thing const& x, Thing const& y) const {
+    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
       if (_should_check) {
         return wt_lex_compare(x, y, _weights);
       } else {
@@ -1637,7 +1645,7 @@ namespace libsemigroups {
     //! See wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
     //! std::vector<size_t> const&).
     template <typename Thing>
-    bool call_no_checks(Thing const& x, Thing const& y) const {
+    [[nodiscard]] bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_lex_compare_no_checks(x, y, _weights);
     }
 
@@ -1652,7 +1660,7 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa should_check(bool)
-    bool should_check() const noexcept {
+    [[nodiscard]] bool should_check() const noexcept {
       return _should_check;
     }
 
@@ -1684,7 +1692,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    std::vector<size_t> const& weights() const noexcept {
+    [[nodiscard]] std::vector<size_t> const& weights() const noexcept {
       return _weights;
     }
 
