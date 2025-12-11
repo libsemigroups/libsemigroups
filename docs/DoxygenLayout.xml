@@ -601,6 +601,7 @@
     <memberdecl>
       <nestedclasses visible="yes" title="" />
       <publictypes title="" />
+      <publicstaticattributes title=""/>
       <publicmethods title="" />
       <publicstaticmethods title="" />
       <related title="" subtitle="" />
@@ -610,7 +611,6 @@
       <publicslots title=""/>
       <signals title=""/>
       <publicattributes title=""/>
-      <publicstaticattributes title=""/>
       <protectedtypes title=""/>
       <protectedslots title=""/>
       <protectedmethods title=""/>
