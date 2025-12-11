@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(later)
+// TODO
 // * tpp file and out of line
 // * dry it out
 // * iwyu
@@ -932,6 +932,7 @@ namespace libsemigroups {
     // TODO init
     // TODO add should_check getters and setters
     // TODO add weights getter + setter
+    // TODO rule of 5?
 
     //! \brief Constant to enable validity checks.
     //!
