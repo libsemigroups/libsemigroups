@@ -17,7 +17,6 @@
 //
 
 // TODO
-// * iwyu
 // * tpp file and out of line
 // * dry it out
 // * noexcept
@@ -25,15 +24,18 @@
 #ifndef LIBSEMIGROUPS_ORDER_HPP_
 #define LIBSEMIGROUPS_ORDER_HPP_
 
-#include <algorithm>  // for std::find_if, std::lexicographical_compare
-#include <cstddef>    // for size_t
-#include <numeric>    // for accumulate
-#include <vector>     // for vector
+#include <algorithm>         // for std::find_if, std::lexicographical_compare
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint8_t
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for distance
+#include <numeric>           // for accumulate
+#include <type_traits>       // for enable_if_t
+#include <utility>           // for move
+#include <vector>            // for vector
 
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "ranges.hpp"     // for shortlex_compare
-
-#include "ranges.hpp"
 
 namespace libsemigroups {
   //! \ingroup types_group
