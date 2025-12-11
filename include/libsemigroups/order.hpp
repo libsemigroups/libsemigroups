@@ -931,9 +931,15 @@ namespace libsemigroups {
   //! std::vector<size_t> const&)
   struct WtShortLexCompare {
     //! \brief Constant to enable validity checks.
+    //!
+    //! This constant can be used in the constructors to indicate that
+    //! checks should be performed on the arguments to the call operator.
     static constexpr bool checks = true;
 
     //! \brief Constant to disable validity checks.
+    //!
+    //! This constant can be used in the constructors to indicate that no
+    //! checks should be performed on the arguments to the call operator.
     static constexpr bool no_checks = false;
 
     //! \brief Construct from weights vector reference and specify
@@ -945,8 +951,8 @@ namespace libsemigroups {
     //! whether the call operator will validate that letters are valid indices.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true, the call operator will check validity;
-    //! if \c false, it will not.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
     WtShortLexCompare(std::vector<size_t> const& weights, bool should_check)
         : _weights(weights), _should_check(should_check) {}
 
@@ -959,8 +965,8 @@ namespace libsemigroups {
     //! whether the call operator will validate that letters are valid indices.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true, the call operator will check validity;
-    //! if \c false, it will not.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
     WtShortLexCompare(std::vector<size_t>&& weights, bool should_check)
         : _weights(std::move(weights)), _should_check(should_check) {}
 
@@ -1007,12 +1013,12 @@ namespace libsemigroups {
 
     // TODO add should_check getters and setters
 
-    //! \brief Call operator that always performs validity checks.
+    //! \brief Call operator that does no checks.
     //!
-    //! This member function always uses \ref wt_shortlex_compare to compare
-    //! \p x and \p y, regardless of the value of the constructor parameter
-    //! \c should_check. Use this when you want to ensure validation is
-    //! performed.
+    //! This member function always uses \ref wt_shortlex_compare_no_checks to
+    //! compare \p x and \p y, regardless of the value of the constructor
+    //! parameter \c should_check. Use this when you want to ensure validation
+    //! is not performed.
     //!
     //! \tparam Thing the type of the objects to be compared.
     //!
@@ -1022,15 +1028,15 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted short-lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter is not a valid index
-    //! into the weights vector.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! See wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&).
+    //! See wt_short_lex_compare_no_checks(Iterator, Iterator, Iterator,
+    //! Iterator, std::vector<size_t> const&).
     template <typename Thing>
-    bool call_checks(Thing const& x, Thing const& y) const {
-      return wt_shortlex_compare(x, y, _weights);
+    bool call_no_checks(Thing const& x, Thing const& y) const {
+      return wt_shortlex_compare_no_checks(x, y, _weights);
     }
 
    private:
@@ -1390,10 +1396,17 @@ namespace libsemigroups {
   struct WtLexCompare {
     // TODO init
     // TODO add should_check getters and setters
+
     //! \brief Constant to enable validity checks.
+    //!
+    //! This constant can be used in the constructors to indicate that
+    //! checks should be performed on the arguments to the call operator.
     static constexpr bool checks = true;
 
     //! \brief Constant to disable validity checks.
+    //!
+    //! This constant can be used in the constructors to indicate that no
+    //! checks should be performed on the arguments to the call operator.
     static constexpr bool no_checks = false;
 
     //! \brief Construct from weights vector reference and specify whether or
@@ -1405,8 +1418,8 @@ namespace libsemigroups {
     //! whether the call operator will validate that letters are valid indices.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true, the call operator will check validity;
-    //! if \c false, it will not.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1422,8 +1435,8 @@ namespace libsemigroups {
     //! whether the call operator will validate that letters are valid indices.
     //!
     //! \param weights the weights vector.
-    //! \param should_check if \c true, the call operator will check validity;
-    //! if \c false, it will not.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1468,12 +1481,12 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Call operator that always performs validity checks.
+    //! \brief Call operator that does no checks.
     //!
-    //! This member function always uses \ref wt_lex_compare to compare
-    //! \p x and \p y, regardless of the value of the constructor
+    //! This member function always uses \ref wt_lex_compare_no_checks to
+    //! compare \p x and \p y, regardless of the value of the constructor
     //! parameter \c should_check. Use this when you want to ensure validation
-    //! is performed.
+    //! is not performed.
     //!
     //! \tparam Thing the type of the objects to be compared.
     //!
@@ -1483,16 +1496,15 @@ namespace libsemigroups {
     //! \returns The boolean value \c true if \p x is weighted lex less
     //! than \p y, and \c false otherwise.
     //!
-    //! \throws LibsemigroupsException if any letter is not a valid index
-    //! into the weights vector.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! See wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+    //! See wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
     //! std::vector<size_t> const&).
     template <typename Thing>
-    // TODO rename to call_no_checks, for consistency with Meeter/Joiner
-    bool call_checks(Thing const& x, Thing const& y) const {
-      return wt_lex_compare(x, y, _weights);
+    bool call_no_checks(Thing const& x, Thing const& y) const {
+      return wt_lex_compare_no_checks(x, y, _weights);
     }
 
    private:

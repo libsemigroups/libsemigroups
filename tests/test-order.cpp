@@ -141,7 +141,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::no_checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -156,7 +156,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {1, 1, 1, 1, 1};
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::no_checks);
 
     word_type w1 = {0};  // weight = 1
     word_type w2 = {1};  // weight = 1
@@ -171,7 +171,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::no_checks);
 
     word_type w1 = {1, 1, 1, 1};  // weight = 1 + 1 + 1 + 1 = 4
     word_type w2 = {3, 1};        // weight = 3 + 1 = 4
@@ -457,7 +457,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtShortLexCompare   comp(weights, WtShortLexCompare::doCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
@@ -472,7 +472,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtShortLexCompare   comp(weights, WtShortLexCompare::doCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::checks);
 
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
@@ -482,32 +482,31 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WtShortLexCompare",
                           "030",
-                          "call_checks always validates",
+                          "call_no_checks always validates",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::no_checks);
 
     word_type w1 = {0, 1};  // weight = 3
     word_type w2 = {2};     // weight = 6
 
-    REQUIRE(comp.call_checks(w1, w2));
-    REQUIRE(!comp.call_checks(w2, w1));
+    REQUIRE(comp.call_no_checks(w1, w2));
+    REQUIRE(!comp.call_no_checks(w2, w1));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WtShortLexCompare",
                           "034",
-                          "call_checks throws on invalid letter",
+                          "call_no_checks throws on invalid letter",
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {2, 1, 6, 3, 4};  // alphabet size = 5
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::checks);
 
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
 
-    // call_checks should throw even though checks are disabled in constructor
-    REQUIRE_THROWS_AS(comp.call_checks(w1, w2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(comp(w1, w2), LibsemigroupsException);
   }
 
   // =========================================================================
@@ -520,7 +519,7 @@ namespace libsemigroups {
                           "[quick][order]") {
     auto                rg      = ReportGuard(false);
     std::vector<size_t> weights = {3, 2, 1};
-    WtShortLexCompare   comp(weights, WtShortLexCompare::noCheck);
+    WtShortLexCompare   comp(weights, WtShortLexCompare::no_checks);
 
     std::set<word_type, WtShortLexCompare> ordered_words(comp);
     ordered_words.insert({2});     // weight = 1
