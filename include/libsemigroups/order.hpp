@@ -920,8 +920,8 @@ namespace libsemigroups {
   //! \warning
   //! When the constructor parameter \c should_check is \c false, the call
   //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to \c true (
-  //! \ref checks) to enable argument checking in the call operator.
+  //! vector. Use the constructor with \c should_check set to \c true
+  //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
   //! * wt_shortlex_compare(Thing const&, Thing const&, std::vector<size_t>
@@ -929,10 +929,6 @@ namespace libsemigroups {
   //! * wt_shortlex_compare_no_checks(Thing const&, Thing const&,
   //! std::vector<size_t> const&)
   struct WtShortLexCompare {
-    // TODO add should_check getters and setters
-    // TODO add weights getter + setter
-    // TODO rule of 5?
-
     //! \brief Constant to enable validity checks.
     //!
     //! This constant can be used in the constructors to indicate that
@@ -1056,8 +1052,6 @@ namespace libsemigroups {
       }
     }
 
-    // TODO add should_check getters and setters
-
     //! \brief Call operator that does no checks.
     //!
     //! This member function always uses \ref wt_shortlex_compare_no_checks to
@@ -1082,6 +1076,69 @@ namespace libsemigroups {
     template <typename Thing>
     bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_shortlex_compare_no_checks(x, y, _weights);
+    }
+
+    //! \brief Returns the value of the constructor parameter \c should_check.
+    //!
+    //! This function returns the current value of the constructor parameter
+    //! \c should_check.
+    //!
+    //! \returns Whether or not the call operator is checking its arguments.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa should_check(bool)
+    bool should_check() const noexcept {
+      return _should_check;
+    }
+
+    //! \brief Set the value of the constructor parameter \c should_check.
+    //!
+    //! This function sets the value of \c should_check to \p val. This
+    //! parameter determines whether or not the call operator is checking its
+    //! arguments.
+    //!
+    //! \param val the new value of \c should_check.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa should_check()
+    WtShortLexCompare& should_check(bool val) noexcept {
+      _should_check = val;
+      return *this;
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! This function returns the current value of the weights used to define
+    //! the comparison implemented by WtShortLexCompare.
+    //!
+    //! \returns The current weights.
+    //!
+    //! \exceptions
+    //! \noexcept
+    std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+
+    //! \brief Set the weights.
+    //!
+    //! This function can be used to redefine the weights used to define the
+    //! comparison implemented by WtShortLexCompare.
+    //!
+    //! \param val the new weights to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    WtShortLexCompare& weights(std::vector<size_t> const& val) {
+      _weights = val;
+      return *this;
     }
 
    private:
@@ -1430,17 +1487,14 @@ namespace libsemigroups {
   //! \warning
   //! When the constructor parameter \c should_check is \c false, the call
   //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to \c true (\ref
-  //! checks to enable argument checking in the call operator.
+  //! vector. Use the constructor with \c should_check set to \c true
+  //! (\ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
   //! * wt_lex_compare(Thing const&, Thing const&, std::vector<size_t> const&)
   //! * wt_lex_compare_no_checks(Thing const&, Thing const&, std::vector<size_t>
   //! const&)
   struct WtLexCompare {
-    // TODO add should_check getters and setters
-    // TODO add weights getter + setter
-
     //! \brief Constant to enable validity checks.
     //!
     //! This constant can be used in the constructors to indicate that
@@ -1585,6 +1639,69 @@ namespace libsemigroups {
     template <typename Thing>
     bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_lex_compare_no_checks(x, y, _weights);
+    }
+
+    //! \brief Returns the value of the constructor parameter \c should_check.
+    //!
+    //! This function returns the current value of the constructor parameter
+    //! \c should_check.
+    //!
+    //! \returns Whether or not the call operator is checking its arguments.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa should_check(bool)
+    bool should_check() const noexcept {
+      return _should_check;
+    }
+
+    //! \brief Set the value of the constructor parameter \c should_check.
+    //!
+    //! This function sets the value of \c should_check to \p val. This
+    //! parameter determines whether or not the call operator is checking its
+    //! arguments.
+    //!
+    //! \param val the new value of \c should_check.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa should_check()
+    WtLexCompare& should_check(bool val) noexcept {
+      _should_check = val;
+      return *this;
+    }
+
+    //! \brief Returns the weights.
+    //!
+    //! This function returns the current value of the weights used to define
+    //! the comparison implemented by WtLexCompare.
+    //!
+    //! \returns The current weights.
+    //!
+    //! \exceptions
+    //! \noexcept
+    std::vector<size_t> const& weights() const noexcept {
+      return _weights;
+    }
+
+    //! \brief Set the weights.
+    //!
+    //! This function can be used to redefine the weights used to define the
+    //! comparison implemented by WtLexCompare.
+    //!
+    //! \param val the new weights to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    WtLexCompare& weights(std::vector<size_t> const& val) {
+      _weights = val;
+      return *this;
     }
 
    private:
