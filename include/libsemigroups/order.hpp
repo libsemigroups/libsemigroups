@@ -929,7 +929,6 @@ namespace libsemigroups {
   //! * wt_shortlex_compare_no_checks(Thing const&, Thing const&,
   //! std::vector<size_t> const&)
   struct WtShortLexCompare {
-    // TODO init
     // TODO add should_check getters and setters
     // TODO add weights getter + setter
     // TODO rule of 5?
@@ -957,8 +956,30 @@ namespace libsemigroups {
     //! \param weights the weights vector.
     //! \param should_check if \c true (\ref checks), the call operator will
     //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     WtShortLexCompare(std::vector<size_t> const& weights, bool should_check)
         : _weights(weights), _should_check(should_check) {}
+
+    //! \brief Reinitialize an existing WtShortLexCompare object.
+    //!
+    //! This function reinitializes an existing WtShortLexCompare object so that
+    //! it is in the same state as if it was newly constructed using the same
+    //! arguments.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtShortLexCompare& init(std::vector<size_t> const& weights,
+                            bool                       should_check) {
+      _weights      = weights;
+      _should_check = should_check;
+      return *this;
+    }
 
     //! \brief Construct from weights vector rvalue reference and specify
     //! whether or not the call operator should check its arguments.
@@ -971,8 +992,30 @@ namespace libsemigroups {
     //! \param weights the weights vector.
     //! \param should_check if \c true (\ref checks), the call operator will
     //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO check \exceptions everywhere
     WtShortLexCompare(std::vector<size_t>&& weights, bool should_check)
         : _weights(std::move(weights)), _should_check(should_check) {}
+
+    //! \brief Reinitialize an existing WtShortLexCompare object.
+    //!
+    //! This function reinitializes an existing WtShortLexCompare object so that
+    //! it is in the same state as if it was newly constructed using the same
+    //! arguments.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtShortLexCompare& init(std::vector<size_t>&& weights, bool should_check) {
+      _weights      = std::move(weights);
+      _should_check = should_check;
+      return *this;
+    }
 
     //! \brief Call operator that compares \p x and \p y using either
     //! \ref wt_shortlex_compare or \ref wt_shortlex_compare_no_checks.
@@ -1012,8 +1055,6 @@ namespace libsemigroups {
         return wt_shortlex_compare_no_checks(x, y, _weights);
       }
     }
-
-    // TODO init
 
     // TODO add should_check getters and setters
 
@@ -1397,7 +1438,6 @@ namespace libsemigroups {
   //! * wt_lex_compare_no_checks(Thing const&, Thing const&, std::vector<size_t>
   //! const&)
   struct WtLexCompare {
-    // TODO init
     // TODO add should_check getters and setters
     // TODO add weights getter + setter
 
@@ -1430,6 +1470,24 @@ namespace libsemigroups {
     WtLexCompare(std::vector<size_t> const& weights, bool should_check)
         : _weights(weights), _should_check(should_check) {}
 
+    //! \brief Reinitialize an existing WtLexCompare object.
+    //!
+    //! This function reinitializes an existing WtLexCompare object so that
+    //! it is in the same state as if it was newly constructed using the same
+    //! arguments.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLexCompare& init(std::vector<size_t> const& weights, bool should_check) {
+      _weights      = std::move(weights);
+      _should_check = should_check;
+      return *this;
+    }
+
     //! \brief Construct from weights vector rvalue reference and specify
     //! whether or not the call operator should check its arguments.
     //!
@@ -1446,6 +1504,24 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     WtLexCompare(std::vector<size_t>&& weights, bool should_check)
         : _weights(std::move(weights)), _should_check(should_check) {}
+
+    //! \brief Reinitialize an existing WtLexCompare object.
+    //!
+    //! This function reinitializes an existing WtLexCompare object so that
+    //! it is in the same state as if it was newly constructed using the same
+    //! arguments.
+    //!
+    //! \param weights the weights vector.
+    //! \param should_check if \c true (\ref checks), the call operator will
+    //! check validity; if \c false (\ref no_checks), it will not.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    WtLexCompare& init(std::vector<size_t>&& weights, bool should_check) {
+      _weights      = std::move(weights);
+      _should_check = should_check;
+      return *this;
+    }
 
     //! \brief Call operator that compares \p x and \p y using either
     //! \ref wt_lex_compare or \ref wt_lex_compare_no_checks.
