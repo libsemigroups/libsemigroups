@@ -16,8 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// This file contains the declarations of several functions and structs
+// defining linear orders on words.
+
 // TODO
-// * tpp file and out of line
 // * dry it out
 // * noexcept
 
@@ -441,40 +443,7 @@ namespace libsemigroups {
   [[nodiscard]] bool recursive_path_compare(Iterator first1,
                                             Iterator last1,
                                             Iterator first2,
-                                            Iterator last2) noexcept {
-    if (first2 == last2) {
-      // Empty word is not bigger than every word
-      return false;
-    } else if (first1 == last1) {
-      // Empty word is smaller than ever word other than the empty word
-      return true;
-    }
-
-    bool lastmoved = false;
-    --last1;
-    --last2;
-    while (true) {
-      if (last1 < first1) {
-        if (last2 < first2) {
-          return lastmoved;
-        }
-        return true;
-      }
-      if (last2 < first2) {
-        return false;
-      }
-      if (*last1 == *last2) {
-        last1--;
-        last2--;
-      } else if (*last1 < *last2) {
-        last1--;
-        lastmoved = false;
-      } else if (*last2 < *last1) {
-        last2--;
-        lastmoved = true;
-      }
-    }
-  }
+                                            Iterator last2) noexcept;
 
   //! \brief Compare two objects of the same type using
   //! \ref recursive_path_compare.
@@ -628,23 +597,7 @@ namespace libsemigroups {
                                 Iterator                   last1,
                                 Iterator                   first2,
                                 Iterator                   last2,
-                                std::vector<size_t> const& weights) {
-    size_t weight1 = std::accumulate(
-        first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
-
-    size_t weight2 = std::accumulate(
-        first2, last2, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
-
-    if (weight1 != weight2) {
-      return weight1 < weight2;
-    }
-
-    return shortlex_compare(first1, last1, first2, last2);
-  }
+                                std::vector<size_t> const& weights);
 
   //! \brief Compare two objects of the same type using
   //! \ref wt_shortlex_compare_no_checks without checks.
@@ -789,35 +742,7 @@ namespace libsemigroups {
                                          Iterator                   last1,
                                          Iterator                   first2,
                                          Iterator                   last2,
-                                         std::vector<size_t> const& weights) {
-    size_t const alphabet_size = weights.size();
-
-    auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it1 != last1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it1),
-          std::distance(first1, it1));
-    }
-
-    auto const it2 = std::find_if(first2, last2, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it2 != last2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it2),
-          std::distance(first2, it2));
-    }
-
-    return wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights);
-  }
+                                         std::vector<size_t> const& weights);
 
   //! \brief Compare two objects of the same type using \ref wt_shortlex_compare
   //! and check validity.
@@ -1199,23 +1124,7 @@ namespace libsemigroups {
                            Iterator                   last1,
                            Iterator                   first2,
                            Iterator                   last2,
-                           std::vector<size_t> const& weights) {
-    size_t weight1 = std::accumulate(
-        first1, last1, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
-
-    size_t weight2 = std::accumulate(
-        first2, last2, size_t(0), [&weights](size_t sum, auto letter) {
-          return sum + weights[letter];
-        });
-
-    if (weight1 != weight2) {
-      return weight1 < weight2;
-    }
-
-    return std::lexicographical_compare(first1, last1, first2, last2);
-  }
+                           std::vector<size_t> const& weights);
 
   //! \brief Compare two objects of the same type using
   //! \ref wt_lex_compare_no_checks without checks.
@@ -1360,35 +1269,7 @@ namespace libsemigroups {
                                     Iterator                   last1,
                                     Iterator                   first2,
                                     Iterator                   last2,
-                                    std::vector<size_t> const& weights) {
-    size_t const alphabet_size = weights.size();
-
-    auto const it1 = std::find_if(first1, last1, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it1 != last1) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it1),
-          std::distance(first1, it1));
-    }
-
-    auto const it2 = std::find_if(first2, last2, [&alphabet_size](auto letter) {
-      return static_cast<size_t>(letter) >= alphabet_size;
-    });
-    if (it2 != last2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "letter value out of bounds, expected value in [0, {}), found {} in "
-          "position {}",
-          alphabet_size,
-          static_cast<size_t>(*it2),
-          std::distance(first2, it2));
-    }
-
-    return wt_lex_compare_no_checks(first1, last1, first2, last2, weights);
-  }
+                                    std::vector<size_t> const& weights);
 
   //! \brief Compare two objects of the same type using \ref wt_lex_compare
   //! and check validity.
@@ -1723,5 +1604,7 @@ namespace libsemigroups {
   //! @}
 
 }  // namespace libsemigroups
+
+#include "order.tpp"
 
 #endif  // LIBSEMIGROUPS_ORDER_HPP_
