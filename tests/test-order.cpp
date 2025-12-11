@@ -16,19 +16,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <array>   // for array
-#include <set>     // for set
-#include <string>  // for string
-#include <vector>  // for vector
+#include <array>    // for array
+#include <cstddef>  // for size_t
+#include <set>      // for set
+#include <string>   // for string
+#include <vector>   // for vector
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/exception.hpp"   // for LibsemigroupsException
+#include "libsemigroups/order.hpp"       // for wt_shortlex_compare*
+#include "libsemigroups/types.hpp"       // for word_type
+#include "libsemigroups/word-range.hpp"  // for operator ""_w
+
+#include "libsemigroups/detail/fmt.hpp"     // for format
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
-#include "libsemigroups/order.hpp"          // for wt_shortlex_compare*
-#include "libsemigroups/types.hpp"          // for word_type
-#include "libsemigroups/word-range.hpp"     // for operator ""_w
 
 namespace libsemigroups {
 
@@ -506,6 +509,7 @@ namespace libsemigroups {
     word_type w1 = {0, 1};
     word_type w2 = {10};  // invalid: 10 >= weights.size()
 
+    // constructor
     REQUIRE_THROWS_AS(comp(w1, w2), LibsemigroupsException);
   }
 
