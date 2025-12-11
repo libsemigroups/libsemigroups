@@ -320,7 +320,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
+  //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
   bool shortlex_compare(Thing const& x, Thing const& y) {
@@ -356,7 +356,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
+  //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
   template <typename Thing>
   bool shortlex_compare(Thing* const x, Thing* const y) {
     return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
@@ -501,7 +501,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
+  //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
   bool recursive_path_compare(Thing const& x, Thing const& y) noexcept {
@@ -535,7 +535,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
+  //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   template <typename Thing>
   bool recursive_path_compare(Thing* const x, Thing* const y) noexcept {
     return recursive_path_compare(
@@ -554,7 +554,7 @@ namespace libsemigroups {
   //! advantages over using \ref recursive_path_compare otherwise.
   //!
   //! \sa
-  //! \ref recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
+  //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   struct RecursivePathCompare {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref recursive_path_compare.
@@ -615,7 +615,7 @@ namespace libsemigroups {
   //! the \p weights vector.
   //!
   //! \sa
-  //! \ref wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+  //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
@@ -678,7 +678,7 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+  //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
@@ -726,7 +726,7 @@ namespace libsemigroups {
   //! vector.
   //!
   //! \sa
-  //! \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+  //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
   bool wt_shortlex_compare_no_checks(Thing* const               x,
@@ -774,7 +774,7 @@ namespace libsemigroups {
   //! \p first2.
   //!
   //! \sa
-  //! \ref wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+  //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
@@ -848,7 +848,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+  //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
@@ -870,7 +870,7 @@ namespace libsemigroups {
   //!
   //! After checking that all letters are valid indices into the weights
   //! vector, this function performs the same as
-  //! `wt_shortlex_compare_no_checks(x, y, weights)`.
+  //! `wt_shortlex_compare_no_checks(*x, *y, weights)`.
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
@@ -895,7 +895,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+  //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
   bool wt_shortlex_compare(Thing* const               x,
@@ -920,16 +920,19 @@ namespace libsemigroups {
   //! \warning
   //! When the constructor parameter \c should_check is \c false, the call
   //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to
-  //! `WtShortLexCompare::checks`, or call the \ref call_checks member function,
-  //! to enable validation.
+  //! vector. Use the constructor with \c should_check set to \c true (
+  //! \ref checks) to enable argument checking in the call operator.
   //!
   //! \sa
-  //! wt_shortlex_compare(Thing const&, Thing const&, std::vector<size_t>
+  //! * wt_shortlex_compare(Thing const&, Thing const&, std::vector<size_t>
   //! const&)
-  //! wt_shortlex_compare_no_checks(Thing const&, Thing const&,
+  //! * wt_shortlex_compare_no_checks(Thing const&, Thing const&,
   //! std::vector<size_t> const&)
   struct WtShortLexCompare {
+    // TODO init
+    // TODO add should_check getters and setters
+    // TODO add weights getter + setter
+
     //! \brief Constant to enable validity checks.
     //!
     //! This constant can be used in the constructors to indicate that
@@ -942,8 +945,8 @@ namespace libsemigroups {
     //! checks should be performed on the arguments to the call operator.
     static constexpr bool no_checks = false;
 
-    //! \brief Construct from weights vector reference and specify
-    //! \p should_check.
+    //! \brief Construct from weights vector reference and specify whether or
+    //! not the call operator should check its arguments.
     //!
     //! Constructs a comparison object that stores a copy of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
@@ -956,8 +959,8 @@ namespace libsemigroups {
     WtShortLexCompare(std::vector<size_t> const& weights, bool should_check)
         : _weights(weights), _should_check(should_check) {}
 
-    //! \brief Construct from weights vector by rvalue and specify
-    //! \p should_check.
+    //! \brief Construct from weights vector rvalue reference and specify
+    //! whether or not the call operator should check its arguments.
     //!
     //! Constructs a comparison object that takes ownership of the provided
     //! weights vector, where the `i`th index corresponds to the weight of the
@@ -992,9 +995,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! See
-    //! wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
-    //! std::vector<size_t> const&) or
-    //! wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+    //! * wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+    //! std::vector<size_t> const&);
+    //! * wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
     //! std::vector<size_t> const&).
     //!
     //! \warning
@@ -1032,8 +1035,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! See wt_short_lex_compare_no_checks(Iterator, Iterator, Iterator,
-    //! Iterator, std::vector<size_t> const&).
+    //! See wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator,
+    //! Iterator, std::vector<size_t> const&)
     template <typename Thing>
     bool call_no_checks(Thing const& x, Thing const& y) const {
       return wt_shortlex_compare_no_checks(x, y, _weights);
@@ -1081,7 +1084,7 @@ namespace libsemigroups {
   //! the weights vector.
   //!
   //! \sa
-  //! \ref wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+  //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
@@ -1144,7 +1147,7 @@ namespace libsemigroups {
   //! into the weights vector.
   //!
   //! \sa
-  //! \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+  //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
@@ -1192,7 +1195,7 @@ namespace libsemigroups {
   //! vector.
   //!
   //! \sa
-  //! \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+  //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
   bool wt_lex_compare_no_checks(Thing* const               x,
@@ -1240,8 +1243,8 @@ namespace libsemigroups {
   //! \p first2.
   //!
   //! \sa
-  //! \ref wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
-  //! std::vector<size_t> const&).
+  //! wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+  //! std::vector<size_t> const&)
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
   bool wt_lex_compare(Iterator                   first1,
@@ -1314,7 +1317,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+  //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
@@ -1335,7 +1338,7 @@ namespace libsemigroups {
   //!
   //! After checking that all letters are valid indices into the weights
   //! vector, this function performs the same as
-  //! `wt_lex_compare_no_checks(x, y, weights)`.
+  //! `wt_lex_compare_no_checks(*x, *y, weights)`.
   //!
   //! \tparam Thing the type of the objects to be compared.
   //!
@@ -1360,7 +1363,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   //!
   //! \sa
-  //! \ref wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+  //! wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
   //! std::vector<size_t> const&).
   template <typename Thing>
   bool wt_lex_compare(Thing* const               x,
@@ -1385,9 +1388,8 @@ namespace libsemigroups {
   //! \warning
   //! When the constructor parameter \c should_check is \c false, the call
   //! operator does not check that letters are valid indices into the weights
-  //! vector. Use the constructor with \c should_check set to
-  //! `WtLexCompare::checks`, or call the \ref call_checks member function, to
-  //! enable validation.
+  //! vector. Use the constructor with \c should_check set to \c true (\ref
+  //! checks to enable argument checking in the call operator.
   //!
   //! \sa
   //! * wt_lex_compare(Thing const&, Thing const&, std::vector<size_t> const&)
@@ -1396,6 +1398,7 @@ namespace libsemigroups {
   struct WtLexCompare {
     // TODO init
     // TODO add should_check getters and setters
+    // TODO add weights getter + setter
 
     //! \brief Constant to enable validity checks.
     //!
