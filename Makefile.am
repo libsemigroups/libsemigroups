@@ -93,6 +93,7 @@ pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
 pkginclude_HEADERS += include/libsemigroups/matrix.hpp
 pkginclude_HEADERS += include/libsemigroups/obvinf.hpp
 pkginclude_HEADERS += include/libsemigroups/order.hpp
+pkginclude_HEADERS += include/libsemigroups/order.tpp
 pkginclude_HEADERS += include/libsemigroups/paths-count.hpp
 pkginclude_HEADERS += include/libsemigroups/paths-count.tpp
 pkginclude_HEADERS += include/libsemigroups/paths.hpp
