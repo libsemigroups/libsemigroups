@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -187,6 +188,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_static_matrix.html',''); initRe
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classlibsemigroups_1_1_static_matrix-members.html">List of all members</a>  </div>
@@ -257,6 +259,15 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>scalar_type</b> = ty
 using&#160;</td><td class="memItemRight" valign="bottom"><b>Zero</b> = ZeroOp</td></tr>
 <tr class="memdesc:a6896831359097d5fd342aa0c78701c39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the template parameter <code class="param">ZeroOp</code>. <br /></td></tr>
 <tr class="separator:a6896831359097d5fd342aa0c78701c39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:afb0499a336ef21ee61fa6bcc7209c98c" id="r_afb0499a336ef21ee61fa6bcc7209c98c"><td class="memItemLeft" align="right" valign="top"><a id="afb0499a336ef21ee61fa6bcc7209c98c" name="afb0499a336ef21ee61fa6bcc7209c98c"></a>
+static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>nr_cols</b> = C</td></tr>
+<tr class="separator:afb0499a336ef21ee61fa6bcc7209c98c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a424b0e7bd8c90143479cb3a4ad0e21e9" id="r_a424b0e7bd8c90143479cb3a4ad0e21e9"><td class="memItemLeft" align="right" valign="top"><a id="a424b0e7bd8c90143479cb3a4ad0e21e9" name="a424b0e7bd8c90143479cb3a4ad0e21e9"></a>
+static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>nr_rows</b> = R</td></tr>
+<tr class="separator:a424b0e7bd8c90143479cb3a4ad0e21e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -485,7 +496,9 @@ template&lt;typename PlusOp, typename ProdOp, typename ZeroOp, typename OneOp, s
 </dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where \(m\) is the template parameter <code>R</code> and \(n\) is the template parameter <code>C</code>.</dd></dl>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">Mat m({{1, 1}, {0, 0}});</div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">using </span>Mat = <a class="code hl_class" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>;</div>
+<div class="line"> Mat m({{1, 1}, {0, 0}});</div>
+<div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>

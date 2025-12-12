@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -559,10 +560,10 @@ $(function(){initNavTree('race_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span> </div>
 <div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_RACE_HPP_</span></div>
 <div class="ttc" id="aat_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector/at.html">std::vector::at</a></div><div class="ttdeci">T at(T... args)</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_a43980e1c87cad4aeee2da1007e419ef4"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#a43980e1c87cad4aeee2da1007e419ef4">libsemigroups::Reporter::reset_start_time</a></div><div class="ttdeci">Reporter const &amp; reset_start_time() const</div><div class="ttdoc">Reset the start time (and last report) to now.</div><div class="ttdef"><b>Definition</b> runner.hpp:255</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_aba5d24029c82fbbf8db4ba268fba1fba"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#aba5d24029c82fbbf8db4ba268fba1fba">libsemigroups::Reporter::report_prefix</a></div><div class="ttdeci">std::string const &amp; report_prefix() const noexcept</div><div class="ttdoc">Get the current prefix string for reporting.</div><div class="ttdef"><b>Definition</b> runner.hpp:325</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_a43980e1c87cad4aeee2da1007e419ef4"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#a43980e1c87cad4aeee2da1007e419ef4">libsemigroups::Reporter::reset_start_time</a></div><div class="ttdeci">Reporter const &amp; reset_start_time() const</div><div class="ttdoc">Reset the start time (and last report) to now.</div><div class="ttdef"><b>Definition</b> runner.hpp:264</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_aba5d24029c82fbbf8db4ba268fba1fba"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#aba5d24029c82fbbf8db4ba268fba1fba">libsemigroups::Reporter::report_prefix</a></div><div class="ttdeci">std::string const &amp; report_prefix() const noexcept</div><div class="ttdoc">Get the current prefix string for reporting.</div><div class="ttdef"><b>Definition</b> runner.hpp:334</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_abb16faf928158bcadef71597e302b78c"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#abb16faf928158bcadef71597e302b78c">libsemigroups::Reporter::delta</a></div><div class="ttdeci">static std::chrono::nanoseconds delta(std::chrono::high_resolution_clock::time_point const &amp;t)</div><div class="ttdoc">The time between a given point and now.</div><div class="ttdef"><b>Definition</b> runner.hpp:70</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_adf69053faf05bc02e3b6ed686f8e0ac7"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#adf69053faf05bc02e3b6ed686f8e0ac7">libsemigroups::Reporter::start_time</a></div><div class="ttdeci">time_point start_time() const noexcept</div><div class="ttdoc">Get the start time.</div><div class="ttdef"><b>Definition</b> runner.hpp:243</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_reporter_html_adf69053faf05bc02e3b6ed686f8e0ac7"><div class="ttname"><a href="classlibsemigroups_1_1_reporter.html#adf69053faf05bc02e3b6ed686f8e0ac7">libsemigroups::Reporter::start_time</a></div><div class="ttdeci">time_point start_time() const noexcept</div><div class="ttdoc">Get the start time.</div><div class="ttdef"><b>Definition</b> runner.hpp:252</div></div>
 <div class="ttc" id="afind_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find_if</a></div><div class="ttdeci">T find_if(T... args)</div></div>
 <div class="ttc" id="aforward_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward</a></div><div class="ttdeci">T forward(T... args)</div></div>
 <div class="ttc" id="aget_id_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/thread/get_id.html">std::this_thread::get_id</a></div><div class="ttdeci">T get_id(T... args)</div></div>

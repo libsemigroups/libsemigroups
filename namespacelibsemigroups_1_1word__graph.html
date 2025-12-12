@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -436,7 +437,9 @@ template&lt;typename Node&gt; </div>
 </dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(N)\) where \(N\) is the second parameter.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The edges added by this function are all labelled <code>0</code>. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The edges added by this function are all labelled <code>0</code>. </dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -483,7 +486,9 @@ template&lt;typename Node, typename Iterator&gt; </div>
 </dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(m)\) where \(m\) is the distance between <code class="param">first</code> and <code class="param">last</code>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The edges added by this function are all labelled <code>0</code>. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The edges added by this function are all labelled <code>0</code>. </dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -524,7 +529,8 @@ template&lt;typename Node&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The adjacency matrix. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The adjacency matrix.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -574,10 +580,11 @@ template&lt;typename Node1, typename Node2&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_set.html">std::unordered_set</a> consisting of all the nodes in the word graph <code class="param">wg</code> that can reach <code class="param">target</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">target</code> is out of bounds (greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>). </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">target</code> is out of bounds (greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>).</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -625,6 +632,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_set.html">std::unordered_set</a> consisting of all the nodes in the word graph <code class="param">wg</code> that can reach <code class="param">target</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>The arguments are not checked, and in particular it is assumed that <code class="param">target</code> is a node of <code class="param">wg</code> (i.e. less than <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>). </dd></dl>
 
 </div>
@@ -667,6 +675,7 @@ template&lt;typename Node&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -734,7 +743,10 @@ template&lt;typename Node&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs.</dd>
+<dd>
+<a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -797,6 +809,7 @@ template&lt;typename Node&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the word graphs are equal at the specified range of nodes.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks are performed to ensure that the arguments are valid.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
@@ -858,7 +871,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Complexity</dt><dd>Linear in the length of <code class="param">path</code>. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the length of <code class="param">path</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -925,7 +940,9 @@ template&lt;typename Node1, typename Node2, typename Iterator&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Complexity</dt><dd>Linear in the distance between <code class="param">first</code> and <code class="param">last</code>. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Linear in the distance between <code class="param">first</code> and <code class="param">last</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -987,7 +1004,9 @@ template&lt;typename Node1, typename Node2, typename Iterator&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code class="param">Node1</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst the distance from <code class="param">first</code> to <code class="param">last</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1043,7 +1062,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code class="param">Node1</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst the length of <code class="param">path</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1092,13 +1113,15 @@ template&lt;typename Node&gt; </div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ace5a7a89a4451ecb0597bc26c9dce496">add_to_out_degree</a>(1);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(0, 0, 1);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(1, 0, 0);</div>
-<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg); <span class="comment">// returns false</span></div>
+<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg); <span class="comment">//-&gt; false</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html">libsemigroups::WordGraph</a></div><div class="ttdoc">Class for representing word graphs.</div><div class="ttdef"><b>Definition</b> word-graph.hpp:83</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html_ab4e724c989a931dd69959954c413cd5b"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">libsemigroups::WordGraph::target</a></div><div class="ttdeci">WordGraph &amp; target(node_type s, label_type a, node_type t)</div><div class="ttdoc">Add an edge from one node to another with a given label.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html_ab63d0e739cdf51ef0bce2316ef228b62"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html#ab63d0e739cdf51ef0bce2316ef228b62">libsemigroups::WordGraph::add_nodes</a></div><div class="ttdeci">WordGraph &amp; add_nodes(size_type nr)</div><div class="ttdoc">Add a number of new nodes.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_graph_html_ace5a7a89a4451ecb0597bc26c9dce496"><div class="ttname"><a href="classlibsemigroups_1_1_word_graph.html#ace5a7a89a4451ecb0597bc26c9dce496">libsemigroups::WordGraph::add_to_out_degree</a></div><div class="ttdeci">WordGraph &amp; add_to_out_degree(size_type nr)</div><div class="ttdoc">Add to the out-degree of every node.</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1word__graph_html_addfcc6c5534df21b88771042cd6cfa06"><div class="ttname"><a href="#addfcc6c5534df21b88771042cd6cfa06">libsemigroups::word_graph::is_acyclic</a></div><div class="ttdeci">bool is_acyclic(WordGraph&lt; Node &gt; const &amp;wg)</div><div class="ttdoc">Check if a word graph is acyclic.</div></div>
-</div><!-- fragment --> </dd></dl>
+</div><!-- fragment --></dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1154,12 +1177,14 @@ template&lt;typename Node1, typename Node2&gt; </div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(0, 0, 1);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(1, 0, 0);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(2, 0, 3);</div>
-<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg); <span class="comment">// returns false</span></div>
-<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 0); <span class="comment">// returns false</span></div>
-<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 1); <span class="comment">// returns false</span></div>
-<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 2); <span class="comment">// returns true</span></div>
-<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 3); <span class="comment">// returns true</span></div>
-</div><!-- fragment --> </dd></dl>
+<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg); <span class="comment">//-&gt; false</span></div>
+<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 0); <span class="comment">//-&gt; false</span></div>
+<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 1); <span class="comment">//-&gt; false</span></div>
+<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 2); <span class="comment">//-&gt; true</span></div>
+<div class="line"><a class="code hl_function" href="#addfcc6c5534df21b88771042cd6cfa06">word_graph::is_acyclic</a>(wg, 3); <span class="comment">//-&gt; true</span></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1214,7 +1239,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code>bool</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb">out_degree</a>. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb">out_degree</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1289,7 +1316,10 @@ template&lt;typename Node, typename Iterator1, typename Iterator2, typename Iter
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>This function ignores out of bound targets in <code class="param">wg</code> (if any). </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1351,10 +1381,11 @@ template&lt;typename Node, typename Iterator1, typename Iterator2&gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the nodes in the range between <code class="param">first_node</code> and <code class="param">last_node</code> does not belong to <code class="param">wg</code> (i.e. is greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>).</td></tr>
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the rules in the range between <code class="param">first_rule</code> and <code class="param">last_rule</code> contains an invalid label (i.e. one greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>). </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the rules in the range between <code class="param">first_rule</code> and <code class="param">last_rule</code> contains an invalid label (i.e. one greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>).</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -1423,8 +1454,11 @@ template&lt;typename Node, typename Iterator1, typename Iterator2, typename Iter
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the word graph is compatible with the given rules at each one of the given nodes.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1483,8 +1517,11 @@ template&lt;typename Node, typename Iterator1, typename Iterator2&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the word graph is compatible with the given rules at each one of the given nodes.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function does not check that its arguments are valid. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function does not check that its arguments are valid.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_graph.html#a900fba6fcc54559396ac8e4834c3c435" title="Check if two word graphs are equal.">WordGraph::operator==</a> for a comparison of two entire word graphs. </dd></dl>
 
 </div>
 </div>
@@ -1527,7 +1564,8 @@ template&lt;typename Node&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the word graph is complete.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where <code>m</code> is number_of_nodes() and <code>n</code> is out_degree(). </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where <code>m</code> is number_of_nodes() and <code>n</code> is out_degree().</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -1588,7 +1626,8 @@ template&lt;typename Node, typename Iterator1, typename Iterator2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where <code>m</code> is the number of nodes in the range and <code>n</code> is out_degree(). </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where <code>m</code> is the number of nodes in the range and <code>n</code> is out_degree().</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -1645,6 +1684,7 @@ template&lt;typename Node, typename Iterator1, typename Iterator2&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the word graph is complete on the given range of nodes.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(mn)\) where <code>m</code> is the number of nodes in the range and <code>n</code> is out_degree().</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments. </dd></dl>
 
 </div>
@@ -1689,7 +1729,9 @@ template&lt;typename Node&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the word graph is connected.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -1751,7 +1793,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If <code class="param">source</code> and <code class="param">target</code> are equal, then, by convention, we consider <code class="param">target</code> to be reachable from <code class="param">source</code>, via the empty path. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If <code class="param">source</code> and <code class="param">target</code> are equal, then, by convention, we consider <code class="param">target</code> to be reachable from <code class="param">source</code>, via the empty path.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -1809,19 +1853,21 @@ template&lt;typename Node1, typename Node2&gt; </div>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>If <code class="param">source</code> and <code class="param">target</code> are equal, then, by convention, we consider <code class="param">target</code> to be reachable from <code class="param">source</code>, via the empty path.</dd>
 <dd>
-This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd></dl>
+This function ignores out of bound targets in <code class="param">wg</code> (if any).</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_class" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt;size_t&gt;</a> wg;</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab63d0e739cdf51ef0bce2316ef228b62">add_nodes</a>(4);</div>
-<div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ace5a7a89a4451ecb0597bc26c9dce496">add_to_out_degree</a>(1);</div>
+<div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ace5a7a89a4451ecb0597bc26c9dce496">add_to_out_degree</a>(4);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(0, 1, 0);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(1, 0, 0);</div>
 <div class="line">wg.<a class="code hl_function" href="classlibsemigroups_1_1_word_graph.html#ab4e724c989a931dd69959954c413cd5b">target</a>(2, 3, 0);</div>
-<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 0, 1); <span class="comment">// returns true</span></div>
-<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 1, 0); <span class="comment">// returns true</span></div>
-<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 1, 2); <span class="comment">// returns false</span></div>
-<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 2, 3); <span class="comment">// returns true</span></div>
-<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 3, 2); <span class="comment">// returns false</span></div>
+<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 0, 1); <span class="comment">//-&gt; false</span></div>
+<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 1, 0); <span class="comment">//-&gt; true</span></div>
+<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 1, 2); <span class="comment">//-&gt; false</span></div>
+<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 2, 3); <span class="comment">//-&gt; false</span></div>
+<div class="line"><a class="code hl_function" href="#abd990a75c79a7759fcd28a26ce7374f0">word_graph::is_reachable_no_checks</a>(wg, 3, 2); <span class="comment">//-&gt; false</span></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1word__graph_html_abd990a75c79a7759fcd28a26ce7374f0"><div class="ttname"><a href="#abd990a75c79a7759fcd28a26ce7374f0">libsemigroups::word_graph::is_reachable_no_checks</a></div><div class="ttdeci">bool is_reachable_no_checks(WordGraph&lt; Node1 &gt; const &amp;wg, Node2 source, Node2 target)</div><div class="ttdoc">Check if there is a path from one node to another.</div></div>
 </div><!-- fragment --> </dd></dl>
 
@@ -1867,6 +1913,7 @@ template&lt;typename Node&gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#ac10246a1e153539515a5eb8a5b53f255">standardize</a>. </dd></dl>
 
 </div>
@@ -1918,10 +1965,11 @@ template&lt;typename Node&gt; </div>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">auto</span> wg = <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;WordGraph&lt;uint8_t&gt;</a>&gt;(</div>
 <div class="line">    5, {{0, 0}, {1, 1}, {2}, {3, 3}});</div>
-<div class="line"><a class="code hl_function" href="#a2cfcd615198613c9deb7db192e997515">word_graph::is_strictly_cyclic</a>(wg);  <span class="comment">// returns false</span></div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:855</div></div>
+<div class="line"><a class="code hl_function" href="#a2cfcd615198613c9deb7db192e997515">word_graph::is_strictly_cyclic</a>(wg);  <span class="comment">//-&gt; false</span></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:856</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1word__graph_html_a2cfcd615198613c9deb7db192e997515"><div class="ttname"><a href="#a2cfcd615198613c9deb7db192e997515">libsemigroups::word_graph::is_strictly_cyclic</a></div><div class="ttdeci">bool is_strictly_cyclic(WordGraph&lt; Node &gt; const &amp;wg)</div><div class="ttdoc">Check if every node is reachable from some node.</div></div>
-</div><!-- fragment --> </dd></dl>
+</div><!-- fragment --></dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -1988,7 +2036,9 @@ template&lt;typename Node1, typename Node2, typename Iterator&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst the distance from <code class="param">first</code> to <code class="param">last</code>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any value in <code class="param">wg</code> or in the word described by <code class="param">first</code> and <code class="param">last</code> is out of bounds (greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>), the path labelled by the word exits the word graph, which is reflected in the result value of this function, but does not cause an exception to be thrown. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any value in <code class="param">wg</code> or in the word described by <code class="param">first</code> and <code class="param">last</code> is out of bounds (greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>), the path labelled by the word exits the word graph, which is reflected in the result value of this function, but does not cause an exception to be thrown.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2034,7 +2084,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pair consisting of the last node reached and an iterator pointing at the last letter in the word labelling an edge.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst the distance from <code>w.size()</code>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any value in <code class="param">wg</code> or in the word described by <code class="param">first</code> and <code class="param">last</code> is out of bounds (greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>), the path labelled by the word exits the word graph, which is reflected in the result value of this function, but does not cause an exception to be thrown. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any value in <code class="param">wg</code> or in the word described by <code class="param">first</code> and <code class="param">last</code> is out of bounds (greater than or equal to <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>), the path labelled by the word exits the word graph, which is reflected in the result value of this function, but does not cause an exception to be thrown.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2096,6 +2148,7 @@ template&lt;typename Node1, typename Node2, typename Iterator&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A pair consisting of the last node reached and an iterator pointing at the last letter in the word labelling an edge.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst the distance from <code class="param">first</code> to <code class="param">last</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed, it is assumed that <code class="param">source</code> is a node in the word graph <code class="param">wg</code>; and that the letters in the word described by <code class="param">first</code> and <code class="param">last</code> belong to the range <code>0</code> to <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>. </dd></dl>
 
 </div>
@@ -2142,6 +2195,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pair consisting of the last node reached and an iterator pointing at the last letter in the word labelling an edge.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst the distance from <code>w.size()</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks on the arguments of this function are performed, it is assumed that <code class="param">source</code> is a node in the word graph <code class="param">wg</code>; and that the letters in the word described by <code class="param">first</code> and <code class="param">last</code> belong to the range <code>0</code> to <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>. </dd></dl>
 
 </div>
@@ -2196,7 +2250,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2244,7 +2300,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/unordered_set.html">std::unordered_set</a> consisting of all the nodes in the word graph <code class="param">wg</code> that are reachable from <code class="param">source</code>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>The arguments are not checked, and in particular it is assumed that <code class="param">source</code> is a node of <code class="param">wg</code> (i.e. less than <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>). </dd></dl>
 
 </div>
@@ -2299,7 +2357,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2346,7 +2406,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of nodes in the word graph <code class="param">wg</code> that are reachable from <code class="param">source</code>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>The arguments are not checked, and in particular it is assumed that <code class="param">source</code> is a node of <code class="param">wg</code> (i.e. less than <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>). </dd></dl>
 
 </div>
@@ -2376,7 +2438,7 @@ template&lt;typename Node&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This function constructs a random acyclic connected word graph with <code class="param">number_of_nodes</code> nodes, and out-degree <code class="param">out_degree</code>. This function implements the Markov chain algorithm given in <a class="el" href="citelist.html#CITEREF_carnino2011">[15]</a>.</p>
+<p>This function constructs a random acyclic connected word graph with <code class="param">number_of_nodes</code> nodes, and out-degree <code class="param">out_degree</code>. This function implements the Markov chain algorithm given in <a class="el" href="citelist.html#CITEREF_carnino2011">[16]</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">number_of_nodes</td><td>the number of nodes. </td></tr>
@@ -2396,7 +2458,8 @@ template&lt;typename Node&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Complexity</dt><dd>The complexity of the implementation is \(O(n^2)\) where <code class="param">n</code> is the number of nodes. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>The complexity of the implementation is \(O(n^2)\) where <code class="param">n</code> is the number of nodes.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2450,7 +2513,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2501,7 +2566,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2549,7 +2616,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> object containing a spanning tree.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>The arguments are not checked, and in particular it is assumed that <code class="param">root</code> is a node of <code class="param">wg</code> (i.e. less than <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>). </dd></dl>
 
 </div>
@@ -2595,7 +2664,9 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>The arguments are not checked, and in particular it is assumed that <code class="param">root</code> is a node of <code class="param">wg</code> (i.e. less than <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes</a>). </dd></dl>
 
 </div>
@@ -2642,7 +2713,9 @@ template&lt;typename Graph&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>This function returns <code>true</code> if the word graph <code class="param">wg</code> is modified by this function (i.e. it was not standardized already), and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -2682,7 +2755,9 @@ template&lt;typename Graph&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a> the first entry of which is <code>true</code> if the word graph <code class="param">wg</code> is modified by this function (i.e. it was not standardized already), and <code>false</code> otherwise. The second entry is a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> object containing a spanning tree for <code class="param">wg</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If any target of any edge in the word graph <code class="param">wg</code> that is out of bounds, then this is ignored by this function.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -3044,7 +3119,8 @@ template&lt;typename Node&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a> of Node types that contains the nodes of <code class="param">wg</code> in topological order (if possible) and is otherwise empty.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>\(O(m + n)\) where \(m\) is the number of nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> and \(n\) is the number of edges. Note that for <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> objects the number of edges is always at most \(mk\) where \(k\) is the <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -3094,7 +3170,8 @@ template&lt;typename Node1, typename Node2&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a> of Node types that contains the nodes reachable from <code class="param">source</code> in <code class="param">wg</code> in topological order (if possible) and is otherwise empty.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>At worst \(O(m + n)\) where \(m\) is the number of nodes in the subword graph of those nodes reachable from <code class="param">source</code> and \(n\) is the number of edges. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At worst \(O(m + n)\) where \(m\) is the number of nodes in the subword graph of those nodes reachable from <code class="param">source</code> and \(n\) is the number of edges.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>

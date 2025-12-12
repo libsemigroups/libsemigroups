@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -197,21 +198,28 @@ $(function(){initNavTree('group__todd__coxeter__class__group.html',''); initResi
 <p>In this documentation we use the term "congruence enumeration" to mean the execution of (any version of) the Todd-Coxeter algorithm. Some of the features of this class were inspired by similar features in <a href="https://staff.itee.uq.edu.au/havas/">ACE</a> by George Havas and Colin Ramsay.</p>
 <p>For information about the output printed by a ToddCoxeter instance during a congruence enumeration, see <a class="el" href="md_todd-coxeter-report.html">this page</a>.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42" title="Enum to indicate the sided-ness of a congruence.">congruence_kind</a> and <a class="el" href="group__types__group.html#gae214dc6594738d449fb4483859d58932" title="Enum to indicate true, false or not currently knowable.">tril</a>.</dd></dl>
-<dl class="section user"><dt>Example 1</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
+<dl class="section user"><dt>Example 1</dt><dd><div class="fragment"><div class="line"><span class="keyword">using </span>options = detail::ToddCoxeterImpl::options;</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
 <div class="line">p.alphabet(2);</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, 00_w, 0_w);</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, 0_w, 1_w);</div>
 <div class="line"><a class="code hl_function" href="#ga85d089a95e53c442b0d970877c8d8942">ToddCoxeter</a> tc(<a class="code hl_enumvalue" href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a123c05d62f2de99971d13bdb90425f1c">congruence_kind::onesided</a>, p);</div>
 <div class="line">tc.strategy(options::strategy::felsch);</div>
-<div class="line">tc.number_of_classes();</div>
-<div class="line">tc.contains(0000_w, 00_w);</div>
-<div class="line">tc.index_of(0000_w);</div>
+<div class="line">tc.number_of_classes(); <span class="comment">//-&gt; 1</span></div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1todd__coxeter.html#a571341887bbc453360734cbbb4d99dea">todd_coxeter::contains</a>(tc, 0000_w, 00_w); <span class="comment">//-&gt; true</span></div>
+<div class="line"><a class="code hl_function" href="group__todd__coxeter__helpers__group.html#gab8405d419fc534ad18019cf9c1ab3533">todd_coxeter::index_of</a>(tc, 0000_w); <span class="comment">//-&gt; 0</span></div>
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__todd__coxeter__class__group_html_ga85d089a95e53c442b0d970877c8d8942"><div class="ttname"><a href="#ga85d089a95e53c442b0d970877c8d8942">libsemigroups::ToddCoxeter</a></div><div class="ttdeci">ToddCoxeter(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; ToddCoxeter&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
+<div class="ttc" id="agroup__todd__coxeter__helpers__group_html_gab8405d419fc534ad18019cf9c1ab3533"><div class="ttname"><a href="group__todd__coxeter__helpers__group.html#gab8405d419fc534ad18019cf9c1ab3533">libsemigroups::todd_coxeter::index_of</a></div><div class="ttdeci">index_type index_of(ToddCoxeter&lt; Word &gt; &amp;tc, Word const &amp;w)</div><div class="ttdoc">Returns the index of the class containing a word.</div><div class="ttdef"><b>Definition</b> todd-coxeter-helpers.hpp:176</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a123c05d62f2de99971d13bdb90425f1c"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a123c05d62f2de99971d13bdb90425f1c">libsemigroups::congruence_kind::onesided</a></div><div class="ttdeci">@ onesided</div><div class="ttdoc">Value representing a one-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:69</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:907</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1todd__coxeter_html_a571341887bbc453360734cbbb4d99dea"><div class="ttname"><a href="namespacelibsemigroups_1_1todd__coxeter.html#a571341887bbc453360734cbbb4d99dea">libsemigroups::todd_coxeter::contains</a></div><div class="ttdeci">bool contains(Thing &amp;thing, typename Thing::native_word_type const &amp;u, typename Thing::native_word_type const &amp;v)</div><div class="ttdoc">Check containment of a pair of words.</div><div class="ttdef"><b>Definition</b> cong-common-helpers.hpp:605</div></div>
 </div><!-- fragment --></dd></dl>
-<dl class="section user"><dt>Example 2</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
+<dl class="section user"><dt>Example 2</dt><dd><div class="fragment"><div class="line"><span class="keyword">using </span>options = detail::ToddCoxeterImpl::options;</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
 <div class="line">p.alphabet(4);</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, 00_w, 0_w);</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, 10_w, 1_w);</div>
@@ -229,9 +237,9 @@ $(function(){initNavTree('group__todd__coxeter__class__group.html',''); initResi
 <div class="line">tc.strategy(options::strategy::hlt)</div>
 <div class="line">   .lookahead_extent(options::lookahead_extent::partial)</div>
 <div class="line">   .save(<span class="keyword">false</span>);</div>
-<div class="line">tc.number_of_classes()  <span class="comment">// 10&#39;752</span></div>
-<div class="line">tc.standardize(order::recursive);</div>
-<div class="line">normal_forms(tc) | rx::take(10) | rx::to_vector()</div>
+<div class="line">tc.number_of_classes();  <span class="comment">//-&gt; 10752</span></div>
+<div class="line">tc.standardize(<a class="code hl_enumvalue" href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4">Order::recursive</a>);</div>
+<div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1todd__coxeter.html#aa4a1a7a3c15699c3b9bfcc5c4b01ef5b">todd_coxeter::normal_forms</a>(tc) | rx::take(10) | rx::to_vector();</div>
 <div class="line"><span class="comment">// {0_w,</span></div>
 <div class="line"><span class="comment">//  1_w,</span></div>
 <div class="line"><span class="comment">//  2_w,</span></div>
@@ -242,8 +250,8 @@ $(function(){initNavTree('group__todd__coxeter__class__group.html',''); initResi
 <div class="line"><span class="comment">//  221_w,</span></div>
 <div class="line"><span class="comment">//  212_w,</span></div>
 <div class="line"><span class="comment">//  2121_w}</span></div>
-<div class="line">tc.standardize(order::<a class="code hl_enumvalue" href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4">lex</a>);</div>
-<div class="line">normal_forms(tc) | rx::take(10) | rx::to_vector()</div>
+<div class="line">tc.standardize(<a class="code hl_enumvalue" href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4">Order::lex</a>);</div>
+<div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1todd__coxeter.html#aa4a1a7a3c15699c3b9bfcc5c4b01ef5b">todd_coxeter::normal_forms</a>(tc) | rx::take(10) | rx::to_vector();</div>
 <div class="line"><span class="comment">// {0_w,</span></div>
 <div class="line"><span class="comment">//  01_w,</span></div>
 <div class="line"><span class="comment">//  012_w,</span></div>
@@ -254,8 +262,10 @@ $(function(){initNavTree('group__todd__coxeter__class__group.html',''); initResi
 <div class="line"><span class="comment">//  01212121_w,</span></div>
 <div class="line"><span class="comment">//  012121212_w,</span></div>
 <div class="line"><span class="comment">//  0121212121_w};</span></div>
-<div class="ttc" id="agroup__types__group_html_ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4"><div class="ttname"><a href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4">libsemigroups::Order::lex</a></div><div class="ttdeci">@ lex</div><div class="ttdef"><b>Definition</b> order.hpp:56</div></div>
+<div class="ttc" id="agroup__types__group_html_ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4"><div class="ttname"><a href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4">libsemigroups::Order::lex</a></div><div class="ttdeci">@ lex</div><div class="ttdef"><b>Definition</b> order.hpp:65</div></div>
+<div class="ttc" id="agroup__types__group_html_ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4"><div class="ttname"><a href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4">libsemigroups::Order::recursive</a></div><div class="ttdeci">@ recursive</div><div class="ttdef"><b>Definition</b> order.hpp:69</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:71</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1todd__coxeter_html_aa4a1a7a3c15699c3b9bfcc5c4b01ef5b"><div class="ttname"><a href="namespacelibsemigroups_1_1todd__coxeter.html#aa4a1a7a3c15699c3b9bfcc5c4b01ef5b">libsemigroups::todd_coxeter::normal_forms</a></div><div class="ttdeci">auto normal_forms(Kambites&lt; Word &gt; &amp;k)</div><div class="ttdoc">Returns a range object containing normal forms.</div><div class="ttdef"><b>Definition</b> kambites-helpers.hpp:62</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>

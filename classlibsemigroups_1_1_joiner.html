@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -192,8 +193,9 @@ $(function(){initNavTree('classlibsemigroups_1_1_joiner.html',''); initResizable
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
-<div class="textblock"><p>This class exists for its call operators which can be used to find the join of two word graphs with the same <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>. This class implements the Hopcroft-Karp algorithm <a class="el" href="citelist.html#CITEREF_hop71">[35]</a> for computing a finite state automata recognising the union of the languages accepted by two given automata.</p>
-<p>The input word graphs need not be complete, and the root nodes can also be specified. </p>
+<div class="textblock"><p>This class exists for its call operators which can be used to find the join of two word graphs with the same <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb" title="Returns the out-degree.">WordGraph::out_degree</a>. This class implements the Hopcroft-Karp algorithm <a class="el" href="citelist.html#CITEREF_hop71">[36]</a> for computing a finite state automata recognising the union of the languages accepted by two given automata.</p>
+<p>The input word graphs need not be complete, and the root nodes can also be specified.</p>
+<dl class="section note"><dt>Note</dt><dd>This class will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>

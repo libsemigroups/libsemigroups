@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -309,7 +310,7 @@ template&lt;typename Element&gt; </div>
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a034471325d79ac9531236b5ea0d4572d"><div class="ttname"><a href="#a034471325d79ac9531236b5ea0d4572d">libsemigroups::KoniecznyTraits::Degree</a></div><div class="ttdeci">::libsemigroups::Degree&lt; element_type &gt; Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:147</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a034471325d79ac9531236b5ea0d4572d"><div class="ttname"><a href="#a034471325d79ac9531236b5ea0d4572d">libsemigroups::KoniecznyTraits::Degree</a></div><div class="ttdeci">::libsemigroups::Degree&lt; element_type &gt; Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:146</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -422,10 +423,10 @@ template&lt;typename Element&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> <a class="code hl_typedef" href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">RightAction</a>&lt;<a class="code hl_typedef" href="#a5991027408ae4f685f2910d843af9183">element_type</a>,</div>
 <div class="line">                      <a class="code hl_typedef" href="#afb6a7cc79d98d2e5ab1e98b225733919">lambda_value_type</a>,</div>
 <div class="line">                      <a class="code hl_struct" href="structlibsemigroups_1_1_image_right_action.html">ImageRightAction&lt;element_type, lambda_value_type&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__action__group_html_ga1288ede08d1b9494336b874ad4da177e"><div class="ttname"><a href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">libsemigroups::RightAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::right &gt; RightAction</div><div class="ttdef"><b>Definition</b> action.hpp:935</div></div>
+<div class="ttc" id="agroup__action__group_html_ga1288ede08d1b9494336b874ad4da177e"><div class="ttname"><a href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">libsemigroups::RightAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::right &gt; RightAction</div><div class="ttdef"><b>Definition</b> action.hpp:933</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_image_right_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_right_action.html">libsemigroups::ImageRightAction</a></div><div class="ttdoc">Adapter for the value of a right action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:399</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::KoniecznyTraits::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">The type of the elements of a Konieczny instance with const removed.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:89</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_afb6a7cc79d98d2e5ab1e98b225733919"><div class="ttname"><a href="#afb6a7cc79d98d2e5ab1e98b225733919">libsemigroups::KoniecznyTraits::lambda_value_type</a></div><div class="ttdeci">typename ::libsemigroups::LambdaValue&lt; element_type &gt;::type lambda_value_type</div><div class="ttdef"><b>Definition</b> konieczny.hpp:97</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::KoniecznyTraits::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">The type of the elements of a Konieczny instance with const removed.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:88</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_afb6a7cc79d98d2e5ab1e98b225733919"><div class="ttname"><a href="#afb6a7cc79d98d2e5ab1e98b225733919">libsemigroups::KoniecznyTraits::lambda_value_type</a></div><div class="ttdeci">typename ::libsemigroups::LambdaValue&lt; element_type &gt;::type lambda_value_type</div><div class="ttdef"><b>Definition</b> konieczny.hpp:96</div></div>
 </div><!-- fragment --><p>The type of the orbit of the lambda values under <a class="el" href="structlibsemigroups_1_1_image_right_action.html" title="Adapter for the value of a right action.">ImageRightAction</a>. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_image_right_action.html" title="Adapter for the value of a right action.">ImageRightAction</a> and <a class="el" href="group__action__group.html#ga1288ede08d1b9494336b874ad4da177e">RightAction</a> </dd></dl>
 
 </div>
@@ -525,7 +526,7 @@ template&lt;typename Element&gt; </div>
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_ad76f1a1683f85f7c152ac2d9544efa4e"><div class="ttname"><a href="#ad76f1a1683f85f7c152ac2d9544efa4e">libsemigroups::KoniecznyTraits::One</a></div><div class="ttdeci">::libsemigroups::One&lt; element_type &gt; One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:132</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_ad76f1a1683f85f7c152ac2d9544efa4e"><div class="ttname"><a href="#ad76f1a1683f85f7c152ac2d9544efa4e">libsemigroups::KoniecznyTraits::One</a></div><div class="ttdeci">::libsemigroups::One&lt; element_type &gt; One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:131</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -566,7 +567,7 @@ template&lt;typename Element&gt; </div>
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a1e49464ff67417d6ed59d360c499c9ca"><div class="ttname"><a href="#a1e49464ff67417d6ed59d360c499c9ca">libsemigroups::KoniecznyTraits::Product</a></div><div class="ttdeci">::libsemigroups::Product&lt; element_type &gt; Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:126</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a1e49464ff67417d6ed59d360c499c9ca"><div class="ttname"><a href="#a1e49464ff67417d6ed59d360c499c9ca">libsemigroups::KoniecznyTraits::Product</a></div><div class="ttdeci">::libsemigroups::Product&lt; element_type &gt; Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:125</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -652,9 +653,9 @@ template&lt;typename Element&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> <a class="code hl_typedef" href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">LeftAction</a>&lt;<a class="code hl_typedef" href="#a5991027408ae4f685f2910d843af9183">element_type</a>,</div>
 <div class="line">                     <a class="code hl_typedef" href="#a189bd3908835d85f1248d598199f7f33">rho_value_type</a>,</div>
 <div class="line">                     <a class="code hl_struct" href="structlibsemigroups_1_1_image_left_action.html">ImageLeftAction&lt;element_type, rho_value_type&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__action__group_html_gae30bbc0cb349827de1e1af8f7a1c1b62"><div class="ttname"><a href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">libsemigroups::LeftAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::left &gt; LeftAction</div><div class="ttdef"><b>Definition</b> action.hpp:945</div></div>
+<div class="ttc" id="agroup__action__group_html_gae30bbc0cb349827de1e1af8f7a1c1b62"><div class="ttname"><a href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">libsemigroups::LeftAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::left &gt; LeftAction</div><div class="ttdef"><b>Definition</b> action.hpp:943</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_image_left_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_left_action.html">libsemigroups::ImageLeftAction</a></div><div class="ttdoc">Adapter for the value of a left action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:357</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a189bd3908835d85f1248d598199f7f33"><div class="ttname"><a href="#a189bd3908835d85f1248d598199f7f33">libsemigroups::KoniecznyTraits::rho_value_type</a></div><div class="ttdeci">typename ::libsemigroups::RhoValue&lt; element_type &gt;::type rho_value_type</div><div class="ttdoc">Alias for RhoValue with template parameter element_type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:101</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_konieczny_traits_html_a189bd3908835d85f1248d598199f7f33"><div class="ttname"><a href="#a189bd3908835d85f1248d598199f7f33">libsemigroups::KoniecznyTraits::rho_value_type</a></div><div class="ttdeci">typename ::libsemigroups::RhoValue&lt; element_type &gt;::type rho_value_type</div><div class="ttdoc">Alias for RhoValue with template parameter element_type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:100</div></div>
 </div><!-- fragment --><p>The type of the orbit of the rho values under <a class="el" href="structlibsemigroups_1_1_image_left_action.html" title="Adapter for the value of a left action.">ImageLeftAction</a> </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="structlibsemigroups_1_1_image_left_action.html" title="Adapter for the value of a left action.">ImageLeftAction</a> and <a class="el" href="group__action__group.html#gae30bbc0cb349827de1e1af8f7a1c1b62">LeftAction</a> </dd></dl>
 
 </div>

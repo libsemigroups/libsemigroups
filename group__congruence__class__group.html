@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -202,14 +203,16 @@ $(function(){initNavTree('group__congruence__class__group.html',''); initResizab
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__cong__common__helpers__group.html">Common congruence helpers</a> for information about helper functions for the <a class="el" href="group__congruence__class__group.html">Congruence</a> class template.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">Presentation&lt;word_type&gt;</a> p;</div>
-<div class="line">p.alphabet(2)</div>
+<div class="line">p.alphabet(2);</div>
+<div class="line">p.contains_empty_word(<span class="keyword">true</span>);</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">presentation::add_rule</a>(p, {0, 1}, {});</div>
+<div class="line"> </div>
 <div class="line">Congruence cong(<a class="code hl_enumvalue" href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">congruence_kind::twosided</a>, p);</div>
 <div class="line"><a class="code hl_function" href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">is_obviously_infinite</a>(cong);  <span class="comment">// true</span></div>
 <div class="line"><a class="code hl_function" href="group__cong__common__helpers__add__pair__group.html#ga16074615f30aabe07828fd18e3767303">congruence_common::add_generating_pair</a>(cong, {0, 0, 0}, {});</div>
-<div class="line">cong.number_of_classes(); <span class="comment">// 3</span></div>
+<div class="line">cong.number_of_classes(); <span class="comment">//-&gt; 3</span></div>
 <div class="ttc" id="agroup__cong__common__helpers__add__pair__group_html_ga16074615f30aabe07828fd18e3767303"><div class="ttname"><a href="group__cong__common__helpers__add__pair__group.html#ga16074615f30aabe07828fd18e3767303">libsemigroups::congruence_common::add_generating_pair</a></div><div class="ttdeci">void add_generating_pair(Thing &amp;thing, typename Thing::native_word_type const &amp;u, typename Thing::native_word_type const &amp;v)</div><div class="ttdoc">Helper for adding a generating pair of words.</div><div class="ttdef"><b>Definition</b> cong-common-helpers.hpp:200</div></div>
-<div class="ttc" id="agroup__obvinf__group_html_gad2114ce6b9a5c58fb69842a91704c034"><div class="ttname"><a href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">libsemigroups::is_obviously_infinite</a></div><div class="ttdeci">bool is_obviously_infinite(Presentation&lt; Word &gt; const &amp;p)</div><div class="ttdoc">Function for checking if the finitely presented semigroup or monoid defined by a Presentation object ...</div><div class="ttdef"><b>Definition</b> obvinf.hpp:496</div></div>
+<div class="ttc" id="agroup__obvinf__group_html_gad2114ce6b9a5c58fb69842a91704c034"><div class="ttname"><a href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">libsemigroups::is_obviously_infinite</a></div><div class="ttdeci">bool is_obviously_infinite(Presentation&lt; Word &gt; const &amp;p)</div><div class="ttdoc">Function for checking if the finitely presented semigroup or monoid defined by a Presentation object ...</div><div class="ttdef"><b>Definition</b> obvinf.hpp:497</div></div>
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:71</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:907</div></div>

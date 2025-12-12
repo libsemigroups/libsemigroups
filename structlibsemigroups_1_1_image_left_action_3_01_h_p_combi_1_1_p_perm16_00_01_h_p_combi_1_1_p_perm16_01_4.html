@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -188,7 +189,7 @@ $(function(){initNavTree('structlibsemigroups_1_1_image_left_action_3_01_h_p_com
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="structlibsemigroups_1_1_image_left_action_3_01_h_p_combi_1_1_p_perm16_00_01_h_p_combi_1_1_p_perm16_01_4-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">ImageLeftAction&lt; HPCombi::PPerm16, HPCombi::PPerm16 &gt;<div class="ingroups"><a class="el" href="group__adapters__hpcombi__group.html">Adapters for HPCombi</a></div></div></div>
+  <div class="headertitle"><div class="title">ImageLeftAction&lt; HPCombi::PPerm16, HPCombi::PPerm16 &gt;<div class="ingroups"><a class="el" href="group__hpcombi__group.html">HPCombi</a> &raquo; <a class="el" href="group__adapters__hpcombi__group.html">Adapters for HPCombi</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
@@ -198,13 +199,13 @@ $(function(){initNavTree('structlibsemigroups_1_1_image_left_action_3_01_h_p_com
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9c8aae79e285b7f6ca69e21b3ae89330" id="r_a9c8aae79e285b7f6ca69e21b3ae89330"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c8aae79e285b7f6ca69e21b3ae89330">operator()</a> (HPCombi::PPerm16 &amp;res, HPCombi::PPerm16 const &amp;x, HPCombi::PPerm16 const &amp;y) const noexcept</td></tr>
-<tr class="memdesc:a9c8aae79e285b7f6ca69e21b3ae89330"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the idempotent \(xy(xy) ^ {-1}\) in <code class="param">res</code>.  <br /></td></tr>
-<tr class="separator:a9c8aae79e285b7f6ca69e21b3ae89330"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a522476921b2454591ceb243ebb114b2e" id="r_a522476921b2454591ceb243ebb114b2e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a522476921b2454591ceb243ebb114b2e">operator()</a> (HPCombi::PPerm16 &amp;res, HPCombi::PPerm16 const &amp;pt, HPCombi::PPerm16 const &amp;x) const noexcept</td></tr>
+<tr class="memdesc:a522476921b2454591ceb243ebb114b2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the idempotent \(xy(xy) ^ {-1}\) in <code class="param">res</code>.  <br /></td></tr>
+<tr class="separator:a522476921b2454591ceb243ebb114b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9c8aae79e285b7f6ca69e21b3ae89330" name="a9c8aae79e285b7f6ca69e21b3ae89330"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c8aae79e285b7f6ca69e21b3ae89330">&#9670;&#160;</a></span>operator()()</h2>
+<a id="a522476921b2454591ceb243ebb114b2e" name="a522476921b2454591ceb243ebb114b2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a522476921b2454591ceb243ebb114b2e">&#9670;&#160;</a></span>operator()()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,12 +221,12 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">HPCombi::PPerm16 const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">HPCombi::PPerm16 const &amp;</td>          <td class="paramname"><span class="paramname"><em>pt</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">HPCombi::PPerm16 const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;) const</td>
+          <td class="paramtype">HPCombi::PPerm16 const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>&#160;) const</td>
         </tr>
       </table>
   </td>
@@ -234,7 +235,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Modifies res in-place to store the idempotent \(xy(xy) ^ {-1}\) in <code class="param">res</code>.</p>
+<p>Modifies <code class="param">res</code> in-place to store the idempotent \(xy(xy) ^ {-1}\) in <code class="param">res</code> where \(y\) is <code class="param">pt</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">res</td><td>the value to hold the output. </td></tr>
+    <tr><td class="paramname">pt</td><td>the point being acted upon. </td></tr>
+    <tr><td class="paramname">x</td><td>the partial permutation that is acting.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
 
 </div>

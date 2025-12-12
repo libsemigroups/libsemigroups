@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -286,7 +287,7 @@ template&lt;typename Result, typename Node&gt; </div>
 <p>Defined in <code><a class="el" href="to-todd-coxeter_8hpp_source.html">to-todd-coxeter.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;ToddCoxeter&lt;Word&gt;</a>&gt;(knd, fpb, wg);</div>
-</div><!-- fragment --><p>This function converts the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object <code class="param">fpb</code> into a <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> object using the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> (which should be either the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> or the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> of <code class="param">fpb</code>).</p>
+</div><!-- fragment --><p> This function converts the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object <code class="param">fpb</code> into a <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> object using the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> (which should be either the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> or the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> of <code class="param">fpb</code>).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Result</td><td>used for SFINAE, the return type of this function, must be <code>ToddCoxeter&lt;Word&gt;</code> for some type <code>Word</code>. </td></tr>

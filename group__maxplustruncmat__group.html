@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -205,15 +206,15 @@ $(function(){initNavTree('group__maxplustruncmat__group.html',''); initResizable
 <p>All three of these types can be accessed via the alias template <a class="el" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat</a> if <code>T</code> has value <code>0</code>, then the threshold can be set at run time, and if <code>R</code> or <code>C</code> is <code>0</code>, then the dimension can be set at run time. The default value of <code>T</code> is <code>0</code>, <code>R</code> is <code>0</code>, and of <code>C</code> is <code>R</code>.</p>
 <p>The alias <a class="el" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat</a> is either <a class="el" href="classlibsemigroups_1_1_static_matrix.html" title="Static matrix class.">StaticMatrix</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicMatrixStaticArith">DynamicMatrix (compile-time</a>arithmetic)", or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)", please refer to the documentation of these class templates for more details. The only substantial difference in the interface of static and dynamic matrices is that the former can be default constructed and the latter should be constructed using the dimensions.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// construct an uninitialized 3 x 3 static matrix with threshold 11</span></div>
-<div class="line"><a class="code hl_typedef" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat&lt;11, 3&gt;</a> m;</div>
+<div class="line">[[maybe_unused]] <a class="code hl_typedef" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat&lt;11, 3&gt;</a> m3_11;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix with threshold 11</span></div>
-<div class="line"><a class="code hl_typedef" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat&lt;11&gt;</a> m(4, 4);</div>
+<div class="line"><a class="code hl_typedef" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat&lt;11&gt;</a> m4_11(4, 4);</div>
 <div class="line"><span class="comment">// construct a truncated max-plus semiring with threshold 11</span></div>
-<div class="line">MaxPlusTruncSemiring sr(11);</div>
+<div class="line">MaxPlusTruncSemiring sr_11(11);</div>
 <div class="line"><span class="comment">// construct an uninitialized 5 x 5 dynamic matrix with threshold 11</span></div>
 <div class="line"><span class="comment">// (defined at run time)</span></div>
-<div class="line"><a class="code hl_typedef" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat&lt;&gt;</a>  m(sr, 5, 5);</div>
-<div class="ttc" id="agroup__maxplustruncmat__group_html_ga8106fe54684e660284895b64d007aa83"><div class="ttname"><a href="#ga8106fe54684e660284895b64d007aa83">libsemigroups::MaxPlusTruncMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, std::conditional_t&lt; T==0, DynamicMatrix&lt; MaxPlusTruncSemiring&lt; Scalar &gt;, Scalar &gt;, DynamicMaxPlusTruncMat&lt; T, Scalar &gt; &gt;, StaticMaxPlusTruncMat&lt; T, R, C, Scalar &gt; &gt; MaxPlusTruncMat</div><div class="ttdoc">Alias template for truncated max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5345</div></div>
+<div class="line"><a class="code hl_typedef" href="#ga8106fe54684e660284895b64d007aa83">MaxPlusTruncMat&lt;&gt;</a>  m5_11(&amp;sr_11, 5, 5);</div>
+<div class="ttc" id="agroup__maxplustruncmat__group_html_ga8106fe54684e660284895b64d007aa83"><div class="ttname"><a href="#ga8106fe54684e660284895b64d007aa83">libsemigroups::MaxPlusTruncMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, std::conditional_t&lt; T==0, DynamicMatrix&lt; MaxPlusTruncSemiring&lt; Scalar &gt;, Scalar &gt;, DynamicMaxPlusTruncMat&lt; T, Scalar &gt; &gt;, StaticMaxPlusTruncMat&lt; T, R, C, Scalar &gt; &gt; MaxPlusTruncMat</div><div class="ttdoc">Alias template for truncated max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5349</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -277,9 +278,9 @@ template&lt;size_t T, typename Scalar&gt; </div>
 <div class="line">                                               <a class="code hl_struct" href="structlibsemigroups_1_1_max_plus_zero.html">MaxPlusZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                               <a class="code hl_struct" href="structlibsemigroups_1_1_integer_zero.html">IntegerZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                               Scalar&gt;</div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4197</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_max_plus_trunc_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_trunc_prod.html">libsemigroups::MaxPlusTruncProd</a></div><div class="ttdoc">Function object for multiplication in truncated max-plus semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5074</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_max_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_zero.html">libsemigroups::MaxPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the max-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4524</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4201</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_max_plus_trunc_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_trunc_prod.html">libsemigroups::MaxPlusTruncProd</a></div><div class="ttdoc">Function object for multiplication in truncated max-plus semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5078</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_max_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_max_plus_zero.html">libsemigroups::MaxPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the max-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4528</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of dynamic truncated max-plus matrices where the dimension is defined at run time, but the threshold is defined at compile-time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -311,8 +312,8 @@ template&lt;size_t T = 0, size_t R = 0, size_t C = R, typename Scalar = int&gt; 
 <div class="line">                         DynamicMatrix&lt;MaxPlusTruncSemiring&lt;Scalar&gt;, Scalar&gt;,</div>
 <div class="line">                         <a class="code hl_typedef" href="#ga2f14a69641e06453fb1ccc6e7b22aca8">DynamicMaxPlusTruncMat&lt;T, Scalar&gt;</a>&gt;,</div>
 <div class="line">      <a class="code hl_typedef" href="#ga8888c233511b72f75cd18949a1d343ac">StaticMaxPlusTruncMat&lt;T, R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__maxplustruncmat__group_html_ga2f14a69641e06453fb1ccc6e7b22aca8"><div class="ttname"><a href="#ga2f14a69641e06453fb1ccc6e7b22aca8">libsemigroups::DynamicMaxPlusTruncMat</a></div><div class="ttdeci">DynamicMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusTruncProd&lt; T, Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMaxPlusTruncMat</div><div class="ttdoc">Alias for dynamic truncated max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5299</div></div>
-<div class="ttc" id="agroup__maxplustruncmat__group_html_ga8888c233511b72f75cd18949a1d343ac"><div class="ttname"><a href="#ga8888c233511b72f75cd18949a1d343ac">libsemigroups::StaticMaxPlusTruncMat</a></div><div class="ttdeci">StaticMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusTruncProd&lt; T, Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMaxPlusTruncMat</div><div class="ttdoc">Alias for static truncated max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5319</div></div>
+<div class="ttc" id="agroup__maxplustruncmat__group_html_ga2f14a69641e06453fb1ccc6e7b22aca8"><div class="ttname"><a href="#ga2f14a69641e06453fb1ccc6e7b22aca8">libsemigroups::DynamicMaxPlusTruncMat</a></div><div class="ttdeci">DynamicMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusTruncProd&lt; T, Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMaxPlusTruncMat</div><div class="ttdoc">Alias for dynamic truncated max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5303</div></div>
+<div class="ttc" id="agroup__maxplustruncmat__group_html_ga8888c233511b72f75cd18949a1d343ac"><div class="ttname"><a href="#ga8888c233511b72f75cd18949a1d343ac">libsemigroups::StaticMaxPlusTruncMat</a></div><div class="ttdeci">StaticMatrix&lt; MaxPlusPlus&lt; Scalar &gt;, MaxPlusTruncProd&lt; T, Scalar &gt;, MaxPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMaxPlusTruncMat</div><div class="ttdoc">Alias for static truncated max-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:5323</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for truncated max-plus matrices.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

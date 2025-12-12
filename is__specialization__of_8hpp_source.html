@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -209,29 +210,31 @@ $(function(){initNavTree('is__specialization__of_8hpp_source.html',''); initResi
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment">// This file contains the struct is_specialization_of and the alias</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// is_specialization_of_v.</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#ifndef LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#define LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;type_traits&gt;</span>  <span class="comment">// for true_type</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">// TODO(v4): rename this file to use &quot;-&quot; and not &quot;_&quot; for consistency!</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#ifndef LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#define LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a> {</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  <span class="comment">// From https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2098r0.pdf</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing, <span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Primary&gt;</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1is__specialization__of.html">   56</a></span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a> : <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::false_type</a> {};</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Primary, <span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1is__specialization__of_3_01_primary_3_01_args_8_8_8_01_4_00_01_primary_01_4.html">   60</a></span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>&lt;Primary&lt;Args...&gt;, Primary&gt; : <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::true_type</a> {};</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing, <span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Primary&gt;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">   82</a></span>  <span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>      = <a class="code hl_struct" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of&lt;Thing, Primary&gt;::value</a>;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_</span></div>
-<div class="ttc" id="agroup__types__group_html_ga1188c878628c9ce9037f1fb10ad0158f"><div class="ttname"><a href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">libsemigroups::is_specialization_of_v</a></div><div class="ttdeci">constexpr bool is_specialization_of_v</div><div class="ttdoc">Helper variable template for is_specialization_of.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:83</div></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;type_traits&gt;</span>  <span class="comment">// for true_type</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a> {</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  <span class="comment">// From https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2098r0.pdf</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing, <span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Primary&gt;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1is__specialization__of.html">   57</a></span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a> : <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::false_type</a> {};</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Primary, <span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1is__specialization__of_3_01_primary_3_01_args_8_8_8_01_4_00_01_primary_01_4.html">   61</a></span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of</a>&lt;Primary&lt;Args...&gt;, Primary&gt; : <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::true_type</a> {};</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Thing, <span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Primary&gt;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">   83</a></span>  <span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v</a></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>      = <a class="code hl_struct" href="structlibsemigroups_1_1is__specialization__of.html">is_specialization_of&lt;Thing, Primary&gt;::value</a>;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_IS_SPECIALIZATION_OF_HPP_</span></div>
+<div class="ttc" id="agroup__types__group_html_ga1188c878628c9ce9037f1fb10ad0158f"><div class="ttname"><a href="group__types__group.html#ga1188c878628c9ce9037f1fb10ad0158f">libsemigroups::is_specialization_of_v</a></div><div class="ttdeci">constexpr bool is_specialization_of_v</div><div class="ttdoc">Helper variable template for is_specialization_of.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:84</div></div>
 <div class="ttc" id="aintegral_constant_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::false_type</a></div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1is__specialization__of_html"><div class="ttname"><a href="structlibsemigroups_1_1is__specialization__of.html">libsemigroups::is_specialization_of</a></div><div class="ttdoc">Struct for checking if a template parameter is a specialization of another.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:56</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1is__specialization__of_html"><div class="ttname"><a href="structlibsemigroups_1_1is__specialization__of.html">libsemigroups::is_specialization_of</a></div><div class="ttdoc">Struct for checking if a template parameter is a specialization of another.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:57</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

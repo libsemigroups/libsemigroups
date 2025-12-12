@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -522,10 +523,10 @@ $(function(){initNavTree('pbr_8hpp_source.html',''); initResizable(true); });
 <div class="ttc" id="aclasslibsemigroups_1_1_p_b_r_html_af60ddfda3183cd2e0c11a5ecf318430b"><div class="ttname"><a href="classlibsemigroups_1_1_p_b_r.html#af60ddfda3183cd2e0c11a5ecf318430b">libsemigroups::PBR::operator=</a></div><div class="ttdeci">PBR &amp; operator=(PBR const &amp;)=default</div><div class="ttdoc">Default copy assignment operator.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_p_b_r_html_af6f66d15de0e408c5e5e65bbc4e0e3aa"><div class="ttname"><a href="classlibsemigroups_1_1_p_b_r.html#af6f66d15de0e408c5e5e65bbc4e0e3aa">libsemigroups::PBR::initializer_list_type</a></div><div class="ttdeci">std::initializer_list&lt; std::vector&lt; T &gt; &gt; const  &amp; initializer_list_type</div><div class="ttdoc">Type of constructor argument.</div><div class="ttdef"><b>Definition</b> pbr.hpp:74</div></div>
 <div class="ttc" id="aforward_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/forward.html">std::forward</a></div><div class="ttdeci">T forward(T... args)</div></div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:855</div></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:856</div></div>
 <div class="ttc" id="agroup__types__group_html_ga2997d4c629358b2e320360bede28bd90"><div class="ttname"><a href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">libsemigroups::enable_if_is_same</a></div><div class="ttdeci">std::enable_if_t&lt; std::is_same_v&lt; Given, Expected &gt;, Expected &gt; enable_if_is_same</div><div class="ttdoc">Alias equal to the second template parameter if both template parameters are equal.</div><div class="ttdef"><b>Definition</b> types.hpp:48</div></div>
-<div class="ttc" id="agroup__types__group_html_ggafc015eff6557e84151d2e53b94375445a7c4f29407893c334a6cb7a87bf045c0d"><div class="ttname"><a href="group__types__group.html#ggafc015eff6557e84151d2e53b94375445a7c4f29407893c334a6cb7a87bf045c0d">libsemigroups::side::right</a></div><div class="ttdeci">@ right</div><div class="ttdef"><b>Definition</b> action.hpp:97</div></div>
-<div class="ttc" id="agroup__types__group_html_ggafc015eff6557e84151d2e53b94375445a811882fecd5c7618d7099ebbd39ea254"><div class="ttname"><a href="group__types__group.html#ggafc015eff6557e84151d2e53b94375445a811882fecd5c7618d7099ebbd39ea254">libsemigroups::side::left</a></div><div class="ttdeci">@ left</div><div class="ttdef"><b>Definition</b> action.hpp:94</div></div>
+<div class="ttc" id="agroup__types__group_html_ggafc015eff6557e84151d2e53b94375445a7c4f29407893c334a6cb7a87bf045c0d"><div class="ttname"><a href="group__types__group.html#ggafc015eff6557e84151d2e53b94375445a7c4f29407893c334a6cb7a87bf045c0d">libsemigroups::side::right</a></div><div class="ttdeci">@ right</div><div class="ttdef"><b>Definition</b> action.hpp:96</div></div>
+<div class="ttc" id="agroup__types__group_html_ggafc015eff6557e84151d2e53b94375445a811882fecd5c7618d7099ebbd39ea254"><div class="ttname"><a href="group__types__group.html#ggafc015eff6557e84151d2e53b94375445a811882fecd5c7618d7099ebbd39ea254">libsemigroups::side::left</a></div><div class="ttdeci">@ left</div><div class="ttdef"><b>Definition</b> action.hpp:93</div></div>
 <div class="ttc" id="ainitializer_list_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a></div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1pbr_html"><div class="ttname"><a href="namespacelibsemigroups_1_1pbr.html">libsemigroups::pbr</a></div><div class="ttdoc">Namespace for PBR helper functions.</div><div class="ttdef"><b>Definition</b> pbr.hpp:383</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1pbr_html_a17cdaedbfda5ffc8a9ff098ea481374a"><div class="ttname"><a href="namespacelibsemigroups_1_1pbr.html#a17cdaedbfda5ffc8a9ff098ea481374a">libsemigroups::pbr::throw_if_invalid</a></div><div class="ttdeci">void throw_if_invalid(PBR const &amp;x)</div><div class="ttdoc">Throws if a PBR is invalid.</div><div class="ttdef"><b>Definition</b> pbr.hpp:487</div></div>

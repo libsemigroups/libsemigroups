@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -333,7 +334,7 @@ template&lt;typename Given, typename Expected&gt; </div>
 </td></tr>
 <tr><td class="fieldname"><a id="ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4" name="ggabdaf879e32abd3c9d7ae16e794b8f405ab067b3d3054d8868c950e1946300a3f4"></a>lex&#160;</td><td class="fielddoc"><p>The lexicographic ordering. Note that this is not a well-order, so there may not be a lexicographically least word in a given congruence class of words. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4" name="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4"></a>recursive&#160;</td><td class="fielddoc"><p>The recursive-path ordering, as described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[37]</a> (Definition 1.2.14, page 24). </p>
+<tr><td class="fieldname"><a id="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4" name="ggabdaf879e32abd3c9d7ae16e794b8f405af8e45531a3ea3d5c1247b004985175a4"></a>recursive&#160;</td><td class="fielddoc"><p>The recursive-path ordering, as described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[38]</a> (Definition 1.2.14, page 24). </p>
 </td></tr>
 </table>
 
@@ -430,9 +431,9 @@ template&lt;typename Thing, template&lt; typename... &gt; typename Primary&gt; <
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_variable" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;std::vector&lt;int&gt;</a>, <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&gt; <span class="comment">// true</span></div>
-<div class="line"><a class="code hl_variable" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;std::vector&lt;int&gt;</a>, <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>&gt; <span class="comment">// false</span></div>
-<div class="ttc" id="agroup__types__group_html_ga1188c878628c9ce9037f1fb10ad0158f"><div class="ttname"><a href="#ga1188c878628c9ce9037f1fb10ad0158f">libsemigroups::is_specialization_of_v</a></div><div class="ttdeci">constexpr bool is_specialization_of_v</div><div class="ttdoc">Helper variable template for is_specialization_of.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:83</div></div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_variable" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;std::vector&lt;int&gt;</a>, <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&gt;; <span class="comment">//-&gt; true</span></div>
+<div class="line"><a class="code hl_variable" href="#ga1188c878628c9ce9037f1fb10ad0158f">is_specialization_of_v&lt;std::vector&lt;int&gt;</a>, <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a>&gt;; <span class="comment">//-&gt; false</span></div>
+<div class="ttc" id="agroup__types__group_html_ga1188c878628c9ce9037f1fb10ad0158f"><div class="ttname"><a href="#ga1188c878628c9ce9037f1fb10ad0158f">libsemigroups::is_specialization_of_v</a></div><div class="ttdeci">constexpr bool is_specialization_of_v</div><div class="ttdoc">Helper variable template for is_specialization_of.</div><div class="ttdef"><b>Definition</b> is_specialization_of.hpp:84</div></div>
 <div class="ttc" id="aunordered_map_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/unordered_map.html">std::unordered_map</a></div></div>
 <div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div></div>
 </div><!-- fragment --></dd></dl>

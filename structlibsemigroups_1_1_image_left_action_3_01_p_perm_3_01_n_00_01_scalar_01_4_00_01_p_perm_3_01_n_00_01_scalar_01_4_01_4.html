@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -198,11 +199,47 @@ struct libsemigroups::ImageLeftAction&lt; PPerm&lt; N, Scalar &gt;, PPerm&lt; N,
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abfb5f19af9f596046080fbbed7cfb4d5" id="r_abfb5f19af9f596046080fbbed7cfb4d5"><td class="memItemLeft" align="right" valign="top"><a id="abfb5f19af9f596046080fbbed7cfb4d5" name="abfb5f19af9f596046080fbbed7cfb4d5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (<a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; &amp;res, <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; const &amp;pt, <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; const &amp;x) const noexcept</td></tr>
-<tr class="memdesc:abfb5f19af9f596046080fbbed7cfb4d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the idempotent \(xy(xy) ^ {-1}\) in <code class="param">res</code>. <br /></td></tr>
+<tr class="memitem:abfb5f19af9f596046080fbbed7cfb4d5" id="r_abfb5f19af9f596046080fbbed7cfb4d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abfb5f19af9f596046080fbbed7cfb4d5">operator()</a> (<a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; &amp;res, <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; const &amp;pt, <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; const &amp;x) const noexcept</td></tr>
 <tr class="separator:abfb5f19af9f596046080fbbed7cfb4d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="abfb5f19af9f596046080fbbed7cfb4d5" name="abfb5f19af9f596046080fbbed7cfb4d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfb5f19af9f596046080fbbed7cfb4d5">&#9670;&#160;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;size_t N, typename Scalar&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void operator() </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>res</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>pt</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a>&lt; N, Scalar &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Stores the idempotent \(xy(xy) ^ {-1}\) in <code class="param">res</code> where \(y\) if <code class="param">pt</code>. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/Users/jdm3/libsemigroups/include/libsemigroups/<a class="el" href="transf_8hpp_source.html">transf.hpp</a></li>
 </ul>

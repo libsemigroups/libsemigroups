@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -201,73 +202,135 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateless struct with binary call operator using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <a href="structlibsemigroups_1_1_lexicographical_compare.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1_recursive_path_compare.html">RecursivePathCompare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateless struct with binary call operator using <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>.  <a href="structlibsemigroups_1_1_recursive_path_compare.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateless struct with binary call operator using <a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>.  <a href="structlibsemigroups_1_1_recursive_path_compare.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1_short_lex_compare.html">ShortLexCompare</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateless struct with binary call operator using <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>.  <a href="structlibsemigroups_1_1_short_lex_compare.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateless struct with binary call operator using <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>.  <a href="structlibsemigroups_1_1_short_lex_compare.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1_wt_lex_compare.html">WtLexCompare</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateful struct with binary call operator using <a class="el" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a> or <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a>.  <a href="structlibsemigroups_1_1_wt_lex_compare.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlibsemigroups_1_1_wt_short_lex_compare.html">WtShortLexCompare</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A stateful struct with binary call operator using <a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a> or <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a>.  <a href="structlibsemigroups_1_1_wt_short_lex_compare.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga970a1f603a89ad5062b9071dbe6a31fc" id="r_ga970a1f603a89ad5062b9071dbe6a31fc"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ga970a1f603a89ad5062b9071dbe6a31fc"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga970a1f603a89ad5062b9071dbe6a31fc">lexicographical_compare</a> (T *const x, T *const y)</td></tr>
-<tr class="memdesc:ga970a1f603a89ad5062b9071dbe6a31fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
-<tr class="separator:ga970a1f603a89ad5062b9071dbe6a31fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4fa4702fa73b3a2904233b1bf827fe12" id="r_ga4fa4702fa73b3a2904233b1bf827fe12"><td class="memTemplParams" colspan="2">template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </td></tr>
-<tr class="memitem:ga4fa4702fa73b3a2904233b1bf827fe12"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga4fa4702fa73b3a2904233b1bf827fe12">lexicographical_compare</a> (T const &amp;x, T const &amp;y)</td></tr>
-<tr class="memdesc:ga4fa4702fa73b3a2904233b1bf827fe12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
-<tr class="separator:ga4fa4702fa73b3a2904233b1bf827fe12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaeb12b3d7a1fc8713b150d5694862ed24" id="r_gaeb12b3d7a1fc8713b150d5694862ed24"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:gaeb12b3d7a1fc8713b150d5694862ed24"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaeb12b3d7a1fc8713b150d5694862ed24">recursive_path_compare</a> (T *const x, T *const y) noexcept</td></tr>
-<tr class="memdesc:gaeb12b3d7a1fc8713b150d5694862ed24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>.  <br /></td></tr>
-<tr class="separator:gaeb12b3d7a1fc8713b150d5694862ed24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadffe31339a26a333b7e64776b424c2e7" id="r_gadffe31339a26a333b7e64776b424c2e7"><td class="memTemplParams" colspan="2">template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </td></tr>
-<tr class="memitem:gadffe31339a26a333b7e64776b424c2e7"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a> (T const &amp;first1, T last1, T const &amp;first2, T last2) noexcept</td></tr>
-<tr class="memdesc:gadffe31339a26a333b7e64776b424c2e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the recursive path comparison.  <br /></td></tr>
-<tr class="separator:gadffe31339a26a333b7e64776b424c2e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad2dc887072358e1facbb2712c29c97ee" id="r_gad2dc887072358e1facbb2712c29c97ee"><td class="memTemplParams" colspan="2">template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </td></tr>
-<tr class="memitem:gad2dc887072358e1facbb2712c29c97ee"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gad2dc887072358e1facbb2712c29c97ee">recursive_path_compare</a> (T const &amp;x, T const &amp;y) noexcept</td></tr>
-<tr class="memdesc:gad2dc887072358e1facbb2712c29c97ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>.  <br /></td></tr>
-<tr class="separator:gad2dc887072358e1facbb2712c29c97ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga815a3c2721ce74cc3fc1b422c43b2a58" id="r_ga815a3c2721ce74cc3fc1b422c43b2a58"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ga815a3c2721ce74cc3fc1b422c43b2a58"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga815a3c2721ce74cc3fc1b422c43b2a58">shortlex_compare</a> (T *const x, T *const y)</td></tr>
-<tr class="memdesc:ga815a3c2721ce74cc3fc1b422c43b2a58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>.  <br /></td></tr>
-<tr class="separator:ga815a3c2721ce74cc3fc1b422c43b2a58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3233f95f6ca46ac303936e7d8b5d0fb2" id="r_ga3233f95f6ca46ac303936e7d8b5d0fb2"><td class="memTemplParams" colspan="2">template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </td></tr>
-<tr class="memitem:ga3233f95f6ca46ac303936e7d8b5d0fb2"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a> (T const &amp;first1, T const &amp;last1, T const &amp;first2, T const &amp;last2)</td></tr>
-<tr class="memdesc:ga3233f95f6ca46ac303936e7d8b5d0fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the short-lex reduction ordering.  <br /></td></tr>
-<tr class="separator:ga3233f95f6ca46ac303936e7d8b5d0fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga66132099e4d079c4ebc735548994ec80" id="r_ga66132099e4d079c4ebc735548994ec80"><td class="memTemplParams" colspan="2">template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </td></tr>
-<tr class="memitem:ga66132099e4d079c4ebc735548994ec80"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga66132099e4d079c4ebc735548994ec80">shortlex_compare</a> (T const &amp;x, T const &amp;y)</td></tr>
-<tr class="memdesc:ga66132099e4d079c4ebc735548994ec80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>.  <br /></td></tr>
-<tr class="separator:ga66132099e4d079c4ebc735548994ec80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3887ac6302b313d7c2c1bebf38e9a1eb" id="r_ga3887ac6302b313d7c2c1bebf38e9a1eb"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:ga3887ac6302b313d7c2c1bebf38e9a1eb"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga3887ac6302b313d7c2c1bebf38e9a1eb">lexicographical_compare</a> (Thing *const x, Thing *const y)</td></tr>
+<tr class="memdesc:ga3887ac6302b313d7c2c1bebf38e9a1eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
+<tr class="separator:ga3887ac6302b313d7c2c1bebf38e9a1eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0283172b6c35fa1597d6fb8910406179" id="r_ga0283172b6c35fa1597d6fb8910406179"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga0283172b6c35fa1597d6fb8910406179"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga0283172b6c35fa1597d6fb8910406179">lexicographical_compare</a> (Thing const &amp;x, Thing const &amp;y)</td></tr>
+<tr class="memdesc:ga0283172b6c35fa1597d6fb8910406179"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
+<tr class="separator:ga0283172b6c35fa1597d6fb8910406179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8e591060f7c2da204c7388cfe16cb73f" id="r_ga8e591060f7c2da204c7388cfe16cb73f"><td class="memTemplParams" colspan="2">template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga8e591060f7c2da204c7388cfe16cb73f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2) noexcept</td></tr>
+<tr class="memdesc:ga8e591060f7c2da204c7388cfe16cb73f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the recursive path comparison.  <br /></td></tr>
+<tr class="separator:ga8e591060f7c2da204c7388cfe16cb73f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga04269b440bcbaaf216fefcd2cfb100c2" id="r_ga04269b440bcbaaf216fefcd2cfb100c2"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:ga04269b440bcbaaf216fefcd2cfb100c2"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga04269b440bcbaaf216fefcd2cfb100c2">recursive_path_compare</a> (Thing *const x, Thing *const y) noexcept</td></tr>
+<tr class="memdesc:ga04269b440bcbaaf216fefcd2cfb100c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>.  <br /></td></tr>
+<tr class="separator:ga04269b440bcbaaf216fefcd2cfb100c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab19586f59c14d561bc218728c622da11" id="r_gab19586f59c14d561bc218728c622da11"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:gab19586f59c14d561bc218728c622da11"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gab19586f59c14d561bc218728c622da11">recursive_path_compare</a> (Thing const &amp;x, Thing const &amp;y) noexcept</td></tr>
+<tr class="memdesc:gab19586f59c14d561bc218728c622da11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>.  <br /></td></tr>
+<tr class="separator:gab19586f59c14d561bc218728c622da11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga772e45259627f8c8a1c545bc95e2ffd4" id="r_ga772e45259627f8c8a1c545bc95e2ffd4"><td class="memTemplParams" colspan="2">template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga772e45259627f8c8a1c545bc95e2ffd4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2)</td></tr>
+<tr class="memdesc:ga772e45259627f8c8a1c545bc95e2ffd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the short-lex reduction ordering.  <br /></td></tr>
+<tr class="separator:ga772e45259627f8c8a1c545bc95e2ffd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6206dea33b0d0cb599ffbd39d643f077" id="r_ga6206dea33b0d0cb599ffbd39d643f077"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:ga6206dea33b0d0cb599ffbd39d643f077"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga6206dea33b0d0cb599ffbd39d643f077">shortlex_compare</a> (Thing *const x, Thing *const y)</td></tr>
+<tr class="memdesc:ga6206dea33b0d0cb599ffbd39d643f077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>.  <br /></td></tr>
+<tr class="separator:ga6206dea33b0d0cb599ffbd39d643f077"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac339d5f6bc7b6e924db77e0216855d36" id="r_gac339d5f6bc7b6e924db77e0216855d36"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:gac339d5f6bc7b6e924db77e0216855d36"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gac339d5f6bc7b6e924db77e0216855d36">shortlex_compare</a> (Thing const &amp;x, Thing const &amp;y)</td></tr>
+<tr class="memdesc:gac339d5f6bc7b6e924db77e0216855d36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>.  <br /></td></tr>
+<tr class="separator:gac339d5f6bc7b6e924db77e0216855d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga71df534b0f6a64e829e44c298bec307d" id="r_ga71df534b0f6a64e829e44c298bec307d"><td class="memTemplParams" colspan="2">template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga71df534b0f6a64e829e44c298bec307d"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga71df534b0f6a64e829e44c298bec307d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the weighted lex ordering and check validity.  <br /></td></tr>
+<tr class="separator:ga71df534b0f6a64e829e44c298bec307d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6e1eb08028b64bbbc23a6bfa1b565dc7" id="r_ga6e1eb08028b64bbbc23a6bfa1b565dc7"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:ga6e1eb08028b64bbbc23a6bfa1b565dc7"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga6e1eb08028b64bbbc23a6bfa1b565dc7">wt_lex_compare</a> (Thing *const x, Thing *const y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga6e1eb08028b64bbbc23a6bfa1b565dc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a> and check validity.  <br /></td></tr>
+<tr class="separator:ga6e1eb08028b64bbbc23a6bfa1b565dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga410d0b7a2b77e7270108add670aaf3c5" id="r_ga410d0b7a2b77e7270108add670aaf3c5"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga410d0b7a2b77e7270108add670aaf3c5"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga410d0b7a2b77e7270108add670aaf3c5">wt_lex_compare</a> (Thing const &amp;x, Thing const &amp;y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga410d0b7a2b77e7270108add670aaf3c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a> and check validity.  <br /></td></tr>
+<tr class="separator:ga410d0b7a2b77e7270108add670aaf3c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5b1f2a5246b2f4807b4c8a3569c74608" id="r_ga5b1f2a5246b2f4807b4c8a3569c74608"><td class="memTemplParams" colspan="2">template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga5b1f2a5246b2f4807b4c8a3569c74608"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga5b1f2a5246b2f4807b4c8a3569c74608"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the weighted lex ordering without checks.  <br /></td></tr>
+<tr class="separator:ga5b1f2a5246b2f4807b4c8a3569c74608"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga467b90042d1a124b8e40b0061ab91235" id="r_ga467b90042d1a124b8e40b0061ab91235"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:ga467b90042d1a124b8e40b0061ab91235"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga467b90042d1a124b8e40b0061ab91235">wt_lex_compare_no_checks</a> (Thing *const x, Thing *const y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga467b90042d1a124b8e40b0061ab91235"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a> without checks.  <br /></td></tr>
+<tr class="separator:ga467b90042d1a124b8e40b0061ab91235"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4db159e9a1e5dc056180de2fcae533e6" id="r_ga4db159e9a1e5dc056180de2fcae533e6"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga4db159e9a1e5dc056180de2fcae533e6"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga4db159e9a1e5dc056180de2fcae533e6">wt_lex_compare_no_checks</a> (Thing const &amp;x, Thing const &amp;y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga4db159e9a1e5dc056180de2fcae533e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a> without checks.  <br /></td></tr>
+<tr class="separator:ga4db159e9a1e5dc056180de2fcae533e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga10aa01065b7e4228767b22a7650b6ffd" id="r_ga10aa01065b7e4228767b22a7650b6ffd"><td class="memTemplParams" colspan="2">template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga10aa01065b7e4228767b22a7650b6ffd"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga10aa01065b7e4228767b22a7650b6ffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the weighted short-lex ordering and check validity.  <br /></td></tr>
+<tr class="separator:ga10aa01065b7e4228767b22a7650b6ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa3f6fe632f3ea840bebec1b227285627" id="r_gaa3f6fe632f3ea840bebec1b227285627"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:gaa3f6fe632f3ea840bebec1b227285627"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa3f6fe632f3ea840bebec1b227285627">wt_shortlex_compare</a> (Thing *const x, Thing *const y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:gaa3f6fe632f3ea840bebec1b227285627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a> and check validity.  <br /></td></tr>
+<tr class="separator:gaa3f6fe632f3ea840bebec1b227285627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga27dfa0fc0868d162e5a2d5540f4a50d9" id="r_ga27dfa0fc0868d162e5a2d5540f4a50d9"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga27dfa0fc0868d162e5a2d5540f4a50d9"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga27dfa0fc0868d162e5a2d5540f4a50d9">wt_shortlex_compare</a> (Thing const &amp;x, Thing const &amp;y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga27dfa0fc0868d162e5a2d5540f4a50d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a> and check validity.  <br /></td></tr>
+<tr class="separator:ga27dfa0fc0868d162e5a2d5540f4a50d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga38edb6f16c2ec94c10141155a2e84d4f" id="r_ga38edb6f16c2ec94c10141155a2e84d4f"><td class="memTemplParams" colspan="2">template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga38edb6f16c2ec94c10141155a2e84d4f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga38edb6f16c2ec94c10141155a2e84d4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using the weighted short-lex ordering without checks.  <br /></td></tr>
+<tr class="separator:ga38edb6f16c2ec94c10141155a2e84d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa8204f330c27676ea446e90ca14c4f17" id="r_gaa8204f330c27676ea446e90ca14c4f17"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:gaa8204f330c27676ea446e90ca14c4f17"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa8204f330c27676ea446e90ca14c4f17">wt_shortlex_compare_no_checks</a> (Thing *const x, Thing *const y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:gaa8204f330c27676ea446e90ca14c4f17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects via their pointers using <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a> without checks.  <br /></td></tr>
+<tr class="separator:gaa8204f330c27676ea446e90ca14c4f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1abcac3bf14cd28847a3fadbb060354e" id="r_ga1abcac3bf14cd28847a3fadbb060354e"><td class="memTemplParams" colspan="2">template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ga1abcac3bf14cd28847a3fadbb060354e"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga1abcac3bf14cd28847a3fadbb060354e">wt_shortlex_compare_no_checks</a> (Thing const &amp;x, Thing const &amp;y, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;weights)</td></tr>
+<tr class="memdesc:ga1abcac3bf14cd28847a3fadbb060354e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two objects of the same type using <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a> without checks.  <br /></td></tr>
+<tr class="separator:ga1abcac3bf14cd28847a3fadbb060354e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga970a1f603a89ad5062b9071dbe6a31fc" name="ga970a1f603a89ad5062b9071dbe6a31fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga970a1f603a89ad5062b9071dbe6a31fc">&#9670;&#160;</a></span>lexicographical_compare() <span class="overload">[1/2]</span></h2>
+<a id="ga3887ac6302b313d7c2c1bebf38e9a1eb" name="ga3887ac6302b313d7c2c1bebf38e9a1eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3887ac6302b313d7c2c1bebf38e9a1eb">&#9670;&#160;</a></span>lexicographical_compare() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T&gt; </div>
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool lexicographical_compare </td>
           <td>(</td>
-          <td class="paramtype">T *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects via their pointers using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
+<p>This function compares two objects via their pointers using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the objects to be compared.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
   </table>
   </dd>
 </dl>
@@ -281,38 +344,45 @@ template&lt;typename T&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is lexicographically less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga4fa4702fa73b3a2904233b1bf827fe12">lexicographical_compare</a>(</div>
-<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
-<div class="ttc" id="agroup__orders__group_html_ga4fa4702fa73b3a2904233b1bf827fe12"><div class="ttname"><a href="#ga4fa4702fa73b3a2904233b1bf827fe12">libsemigroups::lexicographical_compare</a></div><div class="ttdeci">bool lexicographical_compare(T const &amp;x, T const &amp;y)</div><div class="ttdoc">Compare two objects of the same type using std::lexicographical_compare.</div><div class="ttdef"><b>Definition</b> order.hpp:102</div></div>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga0283172b6c35fa1597d6fb8910406179">lexicographical_compare</a>(x.cbegin(),x.cend(),y.cbegin(),y.cend());</div>
+<div class="ttc" id="agroup__orders__group_html_ga0283172b6c35fa1597d6fb8910406179"><div class="ttname"><a href="#ga0283172b6c35fa1597d6fb8910406179">libsemigroups::lexicographical_compare</a></div><div class="ttdeci">bool lexicographical_compare(Thing const &amp;x, Thing const &amp;y)</div><div class="ttdoc">Compare two objects of the same type using std::lexicographical_compare.</div><div class="ttdef"><b>Definition</b> order.hpp:112</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
 </div>
-<a id="ga4fa4702fa73b3a2904233b1bf827fe12" name="ga4fa4702fa73b3a2904233b1bf827fe12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4fa4702fa73b3a2904233b1bf827fe12">&#9670;&#160;</a></span>lexicographical_compare() <span class="overload">[2/2]</span></h2>
+<a id="ga0283172b6c35fa1597d6fb8910406179" name="ga0283172b6c35fa1597d6fb8910406179"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0283172b6c35fa1597d6fb8910406179">&#9670;&#160;</a></span>lexicographical_compare() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </div>
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool lexicographical_compare </td>
           <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects of the same type using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
+<p>This function compares two objects of the same type using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the objects to be compared.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
   </table>
   </dd>
 </dl>
@@ -326,20 +396,18 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is lexicographically less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>(</div>
-<div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend());</div>
-<div class="ttc" id="alexicographical_compare_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a></div><div class="ttdeci">T lexicographical_compare(T... args)</div></div>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga0283172b6c35fa1597d6fb8910406179">lexicographical_compare</a>(x.cbegin(),x.cend(),y.cbegin(),y.cend());</div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
 </div>
-<a id="gaeb12b3d7a1fc8713b150d5694862ed24" name="gaeb12b3d7a1fc8713b150d5694862ed24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaeb12b3d7a1fc8713b150d5694862ed24">&#9670;&#160;</a></span>recursive_path_compare() <span class="overload">[1/3]</span></h2>
+<a id="ga8e591060f7c2da204c7388cfe16cb73f" name="ga8e591060f7c2da204c7388cfe16cb73f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8e591060f7c2da204c7388cfe16cb73f">&#9670;&#160;</a></span>recursive_path_compare() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T&gt; </div>
+template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -347,94 +415,41 @@ template&lt;typename T&gt; </div>
         <tr>
           <td class="memname">bool recursive_path_compare </td>
           <td>(</td>
-          <td class="paramtype">T *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects via their pointers using <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the objects to be compared.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
-    <tr><td class="paramname">y</td><td>pointer to the second object for comparison.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the value pointed to by <code class="param">x</code> is less than the value pointed to by <code class="param">y</code> with respect to the recursive path ordering, and <code>false</code> otherwise.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>(</div>
-<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
-<div class="ttc" id="agroup__orders__group_html_gadffe31339a26a333b7e64776b424c2e7"><div class="ttname"><a href="#gadffe31339a26a333b7e64776b424c2e7">libsemigroups::recursive_path_compare</a></div><div class="ttdeci">bool recursive_path_compare(T const &amp;first1, T last1, T const &amp;first2, T last2) noexcept</div><div class="ttdoc">Compare two objects of the same type using the recursive path comparison.</div><div class="ttdef"><b>Definition</b> order.hpp:423</div></div>
-</div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare(T const&amp;, T, T const&amp;, T)</a> </dd></dl>
-
-</div>
-</div>
-<a id="gadffe31339a26a333b7e64776b424c2e7" name="gadffe31339a26a333b7e64776b424c2e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gadffe31339a26a333b7e64776b424c2e7">&#9670;&#160;</a></span>recursive_path_compare() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool recursive_path_compare </td>
-          <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects of the same type using the recursive path comparison described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[37]</a> (Definition 1.2.14, page 24).</p>
+<p>This function compares two objects of the same type using the recursive path comparison described in <a class="el" href="citelist.html#CITEREF_jantzen2012aa">[38]</a> (Definition 1.2.14, page 24).</p>
 <p>If \(u, v\in X ^ {*}\), \(u \neq v\), and \(u = a&#39;u\), \(v = bv&#39;\) for some \(a,b \in X\), \(u&#39;,v&#39;\in X ^ {*}\), then \(u &gt; v\) if one of the following conditions holds:</p><ol type="1">
 <li>\(a = b\) and \(u&#39; \geq v&#39;\);</li>
 <li>\(a &gt; b\) and \(u  &gt; v&#39;\);</li>
 <li>\(b &gt; a\) and \(u&#39; &gt; v\).</li>
 </ol>
-<p>This documentation and the implementation of <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a> is based on the source code of <a class="el" href="citelist.html#CITEREF_holt2018aa">[34]</a>.</p>
+<p>This documentation and the implementation of <a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a> is based on the source code of <a class="el" href="citelist.html#CITEREF_holt2018aa">[35]</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of iterators to the first object to be compared.</td></tr>
+    <tr><td class="paramname">Iterator</td><td>the type of iterators that are the arguments.</td></tr>
   </table>
   </dd>
 </dl>
@@ -449,17 +464,17 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is less than the range <code>[first2, last2)</code> with respect to the recursive path ordering, and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function has significantly worse performance than all the variants of <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a> and <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function has significantly worse performance than all the variants of <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a> and <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>. </dd></dl>
 
 </div>
 </div>
-<a id="gad2dc887072358e1facbb2712c29c97ee" name="gad2dc887072358e1facbb2712c29c97ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad2dc887072358e1facbb2712c29c97ee">&#9670;&#160;</a></span>recursive_path_compare() <span class="overload">[3/3]</span></h2>
+<a id="ga04269b440bcbaaf216fefcd2cfb100c2" name="ga04269b440bcbaaf216fefcd2cfb100c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga04269b440bcbaaf216fefcd2cfb100c2">&#9670;&#160;</a></span>recursive_path_compare() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </div>
+template&lt;typename Thing&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -467,25 +482,78 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
         <tr>
           <td class="memname">bool recursive_path_compare </td>
           <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects of the same type using <a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>.</p>
+<p>This function compares two objects via their pointers using <a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the objects to be compared.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the second object for comparison.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the value pointed to by <code class="param">x</code> is less than the value pointed to by <code class="param">y</code> with r to the recursive path ordering, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>(</div>
+<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
+<div class="ttc" id="agroup__orders__group_html_ga8e591060f7c2da204c7388cfe16cb73f"><div class="ttname"><a href="#ga8e591060f7c2da204c7388cfe16cb73f">libsemigroups::recursive_path_compare</a></div><div class="ttdeci">bool recursive_path_compare(Iterator first1, Iterator last1, Iterator first2, Iterator last2) noexcept</div><div class="ttdoc">Compare two objects of the same type using the recursive path comparison.</div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f" title="Compare two objects of the same type using the recursive path comparison.">recursive_path_compare(Iterator, Iterator, Iterator, Iterator)</a> </dd></dl>
+
+</div>
+</div>
+<a id="gab19586f59c14d561bc218728c622da11" name="gab19586f59c14d561bc218728c622da11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab19586f59c14d561bc218728c622da11">&#9670;&#160;</a></span>recursive_path_compare() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool recursive_path_compare </td>
+          <td>(</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using <a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
   </table>
   </dd>
 </dl>
@@ -498,94 +566,56 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is less than <code class="param">y</code> with respect to the recursive path ordering, and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare</a>(</div>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga8e591060f7c2da204c7388cfe16cb73f">recursive_path_compare</a>(</div>
 <div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend());</div>
 </div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#gadffe31339a26a333b7e64776b424c2e7">recursive_path_compare(T const&amp;, T, T const&amp;, T)</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga8e591060f7c2da204c7388cfe16cb73f" title="Compare two objects of the same type using the recursive path comparison.">recursive_path_compare(Iterator, Iterator, Iterator, Iterator)</a> </dd></dl>
 
 </div>
 </div>
-<a id="ga815a3c2721ce74cc3fc1b422c43b2a58" name="ga815a3c2721ce74cc3fc1b422c43b2a58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga815a3c2721ce74cc3fc1b422c43b2a58">&#9670;&#160;</a></span>shortlex_compare() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">bool shortlex_compare </td>
-          <td>(</td>
-          <td class="paramtype">T *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects via their pointers using <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the objects to be compared.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
-    <tr><td class="paramname">y</td><td>pointer to the second object for comparison.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word short-lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n)\) where \(n\) is the minimum of the length of the word pointed to by <code class="param">x</code> and the length of word pointed to by <code class="param">y</code>.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>(</div>
-<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
-<div class="ttc" id="agroup__orders__group_html_ga3233f95f6ca46ac303936e7d8b5d0fb2"><div class="ttname"><a href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">libsemigroups::shortlex_compare</a></div><div class="ttdeci">bool shortlex_compare(T const &amp;first1, T const &amp;last1, T const &amp;first2, T const &amp;last2)</div><div class="ttdoc">Compare two objects of the same type using the short-lex reduction ordering.</div><div class="ttdef"><b>Definition</b> order.hpp:273</div></div>
-</div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>. </dd></dl>
-
-</div>
-</div>
-<a id="ga3233f95f6ca46ac303936e7d8b5d0fb2" name="ga3233f95f6ca46ac303936e7d8b5d0fb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">&#9670;&#160;</a></span>shortlex_compare() <span class="overload">[2/3]</span></h2>
+<a id="ga772e45259627f8c8a1c545bc95e2ffd4" name="ga772e45259627f8c8a1c545bc95e2ffd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga772e45259627f8c8a1c545bc95e2ffd4">&#9670;&#160;</a></span>shortlex_compare() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </div>
+template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool shortlex_compare </td>
           <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>&#160;)</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects of the same type using the short-lex reduction ordering.</p>
+<p>This function compares two objects of the same type using the short-lex reduction ordering.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of iterators to the first object to be compared.</td></tr>
+    <tr><td class="paramname">Iterator</td><td>the type of iterators that are the parameters.</td></tr>
   </table>
   </dd>
 </dl>
@@ -601,45 +631,108 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is short-lex less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>Throws if <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a> does.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At most \(O(n)\) where \(n\) is the minimum of the distance between <code class="param">last1</code> and <code class="param">first1</code>, and the distance between <code class="param">last2</code> and <code class="param">first2</code>.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> S&gt;</div>
-<div class="line"><span class="keywordtype">bool</span> <a class="code hl_function" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>(T <span class="keyword">const</span>&amp; first1,</div>
-<div class="line">                      T <span class="keyword">const</span>&amp; last1,</div>
-<div class="line">                      S <span class="keyword">const</span>&amp; first2,</div>
-<div class="line">                      S <span class="keyword">const</span>&amp; last2) {</div>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Iterator&gt;</div>
+<div class="line"><span class="keywordtype">bool</span> <a class="code hl_function" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>(Iterator first1,</div>
+<div class="line">                      Iterator last1,</div>
+<div class="line">                      Iterator first2,</div>
+<div class="line">                      Iterator last2) {</div>
 <div class="line">  <span class="keywordflow">return</span> (last1 - first1) &lt; (last2 - first2)</div>
 <div class="line">         || ((last1 - first1) == (last2 - first2)</div>
 <div class="line">             &amp;&amp; <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a></div>
 <div class="line">                  (first1, last1, first2, last2));</div>
 <div class="line">}</div>
+<div class="ttc" id="agroup__orders__group_html_ga772e45259627f8c8a1c545bc95e2ffd4"><div class="ttname"><a href="#ga772e45259627f8c8a1c545bc95e2ffd4">libsemigroups::shortlex_compare</a></div><div class="ttdeci">bool shortlex_compare(Iterator first1, Iterator last1, Iterator first2, Iterator last2)</div><div class="ttdoc">Compare two objects of the same type using the short-lex reduction ordering.</div><div class="ttdef"><b>Definition</b> order.hpp:288</div></div>
+<div class="ttc" id="alexicographical_compare_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a></div><div class="ttdeci">T lexicographical_compare(T... args)</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
 </div>
-<a id="ga66132099e4d079c4ebc735548994ec80" name="ga66132099e4d079c4ebc735548994ec80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga66132099e4d079c4ebc735548994ec80">&#9670;&#160;</a></span>shortlex_compare() <span class="overload">[3/3]</span></h2>
+<a id="ga6206dea33b0d0cb599ffbd39d643f077" name="ga6206dea33b0d0cb599ffbd39d643f077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6206dea33b0d0cb599ffbd39d643f077">&#9670;&#160;</a></span>shortlex_compare() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;T&gt;&gt;&gt; </div>
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool shortlex_compare </td>
           <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
-<p>Compare two objects of the same type using <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>.</p>
+<p>This function compares two objects via their pointers using <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the objects to be compared.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the second object for comparison.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word short-lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare(Iterator, Iterator, Iterator, Iterator)</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n)\) where \(n\) is the minimum of the length of the word pointed to by <code class="param">x</code> and the length of word pointed to by <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>(</div>
+<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend());</div>
+</div><!-- fragment --></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4" title="Compare two objects of the same type using the short-lex reduction ordering.">shortlex_compare(Iterator, Iterator, Iterator, Iterator)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="gac339d5f6bc7b6e924db77e0216855d36" name="gac339d5f6bc7b6e924db77e0216855d36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac339d5f6bc7b6e924db77e0216855d36">&#9670;&#160;</a></span>shortlex_compare() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool shortlex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
   </table>
   </dd>
 </dl>
@@ -651,12 +744,814 @@ template&lt;typename T, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&l
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is short-lex less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare(Iterator, Iterator, Iterator, Iterator)</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>At most \(O(n)\) where \(n\) is the minimum of the length of <code class="param">x</code> and the length of <code class="param">y</code>.</dd></dl>
-<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>(</div>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>(</div>
 <div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend());</div>
 </div><!-- fragment --></dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare(T const&amp;, T const&amp;, T const&amp;, T const&amp;)</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga772e45259627f8c8a1c545bc95e2ffd4" title="Compare two objects of the same type using the short-lex reduction ordering.">shortlex_compare(Iterator, Iterator, Iterator, Iterator)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga71df534b0f6a64e829e44c298bec307d" name="ga71df534b0f6a64e829e44c298bec307d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga71df534b0f6a64e829e44c298bec307d">&#9670;&#160;</a></span>wt_lex_compare() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_lex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using the weighted lex ordering. The weight of a word is computed by adding up the weights of the letters in the word, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet. Heavier words come later in the ordering than all lighter words. Amongst words of equal weight, lexicographic ordering is used.</p>
+<p>After checking that all letters in both ranges are valid indices into the weights vector, this function performs the same as <code>wt_lex_compare_no_checks(first1, last1, first2, last2, weights)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of iterators to the first object to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>beginning iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">last1</td><td>ending iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">first2</td><td>beginning iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">last2</td><td>ending iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is weighted lex less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter in either range is not a valid index into the weights vector (i.e., if any letter is greater than or equal to <code>weights.size()</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the distance between <code class="param">last1</code> and <code class="param">first1</code>, and \(m\) is the distance between <code class="param">last2</code> and <code class="param">first2</code>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608" title="Compare two objects of the same type using the weighted lex ordering without checks.">wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga6e1eb08028b64bbbc23a6bfa1b565dc7" name="ga6e1eb08028b64bbbc23a6bfa1b565dc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6e1eb08028b64bbbc23a6bfa1b565dc7">&#9670;&#160;</a></span>wt_lex_compare() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_lex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects via their pointers using <a class="el" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<p>After checking that all letters are valid indices into the weights vector, this function performs the same as <code>wt_lex_compare_no_checks(*x, *y, weights)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word weighted lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter is not a valid index into the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of the word pointed to by <code class="param">x</code> and \(m\) is the length of word pointed to by <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a>(</div>
+<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend(), weights);</div>
+<div class="ttc" id="agroup__orders__group_html_ga71df534b0f6a64e829e44c298bec307d"><div class="ttname"><a href="#ga71df534b0f6a64e829e44c298bec307d">libsemigroups::wt_lex_compare</a></div><div class="ttdeci">bool wt_lex_compare(Iterator first1, Iterator last1, Iterator first2, Iterator last2, std::vector&lt; size_t &gt; const &amp;weights)</div><div class="ttdoc">Compare two objects of the same type using the weighted lex ordering and check validity.</div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga71df534b0f6a64e829e44c298bec307d" title="Compare two objects of the same type using the weighted lex ordering and check validity.">wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga410d0b7a2b77e7270108add670aaf3c5" name="ga410d0b7a2b77e7270108add670aaf3c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga410d0b7a2b77e7270108add670aaf3c5">&#9670;&#160;</a></span>wt_lex_compare() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_lex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using <a class="el" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<p>After checking that all letters in both objects are valid indices into the weights vector, this function performs the same as <code>wt_lex_compare_no_checks(x, y, weights)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>const reference to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>const reference to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is weighted lex less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter in <code class="param">x</code> or <code class="param">y</code> is not a valid index into the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of <code class="param">x</code> and \(m\) is the length of <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga71df534b0f6a64e829e44c298bec307d">wt_lex_compare</a>(</div>
+<div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);</div>
+</div><!-- fragment --></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga71df534b0f6a64e829e44c298bec307d" title="Compare two objects of the same type using the weighted lex ordering and check validity.">wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga5b1f2a5246b2f4807b4c8a3569c74608" name="ga5b1f2a5246b2f4807b4c8a3569c74608"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5b1f2a5246b2f4807b4c8a3569c74608">&#9670;&#160;</a></span>wt_lex_compare_no_checks() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_lex_compare_no_checks </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using the weighted lex ordering. The weight of a word is computed by adding up the weights of the letters in the word, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet. Heavier words come later in the ordering than all lighter words. Amongst words of equal weight, lexicographic ordering is used.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of iterators to the first object to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>beginning iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">last1</td><td>ending iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">first2</td><td>beginning iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">last2</td><td>ending iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is weighted lex less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>Throws if <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a> does.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the distance between <code class="param">last1</code> and <code class="param">first1</code>, and \(m\) is the distance between <code class="param">last2</code> and <code class="param">first2</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>It is not checked that the letters in the ranges are valid indices into the weights vector.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga71df534b0f6a64e829e44c298bec307d" title="Compare two objects of the same type using the weighted lex ordering and check validity.">wt_lex_compare(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga467b90042d1a124b8e40b0061ab91235" name="ga467b90042d1a124b8e40b0061ab91235"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga467b90042d1a124b8e40b0061ab91235">&#9670;&#160;</a></span>wt_lex_compare_no_checks() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_lex_compare_no_checks </td>
+          <td>(</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects via their pointers using <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word weighted lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">vector&lt;size_t&gt; const&amp;)</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of the word pointed to by <code class="param">x</code> and \(m\) is the length of word pointed to by <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a>(</div>
+<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend(), weights);</div>
+<div class="ttc" id="agroup__orders__group_html_ga5b1f2a5246b2f4807b4c8a3569c74608"><div class="ttname"><a href="#ga5b1f2a5246b2f4807b4c8a3569c74608">libsemigroups::wt_lex_compare_no_checks</a></div><div class="ttdeci">bool wt_lex_compare_no_checks(Iterator first1, Iterator last1, Iterator first2, Iterator last2, std::vector&lt; size_t &gt; const &amp;weights)</div><div class="ttdoc">Compare two objects of the same type using the weighted lex ordering without checks.</div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>It is not checked that the letters are valid indices into the weights vector.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608" title="Compare two objects of the same type using the weighted lex ordering without checks.">wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga4db159e9a1e5dc056180de2fcae533e6" name="ga4db159e9a1e5dc056180de2fcae533e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4db159e9a1e5dc056180de2fcae533e6">&#9670;&#160;</a></span>wt_lex_compare_no_checks() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_lex_compare_no_checks </td>
+          <td>(</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>const reference to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>const reference to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is weighted lex less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">vector&lt;size_t&gt; const&amp;)</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of <code class="param">x</code> and \(m\) is the length of <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga5b1f2a5246b2f4807b4c8a3569c74608">wt_lex_compare_no_checks</a>(</div>
+<div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);</div>
+</div><!-- fragment --></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>It is not checked that the letters in <code class="param">x</code> and <code class="param">y</code> are valid indices into the weights vector.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga5b1f2a5246b2f4807b4c8a3569c74608" title="Compare two objects of the same type using the weighted lex ordering without checks.">wt_lex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga10aa01065b7e4228767b22a7650b6ffd" name="ga10aa01065b7e4228767b22a7650b6ffd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga10aa01065b7e4228767b22a7650b6ffd">&#9670;&#160;</a></span>wt_shortlex_compare() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_shortlex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using the weighted short-lex ordering. The weight of a word is computed by adding up the weights of the letters in the word, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet. Heavier words come later in the ordering than all lighter words. Amongst words of equal weight, short-lex ordering is used.</p>
+<p>After checking that all letters in both ranges are valid indices into the weights vector, this function performs the same as <code>wt_shortlex_compare_no_checks(first1, last1, first2, last2, weights)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of iterators to the first object to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>beginning iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">last1</td><td>ending iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">first2</td><td>beginning iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">last2</td><td>ending iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is weighted short-lex less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter in either range is not a valid index into the weights vector (i.e., if any letter is greater than or equal to <code>weights.size()</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the distance between <code class="param">last1</code> and <code class="param">first1</code>, and \(m\) is the distance between <code class="param">last2</code> and <code class="param">first2</code>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f" title="Compare two objects of the same type using the weighted short-lex ordering without checks.">wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="gaa3f6fe632f3ea840bebec1b227285627" name="gaa3f6fe632f3ea840bebec1b227285627"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa3f6fe632f3ea840bebec1b227285627">&#9670;&#160;</a></span>wt_shortlex_compare() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_shortlex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects via their pointers using <a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<p>After checking that all letters are valid indices into the weights vector, this function performs the same as <code>wt_shortlex_compare_no_checks(*x, *y, weights)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word weighted short-lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter is not a valid index into the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of the word pointed to by <code class="param">x</code> and \(m\) is the length of word pointed to by <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a>(</div>
+<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend(), weights);</div>
+<div class="ttc" id="agroup__orders__group_html_ga10aa01065b7e4228767b22a7650b6ffd"><div class="ttname"><a href="#ga10aa01065b7e4228767b22a7650b6ffd">libsemigroups::wt_shortlex_compare</a></div><div class="ttdeci">bool wt_shortlex_compare(Iterator first1, Iterator last1, Iterator first2, Iterator last2, std::vector&lt; size_t &gt; const &amp;weights)</div><div class="ttdoc">Compare two objects of the same type using the weighted short-lex ordering and check validity.</div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd" title="Compare two objects of the same type using the weighted short-lex ordering and check validity.">wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga27dfa0fc0868d162e5a2d5540f4a50d9" name="ga27dfa0fc0868d162e5a2d5540f4a50d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga27dfa0fc0868d162e5a2d5540f4a50d9">&#9670;&#160;</a></span>wt_shortlex_compare() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_shortlex_compare </td>
+          <td>(</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using <a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<p>After checking that all letters in both objects are valid indices into the weights vector, this function performs the same as <code>wt_shortlex_compare_no_checks(x, y, weights)</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>const reference to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>const reference to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is weighted short-lex less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any letter in <code class="param">x</code> or <code class="param">y</code> is not a valid index into the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of <code class="param">x</code> and \(m\) is the length of <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga10aa01065b7e4228767b22a7650b6ffd">wt_shortlex_compare</a>(</div>
+<div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);</div>
+</div><!-- fragment --></dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd" title="Compare two objects of the same type using the weighted short-lex ordering and check validity.">wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga38edb6f16c2ec94c10141155a2e84d4f" name="ga38edb6f16c2ec94c10141155a2e84d4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga38edb6f16c2ec94c10141155a2e84d4f">&#9670;&#160;</a></span>wt_shortlex_compare_no_checks() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Iterator&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_shortlex_compare_no_checks </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using the weighted short-lex ordering. The weight of a word is computed by adding up the weights of the letters in the word, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet. Heavier words come later in the ordering than all lighter words. Amongst words of equal weight, short-lex ordering is used.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of iterators that are the arguments.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>beginning iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">last1</td><td>ending iterator of first object for comparison. </td></tr>
+    <tr><td class="paramname">first2</td><td>beginning iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">last2</td><td>ending iterator of second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is weighted short-lex less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>Throws if <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a> does.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the distance between <code class="param">last1</code> and <code class="param">first1</code>, and \(m\) is the distance between <code class="param">last2</code> and <code class="param">first2</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>It is not checked that the letters in the ranges are valid indices into the <code class="param">weights</code> vector.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga10aa01065b7e4228767b22a7650b6ffd" title="Compare two objects of the same type using the weighted short-lex ordering and check validity.">wt_shortlex_compare(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="gaa8204f330c27676ea446e90ca14c4f17" name="gaa8204f330c27676ea446e90ca14c4f17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa8204f330c27676ea446e90ca14c4f17">&#9670;&#160;</a></span>wt_shortlex_compare_no_checks() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_shortlex_compare_no_checks </td>
+          <td>(</td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing *const</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects via their pointers using <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>pointer to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>pointer to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> points to a word weighted short-lex less than the word pointed to by <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">vector&lt;size_t&gt; const&amp;)</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of the word pointed to by <code class="param">x</code> and \(m\) is the length of word pointed to by <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a>(</div>
+<div class="line">  x-&gt;cbegin(), x-&gt;cend(), y-&gt;cbegin(), y-&gt;cend(), weights);</div>
+<div class="ttc" id="agroup__orders__group_html_ga38edb6f16c2ec94c10141155a2e84d4f"><div class="ttname"><a href="#ga38edb6f16c2ec94c10141155a2e84d4f">libsemigroups::wt_shortlex_compare_no_checks</a></div><div class="ttdeci">bool wt_shortlex_compare_no_checks(Iterator first1, Iterator last1, Iterator first2, Iterator last2, std::vector&lt; size_t &gt; const &amp;weights)</div><div class="ttdoc">Compare two objects of the same type using the weighted short-lex ordering without checks.</div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>It is not checked that the letters are valid indices into the weights vector.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f" title="Compare two objects of the same type using the weighted short-lex ordering without checks.">wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga1abcac3bf14cd28847a3fadbb060354e" name="ga1abcac3bf14cd28847a3fadbb060354e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1abcac3bf14cd28847a3fadbb060354e">&#9670;&#160;</a></span>wt_shortlex_compare_no_checks() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Thing, typename = std::enable_if_t&lt;!rx::is_input_or_sink_v&lt;Thing&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wt_shortlex_compare_no_checks </td>
+          <td>(</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; size_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>weights</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="order_8hpp_source.html">order.hpp</a></code>.</p>
+<p>This function compares two objects of the same type using <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a>, where the <code>i</code>th index of the weights vector corresponds to the weight of the <code>i</code>th letter in the alphabet.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Thing</td><td>the type of the objects to be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>const reference to the first object for comparison. </td></tr>
+    <tr><td class="paramname">y</td><td>const reference to the second object for comparison. </td></tr>
+    <tr><td class="paramname">weights</td><td>the weights vector.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is weighted short-lex less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f">vector&lt;size_t&gt; const&amp;)</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At most \(O(n + m)\) where \(n\) is the length of <code class="param">x</code> and \(m\) is the length of <code class="param">y</code>.</dd></dl>
+<dl class="section user"><dt>Possible Implementation</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#ga38edb6f16c2ec94c10141155a2e84d4f">wt_shortlex_compare_no_checks</a>(</div>
+<div class="line">  x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);</div>
+</div><!-- fragment --></dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>It is not checked that the letters in <code class="param">x</code> and <code class="param">y</code> are valid indices into the weights vector.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga38edb6f16c2ec94c10141155a2e84d4f" title="Compare two objects of the same type using the weighted short-lex ordering without checks.">wt_shortlex_compare_no_checks(Iterator, Iterator, Iterator, Iterator,
+std::vector&lt;size_t&gt; const&amp;)</a>. </dd></dl>
 
 </div>
 </div>

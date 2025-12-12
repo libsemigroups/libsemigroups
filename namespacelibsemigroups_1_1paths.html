@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -195,16 +196,7 @@ $(function(){initNavTree('namespacelibsemigroups_1_1paths.html',''); initResizab
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a8a0fd7a8363e41d8c12a90716f4f500f" id="r_a8a0fd7a8363e41d8c12a90716f4f500f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a> { <br />
-&#160;&#160;<a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6">dfs</a> = 0
-, <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6">matrix</a>
-, <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab">acyclic</a>
-, <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03">trivial</a>
-, <br />
-&#160;&#160;<a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">automatic</a>
-<br />
- }</td></tr>
-<tr class="memdesc:a8a0fd7a8363e41d8c12a90716f4f500f"><td class="mdescLeft">&#160;</td><td class="mdescRight">An enum for specifying the algorithm to the functions number_of_paths().  <a href="#a8a0fd7a8363e41d8c12a90716f4f500f">More...</a><br /></td></tr>
+<tr class="memitem:a8a0fd7a8363e41d8c12a90716f4f500f" id="r_a8a0fd7a8363e41d8c12a90716f4f500f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a> </td></tr>
 <tr class="separator:a8a0fd7a8363e41d8c12a90716f4f500f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
@@ -218,7 +210,7 @@ Enumerations</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum class <a class="el" href="#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a></td>
+          <td class="memname">enum class algorithm</td>
         </tr>
       </table>
   </td>
@@ -227,18 +219,7 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6" name="a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6"></a>dfs&#160;</td><td class="fielddoc"><p>Use a depth-first-search. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6" name="a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6"></a>matrix&#160;</td><td class="fielddoc"><p>Use the adjacency matrix and matrix multiplication. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab" name="a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab"></a>acyclic&#160;</td><td class="fielddoc"><p>Use a dynamic programming approach for acyclic word graphs. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03" name="a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03"></a>trivial&#160;</td><td class="fielddoc"><p>Try to utilise some corner cases. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8" name="a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8"></a>automatic&#160;</td><td class="fielddoc"><p>The function <a class="el" href="classlibsemigroups_1_1_paths.html#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a> tries to decide which algorithm is best. </p>
-</td></tr>
-</table>
+<p>An enum for specifying the algorithm to the functions count(). </p>
 
 </div>
 </div>

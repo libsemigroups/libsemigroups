@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -198,10 +199,10 @@ $(function(){initNavTree('group__minplusmat__group.html',''); initResizable(true
 <p>The alias <a class="el" href="#MinPlusMatAlias">MinPlusMat</a> is either <a class="el" href="classlibsemigroups_1_1_static_matrix.html">StaticMatrix</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicMatrixStaticArith">DynamicMatrix (compile-time arithmetic),</a>or <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_semiring_00_01_scalar_01_4.html#DynamicMatrixDynamicArith">DynamicMatrix (run-time arithmetic)</a> please refer to the documentation of these class templates for more details. The only substantial difference in the interface of static and dynamic matrices is that the former can be default constructed and the latter should be constructed using the dimensions.</p>
 <dl class="section user"><dt>Example</dt><dd></dd></dl>
 <div class="fragment"><div class="line"><span class="comment">// default construct an uninitialized 3 x 3 static matrix</span></div>
-<div class="line"><a class="code hl_typedef" href="#gafc0b3787714b4088d46c7cd42c01aeee">MinPlusMat&lt;3&gt;</a> m;</div>
+<div class="line">[[maybe_unused]] <a class="code hl_typedef" href="#gafc0b3787714b4088d46c7cd42c01aeee">MinPlusMat&lt;3&gt;</a> m3;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix</span></div>
-<div class="line"><a class="code hl_typedef" href="#gafc0b3787714b4088d46c7cd42c01aeee">MinPlusMat&lt;&gt;</a> m(4, 4);</div>
-<div class="ttc" id="agroup__minplusmat__group_html_gafc0b3787714b4088d46c7cd42c01aeee"><div class="ttname"><a href="#gafc0b3787714b4088d46c7cd42c01aeee">libsemigroups::MinPlusMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicMinPlusMat&lt; Scalar &gt;, StaticMinPlusMat&lt; R, C, Scalar &gt; &gt; MinPlusMat</div><div class="ttdoc">Alias template for min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4903</div></div>
+<div class="line"><a class="code hl_typedef" href="#gafc0b3787714b4088d46c7cd42c01aeee">MinPlusMat&lt;&gt;</a> m4(4, 4);</div>
+<div class="ttc" id="agroup__minplusmat__group_html_gafc0b3787714b4088d46c7cd42c01aeee"><div class="ttname"><a href="#gafc0b3787714b4088d46c7cd42c01aeee">libsemigroups::MinPlusMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicMinPlusMat&lt; Scalar &gt;, StaticMinPlusMat&lt; R, C, Scalar &gt; &gt; MinPlusMat</div><div class="ttdoc">Alias template for min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4907</div></div>
 </div><!-- fragment --> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -260,9 +261,9 @@ template&lt;typename Scalar&gt; </div>
 <div class="line">                                          <a class="code hl_struct" href="structlibsemigroups_1_1_min_plus_zero.html">MinPlusZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                          <a class="code hl_struct" href="structlibsemigroups_1_1_integer_zero.html">IntegerZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                          Scalar&gt;</div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4197</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_min_plus_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_prod.html">libsemigroups::MinPlusProd</a></div><div class="ttdoc">Function object for multiplication in the min-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4795</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_min_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_zero.html">libsemigroups::MinPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the min-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4832</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4201</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_min_plus_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_prod.html">libsemigroups::MinPlusProd</a></div><div class="ttdoc">Function object for multiplication in the min-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4799</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_min_plus_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_min_plus_zero.html">libsemigroups::MinPlusZero</a></div><div class="ttdoc">Function object for returning the additive identity of the min-plus semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4836</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of dynamic min-plus matrices where the dimensions of the matrices can be defined at run time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -290,8 +291,8 @@ template&lt;size_t R = 0, size_t C = R, typename Scalar = int&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line"> std::conditional_t&lt;R == 0 || C == 0,</div>
 <div class="line">                                        <a class="code hl_typedef" href="#ga92aa8577de9638be5f3cec241a30687a">DynamicMinPlusMat&lt;Scalar&gt;</a>,</div>
 <div class="line">                                        <a class="code hl_typedef" href="#gac76d8e91bb94821a55477e9367bcf2a7">StaticMinPlusMat&lt;R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__minplusmat__group_html_ga92aa8577de9638be5f3cec241a30687a"><div class="ttname"><a href="#ga92aa8577de9638be5f3cec241a30687a">libsemigroups::DynamicMinPlusMat</a></div><div class="ttdeci">DynamicMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusProd&lt; Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMinPlusMat</div><div class="ttdoc">Alias for dynamic min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4860</div></div>
-<div class="ttc" id="agroup__minplusmat__group_html_gac76d8e91bb94821a55477e9367bcf2a7"><div class="ttname"><a href="#gac76d8e91bb94821a55477e9367bcf2a7">libsemigroups::StaticMinPlusMat</a></div><div class="ttdeci">StaticMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusProd&lt; Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMinPlusMat</div><div class="ttdoc">Alias for static min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4879</div></div>
+<div class="ttc" id="agroup__minplusmat__group_html_ga92aa8577de9638be5f3cec241a30687a"><div class="ttname"><a href="#ga92aa8577de9638be5f3cec241a30687a">libsemigroups::DynamicMinPlusMat</a></div><div class="ttdeci">DynamicMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusProd&lt; Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, Scalar &gt; DynamicMinPlusMat</div><div class="ttdoc">Alias for dynamic min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4864</div></div>
+<div class="ttc" id="agroup__minplusmat__group_html_gac76d8e91bb94821a55477e9367bcf2a7"><div class="ttname"><a href="#gac76d8e91bb94821a55477e9367bcf2a7">libsemigroups::StaticMinPlusMat</a></div><div class="ttdeci">StaticMatrix&lt; MinPlusPlus&lt; Scalar &gt;, MinPlusProd&lt; Scalar &gt;, MinPlusZero&lt; Scalar &gt;, IntegerZero&lt; Scalar &gt;, R, C, Scalar &gt; StaticMinPlusMat</div><div class="ttdoc">Alias for static min-plus matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4883</div></div>
 </div><!-- fragment --><p><a class="anchor" id="MinPlusMatAlias"></a></p>
 <p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for min-plus matrices.</p>

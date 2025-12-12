@@ -31,7 +31,7 @@ var searchData=
   ['hlt_5fdefs_28',['hlt_defs',['../group__todd__coxeter__class__settings__group.html#gafaa853d0d9cd8dbd4fd98c0654e8ae26',1,'libsemigroups::detail::ToddCoxeterImpl::hlt_defs(size_t val)'],['../group__todd__coxeter__class__settings__group.html#gae4cbea03ee1cf9c48741cad2de7df25d',1,'libsemigroups::detail::ToddCoxeterImpl::hlt_defs() const noexcept']]],
   ['hours_29',['hours',['http://en.cppreference.com/w/cpp/chrono/duration.html',1,'hours'],['http://en.cppreference.com/w/cpp/chrono/duration/duration.html',1,'std::chrono::hours::hours()']]],
   ['how_20to_20use_20libsemigroups_30',['How to use libsemigroups',['../index.html#how-to-use-libsemigroups',1,'']]],
-  ['hpcombi_31',['Adapters for HPCombi',['../group__adapters__hpcombi__group.html',1,'']]],
+  ['hpcombi_31',['HPCombi',['../group__adapters__hpcombi__group.html',1,'Adapters for HPCombi'],['../group__hpcombi__group.html',1,'HPCombi'],['../group__make__hpcombi__group.html',1,'The `make` function for HPCombi']]],
   ['human_5freadable_5findex_32',['human_readable_index',['../namespacelibsemigroups_1_1words.html#ae001532f1d53e7e1b052d240999c26b2',1,'libsemigroups::words']]],
   ['human_5freadable_5fletter_33',['human_readable_letter',['../namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b',1,'libsemigroups::words']]],
   ['hypo_5fplactic_5fmonoid_34',['hypo_plactic_monoid',['../namespacelibsemigroups_1_1presentation_1_1examples.html#acbcc7dc2f253a440f553b4113fae2252',1,'libsemigroups::presentation::examples']]],

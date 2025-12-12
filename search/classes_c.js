@@ -15,7 +15,7 @@ var searchData=
   ['maxplustruncsemiring_12',['MaxPlusTruncSemiring',['../classlibsemigroups_1_1_max_plus_trunc_semiring.html',1,'libsemigroups']]],
   ['maxpluszero_13',['MaxPlusZero',['../structlibsemigroups_1_1_max_plus_zero.html',1,'libsemigroups']]],
   ['mbstate_5ft_14',['mbstate_t',['http://en.cppreference.com/w/cpp/string/multibyte/mbstate_t.html',1,'std']]],
-  ['meeter_15',['Meeter',['../classlibsemigroups_1_1_meeter.html',1,'libsemigroups']]],
+  ['meeter_15',['Meeter',['../classlibsemigroups_1_1_meeter.html',1,'Meeter'],['../classlibsemigroups_1_1v4_1_1_meeter.html',1,'Meeter']]],
   ['mega_16',['mega',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
   ['mersenne_5ftwister_5fengine_17',['mersenne_twister_engine',['http://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine.html',1,'std']]],
   ['messages_18',['messages',['http://en.cppreference.com/w/cpp/locale/messages.html',1,'std']]],

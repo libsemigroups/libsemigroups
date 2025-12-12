@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -186,6 +187,7 @@ $(function(){initNavTree('namespacelibsemigroups_1_1forest.html',''); initResiza
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">libsemigroups::forest Namespace Reference<div class="ingroups"><a class="el" href="group__word__graph__group.html">Word graphs and related functionality</a></div></div></div>
 </div><!--header-->
@@ -193,6 +195,15 @@ $(function(){initNavTree('namespacelibsemigroups_1_1forest.html',''); initResiza
 <a name="details" id="details"></a>
 <div class="textblock"><p>This page contains the documentation of some helper functions for the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> class. </p>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html">PathsFromRoots</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Range for iterating through paths in a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <a href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html">PathsToRoots</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Range for iterating through paths in a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <a href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a9a119cdf5198d77e059647925ec92e0b" id="r_a9a119cdf5198d77e059647925ec92e0b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a119cdf5198d77e059647925ec92e0b">depth</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f, <a class="el" href="classlibsemigroups_1_1_forest.html#a0d1b6b7b876379a255c2dbf8e7a359bc">Forest::node_type</a> n)</td></tr>
@@ -201,12 +212,24 @@ Functions</h2></td></tr>
 <tr class="memitem:aac245c4c83f0c1ae612bf04569b5a3eb" id="r_aac245c4c83f0c1ae612bf04569b5a3eb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac245c4c83f0c1ae612bf04569b5a3eb">depth_no_checks</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f, <a class="el" href="classlibsemigroups_1_1_forest.html#a0d1b6b7b876379a255c2dbf8e7a359bc">Forest::node_type</a> n)</td></tr>
 <tr class="memdesc:aac245c4c83f0c1ae612bf04569b5a3eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the depth of a node in the forest, n.e. the distance, in terms of the number of edges, from a root.  <br /></td></tr>
 <tr class="separator:aac245c4c83f0c1ae612bf04569b5a3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac52df16ff6ea1c6b9dce7df5c220f2cd" id="r_ac52df16ff6ea1c6b9dce7df5c220f2cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac52df16ff6ea1c6b9dce7df5c220f2cd">dot</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f)</td></tr>
+<tr class="memdesc:ac52df16ff6ea1c6b9dce7df5c220f2cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object representing a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <br /></td></tr>
+<tr class="separator:ac52df16ff6ea1c6b9dce7df5c220f2cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a352773cec9ded78aadf348b8daeb58c2" id="r_a352773cec9ded78aadf348b8daeb58c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a352773cec9ded78aadf348b8daeb58c2">dot</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; const &amp;labels)</td></tr>
+<tr class="memdesc:a352773cec9ded78aadf348b8daeb58c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object representing a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <br /></td></tr>
+<tr class="separator:a352773cec9ded78aadf348b8daeb58c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e9798231bc0adcccd54aca2dc62d502" id="r_a8e9798231bc0adcccd54aca2dc62d502"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e9798231bc0adcccd54aca2dc62d502">is_forest</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f)</td></tr>
+<tr class="memdesc:a8e9798231bc0adcccd54aca2dc62d502"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> object is well-defined.  <br /></td></tr>
+<tr class="separator:a8e9798231bc0adcccd54aca2dc62d502"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9812c403d96351c5d88ce760afd0498f" id="r_a9812c403d96351c5d88ce760afd0498f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9812c403d96351c5d88ce760afd0498f">is_root</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f, <a class="el" href="classlibsemigroups_1_1_forest.html#a0d1b6b7b876379a255c2dbf8e7a359bc">Forest::node_type</a> n)</td></tr>
 <tr class="memdesc:a9812c403d96351c5d88ce760afd0498f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a node is the root of any tree in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <br /></td></tr>
 <tr class="separator:a9812c403d96351c5d88ce760afd0498f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8720c0008d21ee85c6a967145f5a80bb" id="r_a8720c0008d21ee85c6a967145f5a80bb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8720c0008d21ee85c6a967145f5a80bb">is_root_no_checks</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f, <a class="el" href="classlibsemigroups_1_1_forest.html#a0d1b6b7b876379a255c2dbf8e7a359bc">Forest::node_type</a> n)</td></tr>
 <tr class="memdesc:a8720c0008d21ee85c6a967145f5a80bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a node is the root of any tree in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <br /></td></tr>
 <tr class="separator:a8720c0008d21ee85c6a967145f5a80bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ed5c5d223bcf7ed89c79bc8f58e455" id="r_ac6ed5c5d223bcf7ed89c79bc8f58e455"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_forest.html#aa16195c0e23f5fba6f2731fe0eab2322">Forest::label_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6ed5c5d223bcf7ed89c79bc8f58e455">max_label</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f)</td></tr>
+<tr class="memdesc:ac6ed5c5d223bcf7ed89c79bc8f58e455"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum label of any edge in a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.  <br /></td></tr>
+<tr class="separator:ac6ed5c5d223bcf7ed89c79bc8f58e455"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac438d9251527dfad3126f163529f9279" id="r_ac438d9251527dfad3126f163529f9279"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac438d9251527dfad3126f163529f9279">path_from_root</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;f, <a class="el" href="classlibsemigroups_1_1_forest.html#a0d1b6b7b876379a255c2dbf8e7a359bc">Forest::node_type</a> n)</td></tr>
 <tr class="memdesc:ac438d9251527dfad3126f163529f9279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a word containing the labels of the edges on the path from a root node to <code class="param">n</code>.  <br /></td></tr>
 <tr class="separator:ac438d9251527dfad3126f163529f9279"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -316,6 +339,110 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ac52df16ff6ea1c6b9dce7df5c220f2cd" name="ac52df16ff6ea1c6b9dce7df5c220f2cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac52df16ff6ea1c6b9dce7df5c220f2cd">&#9670;&#160;</a></span>dot() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> dot </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns a <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object representing the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> <code class="param">f</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object. </dd></dl>
+
+</div>
+</div>
+<a id="a352773cec9ded78aadf348b8daeb58c2" name="a352773cec9ded78aadf348b8daeb58c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a352773cec9ded78aadf348b8daeb58c2">&#9670;&#160;</a></span>dot() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> dot </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>labels</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function returns a <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object representing the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> <code class="param">f</code>. If <code class="param">labels</code> is not empty, then each node is labelled with the path from that node to the root of its tree with each letter replaced by the string in the corresponding position of <code class="param">labels</code>. If <code class="param">labels</code> is empty, then the nodes are not labelled by their paths.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>. </td></tr>
+    <tr><td class="paramname">labels</td><td>substitute for each edge label.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="classlibsemigroups_1_1_dot.html">Dot</a> object.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the size of <code class="param">labels</code> is not the same as the <a class="el" href="#ac6ed5c5d223bcf7ed89c79bc8f58e455">max_label</a> plus one. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8e9798231bc0adcccd54aca2dc62d502" name="a8e9798231bc0adcccd54aca2dc62d502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e9798231bc0adcccd54aca2dc62d502">&#9670;&#160;</a></span>is_forest()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_forest </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns <code>true</code> if the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> <code class="param">f</code> is well-defined, meaning that it contains no cycles. It is not possible to create a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> with cycles using <a class="el" href="classlibsemigroups_1_1_forest.html#afcdbe6829f98f436d4c86256c54622b5">set_parent_and_label</a> (which will throw if such a cycle is introduced), but it is possible using <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> with cycles using <a class="el" href="classlibsemigroups_1_1_forest.html#ac222dcf6d3601d906e9ca6e86b4126f5">set_parent_and_label_no_checks</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether or not <code class="param">f</code> is valid.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd>Forest::throw_if_not_acyclic </dd></dl>
+
+</div>
+</div>
 <a id="a9812c403d96351c5d88ce760afd0498f" name="a9812c403d96351c5d88ce760afd0498f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9812c403d96351c5d88ce760afd0498f">&#9670;&#160;</a></span>is_root()</h2>
 
@@ -399,6 +526,40 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ac6ed5c5d223bcf7ed89c79bc8f58e455" name="ac6ed5c5d223bcf7ed89c79bc8f58e455"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6ed5c5d223bcf7ed89c79bc8f58e455">&#9670;&#160;</a></span>max_label()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlibsemigroups_1_1_forest.html#aa16195c0e23f5fba6f2731fe0eab2322">Forest::label_type</a> max_label </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns the maximum label of any edge in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> <code class="param">f</code> or <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a> if there are no edges.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The maximum label or <a class="el" href="group__constants__group.html#ga43ad6fa7b6a31a377b9b4c15219f5f37">UNDEFINED</a>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
 <a id="ac438d9251527dfad3126f163529f9279" name="ac438d9251527dfad3126f163529f9279"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac438d9251527dfad3126f163529f9279">&#9670;&#160;</a></span>path_from_root() <span class="overload">[1/2]</span></h2>
 
@@ -436,10 +597,11 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The word labelling the path from a root node to <code class="param">n</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html" title="Range for iterating through paths in a Forest.">PathsFromRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -477,10 +639,11 @@ Functions</h2></td></tr>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html" title="Range for iterating through paths in a Forest.">PathsFromRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -519,7 +682,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The word labelling the path from a root node to <code class="param">n</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html" title="Range for iterating through paths in a Forest.">PathsFromRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -555,7 +719,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html" title="Range for iterating through paths in a Forest.">PathsFromRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -596,10 +761,11 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The word labelling the path from a root node to <code class="param">n</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html" title="Range for iterating through paths in a Forest.">PathsToRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -637,10 +803,11 @@ Functions</h2></td></tr>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">n</code> is greater than or equal to <a class="el" href="classlibsemigroups_1_1_forest.html#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html" title="Range for iterating through paths in a Forest.">PathsToRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -679,7 +846,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The word labelling the path from a root node to <code class="param">n</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html" title="Range for iterating through paths in a Forest.">PathsToRoots</a> </dd></dl>
 
 </div>
 </div>

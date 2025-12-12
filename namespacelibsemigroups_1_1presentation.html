@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -2791,6 +2792,9 @@ template&lt;typename Word&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Word&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool is_normalized </td>
@@ -2799,6 +2803,11 @@ template&lt;typename Word&gt; </div>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>This function returns <code>true</code> if the <a class="el" href="classlibsemigroups_1_1_presentation.html#ac21a91e92a664a0ac48d99643f62fd6a">alphabet</a> of <code class="param">p</code> is <code>0</code> to <code>p.alphabet().size() - 1</code> and <code>false</code> otherwise.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -2928,7 +2937,7 @@ template&lt;typename Word&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A \(1\)-relation presentation is <em>strongly compressible</em> if both relation words start with the same letter and end with the same letter. In other words, if the alphabet of the presentation <code class="param">p</code> is \(A\) and the relation words are of the form \(aub = avb\) where \(a, b\in A\) (possibly \( a = b\)) and \(u, v\in A ^ *\), then <code class="param">p</code> is strongly compressible. See section 3.2 of <a class="el" href="citelist.html#CITEREF_nybergbrodda2021aa">[52]</a> for details.</p>
+<p>A \(1\)-relation presentation is <em>strongly compressible</em> if both relation words start with the same letter and end with the same letter. In other words, if the alphabet of the presentation <code class="param">p</code> is \(A\) and the relation words are of the form \(aub = avb\) where \(a, b\in A\) (possibly \( a = b\)) and \(u, v\in A ^ *\), then <code class="param">p</code> is strongly compressible. See section 3.2 of <a class="el" href="citelist.html#CITEREF_nybergbrodda2021aa">[53]</a> for details.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Word</td><td>the type of the words in the presentation.</td></tr>
@@ -4644,6 +4653,9 @@ template&lt;typename Word&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Word&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> to_report_string </td>
@@ -4652,6 +4664,11 @@ template&lt;typename Word&gt; </div>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Return a representation of a presentation that will appear in the reporting output. The information that is provided is:</p><ul>
 <li>the size of the alphabet (<code>|A|</code>);</li>
@@ -4674,7 +4691,7 @@ template&lt;typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;std::string&gt;</a> p;</div>
-<div class="line"><a class="code hl_function" href="#adcb72dbbefb9e5d5c7b33d7faeb19420">presentation::to_report_string</a>(p)</div>
+<div class="line"><a class="code hl_function" href="#adcb72dbbefb9e5d5c7b33d7faeb19420">presentation::to_report_string</a>(p);</div>
 <div class="line"><span class="comment">// &quot;|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0&quot;</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_adcb72dbbefb9e5d5c7b33d7faeb19420"><div class="ttname"><a href="#adcb72dbbefb9e5d5c7b33d7faeb19420">libsemigroups::presentation::to_report_string</a></div><div class="ttdeci">std::string to_report_string(Presentation&lt; Word &gt; const &amp;p)</div><div class="ttdoc">Return a representation of a presentation to appear in the reporting output.</div></div>

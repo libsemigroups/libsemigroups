@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -263,7 +264,7 @@ $(function(){initNavTree('ke_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>      }</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>      <span class="keywordtype">bool</span> operator&lt;(KE <span class="keyword">const</span>&amp; that)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="group__orders__group.html#ga3233f95f6ca46ac303936e7d8b5d0fb2">shortlex_compare</a>(_value, that._value);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="group__orders__group.html#ga772e45259627f8c8a1c545bc95e2ffd4">shortlex_compare</a>(_value, that._value);</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>      }</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>      <span class="keywordtype">void</span> swap(KE&amp; x) {</div>
@@ -432,12 +433,12 @@ $(function(){initNavTree('ke_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>}  <span class="comment">// namespace std</span></div>
 <div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_DETAIL_KE_HPP_</span></div>
 <div class="ttc" id="aback_inserter_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/iterator/back_inserter.html">std::back_inserter</a></div><div class="ttdeci">T back_inserter(T... args)</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a></div><div class="ttdoc">Class implementing the Froidure-Pin algorithm.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:188</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a></div><div class="ttdoc">Class implementing the Froidure-Pin algorithm.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:190</div></div>
 <div class="ttc" id="aequal_to_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/functional/equal_to.html">std::equal_to</a></div></div>
 <div class="ttc" id="agroup__constants__group_html_gad6f08fa16691724172bb75e5805cf756"><div class="ttname"><a href="group__constants__group.html#gad6f08fa16691724172bb75e5805cf756">libsemigroups::LIMIT_MAX</a></div><div class="ttdeci">LimitMax const LIMIT_MAX</div><div class="ttdoc">Value for the maximum of something.</div></div>
 <div class="ttc" id="agroup__kambites__class__group_html_ga570279f4b30ed45d3a90c15bbb74018c"><div class="ttname"><a href="group__kambites__class__group.html#ga570279f4b30ed45d3a90c15bbb74018c">libsemigroups::Kambites</a></div><div class="ttdeci">Kambites(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; Kambites&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
-<div class="ttc" id="agroup__kambites__class__mem__types__group_html_gadb77e95f9a34d15b561c8de6f597bab1"><div class="ttname"><a href="group__kambites__class__mem__types__group.html#gadb77e95f9a34d15b561c8de6f597bab1">libsemigroups::Kambites::native_word_type</a></div><div class="ttdeci">std::conditional_t&lt; std::is_same_v&lt; Word, detail::MultiView&lt; std::string &gt; &gt;, std::string, Word &gt; native_word_type</div><div class="ttdoc">Type of the words in the relations of the presentation stored in a Kambites instance.</div><div class="ttdef"><b>Definition</b> kambites-class.hpp:164</div></div>
-<div class="ttc" id="agroup__orders__group_html_ga3233f95f6ca46ac303936e7d8b5d0fb2"><div class="ttname"><a href="group__orders__group.html#ga3233f95f6ca46ac303936e7d8b5d0fb2">libsemigroups::shortlex_compare</a></div><div class="ttdeci">bool shortlex_compare(T const &amp;first1, T const &amp;last1, T const &amp;first2, T const &amp;last2)</div><div class="ttdoc">Compare two objects of the same type using the short-lex reduction ordering.</div><div class="ttdef"><b>Definition</b> order.hpp:273</div></div>
+<div class="ttc" id="agroup__kambites__class__mem__types__group_html_gadb77e95f9a34d15b561c8de6f597bab1"><div class="ttname"><a href="group__kambites__class__mem__types__group.html#gadb77e95f9a34d15b561c8de6f597bab1">libsemigroups::Kambites::native_word_type</a></div><div class="ttdeci">std::conditional_t&lt; std::is_same_v&lt; Word, detail::MultiView&lt; std::string &gt; &gt;, std::string, Word &gt; native_word_type</div><div class="ttdoc">Type of the words in the relations of the presentation stored in a Kambites instance.</div><div class="ttdef"><b>Definition</b> kambites-class.hpp:163</div></div>
+<div class="ttc" id="agroup__orders__group_html_ga772e45259627f8c8a1c545bc95e2ffd4"><div class="ttname"><a href="group__orders__group.html#ga772e45259627f8c8a1c545bc95e2ffd4">libsemigroups::shortlex_compare</a></div><div class="ttdeci">bool shortlex_compare(Iterator first1, Iterator last1, Iterator first2, Iterator last2)</div><div class="ttdoc">Compare two objects of the same type using the short-lex reduction ordering.</div><div class="ttdef"><b>Definition</b> order.hpp:288</div></div>
 <div class="ttc" id="agroup__types__group_html_ga4c833ae5c1a57b830205688bf18f9991"><div class="ttname"><a href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">libsemigroups::word_type</a></div><div class="ttdeci">std::vector&lt; letter_type &gt; word_type</div><div class="ttdoc">Type for a word over the generators of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:99</div></div>
 <div class="ttc" id="agroup__types__group_html_ga590f23f6d9ebc02389a53e56ea1a74c1"><div class="ttname"><a href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1">libsemigroups::letter_type</a></div><div class="ttdeci">size_t letter_type</div><div class="ttdoc">Type for the index of a generator of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:96</div></div>
 <div class="ttc" id="agroup__types__group_html_gae214dc6594738d449fb4483859d58932"><div class="ttname"><a href="group__types__group.html#gae214dc6594738d449fb4483859d58932">libsemigroups::tril</a></div><div class="ttdeci">tril</div><div class="ttdoc">Enum to indicate true, false or not currently knowable.</div><div class="ttdef"><b>Definition</b> types.hpp:54</div></div>

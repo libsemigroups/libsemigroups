@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -196,7 +197,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_gabow.html',''); initResizable(
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Node&gt;<br />
 class libsemigroups::Gabow&lt; Node &gt;</div><p>Defined in <code><a class="el" href="gabow_8hpp_source.html">gabow.hpp</a></code>.</p>
-<p>This page contains class implements <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a>'s algorithm <a class="el" href="citelist.html#CITEREF_gab00">[25]</a> for computing the strongly connected components of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</p>
+<p>This page contains class implements <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a>'s algorithm <a class="el" href="citelist.html#CITEREF_gab00">[26]</a> for computing the strongly connected components of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</p>
 <p>Instances of this class can be used to compute, and provide information about, the strongly connected components of the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> used to construct the instance. The strongly connected components are lazily evaluated when triggered by a relevant member function. The complexity of <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a>'s algorithm is at most \(O(mn)\) where <code>m</code> is <a class="el" href="classlibsemigroups_1_1_word_graph.html#ae3399ccea6846154f3837cd071729bc3" title="Returns the number of nodes.">WordGraph::number_of_nodes()</a> and <code>n</code> is <a class="el" href="classlibsemigroups_1_1_word_graph.html#a7d579c48a185642baff56e8c36aa69bb">out_degree()</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

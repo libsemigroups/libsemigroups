@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -187,6 +188,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_string_range.html',''); initRes
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classlibsemigroups_1_1_string_range-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">StringRange<div class="ingroups"><a class="el" href="group__words__group.html">Words</a></div></div></div>
@@ -209,12 +211,12 @@ $(function(){initNavTree('classlibsemigroups_1_1_string_range.html',''); initRes
 <div class="line">       .<a class="code hl_function" href="#a5578aa55182e03865fb58f11c2d1d28e">alphabet</a>(<span class="stringliteral">&quot;ab&quot;</span>)         <span class="comment">// on 2 letters</span></div>
 <div class="line">       .<a class="code hl_function" href="#a0b05543c438534af9e3c8f3d90022f22">min</a>(1)                 <span class="comment">// of length in the range from 1</span></div>
 <div class="line">       .<a class="code hl_function" href="#a39b9a710d7599958a2a71b41b9a7d25d">max</a>(5);                <span class="comment">// to 5</span></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a0b05543c438534af9e3c8f3d90022f22"><div class="ttname"><a href="#a0b05543c438534af9e3c8f3d90022f22">libsemigroups::StringRange::min</a></div><div class="ttdeci">StringRange &amp; min(size_type val)</div><div class="ttdoc">Set the first string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1909</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a39b9a710d7599958a2a71b41b9a7d25d"><div class="ttname"><a href="#a39b9a710d7599958a2a71b41b9a7d25d">libsemigroups::StringRange::max</a></div><div class="ttdeci">StringRange &amp; max(size_type val)</div><div class="ttdoc">Set one past the last string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1932</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a0b05543c438534af9e3c8f3d90022f22"><div class="ttname"><a href="#a0b05543c438534af9e3c8f3d90022f22">libsemigroups::StringRange::min</a></div><div class="ttdeci">StringRange &amp; min(size_type val)</div><div class="ttdoc">Set the first string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1914</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a39b9a710d7599958a2a71b41b9a7d25d"><div class="ttname"><a href="#a39b9a710d7599958a2a71b41b9a7d25d">libsemigroups::StringRange::max</a></div><div class="ttdeci">StringRange &amp; max(size_type val)</div><div class="ttdoc">Set one past the last string in the range by length.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1937</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a5578aa55182e03865fb58f11c2d1d28e"><div class="ttname"><a href="#a5578aa55182e03865fb58f11c2d1d28e">libsemigroups::StringRange::alphabet</a></div><div class="ttdeci">StringRange &amp; alphabet(std::string const &amp;x)</div><div class="ttdoc">Set the alphabet.</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a610f627a2f1536c0449454874abebd09"><div class="ttname"><a href="#a610f627a2f1536c0449454874abebd09">libsemigroups::StringRange::order</a></div><div class="ttdeci">StringRange &amp; order(Order val)</div><div class="ttdoc">Set the order of the strings in the range.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1850</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a7249acb1f62156e30a68c51a4fdfdc86"><div class="ttname"><a href="#a7249acb1f62156e30a68c51a4fdfdc86">libsemigroups::StringRange::StringRange</a></div><div class="ttdeci">StringRange()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1719</div></div>
-<div class="ttc" id="agroup__types__group_html_ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458"><div class="ttname"><a href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">libsemigroups::Order::shortlex</a></div><div class="ttdeci">@ shortlex</div><div class="ttdef"><b>Definition</b> order.hpp:51</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a610f627a2f1536c0449454874abebd09"><div class="ttname"><a href="#a610f627a2f1536c0449454874abebd09">libsemigroups::StringRange::order</a></div><div class="ttdeci">StringRange &amp; order(Order val)</div><div class="ttdoc">Set the order of the strings in the range.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1855</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_string_range_html_a7249acb1f62156e30a68c51a4fdfdc86"><div class="ttname"><a href="#a7249acb1f62156e30a68c51a4fdfdc86">libsemigroups::StringRange::StringRange</a></div><div class="ttdeci">StringRange()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1724</div></div>
+<div class="ttc" id="agroup__types__group_html_ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458"><div class="ttname"><a href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a9a18fdcd8c5fc82189c7819f1025b458">libsemigroups::Order::shortlex</a></div><div class="ttdeci">@ shortlex</div><div class="ttdef"><b>Definition</b> order.hpp:60</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_word_range.html" title="Class for generating words in a given range and in a particular order.">WordRange</a> </dd></dl>
 </div><table class="memberdecls">
@@ -228,6 +230,15 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>output_type</b> = <a
 using&#160;</td><td class="memItemRight" valign="bottom"><b>size_type</b> = typename <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt;<a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&gt;::size_type</td></tr>
 <tr class="memdesc:ac60c6ae1f962390f5fdfa0c50a208e36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for the size type. <br /></td></tr>
 <tr class="separator:ac60c6ae1f962390f5fdfa0c50a208e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a006ce47fc5dc52eb0d5eb378aa53489f" id="r_a006ce47fc5dc52eb0d5eb378aa53489f"><td class="memItemLeft" align="right" valign="top"><a id="a006ce47fc5dc52eb0d5eb378aa53489f" name="a006ce47fc5dc52eb0d5eb378aa53489f"></a>
+static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_finite</b> = true</td></tr>
+<tr class="memdesc:a006ce47fc5dc52eb0d5eb378aa53489f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value indicating that the range is finite. <br /></td></tr>
+<tr class="separator:a006ce47fc5dc52eb0d5eb378aa53489f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab41ec88d3177770fa7764b8ee7656d3a" id="r_ab41ec88d3177770fa7764b8ee7656d3a"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab41ec88d3177770fa7764b8ee7656d3a">is_idempotent</a> = true</td></tr>
+<tr class="separator:ab41ec88d3177770fa7764b8ee7656d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>

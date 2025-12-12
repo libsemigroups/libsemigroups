@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -187,6 +188,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_paths.html',''); initResizable(
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#related">Related Symbols</a> &#124;
 <a href="classlibsemigroups_1_1_paths-members.html">List of all members</a>  </div>
@@ -225,6 +227,15 @@ Public Types</h2></td></tr>
 <tr class="memitem:a05c171f51198f6f839b3b3f198d6efd1" id="r_a05c171f51198f6f839b3b3f198d6efd1"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05c171f51198f6f839b3b3f198d6efd1">size_type</a> = typename <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt;Node&gt;::size_type</td></tr>
 <tr class="memdesc:a05c171f51198f6f839b3b3f198d6efd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsigned integer for indexing.  <br /></td></tr>
 <tr class="separator:a05c171f51198f6f839b3b3f198d6efd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a006ce47fc5dc52eb0d5eb378aa53489f" id="r_a006ce47fc5dc52eb0d5eb378aa53489f"><td class="memItemLeft" align="right" valign="top"><a id="a006ce47fc5dc52eb0d5eb378aa53489f" name="a006ce47fc5dc52eb0d5eb378aa53489f"></a>
+static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_finite</b> = true</td></tr>
+<tr class="separator:a006ce47fc5dc52eb0d5eb378aa53489f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab41ec88d3177770fa7764b8ee7656d3a" id="r_ab41ec88d3177770fa7764b8ee7656d3a"><td class="memItemLeft" align="right" valign="top"><a id="ab41ec88d3177770fa7764b8ee7656d3a" name="ab41ec88d3177770fa7764b8ee7656d3a"></a>
+static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_idempotent</b> = true</td></tr>
+<tr class="separator:ab41ec88d3177770fa7764b8ee7656d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -345,20 +356,20 @@ Related Symbols</h2></td></tr>
 <tr class="memitem:a537bc06e83dd1a586f8291723bce51f6" id="r_a537bc06e83dd1a586f8291723bce51f6"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
 <tr class="memitem:a537bc06e83dd1a586f8291723bce51f6"><td class="memTemplItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>)</td></tr>
 <tr class="separator:a537bc06e83dd1a586f8291723bce51f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9295eb5c70bebb6371e3fe6eb5ba064" id="r_ad9295eb5c70bebb6371e3fe6eb5ba064"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
-<tr class="memitem:ad9295eb5c70bebb6371e3fe6eb5ba064"><td class="memTemplItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad9295eb5c70bebb6371e3fe6eb5ba064">number_of_paths</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, Node2 <a class="el" href="#ab8b316afbf43a397c843766104a97b95">target</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>, <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a> lgrthm=<a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>)</td></tr>
-<tr class="separator:ad9295eb5c70bebb6371e3fe6eb5ba064"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a830e2d5efd8bf231b99e71b994336e" id="r_a6a830e2d5efd8bf231b99e71b994336e"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
-<tr class="memitem:a6a830e2d5efd8bf231b99e71b994336e"><td class="memTemplItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a6a830e2d5efd8bf231b99e71b994336e">number_of_paths</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>, <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a> lgrthm=<a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>)</td></tr>
-<tr class="separator:a6a830e2d5efd8bf231b99e71b994336e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac1fee4167b4e6c66e234866357041c7" id="r_aac1fee4167b4e6c66e234866357041c7"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
+<tr class="memitem:aac1fee4167b4e6c66e234866357041c7"><td class="memTemplItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aac1fee4167b4e6c66e234866357041c7">number_of_paths</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, Node2 <a class="el" href="#ab8b316afbf43a397c843766104a97b95">target</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>, v4::paths::algorithm lgrthm=v4::paths::algorithm::automatic)</td></tr>
+<tr class="separator:aac1fee4167b4e6c66e234866357041c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a667d5810d60534eaa056dfb8b5f44fc5" id="r_a667d5810d60534eaa056dfb8b5f44fc5"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
+<tr class="memitem:a667d5810d60534eaa056dfb8b5f44fc5"><td class="memTemplItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a667d5810d60534eaa056dfb8b5f44fc5">number_of_paths</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>, v4::paths::algorithm lgrthm=v4::paths::algorithm::automatic)</td></tr>
+<tr class="separator:a667d5810d60534eaa056dfb8b5f44fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27e4b4b0e014decb75982975c4865665" id="r_a27e4b4b0e014decb75982975c4865665"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
-<tr class="memitem:a27e4b4b0e014decb75982975c4865665"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a27e4b4b0e014decb75982975c4865665">number_of_paths_algorithm</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>) noexcept</td></tr>
+<tr class="memitem:a27e4b4b0e014decb75982975c4865665"><td class="memTemplItemLeft" align="right" valign="top">paths::algorithm&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a27e4b4b0e014decb75982975c4865665">number_of_paths_algorithm</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>) noexcept</td></tr>
 <tr class="separator:a27e4b4b0e014decb75982975c4865665"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf7ebeed72ca37119461750fbfded1f1" id="r_abf7ebeed72ca37119461750fbfded1f1"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
-<tr class="memitem:abf7ebeed72ca37119461750fbfded1f1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#abf7ebeed72ca37119461750fbfded1f1">number_of_paths_algorithm</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, Node2 <a class="el" href="#ab8b316afbf43a397c843766104a97b95">target</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>)</td></tr>
+<tr class="memitem:abf7ebeed72ca37119461750fbfded1f1"><td class="memTemplItemLeft" align="right" valign="top">paths::algorithm&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#abf7ebeed72ca37119461750fbfded1f1">number_of_paths_algorithm</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, Node2 <a class="el" href="#ab8b316afbf43a397c843766104a97b95">target</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>)</td></tr>
 <tr class="separator:abf7ebeed72ca37119461750fbfded1f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa49e336f130be3711255b4af6dfb2acb" id="r_aa49e336f130be3711255b4af6dfb2acb"><td class="memTemplParams" colspan="2">template&lt;typename Node1, typename Node2&gt; </td></tr>
-<tr class="memitem:aa49e336f130be3711255b4af6dfb2acb"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aa49e336f130be3711255b4af6dfb2acb">number_of_paths_algorithm</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>)</td></tr>
+<tr class="memitem:aa49e336f130be3711255b4af6dfb2acb"><td class="memTemplItemLeft" align="right" valign="top">paths::algorithm&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aa49e336f130be3711255b4af6dfb2acb">number_of_paths_algorithm</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;wg, Node2 <a class="el" href="#a62de30826b1b4cee4d28db32e3ff1d7b">source</a>, size_t <a class="el" href="#a259f19eea7070c87f9d81af1bf5f9a4d">min</a>, size_t <a class="el" href="#a457ef0beb1c2a4546743379382b443ff">max</a>)</td></tr>
 <tr class="separator:aa49e336f130be3711255b4af6dfb2acb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3100fb2c1a2146a9c92a4e962dfa2245" id="r_a3100fb2c1a2146a9c92a4e962dfa2245"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:a3100fb2c1a2146a9c92a4e962dfa2245"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3100fb2c1a2146a9c92a4e962dfa2245">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_paths.html">Paths</a>&lt; Node &gt; const &amp;p)</td></tr>
@@ -1477,7 +1488,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>An iterator <code>it</code> of type <code>detail::const_pstilo_iterator</code> pointing to a <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> consisting of the edge labels of the first path (in lexicographical order) from the node <code class="param">source</code> to the node <code class="param">target</code> with length in the range \([min, max)\) (if any).</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>An iterator <code>it</code> pointing to a <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> consisting of the edge labels of the first path (in lexicographical order) from the node <code class="param">source</code> to the node <code class="param">target</code> with length in the range \([min, max)\) (if any).</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">target</code> or <code class="param">source</code> is not a node in the word graph.</td></tr>
@@ -1588,6 +1599,19 @@ template&lt;typename Node&gt; </div>
 <p>Returns an iterator for pilo (Path And Node In Lex <a class="el" href="group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405" title="The possible orderings of words and strings.">Order</a>).</p>
 <p>Returns a forward iterator pointing to one after the last path from any node in the word graph.</p>
 <p>The iterator returned by this function may still dereferenceable and incrementable, but may not point to a path in the correct range.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (used to resolve the template parameter <code class="param">Node</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An iterator point one beyond the last path in <code class="param">wg</code>.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#aae854ee29b7c1afd96c4864e5e9a0745" title="Returns an iterator for pilo (Path And Node In Lex Order).">cbegin_pilo</a> </dd></dl>
 
 </div>
@@ -1619,6 +1643,19 @@ template&lt;typename Node&gt; </div>
 <p>Returns an iterator for pislo (Path And Node In Short Lex <a class="el" href="group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405" title="The possible orderings of words and strings.">Order</a>).</p>
 <p>Returns a forward iterator pointing to one after the last path from any node in the word graph.</p>
 <p>The iterator returned by this function may still dereferenceable and incrementable, but may not point to a path in the correct range.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (used to resolve the template parameter <code class="param">Node</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An iterator point one beyond the last path in <code class="param">wg</code>.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a417765f819cea5640b400b6bb3110f68">cbegin_pislo</a> </dd></dl>
 
 </div>
@@ -1650,6 +1687,19 @@ template&lt;typename Node&gt; </div>
 <p>Returns an iterator for PSTILO (Path Source Target In Lex <a class="el" href="group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405" title="The possible orderings of words and strings.">Order</a>).</p>
 <p>Returns a forward iterator pointing to one after the last path from any node in the word graph.</p>
 <p>The iterator returned by this function may still dereferenceable and incrementable, but may not point to a path in the correct range.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (used to resolve the template parameter <code class="param">Node</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An iterator point one beyond the last path in <code class="param">wg</code>.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a01b271ca34c3ec4b95ca887abe0f8a63">cbegin_pstilo</a> </dd></dl>
 
 </div>
@@ -1681,6 +1731,19 @@ template&lt;typename Node&gt; </div>
 <p>Returns an iterator for PSTISLO (Path Source Target In Short Lex <a class="el" href="group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405" title="The possible orderings of words and strings.">Order</a>).</p>
 <p>Returns a forward iterator pointing to one after the last path from any node in the word graph.</p>
 <p>The iterator returned by this function may still dereferenceable and incrementable, but may not point to a path in the correct range.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (used to resolve the template parameter <code class="param">Node</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An iterator point one beyond the last path in <code class="param">wg</code>.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#ace41d5f3eb93dc4f46e75c5eee89d7e7">cbegin_pstislo</a> </dd></dl>
 
 </div>
@@ -1729,13 +1792,14 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>At worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If <code>libsemigroups</code> is compiled with the flag <code>--enable-eigen</code>, then this function makes use of the Eigen library for linear algebra (see <a class="el" href="citelist.html#CITEREF_guennebaud2010aa">[30]</a>).</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>If the number of paths exceeds 2 ^ 64, then return value of this function will not be correct. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If <code>libsemigroups</code> is compiled with the flag <code>--enable-eigen</code>, then this function makes use of the Eigen library for linear algebra (see <a class="el" href="citelist.html#CITEREF_guennebaud2010aa">[31]</a>).</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If the number of paths exceeds \(2 ^{64}-1\), then the return value of this function will not be correct.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated</a></b></dt><dd>This function is deprecated, it will be moved into the <code>paths</code> namespace in the file <code><a class="el" href="paths-count_8hpp_source.html">paths-count.hpp</a></code> in <code>libsemigroups</code> v4. </dd></dl>
 
 </div>
 </div>
-<a id="ad9295eb5c70bebb6371e3fe6eb5ba064" name="ad9295eb5c70bebb6371e3fe6eb5ba064"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9295eb5c70bebb6371e3fe6eb5ba064">&#9670;&#160;</a></span>number_of_paths() <span class="overload">[2/3]</span></h2>
+<a id="aac1fee4167b4e6c66e234866357041c7" name="aac1fee4167b4e6c66e234866357041c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac1fee4167b4e6c66e234866357041c7">&#9670;&#160;</a></span>number_of_paths() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1773,7 +1837,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a></td>          <td class="paramname"><span class="paramname"><em>lgrthm</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a></span>&#160;)</td>
+          <td class="paramtype">v4::paths::algorithm</td>          <td class="paramname"><span class="paramname"><em>lgrthm</em></span><span class="paramdefsep"> = </span><span class="paramdefval">v4::paths::algorithm::automatic</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -1790,7 +1854,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
     <tr><td class="paramname">target</td><td>the last node. </td></tr>
     <tr><td class="paramname">min</td><td>the minimum length of a path. </td></tr>
     <tr><td class="paramname">max</td><td>the maximum length of a path. </td></tr>
-    <tr><td class="paramname">lgrthm</td><td>the algorithm to use (defaults to: <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>).</td></tr>
+    <tr><td class="paramname">lgrthm</td><td>the algorithm to use (defaults to: paths::algorithm::automatic).</td></tr>
   </table>
   </dd>
 </dl>
@@ -1807,22 +1871,23 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>The complexity depends on the value of <code class="param">lgrthm</code> as follows:<ul>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6" title="Use a depth-first-search.">paths::algorithm::dfs</a>: \(O(r)\) where \(r\) is the number of paths in the word graph starting at <code class="param">source</code> </li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6" title="Use the adjacency matrix and matrix multiplication.">paths::algorithm::matrix</a>: at worst \(O(n ^ 3 k)\) where \(n\) is the number of nodes and \(k\) equals <code class="param">max</code>.</li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab" title="Use a dynamic programming approach for acyclic word graphs.">paths::algorithm::acyclic</a>: at worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph (only valid if the subgraph induced by the nodes reachable from <code class="param">source</code> is acyclic)</li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03" title="Try to utilise some corner cases.">paths::algorithm::trivial</a>: constant (only valid in some circumstances)</li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>: attempts to select the fastest algorithm of the preceding algorithms and then applies that.</li>
+<li>paths::algorithm::dfs: \(O(r)\) where \(r\) is the number of paths in the word graph starting at <code class="param">source</code> </li>
+<li>paths::algorithm::matrix: at worst \(O(n ^ 3 k)\) where \(n\) is the number of nodes and \(k\) equals <code class="param">max</code>.</li>
+<li>paths::algorithm::acyclic: at worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph (only valid if the subgraph induced by the nodes reachable from <code class="param">source</code> is acyclic)</li>
+<li>paths::algorithm::trivial: constant (only valid in some circumstances)</li>
+<li>paths::algorithm::automatic: attempts to select the fastest algorithm of the preceding algorithms and then applies that.</li>
 </ul>
 </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If <code>libsemigroups</code> is compiled with the flag <code>--enable-eigen</code>, then this function makes use of the Eigen library for linear algebra (see <a class="el" href="citelist.html#CITEREF_guennebaud2010aa">[30]</a>).</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>If <code class="param">lgrthm</code> is <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>, then it is not always the case that the fastest algorithm is used.</dd>
+<dl class="section note"><dt>Note</dt><dd>If <code>libsemigroups</code> is compiled with the flag <code>--enable-eigen</code>, then this function makes use of the Eigen library for linear algebra (see <a class="el" href="citelist.html#CITEREF_guennebaud2010aa">[31]</a>).</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If <code class="param">lgrthm</code> is paths::algorithm::automatic, then it is not always the case that the fastest algorithm is used.</dd>
 <dd>
-If the number of paths exceeds 2 ^ 64, then return value of this function will not be correct. </dd></dl>
+If the number of paths exceeds \(2^{64}-1\), then the return value of this function will not be correct.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated</a></b></dt><dd>This function is deprecated, it will be moved into the <code>paths</code> namespace in the file <code><a class="el" href="paths-count_8hpp_source.html">paths-count.hpp</a></code> in <code>libsemigroups</code> v4. </dd></dl>
 
 </div>
 </div>
-<a id="a6a830e2d5efd8bf231b99e71b994336e" name="a6a830e2d5efd8bf231b99e71b994336e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6a830e2d5efd8bf231b99e71b994336e">&#9670;&#160;</a></span>number_of_paths() <span class="overload">[3/3]</span></h2>
+<a id="a667d5810d60534eaa056dfb8b5f44fc5" name="a667d5810d60534eaa056dfb8b5f44fc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a667d5810d60534eaa056dfb8b5f44fc5">&#9670;&#160;</a></span>number_of_paths() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1855,7 +1920,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a></td>          <td class="paramname"><span class="paramname"><em>lgrthm</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a></span>&#160;)</td>
+          <td class="paramtype">v4::paths::algorithm</td>          <td class="paramname"><span class="paramname"><em>lgrthm</em></span><span class="paramdefsep"> = </span><span class="paramdefval">v4::paths::algorithm::automatic</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -1871,7 +1936,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
     <tr><td class="paramname">source</td><td>the first node. </td></tr>
     <tr><td class="paramname">min</td><td>the minimum length of a path. </td></tr>
     <tr><td class="paramname">max</td><td>the maximum length of a path. </td></tr>
-    <tr><td class="paramname">lgrthm</td><td>the algorithm to use (defaults to: <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>).</td></tr>
+    <tr><td class="paramname">lgrthm</td><td>the algorithm to use (defaults to: paths::algorithm::automatic).</td></tr>
   </table>
   </dd>
 </dl>
@@ -1887,17 +1952,18 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>The complexity depends on the value of <code class="param">lgrthm</code> as follows:<ul>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa4ec503be252d765ea37621a629afdaa6" title="Use a depth-first-search.">paths::algorithm::dfs</a>: \(O(r)\) where \(r\) is the number of paths in the word graph starting at <code class="param">source</code> </li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa21b72c0b7adc5c7b4a50ffcb90d92dd6" title="Use the adjacency matrix and matrix multiplication.">paths::algorithm::matrix</a>: at worst \(O(n ^ 3 k)\) where \(n\) is the number of nodes and \(k\) equals <code class="param">max</code>.</li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa87d4f8db0ed833a4d532e6e072cea8ab" title="Use a dynamic programming approach for acyclic word graphs.">paths::algorithm::acyclic</a>: at worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph (only valid if the subgraph induced by the nodes reachable from <code class="param">source</code> is acyclic)</li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa156ecc15f503372b5497d5150ab68b03" title="Try to utilise some corner cases.">paths::algorithm::trivial</a>: at worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph (only valid in some circumstances)</li>
-<li><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>: attempts to select the fastest algorithm of the preceding algorithms and then applies that.</li>
+<li>paths::algorithm::dfs: \(O(r)\) where \(r\) is the number of paths in the word graph starting at <code class="param">source</code> </li>
+<li>paths::algorithm::matrix: at worst \(O(n ^ 3 k)\) where \(n\) is the number of nodes and \(k\) equals <code class="param">max</code>.</li>
+<li>paths::algorithm::acyclic: at worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph (only valid if the subgraph induced by the nodes reachable from <code class="param">source</code> is acyclic)</li>
+<li>paths::algorithm::trivial: at worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph (only valid in some circumstances)</li>
+<li>paths::algorithm::automatic: attempts to select the fastest algorithm of the preceding algorithms and then applies that.</li>
 </ul>
 </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>If <code>libsemigroups</code> is compiled with the flag <code>--enable-eigen</code>, then this function makes use of the Eigen library for linear algebra (see <a class="el" href="citelist.html#CITEREF_guennebaud2010aa">[30]</a>).</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>If <code class="param">lgrthm</code> is <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500fa2bd9c0ed00116be1258e0cc66617d7c8">paths::algorithm::automatic</a>, then it is not always the case that the fastest algorithm is used.</dd>
+<dl class="section note"><dt>Note</dt><dd>If <code>libsemigroups</code> is compiled with the flag <code>--enable-eigen</code>, then this function makes use of the Eigen library for linear algebra (see <a class="el" href="citelist.html#CITEREF_guennebaud2010aa">[31]</a>).</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>If <code class="param">lgrthm</code> is paths::algorithm::automatic, then it is not always the case that the fastest algorithm is used.</dd>
 <dd>
-If the number of paths exceeds 2 ^ 64, then return value of this function will not be correct. </dd></dl>
+If the number of paths exceeds \(2^{64}-1\), then the return value of this function will not be correct.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated</a></b></dt><dd>This function is deprecated, it will be moved into the <code>paths</code> namespace in the file <code><a class="el" href="paths-count_8hpp_source.html">paths-count.hpp</a></code> in <code>libsemigroups</code> v4. </dd></dl>
 
 </div>
 </div>
@@ -1913,7 +1979,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a> number_of_paths_algorithm </td>
+          <td class="memname">paths::algorithm number_of_paths_algorithm </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>, </td>
         </tr>
@@ -1929,7 +1995,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f" title="An enum for specifying the algorithm to the functions number_of_paths().">paths::algorithm</a> used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a>.</p>
+<p>Returns the paths::algorithm used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>. </td></tr>
@@ -1937,9 +2003,10 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f" title="An enum for specifying the algorithm to the functions number_of_paths().">paths::algorithm</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type paths::algorithm.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>Constant </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>Constant</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function is deprecated, it will be moved into the <code>paths</code> namespace in the file <code><a class="el" href="paths-count_8hpp_source.html">paths-count.hpp</a></code> in <code>libsemigroups</code> v4. </dd></dl>
 
 </div>
 </div>
@@ -1955,7 +2022,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a> number_of_paths_algorithm </td>
+          <td class="memname">paths::algorithm number_of_paths_algorithm </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>, </td>
         </tr>
@@ -1986,8 +2053,8 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a> used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a>.</p>
-<p>Returns the <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a> used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a> to compute the number of paths originating at the given source node and ending at the given target node with length in the range \([min, max)\).</p>
+<p>Returns the paths::algorithm used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a>.</p>
+<p>Returns the paths::algorithm used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a> to compute the number of paths originating at the given source node and ending at the given target node with length in the range \([min, max)\).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>. </td></tr>
@@ -1998,9 +2065,10 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">algorithm</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type paths::algorithm.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>At worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated</a></b></dt><dd>This function is deprecated, it will be moved into the <code>paths</code> namespace in the file <code><a class="el" href="paths-count_8hpp_source.html">paths-count.hpp</a></code> in <code>libsemigroups</code> v4. </dd></dl>
 
 </div>
 </div>
@@ -2016,7 +2084,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f">paths::algorithm</a> number_of_paths_algorithm </td>
+          <td class="memname">paths::algorithm number_of_paths_algorithm </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node1 &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>, </td>
         </tr>
@@ -2042,7 +2110,7 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f" title="An enum for specifying the algorithm to the functions number_of_paths().">paths::algorithm</a> used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a>.</p>
+<p>Returns the paths::algorithm used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a>.</p>
 <p>Returns the algorithm used by <a class="el" href="#a537bc06e83dd1a586f8291723bce51f6">number_of_paths()</a> to compute the number of paths originating at the given source node with length in the range \([min, max)\).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -2053,9 +2121,10 @@ template&lt;typename Node1, typename Node2&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <a class="el" href="namespacelibsemigroups_1_1paths.html#a8a0fd7a8363e41d8c12a90716f4f500f" title="An enum for specifying the algorithm to the functions number_of_paths().">paths::algorithm</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type paths::algorithm.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>At worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph. </dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>At worst \(O(nm)\) where \(n\) is the number of nodes and \(m\) is the out-degree of the word graph.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated</a></b></dt><dd>This function is deprecated, it will be moved into the <code>paths</code> namespace in the file <code><a class="el" href="paths-count_8hpp_source.html">paths-count.hpp</a></code> in <code>libsemigroups</code> v4. </dd></dl>
 
 </div>
 </div>

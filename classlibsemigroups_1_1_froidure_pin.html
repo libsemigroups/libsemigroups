@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -197,7 +198,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_froidure_pin.html',''); initRes
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename Traits = FroidurePinTraits&lt;Element&gt;&gt;<br />
 class libsemigroups::FroidurePin&lt; Element, Traits &gt;</div><p>Defined in <code><a class="el" href="froidure-pin_8hpp_source.html">froidure-pin.hpp</a></code>.</p>
-<p>The class template <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> implements the Froidure-Pin algorithm as described in the article <a class="el" href="citelist.html#CITEREF_froidure1997aa">[24]</a> by Veronique Froidure and Jean-Eric Pin. A <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> instance is defined by a generating set, and the main function is <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a>, which implements the Froidure-Pin Algorithm. If <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a> is invoked and <a class="el" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">finished</a> returns <code>true</code>, then the size <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0b6b70701c46e22849f0f363861351cd">size</a>, the left and right Cayley graphs <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> and <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> are determined, and a confluent terminating presentation <a class="el" href="namespacelibsemigroups_1_1froidure__pin.html#adc764cfa43196ddf72aba095e9fc4cf3">rules</a> for the semigroup is known.</p>
+<p>The class template <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> implements the Froidure-Pin algorithm as described in the article <a class="el" href="citelist.html#CITEREF_froidure1997aa">[25]</a> by Veronique Froidure and Jean-Eric Pin. A <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> instance is defined by a generating set, and the main function is <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a>, which implements the Froidure-Pin Algorithm. If <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a> is invoked and <a class="el" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">finished</a> returns <code>true</code>, then the size <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0b6b70701c46e22849f0f363861351cd">size</a>, the left and right Cayley graphs <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> and <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> are determined, and a confluent terminating presentation <a class="el" href="namespacelibsemigroups_1_1froidure__pin.html#adc764cfa43196ddf72aba095e9fc4cf3">rules</a> for the semigroup is known.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of the elements in the represented semigroup.</td></tr>
@@ -243,23 +244,26 @@ class libsemigroups::FroidurePin&lt; Element, Traits &gt;</div><p>Defined in <co
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="line"> </div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::FroidurePin::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:306</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::FroidurePin::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:291</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_aa90686dc10314c884b40c01b8b8e35f3"><div class="ttname"><a href="#aa90686dc10314c884b40c01b8b8e35f3">libsemigroups::FroidurePin::Complexity</a></div><div class="ttdeci">typename Traits::Complexity Complexity</div><div class="ttdoc">Adapter for the complexity of multiplication.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:288</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::FroidurePin::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:309</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_ae3f59267514050c7b2c84210316ffe3f"><div class="ttname"><a href="#ae3f59267514050c7b2c84210316ffe3f">libsemigroups::FroidurePin::IncreaseDegree</a></div><div class="ttdeci">typename Traits::IncreaseDegree IncreaseDegree</div><div class="ttdoc">Adapter for increasing the degree of an element.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:300</div></div>
+</div><!-- fragment --> <div class="fragment"><div class="line"> <span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacelibsemigroups_1_1froidure__pin.html">froidure_pin</a>;</div>
 <div class="line"><a class="code hl_function" href="#afced1630502fbf2a950904dfe23847fd">FroidurePin&lt;int&gt;</a> S({2});</div>
 <div class="line">S.size();           <span class="comment">// 32</span></div>
-<div class="line">S.number_of_idempotents()  <span class="comment">// 1</span></div>
+<div class="line">S.number_of_idempotents();  <span class="comment">// 1</span></div>
 <div class="line">*S.cbegin();        <span class="comment">// 2</span></div>
 <div class="line"> </div>
-<div class="line"><a class="code hl_function" href="#afced1630502fbf2a950904dfe23847fd">FroidurePin&lt;uint8_t&gt;</a> T({2, 3});</div>
-<div class="line">T.size()                      <span class="comment">// 130</span></div>
-<div class="line">T.number_of_idempotents()     <span class="comment">// 2</span></div>
+<div class="line"><a class="code hl_class" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin&lt;uint8_t&gt;</a> T({2, 3});</div>
+<div class="line">T.<a class="code hl_function" href="classlibsemigroups_1_1_froidure_pin_base.html#a0b6b70701c46e22849f0f363861351cd">size</a>();                      <span class="comment">// 130</span></div>
+<div class="line">T.number_of_idempotents();     <span class="comment">// 2</span></div>
 <div class="line">*T.cbegin_idempotents();      <span class="comment">// 0</span></div>
 <div class="line">*T.cbegin_idempotents() + 1;  <span class="comment">// 1</span></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::FroidurePin::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:304</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::FroidurePin::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:289</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_aa90686dc10314c884b40c01b8b8e35f3"><div class="ttname"><a href="#aa90686dc10314c884b40c01b8b8e35f3">libsemigroups::FroidurePin::Complexity</a></div><div class="ttdeci">typename Traits::Complexity Complexity</div><div class="ttdoc">Adapter for the complexity of multiplication.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:286</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::FroidurePin::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:307</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_ae3f59267514050c7b2c84210316ffe3f"><div class="ttname"><a href="#ae3f59267514050c7b2c84210316ffe3f">libsemigroups::FroidurePin::IncreaseDegree</a></div><div class="ttdeci">typename Traits::IncreaseDegree IncreaseDegree</div><div class="ttdoc">Adapter for increasing the degree of an element.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:298</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a0b6b70701c46e22849f0f363861351cd"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin_base.html#a0b6b70701c46e22849f0f363861351cd">libsemigroups::FroidurePinBase::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdoc">Returns the size of a FroidurePin instance.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:851</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html">libsemigroups::FroidurePin</a></div><div class="ttdoc">Class implementing the Froidure-Pin algorithm.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:190</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_afced1630502fbf2a950904dfe23847fd"><div class="ttname"><a href="#afced1630502fbf2a950904dfe23847fd">libsemigroups::FroidurePin::FroidurePin</a></div><div class="ttdeci">FroidurePin()</div><div class="ttdoc">Default constructor.</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1froidure__pin_html"><div class="ttname"><a href="namespacelibsemigroups_1_1froidure__pin.html">libsemigroups::froidure_pin</a></div><div class="ttdoc">This namespace contains helper functions for the FroidurePin class template.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:1844</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><div class="dynheader">
 Inheritance diagram for FroidurePin&lt; Element, Traits &gt;:</div>
@@ -1005,7 +1009,7 @@ template&lt;typename Element, typename Traits = FroidurePinTraits&lt;Element&gt;
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line"> detail::BruidhinnConstIterator&lt;<a class="code hl_typedef" href="#a5991027408ae4f685f2910d843af9183">element_type</a>,</div>
 <div class="line">                                         <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;internal_element_type&gt;</a>&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::FroidurePin::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">Type of the elements.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:247</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::FroidurePin::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">Type of the elements.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:249</div></div>
 <div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div></div>
 </div><!-- fragment --><p>Return type for const random access iterators pointing at the elements of a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object in the order they were enumerated (i.e. in short-lex order of the minimum word in the generators). </p>
 

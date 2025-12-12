@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -196,10 +197,18 @@ $(function(){initNavTree('group__to__presentation__group.html',''); initResizabl
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga71b38b93df0ce88b2f407759e7ae11b4" id="r_ga71b38b93df0ce88b2f407759e7ae11b4"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Word&gt; </td></tr>
+<tr class="memitem:ga71b38b93df0ce88b2f407759e7ae11b4"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga71b38b93df0ce88b2f407759e7ae11b4">to</a> (Congrence&lt; Word &gt; &amp;c) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt; &amp;&amp;!std::is_same_v&lt; typename Result::word_type, Word &gt;, Result &gt;</td></tr>
+<tr class="memdesc:ga71b38b93df0ce88b2f407759e7ae11b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a <a class="el" href="group__congruence__class__group.html">Congruence</a>.  <br /></td></tr>
+<tr class="separator:ga71b38b93df0ce88b2f407759e7ae11b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1e93abc105543c80499d53280e4ce5e0" id="r_ga1e93abc105543c80499d53280e4ce5e0"><td class="memTemplParams" colspan="2">template&lt;typename Result&gt; </td></tr>
 <tr class="memitem:ga1e93abc105543c80499d53280e4ce5e0"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga1e93abc105543c80499d53280e4ce5e0">to</a> (<a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a> &amp;fp) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</td></tr>
 <tr class="memdesc:ga1e93abc105543c80499d53280e4ce5e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object.  <br /></td></tr>
 <tr class="separator:ga1e93abc105543c80499d53280e4ce5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa3de5bcfca63c1e27e6446bc9c5a9316" id="r_gaa3de5bcfca63c1e27e6446bc9c5a9316"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Word&gt; </td></tr>
+<tr class="memitem:gaa3de5bcfca63c1e27e6446bc9c5a9316"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa3de5bcfca63c1e27e6446bc9c5a9316">to</a> (Kambtes&lt; Word &gt; &amp;k) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt; &amp;&amp;!std::is_same_v&lt; typename Result::word_type, Word &gt;, Result &gt;</td></tr>
+<tr class="memdesc:gaa3de5bcfca63c1e27e6446bc9c5a9316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a <a class="el" href="group__kambites__class__group.html">Kambites</a>.  <br /></td></tr>
+<tr class="separator:gaa3de5bcfca63c1e27e6446bc9c5a9316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga08d69306a75ab05829f67aa475558567" id="r_ga08d69306a75ab05829f67aa475558567"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Thing, typename Word, typename Rewriter typename ReductionOrder&gt; </td></tr>
 <tr class="memitem:ga08d69306a75ab05829f67aa475558567"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga08d69306a75ab05829f67aa475558567">to</a> (KnutBendix&lt; Word, Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; Word &gt;, <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; &gt;</td></tr>
 <tr class="memdesc:ga08d69306a75ab05829f67aa475558567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a <a class="el" href="group__knuth__bendix__class__group.html">KnuthBendix</a> object.  <br /></td></tr>
@@ -216,10 +225,60 @@ Functions</h2></td></tr>
 <tr class="memitem:ga15e06776b837cffe48141b28f41e62aa"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga15e06776b837cffe48141b28f41e62aa">to</a> (<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; Word &gt; const &amp;p, Func &amp;&amp;f) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</td></tr>
 <tr class="memdesc:ga15e06776b837cffe48141b28f41e62aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a different type of presentation.  <br /></td></tr>
 <tr class="separator:ga15e06776b837cffe48141b28f41e62aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaae7097b1a8e6e799756de7eb0d5246bb" id="r_gaae7097b1a8e6e799756de7eb0d5246bb"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename PresentationType&gt; </td></tr>
+<tr class="memitem:gaae7097b1a8e6e799756de7eb0d5246bb"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaae7097b1a8e6e799756de7eb0d5246bb">to</a> (<a class="el" href="classlibsemigroups_1_1_stephen.html">Stephen</a>&lt; PresentationType &gt; &amp;s) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</td></tr>
+<tr class="memdesc:gaae7097b1a8e6e799756de7eb0d5246bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a <a class="el" href="classlibsemigroups_1_1_stephen.html" title="For constructing the word graph of left factors of a word in an f.p. semigroup.">Stephen</a> object.  <br /></td></tr>
+<tr class="separator:gaae7097b1a8e6e799756de7eb0d5246bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga31bd279d558c577d2a315e1bfd77a829" id="r_ga31bd279d558c577d2a315e1bfd77a829"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Word&gt; </td></tr>
+<tr class="memitem:ga31bd279d558c577d2a315e1bfd77a829"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga31bd279d558c577d2a315e1bfd77a829">to</a> (ToddCoxter&lt; Word &gt; &amp;tc) -&gt; std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt; &amp;&amp;!std::is_same_v&lt; typename Result::word_type, Word &gt;, Result &gt;</td></tr>
+<tr class="memdesc:ga31bd279d558c577d2a315e1bfd77a829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make a presentation from a <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> object.  <br /></td></tr>
+<tr class="separator:ga31bd279d558c577d2a315e1bfd77a829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga71b38b93df0ce88b2f407759e7ae11b4" name="ga71b38b93df0ce88b2f407759e7ae11b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga71b38b93df0ce88b2f407759e7ae11b4">&#9670;&#160;</a></span>to() <span class="overload">[1/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Result, typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto to </td>
+          <td>(</td>
+          <td class="paramtype">Congrence&lt; Word &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>c</em></span></td><td>)</td>
+          <td> -&gt;  std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt; &amp;&amp;!std::is_same_v&lt; typename Result::word_type, Word &gt;, Result &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code></p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(c);</div>
+<div class="ttc" id="anamespacelibsemigroups_html_ae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
+</div><!-- fragment --><p>There are two versions of this function:</p>
+<ol type="1">
+<li>When <code>typename Result::word_type</code> and <code>Word</code> are not the same, this function calls <code>to&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;typename Result::word_type&gt;</code> on <code>c.presentation()</code> to return a presentation equivalent to the object used to construct or initialise the Congruence object (if any) but of a different type (for example, can be used to convert from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code> to <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>).</li>
+<li>If the word representations are the same, the function returns a reference to the presentation used to construct or initialise the Congruence object (if any) via <code>c.presentation()</code>.</li>
+</ol>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Result</td><td>the return type, also used for SFINAE, should be <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation&lt;T&gt;</a></code> for some type <code>T</code>. </td></tr>
+    <tr><td class="paramname">Word</td><td>the type of the words in the input Congruence. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>the Congruence object from which to obtain the rules.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;</code>. </dd></dl>
+
+</div>
+</div>
 <a id="ga1e93abc105543c80499d53280e4ce5e0" name="ga1e93abc105543c80499d53280e4ce5e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1e93abc105543c80499d53280e4ce5e0">&#9670;&#160;</a></span>to() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1e93abc105543c80499d53280e4ce5e0">&#9670;&#160;</a></span>to() <span class="overload">[2/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -237,7 +296,6 @@ template&lt;typename Result&gt; </div>
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(fp);</div>
-<div class="ttc" id="anamespacelibsemigroups_html_ae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
 </div><!-- fragment --><p>This function constructs and returns a <a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a> object using the rules of a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> object, accessed via <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a229ee34403288cf24cb81677d6e083e7" title="Returns a forward iterator pointing to the first rule (if any).">FroidurePin::cbegin_rules</a> and <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a07edf8e2ad3c41ba152f7c4b32199235" title="Returns a forward iterator pointing one past the last rule (if any).">FroidurePin::cend_rules</a>.</p>
 <p>No enumeration of the argument <code class="param">fp</code> is performed, so it might be the case that the resulting presentation does not define the same semigroup as <code class="param">fp</code>. To ensure that the resulting presentation defines the same semigroup as <code class="param">fp</code>, run <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">FroidurePin::run</a> (or any other function that fully enumerates <code class="param">fp</code>) prior to calling this function.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -257,8 +315,49 @@ template&lt;typename Result&gt; </div>
 
 </div>
 </div>
+<a id="gaa3de5bcfca63c1e27e6446bc9c5a9316" name="gaa3de5bcfca63c1e27e6446bc9c5a9316"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa3de5bcfca63c1e27e6446bc9c5a9316">&#9670;&#160;</a></span>to() <span class="overload">[3/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Result, typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto to </td>
+          <td>(</td>
+          <td class="paramtype">Kambtes&lt; Word &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>k</em></span></td><td>)</td>
+          <td> -&gt;  std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt; &amp;&amp;!std::is_same_v&lt; typename Result::word_type, Word &gt;, Result &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code></p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(k);</div>
+</div><!-- fragment --><p>There are two versions of this function:</p>
+<ol type="1">
+<li>When <code>typename Result::word_type</code> and <code>Word</code> are not the same, this function calls <code>to&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;typename Result::word_type&gt;</code> on <code>k.presentation()</code> to return a presentation equivalent to the object used to construct or initialise the Kambites object (if any) but of a different type (for example, this function can be used to convert from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code> to <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>).</li>
+<li>If the word representations are the same, the function returns a reference to the presentation used to construct or initialise the Kambites object (if any) via <code>k.presentation()</code>.</li>
+</ol>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Result</td><td>the return type, also used for SFINAE, should be <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation&lt;T&gt;</a></code> for some type <code>T</code>. </td></tr>
+    <tr><td class="paramname">Word</td><td>the type of the words in the input Kambites. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">k</td><td>the Kambites object from which to obtain the rules.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;</code>. </dd></dl>
+
+</div>
+</div>
 <a id="ga08d69306a75ab05829f67aa475558567" name="ga08d69306a75ab05829f67aa475558567"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga08d69306a75ab05829f67aa475558567">&#9670;&#160;</a></span>to() <span class="overload">[2/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga08d69306a75ab05829f67aa475558567">&#9670;&#160;</a></span>to() <span class="overload">[4/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,7 +375,7 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word, typenam
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&gt;</a>(kb);</div>
-</div><!-- fragment --><p>This function constructs and returns a <a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a> object using the currently active rules of <code class="param">kb</code>.</p>
+</div><!-- fragment --><p> This function constructs and returns a <a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a> object using the currently active rules of <code class="param">kb</code>.</p>
 <p>No enumeration of the argument <code class="param">kb</code> is performed, so it might be the case that the resulting presentation does not define the same semigroup/monoid as <code class="param">kb</code>. To ensure that the resulting presentation defines the same semigroup as <code class="param">kb</code>, run <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a> (or any other function that fully enumerates <code class="param">kb</code>) prior to calling this function.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -299,7 +398,7 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word, typenam
 </div>
 </div>
 <a id="ga670c3bbc15bb5df011730009fb6a176e" name="ga670c3bbc15bb5df011730009fb6a176e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga670c3bbc15bb5df011730009fb6a176e">&#9670;&#160;</a></span>to() <span class="overload">[3/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga670c3bbc15bb5df011730009fb6a176e">&#9670;&#160;</a></span>to() <span class="overload">[5/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -341,7 +440,7 @@ template&lt;typename Result, typename WordIn, typename Rewriter, typename Reduct
 </div>
 </div>
 <a id="gaf9d6cc3283fbc617d886cf0a089c1f82" name="gaf9d6cc3283fbc617d886cf0a089c1f82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf9d6cc3283fbc617d886cf0a089c1f82">&#9670;&#160;</a></span>to() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf9d6cc3283fbc617d886cf0a089c1f82">&#9670;&#160;</a></span>to() <span class="overload">[6/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -358,7 +457,7 @@ template&lt;typename Result, typename Word&gt; </div>
           <td> -&gt; std::enable_if_t&lt;
       std::is_same_v&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt;typename Result::word_type&gt;, Result&gt;
           &amp;&amp; !std::is_same_v&lt;typename Result::word_type, Word&gt;,
-      Result&gt;</td>
+      Result&gt; </td>
         </tr>
       </table>
   </td>
@@ -397,10 +496,11 @@ template&lt;typename Result, typename Word&gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code> to <code><a class="el" href="presentation_8hpp_source.html">presentation.hpp</a></code> in v4 of libsemigroups.</dd></dl>
 <p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code>.</p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;InversePresentation&gt;</a>(p);</div>
-</div><!-- fragment --><p>This function returns an inverse presentation with rules equivalent to those of the input presentation, but over a normalised alphabet. If the alphabet of <code class="param">p</code> is \(\{a_0, a_1, \dots, a_{n-1}\}\), then the alphabet of the returned inverse presentation will be \(\{0, 1, \dots, n-1, n, \dots, 2n-1\}\), where the inverse of letter \(i\) is the letter \(i + n\, (\text{mod }2n)\).</p>
+</div><!-- fragment --><p> This function returns an inverse presentation with rules equivalent to those of the input presentation, but over a normalised alphabet. If the alphabet of <code class="param">p</code> is \(\{a_0, a_1, \dots, a_{n-1}\}\), then the alphabet of the returned inverse presentation will be \(\{0, 1, \dots, n-1, n, \dots, 2n-1\}\), where the inverse of letter \(i\) is the letter \(i + n\, (\text{mod }2n)\).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Thing</td><td>used for SFINAE, must be <a class="el" href="classlibsemigroups_1_1_inverse_presentation.html" title="For an implementation of inverse presentations for semigroups or monoids.">InversePresentation</a>. </td></tr>
@@ -417,15 +517,16 @@ template&lt;typename Result, typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_inverse_presentation.html" title="For an implementation of inverse presentations for semigroups or monoids.">InversePresentation</a>&lt;Word&gt;</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>p.throw_if_bad_alphabet_or_rules()</code> throws. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>p.throw_if_bad_alphabet_or_rules()</code> throws.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code> to <code><a class="el" href="presentation_8hpp_source.html">presentation.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
 <a id="ga15e06776b837cffe48141b28f41e62aa" name="ga15e06776b837cffe48141b28f41e62aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga15e06776b837cffe48141b28f41e62aa">&#9670;&#160;</a></span>to() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga15e06776b837cffe48141b28f41e62aa">&#9670;&#160;</a></span>to() <span class="overload">[7/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -440,7 +541,9 @@ template&lt;typename Result, typename Word, typename Func&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Func &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>&#160;) -&gt;  std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</td>
+          <td class="paramtype">Func &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>&#160;) -&gt; std::enable_if_t&lt;
+          std::is_same_v&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt;typename Result::word_type&gt;, Result&gt;,
+          Result&gt; </td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -470,7 +573,89 @@ template&lt;typename Result, typename Word, typename Func&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd><code>Func</code> must be a function type that is invocable with values of <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;::<a class="el" href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1" title="Type for the index of a generator of a semigroup.">letter_type</a></code>. If this is not true, then template substitution will fail. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd><code>Func</code> must be a function type that is invocable with values of <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;::<a class="el" href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1" title="Type for the index of a generator of a semigroup.">letter_type</a></code>. If this is not true, then template substitution will fail.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code> to <code><a class="el" href="presentation_8hpp_source.html">presentation.hpp</a></code> in v4 of libsemigroups. </dd></dl>
+
+</div>
+</div>
+<a id="gaae7097b1a8e6e799756de7eb0d5246bb" name="gaae7097b1a8e6e799756de7eb0d5246bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaae7097b1a8e6e799756de7eb0d5246bb">&#9670;&#160;</a></span>to() <span class="overload">[8/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Result, typename PresentationType&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto to </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_stephen.html">Stephen</a>&lt; PresentationType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span></td><td>)</td>
+          <td> -&gt; std::enable_if_t&lt;
+      std::is_same_v&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt;typename Result::word_type&gt;, Result&gt;,
+      Result&gt; </td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code></p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;std::string&gt;</a>&gt;(s);</div>
+</div><!-- fragment --><p>This function calls <code>to&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;typename Result::word_type&gt;</code> on <code>s.presentation()</code> to return a presentation equivalent to the object used to construct or initialise the <a class="el" href="classlibsemigroups_1_1_stephen.html" title="For constructing the word graph of left factors of a word in an f.p. semigroup.">Stephen</a> object (if any) but of a different type (for example, can be used to convert from <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> to <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code>).</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Result</td><td>the return type, also used for SFINAE, should be <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation&lt;T&gt;</a></code> for some type <code>T</code>. </td></tr>
+    <tr><td class="paramname">PresentationType</td><td>the type of the presentation in the input <a class="el" href="classlibsemigroups_1_1_stephen.html" title="For constructing the word graph of left factors of a word in an f.p. semigroup.">Stephen</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>the <a class="el" href="classlibsemigroups_1_1_stephen.html" title="For constructing the word graph of left factors of a word in an f.p. semigroup.">Stephen</a> object from which to obtain the rules.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;typename Result::word_type&gt;</code>. </dd></dl>
+
+</div>
+</div>
+<a id="ga31bd279d558c577d2a315e1bfd77a829" name="ga31bd279d558c577d2a315e1bfd77a829"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga31bd279d558c577d2a315e1bfd77a829">&#9670;&#160;</a></span>to() <span class="overload">[9/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Result, typename Word&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto to </td>
+          <td>(</td>
+          <td class="paramtype">ToddCoxter&lt; Word &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>tc</em></span></td><td>)</td>
+          <td> -&gt;  std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_presentation.html">Presentation</a>&lt; typename Result::word_type &gt;, Result &gt; &amp;&amp;!std::is_same_v&lt; typename Result::word_type, Word &gt;, Result &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code></p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(tc);</div>
+</div><!-- fragment --><p>There are two versions of this function:</p>
+<ol type="1">
+<li>When <code>typename Result::word_type</code> and <code>Word</code> are not the same, this function calls <code>to&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;typename Result::word_type&gt;</code> on <code>tc.presentation()</code> to return a presentation equivalent to the object used to construct or initialise the ToddCoxeter object (if any) but of a different type (for example, can be used to convert from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code> to <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>).</li>
+<li>If the word representations are the same, the function returns a reference to the presentation used to construct or initialise the ToddCoxeter object (if any) via <code>tc.presentation()</code>.</li>
+</ol>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Result</td><td>the return type, also used for SFINAE, should be <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation&lt;T&gt;</a></code> for some type <code>T</code>. </td></tr>
+    <tr><td class="paramname">Word</td><td>the type of the words in the input ToddCoxeter. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tc</td><td>the ToddCoxeter object from which to obtain the rules.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;</code>. </dd></dl>
 
 </div>
 </div>

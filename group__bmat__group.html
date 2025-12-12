@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -198,10 +199,10 @@ $(function(){initNavTree('group__bmat__group.html',''); initResizable(true); });
 <p>The alias <code><a class="el" href="#gaba976bb482d4da5aa454b2b185a7241a" title="Alias template for boolean matrices.">BMat</a>&lt;R, C&gt;</code> is either <a class="el" href="classlibsemigroups_1_1_static_matrix.html" title="Static matrix class.">StaticMatrix</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicMatrixStaticArith">DynamicMatrix (compile-time arithmetic)</a>, or <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_semiring_00_01_scalar_01_4.html#DynamicMatrixDynamicArith">DynamicMatrix (run-time arithmetic)</a>, please refer to the documentation of these class templates for more details. The only substantial difference in the interface of static and dynamic is that the former can be default constructed and the latter should be constructed using the dimensions.</p>
 <p>Adapters for <a class="el" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat</a> objects are documented <a class="el" href="group__adapters__bmat__group.html">here</a>.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// default construct an uninitialized 3 x 3 static matrix</span></div>
-<div class="line"><a class="code hl_typedef" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat&lt;3&gt;</a> m;</div>
+<div class="line">[[maybe_unused]] <a class="code hl_typedef" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat&lt;3&gt;</a> m3;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix</span></div>
-<div class="line"><a class="code hl_typedef" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat&lt;&gt;</a> m(4, 4);</div>
-<div class="ttc" id="agroup__bmat__group_html_gaba976bb482d4da5aa454b2b185a7241a"><div class="ttname"><a href="#gaba976bb482d4da5aa454b2b185a7241a">libsemigroups::BMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicBMat, StaticBMat&lt; R, C &gt; &gt; BMat</div><div class="ttdoc">Alias template for boolean matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3972</div></div>
+<div class="line"><a class="code hl_typedef" href="#gaba976bb482d4da5aa454b2b185a7241a">BMat&lt;&gt;</a> m4(4, 4);</div>
+<div class="ttc" id="agroup__bmat__group_html_gaba976bb482d4da5aa454b2b185a7241a"><div class="ttname"><a href="#gaba976bb482d4da5aa454b2b185a7241a">libsemigroups::BMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, DynamicBMat, StaticBMat&lt; R, C &gt; &gt; BMat</div><div class="ttdoc">Alias template for boolean matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3976</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -314,10 +315,10 @@ template&lt;size_t R, size_t C&gt; </div>
 <div class="line">                                  C,</div>
 <div class="line">                                  <span class="keywordtype">int</span>&gt;</div>
 <div class="ttc" id="aclasslibsemigroups_1_1_static_matrix_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_matrix.html">libsemigroups::StaticMatrix</a></div><div class="ttdoc">Static matrix class.</div><div class="ttdef"><b>Definition</b> matrix.hpp:1865</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_one.html">libsemigroups::BooleanOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3883</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_plus_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_plus.html">libsemigroups::BooleanPlus</a></div><div class="ttdoc">Function object for addition in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3829</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_prod.html">libsemigroups::BooleanProd</a></div><div class="ttdoc">Function object for multiplication in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3856</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_boolean_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_zero.html">libsemigroups::BooleanZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3908</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_one.html">libsemigroups::BooleanOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3887</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_plus_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_plus.html">libsemigroups::BooleanPlus</a></div><div class="ttdoc">Function object for addition in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3833</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_prod.html">libsemigroups::BooleanProd</a></div><div class="ttdoc">Function object for multiplication in the boolean semiring.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3860</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_boolean_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_boolean_zero.html">libsemigroups::BooleanZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:3912</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of static boolean matrices where the dimensions of the matrices are defined at compile time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

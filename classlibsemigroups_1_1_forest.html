@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -294,6 +295,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af74761f0d690736435fa5b34365d837d" id="r_af74761f0d690736435fa5b34365d837d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af74761f0d690736435fa5b34365d837d">throw_if_node_out_of_bounds</a> (<a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a> v) const</td></tr>
 <tr class="memdesc:af74761f0d690736435fa5b34365d837d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw an exception if a node is out of bound.  <br /></td></tr>
 <tr class="separator:af74761f0d690736435fa5b34365d837d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad610523af1cd595befea7674f571b9f5" id="r_ad610523af1cd595befea7674f571b9f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad610523af1cd595befea7674f571b9f5">throw_if_not_acyclic</a> () const</td></tr>
+<tr class="memdesc:ad610523af1cd595befea7674f571b9f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Throw an exception if the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> is not acyclic.  <br /></td></tr>
+<tr class="separator:ad610523af1cd595befea7674f571b9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="related" name="related"></a>
 Related Symbols</h2></td></tr>
@@ -664,7 +668,7 @@ Related Symbols</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const reference to the vector of edge labels in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>. The value in position <code>i</code> of this vector is the label of the edge from the parent of node <code>i</code> to <code>i</code>. If the parent equals UNDEFINED, then node <code>i</code> is a root node.</p>
+<p>This function returns a const reference to the vector of edge labels in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>. The value in position <code>i</code> of this vector is the label of the edge from the parent of node <code>i</code> to <code>i</code>. If the parent equals UNDEFINED, then node <code>i</code> is a root node.</p>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;label_type&gt;</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
@@ -693,8 +697,8 @@ Related Symbols</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of nodes in the forest.</p>
-<dl class="section return"><dt>Returns</dt><dd>A <code>size_t</code>.</dd></dl>
+<p>This function returns the number of nodes in the forest.</p>
+<dl class="section return"><dt>Returns</dt><dd>The number of nodes.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant </dd></dl>
 
@@ -863,7 +867,7 @@ Related Symbols</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a const reference to the vector of parents in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>. The value in position <code>i</code> of this vector is the parent of node <code>i</code>. If the parent equals UNDEFINED, then node <code>i</code> is a root node.</p>
+<p>This function returns a const reference to the vector of parents in the <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a>. The value in position <code>i</code> of this vector is the parent of node <code>i</code>. If the parent equals UNDEFINED, then node <code>i</code> is a root node.</p>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;node_type&gt;</a>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>Constant. </dd></dl>
@@ -905,7 +909,8 @@ template&lt;typename Iterator&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An <code>Iterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html" title="Range for iterating through paths in a Forest.">forest::PathsFromRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -945,6 +950,7 @@ template&lt;typename Iterator&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An <code>Iterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html" title="Range for iterating through paths in a Forest.">forest::PathsToRoots</a> </dd></dl>
 
 </div>
 </div>
@@ -953,9 +959,6 @@ template&lt;typename Iterator&gt; </div>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> &amp; set_parent_and_label </td>
@@ -973,11 +976,6 @@ template&lt;typename Iterator&gt; </div>
           <td class="paramtype"><a class="el" href="#aa16195c0e23f5fba6f2731fe0eab2322">label_type</a></td>          <td class="paramname"><span class="paramname"><em>gen</em></span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>This function sets the parent of <code class="param">node</code> to be <code class="param">parent</code>, and the associated edge-label to be <code class="param">gen</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -991,7 +989,9 @@ template&lt;typename Iterator&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">node</code> or <code class="param">parent</code> exceeds <a class="el" href="#a25dedc9637cca8285b913365ac012b62" title="Returns the number of nodes in the forest.">number_of_nodes()</a>.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">node</code> or <code class="param">parent</code> exceeds <a class="el" href="#a25dedc9637cca8285b913365ac012b62" title="Returns the number of nodes in the forest.">number_of_nodes()</a>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">node</code> equals <code class="param">parent</code>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if adding <code class="param">parent</code> as the parent of <code class="param">node</code> would result in a cycle.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1073,6 +1073,32 @@ template&lt;typename Iterator&gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ad610523af1cd595befea7674f571b9f5" name="ad610523af1cd595befea7674f571b9f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad610523af1cd595befea7674f571b9f5">&#9670;&#160;</a></span>throw_if_not_acyclic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void throw_if_not_acyclic </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function throws a descriptive exception if a <a class="el" href="classlibsemigroups_1_1_forest.html" title="Class representing a collection of spanning trees of a word graph.">Forest</a> instance is not well-defined, i.e. if it is not acyclic. See <a class="el" href="namespacelibsemigroups_1_1forest.html#a8e9798231bc0adcccd54aca2dc62d502">is_forest</a> for more details. </p>
 
 </div>
 </div>

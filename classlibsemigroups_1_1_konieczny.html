@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -195,7 +196,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_konieczny.html',''); initResiza
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&gt;<br />
-class libsemigroups::Konieczny&lt; Element, Traits &gt;</div><p>The class template <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> implements Konieczny's algorithm as described in the article 'Green's equivalences in finite semigroups of binary relations' by Janusz Konieczny <a class="el" href="citelist.html#CITEREF_konieczny1994aa">[42]</a>. This algorithm is similar to that of Lallement and McFadden; see <a class="el" href="citelist.html#CITEREF_lallement1990aa">[44]</a>. It differs in being applicable to subsemigroups of a non-regular semigroup, though is essentially the same algorithm for elements which happen to be regular.</p>
+class libsemigroups::Konieczny&lt; Element, Traits &gt;</div><p>The class template <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> implements Konieczny's algorithm as described in the article 'Green's equivalences in finite semigroups of binary relations' by Janusz Konieczny <a class="el" href="citelist.html#CITEREF_konieczny1994aa">[43]</a>. This algorithm is similar to that of Lallement and McFadden; see <a class="el" href="citelist.html#CITEREF_lallement1990aa">[45]</a>. It differs in being applicable to subsemigroups of a non-regular semigroup, though is essentially the same algorithm for elements which happen to be regular.</p>
 <p>A <a class="el" href="classlibsemigroups_1_1_konieczny.html" title="Class implementing Konieczny&#39;s algorithm.">Konieczny</a> instance is defined by a generating set, and the main function is <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">Konieczny::run</a>, which implements Konieczny's Algorithm. If <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">Konieczny::run</a> is invoked and <a class="el" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">Konieczny::finished</a> returns <code>true</code>, then the size, partial order of \(\mathscr{D}\)-classes, and frames for each \(\mathscr{D}\)-class are known.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -632,7 +633,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line"> detail::BruidhinnConstIterator&lt;<a class="code hl_typedef" href="classlibsemigroups_1_1_froidure_pin.html#a5991027408ae4f685f2910d843af9183">element_type</a>,</div>
 <div class="line">                                         <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;internal_element_type&gt;</a>&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html#a5991027408ae4f685f2910d843af9183">libsemigroups::FroidurePin::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">Type of the elements.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:247</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html#a5991027408ae4f685f2910d843af9183">libsemigroups::FroidurePin::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">Type of the elements.</div><div class="ttdef"><b>Definition</b> froidure-pin.hpp:249</div></div>
 <div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div></div>
 </div><!-- fragment -->
 </div>
@@ -727,7 +728,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::Konieczny::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:232</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::Konieczny::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:231</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -868,7 +869,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <div class="line">    <span class="keywordflow">return</span> T::one();</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::Konieczny::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:244</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::Konieczny::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:243</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
 </div><!-- fragment -->    </dd></dl>
 
@@ -910,7 +911,7 @@ template&lt;typename Element, typename Traits = KoniecznyTraits&lt;Element&gt;&g
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::Konieczny::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:247</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_konieczny_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::Konieczny::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> konieczny.hpp:246</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>

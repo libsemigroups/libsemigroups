@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -196,18 +197,10 @@ $(function(){initNavTree('group__make__pperm__group.html',''); initResizable(tru
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga7cb8f4b7c4b54a46a9181d70058d23dd" id="r_ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="memTemplParams" colspan="2">template&lt;typename Return, typename Container&gt; </td></tr>
-<tr class="memitem:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga7cb8f4b7c4b54a46a9181d70058d23dd">make</a> (Container &amp;&amp;cont)</td></tr>
-<tr class="memdesc:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from container and check.  <br /></td></tr>
-<tr class="separator:ga7cb8f4b7c4b54a46a9181d70058d23dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9a49e09e7f6c143fb397613a66b47ba5" id="r_ga9a49e09e7f6c143fb397613a66b47ba5"><td class="memTemplParams" colspan="2">template&lt;typename Return, typename OtherContainer&gt; </td></tr>
 <tr class="memitem:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga9a49e09e7f6c143fb397613a66b47ba5">make</a> (OtherContainer &amp;&amp;cont)</td></tr>
 <tr class="memdesc:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from universal reference container and check.  <br /></td></tr>
 <tr class="separator:ga9a49e09e7f6c143fb397613a66b47ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae868c33601ee075c1bb1a8b29732404a" id="r_gae868c33601ee075c1bb1a8b29732404a"><td class="memTemplParams" colspan="2">template&lt;typename Return, typename Int&gt; </td></tr>
-<tr class="memitem:gae868c33601ee075c1bb1a8b29732404a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gae868c33601ee075c1bb1a8b29732404a">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt; dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt; ran, size_t M)</td></tr>
-<tr class="memdesc:gae868c33601ee075c1bb1a8b29732404a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from domain, range, and degree, and check.  <br /></td></tr>
-<tr class="separator:gae868c33601ee075c1bb1a8b29732404a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaaec675a942d25a731884ad2367798edf" id="r_gaaec675a942d25a731884ad2367798edf"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
 <tr class="memitem:gaaec675a942d25a731884ad2367798edf"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaaec675a942d25a731884ad2367798edf">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; typename Return::point_type &gt; cont)</td></tr>
 <tr class="memdesc:gaaec675a942d25a731884ad2367798edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from initializer list and check.  <br /></td></tr>
@@ -220,68 +213,10 @@ Functions</h2></td></tr>
 <tr class="memitem:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__transf__group.html#ga051924855e3a663c3b6c01bd6fefd553">IsPPerm</a>&lt; Return &gt;, Return &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gafdd7422ba2d71dd20b1694e98d8d6d82">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::point_type &gt; const &amp;dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Return::point_type &gt; const &amp;ran, size_t M)</td></tr>
 <tr class="memdesc:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classlibsemigroups_1_1_p_perm.html">PPerm</a> from domain, range, and degree, and check.  <br /></td></tr>
 <tr class="separator:gafdd7422ba2d71dd20b1694e98d8d6d82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabdf81e17957ca1ff137f6e7ede85226c" id="r_gabdf81e17957ca1ff137f6e7ede85226c"><td class="memTemplParams" colspan="2">template&lt;typename Return&gt; </td></tr>
-<tr class="memitem:gabdf81e17957ca1ff137f6e7ede85226c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gabdf81e17957ca1ff137f6e7ede85226c">make</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; uint8_t &gt; const &amp;dom, <a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; uint8_t &gt; const &amp;ran, size_t deg=16)</td></tr>
-<tr class="memdesc:gabdf81e17957ca1ff137f6e7ede85226c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a HPCombi::PPerm16 from domain, range, and degree, and check.  <br /></td></tr>
-<tr class="separator:gabdf81e17957ca1ff137f6e7ede85226c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga7cb8f4b7c4b54a46a9181d70058d23dd" name="ga7cb8f4b7c4b54a46a9181d70058d23dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7cb8f4b7c4b54a46a9181d70058d23dd">&#9670;&#160;</a></span>make() <span class="overload">[1/7]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Return, typename Container&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt; make </td>
-          <td>(</td>
-          <td class="paramtype">Container &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>cont</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Constructs a HPCombi::PPerm16 initialized using the container <code class="param">cont</code> as follows: the image of the point <code>i</code> under the partial perm is the value in position <code>i</code> of the container <code class="param">cont</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Return</td><td>the return type. Must by HPCombi::PPerm16. </td></tr>
-    <tr><td class="paramname">Container</td><td>type of the container.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">cont</td><td>the container.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A <code>HPCombi::PPerm16</code> instance.</dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following hold:<ul>
-<li>the size of <code class="param">cont</code> exceeds <code>16</code>;</li>
-<li>any value in <code class="param">cont</code> exceeds <code>cont.size()</code>;</li>
-<li>any value in <code class="param">cont</code> is repeated.</li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Linear in the size of the container <code class="param">cont</code>. </dd></dl>
-
-</div>
-</div>
 <a id="ga9a49e09e7f6c143fb397613a66b47ba5" name="ga9a49e09e7f6c143fb397613a66b47ba5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9a49e09e7f6c143fb397613a66b47ba5">&#9670;&#160;</a></span>make() <span class="overload">[2/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9a49e09e7f6c143fb397613a66b47ba5">&#9670;&#160;</a></span>make() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -333,72 +268,8 @@ template&lt;typename Return, typename OtherContainer&gt; </div>
 
 </div>
 </div>
-<a id="gae868c33601ee075c1bb1a8b29732404a" name="gae868c33601ee075c1bb1a8b29732404a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae868c33601ee075c1bb1a8b29732404a">&#9670;&#160;</a></span>make() <span class="overload">[3/7]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Return, typename Int&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt; make </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt;</td>          <td class="paramname"><span class="paramname"><em>dom</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; Int &gt;</td>          <td class="paramname"><span class="paramname"><em>ran</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>M</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">M</code> such that <code>f[dom[i]] = ran[i]</code> for all <code>i</code> and which is <code>0xFF</code> on every other value in the range \([0, M)\).</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Return</td><td>the return type, must be HPCombi::PPerm16.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
-    <tr><td class="paramname">ran</td><td>the range. </td></tr>
-    <tr><td class="paramname">M</td><td>the degree.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following fail to hold:<ul>
-<li>the value <code class="param">M</code> is not compatible with the template parameter <code class="param">N</code> </li>
-<li><code class="param">dom</code> and <code class="param">ran</code> do not have the same size</li>
-<li>any value in <code class="param">dom</code> or <code class="param">ran</code> is greater than <code class="param">M</code> </li>
-<li>there are repeated entries in <code class="param">dom</code> or <code class="param">ran</code>.</li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Linear in the size of <code class="param">dom</code>. </dd></dl>
-
-</div>
-</div>
 <a id="gaaec675a942d25a731884ad2367798edf" name="gaaec675a942d25a731884ad2367798edf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaaec675a942d25a731884ad2367798edf">&#9670;&#160;</a></span>make() <span class="overload">[4/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaec675a942d25a731884ad2367798edf">&#9670;&#160;</a></span>make() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -450,7 +321,7 @@ template&lt;typename Return&gt; </div>
 </div>
 </div>
 <a id="ga5c155f14c0998f0dcdbad879f93e4271" name="ga5c155f14c0998f0dcdbad879f93e4271"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5c155f14c0998f0dcdbad879f93e4271">&#9670;&#160;</a></span>make() <span class="overload">[5/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5c155f14c0998f0dcdbad879f93e4271">&#9670;&#160;</a></span>make() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -514,7 +385,7 @@ template&lt;typename Return&gt; </div>
 </div>
 </div>
 <a id="gafdd7422ba2d71dd20b1694e98d8d6d82" name="gafdd7422ba2d71dd20b1694e98d8d6d82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafdd7422ba2d71dd20b1694e98d8d6d82">&#9670;&#160;</a></span>make() <span class="overload">[6/7]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gafdd7422ba2d71dd20b1694e98d8d6d82">&#9670;&#160;</a></span>make() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -558,70 +429,6 @@ template&lt;typename Return&gt; </div>
     <tr><td class="paramname">dom</td><td>the domain. </td></tr>
     <tr><td class="paramname">ran</td><td>the range. </td></tr>
     <tr><td class="paramname">M</td><td>the degree.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if any of the following fail to hold:<ul>
-<li>the value <code class="param">M</code> is not compatible with the template parameter <code class="param">N</code> </li>
-<li><code class="param">dom</code> and <code class="param">ran</code> do not have the same size</li>
-<li>any value in <code class="param">dom</code> or <code class="param">ran</code> is greater than <code class="param">M</code> </li>
-<li>there are repeated entries in <code class="param">dom</code> or <code class="param">ran</code>.</li>
-</ul>
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section user"><dt>Complexity</dt><dd>Linear in the size of <code class="param">dom</code>. </dd></dl>
-
-</div>
-</div>
-<a id="gabdf81e17957ca1ff137f6e7ede85226c" name="gabdf81e17957ca1ff137f6e7ede85226c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabdf81e17957ca1ff137f6e7ede85226c">&#9670;&#160;</a></span>make() <span class="overload">[7/7]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Return&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__types__group.html#ga2997d4c629358b2e320360bede28bd90">enable_if_is_same</a>&lt; Return, HPCombi::PPerm16 &gt; make </td>
-          <td>(</td>
-          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; uint8_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>dom</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; uint8_t &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>ran</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>deg</em></span><span class="paramdefsep"> = </span><span class="paramdefval">16</span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Constructs a partial perm of degree <code class="param">deg</code> such that <code>f[dom[i]] = ran[i]</code> for all <code>i</code> and which is <code>0xFF</code> on every other value in the range \([0, M)\).</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Return</td><td>the return type, must be HPCombi::PPerm16.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">dom</td><td>the domain. </td></tr>
-    <tr><td class="paramname">ran</td><td>the range. </td></tr>
-    <tr><td class="paramname">deg</td><td>the degree.</td></tr>
   </table>
   </dd>
 </dl>

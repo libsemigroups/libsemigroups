@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -196,12 +197,11 @@ $(function(){initNavTree('group__action__group.html',''); initResizable(true); }
 <p>This page contains an overview of the functionality in <code>libsemigroups</code> for finding actions of semigroups, or groups, on sets. The notion of an "action" in the context of <code>libsemigroups</code> is analogous to the notion of an orbit of a group.</p>
 <p>You are unlikely to want to use <a class="el" href="classlibsemigroups_1_1_action.html" title="Class for generating the action of a semigroup.">Action</a> directly, but rather via the more convenient aliases <a class="el" href="#ga1288ede08d1b9494336b874ad4da177e">RightAction</a> and <a class="el" href="#gae30bbc0cb349827de1e1af8f7a1c1b62">LeftAction</a>. To use <a class="el" href="#ga1288ede08d1b9494336b874ad4da177e">RightAction</a> and <a class="el" href="#gae30bbc0cb349827de1e1af8f7a1c1b62">LeftAction</a> with custom types, actions, and so on, see <a class="el" href="structlibsemigroups_1_1_action_traits.html">ActionTraits</a>.</p>
 <p>See also <a class="el" href="structlibsemigroups_1_1_image_left_action.html" title="Adapter for the value of a left action.">ImageLeftAction</a> and <a class="el" href="structlibsemigroups_1_1_image_right_action.html" title="Adapter for the value of a right action.">ImageRightAction</a>.</p>
-<div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a>;</div>
-<div class="line"><a class="code hl_typedef" href="#ga1288ede08d1b9494336b874ad4da177e">RightAction&lt;PPerm&lt;16&gt;</a>, <a class="code hl_class" href="classlibsemigroups_1_1_p_perm.html">PPerm&lt;16&gt;</a>, <a class="code hl_struct" href="structlibsemigroups_1_1_image_right_action.html">ImageRightAction&lt;PPerm&lt;16&gt;</a>, <a class="code hl_class" href="classlibsemigroups_1_1_p_perm.html">PPerm&lt;16&gt;</a>&gt;&gt;</div>
+<div class="fragment"><div class="line"><a class="code hl_typedef" href="#ga1288ede08d1b9494336b874ad4da177e">RightAction&lt;PPerm&lt;16&gt;</a>, PPerm&lt;16&gt;, ImageRightAction&lt;PPerm&lt;16&gt;, PPerm&lt;16&gt;&gt;&gt;</div>
 <div class="line">o;</div>
-<div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#ac1ffe0341c647944393d697b63971aa8">add_seed</a>(<a class="code hl_class" href="classlibsemigroups_1_1_p_perm.html">PPerm&lt;16&gt;::identity</a>(16));</div>
+<div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#ac1ffe0341c647944393d697b63971aa8">add_seed</a>(<a class="code hl_function" href="classlibsemigroups_1_1_p_perm.html#ad8052407ae2f13c42cc18b84da7c77d7">PPerm&lt;16&gt;::one</a>(16));</div>
 <div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#a5d20b484772bb4570c77ec8aaf53cd37">add_generator</a>(</div>
-<div class="line">   <a class="code hl_class" href="classlibsemigroups_1_1_p_perm.html">PPerm&lt;16&gt;</a>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},</div>
+<div class="line">   PPerm&lt;16&gt;({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},</div>
 <div class="line">             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},</div>
 <div class="line">             16));</div>
 <div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#a5d20b484772bb4570c77ec8aaf53cd37">add_generator</a>(</div>
@@ -217,15 +217,14 @@ $(function(){initNavTree('group__action__group.html',''); initResizable(true); }
 <div class="line">             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},</div>
 <div class="line">             16));</div>
 <div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#a6933d5f03fca7669a57fa931a6db0764">reserve</a>(70000);</div>
-<div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#a0b6b70701c46e22849f0f363861351cd">size</a>();  <span class="comment">// returns 65536</span></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_action_html_a0b6b70701c46e22849f0f363861351cd"><div class="ttname"><a href="classlibsemigroups_1_1_action.html#a0b6b70701c46e22849f0f363861351cd">libsemigroups::Action::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdoc">Returns the size of the fully enumerated action.</div><div class="ttdef"><b>Definition</b> action.hpp:580</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_action_html_a5d20b484772bb4570c77ec8aaf53cd37"><div class="ttname"><a href="classlibsemigroups_1_1_action.html#a5d20b484772bb4570c77ec8aaf53cd37">libsemigroups::Action::add_generator</a></div><div class="ttdeci">Action &amp; add_generator(element_type const &amp;gen)</div><div class="ttdoc">Add a generator to the action.</div><div class="ttdef"><b>Definition</b> action.hpp:447</div></div>
+<div class="line">o.<a class="code hl_function" href="classlibsemigroups_1_1_action.html#a0b6b70701c46e22849f0f363861351cd">size</a>();  <span class="comment">//-&gt; 65536</span></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_action_html_a0b6b70701c46e22849f0f363861351cd"><div class="ttname"><a href="classlibsemigroups_1_1_action.html#a0b6b70701c46e22849f0f363861351cd">libsemigroups::Action::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdoc">Returns the size of the fully enumerated action.</div><div class="ttdef"><b>Definition</b> action.hpp:578</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_action_html_a5d20b484772bb4570c77ec8aaf53cd37"><div class="ttname"><a href="classlibsemigroups_1_1_action.html#a5d20b484772bb4570c77ec8aaf53cd37">libsemigroups::Action::add_generator</a></div><div class="ttdeci">Action &amp; add_generator(element_type const &amp;gen)</div><div class="ttdoc">Add a generator to the action.</div><div class="ttdef"><b>Definition</b> action.hpp:445</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_action_html_a6933d5f03fca7669a57fa931a6db0764"><div class="ttname"><a href="classlibsemigroups_1_1_action.html#a6933d5f03fca7669a57fa931a6db0764">libsemigroups::Action::reserve</a></div><div class="ttdeci">Action &amp; reserve(size_t val)</div><div class="ttdoc">Increase the capacity to a value that is greater or equal to val.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_action_html_ac1ffe0341c647944393d697b63971aa8"><div class="ttname"><a href="classlibsemigroups_1_1_action.html#ac1ffe0341c647944393d697b63971aa8">libsemigroups::Action::add_seed</a></div><div class="ttdeci">Action &amp; add_seed(const_reference_point_type seed)</div><div class="ttdoc">Add a seed to the action.</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_p_perm_html"><div class="ttname"><a href="classlibsemigroups_1_1_p_perm.html">libsemigroups::PPerm</a></div><div class="ttdoc">Partial permutations with static or dynamic degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:1225</div></div>
-<div class="ttc" id="agroup__action__group_html_ga1288ede08d1b9494336b874ad4da177e"><div class="ttname"><a href="#ga1288ede08d1b9494336b874ad4da177e">libsemigroups::RightAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::right &gt; RightAction</div><div class="ttdef"><b>Definition</b> action.hpp:935</div></div>
-<div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_image_right_action_html"><div class="ttname"><a href="structlibsemigroups_1_1_image_right_action.html">libsemigroups::ImageRightAction</a></div><div class="ttdoc">Adapter for the value of a right action.</div><div class="ttdef"><b>Definition</b> adapters.hpp:399</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_p_perm_html"><div class="ttname"><a href="classlibsemigroups_1_1_p_perm.html">libsemigroups::PPerm</a></div><div class="ttdoc">Partial permutations with static or dynamic degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:1212</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_p_perm_html_ad8052407ae2f13c42cc18b84da7c77d7"><div class="ttname"><a href="classlibsemigroups_1_1_p_perm.html#ad8052407ae2f13c42cc18b84da7c77d7">libsemigroups::PPerm::one</a></div><div class="ttdeci">static PPerm one(size_t M)</div><div class="ttdoc">Returns the identity transformation on the given number of points.</div><div class="ttdef"><b>Definition</b> transf.hpp:1286</div></div>
+<div class="ttc" id="agroup__action__group_html_ga1288ede08d1b9494336b874ad4da177e"><div class="ttname"><a href="#ga1288ede08d1b9494336b874ad4da177e">libsemigroups::RightAction</a></div><div class="ttdeci">Action&lt; Element, Point, Func, Traits, side::right &gt; RightAction</div><div class="ttdef"><b>Definition</b> action.hpp:933</div></div>
 </div><!-- fragment --> <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>

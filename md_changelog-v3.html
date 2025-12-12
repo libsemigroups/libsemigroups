@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -189,6 +190,44 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id="v330-released-12122025"></a>
+v3.3.0 (released 12/12/2025)</h1>
+<p>This is a minor release with a number of improvements and new features:</p>
+<ul>
+<li>Deprecate <code>report_every</code> by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/826">https://github.com/libsemigroups/libsemigroups/pull/826</a></li>
+<li>to-presentation: move present. to present. back to present.hpp by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/828">https://github.com/libsemigroups/libsemigroups/pull/828</a></li>
+<li>benchmarks: for Rewriters by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/829">https://github.com/libsemigroups/libsemigroups/pull/829</a></li>
+<li>to-presentation: add ToddCoxeter, Stephen -&gt; Presentation by [@jswent] in <a href="https://github.com/libsemigroups/libsemigroups/pull/823">https://github.com/libsemigroups/libsemigroups/pull/823</a></li>
+<li>Update <code>Forest</code> doc by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/831">https://github.com/libsemigroups/libsemigroups/pull/831</a></li>
+<li>Forest add <code>max_label</code> helper by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/830">https://github.com/libsemigroups/libsemigroups/pull/830</a></li>
+<li>Implement <code>to&lt;WordGraph&gt;</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/832">https://github.com/libsemigroups/libsemigroups/pull/832</a></li>
+<li>forest: add validation by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/835">https://github.com/libsemigroups/libsemigroups/pull/835</a></li>
+<li>Forest dot function by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/836">https://github.com/libsemigroups/libsemigroups/pull/836</a></li>
+<li>Forest paths by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/837">https://github.com/libsemigroups/libsemigroups/pull/837</a></li>
+<li>to-presentation: add Cong -&gt; Presentation by [@jswent] in <a href="https://github.com/libsemigroups/libsemigroups/pull/834">https://github.com/libsemigroups/libsemigroups/pull/834</a></li>
+<li>Add word graph view and refactor word graph helper functions by [@nadim-]241 in <a href="https://github.com/libsemigroups/libsemigroups/pull/722">https://github.com/libsemigroups/libsemigroups/pull/722</a></li>
+<li>ranges: fix Random by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/838">https://github.com/libsemigroups/libsemigroups/pull/838</a></li>
+<li>forest: fix off by 1 in exception by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/845">https://github.com/libsemigroups/libsemigroups/pull/845</a></li>
+<li>forest: add <code>to_human_readable_repr</code> for <code>PathsFrom/ToRoots</code> by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/847">https://github.com/libsemigroups/libsemigroups/pull/847</a></li>
+<li>paths: add missing full stops by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/849">https://github.com/libsemigroups/libsemigroups/pull/849</a></li>
+<li>Update <code>presentation::examples</code> references and docstrings by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/851">https://github.com/libsemigroups/libsemigroups/pull/851</a></li>
+<li>hpcombi: bump version to 1.1.0 by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/854">https://github.com/libsemigroups/libsemigroups/pull/854</a></li>
+<li>Refactor some transformations code to better support HPCombi in the python bindings by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/855">https://github.com/libsemigroups/libsemigroups/pull/855</a></li>
+<li>hpcombi: fix inconsistencies by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/861">https://github.com/libsemigroups/libsemigroups/pull/861</a></li>
+<li>hpcombi: bump version to 1.1.1 by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/862">https://github.com/libsemigroups/libsemigroups/pull/862</a></li>
+<li>Initialise <code>p</code> in <code>throw_if_is_acyclic</code> by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/864">https://github.com/libsemigroups/libsemigroups/pull/864</a></li>
+<li>Refactor and fix issues with Path iterators by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/865">https://github.com/libsemigroups/libsemigroups/pull/865</a></li>
+<li>Add weighted shortlex by [@jswent] in <a href="https://github.com/libsemigroups/libsemigroups/pull/839">https://github.com/libsemigroups/libsemigroups/pull/839</a></li>
+<li>Add weighted lexicographical compare by [@jswent] in <a href="https://github.com/libsemigroups/libsemigroups/pull/867">https://github.com/libsemigroups/libsemigroups/pull/867</a></li>
+<li>Add "manual examples" to test file : 0.1.0 by [@josh-dev-things] in <a href="https://github.com/libsemigroups/libsemigroups/pull/859">https://github.com/libsemigroups/libsemigroups/pull/859</a></li>
+<li>Fix <code>recursive_path_compare</code> for empty strings by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/869">https://github.com/libsemigroups/libsemigroups/pull/869</a></li>
+</ul>
+<h1><a class="anchor" id="new-contributors"></a>
+New Contributors</h1>
+<ul>
+<li>[@nadim-]241 made their first contribution in <a href="https://github.com/libsemigroups/libsemigroups/pull/722">https://github.com/libsemigroups/libsemigroups/pull/722</a></li>
+<li>[@josh-dev-things] made their first contribution in <a href="https://github.com/libsemigroups/libsemigroups/pull/859">https://github.com/libsemigroups/libsemigroups/pull/859</a></li>
+</ul>
 <h1><a class="anchor" id=" v320-released-30092025"></a>
  v3.2.0 (released 30/09/2025)</h1>
 <p>This release contains a number of improvements, bug fixes, and a small number of new features:</p>
@@ -209,7 +248,7 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 <li>todd-coxeter: fix typo in doc by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/818">https://github.com/libsemigroups/libsemigroups/pull/818</a></li>
 <li>to-presentation: add Kambites -&gt; Presentation by [@jswent] in <a href="https://github.com/libsemigroups/libsemigroups/pull/812">https://github.com/libsemigroups/libsemigroups/pull/812</a></li>
 </ul>
-<h1><a class="anchor" id="new-contributors"></a>
+<h1><a class="anchor" id="new-contributors-1"></a>
 New Contributors</h1>
 <ul>
 <li>[@jswent] made their first contribution in <a href="https://github.com/libsemigroups/libsemigroups/pull/812">https://github.com/libsemigroups/libsemigroups/pull/812</a></li>

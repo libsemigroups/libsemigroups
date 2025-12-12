@@ -71,7 +71,7 @@ var searchData=
   ['swap_68',['Swap',['../structlibsemigroups_1_1_swap.html',1,'libsemigroups']]],
   ['swap_3c_20element_20_3e_69',['Swap&lt; Element &gt;',['../structlibsemigroups_1_1_swap.html',1,'libsemigroups']]],
   ['swap_3c_20element_5ftype_20_3e_70',['Swap&lt; element_type &gt;',['../structlibsemigroups_1_1_swap.html',1,'libsemigroups']]],
-  ['swap_3c_20tptransf16subclass_2c_20std_3a_3aenable_5fif_5ft_3c_20std_3a_3ais_5fbase_5fof_5fv_3c_20hpcombi_3a_3aptransf16_2c_20tptransf16subclass_20_3e_20_3e_20_3e_71',['Swap&lt; TPTransf16Subclass, std::enable_if_t&lt; std::is_base_of_v&lt; HPCombi::PTransf16, TPTransf16Subclass &gt; &gt; &gt;',['../structlibsemigroups_1_1_swap_3_01_t_p_transf16_subclass_00_01std_1_1enable__if__t_3_01std_1_1is_dbd89545857f7e9f53ff2b2b6e997e30.html',1,'libsemigroups']]],
+  ['swap_3c_20thing_2c_20std_3a_3aenable_5fif_5ft_3c_20std_3a_3ais_5fbase_5fof_5fv_3c_20hpcombi_3a_3aptransf16_2c_20thing_20_3e_20_3e_20_3e_71',['Swap&lt; Thing, std::enable_if_t&lt; std::is_base_of_v&lt; HPCombi::PTransf16, Thing &gt; &gt; &gt;',['../structlibsemigroups_1_1_swap_3_01_thing_00_01std_1_1enable__if__t_3_01std_1_1is__base__of__v_3_005aaca2985d1f9de4a59374f3a4dde82.html',1,'libsemigroups']]],
   ['system_5fclock_72',['system_clock',['http://en.cppreference.com/w/cpp/chrono/system_clock.html',1,'std::chrono']]],
   ['system_5ferror_73',['system_error',['http://en.cppreference.com/w/cpp/error/system_error.html',1,'std']]]
 ];

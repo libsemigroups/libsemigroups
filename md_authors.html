@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -202,6 +203,7 @@ Contributors</h1>
 <li>Ilya Finkelshteyn (<a href="#" onclick="location.href='mai'+'lto:'+'ily'+'af'+'@ap'+'pv'+'eyo'+'r.'+'com'; return false;">ilyaf<span class="obfuscator">.nosp@m.</span>@app<span class="obfuscator">.nosp@m.</span>veyor<span class="obfuscator">.nosp@m.</span>.com</a>) contributed to the continuous integration in AppVeyor.</li>
 <li>Isuru Fernando (<a href="#" onclick="location.href='mai'+'lto:'+'isu'+'ru'+'f@g'+'ma'+'il.'+'co'+'m'; return false;">isuru<span class="obfuscator">.nosp@m.</span>f@gm<span class="obfuscator">.nosp@m.</span>ail.c<span class="obfuscator">.nosp@m.</span>om</a>) contributed to the build system.</li>
 <li><a href="https://www.lri.fr/~hivert/">Florent Hivert</a> (<a href="#" onclick="location.href='mai'+'lto:'+'Flo'+'re'+'nt.'+'Hi'+'ver'+'t@'+'lri'+'.f'+'r'; return false;">Flore<span class="obfuscator">.nosp@m.</span>nt.H<span class="obfuscator">.nosp@m.</span>ivert<span class="obfuscator">.nosp@m.</span>@lri<span class="obfuscator">.nosp@m.</span>.fr</a>) contributed many helpful ideas to <code>libsemigroups</code>, and <code>HPCombi</code>.</li>
+<li>Josh James-lee (<a href="#" onclick="location.href='mai'+'lto:'+'jjl'+'21'+'@st'+'-a'+'ndr'+'ew'+'s.a'+'c.'+'uk'; return false;">jjl21<span class="obfuscator">.nosp@m.</span>@st-<span class="obfuscator">.nosp@m.</span>andre<span class="obfuscator">.nosp@m.</span>ws.a<span class="obfuscator">.nosp@m.</span>c.uk</a> contributed the code necessary to test the Doxygen code examples.</li>
 <li><a href="https://math.rptu.de/en/wgs/agag/people/head/prof-dr-max-horn">Max Horn</a> (<a href="#" onclick="location.href='mai'+'lto:'+'max'+'@q'+'uen'+'di'+'.de'; return false;">max@q<span class="obfuscator">.nosp@m.</span>uend<span class="obfuscator">.nosp@m.</span>i.de</a>) contributed some fixes.</li>
 <li><a href="http://www.jamezone.org/">Jerry James</a> (<a href="#" onclick="location.href='mai'+'lto:'+'log'+'an'+'jer'+'ry'+'@gm'+'ai'+'l.c'+'om'; return false;">logan<span class="obfuscator">.nosp@m.</span>jerr<span class="obfuscator">.nosp@m.</span>y@gma<span class="obfuscator">.nosp@m.</span>il.c<span class="obfuscator">.nosp@m.</span>om</a>) contributed some bugfixes.</li>
 <li><a href="http://julius.jonusas.work/">Julius Jonušas</a> contributed to the implementation of the Froidure-Pin algorithm.</li>
@@ -210,8 +212,9 @@ Contributors</h1>
 <li>Michael Orlitzky (<a href="#" onclick="location.href='mai'+'lto:'+'mic'+'ha'+'el@'+'or'+'lit'+'zk'+'y.c'+'om'; return false;">micha<span class="obfuscator">.nosp@m.</span>el@o<span class="obfuscator">.nosp@m.</span>rlitz<span class="obfuscator">.nosp@m.</span>ky.c<span class="obfuscator">.nosp@m.</span>om</a>) contributed to the build system.</li>
 <li><a href="https://pasechnik.info/dima">Dima Pasechnik</a> (<a href="#" onclick="location.href='mai'+'lto:'+'dim'+'a@'+'pas'+'ec'+'hni'+'k.'+'inf'+'o'; return false;">dima@<span class="obfuscator">.nosp@m.</span>pase<span class="obfuscator">.nosp@m.</span>chnik<span class="obfuscator">.nosp@m.</span>.inf<span class="obfuscator">.nosp@m.</span>o</a>) contributed to the build system.</li>
 <li>Chris Russell contributed some tests for finitely presented semigroups.</li>
+<li>Nadim Searight contributed the <code>WordGraphView</code> functionality.</li>
 <li><a href="https://flsmith.github.io">Finn Smith</a> (<a href="#" onclick="location.href='mai'+'lto:'+'fls'+'3@'+'st-'+'an'+'dre'+'ws'+'.ac'+'.u'+'k'; return false;">fls3@<span class="obfuscator">.nosp@m.</span>st-a<span class="obfuscator">.nosp@m.</span>ndrew<span class="obfuscator">.nosp@m.</span>s.ac<span class="obfuscator">.nosp@m.</span>.uk</a>) contributed the implementation of the Konieczny and Lallement-McFadden algorithm, to the Todd-Coxeter implementation, and to BMat8s.</li>
-<li>Jake Swent (<a href="#" onclick="location.href='mai'+'lto:'+'jws'+'20'+'@st'+'-a'+'ndr'+'ew'+'s.a'+'c.'+'uk'; return false;">jws20<span class="obfuscator">.nosp@m.</span>@st-<span class="obfuscator">.nosp@m.</span>andre<span class="obfuscator">.nosp@m.</span>ws.a<span class="obfuscator">.nosp@m.</span>c.uk</a>) contributed to the <code>to</code> function.</li>
+<li>Jake Swent (<a href="#" onclick="location.href='mai'+'lto:'+'jws'+'20'+'@st'+'-a'+'ndr'+'ew'+'s.a'+'c.'+'uk'; return false;">jws20<span class="obfuscator">.nosp@m.</span>@st-<span class="obfuscator">.nosp@m.</span>andre<span class="obfuscator">.nosp@m.</span>ws.a<span class="obfuscator">.nosp@m.</span>c.uk</a>) contributed to the <code>to</code> function, and the reduction orderings code.</li>
 <li><a href="http://nicolas.thiery.name/">Nicolas Thiéry</a> (<a href="#" onclick="location.href='mai'+'lto:'+'nth'+'ie'+'ry@'+'us'+'ers'+'.s'+'f.n'+'et'; return false;">nthie<span class="obfuscator">.nosp@m.</span>ry@u<span class="obfuscator">.nosp@m.</span>sers.<span class="obfuscator">.nosp@m.</span>sf.n<span class="obfuscator">.nosp@m.</span>et</a>) contributed to the build system, packaging <code>libsemigroups</code> via conda, the python bindings and many helpful conversations and suggestions.</li>
 <li><a href="https://mariatsalakou.github.io/">Maria Tsalakou</a> (<a href="#" onclick="location.href='mai'+'lto:'+'mt2'+'00'+'@st'+'-a'+'ndr'+'ew'+'s.a'+'c.'+'uk'; return false;">mt200<span class="obfuscator">.nosp@m.</span>@st-<span class="obfuscator">.nosp@m.</span>andre<span class="obfuscator">.nosp@m.</span>ws.a<span class="obfuscator">.nosp@m.</span>c.uk</a>) contributed to the Knuth-Bendix implementation, related algorithms for the class <code>WordGraph</code>, and to the implementation of the <code>Ukkonen</code> and <code>Kambites</code> classes.</li>
 <li><a href="https://wilf.me">Wilf Wilson</a> (<a href="#" onclick="location.href='mai'+'lto:'+'wil'+'f@'+'wil'+'f-'+'wil'+'so'+'n.n'+'et'; return false;">wilf@<span class="obfuscator">.nosp@m.</span>wilf<span class="obfuscator">.nosp@m.</span>-wils<span class="obfuscator">.nosp@m.</span>on.n<span class="obfuscator">.nosp@m.</span>et</a>) contributed some fixes.</li>

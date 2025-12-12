@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -325,13 +326,10 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
           <td class="memname">auto to </td>
           <td>(</td>
           <td class="paramtype">Kambites&lt; Word &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>k</em></span></td><td>)</td>
-          <td> -&gt; std::enable_if_t&lt;
-      std::is_same_v&lt;Thing&lt;detail::KE&lt;Word&gt;&gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt;detail::KE&lt;Word&gt;&gt;&gt;,
-      <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt;detail::KE&lt;Word&gt;&gt;&gt;</td>
+          <td> -&gt;  std::enable_if_t&lt; std::is_same_v&lt; Thing&lt; detail::KE&lt; Word &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; detail::KE&lt; Word &gt; &gt; &gt;, <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a>&lt; detail::KE&lt; Word &gt; &gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Make a presentation from a kambites.</p>
 <p>Defined in <code><a class="el" href="to-froidure-pin_8hpp_source.html">to-froidure-pin.hpp</a></code> </p>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;FroidurePin&gt;</a>(k);</div>
@@ -356,29 +354,7 @@ template&lt;template&lt; typename... &gt; typename Thing, typename Word&gt; </di
   </table>
   </dd>
 </dl>
-<dl class="section warning"><dt>Warning</dt><dd>The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> instance is always infinite, and so any calls to any member functions that that trigger a full enumeration will never terminate (or they will when your computer kills the process because it has run out of memory).</dd></dl>
-<p>Defined in <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code></p>
-<p>Despite the hideous signature, this function should be invoked as follows:</p>
-<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Presentation&lt;Word&gt;</a>&gt;(k);</div>
-</div><!-- fragment --><p>There are two versions of this function:</p>
-<ol type="1">
-<li>When <code>typename Result::word_type</code> and <code>Word</code> are not the same, this function uses <code>to&lt;<a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;typename Result::word_type&gt;</code> to return a presentation equivalent to the object used to construct or initialise the Kambites object (if any) but of a different type (for example, can be used to convert from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></code> to <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>).</li>
-<li>If the word representations are the same, the function returns a reference to the presentation used to construct or initialise the Kambites object (if any) via <code>k.presentation()</code>.</li>
-</ol>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Result</td><td>the return type, also used for SFINAE, should be <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation&lt;T&gt;</a></code> for some type <code>T</code>. </td></tr>
-    <tr><td class="paramname">Word</td><td>the type of the words in the input Kambites. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">k</td><td>the Kambites object from which to obtain the rules.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;</code>. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The returned <a class="el" href="classlibsemigroups_1_1_froidure_pin.html" title="Class implementing the Froidure-Pin algorithm.">FroidurePin</a> instance is always infinite, and so any calls to any member functions that that trigger a full enumeration will never terminate (or they will when your computer kills the process because it has run out of memory). </dd></dl>
 
 </div>
 </div>

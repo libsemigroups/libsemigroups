@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -195,11 +196,11 @@ $(function(){initNavTree('classlibsemigroups_1_1_to_string.html',''); initResiza
 <div class="textblock"><p>Defined in <code><a class="el" href="word-range_8hpp_source.html">word-range.hpp</a></code>.</p>
 <p>An instance of this class is used to convert from <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> to <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>. The letters in the word are converted to characters according to their position in alphabet used to construct a <a class="el" href="classlibsemigroups_1_1_to_string.html" title="Class for converting word_type into std::string with specified alphabet.">ToString</a> instance if one is provided, or using <a class="el" href="namespacelibsemigroups_1_1words.html#a7a783c2cd32ccb72e625974bb952181b">human_readable_letter</a> otherwise.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_function" href="#a1e77d819d63e7e9261ac3250ad8d5428">ToString</a> tostring(<span class="stringliteral">&quot;bac&quot;</span>);</div>
-<div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({1, 0, 2}));                 <span class="comment">// returns &quot;abc&quot;</span></div>
-<div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({0, 1, 1, 0, 1, 1, 0, 2}));  <span class="comment">// returns &quot;baabaabc&quot;</span></div>
+<div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({1, 0, 2}));                 <span class="comment">//-&gt; &quot;abc&quot;</span></div>
+<div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({0, 1, 1, 0, 1, 1, 0, 2}));  <span class="comment">//-&gt; &quot;baabaabc&quot;</span></div>
 <div class="line"> </div>
 <div class="line">tostring.init();</div>
-<div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({1, 0, 2}));                 <span class="comment">// returns &quot;bac&quot;</span></div>
+<div class="line">tostring(<a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a>({1, 0, 2}));                 <span class="comment">//-&gt; &quot;bac&quot;</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_to_string_html_a1e77d819d63e7e9261ac3250ad8d5428"><div class="ttname"><a href="#a1e77d819d63e7e9261ac3250ad8d5428">libsemigroups::ToString::ToString</a></div><div class="ttdeci">ToString()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition</b> word-range.hpp:1163</div></div>
 <div class="ttc" id="agroup__types__group_html_ga4c833ae5c1a57b830205688bf18f9991"><div class="ttname"><a href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">libsemigroups::word_type</a></div><div class="ttdeci">std::vector&lt; letter_type &gt; word_type</div><div class="ttdoc">Type for a word over the generators of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:99</div></div>
 </div><!-- fragment --> </dd></dl>
@@ -611,7 +612,8 @@ template&lt;typename InputRange, typename = std::enable_if_t&lt;rx::is_input_or_
 </table>
 </div><div class="memdoc">
 <p>A custom combinator for rx::ranges to convert the output of a <a class="el" href="classlibsemigroups_1_1_word_range.html" title="Class for generating words in a given range and in a particular order.">WordRange</a> object into <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>, that can be combined with other combinators using <code>operator|</code>.</p>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_class" href="classlibsemigroups_1_1_word_range.html">WordRange</a> <a class="code hl_namespace" href="namespacelibsemigroups_1_1words.html">words</a>;</div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">using </span>rx::operator|;</div>
+<div class="line"><a class="code hl_class" href="classlibsemigroups_1_1_word_range.html">WordRange</a> <a class="code hl_namespace" href="namespacelibsemigroups_1_1words.html">words</a>;</div>
 <div class="line"><a class="code hl_namespace" href="namespacelibsemigroups_1_1words.html">words</a>.alphabet_size(1).min(0).max(10);</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> strings = (<a class="code hl_namespace" href="namespacelibsemigroups_1_1words.html">words</a> | <a class="code hl_function" href="#a1e77d819d63e7e9261ac3250ad8d5428">ToString</a>(<span class="stringliteral">&quot;a&quot;</span>));</div>
@@ -619,7 +621,7 @@ template&lt;typename InputRange, typename = std::enable_if_t&lt;rx::is_input_or_
 <div class="line"><span class="comment">// {&quot;&quot;, &quot;a&quot;, &quot;aa&quot;, &quot;aaa&quot;, &quot;aaaa&quot;, &quot;aaaaa&quot;, &quot;aaaaaa&quot;, &quot;aaaaaaa&quot;,</span></div>
 <div class="line"><span class="comment">// &quot;aaaaaaaa&quot;, &quot;aaaaaaaaa&quot;};</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_word_range_html"><div class="ttname"><a href="classlibsemigroups_1_1_word_range.html">libsemigroups::WordRange</a></div><div class="ttdoc">Class for generating words in a given range and in a particular order.</div><div class="ttdef"><b>Definition</b> word-range.hpp:319</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1words_html"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html">libsemigroups::words</a></div><div class="ttdoc">Namespace containing some operators for creating words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2095</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1words_html"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html">libsemigroups::words</a></div><div class="ttdoc">Namespace containing some operators for creating words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2100</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>

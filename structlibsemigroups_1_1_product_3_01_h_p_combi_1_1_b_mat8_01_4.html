@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -188,7 +189,7 @@ $(function(){initNavTree('structlibsemigroups_1_1_product_3_01_h_p_combi_1_1_b_m
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="structlibsemigroups_1_1_product_3_01_h_p_combi_1_1_b_mat8_01_4-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">Product&lt; HPCombi::BMat8 &gt;<div class="ingroups"><a class="el" href="group__adapters__hpcombi__group.html">Adapters for HPCombi</a></div></div></div>
+  <div class="headertitle"><div class="title">Product&lt; HPCombi::BMat8 &gt;<div class="ingroups"><a class="el" href="group__hpcombi__group.html">HPCombi</a> &raquo; <a class="el" href="group__adapters__hpcombi__group.html">Adapters for HPCombi</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
@@ -198,13 +199,13 @@ $(function(){initNavTree('structlibsemigroups_1_1_product_3_01_h_p_combi_1_1_b_m
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a871bfc977724992557b4ac17dac672a7" id="r_a871bfc977724992557b4ac17dac672a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a871bfc977724992557b4ac17dac672a7">operator()</a> (HPCombi::BMat8 &amp;xy, HPCombi::BMat8 const &amp;x, HPCombi::BMat8 const &amp;y, size_t=0) const noexcept</td></tr>
-<tr class="memdesc:a871bfc977724992557b4ac17dac672a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes <code class="param">xy</code> in-place to hold the product of <code class="param">x</code> and <code class="param">y</code>.  <br /></td></tr>
-<tr class="separator:a871bfc977724992557b4ac17dac672a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38b1de9d2fef536d7e2a24bc0fa368fb" id="r_a38b1de9d2fef536d7e2a24bc0fa368fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38b1de9d2fef536d7e2a24bc0fa368fb">operator()</a> (HPCombi::BMat8 &amp;xy, HPCombi::BMat8 const &amp;x, HPCombi::BMat8 const &amp;y, size_t deg=0) const noexcept</td></tr>
+<tr class="memdesc:a38b1de9d2fef536d7e2a24bc0fa368fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifies <code class="param">xy</code> in-place to be the product of <code class="param">x</code> and <code class="param">y</code>.  <br /></td></tr>
+<tr class="separator:a38b1de9d2fef536d7e2a24bc0fa368fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a871bfc977724992557b4ac17dac672a7" name="a871bfc977724992557b4ac17dac672a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a871bfc977724992557b4ac17dac672a7">&#9670;&#160;</a></span>operator()()</h2>
+<a id="a38b1de9d2fef536d7e2a24bc0fa368fb" name="a38b1de9d2fef536d7e2a24bc0fa368fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38b1de9d2fef536d7e2a24bc0fa368fb">&#9670;&#160;</a></span>operator()()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -230,7 +231,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em></em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;) const</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>deg</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;) const</td>
         </tr>
       </table>
   </td>
@@ -239,7 +240,17 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Changes <code class="param">xy</code> in-place to hold the product of <code class="param">x</code> and <code class="param">y</code> </p>
+<p>Modifies <code class="param">xy</code> in-place to be the product of <code class="param">x</code> and <code class="param">y</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">xy</td><td>the <code>HPCombi::BMat8</code> to hold the product. </td></tr>
+    <tr><td class="paramname">x</td><td>the first <code>HPCombi::BMat8</code> to multiply. </td></tr>
+    <tr><td class="paramname">y</td><td>the <code>HPCombi::BMat8</code> to multiply <code class="param">x</code> by. </td></tr>
+    <tr><td class="paramname">deg</td><td>unused, for interface consistency only (defaults to <code>0</code>).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
 
 </div>
 </div>

@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -849,12 +850,12 @@ template&lt;typename Mat&gt; </div>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>\(O(m\log_2(e))\) where \(m\) is the dimension of the matrix <code class="param">x</code> and \(e\) is the parameter <code class="param">e</code>.</dd></dl>
 <dl class="section user"><dt>Example</dt><dd></dd></dl>
-<div class="fragment"><div class="line"><span class="keyword">auto</span> x == <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;ProjMaxPlusMat&lt;&gt;</a>&gt;({{-2, 2, 0}, {-1, 0, 0}, {1, -3,</div>
-<div class="line">1}}));</div>
+<div class="fragment"><div class="line"><span class="keyword">auto</span> x = <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;ProjMaxPlusMat&lt;&gt;</a>&gt;({{-2, 2, 0}, {-1, 0, 0}, {1, -3,</div>
+<div class="line">1}});</div>
 <div class="line"><span class="comment">// returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}</span></div>
 <div class="line"><a class="code hl_function" href="#aee5f465d1002b3cd193aa435af16f358">matrix::pow</a>(x, 100);</div>
-<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:855</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_aee5f465d1002b3cd193aa435af16f358"><div class="ttname"><a href="#aee5f465d1002b3cd193aa435af16f358">libsemigroups::matrix::pow</a></div><div class="ttdeci">Mat pow(Mat const &amp;x, typename Mat::scalar_type e)</div><div class="ttdoc">Returns a power of a matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7153</div></div>
+<div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:856</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_aee5f465d1002b3cd193aa435af16f358"><div class="ttname"><a href="#aee5f465d1002b3cd193aa435af16f358">libsemigroups::matrix::pow</a></div><div class="ttdeci">Mat pow(Mat const &amp;x, typename Mat::scalar_type e)</div><div class="ttdoc">Returns a power of a matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7157</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -1125,7 +1126,7 @@ template&lt;typename Mat, typename = std::enable_if_t&lt;IsBMat&lt;Mat&gt;&gt;&g
 <dl class="section user"><dt>Example</dt><dd></dd></dl>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> x = <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;BMat&lt;&gt;</a>&gt;({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});</div>
 <div class="line"><a class="code hl_function" href="#a98253c8c2358331263d7b8d9fab43295">matrix::row_space_size</a>(x); <span class="comment">// returns 7</span></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_a98253c8c2358331263d7b8d9fab43295"><div class="ttname"><a href="#a98253c8c2358331263d7b8d9fab43295">libsemigroups::matrix::row_space_size</a></div><div class="ttdeci">size_t row_space_size(Mat const &amp;x)</div><div class="ttdoc">Returns the size of the row space of a boolean matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7897</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_a98253c8c2358331263d7b8d9fab43295"><div class="ttname"><a href="#a98253c8c2358331263d7b8d9fab43295">libsemigroups::matrix::row_space_size</a></div><div class="ttdeci">size_t row_space_size(Mat const &amp;x)</div><div class="ttdoc">Returns the size of the row space of a boolean matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7901</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

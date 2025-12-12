@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -207,16 +208,16 @@ $(function(){initNavTree('group__ntpmat__group.html',''); initResizable(true); }
 <p>The alias <a class="el" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat</a> is one of <a class="el" href="classlibsemigroups_1_1_static_matrix.html" title="Static matrix class.">StaticMatrix</a>, <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_plus_op_00_01_prod_op_00_01_zero_op_00_01_one_op_00_01_scalar_01_4.html#DynamicMatrixStaticArith">DynamicMatrix (compile-time arithmetic)</a>, or <a class="el" href="classlibsemigroups_1_1_dynamic_matrix_3_01_semiring_00_01_scalar_01_4.html#DynamicMatrixDynamicArith">DynamicMatrix (run-time arithmetic)</a>; please refer to the documentation of these class templates for more details. The only substantial difference in the interface of static and dynamic matrices is that the former can be default constructed and the latter should be constructed using the dimensions.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// construct an uninitialized 3 x 3 static matrix with threshold</span></div>
 <div class="line"><span class="comment">// 11, period 2</span></div>
-<div class="line"><a class="code hl_typedef" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat&lt;11, 2, 3&gt;</a> m;</div>
+<div class="line">[[maybe_unused]] <a class="code hl_typedef" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat&lt;11, 2, 3&gt;</a> m3_11_2;</div>
 <div class="line"><span class="comment">// construct an uninitialized 4 x 4 dynamic matrix with threshold 11,</span></div>
 <div class="line"><span class="comment">// period 2</span></div>
-<div class="line"><a class="code hl_typedef" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat&lt;11, 2&gt;</a> m(4, 4);</div>
+<div class="line"><a class="code hl_typedef" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat&lt;11, 2&gt;</a> m4_11_2(4, 4);</div>
 <div class="line"><span class="comment">// construct an ntp semiring with threshold 11, period 2</span></div>
-<div class="line">NTPSemiring sr(11, 2);</div>
+<div class="line">NTPSemiring&lt;&gt; sr_11_2(11, 2);</div>
 <div class="line"><span class="comment">// construct an uninitialized 5 x 5 dynamic matrix with threshold 11,</span></div>
 <div class="line"><span class="comment">// period 2</span></div>
-<div class="line"><a class="code hl_typedef" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat&lt;&gt;</a> m(sr, 5, 5);</div>
-<div class="ttc" id="agroup__ntpmat__group_html_gac851715916ffaa7edce06a38ddf6fd75"><div class="ttname"><a href="#gac851715916ffaa7edce06a38ddf6fd75">libsemigroups::NTPMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, std::conditional_t&lt; T==0 &amp;&amp;P==0, DynamicNTPMatWithSemiring&lt; Scalar &gt;, DynamicNTPMatWithoutSemiring&lt; T, P, Scalar &gt; &gt;, StaticNTPMat&lt; T, P, R, C, Scalar &gt; &gt; NTPMat</div><div class="ttdoc">Alias template for ntp matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6406</div></div>
+<div class="line"><a class="code hl_typedef" href="#gac851715916ffaa7edce06a38ddf6fd75">NTPMat&lt;&gt;</a> m_5_11_2(&amp;sr_11_2, 5, 5);</div>
+<div class="ttc" id="agroup__ntpmat__group_html_gac851715916ffaa7edce06a38ddf6fd75"><div class="ttname"><a href="#gac851715916ffaa7edce06a38ddf6fd75">libsemigroups::NTPMat</a></div><div class="ttdeci">std::conditional_t&lt; R==0||C==0, std::conditional_t&lt; T==0 &amp;&amp;P==0, DynamicNTPMatWithSemiring&lt; Scalar &gt;, DynamicNTPMatWithoutSemiring&lt; T, P, Scalar &gt; &gt;, StaticNTPMat&lt; T, P, R, C, Scalar &gt; &gt; NTPMat</div><div class="ttdoc">Alias template for ntp matrices.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6410</div></div>
 </div><!-- fragment --> </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -287,9 +288,9 @@ template&lt;size_t T, size_t P, typename Scalar&gt; </div>
 <div class="line">                                                     <a class="code hl_struct" href="structlibsemigroups_1_1_integer_zero.html">IntegerZero&lt;Scalar&gt;</a>,</div>
 <div class="line">                                                     <a class="code hl_struct" href="structlibsemigroups_1_1_integer_one.html">IntegerOne&lt;Scalar&gt;</a>,</div>
 <div class="line">                                                     Scalar&gt;</div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_one.html">libsemigroups::IntegerOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4222</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4197</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_n_t_p_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_n_t_p_prod.html">libsemigroups::NTPProd</a></div><div class="ttdoc">Function object for multiplication in an ntp semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6102</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_one.html">libsemigroups::IntegerOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4226</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_integer_zero_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_zero.html">libsemigroups::IntegerZero</a></div><div class="ttdoc">Function object for returning the additive identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4201</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_n_t_p_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_n_t_p_prod.html">libsemigroups::NTPProd</a></div><div class="ttdoc">Function object for multiplication in an ntp semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6106</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias for the type of dynamic ntp matrices where the dimension is defined at run time, but the threshold and period are defined at compile-time.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -346,9 +347,9 @@ template&lt;size_t T = 0, size_t P = 0, size_t R = 0, size_t C = R, typename Sca
 <div class="line">                         <a class="code hl_typedef" href="#ga44934944fe17340c2731f5124bef96a9">DynamicNTPMatWithSemiring&lt;Scalar&gt;</a>,</div>
 <div class="line">                         <a class="code hl_typedef" href="#ga7537ece237be870b610020fcb823363f">DynamicNTPMatWithoutSemiring&lt;T, P, Scalar&gt;</a>&gt;,</div>
 <div class="line">      <a class="code hl_typedef" href="#gad39a537461d92aaed93207d2c775ed2e">StaticNTPMat&lt;T, P, R, C, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="agroup__ntpmat__group_html_ga44934944fe17340c2731f5124bef96a9"><div class="ttname"><a href="#ga44934944fe17340c2731f5124bef96a9">libsemigroups::DynamicNTPMatWithSemiring</a></div><div class="ttdeci">DynamicMatrix&lt; NTPSemiring&lt; Scalar &gt;, Scalar &gt; DynamicNTPMatWithSemiring</div><div class="ttdoc">Alias for ntp matrices with dynamic threshold and period.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6329</div></div>
-<div class="ttc" id="agroup__ntpmat__group_html_ga7537ece237be870b610020fcb823363f"><div class="ttname"><a href="#ga7537ece237be870b610020fcb823363f">libsemigroups::DynamicNTPMatWithoutSemiring</a></div><div class="ttdeci">DynamicMatrix&lt; NTPPlus&lt; T, P, Scalar &gt;, NTPProd&lt; T, P, Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, Scalar &gt; DynamicNTPMatWithoutSemiring</div><div class="ttdoc">Alias for ntp matrices with static threshold and period.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6345</div></div>
-<div class="ttc" id="agroup__ntpmat__group_html_gad39a537461d92aaed93207d2c775ed2e"><div class="ttname"><a href="#gad39a537461d92aaed93207d2c775ed2e">libsemigroups::StaticNTPMat</a></div><div class="ttdeci">StaticMatrix&lt; NTPPlus&lt; T, P, Scalar &gt;, NTPProd&lt; T, P, Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, R, C, Scalar &gt; StaticNTPMat</div><div class="ttdoc">Alias for ntp matrices with static threshold and period, and dimensions.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6371</div></div>
+<div class="ttc" id="agroup__ntpmat__group_html_ga44934944fe17340c2731f5124bef96a9"><div class="ttname"><a href="#ga44934944fe17340c2731f5124bef96a9">libsemigroups::DynamicNTPMatWithSemiring</a></div><div class="ttdeci">DynamicMatrix&lt; NTPSemiring&lt; Scalar &gt;, Scalar &gt; DynamicNTPMatWithSemiring</div><div class="ttdoc">Alias for ntp matrices with dynamic threshold and period.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6333</div></div>
+<div class="ttc" id="agroup__ntpmat__group_html_ga7537ece237be870b610020fcb823363f"><div class="ttname"><a href="#ga7537ece237be870b610020fcb823363f">libsemigroups::DynamicNTPMatWithoutSemiring</a></div><div class="ttdeci">DynamicMatrix&lt; NTPPlus&lt; T, P, Scalar &gt;, NTPProd&lt; T, P, Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, Scalar &gt; DynamicNTPMatWithoutSemiring</div><div class="ttdoc">Alias for ntp matrices with static threshold and period.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6349</div></div>
+<div class="ttc" id="agroup__ntpmat__group_html_gad39a537461d92aaed93207d2c775ed2e"><div class="ttname"><a href="#gad39a537461d92aaed93207d2c775ed2e">libsemigroups::StaticNTPMat</a></div><div class="ttdeci">StaticMatrix&lt; NTPPlus&lt; T, P, Scalar &gt;, NTPProd&lt; T, P, Scalar &gt;, IntegerZero&lt; Scalar &gt;, IntegerOne&lt; Scalar &gt;, R, C, Scalar &gt; StaticNTPMat</div><div class="ttdoc">Alias for ntp matrices with static threshold and period, and dimensions.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6375</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="matrix_8hpp_source.html">matrix.hpp</a></code>.</p>
 <p>Alias template for ntp matrices.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -259,10 +260,11 @@ template&lt;typename Result, typename Word&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A value of type <code><a class="el" href="classlibsemigroups_1_1_inverse_presentation.html" title="For an implementation of inverse presentations for semigroups or monoids.">InversePresentation</a>&lt;WordOutput&gt;</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>typename Result::word_type</code> and <code>Word</code> are not the same and <code>p.throw_if_bad_alphabet_or_rules()</code> throws. If <code>typename Result::word_type</code> and <code>Word</code> are the same, then this function is <code>noexcept</code>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>typename Result::word_type</code> and <code>Word</code> are not the same and <code>p.throw_if_bad_alphabet_or_rules()</code> throws. If <code>typename Result::word_type</code> and <code>Word</code> are the same, then this function is <code>noexcept</code>.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code> to <code><a class="el" href="presentation_8hpp_source.html">presentation.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
@@ -282,7 +284,9 @@ template&lt;typename Result, typename Word, typename Func&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Func &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>&#160;) -&gt;  std::enable_if_t&lt; std::is_same_v&lt; <a class="el" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation</a>&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</td>
+          <td class="paramtype">Func &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span>&#160;) -&gt; std::enable_if_t&lt;
+      std::is_same_v&lt;<a class="el" href="classlibsemigroups_1_1_inverse_presentation.html">InversePresentation</a>&lt;typename Result::word_type&gt;, Result&gt;,
+      Result&gt; </td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -312,7 +316,9 @@ template&lt;typename Result, typename Word, typename Func&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd><code>Func</code> must be a function type that is invocable with values of <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;::<a class="el" href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1" title="Type for the index of a generator of a semigroup.">letter_type</a></code>. If this is not true, then template substitution will fail. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd><code>Func</code> must be a function type that is invocable with values of <code><a class="el" href="classlibsemigroups_1_1_presentation.html" title="For an implementation of presentations for semigroups or monoids.">Presentation</a>&lt;Word&gt;::<a class="el" href="group__types__group.html#ga590f23f6d9ebc02389a53e56ea1a74c1" title="Type for the index of a generator of a semigroup.">letter_type</a></code>. If this is not true, then template substitution will fail.</dd>
+<dd>
+This function will be moved from the header <code><a class="el" href="to-presentation_8hpp_source.html">to-presentation.hpp</a></code> to <code><a class="el" href="presentation_8hpp_source.html">presentation.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>

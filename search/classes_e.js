@@ -8,7 +8,7 @@ var searchData=
   ['one_3c_20hpcombi_3a_3abmat8_20_3e_5',['One&lt; HPCombi::BMat8 &gt;',['../structlibsemigroups_1_1_one_3_01_h_p_combi_1_1_b_mat8_01_4.html',1,'libsemigroups']]],
   ['one_3c_20mat_2c_20std_3a_3aenable_5fif_5ft_3c_20ismatrix_3c_20mat_20_3e_20_3e_20_3e_6',['One&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;',['../structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html',1,'libsemigroups']]],
   ['one_3c_20pbr_20_3e_7',['One&lt; PBR &gt;',['../structlibsemigroups_1_1_one_3_01_p_b_r_01_4.html',1,'libsemigroups']]],
-  ['one_3c_20tptransf16subclass_2c_20std_3a_3aenable_5fif_5ft_3c_20std_3a_3ais_5fbase_5fof_5fv_3c_20hpcombi_3a_3aptransf16_2c_20tptransf16subclass_20_3e_20_3e_20_3e_8',['One&lt; TPTransf16Subclass, std::enable_if_t&lt; std::is_base_of_v&lt; HPCombi::PTransf16, TPTransf16Subclass &gt; &gt; &gt;',['../structlibsemigroups_1_1_one_3_01_t_p_transf16_subclass_00_01std_1_1enable__if__t_3_01std_1_1is__520cc8ea6b19e1b55b58601b08c33bc3.html',1,'libsemigroups']]],
+  ['one_3c_20thing_2c_20std_3a_3aenable_5fif_5ft_3c_20std_3a_3ais_5fbase_5fof_5fv_3c_20hpcombi_3a_3aptransf16_2c_20thing_20_3e_20_3e_20_3e_8',['One&lt; Thing, std::enable_if_t&lt; std::is_base_of_v&lt; HPCombi::PTransf16, Thing &gt; &gt; &gt;',['../structlibsemigroups_1_1_one_3_01_thing_00_01std_1_1enable__if__t_3_01std_1_1is__base__of__v_3_0143ed98ee004f8b3e5d5478798e81776d.html',1,'libsemigroups']]],
   ['onsets_9',['OnSets',['../structlibsemigroups_1_1_on_sets.html',1,'libsemigroups']]],
   ['ontuples_10',['OnTuples',['../structlibsemigroups_1_1_on_tuples.html',1,'libsemigroups']]],
   ['optional_11',['optional',['http://en.cppreference.com/w/cpp/experimental/optional.html',1,'std::experimental']]],

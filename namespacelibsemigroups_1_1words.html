@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -193,13 +194,13 @@ $(function(){initNavTree('namespacelibsemigroups_1_1words.html',''); initResizab
 <a name="details" id="details"></a>
 <div class="textblock"><p>Defined in <code><a class="el" href="word-range_8hpp_source.html">word-range.hpp</a></code>.</p>
 <p>This namespace contains some functions for creating <a class="el" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> objects in a compact form. </p><dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacelibsemigroups_1_1words.html">words</a>;</div>
-<div class="line"><a class="code hl_function" href="#a25eb7f296ed35c90b022be940ff2b4e2">pow</a>(<span class="stringliteral">&quot;a&quot;</span>, 5)            <span class="comment">// same as &quot;aaaaa&quot;</span></div>
-<div class="line">01_w + 2               <span class="comment">// same as 012_w</span></div>
-<div class="line">01_w + 01_w            <span class="comment">// same as 0101_w</span></div>
-<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(0123_w, 0, 16, 3) <span class="comment">// same as 032103_w</span></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1words_html"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html">libsemigroups::words</a></div><div class="ttdoc">Namespace containing some operators for creating words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2095</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1words_html_a25eb7f296ed35c90b022be940ff2b4e2"><div class="ttname"><a href="#a25eb7f296ed35c90b022be940ff2b4e2">libsemigroups::words::pow</a></div><div class="ttdeci">Word pow(Word const &amp;x, size_t n)</div><div class="ttdoc">Returns the power of a word.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2253</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1words_html_a3a481438e3557e66943cf55c20db9676"><div class="ttname"><a href="#a3a481438e3557e66943cf55c20db9676">libsemigroups::words::prod</a></div><div class="ttdeci">Word prod(Container const &amp;elts, int first, int last, int step=1)</div><div class="ttdoc">Returns a product of letters or words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2434</div></div>
+<div class="line"><a class="code hl_function" href="#a25eb7f296ed35c90b022be940ff2b4e2">pow</a>(<span class="stringliteral">&quot;a&quot;</span>, 5)            <span class="comment">//-&gt; &quot;aaaaa&quot;</span></div>
+<div class="line">01_w + 2               <span class="comment">//-&gt; 012_w</span></div>
+<div class="line">01_w + 01_w            <span class="comment">//-&gt; 0101_w</span></div>
+<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(0123_w, 0, 16, 3) <span class="comment">//-&gt; 032103_w</span></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1words_html"><div class="ttname"><a href="namespacelibsemigroups_1_1words.html">libsemigroups::words</a></div><div class="ttdoc">Namespace containing some operators for creating words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2100</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1words_html_a25eb7f296ed35c90b022be940ff2b4e2"><div class="ttname"><a href="#a25eb7f296ed35c90b022be940ff2b4e2">libsemigroups::words::pow</a></div><div class="ttdeci">Word pow(Word const &amp;x, size_t n)</div><div class="ttdoc">Returns the power of a word.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2258</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1words_html_a3a481438e3557e66943cf55c20db9676"><div class="ttname"><a href="#a3a481438e3557e66943cf55c20db9676">libsemigroups::words::prod</a></div><div class="ttdeci">Word prod(Container const &amp;elts, int first, int last, int step=1)</div><div class="ttdoc">Returns a product of letters or words.</div><div class="ttdef"><b>Definition</b> word-range.hpp:2439</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -706,11 +707,11 @@ ks}\). All subscripts are taken modulo \(n\).</p>
   </dd>
 </dl>
 <dl class="section user"><dt>Examples</dt><dd><div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacelibsemigroups_1_1words.html">words</a>;</div>
-<div class="line"><a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> w = 012345_w</div>
-<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(w, 0, 5, 2)              <span class="comment">// {0, 2, 4}</span></div>
-<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(w, 1, 9, 2)              <span class="comment">// {1, 3, 5, 1}</span></div>
-<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(<span class="stringliteral">&quot;abcde&quot;</span>, 4, 1, -1)       <span class="comment">// &quot;edc&quot;</span></div>
-<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>({<span class="stringliteral">&quot;aba&quot;</span>, <span class="stringliteral">&quot;xyz&quot;</span>}, 0, 4, 1) <span class="comment">// &quot;abaxyzabaxyz&quot;</span></div>
+<div class="line"><a class="code hl_typedef" href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">word_type</a> w = 012345_w;</div>
+<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(w, 0, 5, 2);              <span class="comment">// {0, 2, 4}</span></div>
+<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(w, 1, 9, 2);              <span class="comment">// {1, 3, 5, 1}</span></div>
+<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>(<span class="stringliteral">&quot;abcde&quot;</span>, 4, 1, -1);       <span class="comment">// &quot;edc&quot;</span></div>
+<div class="line"><a class="code hl_function" href="#a3a481438e3557e66943cf55c20db9676">prod</a>({<span class="stringliteral">&quot;aba&quot;</span>, <span class="stringliteral">&quot;xyz&quot;</span>}, 0, 4, 1); <span class="comment">// &quot;abaxyzabaxyz&quot;</span></div>
 <div class="ttc" id="agroup__types__group_html_ga4c833ae5c1a57b830205688bf18f9991"><div class="ttname"><a href="group__types__group.html#ga4c833ae5c1a57b830205688bf18f9991">libsemigroups::word_type</a></div><div class="ttdeci">std::vector&lt; letter_type &gt; word_type</div><div class="ttdoc">Type for a word over the generators of a semigroup.</div><div class="ttdef"><b>Definition</b> types.hpp:99</div></div>
 </div><!-- fragment --> </dd></dl>
 

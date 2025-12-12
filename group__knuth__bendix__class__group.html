@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -211,13 +212,15 @@ $(function(){initNavTree('group__knuth__bendix__class__group.html',''); initResi
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#a8aa8feb639d28dbe9a7af0fce7b93c43">presentation::add_rule_no_checks</a>(p, <span class="stringliteral">&quot;cd&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a class="code hl_function" href="namespacelibsemigroups_1_1presentation.html#a8aa8feb639d28dbe9a7af0fce7b93c43">presentation::add_rule_no_checks</a>(p, <span class="stringliteral">&quot;dc&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line"><a class="code hl_function" href="#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a> kb(<a class="code hl_enumvalue" href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">twosided</a>, p);</div>
+<div class="line"><a class="code hl_function" href="#ga53918be05b2da9fe4637a180dd329497">KnuthBendix</a> kb(<a class="code hl_enumvalue" href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">congruence_kind::twosided</a>, p);</div>
 <div class="line"> </div>
-<div class="line">!kb.confluent();              <span class="comment">// true</span></div>
+<div class="line">kb.number_of_active_rules();  <span class="comment">//-&gt; 0</span></div>
+<div class="line">kb.number_of_pending_rules(); <span class="comment">//-&gt; 4</span></div>
 <div class="line">kb.run();</div>
-<div class="line">kb.number_of_active_rules();  <span class="comment">// 8</span></div>
-<div class="line">kb.confluent();               <span class="comment">// true</span></div>
-<div class="line">kb.number_of_classes();       <span class="comment">// POSITIVE_INFINITY</span></div>
+<div class="line">kb.number_of_active_rules();  <span class="comment">//-&gt; 4</span></div>
+<div class="line">kb.number_of_pending_rules(); <span class="comment">//-&gt; 0</span></div>
+<div class="line">kb.confluent();               <span class="comment">//-&gt; true</span></div>
+<div class="line">kb.number_of_classes();       <span class="comment">//-&gt; POSITIVE_INFINITY</span></div>
 <div class="ttc" id="agroup__knuth__bendix__class__group_html_ga53918be05b2da9fe4637a180dd329497"><div class="ttname"><a href="#ga53918be05b2da9fe4637a180dd329497">libsemigroups::KnuthBendix</a></div><div class="ttdeci">KnuthBendix(congruence_kind, Presentation&lt; Word &gt; const &amp;) -&gt; KnuthBendix&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__presentations__group_html_ga23151a59e438840f91914ddf8716f2cb"><div class="ttname"><a href="group__presentations__group.html#ga23151a59e438840f91914ddf8716f2cb">libsemigroups::Presentation</a></div><div class="ttdeci">Presentation(Presentation&lt; Word &gt; const &amp;) -&gt; Presentation&lt; Word &gt;</div><div class="ttdoc">Deduction guide.</div></div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:71</div></div>

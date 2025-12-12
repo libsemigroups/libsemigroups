@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -828,7 +829,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="line">                       {0, 0, 0, 1},</div>
 <div class="line">                       {0, 0, 0, 1},</div>
 <div class="line">                       {0, 0, 0, 1}}));</div>
-<div class="line">S.<a class="code hl_function" href="#a0b6b70701c46e22849f0f363861351cd">size</a>(); <span class="comment">// 4</span></div>
+<div class="line">S.<a class="code hl_function" href="#a0b6b70701c46e22849f0f363861351cd">size</a>(); <span class="comment">//-&gt; 4</span></div>
 <div class="line">std::vector&lt;relation_type&gt;(S.<a class="code hl_function" href="#a229ee34403288cf24cb81677d6e083e7">cbegin_rules</a>(), S.<a class="code hl_function" href="#a07edf8e2ad3c41ba152f7c4b32199235">cend_rules</a>());</div>
 <div class="line"><span class="comment">// {{{0, 0}, {0}},</span></div>
 <div class="line"><span class="comment">//  {{0, 1}, {1}},</span></div>
@@ -847,9 +848,9 @@ Additional Inherited Members</h2></td></tr>
 <div class="line"><span class="comment">//  {{3, 2}, {2}},</span></div>
 <div class="line"><span class="comment">//  {{3, 3}, {3}}}</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:74</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a07edf8e2ad3c41ba152f7c4b32199235"><div class="ttname"><a href="#a07edf8e2ad3c41ba152f7c4b32199235">libsemigroups::FroidurePinBase::cend_rules</a></div><div class="ttdeci">const_rule_iterator cend_rules()</div><div class="ttdoc">Returns a forward iterator pointing one past the last rule (if any).</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:1509</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a0b6b70701c46e22849f0f363861351cd"><div class="ttname"><a href="#a0b6b70701c46e22849f0f363861351cd">libsemigroups::FroidurePinBase::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdoc">Returns the size of a FroidurePin instance.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:850</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a229ee34403288cf24cb81677d6e083e7"><div class="ttname"><a href="#a229ee34403288cf24cb81677d6e083e7">libsemigroups::FroidurePinBase::cbegin_rules</a></div><div class="ttdeci">const_rule_iterator cbegin_rules()</div><div class="ttdoc">Returns a forward iterator pointing to the first rule (if any).</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:1405</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a07edf8e2ad3c41ba152f7c4b32199235"><div class="ttname"><a href="#a07edf8e2ad3c41ba152f7c4b32199235">libsemigroups::FroidurePinBase::cend_rules</a></div><div class="ttdeci">const_rule_iterator cend_rules()</div><div class="ttdoc">Returns a forward iterator pointing one past the last rule (if any).</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:1510</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a0b6b70701c46e22849f0f363861351cd"><div class="ttname"><a href="#a0b6b70701c46e22849f0f363861351cd">libsemigroups::FroidurePinBase::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdoc">Returns the size of a FroidurePin instance.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:851</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html_a229ee34403288cf24cb81677d6e083e7"><div class="ttname"><a href="#a229ee34403288cf24cb81677d6e083e7">libsemigroups::FroidurePinBase::cbegin_rules</a></div><div class="ttdeci">const_rule_iterator cbegin_rules()</div><div class="ttdoc">Returns a forward iterator pointing to the first rule (if any).</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:1406</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_html_adcfa14383b4b37ae1788057a2c87f15d"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin.html#adcfa14383b4b37ae1788057a2c87f15d">libsemigroups::FroidurePin::add_generator</a></div><div class="ttdeci">FroidurePin &amp; add_generator(const_reference x)</div><div class="ttdoc">Add a copy of an element to the generators.</div></div>
 </div><!-- fragment --> </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function does not trigger any enumeration. </dd></dl>
@@ -998,7 +999,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="line">                       {0, 0, 0, 1},</div>
 <div class="line">                       {0, 0, 0, 1},</div>
 <div class="line">                       {0, 0, 0, 1}}));</div>
-<div class="line">S.<a class="code hl_function" href="#a0b6b70701c46e22849f0f363861351cd">size</a>(); <span class="comment">// 4</span></div>
+<div class="line">S.<a class="code hl_function" href="#a0b6b70701c46e22849f0f363861351cd">size</a>(); <span class="comment">//-&gt; 4</span></div>
 <div class="line">std::vector&lt;relation_type&gt;(S.<a class="code hl_function" href="#a229ee34403288cf24cb81677d6e083e7">cbegin_rules</a>(), S.<a class="code hl_function" href="#a07edf8e2ad3c41ba152f7c4b32199235">cend_rules</a>());</div>
 <div class="line"><span class="comment">// {{{0, 0}, {0}},</span></div>
 <div class="line"><span class="comment">//  {{0, 1}, {1}},</span></div>

@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -202,6 +203,9 @@ Topics</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__make__forest__group.html">make&lt;Forest&gt;</a></td></tr>
 <tr class="memdesc:group__make__forest__group"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely construct a <a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> instance. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__to__word__graph__group.html">to&lt;WordGraph&gt;</a></td></tr>
+<tr class="memdesc:group__to__word__graph__group"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> instance. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__make__word__graph__group.html">make&lt;WordGraph&gt;</a></td></tr>
 <tr class="memdesc:group__make__word__graph__group"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely construct a <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> instance. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -226,8 +230,14 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_gabow.html">Gabow&lt; Node &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class implementing <a class="el" href="classlibsemigroups_1_1_gabow.html" title="Class implementing Gabow&#39;s algorithm for computing strongly connected components of a WordGraph.">Gabow</a>'s algorithm for computing strongly connected components of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.  <a href="classlibsemigroups_1_1_gabow.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1v4_1_1_joiner.html">Joiner</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for taking joins of word graphs.  <a href="classlibsemigroups_1_1v4_1_1_joiner.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_joiner.html">Joiner</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for taking joins of word graphs.  <a href="classlibsemigroups_1_1_joiner.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1v4_1_1_meeter.html">Meeter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for taking meets of word graphs.  <a href="classlibsemigroups_1_1v4_1_1_meeter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_meeter.html">Meeter</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for taking meets of word graphs.  <a href="classlibsemigroups_1_1_meeter.html#details">More...</a><br /></td></tr>
@@ -238,6 +248,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph&lt; Node &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for representing word graphs.  <a href="classlibsemigroups_1_1_word_graph.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlibsemigroups_1_1_word_graph_view.html">WordGraphView&lt; Node &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">non-owning view over a specified range of <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> nodes.  <a href="classlibsemigroups_1_1_word_graph_view.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -245,6 +258,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga8a1d142b05bc5185b1266f862622837d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga8a1d142b05bc5185b1266f862622837d">format</a> (<a class="el" href="classlibsemigroups_1_1_forest.html">libsemigroups::Forest</a> const &amp;f, FormatContext &amp;ctx) const</td></tr>
 <tr class="memdesc:ga8a1d142b05bc5185b1266f862622837d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Custom formatter for Forest objects.  <br /></td></tr>
 <tr class="separator:ga8a1d142b05bc5185b1266f862622837d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga57dc3a0448654cc909a9a043948a25b6" id="r_ga57dc3a0448654cc909a9a043948a25b6"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
+<tr class="memitem:ga57dc3a0448654cc909a9a043948a25b6"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga57dc3a0448654cc909a9a043948a25b6">operator&lt;&lt;</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;os, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
+<tr class="separator:ga57dc3a0448654cc909a9a043948a25b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga57dc3a0448654cc909a9a043948a25b6" id="r_ga57dc3a0448654cc909a9a043948a25b6"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:ga57dc3a0448654cc909a9a043948a25b6"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga57dc3a0448654cc909a9a043948a25b6">operator&lt;&lt;</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;os, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
 <tr class="separator:ga57dc3a0448654cc909a9a043948a25b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -258,6 +274,20 @@ Functions</h2></td></tr>
 <tr class="memitem:gaa1b9d94808831c1d053c277c71389375"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa1b9d94808831c1d053c277c71389375">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
 <tr class="memdesc:gaa1b9d94808831c1d053c277c71389375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object.  <br /></td></tr>
 <tr class="separator:gaa1b9d94808831c1d053c277c71389375"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga27c7e5bad990766d554655955f62bebc" id="r_ga27c7e5bad990766d554655955f62bebc"><td class="memItemLeft" align="right" valign="top">static <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga27c7e5bad990766d554655955f62bebc">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1v4_1_1_joiner.html">Joiner</a> const &amp;join)</td></tr>
+<tr class="memdesc:ga27c7e5bad990766d554655955f62bebc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1v4_1_1_joiner.html" title="Class for taking joins of word graphs.">Joiner</a> object.  <br /></td></tr>
+<tr class="separator:ga27c7e5bad990766d554655955f62bebc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga723b4c4b2ffb0ca224d0123df6fcde7f" id="r_ga723b4c4b2ffb0ca224d0123df6fcde7f"><td class="memItemLeft" align="right" valign="top">static <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga723b4c4b2ffb0ca224d0123df6fcde7f">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1v4_1_1_meeter.html">Meeter</a> const &amp;meet)</td></tr>
+<tr class="memdesc:ga723b4c4b2ffb0ca224d0123df6fcde7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1v4_1_1_meeter.html" title="Class for taking meets of word graphs.">Meeter</a> object.  <br /></td></tr>
+<tr class="separator:ga723b4c4b2ffb0ca224d0123df6fcde7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa1b9d94808831c1d053c277c71389375" id="r_gaa1b9d94808831c1d053c277c71389375"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
+<tr class="memitem:gaa1b9d94808831c1d053c277c71389375"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa1b9d94808831c1d053c277c71389375">to_human_readable_repr</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg)</td></tr>
+<tr class="memdesc:gaa1b9d94808831c1d053c277c71389375"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object.  <br /></td></tr>
+<tr class="separator:gaa1b9d94808831c1d053c277c71389375"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad627eaf6dba5fdfb01f5f6c6af37eb0c" id="r_gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
+<tr class="memitem:gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gad627eaf6dba5fdfb01f5f6c6af37eb0c">to_input_string</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;prefix=&quot;&quot;, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;braces=&quot;{}&quot;, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;suffix=&quot;&quot;)</td></tr>
+<tr class="memdesc:gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string that can be used to recreate a word graph.  <br /></td></tr>
+<tr class="separator:gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad627eaf6dba5fdfb01f5f6c6af37eb0c" id="r_gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="memTemplParams" colspan="2">template&lt;typename Node&gt; </td></tr>
 <tr class="memitem:gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gad627eaf6dba5fdfb01f5f6c6af37eb0c">to_input_string</a> (<a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;prefix=&quot;&quot;, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;braces=&quot;{}&quot;, <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;suffix=&quot;&quot;)</td></tr>
 <tr class="memdesc:gad627eaf6dba5fdfb01f5f6c6af37eb0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string that can be used to recreate a word graph.  <br /></td></tr>
@@ -319,7 +349,42 @@ template&lt;typename FormatContext&gt; </div>
 </div>
 </div>
 <a id="ga57dc3a0448654cc909a9a043948a25b6" name="ga57dc3a0448654cc909a9a043948a25b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga57dc3a0448654cc909a9a043948a25b6">&#9670;&#160;</a></span>operator&lt;&lt;()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga57dc3a0448654cc909a9a043948a25b6">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/io/basic_ostream.html">std::ostream</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>os</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Output the edges of a wordGraph to a stream.</p>
+<p>This function outputs the word graph <code class="param">wg</code> to the stream <code class="param">os</code>. The word graph is represented by the out-neighbours of each node ordered according to their labels. The symbol <code>-</code> is used to denote that an edge is not defined. For example, the word graph with 1 node, out-degree 2, and a single loop labelled 1 from node 0 to 0 is represented as <code>{{-, 0}}</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">os</td><td>the ostream. </td></tr>
+    <tr><td class="paramname">wg</td><td>the word graph.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The first parameter <code class="param">os</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
+
+</div>
+</div>
+<a id="ga57dc3a0448654cc909a9a043948a25b6" name="ga57dc3a0448654cc909a9a043948a25b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga57dc3a0448654cc909a9a043948a25b6">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -353,7 +418,7 @@ template&lt;typename Node&gt; </div>
 </div>
 </div>
 <a id="ga27c7e5bad990766d554655955f62bebc" name="ga27c7e5bad990766d554655955f62bebc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga27c7e5bad990766d554655955f62bebc">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga27c7e5bad990766d554655955f62bebc">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -382,12 +447,13 @@ template&lt;typename Node&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A string containing the representation.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
 
 </div>
 </div>
 <a id="ga723b4c4b2ffb0ca224d0123df6fcde7f" name="ga723b4c4b2ffb0ca224d0123df6fcde7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga723b4c4b2ffb0ca224d0123df6fcde7f">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga723b4c4b2ffb0ca224d0123df6fcde7f">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -416,12 +482,124 @@ template&lt;typename Node&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A string containing the representation.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
+
+</div>
+</div>
+<a id="gaa1b9d94808831c1d053c277c71389375" name="gaa1b9d94808831c1d053c277c71389375"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa1b9d94808831c1d053c277c71389375">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[3/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> to_human_readable_repr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes in the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string containing the representation.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
+
+</div>
+</div>
+<a id="ga27c7e5bad990766d554655955f62bebc" name="ga27c7e5bad990766d554655955f62bebc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga27c7e5bad990766d554655955f62bebc">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[4/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> to_human_readable_repr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1v4_1_1_joiner.html">Joiner</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>join</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1v4_1_1_joiner.html" title="Class for taking joins of word graphs.">Joiner</a> object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">join</td><td>the <a class="el" href="classlibsemigroups_1_1v4_1_1_joiner.html" title="Class for taking joins of word graphs.">Joiner</a> object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string containing the representation.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+
+</div>
+</div>
+<a id="ga723b4c4b2ffb0ca224d0123df6fcde7f" name="ga723b4c4b2ffb0ca224d0123df6fcde7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga723b4c4b2ffb0ca224d0123df6fcde7f">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[5/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> to_human_readable_repr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1v4_1_1_meeter.html">Meeter</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>meet</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Return a human readable representation of a <a class="el" href="classlibsemigroups_1_1v4_1_1_meeter.html" title="Class for taking meets of word graphs.">Meeter</a> object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meet</td><td>the <a class="el" href="classlibsemigroups_1_1v4_1_1_meeter.html" title="Class for taking meets of word graphs.">Meeter</a> object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string containing the representation.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
 
 </div>
 </div>
 <a id="gaa1b9d94808831c1d053c277c71389375" name="gaa1b9d94808831c1d053c277c71389375"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaa1b9d94808831c1d053c277c71389375">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa1b9d94808831c1d053c277c71389375">&#9670;&#160;</a></span>to_human_readable_repr() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -463,7 +641,72 @@ template&lt;typename Node&gt; </div>
 </div>
 </div>
 <a id="gad627eaf6dba5fdfb01f5f6c6af37eb0c" name="gad627eaf6dba5fdfb01f5f6c6af37eb0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad627eaf6dba5fdfb01f5f6c6af37eb0c">&#9670;&#160;</a></span>to_input_string()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gad627eaf6dba5fdfb01f5f6c6af37eb0c">&#9670;&#160;</a></span>to_input_string() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> to_input_string </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>prefix</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>braces</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;{}&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>suffix</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns a <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> containing the input required to construct a copy of the argument <code class="param">wg</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>the type of the nodes of <code class="param">wg</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">wg</td><td>the word graph. </td></tr>
+    <tr><td class="paramname">prefix</td><td>a prefix for the returned string (defaults to an empty string). </td></tr>
+    <tr><td class="paramname">braces</td><td>the braces to use in the string (defaults to <code>"{}"</code>). </td></tr>
+    <tr><td class="paramname">suffix</td><td>a suffix for the returned string (defaults to an empty string).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string containing the input required to recreate <code class="param">wg</code>.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if the argument <code class="param">braces</code> is not of length <code>2</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This function will be moved from the header <code><a class="el" href="word-graph_8hpp_source.html">word-graph.hpp</a></code> to <code><a class="el" href="word-graph-helpers_8hpp_source.html">word-graph-helpers.hpp</a></code> in v4 of libsemigroups. </dd></dl>
+
+</div>
+</div>
+<a id="gad627eaf6dba5fdfb01f5f6c6af37eb0c" name="gad627eaf6dba5fdfb01f5f6c6af37eb0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad627eaf6dba5fdfb01f5f6c6af37eb0c">&#9670;&#160;</a></span>to_input_string() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

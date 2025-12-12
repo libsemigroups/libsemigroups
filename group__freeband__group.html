@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -191,7 +192,7 @@ $(function(){initNavTree('group__freeband__group.html',''); initResizable(true);
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a>
-<p><code>libsemigroups</code> contains an implementation of the Radoszewski-Rytter Algorithm <a class="el" href="citelist.html#CITEREF_radoszewski2010aa">[54]</a> for testing equivalence of words in free bands.</p>
+<p><code>libsemigroups</code> contains an implementation of the Radoszewski-Rytter Algorithm <a class="el" href="citelist.html#CITEREF_radoszewski2010aa">[55]</a> for testing equivalence of words in free bands.</p>
 <p>The documentation for the functions in <code>libsemigroups</code> for free bands are linked to below. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -328,20 +329,29 @@ template&lt;typename T&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Return <code>true</code> if both words are the same as elements of the free band and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>The time complexity is \(O(mn)\) and space complexity is \(O(n)\) where \(n\) is the total length of <code class="param">x</code> and <code class="param">y</code>, and \(m\) is the number of distinct letters appearing in <code class="param">x</code> and <code class="param">y</code>.</dd></dl>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacelibsemigroups.html">libsemigroups</a>;</div>
-<div class="line"><a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 3, 2, 1, 0},</div>
-<div class="line">                  {0, 1, 2, 3, 2, 3, 2, 1, 0}); <span class="comment">// true</span></div>
-<div class="line"><a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({1, 2, 3}, {0, 1, 2}); <span class="comment">// false</span></div>
-<div class="line"><a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10}) <span class="comment">// true</span></div>
-<div class="line"><a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},</div>
-<div class="line">                  {4, 3, 2, 1, 0, 4, 3, 2, 1, 0}); <span class="comment">// false</span></div>
-<div class="line"><a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2}); <span class="comment">// true</span></div>
-<div class="line"><a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 3, 0, 1},</div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keywordtype">bool</span> example = <a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 3, 2, 1, 0},</div>
+<div class="line">                  {0, 1, 2, 3, 2, 3, 2, 1, 0});</div>
+<div class="line">example; <span class="comment">//-&gt; true</span></div>
+<div class="line"> </div>
+<div class="line">example = <a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({1, 2, 3}, {0, 1, 2});</div>
+<div class="line">example; <span class="comment">//-&gt; false</span></div>
+<div class="line"> </div>
+<div class="line">example = <a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({1, 4, 2, 3, 10}, {1, 4, 1, 4, 2, 3, 10});</div>
+<div class="line">example; <span class="comment">//-&gt; true</span></div>
+<div class="line"> </div>
+<div class="line">example = <a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 3, 4, 0, 1, 2, 3, 4},</div>
+<div class="line">                  {4, 3, 2, 1, 0, 4, 3, 2, 1, 0});</div>
+<div class="line">example; <span class="comment">//-&gt; false</span></div>
+<div class="line"> </div>
+<div class="line">example = <a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 1, 0, 1, 2}, {0, 1, 2});</div>
+<div class="line">example; <span class="comment">//-&gt; true</span></div>
+<div class="line"> </div>
+<div class="line">example = <a class="code hl_function" href="#ga070ba4b3f7eb191f663af669cb0478dd">freeband_equal_to</a>({0, 1, 2, 3, 0, 1},</div>
 <div class="line">                  {0, 1, 2, 3, 3, 2, 2, 1, 0, 2, 1, 0, 2, 3,</div>
 <div class="line">                   0, 2, 1, 3, 2, 1, 2, 3, 2, 1, 0, 2, 0, 1,</div>
-<div class="line">                   0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1}); <span class="comment">// true</span></div>
+<div class="line">                   0, 2, 0, 3, 2, 0, 1, 2, 2, 3, 0, 1});</div>
+<div class="line">example; <span class="comment">//-&gt; true</span></div>
 <div class="ttc" id="agroup__freeband__group_html_ga070ba4b3f7eb191f663af669cb0478dd"><div class="ttname"><a href="#ga070ba4b3f7eb191f663af669cb0478dd">libsemigroups::freeband_equal_to</a></div><div class="ttdeci">bool freeband_equal_to(word_type const &amp;x, word_type const &amp;y)</div><div class="ttdoc">Check if two words represent the same element of a free band.</div></div>
-<div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>

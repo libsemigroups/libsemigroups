@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -199,22 +200,82 @@ $(function(){initNavTree('structlibsemigroups_1_1_lexicographical_compare.html',
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:aa4fcf0a0b53bcabec4486b8128ed40e4" id="r_aa4fcf0a0b53bcabec4486b8128ed40e4"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
+<tr class="memitem:aa4fcf0a0b53bcabec4486b8128ed40e4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aa4fcf0a0b53bcabec4486b8128ed40e4">operator()</a> (Iterator first1, Iterator last1, Iterator first2, Iterator last2) const</td></tr>
+<tr class="memdesc:aa4fcf0a0b53bcabec4486b8128ed40e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call operator that compares iterators using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
+<tr class="separator:aa4fcf0a0b53bcabec4486b8128ed40e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71105d050ea5751380bc856a8b868a47" id="r_a71105d050ea5751380bc856a8b868a47"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a71105d050ea5751380bc856a8b868a47"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a71105d050ea5751380bc856a8b868a47">operator()</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; T &gt; x, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/initializer_list.html">std::initializer_list</a>&lt; T &gt; y) const</td></tr>
 <tr class="memdesc:a71105d050ea5751380bc856a8b868a47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call operator that compares <code class="param">x</code> and <code class="param">y</code> given initializer lists using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
 <tr class="separator:a71105d050ea5751380bc856a8b868a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7a67f29c0e0ba98b1936c359253b88d" id="r_ad7a67f29c0e0ba98b1936c359253b88d"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ad7a67f29c0e0ba98b1936c359253b88d"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad7a67f29c0e0ba98b1936c359253b88d">operator()</a> (T const &amp;x, T const &amp;y) const</td></tr>
-<tr class="memdesc:ad7a67f29c0e0ba98b1936c359253b88d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call operator that compares <code class="param">x</code> and <code class="param">y</code> using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
-<tr class="separator:ad7a67f29c0e0ba98b1936c359253b88d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad89f69695201908792802f95d7d578be" id="r_ad89f69695201908792802f95d7d578be"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ad89f69695201908792802f95d7d578be"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad89f69695201908792802f95d7d578be">operator()</a> (T first1, T last1, T first2, T last2) const</td></tr>
-<tr class="memdesc:ad89f69695201908792802f95d7d578be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call operator that compares iterators using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
-<tr class="separator:ad89f69695201908792802f95d7d578be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e793801ef3a9d436d6e6d5663beca63" id="r_a4e793801ef3a9d436d6e6d5663beca63"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
+<tr class="memitem:a4e793801ef3a9d436d6e6d5663beca63"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a4e793801ef3a9d436d6e6d5663beca63">operator()</a> (Thing const &amp;x, Thing const &amp;y) const</td></tr>
+<tr class="memdesc:a4e793801ef3a9d436d6e6d5663beca63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call operator that compares <code class="param">x</code> and <code class="param">y</code> using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.  <br /></td></tr>
+<tr class="separator:a4e793801ef3a9d436d6e6d5663beca63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa4fcf0a0b53bcabec4486b8128ed40e4" name="aa4fcf0a0b53bcabec4486b8128ed40e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4fcf0a0b53bcabec4486b8128ed40e4">&#9670;&#160;</a></span>operator()() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator() </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Call operator that compares iterators using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>the type of the parameters.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>the start of the first object to compare. </td></tr>
+    <tr><td class="paramname">last1</td><td>one beyond the end of the first object to compare. </td></tr>
+    <tr><td class="paramname">first2</td><td>the start of the second object to compare. </td></tr>
+    <tr><td class="paramname">last2</td><td>one beyond the end of the second object to compare.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is lexicographically less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
+<dl class="section user"><dt>Complexity</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>. </dd></dl>
+
+</div>
+</div>
 <a id="a71105d050ea5751380bc856a8b868a47" name="a71105d050ea5751380bc856a8b868a47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71105d050ea5751380bc856a8b868a47">&#9670;&#160;</a></span>operator()() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a71105d050ea5751380bc856a8b868a47">&#9670;&#160;</a></span>operator()() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -237,14 +298,14 @@ template&lt;typename T&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Call operator that compares <code class="param">x</code> and <code class="param">y</code> given initializer lists using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the parameters.</td></tr>
+    <tr><td class="paramname">T</td><td>the items in the arguments.</td></tr>
   </table>
   </dd>
 </dl>
@@ -261,13 +322,13 @@ template&lt;typename T&gt; </div>
 
 </div>
 </div>
-<a id="ad7a67f29c0e0ba98b1936c359253b88d" name="ad7a67f29c0e0ba98b1936c359253b88d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7a67f29c0e0ba98b1936c359253b88d">&#9670;&#160;</a></span>operator()() <span class="overload">[2/3]</span></h2>
+<a id="a4e793801ef3a9d436d6e6d5663beca63" name="a4e793801ef3a9d436d6e6d5663beca63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e793801ef3a9d436d6e6d5663beca63">&#9670;&#160;</a></span>operator()() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T&gt; </div>
+template&lt;typename Thing&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -275,24 +336,24 @@ template&lt;typename T&gt; </div>
         <tr>
           <td class="memname">bool operator() </td>
           <td>(</td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;) const</td>
+          <td class="paramtype">Thing const &amp;</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;) const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Call operator that compares <code class="param">x</code> and <code class="param">y</code> using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the parameters.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the parameters.</td></tr>
   </table>
   </dd>
 </dl>
@@ -304,66 +365,6 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if <code class="param">x</code> is lexicographically less than <code class="param">y</code>, and <code>false</code> otherwise.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
-<dl class="section user"><dt>Complexity</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>. </dd></dl>
-
-</div>
-</div>
-<a id="ad89f69695201908792802f95d7d578be" name="ad89f69695201908792802f95d7d578be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad89f69695201908792802f95d7d578be">&#9670;&#160;</a></span>operator()() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool operator() </td>
-          <td>(</td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>first1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>last1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>first2</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>last2</em></span>&#160;) const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Call operator that compares iterators using <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of the parameters.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">first1</td><td>the start of the first object to compare. </td></tr>
-    <tr><td class="paramname">last1</td><td>one beyond the end of the first object to compare. </td></tr>
-    <tr><td class="paramname">first2</td><td>the start of the second object to compare. </td></tr>
-    <tr><td class="paramname">last2</td><td>one beyond the end of the second object to compare.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The boolean value <code>true</code> if the range <code>[first1, last1)</code> is lexicographically less than the range <code>[first2, last2)</code>, and <code>false</code> otherwise.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>.</dd></dl>
 <dl class="section user"><dt>Complexity</dt><dd>See <a class="elRef" href="http://en.cppreference.com/w/cpp/algorithm/lexicographical_compare.html">std::lexicographical_compare</a>. </dd></dl>
 

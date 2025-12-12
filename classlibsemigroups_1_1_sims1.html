@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.2.0</span>
+   &#160;<span id="projectnumber">v3.3.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -106,6 +106,7 @@ $(function() { codefold.init(0); });
       <li><a href="group__constants__group.html"><span>Constants</span></a></li>
       <li><a href="group__elements__group.html"><span>Elements</span></a></li>
       <li><a href="group__exception__group.html"><span>Exceptions</span></a></li>
+      <li><a href="group__hpcombi__group.html"><span>HPCombi</span></a></li>
       <li><a href="group__orders__group.html"><span>Orders</span></a></li>
       <li><a href="group__presentations__group.html"><span>Presentations</span></a></li>
       <li><a href="group__ranges__group.html"><span>Ranges</span></a></li>
@@ -194,7 +195,7 @@ $(function(){initNavTree('classlibsemigroups_1_1_sims1.html',''); initResizable(
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><p>Defined in <code><a class="el" href="sims_8hpp_source.html">sims.hpp</a></code>.</p>
-<p>On this page we describe the functionality relating to the small index congruence algorithm for 1-sided congruences. The algorithm implemented by this class is essentially the low index subgroup algorithm for finitely presented groups described in Section 5.6 of Computation with Finitely Presented Groups by C. Sims; see <a class="el" href="citelist.html#CITEREF_sims1994aa">[57]</a>. The low index subgroups algorithm was adapted for semigroups and monoids by R. Cirpons, J. D. Mitchell, and M. Tsalakou; see <a class="el" href="citelist.html#CITEREF_anagnostopoulou-merkouri2023aa">[6]</a></p>
+<p>On this page we describe the functionality relating to the small index congruence algorithm for 1-sided congruences. The algorithm implemented by this class is essentially the low index subgroup algorithm for finitely presented groups described in Section 5.6 of Computation with Finitely Presented Groups by C. Sims; see <a class="el" href="citelist.html#CITEREF_sims1994aa">[58]</a>. The low index subgroups algorithm was adapted for semigroups and monoids by R. Cirpons, J. D. Mitchell, and M. Tsalakou; see <a class="el" href="citelist.html#CITEREF_anagnostopoulou-merkouri2023aa">[6]</a></p>
 <p>The purpose of this class is to provide the functions <a class="el" href="#ae33bdeb5da6eef3c17b06c1b4f1e47c3">cbegin</a>, <a class="el" href="#ae8feba2a08c19e1d90f8de18ebecdf62">cend</a>, <a class="el" href="#ab5894adbf3193d1bdd87a5d634b501aa">for_each</a>, and <a class="el" href="#acccfd4edd43570857c1274f36556d393">find_if</a> which permit iterating through the one-sided congruences of a semigroup or monoid defined by a presentation containing (a possibly empty) set of pairs and with at most a given number of classes. An iterator returned by <a class="el" href="#ae33bdeb5da6eef3c17b06c1b4f1e47c3">cbegin</a> points at an <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> instance containing the action of the semigroup or monoid on the classes of a congruence.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1_sims2.html" title="For computing finite index two-sided congruences of a finitely presented semigroup or monoid.">Sims2</a> for equivalent functionality for 2-sided congruences. </dd>
 <dd>
