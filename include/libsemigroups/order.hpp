@@ -923,7 +923,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO check \exceptions everywhere
     WtShortLexCompare(std::vector<size_t>&& weights, bool should_check)
         : _weights(std::move(weights)), _should_check(should_check) {}
 
@@ -1587,9 +1586,6 @@ namespace libsemigroups {
     //! \param val the new weights to use.
     //!
     //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
     WtLexCompare& weights(std::vector<size_t> const& val) {
       _weights = val;
       return *this;
