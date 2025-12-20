@@ -55,6 +55,25 @@ namespace libsemigroups {
       }
       // TODO(1) implement is_free mem fn of derived classes and check equality
       // if this returns true
+      if (static_cast<Subclass&>(*this).currently_contains_no_checks(
+              first1, last1, first2, last2)
+          == tril::TRUE) {
+        return true;
+      }
+      // TODO(1) the following doesn't work because of some issue in Congruences
+      // where the function passed to run_until is invoked by the Congruence in
+      // one thread (causing a data race) but should probably be invoked in each
+      // runner thread instead.
+      //
+      // The issue is that we are calling
+      // KnuthBendix::currently_contains_no_checks (for example) when
+      // KnuthBendix is running, and it is not thread safe.
+      //
+      // run_until([this, first1, last1, first2, last2]() {
+      //   return static_cast<Subclass&>(*this).currently_contains_no_checks(
+      //              first1, last1, first2, last2)
+      //          != tril::unknown;
+      // });
       run();
       return static_cast<Subclass&>(*this).currently_contains_no_checks(
                  first1, last1, first2, last2)
