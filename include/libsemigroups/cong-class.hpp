@@ -792,6 +792,12 @@ namespace libsemigroups {
                            Result>,
             Result>;
 
+    template <typename Result, typename Node>
+    friend auto
+    to(congruence_kind knd, WordGraph<Node> const& wg) -> std::enable_if_t<
+        std::is_same_v<Congruence<typename Result::native_word_type>, Result>,
+        Result>;
+
     void init_runners() const;
 
     //////////////////////////////////////////////////////////////////////////

@@ -58,4 +58,15 @@ namespace libsemigroups {
 
     return cong;
   }
+
+  template <typename Result, typename Node>
+  auto to(congruence_kind knd, WordGraph<Node> const& wg) -> std::enable_if_t<
+      std::is_same_v<Congruence<typename Result::native_word_type>, Result>,
+      Result> {
+    using Word = typename Result::native_word_type;
+    Congruence<Word> cong;
+
+    cong.add_runner(std::make_shared<ToddCoxeter<Word>>(knd, wg));
+    return cong;
+  }
 }  // namespace libsemigroups
