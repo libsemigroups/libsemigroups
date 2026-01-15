@@ -687,35 +687,35 @@ namespace libsemigroups {
   //! follows:
   //!
   //! \code_no_test
-//! to<InversePresentation>(p);
-//! \end_code_no_test
-//!
-//! This function returns an inverse presentation with rules equivalent to
-//! those of the input presentation, but over a normalised alphabet. If the
-//! alphabet of \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the
-//! alphabet of the returned inverse presentation will be
-//! \f$\{0, 1, \dots, n-1, n, \dots, 2n-1\}\f$, where the inverse of letter
-//! \f$i\f$ is the letter \f$i + n\, (\text{mod }2n)\f$.
-//!
-//! \tparam Thing used for SFINAE, must be InversePresentation.
-//! \tparam Word the type of the words in the input presentation.
-//! \param p the input presentation.
-//!
-//! \returns A value of type `InversePresentation<Word>`.
-//!
-//! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
-//! throws.
-//!
-//! \note This function will be moved from the header `to-presentation.hpp` to
-//! `presentation.hpp` in v4 of libsemigroups.
-// \note The parameter \p p must not be an `InversePresentation`, otherwise
-// a compilation error is thrown.
-// NOTE: not sure this is true anymore so just leaving it out
+  //! to<InversePresentation>(p);
+  //! \end_code_no_test
+  //!
+  //! This function returns an inverse presentation with rules equivalent to
+  //! those of the input presentation, but over a normalised alphabet. If the
+  //! alphabet of \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the
+  //! alphabet of the returned inverse presentation will be
+  //! \f$\{0, 1, \dots, n-1, n, \dots, 2n-1\}\f$, where the inverse of letter
+  //! \f$i\f$ is the letter \f$i + n\, (\text{mod }2n)\f$.
+  //!
+  //! \tparam Thing used for SFINAE, must be InversePresentation.
+  //! \tparam Word the type of the words in the input presentation.
+  //! \param p the input presentation.
+  //!
+  //! \returns A value of type `InversePresentation<Word>`.
+  //!
+  //! \throws LibsemigroupsException if `p.throw_if_bad_alphabet_or_rules()`
+  //! throws.
+  //!
+  //! \note This function will be moved from the header `to-presentation.hpp` to
+  //! `presentation.hpp` in v4 of libsemigroups.
+  // \note The parameter \p p must not be an `InversePresentation`, otherwise
+  // a compilation error is thrown.
+  // NOTE: not sure this is true anymore so just leaving it out
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   // FIXME(1) this is the same hack as elsewhere because Doxygen conflates
   // functions with trailing return type but the same name and signature.
   template <template <typename...> typename Thing, typename Word>
-  auto to(Presentation<Word> const& p) -> std::enable_if_t<
+  auto to(Presentatio<Word> const& p) -> std::enable_if_t<
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>>;
 #else
