@@ -777,4 +777,22 @@ namespace libsemigroups {
     REQUIRE(!k.finished());
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "146",
+                                   "process millions of pending rules",
+                                   "[knuth-bendix][extreme]",
+                                   RewriteTrie) {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abAB");
+
+    auto rules = StringRange().alphabet(p.alphabet()).min(12).max(13);
+    p.rules    = rules | rx::to_vector();
+    presentation::add_rule(p, "aaaabbbb", "aabb");
+    KnuthBendix<std::string, TestType> k(twosided, p);
+    k.process_pending_rules();
+    // TODO checking local confluence seems to be extremely slow here
+  }
+
 }  // namespace libsemigroups
