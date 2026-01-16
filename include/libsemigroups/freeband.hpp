@@ -1,9 +1,9 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-2025 James D. Mitchell
-//                    Tom D. Conti-Leslie
-//                    Murray T. Whyte
-//                    Reinis Cirpons
+// Copyright (C) 2021-2026 James D. Mitchell +
+//                         Tom D. Conti-Leslie +
+//                         Murray T. Whyte +
+//                         Reinis Cirpons
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
