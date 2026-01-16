@@ -873,6 +873,7 @@ EXTRA_PROGRAMS += test_sims
 EXTRA_PROGRAMS += test_stephen
 EXTRA_PROGRAMS += test_string
 EXTRA_PROGRAMS += test_timer
+EXTRA_PROGRAMS += test_to_congruence
 EXTRA_PROGRAMS += test_to_froidure_pin
 EXTRA_PROGRAMS += test_to_knuth_bendix
 EXTRA_PROGRAMS += test_to_presentation
@@ -979,6 +980,7 @@ test_all_SOURCES += tests/test-sims.cpp
 test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-timer.cpp
+test_all_SOURCES += tests/test-to-congruence.cpp
 test_all_SOURCES += tests/test-to-froidure-pin.cpp
 test_all_SOURCES += tests/test-to-knuth-bendix.cpp
 test_all_SOURCES += tests/test-to-presentation.cpp
@@ -1023,6 +1025,7 @@ test_cong_all_SOURCES += tests/test-knuth-bendix-4.cpp
 test_cong_all_SOURCES += tests/test-knuth-bendix-5.cpp
 test_cong_all_SOURCES += tests/test-knuth-bendix-6.cpp
 test_cong_all_SOURCES += tests/test-todd-coxeter.cpp
+test_cong_all_SOURCES += tests/test-to-congruence.cpp
 test_cong_all_SOURCES += tests/test-main.cpp
 test_cong_all_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
@@ -1244,6 +1247,10 @@ test_string_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
 test_timer_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+
+test_to_congruence_SOURCES =  tests/test-to-congruence.cpp
+test_to_congruence_SOURCES += tests/test-main.cpp
+test_to_congruence_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
 test_to_froidure_pin_SOURCES += tests/test-main.cpp
