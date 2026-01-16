@@ -743,7 +743,9 @@ namespace libsemigroups {
             });
           }
         }
-        report_progress_from_thread(seen, start_time);
+        if (_ticker_running) {
+          report_progress_from_thread(seen, start_time);
+        }
 
         if (rules_added_this_pass) {
           Guard sg(_state);
@@ -785,7 +787,9 @@ namespace libsemigroups {
             }
           }
         }
-        report_progress_from_thread(seen, start_time);
+        if (_ticker_running) {
+          report_progress_from_thread(seen, start_time);
+        }
       }
 
       return rules_added;
