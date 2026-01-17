@@ -1,5 +1,13 @@
 # Changelog - version 3
 
+## v3.4.0 (released 17/01/2026)
+
+This is a minor release with a couple of improvements:
+
+- rewriter: properly init `_state` by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/879
+- Update copyright by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/884
+- Add to<Congruence>(congruence_kind, WordGraph) by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/880
+
 ## v3.3.0 (released 12/12/2025)
 
 This is a minor release with a number of improvements and new features:
