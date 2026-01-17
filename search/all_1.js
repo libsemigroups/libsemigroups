@@ -45,8 +45,9 @@ var searchData=
   ['13_2001_202020_42',['v1.0.5 (released 13/01/2020)',['../md_changelog-v1.html#v105-released-13012020',1,'']]],
   ['14_2012_202022_43',['v2.5.0 (released 14/12/2022)',['../md_changelog-v2.html#v250-released-14122022',1,'']]],
   ['16_2012_202021_44',['v2.1.3 (released 16/12/2021)',['../md_changelog-v2.html#v213-released-16122021',1,'']]],
-  ['17_2003_202020_45',['v1.0.7 (released 17/03/2020)',['../md_changelog-v1.html#v107-released-17032020',1,'']]],
-  ['18_2006_202025_46',['2.7.4 (released 18/06/2025)',['../md_changelog-v2.html#autotoc_md274-released-18062025',1,'']]],
-  ['19_2001_202024_47',['v2.7.3 (released 19/01/2024)',['../md_changelog-v2.html#v273-released-19012024',1,'']]],
-  ['19_2007_202025_48',['v3.1.0 (released 19/07/2025)',['../md_changelog-v3.html#v310-released-19072025',1,'']]]
+  ['17_2001_202026_45',['v3.4.0 (released 17/01/2026)',['../md_changelog-v3.html#v340-released-17012026',1,'']]],
+  ['17_2003_202020_46',['v1.0.7 (released 17/03/2020)',['../md_changelog-v1.html#v107-released-17032020',1,'']]],
+  ['18_2006_202025_47',['2.7.4 (released 18/06/2025)',['../md_changelog-v2.html#autotoc_md274-released-18062025',1,'']]],
+  ['19_2001_202024_48',['v2.7.3 (released 19/01/2024)',['../md_changelog-v2.html#v273-released-19012024',1,'']]],
+  ['19_2007_202025_49',['v3.1.0 (released 19/07/2025)',['../md_changelog-v3.html#v310-released-19072025',1,'']]]
 ];

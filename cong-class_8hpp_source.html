@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.3.0</span>
+   &#160;<span id="projectnumber">v3.4.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -191,7 +191,7 @@ $(function(){initNavTree('cong-class_8hpp_source.html',''); initResizable(true);
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">//</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// libsemigroups - C++ library for semigroups and monoids</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019-2025 James D. Mitchell</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Copyright (C) 2019-2026 James D. Mitchell</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// it under the terms of the GNU General Public License as published by</span></div>
@@ -486,37 +486,43 @@ $(function(){initNavTree('cong-class_8hpp_source.html',''); initResizable(true);
 <div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>                           Result&gt;,</div>
 <div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>            Result&gt;;</div>
 <div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span> </div>
-<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>    <span class="keywordtype">void</span> init_runners() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span></div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>    <span class="comment">// Runner - pure virtual member functions - private</span></div>
+<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Node&gt;</div>
+<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>    <span class="keyword">friend</span> <span class="keyword">auto</span></div>
+<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>    to(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> knd, WordGraph&lt;Node&gt; <span class="keyword">const</span>&amp; wg) -&gt; std::enable_if_t&lt;</div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>        std::is_same_v&lt;Congruence&lt;typename Result::native_word_type&gt;, Result&gt;,</div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>        Result&gt;;</div>
 <div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span> </div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>    <span class="keywordtype">void</span> run_impl() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>    <span class="keywordtype">bool</span> finished_impl()<span class="keyword"> const override </span>{</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>      <span class="keywordflow">return</span> _race.finished();</div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>    }</div>
-<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>  };  <span class="comment">// class Congruence</span></div>
-<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span></div>
-<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00816" name="l00816"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">  816</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp;) -&gt; Congruence&lt;Word&gt;;</div>
-<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span></div>
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>  <span class="comment">// NOTE:there&#39;s no rvalue ref constructor, so it&#39;s possible this guide is</span></div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>  <span class="comment">// superfluous</span></div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gacbb7d01ab35ccfd153e2bdef2463359f">  829</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a>&amp;&amp;) -&gt; Congruence&lt;Word&gt;;</div>
-<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span></div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#ga1baf040502b737a1cf5bcbaff877ce13">  840</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(Congruence&lt;Word&gt; <span class="keyword">const</span>&amp;) -&gt; Congruence&lt;Word&gt;;</div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span></div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00851" name="l00851"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gaa3b9a0e3a8e2e7ce35ed4c3708b6380e">  851</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(Congruence&lt;Word&gt;&amp;&amp;) -&gt; Congruence&lt;Word&gt;;</div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span></div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno"><a class="line" href="group__congruence__group.html#ga43bab2c11eb72469ce537c72db2ed5f4">  869</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(Congruence&lt;Word&gt; <span class="keyword">const</span>&amp; c);</div>
-<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span> </div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span><span class="preprocessor">#include &quot;cong-class.tpp&quot;</span></div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span> </div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_CONG_CLASS_HPP_</span></div>
+<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>    <span class="keywordtype">void</span> init_runners() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span></div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>    <span class="comment">// Runner - pure virtual member functions - private</span></div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span> </div>
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>    <span class="keywordtype">void</span> run_impl() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>    <span class="keywordtype">bool</span> finished_impl()<span class="keyword"> const override </span>{</div>
+<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>      <span class="keywordflow">return</span> _race.finished();</div>
+<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>    }</div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>  };  <span class="comment">// class Congruence</span></div>
+<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span></div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">  822</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a> <span class="keyword">const</span>&amp;) -&gt; Congruence&lt;Word&gt;;</div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span></div>
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>  <span class="comment">// NOTE:there&#39;s no rvalue ref constructor, so it&#39;s possible this guide is</span></div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>  <span class="comment">// superfluous</span></div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gacbb7d01ab35ccfd153e2bdef2463359f">  835</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(<a class="code hl_enumeration" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a>, <a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;Word&gt;</a>&amp;&amp;) -&gt; Congruence&lt;Word&gt;;</div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span></div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#ga1baf040502b737a1cf5bcbaff877ce13">  846</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(Congruence&lt;Word&gt; <span class="keyword">const</span>&amp;) -&gt; Congruence&lt;Word&gt;;</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span></div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno"><a class="line" href="group__congruence__class__group.html#gaa3b9a0e3a8e2e7ce35ed4c3708b6380e">  857</a></span>  <a class="code hl_function" href="group__congruence__class__group.html#gae8b36c3f690b40578cff4d86cad255b1">Congruence</a>(Congruence&lt;Word&gt;&amp;&amp;) -&gt; Congruence&lt;Word&gt;;</div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span></div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Word&gt;</div>
+<div class="line"><a id="l00875" name="l00875"></a><span class="lineno"><a class="line" href="group__congruence__group.html#ga43bab2c11eb72469ce537c72db2ed5f4">  875</a></span>  <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> <a class="code hl_function" href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">to_human_readable_repr</a>(Congruence&lt;Word&gt; <span class="keyword">const</span>&amp; c);</div>
+<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span> </div>
+<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span><span class="preprocessor">#include &quot;cong-class.tpp&quot;</span></div>
+<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span> </div>
+<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_CONG_CLASS_HPP_</span></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_froidure_pin_base_html"><div class="ttname"><a href="classlibsemigroups_1_1_froidure_pin_base.html">libsemigroups::FroidurePinBase</a></div><div class="ttdoc">Base class for FroidurePin containing non-element specific data and member functions.</div><div class="ttdef"><b>Definition</b> froidure-pin-base.hpp:67</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_presentation_html"><div class="ttname"><a href="classlibsemigroups_1_1_presentation.html">libsemigroups::Presentation</a></div><div class="ttdoc">For an implementation of presentations for semigroups or monoids.</div><div class="ttdef"><b>Definition</b> presentation.hpp:103</div></div>

@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.3.0</span>
+   &#160;<span id="projectnumber">v3.4.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -199,12 +199,16 @@ $(function(){initNavTree('group__to__cong__group.html',''); initResizable(true);
 Functions</h2></td></tr>
 <tr class="memitem:gaa40fe251f7d4fb2e398b5b87eb6d3b9b" id="r_gaa40fe251f7d4fb2e398b5b87eb6d3b9b"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Node&gt; </td></tr>
 <tr class="memitem:gaa40fe251f7d4fb2e398b5b87eb6d3b9b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaa40fe251f7d4fb2e398b5b87eb6d3b9b">to</a> (<a class="el" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> knd, <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html">FroidurePinBase</a> &amp;fpb, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Congruence&lt; typename Result::native_word_type &gt;, Result &gt;, Result &gt;</td></tr>
-<tr class="memdesc:gaa40fe251f7d4fb2e398b5b87eb6d3b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object to a Congruence object.  <br /></td></tr>
+<tr class="memdesc:gaa40fe251f7d4fb2e398b5b87eb6d3b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object to a <a class="el" href="group__congruence__class__group.html">Congruence</a>.  <br /></td></tr>
 <tr class="separator:gaa40fe251f7d4fb2e398b5b87eb6d3b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9ba865cf14a162b5351594f30bc1b2bb" id="r_ga9ba865cf14a162b5351594f30bc1b2bb"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename Node&gt; </td></tr>
+<tr class="memitem:ga9ba865cf14a162b5351594f30bc1b2bb"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga9ba865cf14a162b5351594f30bc1b2bb">to</a> (<a class="el" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a> knd, <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;wg) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Congruence&lt; typename Result::native_word_type &gt;, Result &gt;, Result &gt;</td></tr>
+<tr class="memdesc:ga9ba865cf14a162b5351594f30bc1b2bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> object to a <a class="el" href="group__congruence__class__group.html">Congruence</a>.  <br /></td></tr>
+<tr class="separator:ga9ba865cf14a162b5351594f30bc1b2bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gaa40fe251f7d4fb2e398b5b87eb6d3b9b" name="gaa40fe251f7d4fb2e398b5b87eb6d3b9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaa40fe251f7d4fb2e398b5b87eb6d3b9b">&#9670;&#160;</a></span>to()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa40fe251f7d4fb2e398b5b87eb6d3b9b">&#9670;&#160;</a></span>to() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,7 +238,7 @@ template&lt;typename Result, typename Node&gt; </div>
 <p>Despite the hideous signature, this function should be invoked as follows:</p>
 <div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Congruence&lt;Word&gt;</a>&gt;(knd, fpb, wg);</div>
 <div class="ttc" id="anamespacelibsemigroups_html_ae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
-</div><!-- fragment --><p>This function converts the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object <code class="param">fpb</code> into a Congruence object using the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> (which should be either the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> or the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> of <code class="param">fpb</code>).</p>
+</div><!-- fragment --><p>This function converts the <a class="el" href="classlibsemigroups_1_1_froidure_pin.html">FroidurePin</a> object <code class="param">fpb</code> into a <a class="el" href="group__congruence__class__group.html">Congruence</a> object using the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> <code class="param">wg</code> (which should be either the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> or the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> of <code class="param">fpb</code>).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Result</td><td>used for SFINAE, the return type of this function, must be <code>Congruence&lt;Word&gt;</code> for some type <code>Word</code>. </td></tr>
@@ -250,13 +254,58 @@ template&lt;typename Result, typename Node&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A Congruence object representing the trivial congruence over the semigroup defined by <code class="param">fpb</code>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="group__congruence__class__group.html">Congruence</a> object representing the trivial congruence over the semigroup defined by <code class="param">fpb</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">wg</code> is not the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#a0408a10a381dbe0e643358685c171392">left_cayley_graph</a> or the <a class="el" href="classlibsemigroups_1_1_froidure_pin_base.html#ac03778bcaee21b55383ecf3e35fc15ae">right_cayley_graph</a> of <code class="param">fpb</code>. </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ga9ba865cf14a162b5351594f30bc1b2bb" name="ga9ba865cf14a162b5351594f30bc1b2bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9ba865cf14a162b5351594f30bc1b2bb">&#9670;&#160;</a></span>to() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Result, typename Node&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto to </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__types__group.html#gaefc0b002795e4a0b5db2a5c04078aa42">congruence_kind</a></td>          <td class="paramname"><span class="paramname"><em>knd</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>&lt; Node &gt; const &amp;</td>          <td class="paramname"><span class="paramname"><em>wg</em></span>&#160;) -&gt; std::enable_if_t&lt;
+      std::is_same_v&lt;Congruence&lt;typename Result::native_word_type&gt;, Result&gt;,
+      Result&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defined in <code><a class="el" href="to-cong_8hpp_source.html">to-cong.hpp</a></code> </p>
+<p>Despite the hideous signature, this function should be invoked as follows:</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to&lt;Congruence&lt;Word&gt;</a>&gt;(knd, wg);</div>
+</div><!-- fragment --><p>This function converts the <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> object <code class="param">wg</code> into a <a class="el" href="group__congruence__class__group.html">Congruence</a> object by constructing a <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> instance from <code class="param">wg</code> and adding that as a runner to the <a class="el" href="group__congruence__class__group.html">Congruence</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Result</td><td>used for SFINAE, the return type of this function, must be <code>Congruence&lt;Word&gt;</code> for some type <code>Word</code>. </td></tr>
+    <tr><td class="paramname">Node</td><td>the type of the nodes in the <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">knd</td><td>the kind of the congruence being constructed. </td></tr>
+    <tr><td class="paramname">wg</td><td>the word graph <code class="param">wg</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="group__congruence__class__group.html">Congruence</a> object representing the trivial congruence over <code class="param">wg</code>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> <code class="param">wg</code> is added as is to the constructed <a class="el" href="group__congruence__class__group.html">Congruence</a>, and no checks are performed that the constructed <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> or <a class="el" href="group__congruence__class__group.html">Congruence</a> object are valid. </dd></dl>
 
 </div>
 </div>
