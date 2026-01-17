@@ -1,5 +1,5 @@
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020-2025 James D. Mitchell
+// Copyright (C) 2020-2026 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -775,6 +775,24 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> k(twosided, p);
     k.run_for(std::chrono::seconds(1));
     REQUIRE(!k.finished());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "146",
+                                   "process millions of pending rules",
+                                   "[knuth-bendix][extreme]",
+                                   RewriteTrie) {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abAB");
+
+    auto rules = StringRange().alphabet(p.alphabet()).min(12).max(13);
+    p.rules    = rules | rx::to_vector();
+    presentation::add_rule(p, "aaaabbbb", "aabb");
+    KnuthBendix<std::string, TestType> k(twosided, p);
+    k.process_pending_rules();
+    // TODO checking local confluence seems to be extremely slow here
   }
 
 }  // namespace libsemigroups

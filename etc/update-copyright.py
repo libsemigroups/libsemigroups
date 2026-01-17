@@ -12,8 +12,7 @@ Copyright (C) CURRENT_YEAR Author 1 (+ Author 2 ...)
 
 for files created this year.
 
-The files edit by this script are:
-    * autogen.sh
+The files edit by this script are autogen.sh, and any cpp, hpp or tpp files in:
     * benchmarks/**
     * include/libsemigroups/**
     * src/**
@@ -25,8 +24,10 @@ from datetime import date
 from glob import glob
 from os.path import isfile
 
-BOLD_TEXT = "\033[1m"
-END_BOLD_TEXT = "\033[0m"
+CYAN = "\033[93m"
+GREEN = "\033[92m"
+BOLD = "\033[1m"
+END_DECORATION = "\033[0m"
 
 
 year = date.today().year
@@ -47,10 +48,10 @@ copyright_author = re.compile(r"copyright \(c\).*20\d\d (.*)", re.IGNORECASE)
 
 pathnames = [
     "autogen.sh",
-    "benchmarks/**",
-    "include/libsemigroups/**",
-    "src/**",
-    "tests/**",
+    "benchmarks/**.[cht]pp",
+    "include/libsemigroups/**.[cht]pp",
+    "src/**.[cht]pp",
+    "tests/**.[cht]pp",
 ]
 
 authors = set()
@@ -72,8 +73,11 @@ def process_line(line):
 
 def process_file(filename):
     """Update the copyright information in a file, and report any changes"""
+    print(f"{filename + ' . . .':64}", end="")
+
     with open(filename, "r") as f:
         content = f.readlines()
+
     changed = False
     for line_number, line in enumerate(content):
         new_line, changed = process_line(line)
@@ -81,34 +85,30 @@ def process_file(filename):
             content[line_number] = new_line
             break
 
-    print(f"{filename + ' . . .':64}", end="")
     if changed:
         with open(filename, "w") as f:
             f.writelines(content)
-        print(f"{'Changed':>16}")
+        print(f"{CYAN}{'Changed':>16}{END_DECORATION}")
     else:
-        print(f"{'Already correct':>16}")
+        print(f"{GREEN}{'Already correct':>16}{END_DECORATION}")
 
 
 def process_path(pathname):
     """Update the copyright information of all files in a specified path."""
     print(
-        BOLD_TEXT
-        + f"Checking for Copyright year changes in {pathname} . . ."
-        + END_BOLD_TEXT
+        f"{BOLD}Checking for Copyright year changes in {pathname} . . .{END_DECORATION}"
     )
     filenames = glob(pathname, recursive=True, include_hidden=True)
     for filename in filter(isfile, filenames):
         process_file(filename)
+    print()
 
 
 if __name__ == "__main__":
     for pathname in pathnames:
         process_path(pathname)
     if authors:
-        print(
-            "\nThe following contributors' Copyright years have been updated:"
-        )
+        print("\nThe following contributors' Copyright years have been updated:")
         for author in sorted(authors):
             print(f" * {author}")
         print(

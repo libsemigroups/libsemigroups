@@ -220,6 +220,7 @@ namespace libsemigroups {
           _confluence_known(false),
           _max_pending_rules(0),
           _pending_rules(),
+          _state(State::none),
           _ticker_running(false) {}
 
     RewriteBase& RewriteBase::init() {
@@ -233,6 +234,7 @@ namespace libsemigroups {
       _max_pending_rules = 0;
       _cached_confluent  = false;
       _confluence_known  = false;
+      _state             = State::none;
       _ticker_running    = false;
       return *this;
     }
@@ -242,6 +244,7 @@ namespace libsemigroups {
           _confluence_known(that._confluence_known.load()),
           _max_pending_rules(std::move(that._max_pending_rules)),
           _pending_rules(std::move(that._pending_rules)),
+          _state(std::move(that._state)),
           _ticker_running(std::move(that._ticker_running)) {}
 
     RewriteBase& RewriteBase::operator=(RewriteBase const& that) {
@@ -250,6 +253,7 @@ namespace libsemigroups {
       _confluence_known = that._confluence_known.load();
       _pending_rules.clear();
       _ticker_running = that._ticker_running;
+      _state          = that._state;
 
       for (auto const* rule : that._pending_rules) {
         _pending_rules.emplace_back(copy_rule(rule));
@@ -264,6 +268,7 @@ namespace libsemigroups {
       // Again we swap so that all rules are properly deleted
       std::swap(_pending_rules, that._pending_rules);
       _ticker_running = std::move(that._ticker_running);
+      _state          = that._state;
       return *this;
     }
 
@@ -327,7 +332,7 @@ namespace libsemigroups {
     void RewriteBase::report_progress_from_thread(
         std::atomic_uint64_t const&                           seen,
         std::chrono::high_resolution_clock::time_point const& start_time) {
-      if (_state == State::none) {
+      if (_state == State::none || _state == State::adding_pending_rules) {
         using detail::string_time;
         auto gd       = detail::group_digits;
         auto active   = gd(number_of_active_rules());
@@ -703,6 +708,8 @@ namespace libsemigroups {
         }
         bool rules_added_this_pass = false;
         while (number_of_pending_rules() != 0) {
+          Guard sg(_state);
+          _state     = State::adding_pending_rules;
           Rule* rule = next_pending_rule();
           LIBSEMIGROUPS_ASSERT(!rule->active());
           LIBSEMIGROUPS_ASSERT(rule->lhs() != rule->rhs());
@@ -736,6 +743,9 @@ namespace libsemigroups {
             });
           }
         }
+        if (_ticker_running) {
+          report_progress_from_thread(seen, start_time);
+        }
 
         if (rules_added_this_pass) {
           Guard sg(_state);
@@ -745,6 +755,7 @@ namespace libsemigroups {
               = use_separate_trie ? &_new_rule_trie : &_rule_trie;
           decltype(_rule_map)* rule_map
               = use_separate_trie ? &_new_rule_map : &_rule_map;
+          seen = 0;
 
           for (auto it = begin(); it != end();) {
             ++seen;
@@ -775,6 +786,9 @@ namespace libsemigroups {
               });
             }
           }
+        }
+        if (_ticker_running) {
+          report_progress_from_thread(seen, start_time);
         }
       }
 
@@ -900,7 +914,8 @@ namespace libsemigroups {
       if (reporting_enabled()) {
         // TODO(1) This could maybe be better, more like the formatting in
         // "report_progress_from_thread"
-        auto total_rules = Rules::number_of_active_rules();
+        auto total_rules
+            = Rules::number_of_active_rules() + number_of_pending_rules();
         report_default("KnuthBendix: reducing rules: {0:>{width}} / "
                        "{1:>{width}} ({2:>4.1f}%) ({3})\n",
                        gd(seen),
