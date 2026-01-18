@@ -512,16 +512,8 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, if
     //! \c *this and \c that have different degrees, then bad things may happen.
     // TODO(later) other operators such as power
-    // TODO to tpp
     template <typename Subclass>
-    [[nodiscard]] Subclass operator*(Subclass const& that) const {
-      static_assert(IsDerivedFromPTransf<Subclass>,
-                    "the template parameter Subclass must be derived from "
-                    "PTransfPolymorphicBase");
-      Subclass xy(that.degree());
-      xy.product_inplace(*static_cast<Subclass const*>(this), that);
-      return xy;
-    }
+    [[nodiscard]] Subclass operator*(Subclass const& that) const;
 
     //! \brief Type of iterators pointing to image values.
     //!
