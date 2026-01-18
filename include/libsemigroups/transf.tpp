@@ -84,6 +84,21 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
   }
 
+  template <typename Point, typename Container>
+  Point& PTransfBase<Point, Container>::at(size_t i) {
+    if (i >= degree()) {
+      // TODO(v4) change this to a LIBSEMIGROUPS_EXCEPTION, exception type
+      // chosen for backwards compatibility only. The python bindings requires
+      // __getitem__ to throw an IndexError so that list(x) will function, for
+      // example.
+      throw std::out_of_range(fmt::format(
+          "index out of range, expected a value in [0, {}) found {}",
+          degree(),
+          i));
+    }
+    return _container[i];
+  }
+
   // STATIC
   template <typename Point, typename Container>
   void PTransfBase<Point, Container>::resize(container_type& c,
