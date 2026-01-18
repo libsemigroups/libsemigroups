@@ -48,6 +48,8 @@
 
 std::string chomp(std::string_view what);
 
+// TODO(1) make this a function, and allow specifying optionally the type of
+// exception
 #define REQUIRE_EXCEPTION_MSG(code, expected)      \
   REQUIRE_THROWS_AS(code, LibsemigroupsException); \
   try {                                            \

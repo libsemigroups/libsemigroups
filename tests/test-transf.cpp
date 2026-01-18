@@ -22,14 +22,16 @@
 //
 // It would probably be better to put this diagnostic push/pop around the
 // particular tests, but that doesn't suppress the warnings.
+
 #pragma GCC diagnostic push
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic ignored "-Warray-bounds"
 #endif
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint32_t, int32_t, int64_t
-#include <vector>   // for vector
+#include <cstddef>    // for size_t
+#include <cstdint>    // for uint32_t, int32_t, int64_t
+#include <stdexcept>  // for out_of_range
+#include <vector>     // for vector
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
 #include "test-main.hpp"                       // LIBSEMIGROUPS_TEST_CASE
@@ -151,13 +153,28 @@ namespace libsemigroups {
     auto y = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
     REQUIRE(x.undef() == UNDEFINED);
     REQUIRE(x == y);
-    auto yy = x * x;
+    auto const yy = x * x;
     REQUIRE(yy[0] == UNDEFINED);
     REQUIRE(yy[1] == UNDEFINED);
     REQUIRE(yy.at(2) == UNDEFINED);
     REQUIRE(yy.at(3) == UNDEFINED);
     REQUIRE(yy.at(4) == UNDEFINED);
     REQUIRE(yy.at(5) == 1);
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = yy.at(10),
+        "index out of range, expected a value in [0, 10) found 10");
+
+    REQUIRE_THROWS_AS(yy.at(10), LibsemigroupsException);
+
+    try {
+      std::ignore = yy.at(10);
+    } catch (std::out_of_range const& e) {
+      REQUIRE(chomp(e.what())
+              == "ndex out of range, expected a value in [0, 10) found 10");
+    }
+
+    REQUIRE_THROWS_AS(yy.at(10), std::out_of_range);
 
     REQUIRE(yy > y);
     REQUIRE(!(x < x));

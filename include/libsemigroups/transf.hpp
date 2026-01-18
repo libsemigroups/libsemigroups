@@ -472,10 +472,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(1) better exception message for python bindings
-    [[nodiscard]] point_type& at(size_t i) {
-      return _container.at(i);
-    }
+    [[nodiscard]] point_type& at(size_t i);
 
     //! \brief Get a const reference to the image of a point.
     //!
@@ -490,9 +487,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(1) better exception message for python bindings
     [[nodiscard]] point_type const& at(size_t i) const {
-      return _container.at(i);
+      return const_cast<PTransfBase&>(*this).at(i);
     }
 
     //! \brief Multiply by another partial transformation.
