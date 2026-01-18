@@ -99,6 +99,18 @@ namespace libsemigroups {
     return _container[i];
   }
 
+  template <typename Point, typename Container>
+  template <typename Subclass>
+  Subclass
+  PTransfBase<Point, Container>::operator*(Subclass const& that) const {
+    static_assert(IsDerivedFromPTransf<Subclass>,
+                  "the template parameter Subclass must be derived from "
+                  "PTransfPolymorphicBase");
+    Subclass xy(that.degree());
+    xy.product_inplace(*static_cast<Subclass const*>(this), that);
+    return xy;
+  }
+
   // STATIC
   template <typename Point, typename Container>
   void PTransfBase<Point, Container>::resize(container_type& c,
