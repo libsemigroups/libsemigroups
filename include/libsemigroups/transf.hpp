@@ -1534,6 +1534,14 @@ namespace libsemigroups {
 
     template <size_t N, typename Scalar>
     struct IsPermHelper<Perm<N, Scalar>> : std::true_type {};
+
+    template <size_t N, typename Scalar>
+    struct IsStaticHelper<Perm<N, Scalar>>
+        : IsStaticHelper<PTransf<N, Scalar>> {};
+
+    template <size_t N, typename Scalar>
+    struct IsDynamicHelper<Perm<N, Scalar>>
+        : IsDynamicHelper<PTransf<N, Scalar>> {};
   }  // namespace detail
 
   //! \ingroup transf_group
