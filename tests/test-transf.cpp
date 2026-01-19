@@ -72,13 +72,33 @@ namespace libsemigroups {
     static_assert(IsTransf<TestType>, "IsTransf<TestType> must be true!");
     auto x = make<TestType>({0, 1, 0, 0});
     auto y = make<TestType>({0, 1, 0, 0});
+
+    REQUIRE(x.at(0) == 0);
+    REQUIRE(x.at(1) == 1);
+    REQUIRE(x[0] == 0);
+    REQUIRE(*x.begin() == 0);
+    REQUIRE(*x.cbegin() == 0);
+    REQUIRE(*(x.end() - 1) == 0);
+    REQUIRE(*(x.cend() - 1) == 0);
+
     REQUIRE(x == y);
     REQUIRE(y * y == x);
     REQUIRE((x < y) == false);
+    REQUIRE(x <= y);
+    REQUIRE((x > y) == false);
+    REQUIRE(x >= y);
 
     auto z = make<TestType>({0, 1, 0, 3});
     REQUIRE(x < z);
+    REQUIRE(x <= z);
+    REQUIRE(x != z);
     REQUIRE(image(z) == std::vector<typename TestType::point_type>({0, 1, 3}));
+    z.swap(x);
+    REQUIRE(x > z);
+    REQUIRE(x >= z);
+    REQUIRE(x != z);
+    REQUIRE(image(z) == std::vector<typename TestType::point_type>({0, 1}));
+    z.swap(x);
 
     auto expected = make<TestType>({0, 0, 0, 0});
     REQUIRE(expected < x);
@@ -151,6 +171,7 @@ namespace libsemigroups {
     static_assert(IsPPerm<TestType>, "IsPPerm<TestType> must be true!");
     auto x = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
     auto y = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
+
     REQUIRE(x.undef() == UNDEFINED);
     REQUIRE(x == y);
     auto const yy = x * x;
@@ -160,24 +181,31 @@ namespace libsemigroups {
     REQUIRE(yy.at(3) == UNDEFINED);
     REQUIRE(yy.at(4) == UNDEFINED);
     REQUIRE(yy.at(5) == 1);
-
-    REQUIRE_EXCEPTION_MSG(
-        std::ignore = yy.at(10),
-        "index out of range, expected a value in [0, 10) found 10");
-
-    REQUIRE_THROWS_AS(yy.at(10), LibsemigroupsException);
+    REQUIRE(*x.begin() == 1);
+    REQUIRE(*(x.begin() + 1) == UNDEFINED);
+    REQUIRE(*(x.begin() + 4) == 9);
+    REQUIRE(*x.cbegin() == 1);
+    REQUIRE(*(x.cbegin() + 1) == UNDEFINED);
+    REQUIRE(*(x.cbegin() + 4) == 9);
+    REQUIRE(*(x.end() - 1) == UNDEFINED);
+    REQUIRE(*(x.end() - 5) == 0);
+    REQUIRE(*(x.cend() - 1) == UNDEFINED);
+    REQUIRE(*(x.cend() - 5) == 0);
 
     try {
       std::ignore = yy.at(10);
     } catch (std::out_of_range const& e) {
-      REQUIRE(chomp(e.what())
-              == "ndex out of range, expected a value in [0, 10) found 10");
+      REQUIRE(std::string(e.what())
+              == "index out of range, expected a value in [0, 10) found 10");
     }
 
     REQUIRE_THROWS_AS(yy.at(10), std::out_of_range);
 
     REQUIRE(yy > y);
     REQUIRE(!(x < x));
+    REQUIRE(x <= y);
+    REQUIRE(x >= y);
+
     auto expected = TestType({UNDEFINED, UNDEFINED, UNDEFINED});
     REQUIRE(expected > x);
 
@@ -188,6 +216,19 @@ namespace libsemigroups {
     REQUIRE(yy.rank() == 1);
     REQUIRE(y.rank() == 3);
     REQUIRE(x.rank() == 3);
+
+    auto z = make<TestType>({8, 1, 7, 3}, {2, 1, 0, 5}, 10);
+    REQUIRE(x < z);
+    REQUIRE(x <= z);
+    REQUIRE(x != z);
+    REQUIRE(image(z)
+            == std::vector<typename TestType::point_type>({0, 1, 2, 5}));
+    z.swap(x);
+    REQUIRE(x > z);
+    REQUIRE(x >= z);
+    REQUIRE(x != z);
+    REQUIRE(image(z) == std::vector<typename TestType::point_type>({0, 1, 9}));
+    z.swap(x);
 
     auto id  = one(x);
     expected = TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
@@ -405,5 +446,207 @@ namespace libsemigroups {
     // Too many braces
     REQUIRE_THROWS_AS(to_human_readable_repr(z, "", "xxx"),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Perm",
+                                   "012",
+                                   "mem fns",
+                                   "[quick][perm]",
+                                   Perm<>,
+                                   Perm<4>) {
+    static_assert(IsPerm<TestType>, "IsPerm<TestType> must be true!");
+    TestType x  = make<TestType>({1, 0, 3, 2});
+    TestType y  = make<TestType>({1, 0, 3, 2});
+    TestType id = one(x);
+
+    REQUIRE(x == y);
+    REQUIRE(y * y == id);
+    REQUIRE((x < y) == false);
+
+    TestType z = make<TestType>({1, 3, 0, 2});
+    REQUIRE(x < z);
+    REQUIRE(image(z)
+            == std::vector<typename TestType::point_type>({0, 1, 2, 3}));
+
+    TestType expected = make<TestType>({0, 1, 2, 3});
+    REQUIRE(expected < x);
+
+    REQUIRE(z.degree() == 4);
+    REQUIRE(Complexity<TestType>()(z) == 4);
+    REQUIRE(z.rank() == 4);
+
+    expected = make<TestType>({0, 1, 2, 3});
+    REQUIRE(id == expected);
+
+    if (IsDynamic<TestType>) {
+      x.increase_degree_by(10);
+      REQUIRE(x.degree() == 14);
+      REQUIRE(x.end() - x.begin() == 14);
+    } else {
+      REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
+    }
+
+    REQUIRE(x.hash_value() != 0);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Transf",
+                                   "013",
+                                   "const mem fns",
+                                   "[quick][transf]",
+                                   Transf<>,
+                                   Transf<4>) {
+    static_assert(IsTransf<TestType>, "IsTransf<TestType> must be true!");
+    TestType const x = make<TestType>({0, 1, 0, 0});
+    TestType const y = make<TestType>({0, 1, 0, 0});
+
+    REQUIRE(x.at(0) == 0);
+    REQUIRE(x.at(1) == 1);
+    REQUIRE(x[0] == 0);
+    REQUIRE(*x.begin() == 0);
+    REQUIRE(*x.cbegin() == 0);
+    REQUIRE(*(x.end() - 1) == 0);
+    REQUIRE(*(x.cend() - 1) == 0);
+
+    REQUIRE(x == y);
+    REQUIRE(y * y == x);
+    REQUIRE((x < y) == false);
+    REQUIRE(x <= y);
+    REQUIRE((x > y) == false);
+    REQUIRE(x >= y);
+
+    TestType const z = make<TestType>({0, 1, 0, 3});
+    REQUIRE(x < z);
+    REQUIRE(x <= z);
+    REQUIRE(x != z);
+    REQUIRE(image(z) == std::vector<typename TestType::point_type>({0, 1, 3}));
+
+    TestType const expected_1 = make<TestType>({0, 0, 0, 0});
+    REQUIRE(expected_1 < x);
+
+    REQUIRE(z.degree() == 4);
+    REQUIRE(Complexity<TestType>()(z) == 4);
+    REQUIRE(z.rank() == 3);
+    TestType const id = one(z);
+
+    TestType const expected_2 = make<TestType>({0, 1, 2, 3});
+    REQUIRE(id == expected_2);
+
+    REQUIRE(x.hash_value() != 0);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("PPerm",
+                                   "014",
+                                   "const mem fns",
+                                   "[quick][pperm]",
+                                   PPerm<>,
+                                   PPerm<10>) {
+    static_assert(IsPPerm<TestType>, "IsPPerm<TestType> must be true!");
+    TestType const x = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
+    TestType const y = make<TestType>({4, 5, 0}, {9, 0, 1}, 10);
+
+    REQUIRE(x.undef() == UNDEFINED);
+    REQUIRE(x == y);
+    auto yy = x * x;
+    REQUIRE(yy[0] == UNDEFINED);
+    REQUIRE(yy[1] == UNDEFINED);
+    REQUIRE(yy.at(2) == UNDEFINED);
+    REQUIRE(yy.at(3) == UNDEFINED);
+    REQUIRE(yy.at(4) == UNDEFINED);
+    REQUIRE(yy.at(5) == 1);
+    REQUIRE(*x.begin() == 1);
+    REQUIRE(*(x.begin() + 1) == UNDEFINED);
+    REQUIRE(*(x.begin() + 4) == 9);
+    REQUIRE(*x.cbegin() == 1);
+    REQUIRE(*(x.cbegin() + 1) == UNDEFINED);
+    REQUIRE(*(x.cbegin() + 4) == 9);
+    REQUIRE(*(x.end() - 1) == UNDEFINED);
+    REQUIRE(*(x.end() - 5) == 0);
+    REQUIRE(*(x.cend() - 1) == UNDEFINED);
+    REQUIRE(*(x.cend() - 5) == 0);
+
+    try {
+      std::ignore = yy.at(10);
+    } catch (std::out_of_range const& e) {
+      REQUIRE(std::string(e.what())
+              == "index out of range, expected a value in [0, 10) found 10");
+    }
+
+    REQUIRE_THROWS_AS(yy.at(10), std::out_of_range);
+
+    REQUIRE(yy > y);
+    REQUIRE(!(x < x));
+    REQUIRE(x <= y);
+    REQUIRE(x >= y);
+    TestType const expected_1 = TestType({UNDEFINED, UNDEFINED, UNDEFINED});
+    REQUIRE(expected_1 > x);
+
+    REQUIRE(x.degree() == 10);
+    REQUIRE(y.degree() == 10);
+    REQUIRE(Complexity<TestType>()(x) == 10);
+    REQUIRE(Complexity<TestType>()(y) == 10);
+    REQUIRE(yy.rank() == 1);
+    REQUIRE(y.rank() == 3);
+    REQUIRE(x.rank() == 3);
+
+    TestType const z = make<TestType>({8, 1, 7, 3}, {2, 1, 0, 5}, 10);
+    REQUIRE(x < z);
+    REQUIRE(x <= z);
+    REQUIRE(x != z);
+    REQUIRE(image(z)
+            == std::vector<typename TestType::point_type>({0, 1, 2, 5}));
+
+    TestType const id         = one(x);
+    TestType const expected_2 = TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+    REQUIRE(id == expected_2);
+
+    REQUIRE(x.hash_value() != 0);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Perm",
+                                   "015",
+                                   "const mem fns",
+                                   "[quick][perm]",
+                                   Perm<>,
+                                   Perm<4>) {
+    static_assert(IsPerm<TestType>, "IsPerm<TestType> must be true!");
+    TestType const x  = make<TestType>({1, 0, 3, 2});
+    TestType const y  = make<TestType>({1, 0, 3, 2});
+    TestType const id = one(x);
+
+    REQUIRE(x == y);
+    REQUIRE(y * y == id);
+    REQUIRE(!(x > y));
+    REQUIRE(!(x < y));
+    REQUIRE(x <= y);
+    REQUIRE(x >= y);
+
+    REQUIRE((x < y) == false);
+    REQUIRE(x[0] == 1);
+    REQUIRE(x[1] == 0);
+    REQUIRE(x.at(2) == 3);
+    REQUIRE(x.at(3) == 2);
+    REQUIRE(*x.begin() == 1);
+    REQUIRE(*(x.begin() + 1) == 0);
+    REQUIRE(*x.cbegin() == 1);
+    REQUIRE(*(x.cbegin() + 1) == 0);
+    REQUIRE(*(x.end() - 1) == 2);
+    REQUIRE(*(x.cend() - 1) == 2);
+
+    TestType const z = make<TestType>({1, 3, 0, 2});
+    REQUIRE(x < z);
+    REQUIRE(image(z)
+            == std::vector<typename TestType::point_type>({0, 1, 2, 3}));
+
+    TestType const expected_1 = make<TestType>({0, 1, 2, 3});
+    REQUIRE(expected_1 < x);
+
+    REQUIRE(z.degree() == 4);
+    REQUIRE(Complexity<TestType>()(z) == 4);
+    REQUIRE(z.rank() == 4);
+
+    TestType const expected_2 = make<TestType>({0, 1, 2, 3});
+    REQUIRE(id == expected_2);
+
+    REQUIRE(x.hash_value() != 0);
   }
 }  // namespace libsemigroups
