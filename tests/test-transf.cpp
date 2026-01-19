@@ -347,7 +347,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm", "007", "inverse", "[quick][perm]") {
-    // TODO(now) check if Issue #87 is resolved?
     REQUIRE(test_inverse(Perm<>({})));
     REQUIRE(test_inverse(Perm<>({0})));
     REQUIRE(test_inverse(Perm<>({1, 0})));
