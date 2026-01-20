@@ -338,6 +338,7 @@ namespace libsemigroups {
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
       while (current != NodeManager<node_type>::first_free_node()
+             && !tc->stopped()
              && (!should_stop_early || (tc->running() && !tc->stopped())
                  || !tc->running())) {
         // If should_stop_early and tc->stopped(), then we exit this loop.
@@ -877,21 +878,32 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::really_run_impl() {
-      init_run();
-      if (strategy() == options::strategy::felsch) {
-        Guard guard(_state, state::felsch);
-        felsch();
-      } else if (strategy() == options::strategy::hlt) {
-        Guard guard(_state, state::hlt);
-        hlt();
-      } else if (strategy() == options::strategy::CR) {
-        CR_style();
-      } else if (strategy() == options::strategy::R_over_C) {
-        R_over_C_style();
-      } else if (strategy() == options::strategy::Cr) {
-        Cr_style();
-      } else if (strategy() == options::strategy::Rc) {
-        Rc_style();
+      stats_run_start();
+      report_before_run();
+      if (strategy() != options::strategy::lookahead
+          && strategy() != options::strategy::lookbehind) {
+        init_run();
+        if (strategy() == options::strategy::felsch) {
+          Guard guard(_state, state::felsch);
+          felsch();
+        } else if (strategy() == options::strategy::hlt) {
+          Guard guard(_state, state::hlt);
+          hlt();
+        } else if (strategy() == options::strategy::CR) {
+          CR_style();
+        } else if (strategy() == options::strategy::R_over_C) {
+          R_over_C_style();
+        } else if (strategy() == options::strategy::Cr) {
+          Cr_style();
+        } else if (strategy() == options::strategy::Rc) {
+          Rc_style();
+        }
+      } else if (strategy() == options::strategy::lookahead) {
+        Guard guard(_state, state::lookahead);
+        perform_lookahead(false);
+      } else if (strategy() == options::strategy::lookbehind) {
+        Guard guard(_state, state::lookbehind);
+        perform_lookbehind(false);
       }
     }
 
@@ -917,6 +929,9 @@ namespace libsemigroups {
             "generators and 0 rules unless the word graph was defined at "
             "construction or re-initialisation");
       }
+
+      // TODO the pattern below is so common we should incorporate it into
+      // Runner or somewhere
 
       if (!_ticker_running && reporting_enabled()
           && (!running_for()
@@ -948,9 +963,9 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::init_run() {
+      // TODO shouldn't we only do everything below if we've never been run
+      // before?
       _word_graph.settings(*this);
-      stats_run_start();
-      report_before_run();
 
       auto       first = internal_generating_pairs().cbegin();
       auto       last  = internal_generating_pairs().cend();
@@ -997,7 +1012,8 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::finalise_run() {
-      if (!stopped()) {
+      if (strategy() != options::strategy::lookahead
+          && strategy() != options::strategy::lookbehind && !stopped()) {
         if (_word_graph.definitions().any_skipped()) {
           auto const& d = current_word_graph();
           if (d.number_of_nodes_active() != lower_bound()
@@ -1312,13 +1328,19 @@ namespace libsemigroups {
     // TODO add number of lookbehinds here too?
     void ToddCoxeterImpl::report_after_run() const {
       if (reporting_enabled()) {
+        report_no_prefix(report_divider());
+
         std::string reason = finished() ? "finished" : string_why_we_stopped();
 
+        if (reason.empty()
+            && (strategy() == options::strategy::lookahead
+                || strategy() == options::strategy::lookbehind)) {
+          reason = fmt::format("{} complete", strategy());
+        }
         // Often the end of a run coincides with the end of a lookahead, which
         // already prints out this info, so avoid duplication in case nothing
         // has changed.
 
-        report_no_prefix(report_divider());
         report_default("{}: {} ({})\n",
                        report_prefix(),
                        fmt::format(run_color, "RUN {} STOP", _stats.run_index),
@@ -1430,12 +1452,14 @@ namespace libsemigroups {
                                         lookahead_style()));
 
         if (current_word_graph().definitions().any_skipped()) {
+          // TODO update
           report_default(
               "ToddCoxeter: triggered because there are skipped "
               "definitions ({} active nodes)!\n",
               group_digits(current_word_graph().number_of_nodes_active()));
         } else if (current_word_graph().number_of_nodes_active()
                    > lookahead_next()) {
+          // TODO update
           auto ln      = lookahead_next();
           auto ln_name = italic("n");
           auto ln_key  = fmt::format("{} = lookahead_next()         = {}\n",
@@ -1725,18 +1749,19 @@ namespace libsemigroups {
     // ToddCoxeterImpl - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO replace should_stop_early with a function
     void ToddCoxeterImpl::perform_lookahead(bool should_stop_early) {
       if (_word_graph.number_of_nodes_active() == 1) {
         // Can't collapse anything in this case
         return;
       }
+      Guard guard(_state, state::lookahead);
+
       if (!running()) {
         stats_run_start();
         report_before_run();
       }
       stats_phase_start();
-      Guard guard(_state, state::lookahead);
-
       report_before_lookahead();
 
       auto& current = _word_graph.lookahead_cursor();
@@ -1805,6 +1830,14 @@ namespace libsemigroups {
         report_after_run();
         stats_run_stop();
       }
+    }
+
+    ToddCoxeterImpl&
+    ToddCoxeterImpl::perform_lookahead_for(std::chrono::nanoseconds t) {
+      SettingsGuard sg(this);
+      strategy(options::strategy::lookahead);
+      run_for(t);
+      return *this;
     }
 
     bool ToddCoxeterImpl::lookahead_stop_early(
