@@ -914,7 +914,10 @@ namespace libsemigroups {
             "there are infinitely many classes in the congruence and "
             "Todd-Coxeter will never terminate");
       } else if (strategy() != options::strategy::felsch
-                 && strategy() != options::strategy::hlt && running_until()) {
+                 && strategy() != options::strategy::hlt
+                 && strategy() != options::strategy::lookahead
+                 && strategy() != options::strategy::lookbehind
+                 && running_until()) {
         LIBSEMIGROUPS_EXCEPTION(
             "the strategy {} cannot be used with run_until !", strategy());
       } else if (internal_presentation().rules.empty()
@@ -1836,6 +1839,14 @@ namespace libsemigroups {
       SettingsGuard sg(this);
       strategy(options::strategy::lookahead);
       run_for(t);
+      return *this;
+    }
+
+    ToddCoxeterImpl&
+    ToddCoxeterImpl::perform_lookahead_until(std::function<bool()>&& pred) {
+      SettingsGuard sg(this);
+      strategy(options::strategy::lookahead);
+      run_until(std::move(pred));
       return *this;
     }
 

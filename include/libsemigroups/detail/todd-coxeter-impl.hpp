@@ -167,12 +167,12 @@ namespace libsemigroups {
         enum class strategy {
           hlt,
           felsch,
+          lookahead,
+          lookbehind,
           CR,
           R_over_C,
           Cr,
           Rc,
-          lookahead,
-          lookbehind
         };
 
         enum class lookahead_extent { full, partial };
@@ -187,7 +187,9 @@ namespace libsemigroups {
           unlimited
         };
 
-        constexpr static bool stop_early        = true;
+        // TODO remove
+        constexpr static bool stop_early = true;
+        // TODO remove
         constexpr static bool do_not_stop_early = false;
       };  // struct options
 
@@ -505,6 +507,7 @@ namespace libsemigroups {
                                  word_type const& u,
                                  word_type const& v);
 
+        // TODO privatise and befriend ToddCoxeterImpl
         template <typename Iterator>
         void make_compatible(ToddCoxeterImpl* tc,
                              node_type&       current,
@@ -1747,7 +1750,6 @@ namespace libsemigroups {
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
       // TODO return type ToddCoxeterImpl&
-      // TODO perform_lookahead_until(Func)
       void perform_lookahead(bool stop_early);
 
       // Perform a lookahead for an amount of time
@@ -1757,6 +1759,8 @@ namespace libsemigroups {
       void perform_lookahead_for(Time t) {
         perform_lookahead_for(std::chrono::nanoseconds(t));
       }
+
+      ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
       // TODO doc
       // TODO perform_lookbehind_for(Time) with/without collapser
@@ -2153,7 +2157,9 @@ namespace libsemigroups {
       // ToddCoxeterImpl - lookahead - private
       ////////////////////////////////////////////////////////////////////////
 
-      static constexpr bool StopEarly      = true;
+      // TODO remove
+      static constexpr bool StopEarly = true;
+      // TODO remove
       static constexpr bool DoNotStopEarly = false;
 
       void hlt_lookahead(bool should_stop_early);

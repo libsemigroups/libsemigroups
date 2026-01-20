@@ -2386,8 +2386,9 @@ namespace libsemigroups {
     });
     REQUIRE(tc.stopped_by_predicate());
     REQUIRE(tc.strategy() == options::strategy::hlt);
-    tc.perform_lookahead_for(std::chrono::seconds(4));
-    REQUIRE(tc.timed_out());
+    tc.perform_lookahead_until(
+        [&tc]() { return tc.number_of_nodes_active() < 10'000'000; });
+    REQUIRE(tc.stopped_by_predicate());
     REQUIRE(tc.strategy() == options::strategy::hlt);
 
     // tc.perform_lookbehind(options::do_not_stop_early);
