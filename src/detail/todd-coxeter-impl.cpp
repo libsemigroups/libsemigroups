@@ -877,6 +877,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     void ToddCoxeterImpl::really_run_impl() {
+      init_run();
       if (strategy() == options::strategy::felsch) {
         Guard guard(_state, state::felsch);
         felsch();
@@ -917,7 +918,6 @@ namespace libsemigroups {
             "construction or re-initialisation");
       }
 
-      init_run();
       if (!_ticker_running && reporting_enabled()
           && (!running_for()
               || duration_cast<seconds>(running_for_how_long())

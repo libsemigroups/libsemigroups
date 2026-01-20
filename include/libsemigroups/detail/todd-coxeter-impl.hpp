@@ -164,7 +164,16 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       struct options : public FelschGraphSettings_::options {
-        enum class strategy { hlt, felsch, CR, R_over_C, Cr, Rc };
+        enum class strategy {
+          hlt,
+          felsch,
+          CR,
+          R_over_C,
+          Cr,
+          Rc,
+          lookahead,
+          lookbehind
+        };
 
         enum class lookahead_extent { full, partial };
 
@@ -1737,9 +1746,14 @@ namespace libsemigroups {
       //!
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
+      // TODO return type ToddCoxeterImpl&
+      // TODO perform_lookahead_for(Time)
+      // TODO perform_lookahead_until(Func)
       void perform_lookahead(bool stop_early);
 
       // TODO doc
+      // TODO perform_lookbehind_for(Time) with/without collapser
+      // TODO perform_lookbehind_until(Func) with/without collapser
       template <typename Func>
       ToddCoxeterImpl& perform_lookbehind(Func&&, bool);
 

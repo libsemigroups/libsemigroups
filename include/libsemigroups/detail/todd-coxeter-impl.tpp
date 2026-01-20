@@ -248,8 +248,6 @@ namespace libsemigroups {
       return std::copy(u.begin(), u.end(), d_first);
     }
 
-    // TODO implement stop_early, example 097 is good example for why this is
-    // needed
     template <typename Func>
     ToddCoxeterImpl&
     ToddCoxeterImpl::perform_lookbehind(Func&& collapser,
