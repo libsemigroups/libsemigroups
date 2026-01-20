@@ -247,6 +247,7 @@ namespace libsemigroups {
       }
       return std::copy(u.begin(), u.end(), d_first);
     }
+
     // TODO implement stop_early, example 097 is good example for why this is
     // needed
     template <typename Func>
@@ -291,7 +292,7 @@ namespace libsemigroups {
           _forest.path_from_root_no_checks(std::back_inserter(w1), current);
           collapser(std::back_inserter(w2), w1.begin(), w1.end());
           if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
-            node_type other = word_graph::follow_path_no_checks(
+            node_type other = v4::word_graph::follow_path_no_checks(
                 _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
             if (other != UNDEFINED && other != current) {
               _word_graph.merge_nodes_no_checks(current, other);
