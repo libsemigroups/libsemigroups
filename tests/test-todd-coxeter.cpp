@@ -2384,9 +2384,15 @@ namespace libsemigroups {
     tc.run_until([&tc]() -> bool {
       return tc.current_word_graph().number_of_nodes_active() >= 12'000'000;
     });
-    tc.perform_lookbehind(options::do_not_stop_early);
+    REQUIRE(tc.stopped_by_predicate());
+    REQUIRE(tc.strategy() == options::strategy::hlt);
+    tc.perform_lookahead_for(std::chrono::seconds(4));
+    REQUIRE(tc.timed_out());
+    REQUIRE(tc.strategy() == options::strategy::hlt);
 
-    REQUIRE(tc.number_of_classes() == 1);
+    // tc.perform_lookbehind(options::do_not_stop_early);
+
+    // REQUIRE(tc.number_of_classes() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

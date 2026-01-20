@@ -338,7 +338,6 @@ namespace libsemigroups {
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
       while (current != NodeManager<node_type>::first_free_node()
-             && !tc->stopped()
              && (!should_stop_early || (tc->running() && !tc->stopped())
                  || !tc->running())) {
         // If should_stop_early and tc->stopped(), then we exit this loop.
