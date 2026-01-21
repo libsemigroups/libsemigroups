@@ -23,6 +23,9 @@
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)? Or possibly reintroduce PrefDefs here
+// * implement number_of_nodes_killed_last_phase or similar, to allow easy
+// running of the previous perform_lookahead(stop_early).
+// * make all the non-core strategies helpers
 
 #ifndef LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
 #define LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
@@ -187,10 +190,6 @@ namespace libsemigroups {
           unlimited
         };
 
-        // TODO remove
-        constexpr static bool stop_early = true;
-        // TODO remove
-        constexpr static bool do_not_stop_early = false;
       };  // struct options
 
       enum class state : uint8_t { none, hlt, felsch, lookahead, lookbehind };
@@ -1756,11 +1755,13 @@ namespace libsemigroups {
       // Perform a lookahead for an amount of time
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
 
+      // Perform a lookahead for an amount of time
       template <typename Time>
       void perform_lookahead_for(Time t) {
         perform_lookahead_for(std::chrono::nanoseconds(t));
       }
 
+      // Perform a lookahead until a function returns true or
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
       ToddCoxeterImpl&
@@ -2168,11 +2169,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - lookahead - private
       ////////////////////////////////////////////////////////////////////////
-
-      // TODO remove
-      static constexpr bool StopEarly = true;
-      // TODO remove
-      static constexpr bool DoNotStopEarly = false;
 
       void hlt_lookahead(bool should_stop_early);
       void felsch_lookahead(bool should_stop_early);

@@ -56,6 +56,9 @@ namespace libsemigroups {
   constexpr bool ye_print_divider = true;
   constexpr bool no_print_divider = false;
 
+  constexpr bool stop_early        = true;
+  constexpr bool do_not_stop_early = false;
+
   using DoRegisterDefs = detail::felsch_graph::DoRegisterDefs<
       detail::NodeManagedGraph<detail::ToddCoxeterImpl::Graph::node_type>,
       detail::ToddCoxeterImpl::Definitions>;
@@ -1024,7 +1027,7 @@ namespace libsemigroups {
             SettingsGuard guard(this);
             lookahead_extent(options::lookahead_extent::full);
             lookahead_style(options::lookahead_style::hlt);
-            perform_lookahead_impl(DoNotStopEarly);
+            perform_lookahead_impl(do_not_stop_early);
           }
         }
         if (any_change()) {
@@ -1093,7 +1096,7 @@ namespace libsemigroups {
           // a lookahead.
           report_after_phase();
           stats_phase_stop();
-          perform_lookahead_impl(StopEarly);
+          perform_lookahead_impl(stop_early);
           stats_phase_start();
           report_before_phase();
         }
@@ -1124,7 +1127,7 @@ namespace libsemigroups {
       }
       lookahead_extent(options::lookahead_extent::full);
       lookahead_style(options::lookahead_style::hlt);
-      perform_lookahead_impl(DoNotStopEarly);
+      perform_lookahead_impl(do_not_stop_early);
     }
 
     void ToddCoxeterImpl::R_over_C_style() {
@@ -1136,7 +1139,7 @@ namespace libsemigroups {
                >= lookahead_next();
       });
       lookahead_extent(options::lookahead_extent::full);
-      perform_lookahead_impl(StopEarly);
+      perform_lookahead_impl(stop_early);
       CR_style();
     }
 
@@ -1159,7 +1162,7 @@ namespace libsemigroups {
       run();
       lookahead_extent(options::lookahead_extent::full);
       lookahead_style(options::lookahead_style::hlt);
-      perform_lookahead_impl(DoNotStopEarly);
+      perform_lookahead_impl(do_not_stop_early);
     }
 
     void ToddCoxeterImpl::Rc_style() {
@@ -1182,7 +1185,7 @@ namespace libsemigroups {
       run();
       lookahead_extent(options::lookahead_extent::full);
       lookahead_style(options::lookahead_style::hlt);
-      perform_lookahead_impl(DoNotStopEarly);
+      perform_lookahead_impl(do_not_stop_early);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1751,6 +1754,16 @@ namespace libsemigroups {
     // ToddCoxeterImpl - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
+    // There are two ways to run a lookahead:
+    //
+    // 1. from within HLT or Felsch
+    // 2. via the mem fns perform_lookahead(_for/_until)
+    //
+    // If 1 holds, then strategy() will be options::strategy::hlt or
+    // options::strategy::felsch. If 2 holds, then strategy() will be
+    // options::strategy::lookahead. If 1 holds, then we do all of the wrangling
+    // of the settings. If 2 holds, we do none of the wrangling of the settings,
+    // since the stopping condition should be set from outside.
     ToddCoxeterImpl&
     ToddCoxeterImpl::perform_lookahead_impl(bool should_stop_early) {
       if (_word_graph.number_of_nodes_active() == 1) {
@@ -1759,10 +1772,6 @@ namespace libsemigroups {
       }
       Guard guard(_state, state::lookahead);
 
-      if (!running()) {
-        stats_run_start();
-        report_before_run();
-      }
       stats_phase_start();
       report_before_lookahead();
 
@@ -1788,50 +1797,51 @@ namespace libsemigroups {
         felsch_lookahead(should_stop_early);
       }
 
-      size_t const num_nodes          = _word_graph.number_of_nodes_active();
-      size_t const old_lookahead_next = lookahead_next();
+      // TODO put this in a separate function
 
-      // NOTE: that lookahead_next() is ~= num_nodes + num_killed_by_me
-      // unless triggered by skipped definitions.
+      if (strategy() != options::strategy::lookahead) {
+        size_t const num_nodes          = _word_graph.number_of_nodes_active();
+        size_t const old_lookahead_next = lookahead_next();
 
-      // The aim is that lookahead_next() should at most num_nodes *
-      // growth_factor, or if num_killed_by_me is too small lookahead_next()
-      // be should increased.
-      if (num_nodes * lookahead_growth_factor() < lookahead_next()
-          || num_nodes > lookahead_next()) {
-        // In the first case,
-        // num_killed_by_me ~= lookahead_next() - num_nodes
-        //                   > num_nodes * lookahead_growth_factor() -
-        //                   num_nodes = num_nodes * (lookahead_growth_factor
-        //                   - 1).
-        // I.e. num_killed_by_me is relatively big, and so we decrease
-        // lookahead_next().
+        // NOTE: that lookahead_next() is ~= num_nodes + num_killed_by_me
+        // unless triggered by skipped definitions.
 
-        // In the second case, if we don't change lookahead_next(), then we'd
-        // immediately perform the same lookahead again without making any
-        // further definitions, so we increase lookahead_next().
-        lookahead_next(std::max(
-            lookahead_min(),
-            static_cast<size_t>(lookahead_growth_factor() * num_nodes)));
-      } else if (_stats.lookahead_nodes_killed
-                 < ((num_nodes + _stats.lookahead_nodes_killed)
-                    / lookahead_growth_threshold())) {
-        // In this case,
-        // num_killed_by_me ~= lookahead_next() - num_nodes
-        //                   < (num_nodes + num_killed_by_me) / lgt
-        // => num_killed_by_me * lgt < num_nodes + num_killed_by_me
-        // => num_killed_by_me (lgt - 1) < num_nodes
-        // => num_killed_by_me < num_nodes / (lgt - 1)
-        // i.e. num_killed_by_me is relatively small and so we increase
-        // lookahead_next().
-        lookahead_next(lookahead_next() * lookahead_growth_factor());
+        // The aim is that lookahead_next() should at most num_nodes *
+        // growth_factor, or if num_killed_by_me is too small lookahead_next()
+        // be should increased.
+        if (num_nodes * lookahead_growth_factor() < lookahead_next()
+            || num_nodes > lookahead_next()) {
+          // In the first case,
+          // num_killed_by_me ~= lookahead_next() - num_nodes
+          //                   > num_nodes * lookahead_growth_factor() -
+          //                   num_nodes = num_nodes * (lookahead_growth_factor
+          //                   - 1).
+          // I.e. num_killed_by_me is relatively big, and so we decrease
+          // lookahead_next().
+
+          // In the second case, if we don't change lookahead_next(), then we'd
+          // immediately perform the same lookahead again without making any
+          // further definitions, so we increase lookahead_next().
+          lookahead_next(std::max(
+              lookahead_min(),
+              static_cast<size_t>(lookahead_growth_factor() * num_nodes)));
+        } else if (_stats.lookahead_nodes_killed
+                   < ((num_nodes + _stats.lookahead_nodes_killed)
+                      / lookahead_growth_threshold())) {
+          // In this case,
+          // num_killed_by_me ~= lookahead_next() - num_nodes
+          //                   < (num_nodes + num_killed_by_me) / lgt
+          // => num_killed_by_me * lgt < num_nodes + num_killed_by_me
+          // => num_killed_by_me (lgt - 1) < num_nodes
+          // => num_killed_by_me < num_nodes / (lgt - 1)
+          // i.e. num_killed_by_me is relatively small and so we increase
+          // lookahead_next().
+          lookahead_next(lookahead_next() * lookahead_growth_factor());
+        }
+        report_after_lookahead(old_lookahead_next);
       }
-      report_after_lookahead(old_lookahead_next);
+
       stats_phase_stop();
-      if (!running()) {
-        report_after_run();
-        stats_run_stop();
-      }
       return *this;
     }
 
