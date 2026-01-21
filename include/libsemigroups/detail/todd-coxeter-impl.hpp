@@ -2119,11 +2119,7 @@ namespace libsemigroups {
           std::chrono::high_resolution_clock::time_point& last_stop_early_check,
           uint64_t& killed_at_prev_interval);
 
-      // TODO return type ToddCoxeterImpl&
       ToddCoxeterImpl& perform_lookahead_impl(bool stop_early);
-
-      // TODO rm
-      void perform_lookahead_with_stop_early();
 
       ////////////////////////////////////////////////////////////////////////
       // ToddCoxeterImpl - main strategies - private
