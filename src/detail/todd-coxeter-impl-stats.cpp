@@ -21,6 +21,12 @@
 
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
+#include <atomic>   // for atomic
+#include <chrono>   // for high_resolutio...
+#include <utility>  // for move
+
+#include "libsemigroups/runner.hpp"  // for delta
+
 namespace libsemigroups::detail {
 
   ////////////////////////////////////////////////////////////////////////

@@ -1167,7 +1167,7 @@ namespace libsemigroups::detail {
     report_after_phase();
     if (strategy() != options::strategy::lookahead) {
       auto const old_lookahead_next = lookahead_update_settings();
-      report_after_lookahead(old_lookahead_next);
+      report_lookahead_settings(old_lookahead_next);
     }
     stats_phase_stop();
     return *this;

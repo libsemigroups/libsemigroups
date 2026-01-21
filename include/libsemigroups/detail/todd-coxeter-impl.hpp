@@ -2009,11 +2009,11 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       void report_after_phase() const;
-      void report_after_lookahead(size_t old_lookahead_next) const;
       void report_after_run() const;
       void report_before_phase(std::string_view = "") const;
       void report_before_lookahead() const;
       void report_before_run() const;
+      void report_lookahead_settings(size_t old_lookahead_next) const;
       void report_lookahead_stop_early(size_t expected,
                                        size_t killed_last_interval);
       void report_presentation() const;

@@ -18,6 +18,8 @@
 
 // This file contains the implementations of the private member functions of
 // ToddCoxeterImpl that related to reporting.
+//
+// TODO alphabetize
 
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
@@ -156,7 +158,7 @@ namespace libsemigroups::detail {
   }
 
   void
-  ToddCoxeterImpl::report_after_lookahead(size_t old_lookahead_next) const {
+  ToddCoxeterImpl::report_lookahead_settings(size_t old_lookahead_next) const {
     auto gd  = group_digits;
     auto sgd = signed_group_digits;
 
@@ -443,9 +445,6 @@ namespace libsemigroups::detail {
     report_no_prefix(report_divider());
     report_default("ToddCoxeter: {} (strategy() = {})\n",
                    fmt::format(run_color, "RUN {} START", _stats.run_index),
-                   // TODO(1) if using ACE style strategy include the value
-                   // of the relevant setting
-                   // TODO(1) add more nuance when not using hlt/felsch
                    strategy());
     if (_stats.run_index > 0) {
       report_times();
