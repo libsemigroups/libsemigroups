@@ -341,8 +341,7 @@ namespace libsemigroups {
       typename FelschGraph_::NoPreferredDefs prefdefs;
 
       while (current != NodeManager<node_type>::first_free_node()
-             && (!should_stop_early || (tc->running() && !tc->stopped())
-                 || !tc->running())) {
+             && (!should_stop_early || !tc->stopped())) {
         // If should_stop_early and tc->stopped(), then we exit this loop.
         // O/w we continue, this is because _finished is sometimes set before we
         // are really finished, which is something that should be fixed at some
@@ -1916,9 +1915,8 @@ namespace libsemigroups {
       node_type&   current = _word_graph.lookahead_cursor();
       size_t const n       = _word_graph.out_degree();
 
-      while (
-          current != _word_graph.first_free_node()
-          && (!should_stop_early || (running() && !stopped()) || !running())) {
+      while (current != _word_graph.first_free_node()
+             && (!should_stop_early || !stopped())) {
         // See the comment in make_compatible about why we have
         // !should_stop_early here. This might never be used but is here for
         // consistency.
