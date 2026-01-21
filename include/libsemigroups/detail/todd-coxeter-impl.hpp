@@ -527,6 +527,7 @@ namespace libsemigroups {
 
       bool                                   _finished;
       Forest                                 _forest;
+      bool                                   _never_run;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
       // _state must be atomic to avoid the situation where the ticker
@@ -559,7 +560,7 @@ namespace libsemigroups {
       ToddCoxeterImpl& init(congruence_kind                knd,
                             Presentation<word_type> const& p);
 
-      // TODO(1) a "to" function variant that throws if wg is not valid see
+      // TODO(1) a "make" function variant that throws if wg is not valid see
       // below
       template <typename Node>
       ToddCoxeterImpl(congruence_kind knd, WordGraph<Node> const& wg)
@@ -1740,30 +1741,29 @@ namespace libsemigroups {
       //! style and extent of this lookahead are controlled by the settings
       //! \ref lookahead_style and \ref lookahead_extent.
       //!
-      //! If the argument \p stop_early is \c true, then the settings
-      //! \ref lookahead_stop_early_interval and
-      //! \ref lookahead_stop_early_ratio are used to determine whether or not
-      //! the lookahead should be aborted early. If \p stop_early is \c false,
-      //! then these settings are ignored.
+      //! \returns A reference to `*this`.
       //!
-      //! \param stop_early whether or not to consider stopping the
-      //! lookahead early if too few nodes are killed.
+      //! \sa perform_lookahead_for and perform_lookahead_until
       ToddCoxeterImpl& perform_lookahead() {
         return perform_lookahead_impl(false);
       }
 
+      // TODO doc
       // Perform a lookahead for an amount of time
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
 
+      // TODO doc
       // Perform a lookahead for an amount of time
       template <typename Time>
       void perform_lookahead_for(Time t) {
         perform_lookahead_for(std::chrono::nanoseconds(t));
       }
 
+      // TODO doc
       // Perform a lookahead until a function returns true or
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
+      // TODO doc
       ToddCoxeterImpl&
       perform_lookahead_until(std::function<bool()> const& pred) {
         return perform_lookahead_until(std::function<bool()>(pred));
@@ -2125,8 +2125,8 @@ namespace libsemigroups {
       // ToddCoxeterImpl - main strategies - private
       ////////////////////////////////////////////////////////////////////////
 
-      void init_run();
-      void finalise_run();
+      void before_run();
+      void after_run();
 
       void felsch();
       void hlt();

@@ -452,6 +452,7 @@ namespace libsemigroups {
         : CongruenceCommon(),
           _finished(),
           _forest(),
+          _never_run(),
           _settings_stack(),
           _standardized(),
           _state(),
@@ -467,6 +468,7 @@ namespace libsemigroups {
       report_prefix("ToddCoxeter");
       _finished = false;
       _forest.init();
+      _never_run = true;
       reset_settings_stack();
       _standardized = Order::none;
       _state        = state::none;
@@ -493,6 +495,7 @@ namespace libsemigroups {
       CongruenceCommon::operator=(std::move(that));
       _finished       = std::move(that._finished);
       _forest         = std::move(that._forest);
+      _never_run      = std::move(that._never_run);
       _settings_stack = std::move(that._settings_stack);
       _state          = that._state.load();
       _stats          = std::move(that._stats);
@@ -509,8 +512,9 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::operator=(ToddCoxeterImpl const& that) {
       LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
       CongruenceCommon::operator=(that);
-      _finished = that._finished;
-      _forest   = that._forest;
+      _finished  = that._finished;
+      _forest    = that._forest;
+      _never_run = that._never_run;
       _settings_stack.clear();
       for (auto const& uptr : that._settings_stack) {
         _settings_stack.push_back(std::make_unique<Settings>(*uptr));
@@ -881,31 +885,29 @@ namespace libsemigroups {
     void ToddCoxeterImpl::really_run_impl() {
       stats_run_start();
       report_before_run();
-      if (strategy() != options::strategy::lookahead
-          && strategy() != options::strategy::lookbehind) {
-        init_run();
-        if (strategy() == options::strategy::felsch) {
-          Guard guard(_state, state::felsch);
-          felsch();
-        } else if (strategy() == options::strategy::hlt) {
-          Guard guard(_state, state::hlt);
-          hlt();
-        } else if (strategy() == options::strategy::CR) {
-          CR_style();
-        } else if (strategy() == options::strategy::R_over_C) {
-          R_over_C_style();
-        } else if (strategy() == options::strategy::Cr) {
-          Cr_style();
-        } else if (strategy() == options::strategy::Rc) {
-          Rc_style();
-        }
+      before_run();
+      if (strategy() == options::strategy::felsch) {
+        Guard guard(_state, state::felsch);
+        felsch();
+      } else if (strategy() == options::strategy::hlt) {
+        Guard guard(_state, state::hlt);
+        hlt();
       } else if (strategy() == options::strategy::lookahead) {
         Guard guard(_state, state::lookahead);
         perform_lookahead_impl(false);
       } else if (strategy() == options::strategy::lookbehind) {
         Guard guard(_state, state::lookbehind);
         perform_lookbehind(false);
+      } else if (strategy() == options::strategy::CR) {
+        CR_style();
+      } else if (strategy() == options::strategy::R_over_C) {
+        R_over_C_style();
+      } else if (strategy() == options::strategy::Cr) {
+        Cr_style();
+      } else if (strategy() == options::strategy::Rc) {
+        Rc_style();
       }
+      after_run();
     }
 
     void ToddCoxeterImpl::run_impl() {
@@ -948,8 +950,6 @@ namespace libsemigroups {
       } else {
         really_run_impl();
       }
-
-      finalise_run();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -966,56 +966,62 @@ namespace libsemigroups {
     // ToddCoxeterImpl - main strategies - private
     ////////////////////////////////////////////////////////////////////////
 
-    void ToddCoxeterImpl::init_run() {
-      // TODO shouldn't we only do everything below if we've never been run
-      // before?
+    void ToddCoxeterImpl::before_run() {
       _word_graph.settings(*this);
+      if (_never_run) {
+        _never_run       = false;
+        auto       first = internal_generating_pairs().cbegin();
+        auto       last  = internal_generating_pairs().cend();
+        auto const id    = current_word_graph().initial_node();
 
-      auto       first = internal_generating_pairs().cbegin();
-      auto       last  = internal_generating_pairs().cend();
-      auto const id    = current_word_graph().initial_node();
-      if (save() || strategy() == options::strategy::felsch) {
-        for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
-          _word_graph.process_coincidences(DoRegisterDefs{_word_graph});
+        if (save() || strategy() == options::strategy::felsch) {
+          for (auto it = first; it < last; it += 2) {
+            _word_graph.push_definition_hlt<do_register_defs>(
+                id, *it, *(it + 1));
+            _word_graph.process_coincidences(DoRegisterDefs{_word_graph});
+          }
+        } else {
+          for (auto it = first; it < last; it += 2) {
+            _word_graph.push_definition_hlt<do_not_register_defs>(
+                id, *it, *(it + 1));
+            _word_graph.process_coincidences(DoNotRegisterDefs{});
+          }
         }
-      } else {
-        for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_not_register_defs>(
-              id, *it, *(it + 1));
-          _word_graph.process_coincidences(DoNotRegisterDefs{});
-        }
-      }
-      if (strategy() == options::strategy::felsch && use_relations_in_extra()) {
-        first = internal_presentation().rules.cbegin();
-        last  = internal_presentation().rules.cend();
 
-        for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
-          _word_graph.process_coincidences(DoNotRegisterDefs{});
-        }
-      }
+        if (use_relations_in_extra()
+            && strategy() == options::strategy::felsch) {
+          first = internal_presentation().rules.cbegin();
+          last  = internal_presentation().rules.cend();
 
-      if (kind() == congruence_kind::twosided
-          && !internal_generating_pairs().empty()) {
-        // TODO(1) avoid copy of presentation here, if possible
-        Presentation<word_type> p = internal_presentation();
-        if (p.alphabet().size() != _word_graph.out_degree()) {
-          LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
-          p.alphabet(_word_graph.out_degree());
+          for (auto it = first; it < last; it += 2) {
+            _word_graph.push_definition_hlt<do_register_defs>(
+                id, *it, *(it + 1));
+            _word_graph.process_coincidences(DoNotRegisterDefs{});
+          }
         }
-        presentation::add_rules(p,
-                                internal_generating_pairs().cbegin(),
-                                internal_generating_pairs().cend());
-        _word_graph.presentation_no_checks(std::move(p));
-      }
 
-      if (save() || strategy() == options::strategy::felsch) {
-        _word_graph.process_definitions();
+        if (kind() == congruence_kind::twosided
+            && !internal_generating_pairs().empty()) {
+          // TODO(1) avoid copy of presentation here, if possible
+          // TODO remove duplicates?
+          Presentation<word_type> p = internal_presentation();
+          if (p.alphabet().size() != _word_graph.out_degree()) {
+            LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
+            p.alphabet(_word_graph.out_degree());
+          }
+          presentation::add_rules(p,
+                                  internal_generating_pairs().cbegin(),
+                                  internal_generating_pairs().cend());
+          _word_graph.presentation_no_checks(std::move(p));
+        }
+
+        if (save() || strategy() == options::strategy::felsch) {
+          _word_graph.process_definitions();
+        }
       }
     }
 
-    void ToddCoxeterImpl::finalise_run() {
+    void ToddCoxeterImpl::after_run() {
       if (strategy() != options::strategy::lookahead
           && strategy() != options::strategy::lookbehind && !stopped()) {
         if (_word_graph.definitions().any_skipped()) {
@@ -1374,7 +1380,7 @@ namespace libsemigroups {
 
         // When the times are very short (microseconds) the percentage spent in
         // each phase type won't add up to 100% (it will be less) because the
-        // calling of the functions before hlt/felsch (init_run etc) take a
+        // calling of the functions before hlt/felsch (before_run etc) take a
         // non-trivial % of the run time. Be good to fix this, but not sure how
         // exactly.
         rc("{}: {} | {} | {} | {}\n",

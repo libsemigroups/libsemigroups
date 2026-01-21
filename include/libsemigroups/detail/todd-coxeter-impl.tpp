@@ -28,7 +28,8 @@ namespace libsemigroups {
 
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
-      _finished = false;
+      _finished  = false;
+      _never_run = true;
       reset_settings_stack();
       _standardized   = Order::none;
       _ticker_running = false;
