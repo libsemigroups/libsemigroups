@@ -1333,8 +1333,6 @@ namespace libsemigroups {
       }
     }
 
-    // TODO this print the correct reason for stopping after
-    // lookahead/lookbehind, just whatever the previous reason was.
     // TODO add number of lookbehinds here too?
     void ToddCoxeterImpl::report_after_run() const {
       if (reporting_enabled()) {
