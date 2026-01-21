@@ -209,6 +209,7 @@ namespace libsemigroups {
       class SettingsGuard;
       friend class SettingsGuard;
 
+      // TODO to cpp?
       struct NonAtomicStats {
         using time_point = std::chrono::high_resolution_clock::time_point;
 
@@ -267,6 +268,7 @@ namespace libsemigroups {
         NonAtomicStats& operator=(NonAtomicStats&&)      = default;
       };
 
+      // TODO to cpp?
       struct Stats : public NonAtomicStats {
         // Data
         std::atomic_uint64_t lookahead_nodes_killed;
@@ -284,16 +286,19 @@ namespace libsemigroups {
           return *this;
         }
 
+        // TODO to cpp
         Stats(Stats const& that)
             : NonAtomicStats(that),
               lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
               lookahead_position(that.lookahead_position.load()) {}
 
+        // TODO to cpp
         Stats(Stats&& that)
             : NonAtomicStats(std::move(that)),
               lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
               lookahead_position(that.lookahead_position.load()) {}
 
+        // TODO to cpp
         Stats& operator=(Stats const& that) {
           NonAtomicStats::operator=(that);
           lookahead_nodes_killed = that.lookahead_nodes_killed.load();
@@ -301,6 +306,7 @@ namespace libsemigroups {
           return *this;
         }
 
+        // TODO to cpp
         Stats& operator=(Stats&& that) {
           NonAtomicStats::operator=(std::move(that));
           lookahead_nodes_killed = that.lookahead_nodes_killed.load();
@@ -309,6 +315,7 @@ namespace libsemigroups {
         }
       };
 
+      // TODO to cpp
       void stats_run_start() {
         _stats.run_start_time = std::chrono::high_resolution_clock::now();
 
@@ -327,6 +334,7 @@ namespace libsemigroups {
         _stats.phase_index = 0;
       }
 
+      // TODO to cpp
       void stats_run_stop() {
         _stats.run_index++;
 
@@ -340,6 +348,7 @@ namespace libsemigroups {
         _stats.all_lookahead_phases_time += _stats.run_lookahead_phases_time;
       }
 
+      // TODO to cpp
       void stats_phase_start() {
         _stats.phase_start_time = std::chrono::high_resolution_clock::now();
         _stats.report_index     = 0;
@@ -357,6 +366,7 @@ namespace libsemigroups {
             = complete(current_word_graph().number_of_edges_active());
       }
 
+      // TODO to cpp
       void stats_phase_stop() {
         _stats.phase_index++;
 

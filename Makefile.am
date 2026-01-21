@@ -779,6 +779,7 @@ libsemigroups_la_SOURCES += src/detail/rewriters.cpp
 libsemigroups_la_SOURCES += src/detail/string.cpp
 libsemigroups_la_SOURCES += src/detail/timer.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl.cpp
+libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-report.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
