@@ -1215,121 +1215,115 @@ namespace libsemigroups {
       auto gd  = group_digits;
       auto sgd = signed_group_digits;
 
-      if (reporting_enabled()) {
-        auto lgf      = lookahead_growth_factor();
-        auto lgf_name = italic("f");
-        auto lgf_key  = fmt::format(
-            "{} = lookahead_growth_factor()    = {}\n", lgf_name, lgf);
+      if (!reporting_enabled() || finished()) {
+        return;
+      }
 
-        auto lgt      = lookahead_growth_threshold();
-        auto lgt_name = italic("t");
-        auto lgt_key  = fmt::format(
-            "{} = lookahead_growth_threshold() = {}\n", lgt_name, lgt);
+      auto lgf      = lookahead_growth_factor();
+      auto lgf_name = italic("f");
+      auto lgf_key  = fmt::format(
+          "{} = lookahead_growth_factor()    = {}\n", lgf_name, lgf);
 
-        auto oln      = old_lookahead_next;
-        auto oln_name = italic("n");
-        auto oln_key  = fmt::format(
-            "{} = lookahead_next()             = {}\n", oln_name, gd(oln));
+      auto lgt      = lookahead_growth_threshold();
+      auto lgt_name = italic("t");
+      auto lgt_key  = fmt::format(
+          "{} = lookahead_growth_threshold() = {}\n", lgt_name, lgt);
 
-        auto ln = lookahead_next();
+      auto oln      = old_lookahead_next;
+      auto oln_name = italic("n");
+      auto oln_key  = fmt::format(
+          "{} = lookahead_next()             = {}\n", oln_name, gd(oln));
 
-        auto a      = _word_graph.number_of_nodes_active();
-        auto a_name = italic("a");
-        auto a_key  = fmt::format(
-            "{} = number_of_nodes_active()     = {}\n", a_name, gd(a));
+      auto ln = lookahead_next();
 
-        auto l      = _stats.lookahead_nodes_killed.load();
-        auto l_name = italic("l");
-        auto l_key  = fmt::format(
-            "{} = nodes killed in lookahead    = {}\n", l_name, gd(l));
+      auto a      = _word_graph.number_of_nodes_active();
+      auto a_name = italic("a");
+      auto a_key  = fmt::format(
+          "{} = number_of_nodes_active()     = {}\n", a_name, gd(a));
 
-        auto m      = lookahead_min();
-        auto m_name = italic("m");
-        auto m_key  = fmt::format(
-            "{} = lookahead_min()              = {}\n", m_name, gd(m));
+      auto l      = _stats.lookahead_nodes_killed.load();
+      auto l_name = italic("l");
+      auto l_key  = fmt::format(
+          "{} = nodes killed in lookahead    = {}\n", l_name, gd(l));
 
-        std::set<std::string> keys;
+      auto m      = lookahead_min();
+      auto m_name = italic("m");
+      auto m_key  = fmt::format(
+          "{} = lookahead_min()              = {}\n", m_name, gd(m));
 
-        int64_t const diff = static_cast<int64_t>(ln) - oln;
-        std::string   reason
-            = fmt_default("ToddCoxeter: lookahead_next() is now ");
+      std::set<std::string> keys;
 
-        if (a * lgf < oln || a > oln) {
-          reason += fmt::format("max({} x {} = {}, {} = {}) ({})\n",
+      int64_t const diff = static_cast<int64_t>(ln) - oln;
+      std::string reason = fmt_default("ToddCoxeter: lookahead_next() is now ");
+
+      if (a * lgf < oln || a > oln) {
+        reason += fmt::format("max({} x {} = {}, {} = {}) ({})\n",
+                              lgf_name,
+                              a_name,
+                              gd(lgf * a),
+                              m_name,
+                              gd(m),
+                              sgd(diff));
+        if (a * lgf < oln) {
+          // TODO(1) add different levels of reporting, and only print the
+          // "because" stuff if the level is > 0 (where 0 would be the
+          // default).
+          reason += fmt_default("ToddCoxeter: because {} x {} < {}\n",
                                 lgf_name,
                                 a_name,
-                                gd(lgf * a),
-                                m_name,
-                                gd(m),
-                                sgd(diff));
-          if (a * lgf < oln) {
-            // TODO(1) add different levels of reporting, and only print the
-            // "because" stuff if the level is > 0 (where 0 would be the
-            // default).
-            reason += fmt_default("ToddCoxeter: because {} x {} < {}\n",
-                                  lgf_name,
-                                  a_name,
-                                  oln_name);
-          } else {
-            reason += fmt_default(
-                "ToddCoxeter: because {} > {}\n", a_name, oln_name);
-          }
-          keys.insert(a_key);
-          keys.insert(lgf_key);
-          keys.insert(oln_key);
-          keys.insert(m_key);
-        } else if (l < (l + a) / lgt) {
-          reason += fmt::format("{} x {} = {} ({})\n",
-                                oln_name,
-                                lgf_name,
-                                gd(oln * lgf),
-                                sgd(diff));
-
-          reason
-              += fmt_default("ToddCoxeter: because: {} < ({} + {}) / {} = {}\n",
-                             l_name,
-                             l_name,
-                             a_name,
-                             lgt_name,
-                             gd((l + a) / lgt));
-          keys.insert(a_key);
-          keys.insert(l_key);
-          keys.insert(lgf_key);
-          keys.insert(lgt_key);
-          keys.insert(oln_key);
+                                oln_name);
         } else {
-          reason += fmt::format("{} ({})\n", gd(ln), sgd(diff));
-          reason += fmt_default("ToddCoxeter: because:\n");
-          reason += fmt_default("ToddCoxeter: 1. {} <= {} x {} = {}\n",
-                                oln_name,
-                                lgf_name,
-                                a_name,
-                                gd(lgf * a));
-          reason += fmt_default("ToddCoxeter: 2. {} <= {}\n", a_name, oln_name);
-          reason += fmt_default("ToddCoxeter: 3. {} >= ({} + {}) / {} = {}\n",
-                                l_name,
-                                l_name,
-                                a_name,
-                                lgt_name,
-                                gd((l + a) / lgt));
-          keys.insert(a_key);
-          keys.insert(l_key);
-          keys.insert(lgf_key);
-          keys.insert(lgt_key);
-          keys.insert(oln_key);
+          reason += fmt_default(
+              "ToddCoxeter: because {} > {}\n", a_name, oln_name);
         }
+        keys.insert(a_key);
+        keys.insert(lgf_key);
+        keys.insert(oln_key);
+        keys.insert(m_key);
+      } else if (l < (l + a) / lgt) {
+        reason += fmt::format("{} x {} = {} ({})\n",
+                              oln_name,
+                              lgf_name,
+                              gd(oln * lgf),
+                              sgd(diff));
 
-        report_no_prefix(report_divider());
-        report_default("ToddCoxeter: {}\n",
-                       fmt::format(phase_color,
-                                   "LOOKAHEAD {}.{} STOP",
-                                   _stats.run_index,
-                                   _stats.phase_index));
-        report_progress_from_thread(no_print_divider);
-        if (!finished()) {
-          report_no_prefix(reason);
-          report_keys(keys);
-        }
+        reason
+            += fmt_default("ToddCoxeter: because: {} < ({} + {}) / {} = {}\n",
+                           l_name,
+                           l_name,
+                           a_name,
+                           lgt_name,
+                           gd((l + a) / lgt));
+        keys.insert(a_key);
+        keys.insert(l_key);
+        keys.insert(lgf_key);
+        keys.insert(lgt_key);
+        keys.insert(oln_key);
+      } else {
+        reason += fmt::format("{} ({})\n", gd(ln), sgd(diff));
+        reason += fmt_default("ToddCoxeter: because:\n");
+        reason += fmt_default("ToddCoxeter: 1. {} <= {} x {} = {}\n",
+                              oln_name,
+                              lgf_name,
+                              a_name,
+                              gd(lgf * a));
+        reason += fmt_default("ToddCoxeter: 2. {} <= {}\n", a_name, oln_name);
+        reason += fmt_default("ToddCoxeter: 3. {} >= ({} + {}) / {} = {}\n",
+                              l_name,
+                              l_name,
+                              a_name,
+                              lgt_name,
+                              gd((l + a) / lgt));
+        keys.insert(a_key);
+        keys.insert(l_key);
+        keys.insert(lgf_key);
+        keys.insert(lgt_key);
+        keys.insert(oln_key);
+      }
+
+      if (!finished()) {
+        report_no_prefix(reason);
+        report_keys(keys);
       }
     }
 
@@ -1453,86 +1447,90 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::report_before_lookahead() const {
-      if (reporting_enabled()) {
-        report_before_phase(fmt::format("lookahead_extent() = {}, "
-                                        "lookahead_style() = {}",
-                                        lookahead_extent(),
-                                        lookahead_style()));
+      if (!reporting_enabled()) {
+        return;
+      }
+      report_before_phase(fmt::format("lookahead_extent() = {}, "
+                                      "lookahead_style() = {}",
+                                      lookahead_extent(),
+                                      lookahead_style()));
+      if (strategy() == options::strategy::lookahead) {
+        return;
+      }
+      // If the strategy() is lookahead, then lookahead was called via the
+      // mem fns perform_lookahead(_for/until) and so this information is
+      // not relevant.
+      if (current_word_graph().definitions().any_skipped()) {
+        report_default(
+            "ToddCoxeter: triggered because there are skipped "
+            "definitions ({} active nodes)!\n",
+            group_digits(current_word_graph().number_of_nodes_active()));
+      } else if (current_word_graph().number_of_nodes_active()
+                 > lookahead_next()) {
+        auto ln      = lookahead_next();
+        auto ln_name = italic("n");
+        auto ln_key  = fmt::format(
+            "{} = lookahead_next()         = {}\n", ln_name, group_digits(ln));
 
-        if (current_word_graph().definitions().any_skipped()) {
-          // TODO update
-          report_default(
-              "ToddCoxeter: triggered because there are skipped "
-              "definitions ({} active nodes)!\n",
-              group_digits(current_word_graph().number_of_nodes_active()));
-        } else if (current_word_graph().number_of_nodes_active()
-                   > lookahead_next()) {
-          // TODO update
-          auto ln      = lookahead_next();
-          auto ln_name = italic("n");
-          auto ln_key  = fmt::format("{} = lookahead_next()         = {}\n",
-                                    ln_name,
-                                    group_digits(ln));
+        auto a      = current_word_graph().number_of_nodes_active();
+        auto a_name = italic("a");
+        auto a_key  = fmt::format(
+            "{} = number_of_nodes_active() = {}\n", a_name, group_digits(a));
 
-          auto a      = current_word_graph().number_of_nodes_active();
-          auto a_name = italic("a");
-          auto a_key  = fmt::format(
-              "{} = number_of_nodes_active() = {}\n", a_name, group_digits(a));
-
-          std::set<std::string> keys;
-          report_default("ToddCoxeter: because {} >= {}\n", a_name, ln_name);
-          keys.insert(a_key);
-          keys.insert(ln_key);
-          report_keys(keys);
-        }
+        std::set<std::string> keys;
+        report_default("ToddCoxeter: because {} >= {}\n", a_name, ln_name);
+        keys.insert(a_key);
+        keys.insert(ln_key);
+        report_keys(keys);
       }
     }
 
     void ToddCoxeterImpl::report_before_run() const {
-      if (reporting_enabled()) {
-        report_no_prefix(report_divider());
-        // TODO update to report we are doing a lookahead/behind in those cases
-        report_default("ToddCoxeter: {} (strategy() = {})\n",
-                       fmt::format(run_color, "RUN {} START", _stats.run_index),
-                       // TODO(1) if using ACE style strategy include the value
-                       // of the relevant setting
-                       // TODO(1) add more nuance when not using hlt/felsch
-                       strategy());
-        if (_stats.run_index > 0) {
-          report_times();
-        }
-
-        report_presentation();
+      if (!reporting_enabled()) {
+        return;
       }
+      report_no_prefix(report_divider());
+      report_default("ToddCoxeter: {} (strategy() = {})\n",
+                     fmt::format(run_color, "RUN {} START", _stats.run_index),
+                     // TODO(1) if using ACE style strategy include the value
+                     // of the relevant setting
+                     // TODO(1) add more nuance when not using hlt/felsch
+                     strategy());
+      if (_stats.run_index > 0) {
+        report_times();
+      }
+
+      report_presentation();
     }
 
     void
     ToddCoxeterImpl::report_lookahead_stop_early(size_t expected,
                                                  size_t killed_last_interval) {
-      if (reporting_enabled()) {
-        auto gd       = group_digits;
-        auto interval = string_time(lookahead_stop_early_interval());
-        report_no_prefix(report_divider());
-        report_default("ToddCoxeter: too few nodes killed in last {} = "
-                       "{}, stopping lookahead early!\n",
-                       italic("i"),
-                       interval);
-        report_default("ToddCoxeter: expected at least {} x {} = {} but "
-                       "found {}\n",
-                       italic("r"),
-                       italic("a"),
-                       gd(expected),
-                       gd(killed_last_interval));
-        report_keys({fmt::format("{} = lookahead_stop_early_ratio()    = {}\n",
-                                 italic("r"),
-                                 lookahead_stop_early_ratio()),
-                     fmt::format("{} = lookahead_stop_early_interval() = {}\n",
-                                 italic("i"),
-                                 interval),
-                     fmt::format("{} = number_of_nodes_active()        = {}\n",
-                                 italic("a"),
-                                 gd(number_of_nodes_active()))});
+      if (!reporting_enabled()) {
+        return;
       }
+      auto gd       = group_digits;
+      auto interval = string_time(lookahead_stop_early_interval());
+      report_no_prefix(report_divider());
+      report_default("ToddCoxeter: too few nodes killed in last {} = "
+                     "{}, stopping lookahead early!\n",
+                     italic("i"),
+                     interval);
+      report_default("ToddCoxeter: expected at least {} x {} = {} but "
+                     "found {}\n",
+                     italic("r"),
+                     italic("a"),
+                     gd(expected),
+                     gd(killed_last_interval));
+      report_keys({fmt::format("{} = lookahead_stop_early_ratio()    = {}\n",
+                               italic("r"),
+                               lookahead_stop_early_ratio()),
+                   fmt::format("{} = lookahead_stop_early_interval() = {}\n",
+                               italic("i"),
+                               interval),
+                   fmt::format("{} = number_of_nodes_active()        = {}\n",
+                               italic("a"),
+                               gd(number_of_nodes_active()))});
     }
 
     void ToddCoxeterImpl::report_presentation() const {
@@ -1541,31 +1539,32 @@ namespace libsemigroups {
     }
 
     void ToddCoxeterImpl::report_progress_from_thread(bool divider) const {
-      if (reporting_enabled() && _state != state::none) {
-        // Sometimes this gets called concurrently but slightly after the end
-        // of a phase, which results in a weird NONE block with messed up
-        // numbers being printed.
-        auto rc = report_cell();
-
-        // Set the value of _stats.report_nodes_active_prev to the current
-        // number of active nodes when active_nodes is destructed,
-        // active_nodes has the 2nd argument as its value
-        DeferSet active_nodes(_stats.report_nodes_active_prev,
-                              current_word_graph().number_of_nodes_active());
-        DeferSet active_edges(_stats.report_edges_active_prev,
-                              current_word_graph().number_of_edges_active());
-
-        if (divider) {
-          report_no_prefix(report_divider());
-        }
-        add_nodes_rows(rc, active_nodes);
-        add_edges_rows(rc, active_nodes, active_edges);
-        add_timing_row(rc);
-        add_lookahead_row(rc);
-
-        stats_report_stop();
+      if (!reporting_enabled() || _state == state::none) {
+        return;
       }
-    }  // namespace detail
+      // Sometimes this gets called concurrently but slightly after the end
+      // of a phase, which results in a weird NONE block with messed up
+      // numbers being printed.
+      auto rc = report_cell();
+
+      // Set the value of _stats.report_nodes_active_prev to the current
+      // number of active nodes when active_nodes is destructed,
+      // active_nodes has the 2nd argument as its value
+      DeferSet active_nodes(_stats.report_nodes_active_prev,
+                            current_word_graph().number_of_nodes_active());
+      DeferSet active_edges(_stats.report_edges_active_prev,
+                            current_word_graph().number_of_edges_active());
+
+      if (divider) {
+        report_no_prefix(report_divider());
+      }
+      add_nodes_rows(rc, active_nodes);
+      add_edges_rows(rc, active_nodes, active_edges);
+      add_timing_row(rc);
+      add_lookahead_row(rc);
+
+      stats_report_stop();
+    }
 
     void ToddCoxeterImpl::add_timing_row(ReportCell<5>& rc) const {
       auto this_run_time   = delta(_stats.run_start_time);
@@ -1595,6 +1594,7 @@ namespace libsemigroups {
                      string_time(_stats.all_runs_time + this_run_time)),
          fmt::format("elapsed = {}", string_time(elapsed)));
     }
+
     void ToddCoxeterImpl::report_times() const {
       auto rc = report_cell();
       add_timing_row(rc);
@@ -1800,52 +1800,55 @@ namespace libsemigroups {
         felsch_lookahead(should_stop_early);
       }
 
-      // TODO put this in a separate function
-
+      report_after_phase();
       if (strategy() != options::strategy::lookahead) {
-        size_t const num_nodes          = _word_graph.number_of_nodes_active();
-        size_t const old_lookahead_next = lookahead_next();
-
-        // NOTE: that lookahead_next() is ~= num_nodes + num_killed_by_me
-        // unless triggered by skipped definitions.
-
-        // The aim is that lookahead_next() should at most num_nodes *
-        // growth_factor, or if num_killed_by_me is too small lookahead_next()
-        // be should increased.
-        if (num_nodes * lookahead_growth_factor() < lookahead_next()
-            || num_nodes > lookahead_next()) {
-          // In the first case,
-          // num_killed_by_me ~= lookahead_next() - num_nodes
-          //                   > num_nodes * lookahead_growth_factor() -
-          //                   num_nodes = num_nodes * (lookahead_growth_factor
-          //                   - 1).
-          // I.e. num_killed_by_me is relatively big, and so we decrease
-          // lookahead_next().
-
-          // In the second case, if we don't change lookahead_next(), then we'd
-          // immediately perform the same lookahead again without making any
-          // further definitions, so we increase lookahead_next().
-          lookahead_next(std::max(
-              lookahead_min(),
-              static_cast<size_t>(lookahead_growth_factor() * num_nodes)));
-        } else if (_stats.lookahead_nodes_killed
-                   < ((num_nodes + _stats.lookahead_nodes_killed)
-                      / lookahead_growth_threshold())) {
-          // In this case,
-          // num_killed_by_me ~= lookahead_next() - num_nodes
-          //                   < (num_nodes + num_killed_by_me) / lgt
-          // => num_killed_by_me * lgt < num_nodes + num_killed_by_me
-          // => num_killed_by_me (lgt - 1) < num_nodes
-          // => num_killed_by_me < num_nodes / (lgt - 1)
-          // i.e. num_killed_by_me is relatively small and so we increase
-          // lookahead_next().
-          lookahead_next(lookahead_next() * lookahead_growth_factor());
-        }
+        auto const old_lookahead_next = lookahead_update_settings();
         report_after_lookahead(old_lookahead_next);
       }
-
       stats_phase_stop();
       return *this;
+    }
+
+    size_t ToddCoxeterImpl::lookahead_update_settings() {
+      size_t const num_nodes          = _word_graph.number_of_nodes_active();
+      size_t const old_lookahead_next = lookahead_next();
+
+      // NOTE: that lookahead_next() is ~= num_nodes + num_killed_by_me
+      // unless triggered by skipped definitions.
+
+      // The aim is that lookahead_next() should at most num_nodes *
+      // growth_factor, or if num_killed_by_me is too small lookahead_next()
+      // be should increased.
+      if (num_nodes * lookahead_growth_factor() < lookahead_next()
+          || num_nodes > lookahead_next()) {
+        // In the first case,
+        // num_killed_by_me ~= lookahead_next() - num_nodes
+        //                   > num_nodes * lookahead_growth_factor() -
+        //                   num_nodes = num_nodes * (lookahead_growth_factor
+        //                   - 1).
+        // I.e. num_killed_by_me is relatively big, and so we decrease
+        // lookahead_next().
+
+        // In the second case, if we don't change lookahead_next(), then we'd
+        // immediately perform the same lookahead again without making any
+        // further definitions, so we increase lookahead_next().
+        lookahead_next(std::max(
+            lookahead_min(),
+            static_cast<size_t>(lookahead_growth_factor() * num_nodes)));
+      } else if (_stats.lookahead_nodes_killed
+                 < ((num_nodes + _stats.lookahead_nodes_killed)
+                    / lookahead_growth_threshold())) {
+        // In this case,
+        // num_killed_by_me ~= lookahead_next() - num_nodes
+        //                   < (num_nodes + num_killed_by_me) / lgt
+        // => num_killed_by_me * lgt < num_nodes + num_killed_by_me
+        // => num_killed_by_me (lgt - 1) < num_nodes
+        // => num_killed_by_me < num_nodes / (lgt - 1)
+        // i.e. num_killed_by_me is relatively small and so we increase
+        // lookahead_next().
+        lookahead_next(lookahead_next() * lookahead_growth_factor());
+      }
+      return old_lookahead_next;
     }
 
     ToddCoxeterImpl&

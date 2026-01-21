@@ -2114,10 +2114,16 @@ namespace libsemigroups {
                         num_edges);
       }
 
+      ////////////////////////////////////////////////////////////////////////
+      // Lookahead - private
+      ////////////////////////////////////////////////////////////////////////
+
       [[nodiscard]] bool lookahead_stop_early(
           bool                                            should_stop_early,
           std::chrono::high_resolution_clock::time_point& last_stop_early_check,
           uint64_t& killed_at_prev_interval);
+
+      [[nodiscard]] size_t lookahead_update_settings();
 
       ToddCoxeterImpl& perform_lookahead_impl(bool stop_early);
 
