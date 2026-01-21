@@ -104,6 +104,27 @@ namespace libsemigroups::detail {
       return fmt::format(fmt::emphasis::underline, "{}", var);
     }
 
+    // Simple struct that allows the "receivers" value to be set to "val" but
+    // only when the object goes out of scope. Useful in reporting when we
+    // want to do something with an old value, then update the data member of
+    // Stats.
+    class DeferSet {
+      uint64_t& _receiver;
+      uint64_t  _val;
+
+     public:
+      DeferSet(uint64_t& receiver, uint64_t val)
+          : _receiver(receiver), _val(val) {}
+
+      operator uint64_t() {
+        return _val;
+      }
+
+      ~DeferSet() {
+        _receiver = _val;
+      }
+    };
+
   }  // namespace
 
   void ToddCoxeterImpl::report_progress_from_thread(bool divider) const {

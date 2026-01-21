@@ -41,6 +41,42 @@ namespace libsemigroups::detail {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeterImpl::Stats
+  ////////////////////////////////////////////////////////////////////////
+
+  ToddCoxeterImpl::Stats::Stats()
+      : NonAtomicStats(), lookahead_nodes_killed(), lookahead_position() {}
+
+  ToddCoxeterImpl::Stats& ToddCoxeterImpl::Stats::init() {
+    NonAtomicStats::init();
+    return *this;
+  }
+
+  ToddCoxeterImpl::Stats::Stats(Stats const& that)
+      : NonAtomicStats(that),
+        lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
+        lookahead_position(that.lookahead_position.load()) {}
+
+  ToddCoxeterImpl::Stats::Stats(Stats&& that)
+      : NonAtomicStats(std::move(that)),
+        lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
+        lookahead_position(that.lookahead_position.load()) {}
+
+  ToddCoxeterImpl::Stats& ToddCoxeterImpl::Stats::operator=(Stats const& that) {
+    NonAtomicStats::operator=(that);
+    lookahead_nodes_killed = that.lookahead_nodes_killed.load();
+    lookahead_position     = that.lookahead_position.load();
+    return *this;
+  }
+
+  ToddCoxeterImpl::Stats& ToddCoxeterImpl::Stats::operator=(Stats&& that) {
+    NonAtomicStats::operator=(std::move(that));
+    lookahead_nodes_killed = that.lookahead_nodes_killed.load();
+    lookahead_position     = that.lookahead_position.load();
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterImpl mem fns
   ////////////////////////////////////////////////////////////////////////
 

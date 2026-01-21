@@ -57,25 +57,6 @@
 #include "node-manager.hpp"             // for NodeMana...
 #include "word-graph-with-sources.hpp"  // for WordGrap...
 
-////////////////////////////////////////////////////////////////////////
-// This file is organised as follows:
-// 0.  ToddCoxeterImpl - member types - public
-// 1.  ToddCoxeterImpl - nested classes - private
-// 2.  ToddCoxeterImpl - data members - private
-// 3.  ToddCoxeterImpl - constructors + initializers - public
-// 4.  ToddCoxeterImpl - interface requirements - add_generating_pair
-// 5.  ToddCoxeterImpl - interface requirements - number_of_classes
-// 6.  ToddCoxeterImpl - interface requirements - contains
-// 7.  ToddCoxeterImpl - interface requirements - reduce
-// 8.  ToddCoxeterImpl - settings - public
-// 9.  ToddCoxeterImpl - accessors - public
-// 10. ToddCoxeterImpl - modifiers - public
-// 11. ToddCoxeterImpl - word -> index
-// 12. ToddCoxeterImpl - index -> word
-// 13. Runner          - pure virtual member functions - private
-// 14. ToddCoxeterImpl - member functions - private
-////////////////////////////////////////////////////////////////////////
-
 namespace libsemigroups {
 
   // NOTE: groups are defined here because the order they are declared is the
@@ -163,7 +144,7 @@ namespace libsemigroups {
 
      public:
       ////////////////////////////////////////////////////////////////////////
-      // 0. ToddCoxeterImpl - member types - public
+      // Member types - public
       ////////////////////////////////////////////////////////////////////////
 
       struct options : public FelschGraphSettings_::options {
@@ -201,7 +182,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 1. ToddCoxeterImpl - nested classes - private
+      // Nested classes - private
       ////////////////////////////////////////////////////////////////////////
 
       struct Settings;
@@ -209,6 +190,7 @@ namespace libsemigroups {
       class SettingsGuard;
       friend class SettingsGuard;
 
+      // TODO to separate file todd-coxeter-impl-stats.hpp
       struct NonAtomicStats {
         using time_point = std::chrono::high_resolution_clock::time_point;
 
@@ -254,7 +236,6 @@ namespace libsemigroups {
         mutable uint64_t report_nodes_active_prev;
 
         // Constructors + initializers
-
         NonAtomicStats() {
           init();
         }
@@ -267,50 +248,19 @@ namespace libsemigroups {
         NonAtomicStats& operator=(NonAtomicStats&&)      = default;
       };
 
+      // TODO to separate file todd-coxeter-impl-stats.hpp
       struct Stats : public NonAtomicStats {
         // Data
         std::atomic_uint64_t lookahead_nodes_killed;
         std::atomic_uint64_t lookahead_position;
 
         // Constructors + initialisers
-
-        Stats()
-            : NonAtomicStats(),
-              lookahead_nodes_killed(),
-              lookahead_position() {}
-
-        Stats& init() {
-          NonAtomicStats::init();
-          return *this;
-        }
-
-        // TODO to cpp
-        Stats(Stats const& that)
-            : NonAtomicStats(that),
-              lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-              lookahead_position(that.lookahead_position.load()) {}
-
-        // TODO to cpp
-        Stats(Stats&& that)
-            : NonAtomicStats(std::move(that)),
-              lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-              lookahead_position(that.lookahead_position.load()) {}
-
-        // TODO to cpp
-        Stats& operator=(Stats const& that) {
-          NonAtomicStats::operator=(that);
-          lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-          lookahead_position     = that.lookahead_position.load();
-          return *this;
-        }
-
-        // TODO to cpp
-        Stats& operator=(Stats&& that) {
-          NonAtomicStats::operator=(std::move(that));
-          lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-          lookahead_position     = that.lookahead_position.load();
-          return *this;
-        }
+        Stats();
+        Stats& init();
+        Stats(Stats const& that);
+        Stats(Stats&& that);
+        Stats& operator=(Stats const& that);
+        Stats& operator=(Stats&& that);
       };
 
       void stats_run_start();
@@ -319,32 +269,12 @@ namespace libsemigroups {
       void stats_phase_stop();
       void stats_report_stop() const;
 
-      // Simple struct that allows the "receivers" value to be set to "val" but
-      // only when the object goes out of scope. Useful in reporting when we
-      // want to do something with an old value, then update the data member of
-      // Stats.
-      class DeferSet {
-        uint64_t& _receiver;
-        uint64_t  _val;
-
-       public:
-        DeferSet(uint64_t& receiver, uint64_t val)
-            : _receiver(receiver), _val(val) {}
-
-        operator uint64_t() {
-          return _val;
-        }
-
-        ~DeferSet() {
-          _receiver = _val;
-        }
-      };
-
      public:
       ////////////////////////////////////////////////////////////////////////
       // ?. ToddCoxeterImpl - nested classes - public
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO to separate file todd-coxeter-impl-defs.hpp
       class Definitions {
         using Definition = std::pair<node_type, label_type>;
 
@@ -394,6 +324,7 @@ namespace libsemigroups {
         }
       };  // class Definitions
 
+      // TODO to separate file todd-coxeter-impl-graph.hpp
       class Graph
           : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
         using FelschGraph_
@@ -449,7 +380,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 2. ToddCoxeterImpl - data members - private
+      // Data members - private
       ////////////////////////////////////////////////////////////////////////
 
       bool                                   _finished;
@@ -468,7 +399,7 @@ namespace libsemigroups {
       using word_graph_type = Graph;
 
       ////////////////////////////////////////////////////////////////////////
-      // 3. ToddCoxeterImpl - constructors + initializers - public
+      // Constructors + initializers - public
       ////////////////////////////////////////////////////////////////////////
 
       ToddCoxeterImpl();
@@ -536,7 +467,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 4. ToddCoxeterImpl - interface requirements - add_generating_pair
+      // Interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1,
@@ -564,7 +495,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 5. ToddCoxeterImpl - interface requirements - number_of_classes
+      // Interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_intf_group
@@ -583,7 +514,7 @@ namespace libsemigroups {
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
-      // 6. ToddCoxeterImpl - interface requirements - contains
+      // Interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1,
@@ -626,7 +557,7 @@ namespace libsemigroups {
                     Iterator4 last2);
 
       ////////////////////////////////////////////////////////////////////////
-      // 7. ToddCoxeterImpl - interface requirements - reduce
+      // Interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
       template <typename OutputIterator,
@@ -666,7 +597,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 8. ToddCoxeterImpl - settings - public
+      // Settings - public
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -1337,7 +1268,7 @@ namespace libsemigroups {
 #endif
 
       ////////////////////////////////////////////////////////////////////////
-      // 9. ToddCoxeterImpl - accessors - public
+      // Accessors - public
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -1368,6 +1299,7 @@ namespace libsemigroups {
       //! \noexcept
       // This isn't really necessary in C++, but in the python bindings we don't
       // bind ToddCoxeter::Graph and so we expose this here.
+      // TODO deprecate and move to the word group itself?
       [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
         return current_word_graph().number_of_nodes_active();
       }
@@ -1393,6 +1325,7 @@ namespace libsemigroups {
       //! \noexcept
       // This isn't really necessary in C++, but in the python bindings we don't
       // bind ToddCoxeter::Graph and so we expose this here.
+      // TODO deprecate and move to the word group itself?
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
         return current_word_graph().number_of_edges_active();
       }
@@ -1412,6 +1345,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      // TODO deprecate and move to the word group itself?
       [[nodiscard]] float complete() const noexcept {
         return complete(current_word_graph().number_of_edges_active());
       }
@@ -1618,12 +1552,13 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      // TODO deprecate and move to the word group itself?
       [[nodiscard]] uint64_t number_of_large_collapses() const noexcept {
         return _word_graph.stats().num_large_collapses;
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 10. ToddCoxeterImpl - modifiers - public
+      // Modifiers - public
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1706,7 +1641,7 @@ namespace libsemigroups {
       ToddCoxeterImpl& perform_lookbehind(bool);
 
       ////////////////////////////////////////////////////////////////////////
-      // 11. ToddCoxeterImpl - word -> index
+      // Word -> index
       ////////////////////////////////////////////////////////////////////////
 
       //! \defgroup todd_coxeter_class_word_index_group Word to class index
@@ -1850,7 +1785,7 @@ namespace libsemigroups {
       //! @}
 
       ////////////////////////////////////////////////////////////////////////
-      // 12. ToddCoxeterImpl - index -> word
+      // Index -> word
       ////////////////////////////////////////////////////////////////////////
 
       //! \defgroup todd_coxeter_class_index_word_group Class index to word
@@ -1996,21 +1931,21 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 13. Runner - pure virtual member functions - private
+      // Runner - pure virtual member functions - private
       ////////////////////////////////////////////////////////////////////////
-
-      void really_run_impl();
-
-      void run_impl() override;
 
       [[nodiscard]] bool finished_impl() const override {
         return _finished;
       }
+      void run_impl() override;
+
+      void really_run_impl();  // And this guy
 
       ////////////////////////////////////////////////////////////////////////
-      // 14. ToddCoxeterImpl - member functions - private
+      // Misc member functions - private
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO cleanup this section
       void copy_settings_into_graph();
 
       // This function has prefix tc_ because there's already a settings
@@ -2049,17 +1984,21 @@ namespace libsemigroups {
 
       [[nodiscard]] size_t lookahead_update_settings();
 
-      ToddCoxeterImpl& perform_lookahead_impl(bool stop_early);
+      ToddCoxeterImpl& perform_lookahead_impl(bool should_stop_early);
+
+      void hlt_lookahead(bool should_stop_early);
+      void felsch_lookahead(bool should_stop_early);
 
       ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterImpl - main strategies - private
+      // Main strategies - private
       ////////////////////////////////////////////////////////////////////////
 
       void before_run();
       void after_run();
-
       void felsch();
       void hlt();
+
+      // TODO to helpers
       void CR_style();
       void R_over_C_style();
       void Cr_style();
@@ -2092,16 +2031,8 @@ namespace libsemigroups {
                           uint64_t       num_active_edges) const;
       void add_lookahead_row(ReportCell<5>& rc) const;
 
-      ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterImpl - lookahead - private
-      ////////////////////////////////////////////////////////////////////////
-
-      void hlt_lookahead(bool should_stop_early);
-      void felsch_lookahead(bool should_stop_early);
     };  // class ToddCoxeterImpl
-
   }  // namespace detail
-
 }  // namespace libsemigroups
 
 #include "todd-coxeter-impl.tpp"
