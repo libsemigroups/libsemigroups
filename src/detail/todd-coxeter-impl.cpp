@@ -899,7 +899,7 @@ namespace libsemigroups {
         }
       } else if (strategy() == options::strategy::lookahead) {
         Guard guard(_state, state::lookahead);
-        perform_lookahead(false);
+        perform_lookahead_impl(false);
       } else if (strategy() == options::strategy::lookbehind) {
         Guard guard(_state, state::lookbehind);
         perform_lookbehind(false);
@@ -1024,7 +1024,7 @@ namespace libsemigroups {
             SettingsGuard guard(this);
             lookahead_extent(options::lookahead_extent::full);
             lookahead_style(options::lookahead_style::hlt);
-            perform_lookahead(DoNotStopEarly);
+            perform_lookahead_impl(DoNotStopEarly);
           }
         }
         if (any_change()) {
@@ -1093,7 +1093,7 @@ namespace libsemigroups {
           // a lookahead.
           report_after_phase();
           stats_phase_stop();
-          perform_lookahead(StopEarly);
+          perform_lookahead_impl(StopEarly);
           stats_phase_start();
           report_before_phase();
         }
@@ -1124,7 +1124,7 @@ namespace libsemigroups {
       }
       lookahead_extent(options::lookahead_extent::full);
       lookahead_style(options::lookahead_style::hlt);
-      perform_lookahead(DoNotStopEarly);
+      perform_lookahead_impl(DoNotStopEarly);
     }
 
     void ToddCoxeterImpl::R_over_C_style() {
@@ -1136,7 +1136,7 @@ namespace libsemigroups {
                >= lookahead_next();
       });
       lookahead_extent(options::lookahead_extent::full);
-      perform_lookahead(StopEarly);
+      perform_lookahead_impl(StopEarly);
       CR_style();
     }
 
@@ -1159,7 +1159,7 @@ namespace libsemigroups {
       run();
       lookahead_extent(options::lookahead_extent::full);
       lookahead_style(options::lookahead_style::hlt);
-      perform_lookahead(DoNotStopEarly);
+      perform_lookahead_impl(DoNotStopEarly);
     }
 
     void ToddCoxeterImpl::Rc_style() {
@@ -1182,7 +1182,7 @@ namespace libsemigroups {
       run();
       lookahead_extent(options::lookahead_extent::full);
       lookahead_style(options::lookahead_style::hlt);
-      perform_lookahead(DoNotStopEarly);
+      perform_lookahead_impl(DoNotStopEarly);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1751,11 +1751,11 @@ namespace libsemigroups {
     // ToddCoxeterImpl - lookahead - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO replace should_stop_early with a function
-    void ToddCoxeterImpl::perform_lookahead(bool should_stop_early) {
+    ToddCoxeterImpl&
+    ToddCoxeterImpl::perform_lookahead_impl(bool should_stop_early) {
       if (_word_graph.number_of_nodes_active() == 1) {
         // Can't collapse anything in this case
-        return;
+        return *this;
       }
       Guard guard(_state, state::lookahead);
 
@@ -1832,6 +1832,7 @@ namespace libsemigroups {
         report_after_run();
         stats_run_stop();
       }
+      return *this;
     }
 
     ToddCoxeterImpl&

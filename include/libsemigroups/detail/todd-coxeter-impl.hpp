@@ -1749,8 +1749,9 @@ namespace libsemigroups {
       //!
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
-      // TODO return type ToddCoxeterImpl&
-      void perform_lookahead(bool stop_early);
+      ToddCoxeterImpl& perform_lookahead() {
+        return perform_lookahead_impl(false);
+      }
 
       // Perform a lookahead for an amount of time
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
@@ -1761,6 +1762,11 @@ namespace libsemigroups {
       }
 
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
+
+      ToddCoxeterImpl&
+      perform_lookahead_until(std::function<bool()> const& pred) {
+        return perform_lookahead_until(std::function<bool()>(pred));
+      }
 
       // TODO doc
       // TODO perform_lookbehind_for(Time) with/without collapser
@@ -2112,6 +2118,10 @@ namespace libsemigroups {
           std::chrono::high_resolution_clock::time_point& last_stop_early_check,
           uint64_t& killed_at_prev_interval);
 
+      // TODO return type ToddCoxeterImpl&
+      ToddCoxeterImpl& perform_lookahead_impl(bool stop_early);
+
+      // TODO rm
       void perform_lookahead_with_stop_early();
 
       ////////////////////////////////////////////////////////////////////////

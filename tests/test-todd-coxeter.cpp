@@ -3109,7 +3109,7 @@ namespace libsemigroups {
     tc.strategy(options::strategy::felsch).large_collapse(10'000'000);
     while (!tc.finished()) {
       tc.run_for(std::chrono::seconds(2));
-      tc.perform_lookahead(options::stop_early);
+      tc.perform_lookahead();
       tc.perform_lookbehind(options::do_not_stop_early);
       tc.perform_lookbehind(collapser, options::do_not_stop_early);
     }
