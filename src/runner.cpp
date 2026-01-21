@@ -156,6 +156,9 @@ namespace libsemigroups {
   }
 
   void Runner::run_for(std::chrono::nanoseconds val) {
+    // TODO uncomment, currently this triggers when using any of the non-core
+    // strategies from ToddCoxeterImpl
+    // LIBSEMIGROUPS_ASSERT(!running());
     if (!finished() && !dead()) {
       emit_divider();
       if (val != FOREVER) {

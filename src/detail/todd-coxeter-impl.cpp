@@ -1873,6 +1873,18 @@ namespace libsemigroups {
       return false;
     }
 
+    // TODO remove this, it doesn't work, if we call this from within run_impl,
+    // then the object gets confused about what state it is in, and can end up
+    // stopping running before it is finished.
+    void ToddCoxeterImpl::perform_lookahead_with_stop_early() {
+      auto last_stop_early_check   = std::chrono::high_resolution_clock::now();
+      auto killed_at_prev_interval = _word_graph.number_of_nodes_killed();
+      perform_lookahead_until([&]() {
+        return lookahead_stop_early(
+            true, last_stop_early_check, killed_at_prev_interval);
+      });
+    }
+
     void ToddCoxeterImpl::hlt_lookahead(bool should_stop_early) {
       _word_graph.make_compatible(this,
                                   _word_graph.lookahead_cursor(),

@@ -31,6 +31,9 @@ namespace libsemigroups {
         std::is_same_v<std::invoke_result_t<Func>, bool>,
         "the result type of calling an object of type Func (the template "
         "parameter) must be bool!");
+    // TODO uncomment, currently this triggers when using any of the non-core
+    // strategies from ToddCoxeterImpl
+    // LIBSEMIGROUPS_ASSERT(!running());
     if (!finished() && !dead()) {
       report_default("{}: running until predicate returns true or finished\n",
                      report_prefix());
