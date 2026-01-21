@@ -55,7 +55,8 @@ namespace libsemigroups {
       presentation::throw_if_not_normalized(p);
 
       detail::CongruenceCommon::init(knd);
-      _finished = false;
+      _finished  = false;
+      _never_run = true;
       reset_settings_stack();
       _standardized   = Order::none;
       _ticker_running = false;

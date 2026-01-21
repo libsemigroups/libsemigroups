@@ -209,7 +209,6 @@ namespace libsemigroups {
       class SettingsGuard;
       friend class SettingsGuard;
 
-      // TODO to cpp?
       struct NonAtomicStats {
         using time_point = std::chrono::high_resolution_clock::time_point;
 
@@ -268,7 +267,6 @@ namespace libsemigroups {
         NonAtomicStats& operator=(NonAtomicStats&&)      = default;
       };
 
-      // TODO to cpp?
       struct Stats : public NonAtomicStats {
         // Data
         std::atomic_uint64_t lookahead_nodes_killed;
@@ -315,97 +313,16 @@ namespace libsemigroups {
         }
       };
 
-      // TODO to cpp
-      void stats_run_start() {
-        _stats.run_start_time = std::chrono::high_resolution_clock::now();
-
-        _stats.run_nodes_active_at_start
-            = current_word_graph().number_of_nodes_active();
-        _stats.run_edges_active_at_start
-            = current_word_graph().number_of_edges_active();
-        _stats.run_num_hlt_phases       = 0;
-        _stats.run_num_felsch_phases    = 0;
-        _stats.run_num_lookahead_phases = 0;
-
-        _stats.run_hlt_phases_time       = std::chrono::nanoseconds(0);
-        _stats.run_felsch_phases_time    = std::chrono::nanoseconds(0);
-        _stats.run_lookahead_phases_time = std::chrono::nanoseconds(0);
-
-        _stats.phase_index = 0;
-      }
-
-      // TODO to cpp
-      void stats_run_stop() {
-        _stats.run_index++;
-
-        _stats.all_runs_time += delta(_stats.run_start_time);
-        _stats.all_num_hlt_phases += _stats.run_num_hlt_phases;
-        _stats.all_num_felsch_phases += _stats.run_num_felsch_phases;
-        _stats.all_num_lookahead_phases += _stats.run_num_lookahead_phases;
-
-        _stats.all_hlt_phases_time += _stats.run_hlt_phases_time;
-        _stats.all_felsch_phases_time += _stats.run_felsch_phases_time;
-        _stats.all_lookahead_phases_time += _stats.run_lookahead_phases_time;
-      }
-
-      // TODO to cpp
-      void stats_phase_start() {
-        _stats.phase_start_time = std::chrono::high_resolution_clock::now();
-        _stats.report_index     = 0;
-
-        _stats.phase_nodes_active_at_start
-            = current_word_graph().number_of_nodes_active();
-        _stats.phase_nodes_killed_at_start
-            = current_word_graph().number_of_nodes_killed();
-        _stats.phase_nodes_defined_at_start
-            = current_word_graph().number_of_nodes_defined();
-
-        _stats.phase_edges_active_at_start
-            = current_word_graph().number_of_edges_active();
-        _stats.phase_complete_at_start
-            = complete(current_word_graph().number_of_edges_active());
-      }
-
-      // TODO to cpp
-      void stats_phase_stop() {
-        _stats.phase_index++;
-
-        switch (_state) {
-          case state::none: {
-            break;
-          }
-          case state::hlt: {
-            _stats.run_num_hlt_phases++;
-            _stats.run_hlt_phases_time += delta(_stats.phase_start_time);
-            break;
-          }
-          case state::felsch: {
-            _stats.run_num_felsch_phases++;
-            _stats.run_felsch_phases_time += delta(_stats.phase_start_time);
-            break;
-          }
-          case state::lookahead: {
-            _stats.run_num_lookahead_phases++;
-            _stats.run_lookahead_phases_time += delta(_stats.phase_start_time);
-            break;
-          }
-          case state::lookbehind: {
-            // intentional fall through, not currently collecting stats here
-          }
-          default: {
-            break;
-          }
-        }
-      }
-
-      void stats_report_stop() const {
-        _stats.report_index++;
-      }
+      void stats_run_start();
+      void stats_run_stop();
+      void stats_phase_start();
+      void stats_phase_stop();
+      void stats_report_stop() const;
 
       // Simple struct that allows the "receivers" value to be set to "val" but
-      // only when the object goes out of scope. Useful in reporting when
-      // we want to do something with an old value, then update the data member
-      // of Stats.
+      // only when the object goes out of scope. Useful in reporting when we
+      // want to do something with an old value, then update the data member of
+      // Stats.
       class DeferSet {
         uint64_t& _receiver;
         uint64_t  _val;
@@ -2103,10 +2020,7 @@ namespace libsemigroups {
 
       void reset_settings_stack();
 
-      [[nodiscard]] bool any_change() const {
-        return _stats.run_nodes_active_at_start
-               != current_word_graph().number_of_nodes_active();
-      }
+      [[nodiscard]] bool any_change() const;
 
       // We take both values here, although we could compute them, so that in
       // report_progress_from_thread we do not report at one point in time with

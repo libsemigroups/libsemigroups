@@ -371,23 +371,6 @@ namespace libsemigroups::detail {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // ToddCoxeterImpl::NonAtomicStats
-  ////////////////////////////////////////////////////////////////////////
-
-  ToddCoxeterImpl::NonAtomicStats& ToddCoxeterImpl::NonAtomicStats::init() {
-    create_or_init_time = std::chrono::high_resolution_clock::now();
-    run_index           = 0;
-
-    all_num_hlt_phases       = 0;
-    all_num_felsch_phases    = 0;
-    all_num_lookahead_phases = 0;
-    run_num_hlt_phases       = 0;
-    run_num_felsch_phases    = 0;
-    run_num_lookahead_phases = 0;
-    return *this;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterImpl - constructors + initializers - public
   ////////////////////////////////////////////////////////////////////////
 
@@ -900,6 +883,11 @@ namespace libsemigroups::detail {
     // _word_graph.definitions
     _word_graph.definitions().init(this);
     _word_graph.report_prefix("ToddCoxeter");
+  }
+
+  [[nodiscard]] bool ToddCoxeterImpl::any_change() const {
+    return _stats.run_nodes_active_at_start
+           != current_word_graph().number_of_nodes_active();
   }
 
   ////////////////////////////////////////////////////////////////////////
