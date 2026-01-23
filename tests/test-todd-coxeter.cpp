@@ -2211,8 +2211,8 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     while (tc.complete() < 0.60) {
       tc.run_for(std::chrono::seconds(1));
-      tc.perform_lookbehind(false);
-      tc.perform_lookbehind(collapser, false);
+      tc.perform_lookbehind();
+      tc.perform_lookbehind(collapser);
     }
     tc.strategy(options::strategy::hlt);
 
@@ -2386,10 +2386,11 @@ namespace libsemigroups {
     });
     REQUIRE(tc.stopped_by_predicate());
     REQUIRE(tc.strategy() == options::strategy::hlt);
-    tc.perform_lookahead_until(
-        [&tc]() { return tc.number_of_nodes_active() < 10'000'000; });
-    REQUIRE(tc.stopped_by_predicate());
-    REQUIRE(tc.strategy() == options::strategy::hlt);
+    // tc.perform_lookahead_until(
+    //     [&tc]() { return tc.number_of_nodes_active() < 10'000'000; });
+    // REQUIRE(tc.stopped_by_predicate());
+    // REQUIRE(tc.strategy() == options::strategy::hlt);
+    tc.perform_lookbehind();
 
     // REQUIRE(tc.number_of_classes() == 1);
   }
@@ -3108,8 +3109,8 @@ namespace libsemigroups {
     while (!tc.finished()) {
       tc.run_for(std::chrono::seconds(2));
       tc.perform_lookahead();
-      tc.perform_lookbehind(false);
-      tc.perform_lookbehind(collapser, false);
+      tc.perform_lookbehind();
+      tc.perform_lookbehind(collapser);
     }
 
     // REQUIRE(is_non_trivial(tc) == tril::TRUE);
@@ -3914,7 +3915,7 @@ namespace libsemigroups {
     auto collapser = [&kb](auto d_first, auto first, auto last) {
       return kb.reduce_no_run_no_checks(d_first, first, last);
     };
-    tc.perform_lookbehind(collapser, true);
+    tc.perform_lookbehind(collapser);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {

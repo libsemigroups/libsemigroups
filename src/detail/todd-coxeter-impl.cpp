@@ -281,6 +281,7 @@ namespace libsemigroups::detail {
     auto   start_time         = std::chrono::high_resolution_clock::now();
     Ticker ticker;
 
+    // TODO why does this exist?
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
 
@@ -820,7 +821,7 @@ namespace libsemigroups::detail {
       perform_lookahead_impl(false);
     } else if (strategy() == options::strategy::lookbehind) {
       Guard guard(_state, state::lookbehind);
-      perform_lookbehind(false);
+      perform_lookbehind_impl();  // TODO incorporate collapser here
     } else if (strategy() == options::strategy::CR) {
       CR_style();
     } else if (strategy() == options::strategy::R_over_C) {
@@ -1173,6 +1174,29 @@ namespace libsemigroups::detail {
     return *this;
   }
 
+  ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind_impl() {
+    using iterator       = std::back_insert_iterator<word_type>;
+    using const_iterator = word_type::const_iterator;
+    if (kind() == congruence_kind::onesided
+        && !internal_generating_pairs().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected a 2-sided ToddCoxeter instance, or a 1-sided ToddCoxeter "
+          "instance with 0 generating pairs")
+    }
+    auto collapser
+        = [this](iterator d_first, const_iterator first, const_iterator last) {
+            reduce_no_run_no_checks(d_first, first, last);
+          };
+    return perform_lookbehind(collapser);
+  }
+
+  ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind() {
+    SettingsGuard sg(this);
+    strategy(options::strategy::lookbehind);
+    run();
+    return *this;
+  }
+
   size_t ToddCoxeterImpl::lookahead_update_settings() {
     size_t const num_nodes          = _word_graph.number_of_nodes_active();
     size_t const old_lookahead_next = lookahead_next();
@@ -1302,19 +1326,4 @@ namespace libsemigroups::detail {
     _ticker_running = old_ticker_running;
   }
 
-  ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind(bool should_stop_early) {
-    using iterator       = std::back_insert_iterator<word_type>;
-    using const_iterator = word_type::const_iterator;
-    if (kind() == congruence_kind::onesided
-        && !internal_generating_pairs().empty()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected a 2-sided ToddCoxeter instance, or a 1-sided ToddCoxeter "
-          "instance with 0 generating pairs")
-    }
-    auto collapser
-        = [this](iterator d_first, const_iterator first, const_iterator last) {
-            reduce_no_run_no_checks(d_first, first, last);
-          };
-    return perform_lookbehind(collapser, should_stop_early);
-  }
 }  // namespace libsemigroups::detail

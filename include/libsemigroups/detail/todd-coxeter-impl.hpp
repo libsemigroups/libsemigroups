@@ -160,6 +160,7 @@ namespace libsemigroups {
         };
 
         enum class lookahead_extent { full, partial };
+        // TODO lookbehind_extent
 
         enum class lookahead_style { hlt, felsch };
 
@@ -1607,8 +1608,13 @@ namespace libsemigroups {
       //!
       //! \sa perform_lookahead_for and perform_lookahead_until
       ToddCoxeterImpl& perform_lookahead() {
+        // TODO this isn't correct, should set strategy then run
         return perform_lookahead_impl(false);
       }
+
+      // TODO for backward compatibility have a [[deprecated]]
+      // perform_lookahead(bool) that just forwards its arg to
+      // perform_lookahead_impl
 
       // TODO doc
       // Perform a lookahead for an amount of time
@@ -1635,10 +1641,10 @@ namespace libsemigroups {
       // TODO perform_lookbehind_for(Time) with/without collapser
       // TODO perform_lookbehind_until(Func) with/without collapser
       template <typename Func>
-      ToddCoxeterImpl& perform_lookbehind(Func&&, bool);
+      ToddCoxeterImpl& perform_lookbehind(Func&&);
 
       // TODO doc
-      ToddCoxeterImpl& perform_lookbehind(bool);
+      ToddCoxeterImpl& perform_lookbehind();
 
       ////////////////////////////////////////////////////////////////////////
       // Word -> index
@@ -1985,6 +1991,7 @@ namespace libsemigroups {
       [[nodiscard]] size_t lookahead_update_settings();
 
       ToddCoxeterImpl& perform_lookahead_impl(bool should_stop_early);
+      ToddCoxeterImpl& perform_lookbehind_impl();
 
       void hlt_lookahead(bool should_stop_early);
       void felsch_lookahead(bool should_stop_early);

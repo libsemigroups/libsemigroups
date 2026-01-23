@@ -251,83 +251,55 @@ namespace libsemigroups {
     }
 
     template <typename Func>
-    ToddCoxeterImpl&
-    ToddCoxeterImpl::perform_lookbehind(Func&& collapser,
-                                        bool   should_stop_early) {
+    ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind(Func&& collapser) {
       if (_word_graph.number_of_nodes_active() == 1) {
         // Can't collapse anything in this case
         return *this;
       }
 
-      if (!running()) {
-        stats_run_start();
-        report_before_run();
-      }
-      stats_phase_start();
-
+      // TODO Rename Guard to ValueGuard
       Guard guard(_state, state::lookbehind);
-      report_before_phase();
 
-      auto const old_number_of_killed    = _word_graph.number_of_nodes_killed();
-      auto       killed_at_prev_interval = old_number_of_killed;
+      stats_phase_start();
+      report_before_phase();
 
       bool       old_ticker_running = _ticker_running;
       time_point start_time         = std::chrono::high_resolution_clock::now();
       Ticker     ticker;
 
+      node_type& current = _word_graph.lookahead_cursor();
+
       word_type w1, w2;
 
-      node_type& current = _word_graph.lookahead_cursor();
-      current            = _word_graph.initial_node();
-      size_t N           = _word_graph.number_of_nodes_active();
+      current = _word_graph.initial_node();
       standardize(Order::shortlex);
 
-      // Do the next line after standardize
-      auto last_stop_early_check = std::chrono::high_resolution_clock::now();
-
-      while (!finished() && current < N) {
-        for (; current < N; ++current) {
-          w1.clear();
-          w2.clear();
-          _forest.path_from_root_no_checks(std::back_inserter(w1), current);
-          collapser(std::back_inserter(w2), w1.begin(), w1.end());
-          if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
-            node_type other = v4::word_graph::follow_path_no_checks(
-                _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
-            if (other != UNDEFINED && other != current) {
-              _word_graph.merge_nodes_no_checks(current, other);
+      while (current < _word_graph.number_of_nodes_active() && !stopped()) {
+        w1.clear();
+        w2.clear();
+        _forest.path_from_root_no_checks(std::back_inserter(w1), current);
+        collapser(std::back_inserter(w2), w1.begin(), w1.end());
+        if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
+          node_type other = v4::word_graph::follow_path_no_checks(
+              _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
+          if (other != UNDEFINED && other != current) {
+            _word_graph.merge_nodes_no_checks(current, other);
+            if (_word_graph.number_of_coincidences() > 32'768) {
+              _word_graph.process_coincidences();
+              standardize(Order::shortlex);
             }
           }
-          if (_word_graph.number_of_coincidences() >= large_collapse()
-              || lookahead_stop_early(should_stop_early,
-                                      last_stop_early_check,
-                                      killed_at_prev_interval)) {
-            break;
-          }
         }
-        if (current >= N && !_ticker_running && reporting_enabled()
+        current++;
+        if (!_ticker_running && reporting_enabled()
             && delta(start_time) >= std::chrono::milliseconds(500)) {
           _ticker_running = true;
           ticker([this]() { report_progress_from_thread(true); });
         }
-        if (_word_graph.number_of_coincidences() < large_collapse()) {
-          _word_graph.process_coincidences();
-          break;
-        }
-        standardize(Order::shortlex);
-        N = _word_graph.number_of_nodes_active();
-        if (lookahead_stop_early(should_stop_early,
-                                 last_stop_early_check,
-                                 killed_at_prev_interval)) {
-          break;
-        }
       }
+      _word_graph.process_coincidences();
       report_after_phase();
       stats_phase_stop();
-      if (!running()) {
-        report_after_run();
-        stats_run_stop();
-      }
       _ticker_running = old_ticker_running;
       return *this;
     }

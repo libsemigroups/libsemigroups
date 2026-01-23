@@ -86,7 +86,7 @@ namespace libsemigroups {
     }
 
     void perform_lookbehind(detail::ToddCoxeterImpl& tc) {
-      tc.perform_lookbehind(false);
+      tc.perform_lookbehind();
     }
   }  // namespace todd_coxeter
 }  // namespace libsemigroups
