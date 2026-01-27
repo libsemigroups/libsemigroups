@@ -2209,12 +2209,14 @@ namespace libsemigroups {
     };
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    while (tc.complete() < 0.60) {
-      tc.run_for(std::chrono::seconds(1));
-      tc.perform_lookbehind();
-      tc.perform_lookbehind(collapser);
-    }
+    // while (tc.complete() < 0.60) {
+    //   tc.run_for(std::chrono::seconds(1));
+    //   tc.perform_lookbehind();
+    //   tc.perform_lookbehind(collapser);
+    // }
     tc.strategy(options::strategy::hlt);
+    tc.run_for(std::chrono::seconds(4));
+    tc.perform_lookbehind();
 
     // TODO(1) should be some interplay between lookahead_min and
     // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be
@@ -2390,9 +2392,10 @@ namespace libsemigroups {
     //     [&tc]() { return tc.number_of_nodes_active() < 10'000'000; });
     // REQUIRE(tc.stopped_by_predicate());
     // REQUIRE(tc.strategy() == options::strategy::hlt);
+
     tc.perform_lookbehind();
 
-    // REQUIRE(tc.number_of_classes() == 1);
+    REQUIRE(tc.number_of_classes() == 1);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

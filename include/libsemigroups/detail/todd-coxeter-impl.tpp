@@ -18,6 +18,7 @@
 
 // This file contains out-of-line ToddCoxeterImpl mem fn templates.
 
+#include "libsemigroups/word-graph-helpers.hpp"
 namespace libsemigroups {
   namespace detail {
 
@@ -214,23 +215,29 @@ namespace libsemigroups {
     ToddCoxeterImpl::reduce_no_run_no_checks(OutputIterator d_first,
                                              InputIterator1 first,
                                              InputIterator2 last) const {
-      if (!is_standardized()) {
-        // TODO(1) this is a bit fishy
-        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
-      }
       if (finished()
           || (kind() == congruence_kind::onesided
               && !internal_generating_pairs().empty())) {
+        if (!is_standardized()) {
+          // TODO(1) this is a bit fishy
+          const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
+        }
         index_type pos = current_index_of_no_checks(first, last);
         if (pos == UNDEFINED) {
           return std::copy(first, last, d_first);
         }
         return current_word_of_no_checks(d_first, pos);
       }
-
       node_type const s = current_word_graph().initial_node();
-      word_type       u(first, last);
-      auto            v_begin = u.begin();
+      // TODO just testing something like this needs to be here
+      // if (!is_standardized()) {
+      //   auto& f = const_cast<Forest&>(_forest);
+      //   f.init();
+      //   v4::word_graph::spanning_tree_no_checks(current_word_graph(), s, f);
+      // }
+
+      word_type u(first, last);
+      auto      v_begin = u.begin();
 
       while (v_begin != u.end()) {
         auto [t, old_end] = v4::word_graph::last_node_on_path_no_checks(
@@ -240,6 +247,8 @@ namespace libsemigroups {
                         std::reverse_iterator(v_begin),
                         _forest.cbegin_path_to_root_no_checks(t),
                         _forest.cend_path_to_root_no_checks(t))) {
+          LIBSEMIGROUPS_ASSERT(forest::depth_no_checks(f, t)
+                               <= std::distance(v_begin, old_end));
           auto new_end = _forest.path_from_root_no_checks(v_begin, t);
           u.erase(new_end, old_end);
           v_begin = u.begin();
@@ -272,7 +281,11 @@ namespace libsemigroups {
       word_type w1, w2;
 
       current = _word_graph.initial_node();
-      standardize(Order::shortlex);
+      auto  s = current;
+      auto& f = const_cast<Forest&>(_forest);
+      f.init();
+      v4::word_graph::spanning_tree_no_checks(current_word_graph(), s, f);
+      // standardize(Order::shortlex);
 
       while (current < _word_graph.number_of_nodes_active() && !stopped()) {
         w1.clear();
@@ -286,7 +299,11 @@ namespace libsemigroups {
             _word_graph.merge_nodes_no_checks(current, other);
             if (_word_graph.number_of_coincidences() > 32'768) {
               _word_graph.process_coincidences();
-              standardize(Order::shortlex);
+              auto& f = const_cast<Forest&>(_forest);
+              f.init();
+              v4::word_graph::spanning_tree_no_checks(
+                  current_word_graph(), s, f);
+              // standardize(Order::shortlex);
             }
           }
         }
