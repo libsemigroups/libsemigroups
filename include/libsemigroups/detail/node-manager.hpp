@@ -250,6 +250,19 @@ namespace libsemigroups {
         return _id_node;
       }
 
+      // TODO to cpp
+      [[nodiscard]] node_type max_active_node() const noexcept {
+        auto      current = initial_node();
+        node_type max     = 0;
+        while (current != first_free_node()) {
+          if (current > max) {
+            max = current;
+          }
+          current = next_active_node(current);
+        }
+        return max;
+      }
+
      private:
       void compact(size_t N);
 

@@ -331,8 +331,13 @@ namespace libsemigroups {
         using FelschGraph_
             = FelschGraph<NodeManagedGraph<node_type>, Definitions>;
 
+        // Private data
+        mutable Forest _forest;
+        mutable bool   _forest_valid;
+
        public:
-        Graph()                        = default;
+        Graph() : _forest(), _forest_valid(false) {}
+
         Graph(Graph const&)            = default;
         Graph(Graph&&)                 = default;
         Graph& operator=(Graph const&) = default;
@@ -344,7 +349,66 @@ namespace libsemigroups {
         }
 
         using FelschGraph_::presentation;
+        // For the other overload of target_no_checks
         using FelschGraph_::target_no_checks;
+
+        Graph& target_no_checks(node_type  s,
+                                label_type a,
+                                node_type  t) noexcept {
+          _forest_valid = false;
+          FelschGraph_::target_no_checks(s, a, t);
+          return *this;
+        }
+
+        Graph& register_target_no_checks(node_type  s,
+                                         label_type a,
+                                         node_type  t) noexcept {
+          _forest_valid = false;
+          FelschGraph_::register_target_no_checks(s, a, t);
+          return *this;
+        }
+
+        // TODO New version required, i.e. things that modify the graph such
+        // that the spanning tree will become invalid
+        // TODO privatise and befriend ToddCoxeterImpl
+        template <typename Functor = Noop>
+        void process_coincidences(Functor&& func = Noop{}) {
+          // FelschGraph_::process_coincidences returns true if any changes are
+          // made to the graph.
+          if (FelschGraph_::process_coincidences(std::forward<Functor>(func))) {
+            _forest_valid = false;
+          }
+        }
+
+        Forest const& current_spanning_tree() const {
+          return const_cast<Graph&>(*this).current_spanning_tree();
+        }
+
+        // TODO to cpp file
+        Forest& current_spanning_tree() {
+          if (!_forest_valid) {
+            _forest.init();
+            v4::word_graph::spanning_tree_no_checks(
+                *this, initial_node(), _forest);
+            _forest_valid = true;
+          }
+          LIBSEMIGROUPS_ASSERT(_forest.number_of_nodes()
+                               == max_active_node() + 1);
+          return _forest;
+        }
+        // TODO rm the following, added to figure out what mem fns of
+        // FelschGraph are called here
+        // using FelschGraph_::initial_node;
+        // using FelschGraph_::is_active_node;
+        // using FelschGraph_::lookahead_cursor;
+        // using FelschGraph_::merge_nodes_no_checks;
+        // using FelschGraph_::number_of_coincidences;
+        // using FelschGraph_::number_of_edges_active;
+        // using FelschGraph_::number_of_nodes;
+        // using FelschGraph_::number_of_nodes_active;
+        // using FelschGraph_::out_degree;
+        // using FelschGraph_::stats;
+        // using FelschGraph_::target;
 
         Graph& init();
         Graph& init(Presentation<word_type>&& p);
@@ -358,8 +422,10 @@ namespace libsemigroups {
 
         Graph& presentation_no_checks(Presentation<word_type> const& p);
 
+        // TODO privatise and befriend ToddCoxeterImpl
         void process_definitions();
 
+        // TODO privatise and befriend ToddCoxeterImpl
         template <bool RegDefs>
         void push_definition_hlt(node_type const& c,
                                  word_type const& u,
@@ -385,7 +451,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       bool                                   _finished;
-      Forest                                 _forest;
       bool                                   _never_run;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
@@ -1114,9 +1179,10 @@ namespace libsemigroups {
       //! instance. If the number of active nodes becomes at least the value
       //! of the argument, and the word graph is complete (
       //! \ref word_graph::is_complete returns \c true), then the
-      //! enumeration is terminated. When the given bound is equal to the number
-      //! of classes, this may prevent following the paths labelled by relations
-      //! at many nodes when there is no possibility of finding coincidences.
+      //! enumeration is terminated. When the given bound is equal to the
+      //! number of classes, this may prevent following the paths labelled by
+      //! relations at many nodes when there is no possibility of finding
+      //! coincidences.
       //!
       //! The default value is \ref UNDEFINED.
       //!
@@ -1285,21 +1351,21 @@ namespace libsemigroups {
       //! word graph.
       //!
       //! This function returns the number of nodes in the active part of the
-      //! \ref current_word_graph. Recall that \ref current_word_graph can grow
-      //! and shrink drastically during a congruence enumeration. As
-      //! such to avoid unnecessary memory allocations, where possible, the
-      //! nodes in the \ref current_word_graph are "recycled" leading to the
+      //! \ref current_word_graph. Recall that \ref current_word_graph can
+      //! grow and shrink drastically during a congruence enumeration. As such
+      //! to avoid unnecessary memory allocations, where possible, the nodes
+      //! in the \ref current_word_graph are "recycled" leading to the
       //! situation where some of the nodes in \ref current_word_graph are
-      //! "active" and others are "inactive". In other words, the "active" nodes
-      //! correspond to the part of the word graph that actually represents the
-      //! classes of the congruence we are trying to enumerate; and the
-      //! "inactive" nodes are only there to be "recycled" into "active" nodes
-      //! if they are required later on.
+      //! "active" and others are "inactive". In other words, the "active"
+      //! nodes correspond to the part of the word graph that actually
+      //! represents the classes of the congruence we are trying to enumerate;
+      //! and the "inactive" nodes are only there to be "recycled" into
+      //! "active" nodes if they are required later on.
       //!
       //! \exceptions
       //! \noexcept
-      // This isn't really necessary in C++, but in the python bindings we don't
-      // bind ToddCoxeter::Graph and so we expose this here.
+      // This isn't really necessary in C++, but in the python bindings we
+      // don't bind ToddCoxeter::Graph and so we expose this here.
       // TODO deprecate and move to the word group itself?
       [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
         return current_word_graph().number_of_nodes_active();
@@ -1311,21 +1377,21 @@ namespace libsemigroups {
       //! word graph.
       //!
       //! This function returns the number of edges in the active part of the
-      //! \ref current_word_graph. Recall that \ref current_word_graph can grow
-      //! and shrink drastically during a congruence enumeration. As
-      //! such to avoid unnecessary memory allocations, where possible, the
-      //! nodes in the \ref current_word_graph are "recycled" leading to the
+      //! \ref current_word_graph. Recall that \ref current_word_graph can
+      //! grow and shrink drastically during a congruence enumeration. As such
+      //! to avoid unnecessary memory allocations, where possible, the nodes
+      //! in the \ref current_word_graph are "recycled" leading to the
       //! situation where some of the nodes in \ref current_word_graph are
-      //! "active" and others are "inactive". In other words, the "active" nodes
-      //! correspond to the part of the word graph that actually represents the
-      //! classes of the congruence we are trying to enumerate; and the
-      //! "inactive" nodes are only there to be "recycled" into "active" nodes
-      //! if they are required later on.
+      //! "active" and others are "inactive". In other words, the "active"
+      //! nodes correspond to the part of the word graph that actually
+      //! represents the classes of the congruence we are trying to enumerate;
+      //! and the "inactive" nodes are only there to be "recycled" into
+      //! "active" nodes if they are required later on.
       //!
       //! \exceptions
       //! \noexcept
-      // This isn't really necessary in C++, but in the python bindings we don't
-      // bind ToddCoxeter::Graph and so we expose this here.
+      // This isn't really necessary in C++, but in the python bindings we
+      // don't bind ToddCoxeter::Graph and so we expose this here.
       // TODO deprecate and move to the word group itself?
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
         return current_word_graph().number_of_edges_active();
@@ -1446,8 +1512,10 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      // TODO update doc
+      // TODO update func
       Forest const& current_spanning_tree() const noexcept {
-        return _forest;
+        return _word_graph.current_spanning_tree();
       }
 
       //! \ingroup todd_coxeter_class_accessors_group
@@ -1460,6 +1528,8 @@ namespace libsemigroups {
       //!
       //! \returns A const reference to a spanning tree of the underlying
       //! \ref WordGraph.
+      // TODO update doc
+      // TODO update func
       Forest const& spanning_tree();
 
       //! \ingroup todd_coxeter_class_accessors_group
@@ -1579,9 +1649,10 @@ namespace libsemigroups {
       //! \ref current_word_graph, and does not trigger any enumeration. See
       //! \ref standardization_order for a full description. The return value
       //! of this function indicates whether or not the
-      //! \ref current_word_graph was modified. In other words, if this function
-      //! returns \c true, then the word graph was not previously standardized
-      //! with respect to \p val, and was modified by calling this function if
+      //! \ref current_word_graph was modified. In other words, if this
+      //! function returns \c true, then the word graph was not previously
+      //! standardized with respect to \p val, and was modified by calling
+      //! this function if
       //! \c false is returned, then the word graph was previously
       //! standardized with respect to \p val (although this might not have
       //! been known), and was not modified by calling this function.
@@ -1607,10 +1678,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       //!
       //! \sa perform_lookahead_for and perform_lookahead_until
-      ToddCoxeterImpl& perform_lookahead() {
-        // TODO this isn't correct, should set strategy then run
-        return perform_lookahead_impl(false);
-      }
+      ToddCoxeterImpl& perform_lookahead();
 
       // TODO for backward compatibility have a [[deprecated]]
       // perform_lookahead(bool) that just forwards its arg to
@@ -1961,11 +2029,12 @@ namespace libsemigroups {
 
       void reset_settings_stack();
 
+      // TODO any_change_last_run
       [[nodiscard]] bool any_change() const;
 
       // We take both values here, although we could compute them, so that in
-      // report_progress_from_thread we do not report at one point in time with
-      // some value, then within the same function call (if the graph is
+      // report_progress_from_thread we do not report at one point in time
+      // with some value, then within the same function call (if the graph is
       // changing a lot) report with another value
       [[nodiscard]] float complete(uint64_t num_nodes,
                                    int64_t  num_edges) const noexcept {

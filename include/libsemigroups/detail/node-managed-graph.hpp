@@ -218,8 +218,9 @@ namespace libsemigroups {
         _coinc.emplace(x, y);
       }
 
+      // Returns true if any changes were made to the graph and false o/w.
       template <typename Functor = Noop>
-      void process_coincidences(Functor&& = Noop{});
+      bool process_coincidences(Functor&& = Noop{});
 
       void standardize(std::vector<node_type> const& p,
                        std::vector<node_type> const& q) {

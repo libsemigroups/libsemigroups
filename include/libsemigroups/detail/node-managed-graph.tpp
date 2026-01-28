@@ -210,9 +210,10 @@ namespace libsemigroups {
 
     template <typename Node>
     template <typename Functor>
-    void NodeManagedGraph<Node>::process_coincidences(Functor&& new_def) {
+    bool NodeManagedGraph<Node>::process_coincidences(Functor&& new_def) {
+      bool result = false;
       if (_coinc.empty()) {
-        return;
+        return result;
       }
 
       CollectCoincidences incompat_func(_coinc);
@@ -224,6 +225,7 @@ namespace libsemigroups {
         node_type max = NodeManager<node_type>::find_node(c.second);
         if (min != max) {
           std::tie(min, max) = std::minmax({min, max});
+          result             = true;
           NodeManager<node_type>::union_nodes(min, max);
           _stats.num_edges_active -= BaseGraph::merge_nodes_no_checks(
               min, max, new_def, incompat_func);
@@ -234,7 +236,7 @@ namespace libsemigroups {
         // The next assert is likely very slow so don't do it routinely
         // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
         //                      == count_number_of_edges_active());
-        return;
+        return result;
       }
 
       using detail::group_digits;
@@ -257,6 +259,7 @@ namespace libsemigroups {
         node_type max = NodeManager<node_type>::find_node(c.second);
         if (min != max) {
           std::tie(min, max) = std::minmax({min, max});
+          result             = true;
           NodeManager<node_type>::union_nodes(min, max);
           for (letter_type i = 0; i < out_degree(); ++i) {
             node_type const v = target_no_checks(max, i);
@@ -271,6 +274,9 @@ namespace libsemigroups {
           }
         }
       }
+
+      // TODO surely only do the next bit if we changed anything above, right?
+      // I.e. if result == true
 
       // TODO(later) use rebuild_sources
       auto c = NodeManager<node_type>::initial_node();
@@ -302,6 +308,7 @@ namespace libsemigroups {
       // The next assertion is likely very slow so commented out
       // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
       //                      == count_number_of_edges_active());
+      return result;
     }
 
     template <typename Node>
@@ -342,5 +349,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups

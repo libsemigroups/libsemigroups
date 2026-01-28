@@ -392,6 +392,12 @@ namespace libsemigroups {
     template <typename Iterator>
     Iterator path_from_root_no_checks(Iterator d_first, node_type i) const;
 
+    template <typename Iterator>
+    Iterator path_from_root(Iterator d_first, node_type i) const {
+      throw_if_node_out_of_bounds(i);
+      return path_from_root_no_checks(d_first, i);
+    }
+
     //! \brief Throw an exception if a node is out of bound.
     //!
     //! This function throws an exception if the node \p v is out of points.
@@ -997,7 +1003,7 @@ namespace libsemigroups {
           return *_forest;
         }
       };  // class PathsFromToRootsCommonRoots
-    }     // namespace detail
+    }  // namespace detail
 
     //! \brief Range for iterating through paths in a Forest.
     //!

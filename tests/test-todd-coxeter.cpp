@@ -2209,21 +2209,14 @@ namespace libsemigroups {
     };
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    // while (tc.complete() < 0.60) {
-    //   tc.run_for(std::chrono::seconds(1));
-    //   tc.perform_lookbehind();
-    //   tc.perform_lookbehind(collapser);
-    // }
-    tc.strategy(options::strategy::hlt);
-    tc.run_for(std::chrono::seconds(4));
-    tc.perform_lookbehind();
-
-    // TODO(1) should be some interplay between lookahead_min and
-    // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be
-    // greater than lookahead_next, maybe?
-    tc.lookahead_min(2'500'000)
-        .lookahead_growth_factor(1.2)
-        .lookahead_stop_early_ratio(0.1);
+    tc.strategy(options::strategy::felsch).lookahead_min(2'500'000);
+    // .lookahead_growth_factor(1.2)
+    // .lookahead_stop_early_ratio(0.1);
+    while (tc.number_of_nodes_active() < 12'000'000 && !tc.finished()) {
+      tc.run_for(std::chrono::seconds(10));
+      tc.perform_lookbehind();
+      tc.perform_lookahead_for(std::chrono::seconds(10));
+    }
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 
@@ -3897,8 +3890,8 @@ namespace libsemigroups {
     std::for_each(expected.begin(), expected.end(), [&](std::string& word) {
       word = todd_coxeter::reduce_no_run(tc, word);
     });
-    // Standardising (triggered by reduce_no_run) after 3 seconds makes this run
-    // much faster
+    // Standardising (triggered by reduce_no_run) after 3 seconds makes this
+    // run much faster
 
     for (size_t i = 0; i != expected.size(); ++i) {
       REQUIRE(todd_coxeter::currently_contains(tc, words[i], expected[i])

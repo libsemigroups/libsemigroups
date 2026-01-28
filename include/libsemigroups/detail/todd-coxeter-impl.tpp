@@ -105,7 +105,7 @@ namespace libsemigroups {
       if (!is_standardized()) {
         // We must standardize here o/w there's no bijection between the numbers
         // 0, ..., n - 1 on to the nodes of the word graph.
-        // Or worse, there's no guarantee that _forest is populated or is a
+        // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
@@ -114,7 +114,8 @@ namespace libsemigroups {
       size_t const offset
           = (internal_presentation().contains_empty_word() ? 0 : 1);
 
-      return _forest.path_from_root_no_checks(d_first, i + offset);
+      return current_spanning_tree().path_from_root_no_checks(d_first,
+                                                              i + offset);
     }
 
     template <typename OutputIterator>
@@ -135,7 +136,7 @@ namespace libsemigroups {
       if (!is_standardized()) {
         // We must standardize here o/w there's no bijection between the numbers
         // 0, ..., n - 1 on to the nodes of the word graph.
-        // Or worse, there's no guarantee that _forest is populated or is a
+        // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
         const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
@@ -229,12 +230,7 @@ namespace libsemigroups {
         return current_word_of_no_checks(d_first, pos);
       }
       node_type const s = current_word_graph().initial_node();
-      // TODO just testing something like this needs to be here
-      // if (!is_standardized()) {
-      //   auto& f = const_cast<Forest&>(_forest);
-      //   f.init();
-      //   v4::word_graph::spanning_tree_no_checks(current_word_graph(), s, f);
-      // }
+      Forest const&   f = current_spanning_tree();
 
       word_type u(first, last);
       auto      v_begin = u.begin();
@@ -245,11 +241,13 @@ namespace libsemigroups {
 
         if (!std::equal(std::reverse_iterator(old_end),
                         std::reverse_iterator(v_begin),
-                        _forest.cbegin_path_to_root_no_checks(t),
-                        _forest.cend_path_to_root_no_checks(t))) {
-          LIBSEMIGROUPS_ASSERT(forest::depth_no_checks(f, t)
-                               <= std::distance(v_begin, old_end));
-          auto new_end = _forest.path_from_root_no_checks(v_begin, t);
+                        f.cbegin_path_to_root_no_checks(t),
+                        f.cend_path_to_root_no_checks(t))) {
+          LIBSEMIGROUPS_ASSERT(
+              forest::depth_no_checks(f, t)
+              <= static_cast<size_t>(std::distance(v_begin, old_end)));
+          auto new_end = f.path_from_root_no_checks(v_begin, t);
+          LIBSEMIGROUPS_ASSERT(new_end <= old_end);
           u.erase(new_end, old_end);
           v_begin = u.begin();
         } else {
@@ -277,20 +275,15 @@ namespace libsemigroups {
       Ticker     ticker;
 
       node_type& current = _word_graph.lookahead_cursor();
+      current            = _word_graph.initial_node();
 
       word_type w1, w2;
 
-      current = _word_graph.initial_node();
-      auto  s = current;
-      auto& f = const_cast<Forest&>(_forest);
-      f.init();
-      v4::word_graph::spanning_tree_no_checks(current_word_graph(), s, f);
-      // standardize(Order::shortlex);
-
-      while (current < _word_graph.number_of_nodes_active() && !stopped()) {
+      while (current != _word_graph.first_free_node() && !stopped()) {
         w1.clear();
         w2.clear();
-        _forest.path_from_root_no_checks(std::back_inserter(w1), current);
+        auto const& f = current_spanning_tree();
+        f.path_from_root_no_checks(std::back_inserter(w1), current);
         collapser(std::back_inserter(w2), w1.begin(), w1.end());
         if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
           node_type other = v4::word_graph::follow_path_no_checks(
@@ -299,15 +292,10 @@ namespace libsemigroups {
             _word_graph.merge_nodes_no_checks(current, other);
             if (_word_graph.number_of_coincidences() > 32'768) {
               _word_graph.process_coincidences();
-              auto& f = const_cast<Forest&>(_forest);
-              f.init();
-              v4::word_graph::spanning_tree_no_checks(
-                  current_word_graph(), s, f);
-              // standardize(Order::shortlex);
             }
           }
         }
-        current++;
+        current = _word_graph.next_active_node(current);
         if (!_ticker_running && reporting_enabled()
             && delta(start_time) >= std::chrono::milliseconds(500)) {
           _ticker_running = true;

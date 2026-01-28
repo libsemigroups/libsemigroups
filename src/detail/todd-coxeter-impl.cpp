@@ -188,6 +188,7 @@ namespace libsemigroups::detail {
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
+    _forest_valid = false;
     return *this;
   }
 
@@ -199,6 +200,7 @@ namespace libsemigroups::detail {
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
+    _forest_valid = false;
     return *this;
   }
 
@@ -378,7 +380,6 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::ToddCoxeterImpl()
       : CongruenceCommon(),
         _finished(),
-        _forest(),
         _never_run(),
         _settings_stack(),
         _standardized(),
@@ -393,8 +394,7 @@ namespace libsemigroups::detail {
     CongruenceCommon::init();
     report_divider(fmt::format("{:+<32}\n", ""));
     report_prefix("ToddCoxeter");
-    _finished = false;
-    _forest.init();
+    _finished  = false;
     _never_run = true;
     reset_settings_stack();
     _standardized = Order::none;
@@ -420,7 +420,6 @@ namespace libsemigroups::detail {
     LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
     CongruenceCommon::operator=(std::move(that));
     _finished       = std::move(that._finished);
-    _forest         = std::move(that._forest);
     _never_run      = std::move(that._never_run);
     _settings_stack = std::move(that._settings_stack);
     _state          = that._state.load();
@@ -439,7 +438,6 @@ namespace libsemigroups::detail {
     LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
     CongruenceCommon::operator=(that);
     _finished  = that._finished;
-    _forest    = that._forest;
     _never_run = that._never_run;
     _settings_stack.clear();
     for (auto const& uptr : that._settings_stack) {
@@ -749,22 +747,22 @@ namespace libsemigroups::detail {
   }
 
   bool ToddCoxeterImpl::is_standardized(Order val) const {
-    // TODO(1) this is probably not always valid,
+    // TODO(0) this is probably not always valid,
     // the easiest fix for this would just be to call standardize(val) and
     // check if the return value is false, but this wouldn't be const, so
     // maybe not.
-    return val == _standardized
-           && _forest.number_of_nodes()
-                  == current_word_graph().number_of_nodes_active();
+    return val == _standardized;
+    // && _forest.number_of_nodes()
+    //        == current_word_graph().number_of_nodes_active();
   }
 
   bool ToddCoxeterImpl::is_standardized() const {
-    // TODO(1) this is probably not always valid, i.e. if we are
+    // TODO(0) this is not always valid, i.e. if we are
     // standardized, then grow, then collapse, but end up with the same
     // number of nodes again.
-    return _standardized != Order::none
-           && _forest.number_of_nodes()
-                  == current_word_graph().number_of_nodes_active();
+    return _standardized != Order::none;
+    // && _forest.number_of_nodes()
+    //        == current_word_graph().number_of_nodes_active();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -778,6 +776,7 @@ namespace libsemigroups::detail {
         0, _word_graph.number_of_nodes_active());
   }
 
+  // TODO move this to Graph also
   bool ToddCoxeterImpl::standardize(Order val) {
     if (is_standardized(val)) {
       return false;
@@ -790,11 +789,13 @@ namespace libsemigroups::detail {
                      "take a few moments!\n",
                      val);
     }
-    _forest.init();
-    _forest.add_nodes(_word_graph.number_of_nodes_active());
+    Forest& f = _word_graph.current_spanning_tree();
+    f.init();
+    f.add_nodes(_word_graph.number_of_nodes_active());
     // NOTE: the cursor() does not survive the next line
     // but lookahead_cursor() should
-    bool result   = v4::word_graph::standardize(_word_graph, _forest, val);
+    bool result = v4::word_graph::standardize(_word_graph, f, val);
+    // TODO but _word_graph._forest_valid isn't set here
     _standardized = val;
     report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
                    val,
@@ -818,7 +819,7 @@ namespace libsemigroups::detail {
       hlt();
     } else if (strategy() == options::strategy::lookahead) {
       Guard guard(_state, state::lookahead);
-      perform_lookahead_impl(false);
+      perform_lookahead_impl(stop_early);
     } else if (strategy() == options::strategy::lookbehind) {
       Guard guard(_state, state::lookbehind);
       perform_lookbehind_impl();  // TODO incorporate collapser here
@@ -1239,6 +1240,13 @@ namespace libsemigroups::detail {
     return old_lookahead_next;
   }
 
+  ToddCoxeterImpl& ToddCoxeterImpl::perform_lookahead() {
+    SettingsGuard sg(this);
+    strategy(options::strategy::lookahead);
+    run();
+    return *this;
+  }
+
   ToddCoxeterImpl&
   ToddCoxeterImpl::perform_lookahead_for(std::chrono::nanoseconds t) {
     SettingsGuard sg(this);
@@ -1259,7 +1267,9 @@ namespace libsemigroups::detail {
       bool                                            should_stop_early,
       std::chrono::high_resolution_clock::time_point& last_stop_early_check,
       uint64_t&                                       killed_at_prev_interval) {
-    if (should_stop_early
+    // We don't use "stop_early" when running lookahead/behind from the outside
+    if (state() != state::lookahead && state() != state::lookbehind
+        && should_stop_early
         && delta(last_stop_early_check) > lookahead_stop_early_interval()) {
       size_t killed_last_interval
           = current_word_graph().number_of_nodes_killed()
