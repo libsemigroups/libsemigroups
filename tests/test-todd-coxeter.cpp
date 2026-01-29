@@ -2201,22 +2201,11 @@ namespace libsemigroups {
     // presentation::greedy_reduce_length(p);
     // REQUIRE(presentation::length(p) == 8'515);
 
-    KnuthBendix kb(congruence_kind::twosided, p);
-    kb.run_for(std::chrono::seconds(1));
-
-    auto collapser = [&kb](auto d_first, auto first, auto last) {
-      return kb.reduce_no_run_no_checks(d_first, first, last);
-    };
-
     ToddCoxeter tc(congruence_kind::twosided, p);
-    tc.strategy(options::strategy::felsch).lookahead_min(2'500'000);
-    // .lookahead_growth_factor(1.2)
-    // .lookahead_stop_early_ratio(0.1);
-    while (tc.number_of_nodes_active() < 12'000'000 && !tc.finished()) {
-      tc.run_for(std::chrono::seconds(10));
-      tc.perform_lookbehind();
-      tc.perform_lookahead_for(std::chrono::seconds(10));
-    }
+    tc.strategy(options::strategy::hlt)
+        .lookahead_min(2'500'000)
+        .lookahead_growth_factor(1.2)
+        .lookahead_stop_early_ratio(0.1);
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 
@@ -2830,9 +2819,9 @@ namespace libsemigroups {
     tc.lookahead_next(5'000'000);
     REQUIRE(!is_obviously_infinite(tc));
 
-    // the random strategy is typically fastest
     section_hlt(tc);
     // Takes about 3.5s with preprocessing
+    // TODO not any more, it takes 5.8s
     SECTION("preprocessing + Felsch") {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 33);
@@ -3898,20 +3887,11 @@ namespace libsemigroups {
               == tril::TRUE);
     }
     tc.run_until([&tc]() {
-      return tc.current_word_graph().number_of_nodes_active() > 6 * 10'200'960;
+      return tc.current_word_graph().number_of_nodes_active() > 51'200'960;
     });
-    KnuthBendix kb(congruence_kind::twosided, p);
-    kb.run_for(std::chrono::seconds(1));
 
-    // for (size_t i = 0; i < tc.number_of_nodes_active(); ++i) {
-    //   auto w = todd_coxeter::current_word_of(tc, i);
-    //   REQUIRE(w == knuth_bendix::reduce_no_run(kb, w));
-    // }
-
-    auto collapser = [&kb](auto d_first, auto first, auto last) {
-      return kb.reduce_no_run_no_checks(d_first, first, last);
-    };
-    tc.perform_lookbehind(collapser);
+    tc.perform_lookahead();
+    tc.perform_lookbehind_for(std::chrono::seconds(30));
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {

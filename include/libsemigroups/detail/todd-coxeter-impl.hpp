@@ -1696,7 +1696,9 @@ namespace libsemigroups {
       }
 
       // TODO doc
-      // Perform a lookahead until a function returns true or
+      // Perform a lookahead until a function returns true or finished
+      // TODO make the reference one the actual function and call it with this
+      // one
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
       // TODO doc
@@ -1713,6 +1715,18 @@ namespace libsemigroups {
 
       // TODO doc
       ToddCoxeterImpl& perform_lookbehind();
+
+      // TODO doc
+      ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
+
+      // TODO doc
+      ToddCoxeterImpl& perform_lookbehind_until(std::function<bool()>&& pred);
+
+      // TODO doc
+      ToddCoxeterImpl&
+      perform_lookbehind_until(std::function<bool()> const& pred) {
+        return perform_lookbehind_until(std::function<bool()>(pred));
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // Word -> index

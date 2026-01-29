@@ -18,7 +18,6 @@
 
 // This file contains out-of-line ToddCoxeterImpl mem fn templates.
 
-#include "libsemigroups/word-graph-helpers.hpp"
 namespace libsemigroups {
   namespace detail {
 
