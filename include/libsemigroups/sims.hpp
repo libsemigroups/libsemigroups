@@ -1987,6 +1987,10 @@ namespace libsemigroups {
   //!
   //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
+  //!
+  //! \note To use RepOrc to compute a *faithful* transformation representation
+  //! it is necessary that \ref target_size equals the size of the semigroup or
+  //! monoid defined by the input \ref RepOrc::presentation.
   class RepOrc : public SimsSettings<RepOrc> {
    private:
     size_t _min;
@@ -2119,6 +2123,12 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \note To use RepOrc to compute a *faithful* transformation
+    //! representation it is necessary that \ref target_size equals the size of
+    //! the semigroup or monoid defined by the input \ref RepOrc::presentation.
+    //! No checks are performed that the parameter \p val is less than or equal
+    //! to the size of the semigroup.
     RepOrc& target_size(size_t val) noexcept {
       _size = val;
       return *this;
@@ -2181,6 +2191,11 @@ namespace libsemigroups {
   //!
   //! If no such WordGraph can be found, then an empty WordGraph is
   //! returned (with `0` nodes and `0` edges).
+  //!
+  //! \note To use MinimalRepOrc to compute a *faithful* transformation
+  //! representation it is necessary that \ref target_size equals the size of
+  //! the semigroup or monoid defined by the input \ref
+  //! MinimalRepOrc::presentation.
   class MinimalRepOrc : public SimsSettings<MinimalRepOrc> {
    private:
     size_t _size;
@@ -2219,6 +2234,12 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \note To use MinimalRepOrc to compute a *faithful* transformation
+    //! representation it is necessary that \ref target_size equals the size of
+    //! the semigroup or monoid defined by the input
+    //! \ref MinimalRepOrc::presentation. No checks are performed that the
+    //! parameter \p val is less than or equal to the size of the semigroup.
     MinimalRepOrc& target_size(size_t val) noexcept {
       _size = val;
       return *this;

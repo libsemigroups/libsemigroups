@@ -1280,7 +1280,11 @@ namespace libsemigroups {
             S.add_generator(id);
           }
         }
-        LIBSEMIGROUPS_ASSERT(S.size() <= _size);
+
+        // Tempting to have the following assertion (included until v3.4.0
+        // inclusive) but since _size is set by target_size(), it is
+        // arbitrary, and can, for example be less than S.size().
+        // LIBSEMIGROUPS_ASSERT(S.size() <= _size);
         if (S.size() == _size) {
           return true;
         }

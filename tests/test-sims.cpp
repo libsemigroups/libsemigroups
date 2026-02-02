@@ -4973,6 +4973,37 @@ namespace libsemigroups {
     REQUIRE(d.number_of_nodes() == 6);
   }
 
+  // The next test arose from misconfiguring the RepOrc object in the GAP
+  // package Semigroups, which lead to the failure of the assertion in the hook
+  // function in RepOrc::word_graph (that the size of the generated semigroup be
+  // less than or equal to the value set by RepOrc::target_size). The assertion
+  // is basically nonsense, and would be triggered by this test case if it
+  // still existed.
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "137", "bad assert", "[quick][low-index]") {
+    auto rg = ReportGuard(false);
+
+    auto S = make<FroidurePin>({Bipartition({{1, -1}, {2, -2}, {3, -3}}),
+                                Bipartition({{1, -2}, {2, -3}, {3, -1}}),
+                                Bipartition({{1, -2}, {2, -1}, {3, -3}}),
+                                Bipartition({{1}, {2, -2}, {3, -3}, {-1}}),
+                                Bipartition({{1, 2, -1, -2}, {3, -3}})});
+    auto p = to<Presentation<word_type>>(S);
+    REQUIRE(!p.contains_empty_word());
+    p.contains_empty_word(true);
+
+    // p defines a semigroup of size 204
+
+    RepOrc orc;
+    auto   d = orc.presentation(p)
+                 .min_nodes(0)
+                 .max_nodes(203)
+                 .target_size(203)
+                 .number_of_threads(std::thread::hardware_concurrency())
+                 .word_graph();
+
+    REQUIRE(d.number_of_nodes() != 0);
+  }
+
   // TODO(1): test fails for now, uncomment when we get Sims<Word> to work as
   // per forthcoming changes to congruence interface and friends
   // LIBSEMIGROUPS_TEST_CASE("Sims1",
