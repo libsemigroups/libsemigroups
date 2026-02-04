@@ -2821,7 +2821,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     // Takes about 3.5s with preprocessing
-    // TODO not any more, it takes 5.8s
+    // TODO not any more, it takes 5.8s, also on main
     SECTION("preprocessing + Felsch") {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 33);
