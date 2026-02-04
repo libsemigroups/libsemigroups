@@ -1281,6 +1281,7 @@ namespace libsemigroups::detail {
         if (other != UNDEFINED && other != current) {
           _word_graph.merge_nodes_no_checks(current, other);
           if (_word_graph.number_of_coincidences() > 32'768) {
+            // TODO(0) make the number 32'768 above a setting
             _word_graph.process_coincidences();
           }
         }

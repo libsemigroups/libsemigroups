@@ -320,7 +320,6 @@ namespace libsemigroups::detail {
     }
   }
 
-  // TODO add number of lookbehinds here too?
   void ToddCoxeterImpl::report_after_run() const {
     if (reporting_enabled()) {
       report_no_prefix(report_divider());
@@ -330,7 +329,6 @@ namespace libsemigroups::detail {
       if (reason.empty()
           && (strategy() == options::strategy::lookahead
               || strategy() == options::strategy::lookbehind)) {
-        // TODO this is no longer correct I think
         reason = fmt::format("{} complete", strategy());
       }
       // Often the end of a run coincides with the end of a lookahead, which
