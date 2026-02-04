@@ -21,7 +21,7 @@
 
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
-#include <chrono>       // for TODO
+#include <chrono>       // for high_resolution_clock
 #include <iterator>     // for TODO
 #include <string_view>  // for basic_string_view
 #include <tuple>        // for tie
@@ -1162,7 +1162,8 @@ namespace libsemigroups::detail {
       bool                                            should_stop_early,
       std::chrono::high_resolution_clock::time_point& last_stop_early_check,
       uint64_t&                                       killed_at_prev_interval) {
-    // We don't use "stop_early" when running lookahead/behind from the outside
+    // We don't use "stop_early" when running lookahead/behind from the
+    // outside, which is indicated by the strategy.
     if (strategy() != options::strategy::lookahead
         && strategy() != options::strategy::lookbehind && should_stop_early
         && delta(last_stop_early_check) > lookahead_stop_early_interval()) {
@@ -1252,21 +1253,27 @@ namespace libsemigroups::detail {
 
     stats_phase_start();
     report_before_phase();
+    auto const killed_before_lookbehind = _word_graph.number_of_nodes_killed();
 
-    bool       old_ticker_running = _ticker_running;
-    time_point start_time         = std::chrono::high_resolution_clock::now();
-    Ticker     ticker;
+    bool const       old_ticker_running = _ticker_running;
+    time_point const start_time = std::chrono::high_resolution_clock::now();
+    Ticker           ticker;
 
     node_type& current = _word_graph.lookahead_cursor();
     current            = _word_graph.initial_node();
+
+    _stats.lookahead_or_behind_position     = 0;
+    _stats.lookahead_or_behind_nodes_killed = 0;
 
     word_type w1, w2;
 
     while (current != _word_graph.first_free_node() && !stopped()) {
       w1.clear();
       w2.clear();
-      auto const& f = current_spanning_tree();
-      f.path_from_root_no_checks(std::back_inserter(w1), current);
+      // Repeatedly call current_spanning_tree() to ensure it is up-to-date
+      // after any calls to process_coincidences below.
+      current_spanning_tree().path_from_root_no_checks(std::back_inserter(w1),
+                                                       current);
       _lookbehind_collapser(std::back_inserter(w2), w1.begin(), w1.end());
       if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
         node_type other = v4::word_graph::follow_path_no_checks(
@@ -1279,6 +1286,10 @@ namespace libsemigroups::detail {
         }
       }
       current = _word_graph.next_active_node(current);
+      _stats.lookahead_or_behind_position++;
+      _stats.lookahead_or_behind_nodes_killed
+          = current_word_graph().number_of_nodes_killed()
+            - killed_before_lookbehind;
       if (!_ticker_running && reporting_enabled()
           && delta(start_time) >= std::chrono::milliseconds(500)) {
         _ticker_running = true;
@@ -1288,6 +1299,9 @@ namespace libsemigroups::detail {
     _word_graph.process_coincidences();
     report_after_phase();
     stats_phase_stop();
+    _stats.lookahead_or_behind_nodes_killed
+        = current_word_graph().number_of_nodes_killed()
+          - killed_before_lookbehind;
     _ticker_running = old_ticker_running;
     return *this;
   }
