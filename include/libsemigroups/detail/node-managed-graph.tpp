@@ -211,9 +211,9 @@ namespace libsemigroups {
     template <typename Node>
     template <typename Functor>
     bool NodeManagedGraph<Node>::process_coincidences(Functor&& new_def) {
-      bool result = false;
+      bool any_collapse_before_large_collapse = false;
       if (_coinc.empty()) {
-        return result;
+        return any_collapse_before_large_collapse;
       }
 
       CollectCoincidences incompat_func(_coinc);
@@ -224,8 +224,8 @@ namespace libsemigroups {
         node_type min = NodeManager<node_type>::find_node(c.first);
         node_type max = NodeManager<node_type>::find_node(c.second);
         if (min != max) {
-          std::tie(min, max) = std::minmax({min, max});
-          result             = true;
+          std::tie(min, max)                 = std::minmax({min, max});
+          any_collapse_before_large_collapse = true;
           NodeManager<node_type>::union_nodes(min, max);
           _stats.num_edges_active -= BaseGraph::merge_nodes_no_checks(
               min, max, new_def, incompat_func);
@@ -236,7 +236,7 @@ namespace libsemigroups {
         // The next assert is likely very slow so don't do it routinely
         // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
         //                      == count_number_of_edges_active());
-        return result;
+        return any_collapse_before_large_collapse;
       }
 
       using detail::group_digits;
@@ -250,7 +250,8 @@ namespace libsemigroups {
       // Setting this here means that during a large collapse the % of edges
       // active falls to zero until we start rebuilding the sources in the while
       // loop below, this currently seems unavoidable.
-      _stats.num_edges_active = 0;
+      _stats.num_edges_active                = 0;
+      bool any_collapse_after_large_collapse = false;
 
       while (!_coinc.empty()) {
         Coincidence c = _coinc.top();
@@ -258,8 +259,8 @@ namespace libsemigroups {
         node_type min = NodeManager<node_type>::find_node(c.first);
         node_type max = NodeManager<node_type>::find_node(c.second);
         if (min != max) {
-          std::tie(min, max) = std::minmax({min, max});
-          result             = true;
+          std::tie(min, max)                = std::minmax({min, max});
+          any_collapse_after_large_collapse = true;
           NodeManager<node_type>::union_nodes(min, max);
           for (letter_type i = 0; i < out_degree(); ++i) {
             node_type const v = target_no_checks(max, i);
@@ -275,40 +276,41 @@ namespace libsemigroups {
         }
       }
 
-      // TODO surely only do the next bit if we changed anything above, right?
-      // I.e. if result == true
-
-      // TODO(later) use rebuild_sources
-      auto c = NodeManager<node_type>::initial_node();
-      while (c != NodeManager<node_type>::first_free_node()) {
-        BaseGraph::remove_all_sources_no_checks(c);
-        c = NodeManager<node_type>::next_active_node(c);
-      }
-
-      c = NodeManager<node_type>::initial_node();
-
-      while (c != NodeManager<node_type>::first_free_node()) {
-        for (letter_type x = 0; x < out_degree(); ++x) {
-          auto cx = target_no_checks(c, x);
-          if (cx != UNDEFINED) {
-            _stats.num_edges_active++;
-            auto d = NodeManager<node_type>::find_node(cx);
-            if (cx != d) {
-              new_def(c, x);
-              WordGraph<node_type>::target_no_checks(c, x, d);
-            }
-            // Must re-add the source, even if we don't need to reset
-            // the target or stack the deduction
-            BaseGraph::add_source_no_checks(d, x, c);
-            LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
-          }
+      if (any_collapse_after_large_collapse) {
+        // Rebuild the sources only required if any changes were made in the
+        // loop above.
+        auto c = NodeManager<node_type>::initial_node();
+        while (c != NodeManager<node_type>::first_free_node()) {
+          BaseGraph::remove_all_sources_no_checks(c);
+          c = NodeManager<node_type>::next_active_node(c);
         }
-        c = NodeManager<node_type>::next_active_node(c);
+
+        c = NodeManager<node_type>::initial_node();
+
+        while (c != NodeManager<node_type>::first_free_node()) {
+          for (letter_type x = 0; x < out_degree(); ++x) {
+            auto cx = target_no_checks(c, x);
+            if (cx != UNDEFINED) {
+              _stats.num_edges_active++;
+              auto d = NodeManager<node_type>::find_node(cx);
+              if (cx != d) {
+                new_def(c, x);
+                WordGraph<node_type>::target_no_checks(c, x, d);
+              }
+              // Must re-add the source, even if we don't need to reset
+              // the target or stack the deduction
+              BaseGraph::add_source_no_checks(d, x, c);
+              LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(d));
+            }
+          }
+          c = NodeManager<node_type>::next_active_node(c);
+        }
       }
       // The next assertion is likely very slow so commented out
       // LIBSEMIGROUPS_ASSERT(_stats.num_edges_active
       //                      == count_number_of_edges_active());
-      return result;
+      return any_collapse_before_large_collapse
+             || any_collapse_after_large_collapse;
     }
 
     template <typename Node>
