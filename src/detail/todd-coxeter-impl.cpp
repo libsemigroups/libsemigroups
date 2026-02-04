@@ -1303,7 +1303,7 @@ namespace libsemigroups::detail {
       return *this;
     }
 
-    // TODO Rename Guard to ValueGuard
+    // TODO(1) Rename Guard to ValueGuard
     Guard guard(_state, state::lookbehind);
 
     stats_phase_start();
