@@ -130,6 +130,68 @@ namespace libsemigroups {
         first1, last1, first2, last2);
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // Lookbehind
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Word>
+  template <typename Func>
+  ToddCoxeter<Word>&
+  ToddCoxeter<Word>::perform_lookbehind_no_checks(Func&& collapser) {
+    static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                      std::back_insert_iterator<word_type>,
+                                      word_type::const_iterator,
+                                      word_type::const_iterator>);
+
+    auto collapser_wrap
+        = [&collapser, this](auto d_first, auto first, auto last) {
+            return collapser(detail::ifrw(this, d_first),
+                             detail::cifrw(this, first),
+                             detail::cifrw(this, last));
+          };
+    ToddCoxeterImpl::perform_lookbehind_no_checks(collapser_wrap);
+    return *this;
+  }
+
+  template <typename Word>
+  template <typename Func>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::perform_lookbehind_for_no_checks(
+      std::chrono::nanoseconds t,
+      Func&&                   collapser) {
+    static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                      std::back_insert_iterator<word_type>,
+                                      word_type::const_iterator,
+                                      word_type::const_iterator>);
+    auto collapser_wrap
+        = [&collapser, this](auto d_first, auto first, auto last) {
+            return collapser(detail::ifrw(this, d_first),
+                             detail::cifrw(this, first),
+                             detail::cifrw(this, last));
+          };
+    ToddCoxeterImpl::perform_lookbehind_for_no_checks(t, collapser_wrap);
+    return *this;
+  }
+
+  template <typename Word>
+  template <typename Func>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::perform_lookbehind_until_no_checks(
+      std::function<bool()>&& pred,
+      Func&&                  collapser) {
+    static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                      std::back_insert_iterator<word_type>,
+                                      word_type::const_iterator,
+                                      word_type::const_iterator>);
+    auto collapser_wrap
+        = [&collapser, this](auto d_first, auto first, auto last) {
+            return collapser(detail::ifrw(this, d_first),
+                             detail::cifrw(this, first),
+                             detail::cifrw(this, last));
+          };
+    ToddCoxeterImpl::perform_lookbehind_until_no_checks(std::move(pred),
+                                                        collapser_wrap);
+    return *this;
+  }
+
   template <typename Word>
   std::string to_human_readable_repr(ToddCoxeter<Word> const& tc) {
     using detail::group_digits;
