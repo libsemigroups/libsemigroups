@@ -352,6 +352,19 @@ namespace libsemigroups {
       _ident[c]        = _id_node;
     }
 
+    template <typename Node>
+    Node NodeManager<Node>::max_active_node() const noexcept {
+      auto      current = initial_node();
+      node_type max     = 0;
+      while (current != first_free_node()) {
+        if (current > max) {
+          max = current;
+        }
+        current = next_active_node(current);
+      }
+      return max;
+    }
+
     // Basically free all nodes
     template <typename Node>
     void NodeManager<Node>::clear() {
