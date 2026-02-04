@@ -2206,6 +2206,8 @@ namespace libsemigroups {
         .lookahead_min(2'500'000)
         .lookahead_growth_factor(1.2)
         .lookahead_stop_early_ratio(0.1);
+    tc.run_until([&tc]() { return tc.number_of_nodes_active() > 12'000'000; });
+    tc.perform_lookbehind();
     REQUIRE(tc.number_of_classes() == 823'543);
   }
 

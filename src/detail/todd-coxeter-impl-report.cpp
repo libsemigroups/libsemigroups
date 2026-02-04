@@ -289,11 +289,12 @@ namespace libsemigroups::detail {
 
     LIBSEMIGROUPS_ASSERT(elapsed >= _stats.all_runs_time + this_run_time);
     std::string c1;
+    // TODO(1) if we add an additional column, then we should split the timing
+    // row into two, to make them narrower.
     if (_stats.report_index == 0 || _state == state::none) {
       c1 = underline("time");
     } else {
-      c1 = fmt::format("{} {}.{} = {}",
-                       toupper(_state.load()),
+      c1 = fmt::format("phase {}.{} = {}",
                        _stats.run_index,
                        _stats.phase_index,
                        string_time(this_phase_time));
