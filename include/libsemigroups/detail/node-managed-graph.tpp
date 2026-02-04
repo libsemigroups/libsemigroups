@@ -351,5 +351,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }  // namespace detail
+  }    // namespace detail
 }  // namespace libsemigroups

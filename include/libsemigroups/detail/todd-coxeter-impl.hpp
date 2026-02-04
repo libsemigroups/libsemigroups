@@ -171,7 +171,6 @@ namespace libsemigroups {
           discard_all_if_no_space,
           unlimited
         };
-
       };  // struct options
 
       enum class state : uint8_t { none, hlt, felsch, lookahead, lookbehind };
@@ -1715,8 +1714,6 @@ namespace libsemigroups {
       }
 
       // TODO doc
-
-      // TODO doc
       ToddCoxeterImpl& perform_lookbehind();
 
       // TODO doc
@@ -2141,10 +2138,8 @@ namespace libsemigroups {
                           uint64_t     num_active_nodes,
                           uint64_t     num_active_edges) const;
       void add_lookahead_or_behind_row(ReportCell_& rc) const;
-
     };  // class ToddCoxeterImpl
-  }  // namespace detail
+  }     // namespace detail
 }  // namespace libsemigroups
-
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
