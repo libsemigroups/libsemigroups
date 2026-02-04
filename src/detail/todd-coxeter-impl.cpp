@@ -870,53 +870,53 @@ namespace libsemigroups::detail {
 
   void ToddCoxeterImpl::before_run() {
     _word_graph.settings(*this);
-    if (_never_run) {
-      _never_run       = false;
-      auto       first = internal_generating_pairs().cbegin();
-      auto       last  = internal_generating_pairs().cend();
-      auto const id    = current_word_graph().initial_node();
+    if (!_never_run) {
+      return;
+    }
+    _never_run       = false;
+    auto       first = internal_generating_pairs().cbegin();
+    auto       last  = internal_generating_pairs().cend();
+    auto const id    = current_word_graph().initial_node();
 
-      if (save() || strategy() == options::strategy::felsch) {
-        for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
-          _word_graph.process_coincidences(DoRegisterDefs{_word_graph});
-        }
-      } else {
-        for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_not_register_defs>(
-              id, *it, *(it + 1));
-          _word_graph.process_coincidences(DoNotRegisterDefs{});
-        }
+    if (save() || strategy() == options::strategy::felsch) {
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
+        _word_graph.process_coincidences(DoRegisterDefs{_word_graph});
       }
-
-      if (use_relations_in_extra() && strategy() == options::strategy::felsch) {
-        first = internal_presentation().rules.cbegin();
-        last  = internal_presentation().rules.cend();
-
-        for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
-          _word_graph.process_coincidences(DoNotRegisterDefs{});
-        }
+    } else {
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<do_not_register_defs>(
+            id, *it, *(it + 1));
+        _word_graph.process_coincidences(DoNotRegisterDefs{});
       }
+    }
 
-      if (kind() == congruence_kind::twosided
-          && !internal_generating_pairs().empty()) {
-        // TODO(1) avoid copy of presentation here, if possible
-        // TODO remove duplicates?
-        Presentation<word_type> p = internal_presentation();
-        if (p.alphabet().size() != _word_graph.out_degree()) {
-          LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
-          p.alphabet(_word_graph.out_degree());
-        }
-        presentation::add_rules(p,
-                                internal_generating_pairs().cbegin(),
-                                internal_generating_pairs().cend());
-        _word_graph.presentation_no_checks(std::move(p));
-      }
+    if (use_relations_in_extra() && strategy() == options::strategy::felsch) {
+      first = internal_presentation().rules.cbegin();
+      last  = internal_presentation().rules.cend();
 
-      if (save() || strategy() == options::strategy::felsch) {
-        _word_graph.process_definitions();
+      for (auto it = first; it < last; it += 2) {
+        _word_graph.push_definition_hlt<do_register_defs>(id, *it, *(it + 1));
+        _word_graph.process_coincidences(DoNotRegisterDefs{});
       }
+    }
+
+    if (kind() == congruence_kind::twosided
+        && !internal_generating_pairs().empty()) {
+      // TODO(1) avoid copy of presentation here, if possible
+      Presentation<word_type> p = internal_presentation();
+      if (p.alphabet().size() != _word_graph.out_degree()) {
+        LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
+        p.alphabet(_word_graph.out_degree());
+      }
+      presentation::add_rules(p,
+                              internal_generating_pairs().cbegin(),
+                              internal_generating_pairs().cend());
+      _word_graph.presentation_no_checks(std::move(p));
+    }
+
+    if (save() || strategy() == options::strategy::felsch) {
+      _word_graph.process_definitions();
     }
   }
 
