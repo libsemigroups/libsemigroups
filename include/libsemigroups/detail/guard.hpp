@@ -39,17 +39,25 @@ namespace libsemigroups {
       Guard& operator=(Guard const&) = delete;
       Guard& operator=(Guard&&)      = delete;
 
+      // TODO rm, this is too confusing to use
       Guard(Thing& value, Thing new_value) : _old_value(value), _value(value) {
         _value = new_value;
       }
 
+      // TODO rm, this is too confusing to use
       template <typename Value>
       Guard(Thing& value, Value new_value)
           : _old_value(value.load()), _value(value) {
         _value = new_value;
       }
 
-      explicit Guard(Thing& value) : _old_value(value), _value(value) {}
+      explicit Guard(Thing& value) : _old_value(), _value(value) {
+        if constexpr (is_specialization_of_v<Thing, std::atomic>) {
+          _old_value = value.load();
+        } else {
+          _old_value = value;
+        }
+      }
 
       ~Guard() {
         if constexpr (is_specialization_of_v<Thing, std::atomic>) {

@@ -188,8 +188,8 @@ namespace libsemigroups::detail {
     auto const old_number_of_killed = number_of_nodes_killed();
     auto       killed_at_prev_interval = old_number_of_killed;
 
-    bool   old_ticker_running = tc->_ticker_running;
-    auto   start_time         = std::chrono::high_resolution_clock::now();
+    Guard  guard(tc->_ticker_running);
+    auto   start_time = std::chrono::high_resolution_clock::now();
     Ticker ticker;
 
     CollectCoincidences                    incompat(_coinc);
@@ -230,7 +230,6 @@ namespace libsemigroups::detail {
     }
     tc->_stats.lookahead_or_behind_nodes_killed
         += (number_of_nodes_killed() - killed_at_prev_interval);
-    tc->_ticker_running = old_ticker_running;
   }
 
   ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::presentation_no_checks(
@@ -1252,8 +1251,8 @@ namespace libsemigroups::detail {
     auto const old_number_of_killed = _word_graph.number_of_nodes_killed();
     auto       killed_at_prev_interval = old_number_of_killed;
 
-    bool       old_ticker_running = _ticker_running;
-    time_point start_time         = std::chrono::high_resolution_clock::now();
+    Guard      guard(_ticker_running);
+    time_point start_time = std::chrono::high_resolution_clock::now();
     Ticker     ticker;
 
     node_type&   current = _word_graph.lookahead_cursor();
@@ -1284,7 +1283,6 @@ namespace libsemigroups::detail {
     }
     _stats.lookahead_or_behind_nodes_killed
         += (_word_graph.number_of_nodes_killed() - killed_at_prev_interval);
-    _ticker_running = old_ticker_running;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1304,13 +1302,14 @@ namespace libsemigroups::detail {
     }
 
     // TODO(1) Rename Guard to ValueGuard
-    Guard guard(_state, state::lookbehind);
+    Guard sg(_state);
+    _state = state::lookbehind;
 
     stats_phase_start();
     report_before_phase();
     auto const killed_before_lookbehind = _word_graph.number_of_nodes_killed();
 
-    bool const       old_ticker_running = _ticker_running;
+    Guard            tg(_ticker_running);
     time_point const start_time = std::chrono::high_resolution_clock::now();
     Ticker           ticker;
 
@@ -1358,7 +1357,6 @@ namespace libsemigroups::detail {
     _stats.lookahead_or_behind_nodes_killed
         = current_word_graph().number_of_nodes_killed()
           - killed_before_lookbehind;
-    _ticker_running = old_ticker_running;
     return *this;
   }
 
