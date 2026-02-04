@@ -331,60 +331,95 @@ namespace libsemigroups {
       // TODO to separate file todd-coxeter-impl-graph.hpp
       class Graph
           : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
+        ////////////////////////////////////////////////////////////////////////
+        // Private aliases
+        ////////////////////////////////////////////////////////////////////////
         using FelschGraph_
             = FelschGraph<NodeManagedGraph<node_type>, Definitions>;
 
+        ////////////////////////////////////////////////////////////////////////
         // Private data
+        ////////////////////////////////////////////////////////////////////////
         mutable Forest _forest;
         mutable bool   _forest_valid;
         Order          _standardization_order;
 
        public:
-        Graph() : _forest(), _forest_valid(false) {}
+        ////////////////////////////////////////////////////////////////////////
+        // Constructors and initializers
+        ////////////////////////////////////////////////////////////////////////
+        Graph();
+        Graph& init();
 
         Graph(Graph const&)            = default;
         Graph(Graph&&)                 = default;
         Graph& operator=(Graph const&) = default;
         Graph& operator=(Graph&&)      = default;
 
-        Graph& operator=(WordGraph<node_type> const& wg) {
-          FelschGraph_::operator=(wg);
-          return *this;
-        }
+        Graph& init(Presentation<word_type>&& p);
 
+        Graph& init(Presentation<word_type> const& p,
+                    WordGraph<node_type> const&    wg);
+
+        // TODO required?
+        Graph& operator=(WordGraph<node_type> const& wg);
+
+        ////////////////////////////////////////////////////////////////////////
+        // FelschGraph_ mem fns
+        ////////////////////////////////////////////////////////////////////////
         using FelschGraph_::presentation;
-        // For the other overload of target_no_checks
+        using FelschGraph_::standardize;
         using FelschGraph_::target_no_checks;
+
+        ////////////////////////////////////////////////////////////////////////
+        // FelschGraph_ mem fns overrides
+        ////////////////////////////////////////////////////////////////////////
+
+        // Functions that are present in the FelschGraph_, but must be
+        // overridden here so that the validation and standardization stuff is
+        // reset.
 
         Graph& target_no_checks(node_type  s,
                                 label_type a,
-                                node_type  t) noexcept {
-          _forest_valid          = false;
-          _standardization_order = Order::none;
-          FelschGraph_::target_no_checks(s, a, t);
-          return *this;
-        }
+                                node_type  t) noexcept;
 
         Graph& register_target_no_checks(node_type  s,
                                          label_type a,
-                                         node_type  t) noexcept {
-          _forest_valid          = false;
-          _standardization_order = Order::none;
-          FelschGraph_::register_target_no_checks(s, a, t);
-          return *this;
-        }
+                                         node_type  t) noexcept;
 
-        // TODO privatise and befriend ToddCoxeterImpl
-        // TODO to tpp
+        // TODO privatise and befriend ToddCoxeterImpl?
         template <typename Functor = Noop>
-        void process_coincidences(Functor&& func = Noop{}) {
-          // FelschGraph_::process_coincidences returns true if any changes are
-          // made to the graph.
-          if (FelschGraph_::process_coincidences(std::forward<Functor>(func))) {
-            _forest_valid          = false;
-            _standardization_order = Order::none;
-          }
-        }
+        void process_coincidences(Functor&& func = Noop{});
+
+        ////////////////////////////////////////////////////////////////////////
+        // Other modifiers
+        ////////////////////////////////////////////////////////////////////////
+
+        Graph& presentation_no_checks(Presentation<word_type> const& p);
+
+        // TODO privatise, if for no other reason than this is implemented in
+        // the cpp file so not really usable with arbitrary types, and also at
+        // the moment we only provide const access through ToddCoxeterImpl, so
+        // again these functions can't be called.
+        template <typename Iterator>
+        void make_compatible(ToddCoxeterImpl* tc,
+                             node_type&       current,
+                             Iterator         first,
+                             Iterator         last,
+                             bool             should_stop_early);
+
+        // TODO privatise
+        void process_definitions();
+
+        // TODO privatise
+        template <bool RegDefs>
+        void push_definition_hlt(node_type const& c,
+                                 word_type const& u,
+                                 word_type const& v);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Spanning tree
+        ////////////////////////////////////////////////////////////////////////
 
         [[nodiscard]] bool is_spanning_tree_valid() const noexcept {
           return _forest_valid;
@@ -394,35 +429,14 @@ namespace libsemigroups {
           return const_cast<Graph&>(*this).current_spanning_tree();
         }
 
-        // TODO to tpp file
-        Forest& current_spanning_tree() {
-          if (!_forest_valid) {
-            _forest.init();
-            v4::word_graph::spanning_tree_no_checks(
-                *this, initial_node(), _forest);
-            _forest_valid = true;
-          }
-          LIBSEMIGROUPS_ASSERT(_forest.number_of_nodes()
-                               == max_active_node() + 1);
-          return _forest;
-        }
+        Forest& current_spanning_tree();
 
-        Graph& init();
-        Graph& init(Presentation<word_type>&& p);
-
-        Graph& init(Presentation<word_type> const& p,
-                    WordGraph<node_type> const&    wg) {
-          FelschGraph_::operator=(wg);
-          FelschGraph_::presentation_no_checks(p);
-          return *this;
-        }
-
-        Graph& presentation_no_checks(Presentation<word_type> const& p);
+        ////////////////////////////////////////////////////////////////////////
+        // Standardization
+        ////////////////////////////////////////////////////////////////////////
 
         // TODO(0) copy the doc across
         bool standardize(Order val);
-
-        using FelschGraph_::standardize;
 
         // TODO(0) copy the doc across
         [[nodiscard]] bool is_standardized(Order val) const {
@@ -438,20 +452,6 @@ namespace libsemigroups {
         [[nodiscard]] inline Order standardization_order() const noexcept {
           return _standardization_order;
         }
-
-        void process_definitions();
-
-        template <bool RegDefs>
-        void push_definition_hlt(node_type const& c,
-                                 word_type const& u,
-                                 word_type const& v);
-
-        template <typename Iterator>
-        void make_compatible(ToddCoxeterImpl* tc,
-                             node_type&       current,
-                             Iterator         first,
-                             Iterator         last,
-                             bool             should_stop_early);
 
        private:
         void report_lookahead_stop_early(ToddCoxeterImpl* tc,

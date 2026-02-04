@@ -95,8 +95,11 @@ namespace libsemigroups::detail {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // ToddCoxeterImpl::Graph
+  // ToddCoxeterImpl::Graph --- Constructors and initializers
   ////////////////////////////////////////////////////////////////////////
+
+  ToddCoxeterImpl::Graph::Graph()
+      : _forest(), _forest_valid(false), _standardization_order(Order::none) {}
 
   ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::init() {
     NodeManager<node_type>::clear();
@@ -105,7 +108,10 @@ namespace libsemigroups::detail {
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
-    _forest_valid = false;
+    // Don't need to _forest.init() because this will be done at first call of
+    // current_spanning_tree()
+    _forest_valid          = false;
+    _standardization_order = Order::none;
     return *this;
   }
 
@@ -117,8 +123,114 @@ namespace libsemigroups::detail {
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
-    _forest_valid = false;
+    _forest_valid          = false;
+    _standardization_order = Order::none;
     return *this;
+  }
+
+  ToddCoxeterImpl::Graph&
+  ToddCoxeterImpl::Graph::init(Presentation<word_type> const& p,
+                               WordGraph<node_type> const&    wg) {
+    // Don't need to _forest.init() because this will be done at first
+    // call of current_spanning_tree()
+    _forest_valid          = false;
+    _standardization_order = Order::none;
+    FelschGraph_::operator=(wg);
+    FelschGraph_::presentation_no_checks(p);
+    return *this;
+  }
+
+  ToddCoxeterImpl::Graph&
+  ToddCoxeterImpl::Graph::operator=(WordGraph<node_type> const& wg) {
+    // Don't need to _forest.init() because this will be done at first
+    // call of current_spanning_tree()
+    _forest_valid          = false;
+    _standardization_order = Order::none;
+    FelschGraph_::operator=(wg);
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // FelschGraph_ mem fns overrides
+  ////////////////////////////////////////////////////////////////////////
+
+  ToddCoxeterImpl::Graph&
+  ToddCoxeterImpl::Graph::target_no_checks(node_type  s,
+                                           label_type a,
+                                           node_type  t) noexcept {
+    _forest_valid          = false;
+    _standardization_order = Order::none;
+    FelschGraph_::target_no_checks(s, a, t);
+    return *this;
+  }
+
+  ToddCoxeterImpl::Graph&
+  ToddCoxeterImpl::Graph::register_target_no_checks(node_type  s,
+                                                    label_type a,
+                                                    node_type  t) noexcept {
+    _forest_valid          = false;
+    _standardization_order = Order::none;
+    FelschGraph_::register_target_no_checks(s, a, t);
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeterImpl::Graph --- Other modifiers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename RuleIterator>
+  void ToddCoxeterImpl::Graph::make_compatible(ToddCoxeterImpl* tc,
+                                               node_type&       current,
+                                               RuleIterator     first,
+                                               RuleIterator     last,
+                                               bool should_stop_early) {
+    auto last_stop_early_check      = std::chrono::high_resolution_clock::now();
+    auto const old_number_of_killed = number_of_nodes_killed();
+    auto       killed_at_prev_interval = old_number_of_killed;
+
+    bool   old_ticker_running = tc->_ticker_running;
+    auto   start_time         = std::chrono::high_resolution_clock::now();
+    Ticker ticker;
+
+    CollectCoincidences                    incompat(_coinc);
+    typename FelschGraph_::NoPreferredDefs prefdefs;
+
+    while (current != NodeManager<node_type>::first_free_node()
+           && (!should_stop_early || !tc->stopped())) {
+      // If should_stop_early and tc->stopped(), then we exit this loop.
+      // O/w we continue, this is because _finished is sometimes set before we
+      // are really finished, which is something that should be fixed at some
+      // point (see for example CR_style).
+
+      // TODO(1) when we have an RuleIterator into the active nodes, we
+      // should remove the while loop, and use that in make_compatible
+      // instead. At present there is a cbegin/cend_active_nodes in
+      // NodeManager but the RuleIterators returned by them are invalidated
+      // by any changes to the graph, such as those made by
+      // felsch_graph::make_compatible.
+      felsch_graph::make_compatible<do_not_register_defs>(
+          *this, current, current + 1, first, last, incompat, prefdefs);
+      // Using NoPreferredDefs is just a (more or less) arbitrary
+      // choice, could allow the other choices here too (which works,
+      // but didn't seem to be very useful).
+      process_coincidences(DoNotRegisterDefs{});
+
+      current = NodeManager<node_type>::next_active_node(current);
+      tc->_stats.lookahead_or_behind_position++;
+      if (tc->lookahead_stop_early(should_stop_early,
+                                   last_stop_early_check,
+                                   killed_at_prev_interval)) {
+        break;
+      }
+      if (!tc->_ticker_running && reporting_enabled()
+          && delta(start_time) > std::chrono::milliseconds(500)) {
+        tc->_ticker_running = true;
+        ticker([&tc]() { tc->report_progress_from_thread(ye_print_divider); });
+      }
+    }
+    tc->_stats.lookahead_or_behind_nodes_killed
+        += (number_of_nodes_killed() - killed_at_prev_interval);
+    tc->_ticker_running = old_ticker_running;
   }
 
   ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::presentation_no_checks(
@@ -186,63 +298,23 @@ namespace libsemigroups::detail {
         x, a, y, b, incompat, pref_defs);
   }
 
-  template <typename RuleIterator>
-  void ToddCoxeterImpl::Graph::make_compatible(ToddCoxeterImpl* tc,
-                                               node_type&       current,
-                                               RuleIterator     first,
-                                               RuleIterator     last,
-                                               bool should_stop_early) {
-    auto last_stop_early_check      = std::chrono::high_resolution_clock::now();
-    auto const old_number_of_killed = number_of_nodes_killed();
-    auto       killed_at_prev_interval = old_number_of_killed;
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeterImpl::Graph --- Spanning tree
+  ////////////////////////////////////////////////////////////////////////
 
-    bool   old_ticker_running = tc->_ticker_running;
-    auto   start_time         = std::chrono::high_resolution_clock::now();
-    Ticker ticker;
-
-    CollectCoincidences                    incompat(_coinc);
-    typename FelschGraph_::NoPreferredDefs prefdefs;
-
-    while (current != NodeManager<node_type>::first_free_node()
-           && (!should_stop_early || !tc->stopped())) {
-      // If should_stop_early and tc->stopped(), then we exit this loop.
-      // O/w we continue, this is because _finished is sometimes set before we
-      // are really finished, which is something that should be fixed at some
-      // point (see for example CR_style).
-
-      // TODO(1) when we have an RuleIterator into the active nodes, we
-      // should remove the while loop, and use that in make_compatible
-      // instead. At present there is a cbegin/cend_active_nodes in
-      // NodeManager but the RuleIterators returned by them are invalidated
-      // by any changes to the graph, such as those made by
-      // felsch_graph::make_compatible.
-      felsch_graph::make_compatible<do_not_register_defs>(
-          *this, current, current + 1, first, last, incompat, prefdefs);
-      // Using NoPreferredDefs is just a (more or less) arbitrary
-      // choice, could allow the other choices here too (which works,
-      // but didn't seem to be very useful).
-      process_coincidences(DoNotRegisterDefs{});
-
-      current = NodeManager<node_type>::next_active_node(current);
-      tc->_stats.lookahead_or_behind_position++;
-      if (tc->lookahead_stop_early(should_stop_early,
-                                   last_stop_early_check,
-                                   killed_at_prev_interval)) {
-        break;
-      }
-      if (!tc->_ticker_running && reporting_enabled()
-          && delta(start_time) > std::chrono::milliseconds(500)) {
-        tc->_ticker_running = true;
-        ticker([&tc]() { tc->report_progress_from_thread(ye_print_divider); });
-      }
+  Forest& ToddCoxeterImpl::Graph::current_spanning_tree() {
+    if (!_forest_valid) {
+      _standardization_order = Order::none;
+      _forest.init();
+      v4::word_graph::spanning_tree_no_checks(*this, initial_node(), _forest);
+      _forest_valid = true;
     }
-    tc->_stats.lookahead_or_behind_nodes_killed
-        += (number_of_nodes_killed() - killed_at_prev_interval);
-    tc->_ticker_running = old_ticker_running;
+    LIBSEMIGROUPS_ASSERT(_forest.number_of_nodes() == max_active_node() + 1);
+    return _forest;
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Standardization
+  // ToddCoxeterImpl::Graph --- Standardization
   ////////////////////////////////////////////////////////////////////////
 
   bool ToddCoxeterImpl::Graph::standardize(Order val) {
@@ -328,7 +400,6 @@ namespace libsemigroups::detail {
         _finished(),
         _never_run(),
         _settings_stack(),
-        // TODO set in Graph _standardized(),
         _state(),
         _stats(),
         _ticker_running(),
@@ -343,7 +414,6 @@ namespace libsemigroups::detail {
     _finished  = false;
     _never_run = true;
     reset_settings_stack();
-    // TODO set in Graph _standardized = Order::none;
     _state = state::none;
     _stats.init();
     _ticker_running = false;
@@ -370,7 +440,6 @@ namespace libsemigroups::detail {
     _settings_stack = std::move(that._settings_stack);
     _state          = that._state.load();
     _stats          = std::move(that._stats);
-    // TODO add to Graph _standardized   = std::move(that._standardized);
     _ticker_running = std::move(that._ticker_running);
     _word_graph     = std::move(that._word_graph);
     // The next line is essential so that the _word_graph.definitions()._tc
@@ -389,7 +458,6 @@ namespace libsemigroups::detail {
     for (auto const& uptr : that._settings_stack) {
       _settings_stack.push_back(std::make_unique<Settings>(*uptr));
     }
-    // TODO add to Graph _standardized   = that._standardized;
     _state          = that._state.load();
     _stats          = that._stats;
     _ticker_running = that._ticker_running;

@@ -109,6 +109,19 @@ namespace libsemigroups {
     };  // class ToddCoxeterImpl::SettingsGuard
 
     ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeterImpl::Graph
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Functor>
+    void ToddCoxeterImpl::Graph::process_coincidences(Functor&& func) {
+      // FelschGraph_::process_coincidences returns true if any changes are
+      // made to the graph.
+      if (FelschGraph_::process_coincidences(std::forward<Functor>(func))) {
+        _forest_valid          = false;
+        _standardization_order = Order::none;
+      }
+    }
+    ////////////////////////////////////////////////////////////////////////
     // ToddCoxeterImpl
     ////////////////////////////////////////////////////////////////////////
 
@@ -122,7 +135,6 @@ namespace libsemigroups {
       _finished  = false;
       _never_run = true;
       reset_settings_stack();
-      // TODO add to Graph _standardized   = Order::none;
       _ticker_running = false;
 
       // TODO(1) if &wg == &_word_graph, what then? Should be handled in
@@ -149,7 +161,6 @@ namespace libsemigroups {
       _finished  = false;
       _never_run = true;
       reset_settings_stack();
-      // TODO add to Graph _standardized   = Order::none;
       _ticker_running = false;
 
       // FIXME(1) this doesn't seem to reset _word_graph
