@@ -33,7 +33,7 @@
 #include <cstdint>           // for uint64_t, uint32_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
-#include <limits>            // for numeric_limits
+#include <limits>            // for numeric_limits,
 #include <numeric>           // for iota
 #include <tuple>             // for tuple_size
 #include <type_traits>       // for enable_if_t
@@ -786,11 +786,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst linear in the sum of the parameter \p m and degree().
-    DynamicPTransf& increase_degree_by(size_t m) {
-      resize(degree() + m);
-      std::iota(end() - m, end(), degree() - m);
-      return *this;
-    }
+    DynamicPTransf& increase_degree_by(size_t m);
 
    protected:
     using base_type::resize;
