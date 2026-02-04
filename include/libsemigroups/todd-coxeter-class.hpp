@@ -1275,8 +1275,9 @@ namespace libsemigroups {
     //! @}
 
     // TODO doc
+    // TODO to tpp file
     template <typename Func>
-    ToddCoxeter& perform_lookbehind(Func&& collapser) {
+    ToddCoxeter& perform_lookbehind_no_checks(Func&& collapser) {
       // TODO add static assert that collapser is invocable, with right number
       // of args
       auto collapser_wrap
@@ -1285,11 +1286,44 @@ namespace libsemigroups {
                                detail::cifrw(this, first),
                                detail::cifrw(this, last));
             };
-      ToddCoxeterImpl::perform_lookbehind(collapser_wrap);
+      ToddCoxeterImpl::perform_lookbehind_no_checks(collapser_wrap);
+      return *this;
+    }
+
+    template <typename Func>
+    ToddCoxeter& perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
+                                                  Func&& collapser) {
+      // TODO add static assert that collapser is invocable, with right number
+      // of args
+      auto collapser_wrap
+          = [&collapser, this](auto d_first, auto first, auto last) {
+              return collapser(detail::ifrw(this, d_first),
+                               detail::cifrw(this, first),
+                               detail::cifrw(this, last));
+            };
+      ToddCoxeterImpl::perform_lookbehind_for_no_checks(t, collapser_wrap);
+      return *this;
+    }
+
+    template <typename Func>
+    ToddCoxeter&
+    perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
+                                       Func&&                  collapser) {
+      // TODO add static assert that collapser is invocable, with right number
+      // of args
+      auto collapser_wrap
+          = [&collapser, this](auto d_first, auto first, auto last) {
+              return collapser(detail::ifrw(this, d_first),
+                               detail::cifrw(this, first),
+                               detail::cifrw(this, last));
+            };
+      ToddCoxeterImpl::perform_lookbehind_until_no_checks(std::move(pred),
+                                                          collapser_wrap);
       return *this;
     }
 
     using ToddCoxeterImpl::perform_lookbehind;
+    using ToddCoxeterImpl::perform_lookbehind_no_checks;
   };  // class ToddCoxeter
 
   //! \ingroup todd_coxeter_class_group

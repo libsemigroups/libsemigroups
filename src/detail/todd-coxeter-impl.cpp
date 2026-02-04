@@ -74,71 +74,6 @@ namespace libsemigroups::detail {
   // ToddCoxeterImpl::Settings
   ////////////////////////////////////////////////////////////////////////
 
-  struct ToddCoxeterImpl::Settings {
-    size_t                    def_max;
-    options::def_policy       def_policy;
-    size_t                    hlt_defs;
-    size_t                    f_defs;
-    options::lookahead_extent lookahead_extent;
-    float                     lookahead_growth_factor;
-    size_t                    lookahead_growth_threshold;
-    size_t                    lookahead_min;
-    size_t                    lookahead_next;
-    std::chrono::nanoseconds  lookahead_stop_early_interval;
-    float                     lookahead_stop_early_ratio;
-    options::lookahead_style  lookahead_style;
-    size_t                    lower_bound;
-    bool                      save;
-    options::strategy         strategy;
-    bool                      use_relations_in_extra;
-
-    Settings()
-        : def_max(),
-          def_policy(),
-          hlt_defs(),
-          f_defs(),
-          lookahead_extent(),
-          lookahead_growth_factor(),
-          lookahead_growth_threshold(),
-          lookahead_min(),
-          lookahead_next(),
-          lookahead_stop_early_interval(),
-          lookahead_stop_early_ratio(),
-          lookahead_style(),
-          lower_bound(),
-          save(),
-          strategy(),
-          use_relations_in_extra() {
-      init();
-    }
-
-    Settings(Settings const&)            = default;
-    Settings(Settings&&)                 = default;
-    Settings& operator=(Settings const&) = default;
-    Settings& operator=(Settings&&)      = default;
-
-    Settings& init() {
-      def_max                       = 2'000;
-      def_policy                    = options::def_policy::no_stack_if_no_space;
-      hlt_defs                      = 200'000;
-      f_defs                        = 100'000;
-      lookahead_extent              = options::lookahead_extent::partial;
-      lookahead_growth_factor       = 2.0;
-      lookahead_growth_threshold    = 4;
-      lower_bound                   = UNDEFINED;
-      lookahead_min                 = 10'000;
-      lookahead_next                = 5'000'000;
-      lookahead_stop_early_interval = std::chrono::seconds(1);
-      lookahead_stop_early_ratio    = 0.01;
-      lookahead_style               = options::lookahead_style::hlt;
-
-      save                   = false;
-      strategy               = options::strategy::hlt;
-      use_relations_in_extra = false;
-      return *this;
-    }
-  };  // class ToddCoxeterImpl::Settings
-
   ToddCoxeterImpl::Settings& ToddCoxeterImpl::tc_settings() {
     LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     return *_settings_stack.back();
@@ -158,24 +93,6 @@ namespace libsemigroups::detail {
     }
     LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  // ToddCoxeterImpl::SettingsGuard
-  ////////////////////////////////////////////////////////////////////////
-
-  class ToddCoxeterImpl::SettingsGuard {
-    ToddCoxeterImpl* _tc;
-
-   public:
-    explicit SettingsGuard(ToddCoxeterImpl* tc) : _tc(tc) {
-      _tc->_settings_stack.push_back(std::make_unique<Settings>());
-    }
-
-    ~SettingsGuard() {
-      _tc->_settings_stack.pop_back();
-      LIBSEMIGROUPS_ASSERT(!_tc->_settings_stack.empty());
-    }
-  };  // class ToddCoxeterImpl::SettingsGuard
 
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterImpl::Graph
@@ -822,7 +739,7 @@ namespace libsemigroups::detail {
       perform_lookahead_impl(stop_early);
     } else if (strategy() == options::strategy::lookbehind) {
       Guard guard(_state, state::lookbehind);
-      perform_lookbehind_impl();  // TODO incorporate collapser here
+      perform_lookbehind_impl();
     } else if (strategy() == options::strategy::CR) {
       CR_style();
     } else if (strategy() == options::strategy::R_over_C) {
@@ -1319,43 +1236,83 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind_impl() {
-    using iterator       = std::back_insert_iterator<word_type>;
-    using const_iterator = word_type::const_iterator;
     if (kind() == congruence_kind::onesided
         && !internal_generating_pairs().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected a 2-sided ToddCoxeter instance, or a 1-sided ToddCoxeter "
-          "instance with 0 generating pairs")
+          "instance with 0 generating pairs, found {} generating pairs",
+          internal_generating_pairs().size());
+    } else if (_word_graph.number_of_nodes_active() == 1) {
+      // Can't collapse anything in this case
+      return *this;
     }
-    auto collapser
-        = [this](iterator d_first, const_iterator first, const_iterator last) {
-            reduce_no_run_no_checks(d_first, first, last);
-          };
-    // TODO rename perform_lookbehind below to perform_lookbehind_impl
-    return perform_lookbehind(collapser);
+
+    // TODO Rename Guard to ValueGuard
+    Guard guard(_state, state::lookbehind);
+
+    stats_phase_start();
+    report_before_phase();
+
+    bool       old_ticker_running = _ticker_running;
+    time_point start_time         = std::chrono::high_resolution_clock::now();
+    Ticker     ticker;
+
+    node_type& current = _word_graph.lookahead_cursor();
+    current            = _word_graph.initial_node();
+
+    word_type w1, w2;
+
+    while (current != _word_graph.first_free_node() && !stopped()) {
+      w1.clear();
+      w2.clear();
+      auto const& f = current_spanning_tree();
+      f.path_from_root_no_checks(std::back_inserter(w1), current);
+      _lookbehind_collapser(std::back_inserter(w2), w1.begin(), w1.end());
+      if (!std::equal(w1.begin(), w1.end(), w2.begin(), w2.end())) {
+        node_type other = v4::word_graph::follow_path_no_checks(
+            _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
+        if (other != UNDEFINED && other != current) {
+          _word_graph.merge_nodes_no_checks(current, other);
+          if (_word_graph.number_of_coincidences() > 32'768) {
+            _word_graph.process_coincidences();
+          }
+        }
+      }
+      current = _word_graph.next_active_node(current);
+      if (!_ticker_running && reporting_enabled()
+          && delta(start_time) >= std::chrono::milliseconds(500)) {
+        _ticker_running = true;
+        ticker([this]() { report_progress_from_thread(true); });
+      }
+    }
+    _word_graph.process_coincidences();
+    report_after_phase();
+    stats_phase_stop();
+    _ticker_running = old_ticker_running;
+    return *this;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::perform_lookbehind() {
-    SettingsGuard sg(this);
-    strategy(options::strategy::lookbehind);
-    run();
-    return *this;
+    return perform_lookbehind_no_checks(
+        [this](auto d_first, auto first, auto last) {
+          reduce_no_run_no_checks(d_first, first, last);
+        });
   }
 
   ToddCoxeterImpl&
   ToddCoxeterImpl::perform_lookbehind_for(std::chrono::nanoseconds t) {
-    SettingsGuard sg(this);
-    strategy(options::strategy::lookbehind);
-    run_for(t);
-    return *this;
+    return perform_lookbehind_for_no_checks(
+        t, [this](auto d_first, auto first, auto last) {
+          reduce_no_run_no_checks(d_first, first, last);
+        });
   }
 
   ToddCoxeterImpl&
   ToddCoxeterImpl::perform_lookbehind_until(std::function<bool()>&& pred) {
-    SettingsGuard sg(this);
-    strategy(options::strategy::lookbehind);
-    run_until(std::move(pred));
-    return *this;
+    return perform_lookbehind_until_no_checks(
+        std::move(pred), [this](auto d_first, auto first, auto last) {
+          reduce_no_run_no_checks(d_first, first, last);
+        });
   }
 
 }  // namespace libsemigroups::detail

@@ -454,6 +454,10 @@ namespace libsemigroups {
       // Data members - private
       ////////////////////////////////////////////////////////////////////////
 
+      std::function<void(std::back_insert_iterator<word_type>,
+                         typename word_type::const_iterator,
+                         typename word_type::const_iterator)>
+                                             _lookbehind_collapser;
       bool                                   _finished;
       bool                                   _never_run;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
@@ -1694,6 +1698,7 @@ namespace libsemigroups {
 
       // TODO doc
       // Perform a lookahead for an amount of time
+      // TODO required?
       template <typename Time>
       void perform_lookahead_for(Time t) {
         perform_lookahead_for(std::chrono::nanoseconds(t));
@@ -1701,8 +1706,6 @@ namespace libsemigroups {
 
       // TODO doc
       // Perform a lookahead until a function returns true or finished
-      // TODO make the reference one the actual function and call it with this
-      // one
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
       // TODO doc
@@ -1712,16 +1715,22 @@ namespace libsemigroups {
       }
 
       // TODO doc
-      // TODO perform_lookbehind_for(Time) with/without collapser
-      // TODO perform_lookbehind_until(Func) with/without collapser
-      template <typename Func>
-      ToddCoxeterImpl& perform_lookbehind(Func&&);
 
       // TODO doc
       ToddCoxeterImpl& perform_lookbehind();
 
       // TODO doc
+      template <typename Func>
+      ToddCoxeterImpl& perform_lookbehind_no_checks(Func&& collapser);
+
+      // TODO doc
       ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
+
+      // TODO doc
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
+                                       Func&&                   collapser);
 
       // TODO doc
       ToddCoxeterImpl& perform_lookbehind_until(std::function<bool()>&& pred);
@@ -1731,6 +1740,12 @@ namespace libsemigroups {
       perform_lookbehind_until(std::function<bool()> const& pred) {
         return perform_lookbehind_until(std::function<bool()>(pred));
       }
+
+      // TODO doc
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
+                                         Func&&                  collapser);
 
       ////////////////////////////////////////////////////////////////////////
       // Word -> index
