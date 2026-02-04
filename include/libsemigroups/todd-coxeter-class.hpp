@@ -1278,8 +1278,11 @@ namespace libsemigroups {
     // TODO to tpp file
     template <typename Func>
     ToddCoxeter& perform_lookbehind_no_checks(Func&& collapser) {
-      // TODO add static assert that collapser is invocable, with right number
-      // of args
+      static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                        std::back_insert_iterator<word_type>,
+                                        word_type::const_iterator,
+                                        word_type::const_iterator>);
+
       auto collapser_wrap
           = [&collapser, this](auto d_first, auto first, auto last) {
               return collapser(detail::ifrw(this, d_first),
@@ -1293,8 +1296,10 @@ namespace libsemigroups {
     template <typename Func>
     ToddCoxeter& perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
                                                   Func&& collapser) {
-      // TODO add static assert that collapser is invocable, with right number
-      // of args
+      static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                        std::back_insert_iterator<word_type>,
+                                        word_type::const_iterator,
+                                        word_type::const_iterator>);
       auto collapser_wrap
           = [&collapser, this](auto d_first, auto first, auto last) {
               return collapser(detail::ifrw(this, d_first),
@@ -1309,8 +1314,10 @@ namespace libsemigroups {
     ToddCoxeter&
     perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
                                        Func&&                  collapser) {
-      // TODO add static assert that collapser is invocable, with right number
-      // of args
+      static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                        std::back_insert_iterator<word_type>,
+                                        word_type::const_iterator,
+                                        word_type::const_iterator>);
       auto collapser_wrap
           = [&collapser, this](auto d_first, auto first, auto last) {
               return collapser(detail::ifrw(this, d_first),
