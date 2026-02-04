@@ -124,7 +124,7 @@ namespace libsemigroups {
       using rx::operator|;
 
       tc.run();
-      if (!tc.is_standardized()) {
+      if (!tc.current_word_graph().is_standardized()) {
         tc.standardize(Order::shortlex);
       }
       if constexpr (std::is_same_v<Word, word_type>) {

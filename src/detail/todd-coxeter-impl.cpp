@@ -242,6 +242,36 @@ namespace libsemigroups::detail {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // Standardization
+  ////////////////////////////////////////////////////////////////////////
+
+  bool ToddCoxeterImpl::Graph::standardize(Order val) {
+    // TODO exception if val is Order::none
+    if (is_standardized(val)) {
+      return false;
+    }
+    time_point start_time;
+    if (reporting_enabled()) {
+      start_time = std::chrono::high_resolution_clock::now();
+      report_no_prefix(report_divider());
+      report_default("ToddCoxeter: {} standardizing the word graph, this might "
+                     "take a few moments!\n",
+                     val);
+    }
+    _forest.init();
+    _forest.add_nodes(number_of_nodes_active());
+    // NOTE: the cursor() does not survive the next line
+    // but lookahead_cursor() should
+    bool result            = v4::word_graph::standardize(*this, _forest, val);
+    _forest_valid          = true;
+    _standardization_order = val;
+    report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
+                   val,
+                   string_time(delta(start_time)));
+    return result;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterImpl::Definitions
   ////////////////////////////////////////////////////////////////////////
 
@@ -298,7 +328,7 @@ namespace libsemigroups::detail {
         _finished(),
         _never_run(),
         _settings_stack(),
-        _standardized(),
+        // TODO set in Graph _standardized(),
         _state(),
         _stats(),
         _ticker_running(),
@@ -313,8 +343,8 @@ namespace libsemigroups::detail {
     _finished  = false;
     _never_run = true;
     reset_settings_stack();
-    _standardized = Order::none;
-    _state        = state::none;
+    // TODO set in Graph _standardized = Order::none;
+    _state = state::none;
     _stats.init();
     _ticker_running = false;
     _word_graph.init();
@@ -340,7 +370,7 @@ namespace libsemigroups::detail {
     _settings_stack = std::move(that._settings_stack);
     _state          = that._state.load();
     _stats          = std::move(that._stats);
-    _standardized   = std::move(that._standardized);
+    // TODO add to Graph _standardized   = std::move(that._standardized);
     _ticker_running = std::move(that._ticker_running);
     _word_graph     = std::move(that._word_graph);
     // The next line is essential so that the _word_graph.definitions()._tc
@@ -359,7 +389,7 @@ namespace libsemigroups::detail {
     for (auto const& uptr : that._settings_stack) {
       _settings_stack.push_back(std::make_unique<Settings>(*uptr));
     }
-    _standardized   = that._standardized;
+    // TODO add to Graph _standardized   = that._standardized;
     _state          = that._state.load();
     _stats          = that._stats;
     _ticker_running = that._ticker_running;
@@ -662,61 +692,15 @@ namespace libsemigroups::detail {
     return current_spanning_tree();
   }
 
-  bool ToddCoxeterImpl::is_standardized(Order val) const {
-    // TODO(0) this is probably not always valid,
-    // the easiest fix for this would just be to call standardize(val) and
-    // check if the return value is false, but this wouldn't be const, so
-    // maybe not.
-    return val == _standardized;
-    // && _forest.number_of_nodes()
-    //        == current_word_graph().number_of_nodes_active();
-  }
-
-  bool ToddCoxeterImpl::is_standardized() const {
-    // TODO(0) this is not always valid, i.e. if we are
-    // standardized, then grow, then collapse, but end up with the same
-    // number of nodes again.
-    return _standardized != Order::none;
-    // && _forest.number_of_nodes()
-    //        == current_word_graph().number_of_nodes_active();
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterImpl - modifiers - public
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeterImpl::shrink_to_fit() {
-    standardize(Order::shortlex);
+    _word_graph.standardize(Order::shortlex);
     _word_graph.erase_free_nodes();
     _word_graph.induced_subgraph_no_checks(
         0, _word_graph.number_of_nodes_active());
-  }
-
-  // TODO move this to Graph also
-  bool ToddCoxeterImpl::standardize(Order val) {
-    if (is_standardized(val)) {
-      return false;
-    }
-    time_point start_time;
-    if (reporting_enabled()) {
-      start_time = std::chrono::high_resolution_clock::now();
-      report_no_prefix(report_divider());
-      report_default("ToddCoxeter: {} standardizing the word graph, this might "
-                     "take a few moments!\n",
-                     val);
-    }
-    Forest& f = _word_graph.current_spanning_tree();
-    f.init();
-    f.add_nodes(_word_graph.number_of_nodes_active());
-    // NOTE: the cursor() does not survive the next line
-    // but lookahead_cursor() should
-    bool result = v4::word_graph::standardize(_word_graph, f, val);
-    // TODO but _word_graph._forest_valid isn't set here
-    _standardized = val;
-    report_default("ToddCoxeter: the word graph was {} standardized in {}\n",
-                   val,
-                   string_time(delta(start_time)));
-    return result;
   }
 
   ////////////////////////////////////////////////////////////////////////

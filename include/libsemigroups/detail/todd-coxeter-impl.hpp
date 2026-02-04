@@ -337,6 +337,7 @@ namespace libsemigroups {
         // Private data
         mutable Forest _forest;
         mutable bool   _forest_valid;
+        Order          _standardization_order;
 
        public:
         Graph() : _forest(), _forest_valid(false) {}
@@ -358,7 +359,8 @@ namespace libsemigroups {
         Graph& target_no_checks(node_type  s,
                                 label_type a,
                                 node_type  t) noexcept {
-          _forest_valid = false;
+          _forest_valid          = false;
+          _standardization_order = Order::none;
           FelschGraph_::target_no_checks(s, a, t);
           return *this;
         }
@@ -366,28 +368,33 @@ namespace libsemigroups {
         Graph& register_target_no_checks(node_type  s,
                                          label_type a,
                                          node_type  t) noexcept {
-          _forest_valid = false;
+          _forest_valid          = false;
+          _standardization_order = Order::none;
           FelschGraph_::register_target_no_checks(s, a, t);
           return *this;
         }
 
-        // TODO New version required, i.e. things that modify the graph such
-        // that the spanning tree will become invalid
         // TODO privatise and befriend ToddCoxeterImpl
+        // TODO to tpp
         template <typename Functor = Noop>
         void process_coincidences(Functor&& func = Noop{}) {
           // FelschGraph_::process_coincidences returns true if any changes are
           // made to the graph.
           if (FelschGraph_::process_coincidences(std::forward<Functor>(func))) {
-            _forest_valid = false;
+            _forest_valid          = false;
+            _standardization_order = Order::none;
           }
+        }
+
+        [[nodiscard]] bool is_spanning_tree_valid() const noexcept {
+          return _forest_valid;
         }
 
         Forest const& current_spanning_tree() const {
           return const_cast<Graph&>(*this).current_spanning_tree();
         }
 
-        // TODO to cpp file
+        // TODO to tpp file
         Forest& current_spanning_tree() {
           if (!_forest_valid) {
             _forest.init();
@@ -399,19 +406,6 @@ namespace libsemigroups {
                                == max_active_node() + 1);
           return _forest;
         }
-        // TODO rm the following, added to figure out what mem fns of
-        // FelschGraph are called here
-        // using FelschGraph_::initial_node;
-        // using FelschGraph_::is_active_node;
-        // using FelschGraph_::lookahead_cursor;
-        // using FelschGraph_::merge_nodes_no_checks;
-        // using FelschGraph_::number_of_coincidences;
-        // using FelschGraph_::number_of_edges_active;
-        // using FelschGraph_::number_of_nodes;
-        // using FelschGraph_::number_of_nodes_active;
-        // using FelschGraph_::out_degree;
-        // using FelschGraph_::stats;
-        // using FelschGraph_::target;
 
         Graph& init();
         Graph& init(Presentation<word_type>&& p);
@@ -425,16 +419,33 @@ namespace libsemigroups {
 
         Graph& presentation_no_checks(Presentation<word_type> const& p);
 
-        // TODO privatise and befriend ToddCoxeterImpl
+        // TODO(0) copy the doc across
+        bool standardize(Order val);
+
+        using FelschGraph_::standardize;
+
+        // TODO(0) copy the doc across
+        [[nodiscard]] bool is_standardized(Order val) const {
+          return _standardization_order == val;
+        }
+
+        // TODO(0) copy the doc across
+        [[nodiscard]] bool is_standardized() const {
+          return _standardization_order != Order::none;
+        }
+
+        // TODO(0) copy the doc across
+        [[nodiscard]] inline Order standardization_order() const noexcept {
+          return _standardization_order;
+        }
+
         void process_definitions();
 
-        // TODO privatise and befriend ToddCoxeterImpl
         template <bool RegDefs>
         void push_definition_hlt(node_type const& c,
                                  word_type const& u,
                                  word_type const& v);
 
-        // TODO privatise and befriend ToddCoxeterImpl
         template <typename Iterator>
         void make_compatible(ToddCoxeterImpl* tc,
                              node_type&       current,
@@ -460,7 +471,6 @@ namespace libsemigroups {
       bool                                   _finished;
       bool                                   _never_run;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
-      Order                                  _standardized;
       // _state must be atomic to avoid the situation where the ticker
       // function is called concurrently with a new lookahead starting
       std::atomic<state> _state;
@@ -1373,7 +1383,7 @@ namespace libsemigroups {
       //! \noexcept
       // This isn't really necessary in C++, but in the python bindings we
       // don't bind ToddCoxeter::Graph and so we expose this here.
-      // TODO deprecate and move to the word group itself?
+      // TODO deprecate and move to Graph itself
       [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
         return current_word_graph().number_of_nodes_active();
       }
@@ -1399,7 +1409,7 @@ namespace libsemigroups {
       //! \noexcept
       // This isn't really necessary in C++, but in the python bindings we
       // don't bind ToddCoxeter::Graph and so we expose this here.
-      // TODO deprecate and move to the word group itself?
+      // TODO deprecate and move to the word graph itself
       [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
         return current_word_graph().number_of_edges_active();
       }
@@ -1419,7 +1429,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      // TODO deprecate and move to the word group itself?
+      // TODO deprecate and move to the word graph itself
       [[nodiscard]] float complete() const noexcept {
         return complete(current_word_graph().number_of_edges_active());
       }
@@ -1582,8 +1592,11 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      inline Order standardization_order() const noexcept {
-        return _standardized;
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().standardization_order()` instead.
+      [[deprecated]] inline Order standardization_order() const noexcept {
+        return current_word_graph().standardization_order();
       }
 
       //! \ingroup todd_coxeter_class_accessors_group
@@ -1601,7 +1614,12 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      bool is_standardized(Order val) const;
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().is_standardized(val)` instead.
+      [[deprecated]] bool is_standardized(Order val) const {
+        return current_word_graph().is_standardized(val);
+      }
 
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Check if the word graph is currently standardized with
@@ -1616,7 +1634,12 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      bool is_standardized() const;
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().is_standardized(val)` instead.
+      [[deprecated]] bool is_standardized() const {
+        return current_word_graph().is_standardized();
+      }
 
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Return the number of large collapses that have occurred.
@@ -1630,7 +1653,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      // TODO deprecate and move to the word group itself?
+      // TODO deprecate and document _word_graph.stats
       [[nodiscard]] uint64_t number_of_large_collapses() const noexcept {
         return _word_graph.stats().num_large_collapses;
       }
@@ -1673,7 +1696,12 @@ namespace libsemigroups {
       //!
       //! \sa \ref word_graph::standardize
       //! \sa \ref current_spanning_tree.
-      bool standardize(Order val);
+      // We don't deprecated this (at least for now) since we only provide const
+      // access to _word_graph, and so require modifiers to also be member
+      // functions of ToddCoxeterImpl
+      bool standardize(Order val) {
+        return _word_graph.standardize(val);
+      }
 
       //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookahead.
@@ -2139,7 +2167,7 @@ namespace libsemigroups {
                           uint64_t     num_active_edges) const;
       void add_lookahead_or_behind_row(ReportCell_& rc) const;
     };  // class ToddCoxeterImpl
-  }     // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_

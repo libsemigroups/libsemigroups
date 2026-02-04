@@ -184,14 +184,14 @@ namespace libsemigroups {
       using v4::word_graph::follow_path_no_checks;
 
       using node_type = typename ToddCoxeter<Word>::node_type;
-      Order old_val   = tc.standardization_order();
+      Order old_val   = tc.current_word_graph().standardization_order();
 
       tc.run();
       for (auto val : {Order::shortlex, Order::lex, Order::recursive}) {
         tc.standardize(val);
-        REQUIRE(tc.is_standardized(val));
-        REQUIRE(tc.is_standardized());
-        REQUIRE(tc.standardization_order() == val);
+        REQUIRE(tc.current_word_graph().is_standardized(val));
+        REQUIRE(tc.current_word_graph().is_standardized());
+        REQUIRE(tc.current_word_graph().standardization_order() == val);
       }
       {
         tc.standardize(Order::shortlex);
@@ -370,9 +370,9 @@ namespace libsemigroups {
     REQUIRE(word_of(tc, 1) == 1_w);
     REQUIRE(word_of(tc, 2) == 00_w);
     tc.standardize(Order::lex);
-    REQUIRE(tc.is_standardized(Order::lex));
-    REQUIRE(tc.is_standardized());
-    REQUIRE(!tc.is_standardized(Order::shortlex));
+    REQUIRE(tc.current_word_graph().is_standardized(Order::lex));
+    REQUIRE(tc.current_word_graph().is_standardized());
+    REQUIRE(!tc.current_word_graph().is_standardized(Order::shortlex));
 
     REQUIRE(word_of(tc, 0) == 0_w);
     REQUIRE(word_of(tc, 1) == 00_w);
@@ -394,7 +394,7 @@ namespace libsemigroups {
     REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare{}));
 
     tc.standardize(Order::shortlex);
-    REQUIRE(tc.is_standardized(Order::shortlex));
+    REQUIRE(tc.current_word_graph().is_standardized(Order::shortlex));
     REQUIRE((normal_forms(tc) | to_vector())
             == std::vector({0_w, 1_w, 00_w, 01_w, 001_w}));
     REQUIRE(index_of(tc, word_of(tc, 0)) == 0);
@@ -425,7 +425,7 @@ namespace libsemigroups {
     // }
 
     tc.standardize(Order::recursive);
-    REQUIRE(tc.is_standardized());
+    REQUIRE(tc.current_word_graph().is_standardized());
 
     REQUIRE(word_of(tc, 0) == 0_w);
     REQUIRE(word_of(tc, 1) == 00_w);
@@ -482,8 +482,8 @@ namespace libsemigroups {
 
     tc.standardize(Order::lex);
     REQUIRE(normal_forms(tc).size_hint() == 10'752);
-    REQUIRE(tc.is_standardized());
-    REQUIRE(tc.is_standardized(Order::lex));
+    REQUIRE(tc.current_word_graph().is_standardized());
+    REQUIRE(tc.current_word_graph().is_standardized(Order::lex));
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(index_of(tc, word_of(tc, c)) == c);
     }
@@ -655,13 +655,13 @@ namespace libsemigroups {
       section_CR_style(tc);
       section_Cr_style(tc);
 
-      REQUIRE(!tc.is_standardized());
+      REQUIRE(!tc.current_word_graph().is_standardized());
       REQUIRE(index_of(tc, 100_w) == index_of(tc, 10000_w));
       REQUIRE(index_of(tc, 100110_w) == index_of(tc, 10000_w));
       REQUIRE(index_of(tc, 1_w) != index_of(tc, 0000_w));
       REQUIRE(index_of(tc, 000_w) != index_of(tc, 0000_w));
       tc.standardize(Order::shortlex);
-      REQUIRE(tc.is_standardized());
+      REQUIRE(tc.current_word_graph().is_standardized());
       check_standardize(tc);
       check_complete_compatible(tc);
     }
@@ -1714,7 +1714,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(class_of(tc, ""_w), LibsemigroupsException);
     REQUIRE_THROWS_AS(class_of(tc, {}), LibsemigroupsException);
 
-    REQUIRE(!tc.is_standardized());
+    REQUIRE(!tc.current_word_graph().is_standardized());
     REQUIRE(tc.current_word_graph().felsch_tree().number_of_nodes() == 7);
 
     ToddCoxeter tc2(onesided, tc);
@@ -1789,6 +1789,7 @@ namespace libsemigroups {
     REQUIRE(is_non_trivial(tc) == tril::TRUE);
     // REQUIRE(!tc.finished());
     tc.standardize(Order::shortlex);
+    // TODO should throw
     tc.standardize(Order::none);
 
     REQUIRE(tc.number_of_classes() == 5'040);
@@ -4544,7 +4545,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

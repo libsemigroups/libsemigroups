@@ -122,7 +122,7 @@ namespace libsemigroups {
       _finished  = false;
       _never_run = true;
       reset_settings_stack();
-      _standardized   = Order::none;
+      // TODO add to Graph _standardized   = Order::none;
       _ticker_running = false;
 
       // TODO(1) if &wg == &_word_graph, what then? Should be handled in
@@ -149,7 +149,7 @@ namespace libsemigroups {
       _finished  = false;
       _never_run = true;
       reset_settings_stack();
-      _standardized   = Order::none;
+      // TODO add to Graph _standardized   = Order::none;
       _ticker_running = false;
 
       // FIXME(1) this doesn't seem to reset _word_graph
@@ -181,8 +181,8 @@ namespace libsemigroups {
     ToddCoxeterImpl::index_of_no_checks(Iterator1 first, Iterator2 last) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
-      if (!is_standardized()) {
-        standardize(Order::shortlex);
+      if (!current_word_graph().is_standardized()) {
+        _word_graph.standardize(Order::shortlex);
       }
       return current_index_of_no_checks(first, last);
     }
@@ -192,13 +192,13 @@ namespace libsemigroups {
     ToddCoxeterImpl::current_word_of_no_checks(OutputIterator d_first,
                                                index_type     i) const {
       LIBSEMIGROUPS_ASSERT(i != UNDEFINED);
-      if (!is_standardized()) {
+      if (!current_word_graph().is_standardized()) {
         // We must standardize here o/w there's no bijection between the numbers
         // 0, ..., n - 1 on to the nodes of the word graph.
         // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
-        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
+        const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
       }
 
       size_t const offset
@@ -223,13 +223,13 @@ namespace libsemigroups {
                                     - offset,
                                 i);
       }
-      if (!is_standardized()) {
+      if (!current_word_graph().is_standardized()) {
         // We must standardize here o/w there's no bijection between the numbers
         // 0, ..., n - 1 on to the nodes of the word graph.
         // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
-        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
+        const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
       }
       return current_word_of_no_checks(d_first, i);
     }
@@ -309,9 +309,9 @@ namespace libsemigroups {
       if (finished()
           || (kind() == congruence_kind::onesided
               && !internal_generating_pairs().empty())) {
-        if (!is_standardized()) {
+        if (!current_word_graph().is_standardized()) {
           // TODO(1) this is a bit fishy
-          const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
+          const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
         }
         index_type pos = current_index_of_no_checks(first, last);
         if (pos == UNDEFINED) {
