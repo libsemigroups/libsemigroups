@@ -361,7 +361,6 @@ namespace libsemigroups {
         Graph& init(Presentation<word_type> const& p,
                     WordGraph<node_type> const&    wg);
 
-        // TODO required?
         Graph& operator=(WordGraph<node_type> const& wg);
 
         ////////////////////////////////////////////////////////////////////////
