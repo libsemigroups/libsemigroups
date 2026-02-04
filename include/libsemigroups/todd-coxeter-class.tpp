@@ -47,6 +47,20 @@ namespace libsemigroups {
   }
 
   template <typename Word>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind    knd,
+                                             ToddCoxeter const& tc) {
+    ToddCoxeterImpl::init(knd, tc);
+    _presentation = tc.presentation();
+    _presentation.rules.insert(_presentation.rules.end(),
+                               tc.generating_pairs().cbegin(),
+                               tc.generating_pairs().cend());
+    // Clear generating pairs last, in case &tc == this!!!
+    _generating_pairs.clear();
+    // TODO(1) check KnuthBendix et al
+    return *this;
+  }
+
+  template <typename Word>
   template <typename Node>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
