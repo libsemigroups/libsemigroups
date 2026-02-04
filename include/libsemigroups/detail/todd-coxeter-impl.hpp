@@ -160,7 +160,7 @@ namespace libsemigroups {
         };
 
         enum class lookahead_extent { full, partial };
-        // TODO lookbehind_extent
+        // TODO(1) enum class lookbehind_extent { full, partial };
 
         enum class lookahead_style { hlt, felsch };
 
