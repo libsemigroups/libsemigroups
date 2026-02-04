@@ -188,9 +188,7 @@ namespace libsemigroups::detail {
     auto const old_number_of_killed = number_of_nodes_killed();
     auto       killed_at_prev_interval = old_number_of_killed;
 
-    Guard  guard(tc->_ticker_running);
-    auto   start_time = std::chrono::high_resolution_clock::now();
-    Ticker ticker;
+    Guard guard(tc->_ticker_running);
 
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
@@ -221,11 +219,6 @@ namespace libsemigroups::detail {
                                    last_stop_early_check,
                                    killed_at_prev_interval)) {
         break;
-      }
-      if (!tc->_ticker_running && reporting_enabled()
-          && delta(start_time) > std::chrono::milliseconds(500)) {
-        tc->_ticker_running = true;
-        ticker([&tc]() { tc->report_progress_from_thread(ye_print_divider); });
       }
     }
     tc->_stats.lookahead_or_behind_nodes_killed
@@ -778,34 +771,6 @@ namespace libsemigroups::detail {
   // Runner - pure virtual member functions - private
   ////////////////////////////////////////////////////////////////////////
 
-  void ToddCoxeterImpl::really_run_impl() {
-    stats_run_start();
-    report_before_run();
-    before_run();
-    if (strategy() == options::strategy::felsch) {
-      Guard guard(_state, state::felsch);
-      felsch();
-    } else if (strategy() == options::strategy::hlt) {
-      Guard guard(_state, state::hlt);
-      hlt();
-    } else if (strategy() == options::strategy::lookahead) {
-      Guard guard(_state, state::lookahead);
-      perform_lookahead_impl(stop_early);
-    } else if (strategy() == options::strategy::lookbehind) {
-      Guard guard(_state, state::lookbehind);
-      perform_lookbehind_impl();
-    } else if (strategy() == options::strategy::CR) {
-      CR_style();
-    } else if (strategy() == options::strategy::R_over_C) {
-      R_over_C_style();
-    } else if (strategy() == options::strategy::Cr) {
-      Cr_style();
-    } else if (strategy() == options::strategy::Rc) {
-      Rc_style();
-    }
-    after_run();
-  }
-
   void ToddCoxeterImpl::run_impl() {
     using std::chrono::duration_cast;
     using std::chrono::seconds;
@@ -832,19 +797,40 @@ namespace libsemigroups::detail {
           "construction or re-initialisation");
     }
 
-    // TODO the pattern below is so common we should incorporate it into
-    // Runner or somewhere
-
+    Ticker ticker;
+    Guard  guard(_ticker_running);
     if (!_ticker_running && reporting_enabled()
         && (!running_for()
             || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
       _ticker_running = true;
-      Ticker t([this]() { report_progress_from_thread(ye_print_divider); });
-      really_run_impl();
-      _ticker_running = false;
-    } else {
-      really_run_impl();
+      ticker([this]() { report_progress_from_thread(ye_print_divider); });
     }
+
+    stats_run_start();
+    report_before_run();
+    before_run();
+    if (strategy() == options::strategy::felsch) {
+      Guard guard(_state, state::felsch);
+      felsch();
+    } else if (strategy() == options::strategy::hlt) {
+      Guard guard(_state, state::hlt);
+      hlt();
+    } else if (strategy() == options::strategy::lookahead) {
+      Guard guard(_state, state::lookahead);
+      perform_lookahead_impl(stop_early);
+    } else if (strategy() == options::strategy::lookbehind) {
+      Guard guard(_state, state::lookbehind);
+      perform_lookbehind_impl();
+    } else if (strategy() == options::strategy::CR) {
+      CR_style();
+    } else if (strategy() == options::strategy::R_over_C) {
+      R_over_C_style();
+    } else if (strategy() == options::strategy::Cr) {
+      Cr_style();
+    } else if (strategy() == options::strategy::Rc) {
+      Rc_style();
+    }
+    after_run();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1110,7 +1096,8 @@ namespace libsemigroups::detail {
       // Can't collapse anything in this case
       return *this;
     }
-    Guard guard(_state, state::lookahead);
+    Guard guard(_state);
+    _state = state::lookahead;
 
     stats_phase_start();
     report_before_lookahead();
@@ -1251,10 +1238,6 @@ namespace libsemigroups::detail {
     auto const old_number_of_killed = _word_graph.number_of_nodes_killed();
     auto       killed_at_prev_interval = old_number_of_killed;
 
-    Guard      guard(_ticker_running);
-    time_point start_time = std::chrono::high_resolution_clock::now();
-    Ticker     ticker;
-
     node_type&   current = _word_graph.lookahead_cursor();
     size_t const n       = _word_graph.out_degree();
 
@@ -1274,11 +1257,6 @@ namespace libsemigroups::detail {
                                last_stop_early_check,
                                killed_at_prev_interval)) {
         break;
-      }
-      if (!_ticker_running && reporting_enabled()
-          && delta(start_time) >= std::chrono::milliseconds(500)) {
-        _ticker_running = true;
-        ticker([this]() { report_progress_from_thread(ye_print_divider); });
       }
     }
     _stats.lookahead_or_behind_nodes_killed
@@ -1308,10 +1286,6 @@ namespace libsemigroups::detail {
     stats_phase_start();
     report_before_phase();
     auto const killed_before_lookbehind = _word_graph.number_of_nodes_killed();
-
-    Guard            tg(_ticker_running);
-    time_point const start_time = std::chrono::high_resolution_clock::now();
-    Ticker           ticker;
 
     node_type& current = _word_graph.lookahead_cursor();
     current            = _word_graph.initial_node();
@@ -1345,12 +1319,9 @@ namespace libsemigroups::detail {
       _stats.lookahead_or_behind_nodes_killed
           = current_word_graph().number_of_nodes_killed()
             - killed_before_lookbehind;
-      if (!_ticker_running && reporting_enabled()
-          && delta(start_time) >= std::chrono::milliseconds(500)) {
-        _ticker_running = true;
-        ticker([this]() { report_progress_from_thread(true); });
-      }
     }
+    // Just in case we have some accumulated coincidences but not enough to
+    // trigger process_coincidences above, we call it again
     _word_graph.process_coincidences();
     report_after_phase();
     stats_phase_stop();

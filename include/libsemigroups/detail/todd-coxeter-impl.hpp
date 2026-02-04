@@ -2068,9 +2068,8 @@ namespace libsemigroups {
       [[nodiscard]] bool finished_impl() const override {
         return _finished;
       }
-      void run_impl() override;
 
-      void really_run_impl();  // And this guy
+      void run_impl() override;
 
       ////////////////////////////////////////////////////////////////////////
       // Misc member functions - private
