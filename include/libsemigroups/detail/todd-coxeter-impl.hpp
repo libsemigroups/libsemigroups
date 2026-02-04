@@ -202,10 +202,12 @@ namespace libsemigroups {
         std::chrono::nanoseconds all_hlt_phases_time;
         std::chrono::nanoseconds all_felsch_phases_time;
         std::chrono::nanoseconds all_lookahead_phases_time;
+        std::chrono::nanoseconds all_lookbehind_phases_time;
 
         uint64_t all_num_hlt_phases;
         uint64_t all_num_felsch_phases;
         uint64_t all_num_lookahead_phases;
+        uint64_t all_num_lookbehind_phases;
 
         uint64_t   run_index;
         time_point run_start_time;
@@ -216,10 +218,12 @@ namespace libsemigroups {
         std::chrono::nanoseconds run_hlt_phases_time;
         std::chrono::nanoseconds run_felsch_phases_time;
         std::chrono::nanoseconds run_lookahead_phases_time;
+        std::chrono::nanoseconds run_lookbehind_phases_time;
 
         uint64_t run_num_hlt_phases;
         uint64_t run_num_felsch_phases;
         uint64_t run_num_lookahead_phases;
+        uint64_t run_num_lookbehind_phases;
 
         uint64_t   phase_index;
         uint64_t   phase_edges_active_at_start;
@@ -2098,6 +2102,8 @@ namespace libsemigroups {
       // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
+      using ReportCell_ = ReportCell<6>;
+
       void report_after_phase() const;
       void report_after_run() const;
       void report_before_phase(std::string_view = "") const;
@@ -2110,16 +2116,16 @@ namespace libsemigroups {
       void report_progress_from_thread(bool divider) const;
       void report_times() const;
 
-      void add_timing_row(ReportCell<5>& rc) const;
+      void add_timing_row(ReportCell_& rc) const;
 
       // The 2nd (and 3rd) arguments for the next 2 functions are required
       // because we need the values at a fixed point in time (due to
       // multi-threaded reporting).
-      void add_nodes_rows(ReportCell<5>& rc, uint64_t num_active_nodes) const;
-      void add_edges_rows(ReportCell<5>& rc,
-                          uint64_t       num_active_nodes,
-                          uint64_t       num_active_edges) const;
-      void add_lookahead_row(ReportCell<5>& rc) const;
+      void add_nodes_rows(ReportCell_& rc, uint64_t num_active_nodes) const;
+      void add_edges_rows(ReportCell_& rc,
+                          uint64_t     num_active_nodes,
+                          uint64_t     num_active_edges) const;
+      void add_lookahead_row(ReportCell_& rc) const;
 
     };  // class ToddCoxeterImpl
   }  // namespace detail

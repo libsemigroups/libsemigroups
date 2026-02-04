@@ -1330,6 +1330,7 @@ namespace libsemigroups::detail {
         = [this](iterator d_first, const_iterator first, const_iterator last) {
             reduce_no_run_no_checks(d_first, first, last);
           };
+    // TODO rename perform_lookbehind below to perform_lookbehind_impl
     return perform_lookbehind(collapser);
   }
 

@@ -37,12 +37,14 @@ namespace libsemigroups::detail {
     create_or_init_time = std::chrono::high_resolution_clock::now();
     run_index           = 0;
 
-    all_num_hlt_phases       = 0;
-    all_num_felsch_phases    = 0;
-    all_num_lookahead_phases = 0;
-    run_num_hlt_phases       = 0;
-    run_num_felsch_phases    = 0;
-    run_num_lookahead_phases = 0;
+    all_num_hlt_phases        = 0;
+    all_num_felsch_phases     = 0;
+    all_num_lookahead_phases  = 0;
+    all_num_lookbehind_phases = 0;
+    run_num_hlt_phases        = 0;
+    run_num_felsch_phases     = 0;
+    run_num_lookahead_phases  = 0;
+    run_num_lookbehind_phases = 0;
     return *this;
   }
 
@@ -93,13 +95,15 @@ namespace libsemigroups::detail {
         = current_word_graph().number_of_nodes_active();
     _stats.run_edges_active_at_start
         = current_word_graph().number_of_edges_active();
-    _stats.run_num_hlt_phases       = 0;
-    _stats.run_num_felsch_phases    = 0;
-    _stats.run_num_lookahead_phases = 0;
+    _stats.run_num_hlt_phases        = 0;
+    _stats.run_num_felsch_phases     = 0;
+    _stats.run_num_lookahead_phases  = 0;
+    _stats.run_num_lookbehind_phases = 0;
 
-    _stats.run_hlt_phases_time       = std::chrono::nanoseconds(0);
-    _stats.run_felsch_phases_time    = std::chrono::nanoseconds(0);
-    _stats.run_lookahead_phases_time = std::chrono::nanoseconds(0);
+    _stats.run_hlt_phases_time        = std::chrono::nanoseconds(0);
+    _stats.run_felsch_phases_time     = std::chrono::nanoseconds(0);
+    _stats.run_lookahead_phases_time  = std::chrono::nanoseconds(0);
+    _stats.run_lookbehind_phases_time = std::chrono::nanoseconds(0);
 
     _stats.phase_index = 0;
   }
@@ -111,10 +115,12 @@ namespace libsemigroups::detail {
     _stats.all_num_hlt_phases += _stats.run_num_hlt_phases;
     _stats.all_num_felsch_phases += _stats.run_num_felsch_phases;
     _stats.all_num_lookahead_phases += _stats.run_num_lookahead_phases;
+    _stats.all_num_lookbehind_phases += _stats.run_num_lookbehind_phases;
 
     _stats.all_hlt_phases_time += _stats.run_hlt_phases_time;
     _stats.all_felsch_phases_time += _stats.run_felsch_phases_time;
     _stats.all_lookahead_phases_time += _stats.run_lookahead_phases_time;
+    _stats.all_lookbehind_phases_time += _stats.run_lookbehind_phases_time;
   }
 
   void ToddCoxeterImpl::stats_phase_start() {
@@ -157,6 +163,8 @@ namespace libsemigroups::detail {
         break;
       }
       case state::lookbehind: {
+        _stats.run_num_lookbehind_phases++;
+        _stats.run_lookbehind_phases_time += delta(_stats.phase_start_time);
         // intentional fall through, not currently collecting stats here
       }
       default: {
