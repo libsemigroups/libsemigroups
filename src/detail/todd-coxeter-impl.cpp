@@ -200,7 +200,6 @@ namespace libsemigroups::detail {
     auto   start_time         = std::chrono::high_resolution_clock::now();
     Ticker ticker;
 
-    // TODO why does this exist?
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
 
@@ -422,7 +421,7 @@ namespace libsemigroups::detail {
           tc.kind(),
           knd);
     }
-    // TODO(0) what about the word graph, if it's partially defined at least
+    // TODO(1) what about the word graph, if it's partially defined at least
     // shouldn't we copy it also?
 
     // if this and &tc are the same object, then we insert the generating
