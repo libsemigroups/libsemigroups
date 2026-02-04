@@ -251,7 +251,9 @@ namespace libsemigroups {
           REQUIRE(nf[p.first] == p.second);
         }
       }
-      tc.standardize(old_val);
+      if (old_val != Order::none) {
+        tc.standardize(old_val);
+      }
     }
 
     template <typename Word>
@@ -1789,8 +1791,8 @@ namespace libsemigroups {
     REQUIRE(is_non_trivial(tc) == tril::TRUE);
     // REQUIRE(!tc.finished());
     tc.standardize(Order::shortlex);
-    // TODO should throw
-    tc.standardize(Order::none);
+    REQUIRE_EXCEPTION_MSG(tc.standardize(Order::none),
+                          "the argument (Order) must not be Order::none");
 
     REQUIRE(tc.number_of_classes() == 5'040);
   }

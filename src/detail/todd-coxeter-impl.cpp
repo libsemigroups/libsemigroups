@@ -318,8 +318,12 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   bool ToddCoxeterImpl::Graph::standardize(Order val) {
-    // TODO exception if val is Order::none
-    if (is_standardized(val)) {
+    if (val == Order::none) {
+      // This is technically a breaking change, but the previous behaviour was
+      // a bug, because this is used as if every call to standardize(Order)
+      // correctly sets _forest, which it does not.
+      LIBSEMIGROUPS_EXCEPTION("the argument (Order) must not be Order::none");
+    } else if (is_standardized(val)) {
       return false;
     }
     time_point start_time;
