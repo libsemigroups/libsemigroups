@@ -19,8 +19,6 @@
 // This file contains the implementations of the private member functions of
 // ToddCoxeterImpl that related to reporting.
 
-// TODO alphabetize
-
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
 #include <algorithm>    // for max, for_each
@@ -193,7 +191,7 @@ namespace libsemigroups::detail {
     _stats.report_complete_prev = percent_complete;
   }
 
-  void ToddCoxeterImpl::add_lookahead_row(ReportCell_& rc) const {
+  void ToddCoxeterImpl::add_lookahead_or_behind_row(ReportCell_& rc) const {
     if ((_state == state::lookahead || _state == state::lookbehind)
         && _stats.report_index != 0 && this_threads_id() != 0) {
       // Don't call this in the main thread, because that's where we write
@@ -205,8 +203,8 @@ namespace libsemigroups::detail {
       // nodes are uniformly randomly killed, leading to the following
       // approximate progress . . .
       auto const N = _stats.phase_nodes_active_at_start;
-      auto const p = _stats.lookahead_position.load();
-      auto const r = _stats.lookahead_nodes_killed.load();
+      auto const p = _stats.lookahead_or_behind_position.load();
+      auto const r = _stats.lookahead_or_behind_nodes_killed.load();
       rc("{}: {} | {} \n",
          report_prefix(),
          fmt::format("{} progress", _state.load()),
@@ -543,7 +541,7 @@ namespace libsemigroups::detail {
     auto a_key  = fmt::format(
         "{} = number_of_nodes_active()     = {}\n", a_name, gd(a));
 
-    auto l      = _stats.lookahead_nodes_killed.load();
+    auto l      = _stats.lookahead_or_behind_nodes_killed.load();
     auto l_name = italic("l");
     auto l_key  = fmt::format(
         "{} = nodes killed in lookahead    = {}\n", l_name, gd(l));
@@ -646,7 +644,7 @@ namespace libsemigroups::detail {
     add_nodes_rows(rc, active_nodes);
     add_edges_rows(rc, active_nodes, active_edges);
     add_timing_row(rc);
-    add_lookahead_row(rc);
+    add_lookahead_or_behind_row(rc);
 
     stats_report_stop();
   }

@@ -256,8 +256,8 @@ namespace libsemigroups {
       // TODO to separate file todd-coxeter-impl-stats.hpp
       struct Stats : public NonAtomicStats {
         // Data
-        std::atomic_uint64_t lookahead_nodes_killed;
-        std::atomic_uint64_t lookahead_position;
+        std::atomic_uint64_t lookahead_or_behind_nodes_killed;
+        std::atomic_uint64_t lookahead_or_behind_position;
 
         // Constructors + initialisers
         Stats();
@@ -2125,7 +2125,7 @@ namespace libsemigroups {
       void add_edges_rows(ReportCell_& rc,
                           uint64_t     num_active_nodes,
                           uint64_t     num_active_edges) const;
-      void add_lookahead_row(ReportCell_& rc) const;
+      void add_lookahead_or_behind_row(ReportCell_& rc) const;
 
     };  // class ToddCoxeterImpl
   }  // namespace detail

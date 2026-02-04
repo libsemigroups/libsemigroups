@@ -53,7 +53,9 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeterImpl::Stats::Stats()
-      : NonAtomicStats(), lookahead_nodes_killed(), lookahead_position() {}
+      : NonAtomicStats(),
+        lookahead_or_behind_nodes_killed(),
+        lookahead_or_behind_position() {}
 
   ToddCoxeterImpl::Stats& ToddCoxeterImpl::Stats::init() {
     NonAtomicStats::init();
@@ -62,25 +64,31 @@ namespace libsemigroups::detail {
 
   ToddCoxeterImpl::Stats::Stats(Stats const& that)
       : NonAtomicStats(that),
-        lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-        lookahead_position(that.lookahead_position.load()) {}
+        lookahead_or_behind_nodes_killed(
+            that.lookahead_or_behind_nodes_killed.load()),
+        lookahead_or_behind_position(that.lookahead_or_behind_position.load()) {
+  }
 
   ToddCoxeterImpl::Stats::Stats(Stats&& that)
       : NonAtomicStats(std::move(that)),
-        lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-        lookahead_position(that.lookahead_position.load()) {}
+        lookahead_or_behind_nodes_killed(
+            that.lookahead_or_behind_nodes_killed.load()),
+        lookahead_or_behind_position(that.lookahead_or_behind_position.load()) {
+  }
 
   ToddCoxeterImpl::Stats& ToddCoxeterImpl::Stats::operator=(Stats const& that) {
     NonAtomicStats::operator=(that);
-    lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-    lookahead_position     = that.lookahead_position.load();
+    lookahead_or_behind_nodes_killed
+        = that.lookahead_or_behind_nodes_killed.load();
+    lookahead_or_behind_position = that.lookahead_or_behind_position.load();
     return *this;
   }
 
   ToddCoxeterImpl::Stats& ToddCoxeterImpl::Stats::operator=(Stats&& that) {
     NonAtomicStats::operator=(std::move(that));
-    lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-    lookahead_position     = that.lookahead_position.load();
+    lookahead_or_behind_nodes_killed
+        = that.lookahead_or_behind_nodes_killed.load();
+    lookahead_or_behind_position = that.lookahead_or_behind_position.load();
     return *this;
   }
 

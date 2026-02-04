@@ -308,7 +308,7 @@ namespace libsemigroups::detail {
       process_coincidences(DoNotRegisterDefs{});
 
       current = NodeManager<node_type>::next_active_node(current);
-      tc->_stats.lookahead_position++;
+      tc->_stats.lookahead_or_behind_position++;
       if (tc->lookahead_stop_early(should_stop_early,
                                    last_stop_early_check,
                                    killed_at_prev_interval)) {
@@ -320,7 +320,7 @@ namespace libsemigroups::detail {
         ticker([&tc]() { tc->report_progress_from_thread(ye_print_divider); });
       }
     }
-    tc->_stats.lookahead_nodes_killed
+    tc->_stats.lookahead_or_behind_nodes_killed
         += (number_of_nodes_killed() - killed_at_prev_interval);
     tc->_ticker_running = old_ticker_running;
   }
@@ -1148,15 +1148,16 @@ namespace libsemigroups::detail {
     if (lookahead_extent() == options::lookahead_extent::partial) {
       // Start lookahead from the node after _current
       current = _word_graph.next_active_node(_word_graph.cursor());
-      _stats.lookahead_position = _word_graph.position_of_node(current);
+      _stats.lookahead_or_behind_position
+          = _word_graph.position_of_node(current);
     } else {
       LIBSEMIGROUPS_ASSERT(lookahead_extent()
                            == options::lookahead_extent::full);
-      current                   = _word_graph.initial_node();
-      _stats.lookahead_position = 0;
+      current                             = _word_graph.initial_node();
+      _stats.lookahead_or_behind_position = 0;
     }
 
-    _stats.lookahead_nodes_killed = 0;
+    _stats.lookahead_or_behind_nodes_killed = 0;
 
     if (lookahead_style() == options::lookahead_style::hlt) {
       hlt_lookahead(should_stop_early);
@@ -1201,8 +1202,8 @@ namespace libsemigroups::detail {
       lookahead_next(
           std::max(lookahead_min(),
                    static_cast<size_t>(lookahead_growth_factor() * num_nodes)));
-    } else if (_stats.lookahead_nodes_killed
-               < ((num_nodes + _stats.lookahead_nodes_killed)
+    } else if (_stats.lookahead_or_behind_nodes_killed
+               < ((num_nodes + _stats.lookahead_or_behind_nodes_killed)
                   / lookahead_growth_threshold())) {
       // In this case,
       // num_killed_by_me ~= lookahead_next() - num_nodes
@@ -1252,7 +1253,7 @@ namespace libsemigroups::detail {
           = current_word_graph().number_of_nodes_killed()
             - killed_at_prev_interval;
       killed_at_prev_interval = current_word_graph().number_of_nodes_killed();
-      _stats.lookahead_nodes_killed += killed_last_interval;
+      _stats.lookahead_or_behind_nodes_killed += killed_last_interval;
 
       auto expected         = static_cast<size_t>(number_of_nodes_active()
                                           * lookahead_stop_early_ratio());
@@ -1296,7 +1297,7 @@ namespace libsemigroups::detail {
       }
       _word_graph.process_definitions();
       current = _word_graph.next_active_node(current);
-      _stats.lookahead_position++;
+      _stats.lookahead_or_behind_position++;
       if (lookahead_stop_early(should_stop_early,
                                last_stop_early_check,
                                killed_at_prev_interval)) {
@@ -1308,7 +1309,7 @@ namespace libsemigroups::detail {
         ticker([this]() { report_progress_from_thread(ye_print_divider); });
       }
     }
-    _stats.lookahead_nodes_killed
+    _stats.lookahead_or_behind_nodes_killed
         += (_word_graph.number_of_nodes_killed() - killed_at_prev_interval);
     _ticker_running = old_ticker_running;
   }
