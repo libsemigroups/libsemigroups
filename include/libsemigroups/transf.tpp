@@ -143,14 +143,26 @@ namespace libsemigroups {
 
   template <typename Scalar>
   DynamicPTransf<Scalar>& DynamicPTransf<Scalar>::increase_degree_by(size_t m) {
-    // The + 1 in the following line is because a Scalar value can be any
-    // integer between 0, and numeric_limits<Scalar>::max() inclusive.
-    if (m > std::numeric_limits<Scalar>::max() - degree() + 1) {
+    // There are std::numeric_limits<Scalar>::max() + 1 possible values an
+    // object of Scalar type can take. If Scalar type is 64-bits, and the
+    // current degree is zero, it's not possible to represent the largest
+    // possible increase, so we do the next best thing and store one less.
+    size_t max_increase = std::numeric_limits<Scalar>::max() - degree();
+    if constexpr (std::numeric_limits<Scalar>::max()
+                  < std::numeric_limits<size_t>::max()) {
+      ++max_increase;
+    } else {
+      if (degree() != 0) {
+        ++max_increase;
+      }
+    }
+
+    if (m > max_increase) {
       LIBSEMIGROUPS_EXCEPTION(
-          fmt::format("the first argument (value to increase degree by) is too "
-                      "large, expected at most {} but found {}",
-                      std::numeric_limits<Scalar>::max() - degree() + 1,
-                      m));
+          "the first argument (value to increase degree by) is too "
+          "large, expected at most {} but found {}",
+          max_increase,
+          m);
     }
     resize(degree() + m);
     std::iota(end() - m, end(), degree() - m);
