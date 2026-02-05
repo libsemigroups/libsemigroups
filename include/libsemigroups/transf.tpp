@@ -145,13 +145,10 @@ namespace libsemigroups {
   DynamicPTransf<Scalar>& DynamicPTransf<Scalar>::increase_degree_by(size_t m) {
     if (degree() + m > std::numeric_limits<Scalar>::max()) {
       LIBSEMIGROUPS_EXCEPTION(
-          fmt::format("cannot increase the degree by {}. The current degree is "
-                      "{}, the maximum possible  degree is {}, but the "
-                      "requested degree was {}",
-                      m,
-                      degree(),
-                      std::numeric_limits<Scalar>::max(),
-                      degree() + m));
+          fmt::format("the first argument (value to increase degree by) is too "
+                      "large, expected at most {} but found {}",
+                      std::numeric_limits<Scalar>::max() - degree(),
+                      m));
     }
     resize(degree() + m);
     std::iota(end() - m, end(), degree() - m);
