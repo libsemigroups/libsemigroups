@@ -328,6 +328,8 @@ namespace libsemigroups {
       // should put this in a separate file todd-coxeter-impl-graph.hpp
       class Graph
           : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
+        friend class ToddCoxeterImpl;
+
         ////////////////////////////////////////////////////////////////////////
         // Private aliases
         ////////////////////////////////////////////////////////////////////////
@@ -363,76 +365,41 @@ namespace libsemigroups {
         ////////////////////////////////////////////////////////////////////////
         // FelschGraph_ mem fns
         ////////////////////////////////////////////////////////////////////////
+
         using FelschGraph_::presentation;
         using FelschGraph_::standardize;
         using FelschGraph_::target_no_checks;
 
         ////////////////////////////////////////////////////////////////////////
-        // FelschGraph_ mem fns overrides
+        // Modifiers
         ////////////////////////////////////////////////////////////////////////
 
-        // Functions that are present in the FelschGraph_, but must be
-        // overridden here so that the validation and standardization stuff is
-        // reset.
-
-        Graph& target_no_checks(node_type  s,
-                                label_type a,
-                                node_type  t) noexcept;
-
-        Graph& register_target_no_checks(node_type  s,
-                                         label_type a,
-                                         node_type  t) noexcept;
-
-        // TODO privatise and befriend ToddCoxeterImpl?
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+        // Should be private but can't be because used by is_non_trivial
         template <typename Functor = Noop>
         void process_coincidences(Functor&& func = Noop{});
 
-        ////////////////////////////////////////////////////////////////////////
-        // Other modifiers
-        ////////////////////////////////////////////////////////////////////////
-
-        Graph& presentation_no_checks(Presentation<word_type> const& p);
-
-        // TODO privatise, if for no other reason than this is implemented in
-        // the cpp file so not really usable with arbitrary types, and also at
-        // the moment we only provide const access through ToddCoxeterImpl, so
-        // again these functions can't be called.
-        template <typename Iterator>
-        void make_compatible(ToddCoxeterImpl* tc,
-                             node_type&       current,
-                             Iterator         first,
-                             Iterator         last,
-                             bool             should_stop_early);
-
-        // TODO privatise
+        // Should be private but can't be because used by is_non_trivial
         void process_definitions();
-
-        // TODO privatise
-        template <bool RegDefs>
-        void push_definition_hlt(node_type const& c,
-                                 word_type const& u,
-                                 word_type const& v);
+#endif
 
         ////////////////////////////////////////////////////////////////////////
         // Spanning tree
         ////////////////////////////////////////////////////////////////////////
 
+        // TODO doc
         [[nodiscard]] bool is_spanning_tree_valid() const noexcept {
           return _forest_valid;
         }
 
+        // TODO doc
         Forest const& current_spanning_tree() const {
           return const_cast<Graph&>(*this).current_spanning_tree();
         }
 
-        Forest& current_spanning_tree();
-
         ////////////////////////////////////////////////////////////////////////
         // Standardization
         ////////////////////////////////////////////////////////////////////////
-
-        // TODO(0) copy the doc across
-        bool standardize(Order val);
 
         // TODO(0) copy the doc across
         [[nodiscard]] bool is_standardized(Order val) const {
@@ -450,6 +417,59 @@ namespace libsemigroups {
         }
 
        private:
+        // Almost all non-const mem fns are private, since they cannot be used
+        // anyway (we only permit const access to the word_graph)
+
+        ////////////////////////////////////////////////////////////////////////
+        // Spanning tree
+        ////////////////////////////////////////////////////////////////////////
+
+        Forest& current_spanning_tree();
+
+        ////////////////////////////////////////////////////////////////////////
+        // Standardization
+        ////////////////////////////////////////////////////////////////////////
+
+        bool standardize(Order val);
+
+        ////////////////////////////////////////////////////////////////////////
+        // FelschGraph_ mem fns overrides
+        ////////////////////////////////////////////////////////////////////////
+
+        // Functions that are present in the FelschGraph_, but must be
+        // overridden here so that the validation and standardization stuff is
+        // reset.
+
+        Graph& target_no_checks(node_type  s,
+                                label_type a,
+                                node_type  t) noexcept;
+
+        Graph& register_target_no_checks(node_type  s,
+                                         label_type a,
+                                         node_type  t) noexcept;
+
+        ////////////////////////////////////////////////////////////////////////
+        // Other modifiers
+        ////////////////////////////////////////////////////////////////////////
+
+        Graph& presentation_no_checks(Presentation<word_type> const& p);
+
+        template <typename Iterator>
+        void make_compatible(ToddCoxeterImpl* tc,
+                             node_type&       current,
+                             Iterator         first,
+                             Iterator         last,
+                             bool             should_stop_early);
+
+        template <bool RegDefs>
+        void push_definition_hlt(node_type const& c,
+                                 word_type const& u,
+                                 word_type const& v);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Reporting
+        ////////////////////////////////////////////////////////////////////////
+
         void report_lookahead_stop_early(ToddCoxeterImpl* tc,
                                          size_t           expected,
                                          size_t           killed_last_interval);
@@ -1692,9 +1712,9 @@ namespace libsemigroups {
       //!
       //! \sa \ref word_graph::standardize
       //! \sa \ref current_spanning_tree.
-      // We don't deprecated this (at least for now) since we only provide const
-      // access to _word_graph, and so require modifiers to also be member
-      // functions of ToddCoxeterImpl
+      // We don't deprecated this (at least for now) since we only provide
+      // const access to _word_graph, and so require modifiers to also be
+      // member functions of ToddCoxeterImpl
       bool standardize(Order val) {
         return _word_graph.standardize(val);
       }
