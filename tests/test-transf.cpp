@@ -649,42 +649,18 @@ namespace libsemigroups {
     REQUIRE(x.hash_value() != 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Transf",
-                          "016",
-                          "increase_degree_by",
-                          "[quick][transf]") {
-    Transf<0, uint8_t> x = make<Transf<0, uint8_t>>({1, 0, 3, 2});
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Transf",
+                                   "016",
+                                   "increase_degree_by",
+                                   "[quick][transf][perm][pperm]",
+                                   (Transf<0, uint8_t>),
+                                   (Perm<0, uint8_t>),
+                                   (PPerm<0, uint8_t>) ) {
+    TestType x = make<TestType>({1, 0, 3, 2});
     REQUIRE_NOTHROW(x.increase_degree_by(1));
     REQUIRE_NOTHROW(x.increase_degree_by(250));
-    REQUIRE_EXCEPTION_MSG(
-        x.increase_degree_by(1),
-        "cannot increase the degree by 1. The current degree is 255, the "
-        "maximum possible  degree is 255, but the requested degree was 256");
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Perm",
-                          "017",
-                          "increase_degree_by",
-                          "[quick][perm]") {
-    Perm<0, uint8_t> x = make<Perm<0, uint8_t>>({1, 0, 3, 2});
-    REQUIRE_NOTHROW(x.increase_degree_by(1));
-    REQUIRE_NOTHROW(x.increase_degree_by(250));
-    REQUIRE_EXCEPTION_MSG(
-        x.increase_degree_by(1),
-        "cannot increase the degree by 1. The current degree is 255, the "
-        "maximum possible  degree is 255, but the requested degree was 256");
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("PPerm",
-                          "018",
-                          "increase_degree_by",
-                          "[quick][pperm]") {
-    PPerm<0, uint8_t> x = make<PPerm<0, uint8_t>>({1, 0, 3, 2});
-    REQUIRE_NOTHROW(x.increase_degree_by(1));
-    REQUIRE_NOTHROW(x.increase_degree_by(250));
-    REQUIRE_EXCEPTION_MSG(
-        x.increase_degree_by(1),
-        "cannot increase the degree by 1. The current degree is 255, the "
-        "maximum possible  degree is 255, but the requested degree was 256");
+    REQUIRE_EXCEPTION_MSG(x.increase_degree_by(1),
+                          "the first argument (value to increase degree by) is "
+                          "too large, expected at most 0 but found 1");
   }
 }  // namespace libsemigroups
