@@ -189,7 +189,6 @@ namespace libsemigroups {
       class SettingsGuard;
       friend class SettingsGuard;
 
-      // TODO to separate file todd-coxeter-impl-stats.hpp
       struct NonAtomicStats {
         using time_point = std::chrono::high_resolution_clock::time_point;
 
@@ -251,7 +250,6 @@ namespace libsemigroups {
         NonAtomicStats& operator=(NonAtomicStats&&)      = default;
       };
 
-      // TODO to separate file todd-coxeter-impl-stats.hpp
       struct Stats : public NonAtomicStats {
         // Data
         std::atomic_uint64_t lookahead_or_behind_nodes_killed;
@@ -277,7 +275,6 @@ namespace libsemigroups {
       // ?. ToddCoxeterImpl - nested classes - public
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO to separate file todd-coxeter-impl-defs.hpp
       class Definitions {
         using Definition = std::pair<node_type, label_type>;
 
@@ -327,7 +324,8 @@ namespace libsemigroups {
         }
       };  // class Definitions
 
-      // TODO to separate file todd-coxeter-impl-graph.hpp
+      // TODO(1) if we ever want to document ToddCoxeterImpl::Graph, then we
+      // should put this in a separate file todd-coxeter-impl-graph.hpp
       class Graph
           : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
         ////////////////////////////////////////////////////////////////////////
