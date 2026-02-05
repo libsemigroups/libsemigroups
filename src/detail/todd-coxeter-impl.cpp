@@ -41,10 +41,10 @@
 #include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "libsemigroups/detail/felsch-graph.hpp"       // for DoNotRegisterDefs
 #include "libsemigroups/detail/fmt.hpp"       // for format_decimal, copy_str
-#include "libsemigroups/detail/guard.hpp"     // for Guard
 #include "libsemigroups/detail/iterator.hpp"  // for operator+
 #include "libsemigroups/detail/node-manager.hpp"  // for NodeManager
 #include "libsemigroups/detail/report.hpp"        // for report_no_prefix
+#include "libsemigroups/detail/value-guard.hpp"   // for ValueGuard
 
 namespace libsemigroups::detail {
 
@@ -188,7 +188,7 @@ namespace libsemigroups::detail {
     auto const old_number_of_killed = number_of_nodes_killed();
     auto       killed_at_prev_interval = old_number_of_killed;
 
-    Guard guard(tc->_ticker_running);
+    ValueGuard guard(tc->_ticker_running);
 
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
@@ -797,8 +797,8 @@ namespace libsemigroups::detail {
           "construction or re-initialisation");
     }
 
-    Ticker ticker;
-    Guard  guard(_ticker_running);
+    Ticker     ticker;
+    ValueGuard tg(_ticker_running);
     if (!_ticker_running && reporting_enabled()
         && (!running_for()
             || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
@@ -809,17 +809,18 @@ namespace libsemigroups::detail {
     stats_run_start();
     report_before_run();
     before_run();
+    ValueGuard sg(_state);
     if (strategy() == options::strategy::felsch) {
-      Guard guard(_state, state::felsch);
+      _state = state::felsch;
       felsch();
     } else if (strategy() == options::strategy::hlt) {
-      Guard guard(_state, state::hlt);
+      _state = state::hlt;
       hlt();
     } else if (strategy() == options::strategy::lookahead) {
-      Guard guard(_state, state::lookahead);
+      _state = state::lookahead;
       perform_lookahead_impl(stop_early);
     } else if (strategy() == options::strategy::lookbehind) {
-      Guard guard(_state, state::lookbehind);
+      _state = state::lookbehind;
       perform_lookbehind_impl();
     } else if (strategy() == options::strategy::CR) {
       CR_style();
@@ -1096,7 +1097,7 @@ namespace libsemigroups::detail {
       // Can't collapse anything in this case
       return *this;
     }
-    Guard guard(_state);
+    ValueGuard guard(_state);
     _state = state::lookahead;
 
     stats_phase_start();
@@ -1279,8 +1280,7 @@ namespace libsemigroups::detail {
       return *this;
     }
 
-    // TODO(1) Rename Guard to ValueGuard
-    Guard sg(_state);
+    ValueGuard sg(_state);
     _state = state::lookbehind;
 
     stats_phase_start();

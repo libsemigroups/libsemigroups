@@ -101,7 +101,6 @@
 #include "detail/fmt.hpp"
 #include "detail/formatters.hpp"
 #include "detail/function-ref.hpp"
-#include "detail/guard.hpp"
 #include "detail/int-range.hpp"
 #include "detail/iterator.hpp"
 #include "detail/kambites-nf.hpp"
@@ -124,6 +123,7 @@
 #include "detail/timer.hpp"
 #include "detail/todd-coxeter-impl.hpp"
 #include "detail/uf.hpp"
+#include "detail/value-guard.hpp"
 #include "detail/word-graph-with-sources.hpp"
 #include "detail/word-iterators.hpp"
 

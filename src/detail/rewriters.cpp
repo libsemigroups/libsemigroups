@@ -24,8 +24,8 @@
 
 #include "libsemigroups/runner.hpp"  // for Ticker
 
-#include "libsemigroups/detail/guard.hpp"   // for Guard
-#include "libsemigroups/detail/report.hpp"  // for report_default
+#include "libsemigroups/detail/report.hpp"       // for report_default
+#include "libsemigroups/detail/value-guard.hpp"  // for ValueGuard
 
 namespace libsemigroups {
   namespace detail {
@@ -318,10 +318,12 @@ namespace libsemigroups {
 
       std::atomic_uint64_t seen = 0;
       if (reporting_enabled() && !_ticker_running) {
-        detail::Guard  state(_state, State::checking_confluence);
-        detail::Guard  ticker(_ticker_running, true);
+        ValueGuard sg(_state);
+        _state = State::checking_confluence;
+        ValueGuard tg(_ticker_running);
+        _ticker_running           = true;
         time_point     start_time = high_resolution_clock::now();
-        detail::Ticker t(
+        detail::Ticker ticker(
             [&]() { report_progress_from_thread(seen, start_time); });
         return confluent_impl(seen);
       } else {
@@ -684,9 +686,9 @@ namespace libsemigroups {
       using detail::aho_corasick_impl::begin_search_no_checks;
       using detail::aho_corasick_impl::end_search_no_checks;
 
-      auto           start_time = std::chrono::high_resolution_clock::now();
-      detail::Ticker ticker;
-      detail::Guard  guard(_ticker_running);
+      auto       start_time = std::chrono::high_resolution_clock::now();
+      Ticker     ticker;
+      ValueGuard guard(_ticker_running);
       std::atomic_uint64_t seen = 0;
 
       // TODO(1) use a heap for these maybe?
@@ -708,7 +710,7 @@ namespace libsemigroups {
         }
         bool rules_added_this_pass = false;
         while (number_of_pending_rules() != 0) {
-          Guard sg(_state);
+          ValueGuard sg(_state);
           _state     = State::adding_pending_rules;
           Rule* rule = next_pending_rule();
           LIBSEMIGROUPS_ASSERT(!rule->active());
@@ -748,7 +750,7 @@ namespace libsemigroups {
         }
 
         if (rules_added_this_pass) {
-          Guard sg(_state);
+          ValueGuard sg(_state);
           _state = State::reducing_pending_rules;
 
           AhoCorasickImpl* new_rule_trie
