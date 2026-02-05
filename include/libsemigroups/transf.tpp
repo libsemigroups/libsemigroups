@@ -59,6 +59,25 @@ namespace libsemigroups {
             std::tuple_size_v<container_type>,
             cont.size());
       }
+    } else {
+      // The size of the container can be at most
+      // std::numeric_limits<Point>::max() + 1. To avoid overflow and underflow
+      // errors whilst performing the checks, we instead check if the container
+      // isn't empty, and then perform the equivalent check that cont.size() - 1
+      // is larger than the numeric_limits max.
+      size_t max_size = std::numeric_limits<Point>::max();
+      if constexpr (std::numeric_limits<Point>::max()
+                    < std::numeric_limits<size_t>::max()) {
+        ++max_size;
+      }
+
+      if (cont.size() > max_size) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the container is too larger, expected a container of size at most "
+            "{}, found a container of size {}",
+            max_size,
+            cont.size());
+      }
     }
 
 #pragma GCC diagnostic push
