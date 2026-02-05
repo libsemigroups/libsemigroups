@@ -656,9 +656,12 @@ namespace libsemigroups {
                                    (Transf<0, uint8_t>),
                                    (Perm<0, uint8_t>),
                                    (PPerm<0, uint8_t>) ) {
-    TestType x = make<TestType>({1, 0, 3, 2});
+    TestType x = make<TestType>(std::vector<uint8_t>());
     REQUIRE_NOTHROW(x.increase_degree_by(1));
-    REQUIRE_NOTHROW(x.increase_degree_by(250));
+    REQUIRE_EXCEPTION_MSG(x.increase_degree_by(256),
+                          "the first argument (value to increase degree by) is "
+                          "too large, expected at most 255 but found 256");
+    REQUIRE_NOTHROW(x.increase_degree_by(255));
     REQUIRE_EXCEPTION_MSG(x.increase_degree_by(1),
                           "the first argument (value to increase degree by) is "
                           "too large, expected at most 0 but found 1");
