@@ -145,11 +145,11 @@ namespace libsemigroups {
   DynamicPTransf<Scalar>& DynamicPTransf<Scalar>::increase_degree_by(size_t m) {
     // The + 1 in the following line is because a Scalar value can be any
     // integer between 0, and numeric_limits<Scalar>::max() inclusive.
-    if (degree() + m > std::numeric_limits<Scalar>::max() + 1) {
+    if (m > std::numeric_limits<Scalar>::max() - degree() + 1) {
       LIBSEMIGROUPS_EXCEPTION(
           fmt::format("the first argument (value to increase degree by) is too "
                       "large, expected at most {} but found {}",
-                      std::numeric_limits<Scalar>::max() + 1 - degree(),
+                      std::numeric_limits<Scalar>::max() - degree() + 1,
                       m));
     }
     resize(degree() + m);
