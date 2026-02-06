@@ -55,27 +55,9 @@ namespace libsemigroups {
     if constexpr (detail::is_array_v<container_type>) {
       if (cont.size() != std::tuple_size_v<container_type>) {
         LIBSEMIGROUPS_EXCEPTION(
-            "incorrect container size, expected {}, found {}",
+            "the argument (container holding the image values) has the "
+            "incorrect size size, expected {}, found {}",
             std::tuple_size_v<container_type>,
-            cont.size());
-      }
-    } else {
-      // The size of the container can be at most
-      // std::numeric_limits<Point>::max() + 1. To avoid overflow and underflow
-      // errors whilst performing the checks, we instead check if the container
-      // isn't empty, and then perform the equivalent check that cont.size() - 1
-      // is larger than the numeric_limits max.
-      size_t max_size = std::numeric_limits<Point>::max();
-      if constexpr (std::numeric_limits<Point>::max()
-                    < std::numeric_limits<size_t>::max()) {
-        ++max_size;
-      }
-
-      if (cont.size() > max_size) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the container is too larger, expected a container of size at most "
-            "{}, found a container of size {}",
-            max_size,
             cont.size());
       }
     }
@@ -162,25 +144,11 @@ namespace libsemigroups {
 
   template <typename Scalar>
   DynamicPTransf<Scalar>& DynamicPTransf<Scalar>::increase_degree_by(size_t m) {
-    // There are std::numeric_limits<Scalar>::max() + 1 possible values an
-    // object of Scalar type can take. If Scalar type is 64-bits, and the
-    // current degree is zero, it's not possible to represent the largest
-    // possible increase, so we do the next best thing and store one less.
-    size_t max_increase = std::numeric_limits<Scalar>::max() - degree();
-    if constexpr (std::numeric_limits<Scalar>::max()
-                  < std::numeric_limits<size_t>::max()) {
-      ++max_increase;
-    } else {
-      if (degree() != 0) {
-        ++max_increase;
-      }
-    }
-
-    if (m > max_increase) {
+    if (!detail::is_valid_degree<Scalar>(degree() + m)) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the first argument (value to increase degree by) is too "
-          "large, expected at most {} but found {}",
-          max_increase,
+          "the 1st argument (value to increase degree by) "
+          "is too large, expected value in [0, {}], found {}",
+          detail::max_degree<Scalar>() - degree(),
           m);
     }
     resize(degree() + m);

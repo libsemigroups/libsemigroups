@@ -58,6 +58,32 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Point>
+    size_t max_degree() {
+      // There are std::numeric_limits<Point>::max() + 1 unique values of type
+      // point (assuming that Point is an unsigned integer type). This
+      // represents the maximum possible degree of a PTransf. To avoid overflow
+      // when computing this size, we reduce the value by 1 when Point can
+      // represent the same number of points as size_t. This is fine, since it
+      // would be pretty much impossible to have a container of that size.
+      size_t max_degree = std::numeric_limits<Point>::max();
+      if constexpr (std::numeric_limits<Point>::max()
+                    < std::numeric_limits<size_t>::max()) {
+        ++max_degree;
+      }
+      return max_degree;
+    }
+
+    template <typename Point>
+    void throw_if_degree_too_large(size_t deg) {
+      if (!is_valid_degree<Point>(deg)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the degree is too large, expected value in [0, {}], found {}",
+            max_degree<Point>(),
+            deg);
+      }
+    }
+
     template <typename Iterator, typename Func>
     void throw_if_value_out_of_range(Iterator         first,
                                      Iterator         last,
@@ -79,6 +105,9 @@ namespace libsemigroups {
 
     template <typename Iterator>
     void throw_if_not_ptransf(Iterator first, Iterator last, size_t deg) {
+      using Scalar = std::decay_t<decltype(*first)>;
+      static_assert(std::is_unsigned_v<Scalar>);
+      throw_if_degree_too_large<Scalar>(deg);
       throw_if_value_out_of_range(
           first,
           last,
@@ -94,6 +123,8 @@ namespace libsemigroups {
                               size_t   deg) {
       using Scalar = std::decay_t<decltype(*dom_first)>;
       static_assert(std::is_same_v<Scalar, std::decay_t<decltype(*img_first)>>);
+      static_assert(std::is_unsigned_v<Scalar>);
+      throw_if_degree_too_large<Scalar>(deg);
 
       auto dom_size = std::distance(dom_first, dom_last);
       auto img_size = std::distance(img_first, img_last);
@@ -135,14 +166,13 @@ namespace libsemigroups {
             static_cast<Scalar>(UNDEFINED),
             std::distance(img_first, it));
       }
-      // NOTE: it is ok if deg >= max. value of Scalar, but then necessary that
-      // the values in <dom> and <ran> are less than (max. value of Scalar) - 1.
     }
 
     template <typename Iterator>
     void throw_if_not_transf(Iterator first, Iterator last, size_t deg) {
-      static_assert(std::is_unsigned_v<
-                    std::decay_t<decltype(*std::declval<Iterator>())>>);
+      using Scalar = std::decay_t<decltype(*first)>;
+      throw_if_degree_too_large<Scalar>(deg);
+      static_assert(std::is_unsigned_v<Scalar>);
       throw_if_value_out_of_range(
           first,
           last,
