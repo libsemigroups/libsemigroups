@@ -666,15 +666,16 @@ namespace libsemigroups::detail {
                    italic("a"),
                    gd(expected),
                    gd(killed_last_interval));
-    report_keys({fmt::format("{} = lookahead_stop_early_ratio()    = {}\n",
-                             italic("r"),
-                             lookahead_stop_early_ratio()),
-                 fmt::format("{} = lookahead_stop_early_interval() = {}\n",
-                             italic("i"),
-                             interval),
-                 fmt::format("{} = number_of_nodes_active()        = {}\n",
-                             italic("a"),
-                             gd(number_of_nodes_active()))});
+    report_keys(
+        {fmt::format("{} = lookahead_stop_early_ratio()    = {}\n",
+                     italic("r"),
+                     lookahead_stop_early_ratio()),
+         fmt::format("{} = lookahead_stop_early_interval() = {}\n",
+                     italic("i"),
+                     interval),
+         fmt::format("{} = number_of_nodes_active()        = {}\n",
+                     italic("a"),
+                     gd(current_word_graph().number_of_nodes_active()))});
   }
 
   void ToddCoxeterImpl::report_presentation() const {

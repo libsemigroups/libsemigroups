@@ -1397,10 +1397,13 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      //!
+      //! \deprecated_warning{function} Use
+      //! `current_word_graph().number_of_nodes_active()` instead.
       // This isn't really necessary in C++, but in the python bindings we
       // don't bind ToddCoxeter::Graph and so we expose this here.
-      // TODO deprecate and move to Graph itself
-      [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
+      [[deprecated]] [[nodiscard]] uint64_t
+      number_of_nodes_active() const noexcept {
         return current_word_graph().number_of_nodes_active();
       }
 

@@ -1215,8 +1215,9 @@ namespace libsemigroups::detail {
       killed_at_prev_interval = current_word_graph().number_of_nodes_killed();
       _stats.lookahead_or_behind_nodes_killed += killed_last_interval;
 
-      auto expected         = static_cast<size_t>(number_of_nodes_active()
-                                          * lookahead_stop_early_ratio());
+      auto expected
+          = static_cast<size_t>(current_word_graph().number_of_nodes_active()
+                                * lookahead_stop_early_ratio());
       last_stop_early_check = std::chrono::high_resolution_clock::now();
       if (killed_last_interval < expected) {
         report_lookahead_stop_early(expected, killed_last_interval);

@@ -2209,7 +2209,9 @@ namespace libsemigroups {
         .lookahead_min(2'500'000)
         .lookahead_growth_factor(1.2)
         .lookahead_stop_early_ratio(0.1);
-    tc.run_until([&tc]() { return tc.number_of_nodes_active() > 12'000'000; });
+    tc.run_until([&tc]() {
+      return tc.current_word_graph().number_of_nodes_active() > 12'000'000;
+    });
     tc.perform_lookbehind();
     REQUIRE(tc.number_of_classes() == 823'543);
   }
@@ -3098,13 +3100,15 @@ namespace libsemigroups {
     tc.strategy(options::strategy::felsch).large_collapse(10'000'000);
     // RUN 0
     tc.run_for(std::chrono::seconds(2));
-    REQUIRE(tc.number_of_nodes_active() > 16'000'000);
-    auto pred = [&]() { return tc.number_of_nodes_active() < 16'000'000; };
+    REQUIRE(tc.current_word_graph().number_of_nodes_active() > 16'000'000);
+    auto pred = [&]() {
+      return tc.current_word_graph().number_of_nodes_active() < 16'000'000;
+    };
     REQUIRE(!pred());
     // RUN 1
     tc.perform_lookbehind_until_no_checks(pred, collapser);
 
-    REQUIRE(tc.number_of_nodes_active() < 16'000'000);
+    REQUIRE(tc.current_word_graph().number_of_nodes_active() < 16'000'000);
     REQUIRE(pred());
     // RUN 2
     tc.perform_lookbehind_for_no_checks(std::chrono::seconds(1), collapser);
@@ -3112,8 +3116,9 @@ namespace libsemigroups {
     tc.perform_lookbehind_no_checks(collapser);
 
     // Does nothing because function already true
-    tc.perform_lookbehind_until(
-        [&tc]() { return tc.number_of_nodes_active() < 15'000'000; });
+    tc.perform_lookbehind_until([&tc]() {
+      return tc.current_word_graph().number_of_nodes_active() < 15'000'000;
+    });
     // RUN 4
     tc.perform_lookbehind_for(std::chrono::seconds(1));
 
