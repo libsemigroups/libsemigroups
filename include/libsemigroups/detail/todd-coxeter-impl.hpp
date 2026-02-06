@@ -1426,10 +1426,13 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      //!
+      //! \deprecated_warning{function} Use
+      //! `current_word_graph().number_of_edges_active()` instead.
       // This isn't really necessary in C++, but in the python bindings we
       // don't bind ToddCoxeter::Graph and so we expose this here.
-      // TODO deprecate and move to the word graph itself
-      [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
+      [[deprecated]] [[nodiscard]] uint64_t
+      number_of_edges_active() const noexcept {
         return current_word_graph().number_of_edges_active();
       }
 
@@ -1672,7 +1675,8 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      // TODO deprecate and document _word_graph.stats
+      // TODO deprecate and move to Graph, don't expose stats because it
+      // contains a bunch of stuff that's probably not interesting
       [[nodiscard]] uint64_t number_of_large_collapses() const noexcept {
         return _word_graph.stats().num_large_collapses;
       }
