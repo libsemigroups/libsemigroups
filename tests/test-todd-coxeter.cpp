@@ -2828,7 +2828,7 @@ namespace libsemigroups {
 
     section_hlt(tc);
     // Takes about 3.5s with preprocessing
-    // TODO not any more, it takes 5.8s, also on main
+    // TODO(1) not any more, it takes 5.8s, also on main
     SECTION("preprocessing + Felsch") {
       presentation::greedy_reduce_length(p);
       REQUIRE(presentation::length(p) == 33);
@@ -4552,7 +4552,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
