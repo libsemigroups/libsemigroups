@@ -253,6 +253,13 @@ namespace libsemigroups {
                                                        Iterator2 last1,
                                                        Iterator3 first2,
                                                        Iterator4 last2) const {
+      // TODO(1) remove when is_free is implemented
+      if (internal_presentation().rules.empty()
+          && internal_generating_pairs().empty()
+          && current_word_graph().number_of_nodes_active() == 1) {
+        return std::equal(first1, last1, first2, last2) ? tril::TRUE
+                                                        : tril::FALSE;
+      }
       auto index1 = current_index_of_no_checks(first1, last1);
       auto index2 = current_index_of_no_checks(first2, last2);
 
@@ -282,12 +289,6 @@ namespace libsemigroups {
                                              Iterator2 last1,
                                              Iterator3 first2,
                                              Iterator4 last2) {
-      // TODO(1) remove when is_free is implemented
-      if (internal_presentation().rules.empty()
-          && internal_generating_pairs().empty()
-          && current_word_graph().number_of_nodes_active() == 1) {
-        return std::equal(first1, last1, first2, last2);
-      }
       return detail::CongruenceCommon::contains_no_checks<ToddCoxeterImpl>(
           first1, last1, first2, last2);
     }
@@ -300,14 +301,14 @@ namespace libsemigroups {
                                    Iterator2 last1,
                                    Iterator3 first2,
                                    Iterator4 last2) {
-      // TODO(1) remove when is_free is implemented
-      if (internal_presentation().rules.empty()
-          && internal_generating_pairs().empty()
-          && current_word_graph().number_of_nodes_active() == 1) {
-        return std::equal(first1, last1, first2, last2);
-      }
-      return detail::CongruenceCommon::contains<ToddCoxeterImpl>(
-          first1, last1, first2, last2);
+      // TODO(1) should be
+      // return detail::CongruenceCommon::contains<ToddCoxeterImpl>(
+      //     first1, last1, first2, last2);
+      // when is_free is implemented. Not currently so that the analogue of
+      // is_free is called.
+      throw_if_not_in_alphabet(first1, last1);
+      throw_if_not_in_alphabet(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
     }
 
     template <typename OutputIterator,

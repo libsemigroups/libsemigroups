@@ -53,12 +53,13 @@ namespace libsemigroups {
       if (std::equal(first1, last1, first2, last2)) {
         return true;
       }
-      // TODO(1) implement is_free mem fn of derived classes and check equality
-      // if this returns true
-      if (static_cast<Subclass&>(*this).currently_contains_no_checks(
-              first1, last1, first2, last2)
-          == tril::TRUE) {
-        return true;
+      tril const val
+          = static_cast<Subclass&>(*this).currently_contains_no_checks(
+              first1, last1, first2, last2);
+      if (val != tril::unknown) {
+        return (val == tril::TRUE ? true : false);
+      } else if (finished()) {  // || static_cast<Subclass&>(*this).is_free()) {
+        return false;
       }
       // TODO(1) the following doesn't work because of some issue in Congruences
       // where the function passed to run_until is invoked by the Congruence in

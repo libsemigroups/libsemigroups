@@ -1747,14 +1747,6 @@ namespace libsemigroups {
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
 
       // TODO doc
-      // Perform a lookahead for an amount of time
-      // TODO required?
-      template <typename Time>
-      void perform_lookahead_for(Time t) {
-        perform_lookahead_for(std::chrono::nanoseconds(t));
-      }
-
-      // TODO doc
       // Perform a lookahead until a function returns true or finished
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
@@ -2189,7 +2181,7 @@ namespace libsemigroups {
                           uint64_t     num_active_edges) const;
       void add_lookahead_or_behind_row(ReportCell_& rc) const;
     };  // class ToddCoxeterImpl
-  }     // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_

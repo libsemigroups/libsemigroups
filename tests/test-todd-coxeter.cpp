@@ -1800,7 +1800,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "034",
                           "symmetric_group(7) Burnside",
-                          "[todd-coxeter][quick][no-valgrind]") {
+                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
@@ -3918,6 +3918,7 @@ namespace libsemigroups {
 
     tc.perform_lookahead();
     tc.perform_lookbehind_for(std::chrono::seconds(30));
+    tc.perform_lookahead_for(std::chrono::seconds(30));
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
     for (size_t i = 0; i != expected.size(); ++i) {
@@ -4941,7 +4942,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "120",
                           "check full enum not triggered",
-                          "[todd-coxeter][quick][no-valgrind]") {
+                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -5294,5 +5295,20 @@ namespace libsemigroups {
              "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
              "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
              "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter", "128", "code coverage", "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    ToddCoxeter tc(congruence_kind::twosided, p);
+
+    std::string word = "ababababba";
+    REQUIRE(tc.contains_no_checks(
+        word.begin(), word.end(), word.begin(), word.end()));
+    REQUIRE(tc.contains(word.begin(), word.end(), word.begin(), word.end()));
+    word = "ababababbac";
+    REQUIRE_THROWS_AS(
+        tc.contains(word.begin(), word.end(), word.begin(), word.end()),
+        LibsemigroupsException);
   }
 }  // namespace libsemigroups

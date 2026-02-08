@@ -119,11 +119,6 @@ namespace libsemigroups {
                                    Iterator2 last1,
                                    Iterator3 first2,
                                    Iterator4 last2) {
-    // TODO(1) remove when is_free is implemented
-    if (presentation().rules.empty() && generating_pairs().empty()
-        && current_word_graph().number_of_nodes_active() == 1) {
-      return std::equal(first1, last1, first2, last2);
-    }
     // Call detail::CongruenceCommon version so that we perform bound checks in
     // ToddCoxeter and not ToddCoxeterImpl
     return detail::CongruenceCommon::contains<ToddCoxeter>(
