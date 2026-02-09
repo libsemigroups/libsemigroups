@@ -251,11 +251,11 @@ namespace libsemigroups {
                           "[quick][pperm]") {
     using point_type = typename Transf<>::point_type;
 
-    // TODO(0): uncomment and fix, or delete
-    // auto x = make<PPerm<0, uint8_t>>({}, {}, 257);
-    // REQUIRE(x * x == x);
-    // x = make<PPerm<0, uint8_t>>({}, {}, 256);
-    // REQUIRE(x * x == x);
+    REQUIRE_THROWS_AS((make<PPerm<0, uint8_t>>({}, {}, 257)),
+                      LibsemigroupsException);
+
+    auto x = make<PPerm<0, uint8_t>>({}, {}, 256);
+    REQUIRE(x * x == x);
 
     REQUIRE_THROWS_AS((make<PPerm<0, uint8_t>>({255}, {255}, 256)),
                       LibsemigroupsException);
