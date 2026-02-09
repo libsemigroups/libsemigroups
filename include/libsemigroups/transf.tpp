@@ -151,9 +151,7 @@ namespace libsemigroups {
           detail::max_degree<Scalar>() - degree(),
           m);
     }
-    resize(degree() + m);
-    std::iota(end() - m, end(), degree() - m);
-    return *this;
+    return increase_degree_by_no_checks(m);
   }
 
   ////////////////////////////////////////////////////////////////////////
