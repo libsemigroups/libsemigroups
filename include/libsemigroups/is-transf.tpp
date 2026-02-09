@@ -124,6 +124,11 @@ namespace libsemigroups {
       using Scalar = std::decay_t<decltype(*dom_first)>;
       static_assert(std::is_same_v<Scalar, std::decay_t<decltype(*img_first)>>);
       static_assert(std::is_unsigned_v<Scalar>);
+
+      // NOTE: it used to be permissable for deg >= max. value of Scalar, if the
+      // values in <dom> and <ran> are less than (max. value of Scalar) - 1. It
+      // was decided that this is probably bad, and so was removed in
+      // https://github.com/libsemigroups/libsemigroups/pull/892
       throw_if_degree_too_large<Scalar>(deg);
 
       auto dom_size = std::distance(dom_first, dom_last);
