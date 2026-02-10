@@ -56,7 +56,7 @@ namespace libsemigroups {
       if (cont.size() != std::tuple_size_v<container_type>) {
         LIBSEMIGROUPS_EXCEPTION(
             "the argument (container holding the image values) has the "
-            "incorrect size size, expected {}, found {}",
+            "incorrect size, expected {}, found {}",
             std::tuple_size_v<container_type>,
             cont.size());
       }
