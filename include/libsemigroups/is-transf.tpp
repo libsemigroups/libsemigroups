@@ -66,6 +66,7 @@ namespace libsemigroups {
       // when computing this size, we reduce the value by 1 when Point can
       // represent the same number of points as size_t. This is fine, since it
       // would be pretty much impossible to have a container of that size.
+      static_assert(std::is_unsigned_v<Point>);
       size_t max_degree = std::numeric_limits<Point>::max();
       if constexpr (std::numeric_limits<Point>::max()
                     < std::numeric_limits<size_t>::max()) {
