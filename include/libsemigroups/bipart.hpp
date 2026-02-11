@@ -37,6 +37,7 @@
 #include <vector>            // for vector
 
 #include "adapters.hpp"   // for Hash
+#include "constants.hpp"  // for UNDEFINED, POSITIVE_INFINITY
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for enable_if_is_same
@@ -107,6 +108,8 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the degree().
     [[nodiscard]] std::vector<std::vector<int32_t>>
     underlying_partition(Blocks const& x);
+
+    Blocks identity_blocks(size_t degree);
 
   }  // namespace blocks
 
@@ -462,6 +465,10 @@ namespace libsemigroups {
     Blocks(Blocks&& copy);
 
     ~Blocks();
+
+    // TODO / FIXME
+    //  why are we talking about a point here, but a block index in the
+    //  corresponding function later?
 
     //! \brief Set whether or not the block containing a point is transverse.
     //!
@@ -903,6 +910,13 @@ namespace libsemigroups {
                                                    = "{}",
                                                    size_t max_width = 72);
 
+  template <>
+  struct Hash<Blocks> {
+    [[nodiscard]] size_t operator()(Blocks const& x) const {
+      return x.hash_value();
+    }
+  };
+
   //! \ingroup bipart_group
   //!
   //! \brief Class for representing bipartitions.
@@ -1147,6 +1161,8 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] uint32_t& at(size_t i) {
       return _vector.at(i);
+      // TODO: do we want to force invalidate the cache here, or trust the user
+      // to do so? Or proper setters?
     }
 
     //! \brief Return a const reference to the index of the block containing a
@@ -1601,6 +1617,8 @@ namespace libsemigroups {
       return _trans_blocks_lookup;
     }
 
+    void invalidate_cache() const;
+
    private:
     void init_trans_blocks_lookup() const;
   };  // class Bipartition
@@ -1659,6 +1677,10 @@ namespace libsemigroups {
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
   make(std::initializer_list<std::vector<int32_t>> const& cont) {
     return make<Bipartition, std::initializer_list<std::vector<int32_t>>>(cont);
+  }
+
+  namespace bipartition {
+    Bipartition block_projection(Blocks const& blocks);
   }
 
   //! \ingroup bipart_group
@@ -1762,12 +1784,12 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Adapters
+  // Adapters - Bipartitions
   ////////////////////////////////////////////////////////////////////////
 
   //! Returns the approximate time complexity of multiplication.
   //!
-  //! In the case of a Bipartition of degree *n* the value *2n ^ 2* is
+  //! In the case of a Bipartition of degree *n* the value *n ^ 2* is
   //! returned.
   template <>
   struct Complexity<Bipartition> {
@@ -1828,6 +1850,5 @@ namespace libsemigroups {
   struct IncreaseDegree<Bipartition> {
     void operator()(Bipartition&, size_t) {}
   };
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BIPART_HPP_
