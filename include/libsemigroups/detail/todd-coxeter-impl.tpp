@@ -306,8 +306,8 @@ namespace libsemigroups {
       //     first1, last1, first2, last2);
       // when is_free is implemented. Not currently so that the analogue of
       // is_free is called.
-      throw_if_not_in_alphabet(first1, last1);
-      throw_if_not_in_alphabet(first2, last2);
+      internal_presentation().throw_if_letter_not_in_alphabet(first1, last1);
+      internal_presentation().throw_if_letter_not_in_alphabet(first2, last2);
       return contains_no_checks(first1, last1, first2, last2);
     }
 

@@ -21,6 +21,7 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
+#include "libsemigroups/detail/todd-coxeter-impl.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
@@ -5297,18 +5298,89 @@ namespace libsemigroups {
              "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter", "128", "code coverage", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "128",
+      "code coverage for ToddCoxeter::init(kind, present., graph)",
+      "[todd-coxeter][quick]") {
+    size_t n = 7;
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+
+    REQUIRE(p.contains_empty_word());
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    tc.run_for(std::chrono::milliseconds(100));
+
+    tc.shrink_to_fit();
+
+    // size_t const num_nodes =
+    // tc.current_word_graph().number_of_nodes_active();
+    // size_t const num_edges
+    // = tc.current_word_graph().number_of_edges_active();
+
+    word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
+    tc.init(
+        congruence_kind::twosided, tc.presentation(), tc.current_word_graph());
+    REQUIRE(!tc.finished());
+    // TODO the following fails but probably shouldn't
+    // REQUIRE(tc.current_word_graph().number_of_edges_active() == num_edges);
+    // REQUIRE(tc.current_word_graph().number_of_nodes_active() == num_nodes);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "129",
+      "code coverage for ToddCoxeterImpl::current_word_of_no_checks",
+      "[quick]") {
+    size_t n = 5;
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+
+    REQUIRE(p.contains_empty_word());
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    tc.run_for(std::chrono::milliseconds(10));
+
+    REQUIRE_NOTHROW(todd_coxeter::current_word_of_no_checks(tc, 0));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "130",
+      "code coverage for ToddCoxeterImpl::contains/_no_checks",
+      "[quick]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     ToddCoxeter tc(congruence_kind::twosided, p);
 
-    std::string word = "ababababba";
-    REQUIRE(tc.contains_no_checks(
+    // It might be expected that ToddCoxeter::contains would call
+    // ToddCoxeterImpl::contains, but it does not, and so we test is
+    // directly so that it is still possible to ToddCoxeterImpl
+    // directly if there are perf. issues with using ToddCoxeter.
+    word_type word = 010100101_w;
+    REQUIRE(static_cast<detail::ToddCoxeterImpl&>(tc).contains(
         word.begin(), word.end(), word.begin(), word.end()));
-    REQUIRE(tc.contains(word.begin(), word.end(), word.begin(), word.end()));
-    word = "ababababbac";
+    REQUIRE(!static_cast<detail::ToddCoxeterImpl&>(tc).contains(
+        word.begin(), word.end(), word.begin(), word.begin() + 1));
+    word = 010100201_w;
+    REQUIRE_THROWS_AS(static_cast<detail::ToddCoxeterImpl&>(tc).contains(
+                          word.begin(), word.end(), word.begin(), word.end()),
+                      LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "131",
+                          "code coverage for ToddCoxeter::contains/_no_checks",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    ToddCoxeter tc(congruence_kind::twosided, p);
+
+    std::string word1 = "ababababba";
+    REQUIRE(tc.contains_no_checks(
+        word1.begin(), word1.end(), word1.begin(), word1.end()));
+    REQUIRE(
+        tc.contains(word1.begin(), word1.end(), word1.begin(), word1.end()));
+    word1 = "ababababbac";
     REQUIRE_THROWS_AS(
-        tc.contains(word.begin(), word.end(), word.begin(), word.end()),
+        tc.contains(word1.begin(), word1.end(), word1.begin(), word1.end()),
         LibsemigroupsException);
   }
 }  // namespace libsemigroups

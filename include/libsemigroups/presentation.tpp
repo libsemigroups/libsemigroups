@@ -230,6 +230,9 @@ namespace libsemigroups {
   Presentation<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
                                                       Iterator2 last) const {
     if (!_contains_empty_word && first == last) {
+      // TODO this error doesn't exactly belong here, at least according to the
+      // name of this function, there are no letters so they all belong in the
+      // alphabet vacuously.
       LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty, did you mean to "
                               "call contains_empty_word(true) first?");
     }
@@ -1015,8 +1018,8 @@ namespace libsemigroups {
                                       Word const&         letters1,
                                       Word const&         letters2) {
       using words::operator+;
-      size_t       m = letters1.size(), n = letters2.size();
-      Word const * shorter = &letters1, *longer = &letters2;
+      size_t      m = letters1.size(), n = letters2.size();
+      Word const *shorter = &letters1, *longer = &letters2;
       if (m > n) {
         std::swap(shorter, longer);
         std::swap(m, n);
