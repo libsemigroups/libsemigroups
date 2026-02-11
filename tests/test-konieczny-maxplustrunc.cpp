@@ -245,7 +245,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
       "029",
-      "Lambda/ImageRightAction for tropical max-plus mats (dim 5, threshold 6)",
+      "Lambda/ImageRightAction, tropical max-plus mats (d=5, t=6)",
       "[quick][konieczny][tropmaxplus]") {
     using Mat       = MaxPlusTruncMat<6, 5>;
     using LambdaVal = LambdaValue<Mat>::type;
@@ -301,7 +301,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
       "030",
-      "Rho/ImageLeftAction for tropical max-plus mats (dim 5, threshold 6)",
+      "Rho/ImageLeftAction for tropical max-plus mats (d=5, t=6)",
       "[quick][konieczny][tropmaxplus]") {
     using Mat    = MaxPlusTruncMat<6, 5>;
     using RhoVal = RhoValue<Mat>::type;
