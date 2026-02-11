@@ -17,7 +17,6 @@
 //
 
 #include <cstddef>   // for size_t
-#include <iostream>  // for cout, endl // TODO(2): remove this include
 #include <vector>    // for vector
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
