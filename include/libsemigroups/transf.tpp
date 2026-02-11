@@ -55,7 +55,8 @@ namespace libsemigroups {
     if constexpr (detail::is_array_v<container_type>) {
       if (cont.size() != std::tuple_size_v<container_type>) {
         LIBSEMIGROUPS_EXCEPTION(
-            "incorrect container size, expected {}, found {}",
+            "the argument (container holding the image values) has the "
+            "incorrect size, expected {}, found {}",
             std::tuple_size_v<container_type>,
             cont.size());
       }
@@ -135,6 +136,22 @@ namespace libsemigroups {
                               N,
                               n);
     }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // DynamicPTransf
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Scalar>
+  DynamicPTransf<Scalar>& DynamicPTransf<Scalar>::increase_degree_by(size_t m) {
+    if (!detail::is_valid_degree<Scalar>(degree() + m)) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 1st argument (value to increase degree by) "
+          "is too large, expected value in [0, {}], found {}",
+          detail::max_degree<Scalar>() - degree(),
+          m);
+    }
+    return increase_degree_by_no_checks(m);
   }
 
   ////////////////////////////////////////////////////////////////////////
