@@ -25,7 +25,7 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "026",
+                          "037",
                           "partial perm",
                           "[quick][pperm][no-valgrind]") {
     auto      rg = ReportGuard(false);
@@ -50,7 +50,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "027",
+                          "038",
                           "symmetric inverse monoid n = 8",
                           "[quick][pperm][no-valgrind]") {
     auto      rg = ReportGuard(false);
@@ -73,7 +73,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "028",
+                          "039",
                           "exceptions",
                           "[quick][pperm][no-valgrind]") {
     auto rg = ReportGuard(false);
