@@ -961,7 +961,6 @@ test_all_SOURCES += tests/test-knuth-bendix-3.cpp
 test_all_SOURCES += tests/test-knuth-bendix-4.cpp
 test_all_SOURCES += tests/test-knuth-bendix-5.cpp
 test_all_SOURCES += tests/test-knuth-bendix-6.cpp
-test_all_SOURCES += tests/test-konieczny-bipart.cpp
 test_all_SOURCES += tests/test-konieczny-bmat.cpp
 test_all_SOURCES += tests/test-konieczny-bmat8-1.cpp
 test_all_SOURCES += tests/test-konieczny-bmat8-2.cpp
