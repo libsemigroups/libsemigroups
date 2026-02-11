@@ -26,7 +26,7 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "043",
+                          "048",
                           "small TwistedBipartition example",
                           "[quick][konieczny]") {
     auto rg = ReportGuard(true);
@@ -57,7 +57,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "044",
+                          "049",
                           "small twisted example 2",
                           "[quick][konieczny][element]") {
     auto x = make<TwistedBipartition>(
@@ -72,7 +72,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "045",
+                          "050",
                           "twisted Brauer monoid, degree 6 threshold 1",
                           "[quick][konieczny]") {
     auto rg = ReportGuard(true);
@@ -95,7 +95,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "046",
+                          "051",
                           "twisted Brauer gens, degree 6 threshold 1",
                           "[quick][konieczny]") {
     auto rg = ReportGuard(true);
@@ -117,7 +117,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "047",
+                          "052",
                           "twisted Partition gens, degree 6 threshold 10",
                           "[standard][konieczny]") {
     auto rg = ReportGuard(true);
