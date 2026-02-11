@@ -781,12 +781,32 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
+    //! \throws LibsemigroupsException if \ref point_type cannot represent
+    //! `degree() + m` unique values.
+    //!
+    //! \complexity
+    //! At worst linear in the sum of the parameter \p m and degree().
+    DynamicPTransf& increase_degree_by(size_t m);
+
+    //! \brief Increase the degree in-place.
+    //!
+    //! Increases the degree of \c this in-place, leaving existing values
+    //! unaltered.
+    //!
+    //! \param m the number of points to add.
+    //!
+    //! \returns A reference to `*this`.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in the sum of the parameter \p m and degree().
-    DynamicPTransf& increase_degree_by(size_t m) {
+    //!
+    //! \warning This function performs no checks on its arguments. In
+    //! particular, there is no check that \ref point_type can represent
+    //! `degree() + m` unique values.
+    DynamicPTransf& increase_degree_by_no_checks(size_t m) {
       resize(degree() + m);
       std::iota(end() - m, end(), degree() - m);
       return *this;

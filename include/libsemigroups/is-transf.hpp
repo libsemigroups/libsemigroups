@@ -26,6 +26,7 @@
 #include <algorithm>      // for none_of, find_if
 #include <cstddef>        // for size_t
 #include <iterator>       // for distance
+#include <limits>         // for numeric_limits
 #include <string_view>    // for string_view
 #include <type_traits>    // for decay_t, is_unsigned_v
 #include <unordered_map>  // for unordered_map
@@ -34,6 +35,7 @@
 #include "constants.hpp"  // for UNDEFINED
 
 #include "detail/print.hpp"  // for to_printable
+#include "detail/stl.hpp"    // for is_array_v
 
 namespace libsemigroups {
 
@@ -75,6 +77,19 @@ namespace libsemigroups {
       std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
       throw_if_duplicates(first, last, seen, where);
     }
+
+    // The maximum degree a PTransf could have. This is the largest value such
+    // that each point in the image can be unique.
+    template <typename Point>
+    size_t max_degree();
+
+    template <typename Point>
+    bool is_valid_degree(size_t deg) {
+      return deg <= max_degree<Point>();
+    }
+
+    template <typename Point>
+    void throw_if_degree_too_large(size_t deg);
 
     template <typename Iterator, typename Func>
     void throw_if_value_out_of_range(Iterator         first,
