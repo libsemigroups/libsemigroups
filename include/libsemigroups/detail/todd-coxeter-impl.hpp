@@ -1203,6 +1203,23 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] options::lookahead_style lookahead_style() const noexcept;
 
+      // TODO doc
+      [[nodiscard]] ToddCoxeterImpl& lookbehind_threshold(size_t val) noexcept;
+
+      //! \ingroup todd_coxeter_class_settings_group
+      //!
+      //! \brief Get the current value of the lookbehind threshold.
+      //!
+      //! This function returns the current value of the lookbehind
+      //! threshold. See lookbehind_threshold(size_t) for details of the
+      //! meaning of this setting.
+      //!
+      //! \returns The current value of the lookbehind threshold.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_t lookbehind_threshold() const noexcept;
+
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Specify the minimum number of classes that may permit any
       //! enumeration early stop.

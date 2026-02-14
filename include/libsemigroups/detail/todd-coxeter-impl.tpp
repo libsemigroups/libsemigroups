@@ -38,6 +38,7 @@ namespace libsemigroups {
       std::chrono::nanoseconds  lookahead_stop_early_interval;
       float                     lookahead_stop_early_ratio;
       options::lookahead_style  lookahead_style;
+      size_t                    lookbehind_threshold;
       size_t                    lower_bound;
       bool                      save;
       options::strategy         strategy;
@@ -82,6 +83,7 @@ namespace libsemigroups {
         lookahead_stop_early_interval = std::chrono::seconds(1);
         lookahead_stop_early_ratio    = 0.01;
         lookahead_style               = options::lookahead_style::hlt;
+        lookbehind_threshold          = 32'768;
 
         save                   = false;
         strategy               = options::strategy::hlt;

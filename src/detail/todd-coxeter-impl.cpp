@@ -665,6 +665,15 @@ namespace libsemigroups::detail {
     return tc_settings().lookahead_extent;
   }
 
+  ToddCoxeterImpl& ToddCoxeterImpl::lookbehind_threshold(size_t val) noexcept {
+    tc_settings().lookbehind_threshold = val;
+    return *this;
+  }
+
+  size_t ToddCoxeterImpl::lookbehind_threshold() const noexcept {
+    return tc_settings().lookbehind_threshold;
+  }
+
   ToddCoxeterImpl& ToddCoxeterImpl::save(bool x) noexcept {
     tc_settings().save = x;
     return *this;
@@ -1309,8 +1318,8 @@ namespace libsemigroups::detail {
             _word_graph, _word_graph.initial_node(), w2.begin(), w2.end());
         if (other != UNDEFINED && other != current) {
           _word_graph.merge_nodes_no_checks(current, other);
-          if (_word_graph.number_of_coincidences() > 32'768) {
-            // TODO(0) make the number 32'768 above a setting
+          if (_word_graph.number_of_coincidences()
+              > tc_settings().lookbehind_threshold) {
             _word_graph.process_coincidences();
           }
         }
