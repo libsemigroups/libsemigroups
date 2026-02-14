@@ -1754,9 +1754,25 @@ namespace libsemigroups {
       //! \sa perform_lookahead_for and perform_lookahead_until
       ToddCoxeterImpl& perform_lookahead();
 
-      // TODO for backward compatibility have a [[deprecated]]
-      // perform_lookahead(bool) that just forwards its arg to
-      // perform_lookahead_impl
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookahead.
+      //!
+      //! This function can be used to explicitly perform a lookahead. The
+      //! style and extent of this lookahead are controlled by the settings
+      //! \ref lookahead_style and \ref lookahead_extent.
+      //!
+      //! If the argument \p stop_early is \c true, then the settings
+      //! \ref lookahead_stop_early_interval and
+      //! \ref lookahead_stop_early_ratio are used to determine whether or not
+      //! the lookahead should be aborted early. If \p stop_early is \c false,
+      //! then these settings are ignored.
+      //!
+      //! \param stop_early whether or not to consider stopping the
+      //! lookahead early if too few nodes are killed.
+      //!
+      //! \deprecated_warning{function} Use
+      //! \ref perform_lookahead_until instead.
+      [[deprecated]] void perform_lookahead(bool stop_early);
 
       // TODO doc
       // Perform a lookahead for an amount of time

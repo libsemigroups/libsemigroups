@@ -1193,6 +1193,11 @@ namespace libsemigroups::detail {
     return *this;
   }
 
+  // The next one is the deprecated version to be removed in v4.
+  void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
+    perform_lookahead_impl(stop_early);
+  }
+
   ToddCoxeterImpl&
   ToddCoxeterImpl::perform_lookahead_for(std::chrono::nanoseconds t) {
     SettingsGuard sg(this);
