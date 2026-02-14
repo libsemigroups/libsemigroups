@@ -128,7 +128,8 @@ namespace libsemigroups {
         tc.standardize(Order::shortlex);
       }
       if constexpr (std::is_same_v<Word, word_type>) {
-        auto result = forest::PathsFromRoots(tc.current_spanning_tree());
+        auto result = forest::PathsFromRoots(
+            tc.current_word_graph().current_spanning_tree());
         if (!tc.presentation().contains_empty_word()) {
           result = result | rx::skip_n(1);
         }
@@ -137,7 +138,8 @@ namespace libsemigroups {
         // This is not as generic as before because we assume either word_type
         // or std::string.
         static_assert(std::is_same_v<Word, std::string>);
-        auto result = forest::PathsFromRoots(tc.current_spanning_tree())
+        auto result = forest::PathsFromRoots(
+                          tc.current_word_graph().current_spanning_tree())
                       | ToString(tc.presentation().alphabet());
         if (!tc.presentation().contains_empty_word()) {
           result = result | rx::skip_n(1);

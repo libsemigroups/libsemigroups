@@ -1100,7 +1100,7 @@ namespace libsemigroups {
       section_hlt(tc);
       REQUIRE(tc.number_of_classes() == 78);
       tc.standardize(Order::shortlex);
-      REQUIRE(tc.spanning_tree().number_of_nodes() == 79);
+      REQUIRE(tc.word_graph().current_spanning_tree().number_of_nodes() == 79);
       check_standardize(tc);
     }
     {

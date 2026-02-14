@@ -217,8 +217,9 @@ namespace libsemigroups {
       size_t const offset
           = (internal_presentation().contains_empty_word() ? 0 : 1);
 
-      return current_spanning_tree().path_from_root_no_checks(d_first,
-                                                              i + offset);
+      return current_word_graph()
+          .current_spanning_tree()
+          .path_from_root_no_checks(d_first, i + offset);
     }
 
     template <typename OutputIterator>
@@ -334,7 +335,7 @@ namespace libsemigroups {
         return current_word_of_no_checks(d_first, pos);
       }
       node_type const s = current_word_graph().initial_node();
-      Forest const&   f = current_spanning_tree();
+      Forest const&   f = current_word_graph().current_spanning_tree();
 
       word_type u(first, last);
       auto      v_begin = u.begin();

@@ -1574,26 +1574,18 @@ namespace libsemigroups {
       //!
       //! This function returns a const reference to the current value of a
       //! possible spanning tree (a \ref Forest) for the underlying
-      //! WordGraph (returned by \ref current_word_graph). This spanning
-      //! tree is only populated during calls to \ref standardize and as
-      //! such might contain nothing, or a spanning tree of a previous value
-      //! of \ref current_word_graph. Some care should be used with the
-      //! return value of this function, and it might be better to use the
-      //! function \ref spanning_tree, which has none of these limitation.
+      //! WordGraph (returned by \ref current_word_graph).
       //!
-      //! If \ref finished returns \c true, and \ref standardize(Order) has
-      //! been called prior to a call to this function, then the returned
-      //! \ref Forest will represent a valid spanning tree for the WordGraph
-      //! returned by \ref current_word_graph or \ref word_graph.
-      //!
-      //! \returns A const reference to a possible spanning tree of the
+      //! \returns A const reference to a spanning tree of the
       //! underlying \ref WordGraph.
       //!
       //! \exceptions
-      //! \noexcept
-      // TODO update doc
-      // TODO update func
-      Forest const& current_spanning_tree() const noexcept {
+      //! \no_libsemigroups_except
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().current_spanning_tree()` instead.
+      // TODO(v4) move the doc to Graph
+      [[deprecated]] Forest const& current_spanning_tree() const {
         return _word_graph.current_spanning_tree();
       }
 
@@ -1607,9 +1599,11 @@ namespace libsemigroups {
       //!
       //! \returns A const reference to a spanning tree of the underlying
       //! \ref WordGraph.
-      // TODO update doc
-      // TODO update func
-      Forest const& spanning_tree();
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().current_spanning_tree()` instead.
+      // TODO(v4) move the doc to Graph
+      [[deprecated]] Forest const& spanning_tree();
 
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the current standardization order of the underlying
