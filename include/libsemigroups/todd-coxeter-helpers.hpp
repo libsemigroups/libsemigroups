@@ -861,10 +861,9 @@ namespace libsemigroups {
     //! not able to find any combination of the many settings for
     //! \ref_todd_coxeter where running \p tc returned an answer. We also tried
     //! with GAP and ACE but neither of these seemed able to return an answer
-    //! either. But doing the following:
+    //! either.
     //!
-    //!
-    //! \param tc the  \ref_todd_coxeter instance.
+    //! \param tc the \ref_todd_coxeter instance.
     //!
     //! \throws LibsemigroupsException if \p tc is a one-sided congruence and
     //! has any generating pairs (because in this case \ref perform_lookbehind

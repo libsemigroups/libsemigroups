@@ -1202,7 +1202,29 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] options::lookahead_style lookahead_style() const noexcept;
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_settings_group
+      //! \brief Set the lookbehind threshold.
+      //!
+      //! During a lookbehind pairs of nodes that represent the same class
+      //! (called *coincidences*) of the congruence are collected and
+      //! periodically collapsed. This happens when at least \p val such pairs
+      //! of nodes have been found. Lookbehinds require a spanning tree for the
+      //! graph to be known, and collapsing coincidences means that this
+      //! spanning tree must be recomputed. As a consequence collapsing
+      //! coincidences may be costly if the value of \ref lookbehind_threshold
+      //! is too low (and this is the reason the setting exists at all).
+      //!
+      //! The default value for this setting is `32'768`.
+      //!
+      //! \param val the threshold beyond which any coincidences discovered
+      //! during lookbehind are collapsed.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa \ref perform_lookbehind for details of lookbehinds.
       [[nodiscard]] ToddCoxeterImpl& lookbehind_threshold(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
@@ -1217,6 +1239,8 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      //!
+      //! \sa \ref perform_lookbehind for details of lookbehinds.
       [[nodiscard]] size_t lookbehind_threshold() const noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
@@ -1774,46 +1798,218 @@ namespace libsemigroups {
       //! \ref perform_lookahead_until instead.
       [[deprecated]] void perform_lookahead(bool stop_early);
 
-      // TODO doc
-      // Perform a lookahead for an amount of time
+      //! \brief Perform a lookahead for a specified amount of time.
+      //!
+      //! This function runs a lookahead for approximately the amount of time
+      //! indicated by \p t, or until the lookahead is complete whichever
+      //! happens first.
+      //!
+      //! \param t the time to run for in nanoseconds.
+      //!
+      //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
 
-      // TODO doc
-      // Perform a lookahead until a function returns true or finished
+      //! \brief Perform a lookahead until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookahead until the nullary predicate \p pred
+      //! returns \p true, or until the lookahead is complete whichever happens
+      //! first.
+      //!
+      //! \param pred an rvalue reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
-      // TODO doc
+      //! \brief Perform a lookahead until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookahead until the nullary predicate \p pred
+      //! returns \p true, or until the lookahead is complete whichever happens
+      //! first.
+      //!
+      //! \param pred a const reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
       ToddCoxeterImpl&
       perform_lookahead_until(std::function<bool()> const& pred) {
         return perform_lookahead_until(std::function<bool()>(pred));
       }
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind.
+      //!
+      //! This function performs a "lookbehind" which is
+      //! defined as follows. For every node \c n in the so-far computed
+      //! \ref WordGraph (obtained from \ref current_word_graph) we
+      //! use the current word graph to rewrite the current short-lex least path
+      //! from the initial node to \c n. If this rewritten word is not equal to
+      //! the original word, and it also labels a path from the initial node in
+      //! the current word graph to a node \c m, then \c m and \c n represent
+      //! the same congruence class. Thus we may collapse \c m and \c n (i.e.
+      //! quotient the word graph by the least congruence containing the pair \c
+      //! m and \c n).
+      //!
+      //! The intended use case for this function is when you have a large word
+      //! graph in a partially enumerated \ref_todd_coxeter instance, and you
+      //! would like to minimise this word graph as far as possible.
+      //!
+      //! For example, if we take the following monoid presentation of B. H.
+      //! Neumann for the trivial group:
+      //!
+      // This test takes a couple of seconds to run.
+      //! \code_no_test
+      //!
+      //! using options = detail::ToddCoxeterImpl::options;
+      //! Presentation<std::string> p;
+      //! p.alphabet("abcdef");
+      //! p.contains_empty_word(true);
+      //! presentation::add_inverse_rules(p, "defabc");
+      //! presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
+      //! presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
+      //! presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
+      //! ToddCoxeter tc(congruence_kind::twosided, p);
+      //!
+      //! tc.lookahead_extent(options::lookahead_extent::full)
+      //!     .lookahead_style(options::lookahead_style::felsch);
+      //!
+      //! tc.run_until([&tc]() -> bool {
+      //!   return tc.current_word_graph().number_of_nodes_active() >=
+      //!   12'000'000;
+      //! });
+      //! tc.perform_lookbehind();
+      //!
+      //! tc.number_of_classes(); // returns 1
+      //! \end_code_no_test
+      //!
+      //! Doing `tc.run()` in the previous example will simply grow the
+      //! underlying word graph until your computer runs out of memory. The
+      //! authors of `libsemigroups` were not able to find any combination of
+      //! the many settings for \ref_todd_coxeter where running \p tc returned
+      //! an answer. We also tried with GAP and ACE but neither of these seemed
+      //! able to return an answer either.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \p tc is a one-sided congruence and
+      //! has any generating pairs (because in this case \ref perform_lookbehind
+      //! does nothing but still might take some time to run).
       ToddCoxeterImpl& perform_lookbehind();
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //!
+      //! \brief Perform a lookbehind using a function to decide whether or not
+      //! to collapse nodes.
+      //!
+      //! This function perform a lookbehind using the function \p collapser to
+      //! decide whether or not to collapse nodes. For example, it might be the
+      //! case that \p collapser uses a \ref_knuth_bendix instance to determine
+      //! whether or not nodes in the graph represent the same class of the
+      //! congruence. More specifically, the shortlex least path from the
+      //! initial node to every node \c n is rewritten using \p collapser, and
+      //! if the rewritten word labels a path in the graph to a node \c m, then
+      //! it is assumed that \c m and \c n represent the same class of the
+      //! congruence, and they are marked for collapsing. For example,
+      //! \ref perform_lookbehind calls \ref perform_lookbehind_no_checks where
+      //! \p collapser is the member function
+      //! \ref ToddCoxeter::reduce_no_run_no_checks.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
       template <typename Func>
       ToddCoxeterImpl& perform_lookbehind_no_checks(Func&& collapser);
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind for a specified amount of time.
+      //!
+      //! This function runs a lookbehind for approximately the amount of time
+      //! indicated by \p t, or until the lookbehind is complete whichever
+      //! happens first.
+      //!
+      //! \param t the time to run for in nanoseconds.
+      //!
+      //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind for a specified amount of time with a
+      //! collapser.
+      //!
+      //! This function runs a lookbehind using \p collapser for approximately
+      //! the amount of time indicated by \p t, or until the lookbehind is
+      //! complete whichever happens first. See
+      //! \ref perform_lookbehind_no_checks(Func&&) for more details.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param t the time to run for in nanoseconds.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
                                        Func&&                   collapser);
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookbehind until the nullary predicate \p pred
+      //! returns \p true, or until the lookbehind is complete whichever happens
+      //! first.
+      //!
+      //! \param pred an rvalue reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookbehind_until(std::function<bool()>&& pred);
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookbehind until the nullary predicate \p pred
+      //! returns \p true, or until the lookbehind is complete whichever happens
+      //! first.
+      //!
+      //! \param pred a const reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
       ToddCoxeterImpl&
       perform_lookbehind_until(std::function<bool()> const& pred) {
         return perform_lookbehind_until(std::function<bool()>(pred));
       }
 
-      // TODO doc
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookbehind using \p collapser until the nullary
+      //! predicate \p pred returns \p true, or until the lookbehind is complete
+      //! whichever happens first.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param pred a const reference to the nullary predicate.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
