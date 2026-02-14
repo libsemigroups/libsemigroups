@@ -5298,11 +5298,10 @@ namespace libsemigroups {
              "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "ToddCoxeter",
-      "128",
-      "code coverage for ToddCoxeter::init(kind, present., graph)",
-      "[todd-coxeter][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "128",
+                          "code cov. ToddCoxeter::init(kind, present., graph)",
+                          "[todd-coxeter][quick]") {
     size_t n = 7;
     auto   p = presentation::examples::full_transformation_monoid_II74(n);
 
@@ -5321,7 +5320,7 @@ namespace libsemigroups {
     tc.init(
         congruence_kind::twosided, tc.presentation(), tc.current_word_graph());
     REQUIRE(!tc.finished());
-    // TODO the following fails but probably shouldn't
+    // TODO(1) the following fails but probably shouldn't
     // REQUIRE(tc.current_word_graph().number_of_edges_active() == num_edges);
     // REQUIRE(tc.current_word_graph().number_of_nodes_active() == num_nodes);
   }
@@ -5329,7 +5328,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "ToddCoxeter",
       "129",
-      "code coverage for ToddCoxeterImpl::current_word_of_no_checks",
+      "code cov. ToddCoxeterImpl::current_word_of_no_checks",
       "[quick]") {
     size_t n = 5;
     auto   p = presentation::examples::full_transformation_monoid_II74(n);
@@ -5341,11 +5340,10 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(todd_coxeter::current_word_of_no_checks(tc, 0));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "ToddCoxeter",
-      "130",
-      "code coverage for ToddCoxeterImpl::contains/_no_checks",
-      "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "130",
+                          "code cov. ToddCoxeterImpl::contains/_no_checks",
+                          "[quick]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -5367,7 +5365,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "131",
-                          "code coverage for ToddCoxeter::contains/_no_checks",
+                          "code cov. ToddCoxeter::contains/_no_checks",
                           "[quick]") {
     Presentation<std::string> p;
     p.alphabet("ab");
