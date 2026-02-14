@@ -324,8 +324,10 @@ namespace libsemigroups {
         }
       };  // class Definitions
 
-      // TODO(1) if we ever want to document ToddCoxeterImpl::Graph, then we
-      // should put this in a separate file todd-coxeter-impl-graph.hpp
+      // TODO(v4) document ToddCoxeterImpl::Graph, some of ToddCoxeterImpl's
+      // doc for deprecated mem fns already refers to mem fns of Graph, so when
+      // they are removed the doc will have no where to live if it isn't
+      // included here.
       class Graph
           : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
         friend class ToddCoxeterImpl;
@@ -387,12 +389,12 @@ namespace libsemigroups {
         // Spanning tree
         ////////////////////////////////////////////////////////////////////////
 
-        // TODO doc
+        // TODO(v4) doc
         [[nodiscard]] bool is_spanning_tree_valid() const noexcept {
           return _forest_valid;
         }
 
-        // TODO doc
+        // TODO(v4) doc
         Forest const& current_spanning_tree() const {
           return const_cast<Graph&>(*this).current_spanning_tree();
         }
@@ -401,17 +403,14 @@ namespace libsemigroups {
         // Standardization
         ////////////////////////////////////////////////////////////////////////
 
-        // TODO(0) copy the doc across
         [[nodiscard]] bool is_standardized(Order val) const {
           return _standardization_order == val;
         }
 
-        // TODO(0) copy the doc across
         [[nodiscard]] bool is_standardized() const {
           return _standardization_order != Order::none;
         }
 
-        // TODO(0) copy the doc across
         [[nodiscard]] inline Order standardization_order() const noexcept {
           return _standardization_order;
         }
