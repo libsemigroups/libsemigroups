@@ -1282,7 +1282,6 @@ namespace libsemigroups {
     ToddCoxeter&
     perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
                                        Func&&                  collapser);
-
   };  // class ToddCoxeter
 
   //! \ingroup todd_coxeter_class_group
