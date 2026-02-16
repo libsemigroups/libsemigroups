@@ -5065,6 +5065,7 @@ namespace libsemigroups {
     REQUIRE(wg.out_degree() == 0);
     REQUIRE(v4::to_human_readable_repr(wg)
             == "<WordGraph with 1 nodes, 0 edges, & out-degree 0>");
+    REQUIRE(&wg == &tc.word_graph());
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

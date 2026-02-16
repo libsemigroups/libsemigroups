@@ -19,9 +19,9 @@
 // This file contains the declaration for a class to manage nodes for
 // NodeManagedGraph instances.
 //
-// TODO combine NodeManager and NodeManagedGraph
-// TODO de-template this, we only ever use uint32_t for these so no point in
-// having it templated.
+// TODO(later) combine NodeManager and NodeManagedGraph
+// TODO(later) de-template this, we only ever use uint32_t for these so no point
+// in having it templated.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_

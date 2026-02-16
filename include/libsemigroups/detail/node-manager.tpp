@@ -95,15 +95,17 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::init() {
-      // TODO compare with clear/compact
       // protected
       _current    = 0;
       _current_la = 0;
       // private
+      _bckwd.clear();
       _bckwd.resize(1, 0);
       _first_free_node = UNDEFINED;
+      _forwd.clear();
       _forwd.resize(1, static_cast<Node>(UNDEFINED));
       _growth_factor = 2.0;
+      _ident.clear();
       _ident.resize(1, 0);
       _last_active_node = 0;
       _stats.init();
