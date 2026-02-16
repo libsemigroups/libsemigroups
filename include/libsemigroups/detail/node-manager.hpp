@@ -71,8 +71,16 @@ namespace libsemigroups {
         std::atomic_uint64_t num_nodes_defined;
         std::atomic_uint64_t num_nodes_killed;
 
-        Stats()
-            : num_nodes_active(1), num_nodes_defined(1), num_nodes_killed(0) {}
+        Stats() : num_nodes_active(), num_nodes_defined(), num_nodes_killed() {
+          init();
+        }
+
+        Stats& init() {
+          num_nodes_active  = 1;
+          num_nodes_defined = 1;
+          num_nodes_killed  = 0;
+          return *this;
+        }
 
         Stats(Stats const& that)
             : num_nodes_active(that.num_nodes_active.load()),
@@ -105,6 +113,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       NodeManager();
+      NodeManager& init();
 
       NodeManager(NodeManager const& that);
       NodeManager(NodeManager&&) = default;

@@ -26,10 +26,6 @@
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGED_GRAPH_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGED_GRAPH_HPP_
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint32_t
-#include <vector>   // for vector
-
 #include <cstddef>      // for size_t
 #include <cstdint>      // for uint32_t
 #include <stack>        // for stack
@@ -66,9 +62,9 @@ namespace libsemigroups {
       using label_type = typename BaseGraph::label_type;
 
       static_assert(
-          std::is_base_of<WordGraphWithSources<node_type>, BaseGraph>::value,
+          std::is_base_of_v<WordGraphWithSources<node_type>, BaseGraph>,
           "the template parameter BaseGraph must be derived from "
-          "WordGraphWithSources<node_type>");
+          "WordGraphWithSources");
 
      protected:
       ////////////////////////////////////////////////////////////////////////

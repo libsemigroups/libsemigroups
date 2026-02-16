@@ -104,7 +104,6 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::init() {
     NodeManager<node_type>::clear();
     FelschGraph_::init();
-    FelschGraph_::add_nodes(1);
     LIBSEMIGROUPS_ASSERT(number_of_nodes() == 1);
     LIBSEMIGROUPS_ASSERT(number_of_nodes_active() == 1);
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::node_capacity() >= 1);
@@ -120,7 +119,7 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::Graph::init(Presentation<word_type>&& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(std::move(p));
-    // TODO(1) shouldn't add nodes here because then there'll be more than
+    // TODO shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());

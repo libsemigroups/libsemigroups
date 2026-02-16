@@ -82,6 +82,12 @@ namespace libsemigroups {
     template <typename Node>
     NodeManagedGraph<Node>& NodeManagedGraph<Node>::init() {
       BaseGraph::init();
+      NodeManager<Node>::init();
+      // NodeManagedGraph's always have 1 active node.
+      BaseGraph::add_nodes(1);
+      LIBSEMIGROUPS_ASSERT(BaseGraph::number_of_nodes() == 1);
+      LIBSEMIGROUPS_ASSERT(BaseGraph::number_of_nodes()
+                           == NodeManager<Node>::number_of_nodes_active());
       _coinc    = decltype(_coinc)();
       _settings = Settings();
       _stats    = Stats();
