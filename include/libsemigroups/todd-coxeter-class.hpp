@@ -1271,16 +1271,13 @@ namespace libsemigroups {
     // NOTE: the following functions must also appear here because the
     // "collapser" needs to be wrapped for compatibility with ToddCoxeterImpl
 
-    // TODO doc
     template <typename Func>
     ToddCoxeter& perform_lookbehind_no_checks(Func&& collapser);
 
-    // TODO doc
     template <typename Func>
     ToddCoxeter& perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
                                                   Func&& collapser);
 
-    // TODO doc
     template <typename Func>
     ToddCoxeter&
     perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
