@@ -76,7 +76,7 @@ namespace libsemigroups {
                                              Presentation<Word> const& p,
                                              WordGraph<Node> const&    wg) {
     if (&wg == &current_word_graph()) {
-      // TODO implement
+      // TODO implement?
       LIBSEMIGROUPS_EXCEPTION("cannot initialise a ToddCoxeter with its own "
                               "word graph, copy it first!")
     }

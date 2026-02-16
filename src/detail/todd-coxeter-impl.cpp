@@ -118,11 +118,13 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::Graph&
   ToddCoxeterImpl::Graph::init(Presentation<word_type>&& p) {
     NodeManager<node_type>::clear();
-    FelschGraph_::init(std::move(p));
-    // TODO shouldn't add nodes here because then there'll be more than
-    // there should be (i.e. NodeManager and FelschGraph_ will have
-    // different numbers of nodes
-    FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
+    WordGraphWithSources<node_type>::init(1, p.alphabet().size());
+    FelschGraph_::presentation_no_checks(std::move(p));
+
+    LIBSEMIGROUPS_ASSERT(number_of_nodes() == 1);
+    LIBSEMIGROUPS_ASSERT(number_of_nodes_active() == 1);
+    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::node_capacity() >= 1);
+
     // Must call _forest.init() in case someone already has
     // a reference to it.
     _forest.init();
@@ -136,22 +138,34 @@ namespace libsemigroups::detail {
                                WordGraph<node_type> const&    wg) {
     // Must call _forest.init() in case someone already has
     // a reference to it.
+    FelschGraph_::operator=(wg);
+    FelschGraph_::presentation_no_checks(p);
+
+    LIBSEMIGROUPS_ASSERT(number_of_nodes() == wg.number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(number_of_nodes_active() == wg.number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::node_capacity()
+                         >= wg.number_of_nodes());
+
     _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
-    FelschGraph_::operator=(wg);
-    FelschGraph_::presentation_no_checks(p);
     return *this;
   }
 
   ToddCoxeterImpl::Graph&
   ToddCoxeterImpl::Graph::operator=(WordGraph<node_type> const& wg) {
+    FelschGraph_::operator=(wg);
+
+    LIBSEMIGROUPS_ASSERT(number_of_nodes() == wg.number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(number_of_nodes_active() == wg.number_of_nodes());
+    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::node_capacity()
+                         >= wg.number_of_nodes());
+
     // Must call _forest.init() in case someone already has
     // a reference to it.
     _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
-    FelschGraph_::operator=(wg);
     return *this;
   }
 

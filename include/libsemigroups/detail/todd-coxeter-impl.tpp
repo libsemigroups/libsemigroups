@@ -131,6 +131,12 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind        knd,
                                            WordGraph<Node> const& wg) {
       // FIXME check that wg is valid, which means what exactly?
+      if (&wg == &current_word_graph()) {
+        // TODO implement?
+        LIBSEMIGROUPS_EXCEPTION(
+            "cannot initialise a ToddCoxeter instance with its own "
+            "word graph, copy it first!")
+      }
 
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
@@ -139,8 +145,6 @@ namespace libsemigroups {
       reset_settings_stack();
       _ticker_running = false;
 
-      // TODO(1) if &wg == &_word_graph, what then? Should be handled in
-      // Graph::operator=
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();
@@ -155,6 +159,12 @@ namespace libsemigroups {
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind                knd,
                                            Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
+      if (&wg == &current_word_graph()) {
+        // TODO implement?
+        LIBSEMIGROUPS_EXCEPTION(
+            "cannot initialise a ToddCoxeter instance with its own "
+            "word graph, copy it first!")
+      }
       // FIXME check that wg is valid, which means what exactly?
       p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p);
@@ -165,7 +175,7 @@ namespace libsemigroups {
       reset_settings_stack();
       _ticker_running = false;
 
-      // FIXME(1) this doesn't seem to reset _word_graph
+      // FIXME(1) this doesn't seem to reset _word_graph TODO
       // properly, in particular, the node managed part isn't reset.
       _word_graph.init(p, wg);  // this does not throw when p is invalid
       copy_settings_into_graph();
@@ -210,7 +220,6 @@ namespace libsemigroups {
         // 0, ..., n - 1 on to the nodes of the word graph.
         // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
-        // TODO(1) bit fishy here too
         const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
       }
 

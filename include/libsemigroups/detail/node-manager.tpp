@@ -95,6 +95,7 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManager<Node>& NodeManager<Node>::init() {
+      // TODO compare with clear/compact
       // protected
       _current    = 0;
       _current_la = 0;
