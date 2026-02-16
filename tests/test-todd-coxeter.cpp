@@ -4963,15 +4963,22 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     tc.run_for(std::chrono::milliseconds(1));
     REQUIRE(!tc.finished());
+    auto const& wg = tc.current_word_graph();
     tc.standardize(Order::shortlex);
+    tc.shrink_to_fit();
     // Have to standardize or otherwise what we are about to do below
     // makes no sense
-    // REQUIRE(v4::word_graph::is_standardized(tc.current_word_graph()));
+    REQUIRE(v4::word_graph::is_standardized(wg));
+    auto const& tree = tc.current_word_graph().current_spanning_tree();
+    for (uint32_t n = 0; n != tree.number_of_nodes(); ++n) {
+      if (n != 0) {
+        REQUIRE(n > tree.parent(n));
+      }
+    }
     REQUIRE(!tc.finished());
 
-    auto const& wg    = tc.current_word_graph();
-    auto        set   = v4::word_graph::nodes_reachable_from(wg, 0);
-    auto        nodes = std::vector<uint32_t>(set.begin(), set.end());
+    auto set   = v4::word_graph::nodes_reachable_from(wg, 0);
+    auto nodes = std::vector<uint32_t>(set.begin(), set.end());
     std::sort(nodes.begin(), nodes.end());
     REQUIRE(!nodes.empty());
     for (auto s : nodes) {
@@ -5052,6 +5059,12 @@ namespace libsemigroups {
       REQUIRE(todd_coxeter::reduce_no_run(tc, words[i])
               == todd_coxeter::reduce_no_run(tc, expected[i]));
     }
+    tc.init();
+    REQUIRE(&wg == &tc.current_word_graph());
+    REQUIRE(wg.number_of_nodes() == 1);
+    REQUIRE(wg.out_degree() == 0);
+    REQUIRE(v4::to_human_readable_repr(wg)
+            == "<WordGraph with 1 nodes, 0 edges, & out-degree 0>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
