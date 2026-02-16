@@ -74,12 +74,12 @@ namespace libsemigroups::detail {
   // ToddCoxeterImpl::Settings
   ////////////////////////////////////////////////////////////////////////
 
-  ToddCoxeterImpl::Settings& ToddCoxeterImpl::tc_settings() {
+  ToddCoxeterImpl::Settings& ToddCoxeterImpl::settings() {
     LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     return *_settings_stack.back();
   }
 
-  ToddCoxeterImpl::Settings const& ToddCoxeterImpl::tc_settings() const {
+  ToddCoxeterImpl::Settings const& ToddCoxeterImpl::settings() const {
     LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     return *_settings_stack.back();
   }
@@ -561,62 +561,62 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeterImpl& ToddCoxeterImpl::def_max(size_t val) noexcept {
-    tc_settings().def_max = val;
+    settings().def_max = val;
     return *this;
   }
 
   size_t ToddCoxeterImpl::def_max() const noexcept {
-    return tc_settings().def_max;
+    return settings().def_max;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::def_policy(options::def_policy val) {
-    tc_settings().def_policy = val;
+    settings().def_policy = val;
     return *this;
   }
 
   ToddCoxeterImpl::options::def_policy
   ToddCoxeterImpl::def_policy() const noexcept {
-    return tc_settings().def_policy;
+    return settings().def_policy;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lookahead_next(size_t n) noexcept {
-    tc_settings().lookahead_next = n;
+    settings().lookahead_next = n;
     return *this;
   }
 
   size_t ToddCoxeterImpl::lookahead_next() const noexcept {
-    return tc_settings().lookahead_next;
+    return settings().lookahead_next;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lookahead_min(size_t n) noexcept {
-    tc_settings().lookahead_min = n;
+    settings().lookahead_min = n;
     return *this;
   }
 
   size_t ToddCoxeterImpl::lookahead_min() const noexcept {
-    return tc_settings().lookahead_min;
+    return settings().lookahead_min;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lookahead_growth_factor(float val) {
     if (val < 1.0) {
       LIBSEMIGROUPS_EXCEPTION("Expected a value >= 1.0, found {}", val);
     }
-    tc_settings().lookahead_growth_factor = val;
+    settings().lookahead_growth_factor = val;
     return *this;
   }
 
   float ToddCoxeterImpl::lookahead_growth_factor() const noexcept {
-    return tc_settings().lookahead_growth_factor;
+    return settings().lookahead_growth_factor;
   }
 
   ToddCoxeterImpl&
   ToddCoxeterImpl::lookahead_growth_threshold(size_t val) noexcept {
-    tc_settings().lookahead_growth_threshold = val;
+    settings().lookahead_growth_threshold = val;
     return *this;
   }
 
   size_t ToddCoxeterImpl::lookahead_growth_threshold() const noexcept {
-    return tc_settings().lookahead_growth_threshold;
+    return settings().lookahead_growth_threshold;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lookahead_stop_early_ratio(float val) {
@@ -624,91 +624,91 @@ namespace libsemigroups::detail {
       LIBSEMIGROUPS_EXCEPTION(
           "Expected a float in the interval [0, 1), found {}", val);
     }
-    tc_settings().lookahead_stop_early_ratio = val;
+    settings().lookahead_stop_early_ratio = val;
     return *this;
   }
 
   float ToddCoxeterImpl::lookahead_stop_early_ratio() const noexcept {
-    return tc_settings().lookahead_stop_early_ratio;
+    return settings().lookahead_stop_early_ratio;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lookahead_stop_early_interval(
       std::chrono::nanoseconds val) noexcept {
-    tc_settings().lookahead_stop_early_interval = val;
+    settings().lookahead_stop_early_interval = val;
     return *this;
   }
 
   std::chrono::nanoseconds
   ToddCoxeterImpl::lookahead_stop_early_interval() const noexcept {
-    return tc_settings().lookahead_stop_early_interval;
+    return settings().lookahead_stop_early_interval;
   }
 
   ToddCoxeterImpl&
   ToddCoxeterImpl::lookahead_style(options::lookahead_style val) noexcept {
-    tc_settings().lookahead_style = val;
+    settings().lookahead_style = val;
     return *this;
   }
 
   ToddCoxeterImpl&
   ToddCoxeterImpl::lookahead_extent(options::lookahead_extent val) noexcept {
-    tc_settings().lookahead_extent = val;
+    settings().lookahead_extent = val;
     return *this;
   }
 
   ToddCoxeterImpl::options::lookahead_style
   ToddCoxeterImpl::lookahead_style() const noexcept {
-    return tc_settings().lookahead_style;
+    return settings().lookahead_style;
   }
 
   ToddCoxeterImpl::options::lookahead_extent
   ToddCoxeterImpl::lookahead_extent() const noexcept {
-    return tc_settings().lookahead_extent;
+    return settings().lookahead_extent;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lookbehind_threshold(size_t val) noexcept {
-    tc_settings().lookbehind_threshold = val;
+    settings().lookbehind_threshold = val;
     return *this;
   }
 
   size_t ToddCoxeterImpl::lookbehind_threshold() const noexcept {
-    return tc_settings().lookbehind_threshold;
+    return settings().lookbehind_threshold;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::save(bool x) noexcept {
-    tc_settings().save = x;
+    settings().save = x;
     return *this;
   }
 
   bool ToddCoxeterImpl::save() const noexcept {
-    return tc_settings().save;
+    return settings().save;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::strategy(options::strategy x) noexcept {
-    tc_settings().strategy = x;
+    settings().strategy = x;
     return *this;
   }
 
   ToddCoxeterImpl::options::strategy
   ToddCoxeterImpl::strategy() const noexcept {
-    return tc_settings().strategy;
+    return settings().strategy;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::use_relations_in_extra(bool val) noexcept {
-    tc_settings().use_relations_in_extra = val;
+    settings().use_relations_in_extra = val;
     return *this;
   }
 
   bool ToddCoxeterImpl::use_relations_in_extra() const noexcept {
-    return tc_settings().use_relations_in_extra;
+    return settings().use_relations_in_extra;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::lower_bound(size_t n) noexcept {
-    tc_settings().lower_bound = n;
+    settings().lower_bound = n;
     return *this;
   }
 
   size_t ToddCoxeterImpl::lower_bound() const noexcept {
-    return tc_settings().lower_bound;
+    return settings().lower_bound;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::large_collapse(size_t n) noexcept {
@@ -727,24 +727,24 @@ namespace libsemigroups::detail {
     } else if (val < l) {
       LIBSEMIGROUPS_EXCEPTION("Expected a value >= {}, found {}!", l, val);
     }
-    tc_settings().hlt_defs = val;
+    settings().hlt_defs = val;
     return *this;
   }
 
   size_t ToddCoxeterImpl::hlt_defs() const noexcept {
-    return tc_settings().hlt_defs;
+    return settings().hlt_defs;
   }
 
   ToddCoxeterImpl& ToddCoxeterImpl::f_defs(size_t val) {
     if (val == 0) {
       LIBSEMIGROUPS_EXCEPTION("Expected a value != 0!");
     }
-    tc_settings().f_defs = val;
+    settings().f_defs = val;
     return *this;
   }
 
   size_t ToddCoxeterImpl::f_defs() const noexcept {
-    return tc_settings().f_defs;
+    return settings().f_defs;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1324,7 +1324,7 @@ namespace libsemigroups::detail {
         if (other != UNDEFINED && other != current) {
           _word_graph.merge_nodes_no_checks(current, other);
           if (_word_graph.number_of_coincidences()
-              > tc_settings().lookbehind_threshold) {
+              > settings().lookbehind_threshold) {
             _word_graph.process_coincidences();
           }
         }

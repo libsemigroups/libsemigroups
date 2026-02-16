@@ -2313,13 +2313,12 @@ namespace libsemigroups {
       // Misc member functions - private
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO cleanup this section
       void copy_settings_into_graph();
 
-      // This function has prefix tc_ because there's already a settings
-      // function in a base class
-      Settings&       tc_settings();
-      Settings const& tc_settings() const;
+      // WARNING: there's already a settings() mem fn in FelschGraphSettings,
+      // beware of confusing the two.
+      Settings&       settings();
+      Settings const& settings() const;
 
       void reset_settings_stack();
 
@@ -2329,6 +2328,7 @@ namespace libsemigroups {
       // report_progress_from_thread we do not report at one point in time
       // with some value, then within the same function call (if the graph is
       // changing a lot) report with another value
+      // TODO(v4) move into Graph
       [[nodiscard]] float complete(uint64_t num_nodes,
                                    int64_t  num_edges) const noexcept {
         return static_cast<float>(num_edges)
@@ -2336,6 +2336,7 @@ namespace libsemigroups {
                   * current_word_graph().out_degree());
       }
 
+      // TODO(v4) move into Graph
       [[nodiscard]] float complete(int64_t num_edges) const noexcept {
         return complete(current_word_graph().number_of_nodes_active(),
                         num_edges);
@@ -2367,7 +2368,7 @@ namespace libsemigroups {
       void felsch();
       void hlt();
 
-      // TODO to helpers
+      // TODO(v4) to helpers
       void CR_style();
       void R_over_C_style();
       void Cr_style();
