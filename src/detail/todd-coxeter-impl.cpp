@@ -854,7 +854,7 @@ namespace libsemigroups::detail {
     _word_graph.report_prefix("ToddCoxeter");
   }
 
-  [[nodiscard]] bool ToddCoxeterImpl::any_change() const {
+  [[nodiscard]] bool ToddCoxeterImpl::any_change_last_run() const {
     return _stats.run_nodes_active_at_start
            != current_word_graph().number_of_nodes_active();
   }
@@ -929,7 +929,7 @@ namespace libsemigroups::detail {
           perform_lookahead_impl(do_not_stop_early);
         }
       }
-      if (any_change()) {
+      if (any_change_last_run()) {
         report_progress_from_thread(ye_print_divider);
       }
       if (!is_obviously_infinite(*this)) {

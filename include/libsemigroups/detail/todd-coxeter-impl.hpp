@@ -2323,8 +2323,7 @@ namespace libsemigroups {
 
       void reset_settings_stack();
 
-      // TODO any_change_last_run
-      [[nodiscard]] bool any_change() const;
+      [[nodiscard]] bool any_change_last_run() const;
 
       // We take both values here, although we could compute them, so that in
       // report_progress_from_thread we do not report at one point in time
