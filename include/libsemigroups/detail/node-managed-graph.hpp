@@ -243,7 +243,7 @@ namespace libsemigroups {
       // Not currently used for anything, previously required for immediate
       // standardization
       void swap_nodes_no_checks(node_type c, node_type d);
-    };
+    };  // class NodeManagedGraph
 
     namespace node_managed_graph {
       template <typename BaseGraph>

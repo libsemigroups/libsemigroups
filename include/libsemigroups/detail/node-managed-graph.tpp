@@ -81,7 +81,7 @@ namespace libsemigroups {
 
     template <typename Node>
     NodeManagedGraph<Node>& NodeManagedGraph<Node>::init() {
-      // FIXME this doesn't seem like enough is reset
+      BaseGraph::init();
       _coinc    = decltype(_coinc)();
       _settings = Settings();
       _stats    = Stats();
@@ -351,5 +351,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups

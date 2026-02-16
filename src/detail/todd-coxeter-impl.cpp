@@ -104,11 +104,12 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::Graph& ToddCoxeterImpl::Graph::init() {
     NodeManager<node_type>::clear();
     FelschGraph_::init();
-    // TODO(1) shouldn't add nodes here because then there'll be more than
-    // there should be (i.e. NodeManager and FelschGraph_ will have
-    // different numbers of nodes
-    FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
-    // Must call _forest.init() in case someone already has a reference to it.
+    FelschGraph_::add_nodes(1);
+    LIBSEMIGROUPS_ASSERT(number_of_nodes() == 1);
+    LIBSEMIGROUPS_ASSERT(number_of_nodes_active() == 1);
+    LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::node_capacity() >= 1);
+    // Must call _forest.init() in case someone already has
+    // a reference to it.
     _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
@@ -123,6 +124,9 @@ namespace libsemigroups::detail {
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
+    // Must call _forest.init() in case someone already has
+    // a reference to it.
+    _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
     return *this;
@@ -131,8 +135,9 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::Graph&
   ToddCoxeterImpl::Graph::init(Presentation<word_type> const& p,
                                WordGraph<node_type> const&    wg) {
-    // Don't need to _forest.init() because this will be done at first
-    // call of current_spanning_tree()
+    // Must call _forest.init() in case someone already has
+    // a reference to it.
+    _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
     FelschGraph_::operator=(wg);
@@ -142,8 +147,9 @@ namespace libsemigroups::detail {
 
   ToddCoxeterImpl::Graph&
   ToddCoxeterImpl::Graph::operator=(WordGraph<node_type> const& wg) {
-    // Don't need to _forest.init() because this will be done at first
-    // call of current_spanning_tree()
+    // Must call _forest.init() in case someone already has
+    // a reference to it.
+    _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
     FelschGraph_::operator=(wg);
