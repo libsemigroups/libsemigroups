@@ -1809,8 +1809,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
 
-      //! \brief Perform a lookahead until a nullary predicate returns \c true
-      //! or \ref finished.
+      //! \brief Perform a lookahead until a nullary predicate returns \c true.
       //!
       //! This function runs a lookahead until the nullary predicate \p pred
       //! returns \p true, or until the lookahead is complete whichever happens
@@ -2409,7 +2408,7 @@ namespace libsemigroups {
                           uint64_t     num_active_edges) const;
       void add_lookahead_or_behind_row(ReportCell_& rc) const;
     };  // class ToddCoxeterImpl
-  }     // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_

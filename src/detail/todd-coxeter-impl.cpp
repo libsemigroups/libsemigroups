@@ -781,7 +781,7 @@ namespace libsemigroups::detail {
     run();
     LIBSEMIGROUPS_ASSERT(finished());
     shrink_to_fit();
-    return current_spanning_tree();
+    return current_word_graph().current_spanning_tree();
   }
 
   ////////////////////////////////////////////////////////////////////////
