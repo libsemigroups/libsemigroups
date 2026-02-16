@@ -4554,7 +4554,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -5380,5 +5380,20 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(
         tc.contains(word1.begin(), word1.end(), word1.begin(), word1.end()),
         LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "132",
+                          "ToddCoxeter::init check that spanning tree is reset",
+                          "[quick]") {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 0_w, 11_w);
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 5);
+    auto const& f = tc.current_word_graph().current_spanning_tree();
+    tc.init();
+    REQUIRE(f.number_of_nodes() == 0);
   }
 }  // namespace libsemigroups

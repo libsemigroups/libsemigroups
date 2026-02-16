@@ -310,10 +310,10 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\"" \
                          "ref_kambites=\ref kambites_class_group \"Kambites\"" \
                          "ref_congruence=\ref congruence_class_group \"Congruence\"" \
-                         "deprecated_alias_warning{1}=\warning This alias is deprecated and will be removed from `libsemigroups` in v4, please use `\1` instead."\
+                         "deprecated_alias_warning{1}=\deprecated This alias is deprecated and will be removed from `libsemigroups` in v4, please use `\1` instead."\
                          "deprecated_alias_warning=\warning This alias is deprecated and will be removed from `libsemigroups` in v4."
 
-ALIASES += "deprecated_warning{1}=\warning This \1 is deprecated and will be removed from `libsemigroups` in v4."
+ALIASES += "deprecated_warning{1}=\deprecated This \1 is deprecated and will be removed from `libsemigroups` in v4."
 ALIASES += "hpcombi=<a href=\"https://libsemigroups.github.io/HPCombi/\">HPCombi</a>"
 ALIASES += "libsemigroups=<a href=\"https://libsemigroups.github.io/libsemigroups/\">libsemigroups</a>"
 ALIASES += "code_no_test=\code"

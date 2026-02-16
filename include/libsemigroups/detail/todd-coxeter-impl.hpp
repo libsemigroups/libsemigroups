@@ -1582,6 +1582,12 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       //!
+      //! \warning This function returns a reference to the current spanning
+      //! tree, if \c this is reinitialized then the value of this reference
+      //! will become invalid. I.e. rather than storing a reference to the
+      //! return value of this function in a variable, it's probably better to
+      //! call \ref current_spanning_tree again.
+      //!
       //! \deprecated_warning{function} Please use
       //! `current_word_graph().current_spanning_tree()` instead.
       // TODO(v4) move the doc to Graph
@@ -1841,8 +1847,8 @@ namespace libsemigroups {
       //! the original word, and it also labels a path from the initial node in
       //! the current word graph to a node \c m, then \c m and \c n represent
       //! the same congruence class. Thus we may collapse \c m and \c n (i.e.
-      //! quotient the word graph by the least congruence containing the pair \c
-      //! m and \c n).
+      //! quotient the word graph by the least congruence containing the pair
+      //! \c m and \c n).
       //!
       //! The intended use case for this function is when you have a large word
       //! graph in a partially enumerated \ref_todd_coxeter instance, and you
@@ -2403,7 +2409,7 @@ namespace libsemigroups {
                           uint64_t     num_active_edges) const;
       void add_lookahead_or_behind_row(ReportCell_& rc) const;
     };  // class ToddCoxeterImpl
-  }     // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_

@@ -108,8 +108,8 @@ namespace libsemigroups::detail {
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
-    // Don't need to _forest.init() because this will be done at first call of
-    // current_spanning_tree()
+    // Must call _forest.init() in case someone already has a reference to it.
+    _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
     return *this;
