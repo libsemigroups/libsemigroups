@@ -186,7 +186,7 @@ namespace libsemigroups {
       _tmp_value2.assign(first2, last2);
       // Words aren't checked, the below returns false if they contain
       // letters not in the alphabet.
-      // The Kambites class requires that input to contains to be actual
+      // The Kambites class requires that input to "contains" be actual
       // objects not iterators. This is different from KnuthBendixImpl and
       // ToddCoxeterImpl. One way to resolve this more satisfactorily would be
       // to implement MultiView for non-strings, so that we can just
@@ -196,9 +196,13 @@ namespace libsemigroups {
                        internal_type())
                  ? tril::TRUE
                  : tril::FALSE;
+    } else if (std::equal(first1, last1, first2, last2)) {
+      return tril::TRUE;
+    } else if (presentation().rules.empty()
+               && internal_generating_pairs().empty()) {
+      return tril::FALSE;
     }
-    return std::equal(first1, last1, first2, last2) ? tril::TRUE
-                                                    : tril::unknown;
+    return tril::unknown;
   }
   template <typename Word>
   template <typename Iterator1,
@@ -239,8 +243,8 @@ namespace libsemigroups {
   void Kambites<Word>::normal_form_no_checks(native_word_type&       result,
                                              native_word_type const& w0) const {
     LIBSEMIGROUPS_ASSERT(!finished() || small_overlap_class() >= 4);
-    using words:: operator+;
-    using words:: operator+=;
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type w(w0);
     internal_type v(result);
@@ -647,7 +651,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39

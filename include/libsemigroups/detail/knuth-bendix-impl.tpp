@@ -302,7 +302,9 @@ namespace libsemigroups {
       reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
       if (w1 == w2) {
         return tril::TRUE;
-      } else if (finished()) {
+      } else if (finished()
+                 || (internal_presentation().rules.empty()
+                     && internal_generating_pairs().empty())) {
         return tril::FALSE;
       }
       return tril::unknown;
