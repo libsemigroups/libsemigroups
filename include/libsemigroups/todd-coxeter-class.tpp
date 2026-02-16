@@ -75,6 +75,11 @@ namespace libsemigroups {
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind           knd,
                                              Presentation<Word> const& p,
                                              WordGraph<Node> const&    wg) {
+    if (&wg == &current_word_graph()) {
+      // TODO implement
+      LIBSEMIGROUPS_EXCEPTION("cannot initialise a ToddCoxeter with its own "
+                              "word graph, copy it first!")
+    }
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to<Presentation> throws in the next line if p isn't valid
       ToddCoxeterImpl::init(knd, v4::to<Presentation<word_type>>(p), wg);

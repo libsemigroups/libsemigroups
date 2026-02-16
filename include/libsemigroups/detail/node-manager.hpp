@@ -18,6 +18,10 @@
 
 // This file contains the declaration for a class to manage nodes for
 // NodeManagedGraph instances.
+//
+// TODO combine NodeManager and NodeManagedGraph
+// TODO de-template this, we only ever use uint32_t for these so no point in
+// having it templated.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
@@ -240,6 +244,7 @@ namespace libsemigroups {
       void      add_free_nodes(size_t);
       void      erase_free_nodes();
       node_type new_active_node();
+
       // TODO rename -> swap_nodes_no_checks
       void switch_nodes(node_type const, node_type const);
       // TODO rename -> permute_nodes_no_checks

@@ -5152,29 +5152,34 @@ namespace libsemigroups {
                           "124",
                           "initialisation from incomplete WordGraph",
                           "[todd-coxeter][standard]") {
-    size_t n = 7;
-    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+    auto   rg = ReportGuard(false);
+    size_t n  = 7;
+    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
 
     REQUIRE(p.contains_empty_word());
     ToddCoxeter tc(congruence_kind::twosided, p);
+    todd_coxeter::add_generating_pair(tc, 0_w, {});
+    todd_coxeter::add_generating_pair(tc, 1_w, {});
+    REQUIRE(tc.number_of_classes() == 2);
+
+    tc.init(congruence_kind::twosided, p);
     tc.run_for(std::chrono::milliseconds(100));
 
     tc.shrink_to_fit();
     size_t const expected = tc.current_word_graph().number_of_nodes();
 
-    // TODO(0) this should throw without the shrink_to_fit
     word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
-    tc.init(
-        congruence_kind::twosided, tc.presentation(), tc.current_word_graph());
+
+    tc.init(congruence_kind::twosided,
+            tc.presentation(),
+            WordGraph(tc.current_word_graph()));
     word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
 
     REQUIRE(expected == tc.current_word_graph().number_of_nodes());
 
     todd_coxeter::add_generating_pair(tc, 0_w, {});
     todd_coxeter::add_generating_pair(tc, 1_w, {});
-    // FIXME and there's some sort of off by one error here, the following
-    // throws
-    // REQUIRE(tc.number_of_classes() == 0);
+    REQUIRE(tc.number_of_classes() == 2);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -5302,8 +5307,9 @@ namespace libsemigroups {
                           "128",
                           "code cov. ToddCoxeter::init(kind, present., graph)",
                           "[todd-coxeter][quick]") {
-    size_t n = 7;
-    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+    auto   rg = ReportGuard(false);
+    size_t n  = 7;
+    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
 
     REQUIRE(p.contains_empty_word());
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -5311,18 +5317,17 @@ namespace libsemigroups {
 
     tc.shrink_to_fit();
 
-    // size_t const num_nodes =
-    // tc.current_word_graph().number_of_nodes_active();
-    // size_t const num_edges
-    // = tc.current_word_graph().number_of_edges_active();
+    size_t const num_nodes = tc.current_word_graph().number_of_nodes_active();
+    size_t const num_edges = tc.current_word_graph().number_of_edges_active();
 
     word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
-    tc.init(
-        congruence_kind::twosided, tc.presentation(), tc.current_word_graph());
+    tc.init(congruence_kind::twosided,
+            tc.presentation(),
+            // TODO rm copy here
+            WordGraph(tc.current_word_graph()));
     REQUIRE(!tc.finished());
-    // TODO(1) the following fails but probably shouldn't
-    // REQUIRE(tc.current_word_graph().number_of_edges_active() == num_edges);
-    // REQUIRE(tc.current_word_graph().number_of_nodes_active() == num_nodes);
+    REQUIRE(tc.current_word_graph().number_of_edges_active() == num_edges);
+    REQUIRE(tc.current_word_graph().number_of_nodes_active() == num_nodes);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -5330,8 +5335,9 @@ namespace libsemigroups {
       "129",
       "code cov. ToddCoxeterImpl::current_word_of_no_checks",
       "[quick]") {
-    size_t n = 5;
-    auto   p = presentation::examples::full_transformation_monoid_II74(n);
+    auto   rg = ReportGuard(false);
+    size_t n  = 5;
+    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
 
     REQUIRE(p.contains_empty_word());
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -5344,6 +5350,7 @@ namespace libsemigroups {
                           "130",
                           "code cov. ToddCoxeterImpl::contains/_no_checks",
                           "[quick]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -5367,6 +5374,7 @@ namespace libsemigroups {
                           "131",
                           "code cov. ToddCoxeter::contains/_no_checks",
                           "[quick]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -5386,6 +5394,7 @@ namespace libsemigroups {
                           "132",
                           "ToddCoxeter::init check that spanning tree is reset",
                           "[quick]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
