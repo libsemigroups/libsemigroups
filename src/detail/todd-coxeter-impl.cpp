@@ -1194,8 +1194,8 @@ namespace libsemigroups::detail {
   }
 
   // The next one is the deprecated version to be removed in v4.
-  void ToddCoxeterImpl::perform_lookahead(bool stop_early) {
-    perform_lookahead_impl(stop_early);
+  void ToddCoxeterImpl::perform_lookahead(bool should_stop_early) {
+    perform_lookahead_impl(should_stop_early);
   }
 
   ToddCoxeterImpl&
