@@ -1922,6 +1922,11 @@ namespace libsemigroups {
       //!
       //! \returns A reference to `*this`.
       //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      //!
       //! \warning No checks are performed on the argument \p collapser to
       //! ensure that the word graph produced by using it to collapse nodes is
       //! valid. It is the responsibility of the caller to ensure that this is
@@ -1939,6 +1944,12 @@ namespace libsemigroups {
       //! \param t the time to run for in nanoseconds.
       //!
       //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      //!
       ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1960,6 +1971,10 @@ namespace libsemigroups {
       //!
       //! \returns A reference to `*this`.
       //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
       // TODO add exception spec to every lookbehind doc
       template <typename Func>
       ToddCoxeterImpl&
@@ -1977,6 +1992,11 @@ namespace libsemigroups {
       //! \param pred an rvalue reference to the nullary predicate.
       //!
       //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
       ToddCoxeterImpl& perform_lookbehind_until(std::function<bool()>&& pred);
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1990,10 +2010,41 @@ namespace libsemigroups {
       //! \param pred a const reference to the nullary predicate.
       //!
       //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
       ToddCoxeterImpl&
       perform_lookbehind_until(std::function<bool()> const& pred) {
         return perform_lookbehind_until(std::function<bool()>(pred));
       }
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true.
+      //!
+      //! This function runs a lookbehind using \p collapser until the nullary
+      //! predicate \p pred returns \c true, or until the lookbehind is complete
+      //! whichever happens first.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param pred an rvalue reference to the nullary predicate.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
+                                         Func&&                  collapser);
 
       //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookbehind until a nullary predicate returns \c true.
@@ -2011,11 +2062,11 @@ namespace libsemigroups {
       //! and writes the output into \c d_first.
       //!
       //! \returns A reference to `*this`.
-      template <typename Func>
-      ToddCoxeterImpl&
-      perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
-                                         Func&&                  collapser);
-
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_until_no_checks(std::function<bool()> const& pred,
