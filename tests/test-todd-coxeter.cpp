@@ -4554,7 +4554,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -5337,7 +5337,7 @@ namespace libsemigroups {
     word_graph::throw_if_any_target_out_of_bounds(tc.current_word_graph());
     tc.init(congruence_kind::twosided,
             tc.presentation(),
-            // TODO rm copy here
+            // TODO(later) rm copy here
             WordGraph(tc.current_word_graph()));
     REQUIRE(!tc.finished());
     REQUIRE(tc.current_word_graph().number_of_edges_active() == num_edges);

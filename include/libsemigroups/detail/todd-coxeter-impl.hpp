@@ -1975,7 +1975,6 @@ namespace libsemigroups {
       //! and has any generating pairs (because in this case
       //! \ref perform_lookbehind does nothing but still might take some time to
       //! run).
-      // TODO add exception spec to every lookbehind doc
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,

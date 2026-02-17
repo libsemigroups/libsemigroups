@@ -132,7 +132,7 @@ namespace libsemigroups {
                                            WordGraph<Node> const& wg) {
       // FIXME check that wg is valid, which means what exactly?
       if (&wg == &current_word_graph()) {
-        // TODO implement?
+        // TODO(later) implement?
         LIBSEMIGROUPS_EXCEPTION(
             "cannot initialise a ToddCoxeter instance with its own "
             "word graph, copy it first!")
@@ -160,7 +160,7 @@ namespace libsemigroups {
                                            Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
       if (&wg == &current_word_graph()) {
-        // TODO implement?
+        // TODO(later) implement?
         LIBSEMIGROUPS_EXCEPTION(
             "cannot initialise a ToddCoxeter instance with its own "
             "word graph, copy it first!")
@@ -175,7 +175,7 @@ namespace libsemigroups {
       reset_settings_stack();
       _ticker_running = false;
 
-      // FIXME(1) this doesn't seem to reset _word_graph TODO
+      // TODO this doesn't seem to reset _word_graph
       // properly, in particular, the node managed part isn't reset.
       _word_graph.init(p, wg);  // this does not throw when p is invalid
       copy_settings_into_graph();
