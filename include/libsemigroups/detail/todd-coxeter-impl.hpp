@@ -1812,7 +1812,7 @@ namespace libsemigroups {
       //! \brief Perform a lookahead until a nullary predicate returns \c true.
       //!
       //! This function runs a lookahead until the nullary predicate \p pred
-      //! returns \p true, or until the lookahead is complete whichever happens
+      //! returns \c true, or until the lookahead is complete whichever happens
       //! first.
       //!
       //! \param pred an rvalue reference to the nullary predicate.
@@ -1824,7 +1824,7 @@ namespace libsemigroups {
       //! or \ref finished.
       //!
       //! This function runs a lookahead until the nullary predicate \p pred
-      //! returns \p true, or until the lookahead is complete whichever happens
+      //! returns \c true, or until the lookahead is complete whichever happens
       //! first.
       //!
       //! \param pred a const reference to the nullary predicate.
@@ -1890,9 +1890,10 @@ namespace libsemigroups {
       //!
       //! \returns A reference to `*this`.
       //!
-      //! \throws LibsemigroupsException if \p tc is a one-sided congruence and
-      //! has any generating pairs (because in this case \ref perform_lookbehind
-      //! does nothing but still might take some time to run).
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
       ToddCoxeterImpl& perform_lookbehind();
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1958,6 +1959,8 @@ namespace libsemigroups {
       //! and writes the output into \c d_first.
       //!
       //! \returns A reference to `*this`.
+      //!
+      // TODO add exception spec to every lookbehind doc
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
@@ -1968,7 +1971,7 @@ namespace libsemigroups {
       //! or \ref finished.
       //!
       //! This function runs a lookbehind until the nullary predicate \p pred
-      //! returns \p true, or until the lookbehind is complete whichever happens
+      //! returns \c true, or until the lookbehind is complete whichever happens
       //! first.
       //!
       //! \param pred an rvalue reference to the nullary predicate.
@@ -1981,7 +1984,7 @@ namespace libsemigroups {
       //! or \ref finished.
       //!
       //! This function runs a lookbehind until the nullary predicate \p pred
-      //! returns \p true, or until the lookbehind is complete whichever happens
+      //! returns \c true, or until the lookbehind is complete whichever happens
       //! first.
       //!
       //! \param pred a const reference to the nullary predicate.
@@ -1993,11 +1996,10 @@ namespace libsemigroups {
       }
 
       //! \ingroup todd_coxeter_class_mod_group
-      //! \brief Perform a lookbehind until a nullary predicate returns \c true
-      //! or \ref finished.
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true.
       //!
       //! This function runs a lookbehind using \p collapser until the nullary
-      //! predicate \p pred returns \p true, or until the lookbehind is complete
+      //! predicate \p pred returns \c true, or until the lookbehind is complete
       //! whichever happens first.
       //!
       //! \tparam Func the type of \p collapser.
@@ -2013,6 +2015,14 @@ namespace libsemigroups {
       ToddCoxeterImpl&
       perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
                                          Func&&                  collapser);
+
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_until_no_checks(std::function<bool()> const& pred,
+                                         Func&& collapser) {
+        return perform_lookbehind_until_no_checks(std::function<bool()>(pred),
+                                                  collapser);
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // Word -> index
