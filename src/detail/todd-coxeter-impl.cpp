@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2023-2025 James D. Mitchell
+// Copyright (C) 2023-2026 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,30 +21,38 @@
 
 #include "libsemigroups/detail/todd-coxeter-impl.hpp"
 
-#include <chrono>       // for high_resolution_clock
-#include <iterator>     // for TODO
-#include <string_view>  // for basic_string_view
+#include <algorithm>    // for minmax
+#include <chrono>       // for duration
+#include <iterator>     // for back_ins...
+#include <string>       // for basic_st...
+#include <string_view>  // for basic_st...
 #include <tuple>        // for tie
 
-#include "libsemigroups/constants.hpp"  // for operator==, operator!=
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/detail/string.hpp"
-#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEP...
-#include "libsemigroups/forest.hpp"        // for Forest
-#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
-#include "libsemigroups/order.hpp"         // for Order
-#include "libsemigroups/presentation.hpp"  // for Presentation, length
-#include "libsemigroups/runner.hpp"        // for Runner::run_until
-#include "libsemigroups/types.hpp"         // for word_type, letter_type
-#include "libsemigroups/word-graph.hpp"    // for follow_path_no_...
+#include "libsemigroups/constants.hpp"           // for operator==, operator!=
+#include "libsemigroups/debug.hpp"               // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXCEP...
+#include "libsemigroups/forest.hpp"              // for Forest
+#include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
+#include "libsemigroups/order.hpp"               // for Order
+#include "libsemigroups/presentation.hpp"        // for Presentation, length
+#include "libsemigroups/runner.hpp"              // for Runner::run_until
+#include "libsemigroups/types.hpp"               // for word_type, letter_type
+#include "libsemigroups/word-graph-helpers.hpp"  // for follow_p...
+#include "libsemigroups/word-graph-view.hpp"     // for WordGrap...
+#include "libsemigroups/word-range.hpp"          // for human_re...
 
-#include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceCommon
-#include "libsemigroups/detail/felsch-graph.hpp"       // for DoNotRegisterDefs
-#include "libsemigroups/detail/fmt.hpp"       // for format_decimal, copy_str
-#include "libsemigroups/detail/iterator.hpp"  // for operator+
-#include "libsemigroups/detail/node-manager.hpp"  // for NodeManager
-#include "libsemigroups/detail/report.hpp"        // for report_no_prefix
-#include "libsemigroups/detail/value-guard.hpp"   // for ValueGuard
+#include "libsemigroups/detail/cong-common-class.hpp"        // for Congruen...
+#include "libsemigroups/detail/containers.hpp"               // for apply_ro...
+#include "libsemigroups/detail/felsch-graph.hpp"             // for DoRegist...
+#include "libsemigroups/detail/iterator.hpp"                 // for operator+
+#include "libsemigroups/detail/node-managed-graph.hpp"       // for NodeMana...
+#include "libsemigroups/detail/node-manager.hpp"             // for NodeManager
+#include "libsemigroups/detail/print.hpp"                    // for to_print...
+#include "libsemigroups/detail/report.hpp"                   // for report_d...
+#include "libsemigroups/detail/string.hpp"                   // for group_di...
+#include "libsemigroups/detail/timer.hpp"                    // for string_time
+#include "libsemigroups/detail/value-guard.hpp"              // for ValueGuard
+#include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGrap...
 
 namespace libsemigroups::detail {
 
