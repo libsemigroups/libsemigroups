@@ -130,7 +130,8 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind        knd,
                                            WordGraph<Node> const& wg) {
-      // FIXME check that wg is valid, which means what exactly?
+      // TODO(1) check that wg is valid, which means what exactly in this
+      // context
       if (&wg == &current_word_graph()) {
         // TODO(later) implement?
         LIBSEMIGROUPS_EXCEPTION(
@@ -165,7 +166,9 @@ namespace libsemigroups {
             "cannot initialise a ToddCoxeter instance with its own "
             "word graph, copy it first!")
       }
-      // FIXME check that wg is valid, which means what exactly?
+      // TODO(1) check that wg is valid:
+      // - that the out-degree of wg equals the size of p.alphabet()
+      // - maybe that's all?
       p.throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(p);
 
@@ -175,8 +178,6 @@ namespace libsemigroups {
       reset_settings_stack();
       _ticker_running = false;
 
-      // TODO this doesn't seem to reset _word_graph
-      // properly, in particular, the node managed part isn't reset.
       _word_graph.init(p, wg);  // this does not throw when p is invalid
       copy_settings_into_graph();
       report_prefix("ToddCoxeter");
