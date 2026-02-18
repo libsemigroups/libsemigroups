@@ -1698,7 +1698,7 @@ namespace libsemigroups {
       //! \no_libsemigroups_except
       //!
       //! \deprecated_warning{function} Please use
-      //! `current_word_graph().is_standardized(val)` instead.
+      //! `current_word_graph().is_standardized()` instead.
       [[deprecated]] bool is_standardized() const {
         return current_word_graph().is_standardized();
       }
