@@ -373,7 +373,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    Node NodeManager<Node>::max_active_node() const noexcept {
+    [[nodiscard]] Node NodeManager<Node>::max_active_node() const noexcept {
       auto      current = initial_node();
       node_type max     = 0;
       while (current != first_free_node()) {
