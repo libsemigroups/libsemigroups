@@ -57,7 +57,7 @@ namespace libsemigroups {
           = static_cast<Subclass&>(*this).currently_contains_no_checks(
               first1, last1, first2, last2);
       if (val != tril::unknown) {
-        return (val == tril::TRUE ? true : false);
+        return val == tril::TRUE;
       } else if (finished()) {  // || static_cast<Subclass&>(*this).is_free()) {
         return false;
       }
