@@ -272,7 +272,7 @@ namespace libsemigroups {
 
      public:
       ////////////////////////////////////////////////////////////////////////
-      // ?. ToddCoxeterImpl - nested classes - public
+      // Nested classes - public
       ////////////////////////////////////////////////////////////////////////
 
       class Definitions {
@@ -1798,6 +1798,7 @@ namespace libsemigroups {
       //! \ref perform_lookahead_until instead.
       [[deprecated]] void perform_lookahead(bool stop_early);
 
+      //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookahead for a specified amount of time.
       //!
       //! This function runs a lookahead for approximately the amount of time
@@ -1809,6 +1810,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
 
+      //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookahead until a nullary predicate returns \c true.
       //!
       //! This function runs a lookahead until the nullary predicate \p pred
@@ -1820,6 +1822,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
 
+      //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookahead until a nullary predicate returns \c true
       //! or \ref finished.
       //!
@@ -1949,7 +1952,7 @@ namespace libsemigroups {
       //! and has any generating pairs (because in this case
       //! \ref perform_lookbehind does nothing but still might take some time to
       //! run).
-      //!
+
       ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
 
       //! \ingroup todd_coxeter_class_mod_group

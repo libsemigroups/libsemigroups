@@ -871,7 +871,7 @@ namespace libsemigroups::detail {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 14. ToddCoxeterImpl - member functions - private
+  // ToddCoxeterImpl - member functions - private
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeterImpl::copy_settings_into_graph() {
