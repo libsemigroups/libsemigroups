@@ -58,8 +58,6 @@ namespace libsemigroups {
               first1, last1, first2, last2);
       if (val != tril::unknown) {
         return val == tril::TRUE;
-      } else if (finished()) {  // || static_cast<Subclass&>(*this).is_free()) {
-        return false;
       }
       // TODO(1) the following doesn't work because of some issue in Congruences
       // where the function passed to run_until is invoked by the Congruence in
