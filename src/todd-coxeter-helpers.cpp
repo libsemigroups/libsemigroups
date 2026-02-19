@@ -40,8 +40,6 @@ namespace libsemigroups {
       detail::NodeManagedGraph<detail::ToddCoxeterImpl::Graph::node_type>,
       detail::ToddCoxeterImpl::Definitions>;
 
-  using options = detail::ToddCoxeterImpl::options;
-
   namespace todd_coxeter {
     [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
                                       size_t                    tries,
