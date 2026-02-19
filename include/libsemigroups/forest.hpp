@@ -388,9 +388,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to
     //! \ref Forest::number_of_nodes.
+    //!
+    //! \throws LibsemigroupsException if \c this is not acyclic.
     template <typename Iterator>
     Iterator path_to_root(Iterator d_first, node_type i) const {
       throw_if_node_out_of_bounds(i);
+      throw_if_not_acyclic();
       return path_to_root_no_checks(d_first, i);
     }
 
@@ -431,10 +434,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is greater than or equal to
     //! \ref Forest::number_of_nodes.
     //!
+    //! \throws LibsemigroupsException if \c this is not acyclic.
+    //!
     //! \sa forest::PathsFromRoots
     template <typename Iterator>
     Iterator path_from_root(Iterator d_first, node_type i) const {
       throw_if_node_out_of_bounds(i);
+      throw_if_not_acyclic();
       return path_from_root_no_checks(d_first, i);
     }
 
