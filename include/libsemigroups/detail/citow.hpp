@@ -121,7 +121,10 @@ namespace libsemigroups {
       }
     };  // class citow
 
-    //
+    // The following is a class for wrapping iterators, it does the opposite of
+    // CITOW, for unwrapping word_types (used natively in, say ToddCoxeterImpl,
+    // to whatever type is used by ToddCoxeter<Word>)
+    // CIFRW = const_iterator_from_word
     template <typename Thing, typename Iterator>
     class cifrw {
      protected:
