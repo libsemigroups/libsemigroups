@@ -1049,7 +1049,7 @@ namespace libsemigroups {
           return *_forest;
         }
       };  // class PathsFromToRootsCommonRoots
-    }  // namespace detail
+    }     // namespace detail
 
     //! \brief Range for iterating through paths in a Forest.
     //!
