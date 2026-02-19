@@ -21,7 +21,6 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
-#include "libsemigroups/detail/todd-coxeter-impl.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
@@ -45,8 +44,9 @@
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
 #include "libsemigroups/word-range.hpp"             // for operator"" _w
 
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/detail/tce.hpp"     // for TCE
+#include "libsemigroups/detail/report.hpp"             // for ReportGuard
+#include "libsemigroups/detail/tce.hpp"                // for TCE
+#include "libsemigroups/detail/todd-coxeter-impl.hpp"  // for ToddCoxeterImpl
 
 namespace libsemigroups {
 
@@ -4554,7 +4554,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -5370,8 +5370,8 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
 
     // It might be expected that ToddCoxeter::contains would call
-    // ToddCoxeterImpl::contains, but it does not, and so we test is
-    // directly so that it is still possible to ToddCoxeterImpl
+    // ToddCoxeterImpl::contains, but it does not, and so we test it
+    // directly so that it is still possible to use ToddCoxeterImpl
     // directly if there are perf. issues with using ToddCoxeter.
     word_type word = 010100101_w;
     REQUIRE(static_cast<detail::ToddCoxeterImpl&>(tc).contains(
