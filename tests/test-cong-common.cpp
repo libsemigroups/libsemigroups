@@ -270,7 +270,7 @@ namespace libsemigroups {
     TestType cong(twosided, p);
 
     REQUIRE(congruence_common::currently_contains(cong, 1_w, 2222222222_w)
-            == tril::unknown);
+            == tril::FALSE);
     REQUIRE(!congruence_common::contains(cong, 1_w, 2222222222_w));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
   }

@@ -84,7 +84,7 @@ namespace libsemigroups {
         :  // protected
           _current(0),
           _current_la(0),
-          // private - data
+          // private
           _bckwd(1, 0),
           _first_free_node(UNDEFINED),
           _forwd(1, static_cast<Node>(UNDEFINED)),
@@ -92,6 +92,25 @@ namespace libsemigroups {
           _ident(1, 0),
           _last_active_node(0),
           _stats() {}
+
+    template <typename Node>
+    NodeManager<Node>& NodeManager<Node>::init() {
+      // protected
+      _current    = 0;
+      _current_la = 0;
+      // private
+      _bckwd.clear();
+      _bckwd.resize(1, 0);
+      _first_free_node = UNDEFINED;
+      _forwd.clear();
+      _forwd.resize(1, static_cast<Node>(UNDEFINED));
+      _growth_factor = 2.0;
+      _ident.clear();
+      _ident.resize(1, 0);
+      _last_active_node = 0;
+      _stats.init();
+      return *this;
+    }
 
     template <typename Node>
     NodeManager<Node>::NodeManager(NodeManager const& that)
@@ -174,10 +193,11 @@ namespace libsemigroups {
 
     template <typename Node>
     void NodeManager<Node>::add_free_nodes(size_t n) {
-      // We add n new free nodes at the end of the current list, and link them
-      // in as follows:
+      // We add n new free nodes at the end of the current list, and link
+      // them in as follows:
       //
-      // 0 <-> ... <-> _last_active_node <-> old_capacity <-> new free node 1
+      // 0 <-> ... <-> _last_active_node <-> old_capacity <-> new free node
+      // 1
       //   <-> ... <-> new free node n   <-> old_first_free_node
       //   <-> remaining old free nodes
       size_t const old_capacity        = _forwd.size();
@@ -238,8 +258,8 @@ namespace libsemigroups {
       if (_first_free_node == UNDEFINED) {
         // There are no free nodes to recycle: make new ones.
         // It seems to be marginally faster to make lots like this, than to
-        // just make 1, in some examples, notably ToddCoxeterImpl 040 (Walker
-        // 3).
+        // just make 1, in some examples, notably ToddCoxeterImpl 040
+        // (Walker 3).
         add_free_nodes(growth_factor() * node_capacity());
       }
       add_active_nodes(1);
@@ -350,6 +370,19 @@ namespace libsemigroups {
       _current_la      = _current_la == _first_free_node ? c : _current_la;
       _first_free_node = c;
       _ident[c]        = _id_node;
+    }
+
+    template <typename Node>
+    [[nodiscard]] Node NodeManager<Node>::max_active_node() const noexcept {
+      auto      current = initial_node();
+      node_type max     = 0;
+      while (current != first_free_node()) {
+        if (current > max) {
+          max = current;
+        }
+        current = next_active_node(current);
+      }
+      return max;
     }
 
     // Basically free all nodes

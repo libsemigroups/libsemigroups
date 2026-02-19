@@ -23,6 +23,9 @@
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)? Or possibly reintroduce PrefDefs here
+// * implement number_of_nodes_killed_last_phase or similar, to allow easy
+// running of the previous perform_lookahead(stop_early).
+// * make all the non-core strategies helpers
 
 #ifndef LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
 #define LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
@@ -52,25 +55,6 @@
 #include "node-managed-graph.hpp"       // for NodeMana...
 #include "node-manager.hpp"             // for NodeMana...
 #include "word-graph-with-sources.hpp"  // for WordGrap...
-
-////////////////////////////////////////////////////////////////////////
-// This file is organised as follows:
-// 0.  ToddCoxeterImpl - member types - public
-// 1.  ToddCoxeterImpl - nested classes - private
-// 2.  ToddCoxeterImpl - data members - private
-// 3.  ToddCoxeterImpl - constructors + initializers - public
-// 4.  ToddCoxeterImpl - interface requirements - add_generating_pair
-// 5.  ToddCoxeterImpl - interface requirements - number_of_classes
-// 6.  ToddCoxeterImpl - interface requirements - contains
-// 7.  ToddCoxeterImpl - interface requirements - reduce
-// 8.  ToddCoxeterImpl - settings - public
-// 9.  ToddCoxeterImpl - accessors - public
-// 10. ToddCoxeterImpl - modifiers - public
-// 11. ToddCoxeterImpl - word -> index
-// 12. ToddCoxeterImpl - index -> word
-// 13. Runner          - pure virtual member functions - private
-// 14. ToddCoxeterImpl - member functions - private
-////////////////////////////////////////////////////////////////////////
 
 namespace libsemigroups {
 
@@ -159,13 +143,23 @@ namespace libsemigroups {
 
      public:
       ////////////////////////////////////////////////////////////////////////
-      // 0. ToddCoxeterImpl - member types - public
+      // Member types - public
       ////////////////////////////////////////////////////////////////////////
 
       struct options : public FelschGraphSettings_::options {
-        enum class strategy { hlt, felsch, CR, R_over_C, Cr, Rc };
+        enum class strategy {
+          hlt,
+          felsch,
+          lookahead,
+          lookbehind,
+          CR,
+          R_over_C,
+          Cr,
+          Rc,
+        };
 
         enum class lookahead_extent { full, partial };
+        // TODO(1) enum class lookbehind_extent { full, partial };
 
         enum class lookahead_style { hlt, felsch };
 
@@ -178,7 +172,7 @@ namespace libsemigroups {
         };
       };  // struct options
 
-      enum class state : uint8_t { none, hlt, felsch, lookahead };
+      enum class state : uint8_t { none, hlt, felsch, lookahead, lookbehind };
 
       using node_type        = typename WordGraph<uint32_t>::node_type;
       using index_type       = node_type;
@@ -187,7 +181,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 1. ToddCoxeterImpl - nested classes - private
+      // Nested classes - private
       ////////////////////////////////////////////////////////////////////////
 
       struct Settings;
@@ -205,10 +199,12 @@ namespace libsemigroups {
         std::chrono::nanoseconds all_hlt_phases_time;
         std::chrono::nanoseconds all_felsch_phases_time;
         std::chrono::nanoseconds all_lookahead_phases_time;
+        std::chrono::nanoseconds all_lookbehind_phases_time;
 
         uint64_t all_num_hlt_phases;
         uint64_t all_num_felsch_phases;
         uint64_t all_num_lookahead_phases;
+        uint64_t all_num_lookbehind_phases;
 
         uint64_t   run_index;
         time_point run_start_time;
@@ -219,10 +215,12 @@ namespace libsemigroups {
         std::chrono::nanoseconds run_hlt_phases_time;
         std::chrono::nanoseconds run_felsch_phases_time;
         std::chrono::nanoseconds run_lookahead_phases_time;
+        std::chrono::nanoseconds run_lookbehind_phases_time;
 
         uint64_t run_num_hlt_phases;
         uint64_t run_num_felsch_phases;
         uint64_t run_num_lookahead_phases;
+        uint64_t run_num_lookbehind_phases;
 
         uint64_t   phase_index;
         uint64_t   phase_edges_active_at_start;
@@ -240,7 +238,6 @@ namespace libsemigroups {
         mutable uint64_t report_nodes_active_prev;
 
         // Constructors + initializers
-
         NonAtomicStats() {
           init();
         }
@@ -255,150 +252,27 @@ namespace libsemigroups {
 
       struct Stats : public NonAtomicStats {
         // Data
-        std::atomic_uint64_t lookahead_nodes_killed;
-        std::atomic_uint64_t lookahead_position;
+        std::atomic_uint64_t lookahead_or_behind_nodes_killed;
+        std::atomic_uint64_t lookahead_or_behind_position;
 
         // Constructors + initialisers
-
-        Stats()
-            : NonAtomicStats(),
-              lookahead_nodes_killed(),
-              lookahead_position() {}
-
-        Stats& init() {
-          NonAtomicStats::init();
-          return *this;
-        }
-
-        Stats(Stats const& that)
-            : NonAtomicStats(that),
-              lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-              lookahead_position(that.lookahead_position.load()) {}
-
-        Stats(Stats&& that)
-            : NonAtomicStats(std::move(that)),
-              lookahead_nodes_killed(that.lookahead_nodes_killed.load()),
-              lookahead_position(that.lookahead_position.load()) {}
-
-        Stats& operator=(Stats const& that) {
-          NonAtomicStats::operator=(that);
-          lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-          lookahead_position     = that.lookahead_position.load();
-          return *this;
-        }
-
-        Stats& operator=(Stats&& that) {
-          NonAtomicStats::operator=(std::move(that));
-          lookahead_nodes_killed = that.lookahead_nodes_killed.load();
-          lookahead_position     = that.lookahead_position.load();
-          return *this;
-        }
+        Stats();
+        Stats& init();
+        Stats(Stats const& that);
+        Stats(Stats&& that);
+        Stats& operator=(Stats const& that);
+        Stats& operator=(Stats&& that);
       };
 
-      void stats_run_start() {
-        _stats.run_start_time = std::chrono::high_resolution_clock::now();
-
-        _stats.run_nodes_active_at_start
-            = current_word_graph().number_of_nodes_active();
-        _stats.run_edges_active_at_start
-            = current_word_graph().number_of_edges_active();
-        _stats.run_num_hlt_phases       = 0;
-        _stats.run_num_felsch_phases    = 0;
-        _stats.run_num_lookahead_phases = 0;
-
-        _stats.run_hlt_phases_time       = std::chrono::nanoseconds(0);
-        _stats.run_felsch_phases_time    = std::chrono::nanoseconds(0);
-        _stats.run_lookahead_phases_time = std::chrono::nanoseconds(0);
-
-        _stats.phase_index = 0;
-      }
-
-      void stats_run_stop() {
-        _stats.run_index++;
-
-        _stats.all_runs_time += delta(_stats.run_start_time);
-        _stats.all_num_hlt_phases += _stats.run_num_hlt_phases;
-        _stats.all_num_felsch_phases += _stats.run_num_felsch_phases;
-        _stats.all_num_lookahead_phases += _stats.run_num_lookahead_phases;
-
-        _stats.all_hlt_phases_time += _stats.run_hlt_phases_time;
-        _stats.all_felsch_phases_time += _stats.run_felsch_phases_time;
-        _stats.all_lookahead_phases_time += _stats.run_lookahead_phases_time;
-      }
-
-      void stats_phase_start() {
-        _stats.phase_start_time = std::chrono::high_resolution_clock::now();
-        _stats.report_index     = 0;
-
-        _stats.phase_nodes_active_at_start
-            = current_word_graph().number_of_nodes_active();
-        _stats.phase_nodes_killed_at_start
-            = current_word_graph().number_of_nodes_killed();
-        _stats.phase_nodes_defined_at_start
-            = current_word_graph().number_of_nodes_defined();
-
-        _stats.phase_edges_active_at_start
-            = current_word_graph().number_of_edges_active();
-        _stats.phase_complete_at_start
-            = complete(current_word_graph().number_of_edges_active());
-      }
-
-      void stats_phase_stop() {
-        _stats.phase_index++;
-
-        switch (_state) {
-          case state::none: {
-            break;
-          }
-          case state::hlt: {
-            _stats.run_num_hlt_phases++;
-            _stats.run_hlt_phases_time += delta(_stats.phase_start_time);
-            break;
-          }
-          case state::felsch: {
-            _stats.run_num_felsch_phases++;
-            _stats.run_felsch_phases_time += delta(_stats.phase_start_time);
-            break;
-          }
-          case state::lookahead: {
-            _stats.run_num_lookahead_phases++;
-            _stats.run_lookahead_phases_time += delta(_stats.phase_start_time);
-            break;
-          }
-          default: {
-            break;
-          }
-        }
-      }
-
-      void stats_report_stop() const {
-        _stats.report_index++;
-      }
-
-      // Simple struct that allows the "receivers" value to be set to "val" but
-      // only when the object goes out of scope. Useful in reporting when
-      // we want to do something with an old value, then update the data member
-      // of Stats.
-      class DeferSet {
-        uint64_t& _receiver;
-        uint64_t  _val;
-
-       public:
-        DeferSet(uint64_t& receiver, uint64_t val)
-            : _receiver(receiver), _val(val) {}
-
-        operator uint64_t() {
-          return _val;
-        }
-
-        ~DeferSet() {
-          _receiver = _val;
-        }
-      };
+      void stats_run_start();
+      void stats_run_stop();
+      void stats_phase_start();
+      void stats_phase_stop();
+      void stats_report_stop() const;
 
      public:
       ////////////////////////////////////////////////////////////////////////
-      // ?. ToddCoxeterImpl - nested classes - public
+      // Nested classes - public
       ////////////////////////////////////////////////////////////////////////
 
       class Definitions {
@@ -450,53 +324,157 @@ namespace libsemigroups {
         }
       };  // class Definitions
 
+      // TODO(v4) document ToddCoxeterImpl::Graph, some of ToddCoxeterImpl's
+      // doc for deprecated mem fns already refers to mem fns of Graph, so when
+      // they are removed the doc will have no where to live if it isn't
+      // included here.
       class Graph
           : public FelschGraph<NodeManagedGraph<node_type>, Definitions> {
+        friend class ToddCoxeterImpl;
+
+        ////////////////////////////////////////////////////////////////////////
+        // Private aliases
+        ////////////////////////////////////////////////////////////////////////
         using FelschGraph_
             = FelschGraph<NodeManagedGraph<node_type>, Definitions>;
 
+        ////////////////////////////////////////////////////////////////////////
+        // Private data
+        ////////////////////////////////////////////////////////////////////////
+        mutable Forest _forest;
+        mutable bool   _forest_valid;
+        Order          _standardization_order;
+
        public:
-        Graph()                        = default;
+        ////////////////////////////////////////////////////////////////////////
+        // Constructors and initializers
+        ////////////////////////////////////////////////////////////////////////
+        Graph();
+        Graph& init();
+
         Graph(Graph const&)            = default;
         Graph(Graph&&)                 = default;
         Graph& operator=(Graph const&) = default;
         Graph& operator=(Graph&&)      = default;
 
-        Graph& operator=(WordGraph<node_type> const& wg) {
-          FelschGraph_::operator=(wg);
-          return *this;
-        }
-
-        using FelschGraph_::presentation;
-        using FelschGraph_::target_no_checks;
-
-        Graph& init();
         Graph& init(Presentation<word_type>&& p);
 
         Graph& init(Presentation<word_type> const& p,
-                    WordGraph<node_type> const&    wg) {
-          FelschGraph_::operator=(wg);
-          FelschGraph_::presentation_no_checks(p);
-          return *this;
+                    WordGraph<node_type> const&    wg);
+
+        Graph& operator=(WordGraph<node_type> const& wg);
+
+        ////////////////////////////////////////////////////////////////////////
+        // FelschGraph_ mem fns
+        ////////////////////////////////////////////////////////////////////////
+
+        using FelschGraph_::presentation;
+        using FelschGraph_::standardize;
+        using FelschGraph_::target_no_checks;
+
+        ////////////////////////////////////////////////////////////////////////
+        // Modifiers
+        ////////////////////////////////////////////////////////////////////////
+
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+        // NOTE: Should be private but can't be because used by is_non_trivial
+        // but is_non_trivial is declared in todd-coxeter-helpers.hpp and so
+        // it is not straightforward to make these functions friends,
+        // unfortunately.
+        template <typename Functor = Noop>
+        void process_coincidences(Functor&& func = Noop{});
+
+        // NOTE: Should be private but can't be because used by is_non_trivial
+        // but is_non_trivial is declared in todd-coxeter-helpers.hpp and so
+        // it is not straightforward to make these functions friends,
+        // unfortunately.
+        void process_definitions();
+#endif
+
+        ////////////////////////////////////////////////////////////////////////
+        // Spanning tree
+        ////////////////////////////////////////////////////////////////////////
+
+        // TODO(v4) doc
+        [[nodiscard]] bool is_spanning_tree_valid() const noexcept {
+          return _forest_valid;
         }
 
+        // TODO(v4) doc
+        Forest const& current_spanning_tree() const {
+          return const_cast<Graph&>(*this).current_spanning_tree();
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        // Standardization
+        ////////////////////////////////////////////////////////////////////////
+
+        [[nodiscard]] bool is_standardized(Order val) const {
+          return _standardization_order == val;
+        }
+
+        [[nodiscard]] bool is_standardized() const {
+          return _standardization_order != Order::none;
+        }
+
+        [[nodiscard]] inline Order standardization_order() const noexcept {
+          return _standardization_order;
+        }
+
+       private:
+        // Almost all non-const mem fns are private, since they cannot be used
+        // anyway (we only permit const access to the word_graph)
+
+        ////////////////////////////////////////////////////////////////////////
+        // Spanning tree
+        ////////////////////////////////////////////////////////////////////////
+
+        Forest& current_spanning_tree();
+
+        ////////////////////////////////////////////////////////////////////////
+        // Standardization
+        ////////////////////////////////////////////////////////////////////////
+
+        bool standardize(Order val);
+
+        ////////////////////////////////////////////////////////////////////////
+        // FelschGraph_ mem fns overrides
+        ////////////////////////////////////////////////////////////////////////
+
+        // Functions that are present in the FelschGraph_, but must be
+        // overridden here so that the validation and standardization stuff is
+        // reset.
+
+        Graph& target_no_checks(node_type  s,
+                                label_type a,
+                                node_type  t) noexcept;
+
+        Graph& register_target_no_checks(node_type  s,
+                                         label_type a,
+                                         node_type  t) noexcept;
+
+        ////////////////////////////////////////////////////////////////////////
+        // Other modifiers
+        ////////////////////////////////////////////////////////////////////////
+
         Graph& presentation_no_checks(Presentation<word_type> const& p);
-
-        void process_definitions();
-
-        template <bool RegDefs>
-        void push_definition_hlt(node_type const& c,
-                                 word_type const& u,
-                                 word_type const& v);
 
         template <typename Iterator>
         void make_compatible(ToddCoxeterImpl* tc,
                              node_type&       current,
                              Iterator         first,
                              Iterator         last,
-                             bool             stop_early);
+                             bool             should_stop_early);
 
-       private:
+        template <bool RegDefs>
+        void push_definition_hlt(node_type const& c,
+                                 word_type const& u,
+                                 word_type const& v);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Reporting
+        ////////////////////////////////////////////////////////////////////////
+
         void report_lookahead_stop_early(ToddCoxeterImpl* tc,
                                          size_t           expected,
                                          size_t           killed_last_interval);
@@ -504,13 +482,16 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 2. ToddCoxeterImpl - data members - private
+      // Data members - private
       ////////////////////////////////////////////////////////////////////////
 
+      std::function<void(std::back_insert_iterator<word_type>,
+                         typename word_type::const_iterator,
+                         typename word_type::const_iterator)>
+                                             _lookbehind_collapser;
       bool                                   _finished;
-      Forest                                 _forest;
+      bool                                   _never_run;
       std::vector<std::unique_ptr<Settings>> _settings_stack;
-      Order                                  _standardized;
       // _state must be atomic to avoid the situation where the ticker
       // function is called concurrently with a new lookahead starting
       std::atomic<state> _state;
@@ -522,7 +503,7 @@ namespace libsemigroups {
       using word_graph_type = Graph;
 
       ////////////////////////////////////////////////////////////////////////
-      // 3. ToddCoxeterImpl - constructors + initializers - public
+      // Constructors + initializers - public
       ////////////////////////////////////////////////////////////////////////
 
       ToddCoxeterImpl();
@@ -541,7 +522,7 @@ namespace libsemigroups {
       ToddCoxeterImpl& init(congruence_kind                knd,
                             Presentation<word_type> const& p);
 
-      // TODO(1) a "to" function variant that throws if wg is not valid see
+      // TODO(1) a "make" function variant that throws if wg is not valid see
       // below
       template <typename Node>
       ToddCoxeterImpl(congruence_kind knd, WordGraph<Node> const& wg)
@@ -590,7 +571,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 4. ToddCoxeterImpl - interface requirements - add_generating_pair
+      // Interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1,
@@ -618,7 +599,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 5. ToddCoxeterImpl - interface requirements - number_of_classes
+      // Interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_intf_group
@@ -637,7 +618,7 @@ namespace libsemigroups {
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
-      // 6. ToddCoxeterImpl - interface requirements - contains
+      // Interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1,
@@ -680,7 +661,7 @@ namespace libsemigroups {
                     Iterator4 last2);
 
       ////////////////////////////////////////////////////////////////////////
-      // 7. ToddCoxeterImpl - interface requirements - reduce
+      // Interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
       template <typename OutputIterator,
@@ -720,7 +701,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 8. ToddCoxeterImpl - settings - public
+      // Settings - public
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -873,7 +854,8 @@ namespace libsemigroups {
       //!
       //! \returns A reference to `*this`.
       //!
-      //! \throws LibsemigroupsException if \p val is \c 0.
+      //! \throws LibsemigroupsException if \p val is less than  \ref
+      //! presentation::length of \ref presentation.
       ToddCoxeterImpl& hlt_defs(size_t val);
 
       //! \ingroup todd_coxeter_class_settings_group
@@ -1228,6 +1210,47 @@ namespace libsemigroups {
       [[nodiscard]] options::lookahead_style lookahead_style() const noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
+      //! \brief Set the lookbehind threshold.
+      //!
+      //! During a lookbehind pairs of nodes that represent the same class
+      //! (called *coincidences*) of the congruence are collected and
+      //! periodically collapsed. This happens when at least \p val such pairs
+      //! of nodes have been found. Lookbehinds require a spanning tree for the
+      //! graph to be known, and collapsing coincidences means that this
+      //! spanning tree must be recomputed. As a consequence collapsing
+      //! coincidences may be costly if the value of \ref lookbehind_threshold
+      //! is too low (and this is the reason the setting exists at all).
+      //!
+      //! The default value for this setting is `32'768`.
+      //!
+      //! \param val the threshold beyond which any coincidences discovered
+      //! during lookbehind are collapsed.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa \ref perform_lookbehind for details of lookbehinds.
+      [[nodiscard]] ToddCoxeterImpl& lookbehind_threshold(size_t val) noexcept;
+
+      //! \ingroup todd_coxeter_class_settings_group
+      //!
+      //! \brief Get the current value of the lookbehind threshold.
+      //!
+      //! This function returns the current value of the lookbehind
+      //! threshold. See lookbehind_threshold(size_t) for details of the
+      //! meaning of this setting.
+      //!
+      //! \returns The current value of the lookbehind threshold.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \sa \ref perform_lookbehind for details of lookbehinds.
+      [[nodiscard]] size_t lookbehind_threshold() const noexcept;
+
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Specify the minimum number of classes that may permit any
       //! enumeration early stop.
       //!
@@ -1236,9 +1259,10 @@ namespace libsemigroups {
       //! instance. If the number of active nodes becomes at least the value
       //! of the argument, and the word graph is complete (
       //! \ref word_graph::is_complete returns \c true), then the
-      //! enumeration is terminated. When the given bound is equal to the number
-      //! of classes, this may prevent following the paths labelled by relations
-      //! at many nodes when there is no possibility of finding coincidences.
+      //! enumeration is terminated. When the given bound is equal to the
+      //! number of classes, this may prevent following the paths labelled by
+      //! relations at many nodes when there is no possibility of finding
+      //! coincidences.
       //!
       //! The default value is \ref UNDEFINED.
       //!
@@ -1391,7 +1415,7 @@ namespace libsemigroups {
 #endif
 
       ////////////////////////////////////////////////////////////////////////
-      // 9. ToddCoxeterImpl - accessors - public
+      // Accessors - public
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -1407,22 +1431,26 @@ namespace libsemigroups {
       //! word graph.
       //!
       //! This function returns the number of nodes in the active part of the
-      //! \ref current_word_graph. Recall that \ref current_word_graph can grow
-      //! and shrink drastically during a congruence enumeration. As
-      //! such to avoid unnecessary memory allocations, where possible, the
-      //! nodes in the \ref current_word_graph are "recycled" leading to the
+      //! \ref current_word_graph. Recall that \ref current_word_graph can
+      //! grow and shrink drastically during a congruence enumeration. As such
+      //! to avoid unnecessary memory allocations, where possible, the nodes
+      //! in the \ref current_word_graph are "recycled" leading to the
       //! situation where some of the nodes in \ref current_word_graph are
-      //! "active" and others are "inactive". In other words, the "active" nodes
-      //! correspond to the part of the word graph that actually represents the
-      //! classes of the congruence we are trying to enumerate; and the
-      //! "inactive" nodes are only there to be "recycled" into "active" nodes
-      //! if they are required later on.
+      //! "active" and others are "inactive". In other words, the "active"
+      //! nodes correspond to the part of the word graph that actually
+      //! represents the classes of the congruence we are trying to enumerate;
+      //! and the "inactive" nodes are only there to be "recycled" into
+      //! "active" nodes if they are required later on.
       //!
       //! \exceptions
       //! \noexcept
-      // This isn't really necessary in C++, but in the python bindings we don't
-      // bind ToddCoxeter::Graph and so we expose this here.
-      [[nodiscard]] uint64_t number_of_nodes_active() const noexcept {
+      //!
+      //! \deprecated_warning{function} Use
+      //! `current_word_graph().number_of_nodes_active()` instead.
+      // This isn't really necessary in C++, but in the python bindings we
+      // don't bind ToddCoxeter::Graph and so we expose this here.
+      [[deprecated]] [[nodiscard]] uint64_t
+      number_of_nodes_active() const noexcept {
         return current_word_graph().number_of_nodes_active();
       }
 
@@ -1432,22 +1460,26 @@ namespace libsemigroups {
       //! word graph.
       //!
       //! This function returns the number of edges in the active part of the
-      //! \ref current_word_graph. Recall that \ref current_word_graph can grow
-      //! and shrink drastically during a congruence enumeration. As
-      //! such to avoid unnecessary memory allocations, where possible, the
-      //! nodes in the \ref current_word_graph are "recycled" leading to the
+      //! \ref current_word_graph. Recall that \ref current_word_graph can
+      //! grow and shrink drastically during a congruence enumeration. As such
+      //! to avoid unnecessary memory allocations, where possible, the nodes
+      //! in the \ref current_word_graph are "recycled" leading to the
       //! situation where some of the nodes in \ref current_word_graph are
-      //! "active" and others are "inactive". In other words, the "active" nodes
-      //! correspond to the part of the word graph that actually represents the
-      //! classes of the congruence we are trying to enumerate; and the
-      //! "inactive" nodes are only there to be "recycled" into "active" nodes
-      //! if they are required later on.
+      //! "active" and others are "inactive". In other words, the "active"
+      //! nodes correspond to the part of the word graph that actually
+      //! represents the classes of the congruence we are trying to enumerate;
+      //! and the "inactive" nodes are only there to be "recycled" into
+      //! "active" nodes if they are required later on.
       //!
       //! \exceptions
       //! \noexcept
-      // This isn't really necessary in C++, but in the python bindings we don't
-      // bind ToddCoxeter::Graph and so we expose this here.
-      [[nodiscard]] uint64_t number_of_edges_active() const noexcept {
+      //!
+      //! \deprecated_warning{function} Use
+      //! `current_word_graph().number_of_edges_active()` instead.
+      // This isn't really necessary in C++, but in the python bindings we
+      // don't bind ToddCoxeter::Graph and so we expose this here.
+      [[deprecated]] [[nodiscard]] uint64_t
+      number_of_edges_active() const noexcept {
         return current_word_graph().number_of_edges_active();
       }
 
@@ -1466,6 +1498,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      // TODO(v4) move to the word graph itself
       [[nodiscard]] float complete() const noexcept {
         return complete(current_word_graph().number_of_edges_active());
       }
@@ -1548,25 +1581,25 @@ namespace libsemigroups {
       //!
       //! This function returns a const reference to the current value of a
       //! possible spanning tree (a \ref Forest) for the underlying
-      //! WordGraph (returned by \ref current_word_graph). This spanning
-      //! tree is only populated during calls to \ref standardize and as
-      //! such might contain nothing, or a spanning tree of a previous value
-      //! of \ref current_word_graph. Some care should be used with the
-      //! return value of this function, and it might be better to use the
-      //! function \ref spanning_tree, which has none of these limitation.
+      //! WordGraph (returned by \ref current_word_graph).
       //!
-      //! If \ref finished returns \c true, and \ref standardize(Order) has
-      //! been called prior to a call to this function, then the returned
-      //! \ref Forest will represent a valid spanning tree for the WordGraph
-      //! returned by \ref current_word_graph or \ref word_graph.
-      //!
-      //! \returns A const reference to a possible spanning tree of the
+      //! \returns A const reference to a spanning tree of the
       //! underlying \ref WordGraph.
       //!
       //! \exceptions
-      //! \noexcept
-      Forest const& current_spanning_tree() const noexcept {
-        return _forest;
+      //! \no_libsemigroups_except
+      //!
+      //! \warning This function returns a reference to the current spanning
+      //! tree, if \c this is reinitialized then the value of this reference
+      //! will become invalid. I.e. rather than storing a reference to the
+      //! return value of this function in a variable, it's probably better to
+      //! call \ref current_spanning_tree again.
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().current_spanning_tree()` instead.
+      // TODO(v4) move the doc to Graph
+      [[deprecated]] Forest const& current_spanning_tree() const {
+        return _word_graph.current_spanning_tree();
       }
 
       //! \ingroup todd_coxeter_class_accessors_group
@@ -1579,7 +1612,11 @@ namespace libsemigroups {
       //!
       //! \returns A const reference to a spanning tree of the underlying
       //! \ref WordGraph.
-      Forest const& spanning_tree();
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().current_spanning_tree()` instead.
+      // TODO(v4) move the doc to Graph
+      [[deprecated]] Forest const& spanning_tree();
 
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the current standardization order of the underlying
@@ -1624,8 +1661,11 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      inline Order standardization_order() const noexcept {
-        return _standardized;
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().standardization_order()` instead.
+      [[deprecated]] inline Order standardization_order() const noexcept {
+        return current_word_graph().standardization_order();
       }
 
       //! \ingroup todd_coxeter_class_accessors_group
@@ -1643,7 +1683,12 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      bool is_standardized(Order val) const;
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().is_standardized(val)` instead.
+      [[deprecated]] bool is_standardized(Order val) const {
+        return current_word_graph().is_standardized(val);
+      }
 
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Check if the word graph is currently standardized with
@@ -1658,7 +1703,12 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      bool is_standardized() const;
+      //!
+      //! \deprecated_warning{function} Please use
+      //! `current_word_graph().is_standardized()` instead.
+      [[deprecated]] bool is_standardized() const {
+        return current_word_graph().is_standardized();
+      }
 
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Return the number of large collapses that have occurred.
@@ -1672,12 +1722,14 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
+      // TODO(v4) deprecate and move to Graph, don't expose stats because it
+      // contains a bunch of stuff that's probably not interesting
       [[nodiscard]] uint64_t number_of_large_collapses() const noexcept {
         return _word_graph.stats().num_large_collapses;
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 10. ToddCoxeterImpl - modifiers - public
+      // Modifiers - public
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1697,9 +1749,10 @@ namespace libsemigroups {
       //! \ref current_word_graph, and does not trigger any enumeration. See
       //! \ref standardization_order for a full description. The return value
       //! of this function indicates whether or not the
-      //! \ref current_word_graph was modified. In other words, if this function
-      //! returns \c true, then the word graph was not previously standardized
-      //! with respect to \p val, and was modified by calling this function if
+      //! \ref current_word_graph was modified. In other words, if this
+      //! function returns \c true, then the word graph was not previously
+      //! standardized with respect to \p val, and was modified by calling
+      //! this function if
       //! \c false is returned, then the word graph was previously
       //! standardized with respect to \p val (although this might not have
       //! been known), and was not modified by calling this function.
@@ -1713,7 +1766,24 @@ namespace libsemigroups {
       //!
       //! \sa \ref word_graph::standardize
       //! \sa \ref current_spanning_tree.
-      bool standardize(Order val);
+      // We don't deprecated this (at least for now) since we only provide
+      // const access to _word_graph, and so require modifiers to also be
+      // member functions of ToddCoxeterImpl
+      bool standardize(Order val) {
+        return _word_graph.standardize(val);
+      }
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookahead.
+      //!
+      //! This function can be used to explicitly perform a lookahead. The
+      //! style and extent of this lookahead are controlled by the settings
+      //! \ref lookahead_style and \ref lookahead_extent.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \sa perform_lookahead_for and perform_lookahead_until
+      ToddCoxeterImpl& perform_lookahead();
 
       //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookahead.
@@ -1730,10 +1800,306 @@ namespace libsemigroups {
       //!
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
-      void perform_lookahead(bool stop_early);
+      //!
+      //! \deprecated_warning{function} Use
+      //! \ref perform_lookahead_until instead.
+      [[deprecated]] void perform_lookahead(bool stop_early);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookahead for a specified amount of time.
+      //!
+      //! This function runs a lookahead for approximately the amount of time
+      //! indicated by \p t, or until the lookahead is complete whichever
+      //! happens first.
+      //!
+      //! \param t the time to run for in nanoseconds.
+      //!
+      //! \returns A reference to `*this`.
+      ToddCoxeterImpl& perform_lookahead_for(std::chrono::nanoseconds t);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookahead until a nullary predicate returns \c true.
+      //!
+      //! This function runs a lookahead until the nullary predicate \p pred
+      //! returns \c true, or until the lookahead is complete whichever happens
+      //! first.
+      //!
+      //! \param pred an rvalue reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
+      ToddCoxeterImpl& perform_lookahead_until(std::function<bool()>&& pred);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookahead until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookahead until the nullary predicate \p pred
+      //! returns \c true, or until the lookahead is complete whichever happens
+      //! first.
+      //!
+      //! \param pred a const reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
+      ToddCoxeterImpl&
+      perform_lookahead_until(std::function<bool()> const& pred) {
+        return perform_lookahead_until(std::function<bool()>(pred));
+      }
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind.
+      //!
+      //! This function performs a "lookbehind" which is
+      //! defined as follows. For every node \c n in the so-far computed
+      //! \ref WordGraph (obtained from \ref current_word_graph) we
+      //! use the current word graph to rewrite the current short-lex least path
+      //! from the initial node to \c n. If this rewritten word is not equal to
+      //! the original word, and it also labels a path from the initial node in
+      //! the current word graph to a node \c m, then \c m and \c n represent
+      //! the same congruence class. Thus we may collapse \c m and \c n (i.e.
+      //! quotient the word graph by the least congruence containing the pair
+      //! \c m and \c n).
+      //!
+      //! The intended use case for this function is when you have a large word
+      //! graph in a partially enumerated \ref_todd_coxeter instance, and you
+      //! would like to minimise this word graph as far as possible.
+      //!
+      //! For example, if we take the following monoid presentation of B. H.
+      //! Neumann for the trivial group:
+      //!
+      // This test takes a couple of seconds to run.
+      //! \code_no_test
+      //!
+      //! using options = detail::ToddCoxeterImpl::options;
+      //! Presentation<std::string> p;
+      //! p.alphabet("abcdef");
+      //! p.contains_empty_word(true);
+      //! presentation::add_inverse_rules(p, "defabc");
+      //! presentation::add_rule(p, "bbdeaecbffdbaeeccefbccefb", "");
+      //! presentation::add_rule(p, "ccefbfacddecbffaafdcaafdc", "");
+      //! presentation::add_rule(p, "aafdcdbaeefacddbbdeabbdea", "");
+      //! ToddCoxeter tc(congruence_kind::twosided, p);
+      //!
+      //! tc.lookahead_extent(options::lookahead_extent::full)
+      //!     .lookahead_style(options::lookahead_style::felsch);
+      //!
+      //! tc.run_until([&tc]() -> bool {
+      //!   return tc.current_word_graph().number_of_nodes_active() >=
+      //!   12'000'000;
+      //! });
+      //! tc.perform_lookbehind();
+      //!
+      //! tc.number_of_classes(); // returns 1
+      //! \end_code_no_test
+      //!
+      //! Doing `tc.run()` in the previous example will simply grow the
+      //! underlying word graph until your computer runs out of memory. The
+      //! authors of `libsemigroups` were not able to find any combination of
+      //! the many settings for \ref_todd_coxeter where running \p tc returned
+      //! an answer. We also tried with GAP and ACE but neither of these seemed
+      //! able to return an answer either.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      ToddCoxeterImpl& perform_lookbehind();
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //!
+      //! \brief Perform a lookbehind using a function to decide whether or not
+      //! to collapse nodes.
+      //!
+      //! This function perform a lookbehind using the function \p collapser to
+      //! decide whether or not to collapse nodes. For example, it might be the
+      //! case that \p collapser uses a \ref_knuth_bendix instance to determine
+      //! whether or not nodes in the graph represent the same class of the
+      //! congruence. More specifically, the shortlex least path from the
+      //! initial node to every node \c n is rewritten using \p collapser, and
+      //! if the rewritten word labels a path in the graph to a node \c m, then
+      //! it is assumed that \c m and \c n represent the same class of the
+      //! congruence, and they are marked for collapsing. For example,
+      //! \ref perform_lookbehind calls \ref perform_lookbehind_no_checks where
+      //! \p collapser is the member function
+      //! \ref ToddCoxeter::reduce_no_run_no_checks.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
+      template <typename Func>
+      ToddCoxeterImpl& perform_lookbehind_no_checks(Func&& collapser);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind for a specified amount of time.
+      //!
+      //! This function runs a lookbehind for approximately the amount of time
+      //! indicated by \p t, or until the lookbehind is complete whichever
+      //! happens first.
+      //!
+      //! \param t the time to run for in nanoseconds.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind for a specified amount of time with a
+      //! collapser.
+      //!
+      //! This function runs a lookbehind using \p collapser for approximately
+      //! the amount of time indicated by \p t, or until the lookbehind is
+      //! complete whichever happens first. See
+      //! \ref perform_lookbehind_no_checks(Func&&) for more details.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param t the time to run for in nanoseconds.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
+                                       Func&&                   collapser);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookbehind until the nullary predicate \p pred
+      //! returns \c true, or until the lookbehind is complete whichever happens
+      //! first.
+      //!
+      //! \param pred an rvalue reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      ToddCoxeterImpl& perform_lookbehind_until(std::function<bool()>&& pred);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true
+      //! or \ref finished.
+      //!
+      //! This function runs a lookbehind until the nullary predicate \p pred
+      //! returns \c true, or until the lookbehind is complete whichever happens
+      //! first.
+      //!
+      //! \param pred a const reference to the nullary predicate.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      ToddCoxeterImpl&
+      perform_lookbehind_until(std::function<bool()> const& pred) {
+        return perform_lookbehind_until(std::function<bool()>(pred));
+      }
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true.
+      //!
+      //! This function runs a lookbehind using \p collapser until the nullary
+      //! predicate \p pred returns \c true, or until the lookbehind is complete
+      //! whichever happens first.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param pred an rvalue reference to the nullary predicate.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
+                                         Func&&                  collapser);
+
+      //! \ingroup todd_coxeter_class_mod_group
+      //! \brief Perform a lookbehind until a nullary predicate returns \c true.
+      //!
+      //! This function runs a lookbehind using \p collapser until the nullary
+      //! predicate \p pred returns \c true, or until the lookbehind is complete
+      //! whichever happens first.
+      //!
+      //! \tparam Func the type of \p collapser.
+      //!
+      //! \param pred a const reference to the nullary predicate.
+      //!
+      //! \param collapser a function taking three arguments: \c d_first,
+      //! \c first, and \c last which rewrites the word given by `[first, last)`
+      //! and writes the output into \c d_first.
+      //!
+      //! \returns A reference to `*this`.
+      //!
+      //! \throws LibsemigroupsException if \c this is a one-sided congruence
+      //! and has any generating pairs (because in this case
+      //! \ref perform_lookbehind does nothing but still might take some time to
+      //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
+      template <typename Func>
+      ToddCoxeterImpl&
+      perform_lookbehind_until_no_checks(std::function<bool()> const& pred,
+                                         Func&& collapser) {
+        return perform_lookbehind_until_no_checks(std::function<bool()>(pred),
+                                                  collapser);
+      }
 
       ////////////////////////////////////////////////////////////////////////
-      // 11. ToddCoxeterImpl - word -> index
+      // Word -> index
       ////////////////////////////////////////////////////////////////////////
 
       //! \defgroup todd_coxeter_class_word_index_group Word to class index
@@ -1877,7 +2243,7 @@ namespace libsemigroups {
       //! @}
 
       ////////////////////////////////////////////////////////////////////////
-      // 12. ToddCoxeterImpl - index -> word
+      // Index -> word
       ////////////////////////////////////////////////////////////////////////
 
       //! \defgroup todd_coxeter_class_index_word_group Class index to word
@@ -2023,39 +2389,35 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 13. Runner - pure virtual member functions - private
+      // Runner - pure virtual member functions - private
       ////////////////////////////////////////////////////////////////////////
-
-      void really_run_impl();
-
-      void run_impl() override;
 
       [[nodiscard]] bool finished_impl() const override {
         return _finished;
       }
 
+      void run_impl() override;
+
       ////////////////////////////////////////////////////////////////////////
-      // 14. ToddCoxeterImpl - member functions - private
+      // Misc member functions - private
       ////////////////////////////////////////////////////////////////////////
 
       void copy_settings_into_graph();
 
-      // This function has prefix tc_ because there's already a settings
-      // function in a base class
-      Settings&       tc_settings();
-      Settings const& tc_settings() const;
+      // WARNING: there's already a settings() mem fn in FelschGraphSettings,
+      // beware of confusing the two.
+      Settings&       settings();
+      Settings const& settings() const;
 
       void reset_settings_stack();
 
-      [[nodiscard]] bool any_change() const {
-        return _stats.run_nodes_active_at_start
-               != current_word_graph().number_of_nodes_active();
-      }
+      [[nodiscard]] bool any_change_last_run() const;
 
       // We take both values here, although we could compute them, so that in
-      // report_progress_from_thread we do not report at one point in time with
-      // some value, then within the same function call (if the graph is
+      // report_progress_from_thread we do not report at one point in time
+      // with some value, then within the same function call (if the graph is
       // changing a lot) report with another value
+      // TODO(v4) move into Graph
       [[nodiscard]] float complete(uint64_t num_nodes,
                                    int64_t  num_edges) const noexcept {
         return static_cast<float>(num_edges)
@@ -2063,25 +2425,39 @@ namespace libsemigroups {
                   * current_word_graph().out_degree());
       }
 
+      // TODO(v4) move into Graph
       [[nodiscard]] float complete(int64_t num_edges) const noexcept {
         return complete(current_word_graph().number_of_nodes_active(),
                         num_edges);
       }
 
+      ////////////////////////////////////////////////////////////////////////
+      // Lookahead - private
+      ////////////////////////////////////////////////////////////////////////
+
       [[nodiscard]] bool lookahead_stop_early(
-          bool                                            stop_early,
+          bool                                            should_stop_early,
           std::chrono::high_resolution_clock::time_point& last_stop_early_check,
           uint64_t& killed_at_prev_interval);
 
+      [[nodiscard]] size_t lookahead_update_settings();
+
+      ToddCoxeterImpl& perform_lookahead_impl(bool should_stop_early);
+      ToddCoxeterImpl& perform_lookbehind_impl();
+
+      void hlt_lookahead(bool should_stop_early);
+      void felsch_lookahead(bool should_stop_early);
+
       ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterImpl - main strategies - private
+      // Main strategies - private
       ////////////////////////////////////////////////////////////////////////
 
-      void init_run();
-      void finalise_run();
-
+      void before_run();
+      void after_run();
       void felsch();
       void hlt();
+
+      // TODO(v4) to helpers
       void CR_style();
       void R_over_C_style();
       void Cr_style();
@@ -2091,43 +2467,32 @@ namespace libsemigroups {
       // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
+      using ReportCell_ = ReportCell<6>;
+
       void report_after_phase() const;
-      void report_after_lookahead(size_t old_lookahead_next) const;
       void report_after_run() const;
       void report_before_phase(std::string_view = "") const;
       void report_before_lookahead() const;
       void report_before_run() const;
+      void report_lookahead_settings(size_t old_lookahead_next) const;
       void report_lookahead_stop_early(size_t expected,
                                        size_t killed_last_interval);
       void report_presentation() const;
       void report_progress_from_thread(bool divider) const;
       void report_times() const;
 
-      void add_timing_row(ReportCell<5>& rc) const;
+      void add_timing_row(ReportCell_& rc) const;
 
       // The 2nd (and 3rd) arguments for the next 2 functions are required
       // because we need the values at a fixed point in time (due to
       // multi-threaded reporting).
-      void add_nodes_rows(ReportCell<5>& rc, uint64_t num_active_nodes) const;
-      void add_edges_rows(ReportCell<5>& rc,
-                          uint64_t       num_active_nodes,
-                          uint64_t       num_active_edges) const;
-      void add_lookahead_row(ReportCell<5>& rc) const;
-
-      ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterImpl - lookahead - private
-      ////////////////////////////////////////////////////////////////////////
-
-      static constexpr bool StopEarly      = true;
-      static constexpr bool DoNotStopEarly = false;
-
-      void hlt_lookahead(bool stop_early);
-      void felsch_lookahead(bool stop_early);
+      void add_nodes_rows(ReportCell_& rc, uint64_t num_active_nodes) const;
+      void add_edges_rows(ReportCell_& rc,
+                          uint64_t     num_active_nodes,
+                          uint64_t     num_active_edges) const;
+      void add_lookahead_or_behind_row(ReportCell_& rc) const;
     };  // class ToddCoxeterImpl
-
-  }  // namespace detail
-
+  }     // namespace detail
 }  // namespace libsemigroups
-
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_

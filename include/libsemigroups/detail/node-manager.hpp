@@ -18,6 +18,10 @@
 
 // This file contains the declaration for a class to manage nodes for
 // NodeManagedGraph instances.
+//
+// TODO(later) combine NodeManager and NodeManagedGraph
+// TODO(later) de-template this, we only ever use uint32_t for these so no point
+// in having it templated.
 
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
@@ -71,8 +75,16 @@ namespace libsemigroups {
         std::atomic_uint64_t num_nodes_defined;
         std::atomic_uint64_t num_nodes_killed;
 
-        Stats()
-            : num_nodes_active(1), num_nodes_defined(1), num_nodes_killed(0) {}
+        Stats() : num_nodes_active(), num_nodes_defined(), num_nodes_killed() {
+          init();
+        }
+
+        Stats& init() {
+          num_nodes_active  = 1;
+          num_nodes_defined = 1;
+          num_nodes_killed  = 0;
+          return *this;
+        }
 
         Stats(Stats const& that)
             : num_nodes_active(that.num_nodes_active.load()),
@@ -105,6 +117,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       NodeManager();
+      NodeManager& init();
 
       NodeManager(NodeManager const& that);
       NodeManager(NodeManager&&) = default;
@@ -231,6 +244,7 @@ namespace libsemigroups {
       void      add_free_nodes(size_t);
       void      erase_free_nodes();
       node_type new_active_node();
+
       // TODO rename -> swap_nodes_no_checks
       void switch_nodes(node_type const, node_type const);
       // TODO rename -> permute_nodes_no_checks
@@ -242,13 +256,11 @@ namespace libsemigroups {
       // not noexcept since std::vector::operator[] isn't.
       void free_node(node_type const);
 
-      ////////////////////////////////////////////////////////////////////////
-      // NodeManager - data - protected
-      ////////////////////////////////////////////////////////////////////////
-
       constexpr node_type initial_node() const noexcept {
         return _id_node;
       }
+
+      [[nodiscard]] node_type max_active_node() const noexcept;
 
      private:
       void compact(size_t N);

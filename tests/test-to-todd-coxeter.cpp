@@ -54,7 +54,8 @@ namespace libsemigroups {
     REQUIRE(!tc.finished());
     tc.shrink_to_fit();  // does nothing
     REQUIRE(!tc.finished());
-    tc.standardize(Order::none);  // does nothing
+    REQUIRE_EXCEPTION_MSG(tc.standardize(Order::none),
+                          "the argument (Order) must not be Order::none");
     REQUIRE(!tc.finished());
 
     REQUIRE(tc.number_of_classes() == 21);
@@ -101,7 +102,8 @@ namespace libsemigroups {
     REQUIRE(!tc.finished());
     tc.shrink_to_fit();  // does nothing
     REQUIRE(!tc.finished());
-    tc.standardize(Order::none);  // does nothing
+    REQUIRE_EXCEPTION_MSG(tc.standardize(Order::none),
+                          "the argument (Order) must not be Order::none");
     REQUIRE(!tc.finished());
 
     REQUIRE(tc.number_of_classes() == 21);

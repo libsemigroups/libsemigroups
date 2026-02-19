@@ -530,17 +530,7 @@ namespace libsemigroups {
     //! not compatible. If the first item is `tc.kind()` and the second is the
     //! parameter \p knd, then compatible arguments are (one-sided,
     //! one-sided), (two-sided, one-sided), and (two-sided, two-sided).
-    ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc) {
-      ToddCoxeterImpl::init(knd, tc);
-      _presentation = tc.presentation();
-      _presentation.rules.insert(_presentation.rules.end(),
-                                 tc.generating_pairs().cbegin(),
-                                 tc.generating_pairs().cend());
-      // Clear generating pairs last, in case &tc == this!!!
-      _generating_pairs.clear();
-      // TODO(1) check KnuthBendix et al
-      return *this;
-    }
+    ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
     //! \ingroup todd_coxeter_class_init_group
     //! \brief Construct from \ref congruence_kind and \ref WordGraph.
@@ -1273,10 +1263,37 @@ namespace libsemigroups {
     }
 
     //! @}
+
+    ////////////////////////////////////////////////////////////////////////
+    // Lookbehind
+    ////////////////////////////////////////////////////////////////////////
+
+    // NOTE: the following functions must also appear here because the
+    // "collapser" needs to be wrapped for compatibility with ToddCoxeterImpl
+
+    template <typename Func>
+    ToddCoxeter& perform_lookbehind_no_checks(Func&& collapser);
+
+    template <typename Func>
+    ToddCoxeter& perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
+                                                  Func&& collapser);
+
+    template <typename Func>
+    ToddCoxeter&
+    perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
+                                       Func&&                  collapser);
+
+    template <typename Func>
+    ToddCoxeter&
+    perform_lookbehind_until_no_checks(std::function<bool()> const& pred,
+                                       Func&&                       collapser) {
+      return perform_lookbehind_until_no_checks(std::function<bool()>(pred),
+                                                collapser);
+    }
   };  // class ToddCoxeter
 
   //! \ingroup todd_coxeter_class_group
-  //
+  //!
   //! \brief Deduction guide.
   //!
   //! Defined in `todd-coxeter-class.hpp`.

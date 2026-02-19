@@ -47,6 +47,20 @@ namespace libsemigroups {
   }
 
   template <typename Word>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind    knd,
+                                             ToddCoxeter const& tc) {
+    ToddCoxeterImpl::init(knd, tc);
+    _presentation = tc.presentation();
+    _presentation.rules.insert(_presentation.rules.end(),
+                               tc.generating_pairs().cbegin(),
+                               tc.generating_pairs().cend());
+    // Clear generating pairs last, in case &tc == this!!!
+    _generating_pairs.clear();
+    // TODO(1) check KnuthBendix et al
+    return *this;
+  }
+
+  template <typename Word>
   template <typename Node>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
@@ -61,6 +75,11 @@ namespace libsemigroups {
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind           knd,
                                              Presentation<Word> const& p,
                                              WordGraph<Node> const&    wg) {
+    if (&wg == &current_word_graph()) {
+      // TODO(later) implement?
+      LIBSEMIGROUPS_EXCEPTION("cannot initialise a ToddCoxeter with its own "
+                              "word graph, copy it first!")
+    }
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to<Presentation> throws in the next line if p isn't valid
       ToddCoxeterImpl::init(knd, v4::to<Presentation<word_type>>(p), wg);
@@ -105,15 +124,72 @@ namespace libsemigroups {
                                    Iterator2 last1,
                                    Iterator3 first2,
                                    Iterator4 last2) {
-    // TODO(1) remove when is_free is implemented
-    if (presentation().rules.empty() && generating_pairs().empty()
-        && current_word_graph().number_of_nodes_active() == 1) {
-      return std::equal(first1, last1, first2, last2);
-    }
     // Call detail::CongruenceCommon version so that we perform bound checks in
     // ToddCoxeter and not ToddCoxeterImpl
     return detail::CongruenceCommon::contains<ToddCoxeter>(
         first1, last1, first2, last2);
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Lookbehind
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Word>
+  template <typename Func>
+  ToddCoxeter<Word>&
+  ToddCoxeter<Word>::perform_lookbehind_no_checks(Func&& collapser) {
+    static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                      std::back_insert_iterator<word_type>,
+                                      word_type::const_iterator,
+                                      word_type::const_iterator>);
+
+    auto collapser_wrap
+        = [&collapser, this](auto d_first, auto first, auto last) {
+            return collapser(detail::ifrw(this, d_first),
+                             detail::cifrw(this, first),
+                             detail::cifrw(this, last));
+          };
+    ToddCoxeterImpl::perform_lookbehind_no_checks(collapser_wrap);
+    return *this;
+  }
+
+  template <typename Word>
+  template <typename Func>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::perform_lookbehind_for_no_checks(
+      std::chrono::nanoseconds t,
+      Func&&                   collapser) {
+    static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                      std::back_insert_iterator<word_type>,
+                                      word_type::const_iterator,
+                                      word_type::const_iterator>);
+    auto collapser_wrap
+        = [&collapser, this](auto d_first, auto first, auto last) {
+            return collapser(detail::ifrw(this, d_first),
+                             detail::cifrw(this, first),
+                             detail::cifrw(this, last));
+          };
+    ToddCoxeterImpl::perform_lookbehind_for_no_checks(t, collapser_wrap);
+    return *this;
+  }
+
+  template <typename Word>
+  template <typename Func>
+  ToddCoxeter<Word>& ToddCoxeter<Word>::perform_lookbehind_until_no_checks(
+      std::function<bool()>&& pred,
+      Func&&                  collapser) {
+    static_assert(std::is_invocable_v<std::decay_t<Func>,
+                                      std::back_insert_iterator<word_type>,
+                                      word_type::const_iterator,
+                                      word_type::const_iterator>);
+    auto collapser_wrap
+        = [&collapser, this](auto d_first, auto first, auto last) {
+            return collapser(detail::ifrw(this, d_first),
+                             detail::cifrw(this, first),
+                             detail::cifrw(this, last));
+          };
+    ToddCoxeterImpl::perform_lookbehind_until_no_checks(std::move(pred),
+                                                        collapser_wrap);
+    return *this;
   }
 
   template <typename Word>

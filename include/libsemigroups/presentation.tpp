@@ -230,6 +230,9 @@ namespace libsemigroups {
   Presentation<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
                                                       Iterator2 last) const {
     if (!_contains_empty_word && first == last) {
+      // TODO(later) this exception message is misleading,
+      // should be something like "the arguments (iterators) define the empty
+      // word, expected a non-empty word"
       LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty, did you mean to "
                               "call contains_empty_word(true) first?");
     }

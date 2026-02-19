@@ -26,10 +26,6 @@
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGED_GRAPH_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGED_GRAPH_HPP_
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint32_t
-#include <vector>   // for vector
-
 #include <cstddef>      // for size_t
 #include <cstdint>      // for uint32_t
 #include <stack>        // for stack
@@ -66,9 +62,9 @@ namespace libsemigroups {
       using label_type = typename BaseGraph::label_type;
 
       static_assert(
-          std::is_base_of<WordGraphWithSources<node_type>, BaseGraph>::value,
+          std::is_base_of_v<WordGraphWithSources<node_type>, BaseGraph>,
           "the template parameter BaseGraph must be derived from "
-          "WordGraphWithSources<node_type>");
+          "WordGraphWithSources");
 
      protected:
       ////////////////////////////////////////////////////////////////////////
@@ -198,6 +194,10 @@ namespace libsemigroups {
       // 100% not thread safe
       [[nodiscard]] uint64_t count_number_of_edges_active() const noexcept;
 
+      [[nodiscard]] size_t number_of_coincidences() const noexcept {
+        return _coinc.size();
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // Modifiers
       ////////////////////////////////////////////////////////////////////////
@@ -214,11 +214,16 @@ namespace libsemigroups {
         _coinc.emplace(x, y);
       }
 
+      // Returns true if any changes were made to the graph and false o/w.
       template <typename Functor = Noop>
-      void process_coincidences(Functor&& = Noop{});
+      bool process_coincidences(Functor&& = Noop{});
 
       void standardize(std::vector<node_type> const& p,
                        std::vector<node_type> const& q) {
+        auto& c = lookahead_cursor();
+        if (c < q.size()) {
+          c = q[c];
+        }
         BaseGraph::permute_nodes_no_checks(
             p, q, NodeManager<node_type>::number_of_nodes_active());
         NodeManager<node_type>::compact();
@@ -234,7 +239,7 @@ namespace libsemigroups {
       // Not currently used for anything, previously required for immediate
       // standardization
       void swap_nodes_no_checks(node_type c, node_type d);
-    };
+    };  // class NodeManagedGraph
 
     namespace node_managed_graph {
       template <typename BaseGraph>

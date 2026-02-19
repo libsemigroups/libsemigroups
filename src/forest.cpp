@@ -234,15 +234,11 @@ namespace libsemigroups {
     }
 
     void path_to_root(Forest const& f, word_type& w, Forest::node_type i) {
-      f.throw_if_not_acyclic();
-      f.throw_if_node_out_of_bounds(i);
-      path_to_root_no_checks(f, w, i);
+      f.path_to_root(std::back_inserter(w), i);
     }
 
     void path_from_root(Forest const& f, word_type& w, Forest::node_type i) {
-      f.throw_if_not_acyclic();
-      f.throw_if_node_out_of_bounds(i);
-      path_from_root_no_checks(f, w, i);
+      f.path_from_root(std::back_inserter(w), i);
     }
 
     [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i) {

@@ -671,6 +671,9 @@ namespace libsemigroups {
           = ConstIteratorStateful<ConstColumnIteratorTraits>;
 
       iterator begin() noexcept {
+        if (number_of_cols() == 0) {
+          return end();
+        }
         return iterator(this, _vec.begin());
       }
 
@@ -679,6 +682,9 @@ namespace libsemigroups {
       }
 
       const_iterator begin() const noexcept {
+        if (number_of_cols() == 0) {
+          return end();
+        }
         return const_iterator(this, _vec.begin());
       }
 
@@ -687,6 +693,9 @@ namespace libsemigroups {
       }
 
       const_iterator cbegin() const noexcept {
+        if (number_of_cols() == 0) {
+          return cend();
+        }
         return const_iterator(this, _vec.cbegin());
       }
 

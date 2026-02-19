@@ -367,10 +367,35 @@ namespace libsemigroups {
     //! into \p d_first.
     //!
     //! \warning No checks are performed on the arguments of this function.
-    //
+    //!
     //! \sa forest::PathsToRoots
     template <typename Iterator>
     Iterator path_to_root_no_checks(Iterator d_first, node_type i) const;
+
+    //! \brief Store the labels of the edges on the path to a root node from
+    //! a given node.
+    //!
+    //! This function writes labels of the edges on the path to a root node
+    //! from node \p i to the iterator \p d_first.
+    //!
+    //! \tparam Iterator The type of the parameter, and the return type.
+    //!
+    //! \param d_first the output iterator.
+    //! \param i the node.
+    //!
+    //! \returns An \c Iterator pointing one beyond the last letter inserted
+    //! into \p d_first.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    //!
+    //! \throws LibsemigroupsException if \c this is not acyclic.
+    template <typename Iterator>
+    Iterator path_to_root(Iterator d_first, node_type i) const {
+      throw_if_node_out_of_bounds(i);
+      throw_if_not_acyclic();
+      return path_to_root_no_checks(d_first, i);
+    }
 
     //! \brief Store the labels of the edges on the path from a root node to
     //! a given node.
@@ -391,6 +416,33 @@ namespace libsemigroups {
     //! \sa forest::PathsFromRoots
     template <typename Iterator>
     Iterator path_from_root_no_checks(Iterator d_first, node_type i) const;
+
+    //! \brief Store the labels of the edges on the path from a root node to
+    //! a given node.
+    //!
+    //! This function writes labels of the edges on the path from a root node
+    //! to node \p i to the iterator \p d_first.
+    //!
+    //! \tparam Iterator The type of the parameter, and the return type.
+    //!
+    //! \param d_first the output iterator.
+    //! \param i the node.
+    //!
+    //! \returns An \c Iterator pointing one beyond the last letter inserted
+    //! into \p d_first.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! \ref Forest::number_of_nodes.
+    //!
+    //! \throws LibsemigroupsException if \c this is not acyclic.
+    //!
+    //! \sa forest::PathsFromRoots
+    template <typename Iterator>
+    Iterator path_from_root(Iterator d_first, node_type i) const {
+      throw_if_node_out_of_bounds(i);
+      throw_if_not_acyclic();
+      return path_from_root_no_checks(d_first, i);
+    }
 
     //! \brief Throw an exception if a node is out of bound.
     //!
