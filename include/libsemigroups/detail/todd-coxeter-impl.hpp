@@ -377,11 +377,17 @@ namespace libsemigroups {
         ////////////////////////////////////////////////////////////////////////
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-        // Should be private but can't be because used by is_non_trivial
+        // NOTE: Should be private but can't be because used by is_non_trivial
+        // but is_non_trivial is declared in todd-coxeter-helpers.hpp and so
+        // it is not straightforward to make these functions friends,
+        // unfortunately.
         template <typename Functor = Noop>
         void process_coincidences(Functor&& func = Noop{});
 
-        // Should be private but can't be because used by is_non_trivial
+        // NOTE: Should be private but can't be because used by is_non_trivial
+        // but is_non_trivial is declared in todd-coxeter-helpers.hpp and so
+        // it is not straightforward to make these functions friends,
+        // unfortunately.
         void process_definitions();
 #endif
 
@@ -2471,7 +2477,7 @@ namespace libsemigroups {
                           uint64_t     num_active_edges) const;
       void add_lookahead_or_behind_row(ReportCell_& rc) const;
     };  // class ToddCoxeterImpl
-  }     // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 #include "todd-coxeter-impl.tpp"
 #endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
