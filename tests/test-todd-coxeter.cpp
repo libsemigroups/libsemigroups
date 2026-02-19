@@ -17,7 +17,7 @@
 // The purpose of this file is to test the ToddCoxeter class.
 
 #include <chrono>    // for chrono::seconds
-#include <cstdlib>   // for ?
+#include <cstdlib>   // for size_t
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
@@ -37,7 +37,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"        // for make
 #include "libsemigroups/to-knuth-bendix.hpp"        // for to_knuth_bendix
 #include "libsemigroups/to-presentation.hpp"        // for Presentation
-#include "libsemigroups/to-todd-coxeter.hpp"        // for ??
+#include "libsemigroups/to-todd-coxeter.hpp"        // for to
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
