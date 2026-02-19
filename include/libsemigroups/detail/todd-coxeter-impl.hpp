@@ -1958,7 +1958,6 @@ namespace libsemigroups {
       //! and has any generating pairs (because in this case
       //! \ref perform_lookbehind does nothing but still might take some time to
       //! run).
-
       ToddCoxeterImpl& perform_lookbehind_for(std::chrono::nanoseconds t);
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1984,6 +1983,11 @@ namespace libsemigroups {
       //! and has any generating pairs (because in this case
       //! \ref perform_lookbehind does nothing but still might take some time to
       //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_for_no_checks(std::chrono::nanoseconds t,
@@ -2049,6 +2053,11 @@ namespace libsemigroups {
       //! and has any generating pairs (because in this case
       //! \ref perform_lookbehind does nothing but still might take some time to
       //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_until_no_checks(std::function<bool()>&& pred,
@@ -2075,6 +2084,11 @@ namespace libsemigroups {
       //! and has any generating pairs (because in this case
       //! \ref perform_lookbehind does nothing but still might take some time to
       //! run).
+      //!
+      //! \warning No checks are performed on the argument \p collapser to
+      //! ensure that the word graph produced by using it to collapse nodes is
+      //! valid. It is the responsibility of the caller to ensure that this is
+      //! valid.
       template <typename Func>
       ToddCoxeterImpl&
       perform_lookbehind_until_no_checks(std::function<bool()> const& pred,
