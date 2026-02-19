@@ -831,7 +831,6 @@ namespace libsemigroups {
     //! Neumann for the trivial group:
     //!
     //! \code_no_test
-    //! \\ TODO : Long running test. Check if meant to be this slow?
     //!
     //! using options = detail::ToddCoxeterImpl::options;
     //! Presentation<std::string> p;
@@ -857,7 +856,7 @@ namespace libsemigroups {
     //! \end_code_no_test
     //!
     //! Running \p tc will simply grow the underlying word graph until
-    //! your computer runs out of memory. The authors of ``libsemigroups`` were
+    //! your computer runs out of memory. The authors of `libsemigroups` were
     //! not able to find any combination of the many settings for
     //! \ref_todd_coxeter where running \p tc returned an answer. We also tried
     //! with GAP and ACE but neither of these seemed able to return an answer
@@ -868,6 +867,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p tc is a one-sided congruence and
     //! has any generating pairs (because in this case \ref perform_lookbehind
     //! does nothing but still might take some time to run).
+    //!
+    //! \deprecated_warning{function}. Use `tc.perform_lookbehind()` instead.
     [[deprecated]] void perform_lookbehind(detail::ToddCoxeterImpl& tc);
 
     ////////////////////////////////////////////////////////////////////////
