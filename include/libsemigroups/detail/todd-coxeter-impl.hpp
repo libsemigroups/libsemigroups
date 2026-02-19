@@ -854,7 +854,8 @@ namespace libsemigroups {
       //!
       //! \returns A reference to `*this`.
       //!
-      //! \throws LibsemigroupsException if \p val is \c 0.
+      //! \throws LibsemigroupsException if \p val is less than  \ref
+      //! presentation::length of \ref presentation.
       ToddCoxeterImpl& hlt_defs(size_t val);
 
       //! \ingroup todd_coxeter_class_settings_group

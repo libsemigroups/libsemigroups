@@ -144,8 +144,6 @@ namespace libsemigroups::detail {
   ToddCoxeterImpl::Graph&
   ToddCoxeterImpl::Graph::init(Presentation<word_type> const& p,
                                WordGraph<node_type> const&    wg) {
-    // Must call _forest.init() in case someone already has
-    // a reference to it.
     FelschGraph_::operator=(wg);
     FelschGraph_::presentation_no_checks(p);
 
@@ -154,6 +152,8 @@ namespace libsemigroups::detail {
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::node_capacity()
                          >= wg.number_of_nodes());
 
+    // Must call _forest.init() in case someone already has
+    // a reference to it.
     _forest.init();
     _forest_valid          = false;
     _standardization_order = Order::none;
