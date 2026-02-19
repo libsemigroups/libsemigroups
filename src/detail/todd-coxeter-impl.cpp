@@ -1341,7 +1341,9 @@ namespace libsemigroups::detail {
       w1.clear();
       w2.clear();
       // Repeatedly call current_spanning_tree() to ensure it is up-to-date
-      // after any calls to process_coincidences below.
+      // after any calls to process_coincidences below. Note that no work is
+      // done by current_spanning_tree() if not changes have been made to the
+      // graph.
       current_word_graph().current_spanning_tree().path_from_root_no_checks(
           std::back_inserter(w1), current);
       _lookbehind_collapser(std::back_inserter(w2), w1.begin(), w1.end());
