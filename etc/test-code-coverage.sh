@@ -97,9 +97,9 @@ fi
 
 bold "Running lcov and genhtml . . .";
 printf "\033[2m";
-lcov  --ignore-errors inconsistent,unused,unsupported,format --directory . --capture --output-file "coverage.info.tmp" --test-name "libsemigroups_3_0_0" --no-checksum --no-external --compat-libtool --gcov-tool "gcov" | grep -v "ignoring data for external file" | grep -v "Dropping 'external' file"
-lcov  --ignore-errors inconsistent,unused,unsupported,format --directory . --remove "coverage.info.tmp" "/tmp/*" "/Applications/*" --output-file "coverage.info"
-LANG=C genhtml  --ignore-errors inconsistent,unused,unsupported,category,format --prefix . --output-directory "coverage" --title "libsemigroups Code Coverage" --legend --show-details "coverage.info.tmp"
+lcov  --directory . --capture --output-file "coverage.info.tmp" --test-name "libsemigroups_1_0_0" --no-checksum --no-external --compat-libtool --gcov-tool "gcov" | grep -v "ignoring data for external file"
+lcov  --ignore-errors unused --directory . --remove "coverage.info.tmp" "/tmp/*" "/Applications/*" --output-file "coverage.info"
+LANG=C genhtml  --prefix . --output-directory "coverage" --title "libsemigroups Code Coverage" --legend --show-details "coverage.info.tmp"
 rm -f coverage.info.tmp
 printf "\033[0m";
 
@@ -109,13 +109,9 @@ fnam=$1
 fnam=${fnam/test_/}
 fnam=${fnam//_/-}
 dir=$(pwd)
-
 hpp=coverage${dir}/include/libsemigroups/${fnam}.hpp.gcov.html
 tpp=coverage${dir}/include/libsemigroups/${fnam}.tpp.gcov.html
 cpp=coverage${dir}/src/${fnam}.cpp.gcov.html
-printf "$hpp"
-printf "$tpp"
-printf "$cpp"
 if [[ -f $hpp ]]; then
   echo "See: $hpp"
 fi;
