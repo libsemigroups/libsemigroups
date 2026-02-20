@@ -1,5 +1,13 @@
 # Changelog - version 3
 
+## v3.5.0 (released 23/02/2026)
+
+This is a minor release with a number of minor improvements, and a substantial
+change to `ToddCoxeter` (the helper function `perform_lookbehind`) has been
+moved into `ToddCoxeter` and a number of variants have been added for running
+lookaheads and behinds for an amount of time or until a nullary predicate
+returns `true`.
+
 ## v3.4.0 (released 17/01/2026)
 
 This is a minor release with a couple of improvements:

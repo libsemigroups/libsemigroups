@@ -622,6 +622,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref one
     // TODO(later) noexcept should depend on whether or not the constructor of
+    // TODO rename one_no_checks
     template <typename T>
     [[nodiscard]] constexpr T one(size_t dim = 8) noexcept {
       LIBSEMIGROUPS_ASSERT(dim <= 8);
