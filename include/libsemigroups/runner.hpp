@@ -560,7 +560,7 @@ namespace libsemigroups {
                             : current_state() == state::timed_out);
     }
 
-    //! \brief Run until a nullary predicate returns \p true or \ref finished.
+    //! \brief Run until a nullary predicate returns \c true or \ref finished.
     //!
     //! \tparam Func the type of the argument.
     //! \param func a callable type that will exist for at
@@ -569,7 +569,7 @@ namespace libsemigroups {
     template <typename Func>
     void run_until(Func&& func);
 
-    //! \brief Run until a nullary predicate returns \p true or \ref finished.
+    //! \brief Run until a nullary predicate returns \c true or \ref finished.
     //!
     //! \param func a function pointer.
     void run_until(bool (*func)()) {
@@ -580,7 +580,6 @@ namespace libsemigroups {
     //!
     //! Reports whether run() was stopped because it is finished(),
     //! timed_out(), or dead().
-    //!
     // not noexcept because it calls timed_out which is not noexcept
     void report_why_we_stopped() const;
 
