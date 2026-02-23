@@ -60,43 +60,15 @@ jobs:
         run: make test_all.exe -j4
       - name: Run the quick tests (ex:no-cygwin)
         run: ./test_all "[quick][exclude:no-cygwin]"
-  # TODO: Turn the macOS jobs back into a matrix once the following is resolved:
-  # https://github.com/Chocobo1/setup-ccache-action/issues/25
-  macos-arm:
-    name: "macOS-arm"
+  macos:
+    name: "macOS-${{ matrix.os.arch }}"
+    runs-on: ${{ matrix.os.image_name }}
     timeout-minutes: 60
-    runs-on: macos-latest
-    env:
-      CXX: ccache clang++
-      CXXFLAGS: -fdiagnostics-color
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup ccache . . .
-        uses: Chocobo1/setup-ccache-action@v1
-        with:
-          update_packager_index: false
-          install_ccache: true
-      - name: Runner information . . .
-        run: uname -a
-      - name: Install dependencies . . .
-        run: brew install autoconf automake libtool
-      - name: Clang version . . .
-        run: clang++ --version
-      - name: Configure . . .
-        run: |
-          mkdir -p m4
-          ./autogen.sh
-          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-backward
-      - name: Build libsemigroups . . .
-        run: make -j4
-      - name: Build test_all . . .
-        run: make test_all -j4
-      - name: Run the quick tests . . .
-        run: ./test_all "[quick]"
-  macos-x86:
-    name: "macOS-x86"
-    timeout-minutes: 60
-    runs-on: macos-15-intel
+    strategy:
+      matrix:
+        os:
+          - { image_name: macos-latest, arch: arm }
+          - { image_name: macos-15-intel, arch: x86 }
     env:
       CXX: ccache clang++
       CXXFLAGS: -fdiagnostics-color
