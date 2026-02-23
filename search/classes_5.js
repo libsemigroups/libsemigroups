@@ -18,6 +18,7 @@ var searchData=
   ['front_5finsert_5fiterator_15',['front_insert_iterator',['http://en.cppreference.com/w/cpp/iterator/front_insert_iterator.html',1,'std']]],
   ['fstream_16',['fstream',['http://en.cppreference.com/w/cpp/io/basic_fstream.html',1,'std']]],
   ['function_17',['function',['http://en.cppreference.com/w/cpp/utility/functional/function.html',1,'std']]],
-  ['future_18',['future',['http://en.cppreference.com/w/cpp/thread/future.html',1,'std']]],
-  ['future_5ferror_19',['future_error',['http://en.cppreference.com/w/cpp/thread/future_error.html',1,'std']]]
+  ['function_3c_20void_28std_3a_3aback_5finsert_5fiterator_3c_20std_3a_3avector_3c_20letter_5ftype_20_3e_20_3e_2c_20typename_20word_5ftype_3a_3aconst_5fiterator_2c_20typename_20word_5ftype_3a_3aconst_5fiterator_29_3e_18',['function&lt; void(std::back_insert_iterator&lt; std::vector&lt; letter_type &gt; &gt;, typename word_type::const_iterator, typename word_type::const_iterator)&gt;',['http://en.cppreference.com/w/cpp/utility/functional/function.html',1,'std']]],
+  ['future_19',['future',['http://en.cppreference.com/w/cpp/thread/future.html',1,'std']]],
+  ['future_5ferror_20',['future_error',['http://en.cppreference.com/w/cpp/thread/future_error.html',1,'std']]]
 ];

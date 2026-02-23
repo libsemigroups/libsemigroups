@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.4.0</span>
+   &#160;<span id="projectnumber">v3.5.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -200,9 +200,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga0f48810d6d32178d2cd24758e0cc3793" id="r_ga0f48810d6d32178d2cd24758e0cc3793"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0f48810d6d32178d2cd24758e0cc3793">complete</a> () const noexcept</td></tr>
 <tr class="memdesc:ga0f48810d6d32178d2cd24758e0cc3793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the proportion of edges defined in the active part of the word graph.  <br /></td></tr>
 <tr class="separator:ga0f48810d6d32178d2cd24758e0cc3793"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga137b18bc5a2b7b5f1a83364594e17f90" id="r_ga137b18bc5a2b7b5f1a83364594e17f90"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga137b18bc5a2b7b5f1a83364594e17f90">current_spanning_tree</a> () const noexcept</td></tr>
-<tr class="memdesc:ga137b18bc5a2b7b5f1a83364594e17f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current possible spanning tree of the underlying word graph.  <br /></td></tr>
-<tr class="separator:ga137b18bc5a2b7b5f1a83364594e17f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga48496a1df07a40684ff5c776361416bc" id="r_ga48496a1df07a40684ff5c776361416bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga48496a1df07a40684ff5c776361416bc">current_spanning_tree</a> () const</td></tr>
+<tr class="memdesc:ga48496a1df07a40684ff5c776361416bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current possible spanning tree of the underlying word graph.  <br /></td></tr>
+<tr class="separator:ga48496a1df07a40684ff5c776361416bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga30382872bf2399b4fb6560bafe897d04" id="r_ga30382872bf2399b4fb6560bafe897d04"><td class="memItemLeft" align="right" valign="top">word_graph_type const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> () const noexcept</td></tr>
 <tr class="memdesc:ga30382872bf2399b4fb6560bafe897d04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current word graph.  <br /></td></tr>
 <tr class="separator:ga30382872bf2399b4fb6560bafe897d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -260,8 +260,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga137b18bc5a2b7b5f1a83364594e17f90" name="ga137b18bc5a2b7b5f1a83364594e17f90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga137b18bc5a2b7b5f1a83364594e17f90">&#9670;&#160;</a></span>current_spanning_tree()</h2>
+<a id="ga48496a1df07a40684ff5c776361416bc" name="ga48496a1df07a40684ff5c776361416bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga48496a1df07a40684ff5c776361416bc">&#9670;&#160;</a></span>current_spanning_tree()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -278,14 +278,15 @@ Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function returns a const reference to the current value of a possible spanning tree (a <a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a>) for the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (returned by <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>). This spanning tree is only populated during calls to <a class="el" href="group__todd__coxeter__class__mod__group.html#ga819c46ec43f099a4bc5d357f99ece71b">standardize</a> and as such might contain nothing, or a spanning tree of a previous value of <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>. Some care should be used with the return value of this function, and it might be better to use the function <a class="el" href="#ga28552809b1b7752efd3f7a4079fa7908">spanning_tree</a>, which has none of these limitation.</p>
-<p>If <a class="el" href="classlibsemigroups_1_1_runner.html#aebaed0be88cbcf45f1985b819c9dabb7">finished</a> returns <code>true</code>, and <a class="el" href="group__todd__coxeter__class__mod__group.html#ga819c46ec43f099a4bc5d357f99ece71b">standardize(Order)</a> has been called prior to a call to this function, then the returned <a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a> will represent a valid spanning tree for the <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> returned by <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> or <a class="el" href="namespacelibsemigroups_1_1word__graph.html">word_graph</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>A const reference to a possible spanning tree of the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+<p>This function returns a const reference to the current value of a possible spanning tree (a <a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a>) for the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (returned by <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>).</p>
+<dl class="section return"><dt>Returns</dt><dd>A const reference to a spanning tree of the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function returns a reference to the current spanning tree, if <code>this</code> is reinitialized then the value of this reference will become invalid. I.e. rather than storing a reference to the return value of this function in a variable, it's probably better to call <a class="el" href="#ga48496a1df07a40684ff5c776361416bc">current_spanning_tree</a> again.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Please use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga48496a1df07a40684ff5c776361416bc" title="Get the current possible spanning tree of the underlying word graph.">current_spanning_tree()</a></code> instead. </dd></dl>
 
 </div>
 </div>
@@ -327,6 +328,9 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool is_standardized </td>
@@ -335,10 +339,16 @@ Functions</h2></td></tr>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>This function returns <code>true</code> if the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> has been standardized with respect to the any <a class="el" href="group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405">Order</a> other than <a class="el" href="group__types__group.html#ggabdaf879e32abd3c9d7ae16e794b8f405a334c4a4c42fdb79d7ebc3e73b517e6f8" title="No ordering.">Order::none</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the current word graph is standardized with respect to any order.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000008">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Please use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga7a9b1c5ef8c4cbc76d5859aeff6e8af6" title="Check if the word graph is currently standardized with respect to a given order.">is_standardized()</a></code> instead. </dd></dl>
 
 </div>
 </div>
@@ -347,6 +357,9 @@ Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool is_standardized </td>
@@ -355,6 +368,11 @@ Functions</h2></td></tr>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>This function returns <code>true</code> if the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> has been standardized with respect to the order <code class="param">val</code>; and <code>false</code> if not.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -364,7 +382,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not the current word graph is standardized with respect to a given order.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000007">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Please use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.is_standardized(val)</code> instead. </dd></dl>
 
 </div>
 </div>
@@ -391,7 +410,8 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>This function returns the number of edges in the active part of the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>. Recall that <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> can grow and shrink drastically during a congruence enumeration. As such to avoid unnecessary memory allocations, where possible, the nodes in the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "recycled" leading to the situation where some of the nodes in <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "active" and others are "inactive". In other words, the "active" nodes correspond to the part of the word graph that actually represents the classes of the congruence we are trying to enumerate; and the "inactive" nodes are only there to be "recycled" into "active" nodes if they are required later on.</p>
-<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga7a0646a62106e1c6a2114bd4a5bda3b0" title="Return the number of edges in the active part of the current word graph.">number_of_edges_active()</a></code> instead. </dd></dl>
 
 </div>
 </div>
@@ -446,7 +466,8 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>This function returns the number of nodes in the active part of the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>. Recall that <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> can grow and shrink drastically during a congruence enumeration. As such to avoid unnecessary memory allocations, where possible, the nodes in the <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "recycled" leading to the situation where some of the nodes in <a class="el" href="#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a> are "active" and others are "inactive". In other words, the "active" nodes correspond to the part of the word graph that actually represents the classes of the congruence we are trying to enumerate; and the "inactive" nodes are only there to be "recycled" into "active" nodes if they are required later on.</p>
-<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga2ece699d31c498c5b09521cadbd22934" title="Return the number of nodes in the active part of the current word graph.">number_of_nodes_active()</a></code> instead. </dd></dl>
 
 </div>
 </div>
@@ -465,7 +486,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>This function returns a const reference to a spanning tree (a <a class="el" href="classlibsemigroups_1_1_forest.html">Forest</a>) for the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html" title="Class for representing word graphs.">WordGraph</a> (returned by <a class="el" href="namespacelibsemigroups_1_1word__graph.html">word_graph</a>) with the nodes appearing in short-lex order. This function triggers a full congruence enumeration.</p>
-<dl class="section return"><dt>Returns</dt><dd>A const reference to a spanning tree of the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A const reference to a spanning tree of the underlying <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a>.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Please use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga48496a1df07a40684ff5c776361416bc" title="Get the current possible spanning tree of the underlying word graph.">current_spanning_tree()</a></code> instead. </dd></dl>
 
 </div>
 </div>
@@ -518,7 +540,8 @@ Functions</h2></td></tr>
 </li>
 </ul>
 <dl class="section return"><dt>Returns</dt><dd>The current standardization order.</dd></dl>
-<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000006">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. Please use <code><a class="el" href="#ga30382872bf2399b4fb6560bafe897d04" title="Get the current word graph.">current_word_graph()</a>.<a class="el" href="#ga954435072186df72ce7aa180601a1102" title="Get the current standardization order of the underlying word graph.">standardization_order()</a></code> instead. </dd></dl>
 
 </div>
 </div>

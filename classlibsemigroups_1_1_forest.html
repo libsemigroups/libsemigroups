@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.4.0</span>
+   &#160;<span id="projectnumber">v3.5.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -278,10 +278,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a76dc919050ed01e6000387ddeaa34945" id="r_a76dc919050ed01e6000387ddeaa34945"><td class="memItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; <a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a> &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76dc919050ed01e6000387ddeaa34945">parents</a> () const noexcept</td></tr>
 <tr class="memdesc:a76dc919050ed01e6000387ddeaa34945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const reference to the vector of parents.  <br /></td></tr>
 <tr class="separator:a76dc919050ed01e6000387ddeaa34945"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e4dcbe040b3c3f9b9fa12166a81f262" id="r_a6e4dcbe040b3c3f9b9fa12166a81f262"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
+<tr class="memitem:a6e4dcbe040b3c3f9b9fa12166a81f262"><td class="memTemplItemLeft" align="right" valign="top">Iterator&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a6e4dcbe040b3c3f9b9fa12166a81f262">path_from_root</a> (Iterator d_first, <a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a> i) const</td></tr>
+<tr class="memdesc:a6e4dcbe040b3c3f9b9fa12166a81f262"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the labels of the edges on the path from a root node to a given node.  <br /></td></tr>
+<tr class="separator:a6e4dcbe040b3c3f9b9fa12166a81f262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae957b9730cca2a45ba6e37966aad71ac" id="r_ae957b9730cca2a45ba6e37966aad71ac"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
 <tr class="memitem:ae957b9730cca2a45ba6e37966aad71ac"><td class="memTemplItemLeft" align="right" valign="top">Iterator&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ae957b9730cca2a45ba6e37966aad71ac">path_from_root_no_checks</a> (Iterator d_first, <a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a> i) const</td></tr>
 <tr class="memdesc:ae957b9730cca2a45ba6e37966aad71ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the labels of the edges on the path from a root node to a given node.  <br /></td></tr>
 <tr class="separator:ae957b9730cca2a45ba6e37966aad71ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1effe09deb0a805e37e6f5c2eb9078be" id="r_a1effe09deb0a805e37e6f5c2eb9078be"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
+<tr class="memitem:a1effe09deb0a805e37e6f5c2eb9078be"><td class="memTemplItemLeft" align="right" valign="top">Iterator&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a1effe09deb0a805e37e6f5c2eb9078be">path_to_root</a> (Iterator d_first, <a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a> i) const</td></tr>
+<tr class="memdesc:a1effe09deb0a805e37e6f5c2eb9078be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the labels of the edges on the path to a root node from a given node.  <br /></td></tr>
+<tr class="separator:a1effe09deb0a805e37e6f5c2eb9078be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a988298a5f1a769790d4ec22df8cafaa1" id="r_a988298a5f1a769790d4ec22df8cafaa1"><td class="memTemplParams" colspan="2">template&lt;typename Iterator&gt; </td></tr>
 <tr class="memitem:a988298a5f1a769790d4ec22df8cafaa1"><td class="memTemplItemLeft" align="right" valign="top">Iterator&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a988298a5f1a769790d4ec22df8cafaa1">path_to_root_no_checks</a> (Iterator d_first, <a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a> i) const</td></tr>
 <tr class="memdesc:a988298a5f1a769790d4ec22df8cafaa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the labels of the edges on the path to a root node from a given node.  <br /></td></tr>
@@ -874,6 +882,60 @@ Related Symbols</h2></td></tr>
 
 </div>
 </div>
+<a id="a6e4dcbe040b3c3f9b9fa12166a81f262" name="a6e4dcbe040b3c3f9b9fa12166a81f262"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e4dcbe040b3c3f9b9fa12166a81f262">&#9670;&#160;</a></span>path_from_root()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Iterator path_from_root </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>d_first</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a></td>          <td class="paramname"><span class="paramname"><em>i</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function writes labels of the edges on the path from a root node to node <code class="param">i</code> to the iterator <code class="param">d_first</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>The type of the parameter, and the return type.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d_first</td><td>the output iterator. </td></tr>
+    <tr><td class="paramname">i</td><td>the node.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An <code>Iterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">i</code> is greater than or equal to <a class="el" href="#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>this</code> is not acyclic.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_from_roots.html" title="Range for iterating through paths in a Forest.">forest::PathsFromRoots</a> </dd></dl>
+
+</div>
+</div>
 <a id="ae957b9730cca2a45ba6e37966aad71ac" name="ae957b9730cca2a45ba6e37966aad71ac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae957b9730cca2a45ba6e37966aad71ac">&#9670;&#160;</a></span>path_from_root_no_checks()</h2>
 
@@ -914,6 +976,59 @@ template&lt;typename Iterator&gt; </div>
 
 </div>
 </div>
+<a id="a1effe09deb0a805e37e6f5c2eb9078be" name="a1effe09deb0a805e37e6f5c2eb9078be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1effe09deb0a805e37e6f5c2eb9078be">&#9670;&#160;</a></span>path_to_root()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Iterator&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Iterator path_to_root </td>
+          <td>(</td>
+          <td class="paramtype">Iterator</td>          <td class="paramname"><span class="paramname"><em>d_first</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a0d1b6b7b876379a255c2dbf8e7a359bc">node_type</a></td>          <td class="paramname"><span class="paramname"><em>i</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function writes labels of the edges on the path to a root node from node <code class="param">i</code> to the iterator <code class="param">d_first</code>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iterator</td><td>The type of the parameter, and the return type.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d_first</td><td>the output iterator. </td></tr>
+    <tr><td class="paramname">i</td><td>the node.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An <code>Iterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">i</code> is greater than or equal to <a class="el" href="#a25dedc9637cca8285b913365ac012b62">number_of_nodes</a>.</td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code>this</code> is not acyclic. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a988298a5f1a769790d4ec22df8cafaa1" name="a988298a5f1a769790d4ec22df8cafaa1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a988298a5f1a769790d4ec22df8cafaa1">&#9670;&#160;</a></span>path_to_root_no_checks()</h2>
 
@@ -949,7 +1064,7 @@ template&lt;typename Iterator&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An <code>Iterator</code> pointing one beyond the last letter inserted into <code class="param">d_first</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>No checks are performed on the arguments of this function.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classlibsemigroups_1_1forest_1_1_paths_to_roots.html" title="Range for iterating through paths in a Forest.">forest::PathsToRoots</a> </dd></dl>
 
 </div>

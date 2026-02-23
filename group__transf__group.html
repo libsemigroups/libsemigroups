@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.4.0</span>
+   &#160;<span id="projectnumber">v3.5.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -491,7 +491,7 @@ template&lt;size_t N = 0, typename Scalar = std::conditional_t&lt;N == 0, uint32
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line"> std::</div>
 <div class="line">      conditional_t&lt;N == 0, DynamicPTransf&lt;Scalar&gt;, <a class="code hl_class" href="classlibsemigroups_1_1_static_p_transf.html">StaticPTransf&lt;N, Scalar&gt;</a>&gt;</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_static_p_transf_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_p_transf.html">libsemigroups::StaticPTransf</a></div><div class="ttdoc">Partial transformations with static degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:828</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_static_p_transf_html"><div class="ttname"><a href="classlibsemigroups_1_1_static_p_transf.html">libsemigroups::StaticPTransf</a></div><div class="ttdoc">Partial transformations with static degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:816</div></div>
 </div><!-- fragment --><p>Defined in <code><a class="el" href="transf_8hpp_source.html">transf.hpp</a></code>.</p>
 <p>This alias equals either <a class="el" href="classlibsemigroups_1_1_dynamic_p_transf.html" title="Partial transformations with dynamic degree.">DynamicPTransf</a> or <a class="el" href="classlibsemigroups_1_1_static_p_transf.html" title="Partial transformations with static degree.">StaticPTransf</a> depending on the template parameters <code class="param">N</code> and <code class="param">Scalar</code>.</p>
 <p>If <code class="param">N</code> is <code>0</code> (the default), then <code><a class="el" href="#gaf374be7ec7bbeabba2f8539b7bbff8ec" title="Partial transformations with static or dynamic degree.">PTransf</a></code> is <a class="el" href="classlibsemigroups_1_1_dynamic_p_transf.html">DynamicPTransf</a>. In this case the default value of <code class="param">Scalar</code> is <code>uint32_t</code>. If <code class="param">N</code> is not <code>0</code>, then <code><a class="el" href="#gaf374be7ec7bbeabba2f8539b7bbff8ec" title="Partial transformations with static or dynamic degree.">PTransf</a></code> is <a class="el" href="classlibsemigroups_1_1_static_p_transf.html">StaticPTransf</a>, and the default value of <code class="param">Scalar</code> is the smallest integer type able to hold <code>N</code>. See also <a class="el" href="structlibsemigroups_1_1_smallest_integer.html" title="Type giving the smallest unsigned integer type that can represent a template.">SmallestInteger</a>.</p>
@@ -1410,7 +1410,7 @@ template&lt;typename Scalar, typename Container&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>Linear in degree().</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000019">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
 
 </div>
 </div>
@@ -1450,7 +1450,7 @@ template&lt;size_t N, typename Scalar&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>Linear in <code>f.degree()</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000020">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
 
 </div>
 </div>
@@ -1494,7 +1494,7 @@ template&lt;size_t N, typename Scalar&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>Linear in <code>f.degree()</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000022">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
 
 </div>
 </div>
@@ -1537,7 +1537,7 @@ template&lt;size_t N, typename Scalar&gt; </div>
   </dd>
 </dl>
 <dl class="section user"><dt>Complexity</dt><dd>Linear in <code>f.degree()</code>.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000021">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4. </dd></dl>
 
 </div>
 </div>

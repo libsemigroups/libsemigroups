@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.4.0</span>
+   &#160;<span id="projectnumber">v3.5.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -282,6 +282,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga12b8e6887e632ef86d3a191ba5b2dda1" id="r_ga12b8e6887e632ef86d3a191ba5b2dda1"><td class="memItemLeft" align="right" valign="top">ToddCoxeter &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga12b8e6887e632ef86d3a191ba5b2dda1">lookahead_style</a> (options::lookahead_style val) noexcept</td></tr>
 <tr class="memdesc:ga12b8e6887e632ef86d3a191ba5b2dda1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the style of lookahead.  <br /></td></tr>
 <tr class="separator:ga12b8e6887e632ef86d3a191ba5b2dda1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaacb8bc1cdcfe629debb036b548c4d209" id="r_gaacb8bc1cdcfe629debb036b548c4d209"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaacb8bc1cdcfe629debb036b548c4d209">lookbehind_threshold</a> () const noexcept</td></tr>
+<tr class="memdesc:gaacb8bc1cdcfe629debb036b548c4d209"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current value of the lookbehind threshold.  <br /></td></tr>
+<tr class="separator:gaacb8bc1cdcfe629debb036b548c4d209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga524a6aaa28c469560163a1c0a51b6861" id="r_ga524a6aaa28c469560163a1c0a51b6861"><td class="memItemLeft" align="right" valign="top">ToddCoxeter &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga524a6aaa28c469560163a1c0a51b6861">lookbehind_threshold</a> (size_t val) noexcept</td></tr>
+<tr class="memdesc:ga524a6aaa28c469560163a1c0a51b6861"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the lookbehind threshold.  <br /></td></tr>
+<tr class="separator:ga524a6aaa28c469560163a1c0a51b6861"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae971c686b9c455f651494bc581cd1a01" id="r_gae971c686b9c455f651494bc581cd1a01"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gae971c686b9c455f651494bc581cd1a01">lower_bound</a> () const noexcept</td></tr>
 <tr class="memdesc:gae971c686b9c455f651494bc581cd1a01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current value of the lower bound.  <br /></td></tr>
 <tr class="separator:gae971c686b9c455f651494bc581cd1a01"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -621,7 +627,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">val</code> is <code>0</code>. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">val</code> is less than <a class="el" href="namespacelibsemigroups_1_1presentation.html#adc4f0c313d39e8062e1efd4c23be2c48">length</a> of <a class="el" href="namespacelibsemigroups_1_1presentation.html">presentation</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1189,6 +1195,71 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+
+</div>
+</div>
+<a id="gaacb8bc1cdcfe629debb036b548c4d209" name="gaacb8bc1cdcfe629debb036b548c4d209"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaacb8bc1cdcfe629debb036b548c4d209">&#9670;&#160;</a></span>lookbehind_threshold() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t lookbehind_threshold </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns the current value of the lookbehind threshold. See <a class="el" href="#ga524a6aaa28c469560163a1c0a51b6861" title="Set the lookbehind threshold.">lookbehind_threshold(size_t)</a> for details of the meaning of this setting.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current value of the lookbehind threshold.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__todd__coxeter__class__mod__group.html#ga908444573a275c990060339811d2d5b8">perform_lookbehind</a> for details of lookbehinds. </dd></dl>
+
+</div>
+</div>
+<a id="ga524a6aaa28c469560163a1c0a51b6861" name="ga524a6aaa28c469560163a1c0a51b6861"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga524a6aaa28c469560163a1c0a51b6861">&#9670;&#160;</a></span>lookbehind_threshold() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ToddCoxeter &amp; lookbehind_threshold </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>val</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>During a lookbehind pairs of nodes that represent the same class (called <em>coincidences</em>) of the congruence are collected and periodically collapsed. This happens when at least <code class="param">val</code> such pairs of nodes have been found. Lookbehinds require a spanning tree for the graph to be known, and collapsing coincidences means that this spanning tree must be recomputed. As a consequence collapsing coincidences may be costly if the value of <a class="el" href="#ga524a6aaa28c469560163a1c0a51b6861">lookbehind_threshold</a> is too low (and this is the reason the setting exists at all).</p>
+<p>The default value for this setting is <code>32'768</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>the threshold beyond which any coincidences discovered during lookbehind are collapsed.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__todd__coxeter__class__mod__group.html#ga908444573a275c990060339811d2d5b8">perform_lookbehind</a> for details of lookbehinds. </dd></dl>
 
 </div>
 </div>

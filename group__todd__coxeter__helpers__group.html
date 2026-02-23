@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.4.0</span>
+   &#160;<span id="projectnumber">v3.5.0</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -1547,9 +1547,7 @@ template&lt;typename Word&gt; </div>
 <p>This function performs a "lookbehind" on the argument <code class="param">tc</code> which is defined as follows. For every node <code>n</code> in the so-far computed <a class="el" href="classlibsemigroups_1_1_word_graph.html">WordGraph</a> (obtained from <a class="el" href="group__todd__coxeter__class__accessors__group.html#ga30382872bf2399b4fb6560bafe897d04">current_word_graph</a>) we use the current word graph to rewrite the current short-lex least path from the initial node to <code>n</code>. If this rewritten word is not equal to the original word, and it also labels a path from the initial node in the current word graph to a node <code>m</code>, then <code>m</code> and <code>n</code> represent the same congruence class. Thus we may collapse <code>m</code> and <code>n</code> (i.e. quotient the word graph by the least congruence containing the pair <code>m</code> and <code>n</code>).</p>
 <p>The intended use case for this function is when you have a large word graph in a partially enumerated <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> instance, and you would like to minimise this word graph as far as possible.</p>
 <p>For example, if we take the following monoid presentation of B. H. Neumann for the trivial group:</p>
-<div class="fragment"><div class="line">\\ TODO : Long running test. Check <span class="keywordflow">if</span> meant <a class="code hl_function" href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">to</a> be <span class="keyword">this</span> slow?</div>
-<div class="line"> </div>
-<div class="line"><span class="keyword">using </span>options = ToddCoxeter<Word>::options;</div>
+<div class="fragment"><div class="line"><span class="keyword">using </span>options = ToddCoxeter<Word>::options;</div>
 <div class="line"><a class="code hl_class" href="classlibsemigroups_1_1_presentation.html">Presentation&lt;std::string&gt;</a> p;</div>
 <div class="line">p.<a class="code hl_function" href="classlibsemigroups_1_1_presentation.html#ac21a91e92a664a0ac48d99643f62fd6a">alphabet</a>(<span class="stringliteral">&quot;abcdef&quot;</span>);</div>
 <div class="line">p.<a class="code hl_function" href="classlibsemigroups_1_1_presentation.html#ab206e03bcd28bba4d8cdbaffba18b5bc">contains_empty_word</a>(<span class="keyword">true</span>);</div>
@@ -1578,8 +1576,7 @@ template&lt;typename Word&gt; </div>
 <div class="ttc" id="agroup__types__group_html_ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a"><div class="ttname"><a href="group__types__group.html#ggaefc0b002795e4a0b5db2a5c04078aa42a0d7162040d190b93ae1a674f618d0d6a">libsemigroups::congruence_kind::twosided</a></div><div class="ttdeci">@ twosided</div><div class="ttdoc">Value representing a two-sided congruence.</div><div class="ttdef"><b>Definition</b> types.hpp:71</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_ad39a6ad8b9694fb7e1ea3dc518a8cde6"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#ad39a6ad8b9694fb7e1ea3dc518a8cde6">libsemigroups::presentation::add_inverse_rules</a></div><div class="ttdeci">void add_inverse_rules(Presentation&lt; Word &gt; &amp;p, Word const &amp;vals, typename Presentation&lt; Word &gt;::letter_type e=UNDEFINED)</div><div class="ttdoc">Add rules for inverses.</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1presentation_html_aec80128d3c2e4b7cbf276731e0edfe56"><div class="ttname"><a href="namespacelibsemigroups_1_1presentation.html#aec80128d3c2e4b7cbf276731e0edfe56">libsemigroups::presentation::add_rule</a></div><div class="ttdeci">void add_rule(Presentation&lt; Word &gt; &amp;p, Word const &amp;lhop, Word const &amp;rhop)</div><div class="ttdoc">Add a rule to the presentation by reference and check.</div><div class="ttdef"><b>Definition</b> presentation.hpp:907</div></div>
-<div class="ttc" id="anamespacelibsemigroups_html_ae2b8ad3fa013a7e70bceed05e2e95486"><div class="ttname"><a href="namespacelibsemigroups.html#ae2b8ad3fa013a7e70bceed05e2e95486">libsemigroups::to</a></div><div class="ttdeci">auto to(detail::KnuthBendixImpl&lt; Rewriter, ReductionOrder &gt; &amp;kb) -&gt; std::enable_if_t&lt; std::is_same_v&lt; Presentation&lt; typename Result::word_type &gt;, Result &gt;, Result &gt;</div><div class="ttdoc">No doc.</div></div>
-</div><!-- fragment --><p>Running <code class="param">tc</code> will simply grow the underlying word graph until your computer runs out of memory. The authors of <code>libsemigroups</code> were not able to find any combination of the many settings for <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> where running <code class="param">tc</code> returned an answer. We also tried with GAP and ACE but neither of these seemed able to return an answer either. But doing the following:</p>
+</div><!-- fragment --><p>Running <code class="param">tc</code> will simply grow the underlying word graph until your computer runs out of memory. The authors of <code>libsemigroups</code> were not able to find any combination of the many settings for <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> where running <code class="param">tc</code> returned an answer. We also tried with GAP and ACE but neither of these seemed able to return an answer either.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tc</td><td>the <a class="el" href="group__todd__coxeter__class__group.html">ToddCoxeter</a> instance.</td></tr>
@@ -1588,10 +1585,11 @@ template&lt;typename Word&gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">tc</code> is a one-sided congruence and has any generating pairs (because in this case <a class="el" href="#gac3f6c69246202c8926af64b75c8b9707">perform_lookbehind</a> does nothing but still might take some time to run). </td></tr>
+    <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if <code class="param">tc</code> is a one-sided congruence and has any generating pairs (because in this case <a class="el" href="#gac3f6c69246202c8926af64b75c8b9707">perform_lookbehind</a> does nothing but still might take some time to run).</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000018">Deprecated</a></b></dt><dd>This function is deprecated and will be removed from <code>libsemigroups</code> in v4.. Use <code>tc.perform_lookbehind()</code> instead. </dd></dl>
 
 </div>
 </div>
