@@ -79,6 +79,7 @@ jobs:
         with:
           update_packager_index: false
           install_ccache: true
+          override_cache_key: "macos_${{ matrix.os.arch }}"
       - name: Runner information . . .
         run: uname -a
       - name: Install dependencies . . .
