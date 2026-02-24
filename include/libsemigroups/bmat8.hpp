@@ -29,14 +29,21 @@
 #include <cstdint>      // for uint64_t
 #include <functional>   // for hash
 #include <iosfwd>       // for ostream, ostringstream
+#include <memory>       // for hash
 #include <string>       // for string
-#include <string_view>  // for hash
 #include <type_traits>  // for is_trivial
 #include <utility>      // for swap
 #include <vector>       // for vector
 
-#include "adapters.hpp"  // for Complexity, Degree, etc . . .
-#include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
+#include "adapters.hpp"   // for Complexity, Degree, etc . . .
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+namespace HPCombi {
+  class BMat8;
+}
+#endif  // LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 namespace libsemigroups {
 
@@ -614,18 +621,25 @@ namespace libsemigroups {
     //! A value of type \p T with the first \p dim values on the main diagonal
     //! equal to 1 and every other entry equal to 0.
     //!
-    //! \exceptions
-    //! \noexcept
+    //! \throws LibsemigroupsException if \p dim is not less than or equal to
+    //! \c 8.
     //!
     //! \complexity
     //! Constant.
     //!
     //! \sa \ref one
-    // TODO(later) noexcept should depend on whether or not the constructor of
-    // TODO rename one_no_checks
     template <typename T>
-    [[nodiscard]] constexpr T one(size_t dim = 8) noexcept {
-      LIBSEMIGROUPS_ASSERT(dim <= 8);
+    [[nodiscard]] constexpr T one(size_t dim = 8) {
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+      static_assert(std::is_same_v<T, BMat8>
+                    || std::is_same_v<T, HPCombi::BMat8>);
+#else
+      static_assert(std::is_same_v<T, BMat8>);
+#endif
+      if (dim > 8) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (dimension) must be at most 8, found {}", dim);
+      }
       constexpr std::array<uint64_t, 9> const ones = {0x0000000000000000,
                                                       0x8000000000000000,
                                                       0x8040000000000000,
@@ -649,12 +663,12 @@ namespace libsemigroups {
     //! \returns
     //! A BMat8.
     //!
-    //! \exceptions
-    //! \noexcept
+    //! \throws LibsemigroupsException if \p dim is not less than or equal to
+    //! \c 8.
     //!
     //! \complexity
     //! Constant.
-    [[nodiscard]] constexpr BMat8 one(size_t dim = 8) noexcept {
+    [[nodiscard]] constexpr BMat8 one(size_t dim = 8) {
       return one<BMat8>(dim);
     }
 
@@ -681,8 +695,8 @@ namespace libsemigroups {
     //! \returns
     //! A BMat8.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p dim is not between
+    //! \c 1 and \c 8.
     // Not noexcept since std::uniform_int_distribution::operator() is not
     // noexcept.
     [[nodiscard]] BMat8 random(size_t dim);
@@ -1046,7 +1060,7 @@ namespace libsemigroups {
       return bmat8::one();
     }
     //! Returns bmat8::one(dim)
-    [[nodiscard]] inline BMat8 operator()(size_t dim = 8) const noexcept {
+    [[nodiscard]] inline BMat8 operator()(size_t dim = 8) const {
       return bmat8::one(dim);
     }
   };
