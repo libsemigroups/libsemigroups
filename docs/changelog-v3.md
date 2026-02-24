@@ -1,5 +1,14 @@
 # Changelog - version 3
 
+## v3.5.1 (released 25/02/2026)
+
+This is a minor release to include a couple of improvements that mysteriously
+disappeared from the last release. These are:
+
+- `increase_degree_by` throws if the resultant degree would exceed the … by [\@Joseph-Edwards] in https://github.com/libsemigroups/libsemigroups/pull/899
+- bmat8: throw from one if dim too high + correct docs for random by
+  [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/902
+
 ## v3.5.0 (released 23/02/2026)
 
 This is a minor release with a number of minor improvements, and a substantial
