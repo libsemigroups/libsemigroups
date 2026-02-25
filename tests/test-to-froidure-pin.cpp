@@ -24,16 +24,17 @@
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
-#include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/types.hpp"            // for congruence_kind
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/cong.hpp"                // for Congruence
+#include "libsemigroups/constants.hpp"           // for UNDEFINED
+#include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin, Froidure...
+#include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix
+#include "libsemigroups/to-froidure-pin.hpp"     // for make
+#include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
+#include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
+#include "libsemigroups/transf.hpp"              // for Transf
+#include "libsemigroups/types.hpp"               // for congruence_kind
+#include "libsemigroups/word-graph.hpp"          // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -334,4 +335,19 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(S.contains(KBE_(kb, "cd")), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "011",
+                          "from ToddCoxeter",
+                          "[quick]") {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    p.rules = {{0, 0}, {0}, {1, 1}, {1}, {0, 1, 0}, {1, 0, 1}, {0, 1}, {1, 0}};
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    auto        fp = to<FroidurePin>(tc);
+
+    REQUIRE(tc.number_of_classes() == 4);
+    // REQUIRE(fp.contains_one());
+    REQUIRE(fp.size() == 4);
+  }
 }  // namespace libsemigroups

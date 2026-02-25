@@ -1057,8 +1057,9 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 322'021);
 
     auto S = to<FroidurePin>(tc);
+    REQUIRE(S.size() == tc.number_of_classes());
     S.run();
-    REQUIRE(S.number_of_rules() == 1430);
+    REQUIRE(S.number_of_rules() == 1453);
 
     //  FIXME(1) the following doesn't seem to work
     // tc.init(congruence_kind::twosided, S.right_cayley_graph());

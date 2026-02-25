@@ -4162,10 +4162,11 @@ namespace libsemigroups {
           p, (seq<size_t>() | take(n) | to_vector()));
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
-      auto  fp = to<FroidurePin>(tc);
+      auto fp = to<FroidurePin>(tc);
+      REQUIRE(tc.number_of_classes() == fp.size());
       Gabow scc(fp.right_cayley_graph());
-      REQUIRE(scc.number_of_components() == num[n]);
-      REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
+      REQUIRE(scc.number_of_components() == num[n] + 1);
+      REQUIRE(fp.number_of_idempotents() == std::pow(2, n));
     }
   }
 
@@ -4191,10 +4192,11 @@ namespace libsemigroups {
           p, (seq<size_t>() | take(n) | to_vector()));
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
-      auto  fp = to<FroidurePin>(tc);
+      auto fp = to<FroidurePin>(tc);
+      REQUIRE(tc.number_of_classes() == fp.size());
       Gabow scc(fp.right_cayley_graph());
-      REQUIRE(scc.number_of_components() == num[n]);
-      REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
+      REQUIRE(scc.number_of_components() == num[n] + 1);
+      REQUIRE(fp.number_of_idempotents() == std::pow(2, n));
 
       if (n <= 6) {
         std::vector<uint64_t> length = {};

@@ -148,7 +148,7 @@ namespace libsemigroups {
     tc.shrink_to_fit();
     // Ensure class indices and letters are equal!
     auto wg        = std::make_shared<word_graph_type>(tc.current_word_graph());
-    size_t const n = tc.current_word_graph().out_degree();
+    size_t const n = wg->out_degree();
     size_t       m = n;
     for (letter_type a = 0; a < m;) {
       if (wg->target_no_checks(0, a) != a + 1) {
@@ -162,8 +162,21 @@ namespace libsemigroups {
     FroidurePin<TCE> result(wg);
     for (size_t i = 0; i < n; ++i) {
       // We use _word_graph.target_no_checks instead of just i, because there
-      // might be more generators than cosets.
+      // might be more generators than nodes.
       result.add_generator(TCE(tc.current_word_graph().target_no_checks(0, i)));
+    }
+
+    // FroidurePin objects always represent semigroups, in that they never
+    // implicitly contain an identity element (they may explicitly contain an
+    // identity element as a generator, or as a product of generators). On the
+    // other hand, ToddCoxeter objects may contain the identity implicitly via
+    // the presence of the empty word in their underlying presentation, so if
+    // this is the case, we must add it as a generator to "result" here. We add
+    // it at the end of the generators so that the indices of the generators in
+    // the ToddCoxeter object corresponds to the index of the generators in
+    // "result".
+    if (tc.internal_presentation().contains_empty_word()) {
+      result.add_generator(TCE(0));
     }
     return result;
   }
