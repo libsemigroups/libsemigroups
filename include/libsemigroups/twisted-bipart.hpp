@@ -505,7 +505,10 @@ namespace libsemigroups {
       }
 
       res.first  = x.floating_components();
-      res.second = *x.bipartition().right_blocks_no_checks();
+      auto* ptr  = x.bipartition().right_blocks_no_checks();
+      res.second = std::move(*ptr);
+      delete ptr;
+      // TODO modify in place instead
     }
   };
 
@@ -525,7 +528,10 @@ namespace libsemigroups {
       }
 
       res.first  = x.floating_components();
-      res.second = *x.bipartition().left_blocks_no_checks();
+      auto* ptr  = x.bipartition().left_blocks_no_checks();
+      res.second = std::move(*ptr);
+      delete ptr;
+      // TODO modify in place instead
     }
   };
 
@@ -555,7 +561,10 @@ namespace libsemigroups {
         res.first  = UNDEFINED;
         res.second = Blocks();
       } else {
-        res.second = *(proj * x.bipartition()).right_blocks_no_checks();
+        auto* ptr  = (proj * x.bipartition()).right_blocks_no_checks();
+        res.second = std::move(*ptr);
+        delete ptr;
+        // TODO modify in place instead
       }
     }
   };
@@ -586,7 +595,10 @@ namespace libsemigroups {
         res.first  = UNDEFINED;
         res.second = Blocks();
       } else {
-        res.second = *(x.bipartition() * proj).left_blocks_no_checks();
+        auto* ptr  = (x.bipartition() * proj).left_blocks_no_checks();
+        res.second = std::move(*ptr);
+        delete ptr;
+        // TODO modify in place instead
       }
     }
   };
