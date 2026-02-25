@@ -790,6 +790,7 @@ namespace libsemigroups {
     REQUIRE(bmat8::one(5) == bm5);
     REQUIRE(bmat8::one(0) == BMat8(0));
     REQUIRE(bmat8::one(8) == bmat8::one());
+    REQUIRE_THROWS_AS(bmat8::one(9), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8", "018", "is_regular_element", "[quick]") {
