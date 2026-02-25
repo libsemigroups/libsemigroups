@@ -300,7 +300,28 @@ namespace libsemigroups {
     [[nodiscard]] typename std::vector<Word>::const_iterator
     redundant_rule(Presentation<Word> const& p, Time t);
 
+    //! \ingroup knuth_bendix_helpers_group
+    //! \brief Construct a \ref Dot object of the Gilman graph of a
+    //! KnuthBendix object.
+    //!
+    //! This function constructs a \ref Dot object representing the
+    //! \ref KnuthBendix::gilman_graph of the \ref_knuth_bendix object \p kb.
+    //!
+    //! \tparam Word the type of words in \p kb.
+    //! \tparam Rewriter the type of rewriter in \p kb.
+    //! \tparam ReductionOrder the reduction order in \p kb.
+    //!
+    //! \param kb the KnuthBendix object.
+    //!
+    //! \returns A Dot object representing the \ref KnuthBendix::gilman_graph.
+    //!
+    //! \warning This function triggers a full enumeration,
+    //! which may never terminate.
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] Dot dot(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
+
   }  // namespace knuth_bendix
+
 }  // namespace libsemigroups
 
 #include "knuth-bendix-helpers.tpp"
