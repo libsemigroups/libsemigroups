@@ -144,8 +144,11 @@ namespace libsemigroups {
                     detail::TCE const&            y,
                     detail::TCE::word_graph_type* t,
                     size_t = 0) const {
-      // y- 1, x????
-      xy = detail::TCE(t->target_no_checks(x, y - 1));
+      if (static_cast<detail::TCE::node_type>(y) == 0) {
+        xy = x;
+      } else {
+        xy = detail::TCE(t->target_no_checks(x, y - 1));
+      }
     }
   };
 
