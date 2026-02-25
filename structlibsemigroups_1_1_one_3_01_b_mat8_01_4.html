@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.0</span>
+   &#160;<span id="projectnumber">v3.5.1</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -196,12 +196,12 @@ $(function(){initNavTree('structlibsemigroups_1_1_one_3_01_b_mat8_01_4.html','')
 <div class="textblock"><p>Adapter for the identity element of the given type.   </p>
 <p>Specialisations of this struct should be stateless trivially default constructible with two call operator of signatures:</p>
 <ol type="1">
-<li><code>Element <a class="el" href="#a6b4b7fb599930a47dd0dc2917d9d12d8" title="Returns bmat8::one(dim)">operator()(size_t n) const</a></code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning a multiplicative identity element for the category <code>Element</code> and with <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> equal to the parameter <code class="param">n</code>. For example, if <code>Element</code> is a type of n x n matrices, then this should return the n x n identity matrix.</li>
+<li><code>Element <a class="el" href="#a68417c0a181949133c8e1ee967eef880" title="Returns bmat8::one(dim)">operator()(size_t n) const</a></code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning a multiplicative identity element for the category <code>Element</code> and with <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> equal to the parameter <code class="param">n</code>. For example, if <code>Element</code> is a type of n x n matrices, then this should return the n x n identity matrix.</li>
 <li><code>Element operator()(T const&amp;) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also). This could be implemented as: <div class="fragment"><div class="line">Element <a class="code hl_function" href="#abe5fbb030425a0619b3ba96a125d8edf">operator()</a>(Element <span class="keyword">const</span>&amp; x) <span class="keyword">const</span> <span class="keyword">noexcept</span> {</div>
 <div class="line">  <span class="keywordflow">return</span> this-&gt;<a class="code hl_function" href="#abe5fbb030425a0619b3ba96a125d8edf">operator()</a>(<a class="code hl_struct" href="structlibsemigroups_1_1_degree.html">Degree&lt;Element&gt;</a>()(x));</div>
 <div class="line">}</div>
 <div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:166</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_one_3_01_b_mat8_01_4_html_abe5fbb030425a0619b3ba96a125d8edf"><div class="ttname"><a href="#abe5fbb030425a0619b3ba96a125d8edf">libsemigroups::One&lt; BMat8 &gt;::operator()</a></div><div class="ttdeci">BMat8 operator()(BMat8 const &amp;) const noexcept</div><div class="ttdoc">Returns x.one()</div><div class="ttdef"><b>Definition</b> bmat8.hpp:1045</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_one_3_01_b_mat8_01_4_html_abe5fbb030425a0619b3ba96a125d8edf"><div class="ttname"><a href="#abe5fbb030425a0619b3ba96a125d8edf">libsemigroups::One&lt; BMat8 &gt;::operator()</a></div><div class="ttdeci">BMat8 operator()(BMat8 const &amp;) const noexcept</div><div class="ttdoc">Returns x.one()</div><div class="ttdef"><b>Definition</b> bmat8.hpp:1059</div></div>
 </div><!-- fragment --></li>
 </ol>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -239,10 +239,10 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (<a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a> const &amp;) const noexcept</td></tr>
 <tr class="memdesc:abe5fbb030425a0619b3ba96a125d8edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code class="param">x.one()</code> <br /></td></tr>
 <tr class="separator:abe5fbb030425a0619b3ba96a125d8edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b4b7fb599930a47dd0dc2917d9d12d8" id="r_a6b4b7fb599930a47dd0dc2917d9d12d8"><td class="memItemLeft" align="right" valign="top"><a id="a6b4b7fb599930a47dd0dc2917d9d12d8" name="a6b4b7fb599930a47dd0dc2917d9d12d8"></a>
-<a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (size_t dim=8) const noexcept</td></tr>
-<tr class="memdesc:a6b4b7fb599930a47dd0dc2917d9d12d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns bmat8::one(dim) <br /></td></tr>
-<tr class="separator:a6b4b7fb599930a47dd0dc2917d9d12d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68417c0a181949133c8e1ee967eef880" id="r_a68417c0a181949133c8e1ee967eef880"><td class="memItemLeft" align="right" valign="top"><a id="a68417c0a181949133c8e1ee967eef880" name="a68417c0a181949133c8e1ee967eef880"></a>
+<a class="el" href="classlibsemigroups_1_1_b_mat8.html">BMat8</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (size_t dim=8) const</td></tr>
+<tr class="memdesc:a68417c0a181949133c8e1ee967eef880"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns bmat8::one(dim) <br /></td></tr>
+<tr class="separator:a68417c0a181949133c8e1ee967eef880"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/Users/jdm3/libsemigroups/include/libsemigroups/<a class="el" href="bmat8_8hpp_source.html">bmat8.hpp</a></li>

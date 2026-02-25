@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.0</span>
+   &#160;<span id="projectnumber">v3.5.1</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -190,6 +190,13 @@ $(function(){initNavTree('md_changelog-v3.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="changelog---version-3"></a></p>
+<h1><a class="anchor" id="v351-released-25022026"></a>
+v3.5.1 (released 25/02/2026)</h1>
+<p>This is a minor release to include a couple of improvements that mysteriously disappeared from the last release. These are:</p>
+<ul>
+<li><code>increase_degree_by</code> throws if the resultant degree would exceed the … by <a href="https://github.com/joseph-edwards">@Joseph-Edwards</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/899">https://github.com/libsemigroups/libsemigroups/pull/899</a></li>
+<li>bmat8: throw from one if dim too high + correct docs for random by <a href="https://github.com/james-d-mitchell">@james-d-mitchell</a> in <a href="https://github.com/libsemigroups/libsemigroups/pull/902">https://github.com/libsemigroups/libsemigroups/pull/902</a></li>
+</ul>
 <h1><a class="anchor" id="v350-released-23022026"></a>
 v3.5.0 (released 23/02/2026)</h1>
 <p>This is a minor release with a number of minor improvements, and a substantial change to <code>ToddCoxeter</code> (the helper function <code>perform_lookbehind</code>) has been moved into <code>ToddCoxeter</code> and a number of variants have been added for running lookaheads and behinds for an amount of time or until a nullary predicate returns <code>true</code>.</p>
