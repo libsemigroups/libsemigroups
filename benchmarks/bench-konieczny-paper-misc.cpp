@@ -1139,5 +1139,4 @@ namespace libsemigroups {
       S.run();
     };
   }
-
 }  // namespace libsemigroups
