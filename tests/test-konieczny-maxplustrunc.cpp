@@ -387,6 +387,7 @@ namespace libsemigroups {
       "033",
       "very large tropical max-plus example (dim 5, threshold 6)",
       "[extreme][konieczny][tropmaxplus]") {
+    auto rg   = ReportGuard(true);
     using Mat = MaxPlusTruncMat<6, 5>;
     std::vector<Mat> gens
         = {Mat({{NEGATIVE_INFINITY,
@@ -510,10 +511,10 @@ namespace libsemigroups {
                 {0, 0, 1, 0, NEGATIVE_INFINITY},
                 {2, 0, NEGATIVE_INFINITY, 1, 2}})};
 
-    Konieczny S = make<Konieczny>(gens);
+    auto S = make<Konieczny>(gens);
 
     S.run();
-    REQUIRE(S.size() == 53643346);
+    REQUIRE(S.size() == 53'643'346);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -576,11 +577,11 @@ namespace libsemigroups {
     FroidurePin F = make<FroidurePin>(gens);
 
     S.run();
-    REQUIRE(S.number_of_D_classes() == 2200);
-    REQUIRE(S.size() == 10000);
+    REQUIRE(S.number_of_D_classes() == 2'200);
+    REQUIRE(S.size() == 10'000);
 
     F.run();
-    REQUIRE(F.size() == 10000);
+    REQUIRE(F.size() == 10'000);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -623,7 +624,7 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == F.size());
 
-    REQUIRE(S.size() == 32311832);
+    REQUIRE(S.size() == 32'311'832);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -760,6 +761,6 @@ namespace libsemigroups {
 
     // REQUIRE(S.size() == F.size());
 
-    REQUIRE(S.size() == 59726943);
+    REQUIRE(S.size() == 59'726'943);
   }
 }  // namespace libsemigroups
