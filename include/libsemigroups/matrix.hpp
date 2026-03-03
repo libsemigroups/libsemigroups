@@ -7926,8 +7926,8 @@ namespace libsemigroups {
       }
       std::decay_t<Container> result;
       for (auto rv : row_basis<Mat>(rvs)) {
-        // TODO: really???
-        result.push_back(std::move(rows[lookup.at(&(*rv.begin()))]));
+        auto&& row = rows[lookup.at(&(*rv.begin()))];
+        result.push_back(std::forward<decltype(row)>(row));
       }
       return result;
     }
