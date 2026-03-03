@@ -312,7 +312,11 @@ namespace libsemigroups {
                        t);
       }
     }
-    report_why_we_stopped();
+    // TODO(later) we should only call report_why_we_stopped if any computation
+    // was actually performed here. This is called repeatedly by Konieczny, for
+    // example, which leads to it just printing hundreds of lines of "#0: :"
+    // into the terminal.
+    // report_why_we_stopped();
   }
 
   ////////////////////////////////////////////////////////////////////////
