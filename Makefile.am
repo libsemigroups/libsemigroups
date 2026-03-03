@@ -95,6 +95,7 @@ pkginclude_HEADERS += include/libsemigroups/konieczny.tpp
 pkginclude_HEADERS += include/libsemigroups/libsemigroups.hpp
 pkginclude_HEADERS += include/libsemigroups/matrix.hpp
 pkginclude_HEADERS += include/libsemigroups/max-plus-trunc-mat.hpp
+pkginclude_HEADERS += include/libsemigroups/max-plus-trunc-mat.tpp
 pkginclude_HEADERS += include/libsemigroups/obvinf.hpp
 pkginclude_HEADERS += include/libsemigroups/order.hpp
 pkginclude_HEADERS += include/libsemigroups/order.tpp
