@@ -175,11 +175,11 @@ namespace libsemigroups {
             typename Element = LeastPerm<N>,
             typename Traits  = SchreierSimsTraits<N, Point, Element>>
   class SchreierSims : private detail::BruidhinnTraits<Element> {
-    static_assert(std::is_same<Point, typename Traits::point_type>::value,
+    static_assert(std::is_same_v<Point, typename Traits::point_type>,
                   "incompatible point types, Traits::point_type and Point "
                   "must be the same");
     static_assert(
-        std::is_same<Element, typename Traits::element_type>::value,
+        std::is_same_v<Element, typename Traits::element_type>,
         "incompatible element types, Traits::element_type and Element "
         "must be the same");
     static_assert(N <= std::numeric_limits<Point>::max(),
@@ -912,7 +912,7 @@ namespace libsemigroups {
     bool is_valid_degree(point_type x) const noexcept {
       return
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-          std::is_same<HPCombi::Perm16, element_type>::value ||
+          std::is_same_v<HPCombi::Perm16, element_type> ||
 #endif
           x == N;
     }
@@ -937,10 +937,9 @@ namespace libsemigroups {
 
     bool internal_equal_to(internal_const_element_type x,
                            internal_const_element_type y) const
-        noexcept(noexcept(
-            EqualTo()(this->to_external_const(x),
-                      this->to_external_const(
-                          y)) && noexcept(this->to_external_const(x)))) {
+        noexcept(noexcept(EqualTo()(this->to_external_const(x),
+                                    this->to_external_const(y))
+                          && noexcept(this->to_external_const(x)))) {
       return EqualTo()(this->to_external_const(x), this->to_external_const(y));
     }
 
