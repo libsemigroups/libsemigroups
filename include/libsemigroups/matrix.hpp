@@ -314,13 +314,13 @@ namespace libsemigroups {
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
       auto resize(size_t r, size_t c) -> std::enable_if_t<
-          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+          std::is_same_v<SFINAE, std::vector<scalar_type>>> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
       auto resize(size_t, size_t) -> std::enable_if_t<
-          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+          !std::is_same_v<SFINAE, std::vector<scalar_type>>> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -631,8 +631,7 @@ namespace libsemigroups {
       template <typename U>
       std::pair<scalar_type, scalar_type> coords(U const& it) const {
         static_assert(
-            std::is_same<U, iterator>::value
-                || std::is_same<U, const_iterator>::value,
+            std::is_same_v<U, iterator> || std::is_same_v<U, const_iterator>,
             "the parameter it must be of type iterator or const_iterator");
         scalar_type const v = std::distance(_container.begin(), it);
         return std::make_pair(v / number_of_cols(), v % number_of_cols());
@@ -1524,8 +1523,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2781,9 +2780,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -6682,7 +6681,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -7300,8 +7299,8 @@ namespace libsemigroups {
       using value_type = typename std::decay_t<Container>::value_type;
       // std::vector<bool> is used as value_type in the benchmarks
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(std::is_same<value_type, RowView>::value
-                        || std::is_same<value_type, std::vector<bool>>::value,
+      static_assert(std::is_same_v<value_type, RowView>
+                        || std::is_same_v<value_type, std::vector<bool>>,
                     "Container::value_type must equal Mat::RowView or "
                     "std::vector<bool>!!");
       static_assert(R <= BitSet<1>::max_size(),
@@ -7352,8 +7351,8 @@ namespace libsemigroups {
       using RowView    = typename Mat::RowView;
       using value_type = typename std::decay_t<Container>::value_type;
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(std::is_same<value_type, RowView>::value
-                        || std::is_same<value_type, std::vector<bool>>::value,
+      static_assert(std::is_same_v<value_type, RowView>
+                        || std::is_same_v<value_type, std::vector<bool>>,
                     "Container::value_type must equal Mat::RowView or "
                     "std::vector<bool>!!");
       static_assert(R <= BitSet<1>::max_size(),
@@ -7640,7 +7639,7 @@ namespace libsemigroups {
     std::enable_if_t<IsMaxPlusTruncMat<Mat>>
     row_basis(Container&& views, std::decay_t<Container>& result) {
       using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(std::is_same<value_type, typename Mat::RowView>::value,
+      static_assert(std::is_same_v<value_type, typename Mat::RowView>,
                     "Container::value_type must be Mat::RowView");
       using scalar_type = typename Mat::scalar_type;
       using Row         = typename Mat::Row;
@@ -7720,8 +7719,8 @@ namespace libsemigroups {
       using RowView    = typename Mat::RowView;
       using value_type = typename std::decay_t<Container>::value_type;
       // std::vector<bool> is used as value_type in the benchmarks
-      static_assert(std::is_same<value_type, RowView>::value
-                        || std::is_same<value_type, std::vector<bool>>::value,
+      static_assert(std::is_same_v<value_type, RowView>
+                        || std::is_same_v<value_type, std::vector<bool>>,
                     "Container::value_type must equal Mat::RowView or "
                     "std::vector<bool>!!");
 
@@ -7861,7 +7860,7 @@ namespace libsemigroups {
     std::decay_t<Container> row_basis(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
       static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
-      static_assert(std::is_same<value_type, typename Mat::RowView>::value,
+      static_assert(std::is_same_v<value_type, typename Mat::RowView>,
                     "Container::value_type must be Mat::RowView");
 
       std::decay_t<Container> result;
@@ -7914,7 +7913,7 @@ namespace libsemigroups {
     row_basis_rows(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
       static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
-      static_assert(std::is_same<value_type, typename Mat::Row>::value,
+      static_assert(std::is_same_v<value_type, typename Mat::Row>,
                     "Container::value_type must be Mat::Row");
 
       detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> rvs;

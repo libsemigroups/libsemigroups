@@ -697,7 +697,7 @@ namespace libsemigroups {
             typename Point,
             typename Container = std::vector<Point>>
   struct OnTuples {
-    static_assert(std::is_same<typename Container::value_type, Point>::value,
+    static_assert(std::is_same_v<typename Container::value_type, Point>,
                   "the 3rd template parameter is not a container of objects of "
                   "type the 2nd template parameter");
     //! \brief Calculate right actions of each element in a container.
