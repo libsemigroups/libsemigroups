@@ -18,13 +18,17 @@
 #ifndef LIBSEMIGROUPS_MAX_PLUS_TRUNC_MAT_HPP_
 #define LIBSEMIGROUPS_MAX_PLUS_TRUNC_MAT_HPP_
 
-#include <cstddef>  // for size_t
+#include <cstddef>        // for size_t
+#include <numeric>        // for inner_product
+#include <type_traits>    // for enable_if_t, enable_if
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for move
 
-#include "action.hpp"     // for RightAction
-#include "adapters.hpp"   // for ImageRightAction
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "matrix.hpp"     // for MaxPlusTruncMat
+#include "action.hpp"    // for RightAction
+#include "adapters.hpp"  // for ImageRightAction
+#include "matrix.hpp"    // for MaxPlusTruncMat
+
+#include "detail/containers.hpp"  // for StaticVector1
 
 namespace libsemigroups {
   // ////////////////////////////////////////////////////////////////////////
@@ -43,31 +47,7 @@ namespace libsemigroups {
     using result_type = typename LambdaValue<Mat>::type;
     void operator()(result_type&       res,
                     result_type const& pt,
-                    Mat const&         x) const {
-      using scalar_type = typename Mat::scalar_type;
-      res.clear();
-      // TODO this is bad but I don't see any good ways around it
-      const_cast<Mat*>(&x)->transpose();
-      auto        rows = matrix::rows(x);
-      result_type prod_rows;
-
-      for (size_t r = 0; r < pt.size(); ++r) {
-        typename Mat::Row row;
-        for (size_t c = 0; c < Mat::nr_cols; ++c) {
-          row(0, c) = std::inner_product(
-              pt[r].cbegin(),
-              pt[r].cend(),
-              rows[c].cbegin(),
-              MaxPlusZero<scalar_type>()(),
-              MaxPlusPlus<scalar_type>(),
-              MaxPlusTruncProd<detail::IsTruncMatHelper<Mat>::threshold,
-                               scalar_type>());
-        }
-        prod_rows.emplace_back(std::move(row));
-      }
-      const_cast<Mat*>(&x)->transpose();
-      res = std::move(matrix::row_basis_rows<Mat>(prod_rows));
-    }
+                    Mat const&         x) const;
   };
 
   //! Specialization of the adapter ImageLeftAction for
@@ -161,29 +141,10 @@ namespace libsemigroups {
   template <typename Mat>
   struct Rank<Mat, RankState<Mat>, std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
     //! Returns the size of the row space of x.
-    inline size_t operator()(Mat const& x) const {
-      using row_type = typename Mat::Row;
-      auto row_views = matrix::rows(x);
-      RightAction<row_type, row_type, matrix::RowSum<row_type>> orb;
-      row_type                                                  seed;
-      for (auto it = seed.begin(); it != seed.end(); ++it) {
-        *it = MaxPlusZero<typename Mat::scalar_type>()();
-      }
-      orb.add_seed(seed);
-      std::unordered_set<row_type, Hash<row_type>> gens;
-      for (auto const& row : row_views) {
-        for (typename Mat::scalar_type i = 0;
-             i <= detail::IsTruncMatHelper<Mat>::threshold;
-             ++i) {
-          gens.insert(row_type(row * i));
-        }
-      }
-      for (auto& gen : gens) {
-        orb.add_generator(gen);
-      }
-      orb.run();
-      return orb.size();
-    }
+    size_t operator()(Mat const& x) const;
   };
 }  // namespace libsemigroups
+
+#include "max-plus-trunc-mat.tpp"
+
 #endif  // LIBSEMIGROUPS_MAX_PLUS_TRUNC_MAT_HPP_
