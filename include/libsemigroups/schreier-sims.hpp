@@ -933,9 +933,10 @@ namespace libsemigroups {
 
     bool internal_equal_to(internal_const_element_type x,
                            internal_const_element_type y) const
-        noexcept(noexcept(EqualTo()(this->to_external_const(x),
-                                    this->to_external_const(y))
-                          && noexcept(this->to_external_const(x)))) {
+        noexcept(noexcept(
+            EqualTo()(this->to_external_const(x),
+                      this->to_external_const(
+                          y)) && noexcept(this->to_external_const(x)))) {
       return EqualTo()(this->to_external_const(x), this->to_external_const(y));
     }
 

@@ -21,7 +21,7 @@ namespace libsemigroups {
   void ImageRightAction<Mat,
                         typename LambdaValue<Mat>::type,
                         std::enable_if_t<IsMaxPlusTruncMat<Mat>>>::
-  operator()(result_type& res, result_type const& pt, Mat const& x) const {
+       operator()(result_type& res, result_type const& pt, Mat const& x) const {
     using scalar_type = typename Mat::scalar_type;
     res.clear();
     // TODO this is bad but I don't see any good ways around it
@@ -49,7 +49,7 @@ namespace libsemigroups {
 
   template <typename Mat>
   size_t Rank<Mat, RankState<Mat>, std::enable_if_t<IsMaxPlusTruncMat<Mat>>>::
-  operator()(Mat const& x) const {
+         operator()(Mat const& x) const {
     using row_type = typename Mat::Row;
     auto row_views = matrix::rows(x);
     RightAction<row_type, row_type, matrix::RowSum<row_type>> orb;
