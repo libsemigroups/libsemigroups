@@ -15,13 +15,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
+#include <vector>  // for vector
 
 #include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"                       // FOR LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/action.hpp"          // for Action::position, Acti...
 #include "libsemigroups/konieczny.hpp"       // for Konieczny
-#include "libsemigroups/twisted-bipart.hpp"  // for TwistedBipartition
+#include "libsemigroups/ranges.hpp"          // for operator|
+#include "libsemigroups/runner.hpp"          // for Runner::run_until
+#include "libsemigroups/twisted-bipart.hpp"  // for TwistedBipartition, make
+#include "libsemigroups/word-graph.hpp"      // for WordGraph::target
+
+#include "libsemigroups/detail/fmt.hpp"       // for fmt
+#include "libsemigroups/detail/iterator.hpp"  // for operator+
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
+#include "libsemigroups/detail/string.hpp"    // for group_digits
 
 namespace libsemigroups {
 
