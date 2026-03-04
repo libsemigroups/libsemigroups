@@ -38,7 +38,7 @@ namespace libsemigroups {
                           "048",
                           "small TwistedBipartition example",
                           "[quick][konieczny]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     auto x = make<TwistedBipartition>({{1, 5, 8, -1, -2, -4, -10},
                                        {2, 4, 7, -8},
@@ -84,7 +84,7 @@ namespace libsemigroups {
                           "050",
                           "twisted Brauer monoid, degree 6 threshold 1",
                           "[quick][konieczny]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     auto x = make<TwistedBipartition>(
         {{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 1, 0);
@@ -107,7 +107,7 @@ namespace libsemigroups {
                           "051",
                           "twisted Brauer gens, degree 6 threshold 1",
                           "[quick][konieczny]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     auto x = make<TwistedBipartition>(
         {{1, -1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 50, 0);
@@ -129,7 +129,7 @@ namespace libsemigroups {
                           "052",
                           "twisted Partition gens, degree 6 threshold 10",
                           "[standard][konieczny]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     auto x = make<TwistedBipartition>(
         {{1}, {-1}, {2, -2}, {3, -3}, {4, -4}, {5, -5}, {6, -6}}, 10, 0);
