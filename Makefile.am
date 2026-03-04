@@ -1321,10 +1321,13 @@ test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
 
 bench_all_SOURCES  = benchmarks/bench-action.cpp
+bench_all_SOURCES += benchmarks/bench-bipartition.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
 bench_all_SOURCES += benchmarks/bench-forest.cpp
 bench_all_SOURCES += benchmarks/bench-freeband.cpp
 bench_all_SOURCES += benchmarks/bench-kambites.cpp
+bench_all_SOURCES += benchmarks/bench-konieczny-twisted-bipart.cpp
+bench_all_SOURCES += benchmarks/bench-konieczny-paper-misc.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-multi-view.cpp
 bench_all_SOURCES += benchmarks/bench-rewriters.cpp
