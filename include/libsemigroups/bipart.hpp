@@ -1617,6 +1617,8 @@ namespace libsemigroups {
       return _trans_blocks_lookup;
     }
 
+    // TODO make private
+    // TODO rename to reset_cached_values?
     void invalidate_cache() const;
 
    private:
