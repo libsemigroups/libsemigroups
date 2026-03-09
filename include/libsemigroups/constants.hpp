@@ -219,12 +219,66 @@ namespace libsemigroups {
       return false;
     }
 
+    // operator>=
+    // No SFINAE required, since the functions delegated to don't exist.
+    template <int64_t R, typename S, typename T>
+    constexpr bool operator>=(Constant<R, S> const& lhs,
+                              T const&              rhs) noexcept {
+      return !(lhs < rhs);
+    }
+
+    template <int64_t R, typename S, typename T>
+    constexpr bool operator>=(T const&              lhs,
+                              Constant<R, S> const& rhs) noexcept {
+      return !(lhs < rhs);
+    }
+
+    // Resolves ambiguity when both sides are different Constant types.
+    template <int64_t R1, typename S1, int64_t R2, typename S2>
+    constexpr bool operator>=(Constant<R1, S1> const& lhs,
+                              Constant<R2, S2> const& rhs) noexcept {
+      return !(lhs < rhs);
+    }
+
+    template <int64_t R, typename S>
+    constexpr bool operator>=(Constant<R, S> const&,
+                              Constant<R, S> const&) noexcept {
+      return true;
+    }
+
+    // operator<=
+    // No SFINAE required, since the functions delegated to don't exist.
+    template <int64_t R, typename S, typename T>
+    constexpr bool operator<=(Constant<R, S> const& lhs,
+                              T const&              rhs) noexcept {
+      return !(rhs < lhs);
+    }
+
+    template <int64_t R, typename S, typename T>
+    constexpr bool operator<=(T const&              lhs,
+                              Constant<R, S> const& rhs) noexcept {
+      return !(rhs < lhs);
+    }
+
+    // Resolves ambiguity when both sides are different Constant types.
+    template <int64_t R1, typename S1, int64_t R2, typename S2>
+    constexpr bool operator<=(Constant<R1, S1> const& lhs,
+                              Constant<R2, S2> const& rhs) noexcept {
+      return !(rhs < lhs);
+    }
+
+    template <int64_t R, typename S>
+    constexpr bool operator<=(Constant<R, S> const&,
+                              Constant<R, S> const&) noexcept {
+      return true;
+    }
+
+    // operator<
     template <int64_t R, typename S>
     constexpr bool operator<(Constant<R, S> const&,
                              Constant<R, S> const&) noexcept {
       return false;
     }
-
     // No further operator< for Constant and Constant unless given explicitly
 
     ////////////////////////////////////////////////////////////////////////

@@ -57,6 +57,12 @@ namespace libsemigroups {
     // operator<
     REQUIRE(!(UNDEFINED < UNDEFINED));
 
+    // operator<=
+    REQUIRE(UNDEFINED <= UNDEFINED);
+
+    // operator>=
+    REQUIRE(UNDEFINED >= UNDEFINED);
+
     // Doesn't compile (intentionally!)
     // REQUIRE(UNDEFINED < POSITIVE_INFINITY);
     // REQUIRE(POSITIVE_INFINITY < UNDEFINED);
@@ -120,6 +126,23 @@ namespace libsemigroups {
     REQUIRE(!(0 > POSITIVE_INFINITY));
     REQUIRE(POSITIVE_INFINITY > 100);
 
+    // operator<=
+    REQUIRE(!(POSITIVE_INFINITY <= 0));
+    REQUIRE(POSITIVE_INFINITY <= POSITIVE_INFINITY);
+    REQUIRE(0 <= POSITIVE_INFINITY);
+    REQUIRE(1000 <= POSITIVE_INFINITY);
+    REQUIRE(size_t(0) <= POSITIVE_INFINITY);
+    REQUIRE(size_t(1000) <= POSITIVE_INFINITY);
+    REQUIRE(static_cast<int64_t>((0)) <= POSITIVE_INFINITY);
+    REQUIRE(static_cast<int64_t>((1000)) <= POSITIVE_INFINITY);
+    REQUIRE(NEGATIVE_INFINITY <= POSITIVE_INFINITY);
+
+    // operator>=
+    REQUIRE(POSITIVE_INFINITY >= POSITIVE_INFINITY);
+    REQUIRE(POSITIVE_INFINITY >= 0);
+    REQUIRE(!(0 >= POSITIVE_INFINITY));
+    REQUIRE(POSITIVE_INFINITY >= 100);
+
     // Doesn't compile (intentionally!)
     // REQUIRE(ForTesting() < POSITIVE_INFINITY);
   }
@@ -161,6 +184,21 @@ namespace libsemigroups {
     REQUIRE(!(NEGATIVE_INFINITY > 0));
     REQUIRE(0 > NEGATIVE_INFINITY);
     REQUIRE(!(NEGATIVE_INFINITY > 100));
+
+    // operator<=
+    REQUIRE(NEGATIVE_INFINITY <= 0);
+    REQUIRE(NEGATIVE_INFINITY <= NEGATIVE_INFINITY);
+    REQUIRE(!(0 <= NEGATIVE_INFINITY));
+    REQUIRE(!(1000 <= NEGATIVE_INFINITY));
+    REQUIRE(!(static_cast<int64_t>((0)) <= NEGATIVE_INFINITY));
+    REQUIRE(!(static_cast<int64_t>((1000)) <= NEGATIVE_INFINITY));
+    REQUIRE(!(POSITIVE_INFINITY <= NEGATIVE_INFINITY));
+
+    // operator>=
+    REQUIRE(NEGATIVE_INFINITY >= NEGATIVE_INFINITY);
+    REQUIRE(!(NEGATIVE_INFINITY >= 0));
+    REQUIRE(0 >= NEGATIVE_INFINITY);
+    REQUIRE(!(NEGATIVE_INFINITY >= 100));
 
     // Don't compile on purpose!
     // REQUIRE(ForTesting() < NEGATIVE_INFINITY);
@@ -206,5 +244,15 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(100 < LIMIT_MAX);
     REQUIRE_NOTHROW(!(0 > LIMIT_MAX));
     REQUIRE_NOTHROW(!(100 > LIMIT_MAX));
+
+    // operator>= and operator<=
+    REQUIRE(LIMIT_MAX >= LIMIT_MAX);
+    REQUIRE(LIMIT_MAX <= LIMIT_MAX);
+    REQUIRE_NOTHROW(LIMIT_MAX >= 0);
+    REQUIRE_NOTHROW(!(0 >= LIMIT_MAX));
+    REQUIRE_NOTHROW(0 <= LIMIT_MAX);
+    REQUIRE_NOTHROW(100 <= LIMIT_MAX);
+    REQUIRE_NOTHROW(!(0 >= LIMIT_MAX));
+    REQUIRE_NOTHROW(!(100 >= LIMIT_MAX));
   }
 }  // namespace libsemigroups
