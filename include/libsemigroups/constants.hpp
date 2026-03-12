@@ -431,7 +431,7 @@ namespace libsemigroups {
     constexpr bool operator>=(Undefined const&, Undefined const&) noexcept {
       return true;
     }
-  }  // namespace detail
+  }     // namespace detail
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONSTANTS_HPP_
