@@ -401,8 +401,24 @@ namespace libsemigroups {
         if (_num == 0) {
           return;
         }
-        auto last = const_pstilo_iterator<node_type>();
-        _it       = const_pstilo_iterator(ptr, source, target, min, min);
+
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+        // It seems that with some versions of gcc the next line causes a
+        // "maybe-uninitialized" compiler warning, related to the member "_edge"
+        // of const_pstilo_iterator. This warning is correct in the sense that
+        // "_edge" will be uninitialized in "last" (since at time of writing
+        // const_pstilo_iterator::const_pstilo_iterator() = default). However,
+        // "last" is only used for comparison with "_it" and
+        // const_pstilo_iterator::operator== only currently uses "_nodes", and
+        // so it doesn't matter if "_edge" is uninitialised, and so we suppress
+        // the warning.
+        auto const last = const_pstilo_iterator<node_type>();
+#pragma GCC diagnostic pop
+
+        _it = const_pstilo_iterator(ptr, source, target, min, min);
         // TODO(1) optimize to avoid this, by simply computing the distance from
         // source to target (could use is_reachable)
         while (_it == last && min <= max) {
