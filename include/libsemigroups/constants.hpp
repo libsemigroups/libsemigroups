@@ -118,7 +118,7 @@ namespace libsemigroups {
   //!
   //! This variable is used to indicate that a value is undefined.
   //! \ref UNDEFINED is comparable with any integral value (signed or unsigned)
-  //! or constant via `==` and `!=` but not via `<` or `>`.
+  //! or constant via `==`, `<=`, `>=` and `!=` but not via `<` or `>`.
   extern Undefined const UNDEFINED;
 
   //! \ingroup constants_group
@@ -126,9 +126,10 @@ namespace libsemigroups {
   //! \brief Value for positive infinity.
   //!
   //! This variable represents \f$\infty\f$.  \ref POSITIVE_INFINITY is
-  //! comparable via `==`, `!=`, `<`, `>` with any integral value (signed or
-  //! unsigned) and with \ref NEGATIVE_INFINITY, and is comparable to any other
-  //! constant via `==` and `!=`, but not by `<` and `>`.
+  //! comparable via `==`, `!=`, `<`, `<=`, `>`, `>=` with any integral value
+  //! (signed or unsigned) and with \ref NEGATIVE_INFINITY, and is comparable
+  //! to any other constant via `==` and `!=`, but not by `<`, `<=`, `>` and
+  //! `>=`.
   extern PositiveInfinity const POSITIVE_INFINITY;
 
   //! \ingroup constants_group
@@ -136,9 +137,9 @@ namespace libsemigroups {
   //! \brief Value for the maximum of something.
   //!
   //! This variable represents the maximum value that certain function
-  //! parameters can have. \ref LIMIT_MAX is comparable via `==`, `!=`, `<`, `>`
-  //! with any integral value (signed or unsigned), and is comparable to any
-  //! other constant via `==` and `!=`, but not by `<` and `>`.
+  //! parameters can have. \ref LIMIT_MAX is comparable via `==`, `!=`, `<`,
+  //! `>` with any integral value (signed or unsigned), and is comparable to
+  //! any other constant via `==` and `!=`, but not by `<`, `>`, `<=` and `>=`.
   extern LimitMax const LIMIT_MAX;
 
   //! \ingroup constants_group
@@ -146,9 +147,9 @@ namespace libsemigroups {
   //! \brief Value for negative infinity.
   //!
   //! This variable represents \f$-\infty\f$.  \ref NEGATIVE_INFINITY is
-  //! comparable via `==`, `!=`, `<`, `>` with any signed integral value and
-  //! with \ref POSITIVE_INFINITY, and is comparable to any other constant via
-  //! `==` and `!=`.
+  //! comparable via `==`, `!=`, `<`, `<=`, `>`, `>=` with any signed integral
+  //! value and with \ref POSITIVE_INFINITY, and is comparable to any other
+  //! constant via `==` and `!=`.
   extern NegativeInfinity const NEGATIVE_INFINITY;
 
   ////////////////////////////////////////////////////////////////////////
@@ -219,61 +220,7 @@ namespace libsemigroups {
       return false;
     }
 
-    // operator>=
-    // No SFINAE required, since the functions delegated to don't exist.
-    template <int64_t R, typename S, typename T>
-    constexpr bool operator>=(Constant<R, S> const& lhs,
-                              T const&              rhs) noexcept {
-      return !(lhs < rhs);
-    }
-
-    template <int64_t R, typename S, typename T>
-    constexpr bool operator>=(T const&              lhs,
-                              Constant<R, S> const& rhs) noexcept {
-      return !(lhs < rhs);
-    }
-
-    // Resolves ambiguity when both sides are different Constant types.
-    template <int64_t R1, typename S1, int64_t R2, typename S2>
-    constexpr bool operator>=(Constant<R1, S1> const& lhs,
-                              Constant<R2, S2> const& rhs) noexcept {
-      return !(lhs < rhs);
-    }
-
-    template <int64_t R, typename S>
-    constexpr bool operator>=(Constant<R, S> const&,
-                              Constant<R, S> const&) noexcept {
-      return true;
-    }
-
-    // operator<=
-    // No SFINAE required, since the functions delegated to don't exist.
-    template <int64_t R, typename S, typename T>
-    constexpr bool operator<=(Constant<R, S> const& lhs,
-                              T const&              rhs) noexcept {
-      return !(rhs < lhs);
-    }
-
-    template <int64_t R, typename S, typename T>
-    constexpr bool operator<=(T const&              lhs,
-                              Constant<R, S> const& rhs) noexcept {
-      return !(rhs < lhs);
-    }
-
-    // Resolves ambiguity when both sides are different Constant types.
-    template <int64_t R1, typename S1, int64_t R2, typename S2>
-    constexpr bool operator<=(Constant<R1, S1> const& lhs,
-                              Constant<R2, S2> const& rhs) noexcept {
-      return !(rhs < lhs);
-    }
-
-    template <int64_t R, typename S>
-    constexpr bool operator<=(Constant<R, S> const&,
-                              Constant<R, S> const&) noexcept {
-      return true;
-    }
-
-    // operator<
+    // operator<<
     template <int64_t R, typename S>
     constexpr bool operator<(Constant<R, S> const&,
                              Constant<R, S> const&) noexcept {
@@ -344,7 +291,147 @@ namespace libsemigroups {
         -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
       return lhs - rhs.operator T();
     }
-  }     // namespace detail
+
+    // operator>= and operator<= for PositiveInfinity
+    // PositiveInfinity is always greater than or equal to any integral.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator>=(PositiveInfinity const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>
+                                || std::is_same_v<NegativeInfinity, T>,
+                            SFINAE> {
+      return true;
+    }
+
+    // PositiveInfinity is equal to itself.
+    constexpr bool operator>=(PositiveInfinity const&,
+                              PositiveInfinity const&) noexcept {
+      return true;
+    }
+
+    // PositiveInfinity is never less than or equal to any integral.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator>=(T const&, PositiveInfinity const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>
+                                || std::is_same_v<NegativeInfinity, T>,
+                            SFINAE> {
+      return false;
+    }
+
+    // An integral is never greater than or equal to PositiveInfinity.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator<=(PositiveInfinity const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>
+                                || std::is_same_v<NegativeInfinity, T>,
+                            SFINAE> {
+      return false;
+    }
+
+    // PositiveInfinity is equal to itself.
+    constexpr bool operator<=(PositiveInfinity const&,
+                              PositiveInfinity const&) noexcept {
+      return true;
+    }
+
+    // PositiveInfinity is always greater than or equal to any integral.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator<=(T const&, PositiveInfinity const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>
+                                || std::is_same_v<NegativeInfinity, T>,
+                            SFINAE> {
+      return true;
+    }
+
+    // operator>= and operator<= for NegativeInfinity
+    // NegativeInfinity is never greater than or equal to any integral value.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator>=(NegativeInfinity const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return false;
+    }
+
+    // NegativeInfinity is equal to itself.
+    constexpr bool operator>=(NegativeInfinity const&,
+                              NegativeInfinity const&) noexcept {
+      return true;
+    }
+
+    // NegativeInfinity is always less than any integral value.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator>=(T const&, NegativeInfinity const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return true;
+    }
+
+    // NegativeInfinity is always less than or equal to any integral.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator<=(NegativeInfinity const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return true;
+    }
+
+    // NegativeInfinity is equal to itself.
+    constexpr bool operator<=(NegativeInfinity const&,
+                              NegativeInfinity const&) noexcept {
+      return true;
+    }
+
+    // An integral value is never leass than or equal to NegativeInfinity.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator<=(T const&, NegativeInfinity const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return false;
+    }
+
+    // operator>= and operator<= for LimitMax
+    // LimitMax is always greater than or equal to any integral value.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator>=(LimitMax const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return true;
+    }
+
+    // LimitMax CAN be compared to itself.
+    constexpr bool operator>=(LimitMax const&, LimitMax const&) noexcept {
+      return true;
+    }
+
+    // LimitMax is never less than or equal to an integral value.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator>=(T const&, LimitMax const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return false;
+    }
+
+    // LimitMax is never less than or equal to an integral value.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator<=(LimitMax const&, T const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return false;
+    }
+
+    // LimitMax is equal to itself.
+    constexpr bool operator<=(LimitMax const&, LimitMax const&) noexcept {
+      return true;
+    }
+
+    // LimitMax is always greater than or equal to any intergral value.
+    template <typename T, typename SFINAE = bool>
+    constexpr auto operator<=(T const&, LimitMax const&) noexcept
+        -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
+      return true;
+    }
+
+    // operator>= and operator<= for Undefined
+    // Undefined can be compared to itself.
+    constexpr bool operator<=(Undefined const&, Undefined const&) noexcept {
+      return true;
+    }
+
+    // Undefined is always equal to itself.
+    constexpr bool operator>=(Undefined const&, Undefined const&) noexcept {
+      return true;
+    }
+  }  // namespace detail
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONSTANTS_HPP_
