@@ -8543,6 +8543,9 @@ namespace libsemigroups {
   //! \ref IsMatrix.
   //!
   //! \tparam Mat the type of matrices.
+  //!
+  //! \note There is no `operator()(size_t)` meaning it isn't possible to use
+  //! elements of type \p Mat with \ref SchreierSims.
   template <typename Mat>
   struct One<Mat, std::enable_if_t<IsMatrix<Mat>>> {
     //! \brief Call operator.
