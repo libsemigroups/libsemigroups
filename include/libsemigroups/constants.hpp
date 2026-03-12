@@ -414,7 +414,7 @@ namespace libsemigroups {
       return true;
     }
 
-    // LimitMax is always greater than or equal to any intergral value.
+    // LimitMax is always greater than or equal to any integral value.
     template <typename T, typename SFINAE = bool>
     constexpr auto operator<=(T const&, LimitMax const&) noexcept
         -> std::enable_if_t<std::is_integral_v<T>, SFINAE> {
