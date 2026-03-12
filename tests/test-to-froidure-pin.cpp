@@ -137,7 +137,7 @@ namespace libsemigroups {
       REQUIRE(Complexity<decltype(v)>()(v) == LIMIT_MAX);
       IncreaseDegree<decltype(v)>()(v, 0);
       REQUIRE(Degree<decltype(v)>()(v) == 0);
-      v = One<decltype(v)>()();
+      v = One<decltype(v)>()(v);
       REQUIRE(v.to_word(k) == ""_w);
     }
   }  // namespace

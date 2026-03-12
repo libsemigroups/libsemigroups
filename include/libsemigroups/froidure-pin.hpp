@@ -173,7 +173,7 @@ namespace libsemigroups {
   //! };
   //! \end_code_no_test
   //! \code_no_test
-  //!  using namespace froidure_pin;
+  //! using namespace froidure_pin;
   //! FroidurePin<int> S({2});
   //! S.size();           // 32
   //! S.number_of_idempotents();  // 1

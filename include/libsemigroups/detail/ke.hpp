@@ -143,10 +143,8 @@ namespace libsemigroups {
     detail::KE<Word> operator()(detail::KE<Word> const&) {
       return detail::KE<Word>();
     }
-
-    detail::KE<Word> operator()(size_t = 0) const {
-      return detail::KE<Word>();
-    }
+    // No operator()(size_t) because it's only required for SchreierSims, and we
+    // couldn't use KE elements in SchreierSims anyway.
   };
 
   template <typename Word>

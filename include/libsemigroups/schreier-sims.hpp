@@ -61,6 +61,7 @@
 #include "detail/containers.hpp"        // for Array2, StaticTriVector2
 #include "detail/fmt.hpp"               // for format
 #include "detail/int-range.hpp"         // for IntRange
+#include "detail/stl.hpp"               // for has_call_operator_size_t_v
 
 namespace libsemigroups {
 
@@ -250,6 +251,9 @@ namespace libsemigroups {
 
     //! \copydoc libsemigroups::Swap
     using Swap = typename Traits::Swap;
+
+    static_assert(detail::has_call_operator_size_t_v<One>,
+                  "Traits::One must implement operator()(size_t)!");
 
    private:
     // TODO replace Array2 by TriArray2 everywhere below

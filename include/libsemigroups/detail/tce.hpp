@@ -135,6 +135,8 @@ namespace libsemigroups {
     detail::TCE operator()(detail::TCE const& x) const noexcept {
       return x.one();
     }
+    // No operator()(size_t) because it's only required for SchreierSims, and we
+    // couldn't use TCE elements in SchreierSims anyway.
   };
 
   template <>

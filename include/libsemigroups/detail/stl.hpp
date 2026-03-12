@@ -103,6 +103,26 @@ namespace libsemigroups {
     template <typename... Args>
     inline constexpr bool is_array_v = is_array<Args...>::value;
 
+    template <typename T>
+    struct has_call_operator_size_t {
+     private:
+      template <typename U>
+      static auto test(int)  // NOLINT(readability/casting)
+          -> decltype(std::declval<U>()(std::declval<size_t>()),
+                      std::true_type{});
+
+      template <typename>
+      static std::false_type test(...);
+
+     public:
+      static constexpr bool value = decltype(test<T>(0))::value;
+    };
+
+    // Convenience variable template (C++17)
+    template <typename T>
+    inline constexpr bool has_call_operator_size_t_v
+        = has_call_operator_size_t<T>::value;
+
   }  // namespace detail
 }  // namespace libsemigroups
 
