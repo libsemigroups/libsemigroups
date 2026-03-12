@@ -57,12 +57,6 @@ namespace libsemigroups {
     // operator<
     REQUIRE(!(UNDEFINED < UNDEFINED));
 
-    // operator<=
-    REQUIRE(UNDEFINED <= UNDEFINED);
-
-    // operator>=
-    REQUIRE(UNDEFINED >= UNDEFINED);
-
     // Doesn't compile (intentionally!)
     // REQUIRE(UNDEFINED < POSITIVE_INFINITY);
     // REQUIRE(POSITIVE_INFINITY < UNDEFINED);
@@ -70,6 +64,8 @@ namespace libsemigroups {
     // REQUIRE(NEGATIVE_INFINITY < UNDEFINED);
     // REQUIRE(UNDEFINED < LIMIT_MAX);
     // REQUIRE(LIMIT_MAX < UNDEFINED);
+    // REQUIRE(UNDEFINED <= UNDEFINED);
+    // REQUIRE(UNDEFINED >= UNDEFINED);
 
     // Doesn't compile (intentionally!)
     // REQUIRE(ForTesting() == UNDEFINED);
