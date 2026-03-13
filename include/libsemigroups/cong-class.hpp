@@ -289,8 +289,9 @@ namespace libsemigroups {
     //!
     //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed that \ref started returns \c false. Adding
-    //! generating pairs after \ref started is not permitted (but also not
+    //! \warning It is assumed that \ref started and
+    //! \ref any_runner_started returns \c false. Adding generating pairs after
+    //! either of these functions returns \c true is not permitted (but also not
     //! checked by this function).
     template <typename Iterator1,
               typename Iterator2,
@@ -300,6 +301,7 @@ namespace libsemigroups {
                                               Iterator2 last1,
                                               Iterator3 first2,
                                               Iterator4 last2) {
+      LIBSEMIGROUPS_ASSERT(!any_runner_started());
       _runners_initted = false;
       return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
           Congruence>(first1, last1, first2, last2);
@@ -328,6 +330,11 @@ namespace libsemigroups {
                                     Iterator3 first2,
                                     Iterator4 last2) {
       _runners_initted = false;
+      if (any_runner_started()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "any_runner_started() returned \"true\" so no further "
+            "generating pairs can be added at this stage");
+      }
       return detail::CongruenceCommon::add_generating_pair<Congruence>(
           first1, last1, first2, last2);
     }
@@ -698,6 +705,32 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] size_t number_of_runners() const noexcept {
       return _race.number_of_runners();
+    }
+
+    //! \ingroup congruence_class_accessors_group
+    //!
+    //! \brief Check if any runner has \ref started.
+    //!
+    //! This function returns \c true if any runner in a \ref_congruence object
+    //! has started and \c false otherwise. You might expect that \ref started
+    //! would return the same answer, but remember that \ref started returns \c
+    //! true if and only if \ref run has been called at least once; and there
+    //! are helper functions, such as \ref is_obviously_infinite, that might
+    //! start some of the runners of a \ref_congruence without ever calling
+    //! \ref Congruence::run.
+    //!
+    //! \returns Whether any runner has started.
+    //!
+    //! \exceptions
+    //! \noexcept
+    // NOTE: for Congruence objects it's possible that "any_runner_started" is
+    // true but "started" is false ("started" is true if and only if "run_impl"
+    // has been called at least once, but, e.g. is_obviously_infinite might
+    // call Kambites::start but there's no call to Congruence::run_impl).
+    [[nodiscard]] bool any_runner_started() const noexcept {
+      return std::any_of(_race.begin(), _race.end(), [](auto const& r) {
+        return r->started();
+      });
     }
 
     //! \ingroup congruence_class_intf_group
