@@ -1,5 +1,18 @@
 # Changelog - version 3
 
+## v3.5.2 (released 14/03/2026)
+
+This a minor release including a couple of improvements, including:
+
+- Resolve issue 907 by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/913
+- Report fixes from Issue 907 by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/917
+- Clarify one adapter by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/915
+- path-iterators: suppress harmless compile warning by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/914
+
 ## v3.5.1 (released 25/02/2026)
 
 This is a minor release to include a couple of improvements that mysteriously
