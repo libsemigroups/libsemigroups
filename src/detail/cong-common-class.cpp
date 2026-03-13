@@ -41,8 +41,8 @@ namespace libsemigroups {
 
     void CongruenceCommon::throw_if_started() const {
       if (started()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "cannot add further generating pairs at this stage");
+        LIBSEMIGROUPS_EXCEPTION("started() returned \"true\" so no further "
+                                "generating pairs can be added at this stage");
       }
     }
   }  // namespace detail
