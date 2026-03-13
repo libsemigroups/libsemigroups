@@ -1023,4 +1023,30 @@ namespace libsemigroups {
     REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Congruence",
+                          "005",
+                          "possible bug",
+                          "[quick][cong]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 01_w, 10_w);
+    Congruence cong(twosided, p);
+
+    REQUIRE(
+        !is_obviously_infinite(cong));  // Add a call to is_obviously_infinite
+    REQUIRE(!cong.started());
+    REQUIRE(cong.get<Kambites<word_type>>()->started());
+    REQUIRE(cong.any_runner_started());
+
+    REQUIRE_EXCEPTION_MSG(
+        congruence_common::add_generating_pair(cong, 1010_w, 01_w),
+        "any_runner_started() returned \"true\" so no further generating pairs "
+        "can be added at this stage");
+    cong.run();
+    REQUIRE(cong.number_of_classes() == 3);
+  }
+
 }  // namespace libsemigroups
