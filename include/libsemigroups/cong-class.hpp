@@ -600,7 +600,7 @@ namespace libsemigroups {
 
     //! \ingroup congruence_class_accessors_group
     //!
-    //! \brief Get a derived class of detail::CongruenceCommon being used to
+    //! \brief Get a derived class of Runner being used to
     //! compute a \ref_congruence instance.
     //!
     //! This function returns a std::shared_ptr to a \p Thing if such an object
@@ -608,10 +608,10 @@ namespace libsemigroups {
     //! a \ref_congruence instance. If no such \p Thing is available, then an
     //! exception is thrown.
     //!
-    //! \tparam Thing the type of the detail::CongruenceCommon object being
-    //! sought.
+    //! \tparam Thing the type of the Runner object being sought.
     //!
-    //! \returns The derived class of detail::CongruenceCommon.
+    //! \returns The derived class of \p Runner of type Thing contained in the
+    //! \ref_congruence.
     //!
     //! \throws LibsemigroupsException if no \p Thing is available.
     //!
@@ -621,15 +621,14 @@ namespace libsemigroups {
 
     //! \ingroup congruence_class_accessors_group
     //!
-    //! \brief Check if a derived class of detail::CongruenceCommon being used
+    //! \brief Check if a derived class of Runner being used
     //! to compute a \ref_congruence instance.
     //!
     //! This function returns \c true if a \p Thing is being used or could be
     //! used to compute the congruence represented by a \ref_congruence
     //! instance; or \c false if not.
     //!
-    //! \tparam Thing the type of the detail::CongruenceCommon object being
-    //! sought.
+    //! \tparam Thing the type of the Runner object being sought.
     //!
     //! \returns Whether or not a \p Thing is being used to compute the
     //! \ref_congruence instance.
@@ -685,8 +684,8 @@ namespace libsemigroups {
     //!
     //! \brief Get the number of runners.
     //!
-    //! This function returns the number of distinct detail::CongruenceCommon
-    //! instances that are contained in a \ref_congruence object.
+    //! This function returns the number of distinct Runner instances that are
+    //! contained in a \ref_congruence object.
     //!
     //! \returns The number of runners.
     //!
