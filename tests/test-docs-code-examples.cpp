@@ -85,10 +85,10 @@ namespace libsemigroups {
     REQUIRE(o.scc().number_of_components() == 17);
   }
 
-  // cong-class.hpp: Line 148
+  // cong-class.hpp: Line 144
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "002",
-                          "./include/libsemigroups/cong-class.hpp:148",
+                          "./include/libsemigroups/cong-class.hpp:144",
                           "[docs][quick]") {
     Presentation<word_type> p;
     p.alphabet(2);
@@ -439,10 +439,10 @@ namespace libsemigroups {
     (p | Random()).get();
   }
 
-  // schreier-sims.hpp: Line 166
+  // schreier-sims.hpp: Line 167
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "026",
-                          "./include/libsemigroups/schreier-sims.hpp:166",
+                          "./include/libsemigroups/schreier-sims.hpp:167",
                           "[docs][quick]") {
     SchreierSims<5> S;
     using Perm = decltype(S)::element_type;
