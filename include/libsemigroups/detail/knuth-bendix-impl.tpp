@@ -347,6 +347,10 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     void
     KnuthBendixImpl<Rewriter, ReductionOrder>::report_presentation() const {
+      // NOTE: this function does the same as presentation::to_report_string,
+      // which we cannot use directly here because we don't have a presentation
+      // object to pass to it (and possibly because of some cyclic dependency
+      // that this would introduce).
       using detail::group_digits;
       size_t min = POSITIVE_INFINITY, max = 0, len = 0;
       for (auto it = _rewriter.begin(); it != _rewriter.end(); ++it) {
@@ -354,6 +358,9 @@ namespace libsemigroups {
         len += rule_len;
         min = (rule_len < min ? rule_len : min);
         max = (rule_len > max ? rule_len : max);
+      }
+      if (min == POSITIVE_INFINITY) {
+        min = 0;
       }
 
       report_default("KnuthBendix: |A| = {}, |R| = {}, "
