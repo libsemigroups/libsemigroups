@@ -220,7 +220,6 @@ namespace libsemigroups {
       return false;
     }
 
-    // operator<<
     template <int64_t R, typename S>
     constexpr bool operator<(Constant<R, S> const&,
                              Constant<R, S> const&) noexcept {
