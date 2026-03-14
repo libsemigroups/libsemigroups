@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.1</span>
+   &#160;<span id="projectnumber">v3.5.2</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -385,7 +385,7 @@ template&lt;typename Iterator1, typename Iterator2, typename Iterator3, typename
 <dl class="section return"><dt>Returns</dt><dd>A reference to <code>*this</code>.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>This function does not check that the arguments are valid. In particular, it is assumed that every value pointed at by the iterators belongs to <code><a class="el" href="namespacelibsemigroups_1_1presentation.html" title="Namespace for Presentation helper functions.">presentation()</a>.alphabet()</code>.</dd>
 <dd>
-It is assumed that <a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> returns <code>false</code>. Adding generating pairs after <a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> is not permitted (but also not checked by this function). </dd></dl>
+It is assumed that <a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> and <a class="el" href="group__congruence__class__accessors__group.html#gaf5fe6617e1ab146af356ddd205381880">any_runner_started</a> returns <code>false</code>. Adding generating pairs after either of these functions returns <code>true</code> is not permitted (but also not checked by this function). </dd></dl>
 
 </div>
 </div>

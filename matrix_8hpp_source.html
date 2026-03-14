@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.1</span>
+   &#160;<span id="projectnumber">v3.5.2</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -4714,53 +4714,53 @@ $(function(){initNavTree('matrix_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l08533" name="l08533"></a><span class="lineno"> 8533</span>    }</div>
 <div class="line"><a id="l08534" name="l08534"></a><span class="lineno"> 8534</span>  };</div>
 <div class="line"><a id="l08535" name="l08535"></a><span class="lineno"> 8535</span></div>
-<div class="foldopen" id="foldopen08543" data-start="{" data-end="};">
-<div class="line"><a id="l08543" name="l08543"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html"> 8543</a></span><span class="comment">  //! \ref IsMatrix.</span></div>
-<div class="line"><a id="l08544" name="l08544"></a><span class="lineno"> 8544</span><span class="comment">  //!</span></div>
-<div class="line"><a id="l08545" name="l08545"></a><span class="lineno"> 8545</span><span class="comment">  //! \tparam Mat the type of matrices.</span></div>
-<div class="line"><a id="l08546" name="l08546"></a><span class="lineno"> 8546</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Mat&gt;</div>
-<div class="line"><a id="l08547" name="l08547"></a><span class="lineno"> 8547</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1_one.html">One</a>&lt;Mat, <a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a>::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; {</div>
-<div class="foldopen" id="foldopen08557" data-start="{" data-end="}">
-<div class="line"><a id="l08557" name="l08557"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a20815163dcbd45ef7597d103dff3df44"> 8557</a></span><span class="comment">    //!</span></div>
-<div class="line"><a id="l08558" name="l08558"></a><span class="lineno"> 8558</span><span class="comment">    //! \complexity</span></div>
-<div class="line"><a id="l08559" name="l08559"></a><span class="lineno"> 8559</span><span class="comment">    //! \f$O(m ^ 2)\f$ where \f$m\f$ is the number of rows of the</span></div>
+<div class="foldopen" id="foldopen08546" data-start="{" data-end="};">
+<div class="line"><a id="l08546" name="l08546"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html"> 8546</a></span><span class="comment">  //!</span></div>
+<div class="line"><a id="l08547" name="l08547"></a><span class="lineno"> 8547</span><span class="comment">  //! \note There is no `operator()(size_t)` meaning it isn&#39;t possible to use</span></div>
+<div class="line"><a id="l08548" name="l08548"></a><span class="lineno"> 8548</span><span class="comment">  //! elements of type \p Mat with \ref SchreierSims.</span></div>
+<div class="line"><a id="l08549" name="l08549"></a><span class="lineno"> 8549</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Mat&gt;</div>
+<div class="line"><a id="l08550" name="l08550"></a><span class="lineno"> 8550</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1_one.html">One</a>&lt;Mat, <a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a>::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; {</div>
+<div class="foldopen" id="foldopen08560" data-start="{" data-end="}">
+<div class="line"><a id="l08560" name="l08560"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a20815163dcbd45ef7597d103dff3df44"> 8560</a></span><span class="comment">    //!</span></div>
+<div class="line"><a id="l08561" name="l08561"></a><span class="lineno"> 8561</span><span class="comment">    //! \complexity</span></div>
+<div class="line"><a id="l08562" name="l08562"></a><span class="lineno"> 8562</span><span class="comment">    //! \f$O(m ^ 2)\f$ where \f$m\f$ is the number of rows of the</span></div>
 </div>
-<div class="line"><a id="l08560" name="l08560"></a><span class="lineno"> 8560</span><span class="comment">    //! matrix \p x.</span></div>
+<div class="line"><a id="l08563" name="l08563"></a><span class="lineno"> 8563</span><span class="comment">    //! matrix \p x.</span></div>
 </div>
-<div class="line"><a id="l08561" name="l08561"></a><span class="lineno"> 8561</span>    <span class="keyword">inline</span> Mat <a class="code hl_function" href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a20815163dcbd45ef7597d103dff3df44">operator()</a>(Mat <span class="keyword">const</span>&amp; x)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l08562" name="l08562"></a><span class="lineno"> 8562</span>      <span class="keywordflow">return</span> x.one();</div>
-<div class="line"><a id="l08563" name="l08563"></a><span class="lineno"> 8563</span>    }</div>
-<div class="line"><a id="l08564" name="l08564"></a><span class="lineno"> 8564</span>  };</div>
-<div class="line"><a id="l08565" name="l08565"></a><span class="lineno"> 8565</span></div>
-<div class="foldopen" id="foldopen08573" data-start="{" data-end="};">
-<div class="line"><a id="l08573" name="l08573"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html"> 8573</a></span><span class="comment">  //! \ref IsMatrix&lt;Mat&gt;.</span></div>
-<div class="line"><a id="l08574" name="l08574"></a><span class="lineno"> 8574</span><span class="comment">  //!</span></div>
-<div class="line"><a id="l08575" name="l08575"></a><span class="lineno"> 8575</span><span class="comment">  //! \tparam Mat the type of matrices.</span></div>
-<div class="line"><a id="l08576" name="l08576"></a><span class="lineno"> 8576</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Mat&gt;</div>
-<div class="line"><a id="l08577" name="l08577"></a><span class="lineno"> 8577</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1_product.html">Product</a>&lt;Mat, <a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a>::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; {</div>
-<div class="foldopen" id="foldopen08593" data-start="{" data-end="}">
-<div class="line"><a id="l08593" name="l08593"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#abf19347029b7cbb9d201c7261866e0f5"> 8593</a></span><span class="comment">    //!</span></div>
-<div class="line"><a id="l08594" name="l08594"></a><span class="lineno"> 8594</span><span class="comment">    //! \warning</span></div>
-<div class="line"><a id="l08595" name="l08595"></a><span class="lineno"> 8595</span><span class="comment">    //! This function only works for square matrices.</span></div>
+<div class="line"><a id="l08564" name="l08564"></a><span class="lineno"> 8564</span>    <span class="keyword">inline</span> Mat <a class="code hl_function" href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a20815163dcbd45ef7597d103dff3df44">operator()</a>(Mat <span class="keyword">const</span>&amp; x)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l08565" name="l08565"></a><span class="lineno"> 8565</span>      <span class="keywordflow">return</span> x.one();</div>
+<div class="line"><a id="l08566" name="l08566"></a><span class="lineno"> 8566</span>    }</div>
+<div class="line"><a id="l08567" name="l08567"></a><span class="lineno"> 8567</span>  };</div>
+<div class="line"><a id="l08568" name="l08568"></a><span class="lineno"> 8568</span></div>
+<div class="foldopen" id="foldopen08576" data-start="{" data-end="};">
+<div class="line"><a id="l08576" name="l08576"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html"> 8576</a></span><span class="comment">  //! \ref IsMatrix&lt;Mat&gt;.</span></div>
+<div class="line"><a id="l08577" name="l08577"></a><span class="lineno"> 8577</span><span class="comment">  //!</span></div>
+<div class="line"><a id="l08578" name="l08578"></a><span class="lineno"> 8578</span><span class="comment">  //! \tparam Mat the type of matrices.</span></div>
+<div class="line"><a id="l08579" name="l08579"></a><span class="lineno"> 8579</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Mat&gt;</div>
+<div class="line"><a id="l08580" name="l08580"></a><span class="lineno"> 8580</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1_product.html">Product</a>&lt;Mat, <a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a>::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; {</div>
+<div class="foldopen" id="foldopen08596" data-start="{" data-end="}">
+<div class="line"><a id="l08596" name="l08596"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#abf19347029b7cbb9d201c7261866e0f5"> 8596</a></span><span class="comment">    //!</span></div>
+<div class="line"><a id="l08597" name="l08597"></a><span class="lineno"> 8597</span><span class="comment">    //! \warning</span></div>
+<div class="line"><a id="l08598" name="l08598"></a><span class="lineno"> 8598</span><span class="comment">    //! This function only works for square matrices.</span></div>
 </div>
-<div class="line"><a id="l08596" name="l08596"></a><span class="lineno"> 8596</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span></div>
+<div class="line"><a id="l08599" name="l08599"></a><span class="lineno"> 8599</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span></div>
 </div>
-<div class="line"><a id="l08597" name="l08597"></a><span class="lineno"> 8597</span>    <a class="code hl_function" href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#abf19347029b7cbb9d201c7261866e0f5">operator()</a>(Mat&amp; xy, Mat <span class="keyword">const</span>&amp; x, Mat <span class="keyword">const</span>&amp; y, <span class="keywordtype">size_t</span> = 0)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l08598" name="l08598"></a><span class="lineno"> 8598</span>      xy.product_inplace_no_checks(x, y);</div>
-<div class="line"><a id="l08599" name="l08599"></a><span class="lineno"> 8599</span>    }</div>
-<div class="line"><a id="l08600" name="l08600"></a><span class="lineno"> 8600</span>  };</div>
-<div class="line"><a id="l08601" name="l08601"></a><span class="lineno"> 8601</span>}  <span class="comment">// namespace libsemigroups</span></div>
-<div class="line"><a id="l08602" name="l08602"></a><span class="lineno"> 8602</span> </div>
-<div class="line"><a id="l08603" name="l08603"></a><span class="lineno"> 8603</span><span class="keyword">namespace </span><a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a> {</div>
-<div class="line"><a id="l08604" name="l08604"></a><span class="lineno"> 8604</span>  <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> N,</div>
-<div class="line"><a id="l08605" name="l08605"></a><span class="lineno"> 8605</span>            <span class="keyword">typename</span> Mat,</div>
-<div class="line"><a id="l08606" name="l08606"></a><span class="lineno"> 8606</span>            std::enable_if_t&lt;libsemigroups::IsMatrix&lt;Mat&gt;&gt;&gt;</div>
-<div class="line"><a id="l08607" name="l08607"></a><span class="lineno"> 8607</span>  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/algorithm/swap.html">swap</a>(Mat&amp; x, Mat&amp; y) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l08608" name="l08608"></a><span class="lineno"> 8608</span>    x.swap(y);</div>
-<div class="line"><a id="l08609" name="l08609"></a><span class="lineno"> 8609</span>  }</div>
-<div class="line"><a id="l08610" name="l08610"></a><span class="lineno"> 8610</span>}  <span class="comment">// namespace std</span></div>
-<div class="line"><a id="l08611" name="l08611"></a><span class="lineno"> 8611</span> </div>
-<div class="line"><a id="l08612" name="l08612"></a><span class="lineno"> 8612</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_MATRIX_HPP_</span></div>
+<div class="line"><a id="l08600" name="l08600"></a><span class="lineno"> 8600</span>    <a class="code hl_function" href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#abf19347029b7cbb9d201c7261866e0f5">operator()</a>(Mat&amp; xy, Mat <span class="keyword">const</span>&amp; x, Mat <span class="keyword">const</span>&amp; y, <span class="keywordtype">size_t</span> = 0)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l08601" name="l08601"></a><span class="lineno"> 8601</span>      xy.product_inplace_no_checks(x, y);</div>
+<div class="line"><a id="l08602" name="l08602"></a><span class="lineno"> 8602</span>    }</div>
+<div class="line"><a id="l08603" name="l08603"></a><span class="lineno"> 8603</span>  };</div>
+<div class="line"><a id="l08604" name="l08604"></a><span class="lineno"> 8604</span>}  <span class="comment">// namespace libsemigroups</span></div>
+<div class="line"><a id="l08605" name="l08605"></a><span class="lineno"> 8605</span> </div>
+<div class="line"><a id="l08606" name="l08606"></a><span class="lineno"> 8606</span><span class="keyword">namespace </span><a class="code hl_namespaceRef" href="http://en.cppreference.com/w/namespacestd.html">std</a> {</div>
+<div class="line"><a id="l08607" name="l08607"></a><span class="lineno"> 8607</span>  <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> N,</div>
+<div class="line"><a id="l08608" name="l08608"></a><span class="lineno"> 8608</span>            <span class="keyword">typename</span> Mat,</div>
+<div class="line"><a id="l08609" name="l08609"></a><span class="lineno"> 8609</span>            std::enable_if_t&lt;libsemigroups::IsMatrix&lt;Mat&gt;&gt;&gt;</div>
+<div class="line"><a id="l08610" name="l08610"></a><span class="lineno"> 8610</span>  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_functionRef" href="http://en.cppreference.com/w/cpp/algorithm/swap.html">swap</a>(Mat&amp; x, Mat&amp; y) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l08611" name="l08611"></a><span class="lineno"> 8611</span>    x.swap(y);</div>
+<div class="line"><a id="l08612" name="l08612"></a><span class="lineno"> 8612</span>  }</div>
+<div class="line"><a id="l08613" name="l08613"></a><span class="lineno"> 8613</span>}  <span class="comment">// namespace std</span></div>
+<div class="line"><a id="l08614" name="l08614"></a><span class="lineno"> 8614</span> </div>
+<div class="line"><a id="l08615" name="l08615"></a><span class="lineno"> 8615</span><span class="preprocessor">#endif  </span><span class="comment">// LIBSEMIGROUPS_MATRIX_HPP_</span></div>
 <div class="ttc" id="aarray_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a></div></div>
 <div class="ttc" id="abasic_ostringstream_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/io/basic_ostringstream.html">std::ostringstream</a></div></div>
 <div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div></div>
@@ -5060,7 +5060,7 @@ $(function(){initNavTree('matrix_8hpp_source.html',''); initResizable(true); });
 <div class="ttc" id="astructlibsemigroups_1_1_degree_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_a2a0648e07eb1f985cccd0916e75447d6"><div class="ttname"><a href="structlibsemigroups_1_1_degree_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a2a0648e07eb1f985cccd0916e75447d6">libsemigroups::Degree&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">constexpr size_t operator()(Mat const &amp;x) const noexcept</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8472</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:166</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_hash_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_af46bb4e7fa0103e239d2de6cf64d135c"><div class="ttname"><a href="structlibsemigroups_1_1_hash_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#af46bb4e7fa0103e239d2de6cf64d135c">libsemigroups::Hash&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">constexpr size_t operator()(Mat const &amp;x) const</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8501</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_hash_html"><div class="ttname"><a href="structlibsemigroups_1_1_hash.html">libsemigroups::Hash</a></div><div class="ttdoc">Adapter for hashing.</div><div class="ttdef"><b>Definition</b> adapters.hpp:453</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_hash_html"><div class="ttname"><a href="structlibsemigroups_1_1_hash.html">libsemigroups::Hash</a></div><div class="ttdoc">Adapter for hashing.</div><div class="ttdef"><b>Definition</b> adapters.hpp:451</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_increase_degree_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_a795da6cb5ea5f430d0ce8117b5562b99"><div class="ttname"><a href="structlibsemigroups_1_1_increase_degree_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a795da6cb5ea5f430d0ce8117b5562b99">libsemigroups::IncreaseDegree&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">constexpr void operator()(Mat &amp;, size_t) const noexcept</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8526</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_increase_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_increase_degree.html">libsemigroups::IncreaseDegree</a></div><div class="ttdoc">Adapter for increasing the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:206</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_integer_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_integer_one.html">libsemigroups::IntegerOne</a></div><div class="ttdoc">Function object for returning the multiplicative identity.</div><div class="ttdef"><b>Definition</b> matrix.hpp:4226</div></div>
@@ -5091,10 +5091,10 @@ $(function(){initNavTree('matrix_8hpp_source.html',''); initResizable(true); });
 <div class="ttc" id="astructlibsemigroups_1_1_n_t_p_plus_html_ae27686c74c337a148bc74ebfcb47ce9d"><div class="ttname"><a href="structlibsemigroups_1_1_n_t_p_plus.html#ae27686c74c337a148bc74ebfcb47ce9d">libsemigroups::NTPPlus::operator()</a></div><div class="ttdeci">constexpr Scalar operator()(Scalar x, Scalar y) const noexcept</div><div class="ttdoc">Call operator for addition.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6077</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_n_t_p_prod_html"><div class="ttname"><a href="structlibsemigroups_1_1_n_t_p_prod.html">libsemigroups::NTPProd</a></div><div class="ttdoc">Function object for multiplication in an ntp semirings.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6106</div></div>
 <div class="ttc" id="astructlibsemigroups_1_1_n_t_p_prod_html_ae27686c74c337a148bc74ebfcb47ce9d"><div class="ttname"><a href="structlibsemigroups_1_1_n_t_p_prod.html#ae27686c74c337a148bc74ebfcb47ce9d">libsemigroups::NTPProd::operator()</a></div><div class="ttdeci">constexpr Scalar operator()(Scalar x, Scalar y) const noexcept</div><div class="ttdoc">Call operator for multiplication.</div><div class="ttdef"><b>Definition</b> matrix.hpp:6120</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_a20815163dcbd45ef7597d103dff3df44"><div class="ttname"><a href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a20815163dcbd45ef7597d103dff3df44">libsemigroups::One&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">Mat operator()(Mat const &amp;x) const</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8557</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:253</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_abf19347029b7cbb9d201c7261866e0f5"><div class="ttname"><a href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#abf19347029b7cbb9d201c7261866e0f5">libsemigroups::Product&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">void operator()(Mat &amp;xy, Mat const &amp;x, Mat const &amp;y, size_t=0) const</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8593</div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_product_html"><div class="ttname"><a href="structlibsemigroups_1_1_product.html">libsemigroups::Product</a></div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> adapters.hpp:291</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_a20815163dcbd45ef7597d103dff3df44"><div class="ttname"><a href="structlibsemigroups_1_1_one_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#a20815163dcbd45ef7597d103dff3df44">libsemigroups::One&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">Mat operator()(Mat const &amp;x) const</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8560</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:251</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4_html_abf19347029b7cbb9d201c7261866e0f5"><div class="ttname"><a href="structlibsemigroups_1_1_product_3_01_mat_00_01std_1_1enable__if__t_3_01_is_matrix_3_01_mat_01_4_01_4_01_4.html#abf19347029b7cbb9d201c7261866e0f5">libsemigroups::Product&lt; Mat, std::enable_if_t&lt; IsMatrix&lt; Mat &gt; &gt; &gt;::operator()</a></div><div class="ttdeci">void operator()(Mat &amp;xy, Mat const &amp;x, Mat const &amp;y, size_t=0) const</div><div class="ttdoc">Call operator.</div><div class="ttdef"><b>Definition</b> matrix.hpp:8596</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_product_html"><div class="ttname"><a href="structlibsemigroups_1_1_product.html">libsemigroups::Product</a></div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> adapters.hpp:289</div></div>
 <div class="ttc" id="aswap_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/swap.html">std::swap</a></div><div class="ttdeci">T swap(T... args)</div></div>
 <div class="ttc" id="atie_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/tie.html">std::tie</a></div><div class="ttdeci">T tie(T... args)</div></div>
 <div class="ttc" id="aunique_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/unique.html">std::unique</a></div><div class="ttdeci">T unique(T... args)</div></div>

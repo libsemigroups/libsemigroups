@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.1</span>
+   &#160;<span id="projectnumber">v3.5.2</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -197,16 +197,49 @@ $(function(){initNavTree('group__congruence__class__accessors__group.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gaf5fe6617e1ab146af356ddd205381880" id="r_gaf5fe6617e1ab146af356ddd205381880"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaf5fe6617e1ab146af356ddd205381880">any_runner_started</a> () const noexcept</td></tr>
+<tr class="memdesc:gaf5fe6617e1ab146af356ddd205381880"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if any runner has <a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a>.  <br /></td></tr>
+<tr class="separator:gaf5fe6617e1ab146af356ddd205381880"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga03b660dd74a4ef688aa16e40d84be5c9" id="r_ga03b660dd74a4ef688aa16e40d84be5c9"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
 <tr class="memitem:ga03b660dd74a4ef688aa16e40d84be5c9"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a>&lt; Thing &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ga03b660dd74a4ef688aa16e40d84be5c9">get</a> () const</td></tr>
-<tr class="memdesc:ga03b660dd74a4ef688aa16e40d84be5c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a derived class of detail::CongruenceCommon being used to compute a <a class="el" href="group__congruence__class__group.html">Congruence</a> instance.  <br /></td></tr>
+<tr class="memdesc:ga03b660dd74a4ef688aa16e40d84be5c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a derived class of <a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a> being used to compute a <a class="el" href="group__congruence__class__group.html">Congruence</a> instance.  <br /></td></tr>
 <tr class="separator:ga03b660dd74a4ef688aa16e40d84be5c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf2403acf5250d85d474308c1b84253f8" id="r_gaf2403acf5250d85d474308c1b84253f8"><td class="memTemplParams" colspan="2">template&lt;typename Thing&gt; </td></tr>
 <tr class="memitem:gaf2403acf5250d85d474308c1b84253f8"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#gaf2403acf5250d85d474308c1b84253f8">has</a> () const</td></tr>
-<tr class="memdesc:gaf2403acf5250d85d474308c1b84253f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a derived class of detail::CongruenceCommon being used to compute a <a class="el" href="group__congruence__class__group.html">Congruence</a> instance.  <br /></td></tr>
+<tr class="memdesc:gaf2403acf5250d85d474308c1b84253f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a derived class of <a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a> being used to compute a <a class="el" href="group__congruence__class__group.html">Congruence</a> instance.  <br /></td></tr>
 <tr class="separator:gaf2403acf5250d85d474308c1b84253f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gaf5fe6617e1ab146af356ddd205381880" name="gaf5fe6617e1ab146af356ddd205381880"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf5fe6617e1ab146af356ddd205381880">&#9670;&#160;</a></span>any_runner_started()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Word&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool any_runner_started </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel nodiscard">nodiscard</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function returns <code>true</code> if any runner in a <a class="el" href="group__congruence__class__group.html">Congruence</a> object has started and <code>false</code> otherwise. You might expect that <a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> would return the same answer, but remember that <a class="el" href="classlibsemigroups_1_1_runner.html#a13dea4340b21db6ccbe2c5a106b25c33">started</a> returns <code>true</code> if and only if <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a> has been called at least once; and there are helper functions, such as <a class="el" href="group__obvinf__group.html#gad2114ce6b9a5c58fb69842a91704c034">is_obviously_infinite</a>, that might start some of the runners of a <a class="el" href="group__congruence__class__group.html">Congruence</a> without ever calling <a class="el" href="classlibsemigroups_1_1_runner.html#a13a43e6d814de94978c515cb084873b1">run</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>Whether any runner has started.</dd></dl>
+<dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw. </dd></dl>
+
+</div>
+</div>
 <a id="ga03b660dd74a4ef688aa16e40d84be5c9" name="ga03b660dd74a4ef688aa16e40d84be5c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga03b660dd74a4ef688aa16e40d84be5c9">&#9670;&#160;</a></span>get()</h2>
 
@@ -228,18 +261,18 @@ template&lt;typename Thing&gt; </div>
 <p>This function returns a <a class="elRef" href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html">std::shared_ptr</a> to a <code class="param">Thing</code> if such an object is being used or could be used to compute the congruence represented by a <a class="el" href="group__congruence__class__group.html">Congruence</a> instance. If no such <code class="param">Thing</code> is available, then an exception is thrown.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Thing</td><td>the type of the detail::CongruenceCommon object being sought.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the <a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a> object being sought.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The derived class of detail::CongruenceCommon.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The derived class of <code class="param"><a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a></code> of type Thing contained in the <a class="el" href="group__congruence__class__group.html">Congruence</a>.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html" title="Exception class deriving from std::runtime_error.">LibsemigroupsException</a></td><td>if no <code class="param">Thing</code> is available.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#gaf2403acf5250d85d474308c1b84253f8" title="Check if a derived class of detail::CongruenceCommon being used to compute a Congruence instance.">has</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#gaf2403acf5250d85d474308c1b84253f8" title="Check if a derived class of Runner being used to compute a Congruence instance.">has</a>. </dd></dl>
 
 </div>
 </div>
@@ -272,13 +305,13 @@ template&lt;typename Thing&gt; </div>
 <p>This function returns <code>true</code> if a <code class="param">Thing</code> is being used or could be used to compute the congruence represented by a <a class="el" href="group__congruence__class__group.html">Congruence</a> instance; or <code>false</code> if not.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Thing</td><td>the type of the detail::CongruenceCommon object being sought.</td></tr>
+    <tr><td class="paramname">Thing</td><td>the type of the <a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a> object being sought.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether or not a <code class="param">Thing</code> is being used to compute the <a class="el" href="group__congruence__class__group.html">Congruence</a> instance.</dd></dl>
 <dl class="section user"><dt>Exceptions</dt><dd>This function guarantees not to throw a <a class="el" href="structlibsemigroups_1_1_libsemigroups_exception.html">LibsemigroupsException</a>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga03b660dd74a4ef688aa16e40d84be5c9" title="Get a derived class of detail::CongruenceCommon being used to compute a Congruence instance.">get</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ga03b660dd74a4ef688aa16e40d84be5c9" title="Get a derived class of Runner being used to compute a Congruence instance.">get</a>. </dd></dl>
 
 </div>
 </div>

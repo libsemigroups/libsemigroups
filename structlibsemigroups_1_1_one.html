@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.1</span>
+   &#160;<span id="projectnumber">v3.5.2</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -191,15 +191,14 @@ $(function(){initNavTree('structlibsemigroups_1_1_one.html',''); initResizable(t
 <div class="contents">
 <a name="details" id="details"></a>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Element, typename = void&gt;<br />
-struct libsemigroups::One&lt; Element, typename &gt;</div><p>Specialisations of this struct should be stateless trivially default constructible with two call operator of signatures:</p>
-<ol type="1">
-<li><code>Element operator()(size_t n) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning a multiplicative identity element for the category <code>Element</code> and with <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> equal to the parameter <code class="param">n</code>. For example, if <code>Element</code> is a type of n x n matrices, then this should return the n x n identity matrix.</li>
-<li><code>Element operator()(T const&amp;) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also). This could be implemented as: <div class="fragment"><div class="line">Element operator()(Element <span class="keyword">const</span>&amp; x) <span class="keyword">const</span> <span class="keyword">noexcept</span> {</div>
-<div class="line">  <span class="keywordflow">return</span> this-&gt;operator()(<a class="code hl_struct" href="structlibsemigroups_1_1_degree.html">Degree&lt;Element&gt;</a>()(x));</div>
-<div class="line">}</div>
-<div class="ttc" id="astructlibsemigroups_1_1_degree_html"><div class="ttname"><a href="structlibsemigroups_1_1_degree.html">libsemigroups::Degree</a></div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> adapters.hpp:166</div></div>
-</div><!-- fragment --></li>
-</ol>
+struct libsemigroups::One&lt; Element, typename &gt;</div><p>Specialisations of this struct should be stateless trivially default constructible with:</p>
+<ul>
+<li>A call operator of signature <code>Element operator()(Element const&amp; x) ! const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning the identity element of type <code class="param">Element</code> for <code>x</code>.</li>
+</ul>
+<p>To use the adapter with <a class="el" href="classlibsemigroups_1_1_schreier_sims.html">SchreierSims</a> it is necessary to implement:</p>
+<ul>
+<li><code>Element operator()(size_t n) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning a multiplicative identity element <code>x</code> of type <code>Element</code> and with <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> equal to the parameter <code class="param">n</code>. For example, if <code>Element</code> is a type of n x n matrices, then this should return the n x n identity matrix.</li>
+</ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of the elements of a semigroup.</td></tr>
@@ -210,6 +209,7 @@ struct libsemigroups::One&lt; Element, typename &gt;</div><p>Specialisations of 
 <dl class="section user"><dt>Used by:</dt><dd><ul>
 <li><a class="el" href="structlibsemigroups_1_1_action_traits.html">ActionTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_froidure_pin_traits.html" title="Traits class for FroidurePin.">FroidurePinTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a></li>
 </ul>
 </dd></dl>
@@ -226,7 +226,7 @@ struct libsemigroups::One&lt; Element, typename &gt;</div><p>Specialisations of 
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
-<div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:253</div></div>
+<div class="ttc" id="astructlibsemigroups_1_1_one_html"><div class="ttname"><a href="structlibsemigroups_1_1_one.html">libsemigroups::One</a></div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> adapters.hpp:251</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/Users/jdm3/libsemigroups/include/libsemigroups/<a class="el" href="adapters_8hpp_source.html">adapters.hpp</a></li>

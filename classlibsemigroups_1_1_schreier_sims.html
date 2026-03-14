@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.1</span>
+   &#160;<span id="projectnumber">v3.5.2</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -213,7 +213,7 @@ class libsemigroups::SchreierSims&lt; N, Point, Element, Traits &gt;</div><p>Def
 <div class="line">S.<a class="code hl_function" href="#a7f9f637b32382bdee72fa920cb99acc0">add_generator</a>(<a class="code hl_class" href="classlibsemigroups_1_1_perm.html">Perm</a>({1, 2, 3, 4, 0}));</div>
 <div class="line">S.<a class="code hl_function" href="#a5e847af3605f49e5362e08a4b67362a7">size</a>(); <span class="comment">//-&gt; 120</span></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_perm_html"><div class="ttname"><a href="classlibsemigroups_1_1_perm.html">libsemigroups::Perm</a></div><div class="ttdoc">Permutations with static or dynamic degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:1524</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::SchreierSims::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">Type of the elements.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:201</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a5991027408ae4f685f2910d843af9183"><div class="ttname"><a href="#a5991027408ae4f685f2910d843af9183">libsemigroups::SchreierSims::element_type</a></div><div class="ttdeci">typename detail::BruidhinnTraits&lt; Element &gt;::value_type element_type</div><div class="ttdoc">Type of the elements.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:202</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a5e847af3605f49e5362e08a4b67362a7"><div class="ttname"><a href="#a5e847af3605f49e5362e08a4b67362a7">libsemigroups::SchreierSims::size</a></div><div class="ttdeci">uint64_t size()</div><div class="ttdoc">Returns the size of the group represented by this.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a7dee9f50142dbc6269018e2bc304b779"><div class="ttname"><a href="#a7dee9f50142dbc6269018e2bc304b779">libsemigroups::SchreierSims::SchreierSims</a></div><div class="ttdeci">SchreierSims()</div><div class="ttdoc">Default constructor.</div></div>
 <div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a7f9f637b32382bdee72fa920cb99acc0"><div class="ttname"><a href="#a7f9f637b32382bdee72fa920cb99acc0">libsemigroups::SchreierSims::add_generator</a></div><div class="ttdeci">bool add_generator(const_element_reference x)</div><div class="ttdoc">Add a generator.</div></div>
@@ -448,7 +448,7 @@ template&lt;size_t N, typename Point = typename SmallestInteger&lt;N&gt;::type, 
 <div class="line">  }</div>
 <div class="line">};</div>
 <div class="ttc" id="aclasslibsemigroups_1_1_b_mat8_html"><div class="ttname"><a href="classlibsemigroups_1_1_b_mat8.html">libsemigroups::BMat8</a></div><div class="ttdoc">Fast boolean matrices of dimension up to 8 x 8.</div><div class="ttdef"><b>Definition</b> bmat8.hpp:81</div></div>
-<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::SchreierSims::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:237</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a577aafc4b57da4cc8b78272f8d6b09e1"><div class="ttname"><a href="#a577aafc4b57da4cc8b78272f8d6b09e1">libsemigroups::SchreierSims::Degree</a></div><div class="ttdeci">typename Traits::Degree Degree</div><div class="ttdoc">Adapter for the degree of an element.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:238</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -588,7 +588,7 @@ template&lt;size_t N, typename Point = typename SmallestInteger&lt;N&gt;::type, 
 <div class="line">    <span class="keywordflow">return</span> x.transpose();</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a5efed4a1e90909fd744065e777cf11a9"><div class="ttname"><a href="#a5efed4a1e90909fd744065e777cf11a9">libsemigroups::SchreierSims::Inverse</a></div><div class="ttdeci">typename Traits::Inverse Inverse</div><div class="ttdoc">Adapter for the inverse of an element.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:243</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a5efed4a1e90909fd744065e777cf11a9"><div class="ttname"><a href="#a5efed4a1e90909fd744065e777cf11a9">libsemigroups::SchreierSims::Inverse</a></div><div class="ttdeci">typename Traits::Inverse Inverse</div><div class="ttdoc">Adapter for the inverse of an element.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:244</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
@@ -606,14 +606,14 @@ template&lt;size_t N, typename Point = typename SmallestInteger&lt;N&gt;::type, 
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Specialisations of this struct should be stateless trivially default constructible with two call operator of signatures:</p>
-<ol type="1">
-<li><code>Element operator()(size_t n) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning a multiplicative identity element for the category <code>Element</code> and with <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> equal to the parameter <code class="param">n</code>. For example, if <code>Element</code> is a type of n x n matrices, then this should return the n x n identity matrix.</li>
-<li><code>Element operator()(T const&amp;) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also). This could be implemented as: <div class="fragment"><div class="line">Element operator()(Element <span class="keyword">const</span>&amp; x) <span class="keyword">const</span> <span class="keyword">noexcept</span> {</div>
-<div class="line">  <span class="keywordflow">return</span> this-&gt;operator()(<a class="code hl_typedef" href="#a577aafc4b57da4cc8b78272f8d6b09e1">Degree&lt;Element&gt;</a>()(x));</div>
-<div class="line">}</div>
-</div><!-- fragment --></li>
-</ol>
+<p>Specialisations of this struct should be stateless trivially default constructible with:</p>
+<ul>
+<li>A call operator of signature <code>Element operator()(Element const&amp; x) ! const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning the identity element of type <code class="param">Element</code> for <code>x</code>.</li>
+</ul>
+<p>To use the adapter with <a class="el" href="classlibsemigroups_1_1_schreier_sims.html">SchreierSims</a> it is necessary to implement:</p>
+<ul>
+<li><code>Element operator()(size_t n) const</code> (possibly <code>noexcept</code>, <code>inline</code> and/or <code>constexpr</code> also) returning a multiplicative identity element <code>x</code> of type <code>Element</code> and with <code><a class="el" href="structlibsemigroups_1_1_degree.html" title="Adapter for the degree of an element.">Degree</a>&lt;Element&gt;()(x)</code> equal to the parameter <code class="param">n</code>. For example, if <code>Element</code> is a type of n x n matrices, then this should return the n x n identity matrix.</li>
+</ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Element</td><td>the type of the elements of a semigroup.</td></tr>
@@ -624,6 +624,7 @@ template&lt;size_t N, typename Point = typename SmallestInteger&lt;N&gt;::type, 
 <dl class="section user"><dt>Used by:</dt><dd><ul>
 <li><a class="el" href="structlibsemigroups_1_1_action_traits.html">ActionTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_froidure_pin_traits.html" title="Traits class for FroidurePin.">FroidurePinTraits</a></li>
+<li><a class="el" href="structlibsemigroups_1_1_konieczny_traits.html" title="This is a traits class for use with Konieczny.">KoniecznyTraits</a></li>
 <li><a class="el" href="structlibsemigroups_1_1_schreier_sims_traits.html" title="Traits class for use with the class template SchreierSims.">SchreierSimsTraits</a></li>
 </ul>
 </dd></dl>
@@ -639,7 +640,7 @@ template&lt;size_t N, typename Point = typename SmallestInteger&lt;N&gt;::type, 
 <div class="line">    <span class="keywordflow">return</span> T::one();</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::SchreierSims::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:246</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_a48ee67a8026a5a6ae1249994f62a1f2e"><div class="ttname"><a href="#a48ee67a8026a5a6ae1249994f62a1f2e">libsemigroups::SchreierSims::One</a></div><div class="ttdeci">typename Traits::One One</div><div class="ttdoc">Adapter for the identity element of the given type.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:247</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>
 </div><!-- fragment -->    </dd></dl>
 
@@ -698,7 +699,7 @@ template&lt;size_t N, typename Point = typename SmallestInteger&lt;N&gt;::type, 
 <div class="line">    xy = x * y;</div>
 <div class="line">  }</div>
 <div class="line">};</div>
-<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::SchreierSims::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:249</div></div>
+<div class="ttc" id="aclasslibsemigroups_1_1_schreier_sims_html_ab0122156fc131010d04c82c4b7a2a78f"><div class="ttname"><a href="#ab0122156fc131010d04c82c4b7a2a78f">libsemigroups::SchreierSims::Product</a></div><div class="ttdeci">typename Traits::Product Product</div><div class="ttdoc">Adapter for the product of two elements.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:250</div></div>
 </div><!-- fragment -->    </dd></dl>
 
 </div>
