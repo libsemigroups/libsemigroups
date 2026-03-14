@@ -109,9 +109,8 @@ namespace libsemigroups {
       return detail::KBE<KnuthBendix_>();
     }
 
-    detail::KBE<KnuthBendix_> operator()(size_t = 0) const noexcept {
-      return detail::KBE<KnuthBendix_>();
-    }
+    // No operator()(size_t) because it's only required for SchreierSims, and we
+    // couldn't use KBE elements in SchreierSims anyway.
   };
 
   template <typename KnuthBendix_>

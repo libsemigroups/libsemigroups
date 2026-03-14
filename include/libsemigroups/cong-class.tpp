@@ -66,10 +66,24 @@ namespace libsemigroups {
     }
     add_runner(std::make_shared<KnuthBendix<Word>>(type, p));
 
-    add_runner(std::make_shared<ToddCoxeter<Word>>(type, p));
-    auto tc = std::make_shared<ToddCoxeter<Word>>(type, p);
-    tc->strategy(ToddCoxeter<Word>::options::strategy::felsch);
-    add_runner(std::move(tc));
+    if (!is_obviously_infinite(p)) {
+      // We do this check here because of:
+      // https://github.com/libsemigroups/libsemigroups/issues/907
+      // The issue being that in Congruence::run_impl we run_until stopped, and
+      // this means that any ToddCoxeter runners will actually run, rather than
+      // refusing to because they are obviously infinite. ToddCoxeter only
+      // refuses to run if it is obviously infinite and we are trying to run to
+      // until finished, in which case it would run forever. On the other if
+      // ToddCoxeter is run_until or run_for and is obviously infinite, then
+      // this is okay assuming that stopped() will return true at some point.
+      // It seems that in some of the CI jobs for the GAP Semigroups package
+      // that this causes the machine to run out of resources because it is
+      // running ToddCoxeter on an infinite semigroup.
+      add_runner(std::make_shared<ToddCoxeter<Word>>(type, p));
+      auto tc = std::make_shared<ToddCoxeter<Word>>(type, p);
+      tc->strategy(ToddCoxeter<Word>::options::strategy::felsch);
+      add_runner(std::move(tc));
+    }
     return *this;
   }
 

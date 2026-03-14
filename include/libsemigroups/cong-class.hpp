@@ -44,10 +44,6 @@ namespace libsemigroups {
   template <typename Node>
   class WordGraph;
 
-  namespace detail {
-    struct CongruenceBase {};
-  }  // namespace detail
-
   //! \defgroup congruence_group Congruence
   //!
   //! This page contains links documentation related to the class template
@@ -156,8 +152,7 @@ namespace libsemigroups {
   //! cong.number_of_classes(); //-> 3
   //! \endcode
   template <typename Word>
-  class Congruence : public detail::CongruenceCommon,
-                     public detail::CongruenceBase {
+  class Congruence : public detail::CongruenceCommon {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
 
     /////////////////////////////////////////////////////////////////////////

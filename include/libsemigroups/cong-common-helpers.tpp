@@ -174,7 +174,7 @@ namespace libsemigroups {
 
       // Congruence + ToddCoxeter have their own overloads for this
       static_assert(!std::is_base_of_v<detail::ToddCoxeterImpl, Subclass>
-                    && !std::is_base_of_v<detail::CongruenceBase, Subclass>);
+                    && !is_specialization_of_v<Subclass, Congruence>);
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
 
       static_assert(

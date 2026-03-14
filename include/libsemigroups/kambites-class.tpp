@@ -112,6 +112,7 @@ namespace libsemigroups {
   template <typename Word>
   Kambites<Word>& Kambites<Word>::init() {
     detail::CongruenceCommon::init();
+    report_prefix("Kambites");
     // Mutable
     _class = UNDEFINED;
     _complements.init();

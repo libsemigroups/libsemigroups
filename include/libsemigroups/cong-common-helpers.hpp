@@ -39,8 +39,9 @@
 #include <unordered_map>     // for unordered_map
 #include <vector>            // for vector
 
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"     // for is_input_or_sink_v, iterator_...
+#include "exception.hpp"             // for LIBSEMIGROUPS_EXCEPTION
+#include "is_specialization_of.hpp"  // for is_specialization_of
+#include "ranges.hpp"                // for is_input_or_sink_v, iterator_...
 
 #include "detail/string.hpp"  // for throw_if_nullptr
 
@@ -58,8 +59,6 @@ namespace libsemigroups {
   namespace detail {
     class ToddCoxeterImpl;
     class CongruenceCommon;
-    struct CongruenceBase;
-
   }  // namespace detail
 
   namespace congruence_common {

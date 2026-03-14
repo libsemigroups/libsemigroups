@@ -208,22 +208,19 @@ namespace libsemigroups {
   //! \brief Adapter for the identity element of the given type.
   //!
   //! Specialisations of this struct should be stateless trivially default
-  //! constructible with two call operator of signatures:
+  //! constructible with:
   //!
-  //! 1. `Element operator()(size_t n) const` (possibly `noexcept`,
-  //!    `inline` and/or `constexpr` also) returning a multiplicative identity
-  //!    element for the category `Element` and with
-  //!    `Degree<Element>()(x)` equal to the parameter \p n. For example,
-  //!    if `Element` is a type of n x n matrices, then this should return
-  //!    the n x n identity matrix.
+  //! * A call operator of signature `Element operator()(Element const& x)
+  //!   const` (possibly `noexcept`, `inline` and/or `constexpr` also)
+  //!   returning the identity element of type \p Element for \c x.
   //!
-  //! 2. `Element operator()(T const&) const` (possibly `noexcept`,
-  //!    `inline` and/or `constexpr` also). This could be implemented as:
-  //!    \code_no_test
-  //!    Element operator()(Element const& x) const noexcept {
-  //!      return this->operator()(Degree<Element>()(x));
-  //!    }
-  //!    \end_code_no_test
+  //! To use the adapter with \ref SchreierSims it is necessary to implement:
+  //!
+  //! * `Element operator()(size_t n) const` (possibly `noexcept`, `inline`
+  //!   and/or `constexpr` also) returning a multiplicative identity element \c
+  //!   x of type `Element` and with `Degree<Element>()(x)` equal to the
+  //!   parameter \p n. For example, if `Element` is a type of n x n matrices,
+  //!   then this should return the n x n identity matrix.
   //!
   //! \tparam Element the type of the elements of a semigroup.
   //!
@@ -232,6 +229,7 @@ namespace libsemigroups {
   //! \par Used by:
   //! * ActionTraits
   //! * FroidurePinTraits
+  //! * KoniecznyTraits
   //! * SchreierSimsTraits
   //!
   //! \par Example

@@ -2302,4 +2302,15 @@ namespace libsemigroups {
       REQUIRE(!is_obviously_infinite(k));
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Kambites",
+                          "048",
+                          "report_prefix",
+                          "[quick][kambites]") {
+    Kambites k;
+    REQUIRE(k.report_prefix() == "Kambites");
+    k.init();
+    REQUIRE(k.report_prefix() == "Kambites");
+  }
+
 }  // namespace libsemigroups
