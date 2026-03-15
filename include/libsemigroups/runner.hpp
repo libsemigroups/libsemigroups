@@ -23,26 +23,20 @@
 #ifndef LIBSEMIGROUPS_RUNNER_HPP_
 #define LIBSEMIGROUPS_RUNNER_HPP_
 
-#include <algorithm>    // for max
-#include <array>        // for array
 #include <atomic>       // for atomic
-#include <chrono>       // for time_point, nanoseconds
-#include <cstddef>      // for size_t
-#include <functional>   // for function
-#include <memory>       // for unique_ptr
+#include <chrono>       // for nanoseconds, high_resolution_clock
+#include <memory>       // for addressof
 #include <mutex>        // for mutex
-#include <string>       // for basic_string, string
+#include <string>       // for basic_string, string, char_traits
 #include <string_view>  // for basic_string_view
-#include <thread>       // for sleep_for, thread
-#include <tuple>        // for apply
-#include <utility>      // for move, forward
-#include <vector>       // for vector
+#include <type_traits>  // for invoke_result_t, is_same_v
+#include <utility>      // for forward
 
 #include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
+#include "detail/fmt.hpp"           // for print, format
 #include "detail/function-ref.hpp"  // for FunctionRef
 #include "detail/report.hpp"        // for report_default
-#include "detail/string.hpp"        // for unicode_string_length
 
 namespace libsemigroups {
 
@@ -796,6 +790,5 @@ namespace libsemigroups {
     void set_state(state val) const noexcept;
   };  // class Runner
 }  // namespace libsemigroups
-
 #include "runner.tpp"
 #endif  // LIBSEMIGROUPS_RUNNER_HPP_

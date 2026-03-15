@@ -21,10 +21,14 @@
 
 #include "libsemigroups/runner.hpp"
 
+#include <ratio>        // for ratio
+#include <string_view>  // for basic_string_view
+
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 
-#include "libsemigroups/detail/report.hpp"  // for report_default
-#include "libsemigroups/detail/timer.hpp"   // for Timer::string
+#include "libsemigroups/detail/function-ref.hpp"  // for FunctionRef
+#include "libsemigroups/detail/report.hpp"        // for report_default
+#include "libsemigroups/detail/timer.hpp"         // for string_time
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
