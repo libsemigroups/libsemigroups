@@ -436,6 +436,7 @@ namespace libsemigroups {
     // Runner - data - private
     ////////////////////////////////////////////////////////////////////////
 
+    mutable std::mutex              _mtx;
     std::chrono::nanoseconds        _run_for;
     mutable std::atomic<state>      _state;
     detail::FunctionRef<bool(void)> _stopper;
@@ -791,15 +792,8 @@ namespace libsemigroups {
     virtual void               run_impl()            = 0;
     [[nodiscard]] virtual bool finished_impl() const = 0;
 
-    void set_state(state stt) const noexcept {
-      // We can set the state back to never_run if run_impl throws, and we are
-      // restoring the old state.
-      if (!dead()) {
-        // It can be that *this* becomes dead after this function has been
-        // called.
-        _state = stt;
-      }
-    }
+    // Thread-safe
+    void set_state(state val) const noexcept;
   };  // class Runner
 }  // namespace libsemigroups
 
