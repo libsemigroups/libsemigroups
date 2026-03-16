@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run clang-format style check for C++.
-        uses: jidicula/clang-format-action@v4.16.0
+        uses: jidicula/clang-format-action@v4.17.0
         with:
           clang-format-version: 15
           include-regex: '^.*\.(c|h|t)pp$'
