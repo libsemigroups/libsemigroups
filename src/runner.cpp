@@ -21,10 +21,14 @@
 
 #include "libsemigroups/runner.hpp"
 
+#include <ratio>        // for ratio
+#include <string_view>  // for basic_string_view
+
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 
-#include "libsemigroups/detail/report.hpp"  // for report_default
-#include "libsemigroups/detail/timer.hpp"   // for Timer::string
+#include "libsemigroups/detail/function-ref.hpp"  // for FunctionRef
+#include "libsemigroups/detail/report.hpp"        // for report_default
+#include "libsemigroups/detail/timer.hpp"         // for string_time
 
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
@@ -82,8 +86,6 @@ namespace libsemigroups {
     return *this;
   }
 
-  Runner::~Runner() = default;
-
   bool Reporter::report() const {
     auto t       = std::chrono::high_resolution_clock::now();
     auto elapsed = t - _last_report.load();
@@ -101,10 +103,15 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   Runner::Runner()
-      : Reporter(), _run_for(FOREVER), _state(state::never_run), _stopper() {}
+      : Reporter(),
+        _mtx(),
+        _run_for(FOREVER),
+        _state(state::never_run),
+        _stopper() {}
 
   Runner& Runner::init() {
     Reporter::init();
+    // Do nothing to _mtx
     _run_for = FOREVER;
     _state   = state::never_run;
     _stopper = decltype(_stopper)();
@@ -112,12 +119,17 @@ namespace libsemigroups {
   }
 
   Runner::Runner(Runner const& other)
-      : Reporter(other), _run_for(other._run_for), _state(), _stopper() {
+      : Reporter(other),
+        _mtx(),
+        _run_for(other._run_for),
+        _state(),
+        _stopper() {
     _state = other._state.load();
   }
 
   Runner::Runner(Runner&& other)
       : Reporter(std::move(other)),
+        _mtx(),
         _run_for(std::move(other._run_for)),
         _state(),
         _stopper() {
@@ -126,6 +138,7 @@ namespace libsemigroups {
 
   Runner& Runner::operator=(Runner const& other) {
     Reporter::operator=(other);
+    // Do nothing to _mtx, _stopper
     _run_for = other._run_for;
     _state   = other._state.load();
     return *this;
@@ -133,10 +146,13 @@ namespace libsemigroups {
 
   Runner& Runner::operator=(Runner&& other) {
     Reporter::operator=(std::move(other));
+    // Do nothing to _mtx, _stopper
     _run_for = std::move(other._run_for);
     _state   = other._state.load();
     return *this;
   }
+
+  Runner::~Runner() = default;
 
   void Runner::run() {
     if (!finished() && !dead()) {
@@ -228,6 +244,23 @@ namespace libsemigroups {
     }
     // since kill() may leave the object in an invalid state we only return
     // true here if we are not dead and the object thinks it is finished.
+  }
+
+  void Runner::set_state(state val) const noexcept {
+    // NOTE: we require a mutex here because it's possible for two threads to
+    // be calling this function at the same time where one has "val1 = dead"
+    // and the other has "val2 != dead", and for the line where "!dead()" is
+    // called to precede both calls to "_state = val", so that sometimes
+    // "_state == val2" instead of "_state == val1 == dead" after this
+    // function is called, when it should be "_state == dead"
+    std::lock_guard lck(_mtx);
+    // We can set the state back to never_run if run_impl throws, and we are
+    // restoring the old state.
+    if (!dead()) {
+      // It can be that *this* becomes dead after this function has been
+      // called.
+      _state = val;
+    }
   }
 
 }  // namespace libsemigroups
