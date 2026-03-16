@@ -1,5 +1,11 @@
 # Changelog - version 3
 
+## v3.5.3 (released 16/03/2026)
+
+This is a minor release fixing an issue in `Runner` (which would sometimes fail
+to be `dead` after being `killed`, causing some computations to run
+indefinitely).
+
 ## v3.5.2 (released 14/03/2026)
 
 This a minor release including a couple of improvements, including:
