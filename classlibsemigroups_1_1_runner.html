@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.2</span>
+   &#160;<span id="projectnumber">v3.5.3</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -624,7 +624,7 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function can be used to terminate <a class="el" href="#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">run()</a> from another thread. After <a class="el" href="#af38db1a1e60b1ef929f2774f2455049a" title="Stop run from running (thread-safe).">kill()</a> has been called the <a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a> may no longer be in a valid state, but will return <code>true</code> from <a class="el" href="#a5ee1002785b648610ebf7fbb3bfe42ef" title="Check if the runner is dead.">dead()</a> .</p>
+<p>This function can be used to terminate <a class="el" href="#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">run()</a> from another thread. After <a class="el" href="#af38db1a1e60b1ef929f2774f2455049a" title="Stop run from running (thread-safe).">kill()</a> has been called the <a class="el" href="classlibsemigroups_1_1_runner.html" title="Abstract class for derived classes that run an algorithm.">Runner</a> may no longer be in a valid state, but will return <code>true</code> from <a class="el" href="#adc6e5733fc3c22f0a7b2914188c49c90af58e6a506c76fc2c90a7d29cbc631c2f" title="Indicates that the Runner was killed (by another thread).">dead()</a> .</p>
 <dl class="section user"><dt>Exceptions</dt><dd>This function is <code>noexcept</code> and is guaranteed never to throw.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">finished()</a> </dd></dl>
 
@@ -692,7 +692,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reports whether <a class="el" href="#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">run()</a> was stopped because it is <a class="el" href="#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">finished()</a>, <a class="el" href="#acceb4f54a07cf7fd6562b46f33e7a1e5" title="Check if the amount of time passed to run_for has elapsed.">timed_out()</a>, or <a class="el" href="#a5ee1002785b648610ebf7fbb3bfe42ef" title="Check if the runner is dead.">dead()</a>. </p>
+<p>Reports whether <a class="el" href="#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">run()</a> was stopped because it is <a class="el" href="#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">finished()</a>, <a class="el" href="#acceb4f54a07cf7fd6562b46f33e7a1e5" title="Check if the amount of time passed to run_for has elapsed.">timed_out()</a>, or <a class="el" href="#adc6e5733fc3c22f0a7b2914188c49c90af58e6a506c76fc2c90a7d29cbc631c2f" title="Indicates that the Runner was killed (by another thread).">dead()</a>. </p>
 
 </div>
 </div>
@@ -1009,7 +1009,7 @@ template&lt;typename Func&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This function can be used to check whether or not <a class="el" href="#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">run()</a> has been stopped for whatever reason. In other words, it checks if <a class="el" href="#acceb4f54a07cf7fd6562b46f33e7a1e5" title="Check if the amount of time passed to run_for has elapsed.">timed_out()</a>, <a class="el" href="#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">finished()</a>, or <a class="el" href="#a5ee1002785b648610ebf7fbb3bfe42ef" title="Check if the runner is dead.">dead()</a>.</p>
+<p>This function can be used to check whether or not <a class="el" href="#a13a43e6d814de94978c515cb084873b1" title="Run until finished.">run()</a> has been stopped for whatever reason. In other words, it checks if <a class="el" href="#acceb4f54a07cf7fd6562b46f33e7a1e5" title="Check if the amount of time passed to run_for has elapsed.">timed_out()</a>, <a class="el" href="#aebaed0be88cbcf45f1985b819c9dabb7" title="Check if run has been run to completion or not.">finished()</a>, or <a class="el" href="#adc6e5733fc3c22f0a7b2914188c49c90af58e6a506c76fc2c90a7d29cbc631c2f" title="Indicates that the Runner was killed (by another thread).">dead()</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>A <code>bool</code>. </dd></dl>
 
 </div>

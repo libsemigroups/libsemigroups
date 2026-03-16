@@ -289,7 +289,7 @@ var searchData=
   ['isspace_286',['isspace',['http://en.cppreference.com/w/cpp/string/byte/isspace.html',1,'std']]],
   ['isstatic_287',['IsStatic',['../group__transf__group.html#ga6a09e412b3f7bbc1a8dcdd2325c3b9fe',1,'libsemigroups']]],
   ['isstaticmatrix_288',['IsStaticMatrix',['../group__matrix__group.html#ga69ca9236258d1d99eef27d4b7e9705bc',1,'libsemigroups']]],
-  ['issues_289',['Issues',['../index.html#issues',1,'Issues'],['../md_install.html#issues-1',1,'Issues']]],
+  ['issues_289',['Issues',['../md_install.html#issues-1',1,'Issues'],['../index.html#issues',1,'Issues']]],
   ['istransf_290',['IsTransf',['../group__transf__group.html#ga093d699d5ec9c202c455fbb638bfa2dc',1,'libsemigroups']]],
   ['istream_291',['istream',['http://en.cppreference.com/w/cpp/io/basic_istream.html',1,'istream'],['http://en.cppreference.com/w/cpp/io/basic_istream/basic_istream.html',1,'std::istream::istream()']]],
   ['istream_5fiterator_292',['istream_iterator',['http://en.cppreference.com/w/cpp/iterator/istream_iterator.html',1,'std']]],

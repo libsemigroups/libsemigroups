@@ -18,10 +18,11 @@ var searchData=
   ['3_20released_2009_2004_202025_15',['v3.0.3 (released 09/04/2025)',['../md_changelog-v3.html#v303-released-09042025',1,'']]],
   ['3_20released_2011_2011_202021_16',['v2.0.3 (released 11/11/2021)',['../md_changelog-v2.html#v203-released-11112021',1,'']]],
   ['3_20released_2012_2008_202025_17',['v3.1.3 (released 12/08/2025)',['../md_changelog-v3.html#v313-released-12082025',1,'']]],
-  ['3_20released_2016_2012_202021_18',['v2.1.3 (released 16/12/2021)',['../md_changelog-v2.html#v213-released-16122021',1,'']]],
-  ['3_20released_2019_2001_202024_19',['v2.7.3 (released 19/01/2024)',['../md_changelog-v2.html#v273-released-19012024',1,'']]],
-  ['3_20released_2022_2009_202022_20',['v2.2.3 (released 22/09/2022)',['../md_changelog-v2.html#v223-released-22092022',1,'']]],
-  ['30_2009_202025_21',[' v3.2.0 (released 30/09/2025)',['../md_changelog-v3.html# v320-released-30092025',1,'']]],
-  ['30_2011_202019_22',['v1.0.2 (released 30/11/2019)',['../md_changelog-v1.html#v102-released-30112019',1,'']]],
-  ['30_2011_202021_23',['v2.1.2 (released 30/11/2021)',['../md_changelog-v2.html#v212-released-30112021',1,'']]]
+  ['3_20released_2016_2003_202026_18',['v3.5.3 (released 16/03/2026)',['../md_changelog-v3.html#v353-released-16032026',1,'']]],
+  ['3_20released_2016_2012_202021_19',['v2.1.3 (released 16/12/2021)',['../md_changelog-v2.html#v213-released-16122021',1,'']]],
+  ['3_20released_2019_2001_202024_20',['v2.7.3 (released 19/01/2024)',['../md_changelog-v2.html#v273-released-19012024',1,'']]],
+  ['3_20released_2022_2009_202022_21',['v2.2.3 (released 22/09/2022)',['../md_changelog-v2.html#v223-released-22092022',1,'']]],
+  ['30_2009_202025_22',[' v3.2.0 (released 30/09/2025)',['../md_changelog-v3.html# v320-released-30092025',1,'']]],
+  ['30_2011_202019_23',['v1.0.2 (released 30/11/2019)',['../md_changelog-v1.html#v102-released-30112019',1,'']]],
+  ['30_2011_202021_24',['v2.1.2 (released 30/11/2021)',['../md_changelog-v2.html#v212-released-30112021',1,'']]]
 ];
