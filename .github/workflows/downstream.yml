@@ -79,10 +79,10 @@ jobs:
           rm -rf /home/runner/gap/pkg/semigroups-*.*.*
           cd /home/runner/gap/pkg
           git clone -b $GAP_SEMIGROUPS_BRANCH --depth=1 https://github.com/$GAP_SEMIGROUPS_REPO/Semigroups.git Semigroups
-          cp -r /home/libsemigroups Semigroups
+          cp -r $GITHUB_WORKSPACE Semigroups
       - name: "Build the Semigroups GAP package"
         run: |
-          cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
+          cd /home/runner/gap/pkg/Semigroups
           # cp .LIBSEMIGROUPS_VERSION libsemigroups/.VERSION 
           ./autogen.sh
           ./configure $CONFIGFLAGS
