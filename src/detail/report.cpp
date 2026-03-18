@@ -35,6 +35,8 @@ namespace libsemigroups {
       ReportingData& operator=(ReportingData const&) = delete;
       ReportingData& operator=(ReportingData&&)      = delete;
 
+      ~ReportingData() = default;
+
       void report(bool val) {
         _report = val;
       }
@@ -66,6 +68,8 @@ namespace libsemigroups {
       ThreadIdManager(ThreadIdManager&&)                 = delete;
       ThreadIdManager& operator=(ThreadIdManager const&) = delete;
       ThreadIdManager& operator=(ThreadIdManager&&)      = delete;
+
+      ~ThreadIdManager() = default;
 
       void   reset();
       size_t tid(std::thread::id t);
