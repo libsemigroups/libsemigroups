@@ -83,7 +83,7 @@ jobs:
       - name: "Build the Semigroups GAP package"
         run: |
           cd /home/runner/gap/pkg/Semigroups
-          # cp .LIBSEMIGROUPS_VERSION libsemigroups/.VERSION 
+          cp .LIBSEMIGROUPS_VERSION libsemigroups/.VERSION 
           ./autogen.sh
           ./configure $CONFIGFLAGS
           make -j4
