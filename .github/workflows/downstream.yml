@@ -64,6 +64,7 @@ jobs:
       GAP_SEMIGROUPS_REPO: "semigroups"
       GAP_SEMIGROUPS_BRANCH: "stable-5.6"
       GAP: "gap -A -T --quitonbreak"
+      GAP_DIR: "/home/runner/gap"
       CONFIGFLAGS: "--disable-hpcombi"
     name: GAP 4.15.1 / Semigroups / stable-5.6 / ubuntu / 64-bit
     runs-on: ubuntu-latest
@@ -75,8 +76,8 @@ jobs:
           gap-version: ${{ env.GAP_VERSION }}
       - name: "Clone the Semigroups GAP package"
         run: |
-          rm -rf /home/gap/inst/gap-$GAP_VERSION/pkg/semigroups-*.*.*
-          cd /home/gap/inst/gap-$GAP_VERSION/pkg
+          rm -rf /home/runner/gap/pkg/semigroups-*.*.*
+          cd /home/runner/gap/pkg
           git clone -b $GAP_SEMIGROUPS_BRANCH --depth=1 https://github.com/$GAP_SEMIGROUPS_REPO/Semigroups.git Semigroups
           cp -r /home/libsemigroups Semigroups
       - name: "Build the Semigroups GAP package"
