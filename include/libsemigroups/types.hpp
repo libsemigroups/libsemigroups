@@ -107,7 +107,10 @@ namespace libsemigroups {
   // std::basic_string<uint8_t>. This only seems to present an issue in Cygwin,
   // and in the conda feedstock tests. This alias was only used in v3.1.0 and
   // is deprecated already in v3.1.1.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   using u8string [[deprecated]] = std::basic_string<uint8_t>;
+#pragma GCC diagnostic pop
   //! @}
 }  // namespace libsemigroups
 
