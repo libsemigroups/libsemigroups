@@ -42,7 +42,7 @@
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
 #include "libsemigroups/word-graph.hpp"             // for WordGraph
-#include "libsemigroups/word-range.hpp"             // for operator"" _w
+#include "libsemigroups/word-range.hpp"             // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"             // for ReportGuard
 #include "libsemigroups/detail/tce.hpp"                // for TCE
