@@ -1,0 +1,3 @@
+[codespell]
+skip = ./third_party/simde-0.8.2,./.git,./benchmark/python,./experiments,./gh-pages,./build
+ignore-words-list=shft

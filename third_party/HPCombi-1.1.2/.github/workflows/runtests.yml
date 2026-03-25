@@ -1,0 +1,59 @@
+name: CI
+on: [pull_request, workflow_dispatch]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+   tests:
+      name: "ubuntu-latest ${{ matrix.sys.c_compiler }}-${{ matrix.sys.version }}"
+      timeout-minutes: 60
+      runs-on: ubuntu-latest
+      strategy:
+        fail-fast: false
+        matrix:
+          sys:
+            - { c_compiler: 'gcc', cpp_compiler: 'g++', version: '9'}
+            - { c_compiler: 'gcc', cpp_compiler: 'g++', version: '10'}
+            - { c_compiler: 'gcc', cpp_compiler: 'g++', version: '11'}
+            - { c_compiler: 'gcc', cpp_compiler: 'g++', version: '12'}
+            - { c_compiler: 'gcc', cpp_compiler: 'g++', version: '13'}
+            - { c_compiler: 'gcc', cpp_compiler: 'g++', version: '14'}
+            - { c_compiler: 'clang', cpp_compiler: 'clang++', version: '14'}
+            - { c_compiler: 'clang', cpp_compiler: 'clang++', version: '15'}
+            - { c_compiler: 'clang', cpp_compiler: 'clang++', version: '16'}
+            - { c_compiler: 'clang', cpp_compiler: 'clang++', version: '17'}
+            - { c_compiler: 'clang', cpp_compiler: 'clang++', version: '18'}
+      steps:
+         - name: "Checkout HPCombi repo . . ."
+           uses: actions/checkout@v3
+         - name: "Setup compiler . . ."
+           run: |
+            CC=${{ matrix.sys.c_compiler }}-${{ matrix.sys.version }}
+            CXX=${{ matrix.sys.cpp_compiler }}-${{ matrix.sys.version }}
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa -y
+            sudo apt-get --yes update
+            sudo apt-get install $CC $CXX
+            echo "CC=$CC" >> $GITHUB_ENV
+            echo "CXX=$CXX" >> $GITHUB_ENV
+         - name: "Compiler information"
+           run: |
+             echo $CXX
+             $CXX --version
+         - name: "Configure the HPCombi build . . ."
+           env:
+             CC: ${{ env.CC }}
+             CXX: ${{ env.CXX }}
+           run: |
+             mkdir build
+             cd build
+             cmake -DBUILD_TESTING=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
+         - name: "Build HPCombi . . ."
+           run: |
+             cd build/tests
+             make -j4
+         - name: "Run HPCombi tests . . ."
+           run: |
+             cd build/tests
+             ./test_all

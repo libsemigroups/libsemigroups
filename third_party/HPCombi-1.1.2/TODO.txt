@@ -1,0 +1,7 @@
+- Get rid of target_compile_options("-Wall -O3 + arch optim")
+- https://cmake.org/Wiki/CMake:How_To_Write_Platform_Checks
+- https://stackoverflow.com/questions/11944060/how-to-detect-target-architecture-using-cmake
+
+Add method data in perm16 and perm_generic
+
+Document examples. Eg for each file foo.cpp in examples/, add "@example foo.cpp" in a relevant file of include/hpcombi/.
