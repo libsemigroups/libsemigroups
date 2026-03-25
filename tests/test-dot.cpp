@@ -19,8 +19,8 @@
 #include <map>      // for map
 #include <string>   // for string
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/dot.hpp"                 // for Dot
 #include "libsemigroups/exception.hpp"           // for LibsemigroupsException

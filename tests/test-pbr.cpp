@@ -18,8 +18,8 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
-#include "test-main.hpp"                       // LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"                        // LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 #include "libsemigroups/pbr.hpp"        // for PBR

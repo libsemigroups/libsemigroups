@@ -19,8 +19,8 @@
 #include "libsemigroups/todd-coxeter-helpers.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat-fastest.hpp"           // for BMatFastest
 #include "libsemigroups/bmat8.hpp"                  // for BMat8

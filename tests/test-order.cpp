@@ -22,8 +22,8 @@
 #include <string>   // for string
 #include <vector>   // for vector
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"   // for LibsemigroupsException
 #include "libsemigroups/order.hpp"       // for wt_shortlex_compare*
