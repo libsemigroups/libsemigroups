@@ -12,7 +12,8 @@ AC_MSG_RESULT([$enable_hpcombi])
 AM_CONDITIONAL([LIBSEMIGROUPS_HPCOMBI_ENABLED], [test "x$enable_hpcombi" = xyes])
 # The next variable becomes the preprocessor macro LIBSEMIGROUPS_HPCOMBI_ENABLED 
 AS_IF([test "x$enable_hpcombi" = xyes],
-      [AC_DEFINE([HPCOMBI_ENABLED], [1], [define if building with HPCombi])])
+      [AC_DEFINE([HPCOMBI_ENABLED], [1], [define if building with HPCombi])
+       AC_SUBST([HPCOMBI_ENABLED], [1])])
 
 # Although HPCombi no longer requires x86, we still require the following flags
 # if they are available.
