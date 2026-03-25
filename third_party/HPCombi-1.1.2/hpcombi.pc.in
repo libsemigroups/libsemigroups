@@ -1,0 +1,7 @@
+Name: @CMAKE_PROJECT_NAME@
+Description: @DESCRIPTION@
+Version: @VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
+Requires: 
+Libs: -L@CMAKE_INSTALL_PREFIX@/lib
+Cflags: -I@CMAKE_INSTALL_PREFIX@/include
+
