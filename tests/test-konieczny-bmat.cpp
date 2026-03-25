@@ -17,9 +17,9 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "bmat-data.hpp"                       // for clark_gens
-#include "test-main.hpp"                       // FOR LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "bmat-data.hpp"                        // for clark_gens
+#include "test-main.hpp"                        // FOR LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
 #include "libsemigroups/konieczny.hpp"      // for Konieczny

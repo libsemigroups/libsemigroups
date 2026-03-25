@@ -18,7 +18,7 @@
 // This file contains some benchmarks for the performance of the bipartition
 // multiplication.
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/bipart.hpp"        // for Bipartition
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin

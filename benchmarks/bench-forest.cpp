@@ -19,7 +19,7 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/forest.hpp"        // for Forest
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
