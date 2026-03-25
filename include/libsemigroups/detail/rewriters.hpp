@@ -31,7 +31,7 @@
 
 #include "libsemigroups/debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/order.hpp"  // for shortlex_compare
-#include "libsemigroups/types.hpp"  // for u8string
+#include "libsemigroups/types.hpp"  // for UNDEFINED
 
 #include "aho-corasick-impl.hpp"  // for AhoCorasickImpl
 #include "multi-view.hpp"         // for MultiView
