@@ -93,6 +93,77 @@ namespace libsemigroups {
     return floating_count;
   }
 
+  bool TwistedBipartition::operator==(TwistedBipartition const& other) const {
+    if (is_zero() && other.is_zero() and _threshold == other._threshold) {
+      return true;
+    }
+
+    return (_bipartition == other._bipartition
+            && _floating_components == other._floating_components
+            && _threshold == other._threshold);
+  }
+
+  bool TwistedBipartition::operator!=(TwistedBipartition const& other) const {
+    return !(*this == other);
+  }
+
+  bool TwistedBipartition::operator<(TwistedBipartition const& other) const {
+    if (is_zero()) {
+      if (other.is_zero()) {
+        return _threshold < other._threshold;
+      }
+      return true;
+    }
+
+    return _bipartition < other._bipartition
+           || (_bipartition == other._bipartition
+               && _threshold < other._threshold)
+           || (_bipartition == other._bipartition
+               && _threshold == other._threshold
+               && _floating_components < other._floating_components);
+  }
+
+  size_t TwistedBipartition::hash_value() const {
+    if (is_zero()) {
+      return 0;
+    }
+    return Hash<Bipartition>()(_bipartition)
+           ^ std::hash<size_t>()(_floating_components);
+  }
+
+  void
+  TwistedBipartition::product_inplace_no_checks(TwistedBipartition const& x,
+                                                TwistedBipartition const& y,
+                                                size_t thread_id) {
+    if (x.degree() != y.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "Cannot multiply TwistedBipartitions of different degrees, found "
+          "degrees {} and {}.",
+          x.degree(),
+          y.degree());
+    }
+    if (x.threshold() != y.threshold()) {
+      LIBSEMIGROUPS_EXCEPTION("Cannot multiply TwistedBipartitions with "
+                              "different thresholds, found "
+                              "thresholds {} and {}.",
+                              x.threshold(),
+                              y.threshold());
+    }
+
+    _threshold = x._threshold;
+
+    if (x.is_zero() || y.is_zero()) {
+      _floating_components = _threshold + 1;
+      return;
+    }
+
+    _floating_components = x._floating_components + y._floating_components
+                           + bipartition::number_floating_components(
+                               x._bipartition, y._bipartition);
+    _bipartition.product_inplace_no_checks(
+        x._bipartition, y._bipartition, thread_id);
+  }
+
   TwistedBipartition operator*(TwistedBipartition const& x,
                                TwistedBipartition const& y) {
     TwistedBipartition result(x);
