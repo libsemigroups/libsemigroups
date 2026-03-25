@@ -631,7 +631,7 @@ namespace libsemigroups {
     }
 
     auto m  = make<TestType>(sr,
-                            {{2, 2, 0, 1},
+                             {{2, 2, 0, 1},
                               {0, 0, 1, 3},
                               {1, NEGATIVE_INFINITY, 0, 0},
                               {0, 1, 0, 1}});
@@ -1037,8 +1037,7 @@ namespace libsemigroups {
     REQUIRE(matrix::pow(x, 100)
             == make<TestType>({{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}));
     REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
-    REQUIRE(matrix::pow(x, 1)
-            == make<TestType>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
+    REQUIRE(matrix::pow(x, 1) == expected);
     REQUIRE(matrix::pow(x, 0) == TestType::one(3));
   }
 
@@ -1094,7 +1093,9 @@ namespace libsemigroups {
       BMat<>                        x(v);
       REQUIRE(x == BMat<>({{true, false}, {true, false}}));
     }
-    { BMat<> x; }
+    {
+      BMat<> x;
+    }
     {
       using Mat               = NTPMat<>;
       NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
