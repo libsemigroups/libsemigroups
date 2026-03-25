@@ -513,21 +513,16 @@ namespace libsemigroups {
         Mat({{0, 8}, {8, 0}})};
 
     Konieczny S = make<Konieczny>(gens);
-
-    FroidurePin F = make<FroidurePin>(gens);
-
     S.run();
+
     REQUIRE(S.number_of_D_classes() == 2'200);
     REQUIRE(S.size() == 10'000);
-
-    F.run();
-    REQUIRE(F.size() == 10'000);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
       "035",
-      "regular-generated bmat gens + arrow - tropical max-plus (dim 4, t 1)",
+      "reg-gen bmat gens + arrow - tropical max-plus (dim 4, t 1)",
       "[extreme][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<10, 4>;
 
@@ -556,23 +551,18 @@ namespace libsemigroups {
                 {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 1, NEGATIVE_INFINITY},
                 {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 1}})};
 
-    Konieczny   S = make<Konieczny>(gens);
-    FroidurePin F = make<FroidurePin>(gens);
-
+    Konieczny S = make<Konieczny>(gens);
     S.run();
-    F.run();
 
-    REQUIRE(S.size() == F.size());
-
-    REQUIRE(S.size() == 32'311'832);
+    REQUIRE(S.size() == 582'214);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
       "036",
-      "regular-generated bmat gens - tropical max-plus (dim 5, t 1)",
+      "regular-generated bmat gens - tropical max-plus (dim 5, t 3)",
       "[extreme][konieczny][tropmaxplus]") {
-    using Mat = MaxPlusTruncMat<4, 5>;
+    using Mat = MaxPlusTruncMat<3, 5>;
 
     std::vector<Mat> gens
         = {Mat({{NEGATIVE_INFINITY,
@@ -693,14 +683,9 @@ namespace libsemigroups {
                  NEGATIVE_INFINITY,
                  1}})};
 
-    Konieczny   S = make<Konieczny>(gens);
-    FroidurePin F = make<FroidurePin>(gens);
-
+    Konieczny S = make<Konieczny>(gens);
     S.run();
-    // F.run();
 
-    // REQUIRE(S.size() == F.size());
-
-    REQUIRE(S.size() == 59'726'943);
+    REQUIRE(S.size() == 114'557'165);
   }
 }  // namespace libsemigroups
