@@ -17,7 +17,7 @@
 
 namespace libsemigroups {
 
-  size_t
+  inline size_t
   Rank<TwistedBipartition>::operator()(TwistedBipartition const& x) const {
     if (x.is_zero()) {
       return 0;
