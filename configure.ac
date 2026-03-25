@@ -126,6 +126,7 @@ AX_CHECK_BACKWARD()
 
 # Check if HPCombi is enable, and available
 AX_CHECK_HPCOMBI()
+AC_CONFIG_FILES([hpcombi.mk])
 
 # Check if the vendored fmt should be used or not
 AX_CHECK_FMT()
