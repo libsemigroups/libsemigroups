@@ -525,7 +525,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   namespace literals {
-    word_type operator"" _w(char const* w, size_t n) {
+    word_type operator""_w(char const* w, size_t n) {
       word_type result;
 #ifdef LIBSEMIGROUPS_DEBUG
       static const std::string valid_chars = "0123456789";
@@ -562,8 +562,8 @@ namespace libsemigroups {
       return result;
     }
 
-    word_type operator"" _w(const char* w) {
-      return operator"" _w(w, std::strlen(w));
+    word_type operator""_w(const char* w) {
+      return operator""_w(w, std::strlen(w));
     }
 
     namespace {

@@ -2042,12 +2042,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the input contains a mixture of
     //! integers and non-integers.
-    word_type operator"" _w(const char* w, size_t n);
+    word_type operator""_w(const char* w, size_t n);
 
     //! \brief Literal for defining \ref word_type over integers less than 10.
     //!
     //! See \ref literal_operator_w "operator\"\"_w" for details.
-    word_type operator"" _w(const char* w);
+    word_type operator""_w(const char* w);
 
     //! \anchor literal_operator_p
     //! \brief Literal for defining std::string by parsing an algebraic
@@ -2070,13 +2070,13 @@ namespace libsemigroups {
     //! \returns A value of type \ref std::string.
     //!
     //! \throws LibsemigroupsException if the string cannot be parsed.
-    std::string operator"" _p(const char* w, size_t n);
+    std::string operator""_p(const char* w, size_t n);
 
     //! \brief Literal for defining \ref word_type by parsing an algebraic
     //! expression.
     //!
     //! See \ref literal_operator_p "operator\"\"_p" for details.
-    std::string operator"" _p(const char* w);
+    std::string operator""_p(const char* w);
   }  // namespace literals
 
   ////////////////////////////////////////////////////////////////////////
