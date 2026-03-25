@@ -53,8 +53,17 @@ namespace libsemigroups {
 
   namespace bipartition {
 
-    // TODO: doc
     // TODO: combine this with multiplication to avoid repeated work?
+    //! \brief Returns the number of floating components in the product
+    //! \f$ab\f$ of two bipartitions \f$a\f$ and \f$b\f$.
+    //!
+    //! \param a a bipartition.
+    //! \param b a bipartition.
+    //!
+    //! \returns The number of floating components in the product \f$ab\f$.
+    //!
+    //! \exceptions
+    //! \no_except
     [[nodiscard]] size_t number_floating_components(Bipartition const& a,
                                                     Bipartition const& b);
 
@@ -62,7 +71,19 @@ namespace libsemigroups {
 
   //! \brief Class for representing twisted bipartitions.
   //!
-  //! TODO: expand doc
+  //! A twisted bipartition is a bipartition together with a threshold and a
+  //! number of floating components. The product of two twisted bipartitions is
+  //! defined only when they have the same threshold, and has the same threshold
+  //! as the two factors. The underlying bipartition is the product of the
+  //! underlying bipartitions of the factors, and the number of floating
+  //! components is the sum of the number of floating components in the two
+  //! factors and the number of floating components in the product of the
+  //! underlying bipartitions of the factors.
+  //!
+  //! Any twisted bipartition with a higher number of floating components
+  //! than its threshold is considered to be equal to zero, and the underlying
+  //! bipartition of such a zero is undefined other than
+  //! having the correct degree.
   class TwistedBipartition {
    public:
     //! \brief Default constructor.
@@ -70,10 +91,6 @@ namespace libsemigroups {
     //! Constructs an uninitialized TwistedBipartition with default values.
     TwistedBipartition()
         : _bipartition(), _threshold(0), _floating_components(0) {}
-
-    // TODO: instead of _is_one, use a flag for whether the
-    // TwistedBipartition knows its threshold. Would simplify equality
-    // checks and product_inplace_no_checks.
 
     //! \brief Constructor with explicit values.
     //!
@@ -83,18 +100,12 @@ namespace libsemigroups {
     //! \param bipartition the underlying Bipartition.
     //! \param threshold the threshold value.
     //! \param floating_components the number of floating components.
-    //!
-    // TODO rm params is_zero, is_one
     TwistedBipartition(Bipartition bipartition,
                        size_t      threshold,
-                       size_t      floating_components,
-                       bool        is_zero = false,
-                       bool        is_one  = false)
+                       size_t      floating_components)
         : _bipartition(bipartition),
           _threshold(threshold),
-          _floating_components(floating_components),
-          _is_zero(is_zero),
-          _is_one(is_one) {}
+          _floating_components(floating_components) {}
 
     //! \brief Copy constructor.
     TwistedBipartition(TwistedBipartition const& other) = default;
@@ -115,36 +126,17 @@ namespace libsemigroups {
     //! \brief Compare TwistedBipartitions for equality.
     // TODO to cpp
     [[nodiscard]] bool operator==(TwistedBipartition const& other) const {
-      if (_is_zero && other._is_zero) {
+      if (is_zero() && other.is_zero() and _threshold == other._threshold) {
         return true;
-      }
-      if (_is_one && other._is_one) {
-        return true;
-      }
-
-      if (other._is_one && _floating_components == 0
-          && _bipartition == other._bipartition) {
-        return true;
-      }
-
-      if (_is_one && other._floating_components == 0
-          && _bipartition == other._bipartition) {
-        return true;
-      }
-
-      if (_is_zero != other._is_zero) {
-        return false;
-      }
-
-      if (_is_one != other._is_one) {
-        return false;
       }
 
       return (_bipartition == other._bipartition
-              && _floating_components == other._floating_components);
+              && _floating_components == other._floating_components
+              && _threshold == other._threshold);
     }
 
     //! \brief Compare TwistedBipartitions for inequality.
+    // TODO to cpp
     [[nodiscard]] bool operator!=(TwistedBipartition const& other) const {
       return !(*this == other);
     }
@@ -152,8 +144,11 @@ namespace libsemigroups {
     //! \brief Compare TwistedBipartitions for less.
     // TODO to cpp
     [[nodiscard]] bool operator<(TwistedBipartition const& other) const {
-      if ((_is_zero && other._is_zero) || (_is_one && other._is_one)) {
-        return false;
+      if (is_zero()) {
+        if (other.is_zero()) {
+          return _threshold < other._threshold;
+        }
+        return true;
       }
 
       return _bipartition < other._bipartition
@@ -167,7 +162,7 @@ namespace libsemigroups {
     //! \brief Return the hash value of the TwistedBipartition.
     // TODO to cpp
     [[nodiscard]] size_t hash_value() const {
-      if (_is_zero) {
+      if (is_zero()) {
         return 0;
       }
       return Hash<Bipartition>()(_bipartition)
@@ -190,43 +185,31 @@ namespace libsemigroups {
     void product_inplace_no_checks(TwistedBipartition const& x,
                                    TwistedBipartition const& y,
                                    size_t                    thread_id = 0) {
-      _is_zero = false;
-      _is_one  = false;
-      // TODO: yikes
-      _threshold = std::max(x._threshold, y._threshold);
-
-      if (x._is_zero || y._is_zero) {
-        set_is_zero(true);
-        return;
+      if (x.degree() != y.degree()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "Cannot multiply TwistedBipartitions of different degrees, found "
+            "degrees {} and {}.",
+            x.degree(),
+            y.degree());
+      }
+      if (x.threshold() != y.threshold()) {
+        LIBSEMIGROUPS_EXCEPTION("Cannot multiply TwistedBipartitions with "
+                                "different thresholds, found "
+                                "thresholds {} and {}.",
+                                x.threshold(),
+                                y.threshold());
       }
 
-      if (x._is_one) {
-        _bipartition         = y._bipartition;
-        _threshold           = y._threshold;
-        _floating_components = y._floating_components;
-        _is_zero             = y._is_zero;
-        _is_one              = y._is_one;
-        return;
-      }
+      _threshold = x._threshold;
 
-      if (y._is_one) {
-        _bipartition         = x._bipartition;
-        _threshold           = x._threshold;
-        _floating_components = x._floating_components;
-        _is_zero             = x._is_zero;
-        _is_one              = x._is_one;
+      if (x.is_zero() || y.is_zero()) {
+        _floating_components = _threshold + 1;
         return;
       }
 
       _floating_components = x._floating_components + y._floating_components
                              + bipartition::number_floating_components(
                                  x._bipartition, y._bipartition);
-
-      if (_floating_components > _threshold) {
-        set_is_zero(true);
-        return;
-      }
-
       _bipartition.product_inplace_no_checks(
           x._bipartition, y._bipartition, thread_id);
     }
@@ -250,37 +233,13 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] bool is_zero() const noexcept {
-      return _is_zero;
-    }
-
-    [[nodiscard]] bool is_one() const noexcept {
-      return _is_one;
-    }
-
-    // TODO rm
-    void set_is_zero(bool is_zero) noexcept {
-      _is_zero = is_zero;
-      if (is_zero) {
-        _is_one = false;
-      }
-    }
-
-    // TODO rm
-    void set_is_one(bool is_one) noexcept {
-      _is_one = is_one;
-      if (is_one) {
-        _is_zero = false;
-      }
+      return floating_components() > threshold();
     }
 
    private:
     Bipartition _bipartition;
     size_t      _threshold;
     size_t      _floating_components;
-    bool        _is_zero;
-    bool        _is_one;
-    // TODO: hacky because adapters usually assume the degree is enough
-    // information to e.g. construct the One
   };
 
   //! \brief Multiply two TwistedBipartitions.
@@ -316,7 +275,7 @@ namespace libsemigroups {
 
   //! \ingroup make_bipart_group
   //!
-  //! \brief Check the arguments, construct a bipartition, and check it.
+  //! \brief Check arguments, construct a twisted bipartition, and check it.
   //!
   //! \copydoc make(Container const&)
   template <typename Return>
@@ -393,20 +352,12 @@ namespace libsemigroups {
     }
   };
 
-  // TODO: this is horrible - should operator()(size_t degree) be
-  // deprecated?
   //! Returns the identity TwistedBipartition of a given degree.
   template <>
   struct One<TwistedBipartition> {
     [[nodiscard]] TwistedBipartition
     operator()(TwistedBipartition const& x) const {
-      return (*this)(x.degree());
-    }
-
-    [[nodiscard]] TwistedBipartition operator()(size_t n = 0) const {
-      auto x = TwistedBipartition(Bipartition::one(n), 0, 0);
-      x.set_is_one(true);
-      return x;
+      return TwistedBipartition(Bipartition::one(x.degree()), x.threshold(), 0);
     }
   };
 
@@ -438,68 +389,20 @@ namespace libsemigroups {
   };
 
   template <>
-  class RankState<TwistedBipartition, void> {
-   public:
-    // we need to know the threshold to compute the rank of a One
-    using type = size_t;
-
-    //! Default constructor is deleted; we need to know the threshold.
-    RankState() noexcept = delete;
-
-    //! Iterator constructor; takes the first valid threshold value.
-    // TODO to tpp file
-    template <typename T>
-    RankState(T first, T last) {
-      if (std::distance(first, last) == 0) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a positive number of generators in the second argument");
-      }
-
-      for (auto it = first; it != last; ++it) {
-        if (!(it->is_one())) {
-          _threshold = it->threshold();
-          return;
-        }
-      }
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected at least one generator with a valid threshold value");
-    }
-
-    type const& get() const {
-      return _threshold;
-    }
-
-    // Other constructors are deleted.
-    //! Deleted.
-    RankState(RankState const&) = default;
-    //! Deleted.
-    RankState(RankState&&) = delete;
-    //! Deleted.
-    RankState& operator=(RankState const&) = delete;
-    //! Deleted.
-    RankState& operator=(RankState&&) = delete;
-
-   private:
-    type _threshold;
-  };
-
-  template <>
   struct Rank<TwistedBipartition> {
     // TODO to tpp file
-    size_t operator()(RankState<TwistedBipartition> const& state,
-                      TwistedBipartition const&            x) const {
+    size_t operator()(TwistedBipartition const& x) const {
       if (x.is_zero()) {
         return 0;
       }
-      if (x.is_one()) {
-        return (state.get() + 2) * x.degree();
-      }
-
-      return (state.get() - x.floating_components() + 1) * x.degree()
+      return (x.threshold() - x.floating_components() + 1) * x.degree()
              + x.rank();
     }
   };
 
+  //! The lambda value of a TwistedBipartition is a pair consisting of the
+  //! number of floating components and the right blocks of the underlying
+  //! bipartition.
   template <>
   struct Lambda<TwistedBipartition, std::pair<size_t, Blocks>> {
     // TODO to tpp file
@@ -508,11 +411,6 @@ namespace libsemigroups {
       if (x.is_zero()) {
         res.first  = UNDEFINED;
         res.second = Blocks();
-        return;
-      }
-      if (x.is_one()) {
-        res.first  = 0;
-        res.second = blocks::identity_blocks(x.degree());
         return;
       }
 
@@ -524,6 +422,9 @@ namespace libsemigroups {
     }
   };
 
+  //! The rho value of a TwistedBipartition is a pair consisting of the
+  //! number of floating components and the left blocks of the underlying
+  //! bipartition.
   template <>
   struct Rho<TwistedBipartition, std::pair<size_t, Blocks>> {
     // TODO to tpp file
@@ -532,11 +433,6 @@ namespace libsemigroups {
       if (x.is_zero()) {
         res.first  = UNDEFINED;
         res.second = Blocks();
-        return;
-      }
-      if (x.is_one()) {
-        res.first  = 0;
-        res.second = blocks::identity_blocks(x.degree());
         return;
       }
 
@@ -559,11 +455,6 @@ namespace libsemigroups {
       if (pt.first == UNDEFINED || x.is_zero()) {
         res.first  = UNDEFINED;
         res.second = Blocks();
-        return;
-      }
-
-      if (x.is_one()) {
-        res = pt;
         return;
       }
 
@@ -597,11 +488,6 @@ namespace libsemigroups {
         return;
       }
 
-      if (x.is_one()) {
-        res = pt;
-        return;
-      }
-
       Bipartition proj = bipartition::block_projection(pt.second);
       res.first
           = pt.first + x.floating_components()
@@ -619,4 +505,5 @@ namespace libsemigroups {
   };
 
 }  // namespace libsemigroups
+#include "twisted-bipart.tpp"
 #endif  // LIBSEMIGROUPS_TWISTED_BIPART_HPP_

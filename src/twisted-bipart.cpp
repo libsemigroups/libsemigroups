@@ -104,13 +104,10 @@ namespace libsemigroups {
                                                    std::string_view braces,
                                                    size_t           max_width) {
     if (x.is_zero()) {
-      return fmt::format("<Zero for TwistedBipartitions of degree {}>",
-                         x.degree());
-    }
-
-    if (x.is_one()) {
-      return fmt::format("<One for TwistedBipartitions of degree {}>",
-                         x.degree());
+      return fmt::format(
+          "<Zero for TwistedBipartitions of degree {}, threshold {}>",
+          x.degree(),
+          x.threshold());
     }
 
     std::string bipart_str
