@@ -206,7 +206,7 @@ namespace libsemigroups {
   make(Container const& cont, size_t threshold, size_t floating_components) {
     detail::throw_if_bad_args<Bipartition>(cont);
     TwistedBipartition result(cont, threshold, floating_components);
-    bipartition::throw_if_invalid(result);
+    bipartition::throw_if_invalid(result.bipartition());
     return result;
   }
 
