@@ -1,0 +1,7 @@
+Name: HPCombi
+Description: High Performance Combinatorics in C++ using vector instructions
+Version: 1.1.2
+Requires: 
+Libs: -L/usr/local/lib
+Cflags: -I/usr/local/include
+
