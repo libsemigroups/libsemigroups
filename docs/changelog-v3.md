@@ -1,5 +1,17 @@
 # Changelog - version 3
 
+## v3.5.4 (released 26/03/2026)
+
+This is a minor release including some improvements to the build system, updating some third party dependencies (HPCombi v1.1.2), some compile warnings resolved, and some further argument checking for matrices introduced:
+
+- row dimension checking for compile-time matrices by [\@jfjameslee] in https://github.com/libsemigroups/libsemigroups/pull/930
+- Bump HPCombi -> v1.1.2 by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/928
+- Fix compile warning [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/927
+- build: generate `hpcombi.mk` file by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/926
+- Add missing destructors by [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/924
+
+**Full Changelog**: https://github.com/libsemigroups/libsemigroups/compare/v3.5.3...v3.5.4
+
 ## v3.5.3 (released 16/03/2026)
 
 This is a minor release fixing an issue in `Runner` (which would sometimes fail

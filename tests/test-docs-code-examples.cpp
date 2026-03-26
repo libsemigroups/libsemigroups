@@ -292,10 +292,10 @@ namespace libsemigroups {
     Mat m({{1, 1}, {0, 0}});
   }
 
-  // matrix.hpp: Line 3818
+  // matrix.hpp: Line 3836
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "014",
-                          "./include/libsemigroups/matrix.hpp:3818",
+                          "./include/libsemigroups/matrix.hpp:3836",
                           "[docs][quick]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] BMat<3> m3;
@@ -303,10 +303,10 @@ namespace libsemigroups {
     BMat<> m4(4, 4);
   }
 
-  // matrix.hpp: Line 4125
+  // matrix.hpp: Line 4143
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "015",
-                          "./include/libsemigroups/matrix.hpp:4125",
+                          "./include/libsemigroups/matrix.hpp:4143",
                           "[docs][quick]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] IntMat<3> m3;
@@ -314,10 +314,10 @@ namespace libsemigroups {
     IntMat<> m4(4, 4);
   }
 
-  // matrix.hpp: Line 4415
+  // matrix.hpp: Line 4433
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "016",
-                          "./include/libsemigroups/matrix.hpp:4415",
+                          "./include/libsemigroups/matrix.hpp:4433",
                           "[docs][quick]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] MaxPlusMat<3> m3;
@@ -325,10 +325,10 @@ namespace libsemigroups {
     MaxPlusMat<> m4(4, 4);
   }
 
-  // matrix.hpp: Line 4724
+  // matrix.hpp: Line 4742
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "017",
-                          "./include/libsemigroups/matrix.hpp:4724",
+                          "./include/libsemigroups/matrix.hpp:4742",
                           "[docs][quick]") {
     // default construct an uninitialized 3 x 3 static matrix
     [[maybe_unused]] MinPlusMat<3> m3;
@@ -336,10 +336,10 @@ namespace libsemigroups {
     MinPlusMat<> m4(4, 4);
   }
 
-  // matrix.hpp: Line 5043
+  // matrix.hpp: Line 5061
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "018",
-                          "./include/libsemigroups/matrix.hpp:5043",
+                          "./include/libsemigroups/matrix.hpp:5061",
                           "[docs][quick]") {
     // construct an uninitialized 3 x 3 static matrix with threshold 11
     [[maybe_unused]] MaxPlusTruncMat<11, 3> m3_11;
@@ -352,10 +352,10 @@ namespace libsemigroups {
     MaxPlusTruncMat<> m5_11(&sr_11, 5, 5);
   }
 
-  // matrix.hpp: Line 5524
+  // matrix.hpp: Line 5542
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "019",
-                          "./include/libsemigroups/matrix.hpp:5524",
+                          "./include/libsemigroups/matrix.hpp:5542",
                           "[docs][quick]") {
     // construct an uninitialized 3 x 3 static matrix with threshold 11
     [[maybe_unused]] MinPlusTruncMat<11, 3> m3_11;
@@ -368,10 +368,10 @@ namespace libsemigroups {
     MinPlusTruncMat<> m5_11(&sr_11, 5, 5);
   }
 
-  // matrix.hpp: Line 6010
+  // matrix.hpp: Line 6028
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "020",
-                          "./include/libsemigroups/matrix.hpp:6010",
+                          "./include/libsemigroups/matrix.hpp:6028",
                           "[docs][quick]") {
     // construct an uninitialized 3 x 3 static matrix with threshold
     // 11, period 2
@@ -386,10 +386,10 @@ namespace libsemigroups {
     NTPMat<> m_5_11_2(&sr_11_2, 5, 5);
   }
 
-  // matrix.hpp: Line 6988
+  // matrix.hpp: Line 7006
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "021",
-                          "./include/libsemigroups/matrix.hpp:6988",
+                          "./include/libsemigroups/matrix.hpp:7006",
                           "[docs][quick]") {
     // default construct an uninitialized 3 x 3 static matrix
     ProjMaxPlusMat<3> m3;
@@ -397,20 +397,20 @@ namespace libsemigroups {
     ProjMaxPlusMat<> m4(4, 4);
   }
 
-  // matrix.hpp: Line 7153
+  // matrix.hpp: Line 7171
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "022",
-                          "./include/libsemigroups/matrix.hpp:7153",
+                          "./include/libsemigroups/matrix.hpp:7171",
                           "[docs][quick]") {
     auto x = make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
     matrix::pow(x, 100);
   }
 
-  // matrix.hpp: Line 7901
+  // matrix.hpp: Line 7919
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "023",
-                          "./include/libsemigroups/matrix.hpp:7901",
+                          "./include/libsemigroups/matrix.hpp:7919",
                           "[docs][quick]") {
     auto x = make<BMat<>>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
     matrix::row_space_size(x);  // returns 7

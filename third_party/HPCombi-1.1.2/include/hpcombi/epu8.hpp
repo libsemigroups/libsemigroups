@@ -58,7 +58,7 @@ namespace HPCombi {
 
 /// Unsigned 8 bits int constant.
 inline constexpr uint8_t
-operator"" _u8(unsigned long long arg) noexcept {  // NOLINT
+operator""_u8(unsigned long long arg) noexcept {  // NOLINT(runtime/int)
     return static_cast<uint8_t>(arg);
 }
 

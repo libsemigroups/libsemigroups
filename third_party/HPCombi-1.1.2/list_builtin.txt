@@ -1,0 +1,9 @@
+# List of intrinsics used in HPCombi
+# Format: <name>;<list of parameters>;<return value>
+# line starting with # are comments
+__builtin_ffs;0;0
+__builtin_ffsll;0;0
+__builtin_clz;32;26
+__builtin_clzll;37;58
+__builtin_popcountl;3;2
+__builtin_popcountll;0x300000003;4
