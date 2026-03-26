@@ -1,0 +1,245 @@
+name: Update Yggdrasil JLL
+
+on:
+  release:
+    types: [published]
+
+  # Allow manual trigger for testing or re-running after a failure
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to use (e.g. v3.5.1)"
+        required: true
+        type: string
+
+concurrency:
+  group: yggdrasil-update
+  cancel-in-progress: false
+
+jobs:
+  update-yggdrasil:
+    runs-on: ubuntu-latest
+
+    # Skip pre-releases and drafts (only applies to release trigger)
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.release.prerelease == false &&
+       github.event.release.draft == false)
+
+    env:
+      RECIPE_PATH: "L/libsemigroups/build_tarballs.jl"
+      YGGDRASIL_FORK: "libsemigroups-yggdrasil-pr/Yggdrasil"
+      YGGDRASIL_UPSTREAM: "JuliaPackaging/Yggdrasil"
+      UPSTREAM_REPO: "libsemigroups/libsemigroups"
+
+    steps:
+      - name: Resolve tag and version
+        id: meta
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${{ github.event.release.tag_name }}"
+          fi
+
+          VERSION="${TAG#v}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version '${VERSION}' (from tag '${TAG}') is not a valid X.Y.Z semver string"
+            exit 1
+          fi
+
+          echo "tag=$TAG"         >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "branch=update-libsemigroups-v${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve tag to commit SHA
+        id: sha
+        run: |
+          set -euo pipefail
+
+          TAG="${{ steps.meta.outputs.tag }}"
+
+          # ls-remote returns the object the ref points to.
+          # For annotated tags this is the tag object, not the commit.
+          # We dereference with ^{} to get the underlying commit.
+          RAW=$(git ls-remote "https://github.com/${UPSTREAM_REPO}.git" "refs/tags/${TAG}" "refs/tags/${TAG}^{}")
+
+          # If there is a ^{} line, use that (annotated tag); otherwise use the direct ref (lightweight tag)
+          COMMIT=$(echo "$RAW" | grep '\^{}' | awk '{print $1}' || true)
+          if [[ -z "$COMMIT" ]]; then
+            COMMIT=$(echo "$RAW" | head -1 | awk '{print $1}')
+          fi
+
+          if [[ ! "$COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Failed to resolve tag '${TAG}' to a commit SHA. Got: '${COMMIT}'"
+            echo "ls-remote output was:"
+            echo "$RAW"
+            exit 1
+          fi
+
+          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+          echo "Resolved ${TAG} -> ${COMMIT}"
+
+      - name: Check for existing PR
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.YGGDRASIL_PR_PAT }}
+        run: |
+          set -euo pipefail
+
+          BRANCH="${{ steps.meta.outputs.branch }}"
+
+          COUNT=$(gh api \
+            "repos/${YGGDRASIL_UPSTREAM}/pulls?state=open&head=libsemigroups-yggdrasil-pr:${BRANCH}" \
+            --jq 'length' 2>/dev/null || echo "0")
+
+          if [[ "$COUNT" != "0" ]]; then
+            echo "::warning::An open PR already exists for branch ${BRANCH} — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout Yggdrasil fork
+        if: steps.check.outputs.skip == 'false'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.YGGDRASIL_FORK }}
+          token: ${{ secrets.YGGDRASIL_PR_PAT }}
+          ref: master
+          fetch-depth: 1
+
+      - name: Sync fork with upstream
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+
+          git remote add upstream "https://github.com/${YGGDRASIL_UPSTREAM}.git"
+          git fetch upstream master --depth=1
+          git reset --hard upstream/master
+          git push origin master --force
+
+      - name: Verify recipe
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f "$RECIPE_PATH" ]]; then
+            echo "::error::Recipe not found at ${RECIPE_PATH}"
+            exit 1
+          fi
+
+      - name: Patch recipe
+        if: steps.check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.meta.outputs.version }}
+          NEW_COMMIT: ${{ steps.sha.outputs.commit }}
+        run: |
+          set -euo pipefail
+
+          FILE="$RECIPE_PATH"
+          cp "$FILE" "$FILE.orig"
+
+          # Update: version = v"X.Y.Z"
+          if ! grep -qP '^version\s*=\s*v"[0-9]+\.[0-9]+\.[0-9]+"' "$FILE"; then
+            echo "::error::Cannot find 'version = v\"X.Y.Z\"' line in recipe"
+            exit 1
+          fi
+          sed -i -E "s|^(version\s*=\s*v\")[0-9]+\.[0-9]+\.[0-9]+(\")|\1${NEW_VERSION}\2|" "$FILE"
+
+          # Update: the 40-char commit SHA inside GitSource
+          OLD_COMMIT=$(grep -oP '"[0-9a-f]{40}"' "$FILE" | head -1 | tr -d '"')
+          if [[ -z "$OLD_COMMIT" ]]; then
+            echo "::error::Cannot find a 40-char commit SHA in recipe"
+            exit 1
+          fi
+          # Replace only the first occurrence
+          sed -i "0,/\"${OLD_COMMIT}\"/s//\"${NEW_COMMIT}\"/" "$FILE"
+
+          # Update: the trailing version comment  # vX.Y.Z
+          # The line with the commit SHA has a comment like:  # v3.5.1
+          # TBD: is this comment necessary in the first place?
+          sed -i -E "s|#\s*v[0-9]+\.[0-9]+\.[0-9]+|# v${NEW_VERSION}|" "$FILE"
+
+          # Validate
+          echo "──── diff ────"
+          diff "$FILE.orig" "$FILE" || true
+          echo "───────────────"
+
+          # Verify each substitution landed
+          grep -q "v\"${NEW_VERSION}\"" "$FILE" \
+            || { echo "::error::Version not updated"; exit 1; }
+          grep -q "\"${NEW_COMMIT}\"" "$FILE" \
+            || { echo "::error::Commit SHA not updated"; exit 1; }
+          grep -q "# v${NEW_VERSION}" "$FILE" \
+            || { echo "::error::Version comment not updated"; exit 1; }
+
+          # Verify the file still has exactly one GitSource for libsemigroups
+          COUNT=$(grep -c 'GitSource.*libsemigroups/libsemigroups' "$FILE")
+          if [[ "$COUNT" -ne 1 ]]; then
+            echo "::error::Expected 1 GitSource for libsemigroups, found ${COUNT}"
+            exit 1
+          fi
+
+          rm "$FILE.orig"
+          echo "Recipe patched successfully"
+
+      - name: Commit and push
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+
+          BRANCH="${{ steps.meta.outputs.branch }}"
+
+          # Clean up stale remote branch from a prior failed run
+          git push origin --delete "$BRANCH" 2>/dev/null || true
+
+          git checkout -b "$BRANCH"
+          git config user.name  "libsemigroups-yggdrasil-pr"
+          git config user.email "libsemigroups-yggdrasil-pr@users.noreply.github.com"
+          git add "$RECIPE_PATH"
+
+          if git diff --cached --quiet; then
+            echo "::error::No changes staged — recipe may already be at v${{ steps.meta.outputs.version }}"
+            exit 1
+          fi
+
+          git commit -m "[libsemigroups] Update to v${{ steps.meta.outputs.version }}"
+          git push origin "$BRANCH"
+
+      - name: Open pull request
+        if: steps.check.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.YGGDRASIL_PR_PAT }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${{ steps.meta.outputs.version }}"
+          BRANCH="${{ steps.meta.outputs.branch }}"
+          COMMIT="${{ steps.sha.outputs.commit }}"
+
+          RELEASE_URL="https://github.com/${UPSTREAM_REPO}/releases/tag/${{ steps.meta.outputs.tag }}"
+
+          PR_BODY="Updates \`libsemigroups\` to [v${VERSION}](${RELEASE_URL}).
+
+          **Changes to \`${RECIPE_PATH}\`:**
+          - \`version\`: \`v${VERSION}\`
+          - \`GitSource\` commit: [\`${COMMIT:0:12}\`](https://github.com/${UPSTREAM_REPO}/commit/${COMMIT})
+
+          ---
+          _This PR was opened automatically by the [libsemigroups release workflow](https://github.com/${UPSTREAM_REPO}/actions/workflows/update-yggdrasil.yml)._
+
+          _Note that this account is not managed, please direct any queries towards @james-d-mitchell or @jswent._"
+
+          PR_URL=$(gh pr create \
+            --repo "$YGGDRASIL_UPSTREAM" \
+            --head "libsemigroups-yggdrasil-pr:${BRANCH}" \
+            --base master \
+            --title "[libsemigroups] Update to v${VERSION}" \
+            --body "$PR_BODY")
+
+          echo "PR created: $PR_URL"
+          echo "::notice::Yggdrasil PR opened at ${PR_URL}"
