@@ -751,14 +751,17 @@ lib_LTLIBRARIES = libsemigroups.la
 libsemigroups_la_SOURCES  = src/aho-corasick.cpp
 libsemigroups_la_SOURCES += src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
-libsemigroups_la_SOURCES += src/cong-helpers.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
 libsemigroups_la_SOURCES += src/dot.cpp
 libsemigroups_la_SOURCES += src/exception.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
 libsemigroups_la_SOURCES += src/freeband.cpp
 libsemigroups_la_SOURCES += src/froidure-pin-base.cpp
+if LIBSEMIGROUPS_HPCOMBI_ENABLED
+## We don't include hpcombi.cpp if HPCombi is not enabled to avoid warnings
+## about there being no symbols.
 libsemigroups_la_SOURCES += src/hpcombi.cpp
+endif
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
 libsemigroups_la_SOURCES += src/presentation-examples.cpp
