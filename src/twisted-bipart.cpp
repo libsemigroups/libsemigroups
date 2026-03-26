@@ -94,7 +94,7 @@ namespace libsemigroups {
   }
 
   bool TwistedBipartition::operator==(TwistedBipartition const& other) const {
-    if (is_zero() && other.is_zero() and _threshold == other._threshold) {
+    if (is_zero() && other.is_zero() && _threshold == other._threshold) {
       return true;
     }
 
