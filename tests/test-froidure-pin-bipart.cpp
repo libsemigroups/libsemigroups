@@ -230,5 +230,4 @@ namespace libsemigroups {
     }
     REQUIRE_THROWS_AS(S.is_idempotent(10), LibsemigroupsException);
   }
-
 }  // namespace libsemigroups
