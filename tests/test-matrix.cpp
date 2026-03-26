@@ -1175,6 +1175,7 @@ namespace libsemigroups {
     REQUIRE(m.number_of_rows() == 0);
     REQUIRE(m.number_of_cols() == 0);
   }
+
   LIBSEMIGROUPS_TEST_CASE("Matrix",
                           "026",
                           "empty matrix with Semiring",
@@ -1187,4 +1188,18 @@ namespace libsemigroups {
     delete sr;
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Matrix",
+                          "027",
+                          "throw invalid row size",
+                          "[quick]") {
+    REQUIRE_EXCEPTION_MSG(
+        make<BMat<3>::Row>({0, 1}),
+        "invalid argument, cannot initialize a row of a matrix with compile "
+        "time number of columns 3 with a container of size 2");
+
+    REQUIRE_NOTHROW(make<IntMat<3>::Row>(
+        {1, 2, 3}));  // Correct dimensions for compile-time matrix
+
+    REQUIRE_NOTHROW(make<BMat<>::Row>({0, 1}));  // dynamic so no check)
+  }
 }  // namespace libsemigroups

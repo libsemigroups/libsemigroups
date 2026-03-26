@@ -3708,6 +3708,24 @@ namespace libsemigroups {
     template <typename Mat, typename Container>
     auto throw_if_bad_dim(Container const&)
         -> std::enable_if_t<IsDynamicMatrix<Mat>> {}
+    // Not checking dynamic matrices, no compile-time dimensions.
+
+    template <typename Mat, typename Container>
+    auto throw_if_bad_row_dim(Container const& row)
+        -> std::enable_if_t<IsStaticMatrix<Mat>> {
+      uint64_t const C = row.size();
+      if (C != Mat::nr_cols) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid argument, cannot initialize a row of a matrix with "
+            "compile time number of columns {} with a container of size {}",
+            Mat::nr_cols,
+            C);
+      }
+    }
+
+    template <typename Mat, typename Container>
+    auto throw_if_bad_row_dim(Container const&)
+        -> std::enable_if_t<IsDynamicMatrix<Mat>> {}
   }  // namespace detail
 
   //! \ingroup matrix_group
@@ -8087,7 +8105,7 @@ namespace libsemigroups {
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
   Mat make(std::initializer_list<typename Mat::scalar_type> const& row) {
-    // TODO(0) Add row dimension checking for compile-time size matrices
+    detail::throw_if_bad_row_dim<Mat>(row);
     Mat m(row);
     matrix::throw_if_bad_entry(m);
     return m;
@@ -8210,7 +8228,7 @@ namespace libsemigroups {
             typename = std::enable_if_t<IsMatrix<Mat>>>
   Mat make(Semiring const*                                         semiring,
            std::initializer_list<typename Mat::scalar_type> const& row) {
-    // TODO(0) Add row dimension checking for compile-time size matrices
+    detail::throw_if_bad_row_dim<Mat>(row);
     Mat m(semiring, row);
     matrix::throw_if_bad_entry(m);
     return m;
