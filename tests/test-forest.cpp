@@ -19,8 +19,8 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "word-graph-test-common.hpp"
 
