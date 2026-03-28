@@ -314,13 +314,13 @@ namespace libsemigroups {
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
       auto resize(size_t r, size_t c) -> std::enable_if_t<
-          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+          std::is_same_v<SFINAE, std::vector<scalar_type>>> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
       auto resize(size_t, size_t) -> std::enable_if_t<
-          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+          !std::is_same_v<SFINAE, std::vector<scalar_type>>> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -631,8 +631,7 @@ namespace libsemigroups {
       template <typename U>
       std::pair<scalar_type, scalar_type> coords(U const& it) const {
         static_assert(
-            std::is_same<U, iterator>::value
-                || std::is_same<U, const_iterator>::value,
+            std::is_same_v<U, iterator> || std::is_same_v<U, const_iterator>,
             "the parameter it must be of type iterator or const_iterator");
         scalar_type const v = std::distance(_container.begin(), it);
         return std::make_pair(v / number_of_cols(), v % number_of_cols());
@@ -7318,8 +7317,8 @@ namespace libsemigroups {
       using value_type = typename std::decay_t<Container>::value_type;
       // std::vector<bool> is used as value_type in the benchmarks
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(std::is_same<value_type, RowView>::value
-                        || std::is_same<value_type, std::vector<bool>>::value,
+      static_assert(std::is_same_v<value_type, RowView>
+                        || std::is_same_v<value_type, std::vector<bool>>,
                     "Container::value_type must equal Mat::RowView or "
                     "std::vector<bool>!!");
       static_assert(R <= BitSet<1>::max_size(),
@@ -7370,8 +7369,8 @@ namespace libsemigroups {
       using RowView    = typename Mat::RowView;
       using value_type = typename std::decay_t<Container>::value_type;
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(std::is_same<value_type, RowView>::value
-                        || std::is_same<value_type, std::vector<bool>>::value,
+      static_assert(std::is_same_v<value_type, RowView>
+                        || std::is_same_v<value_type, std::vector<bool>>,
                     "Container::value_type must equal Mat::RowView or "
                     "std::vector<bool>!!");
       static_assert(R <= BitSet<1>::max_size(),
@@ -7658,7 +7657,7 @@ namespace libsemigroups {
     std::enable_if_t<IsMaxPlusTruncMat<Mat>>
     row_basis(Container&& views, std::decay_t<Container>& result) {
       using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(std::is_same<value_type, typename Mat::RowView>::value,
+      static_assert(std::is_same_v<value_type, typename Mat::RowView>,
                     "Container::value_type must be Mat::RowView");
       using scalar_type = typename Mat::scalar_type;
       using Row         = typename Mat::Row;
@@ -7738,8 +7737,8 @@ namespace libsemigroups {
       using RowView    = typename Mat::RowView;
       using value_type = typename std::decay_t<Container>::value_type;
       // std::vector<bool> is used as value_type in the benchmarks
-      static_assert(std::is_same<value_type, RowView>::value
-                        || std::is_same<value_type, std::vector<bool>>::value,
+      static_assert(std::is_same_v<value_type, RowView>
+                        || std::is_same_v<value_type, std::vector<bool>>,
                     "Container::value_type must equal Mat::RowView or "
                     "std::vector<bool>!!");
 
@@ -7873,15 +7872,81 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(2) complexity
-    template <typename Mat, typename Container>
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<!IsMatrix<std::decay_t<Container>>>>
     std::decay_t<Container> row_basis(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
       static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
-      static_assert(std::is_same<value_type, typename Mat::RowView>::value,
+      static_assert(std::is_same_v<value_type, typename Mat::RowView>,
                     "Container::value_type must be Mat::RowView");
 
       std::decay_t<Container> result;
       row_basis<Mat>(std::forward<Container>(rows), result);
+      return result;
+    }
+
+    template <typename T>
+    struct RowSum {
+      void operator()(T& res, T const& pt, T const& x) const {
+        res = pt;
+        res += x;
+      }
+    };
+
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsMatrix<Mat>>>
+    void row_basis_rows(Mat const& x, Container& result) {
+      LIBSEMIGROUPS_ASSERT(result.empty());
+      for (auto y : row_basis<Mat>(x)) {
+        result.push_back(typename Mat::Row(y));
+      }
+    }
+
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsStaticMatrix<Mat>>>
+    detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
+    row_basis_rows(Mat const& x) {
+      detail::StaticVector1<typename Mat::Row, Mat::nr_rows> container;
+      row_basis_rows(x, container);
+      return container;
+    }
+
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
+    std::vector<typename Mat::Row> row_basis_rows(Mat const& x) {
+      std::vector<typename Mat::Row> container;
+      row_basis_rows(x, container);
+      return container;
+    }
+
+    // This modifies the argument rows by moving out those in the basis
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsStaticMatrix<Mat>>>
+    detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
+    row_basis_rows(Container&& rows) {
+      using value_type = typename std::decay_t<Container>::value_type;
+      static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
+      static_assert(std::is_same_v<value_type, typename Mat::Row>,
+                    "Container::value_type must be Mat::Row");
+
+      detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> rvs;
+      std::unordered_map<typename Mat::scalar_type*, size_t>     lookup;
+
+      for (size_t i = 0; i < rows.size(); ++i) {
+        auto rv = typename Mat::RowView(rows[i]);
+        rvs.push_back(rv);
+        lookup.insert({&(*rv.begin()), i});
+      }
+      std::decay_t<Container> result;
+      for (auto rv : row_basis<Mat>(rvs)) {
+        auto&& row = rows[lookup.at(&(*rv.begin()))];
+        result.push_back(std::forward<decltype(row)>(row));
+      }
       return result;
     }
 
