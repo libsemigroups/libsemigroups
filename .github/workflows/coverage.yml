@@ -36,7 +36,7 @@ jobs:
           export GCOV=/usr/bin/gcov-13
           ci/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
       - name: Uploading to Codecov . . .
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: true
           files: coverage.info
