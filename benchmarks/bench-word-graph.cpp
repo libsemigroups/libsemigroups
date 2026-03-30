@@ -21,7 +21,7 @@
 #include <iostream>   // for std::cout
 #include <random>
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
 
 #include "libsemigroups/paths.hpp"               // for Paths etc
 #include "libsemigroups/types.hpp"               // for word_type

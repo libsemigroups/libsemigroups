@@ -19,8 +19,8 @@
 #include <cstddef>  // for size_t
 #include <utility>  // for std::move, std::ignore
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.13.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/to-word-graph.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"
