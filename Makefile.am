@@ -211,19 +211,13 @@ magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magi
 rxrangesincludedir = $(includedir)/libsemigroups/rx
 rxrangesinclude_HEADERS = third_party/rx-ranges/include/rx/ranges.hpp
 
-## Define backwardincludedir outside the conditional
-## LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD because it is used by
-## uninstall-hook
-backwardcppincludedir = $(includedir)/libsemigroups/backward-cpp
 if LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD
+backwardcppincludedir = $(includedir)/libsemigroups/backward-cpp
 backwardcppinclude_HEADERS=third_party/backward-cpp/backward.hpp
-endif
+endif ## LIBSEMIGROUPS_WITH_INTERNAL_BACKWARD
 
-## Define hpcombiincludedir outside the conditional
-## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by
-## uninstall-hook
-hpcombiincludedir = $(includedir)/libsemigroups/hpcombi
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
+hpcombiincludedir = $(includedir)/libsemigroups/hpcombi
 hpcombiinclude_HEADERS =  third_party/HPCombi-1.1.2/include/hpcombi/arch.hpp
 hpcombiinclude_HEADERS += third_party/HPCombi-1.1.2/include/hpcombi/bmat16.hpp
 hpcombiinclude_HEADERS += third_party/HPCombi-1.1.2/include/hpcombi/bmat16_impl.hpp
@@ -241,21 +235,19 @@ hpcombiinclude_HEADERS += third_party/HPCombi-1.1.2/include/hpcombi/perm_generic
 hpcombiinclude_HEADERS += third_party/HPCombi-1.1.2/include/hpcombi/power.hpp
 hpcombiinclude_HEADERS += third_party/HPCombi-1.1.2/include/hpcombi/vect16.hpp
 hpcombiinclude_HEADERS += third_party/HPCombi-1.1.2/include/hpcombi/vect_generic.hpp
-endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 hpcombisimdearmincludedir  = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/arm
-hpcombisimdemipsincludedir = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/mips
-hpcombisimdewasmincludedir = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/wasm
-hpcombisimdex86includedir  = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/x86
-if LIBSEMIGROUPS_HPCOMBI_ENABLED
 hpcombisimdearminclude_HEADERS =  third_party/HPCombi-1.1.2/third_party/simde-0.8.2/arm/neon.h
 hpcombisimdearminclude_HEADERS += third_party/HPCombi-1.1.2/third_party/simde-0.8.2/arm/sve.h
 
+hpcombisimdemipsincludedir = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/mips
 hpcombisimdemipsinclude_HEADERS = third_party/HPCombi-1.1.2/third_party/simde-0.8.2/mips/msa.h
 
+hpcombisimdewasmincludedir = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/wasm
 hpcombisimdewasminclude_HEADERS =  third_party/HPCombi-1.1.2/third_party/simde-0.8.2/wasm/relaxed-simd.h
 hpcombisimdewasminclude_HEADERS += third_party/HPCombi-1.1.2/third_party/simde-0.8.2/wasm/simd128.h
 
+hpcombisimdex86includedir  = $(includedir)/libsemigroups/hpcombi/simde-0.8.2/x86
 hpcombisimdex86include_HEADERS =  third_party/HPCombi-1.1.2/third_party/simde-0.8.2/x86/aes.h
 hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.2/third_party/simde-0.8.2/x86/avx.h
 hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.2/third_party/simde-0.8.2/x86/avx2.h
@@ -275,11 +267,8 @@ hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.2/third_party/simde-0.
 hpcombisimdex86include_HEADERS += third_party/HPCombi-1.1.2/third_party/simde-0.8.2/x86/xop.h
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-## Define fmtincludedir outside the conditional
-## LIBSEMIGROUPS_WITH_INTERNAL_FMT because it is used by
-## uninstall-hook
-fmtincludedir = $(includedir)/libsemigroups/fmt
 if LIBSEMIGROUPS_WITH_INTERNAL_FMT
+fmtincludedir = $(includedir)/libsemigroups/fmt
 fmtinclude_HEADERS =  third_party/fmt-11.1.4/include/fmt/args.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/base.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/chrono.h
@@ -294,13 +283,10 @@ fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/printf.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/ranges.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/std.h
 fmtinclude_HEADERS += third_party/fmt-11.1.4/include/fmt/xchar.h
-endif
+endif ## LIBSEMIGROUPS_WITH_INTERNAL_FMT
 
-## Define eigenincludedir outside the conditional
-## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN because it is used by
-## uninstall-hook
-eigenincludedir = $(includedir)/libsemigroups/Eigen
 if LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
+eigenincludedir = $(includedir)/libsemigroups/Eigen
 eigeninclude_HEADERS = third_party/eigen-3.4.0/Eigen/Cholesky
 eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/CholmodSupport
 eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/Core
@@ -331,8 +317,7 @@ eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SuperLUSupport
 eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/SVD
 eigeninclude_HEADERS += third_party/eigen-3.4.0/Eigen/UmfPackSupport
 
-unsupportedincludedir = $(includedir)/libsemigroups/unsupported
-eigenunsupportedincludedir = $(unsupportedincludedir)/Eigen
+eigenunsupportedincludedir = $(includedir)/libsemigroups/unsupported/Eigen
 eigenunsupportedinclude_HEADERS =  third_party/eigen-3.4.0/unsupported/Eigen/MatrixFunctions
 
 eigenunsupportedsrcincludedir = $(includedir)/libsemigroups/unsupported/Eigen/src/MatrixFunctions
@@ -342,8 +327,6 @@ eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/
 eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixPower.h
 eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/MatrixSquareRoot.h
 eigenunsupportedsrcinclude_HEADERS += third_party/eigen-3.4.0/unsupported/Eigen/src/MatrixFunctions/StemFunction.h
-
-eigensrcincludedir = $(includedir)/libsemigroups/Eigen/src
 
 eigensrccholeskyincludedir = $(includedir)/libsemigroups/Eigen/src/Cholesky
 eigensrccholeskyinclude_HEADERS = third_party/eigen-3.4.0/Eigen/src/Cholesky/LDLT.h
@@ -743,7 +726,7 @@ eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/Inde
 eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/MatrixCwiseBinaryOps.h
 eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/MatrixCwiseUnaryOps.h
 eigensrcpluginsinclude_HEADERS += third_party/eigen-3.4.0/Eigen/src/plugins/ReshapedMethods.h
-endif  ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
+endif ## LIBSEMIGROUPS_WITH_INTERNAL_EIGEN
 
 lib_LTLIBRARIES = libsemigroups.la
 
@@ -1408,9 +1391,6 @@ clean-local:
 
 clean-local-check:
 	rm -rf $(check_PROGRAMS)
-	rm -rf benchmark/src/build
-	rm -f benchmark/gbench/*.pyc
-	rm -f benchmark/gbench/__py_cache__/*.pyc
 .PHONY: clean-local-check
 
 distclean-local:
@@ -1419,22 +1399,7 @@ distclean-local:
 .PHONY: distclean-local
 
 uninstall-hook:
-	## The order of these deletions is important!
-	if test -d ${backwardcppincludedir}; then rm -rf ${backwardcppincludedir}; fi
-	if test -d ${detailincludedir}; then rmdir ${detailincludedir}; fi
-	if test -d ${eigenunsupportedincludedir}; then rm -rf ${eigenunsupportedincludedir}; fi
-	if test -d ${unsupportedincludedir}; then rmdir ${unsupportedincludedir}; fi
-	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
-	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
-	if test -d ${magicenumincludedir}; then rmdir ${magicenumincludedir}; fi
-	if test -d ${rxrangesincludedir}; then rmdir ${rxrangesincludedir}; fi
-	if test -d ${hpcombisimdearmincludedir}; then rmdir ${hpcombisimdearmincludedir}; fi
-	if test -d ${hpcombisimdemipsincludedir}; then rmdir ${hpcombisimdemipsincludedir}; fi
-	if test -d ${hpcombisimdewasmincludedir}; then rmdir ${hpcombisimdewasmincludedir}; fi
-	if test -d ${hpcombisimdex86includedir}; then rmdir ${hpcombisimdex86includedir}; fi
-	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir}; fi
-	if test -d ${catch2includedir}; then rm -rf ${catch2includedir}; fi
-	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
+	if test -d ${includedir}/libsemigroups; then rm -rf ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 
 superclean: distclean
