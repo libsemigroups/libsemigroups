@@ -490,6 +490,10 @@ namespace libsemigroups {
         const_cast<RewriteTrie*>(this)->rewrite(u);
       }
 
+      [[nodiscard]] AhoCorasickImpl const& aho_corasick() const {
+        return _rule_trie;
+      }
+
      private:
       void add_rule(Rule* rule) {
         Rules::add_rule(rule);
