@@ -105,7 +105,7 @@ jobs:
 
       - name: Checkout Yggdrasil fork
         if: steps.check.outputs.skip == 'false'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ env.YGGDRASIL_FORK }}
           token: ${{ secrets.YGGDRASIL_PR_PAT }}
