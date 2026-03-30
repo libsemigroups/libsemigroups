@@ -75,7 +75,7 @@ jobs:
           update_packager_index: false
           install_ccache: true
       - name: "Create micromamba environment"
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v3
         with:
           environment-name: builder
           cache-environment: true
