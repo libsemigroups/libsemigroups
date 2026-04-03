@@ -208,11 +208,6 @@ namespace libsemigroups {
       } else {
         set_state(state::not_running);
       }
-    } else {
-      // This line is definitely tested, but not showing up in code coverage for
-      // JDM
-      // NOTE: no dividers here
-      report_default("{}: already finished, not running\n", report_prefix());
     }
   }
 
