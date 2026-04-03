@@ -1022,6 +1022,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     presentation::add_rule(p, "bab", "ba");
     Congruence c(twosided, p);
+    REQUIRE(c.report_prefix() == "Congruence");
     REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
   }
 
