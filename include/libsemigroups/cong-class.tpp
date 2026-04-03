@@ -17,6 +17,17 @@
 //
 
 namespace libsemigroups {
+
+  template <typename Word>
+  Congruence<Word>& Congruence<Word>::init_no_base_classes() {
+    report_prefix("Congruence");
+    _race.init();
+    _race.report_prefix("Congruence");
+    _runners_initted = false;
+    _runner_kinds.clear();
+    return *this;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Congruence - out of line implementations
   ////////////////////////////////////////////////////////////////////////
@@ -27,17 +38,13 @@ namespace libsemigroups {
         _race(),
         _runners_initted(),
         _runner_kinds() {
-    _race.report_prefix("Congruence");
-    init();
+    init_no_base_classes();
   }
 
   template <typename Word>
   Congruence<Word>& Congruence<Word>::init() {
     detail::CongruenceCommon::init();
-    _race.init();
-    _runners_initted = false;
-    _runner_kinds.clear();
-    return *this;
+    return init_no_base_classes();
   }
 
   template <typename Word>
@@ -58,8 +65,8 @@ namespace libsemigroups {
   template <typename Word>
   Congruence<Word>& Congruence<Word>::init(congruence_kind           type,
                                            Presentation<Word> const& p) {
-    init();
     detail::CongruenceCommon::init(type);
+    init_no_base_classes();
     _race.max_threads(POSITIVE_INFINITY);
     if (type == congruence_kind::twosided) {
       add_runner(std::make_shared<Kambites<Word>>(type, p));

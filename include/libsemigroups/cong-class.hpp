@@ -163,6 +163,9 @@ namespace libsemigroups {
     mutable bool            _runners_initted;
     std::vector<RunnerKind> _runner_kinds;
 
+    // Private init Congruence but not CongruenceCommon
+    Congruence& init_no_base_classes();
+
    public:
     ////////////////////////////////////////////////////////////////////////
     // Interface requirements - native-types
