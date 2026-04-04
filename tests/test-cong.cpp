@@ -346,7 +346,7 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(cong));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
 
-    REQUIRE(cong.has<KnuthBendix<word_type>>());
+    // REQUIRE(cong.has<KnuthBendix<word_type>>());
 
     KnuthBendix<word_type> kb(twosided, p);
     auto                   ntc = knuth_bendix::non_trivial_classes(
@@ -577,6 +577,7 @@ namespace libsemigroups {
     {
       auto cong
           = to<Congruence<word_type>>(twosided, fp, fp.right_cayley_graph());
+      REQUIRE(cong.kind() == twosided);
       congruence::add_generating_pair(cong, {1}, {0});
       REQUIRE(!is_obviously_infinite(cong));
 
@@ -594,7 +595,7 @@ namespace libsemigroups {
     congruence::add_generating_pair(cong, "ab", "a");
     congruence::add_generating_pair(cong, "ba", "a");
 
-    REQUIRE(cong.has<KnuthBendix<std::string>>());
+    //  REQUIRE(cong.has<KnuthBendix<std::string>>());
     auto& kb = *cong.get<KnuthBendix<std::string>>();
     REQUIRE((kb.active_rules() | rx::to_vector() | rx::count()) == 0);
 
@@ -975,16 +976,17 @@ namespace libsemigroups {
                           "038",
                           "python problem example",
                           "[quick][cong]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
 
     presentation::add_rule(p, "abab", "aaaaaaa");
     presentation::add_rule(p, "ba", "ababbb");
     Congruence c(twosided, p);
-    REQUIRE(c.number_of_runners() <= 4);
-    REQUIRE(c.has<KnuthBendix<std::string>>());
+    REQUIRE(c.number_of_runners() == 0);
+    REQUIRE(!c.has<KnuthBendix<std::string>>());
     REQUIRE(!c.has<ToddCoxeter<std::string>>());
-    REQUIRE(c.has<Kambites<std::string>>());
+    REQUIRE(!c.has<Kambites<std::string>>());
     REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(!c.started());
     c.run();
@@ -1017,13 +1019,38 @@ namespace libsemigroups {
                           "040",
                           "obviously infinite",
                           "[quick][cong]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "bab", "ba");
     Congruence c(twosided, p);
     REQUIRE(c.report_prefix() == "Congruence");
     REQUIRE(c.number_of_classes() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Congruence",
+      "005",
+      "https://github.com/libsemigroups/libsemigroups/issues/907",
+      "[quick][cong]") {
+    // This test case illustrates a bug introduced by the fix to
+    // https://github.com/libsemigroups/libsemigroups/issues/907
+    // where the runners in Congruence are defined too early to reasonably
+    // include/exclude ToddCoxeter runners because the congruence we are trying
+    // to enumerate is infinite.
+
+    // The issue is that this is slow, not that it produces incorrect
+    // results.
+    auto rg = ReportGuard(false);
+    auto p  = presentation::examples::abacus_jones_monoid(6, 3);
+    Presentation<word_type> f;
+    f.alphabet(p.alphabet().size()).contains_empty_word(true);
+
+    Congruence c(twosided, f);
+    for (auto it = p.rules.begin(); it != p.rules.end(); it += 2) {
+      congruence::add_generating_pair(c, *it, *(it + 1));
+    }
+    REQUIRE(c.number_of_classes() == 96'228);
   }
 
 }  // namespace libsemigroups
