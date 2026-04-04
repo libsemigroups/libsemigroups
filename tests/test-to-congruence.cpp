@@ -456,6 +456,9 @@ namespace libsemigroups {
     auto wg = v4::make<WordGraph<uint32_t>>(
         7, {{1, 2}, {1, 3}, {4, 2}, {5, 3}, {4, 6}, {5, 3}, {4, 6}});
     auto cong = to<Congruence<word_type>>(twosided, wg);
+    REQUIRE(cong.kind() == twosided);
+    REQUIRE(cong.presentation().alphabet().size() == 2);
+    REQUIRE(cong.presentation().rules.empty());
 
     congruence::add_generating_pair(cong, 0_w, 1_w);
 

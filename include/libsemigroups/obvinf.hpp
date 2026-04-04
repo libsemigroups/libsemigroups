@@ -587,7 +587,7 @@ namespace libsemigroups {
   //! congruence has infinitely many classes.
   // This function is implemented in cong-class.tpp
   template <typename Word>
-  bool is_obviously_infinite(Congruence<Word>& c);
+  bool is_obviously_infinite(Congruence<Word> const& c);
 
   //! \ingroup obvinf_group
   //!
