@@ -55,11 +55,13 @@ namespace libsemigroups {
     _seen.clear();
     _seen.resize(n, false);
     _unique.resize(n, false);
+    if (n != 0) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-    _matrix = decltype(_matrix)(0, n);
+      _matrix = decltype(_matrix)(0, n);
 #else
-    _matrix           = decltype(_matrix)(n, 0);
+      _matrix = decltype(_matrix)(n, 0);
 #endif
+    }
     return *this;
   }
 
@@ -115,9 +117,14 @@ namespace libsemigroups {
   bool IsObviouslyInfinite::result() const {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     LIBSEMIGROUPS_ASSERT(_matrix.rows() >= 0);
-    LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()
-                         >= 0);
+    if (_nr_gens != 0) {
+      LIBSEMIGROUPS_ASSERT(_matrix.cast<float>().colPivHouseholderQr().rank()
+                           >= 0);
+    }
 #endif
+    if (_nr_gens == 0) {
+      return false;
+    }
     return (_preserve_length
             || (!_empty_word
                 && !std::all_of(_unique.begin(),
@@ -193,7 +200,7 @@ namespace libsemigroups {
       // of active nodes.
       return false;
     }
-    auto                p = tc.internal_presentation();
+    auto const&         p = tc.internal_presentation();
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     ioi.add_rules_no_checks(p.alphabet(),

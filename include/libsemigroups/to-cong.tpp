@@ -29,8 +29,9 @@ namespace libsemigroups {
           "expected the 3rd argument (WordGraph) to be the left_cayley_graph "
           "or right_cayley_graph of the 2nd argument (FroidurePin)!")
     }
-
-    Congruence<Word> cong;
+    Presentation<Word> p;
+    p.alphabet(fpb.number_of_generators());
+    Congruence<Word> cong(knd, std::move(p));
 
     // TODO(1) if necessary make a runner that tries to fpb.run(), then get
     // the Cayley graph and use that in the ToddCoxeter, at present
@@ -64,7 +65,9 @@ namespace libsemigroups {
       std::is_same_v<Congruence<typename Result::native_word_type>, Result>,
       Result> {
     using Word = typename Result::native_word_type;
-    Congruence<Word> cong;
+    Presentation<Word> p;
+    p.alphabet(wg.out_degree());
+    Congruence<Word> cong(knd, std::move(p));
 
     cong.add_runner(std::make_shared<ToddCoxeter<Word>>(knd, wg));
     return cong;
