@@ -48,6 +48,7 @@ namespace libsemigroups {
     Presentation<word_type> alternating_group(size_t n);
     Presentation<word_type> brauer_monoid(size_t n);
     Presentation<word_type> braid_group(size_t n);
+    Presentation<word_type> catalan_monoid(size_t n);
     Presentation<word_type> chinese_monoid(size_t n);
     Presentation<word_type> cyclic_inverse_monoid(size_t n);
     Presentation<word_type> dual_symmetric_inverse_monoid(size_t n);
@@ -147,6 +148,23 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type> braid_group_Art25(size_t n);
+
+    //! \brief A presentation for the Catalan monoid.
+    //!
+    //! This function returns a monoid presentation defining the Catalan
+    //! monoid of degree \p n, using the standard generators
+    //! \f$e_1, \ldots, e_{n - 1}\f$ and relations described by
+    //! \cite Solomon1996aa; see also Section 5 of \cite KKMC19.
+    //!
+    //! This presentation has \f$n - 1\f$ generators and
+    //! \f$3n - 5 + \frac{1}{2}(n - 2)(n - 3)\f$ relations.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type> catalan_monoid_Sol96(size_t n);
 
     //! \brief A presentation for the Brauer monoid.
     //!
@@ -947,6 +965,20 @@ namespace libsemigroups {
     //! `hypo_plactic_monoid_Nov00`.
     [[nodiscard]] inline Presentation<word_type> hypo_plactic_monoid(size_t n) {
       return hypo_plactic_monoid_Nov00(n);
+    }
+
+    //! \copydoc catalan_monoid_Sol96
+    //!
+    //! \note
+    //! This function performs exactly the same as `catalan_monoid_Sol96`,
+    //! and exists as a convenience function for when a presentation for the
+    //! Catalan monoid is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! `catalan_monoid_Sol96`.
+    [[nodiscard]] inline Presentation<word_type> catalan_monoid(size_t n) {
+      return catalan_monoid_Sol96(n);
     }
 
     //! \brief A presentation for a monogenic semigroup.

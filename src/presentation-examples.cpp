@@ -42,7 +42,7 @@
 
 namespace libsemigroups {
   using literals::operator""_w;
-  using words::   operator+;
+  using words::operator+;
 
   namespace {
 
@@ -414,6 +414,33 @@ namespace libsemigroups {
         }
       }
       p.contains_empty_word(true);
+      return p;
+    }
+
+    Presentation<word_type> catalan_monoid_Sol96(size_t n) {
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 1, found {}", n);
+      }
+
+      Presentation<word_type> p;
+      if (n == 1) {
+        p.contains_empty_word(true);
+        return p;
+      }
+
+      p.alphabet(n - 1).contains_empty_word(true);
+      presentation::add_idempotent_rules_no_checks(p, range(0, n - 1));
+
+      for (letter_type i = 0; i < n - 2; ++i) {
+        presentation::add_rule_no_checks(p, {i, i + 1, i}, {i, i + 1});
+        presentation::add_rule_no_checks(p, {i + 1, i, i + 1}, {i, i + 1});
+      }
+      for (letter_type i = 0; i < n - 1; ++i) {
+        for (letter_type j = i + 2; j < n - 1; ++j) {
+          presentation::add_rule_no_checks(p, {i, j}, {j, i});
+        }
+      }
       return p;
     }
 

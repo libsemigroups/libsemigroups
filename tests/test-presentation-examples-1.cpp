@@ -60,6 +60,7 @@ namespace libsemigroups {
     REQUIRE(alternating_group_Moo97(5).contains_empty_word());
     REQUIRE(brauer_monoid_KM07(5).contains_empty_word());
     REQUIRE(chinese_monoid_CEKNH01(5).contains_empty_word());
+    REQUIRE(catalan_monoid_Sol96(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid_Fer22_a(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid_Fer22_b(5).contains_empty_word());
     REQUIRE(dual_symmetric_inverse_monoid_EEF07(5).contains_empty_word());
@@ -1216,5 +1217,43 @@ namespace libsemigroups {
         REQUIRE(tc.number_of_classes() == N * std::pow(d, n));
       }
     }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "101",
+                          "catalan_monoid degree except",
+                          "[pres-examples][quick]") {
+    auto rg = ReportGuard(false);
+    REQUIRE_THROWS_AS(catalan_monoid(0), LibsemigroupsException);
+    REQUIRE_NOTHROW(catalan_monoid(1));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "102",
+                          "catalan_monoid(4)",
+                          "[pres-examples][quick]") {
+    auto rg = ReportGuard(false);
+    auto p  = catalan_monoid(4);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.alphabet().size() == 3);
+    REQUIRE(p.rules.size() == 16);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 14);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "103",
+                          "catalan_monoid(10)",
+                          "[pres-examples][quick]") {
+    auto rg = ReportGuard(false);
+    auto p  = catalan_monoid(10);
+    p.throw_if_bad_alphabet_or_rules();
+
+    REQUIRE(p.alphabet().size() == 9);
+    REQUIRE(p.rules.size() / 2 == 3 * 10 - 5 + 4 * 7);
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 16'796);
   }
 }  // namespace libsemigroups
