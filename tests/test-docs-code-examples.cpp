@@ -22,7 +22,7 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma GCC diagnostic ignored "-Wunused-result"
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "libsemigroups/libsemigroups.hpp"  // for *
 #include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
 

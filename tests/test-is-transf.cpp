@@ -18,8 +18,8 @@
 #include <initializer_list>  // for initializer_list
 #include <string>            // for string
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 #include "libsemigroups/is-transf.hpp"  // for is_transf etc

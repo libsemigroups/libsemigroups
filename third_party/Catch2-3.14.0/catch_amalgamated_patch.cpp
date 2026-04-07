@@ -23,7 +23,6 @@
 // warnings emitted from it.
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Winline"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #pragma GCC diagnostic ignored "-Wswitch-default"
 
