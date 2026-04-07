@@ -85,10 +85,10 @@ namespace libsemigroups {
     REQUIRE(o.scc().number_of_components() == 17);
   }
 
-  // cong-class.hpp: Line 144
+  // cong-class.hpp: Line 145
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "002",
-                          "./include/libsemigroups/cong-class.hpp:144",
+                          "./include/libsemigroups/cong-class.hpp:145",
                           "[docs][quick]") {
     Presentation<word_type> p;
     p.alphabet(2);
