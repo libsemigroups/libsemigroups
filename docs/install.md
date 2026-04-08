@@ -34,10 +34,10 @@ To build `libsemigroups` from the GitHub repository:
 
 To build `libsemigroups` from a release archive:
 
-    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.5.4.tar.gz
-    tar -xf libsemigroups-3.5.4.tar.gz
-    rm -f libsemigroups-3.5.4.tar.gz
-    cd libsemigroups-3.5.4
+    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.5.5.tar.gz
+    tar -xf libsemigroups-3.5.5.tar.gz
+    rm -f libsemigroups-3.5.5.tar.gz
+    cd libsemigroups-3.5.5
     ./configure && make -j8 && sudo make install
 
 ## Configuration options

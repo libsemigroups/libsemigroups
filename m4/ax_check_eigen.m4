@@ -25,7 +25,7 @@ AC_DEFUN([AX_CHECK_EIGEN], [
     AC_MSG_CHECKING([whether to use external eigen])
     AC_MSG_RESULT([$with_external_eigen])
    
-    MIN_EIGEN_VERSION="3.3.7"
+    MIN_EIGEN_VERSION="5.0.1"
     eigen_PCDEP=""
 
     if test "x$with_external_eigen" = xyes;  then
@@ -35,7 +35,7 @@ AC_DEFUN([AX_CHECK_EIGEN], [
           ],
           [AC_MSG_ERROR([cannot use flag --with-external-eigen, the libsemigroups configure file was created on a system without m4 macros for pkg-config available...])])
     else
-          AC_SUBST(EIGEN3_CFLAGS, ['-I$(srcdir)/third_party/eigen-3.4.0/'])
+          AC_SUBST(EIGEN3_CFLAGS, ['-I$(srcdir)/third_party/eigen-5.0.1/'])
     fi
     AC_SUBST([eigen_PCDEP])
   fi

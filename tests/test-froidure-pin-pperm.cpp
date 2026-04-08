@@ -20,8 +20,8 @@
 #include <cstdint>  // for uint16_t
 #include <vector>   // for vector
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/transf.hpp"        // for PPerm

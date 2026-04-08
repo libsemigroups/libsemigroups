@@ -17,6 +17,19 @@
 //
 
 namespace libsemigroups {
+
+  template <typename Word>
+  Congruence<Word>& Congruence<Word>::init_no_base_classes() {
+    report_prefix("Congruence");
+    _generating_pairs.clear();
+    _presentation.init();
+    _race.init();
+    _race.report_prefix("Congruence");
+    _runners_initted = false;
+    _runner_kinds.clear();
+    return *this;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Congruence - out of line implementations
   ////////////////////////////////////////////////////////////////////////
@@ -24,20 +37,18 @@ namespace libsemigroups {
   template <typename Word>
   Congruence<Word>::Congruence()
       : detail::CongruenceCommon(),
+        _generating_pairs(),
+        _presentation(),
         _race(),
         _runners_initted(),
         _runner_kinds() {
-    _race.report_prefix("Congruence");
-    init();
+    init_no_base_classes();
   }
 
   template <typename Word>
   Congruence<Word>& Congruence<Word>::init() {
     detail::CongruenceCommon::init();
-    _race.init();
-    _runners_initted = false;
-    _runner_kinds.clear();
-    return *this;
+    return init_no_base_classes();
   }
 
   template <typename Word>
@@ -56,34 +67,13 @@ namespace libsemigroups {
   Congruence<Word>::~Congruence() = default;
 
   template <typename Word>
-  Congruence<Word>& Congruence<Word>::init(congruence_kind           type,
+  Congruence<Word>& Congruence<Word>::init(congruence_kind           knd,
                                            Presentation<Word> const& p) {
-    init();
-    detail::CongruenceCommon::init(type);
+    p.throw_if_bad_alphabet_or_rules();
+    detail::CongruenceCommon::init(knd);
+    init_no_base_classes();
+    _presentation = p;
     _race.max_threads(POSITIVE_INFINITY);
-    if (type == congruence_kind::twosided) {
-      add_runner(std::make_shared<Kambites<Word>>(type, p));
-    }
-    add_runner(std::make_shared<KnuthBendix<Word>>(type, p));
-
-    if (!is_obviously_infinite(p)) {
-      // We do this check here because of:
-      // https://github.com/libsemigroups/libsemigroups/issues/907
-      // The issue being that in Congruence::run_impl we run_until stopped, and
-      // this means that any ToddCoxeter runners will actually run, rather than
-      // refusing to because they are obviously infinite. ToddCoxeter only
-      // refuses to run if it is obviously infinite and we are trying to run to
-      // until finished, in which case it would run forever. On the other if
-      // ToddCoxeter is run_until or run_for and is obviously infinite, then
-      // this is okay assuming that stopped() will return true at some point.
-      // It seems that in some of the CI jobs for the GAP Semigroups package
-      // that this causes the machine to run out of resources because it is
-      // running ToddCoxeter on an infinite semigroup.
-      add_runner(std::make_shared<ToddCoxeter<Word>>(type, p));
-      auto tc = std::make_shared<ToddCoxeter<Word>>(type, p);
-      tc->strategy(ToddCoxeter<Word>::options::strategy::felsch);
-      add_runner(std::move(tc));
-    }
     return *this;
   }
 
@@ -178,24 +168,7 @@ namespace libsemigroups {
   template <typename Iterator1, typename Iterator2>
   void Congruence<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
                                                          Iterator2 last) const {
-    if (!_race.empty()) {
-      size_t index = (finished() ? _race.winner_index() : 0);
-
-      if (_runner_kinds[index] == RunnerKind::TC) {
-        std::static_pointer_cast<ToddCoxeter<Word>>(*_race.begin())
-            ->throw_if_letter_not_in_alphabet(first, last);
-      } else if (_runner_kinds[index] == RunnerKind::KB) {
-        std::static_pointer_cast<KnuthBendix<Word>>(*_race.begin())
-            ->throw_if_letter_not_in_alphabet(first, last);
-      } else {
-        LIBSEMIGROUPS_ASSERT(_runner_kinds[index] == RunnerKind::K);
-        std::static_pointer_cast<Kambites<Word>>(*_race.begin())
-            ->throw_if_letter_not_in_alphabet(first, last);
-      }
-      return;
-    }
-    LIBSEMIGROUPS_EXCEPTION(
-        "No presentation has been set, so cannot check the word!");
+    _presentation.throw_if_letter_not_in_alphabet(first, last);
   }
 
   template <typename Word>
@@ -236,6 +209,9 @@ namespace libsemigroups {
   template <typename Word>
   template <typename Thing>
   bool Congruence<Word>::has() const {
+    if (_race.empty()) {
+      return false;
+    }
     init_runners();
     RunnerKind val;
     if constexpr (std::is_same_v<Thing, Kambites<Word>>) {
@@ -283,6 +259,41 @@ namespace libsemigroups {
   void Congruence<Word>::init_runners() const {
     if (!_runners_initted) {
       _runners_initted = true;
+      if (_race.empty()) {
+        // Must call "is_obviously_infinite" before adding runners, because if
+        // we don't then "is_obviously_infinite" will check if any of the so far
+        // added runners are obviously infinite, which if presentation() defines
+        // an infinite semigroup will return "true" regardless of what
+        // generating pairs will be added later in this function.
+        bool const is_infinite = is_obviously_infinite(*this);
+
+        if (kind() == congruence_kind::twosided) {
+          add_runner(std::make_shared<Kambites<Word>>(kind(), presentation()));
+        }
+        add_runner(std::make_shared<KnuthBendix<Word>>(kind(), presentation()));
+
+        if (!is_infinite) {
+          // We do this check here because of:
+          // https://github.com/libsemigroups/libsemigroups/issues/907
+          // The issue being that in Congruence::run_impl we run_until stopped,
+          // and this means that any ToddCoxeter runners will actually run,
+          // rather than refusing to because they are obviously infinite.
+          // ToddCoxeter only refuses to run if it is obviously infinite and we
+          // are trying to run to until finished, in which case it would run
+          // forever. On the other if ToddCoxeter is run_until or run_for and is
+          // obviously infinite, then this is okay assuming that stopped() will
+          // return true at some point. It seems that in some of the CI jobs for
+          // the GAP Semigroups package that this causes the machine to run out
+          // of resources because it is running ToddCoxeter on an infinite
+          // semigroup.
+          add_runner(
+              std::make_shared<ToddCoxeter<Word>>(kind(), presentation()));
+          auto tc = std::make_shared<ToddCoxeter<Word>>(kind(), presentation());
+          tc->strategy(ToddCoxeter<Word>::options::strategy::felsch);
+          add_runner(std::move(tc));
+        }
+      }
+
       for (auto const& [i, runner] : rx::enumerate(_race)) {
         auto first = internal_generating_pairs().cbegin();
         auto last  = internal_generating_pairs().cend();
@@ -330,82 +341,6 @@ namespace libsemigroups {
     _race.run_until([this]() { return this->stopped(); });
   }
 
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreturn-type"
-#elif defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
-#endif
-  template <typename Word>
-  Presentation<Word> const& Congruence<Word>::presentation() const {
-    if (_race.empty()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "No presentation has been set, and it cannot be returned!");
-    }
-    if (finished()) {
-      size_t index = _race.winner_index();
-      if (_runner_kinds[index] == RunnerKind::TC) {
-        return std::static_pointer_cast<ToddCoxeter<Word>>(_race.winner())
-            ->presentation();
-      } else if (_runner_kinds[index] == RunnerKind::KB) {
-        return std::static_pointer_cast<KnuthBendix<Word>>(_race.winner())
-            ->presentation();
-      } else if (_runner_kinds[index] == RunnerKind::K) {
-        return std::static_pointer_cast<Kambites<Word>>(_race.winner())
-            ->presentation();
-      }
-    } else {
-      if (_runner_kinds[0] == RunnerKind::TC) {
-        return std::static_pointer_cast<ToddCoxeter<Word>>(*_race.begin())
-            ->presentation();
-      } else if (_runner_kinds[0] == RunnerKind::KB) {
-        return std::static_pointer_cast<KnuthBendix<Word>>(*_race.begin())
-            ->presentation();
-      } else if (_runner_kinds[0] == RunnerKind::K) {
-        return std::static_pointer_cast<Kambites<Word>>(*_race.begin())
-            ->presentation();
-      }
-    }
-  }
-
-  template <typename Word>
-  std::vector<Word> const& Congruence<Word>::generating_pairs() const {
-    if (_race.empty()) {
-      LIBSEMIGROUPS_EXCEPTION("No generating pairs have been defined, and they "
-                              "cannot be returned!");
-    }
-    init_runners();
-    if (finished()) {
-      size_t index = _race.winner_index();
-      if (_runner_kinds[index] == RunnerKind::TC) {
-        return std::static_pointer_cast<ToddCoxeter<Word>>(_race.winner())
-            ->generating_pairs();
-      } else if (_runner_kinds[index] == RunnerKind::KB) {
-        return std::static_pointer_cast<KnuthBendix<Word>>(_race.winner())
-            ->generating_pairs();
-      } else if (_runner_kinds[index] == RunnerKind::K) {
-        return std::static_pointer_cast<Kambites<Word>>(_race.winner())
-            ->generating_pairs();
-      }
-    }
-    if (_runner_kinds[0] == RunnerKind::TC) {
-      return std::static_pointer_cast<ToddCoxeter<Word>>(*_race.begin())
-          ->generating_pairs();
-    } else if (_runner_kinds[0] == RunnerKind::KB) {
-      return std::static_pointer_cast<KnuthBendix<Word>>(*_race.begin())
-          ->generating_pairs();
-    } else if (_runner_kinds[0] == RunnerKind::K) {
-      return std::static_pointer_cast<Kambites<Word>>(*_race.begin())
-          ->generating_pairs();
-    }
-  }
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#elif defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
-
   template <typename Word>
   std::string to_human_readable_repr(Congruence<Word> const& c) {
     return fmt::format(
@@ -420,16 +355,41 @@ namespace libsemigroups {
 
   // This function is declared in obv-inf.hpp
   template <typename Word>
-  bool is_obviously_infinite(Congruence<Word>& c) {
-    if (c.template has<ToddCoxeter<Word>>()
-        && is_obviously_infinite(*c.template get<ToddCoxeter<Word>>())) {
-      return true;
+  bool is_obviously_infinite(Congruence<Word> const& c) {
+    if (c.template has<ToddCoxeter<Word>>()) {
+      auto const& tc = *c.template get<ToddCoxeter<Word>>();
+      if (is_obviously_infinite(tc)) {
+        return true;
+      }
+      auto const& wg = tc.current_word_graph();
+      if (v4::word_graph::is_complete_no_checks(
+              wg, rx::begin(wg.active_nodes()), rx::end(wg.active_nodes()))) {
+        return false;
+      }
     } else if (c.template has<KnuthBendix<Word>>()
                && is_obviously_infinite(*c.template get<KnuthBendix<Word>>())) {
       return true;
     } else if (c.template has<Kambites<Word>>()
                && is_obviously_infinite(*c.template get<Kambites<Word>>())) {
       return true;
+    } else if (!c.finished()) {
+      // We check last whether or not the internal presentation and generating
+      // pairs indicate that "c" is obviously infinite. If not, then we
+      // continue. This means we can potentially check whether a congruence is
+      // obviously infinite without any runners being defined.
+      // We have to do this last in case p defines the free semigroup, but there
+      // is a ToddCoxeter runner that was created from a WordGraph, which is
+      // caught above in the ToddCoxeter clause.
+      auto const&         p = c.presentation();
+      IsObviouslyInfinite ioi(p.alphabet().size());
+      ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
+      ioi.add_rules_no_checks(p.alphabet(),
+                              c.generating_pairs().cbegin(),
+                              c.generating_pairs().cend());
+      auto result = ioi.result();
+      if (result) {
+        return result;
+      }
     }
     return false;
   }

@@ -22,7 +22,7 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma GCC diagnostic ignored "-Wunused-result"
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 #include "libsemigroups/libsemigroups.hpp"  // for *
 #include "test-main.hpp"                    // for LIBSEMIGROUPS_TEST_CASE
 
@@ -85,10 +85,10 @@ namespace libsemigroups {
     REQUIRE(o.scc().number_of_components() == 17);
   }
 
-  // cong-class.hpp: Line 144
+  // cong-class.hpp: Line 145
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "002",
-                          "./include/libsemigroups/cong-class.hpp:144",
+                          "./include/libsemigroups/cong-class.hpp:145",
                           "[docs][quick]") {
     Presentation<word_type> p;
     p.alphabet(2);

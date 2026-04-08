@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // REQUIRE
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // REQUIRE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin

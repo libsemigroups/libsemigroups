@@ -33,8 +33,8 @@
 #include <stdexcept>  // for out_of_range
 #include <vector>     // for vector
 
-#include "Catch2-3.8.0/catch_amalgamated.hpp"  // for TEST_CASE
-#include "test-main.hpp"                       // LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"                        // LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/transf.hpp"  // for Transf<>

@@ -34,6 +34,7 @@
 #include "presentation.hpp"        // for Presentation
 #include "todd-coxeter-class.hpp"  // for ToddCoxeter
 #include "types.hpp"               // for letter_type, wor...
+#include "word-graph-helpers.hpp"  // for complete_no_checks
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/race.hpp"               // for Race
@@ -159,9 +160,14 @@ namespace libsemigroups {
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
 
-    mutable detail::Race    _race;
-    mutable bool            _runners_initted;
-    std::vector<RunnerKind> _runner_kinds;
+    std::vector<Word>               _generating_pairs;
+    Presentation<Word>              _presentation;
+    mutable detail::Race            _race;
+    mutable bool                    _runners_initted;
+    mutable std::vector<RunnerKind> _runner_kinds;
+
+    // Private init Congruence but not CongruenceCommon
+    Congruence& init_no_base_classes();
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -245,6 +251,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
     // NOTE: No rvalue ref version because we anyway must copy p multiple times
+    // TODO note no longer valid impl
     Congruence(congruence_kind knd, Presentation<Word> const& p)
         : Congruence() {
       init(knd, p);
@@ -265,6 +272,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
     // NOTE:  No rvalue ref version because we anyway must copy p multiple times
+    // TODO note no longer valid impl
     Congruence& init(congruence_kind knd, Presentation<Word> const& p);
 
     //////////////////////////////////////////////////////////////////////////
@@ -298,6 +306,8 @@ namespace libsemigroups {
                                               Iterator4 last2) {
       LIBSEMIGROUPS_ASSERT(!any_runner_started());
       _runners_initted = false;
+      _generating_pairs.emplace_back(first1, last1);
+      _generating_pairs.emplace_back(first2, last2);
       return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
           Congruence>(first1, last1, first2, last2);
     }
@@ -740,7 +750,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if no presentation was used to
     //! construct or initialise the object.
-    [[nodiscard]] Presentation<Word> const& presentation() const;
+    [[nodiscard]] Presentation<Word> const& presentation() const noexcept {
+      return _presentation;
+    }
 
     //! \ingroup congruence_class_intf_group
     //!
@@ -753,7 +765,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] std::vector<Word> const& generating_pairs() const;
+    [[nodiscard]] std::vector<Word> const& generating_pairs() const noexcept {
+      return _generating_pairs;
+    }
 
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \ingroup congruence_class_intf_group
@@ -795,17 +809,17 @@ namespace libsemigroups {
     // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void add_runner(std::shared_ptr<ToddCoxeter<Word>>&& ptr) {
+    void add_runner(std::shared_ptr<ToddCoxeter<Word>>&& ptr) const {
       _race.add_runner(std::move(ptr));
       _runner_kinds.push_back(RunnerKind::TC);
     }
 
-    void add_runner(std::shared_ptr<KnuthBendix<Word>>&& ptr) {
+    void add_runner(std::shared_ptr<KnuthBendix<Word>>&& ptr) const {
       _race.add_runner(std::move(ptr));
       _runner_kinds.push_back(RunnerKind::KB);
     }
 
-    void add_runner(std::shared_ptr<Kambites<Word>>&& ptr) {
+    void add_runner(std::shared_ptr<Kambites<Word>>&& ptr) const {
       _race.add_runner(std::move(ptr));
       _runner_kinds.push_back(RunnerKind::K);
     }

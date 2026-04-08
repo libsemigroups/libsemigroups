@@ -1,5 +1,23 @@
 # Changelog - version 3
 
+## v3.5.5 (released 08/04/2026)
+
+In this release a number of issues were resolved, and a couple of the third
+party dependencies were updated to the latest versions. 
+
+* etc: update default vers. number in version-number.sh by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/940
+* Eigen v5.0.1 by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/939
+* cong: set the congruence report prefix in constructors by [\@james-d-mitchell] in 
+  https://github.com/libsemigroups/libsemigroups/pull/941
+* Remove redundant 'already finished' reporting by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/942
+* cong: resolve issue #943 by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/945
+* Bump Catch2 -> v3.14.0 by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/947
+
 ## v3.5.4 (released 26/03/2026)
 
 This is a minor release including some improvements to the build system, updating some third party dependencies (HPCombi v1.1.2), some compile warnings resolved, and some further argument checking for matrices introduced:
