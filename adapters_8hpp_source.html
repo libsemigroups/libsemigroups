@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.4</span>
+   &#160;<span id="projectnumber">v3.5.5</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -386,7 +386,7 @@ $(function(){initNavTree('adapters_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>            <span class="keyword">typename</span> Container = <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt;Point&gt;</a>&gt;</div>
 <div class="foldopen" id="foldopen00697" data-start="{" data-end="};">
 <div class="line"><a id="l00697" name="l00697"></a><span class="lineno"><a class="line" href="structlibsemigroups_1_1_on_tuples.html">  697</a></span>  <span class="keyword">struct </span><a class="code hl_struct" href="structlibsemigroups_1_1_on_tuples.html">OnTuples</a> {</div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>    <span class="keyword">static_assert</span>(<a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same&lt;typename Container::value_type, Point&gt;::value</a>,</div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>    <span class="keyword">static_assert</span>(std::is_same_v&lt;typename Container::value_type, Point&gt;,</div>
 <div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>                  <span class="stringliteral">&quot;the 3rd template parameter is not a container of objects of &quot;</span></div>
 <div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>                  <span class="stringliteral">&quot;type the 2nd template parameter&quot;</span>);</div>
 <div class="foldopen" id="foldopen00719" data-start="{" data-end="}">
@@ -473,7 +473,6 @@ $(function(){initNavTree('adapters_8hpp_source.html',''); initResizable(true); }
 <div class="ttc" id="aclasslibsemigroups_1_1_rank_state_html_ad681e47471bf42318a7a339430ba9413"><div class="ttname"><a href="classlibsemigroups_1_1_rank_state.html#ad681e47471bf42318a7a339430ba9413">libsemigroups::RankState::RankState</a></div><div class="ttdeci">RankState(RankState &amp;&amp;)=delete</div><div class="ttdoc">Deleted.</div></div>
 <div class="ttc" id="aequal_to_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/functional/equal_to.html">std::equal_to</a></div></div>
 <div class="ttc" id="ahash_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/hash.html">std::hash</a></div></div>
-<div class="ttc" id="ais_same_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same</a></div></div>
 <div class="ttc" id="aless_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/functional/less.html">std::less</a></div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="http://en.cppreference.com/w/namespacestd.html">std</a></div></div>

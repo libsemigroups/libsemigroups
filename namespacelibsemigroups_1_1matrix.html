@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.4</span>
+   &#160;<span id="projectnumber">v3.5.5</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -244,10 +244,10 @@ Functions</h2></td></tr>
 <tr class="memitem:aee5f465d1002b3cd193aa435af16f358"><td class="memTemplItemLeft" align="right" valign="top">Mat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aee5f465d1002b3cd193aa435af16f358">pow</a> (Mat const &amp;x, typename Mat::scalar_type e)</td></tr>
 <tr class="memdesc:aee5f465d1002b3cd193aa435af16f358"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a power of a matrix.  <br /></td></tr>
 <tr class="separator:aee5f465d1002b3cd193aa435af16f358"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae981061692c205d5db481c25e9142b4d" id="r_ae981061692c205d5db481c25e9142b4d"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename Container&gt; </td></tr>
-<tr class="memitem:ae981061692c205d5db481c25e9142b4d"><td class="memTemplItemLeft" align="right" valign="top">std::decay_t&lt; Container &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ae981061692c205d5db481c25e9142b4d">row_basis</a> (Container &amp;&amp;<a class="el" href="#a9e765f12af8af29be1881b4c237ad127">rows</a>)</td></tr>
-<tr class="memdesc:ae981061692c205d5db481c25e9142b4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a row basis for the space spanned by a container of row views.  <br /></td></tr>
-<tr class="separator:ae981061692c205d5db481c25e9142b4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e3d850f162c67207856a31b0eaccb99" id="r_a9e3d850f162c67207856a31b0eaccb99"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename Container, typename = std::enable_if_t&lt;!IsMatrix&lt;std::decay_t&lt;Container&gt;&gt;&gt;&gt; </td></tr>
+<tr class="memitem:a9e3d850f162c67207856a31b0eaccb99"><td class="memTemplItemLeft" align="right" valign="top">std::decay_t&lt; Container &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a9e3d850f162c67207856a31b0eaccb99">row_basis</a> (Container &amp;&amp;<a class="el" href="#a9e765f12af8af29be1881b4c237ad127">rows</a>)</td></tr>
+<tr class="memdesc:a9e3d850f162c67207856a31b0eaccb99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a row basis for the space spanned by a container of row views.  <br /></td></tr>
+<tr class="separator:a9e3d850f162c67207856a31b0eaccb99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af987e42d3d15ed93d1ea61c2401827ee" id="r_af987e42d3d15ed93d1ea61c2401827ee"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename Container&gt; </td></tr>
 <tr class="memitem:af987e42d3d15ed93d1ea61c2401827ee"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="group__maxplustruncmat__group.html#gad81c841c2ce0b710d0e1afcb947b9e1a">IsMaxPlusTruncMat</a>&lt; Mat &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#af987e42d3d15ed93d1ea61c2401827ee">row_basis</a> (Container &amp;&amp;views, std::decay_t&lt; Container &gt; &amp;result)</td></tr>
 <tr class="memdesc:af987e42d3d15ed93d1ea61c2401827ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends a basis for a space spanned by row views or bit sets to a container.  <br /></td></tr>
@@ -268,6 +268,22 @@ Functions</h2></td></tr>
 <tr class="memitem:a3185335abec7921e5000b2c42f44f376"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3185335abec7921e5000b2c42f44f376">row_basis</a> (Mat const &amp;x, Container &amp;result)</td></tr>
 <tr class="memdesc:a3185335abec7921e5000b2c42f44f376"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends a basis (consisting of row views) for the row space of a matrix to a container.  <br /></td></tr>
 <tr class="separator:a3185335abec7921e5000b2c42f44f376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48a5ed895d382a7ad98df6810fd41580" id="r_a48a5ed895d382a7ad98df6810fd41580"><td class="memTemplParams" colspan="2"><a id="a48a5ed895d382a7ad98df6810fd41580" name="a48a5ed895d382a7ad98df6810fd41580"></a>
+template&lt;typename Mat, typename Container, typename = std::enable_if_t&lt;IsStaticMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
+<tr class="memitem:a48a5ed895d382a7ad98df6810fd41580"><td class="memTemplItemLeft" align="right" valign="top">detail::StaticVector1&lt; typename Mat::Row, Mat::nr_rows &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>row_basis_rows</b> (Container &amp;&amp;<a class="el" href="#a9e765f12af8af29be1881b4c237ad127">rows</a>)</td></tr>
+<tr class="separator:a48a5ed895d382a7ad98df6810fd41580"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46858ffece86420f6d5f5f00a9221d77" id="r_a46858ffece86420f6d5f5f00a9221d77"><td class="memTemplParams" colspan="2"><a id="a46858ffece86420f6d5f5f00a9221d77" name="a46858ffece86420f6d5f5f00a9221d77"></a>
+template&lt;typename Mat, typename Container, typename = std::enable_if_t&lt;IsStaticMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
+<tr class="memitem:a46858ffece86420f6d5f5f00a9221d77"><td class="memTemplItemLeft" align="right" valign="top">detail::StaticVector1&lt; typename Mat::Row, Mat::nr_rows &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>row_basis_rows</b> (Mat const &amp;x)</td></tr>
+<tr class="separator:a46858ffece86420f6d5f5f00a9221d77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaafa767b7eeaf32df380a2fc67c071f" id="r_aeaafa767b7eeaf32df380a2fc67c071f"><td class="memTemplParams" colspan="2"><a id="aeaafa767b7eeaf32df380a2fc67c071f" name="aeaafa767b7eeaf32df380a2fc67c071f"></a>
+template&lt;typename Mat, typename Container, typename = std::enable_if_t&lt;IsDynamicMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
+<tr class="memitem:aeaafa767b7eeaf32df380a2fc67c071f"><td class="memTemplItemLeft" align="right" valign="top"><a class="elRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a>&lt; typename Mat::Row &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>row_basis_rows</b> (Mat const &amp;x)</td></tr>
+<tr class="separator:aeaafa767b7eeaf32df380a2fc67c071f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae31f64fdad94034346dd60db7689a1ea" id="r_ae31f64fdad94034346dd60db7689a1ea"><td class="memTemplParams" colspan="2"><a id="ae31f64fdad94034346dd60db7689a1ea" name="ae31f64fdad94034346dd60db7689a1ea"></a>
+template&lt;typename Mat, typename Container, typename = std::enable_if_t&lt;IsMatrix&lt;Mat&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ae31f64fdad94034346dd60db7689a1ea"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>row_basis_rows</b> (Mat const &amp;x, Container &amp;result)</td></tr>
+<tr class="separator:ae31f64fdad94034346dd60db7689a1ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98253c8c2358331263d7b8d9fab43295" id="r_a98253c8c2358331263d7b8d9fab43295"><td class="memTemplParams" colspan="2">template&lt;typename Mat, typename = std::enable_if_t&lt;IsBMat&lt;Mat&gt;&gt;&gt; </td></tr>
 <tr class="memitem:a98253c8c2358331263d7b8d9fab43295"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a98253c8c2358331263d7b8d9fab43295">row_space_size</a> (Mat const &amp;x)</td></tr>
 <tr class="memdesc:a98253c8c2358331263d7b8d9fab43295"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the row space of a boolean matrix.  <br /></td></tr>
@@ -855,17 +871,17 @@ template&lt;typename Mat&gt; </div>
 <div class="line"><span class="comment">// returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}</span></div>
 <div class="line"><a class="code hl_function" href="#aee5f465d1002b3cd193aa435af16f358">matrix::pow</a>(x, 100);</div>
 <div class="ttc" id="agroup__make__blocks__group_html_gac5d63f0df722c98d4c9ea90e6af15f77"><div class="ttname"><a href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">libsemigroups::make</a></div><div class="ttdeci">enable_if_is_same&lt; Return, Blocks &gt; make(Container const &amp;cont)</div><div class="ttdoc">Check the arguments, construct a Blocks object, and check it.</div><div class="ttdef"><b>Definition</b> bipart.hpp:856</div></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_aee5f465d1002b3cd193aa435af16f358"><div class="ttname"><a href="#aee5f465d1002b3cd193aa435af16f358">libsemigroups::matrix::pow</a></div><div class="ttdeci">Mat pow(Mat const &amp;x, typename Mat::scalar_type e)</div><div class="ttdoc">Returns a power of a matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7175</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_aee5f465d1002b3cd193aa435af16f358"><div class="ttname"><a href="#aee5f465d1002b3cd193aa435af16f358">libsemigroups::matrix::pow</a></div><div class="ttdeci">Mat pow(Mat const &amp;x, typename Mat::scalar_type e)</div><div class="ttdoc">Returns a power of a matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7174</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
-<a id="ae981061692c205d5db481c25e9142b4d" name="ae981061692c205d5db481c25e9142b4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae981061692c205d5db481c25e9142b4d">&#9670;&#160;</a></span>row_basis() <span class="overload">[1/6]</span></h2>
+<a id="a9e3d850f162c67207856a31b0eaccb99" name="a9e3d850f162c67207856a31b0eaccb99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e3d850f162c67207856a31b0eaccb99">&#9670;&#160;</a></span>row_basis() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Mat, typename Container&gt; </div>
+template&lt;typename Mat, typename Container, typename = std::enable_if_t&lt;!IsMatrix&lt;std::decay_t&lt;Container&gt;&gt;&gt;&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">std::decay_t&lt; Container &gt; row_basis </td>
@@ -1126,7 +1142,7 @@ template&lt;typename Mat, typename = std::enable_if_t&lt;IsBMat&lt;Mat&gt;&gt;&g
 <dl class="section user"><dt>Example</dt><dd></dd></dl>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> x = <a class="code hl_function" href="group__make__blocks__group.html#gac5d63f0df722c98d4c9ea90e6af15f77">make&lt;BMat&lt;&gt;</a>&gt;({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});</div>
 <div class="line"><a class="code hl_function" href="#a98253c8c2358331263d7b8d9fab43295">matrix::row_space_size</a>(x); <span class="comment">// returns 7</span></div>
-<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_a98253c8c2358331263d7b8d9fab43295"><div class="ttname"><a href="#a98253c8c2358331263d7b8d9fab43295">libsemigroups::matrix::row_space_size</a></div><div class="ttdeci">size_t row_space_size(Mat const &amp;x)</div><div class="ttdoc">Returns the size of the row space of a boolean matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7919</div></div>
+<div class="ttc" id="anamespacelibsemigroups_1_1matrix_html_a98253c8c2358331263d7b8d9fab43295"><div class="ttname"><a href="#a98253c8c2358331263d7b8d9fab43295">libsemigroups::matrix::row_space_size</a></div><div class="ttdeci">size_t row_space_size(Mat const &amp;x)</div><div class="ttdoc">Returns the size of the row space of a boolean matrix.</div><div class="ttdef"><b>Definition</b> matrix.hpp:7984</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

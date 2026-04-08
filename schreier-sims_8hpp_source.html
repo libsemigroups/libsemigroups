@@ -69,7 +69,7 @@ window.MathJax = {
   <td id="projectlogo"><img alt="Logo" src="libsemi_logo.jpeg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">libsemigroups
-   &#160;<span id="projectnumber">v3.5.4</span>
+   &#160;<span id="projectnumber">v3.5.5</span>
    </div>
    <div id="projectbrief">C++ library for semigroups and monoids</div>
   </td>
@@ -290,11 +290,11 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keyword">typename</span> Traits  = <a class="code hl_struct" href="structlibsemigroups_1_1_schreier_sims_traits.html">SchreierSimsTraits&lt;N, Point, Element&gt;</a>&gt;</div>
 <div class="foldopen" id="foldopen00177" data-start="{" data-end="};">
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno"><a class="line" href="classlibsemigroups_1_1_schreier_sims.html">  177</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classlibsemigroups_1_1_schreier_sims.html#a7dee9f50142dbc6269018e2bc304b779">SchreierSims</a> : <span class="keyword">private</span> detail::BruidhinnTraits&lt;Element&gt; {</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keyword">static_assert</span>(<a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same&lt;Point, typename Traits::point_type&gt;::value</a>,</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keyword">static_assert</span>(std::is_same_v&lt;Point, typename Traits::point_type&gt;,</div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                  <span class="stringliteral">&quot;incompatible point types, Traits::point_type and Point &quot;</span></div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                  <span class="stringliteral">&quot;must be the same&quot;</span>);</div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="keyword">static_assert</span>(</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same&lt;Element, typename Traits::element_type&gt;::value</a>,</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        std::is_same_v&lt;Element, typename Traits::element_type&gt;,</div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        <span class="stringliteral">&quot;incompatible element types, Traits::element_type and Element &quot;</span></div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="stringliteral">&quot;must be the same&quot;</span>);</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    <span class="keyword">static_assert</span>(N &lt;= std::numeric_limits&lt;Point&gt;::max(),</div>
@@ -565,7 +565,7 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>    <span class="keywordtype">bool</span> is_valid_degree(<a class="code hl_typedef" href="classlibsemigroups_1_1_schreier_sims.html#a7bcd5752b238e1109cfd7ff497735925">point_type</a> x) <span class="keyword">const</span> <span class="keyword">noexcept</span> {</div>
 <div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>      <span class="keywordflow">return</span></div>
 <div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span><span class="preprocessor">#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED</span></div>
-<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>          <a class="code hl_classRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same&lt;HPCombi::Perm16, element_type&gt;::value</a> ||</div>
+<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>          std::is_same_v&lt;HPCombi::Perm16, element_type&gt; ||</div>
 <div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>          x == N;</div>
 <div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span>    }</div>
@@ -704,7 +704,6 @@ $(function(){initNavTree('schreier-sims_8hpp_source.html',''); initResizable(tru
 <div class="ttc" id="afind_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find_if</a></div><div class="ttdeci">T find_if(T... args)</div></div>
 <div class="ttc" id="agroup__action__group_html_ga7ca613439fc4dcd69f978da888e5f54c"><div class="ttname"><a href="group__action__group.html#ga7ca613439fc4dcd69f978da888e5f54c">libsemigroups::to_human_readable_repr</a></div><div class="ttdeci">std::string to_human_readable_repr(Action&lt; Element, Point, Func, Traits, LeftOrRight &gt; const &amp;action)</div><div class="ttdoc">Return a human readable representation of an Action object.</div></div>
 <div class="ttc" id="agroup__transf__group_html_ga00d69f8dd014160fe1ef10a1040e543a"><div class="ttname"><a href="group__transf__group.html#ga00d69f8dd014160fe1ef10a1040e543a">libsemigroups::LeastPerm</a></div><div class="ttdeci">typename detail::LeastPermHelper&lt; N &gt;::type LeastPerm</div><div class="ttdoc">Type of perms using the least memory for a given degree.</div><div class="ttdef"><b>Definition</b> transf.hpp:2413</div></div>
-<div class="ttc" id="ais_same_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same</a></div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1schreier__sims_html"><div class="ttname"><a href="namespacelibsemigroups_1_1schreier__sims.html">libsemigroups::schreier_sims</a></div><div class="ttdoc">Namespace for SchreierSims helper functions.</div><div class="ttdef"><b>Definition</b> schreier-sims.hpp:974</div></div>
 <div class="ttc" id="anamespacelibsemigroups_1_1schreier__sims_html_a7fbd0d1a98951ffce1ff377f6081e7eb"><div class="ttname"><a href="namespacelibsemigroups_1_1schreier__sims.html#a7fbd0d1a98951ffce1ff377f6081e7eb">libsemigroups::schreier_sims::intersection</a></div><div class="ttdeci">void intersection(SchreierSims&lt; N, Point, Element, Traits &gt; &amp;T, SchreierSims&lt; N, Point, Element, Traits &gt; &amp;S1, SchreierSims&lt; N, Point, Element, Traits &gt; &amp;S2)</div><div class="ttdoc">Find the intersection of two permutation groups.</div></div>
 <div class="ttc" id="anamespacelibsemigroups_html"><div class="ttname"><a href="namespacelibsemigroups.html">libsemigroups</a></div><div class="ttdoc">Namespace for everything in the libsemigroups library.</div><div class="ttdef"><b>Definition</b> action.hpp:44</div></div>
