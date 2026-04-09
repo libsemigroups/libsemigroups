@@ -436,7 +436,7 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(p, {i, i + 1, i}, {i, i + 1});
         presentation::add_rule_no_checks(p, {i + 1, i, i + 1}, {i, i + 1});
       }
-      for (letter_type i = 0; i < n - 1; ++i) {
+      for (letter_type i = 0; i < n - 3; ++i) {
         for (letter_type j = i + 2; j < n - 1; ++j) {
           presentation::add_rule_no_checks(p, {i, j}, {j, i});
         }
