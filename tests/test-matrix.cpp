@@ -139,18 +139,18 @@ namespace libsemigroups {
       REQUIRE(m == make<TestType>({{0, 1}, {0, 1}}));
       REQUIRE(!(m == make<TestType>({{0, 0}, {0, 1}})));
       REQUIRE(m == make<TestType>({{0, 1}, {0, 1}}));
-      m.product_inplace_no_checks(make<TestType>({{0, 0}, {0, 0}}),
-                                  make<TestType>({{0, 0}, {0, 0}}));
+      m.product_inplace(make<TestType>({{0, 0}, {0, 0}}),
+                        make<TestType>({{0, 0}, {0, 0}}));
       REQUIRE(m == make<TestType>({{0, 0}, {0, 0}}));
-      m.product_inplace_no_checks(make<TestType>({{0, 0}, {0, 0}}),
-                                  make<TestType>({{1, 1}, {1, 1}}));
+      m.product_inplace(make<TestType>({{0, 0}, {0, 0}}),
+                        make<TestType>({{1, 1}, {1, 1}}));
       REQUIRE(m == make<TestType>({{0, 0}, {0, 0}}));
-      m.product_inplace_no_checks(make<TestType>({{1, 1}, {1, 1}}),
-                                  make<TestType>({{0, 0}, {0, 0}}));
+      m.product_inplace(make<TestType>({{1, 1}, {1, 1}}),
+                        make<TestType>({{0, 0}, {0, 0}}));
       REQUIRE(m == make<TestType>({{0, 0}, {0, 0}}));
 
-      m.product_inplace_no_checks(make<TestType>({{0, 1}, {1, 0}}),
-                                  make<TestType>({{1, 0}, {1, 0}}));
+      m.product_inplace(make<TestType>({{0, 1}, {1, 0}}),
+                        make<TestType>({{1, 0}, {1, 0}}));
       REQUIRE(m == make<TestType>({{1, 0}, {1, 0}}));
       size_t const M = detail::BitSetCapacity<TestType>::value;
       detail::StaticVector1<BitSet<M>, M> result;
@@ -288,9 +288,8 @@ namespace libsemigroups {
                                    BMat<>) {
     auto     rg = ReportGuard(false);
     TestType m(3, 3);
-    m.product_inplace_no_checks(
-        make<TestType>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-        make<TestType>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+    m.product_inplace(make<TestType>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+                      make<TestType>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
     REQUIRE(m == make<TestType>({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
     TestType* A = new TestType();
     delete A;
@@ -310,7 +309,7 @@ namespace libsemigroups {
     std::fill(AB.begin(), AB.end(), false);
     A(1, 1) = true;
 
-    AB.product_inplace_no_checks(A, B);
+    AB.product_inplace(A, B);
     REQUIRE(AB == B);
     REQUIRE(A.one() == make<TestType>({{true, false}, {false, true}}));
   }
@@ -325,15 +324,15 @@ namespace libsemigroups {
     auto y = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
     auto z = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
     REQUIRE(y == z);
-    z.product_inplace_no_checks(x, y);
+    z.product_inplace(x, y);
     REQUIRE(y == z);
-    z.product_inplace_no_checks(y, x);
+    z.product_inplace(y, x);
     REQUIRE(y == z);
     REQUIRE(!(y < z));
     auto id = x.one();
-    z.product_inplace_no_checks(id, x);
+    z.product_inplace(id, x);
     REQUIRE(z == x);
-    z.product_inplace_no_checks(x, id);
+    z.product_inplace(x, id);
     REQUIRE(z == x);
     REQUIRE(x.hash_value() != 0);
   }
@@ -382,7 +381,7 @@ namespace libsemigroups {
       auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace_no_checks(x, x);
+      y.product_inplace(x, x);
       expected = make<TestType>({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
       REQUIRE(y == expected);
       REQUIRE(y.number_of_rows() == 3);
@@ -393,9 +392,9 @@ namespace libsemigroups {
       REQUIRE(Complexity<TestType>()(x) == 27);
       REQUIRE(Complexity<TestType>()(y) == 27);
       auto id = x.one();
-      y.product_inplace_no_checks(id, x);
+      y.product_inplace(id, x);
       REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
+      y.product_inplace(x, id);
       REQUIRE(y == x);
     }
     {
@@ -406,15 +405,15 @@ namespace libsemigroups {
       auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace_no_checks(x, x);
+      y.product_inplace(x, x);
       expected = make<TestType>({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
       auto id = x.one();
-      y.product_inplace_no_checks(id, x);
+      y.product_inplace(id, x);
       REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
+      y.product_inplace(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<TestType>()(y) != 0);
     }
@@ -461,7 +460,7 @@ namespace libsemigroups {
     REQUIRE(!(x == y));
     REQUIRE(x != y);
 
-    y.product_inplace_no_checks(x, x);
+    y.product_inplace(x, x);
     expected = make<TestType>({{1, 2, 2}, {1, 1, 1}, {2, 3, 2}});
     REQUIRE(y == expected);
 
@@ -471,9 +470,9 @@ namespace libsemigroups {
     REQUIRE(Complexity<TestType>()(x) == 27);
     REQUIRE(Complexity<TestType>()(y) == 27);
     auto id = x.one();
-    y.product_inplace_no_checks(id, x);
+    y.product_inplace(id, x);
     REQUIRE(y == x);
-    y.product_inplace_no_checks(x, id);
+    y.product_inplace(x, id);
     REQUIRE(y == x);
     REQUIRE(Hash<TestType>()(y) != 0);
   }
@@ -505,7 +504,7 @@ namespace libsemigroups {
       auto y = make<TestType>({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace_no_checks(x, x);
+      y.product_inplace(x, x);
       expected = make<TestType>({{-4, -3, -2}, {-3, -3, -1}, {-4, -3, -3}});
       REQUIRE(y == expected);
 
@@ -515,9 +514,9 @@ namespace libsemigroups {
       REQUIRE(Complexity<TestType>()(x) == 27);
       REQUIRE(Complexity<TestType>()(y) == 27);
       auto id = x.one();
-      y.product_inplace_no_checks(id, x);
+      y.product_inplace(id, x);
       REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
+      y.product_inplace(x, id);
       REQUIRE(y == x);
     }
     {
@@ -528,7 +527,7 @@ namespace libsemigroups {
       auto y = make<TestType>({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace_no_checks(x, x);
+      y.product_inplace(x, x);
       REQUIRE(y == make<TestType>({{1, 21, 1}, {1, 0, 0}, {2, 22, 1}}));
 
       REQUIRE(x > y);
@@ -537,9 +536,9 @@ namespace libsemigroups {
       REQUIRE(Complexity<TestType>()(x) == 27);
       REQUIRE(Complexity<TestType>()(y) == 27);
       auto id = x.one();
-      y.product_inplace_no_checks(id, x);
+      y.product_inplace(id, x);
       REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
+      y.product_inplace(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<TestType>()(y) != 0);
     }
@@ -690,15 +689,15 @@ namespace libsemigroups {
     auto y = make<TestType>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
     REQUIRE(!(x == y));
 
-    y.product_inplace_no_checks(x, x);
+    y.product_inplace(x, x);
     expected = make<TestType>(sr, {{33, 33, 22}, {32, 32, 10}, {33, 33, 32}});
     REQUIRE(y == expected);
 
     REQUIRE(x < y);
     auto id = x.one();
-    y.product_inplace_no_checks(id, x);
+    y.product_inplace(id, x);
     REQUIRE(y == x);
-    y.product_inplace_no_checks(x, id);
+    y.product_inplace(x, id);
     REQUIRE(y == x);
     REQUIRE(Hash<TestType>()(y) != 0);
     REQUIRE(x * TestType::one(sr, 3) == x);
@@ -745,7 +744,7 @@ namespace libsemigroups {
     auto y = make<TestType>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
     REQUIRE(!(x == y));
 
-    y.product_inplace_no_checks(x, x);
+    y.product_inplace(x, x);
     expected = make<TestType>(sr, {{1, 21, 1}, {1, 0, 0}, {2, 22, 1}});
     REQUIRE(y == expected);
 
@@ -755,9 +754,9 @@ namespace libsemigroups {
     REQUIRE(Complexity<TestType>()(x) == 27);
     REQUIRE(Complexity<TestType>()(y) == 27);
     auto id = x.one();
-    y.product_inplace_no_checks(id, x);
+    y.product_inplace(id, x);
     REQUIRE(y == x);
-    y.product_inplace_no_checks(x, id);
+    y.product_inplace(x, id);
     REQUIRE(y == x);
     REQUIRE(Hash<TestType>()(y) != 0);
     REQUIRE_THROWS_AS(
@@ -789,9 +788,8 @@ namespace libsemigroups {
     auto     rg = ReportGuard(false);
     TestType m(sr, 3, 3);
     // REQUIRE(matrix::throw_if_bad_entry(m)); // m might not be valid!
-    m.product_inplace_no_checks(
-        make<TestType>(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-        make<TestType>(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+    m.product_inplace(make<TestType>(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+                      make<TestType>(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
     REQUIRE(m == make<TestType>(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
     REQUIRE(m.row(0) == Row(sr, {1, 0, 2}));
     REQUIRE(m.row(0).size() == 3);
@@ -937,15 +935,15 @@ namespace libsemigroups {
     auto y = make<TestType>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
     REQUIRE(!(x == y));
 
-    y.product_inplace_no_checks(x, x);
+    y.product_inplace(x, x);
     expected = make<TestType>(sr, {{34, 34, 0}, {34, 34, 0}, {33, 33, 1}});
     REQUIRE(y == expected);
 
     REQUIRE(x < y);
     auto id = x.one();
-    y.product_inplace_no_checks(id, x);
+    y.product_inplace(id, x);
     REQUIRE(y == x);
-    y.product_inplace_no_checks(x, id);
+    y.product_inplace(x, id);
     REQUIRE(y == x);
     REQUIRE(Hash<TestType>()(y) != 0);
     delete sr;
@@ -975,7 +973,7 @@ namespace libsemigroups {
     REQUIRE(y == expected);
     REQUIRE(!(x == y));
 
-    y.product_inplace_no_checks(x, x);
+    y.product_inplace(x, x);
     expected = make<TestType>({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}});
     REQUIRE(y == expected);
 
@@ -986,9 +984,9 @@ namespace libsemigroups {
     REQUIRE(Complexity<TestType>()(x) == 27);
     REQUIRE(Complexity<TestType>()(y) == 27);
     auto id = x.one();
-    y.product_inplace_no_checks(id, x);
+    y.product_inplace(id, x);
     REQUIRE(y == x);
-    y.product_inplace_no_checks(x, id);
+    y.product_inplace(x, id);
     REQUIRE(y == x);
 
     REQUIRE(make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}).hash_value()
@@ -1201,5 +1199,151 @@ namespace libsemigroups {
         {1, 2, 3}));  // Correct dimensions for compile-time matrix
 
     REQUIRE_NOTHROW(make<BMat<>::Row>({0, 1}));  // dynamic so no check)
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "028",
+                                   "produce_inplace exceptions x1",
+                                   "[quick]",
+                                   (IntMat<2, 3>),
+                                   IntMat<>,
+                                   (BMat<2, 3>),
+                                   BMat<>,
+                                   (MaxPlusMat<2, 3>),
+                                   MaxPlusMat<>,
+                                   (MinPlusMat<2, 3>),
+                                   MinPlusMat<>,
+                                   (ProjMaxPlusMat<2, 3>),
+                                   ProjMaxPlusMat<>) {
+    auto m = make<TestType>({{1, 1, 1}, {1, 1, 1}});
+    REQUIRE_EXCEPTION_MSG(m.product_inplace(m, m),
+                          "expected \"*this\" to be a square matrix, but "
+                          "found a 2x3 matrix");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "029",
+                                   "produce_inplace exceptions x2",
+                                   "[quick]",
+                                   IntMat<>,
+                                   BMat<>,
+                                   MaxPlusMat<>,
+                                   MinPlusMat<>,
+                                   ProjMaxPlusMat<>) {
+    // NOTE: this_.produce_inplace(A, B) doesn't compile when using static
+    // matrices, so no need to check those here.
+    auto     A = make<TestType>({{1, 1}, {1, 1}});
+    auto     B = make<TestType>({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
+    TestType this_(3, 3);
+    REQUIRE_EXCEPTION_MSG(
+        this_.product_inplace(A, B),
+        "expected matrices with the same dimensions, "
+        "\"*this\" is a 3x3 matrix, and the 1st argument is a 2x2 matrix");
+    REQUIRE_EXCEPTION_MSG(
+        this_.product_inplace(B, A),
+        "expected matrices with the same dimensions, "
+        "\"*this\" is a 3x3 matrix, and the 2nd argument is a 2x2 matrix");
+    REQUIRE_EXCEPTION_MSG(
+        this_.product_inplace(this_, B),
+        "the 1st argument (matrix) cannot be the same object as \"*this\"");
+    REQUIRE_EXCEPTION_MSG(
+        this_.product_inplace(B, this_),
+        "the 2nd argument (matrix) cannot be the same object as \"*this\"");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "030",
+                                   "operator+= exceptions x1",
+                                   "[quick]",
+                                   IntMat<>,
+                                   BMat<>,
+                                   MaxPlusMat<>,
+                                   MinPlusMat<>,
+                                   ProjMaxPlusMat<>) {
+    // NOTE: A += B doesn't compile when using static matrices, so no need to
+    // check those here.
+    auto A = make<TestType>({{1, 1}, {1, 1}});
+    auto B = make<TestType>({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
+    REQUIRE_EXCEPTION_MSG(
+        A += B,
+        "expected matrices with the same dimensions, "
+        "the 1st summand is a 2x2 matrix, and the 2nd summand is a 3x3 matrix");
+    REQUIRE_EXCEPTION_MSG(
+        A += B.row(1),
+        "expected matrices with the same dimensions, "
+        "the 1st summand is a 2x2 matrix, and the 2nd summand is a 1x3 matrix");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "031",
+                                   "operator+= exceptions x2",
+                                   "[quick]",
+                                   IntMat<>,
+                                   BMat<>,
+                                   MaxPlusMat<>,
+                                   MinPlusMat<>,
+                                   ProjMaxPlusMat<>) {
+    auto A = make<TestType>({{1, 1}});
+    auto B = make<TestType>({{1, 1, 1}});
+    REQUIRE_EXCEPTION_MSG(
+        A += B.row(0),
+        "expected matrices with the same dimensions, the 1st summand is a 1x2 "
+        "matrix, and the 2nd summand is a 1x3 matrix");
+    // The next one checks operator+= for RowViews
+    REQUIRE_EXCEPTION_MSG(
+        A.row(0) += B.row(0),
+        "expected matrices with the same dimensions, the 1st summand is a 1x2 "
+        "matrix, and the 2nd summand is a 1x3 matrix");
+    REQUIRE_NOTHROW(A.row(0) += A.row(0));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "032",
+                                   "operator+ exceptions",
+                                   "[quick]",
+                                   IntMat<>,
+                                   BMat<>,
+                                   MaxPlusMat<>,
+                                   MinPlusMat<>,
+                                   ProjMaxPlusMat<>) {
+    // NOTE: A + B doesn't compile when using static matrices, so no need to
+    // check those here.
+    auto A = make<TestType>({{1, 1}, {1, 1}});
+    auto B = make<TestType>({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
+    REQUIRE_EXCEPTION_MSG(
+        A + B,
+        "expected matrices with the same dimensions, the 1st summand is a 2x2 "
+        "matrix, and the 2nd summand is a 3x3 matrix");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "033",
+                                   "operator* exceptions x1",
+                                   "[quick]",
+                                   IntMat<>,
+                                   BMat<>,
+                                   MaxPlusMat<>,
+                                   MinPlusMat<>,
+                                   ProjMaxPlusMat<>) {
+    // NOTE: A * B doesn't compile when using static matrices, so no need to
+    // check those here.
+    auto A = make<TestType>({{1, 1}, {1, 1}});
+    auto B = make<TestType>({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
+    REQUIRE_EXCEPTION_MSG(
+        A * B,
+        "expected matrices with the same dimensions, the 1st factor is a 2x2 "
+        "matrix, and the 2nd factor is a 3x3 matrix");
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "034",
+                                   "operator* exceptions x2",
+                                   "[quick]",
+                                   IntMat<>,
+                                   (IntMat<2, 3>) ) {
+    auto m = make<TestType>({{1, 2, 3}, {4, 5, 6}});
+    REQUIRE_EXCEPTION_MSG(m * m,
+                          "expected the 1st factor to be a square matrix, but "
+                          "found a 2x3 matrix");
   }
 }  // namespace libsemigroups
