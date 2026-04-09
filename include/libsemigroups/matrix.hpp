@@ -177,15 +177,21 @@ namespace libsemigroups {
     //! \tparam Mat the type of the argument, must satisfy \ref IsMatrix<Mat>.
     //!
     //! \param x the matrix to check.
+    //! \param arg_desc a string_view that describes the argument being checked
+    //! (defaults to `"the argument"`.
     //!
     //! \throws LibsemigroupsException if the number of rows in \p x does not
     //! equal the number of columns.
     template <typename Mat>
-    auto throw_if_not_square(Mat const& x) -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_not_square(Mat const&       x,
+                             std::string_view arg_desc = "the argument")
+        -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != x.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION("expected a square matrix, but found {}x{}",
-                                x.number_of_rows(),
-                                x.number_of_cols());
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected {} to be a square matrix, but found a {}x{} matrix",
+            arg_desc,
+            x.number_of_rows(),
+            x.number_of_cols());
       }
     }
 
@@ -198,20 +204,29 @@ namespace libsemigroups {
     //!
     //! \param x the first matrix to check.
     //! \param y the second matrix to check.
+    //! \param arg_desc_x a string_view that describes the argument \p x being
+    //!        checked (defaults to `"the 1st argument"`).
+    //! \param arg_desc_y a string_view that describes the argument \p y being
+    //! checked (defaults to `"the 2nd argument"`).
     //!
     //! \throws LibsemigroupsException if the number of rows in \p x does not
     //! equal the number of rows of \p y; or the number of columns of \p x does
     //! not equal the number of columns of \p y.
     template <typename Mat>
-    auto throw_if_bad_dim(Mat const& x, Mat const& y)
+    auto throw_if_bad_dim(Mat const&       x,
+                          Mat const&       y,
+                          std::string_view arg_desc_x = "the 1st argument",
+                          std::string_view arg_desc_y = "the 2nd argument")
         -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != y.number_of_rows()
           || x.number_of_cols() != y.number_of_cols()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected matrices with the same dimensions, the 1st argument is a "
-            "{}x{} matrix, and the 2nd is a {}x{} matrix",
+            "expected matrices with the same dimensions, {} is a "
+            "{}x{} matrix, and {} is a {}x{} matrix",
+            arg_desc_x,
             x.number_of_rows(),
             x.number_of_cols(),
+            arg_desc_y,
             y.number_of_rows(),
             y.number_of_cols());
       }
@@ -534,6 +549,26 @@ namespace libsemigroups {
         }
       }
 
+      void product_inplace(Subclass const& A, Subclass const& B) {
+        matrix::throw_if_not_square(*this, "\"*this\"");
+        matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
+                                 A,
+                                 "\"*this\"",
+                                 "the 1st argument");
+        matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
+                                 B,
+                                 "\"*this\"",
+                                 "the 2nd argument");
+        if (&A == this) {
+          LIBSEMIGROUPS_EXCEPTION("the 1st argument (matrix) cannot be the "
+                                  "same object as \"*this\"")
+        } else if (&B == this) {
+          LIBSEMIGROUPS_EXCEPTION("the 2nd argument (matrix) cannot be the "
+                                  "same object as \"*this\"")
+        }
+        product_inplace_no_checks(A, B);
+      }
+
       // not noexcept because iterator increment isn't
       void operator*=(scalar_type a) {
         for (auto it = _container.begin(); it < _container.end(); ++it) {
@@ -541,8 +576,7 @@ namespace libsemigroups {
         }
       }
 
-      // not noexcept because vector::operator[] and array::operator[] aren't
-      void operator+=(Subclass const& that) {
+      void plus_inplace_no_checks(Subclass const& that) {
         LIBSEMIGROUPS_ASSERT(that.number_of_rows() == number_of_rows());
         LIBSEMIGROUPS_ASSERT(that.number_of_cols() == number_of_cols());
         for (size_t i = 0; i < _container.size(); ++i) {
@@ -550,9 +584,33 @@ namespace libsemigroups {
         }
       }
 
-      void operator+=(RowView const& that) {
+      // not noexcept because vector::operator[] and array::operator[] aren't
+      // TODO check if this is used anywhere where we should now used
+      // plus_inplace_no_checks
+      void operator+=(Subclass const& that) {
+        matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
+                                 that,
+                                 "the 1st summand",
+                                 "the 2nd summand");
+        plus_inplace_no_checks(that);
+      }
+
+      void plus_inplace_no_checks(RowView const& that) {
         LIBSEMIGROUPS_ASSERT(number_of_rows() == 1);
+        LIBSEMIGROUPS_ASSERT(number_of_cols() == that.size());
         RowView(*static_cast<Subclass const*>(this)) += that;
+      }
+
+      void operator+=(RowView const& that) {
+        if (number_of_rows() != 1 || number_of_cols() != that.size()) {
+          LIBSEMIGROUPS_EXCEPTION("expected matrices with the same dimensions, "
+                                  "the 1st summand is a {}x{} matrix, and the "
+                                  "2nd summand is a 1x{} matrix",
+                                  number_of_rows(),
+                                  number_of_cols(),
+                                  that.size());
+        }
+        plus_inplace_no_checks(that);
       }
 
       void operator+=(scalar_type a) {
@@ -567,19 +625,35 @@ namespace libsemigroups {
       // Arithmetic operators - not in-place
       ////////////////////////////////////////////////////////////////////////
 
-      // not noexcept because operator+= isn't
-      Subclass operator+(Subclass const& y) const {
+      Subclass plus_no_checks(Subclass const& y) const {
         Subclass result(*static_cast<Subclass const*>(this));
-        result += y;
+        result.plus_inplace_no_checks(y);
+        return result;
+      }
+
+      Subclass operator+(Subclass const& y) const {
+        matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
+                                 y,
+                                 "the 1st summand",
+                                 "the 2nd summand");
+        return plus_no_checks(y);
+      }
+
+      Subclass product_no_checks(Subclass const& y) const {
+        Subclass result(*static_cast<Subclass const*>(this));
+        result.product_inplace_no_checks(*static_cast<Subclass const*>(this),
+                                         y);
         return result;
       }
 
       // not noexcept because product_inplace_no_checks isn't
       Subclass operator*(Subclass const& y) const {
-        Subclass result(*static_cast<Subclass const*>(this));
-        result.product_inplace_no_checks(*static_cast<Subclass const*>(this),
-                                         y);
-        return result;
+        matrix::throw_if_not_square(*this, "the 1st factor");
+        matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
+                                 y,
+                                 "the 1st factor",
+                                 "the 2nd factor");
+        return product_no_checks(y);
       }
 
       Subclass operator*(scalar_type a) const {
@@ -795,6 +869,15 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Mat, typename Subclass>
+    class RowViewCommon;
+
+    template <typename Mat, typename Subclass>
+    void throw_if_bad_dim(RowViewCommon<Mat, Subclass> const& x,
+                          RowViewCommon<Mat, Subclass> const& y,
+                          std::string_view arg_desc_x = "the 1st argument",
+                          std::string_view arg_desc_y = "the 2nd argument");
+
+    template <typename Mat, typename Subclass>
     class RowViewCommon {
       static_assert(IsMatrix<Mat>,
                     "the template parameter Mat must be derived from "
@@ -890,21 +973,40 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // not noexcept because operator[] isn't
-      void operator+=(RowViewCommon const& x) {
+      void plus_inplace_no_checks(RowViewCommon const& x) {
         auto& this_ = *this;
         for (size_t i = 0; i < size(); ++i) {
           this_[i] = plus_no_checks(this_[i], x[i]);
         }
       }
 
-      // not noexcept because iterator arithmeic isn't
+      // TODO add tests
+      void operator+=(RowViewCommon const& x) {
+        throw_if_bad_dim(*this, x, "the 1st summand", "the 2nd summand");
+        plus_inplace_no_checks(x);
+      }
+
+      // not noexcept because operator+= isn't
+      Row plus_no_checks(RowViewCommon const& that) const {
+        Row result(*static_cast<Subclass const*>(this));
+        result.plus_inplace_no_checks(static_cast<Subclass const&>(that));
+        return result;
+      }
+
+      // TODO add tests
+      Row operator+(RowViewCommon const& x) {
+        throw_if_bad_dim(*this, x, "the 1st summand", "the 2nd summand");
+        return plus_no_checks(x);
+      }
+
+      // not noexcept because iterator arithmetic isn't
       void operator+=(scalar_type a) {
         for (auto& x : *this) {
           x = plus_no_checks(x, a);
         }
       }
 
-      // not noexcept because iterator arithmeic isn't
+      // not noexcept because iterator arithmetic isn't
       void operator*=(scalar_type a) {
         for (auto& x : *this) {
           x = product_no_checks(x, a);
@@ -915,13 +1017,6 @@ namespace libsemigroups {
       Row operator*(scalar_type a) const {
         Row result(*static_cast<Subclass const*>(this));
         result *= a;
-        return result;
-      }
-
-      // not noexcept because operator+= isn't
-      Row operator+(RowViewCommon const& that) const {
-        Row result(*static_cast<Subclass const*>(this));
-        result += static_cast<Subclass const&>(that);
         return result;
       }
 
@@ -990,6 +1085,21 @@ namespace libsemigroups {
           std::initializer_list<std::initializer_list<Scalar>>>(m);
     }
 
+    template <typename Mat, typename Subclass>
+    void throw_if_bad_dim(RowViewCommon<Mat, Subclass> const& x,
+                          RowViewCommon<Mat, Subclass> const& y,
+                          std::string_view                    arg_desc_x,
+                          std::string_view                    arg_desc_y) {
+      if (x.size() != y.size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected matrices with the same dimensions, {} is a "
+            "1x{} matrix, and {} is a 1x{} matrix",
+            arg_desc_x,
+            x.size(),
+            arg_desc_y,
+            y.size());
+      }
+    }
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
@@ -1379,8 +1489,25 @@ namespace libsemigroups {
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
     //!
     //! \warning
-    //! The two row views must be of the same size, although this is not
-    //! verified by the implementation.
+    //! The two row views must be of the same \ref size, although this is not
+    //! verified.
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
+    Row plus_no_checks(StaticRowView const& that) const;
+
+    //! \brief Sum row views.
+    //!
+    //! This function sums a row view with another row view and returns a
+    //! newly allocated \ref Row.
+    //!
+    //! \param that  the row view to add.
+    //! \returns  A \ref Row containing the sum.
+    //!
+    //! \throws LibsemigroupsException if the RowView pointed at by \c this
+    //! and \p that do not have the same \ref size.
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
     //!
     //! \warning This function does not detect overflows of \ref scalar_type.
     Row operator+(StaticRowView const& that);
@@ -1401,6 +1528,22 @@ namespace libsemigroups {
     //! \warning
     //! The two row views must be of the same size, although this is not
     //! verified by the implementation.
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
+    void plus_inplace_no_checks(StaticRowView const& that);
+
+    //! \brief Sums a row view with another row view in-place.
+    //!
+    //! This function redefines a RowView object to be the sum of itself and
+    //! \p that.
+    //!
+    //! \param that  the row view to add.
+    //!
+    //! \throws LibsemigroupsException if the RowView pointed at by \c this
+    //! and \p that do not have the same \ref size.
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
     //!
     //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(StaticRowView const& that);
@@ -1623,8 +1766,14 @@ namespace libsemigroups {
     template <typename U>
     bool operator<(U const& that) const;
 
+    //! \copydoc StaticRowView::plus_no_checks
+    Row plus_no_checks(DynamicRowView const& that);
+
     //! \copydoc StaticRowView::operator+
     Row operator+(DynamicRowView const& that);
+
+    //! \copydoc StaticRowView::plus_inplace_no_checks(StaticRowView const&)
+    void plus_inplace_no_checks(DynamicRowView const& that);
 
     //! \copydoc StaticRowView::operator+=(StaticRowView const&)
     void operator+=(DynamicRowView const& that);
@@ -1777,8 +1926,14 @@ namespace libsemigroups {
     template <typename U>
     bool operator<(U const& that) const;
 
+    //! \copydoc StaticRowView::plus_no_checks
+    Row plus_no_checks(DynamicRowView const& that);
+
     //! \copydoc StaticRowView::operator+
     Row operator+(DynamicRowView const& that);
+
+    //! \copydoc StaticRowView::plus_inplace_no_checks(StaticRowView const&)
+    void plus_inplace_no_checks(DynamicRowView const& that);
 
     //! \copydoc StaticRowView::operator+=(StaticRowView const&)
     void operator+=(DynamicRowView const& that);
@@ -2364,7 +2519,7 @@ namespace libsemigroups {
     //!
     //! This function returns the sum of two matrices.
     //!
-    //! \param that  the matrix to add to `this`.
+    //! \param y the matrix to add to `this`.
     //!
     //! \returns The sum of the two matrices.
     //!
@@ -2375,14 +2530,31 @@ namespace libsemigroups {
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
     //! verified.
+    //! \warning This function does not detect overflows of \ref scalar_type.
+    StaticMatrix plus_no_checks(StaticMatrix const& y) const;
+
+    //! \brief Returns the sum of two matrices.
+    //!
+    //! This function returns the sum of two matrices.
+    //!
+    //! \param that  the matrix to add to `this`.
+    //!
+    //! \returns The sum of the two matrices.
+    //!
+    //! \throws LibsemigroupsException if the matrix pointed at by \c this and
+    //! \p that do not have the same dimensions.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$m\f$ \ref number_of_cols
     //!
     //! \warning This function does not detect overflows of \ref scalar_type.
     StaticMatrix operator+(StaticMatrix const& that);
 
     //! \brief Add a matrix to another matrix in-place.
     //!
-    //! This function adds a matrix (or the row represented by a RowView) to
-    //! another matrix of the same shape in-place.
+    //! This function adds a matrix to another matrix  (or the row represented
+    //! by a RowView) of the same shape in-place.
     //!
     //! \param that  the matrix or row view to add.
     //!
@@ -2393,6 +2565,26 @@ namespace libsemigroups {
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
     //! checked.
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
+    void plus_inplace_no_checks(StaticMatrix const& that);
+
+    //! \copydoc plus_inplace_no_checks
+    void plus_inplace_no_checks(RowView const& that);
+
+    //! \brief Add a matrix to another matrix in-place.
+    //!
+    //! This function adds a matrix to another matrix  (or the row represented
+    //! by a RowView) of the same shape in-place.
+    //!
+    //! \param that  the matrix to add.
+    //!
+    //! \throws LibsemigroupsException if the matrix pointed at by \c this and
+    //! \p that do not have the same dimensions.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols
     //!
     //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(StaticMatrix const& that);
@@ -2430,6 +2622,26 @@ namespace libsemigroups {
     //! verified.
     //!
     //! \warning This function does not detect overflows of \ref scalar_type.
+    StaticMatrix product_no_checks(StaticMatrix const& that);
+
+    //! \brief Returns the product of two matrices.
+    //!
+    //! This function returns the product of two matrices.
+    //!
+    //! \param that the matrix to multiply by `this`.
+    //!
+    //! \returns The product of the two matrices.
+    //!
+    //! \throws LibsemigroupsException if either of the following apply:
+    //! * `this` does not point at a square matrix;
+    //! * \p that does not have the same dimensions as the matrix pointed at
+    //!   by `this`.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is
+    //! \ref number_of_cols.
+    //!
+    //! \warning This function does not detect overflows of \ref scalar_type.
     StaticMatrix operator*(StaticMatrix const& that);
 
     //! \brief Multiplies every entry of a matrix by a scalar in-place.
@@ -2459,10 +2671,29 @@ namespace libsemigroups {
     //! \ref number_of_cols.
     //!
     //! \warning
-    //! This function only applies to matrices with the same number of rows
-    //! and columns but this isn't verified.
+    //! The arguments \c this, \p x, and \p y must all be square matrices of
+    //! the same dimension, but this isn't verified.
     void product_inplace_no_checks(StaticMatrix const& x,
                                    StaticMatrix const& y);
+
+    //! \brief Multiplies \p x and \p y and stores the result in `this`.
+    //!
+    //! This function redefines `this` to be the product of \p x and \p y.
+    //! This is in-place multiplication to avoid allocation of memory for
+    //! products which do not need to be stored for future use.
+    //!
+    //! \param x  the first matrix to multiply.
+    //! \param y  the second matrix to multiply.
+    //!
+    //! \throws LibsemigroupsException if either of the following apply:
+    //! * `this` does not point at a square matrix;
+    //! * \p x or \p y do not have the same dimensions as the matrix pointed at
+    //!   by `this`.
+    //!
+    //! \complexity
+    //! \f$O(n ^ 3)\f$ where \f$n\f$ is \ref number_of_rows or
+    //! \ref number_of_cols.
+    void product_inplace(StaticMatrix const& x, StaticMatrix const& y);
 
     //! \brief Returns a view into a row.
     //!
@@ -3057,14 +3288,26 @@ namespace libsemigroups {
     //! \warning This function does not detect overflows of \ref scalar_type.
     DynamicMatrix operator*(scalar_type a);
 
+    //! \copydoc StaticMatrix::product_no_checks
+    DynamicMatrix product_no_checks(DynamicMatrix const& that);
+
     //! \copydoc StaticMatrix::operator*
     DynamicMatrix operator*(DynamicMatrix const& that);
 
     //! \copydoc StaticMatrix::operator*=
     void operator*=(scalar_type a);
 
+    //! \copydoc StaticMatrix::plus_no_checks
+    DynamicMatrix plus_no_checks(DynamicMatrix const& y) const;
+
     //! \copydoc StaticMatrix::operator+
     DynamicMatrix operator+(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::plus_inplace_no_checks
+    void plus_inplace_no_checks(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::plus_inplace_no_checks
+    void plus_inplace_no_checks(RowView const& that);
 
     //! \copydoc StaticMatrix::operator+=
     void operator+=(DynamicMatrix const& that);
@@ -3111,6 +3354,9 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::product_inplace_no_checks
     void product_inplace_no_checks(DynamicMatrix const& x,
                                    DynamicMatrix const& y);
+
+    //! \copydoc StaticMatrix::product_inplace
+    void product_inplace(DynamicMatrix const& x, DynamicMatrix const& y);
 
     //! \copydoc StaticMatrix::row
     RowView row(size_t i) const;
@@ -3440,18 +3686,12 @@ namespace libsemigroups {
 
     //! \copydoc StaticMatrix::operator()(size_t, size_t) const
     scalar_const_reference operator()(size_t r, size_t c) const;
-    //! \brief Multiplies every entry of a matrix by a scalar in-place.
-    //!
-    //! This function multiplies every entry of a matrix by a scalar in-place.
-    //!
-    //! \param a the scalar to multiply every entry by.
-    //!
-    //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
-    //! and \f$m\f$ is \ref number_of_cols.
-    //!
-    //! \warning This function does not detect overflows of \ref scalar_type.
+
+    //! \copydoc StaticMatrix::operator*(scalar_type)
     DynamicMatrix operator*(scalar_type a);
+
+    //! \copydoc StaticMatrix::product_no_checks
+    DynamicMatrix product_no_checks(DynamicMatrix const& that);
 
     //! \copydoc StaticMatrix::operator*
     DynamicMatrix operator*(DynamicMatrix const& that);
@@ -3461,6 +3701,12 @@ namespace libsemigroups {
 
     //! \copydoc StaticMatrix::operator+
     DynamicMatrix operator+(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::plus_inplace_no_checks
+    void plus_inplace_no_checks(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::plus_inplace_no_checks
+    void plus_inplace_no_checks(RowView const& that);
 
     //! \copydoc StaticMatrix::operator+=
     void operator+=(DynamicMatrix const& that);
@@ -3507,6 +3753,9 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::product_inplace_no_checks
     void product_inplace_no_checks(DynamicMatrix const& x,
                                    DynamicMatrix const& y);
+
+    //! \copydoc StaticMatrix::product_inplace
+    void product_inplace(DynamicMatrix const& x, DynamicMatrix const& y);
 
     //! \copydoc StaticMatrix::row
     RowView row(size_t i) const;
@@ -3695,8 +3944,8 @@ namespace libsemigroups {
       uint64_t const C = std::empty(m) ? 0 : m.begin()->size();
       if (R != Mat::nr_rows || C != Mat::nr_cols) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid argument, cannot initialize an {}x{} matrix with compile "
-            "time dimension, with an {}x{} container",
+            "invalid argument, cannot initialize a {}x{} matrix with compile "
+            "time dimension, with a {}x{} container",
             Mat::nr_rows,
             Mat::nr_cols,
             R,
@@ -5523,9 +5772,9 @@ namespace libsemigroups {
   //!    to be defined a run time.
   //!
   //! All three of these types can be accessed via the alias template
-  //! \ref MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then the
-  //! threshold can be set at run time, and if \c R or \c C is \c 0, then the
-  //! dimension can be set at run time. The default value of \c T is \c 0,
+  //! \ref MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then
+  //! the threshold can be set at run time, and if \c R or \c C is \c 0, then
+  //! the dimension can be set at run time. The default value of \c T is \c 0,
   //! \c R is \c 0, and of \c C is \c R.
   //!
   //! The alias \ref MinPlusTruncMat is either StaticMatrix,
@@ -6009,8 +6258,8 @@ namespace libsemigroups {
   //!    \f$p\f$) are to be defined a run time.
   //!
   //! All three of these types can be accessed via the alias template
-  //! \ref NTPMat<T, P, R, C, Scalar> if \c T and \c P have value \c 0, then the
-  //! threshold and period can be set at run time, and if \c R or \c C is
+  //! \ref NTPMat<T, P, R, C, Scalar> if \c T and \c P have value \c 0, then
+  //! the threshold and period can be set at run time, and if \c R or \c C is
   //! \c 0, then the dimension can be set at run time.  The default values of
   //! \c T, \c P, and \c R are \c 0, and the default value of \c C is \c R.
   //!
@@ -6801,8 +7050,23 @@ namespace libsemigroups {
         normalize(true);  // force normalize
       }
 
+      void product_inplace(ProjMaxPlusMat const& A, ProjMaxPlusMat const& B) {
+        _underlying_mat.product_inplace(A._underlying_mat, B._underlying_mat);
+        normalize(true);  // force normalize
+      }
+
+      void plus_inplace_no_checks(ProjMaxPlusMat const& that) {
+        _underlying_mat.plus_inplace_no_checks(that._underlying_mat);
+        normalize(true);  // force normalize
+      }
+
       void operator+=(ProjMaxPlusMat const& that) {
         _underlying_mat += that._underlying_mat;
+        normalize(true);  // force normalize
+      }
+
+      void product_inplace_no_checks(ProjMaxPlusMat const& that) {
+        _underlying_mat.product_inplace_no_checks(that._underlying_mat);
         normalize(true);  // force normalize
       }
 
@@ -6812,6 +7076,11 @@ namespace libsemigroups {
       }
 
       void operator+=(scalar_type a) {
+        _underlying_mat += a;
+        normalize(true);  // force normalize
+      }
+
+      void operator+=(RowView a) {
         _underlying_mat += a;
         normalize(true);  // force normalize
       }
@@ -6832,8 +7101,18 @@ namespace libsemigroups {
       // Arithmetic operators - not in-place
       ////////////////////////////////////////////////////////////////////////
 
+      ProjMaxPlusMat plus_no_checks(ProjMaxPlusMat const& that) const {
+        return ProjMaxPlusMat(
+            plus_no_checks(_underlying_mat, that._underlying_mat));
+      }
+
       ProjMaxPlusMat operator+(ProjMaxPlusMat const& that) const {
         return ProjMaxPlusMat(_underlying_mat + that._underlying_mat);
+      }
+
+      ProjMaxPlusMat product_no_checks(ProjMaxPlusMat const& that) const {
+        return ProjMaxPlusMat(
+            product_no_checks(_underlying_mat, that._underlying_mat));
       }
 
       ProjMaxPlusMat operator*(ProjMaxPlusMat const& that) const {
