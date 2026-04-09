@@ -1660,7 +1660,7 @@ bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
 bench_konieczny_SOURCES += third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
 
 bench_konieczny_maxplus_SOURCES =  benchmarks/bench-konieczny-maxplus.cpp
-bench_konieczny_maxplus_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
+bench_konieczny_maxplus_SOURCES += third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
 
 bench_multi_view_SOURCES =  benchmarks/bench-multi-view.cpp
 bench_multi_view_SOURCES += third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
