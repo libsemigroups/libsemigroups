@@ -1040,16 +1040,11 @@ namespace libsemigroups {
     presentation::add_rule(p, 01_w, 10_w);
     Congruence cong(twosided, p);
 
-    REQUIRE(
-        !is_obviously_infinite(cong));  // Add a call to is_obviously_infinite
+    REQUIRE(!is_obviously_infinite(cong));
     REQUIRE(!cong.started());
-    REQUIRE(cong.get<Kambites<word_type>>()->started());
-    REQUIRE(cong.any_runner_started());
+    REQUIRE(!cong.any_runner_started());
 
-    REQUIRE_EXCEPTION_MSG(
-        congruence_common::add_generating_pair(cong, 1010_w, 01_w),
-        "any_runner_started() returned \"true\" so no further generating pairs "
-        "can be added at this stage");
+    congruence_common::add_generating_pair(cong, 1010_w, 01_w);
     cong.run();
     REQUIRE(cong.number_of_classes() == 3);
   }
