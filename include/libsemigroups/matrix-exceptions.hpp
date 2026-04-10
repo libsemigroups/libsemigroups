@@ -42,16 +42,7 @@ namespace libsemigroups {
     //! equal the number of columns.
     template <typename Mat>
     void throw_if_not_square(Mat const&       x,
-                             std::string_view arg_desc = "the argument") {
-      static_assert(IsMatrix<Mat>);
-      if (x.number_of_rows() != x.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected {} to be a square matrix, but found a {}x{} matrix",
-            arg_desc,
-            x.number_of_rows(),
-            x.number_of_cols());
-      }
-    }
+                             std::string_view arg_desc = "the argument");
 
     //! \brief Throws if two matrices do not have the same dimensions.
     //!
@@ -233,4 +224,6 @@ namespace libsemigroups {
         -> std::enable_if_t<IsDynamicMatrix<Mat>> {}
   }  // namespace detail
 }  // namespace libsemigroups
+
+#include "matrix-exceptions.tpp"
 #endif  // LIBSEMIGROUPS_MATRIX_EXCEPTIONS_HPP_
