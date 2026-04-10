@@ -30,6 +30,18 @@ namespace libsemigroups {
     };
 
     template <typename T>
+    struct IsStaticMatrixHelper : std::false_type {};
+
+    template <typename T>
+    struct IsMatWithSemiringHelper : std::false_type {};
+
+    template <typename S, typename T = void>
+    struct IsTruncMatHelper : std::false_type {};
+
+    template <typename T>
+    static constexpr bool IsTruncMat = IsTruncMatHelper<T>::value;
+
+    template <typename T>
     struct IsIntMatHelper : std::false_type {};
 
   }  // namespace detail
@@ -50,6 +62,46 @@ namespace libsemigroups {
   //! \tparam T the type to check.
   template <typename T>
   constexpr bool IsMatrix = detail::IsMatrixHelper<T>::value;
+
+  //! \brief Helper variable template.
+  //!
+  //! \ingroup matrix_group
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! StaticMatrix; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  constexpr bool IsStaticMatrix = detail::IsStaticMatrixHelper<T>::value;
+
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! DynamicMatrix; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  constexpr bool IsDynamicMatrix = IsMatrix<T> && !IsStaticMatrix<T>;
+
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \p T is
+  //! DynamicMatrix<Semiring, Scalar>; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsMatWithSemiring
+      = detail::IsMatWithSemiringHelper<T>::value;
 
   //! \ingroup matrix_group
   //!

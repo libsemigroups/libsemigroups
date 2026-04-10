@@ -3732,9 +3732,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   namespace detail {
-    template <typename T>
-    struct IsStaticMatrixHelper : std::false_type {};
-
     template <typename PlusOp,
               typename ProdOp,
               typename ZeroOp,
@@ -3746,62 +3743,12 @@ namespace libsemigroups {
         StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>>
         : std::true_type {};
 
-    template <typename T>
-    struct IsMatWithSemiringHelper : std::false_type {};
-
     template <typename Semiring, typename Scalar>
     struct IsMatWithSemiringHelper<DynamicMatrix<Semiring, Scalar>>
         : std::true_type {};
-
-    template <typename S, typename T = void>
-    struct IsTruncMatHelper : std::false_type {};
-
   }  // namespace detail
 
-  //! \brief Helper variable template.
-  //!
-  //! \ingroup matrix_group
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is
-  //! StaticMatrix; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  constexpr bool IsStaticMatrix = detail::IsStaticMatrixHelper<T>::value;
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Helper variable template.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is
-  //! DynamicMatrix; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  constexpr bool IsDynamicMatrix = IsMatrix<T> && !IsStaticMatrix<T>;
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Helper variable template.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \p T is
-  //! DynamicMatrix<Semiring, Scalar>; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsMatWithSemiring
-      = detail::IsMatWithSemiringHelper<T>::value;
-
   namespace detail {
-
-    template <typename T>
-    static constexpr bool IsTruncMat = IsTruncMatHelper<T>::value;
 
     template <typename Mat>
     void throw_if_semiring_nullptr(Mat const& m) {
