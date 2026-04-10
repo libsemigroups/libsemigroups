@@ -178,7 +178,7 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     //! \param arg_desc a string_view that describes the argument being checked
-    //! (defaults to `"the argument"`.
+    //! (defaults to `"the argument"`).
     //!
     //! \throws LibsemigroupsException if the number of rows in \p x does not
     //! equal the number of columns.
@@ -789,7 +789,7 @@ namespace libsemigroups {
       // Private data
       ////////////////////////////////////////////////////////////////////////
       container_type _container;
-    };
+    };  // class MatrixCommon
 
     template <typename Scalar>
     class MatrixDynamicDim {
@@ -1666,8 +1666,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -3011,9 +3011,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -6948,7 +6948,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
