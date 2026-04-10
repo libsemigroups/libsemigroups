@@ -217,8 +217,8 @@ namespace libsemigroups {
   //! To use the adapter with \ref SchreierSims it is necessary to implement:
   //!
   //! * `Element operator()(size_t n) const` (possibly `noexcept`, `inline`
-  //!   and/or `constexpr` also) returning a multiplicative identity element \c
-  //!   x of type `Element` and with `Degree<Element>()(x)` equal to the
+  //!   and/or `constexpr` also) returning a multiplicative identity element
+  //!   \c x of type `Element` and with `Degree<Element>()(x)` equal to the
   //!   parameter \p n. For example, if `Element` is a type of n x n matrices,
   //!   then this should return the n x n identity matrix.
   //!
