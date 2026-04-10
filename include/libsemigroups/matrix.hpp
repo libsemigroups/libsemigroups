@@ -41,12 +41,14 @@
 #include <utility>           // for forward, make_pair, pair
 #include <vector>            // for vector
 
-#include "adapters.hpp"   // for Degree
-#include "bitset.hpp"     // for BitSet
-#include "config.hpp"     // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-#include "constants.hpp"  // for POSITIVE_INFINITY
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "adapters.hpp"           // for Degree
+#include "bitset.hpp"             // for BitSet
+#include "config.hpp"             // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+#include "constants.hpp"          // for POSITIVE_INFINITY
+#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
+#include "is-matrix.hpp"          // for IsMatrix
+#include "matrix-exceptions.hpp"  // for throw_if...
 
 #include "detail/containers.hpp"  // for StaticVector1
 #include "detail/formatters.hpp"  // for formatter of POSITIVE_INFINITY ...
@@ -141,134 +143,7 @@ namespace libsemigroups {
     template <typename T>
     static constexpr bool IsStdBitSet = IsStdBitSetHelper<T>::value;
 
-    struct MatrixPolymorphicBase {};
-
-    template <typename T>
-    struct IsMatrixHelper {
-      static constexpr bool value
-          = std::is_base_of<detail::MatrixPolymorphicBase, T>::value;
-    };
   }  // namespace detail
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Helper variable template.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is
-  //! derived from any of \ref DynamicMatrixStaticArith
-  //! "DynamicMatrix (with compile-time arithmetic)",
-  //! \ref DynamicMatrixDynamicArith
-  //! "DynamicMatrix (with run-time arithmetic)",
-  //! or StaticMatrix; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  constexpr bool IsMatrix = detail::IsMatrixHelper<T>::value;
-
-  namespace matrix {
-
-    //! \brief Throws if a matrix is not square.
-    //!
-    //! This function throws a LibsemigroupsException if the matrix \p x is not
-    //! square.
-    //!
-    //! \tparam Mat the type of the argument, must satisfy \ref IsMatrix<Mat>.
-    //!
-    //! \param x the matrix to check.
-    //! \param arg_desc a string_view that describes the argument being checked
-    //! (defaults to `"the argument"`).
-    //!
-    //! \throws LibsemigroupsException if the number of rows in \p x does not
-    //! equal the number of columns.
-    template <typename Mat>
-    auto throw_if_not_square(Mat const&       x,
-                             std::string_view arg_desc = "the argument")
-        -> std::enable_if_t<IsMatrix<Mat>> {
-      if (x.number_of_rows() != x.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected {} to be a square matrix, but found a {}x{} matrix",
-            arg_desc,
-            x.number_of_rows(),
-            x.number_of_cols());
-      }
-    }
-
-    //! \brief Throws if two matrices do not have the same dimensions.
-    //!
-    //! This function throws a LibsemigroupsException if the matrices \p x and
-    //! \p y do not have equal dimensions.
-    //!
-    //! \tparam Mat the type of the arguments, must satisfy \ref IsMatrix<Mat>.
-    //!
-    //! \param x the first matrix to check.
-    //! \param y the second matrix to check.
-    //! \param arg_desc_x a string_view that describes the argument \p x being
-    //!        checked (defaults to `"the 1st argument"`).
-    //! \param arg_desc_y a string_view that describes the argument \p y being
-    //! checked (defaults to `"the 2nd argument"`).
-    //!
-    //! \throws LibsemigroupsException if the number of rows in \p x does not
-    //! equal the number of rows of \p y; or the number of columns of \p x does
-    //! not equal the number of columns of \p y.
-    template <typename Mat>
-    auto throw_if_bad_dim(Mat const&       x,
-                          Mat const&       y,
-                          std::string_view arg_desc_x = "the 1st argument",
-                          std::string_view arg_desc_y = "the 2nd argument")
-        -> std::enable_if_t<IsMatrix<Mat>> {
-      if (x.number_of_rows() != y.number_of_rows()
-          || x.number_of_cols() != y.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected matrices with the same dimensions, {} is a "
-            "{}x{} matrix, and {} is a {}x{} matrix",
-            arg_desc_x,
-            x.number_of_rows(),
-            x.number_of_cols(),
-            arg_desc_y,
-            y.number_of_rows(),
-            y.number_of_cols());
-      }
-    }
-
-    //! \brief Throws the arguments do not index an entry of a matrix.
-    //!
-    //! This function throws a LibsemigroupsException if \p r is not less than
-    //! the number of rows of \p x; or if \p c is not less than the number of
-    //! columns of \p x.
-    //!
-    //! \tparam Mat the type of the arguments, must satisfy \ref IsMatrix<Mat>.
-    //!
-    //! \param x the matrix.
-    //! \param r the row index.
-    //! \param c the column index.
-    //!
-    //! \throws LibsemigroupsException if `(r, c)` does not index an entry in
-    //! the matrix \p x.
-    template <typename Mat>
-    auto throw_if_bad_coords(Mat const& x, size_t r, size_t c)
-        -> std::enable_if_t<IsMatrix<Mat>> {
-      if (r >= x.number_of_rows()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
-                                "values in [0, {}) x [0, {})",
-                                r,
-                                c,
-                                x.number_of_rows(),
-                                x.number_of_cols(),
-                                r);
-      }
-      if (c >= x.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid column index in ({}, {}), expected "
-                                "values in [0, {}) x [0, {})",
-                                r,
-                                c,
-                                x.number_of_rows(),
-                                x.number_of_cols(),
-                                r);
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Detail
@@ -7705,7 +7580,6 @@ namespace libsemigroups {
       bitset_rows<Mat>(std::move(rows(x)), result);
     }
 
-    // Helper
     //! \brief Computes the rows of a boolean matrix as bit sets.
     //!
     //! Defined in `matrix.hpp`.
