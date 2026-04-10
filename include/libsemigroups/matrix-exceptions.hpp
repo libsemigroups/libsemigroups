@@ -22,6 +22,8 @@
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "is-matrix.hpp"  // for IsMatrix
 
+#include "detail/matrix-common.hpp"  // for entry_repr
+
 namespace libsemigroups::matrix {
 
   //! \brief Throws if a matrix is not square.
@@ -121,6 +123,61 @@ namespace libsemigroups::matrix {
                               x.number_of_rows(),
                               x.number_of_cols(),
                               r);
+    }
+  }
+  //! \ingroup intmat_group
+  //!
+  //! \brief Check that an integer matrix is valid.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This function throws an exception if the entries of an integer matrix
+  //! are not valid, which is if and only if any of the entries equal
+  //! \ref POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
+  //!
+  //! \tparam Mat the type of the argument \p x, must satisfy
+  //! \ref IsMatrix<Mat>.
+  //!
+  //! \param x the matrix to check.
+  template <typename Mat>
+  std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
+    using scalar_type = typename Mat::scalar_type;
+    auto it           = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+      return val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY;
+    });
+    if (it != x.cend()) {
+      auto [r, c] = x.coords(it);
+      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be integers, "
+                              "but found {} in entry ({}, {})",
+                              detail::entry_repr(*it),
+                              r,
+                              c);
+    }
+  }
+
+  //! \ingroup intmat_group
+  //!
+  //! \brief Check that an entry in an integer matrix is valid.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This function throws an exception if the entry \p val of an integer
+  //! matrix are not valid, which is if and only if the entry \p val equals
+  //! \ref POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
+  //!
+  //! The 1st argument is used for overload resolution.
+  //!
+  //! \tparam Mat the type of the 1st argument, must satisfy
+  //! \ref IsMatrix<Mat>.
+  //!
+  //! \param val the entry to check.
+  template <typename Mat>
+  std::enable_if_t<IsIntMat<Mat>>
+  throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+    if (val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY) {
+      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be integers, "
+                              "but found {}",
+                              detail::entry_repr(val));
     }
   }
 

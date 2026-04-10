@@ -4153,30 +4153,6 @@ namespace libsemigroups {
   template <typename T>
   static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
 
-  namespace detail {
-    // This function is required for exceptions and to_human_readable_repr, so
-    // that if we encounter an entry of a matrix (Scalar type), then it can be
-    // printed correctly. If we just did fmt::format("{}", val) and val ==
-    // POSITIVE_INFINITY, but the type of val is, say, size_t, then this
-    // wouldn't use the formatter for PositiveInfinity.
-    //
-    // Also in fmt v11.1.4 the custom formatter for POSITIVE_INFINITY and
-    // NEGATIVE_INFINITY stopped working (and I wasn't able to figure out why)
-    template <typename Scalar>
-    std::string entry_repr(Scalar a) {
-      if constexpr (std::is_same_v<Scalar, NegativeInfinity>
-                    || std::is_signed_v<Scalar>) {
-        if (a == NEGATIVE_INFINITY) {
-          return u8"-\u221E";
-        }
-      }
-      if (a == POSITIVE_INFINITY) {
-        return u8"+\u221E";
-      }
-      return fmt::format("{}", a);
-    }
-  }  // namespace detail
-
   namespace matrix {
 
     //! \ingroup bmat_group
@@ -4444,8 +4420,6 @@ namespace libsemigroups {
                                     DynamicIntMat<Scalar>,
                                     StaticIntMat<R, C, Scalar>>;
   namespace detail {
-    template <typename T>
-    struct IsIntMatHelper : std::false_type {};
 
     template <size_t R, size_t C, typename Scalar>
     struct IsIntMatHelper<StaticIntMat<R, C, Scalar>> : std::true_type {};
@@ -4453,79 +4427,6 @@ namespace libsemigroups {
     template <typename Scalar>
     struct IsIntMatHelper<DynamicIntMat<Scalar>> : std::true_type {};
   }  // namespace detail
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Helper variable template.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is
-  //! \ref IntMat; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
-
-  namespace matrix {
-    //! \ingroup intmat_group
-    //!
-    //! \brief Check that an integer matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function throws an exception if the entries of an integer matrix
-    //! are not valid, which is if and only if any of the entries equal
-    //! \ref POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
-    //!
-    //! \tparam Mat the type of the argument \p x, must satisfy
-    //! \ref IsMatrix<Mat>.
-    //!
-    //! \param x the matrix to check.
-    template <typename Mat>
-    std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
-      using scalar_type = typename Mat::scalar_type;
-      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
-        return val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY;
-      });
-      if (it != x.cend()) {
-        auto [r, c] = x.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers, "
-            "but found {} in entry ({}, {})",
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup intmat_group
-    //!
-    //! \brief Check that an entry in an integer matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function throws an exception if the entry \p val of an integer
-    //! matrix are not valid, which is if and only if the entry \p val equals
-    //! \ref POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
-    //!
-    //! The 1st argument is used for overload resolution.
-    //!
-    //! \tparam Mat the type of the 1st argument, must satisfy
-    //! \ref IsMatrix<Mat>.
-    //!
-    //! \param val the entry to check.
-    template <typename Mat>
-    std::enable_if_t<IsIntMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
-      if (val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers, "
-            "but found {}",
-            detail::entry_repr(val));
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices
@@ -7242,8 +7143,8 @@ namespace libsemigroups {
       = detail::IsProjMaxPlusMatHelper<T>::value;
 
   namespace matrix {
-    // \ingroup projmaxplus_group
-    //
+    //! \ingroup projmaxplus_group
+    //!
     //! \brief Check that the entries in a projective max-plus matrix are
     //! valid.
     //!
@@ -7265,8 +7166,8 @@ namespace libsemigroups {
       throw_if_bad_entry(x.underlying_matrix());
     }
 
-    // \ingroup projmaxplus_group
-    //
+    //! \ingroup projmaxplus_group
+    //!
     //! \brief Check that an entry in a projective max-plus matrix is valid.
     //!
     //! Defined in `matrix.hpp`.
@@ -7538,7 +7439,6 @@ namespace libsemigroups {
       return result;
     }
 
-    // Helper
     //! \brief Computes the rows of a boolean matrix as bit sets and appends
     //! them to a container.
     //!

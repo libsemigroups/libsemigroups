@@ -28,6 +28,10 @@ namespace libsemigroups {
       static constexpr bool value
           = std::is_base_of<detail::MatrixPolymorphicBase, T>::value;
     };
+
+    template <typename T>
+    struct IsIntMatHelper : std::false_type {};
+
   }  // namespace detail
 
   //! \ingroup matrix_group
@@ -46,5 +50,18 @@ namespace libsemigroups {
   //! \tparam T the type to check.
   template <typename T>
   constexpr bool IsMatrix = detail::IsMatrixHelper<T>::value;
+
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! \ref IntMat; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_IS_MATRIX_HPP_
