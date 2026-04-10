@@ -6977,8 +6977,8 @@ namespace libsemigroups {
   //! compile-time, and those where it is not.  Both types can be accessed via
   //! the alias template \ref ProjMaxPlusMat : if \c R or \c C has value
   //! \c 0, then the dimensions can be set at run time, otherwise \c R and
-  //! \c C are the dimensions.  The default value of \c R is \c 0, \c C is \c R,
-  //! and `Scalar` is `int`.
+  //! \c C are the dimensions.  The default value of \c R is \c 0, \c C is
+  //! \c R, and `Scalar` is `int`.
   //!
   //! Matrices in both these classes are modified when constructed to be in a
   //! normal form which is obtained by subtracting the maximum finite entry in

@@ -718,8 +718,8 @@ namespace libsemigroups {
     //!
     //! This function returns \c true if any runner in a \ref_congruence object
     //! has started and \c false otherwise. You might expect that \ref started
-    //! would return the same answer, but remember that \ref started returns \c
-    //! true if and only if \ref run has been called at least once; and there
+    //! would return the same answer, but remember that \ref started returns
+    //! \c true if and only if \ref run has been called at least once; and there
     //! are helper functions, such as \ref is_obviously_infinite, that might
     //! start some of the runners of a \ref_congruence without ever calling
     //! \ref Congruence::run.
