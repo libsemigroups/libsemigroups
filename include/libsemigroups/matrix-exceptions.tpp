@@ -28,5 +28,48 @@ namespace libsemigroups {
             x.number_of_cols());
       }
     }
+
+    template <typename Mat>
+    void throw_if_bad_dim(Mat const&       x,
+                          Mat const&       y,
+                          std::string_view arg_desc_x,
+                          std::string_view arg_desc_y) {
+      static_assert(IsMatrix<Mat>);
+      if (x.number_of_rows() != y.number_of_rows()
+          || x.number_of_cols() != y.number_of_cols()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected matrices with the same dimensions, {} is a "
+            "{}x{} matrix, and {} is a {}x{} matrix",
+            arg_desc_x,
+            x.number_of_rows(),
+            x.number_of_cols(),
+            arg_desc_y,
+            y.number_of_rows(),
+            y.number_of_cols());
+      }
+    }
+
+    template <typename Mat>
+    void throw_if_bad_coords(Mat const& x, size_t r, size_t c) {
+      static_assert(IsMatrix<Mat>);
+      if (r >= x.number_of_rows()) {
+        LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
+                                "values in [0, {}) x [0, {})",
+                                r,
+                                c,
+                                x.number_of_rows(),
+                                x.number_of_cols(),
+                                r);
+      }
+      if (c >= x.number_of_cols()) {
+        LIBSEMIGROUPS_EXCEPTION("invalid column index in ({}, {}), expected "
+                                "values in [0, {}) x [0, {})",
+                                r,
+                                c,
+                                x.number_of_rows(),
+                                x.number_of_cols(),
+                                r);
+      }
+    }
   }  // namespace matrix
 }  // namespace libsemigroups

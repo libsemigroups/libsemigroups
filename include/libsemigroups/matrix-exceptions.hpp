@@ -65,21 +65,7 @@ namespace libsemigroups {
     void throw_if_bad_dim(Mat const&       x,
                           Mat const&       y,
                           std::string_view arg_desc_x = "the 1st argument",
-                          std::string_view arg_desc_y = "the 2nd argument") {
-      static_assert(IsMatrix<Mat>);
-      if (x.number_of_rows() != y.number_of_rows()
-          || x.number_of_cols() != y.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected matrices with the same dimensions, {} is a "
-            "{}x{} matrix, and {} is a {}x{} matrix",
-            arg_desc_x,
-            x.number_of_rows(),
-            x.number_of_cols(),
-            arg_desc_y,
-            y.number_of_rows(),
-            y.number_of_cols());
-      }
-    }
+                          std::string_view arg_desc_y = "the 2nd argument");
 
     //! \brief Throws the arguments do not index an entry of a matrix.
     //!
@@ -96,27 +82,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `(r, c)` does not index an entry in
     //! the matrix \p x.
     template <typename Mat>
-    void throw_if_bad_coords(Mat const& x, size_t r, size_t c) {
-      static_assert(IsMatrix<Mat>);
-      if (r >= x.number_of_rows()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
-                                "values in [0, {}) x [0, {})",
-                                r,
-                                c,
-                                x.number_of_rows(),
-                                x.number_of_cols(),
-                                r);
-      }
-      if (c >= x.number_of_cols()) {
-        LIBSEMIGROUPS_EXCEPTION("invalid column index in ({}, {}), expected "
-                                "values in [0, {}) x [0, {})",
-                                r,
-                                c,
-                                x.number_of_rows(),
-                                x.number_of_cols(),
-                                r);
-      }
-    }
+    void throw_if_bad_coords(Mat const& x, size_t r, size_t c);
+
     //! \ingroup intmat_group
     //!
     //! \brief Check that an integer matrix is valid.
@@ -128,7 +95,7 @@ namespace libsemigroups {
     //! \ref POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
     //!
     //! \tparam Mat the type of the argument \p x, must satisfy
-    //! \ref IsMatrix<Mat>.
+    //! \ref IsIntMat<Mat>.
     //!
     //! \param x the matrix to check.
     template <typename Mat>
