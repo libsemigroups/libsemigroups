@@ -133,13 +133,15 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   namespace detail {
-
+    // TODO move
     template <typename T>
     struct IsStdBitSetHelper : std::false_type {};
 
+    // TODO move
     template <size_t N>
     struct IsStdBitSetHelper<std::bitset<N>> : std::true_type {};
 
+    // TODO move
     template <typename T>
     static constexpr bool IsStdBitSet = IsStdBitSetHelper<T>::value;
 
@@ -4016,8 +4018,6 @@ namespace libsemigroups {
       = std::conditional_t<R == 0 || C == 0, DynamicBMat, StaticBMat<R, C>>;
 
   namespace detail {
-    template <typename T>
-    struct IsBMatHelper : std::false_type {};
 
     template <size_t R, size_t C>
     struct IsBMatHelper<StaticBMat<R, C>> : std::true_type {};
@@ -4025,90 +4025,19 @@ namespace libsemigroups {
     template <>
     struct IsBMatHelper<DynamicBMat> : std::true_type {};
 
+    // TODO move
     template <typename T>
     struct BitSetCapacity {
       static constexpr size_t value = BitSet<1>::max_size();
     };
 
+    // TODO move
     template <size_t R, size_t C>
     struct BitSetCapacity<StaticBMat<R, C>> {
       static_assert(R == C, "the number of rows and columns must be equal");
       static constexpr size_t value = R;
     };
   }  // namespace detail
-
-  //! \ingroup bmat_group
-  //!
-  //! \brief Helper to check if a type is \ref BMat.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is the
-  //! same as `BMat<R, C>` for some values of \c R and \c C.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
-
-  namespace matrix {
-
-    //! \ingroup bmat_group
-    //!
-    //! \brief Check the entries in a boolean matrix are valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of \p m, must satisfy \ref IsBMat<Mat>.
-    //!
-    //! \param m the boolean matrix to check.
-    //!
-    //! \throws LibsemigroupsException if any of the entries in the matrix are
-    //! not \c 0 or \c 1. The values in a boolean matrix are of type \c int,
-    //! but a matrix shouldn't contain values except \c 0 and \c 1.
-    template <typename Mat>
-    std::enable_if_t<IsBMat<Mat>> throw_if_bad_entry(Mat const& m) {
-      using scalar_type = typename Mat::scalar_type;
-      auto it           = std::find_if_not(
-          m.cbegin(), m.cend(), [](scalar_type x) { return x == 0 || x == 1; });
-      if (it != m.cend()) {
-        auto [r, c] = m.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup bmat_group
-    //!
-    //! \brief Check an entry in a boolean matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of the 1st argument, must satisfy
-    //! \ref IsBMat<Mat>.
-    //!
-    //! \param val the entry to check.
-    //!
-    //! \throws LibsemigroupsException if \p val is not \c 0 or \c 1. The
-    //! values in a boolean matrix are of type \c int, but a matrix shouldn't
-    //! contain values except \c 0 and \c 1.
-    template <typename Mat>
-    std::enable_if_t<IsBMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
-      if (val != 0 && val != 1) {
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected 0 or 1 but found {}",
-                                detail::entry_repr(val));
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Integer matrices - compile time semiring arithmetic
@@ -4542,8 +4471,6 @@ namespace libsemigroups {
                                         StaticMaxPlusMat<R, C, Scalar>>;
 
   namespace detail {
-    template <typename T>
-    struct IsMaxPlusMatHelper : std::false_type {};
 
     template <size_t R, size_t C, typename Scalar>
     struct IsMaxPlusMatHelper<StaticMaxPlusMat<R, C, Scalar>> : std::true_type {
@@ -4552,19 +4479,6 @@ namespace libsemigroups {
     template <typename Scalar>
     struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Helper variable template.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is
-  //! \ref MaxPlusMat; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
 
   namespace matrix {
     //! \ingroup maxplusmat_group

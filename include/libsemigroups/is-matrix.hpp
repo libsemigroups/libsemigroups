@@ -44,6 +44,12 @@ namespace libsemigroups {
     template <typename T>
     struct IsIntMatHelper : std::false_type {};
 
+    template <typename T>
+    struct IsBMatHelper : std::false_type {};
+
+    template <typename T>
+    struct IsMaxPlusMatHelper : std::false_type {};
+
   }  // namespace detail
 
   //! \ingroup matrix_group
@@ -115,5 +121,31 @@ namespace libsemigroups {
   //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
+
+  //! \ingroup bmat_group
+  //!
+  //! \brief Helper to check if a type is \ref BMat.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as `BMat<R, C>` for some values of \c R and \c C.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
+
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! \ref MaxPlusMat; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_IS_MATRIX_HPP_
