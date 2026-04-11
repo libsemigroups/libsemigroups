@@ -71,5 +71,33 @@ namespace libsemigroups {
                                 r);
       }
     }
+
+    template <typename Mat>
+    std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
+      using scalar_type = typename Mat::scalar_type;
+      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+        return val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY;
+      });
+      if (it != x.cend()) {
+        auto [r, c] = x.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers, "
+            "but found {} in entry ({}, {})",
+            detail::entry_repr(*it),
+            r,
+            c);
+      }
+    }
+
+    template <typename Mat>
+    [[deprecated]] std::enable_if_t<IsIntMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers, "
+            "but found {}",
+            detail::entry_repr(val));
+      }
+    }
   }  // namespace matrix
 }  // namespace libsemigroups

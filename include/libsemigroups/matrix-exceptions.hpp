@@ -99,21 +99,7 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     template <typename Mat>
-    std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
-      using scalar_type = typename Mat::scalar_type;
-      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
-        return val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY;
-      });
-      if (it != x.cend()) {
-        auto [r, c] = x.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers, "
-            "but found {} in entry ({}, {})",
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
+    std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x);
 
     //! \ingroup intmat_group
     //!
@@ -128,20 +114,17 @@ namespace libsemigroups {
     //! The 1st argument is used for overload resolution.
     //!
     //! \tparam Mat the type of the 1st argument, must satisfy
-    //! \ref IsMatrix<Mat>.
+    //! \ref IsIntMat<Mat>.
     //!
     //! \param val the entry to check.
+    //!
+    //! \deprecated_warning{function}
+    // NOTE this function isn't used and so should be deleted
     template <typename Mat>
-    std::enable_if_t<IsIntMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
-      if (val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers, "
-            "but found {}",
-            detail::entry_repr(val));
-      }
-    }
+    [[deprecated]] std::enable_if_t<IsIntMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
   }  // namespace matrix
+
   namespace detail {
     template <typename Mat>
     void throw_if_semiring_nullptr(Mat const& m) {
