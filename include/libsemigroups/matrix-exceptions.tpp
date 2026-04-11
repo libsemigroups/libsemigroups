@@ -72,6 +72,10 @@ namespace libsemigroups {
       }
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // throw_if_bad_entry
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename Mat>
     std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
       using scalar_type = typename Mat::scalar_type;
@@ -89,6 +93,7 @@ namespace libsemigroups {
       }
     }
 
+    // TODO(v4) deprecated delete
     template <typename Mat>
     [[deprecated]] std::enable_if_t<IsIntMat<Mat>>
     throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
@@ -97,6 +102,101 @@ namespace libsemigroups {
             "invalid entry, expected entries to be integers, "
             "but found {}",
             detail::entry_repr(val));
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsBMat<Mat>> throw_if_bad_entry(Mat const& m) {
+      using scalar_type = typename Mat::scalar_type;
+      auto it           = std::find_if_not(
+          m.cbegin(), m.cend(), [](scalar_type x) { return x == 0 || x == 1; });
+      if (it != m.cend()) {
+        auto [r, c] = m.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
+            detail::entry_repr(*it),
+            r,
+            c);
+      }
+    }
+
+    // TODO(v4) deprecated delete
+    template <typename Mat>
+    std::enable_if_t<IsBMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val != 0 && val != 1) {
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected 0 or 1 but found {} ",
+                                detail::entry_repr(val));
+      }
+    }
+
+    template <typename Mat>
+    auto throw_if_bad_entry(Mat const& x)
+        -> std::enable_if_t<IsMaxPlusMat<Mat>> {
+      using scalar_type = typename Mat::scalar_type;
+      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+        return val == POSITIVE_INFINITY;
+      });
+      if (it != x.cend()) {
+        auto [r, c] = x.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers or {} (= {}), "
+            "but found {} (= {}) in entry ({}, {})",
+            entry_repr(NEGATIVE_INFINITY),
+            static_cast<scalar_type>(NEGATIVE_INFINITY),
+            entry_repr(POSITIVE_INFINITY),
+            static_cast<scalar_type>(POSITIVE_INFINITY),
+            r,
+            c);
+      }
+    }
+
+    // TODO(v4) deprecated delete
+    template <typename Mat>
+    std::enable_if_t<IsMaxPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val == POSITIVE_INFINITY) {
+        using scalar_type = typename Mat::scalar_type;
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
+                                "integers or {} (= {}) but found {} (= {})",
+                                entry_repr(NEGATIVE_INFINITY),
+                                static_cast<scalar_type>(NEGATIVE_INFINITY),
+                                entry_repr(POSITIVE_INFINITY),
+                                static_cast<scalar_type>(POSITIVE_INFINITY));
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x) {
+      using scalar_type = typename Mat::scalar_type;
+      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+        return val == NEGATIVE_INFINITY;
+      });
+      if (it != x.cend()) {
+        auto [r, c] = x.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers or {} (= {}), "
+            "but found {} (= {}) in entry ({}, {})",
+            entry_repr(POSITIVE_INFINITY),
+            static_cast<scalar_type>(POSITIVE_INFINITY),
+            entry_repr(NEGATIVE_INFINITY),
+            static_cast<scalar_type>(NEGATIVE_INFINITY),
+            r,
+            c);
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsMinPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val == NEGATIVE_INFINITY) {
+        using scalar_type = typename Mat::scalar_type;
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
+                                "integers or {} (= {}) but found {} (= {})",
+                                entry_repr(POSITIVE_INFINITY),
+                                static_cast<scalar_type>(POSITIVE_INFINITY),
+                                entry_repr(NEGATIVE_INFINITY),
+                                static_cast<scalar_type>(NEGATIVE_INFINITY));
       }
     }
   }  // namespace matrix

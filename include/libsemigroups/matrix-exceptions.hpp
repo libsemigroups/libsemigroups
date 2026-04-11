@@ -102,6 +102,7 @@ namespace libsemigroups {
     //! \ref IsIntMat<Mat>.
     //!
     //! \param x the matrix to check.
+    // TODO why isn't this just overloaded throw_if_bad_entry(IntMat const& x)??
     template <typename Mat>
     std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x);
 
@@ -145,19 +146,7 @@ namespace libsemigroups {
     //! not \c 0 or \c 1. The values in a boolean matrix are of type \c int,
     //! but a matrix shouldn't contain values except \c 0 and \c 1.
     template <typename Mat>
-    std::enable_if_t<IsBMat<Mat>> throw_if_bad_entry(Mat const& m) {
-      using scalar_type = typename Mat::scalar_type;
-      auto it           = std::find_if_not(
-          m.cbegin(), m.cend(), [](scalar_type x) { return x == 0 || x == 1; });
-      if (it != m.cend()) {
-        auto [r, c] = m.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
+    std::enable_if_t<IsBMat<Mat>> throw_if_bad_entry(Mat const& m);
 
     //! \ingroup bmat_group
     //!
@@ -176,14 +165,93 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p val is not \c 0 or \c 1. The
     //! values in a boolean matrix are of type \c int, but a matrix shouldn't
     //! contain values except \c 0 and \c 1.
+    //!
+    //! \deprecated_warning{function}
+    // NOTE this function isn't used and so should be deleted
     template <typename Mat>
-    std::enable_if_t<IsBMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
-      if (val != 0 && val != 1) {
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected 0 or 1 but found {}",
-                                detail::entry_repr(val));
-      }
-    }
+    [[deprecated]] std::enable_if_t<IsBMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
+
+    //! \ingroup maxplusmat_group
+    //!
+    //! \brief Check that a max-plus matrix is valid.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function can be used to check that a matrix contains values in
+    //! the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix, must satisfy \ref IsMaxPlusMat.
+    //!
+    //! \param x the matrix to check.
+    //!
+    //! \throws LibsemigroupsException if \p x contains
+    //! \ref POSITIVE_INFINITY.
+    template <typename Mat>
+    auto throw_if_bad_entry(Mat const& x)
+        -> std::enable_if_t<IsMaxPlusMat<Mat>>;
+
+    //! \ingroup maxplusmat_group
+    //!
+    //! \brief Check that an entry in a max-plus matrix is valid.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function can be used to check that an entry in a matrix
+    //! belongs to the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix, must satisfy
+    //! \ref IsMaxPlusMat<Mat>.
+    //!
+    //! \param val the entry to check.
+    //!
+    //! \throws LibsemigroupsException if \p val is \ref POSITIVE_INFINITY.
+    //!
+    //! \deprecated_warning{function}
+    // NOTE this function isn't used and so should be deleted
+    template <typename Mat>
+    [[deprecated]] std::enable_if_t<IsMaxPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
+
+    //! \ingroup minplusmat_group
+    //!
+    //! \brief Check that a min-plus matrix is valid.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function can be used to check that a matrix contains values in
+    //! the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix, must satisfy \ref IsMinPlusMat.
+    //!
+    //! \param x the matrix to check.
+    //!
+    //! \throws LibsemigroupsException if \p x contains
+    //! \ref NEGATIVE_INFINITY.
+    template <typename Mat>
+    std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x);
+
+    //! \ingroup minplusmat_group
+    //!
+    //! \brief Check that an entry in a min-plus matrix is valid.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function can be used to check that an entry in a matrix
+    //! belongs to the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix, must satisfy
+    //! \ref IsMinPlusMat<Mat>.
+    //!
+    //! \param val the entry to check.
+    //!
+    //! \throws LibsemigroupsException if \p val is \ref NEGATIVE_INFINITY.
+    //!
+    //! \deprecated_warning{function}
+    // NOTE this function isn't used and so should be deleted
+    template <typename Mat>
+    [[deprecated]] std::enable_if_t<IsMinPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
   }  // namespace matrix
 
   namespace detail {

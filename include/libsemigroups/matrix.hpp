@@ -4471,7 +4471,6 @@ namespace libsemigroups {
                                         StaticMaxPlusMat<R, C, Scalar>>;
 
   namespace detail {
-
     template <size_t R, size_t C, typename Scalar>
     struct IsMaxPlusMatHelper<StaticMaxPlusMat<R, C, Scalar>> : std::true_type {
     };
@@ -4479,73 +4478,6 @@ namespace libsemigroups {
     template <typename Scalar>
     struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
-
-  namespace matrix {
-    //! \ingroup maxplusmat_group
-    //!
-    //! \brief Check that a max-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of the matrix, must satisfy \ref IsMaxPlusMat.
-    //!
-    //! \param x the matrix to check.
-    //!
-    //! \throws LibsemigroupsException if \p x contains
-    //! \ref POSITIVE_INFINITY.
-    template <typename Mat>
-    auto throw_if_bad_entry(Mat const& x)
-        -> std::enable_if_t<IsMaxPlusMat<Mat>> {
-      using scalar_type = typename Mat::scalar_type;
-      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
-        return val == POSITIVE_INFINITY;
-      });
-      if (it != x.cend()) {
-        auto [r, c] = x.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers or {} (= {}), "
-            "but found {} (= {}) in entry ({}, {})",
-            entry_repr(NEGATIVE_INFINITY),
-            static_cast<scalar_type>(NEGATIVE_INFINITY),
-            entry_repr(POSITIVE_INFINITY),
-            static_cast<scalar_type>(POSITIVE_INFINITY),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup maxplusmat_group
-    //!
-    //! \brief Check that an entry in a max-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that an entry in a matrix
-    //! belongs to the underlying semiring.
-    //!
-    //! \tparam Mat the type of the matrix, must satisfy
-    //! \ref IsMaxPlusMat<Mat>.
-    //!
-    //! \param val the entry to check.
-    //!
-    //! \throws LibsemigroupsException if \p val is \ref POSITIVE_INFINITY.
-    template <typename Mat>
-    std::enable_if_t<IsMaxPlusMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
-      if (val == POSITIVE_INFINITY) {
-        using scalar_type = typename Mat::scalar_type;
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
-                                "integers or {} (= {}) but found {} (= {})",
-                                entry_repr(NEGATIVE_INFINITY),
-                                static_cast<scalar_type>(NEGATIVE_INFINITY),
-                                entry_repr(POSITIVE_INFINITY),
-                                static_cast<scalar_type>(POSITIVE_INFINITY));
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Min-plus matrices
@@ -4764,8 +4696,6 @@ namespace libsemigroups {
                                         StaticMinPlusMat<R, C, Scalar>>;
 
   namespace detail {
-    template <typename T>
-    struct IsMinPlusMatHelper : std::false_type {};
 
     template <size_t R, size_t C, typename Scalar>
     struct IsMinPlusMatHelper<StaticMinPlusMat<R, C, Scalar>> : std::true_type {
@@ -4774,85 +4704,6 @@ namespace libsemigroups {
     template <typename Scalar>
     struct IsMinPlusMatHelper<DynamicMinPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Helper variable template.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is
-  //! \ref MinPlusMat; and \c false otherwise.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
-
-  namespace matrix {
-    //! \ingroup minplusmat_group
-    //!
-    //! \brief Check that a min-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of the matrix, must satisfy \ref IsMinPlusMat.
-    //!
-    //! \param x the matrix to check.
-    //!
-    //! \throws LibsemigroupsException if \p x contains
-    //! \ref NEGATIVE_INFINITY.
-    template <typename Mat>
-    std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x) {
-      using scalar_type = typename Mat::scalar_type;
-      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
-        return val == NEGATIVE_INFINITY;
-      });
-      if (it != x.cend()) {
-        auto [r, c] = x.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers or {} (= {}), "
-            "but found {} (= {}) in entry ({}, {})",
-            entry_repr(POSITIVE_INFINITY),
-            static_cast<scalar_type>(POSITIVE_INFINITY),
-            entry_repr(NEGATIVE_INFINITY),
-            static_cast<scalar_type>(NEGATIVE_INFINITY),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup minplusmat_group
-    //!
-    //! \brief Check that an entry in a min-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that an entry in a matrix
-    //! belongs to the underlying semiring.
-    //!
-    //! \tparam Mat the type of the matrix, must satisfy
-    //! \ref IsMinPlusMat<Mat>.
-    //!
-    //! \param val the entry to check.
-    //!
-    //! \throws LibsemigroupsException if \p val is \ref NEGATIVE_INFINITY.
-    template <typename Mat>
-    std::enable_if_t<IsMinPlusMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
-      if (val == NEGATIVE_INFINITY) {
-        using scalar_type = typename Mat::scalar_type;
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
-                                "integers or {} (= {}) but found {} (= {})",
-                                entry_repr(POSITIVE_INFINITY),
-                                static_cast<scalar_type>(POSITIVE_INFINITY),
-                                entry_repr(NEGATIVE_INFINITY),
-                                static_cast<scalar_type>(NEGATIVE_INFINITY));
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices with threshold

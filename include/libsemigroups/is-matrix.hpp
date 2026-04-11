@@ -50,6 +50,9 @@ namespace libsemigroups {
     template <typename T>
     struct IsMaxPlusMatHelper : std::false_type {};
 
+    template <typename T>
+    struct IsMinPlusMatHelper : std::false_type {};
+
   }  // namespace detail
 
   //! \ingroup matrix_group
@@ -147,5 +150,18 @@ namespace libsemigroups {
   //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
+
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! \ref MinPlusMat; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_IS_MATRIX_HPP_
