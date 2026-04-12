@@ -495,15 +495,6 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Mat, typename Subclass>
-  class RowViewCommon;
-
-  template <typename Mat, typename Subclass>
-  void throw_if_bad_dim(RowViewCommon<Mat, Subclass> const& x,
-                        RowViewCommon<Mat, Subclass> const& y,
-                        std::string_view arg_desc_x = "the 1st argument",
-                        std::string_view arg_desc_y = "the 2nd argument");
-
-  template <typename Mat, typename Subclass>
   class RowViewCommon {
     static_assert(IsMatrix<Mat>,
                   "the template parameter Mat must be derived from "
@@ -542,6 +533,8 @@ namespace libsemigroups::detail {
 
     explicit RowViewCommon(Row const& r)
         : RowViewCommon(const_cast<Row&>(r).begin()) {}
+
+    ~RowViewCommon() = default;
 
     // Not noexcept because iterator::operator[] isn't
     scalar_const_reference operator[](size_t i) const {
@@ -598,18 +591,10 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     // not noexcept because operator[] isn't
-    void plus_inplace_no_checks(RowViewCommon const& x) {
-      auto& this_ = *this;
-      for (size_t i = 0; i < size(); ++i) {
-        this_[i] = plus_no_checks(this_[i], x[i]);
-      }
-    }
+    void plus_inplace_no_checks(RowViewCommon const& x);
 
     // TODO add tests
-    void operator+=(RowViewCommon const& x) {
-      throw_if_bad_dim(*this, x, "the 1st summand", "the 2nd summand");
-      plus_inplace_no_checks(x);
-    }
+    void operator+=(RowViewCommon const& x);
 
     // not noexcept because operator+= isn't
     Row plus_no_checks(RowViewCommon const& that) const {
@@ -619,10 +604,7 @@ namespace libsemigroups::detail {
     }
 
     // TODO add tests
-    Row operator+(RowViewCommon const& x) {
-      throw_if_bad_dim(*this, x, "the 1st summand", "the 2nd summand");
-      return plus_no_checks(x);
-    }
+    Row operator+(RowViewCommon const& x);
 
     // not noexcept because iterator arithmetic isn't
     void operator+=(scalar_type a) {
@@ -681,49 +663,13 @@ namespace libsemigroups::detail {
 
    private:
     iterator _begin;
-  };
-
-  template <typename Container>
-  void throw_if_any_row_wrong_size(Container const& m) {
-    if (m.size() <= 1) {
-      return;
-    }
-    uint64_t const C  = m.begin()->size();
-    auto           it = std::find_if_not(
-        m.begin() + 1, m.end(), [&C](typename Container::const_reference r) {
-          return r.size() == C;
-        });
-    if (it != m.end()) {
-      LIBSEMIGROUPS_EXCEPTION("invalid argument, expected every item to "
-                              "have length {}, found {} in entry {}",
-                              C,
-                              it->size(),
-                              std::distance(m.begin(), it));
-    }
-  }
-
-  template <typename Scalar>
-  void throw_if_any_row_wrong_size(
-      std::initializer_list<std::initializer_list<Scalar>> m) {
-    throw_if_any_row_wrong_size<
-        std::initializer_list<std::initializer_list<Scalar>>>(m);
-  }
+  };  // class RowViewCommon
 
   template <typename Mat, typename Subclass>
   void throw_if_bad_dim(RowViewCommon<Mat, Subclass> const& x,
                         RowViewCommon<Mat, Subclass> const& y,
-                        std::string_view                    arg_desc_x,
-                        std::string_view                    arg_desc_y) {
-    if (x.size() != y.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected matrices with the same dimensions, {} is a "
-          "1x{} matrix, and {} is a 1x{} matrix",
-          arg_desc_x,
-          x.size(),
-          arg_desc_y,
-          y.size());
-    }
-  }
+                        std::string_view arg_desc_x = "the 1st argument",
+                        std::string_view arg_desc_y = "the 2nd argument");
 }  // namespace libsemigroups::detail
 
 #include "matrix-common.tpp"

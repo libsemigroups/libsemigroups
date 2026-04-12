@@ -106,6 +106,32 @@ namespace libsemigroups {
     template <typename Mat, typename Container>
     auto throw_if_bad_row_dim(Container const&)
         -> std::enable_if_t<IsDynamicMatrix<Mat>> {}
+
+    template <typename Container>
+    void throw_if_any_row_wrong_size(Container const& m) {
+      if (m.size() <= 1) {
+        return;
+      }
+      uint64_t const C  = m.begin()->size();
+      auto           it = std::find_if_not(
+          m.begin() + 1, m.end(), [&C](typename Container::const_reference r) {
+            return r.size() == C;
+          });
+      if (it != m.end()) {
+        LIBSEMIGROUPS_EXCEPTION("invalid argument, expected every item to "
+                                "have length {}, found {} in entry {}",
+                                C,
+                                it->size(),
+                                std::distance(m.begin(), it));
+      }
+    }
+
+    template <typename Scalar>
+    void throw_if_any_row_wrong_size(
+        std::initializer_list<std::initializer_list<Scalar>> m) {
+      throw_if_any_row_wrong_size<
+          std::initializer_list<std::initializer_list<Scalar>>>(m);
+    }
   }  // namespace detail
 }  // namespace libsemigroups
 

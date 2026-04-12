@@ -287,4 +287,50 @@ namespace libsemigroups::detail {
     }
     LIBSEMIGROUPS_ASSERT(x.size() == number_of_rows());
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // RowViewCommon
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Mat, typename Subclass>
+  void throw_if_bad_dim(RowViewCommon<Mat, Subclass> const& x,
+                        RowViewCommon<Mat, Subclass> const& y,
+                        std::string_view                    arg_desc_x,
+                        std::string_view                    arg_desc_y) {
+    if (x.size() != y.size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected matrices with the same dimensions, {} is a "
+          "1x{} matrix, and {} is a 1x{} matrix",
+          arg_desc_x,
+          x.size(),
+          arg_desc_y,
+          y.size());
+    }
+  }
+
+  template <typename Mat, typename Subclass>
+  void
+  RowViewCommon<Mat, Subclass>::plus_inplace_no_checks(RowViewCommon const& x) {
+    auto& this_ = *this;
+    for (size_t i = 0; i < size(); ++i) {
+      this_[i] = plus_no_checks(this_[i], x[i]);
+    }
+  }
+
+  // This is out of line because throw_if_bad_dim is implemented after this is
+  // declared
+  template <typename Mat, typename Subclass>
+  void RowViewCommon<Mat, Subclass>::operator+=(RowViewCommon const& x) {
+    throw_if_bad_dim(*this, x, "the 1st summand", "the 2nd summand");
+    plus_inplace_no_checks(x);
+  }
+
+  // This is out of line because throw_if_bad_dim is implemented after this is
+  // declared
+  template <typename Mat, typename Subclass>
+  typename RowViewCommon<Mat, Subclass>::Row
+  RowViewCommon<Mat, Subclass>::operator+(RowViewCommon const& x) {
+    throw_if_bad_dim(*this, x, "the 1st summand", "the 2nd summand");
+    return plus_no_checks(x);
+  }
 }  // namespace libsemigroups::detail
