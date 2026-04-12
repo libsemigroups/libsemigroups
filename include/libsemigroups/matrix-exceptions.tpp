@@ -205,8 +205,7 @@ namespace libsemigroups::matrix {
       return x == POSITIVE_INFINITY || (0 <= x && x <= t);
     });
     if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
+      auto [r, c] = m.coords(it);
 
       LIBSEMIGROUPS_EXCEPTION(
           "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
@@ -252,8 +251,7 @@ namespace libsemigroups::matrix {
       return (0 <= x && x < p + t);
     });
     if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
+      auto [r, c] = m.coords(it);
 
       LIBSEMIGROUPS_EXCEPTION(
           "invalid entry, expected values in {{0, 1, ..., {}}}, but "
