@@ -201,8 +201,8 @@ namespace libsemigroups::matrix {
   //! \deprecated_warning{function}
   // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  [[deprecated]]
-  auto throw_if_bad_entry(Mat const&, typename Mat::scalar_type val)
+  [[deprecated]] auto throw_if_bad_entry(Mat const&,
+                                         typename Mat::scalar_type val)
       -> std::enable_if_t<IsMinPlusMat<Mat>>;
 
   //! \ingroup maxplustruncmat_group

@@ -38,7 +38,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the number of rows in \p x does not
     //! equal the number of columns.
-    // TODO deprecate
+    // TODO deprecate + move to detail
     template <typename Mat>
     void throw_if_not_square(Mat const&       x,
                              std::string_view arg_desc = "the argument");
