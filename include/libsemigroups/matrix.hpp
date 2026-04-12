@@ -710,8 +710,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-         DynamicMatrix_,
-         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        DynamicMatrix_,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2001,7 +2001,7 @@ namespace libsemigroups {
     static constexpr size_t number_of_cols_impl() noexcept {
       return C;
     }
-  };
+  };  // class StaticMatrix
 
   ////////////////////////////////////////////////////////////////////////
   // DynamicMatrix with compile time semiring arithmetic
@@ -2055,9 +2055,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-            std::vector<Scalar>,
-            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        std::vector<Scalar>,
+        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -4244,9 +4244,6 @@ namespace libsemigroups {
         DynamicMatrix<MaxPlusTruncSemiring<Scalar>, Scalar>> : std::true_type {
       static constexpr Scalar threshold = UNDEFINED;
     };
-  }  // namespace detail
-
-  namespace detail {
     template <typename T>
     struct IsTruncMatHelper<T, std::enable_if_t<IsMaxPlusTruncMat<T>>>
         : std::true_type {
@@ -4606,7 +4603,6 @@ namespace libsemigroups {
       StaticMinPlusTruncMat<T, R, C, Scalar>>;
 
   namespace detail {
-
     template <size_t T, size_t R, size_t C, typename Scalar>
     struct IsMinPlusTruncMatHelper<StaticMinPlusTruncMat<T, R, C, Scalar>>
         : std::true_type {
@@ -4624,9 +4620,7 @@ namespace libsemigroups {
         DynamicMatrix<MinPlusTruncSemiring<Scalar>, Scalar>> : std::true_type {
       static constexpr Scalar threshold = UNDEFINED;
     };
-  }  // namespace detail
 
-  namespace detail {
     template <typename T>
     struct IsTruncMatHelper<T, std::enable_if_t<IsMinPlusTruncMat<T>>>
         : std::true_type {
@@ -5255,7 +5249,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
