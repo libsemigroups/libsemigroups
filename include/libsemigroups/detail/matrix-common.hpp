@@ -620,7 +620,7 @@ namespace libsemigroups::detail {
       }
     }
 
-    // not noexcept because operator*= isn't
+    // not noexcept because operator*= isn'tl
     Row operator*(scalar_type a) const {
       Row result(*static_cast<Subclass const*>(this));
       result *= a;
