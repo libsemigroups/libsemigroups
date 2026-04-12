@@ -383,18 +383,7 @@ namespace libsemigroups::detail {
 
     // noexcept because swap is noexcept, and so too are number_of_rows and
     // number_of_cols
-    void transpose_no_checks() noexcept {
-      LIBSEMIGROUPS_ASSERT(number_of_rows() == number_of_cols());
-      if (number_of_rows() == 0) {
-        return;
-      }
-      auto& x = *this;
-      for (size_t r = 0; r < number_of_rows() - 1; ++r) {
-        for (size_t c = r + 1; c < number_of_cols(); ++c) {
-          std::swap(x(r, c), x(c, r));
-        }
-      }
-    }
+    void transpose_no_checks() noexcept;
 
     void transpose() {
       matrix::throw_if_not_square(static_cast<Subclass&>(*this));
@@ -406,35 +395,13 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     // not noexcept because there's an allocation
-    RowView row_no_checks(size_t i) const {
-      auto& container = const_cast<Container&>(_container);
-      return RowView(static_cast<Subclass const*>(this),
-                     container.begin() + i * number_of_cols(),
-                     number_of_cols());
-    }
+    RowView row_no_checks(size_t i) const;
 
-    RowView row(size_t i) const {
-      if (i >= number_of_rows()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "index out of range, expected value in [{}, {}), found {}",
-            0,
-            number_of_rows(),
-            i);
-      }
-      return row_no_checks(i);
-    }
+    RowView row(size_t i) const;
 
     // not noexcept because there's an allocation
     template <typename T>
-    void rows(T& x) const {
-      auto& container = const_cast<Container&>(_container);
-      for (auto itc = container.begin(); itc != container.end();
-           itc += number_of_cols()) {
-        x.emplace_back(
-            static_cast<Subclass const*>(this), itc, number_of_cols());
-      }
-      LIBSEMIGROUPS_ASSERT(x.size() == number_of_rows());
-    }
+    void rows(T& x) const;
 
     ////////////////////////////////////////////////////////////////////////
     // Friend functions
@@ -497,10 +464,9 @@ namespace libsemigroups::detail {
     MatrixStaticArithmetic& operator=(MatrixStaticArithmetic const&) = default;
     MatrixStaticArithmetic& operator=(MatrixStaticArithmetic&&)      = default;
 
-    // TODO(2) from here to the end of MatrixStaticArithmetic should be
-    // private or protected
     using scalar_type = Scalar;
 
+   protected:
     static constexpr scalar_type plus_no_checks_impl(scalar_type x,
                                                      scalar_type y) noexcept {
       return PlusOp()(x, y);

@@ -32,12 +32,16 @@ namespace libsemigroups::detail {
     return fmt::format("{}", a);
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // MatrixCommon
+  ////////////////////////////////////////////////////////////////////////
+
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
   template <typename T>
-  void MatrixCommon<Container, Subclass, TRowView, Semiring>::init(T const& m) {
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::init(T const& m) {
     size_t const R = m.size();
     if (R == 0) {
       return;
@@ -54,10 +58,10 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
   // not noexcept because mem allocate is required
-  Subclass MatrixCommon<Container, Subclass, TRowView, Semiring>::one() const {
+  Subclass MatrixCommon<Container, Subclass, RowView, Semiring>::one() const {
     size_t const n = number_of_rows();
     Subclass     x(semiring(), n, n);
     std::fill(x.begin(), x.end(), scalar_zero());
@@ -69,10 +73,10 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
   // not noexcept because memory is allocated
-  void MatrixCommon<Container, Subclass, TRowView, Semiring>::
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::
       product_inplace_no_checks(Subclass const& A, Subclass const& B) {
     LIBSEMIGROUPS_ASSERT(number_of_rows() == number_of_cols());
     LIBSEMIGROUPS_ASSERT(A.number_of_rows() == number_of_rows());
@@ -113,9 +117,9 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
-  void MatrixCommon<Container, Subclass, TRowView, Semiring>::product_inplace(
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::product_inplace(
       Subclass const& A,
       Subclass const& B) {
     matrix::throw_if_not_square(*this, "\"*this\"");
@@ -139,10 +143,10 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
   void
-  MatrixCommon<Container, Subclass, TRowView, Semiring>::plus_inplace_no_checks(
+  MatrixCommon<Container, Subclass, RowView, Semiring>::plus_inplace_no_checks(
       Subclass const& that) {
     LIBSEMIGROUPS_ASSERT(that.number_of_rows() == number_of_rows());
     LIBSEMIGROUPS_ASSERT(that.number_of_cols() == number_of_cols());
@@ -153,9 +157,9 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
-  void MatrixCommon<Container, Subclass, TRowView, Semiring>::operator+=(
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::operator+=(
       Subclass const& that) {
     matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
                              that,
@@ -166,9 +170,9 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
-  void MatrixCommon<Container, Subclass, TRowView, Semiring>::operator+=(
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::operator+=(
       RowView const& that) {
     if (number_of_rows() != 1 || number_of_cols() != that.size()) {
       LIBSEMIGROUPS_EXCEPTION("expected matrices with the same dimensions, "
@@ -183,9 +187,9 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
-  Subclass MatrixCommon<Container, Subclass, TRowView, Semiring>::operator+(
+  Subclass MatrixCommon<Container, Subclass, RowView, Semiring>::operator+(
       Subclass const& y) const {
     matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
                              y,
@@ -196,9 +200,9 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
-  Subclass MatrixCommon<Container, Subclass, TRowView, Semiring>::operator*(
+  Subclass MatrixCommon<Container, Subclass, RowView, Semiring>::operator*(
       Subclass const& y) const {
     matrix::throw_if_not_square(*this, "the 1st factor");
     matrix::throw_if_bad_dim(static_cast<Subclass const&>(*this),
@@ -210,11 +214,11 @@ namespace libsemigroups::detail {
 
   template <typename Container,
             typename Subclass,
-            typename TRowView,
+            typename RowView,
             typename Semiring>
   template <typename Iterator>
   std::pair<typename Container::value_type, typename Container::value_type>
-  MatrixCommon<Container, Subclass, TRowView, Semiring>::coords(
+  MatrixCommon<Container, Subclass, RowView, Semiring>::coords(
       Iterator const& it) const {
     static_assert(
         std::is_same_v<Iterator, iterator>
@@ -224,4 +228,63 @@ namespace libsemigroups::detail {
     return std::make_pair(v / number_of_cols(), v % number_of_cols());
   }
 
+  template <typename Container,
+            typename Subclass,
+            typename RowView,
+            typename Semiring>
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::
+      transpose_no_checks() noexcept {
+    LIBSEMIGROUPS_ASSERT(number_of_rows() == number_of_cols());
+    if (number_of_rows() == 0) {
+      return;
+    }
+    auto& x = *this;
+    for (size_t r = 0; r < number_of_rows() - 1; ++r) {
+      for (size_t c = r + 1; c < number_of_cols(); ++c) {
+        std::swap(x(r, c), x(c, r));
+      }
+    }
+  }
+
+  template <typename Container,
+            typename Subclass,
+            typename RowView,
+            typename Semiring>
+  RowView MatrixCommon<Container, Subclass, RowView, Semiring>::row_no_checks(
+      size_t i) const {
+    auto& container = const_cast<Container&>(_container);
+    return RowView(static_cast<Subclass const*>(this),
+                   container.begin() + i * number_of_cols(),
+                   number_of_cols());
+  }
+
+  template <typename Container,
+            typename Subclass,
+            typename RowView,
+            typename Semiring>
+  RowView
+  MatrixCommon<Container, Subclass, RowView, Semiring>::row(size_t i) const {
+    if (i >= number_of_rows()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "index out of range, expected value in [{}, {}), found {}",
+          0,
+          number_of_rows(),
+          i);
+    }
+    return row_no_checks(i);
+  }
+
+  template <typename Container,
+            typename Subclass,
+            typename RowView,
+            typename Semiring>
+  template <typename T>
+  void MatrixCommon<Container, Subclass, RowView, Semiring>::rows(T& x) const {
+    auto& container = const_cast<Container&>(_container);
+    for (auto itc = container.begin(); itc != container.end();
+         itc += number_of_cols()) {
+      x.emplace_back(static_cast<Subclass const*>(this), itc, number_of_cols());
+    }
+    LIBSEMIGROUPS_ASSERT(x.size() == number_of_rows());
+  }
 }  // namespace libsemigroups::detail
