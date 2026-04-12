@@ -53,6 +53,18 @@ namespace libsemigroups {
     template <typename T>
     struct IsMinPlusMatHelper : std::false_type {};
 
+    template <typename T>
+    struct IsMaxPlusTruncMatHelper : std::false_type {};
+
+    template <typename T>
+    struct IsMinPlusTruncMatHelper : std::false_type {};
+
+    template <typename T>
+    struct IsNTPMatHelper : std::false_type {};
+
+    template <typename T>
+    struct IsProjMaxPlusMatHelper : std::false_type {};
+
   }  // namespace detail
 
   //! \ingroup matrix_group
@@ -163,5 +175,64 @@ namespace libsemigroups {
   //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
+
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Helper to check if a type is \ref MaxPlusTruncMat.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as \ref MaxPlusTruncMat for some template parameters; and \c false
+  //! if it is not.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsMaxPlusTruncMat
+      = detail::IsMaxPlusTruncMatHelper<T>::value;
+
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Helper to check if a type is \ref MinPlusTruncMat.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as \ref MinPlusTruncMat for some template parameters; and \c false
+  //! if it is not.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsMinPlusTruncMat
+      = detail::IsMinPlusTruncMatHelper<T>::value;
+
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Helper to check if a type is \ref NTPMat.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c U is the
+  //! same as \ref NTPMat<T, P, R, C, Scalar> for some values of \c T, \c P,
+  //! \c R, \c C, and `Scalar`; and \c false if it is not.
+  //!
+  //! \tparam U the type to check.
+  template <typename U>
+  static constexpr bool IsNTPMat = detail::IsNTPMatHelper<U>::value;
+
+  //! \ingroup projmaxplus_group
+  //!
+  //! \brief Helper to check if a type is \ref ProjMaxPlusMat.
+  //!
+  //! Defined in `matrix.hpp`.
+  //!
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as \ref ProjMaxPlusMat<R, C, Scalar> for some values of \c R, \c C,
+  //! and \c Scalar; and \c false if it is not.
+  //!
+  //! \tparam T the type to check.
+  template <typename T>
+  static constexpr bool IsProjMaxPlusMat
+      = detail::IsProjMaxPlusMatHelper<T>::value;
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_IS_MATRIX_HPP_

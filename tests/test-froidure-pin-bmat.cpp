@@ -24,8 +24,9 @@
 #include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
-#include "libsemigroups/matrix.hpp"        // for BMat
-#include "libsemigroups/word-range.hpp"  // for namespace literals
+#include "libsemigroups/matrix-make.hpp"  // for make
+#include "libsemigroups/matrix.hpp"       // for BMat
+#include "libsemigroups/word-range.hpp"   // for namespace literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

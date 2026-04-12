@@ -41,18 +41,19 @@
 #include <utility>           // for forward, make_pair, pair
 #include <vector>            // for vector
 
-#include "adapters.hpp"           // for Degree
-#include "bitset.hpp"             // for BitSet
-#include "config.hpp"             // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-#include "constants.hpp"          // for POSITIVE_INFINITY
-#include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "is-matrix.hpp"          // for IsMatrix
-#include "matrix-exceptions.hpp"  // for throw_if...
+#include "adapters.hpp"   // for Degree
+#include "bitset.hpp"     // for BitSet
+#include "config.hpp"     // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+#include "constants.hpp"  // for POSITIVE_INFINITY
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "is-matrix.hpp"  // for IsMatrix
 
-#include "detail/containers.hpp"  // for StaticVector1
-#include "detail/formatters.hpp"  // for formatter of POSITIVE_INFINITY ...
-#include "detail/string.hpp"      // for detail::to_string
+#include "detail/containers.hpp"     // for StaticVector1
+#include "detail/formatters.hpp"     // for formatter of POSITIVE_INFINITY ...
+#include "detail/matrix-common.hpp"  // for entry_repr
+#include "detail/matrix-exceptions.hpp"  // for throw_if...
+#include "detail/string.hpp"             // for detail::to_string
 
 namespace libsemigroups {
 
@@ -1543,8 +1544,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-         DynamicMatrix_,
-         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        DynamicMatrix_,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2888,9 +2889,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-            std::vector<Scalar>,
-            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        std::vector<Scalar>,
+        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -5060,8 +5061,6 @@ namespace libsemigroups {
       StaticMaxPlusTruncMat<T, R, C, Scalar>>;
 
   namespace detail {
-    template <typename T>
-    struct IsMaxPlusTruncMatHelper : std::false_type {};
 
     template <size_t T, size_t R, size_t C, typename Scalar>
     struct IsMaxPlusTruncMatHelper<StaticMaxPlusTruncMat<T, R, C, Scalar>>
@@ -5082,21 +5081,6 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  //! \ingroup maxplustruncmat_group
-  //!
-  //! \brief Helper to check if a type is \ref MaxPlusTruncMat.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is the
-  //! same as \ref MaxPlusTruncMat for some template parameters; and \c false
-  //! if it is not.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsMaxPlusTruncMat
-      = detail::IsMaxPlusTruncMatHelper<T>::value;
-
   namespace detail {
     template <typename T>
     struct IsTruncMatHelper<T, std::enable_if_t<IsMaxPlusTruncMat<T>>>
@@ -5105,86 +5089,6 @@ namespace libsemigroups {
           = IsMaxPlusTruncMatHelper<T>::threshold;
     };
   }  // namespace detail
-
-  namespace matrix {
-    //! \ingroup maxplustruncmat_group
-    //!
-    //! \brief Check that a truncated max-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of \p m, must satisfy
-    //! \ref IsMaxPlusTruncMat<Mat>.
-    //!
-    //! \param m the matrix to check.
-    //!
-    //! \throws LibsemigroupsException if any entry in the matrix is not in
-    //! the set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the
-    //! threshold of the matrix or if the underlying semiring is not defined
-    //! (only applies to matrices with run time arithmetic).
-    template <typename Mat>
-    std::enable_if_t<IsMaxPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
-      // TODO(1) to tpp
-      detail::throw_if_semiring_nullptr(m);
-
-      using scalar_type   = typename Mat::scalar_type;
-      scalar_type const t = matrix::threshold(m);
-      auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
-        return x == NEGATIVE_INFINITY || (0 <= x && x <= t);
-      });
-      if (it != m.cend()) {
-        auto [r, c] = m.coords(it);
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
-            "but found {} in entry ({}, {})",
-            t,
-            entry_repr(NEGATIVE_INFINITY),
-            static_cast<scalar_type>(NEGATIVE_INFINITY),
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup maxplustruncmat_group
-    //!
-    //! \brief Check that an entry in a truncated max-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type the 1st argument, must satisfy
-    //! \ref IsMaxPlusTruncMat<Mat>.
-    //!
-    //! \param m the matrix.
-    //! \param val the entry to check.
-    //!
-    //! \throws LibsemigroupsException if the entry \p val is not in
-    //! the set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the
-    //! threshold of the matrix or if the underlying semiring is not defined
-    //! (only applies to matrices with run time arithmetic).
-    template <typename Mat>
-    std::enable_if_t<IsMaxPlusTruncMat<Mat>>
-    throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
-      detail::throw_if_semiring_nullptr(m);
-      using scalar_type   = typename Mat::scalar_type;
-      scalar_type const t = matrix::threshold(m);
-      if (val == POSITIVE_INFINITY || 0 > val || val > t) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, -{} (= {})}} "
-            "but found {}",
-            t,
-            entry_repr(NEGATIVE_INFINITY),
-            static_cast<scalar_type>(NEGATIVE_INFINITY),
-            detail::entry_repr(val));
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Min-plus matrices with threshold
@@ -5537,8 +5441,6 @@ namespace libsemigroups {
       StaticMinPlusTruncMat<T, R, C, Scalar>>;
 
   namespace detail {
-    template <typename T>
-    struct IsMinPlusTruncMatHelper : std::false_type {};
 
     template <size_t T, size_t R, size_t C, typename Scalar>
     struct IsMinPlusTruncMatHelper<StaticMinPlusTruncMat<T, R, C, Scalar>>
@@ -5559,21 +5461,6 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  //! \ingroup minplustruncmat_group
-  //!
-  //! \brief Helper to check if a type is \ref MinPlusTruncMat.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is the
-  //! same as \ref MinPlusTruncMat for some template parameters; and \c false
-  //! if it is not.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsMinPlusTruncMat
-      = detail::IsMinPlusTruncMatHelper<T>::value;
-
   namespace detail {
     template <typename T>
     struct IsTruncMatHelper<T, std::enable_if_t<IsMinPlusTruncMat<T>>>
@@ -5582,90 +5469,6 @@ namespace libsemigroups {
           = IsMinPlusTruncMatHelper<T>::threshold;
     };
   }  // namespace detail
-
-  namespace matrix {
-    //! \ingroup minplustruncmat_group
-    //!
-    //! \brief Check that a truncated min-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of the matrix \p m (must satisfy
-    //! \ref IsMinPlusTruncMat<Mat>).
-    //!
-    //! \param m the matrix to check.
-    //!
-    //! \throws LibsemigroupsException if any entry in the matrix is not in
-    //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
-    //! threshold of the matrix or if the underlying semiring is not defined
-    //! (only applies to matrices with run time arithmetic).
-    // TODO(1) to tpp
-    template <typename Mat>
-    std::enable_if_t<IsMinPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
-      // Check that the semiring pointer isn't the nullptr if it shouldn't be
-      detail::throw_if_semiring_nullptr(m);
-
-      using scalar_type   = typename Mat::scalar_type;
-      scalar_type const t = matrix::threshold(m);
-      auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
-        return x == POSITIVE_INFINITY || (0 <= x && x <= t);
-      });
-      if (it != m.cend()) {
-        uint64_t r, c;
-        std::tie(r, c) = m.coords(it);
-
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
-            "but found {} in entry ({}, {})",
-            t,
-            detail::entry_repr(POSITIVE_INFINITY),
-            static_cast<scalar_type>(POSITIVE_INFINITY),
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup minplustruncmat_group
-    //!
-    //! \brief Check that an entry in a truncated min-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type the 1st argument, must satisfy
-    //! \ref IsMinPlusTruncMat<Mat>.
-    //!
-    //! \param m the matrix.
-    //! \param val the entry to check.
-    //!
-    //! \throws LibsemigroupsException if the entry \p val is not in
-    //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
-    //! threshold of the matrix or if the underlying semiring is not defined
-    //! (only applies to matrices with run time arithmetic).
-    template <typename Mat>
-    std::enable_if_t<IsMinPlusTruncMat<Mat>>
-    throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
-      detail::throw_if_semiring_nullptr(m);
-
-      using scalar_type   = typename Mat::scalar_type;
-      scalar_type const t = matrix::threshold(m);
-      if (!(val == POSITIVE_INFINITY || (0 <= val && val <= t))) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
-            "but found {}",
-            t,
-            detail::entry_repr(POSITIVE_INFINITY),
-            static_cast<scalar_type>(POSITIVE_INFINITY),
-            detail::entry_repr(val));
-      }
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // NTP matrices
@@ -6121,8 +5924,6 @@ namespace libsemigroups {
       StaticNTPMat<T, P, R, C, Scalar>>;
 
   namespace detail {
-    template <typename T>
-    struct IsNTPMatHelper : std::false_type {};
 
     template <typename Scalar>
     struct IsNTPMatHelper<DynamicNTPMatWithSemiring<Scalar>> : std::true_type {
@@ -6143,20 +5944,6 @@ namespace libsemigroups {
       static constexpr Scalar period    = P;
     };
   }  // namespace detail
-
-  //! \ingroup ntpmat_group
-  //!
-  //! \brief Helper to check if a type is \ref NTPMat.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c U is the
-  //! same as \ref NTPMat<T, P, R, C, Scalar> for some values of \c T, \c P,
-  //! \c R, \c C, and `Scalar`; and \c false if it is not.
-  //!
-  //! \tparam U the type to check.
-  template <typename U>
-  static constexpr bool IsNTPMat = detail::IsNTPMatHelper<U>::value;
 
   namespace detail {
     template <typename T>
@@ -6240,89 +6027,6 @@ namespace libsemigroups {
     }
   }  // namespace matrix
 
-  namespace matrix {
-    //! \ingroup ntpmat_group
-    //!
-    //! \brief Check that the entries in an ntp matrix are valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of the matrix \p m (must satisfy
-    //! \ref IsNTPMat<Mat>).
-    //!
-    //! \param m the matrix to check.
-    //!
-    //! \throws LibsemigroupsException if any entry in the matrix is not in
-    //! the set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the
-    //! threshold, and \f$p\f$ the period, of the matrix.
-    //!
-    //! \throws LibsemigroupsException if the underlying semiring is not
-    //! defined (only applies to matrices with run time arithmetic).
-    template <typename Mat>
-    std::enable_if_t<IsNTPMat<Mat>> throw_if_bad_entry(Mat const& m) {
-      detail::throw_if_semiring_nullptr(m);
-
-      using scalar_type   = typename Mat::scalar_type;
-      scalar_type const t = matrix::threshold(m);
-      scalar_type const p = matrix::period(m);
-      auto it = std::find_if_not(m.cbegin(), m.cend(), [t, p](scalar_type x) {
-        return (0 <= x && x < p + t);
-      });
-      if (it != m.cend()) {
-        uint64_t r, c;
-        std::tie(r, c) = m.coords(it);
-
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}}}, but "
-            "found {} in entry ({}, {})",
-            p + t,
-            detail::entry_repr(*it),
-            r,
-            c);
-      }
-    }
-
-    //! \ingroup ntpmat_group
-    //!
-    //! \brief Check that an entry in an ntp matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that a matrix contains values in
-    //! the underlying semiring.
-    //!
-    //! \tparam Mat the type of the 1st argument (must satisfy
-    //! \ref IsNTPMat<Mat>).
-    //!
-    //! \param m the matrix.
-    //! \param val the entry to check.
-    //!
-    //! \throws LibsemigroupsException if the entry \p val is not in
-    //! the set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the
-    //! threshold, and \f$p\f$ the period, of the matrix.
-    //!
-    //! \throws LibsemigroupsException if the underlying semiring is not
-    //! defined (only applies to matrices with run time arithmetic).
-    template <typename Mat>
-    std::enable_if_t<IsNTPMat<Mat>>
-    throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
-      detail::throw_if_semiring_nullptr(m);
-      using scalar_type   = typename Mat::scalar_type;
-      scalar_type const t = matrix::threshold(m);
-      scalar_type const p = matrix::period(m);
-      if (val < 0 || val >= p + t) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}}}, but "
-            "found {}",
-            p + t,
-            detail::entry_repr(val));
-      }
-    }
-  }  // namespace matrix
-
   ////////////////////////////////////////////////////////////////////////
   // Projective max-plus matrices
   ////////////////////////////////////////////////////////////////////////
@@ -6386,7 +6090,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -6777,8 +6481,6 @@ namespace libsemigroups {
                                             StaticProjMaxPlusMat<R, C, Scalar>>;
 
   namespace detail {
-    template <typename T>
-    struct IsProjMaxPlusMatHelper : std::false_type {};
 
     template <size_t R, size_t C, typename Scalar>
     struct IsProjMaxPlusMatHelper<StaticProjMaxPlusMat<R, C, Scalar>>
@@ -6789,67 +6491,7 @@ namespace libsemigroups {
         : std::true_type {};
   }  // namespace detail
 
-  //! \ingroup projmaxplus_group
-  //!
-  //! \brief Helper to check if a type is \ref ProjMaxPlusMat.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This variable has value \c true if the template parameter \c T is the
-  //! same as \ref ProjMaxPlusMat<R, C, Scalar> for some values of \c R, \c C,
-  //! and \c Scalar; and \c false if it is not.
-  //!
-  //! \tparam T the type to check.
-  template <typename T>
-  static constexpr bool IsProjMaxPlusMat
-      = detail::IsProjMaxPlusMatHelper<T>::value;
-
   namespace matrix {
-    //! \ingroup projmaxplus_group
-    //!
-    //! \brief Check that the entries in a projective max-plus matrix are
-    //! valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that the matrix \p x contains
-    //! values in the underlying semiring, by checking the underlying matrix.
-    //!
-    //! \tparam Mat the type of the parameter (must satisfy
-    //! \ref IsProjMaxPlusMat<Mat>).
-    //!
-    //! \param x the matrix to check.
-    //!
-    //! \throws LibsemigroupsException if
-    //! `throw_if_bad_entry(x.underlying_matrix())` throws.
-    template <typename Mat>
-    constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-    throw_if_bad_entry(Mat const& x) {
-      throw_if_bad_entry(x.underlying_matrix());
-    }
-
-    //! \ingroup projmaxplus_group
-    //!
-    //! \brief Check that an entry in a projective max-plus matrix is valid.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function can be used to check that the matrix \p x contains
-    //! values in the underlying semiring, using the underlying matrix.
-    //!
-    //! \tparam Mat the type of the parameter (must satisfy
-    //! \ref IsProjMaxPlusMat<Mat>).
-    //!
-    //! \param x the matrix.
-    //! \param val the entry.
-    //!
-    //! \throws LibsemigroupsException if
-    //! `throw_if_bad_entry(x.underlying_matrix(), val)` throws.
-    template <typename Mat>
-    constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-    throw_if_bad_entry(Mat const& x, typename Mat::scalar_type val) {
-      throw_if_bad_entry(x.underlying_matrix(), val);
-    }
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - pow
@@ -7773,279 +7415,6 @@ namespace libsemigroups {
   auto operator*(typename Mat::scalar_type a, Mat const& x)
       -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x * a;
-  }
-
-  //! \defgroup make_matrix_group make<Matrix>
-  //! \ingroup matrix_group
-  //!
-  //! \brief Safely construct a \ref matrix_group "Matrix" instance.
-  //!
-  //! This page contains documentation related to safely constructing a
-  //! \ref matrix_group "Matrix" instance.
-  //!
-  //! \sa \ref make_group for an overview of possible uses of the this
-  //! function.
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Checks the arguments, constructs a matrix, and checks it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! Checks the arguments, constructs a matrix, and checks it.
-  //!
-  //! \tparam Mat the type of matrix being constructed, must satisfy
-  //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
-  //!
-  //! \param rows the values to be copied into the matrix.
-  //! \returns The constructed matrix if valid.
-  //!
-  //! \throws
-  //! LibsemigroupsException if `rows` does not represent a
-  //! matrix of the correct dimensions.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed matrix
-  //! contains values that do not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
-  //! \f$n\f$ is the number of columns of the matrix.
-  template <typename Mat,
-            typename
-            = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat make(std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
-    detail::throw_if_any_row_wrong_size(rows);
-    detail::throw_if_bad_dim<Mat>(rows);
-    Mat m(rows);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Checks the arguments, constructs a matrix, and checks it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! Checks the arguments, constructs a matrix, and checks it.
-  //!
-  //! \tparam Mat the type of matrix being constructed, must satisfy
-  //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
-  //!
-  //! \param rows the values to be copied into the matrix.
-  //! \returns The constructed matrix if valid.
-  //!
-  //! \throws
-  //! LibsemigroupsException if `rows` does not represent a
-  //! matrix of the correct dimensions.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed matrix
-  //! contains values that do not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
-  //! \f$n\f$ is the number of columns of the matrix.
-  template <typename Mat,
-            typename
-            = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat make(std::initializer_list<std::vector<typename Mat::scalar_type>> const&
-               rows) {
-    return make<Mat>(std::vector<std::vector<typename Mat::scalar_type>>(rows));
-  }
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Constructs a row and checks it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This function constructs a row from a std::initializer_list and then
-  //! calls \ref matrix::throw_if_bad_entry.
-  //!
-  //! \tparam Mat the type of matrix being constructed, must satisfy
-  //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
-  //!
-  //! \param row the values to be copied into the row.
-  //!
-  //! \returns the constructed row if valid.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed row contains
-  //! values that do not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(n)\f$ where \f$n\f$ is the number of columns of the matrix.
-  //!
-  //! \warning
-  //! This function only works for rows, i.e. when the template
-  //! parameter \c R is \c 1.
-  template <typename Mat,
-            typename
-            = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat make(std::initializer_list<typename Mat::scalar_type> const& row) {
-    detail::throw_if_bad_row_dim<Mat>(row);
-    Mat m(row);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
-  // TODO(1) vector version of above
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Constructs a matrix (from std::initializer_list) and checks
-  //! it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! Checks the arguments, constructs a matrix and checks it.
-  //!
-  //! \tparam Mat the type of the matrix being constructed (must satisfy
-  //! \ref IsMatrix<Mat>).
-  //!
-  //! \tparam Semiring the type of the semiring where arithmetic is performed.
-  //!
-  //! \param semiring  a pointer to const semiring object.
-  //!
-  //! \param rows  the values to be copied into the matrix.
-  //!
-  //! \returns The constructed matrix.
-  //!
-  //! \throws
-  //! LibsemigroupsException if `rows` does not represent a matrix of the
-  //! correct dimensions.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed matrix contains values that do
-  //! not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
-  //! \f$n\f$ is the number of columns of the matrix.
-  template <typename Mat,
-            typename Semiring,
-            typename = std::enable_if_t<IsMatrix<Mat>>>
-  // TODO(1) pass Semiring by reference, this is hard mostly due to the way
-  // the tests are written, which is not optimal.
-  Mat make(Semiring const* semiring,
-           std::initializer_list<
-               std::initializer_list<typename Mat::scalar_type>> const& rows) {
-    detail::throw_if_any_row_wrong_size(rows);
-    detail::throw_if_bad_dim<Mat>(rows);
-    Mat m(semiring, rows);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Constructs a matrix (from std::vector of std::vector) and
-  //! checks it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! Checks the arguments, constructs a matrix, and checks it.
-  //!
-  //! \tparam Mat the type of the matrix being constructed (must satisfy
-  //! \ref IsMatrix).
-  //!
-  //! \tparam Semiring the type of the semiring where arithmetic is performed.
-  //!
-  //! \param semiring  a pointer to const semiring object.
-  //!
-  //! \param rows  the rows to be copied into the matrix.
-  //!
-  //! \returns The constructed matrix.
-  //!
-  //! \throws
-  //! LibsemigroupsException if \p rows does not represent a
-  //! matrix of the correct dimensions.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed matrix
-  //! contains values that do not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
-  //! \f$n\f$ is the number of columns of the matrix.
-  template <typename Mat,
-            typename Semiring,
-            typename = std::enable_if_t<IsMatrix<Mat>>>
-  Mat make(Semiring const*                                            semiring,
-           std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
-    detail::throw_if_any_row_wrong_size(rows);
-    detail::throw_if_bad_dim<Mat>(rows);
-    Mat m(semiring, rows);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Constructs a row and checks it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! This function constructs a row and checks it.
-  //!
-  //! \tparam Semiring the type of the semiring where arithmetic is performed.
-  //!
-  //! \param semiring  a pointer to const semiring object.
-  //!
-  //! \param row  the values to be copied into the row.
-  //!
-  //! \returns  the constructed row if valid.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed row contains
-  //! values that do not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(n)\f$ where \f$n\f$ is the number of columns of the matrix.
-  template <typename Mat,
-            typename Semiring,
-            typename = std::enable_if_t<IsMatrix<Mat>>>
-  Mat make(Semiring const*                                         semiring,
-           std::initializer_list<typename Mat::scalar_type> const& row) {
-    detail::throw_if_bad_row_dim<Mat>(row);
-    Mat m(semiring, row);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
-
-  //! \ingroup make_matrix_group
-  //!
-  //! \brief Constructs a projective max-plus matrix (from
-  //! std::initializer_list) and checks it.
-  //!
-  //! Defined in `matrix.hpp`.
-  //!
-  //! Checks the arguments, constructs a matrix, and checks it.
-  //!
-  //! \tparam Mat the type of the matrix being constructed (must satisfy
-  //! \ref IsProjMaxPlusMat<Mat>).
-  //!
-  //! \param rows  the values to be copied into the matrix.
-  //!
-  //! \returns The constructed matrix.
-  //!
-  //! \throws
-  //! LibsemigroupsException if `rows` does not represent a matrix of the
-  //! correct dimensions.
-  //!
-  //! \throws
-  //! LibsemigroupsException if the constructed matrix contains values that do
-  //! not belong to the underlying semiring.
-  //!
-  //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and \f$n\f$ is the
-  //! number of columns of the matrix.
-  template <size_t R, size_t C, typename Scalar>
-  ProjMaxPlusMat<R, C, Scalar>
-  make(std::initializer_list<std::initializer_list<Scalar>> const& rows) {
-    return ProjMaxPlusMat<R, C, Scalar>(
-        make<ProjMaxPlusMat<R, C, Scalar>::underlying_matrix_type>(rows));
   }
 
   ////////////////////////////////////////////////////////////////////////
