@@ -23,6 +23,8 @@
 #ifndef LIBSEMIGROUPS_MATRIX_EXCEPTIONS_HPP_
 #define LIBSEMIGROUPS_MATRIX_EXCEPTIONS_HPP_
 
+#include <type_traits>  // for enable_if_t
+
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "is-matrix.hpp"  // for IsMatrix
 #include "matrix.hpp"     // for IntMat
@@ -46,9 +48,8 @@ namespace libsemigroups::matrix {
   //! \ref IsIntMat<Mat>.
   //!
   //! \param x the matrix to check.
-  // TODO why isn't this just overloaded throw_if_bad_entry(IntMat const& x)??
-  template <size_t R, size_t C, typename Scalar>
-  void throw_if_bad_entry(IntMat<R, C, Scalar> const& x);
+  template <typename Mat>
+  auto throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsIntMat<Mat>>;
 
   //! \ingroup intmat_group
   //!
@@ -70,8 +71,9 @@ namespace libsemigroups::matrix {
   //! \deprecated_warning{function}
   // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  [[deprecated]] std::enable_if_t<IsIntMat<Mat>>
-  throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
+  [[deprecated]] auto throw_if_bad_entry(Mat const&,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsIntMat<Mat>>;
 
   //! \ingroup bmat_group
   //!
@@ -90,7 +92,7 @@ namespace libsemigroups::matrix {
   //! not \c 0 or \c 1. The values in a boolean matrix are of type \c int,
   //! but a matrix shouldn't contain values except \c 0 and \c 1.
   template <typename Mat>
-  std::enable_if_t<IsBMat<Mat>> throw_if_bad_entry(Mat const& m);
+  auto throw_if_bad_entry(Mat const& m) -> std::enable_if_t<IsBMat<Mat>>;
 
   //! \ingroup bmat_group
   //!
@@ -113,8 +115,9 @@ namespace libsemigroups::matrix {
   //! \deprecated_warning{function}
   // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  [[deprecated]] std::enable_if_t<IsBMat<Mat>>
-  throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
+  [[deprecated]] auto throw_if_bad_entry(Mat const&,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsBMat<Mat>>;
 
   //! \ingroup maxplusmat_group
   //!
@@ -153,8 +156,9 @@ namespace libsemigroups::matrix {
   //! \deprecated_warning{function}
   // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  [[deprecated]] std::enable_if_t<IsMaxPlusMat<Mat>>
-  throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
+  [[deprecated]] auto throw_if_bad_entry(Mat const&,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsMaxPlusMat<Mat>>;
 
   //! \ingroup minplusmat_group
   //!
@@ -172,7 +176,7 @@ namespace libsemigroups::matrix {
   //! \throws LibsemigroupsException if \p x contains
   //! \ref NEGATIVE_INFINITY.
   template <typename Mat>
-  std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x);
+  auto throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMinPlusMat<Mat>>;
 
   //! \ingroup minplusmat_group
   //!
@@ -193,8 +197,9 @@ namespace libsemigroups::matrix {
   //! \deprecated_warning{function}
   // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  [[deprecated]] std::enable_if_t<IsMinPlusMat<Mat>>
-  throw_if_bad_entry(Mat const&, typename Mat::scalar_type val);
+  [[deprecated]]
+  auto throw_if_bad_entry(Mat const&, typename Mat::scalar_type val)
+      -> std::enable_if_t<IsMinPlusMat<Mat>>;
 
   //! \ingroup maxplustruncmat_group
   //!
@@ -215,28 +220,8 @@ namespace libsemigroups::matrix {
   //! threshold of the matrix or if the underlying semiring is not defined
   //! (only applies to matrices with run time arithmetic).
   template <typename Mat>
-  std::enable_if_t<IsMaxPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
-    // TODO(1) to tpp
-    detail::throw_if_semiring_nullptr(m);
-
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
-      return x == NEGATIVE_INFINITY || (0 <= x && x <= t);
-    });
-    if (it != m.cend()) {
-      auto [r, c] = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
-          "but found {} in entry ({}, {})",
-          t,
-          entry_repr(NEGATIVE_INFINITY),
-          static_cast<scalar_type>(NEGATIVE_INFINITY),
-          detail::entry_repr(*it),
-          r,
-          c);
-    }
-  }
+  auto throw_if_bad_entry(Mat const& m)
+      -> std::enable_if_t<IsMaxPlusTruncMat<Mat>>;
 
   //! \ingroup maxplustruncmat_group
   //!
@@ -257,23 +242,13 @@ namespace libsemigroups::matrix {
   //! the set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the
   //! threshold of the matrix or if the underlying semiring is not defined
   //! (only applies to matrices with run time arithmetic).
-  // TODO deprecate
+  //!
+  //! \deprecated_warning{function}
+  // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  std::enable_if_t<IsMaxPlusTruncMat<Mat>>
-  throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
-    detail::throw_if_semiring_nullptr(m);
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    if (val == POSITIVE_INFINITY || 0 > val || val > t) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected values in {{0, 1, ..., {}, -{} (= {})}} "
-          "but found {}",
-          t,
-          entry_repr(NEGATIVE_INFINITY),
-          static_cast<scalar_type>(NEGATIVE_INFINITY),
-          detail::entry_repr(val));
-    }
-  }
+  [[deprecated]] auto throw_if_bad_entry(Mat const&                m,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsMaxPlusTruncMat<Mat>>;
 
   //! \ingroup minplustruncmat_group
   //!
@@ -293,32 +268,9 @@ namespace libsemigroups::matrix {
   //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
   //! threshold of the matrix or if the underlying semiring is not defined
   //! (only applies to matrices with run time arithmetic).
-  // TODO(1) to tpp
   template <typename Mat>
-  std::enable_if_t<IsMinPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
-    // Check that the semiring pointer isn't the nullptr if it shouldn't be
-    detail::throw_if_semiring_nullptr(m);
-
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
-      return x == POSITIVE_INFINITY || (0 <= x && x <= t);
-    });
-    if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
-
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
-          "but found {} in entry ({}, {})",
-          t,
-          detail::entry_repr(POSITIVE_INFINITY),
-          static_cast<scalar_type>(POSITIVE_INFINITY),
-          detail::entry_repr(*it),
-          r,
-          c);
-    }
-  }
+  auto throw_if_bad_entry(Mat const& m)
+      -> std::enable_if_t<IsMinPlusTruncMat<Mat>>;
 
   //! \ingroup minplustruncmat_group
   //!
@@ -339,24 +291,14 @@ namespace libsemigroups::matrix {
   //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
   //! threshold of the matrix or if the underlying semiring is not defined
   //! (only applies to matrices with run time arithmetic).
-  // TODO deprecate
+  //!
+  //! \deprecated_warning{function}
+  // NOTE this function isn't used and so should be deleted
   template <typename Mat>
-  std::enable_if_t<IsMinPlusTruncMat<Mat>>
-  throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
-    detail::throw_if_semiring_nullptr(m);
+  [[deprecated]] auto throw_if_bad_entry(Mat const&                m,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsMinPlusTruncMat<Mat>>;
 
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    if (!(val == POSITIVE_INFINITY || (0 <= val && val <= t))) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
-          "but found {}",
-          t,
-          detail::entry_repr(POSITIVE_INFINITY),
-          static_cast<scalar_type>(POSITIVE_INFINITY),
-          detail::entry_repr(val));
-    }
-  }
   //! \ingroup ntpmat_group
   //!
   //! \brief Check that the entries in an ntp matrix are valid.
@@ -378,28 +320,7 @@ namespace libsemigroups::matrix {
   //! \throws LibsemigroupsException if the underlying semiring is not
   //! defined (only applies to matrices with run time arithmetic).
   template <typename Mat>
-  std::enable_if_t<IsNTPMat<Mat>> throw_if_bad_entry(Mat const& m) {
-    detail::throw_if_semiring_nullptr(m);
-
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    scalar_type const p = matrix::period(m);
-    auto it = std::find_if_not(m.cbegin(), m.cend(), [t, p](scalar_type x) {
-      return (0 <= x && x < p + t);
-    });
-    if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
-
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected values in {{0, 1, ..., {}}}, but "
-          "found {} in entry ({}, {})",
-          p + t,
-          detail::entry_repr(*it),
-          r,
-          c);
-    }
-  }
+  auto throw_if_bad_entry(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>>;
 
   //! \ingroup ntpmat_group
   //!
@@ -422,22 +343,10 @@ namespace libsemigroups::matrix {
   //!
   //! \throws LibsemigroupsException if the underlying semiring is not
   //! defined (only applies to matrices with run time arithmetic).
-  // TODO deprecate
   template <typename Mat>
-  std::enable_if_t<IsNTPMat<Mat>>
-  throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
-    detail::throw_if_semiring_nullptr(m);
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    scalar_type const p = matrix::period(m);
-    if (val < 0 || val >= p + t) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected values in {{0, 1, ..., {}}}, but "
-          "found {}",
-          p + t,
-          detail::entry_repr(val));
-    }
-  }
+  [[deprecated]] auto throw_if_bad_entry(Mat const&                m,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsNTPMat<Mat>>;
 
   //! \ingroup projmaxplus_group
   //!
@@ -457,8 +366,8 @@ namespace libsemigroups::matrix {
   //! \throws LibsemigroupsException if
   //! `throw_if_bad_entry(x.underlying_matrix())` throws.
   template <typename Mat>
-  constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-  throw_if_bad_entry(Mat const& x) {
+  auto throw_if_bad_entry(Mat const& x)
+      -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
     throw_if_bad_entry(x.underlying_matrix());
   }
 
@@ -480,11 +389,11 @@ namespace libsemigroups::matrix {
   //! \throws LibsemigroupsException if
   //! `throw_if_bad_entry(x.underlying_matrix(), val)` throws.
   template <typename Mat>
-  constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-  throw_if_bad_entry(Mat const& x, typename Mat::scalar_type val) {
+  [[deprecated]] auto throw_if_bad_entry(Mat const&                x,
+                                         typename Mat::scalar_type val)
+      -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
     throw_if_bad_entry(x.underlying_matrix(), val);
   }
-
 }  // namespace libsemigroups::matrix
 
 #include "matrix-exceptions.tpp"
