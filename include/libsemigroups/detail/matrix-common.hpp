@@ -19,7 +19,28 @@
 #ifndef LIBSEMIGROUPS_DETAIL_MATRIX_COMMON_HPP_
 #define LIBSEMIGROUPS_DETAIL_MATRIX_COMMON_HPP_
 
-#include "matrix-exceptions.hpp"
+#include <algorithm>         // for copy, equal, fill
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint64_t
+#include <initializer_list>  // for initializer_list
+#include <iosfwd>            // for ostream
+#include <iterator>          // for distance
+#include <numeric>           // for inner_product
+#include <string>            // for basic_string
+#include <string_view>       // for basic_string_view
+#include <type_traits>       // for is_same_v, ena...
+#include <utility>           // for swap, make_pair
+#include <vector>            // for vector
+
+#include "libsemigroups/adapters.hpp"   // for Hash
+#include "libsemigroups/constants.hpp"  // for NEGATIVE_INFINITY
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_...
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_...
+#include "libsemigroups/is-matrix.hpp"  // for IsMatrix, Matr...
+
+#include "fmt.hpp"                // for format
+#include "matrix-exceptions.hpp"  // for throw_if_bad_dim
+#include "string.hpp"             // for to_string
 
 namespace libsemigroups::detail {
   // This function is required for exceptions and to_human_readable_repr, so
@@ -30,6 +51,8 @@ namespace libsemigroups::detail {
   //
   // Also in fmt v11.1.4 the custom formatter for POSITIVE_INFINITY and
   // NEGATIVE_INFINITY stopped working (and I wasn't able to figure out why)
+  // NOTE trying to out-of-line this function fails with "call to
+  // 'entry_repr' is ambiguous", for reasons I couldn't figure out.
   template <typename Scalar>
   [[nodiscard]] std::string entry_repr(Scalar a) {
     if constexpr (std::is_same_v<Scalar, NegativeInfinity>

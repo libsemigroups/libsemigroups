@@ -83,7 +83,7 @@ namespace libsemigroups {
     void throw_if_semiring_nullptr(Mat const& m) {
       if (IsMatWithSemiring<Mat> && m.semiring() == nullptr) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the matrix's pointer to a semiring is nullptr!")
+            "the matrix's pointer to a semiring is nullptr!");
       }
     }
 
