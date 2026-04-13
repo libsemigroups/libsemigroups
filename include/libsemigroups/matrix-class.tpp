@@ -134,4 +134,87 @@ namespace libsemigroups {
     std::swap(_semiring, that._semiring);
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // MinPlusTruncSemiring
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Scalar>
+  MinPlusTruncSemiring<Scalar>::MinPlusTruncSemiring(Scalar threshold)
+      : _threshold(threshold) {
+    if constexpr (std::is_signed<Scalar>::value) {
+      if (threshold < 0) {
+        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
+                                threshold);
+      }
+    }
+  }
+
+  template <typename Scalar>
+  Scalar MinPlusTruncSemiring<Scalar>::product_no_checks(Scalar x, Scalar y)
+      const noexcept {
+    LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold) || x == POSITIVE_INFINITY);
+    LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold) || y == POSITIVE_INFINITY);
+    if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
+      return POSITIVE_INFINITY;
+    }
+    return std::min(x + y, _threshold);
+  }
+
+  template <typename Scalar>
+  Scalar MinPlusTruncSemiring<Scalar>::plus_no_checks(Scalar x,
+                                                      Scalar y) const noexcept {
+    LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold) || x == POSITIVE_INFINITY);
+    LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold) || y == POSITIVE_INFINITY);
+    if (x == POSITIVE_INFINITY) {
+      return y;
+    } else if (y == POSITIVE_INFINITY) {
+      return x;
+    }
+    return std::min(x, y);
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // detail helpers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <size_t T, size_t P, typename Scalar>
+  constexpr Scalar detail::thresholdperiod(Scalar x) noexcept {
+    if (x > T) {
+      return T + (x - T) % P;
+    }
+    return x;
+  }
+
+  template <typename Scalar>
+  inline Scalar detail::thresholdperiod(Scalar x,
+                                        Scalar threshold,
+                                        Scalar period) noexcept {
+    if (x > threshold) {
+      return threshold + (x - threshold) % period;
+    }
+    return x;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // detail::ProjMaxPlusMat
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename T>
+  void detail::ProjMaxPlusMat<T>::normalize(bool force) const {
+    if ((_is_normalized && !force) || (_underlying_mat.number_of_rows() == 0)
+        || (_underlying_mat.number_of_cols() == 0)) {
+      _is_normalized = true;
+      return;
+    }
+    scalar_type const n
+        = *std::max_element(_underlying_mat.cbegin(), _underlying_mat.cend());
+    std::for_each(
+        _underlying_mat.begin(), _underlying_mat.end(), [&n](scalar_type& s) {
+          if (s != NEGATIVE_INFINITY) {
+            s -= n;
+          }
+        });
+    _is_normalized = true;
+  }
+
 }  // namespace libsemigroups

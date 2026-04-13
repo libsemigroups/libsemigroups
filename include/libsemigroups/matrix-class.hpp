@@ -3380,12 +3380,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    explicit MinPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
-      if (std::is_signed<Scalar>::value && threshold < 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
-                                threshold);
-      }
-    }
+    explicit MinPlusTruncSemiring(Scalar threshold);
 
     //! \brief Get the multiplicative identity.
     //!
@@ -3440,16 +3435,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar product_no_checks(Scalar x, Scalar y) const noexcept {
-      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
-                           || x == POSITIVE_INFINITY);
-      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
-                           || y == POSITIVE_INFINITY);
-      if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
-        return POSITIVE_INFINITY;
-      }
-      return std::min(x + y, _threshold);
-    }
+    Scalar product_no_checks(Scalar x, Scalar y) const noexcept;
 
     //! \brief Addition in a truncated min-plus semiring.
     //!
@@ -3475,18 +3461,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept {
-      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
-                           || x == POSITIVE_INFINITY);
-      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
-                           || y == POSITIVE_INFINITY);
-      if (x == POSITIVE_INFINITY) {
-        return y;
-      } else if (y == POSITIVE_INFINITY) {
-        return x;
-      }
-      return std::min(x, y);
-    }
+    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept;
 
     //! \brief Get the threshold.
     //!
@@ -3661,22 +3636,12 @@ namespace libsemigroups {
 
   namespace detail {
     template <size_t T, size_t P, typename Scalar>
-    constexpr Scalar thresholdperiod(Scalar x) noexcept {
-      if (x > T) {
-        return T + (x - T) % P;
-      }
-      return x;
-    }
+    constexpr Scalar thresholdperiod(Scalar x) noexcept;
 
     template <typename Scalar>
     inline Scalar thresholdperiod(Scalar x,
                                   Scalar threshold,
-                                  Scalar period) noexcept {
-      if (x > threshold) {
-        return threshold + (x - threshold) % period;
-      }
-      return x;
-    }
+                                  Scalar period) noexcept;
   }  // namespace detail
 
   //! \ingroup ntpmat_group
@@ -4152,8 +4117,7 @@ namespace libsemigroups {
       ~ProjMaxPlusMat() = default;
 
       ProjMaxPlusMat one() const {
-        auto result = ProjMaxPlusMat(_underlying_mat.one());
-        return result;
+        return ProjMaxPlusMat(_underlying_mat.one());
       }
 
       static ProjMaxPlusMat one(size_t n) {
@@ -4417,24 +4381,7 @@ namespace libsemigroups {
         normalize();
       }
 
-      void normalize(bool force = false) const {
-        if ((_is_normalized && !force)
-            || (_underlying_mat.number_of_rows() == 0)
-            || (_underlying_mat.number_of_cols() == 0)) {
-          _is_normalized = true;
-          return;
-        }
-        scalar_type const n = *std::max_element(_underlying_mat.cbegin(),
-                                                _underlying_mat.cend());
-        std::for_each(_underlying_mat.begin(),
-                      _underlying_mat.end(),
-                      [&n](scalar_type& s) {
-                        if (s != NEGATIVE_INFINITY) {
-                          s -= n;
-                        }
-                      });
-        _is_normalized = true;
-      }
+      void normalize(bool force = false) const;
 
       mutable bool _is_normalized;
       mutable T    _underlying_mat;
