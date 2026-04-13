@@ -23,14 +23,10 @@
 
 #include <algorithm>         // for min
 #include <array>             // for array
-#include <bitset>            // for bitset
 #include <cstddef>           // for size_t
-#include <cstdint>           // for uint64_t
 #include <initializer_list>  // for initializer_list
 #include <iosfwd>            // for ostringstream
 #include <iterator>          // for distance
-#include <numeric>           // for inner_product
-#include <ostream>           // for operator<<, basic_ostream
 #include <string>            // for string
 #include <tuple>             // for tie
 #include <type_traits>       // for false_type, is_signed, true_type
@@ -40,7 +36,6 @@
 #include <vector>            // for vector
 
 #include "adapters.hpp"     // for Degree
-#include "bitset.hpp"       // for BitSet
 #include "config.hpp"       // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 #include "constants.hpp"    // for POSITIVE_INFINITY
 #include "debug.hpp"        // for LIBSEMIGROUPS_ASSERT
@@ -48,9 +43,8 @@
 #include "is-matrix.hpp"    // for IsMatrix
 #include "matrix-view.hpp"  // for RowView
 
-#include "detail/containers.hpp"     // for StaticVector1
-#include "detail/formatters.hpp"     // for formatter of POSITIVE_INFINITY ...
-#include "detail/matrix-common.hpp"  // for entry_repr
+#include "detail/containers.hpp"         // for StaticVector1
+#include "detail/matrix-common.hpp"      // for entry_repr
 #include "detail/matrix-exceptions.hpp"  // for throw_if...
 #include "detail/string.hpp"             // for detail::to_string
 
