@@ -19,15 +19,24 @@
 #ifndef LIBSEMIGROUPS_MATRIX_HELPERS_HPP_
 #define LIBSEMIGROUPS_MATRIX_HELPERS_HPP_
 
-#include <bitset>
-#include <cstddef>
-#include <type_traits>
+#include <algorithm>      // for sort, fill, min
+#include <bitset>         // for bitset
+#include <cstddef>        // for size_t
+#include <type_traits>    // for enable_if_t
+#include <unordered_map>  // for unordered_map
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for move, forward
+#include <vector>         // for vector
 
-#include "bitset.hpp"
-#include "is-matrix.hpp"
-#include "matrix-class.hpp"
+#include "bitset.hpp"        // for BitSet, IsBitSet
+#include "constants.hpp"     // for UNDEFINED
+#include "debug.hpp"         // for LIBSEMIGROUPS_...
+#include "exception.hpp"     // for LIBSEMIGROUPS_...
+#include "is-matrix.hpp"     // for IsBMat, IsStat...
+#include "matrix-class.hpp"  // for DynamicNTPMatW...
 
-#include "detail/containers.hpp"
+#include "detail/containers.hpp"         // for StaticVector1
+#include "detail/matrix-exceptions.hpp"  // for throw_if_not_s...
 
 namespace libsemigroups {
   namespace detail {
@@ -77,7 +86,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <typename Mat>
-    constexpr auto threshold(Mat const&) noexcept
+    [[nodiscard]] constexpr auto threshold(Mat const&) noexcept
         -> std::enable_if_t<!detail::IsTruncMat<Mat>,
                             typename Mat::scalar_type> {
       return UNDEFINED;
@@ -97,7 +106,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <typename Mat>
-    constexpr auto threshold(Mat const&) noexcept
+    [[nodiscard]] constexpr auto threshold(Mat const&) noexcept
         -> std::enable_if_t<detail::IsTruncMat<Mat> && !IsMatWithSemiring<Mat>,
                             typename Mat::scalar_type> {
       return detail::IsTruncMatHelper<Mat>::threshold;
@@ -119,7 +128,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <typename Mat>
-    auto threshold(Mat const& x) noexcept
+    [[nodiscard]] auto threshold(Mat const& x) noexcept
         -> std::enable_if_t<detail::IsTruncMat<Mat> && IsMatWithSemiring<Mat>,
                             typename Mat::scalar_type> {
       return x.semiring()->threshold();
@@ -147,7 +156,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <size_t T, size_t P, size_t R, size_t C, typename Scalar>
-    constexpr Scalar period(StaticNTPMat<T, P, R, C, Scalar> const&) noexcept {
+    [[nodiscard]] constexpr Scalar
+    period(StaticNTPMat<T, P, R, C, Scalar> const&) noexcept {
       return P;
     }
 
@@ -169,7 +179,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <size_t T, size_t P, typename Scalar>
-    constexpr Scalar
+    [[nodiscard]] constexpr Scalar
     period(DynamicNTPMatWithoutSemiring<T, P, Scalar> const&) noexcept {
       return P;
     }
@@ -190,7 +200,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <typename Scalar>
-    Scalar period(DynamicNTPMatWithSemiring<Scalar> const& x) noexcept {
+    [[nodiscard]] Scalar
+    period(DynamicNTPMatWithSemiring<Scalar> const& x) noexcept {
       return x.semiring()->period();
     }
 
@@ -234,48 +245,8 @@ namespace libsemigroups {
     //! \endcode
     // TODO(1) pow_no_checks
     // TODO(2) version that changes x in-place
-    // TODO out of line
     template <typename Mat>
-    Mat pow(Mat const& x, typename Mat::scalar_type e) {
-      using scalar_type = typename Mat::scalar_type;
-
-      if constexpr (std::is_signed<scalar_type>::value) {
-        if (e < 0) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "negative exponent, expected value >= 0, found {}", e);
-        }
-      }
-
-      throw_if_not_square(x);
-
-      typename Mat::semiring_type const* sr = nullptr;
-
-      if constexpr (IsMatWithSemiring<Mat>) {
-        sr = x.semiring();
-      }
-
-      if (e == 0) {
-        return x.one();
-      }
-
-      auto y = Mat(x);
-      if (e == 1) {
-        return y;
-      }
-      auto z = (e % 2 == 0 ? x.one() : y);
-
-      Mat tmp(sr, x.number_of_rows(), x.number_of_cols());
-      while (e > 1) {
-        tmp.product_inplace_no_checks(y, y);
-        std::swap(y, tmp);
-        e /= 2;
-        if (e % 2 == 1) {
-          tmp.product_inplace_no_checks(z, y);
-          std::swap(z, tmp);
-        }
-      }
-      return z;
-    }
+    [[nodiscard]] Mat pow(Mat const& x, typename Mat::scalar_type e);
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - rows
@@ -301,7 +272,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is the number of rows in the matrix \p x.
     template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
-    std::vector<typename Mat::RowView> rows(Mat const& x) {
+    [[nodiscard]] std::vector<typename Mat::RowView> rows(Mat const& x) {
       std::vector<typename Mat::RowView> container;
       x.rows(container);
       return container;
@@ -328,7 +299,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is the number of rows in the matrix \p x.
     template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
-    detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
+    [[nodiscard]] detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
     rows(Mat const& x) {
       detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> container;
       x.rows(container);
@@ -339,7 +310,6 @@ namespace libsemigroups {
     // Matrix helpers - bitset_rows
     ////////////////////////////////////////////////////////////////////////
 
-    // The main function
     //! \brief Converts a container of row views of a boolean matrix to bit
     //! sets, and append them to another container.
     //!
@@ -371,28 +341,9 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in `views` and
     //! and \f$n\f$ is the number of columns in any vector in `views`.
-    // TODO out-of-line
     template <typename Mat, size_t R, size_t C, typename Container>
     void bitset_rows(Container&&                          views,
-                     detail::StaticVector1<BitSet<C>, R>& result) {
-      using RowView    = typename Mat::RowView;
-      using value_type = typename std::decay_t<Container>::value_type;
-      // std::vector<bool> is used as value_type in the benchmarks
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(std::is_same_v<value_type, RowView>
-                        || std::is_same_v<value_type, std::vector<bool>>,
-                    "Container::value_type must equal Mat::RowView or "
-                    "std::vector<bool>!!");
-      static_assert(R <= BitSet<1>::max_size(),
-                    "R must be at most BitSet<1>::max_size()!");
-      static_assert(C <= BitSet<1>::max_size(),
-                    "C must be at most BitSet<1>::max_size()!");
-      LIBSEMIGROUPS_ASSERT(views.size() <= R);
-      LIBSEMIGROUPS_ASSERT(views.empty() || views[0].size() <= C);
-      for (auto const& v : views) {
-        result.emplace_back(v.cbegin(), v.cend());
-      }
-    }
+                     detail::StaticVector1<BitSet<C>, R>& result);
 
     //! \brief Converts a container of row views of a boolean matrix to bit
     //! sets, and return them.
@@ -427,24 +378,7 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in \p views and
     //! and \f$n\f$ is the number of columns in any vector in \p views.
     template <typename Mat, size_t R, size_t C, typename Container>
-    auto bitset_rows(Container&& views) {
-      using RowView    = typename Mat::RowView;
-      using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(std::is_same_v<value_type, RowView>
-                        || std::is_same_v<value_type, std::vector<bool>>,
-                    "Container::value_type must equal Mat::RowView or "
-                    "std::vector<bool>!!");
-      static_assert(R <= BitSet<1>::max_size(),
-                    "R must be at most BitSet<1>::max_size()!");
-      static_assert(C <= BitSet<1>::max_size(),
-                    "C must be at most BitSet<1>::max_size()!");
-      LIBSEMIGROUPS_ASSERT(views.size() <= R);
-      LIBSEMIGROUPS_ASSERT(views.empty() || views[0].size() <= C);
-      detail::StaticVector1<BitSet<C>, R> result;
-      bitset_rows<Mat>(std::forward<Container>(views), result);
-      return result;
-    }
+    [[nodiscard]] auto bitset_rows(Container&& views);
 
     //! \brief Computes the rows of a boolean matrix as bit sets and appends
     //! them to a container.
@@ -475,17 +409,7 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in \p x and and
     //! \f$n\f$ is the number of columns in \p x.
     template <typename Mat, size_t R, size_t C>
-    void bitset_rows(Mat const&                           x,
-                     detail::StaticVector1<BitSet<C>, R>& result) {
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(R <= BitSet<1>::max_size(),
-                    "R must be at most BitSet<1>::max_size()!");
-      static_assert(C <= BitSet<1>::max_size(),
-                    "C must be at most BitSet<1>::max_size()!");
-      LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= C);
-      LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= R);
-      bitset_rows<Mat>(std::move(rows(x)), result);
-    }
+    void bitset_rows(Mat const& x, detail::StaticVector1<BitSet<C>, R>& result);
 
     //! \brief Computes the rows of a boolean matrix as bit sets.
     //!
@@ -506,13 +430,7 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in \p x and
     //! and \f$n\f$ is the number of columns in \p x.
     template <typename Mat>
-    auto bitset_rows(Mat const& x) {
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= BitSet<1>::max_size());
-      LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= BitSet<1>::max_size());
-      size_t const M = detail::BitSetCapacity<Mat>::value;
-      return bitset_rows<Mat, M, M>(std::move(rows(x)));
-    }
+    [[nodiscard]] auto bitset_rows(Mat const& x);
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - bitset_row_basis
@@ -543,36 +461,7 @@ namespace libsemigroups {
     // This works with std::vector and StaticVector1, with value_type equal
     // to std::bitset and BitSet.
     template <typename Mat, typename Container>
-    void bitset_row_basis(Container&& rows, std::decay_t<Container>& result) {
-      using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(IsBitSet<value_type> || detail::IsStdBitSet<value_type>,
-                    "Container::value_type must be BitSet or std::bitset");
-      LIBSEMIGROUPS_ASSERT(rows.size() <= BitSet<1>::max_size());
-      LIBSEMIGROUPS_ASSERT(rows.empty()
-                           || rows[0].size() <= BitSet<1>::max_size());
-
-      std::sort(rows.begin(), rows.end(), detail::LessBitSet());
-      // Remove duplicates
-      rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
-      for (size_t i = 0; i < rows.size(); ++i) {
-        value_type cup;
-        cup.reset();
-        for (size_t j = 0; j < i; ++j) {
-          if ((rows[i] & rows[j]) == rows[j]) {
-            cup |= rows[j];
-          }
-        }
-        for (size_t j = i + 1; j < rows.size(); ++j) {
-          if ((rows[i] & rows[j]) == rows[j]) {
-            cup |= rows[j];
-          }
-        }
-        if (cup != rows[i]) {
-          result.push_back(std::move(rows[i]));
-        }
-      }
-    }
+    void bitset_row_basis(Container&& rows, std::decay_t<Container>& result);
 
     //! \brief Returns a basis for the space spanned by some bit sets.
     //!
@@ -598,18 +487,7 @@ namespace libsemigroups {
     //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the size of \p rows and
     //! \f$c\f$ is the size of each bitset in \p rows.
     template <typename Mat, typename Container>
-    std::decay_t<Container> bitset_row_basis(Container&& rows) {
-      using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(IsBitSet<value_type> || detail::IsStdBitSet<value_type>,
-                    "Container::value_type must be BitSet or std::bitset");
-      LIBSEMIGROUPS_ASSERT(rows.size() <= BitSet<1>::max_size());
-      LIBSEMIGROUPS_ASSERT(rows.empty()
-                           || rows[0].size() <= BitSet<1>::max_size());
-      std::decay_t<Container> result;
-      bitset_row_basis<Mat>(std::forward<Container>(rows), result);
-      return result;
-    }
+    [[nodiscard]] std::decay_t<Container> bitset_row_basis(Container&& rows);
 
     //! \brief Returns a basis for the space spanned by the rows of the
     //! boolean matrix.
@@ -639,14 +517,8 @@ namespace libsemigroups {
     //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the number of rows in \p x and
     //! \f$c\f$ is the number of columns in \p x.
     template <typename Mat, size_t M = detail::BitSetCapacity<Mat>::value>
-    detail::StaticVector1<BitSet<M>, M> bitset_row_basis(Mat const& x) {
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= BitSet<1>::max_size());
-      LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= BitSet<1>::max_size());
-      detail::StaticVector1<BitSet<M>, M> result;
-      bitset_row_basis<Mat>(std::move(bitset_rows(x)), result);
-      return result;
-    }
+    [[nodiscard]] detail::StaticVector1<BitSet<M>, M>
+    bitset_row_basis(Mat const& x);
 
     //! \brief Appends a basis for the rowspace of a boolean matrix to a
     //! container.
@@ -672,15 +544,7 @@ namespace libsemigroups {
     //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the number of rows in \p x
     //! and \f$c\f$ is the number of columns in \p x.
     template <typename Mat, typename Container>
-    void bitset_row_basis(Mat const& x, Container& result) {
-      using value_type = typename Container::value_type;
-      static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
-      static_assert(IsBitSet<value_type> || detail::IsStdBitSet<value_type>,
-                    "Container::value_type must be BitSet or std::bitset");
-      LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= BitSet<1>::max_size());
-      LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= BitSet<1>::max_size());
-      bitset_row_basis<Mat>(std::move(bitset_rows(x)), result);
-    }
+    void bitset_row_basis(Mat const& x, Container& result);
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - row_basis - MaxPlusTruncMat
@@ -715,57 +579,13 @@ namespace libsemigroups {
     //! \f$c\f$ is the size of each row view or bit set in \p views.
     template <typename Mat, typename Container>
     std::enable_if_t<IsMaxPlusTruncMat<Mat>>
-    row_basis(Container&& views, std::decay_t<Container>& result) {
-      using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(std::is_same_v<value_type, typename Mat::RowView>,
-                    "Container::value_type must be Mat::RowView");
-      using scalar_type = typename Mat::scalar_type;
-      using Row         = typename Mat::Row;
-
-      if (views.empty()) {
-        return;
-      }
-
-      LIBSEMIGROUPS_ASSERT(result.empty());
-
-      std::sort(views.begin(), views.end());
-      Row tmp1(views[0]);
-
-      for (size_t r1 = 0; r1 < views.size(); ++r1) {
-        if (r1 == 0 || views[r1] != views[r1 - 1]) {
-          std::fill(tmp1.begin(), tmp1.end(), tmp1.scalar_zero());
-          for (size_t r2 = 0; r2 < r1; ++r2) {
-            scalar_type max_scalar = matrix::threshold(tmp1);
-            for (size_t c = 0; c < tmp1.number_of_cols(); ++c) {
-              if (views[r2][c] == tmp1.scalar_zero()) {
-                continue;
-              }
-              if (views[r1][c] >= views[r2][c]) {
-                if (views[r1][c] != matrix::threshold(tmp1)) {
-                  max_scalar
-                      = std::min(max_scalar, views[r1][c] - views[r2][c]);
-                }
-              } else {
-                max_scalar = tmp1.scalar_zero();
-                break;
-              }
-            }
-            if (max_scalar != tmp1.scalar_zero()) {
-              tmp1 += views[r2] * max_scalar;
-            }
-          }
-          if (tmp1 != views[r1]) {
-            result.push_back(views[r1]);
-          }
-        }
-      }
-    }
+    row_basis(Container&& views, std::decay_t<Container>& result);
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - row_basis - BMat
     ////////////////////////////////////////////////////////////////////////
 
-    // This version of row_basis for BMat's is for used for compatibility
+    // This version of row_basis for BMat's is used for compatibility
     // with the MatrixCommon framework, i.e. so that BMat's exhibit the same
     // interface/behaviour as other matrices.
     //
@@ -793,38 +613,7 @@ namespace libsemigroups {
     // TODO(2) complexity
     template <typename Mat, typename Container>
     std::enable_if_t<IsBMat<Mat>> row_basis(Container&&              views,
-                                            std::decay_t<Container>& result) {
-      using RowView    = typename Mat::RowView;
-      using value_type = typename std::decay_t<Container>::value_type;
-      // std::vector<bool> is used as value_type in the benchmarks
-      static_assert(std::is_same_v<value_type, RowView>
-                        || std::is_same_v<value_type, std::vector<bool>>,
-                    "Container::value_type must equal Mat::RowView or "
-                    "std::vector<bool>!!");
-
-      if (views.empty()) {
-        return;
-      }
-
-      // Convert RowViews to BitSets
-      size_t const M  = detail::BitSetCapacity<Mat>::value;
-      auto         br = bitset_rows<Mat, M, M>(std::forward<Container>(views));
-      using bitset_type = typename decltype(br)::value_type;
-
-      // Map for converting bitsets back to row views
-      std::unordered_map<bitset_type, size_t> lookup;
-      LIBSEMIGROUPS_ASSERT(br.size() == views.size());
-      for (size_t i = 0; i < br.size(); ++i) {
-        lookup.insert({br[i], i});
-      }
-
-      // Compute rowbasis using bitsets + convert back to rowviews
-      for (auto const& bs : bitset_row_basis<Mat>(br)) {
-        auto it = lookup.find(bs);
-        LIBSEMIGROUPS_ASSERT(it != lookup.end());
-        result.push_back(views[it->second]);
-      }
-    }
+                                            std::decay_t<Container>& result);
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - row_basis - generic helpers
@@ -880,7 +669,7 @@ namespace libsemigroups {
     //! and \f$c\f$ is the number of columns in \p x.
     // Row basis of rowspace of matrix <x>
     template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
-    std::vector<typename Mat::RowView> row_basis(Mat const& x) {
+    [[nodiscard]] std::vector<typename Mat::RowView> row_basis(Mat const& x) {
       std::vector<typename Mat::RowView> container;
       row_basis(x, container);
       return container;
@@ -906,7 +695,7 @@ namespace libsemigroups {
     //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the number of rows in \p x
     //! and \f$c\f$ is the number of columns in \p x.
     template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
-    detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
+    [[nodiscard]] detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
     row_basis(Mat const& x) {
       detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> container;
       row_basis(x, container);
@@ -935,17 +724,9 @@ namespace libsemigroups {
     template <typename Mat,
               typename Container,
               typename = std::enable_if_t<!IsMatrix<std::decay_t<Container>>>>
-    std::decay_t<Container> row_basis(Container&& rows) {
-      using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
-      static_assert(std::is_same_v<value_type, typename Mat::RowView>,
-                    "Container::value_type must be Mat::RowView");
+    [[nodiscard]] std::decay_t<Container> row_basis(Container&& rows);
 
-      std::decay_t<Container> result;
-      row_basis<Mat>(std::forward<Container>(rows), result);
-      return result;
-    }
-
+    // TODO move
     template <typename T>
     struct RowSum {
       void operator()(T& res, T const& pt, T const& x) const {
@@ -954,30 +735,24 @@ namespace libsemigroups {
       }
     };
 
+    // TODO(doc)
     template <typename Mat,
               typename Container,
               typename = std::enable_if_t<IsMatrix<Mat>>>
-    void row_basis_rows(Mat const& x, Container& result) {
-      LIBSEMIGROUPS_ASSERT(result.empty());
-      for (auto y : row_basis<Mat>(x)) {
-        result.push_back(typename Mat::Row(y));
-      }
-    }
+    void row_basis_rows(Mat const& x, Container& result);
 
+    // TODO(doc)
     template <typename Mat,
               typename Container,
               typename = std::enable_if_t<IsStaticMatrix<Mat>>>
-    detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
-    row_basis_rows(Mat const& x) {
-      detail::StaticVector1<typename Mat::Row, Mat::nr_rows> container;
-      row_basis_rows(x, container);
-      return container;
-    }
+    [[nodiscard]] detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
+    row_basis_rows(Mat const& x);
 
+    // TODO(doc)
     template <typename Mat,
               typename Container,
               typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
-    std::vector<typename Mat::Row> row_basis_rows(Mat const& x) {
+    [[nodiscard]] std::vector<typename Mat::Row> row_basis_rows(Mat const& x) {
       std::vector<typename Mat::Row> container;
       row_basis_rows(x, container);
       return container;
@@ -987,28 +762,8 @@ namespace libsemigroups {
     template <typename Mat,
               typename Container,
               typename = std::enable_if_t<IsStaticMatrix<Mat>>>
-    detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
-    row_basis_rows(Container&& rows) {
-      using value_type = typename std::decay_t<Container>::value_type;
-      static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
-      static_assert(std::is_same_v<value_type, typename Mat::Row>,
-                    "Container::value_type must be Mat::Row");
-
-      detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> rvs;
-      std::unordered_map<typename Mat::scalar_type*, size_t>     lookup;
-
-      for (size_t i = 0; i < rows.size(); ++i) {
-        auto rv = typename Mat::RowView(rows[i]);
-        rvs.push_back(rv);
-        lookup.insert({&(*rv.begin()), i});
-      }
-      std::decay_t<Container> result;
-      for (auto rv : row_basis<Mat>(rvs)) {
-        auto&& row = rows[lookup.at(&(*rv.begin()))];
-        result.push_back(std::forward<decltype(row)>(row));
-      }
-      return result;
-    }
+    [[nodiscard]] detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
+    row_basis_rows(Container&& rows);
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - row_space_size
@@ -1045,28 +800,9 @@ namespace libsemigroups {
     //! matrix::row_space_size(x); // returns 7
     //! \endcode
     template <typename Mat, typename = std::enable_if_t<IsBMat<Mat>>>
-    size_t row_space_size(Mat const& x) {
-      size_t const M                 = detail::BitSetCapacity<Mat>::value;
-      auto         bitset_row_basis_ = bitset_row_basis<Mat>(
-          std::move(bitset_rows<Mat, M, M>(std::move(rows(x)))));
-
-      std::unordered_set<BitSet<M>> st;
-      st.insert(bitset_row_basis_.cbegin(), bitset_row_basis_.cend());
-      std::vector<BitSet<M>> orb(bitset_row_basis_.cbegin(),
-                                 bitset_row_basis_.cend());
-      for (size_t i = 0; i < orb.size(); ++i) {
-        for (auto& row : bitset_row_basis_) {
-          auto cup = orb[i];
-          for (size_t j = 0; j < x.number_of_rows(); ++j) {
-            cup.set(j, cup[j] || row[j]);
-          }
-          if (st.insert(cup).second) {
-            orb.push_back(std::move(cup));
-          }
-        }
-      }
-      return orb.size();
-    }
+    [[nodiscard]] size_t row_space_size(Mat const& x);
   }  // namespace matrix
 }  // namespace libsemigroups
+
+#include "matrix-helpers.tpp"
 #endif  // LIBSEMIGROUPS_MATRIX_HELPERS_HPP_
