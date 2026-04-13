@@ -630,7 +630,7 @@ namespace libsemigroups {
     }
 
     auto m  = make<TestType>(sr,
-                            {{2, 2, 0, 1},
+                             {{2, 2, 0, 1},
                               {0, 0, 1, 3},
                               {1, NEGATIVE_INFINITY, 0, 0},
                               {0, 1, 0, 1}});
@@ -1092,7 +1092,9 @@ namespace libsemigroups {
       BMat<>                        x(v);
       REQUIRE(x == BMat<>({{true, false}, {true, false}}));
     }
-    { BMat<> x; }
+    {
+      BMat<> x;
+    }
     {
       using Mat               = NTPMat<>;
       NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
@@ -1311,7 +1313,7 @@ namespace libsemigroups {
     auto A = make<TestType>({{1, 1}, {1, 1}});
     auto B = make<TestType>({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
     REQUIRE_EXCEPTION_MSG(
-        A + B,
+        std::ignore = A + B,
         "expected matrices with the same dimensions, the 1st summand is a 2x2 "
         "matrix, and the 2nd summand is a 3x3 matrix");
   }
@@ -1330,7 +1332,7 @@ namespace libsemigroups {
     auto A = make<TestType>({{1, 1}, {1, 1}});
     auto B = make<TestType>({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
     REQUIRE_EXCEPTION_MSG(
-        A * B,
+        std::ignore = A * B,
         "expected matrices with the same dimensions, the 1st factor is a 2x2 "
         "matrix, and the 2nd factor is a 3x3 matrix");
   }
@@ -1342,7 +1344,7 @@ namespace libsemigroups {
                                    IntMat<>,
                                    (IntMat<2, 3>) ) {
     auto m = make<TestType>({{1, 2, 3}, {4, 5, 6}});
-    REQUIRE_EXCEPTION_MSG(m * m,
+    REQUIRE_EXCEPTION_MSG(std::ignore = m * m,
                           "expected the 1st factor to be a square matrix, but "
                           "found a 2x3 matrix");
   }

@@ -75,15 +75,15 @@ namespace libsemigroups::detail {
 
     using RowView = TRowView;
 
-    scalar_type scalar_one() const noexcept {
+    [[nodiscard]] scalar_type scalar_one() const noexcept {
       return static_cast<Subclass const*>(this)->one_impl();
     }
 
-    scalar_type scalar_zero() const noexcept {
+    [[nodiscard]] scalar_type scalar_zero() const noexcept {
       return static_cast<Subclass const*>(this)->zero_impl();
     }
 
-    Semiring const* semiring() const noexcept {
+    [[nodiscard]] Semiring const* semiring() const noexcept {
       return static_cast<Subclass const*>(this)->semiring_impl();
     }
 
@@ -92,11 +92,13 @@ namespace libsemigroups::detail {
     // MatrixCommon - Semiring arithmetic - private
     ////////////////////////////////////////////////////////////////////////
 
-    scalar_type plus_no_checks(scalar_type x, scalar_type y) const noexcept {
+    [[nodiscard]] scalar_type plus_no_checks(scalar_type x,
+                                             scalar_type y) const noexcept {
       return static_cast<Subclass const*>(this)->plus_no_checks_impl(y, x);
     }
 
-    scalar_type product_no_checks(scalar_type x, scalar_type y) const noexcept {
+    [[nodiscard]] scalar_type product_no_checks(scalar_type x,
+                                                scalar_type y) const noexcept {
       return static_cast<Subclass const*>(this)->product_no_checks_impl(y, x);
     }
 
@@ -105,16 +107,21 @@ namespace libsemigroups::detail {
     // MatrixCommon - Container functions - protected
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(1) use constexpr-if, not SFINAE
-    template <typename SFINAE = container_type>
-    auto resize(size_t r, size_t c)
-        -> std::enable_if_t<std::is_same_v<SFINAE, std::vector<scalar_type>>> {
-      _container.resize(r * c);
+    void resize(size_t r, size_t c) {
+      if constexpr (std::is_same_v<container_type, std::vector<scalar_type>>) {
+        _container.resize(r * c);
+      }
     }
 
-    template <typename SFINAE = container_type>
-    auto resize(size_t, size_t)
-        -> std::enable_if_t<!std::is_same_v<SFINAE, std::vector<scalar_type>>> {
+   private:
+    // not noexcept because resize isn't
+    template <typename T>
+    void init(T const& m);
+
+    // not noexcept because init isn't
+    void
+    init(std::initializer_list<std::initializer_list<scalar_type>> const& m) {
+      init<std::initializer_list<std::initializer_list<scalar_type>>>(m);
     }
 
    public:
@@ -128,6 +135,8 @@ namespace libsemigroups::detail {
     MatrixCommon(MatrixCommon&&)                 = default;
     MatrixCommon& operator=(MatrixCommon const&) = default;
     MatrixCommon& operator=(MatrixCommon&&)      = default;
+
+    ~MatrixCommon() = default;
 
     explicit MatrixCommon(std::initializer_list<scalar_type> const& c)
         : MatrixCommon() {
@@ -146,51 +155,38 @@ namespace libsemigroups::detail {
       init(m);
     }
 
-   private:
-    // not noexcept because resize isn't
-    template <typename T>
-    void init(T const& m);
-
-    // not noexcept because init isn't
-    void
-    init(std::initializer_list<std::initializer_list<scalar_type>> const& m) {
-      init<std::initializer_list<std::initializer_list<scalar_type>>>(m);
-    }
-
    public:
     explicit MatrixCommon(RowView const& rv) : MatrixCommon() {
       resize(1, rv.size());
       std::copy(rv.cbegin(), rv.cend(), _container.begin());
     }
 
-    ~MatrixCommon() = default;
-
     // not noexcept because mem allocate is required
-    Subclass one() const;
+    [[nodiscard]] Subclass one() const;
 
     ////////////////////////////////////////////////////////////////////////
     // Comparison operators
     ////////////////////////////////////////////////////////////////////////
 
     // not noexcept because apparently vector::operator== isn't
-    bool operator==(MatrixCommon const& that) const {
+    [[nodiscard]] bool operator==(MatrixCommon const& that) const {
       return _container == that._container;
     }
 
     // not noexcept because apparently vector::operator== isn't
-    bool operator==(RowView const& that) const {
+    [[nodiscard]] bool operator==(RowView const& that) const {
       return number_of_rows() == 1
              && static_cast<RowView>(*static_cast<Subclass const*>(this))
                     == that;
     }
 
     // not noexcept because apparently vector::operator< isn't
-    bool operator<(MatrixCommon const& that) const {
+    [[nodiscard]] bool operator<(MatrixCommon const& that) const {
       return _container < that._container;
     }
 
     // not noexcept because apparently vector::operator< isn't
-    bool operator<(RowView const& that) const {
+    [[nodiscard]] bool operator<(RowView const& that) const {
       return number_of_rows() == 1
              && static_cast<RowView>(*static_cast<Subclass const*>(this))
                     < that;
@@ -198,28 +194,28 @@ namespace libsemigroups::detail {
 
     // not noexcept because operator== isn't
     template <typename T>
-    bool operator!=(T const& that) const {
+    [[nodiscard]] bool operator!=(T const& that) const {
       static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
       return !(*this == that);
     }
 
     // not noexcept because operator< isn't
     template <typename T>
-    bool operator>(T const& that) const {
+    [[nodiscard]] bool operator>(T const& that) const {
       static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
       return that < *this;
     }
 
     // not noexcept because operator< isn't
     template <typename T>
-    bool operator>=(T const& that) const {
+    [[nodiscard]] bool operator>=(T const& that) const {
       static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
       return that < *this || that == *this;
     }
 
     // not noexcept because operator< isn't
     template <typename T>
-    bool operator<=(T const& that) const {
+    [[nodiscard]] bool operator<=(T const& that) const {
       static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
       return *this < that || that == *this;
     }
@@ -230,38 +226,38 @@ namespace libsemigroups::detail {
 
     // not noexcept because vector::operator[] isn't, and neither is
     // array::operator[]
-    scalar_reference operator()(size_t r, size_t c) {
+    [[nodiscard]] scalar_reference operator()(size_t r, size_t c) {
       return this->_container[r * number_of_cols() + c];
     }
 
-    scalar_reference at(size_t r, size_t c) {
+    [[nodiscard]] scalar_reference at(size_t r, size_t c) {
       matrix::throw_if_bad_coords(static_cast<Subclass const&>(*this), r, c);
       return this->operator()(r, c);
     }
 
     // not noexcept because vector::operator[] isn't, and neither is
     // array::operator[]
-    scalar_const_reference operator()(size_t r, size_t c) const {
+    [[nodiscard]] scalar_const_reference operator()(size_t r, size_t c) const {
       return this->_container[r * number_of_cols() + c];
     }
 
-    scalar_const_reference at(size_t r, size_t c) const {
+    [[nodiscard]] scalar_const_reference at(size_t r, size_t c) const {
       matrix::throw_if_bad_coords(static_cast<Subclass const&>(*this), r, c);
       return this->operator()(r, c);
     }
 
     // noexcept because number_of_rows_impl is noexcept
-    size_t number_of_rows() const noexcept {
+    [[nodiscard]] size_t number_of_rows() const noexcept {
       return static_cast<Subclass const*>(this)->number_of_rows_impl();
     }
 
     // noexcept because number_of_cols_impl is noexcept
-    size_t number_of_cols() const noexcept {
+    [[nodiscard]] size_t number_of_cols() const noexcept {
       return static_cast<Subclass const*>(this)->number_of_cols_impl();
     }
 
     // not noexcept because Hash<T>::operator() isn't
-    size_t hash_value() const {
+    [[nodiscard]] size_t hash_value() const {
       return Hash<Container>()(_container);
     }
 
@@ -271,7 +267,6 @@ namespace libsemigroups::detail {
 
     // not noexcept because memory is allocated
     void product_inplace_no_checks(Subclass const& A, Subclass const& B);
-
     void product_inplace(Subclass const& A, Subclass const& B);
 
     // not noexcept because iterator increment isn't
@@ -306,30 +301,30 @@ namespace libsemigroups::detail {
     // Arithmetic operators - not in-place
     ////////////////////////////////////////////////////////////////////////
 
-    Subclass plus_no_checks(Subclass const& y) const {
+    [[nodiscard]] Subclass plus_no_checks(Subclass const& y) const {
       Subclass result(*static_cast<Subclass const*>(this));
       result.plus_inplace_no_checks(y);
       return result;
     }
 
-    Subclass operator+(Subclass const& y) const;
+    [[nodiscard]] Subclass operator+(Subclass const& y) const;
 
-    Subclass product_no_checks(Subclass const& y) const {
+    [[nodiscard]] Subclass product_no_checks(Subclass const& y) const {
       Subclass result(*static_cast<Subclass const*>(this));
       result.product_inplace_no_checks(*static_cast<Subclass const*>(this), y);
       return result;
     }
 
     // not noexcept because product_inplace_no_checks isn't
-    Subclass operator*(Subclass const& y) const;
+    [[nodiscard]] Subclass operator*(Subclass const& y) const;
 
-    Subclass operator*(scalar_type a) const {
+    [[nodiscard]] Subclass operator*(scalar_type a) const {
       Subclass result(*static_cast<Subclass const*>(this));
       result *= a;
       return result;
     }
 
-    Subclass operator+(scalar_type a) const {
+    [[nodiscard]] Subclass operator+(scalar_type a) const {
       Subclass result(*static_cast<Subclass const*>(this));
       result += a;
       return result;
@@ -340,37 +335,38 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     // noexcept because vector::begin and array::begin are noexcept
-    iterator begin() noexcept {
+    [[nodiscard]] iterator begin() noexcept {
       return _container.begin();
     }
 
     // noexcept because vector::end and array::end are noexcept
-    iterator end() noexcept {
+    [[nodiscard]] iterator end() noexcept {
       return _container.end();
     }
 
     // noexcept because vector::begin and array::begin are noexcept
-    const_iterator begin() const noexcept {
+    [[nodiscard]] const_iterator begin() const noexcept {
       return _container.begin();
     }
 
     // noexcept because vector::end and array::end are noexcept
-    const_iterator end() const noexcept {
+    [[nodiscard]] const_iterator end() const noexcept {
       return _container.end();
     }
 
     // noexcept because vector::cbegin and array::cbegin are noexcept
-    const_iterator cbegin() const noexcept {
+    [[nodiscard]] const_iterator cbegin() const noexcept {
       return _container.cbegin();
     }
 
     // noexcept because vector::cend and array::cend are noexcept
-    const_iterator cend() const noexcept {
+    [[nodiscard]] const_iterator cend() const noexcept {
       return _container.cend();
     }
 
     template <typename Iterator>
-    std::pair<scalar_type, scalar_type> coords(Iterator const& it) const;
+    [[nodiscard]] std::pair<scalar_type, scalar_type>
+    coords(Iterator const& it) const;
 
     ////////////////////////////////////////////////////////////////////////
     // Modifiers
@@ -395,9 +391,9 @@ namespace libsemigroups::detail {
     ////////////////////////////////////////////////////////////////////////
 
     // not noexcept because there's an allocation
-    RowView row_no_checks(size_t i) const;
+    [[nodiscard]] RowView row_no_checks(size_t i) const;
 
-    RowView row(size_t i) const;
+    [[nodiscard]] RowView row(size_t i) const;
 
     // not noexcept because there's an allocation
     template <typename T>
@@ -439,11 +435,11 @@ namespace libsemigroups::detail {
     }
 
    protected:
-    size_t number_of_rows_impl() const noexcept {
+    [[nodiscard]] size_t number_of_rows_impl() const noexcept {
       return _number_of_rows;
     }
 
-    size_t number_of_cols_impl() const noexcept {
+    [[nodiscard]] size_t number_of_cols_impl() const noexcept {
       return _number_of_cols;
     }
 
@@ -467,25 +463,25 @@ namespace libsemigroups::detail {
     using scalar_type = Scalar;
 
    protected:
-    static constexpr scalar_type plus_no_checks_impl(scalar_type x,
-                                                     scalar_type y) noexcept {
+    [[nodiscard]] static constexpr scalar_type
+    plus_no_checks_impl(scalar_type x, scalar_type y) noexcept {
       return PlusOp()(x, y);
     }
 
-    static constexpr scalar_type
+    [[nodiscard]] static constexpr scalar_type
     product_no_checks_impl(scalar_type x, scalar_type y) noexcept {
       return ProdOp()(x, y);
     }
 
-    static constexpr scalar_type one_impl() noexcept {
+    [[nodiscard]] static constexpr scalar_type one_impl() noexcept {
       return OneOp()();
     }
 
-    static constexpr scalar_type zero_impl() noexcept {
+    [[nodiscard]] static constexpr scalar_type zero_impl() noexcept {
       return ZeroOp()();
     }
 
-    static constexpr void const* semiring_impl() noexcept {
+    [[nodiscard]] static constexpr void const* semiring_impl() noexcept {
       return nullptr;
     }
   };
@@ -511,7 +507,7 @@ namespace libsemigroups::detail {
     using Row         = typename Mat::Row;
     using matrix_type = Mat;
 
-    size_t size() const noexcept {
+    [[nodiscard]] size_t size() const noexcept {
       return static_cast<Subclass const*>(this)->length_impl();
     }
 
@@ -531,58 +527,58 @@ namespace libsemigroups::detail {
     RowViewCommon& operator=(RowViewCommon const&) = default;
     RowViewCommon& operator=(RowViewCommon&&)      = default;
 
+    ~RowViewCommon() = default;
+
     explicit RowViewCommon(Row const& r)
         : RowViewCommon(const_cast<Row&>(r).begin()) {}
 
-    ~RowViewCommon() = default;
-
     // Not noexcept because iterator::operator[] isn't
-    scalar_const_reference operator[](size_t i) const {
+    [[nodiscard]] scalar_const_reference operator[](size_t i) const {
       return _begin[i];
     }
 
     // Not noexcept because iterator::operator[] isn't
-    scalar_reference operator[](size_t i) {
+    [[nodiscard]] scalar_reference operator[](size_t i) {
       return _begin[i];
     }
 
     // Not noexcept because iterator::operator[] isn't
-    scalar_const_reference operator()(size_t i) const {
+    [[nodiscard]] scalar_const_reference operator()(size_t i) const {
       return (*this)[i];
     }
 
     // Not noexcept because iterator::operator[] isn't
-    scalar_reference operator()(size_t i) {
+    [[nodiscard]] scalar_reference operator()(size_t i) {
       return (*this)[i];
     }
 
     // noexcept because begin() is
-    const_iterator cbegin() const noexcept {
+    [[nodiscard]] const_iterator cbegin() const noexcept {
       return _begin;
     }
 
     // not noexcept because iterator arithmetic isn't
-    const_iterator cend() const {
+    [[nodiscard]] const_iterator cend() const {
       return _begin + size();
     }
 
     // noexcept because begin() is
-    const_iterator begin() const noexcept {
+    [[nodiscard]] const_iterator begin() const noexcept {
       return _begin;
     }
 
     // not noexcept because iterator arithmetic isn't
-    const_iterator end() const {
+    [[nodiscard]] const_iterator end() const {
       return _begin + size();
     }
 
     // noexcept because begin() is
-    iterator begin() noexcept {
+    [[nodiscard]] iterator begin() noexcept {
       return _begin;
     }
 
     // not noexcept because iterator arithmetic isn't
-    iterator end() noexcept {
+    [[nodiscard]] iterator end() noexcept {
       return _begin + size();
     }
 
@@ -597,14 +593,14 @@ namespace libsemigroups::detail {
     void operator+=(RowViewCommon const& x);
 
     // not noexcept because operator+= isn't
-    Row plus_no_checks(RowViewCommon const& that) const {
+    [[nodiscard]] Row plus_no_checks(RowViewCommon const& that) const {
       Row result(*static_cast<Subclass const*>(this));
       result.plus_inplace_no_checks(static_cast<Subclass const&>(that));
       return result;
     }
 
     // TODO add tests
-    Row operator+(RowViewCommon const& x);
+    [[nodiscard]] Row operator+(RowViewCommon const& x);
 
     // not noexcept because iterator arithmetic isn't
     void operator+=(scalar_type a) {
@@ -621,31 +617,31 @@ namespace libsemigroups::detail {
     }
 
     // not noexcept because operator*= isn'tl
-    Row operator*(scalar_type a) const {
+    [[nodiscard]] Row operator*(scalar_type a) const {
       Row result(*static_cast<Subclass const*>(this));
       result *= a;
       return result;
     }
 
     template <typename U>
-    bool operator==(U const& that) const {
+    [[nodiscard]] bool operator==(U const& that) const {
       // TODO(1) static assert that U is Row or RowView
       return std::equal(begin(), end(), that.begin());
     }
 
     template <typename U>
-    bool operator!=(U const& that) const {
+    [[nodiscard]] bool operator!=(U const& that) const {
       return !(*this == that);
     }
 
     template <typename U>
-    bool operator<(U const& that) const {
+    [[nodiscard]] bool operator<(U const& that) const {
       return std::lexicographical_compare(
           cbegin(), cend(), that.cbegin(), that.cend());
     }
 
     template <typename U>
-    bool operator>(U const& that) const {
+    [[nodiscard]] bool operator>(U const& that) const {
       return that < *this;
     }
 

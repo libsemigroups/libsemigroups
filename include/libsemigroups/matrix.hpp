@@ -16,15 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// This file exists just to include the headers below which comprise
+// essentially all the functionality for generic matrices in libsemigroups.
+
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
 
+#include "is-matrix.hpp"
 #include "matrix-adapters.hpp"
 #include "matrix-class.hpp"
+#include "matrix-exceptions.hpp"
 #include "matrix-fmt.hpp"
 #include "matrix-helpers.hpp"
 #include "matrix-make.hpp"
 #include "matrix-view.hpp"
 
-// TODO more
 #endif  // LIBSEMIGROUPS_MATRIX_HPP_
