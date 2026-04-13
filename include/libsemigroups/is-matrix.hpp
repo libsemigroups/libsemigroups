@@ -18,6 +18,8 @@
 #ifndef LIBSEMIGROUPS_IS_MATRIX_HPP_
 #define LIBSEMIGROUPS_IS_MATRIX_HPP_
 
+#include <type_traits>
+
 namespace libsemigroups {
   namespace detail {
 
