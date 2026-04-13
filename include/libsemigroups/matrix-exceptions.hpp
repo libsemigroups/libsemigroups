@@ -16,15 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(v4): it's not clear why some of these functions are in "matrix" and
-// others in "detail", maybe better to move them all into detail, and then this
-// file into the detail dir?
-
 #ifndef LIBSEMIGROUPS_MATRIX_EXCEPTIONS_HPP_
 #define LIBSEMIGROUPS_MATRIX_EXCEPTIONS_HPP_
 
 #include <algorithm>    // for find_if_not
-#include <cstdint>      // for uint64_t
 #include <string>       // for basic_string
 #include <type_traits>  // for enable_if_t
 
