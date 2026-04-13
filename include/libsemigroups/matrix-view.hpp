@@ -569,8 +569,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-         DynamicMatrix_,
-         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        DynamicMatrix_,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:

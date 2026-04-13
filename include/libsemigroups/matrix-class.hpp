@@ -1126,9 +1126,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-            std::vector<Scalar>,
-            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        std::vector<Scalar>,
+        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -4038,7 +4038,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
