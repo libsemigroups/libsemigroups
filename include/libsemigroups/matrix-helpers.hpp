@@ -53,7 +53,147 @@ namespace libsemigroups {
 
   }  // namespace detail
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Namespace for helper functions for matrices.
+  //!
+  //! This namespace contains various helper functions for the various matrix
+  //! classes in `libsemigroups`. These functions could have been member
+  //! functions of the matrix classes but they only use public member
+  //! functions, and so they are declared as free functions instead.
   namespace matrix {
+
+    //! \brief Returns the threshold of a matrix.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! The threshold of a matrix that does not have entries in a truncated
+    //! semiring is \ref UNDEFINED, and this function returns this value.
+    //!
+    //! \tparam Mat the type of the matrix.
+    //!
+    //! \returns The value \ref UNDEFINED.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Mat>
+    constexpr auto threshold(Mat const&) noexcept
+        -> std::enable_if_t<!detail::IsTruncMat<Mat>,
+                            typename Mat::scalar_type> {
+      return UNDEFINED;
+    }
+
+    //! \brief Returns the threshold of a matrix over a truncated semiring.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function returns the threshold of a matrix over a truncated
+    //! semiring.
+    //!
+    //! \tparam Mat the type of the matrix.
+    //!
+    //! \returns The threshold of any matrix of type \p Mat.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Mat>
+    constexpr auto threshold(Mat const&) noexcept
+        -> std::enable_if_t<detail::IsTruncMat<Mat> && !IsMatWithSemiring<Mat>,
+                            typename Mat::scalar_type> {
+      return detail::IsTruncMatHelper<Mat>::threshold;
+    }
+
+    //! \brief Returns the threshold of a matrix over a truncated semiring.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function returns the threshold of a matrix over a truncated
+    //! semiring.
+    //!
+    //! \tparam Mat the type of the matrix.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns The threshold of \p x.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Mat>
+    auto threshold(Mat const& x) noexcept
+        -> std::enable_if_t<detail::IsTruncMat<Mat> && IsMatWithSemiring<Mat>,
+                            typename Mat::scalar_type> {
+      return x.semiring()->threshold();
+    }
+
+    //! \brief Returns the period of a static ntp matrix.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function returns the template parameter \p P of a static ntp
+    //! matrix.
+    //!
+    //! \tparam T  the threshold.
+    //!
+    //! \tparam P  the period.
+    //!
+    //! \tparam R  the number of rows.
+    //!
+    //! \tparam C  the number of columns.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \returns The template parameter \p P.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <size_t T, size_t P, size_t R, size_t C, typename Scalar>
+    constexpr Scalar period(StaticNTPMat<T, P, R, C, Scalar> const&) noexcept {
+      return P;
+    }
+
+    //! \brief Returns the period of a dynamic ntp matrix.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function returns the template parameter \p P of a dynamic ntp
+    //! matrix.
+    //!
+    //! \tparam T  the threshold.
+    //!
+    //! \tparam P  the period.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \returns The template parameter \p P.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <size_t T, size_t P, typename Scalar>
+    constexpr Scalar
+    period(DynamicNTPMatWithoutSemiring<T, P, Scalar> const&) noexcept {
+      return P;
+    }
+
+    //! \brief Returns the period of a dynamic ntp matrix.
+    //!
+    //! Defined in `matrix.hpp`.
+    //!
+    //! This function returns the period of the dynamic ntp
+    //! matrix \p x using its underlying semiring.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \param x the dynamic ntp matrix.
+    //!
+    //! \returns The period of the matrix \p x.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Scalar>
+    Scalar period(DynamicNTPMatWithSemiring<Scalar> const& x) noexcept {
+      return x.semiring()->period();
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - pow
     ////////////////////////////////////////////////////////////////////////

@@ -253,13 +253,7 @@ namespace libsemigroups {
     //! \warning
     //!   This constructor only works for rows, i.e. when the template
     //!   parameter \c R is \c 1.
-    explicit StaticMatrix(std::initializer_list<scalar_type> const& c)
-        : MatrixCommon(c) {
-      static_assert(R == 1,
-                    "cannot construct Matrix from the given initializer list, "
-                    "incompatible dimensions");
-      LIBSEMIGROUPS_ASSERT(c.size() == C);
-    }
+    explicit StaticMatrix(std::initializer_list<scalar_type> const& c);
 
     //! \brief Construct a matrix.
     //!
@@ -347,14 +341,11 @@ namespace libsemigroups {
     //! Default move assignment operator.
     StaticMatrix& operator=(StaticMatrix&&) = default;
 
+    ~StaticMatrix() = default;
+
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // For uniformity of interface, the args do nothing
-    StaticMatrix(size_t r, size_t c) : StaticMatrix() {
-      (void) r;
-      (void) c;
-      LIBSEMIGROUPS_ASSERT(r == number_of_rows());
-      LIBSEMIGROUPS_ASSERT(c == number_of_cols());
-    }
+    StaticMatrix(size_t r, size_t c);
 
     // For uniformity of interface, the first arg does nothing
     StaticMatrix(void const* ptr, std::initializer_list<scalar_type> const& c)
@@ -384,40 +375,8 @@ namespace libsemigroups {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
     }
-#endif
-
-    ~StaticMatrix() = default;
-
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    static StaticMatrix one(size_t n) {
-      // If specified the value of n must equal R or otherwise weirdness will
-      // ensue...
-      LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
-      (void) n;
-#if defined(__APPLE__) && defined(__clang__) \
-    && (__clang_major__ == 13 || __clang_major__ == 14)
-      // With Apple clang version 13.1.6 (clang-1316.0.21.2.5) something goes
-      // wrong and the value R is optimized away somehow, meaning that the
-      // values on the diagonal aren't actually set. This only occurs when
-      // libsemigroups is compiled with -O2 or higher.
-      size_t volatile const m = R;
-#else
-      size_t const m = R;
-#endif
-      StaticMatrix x(m, m);
-      std::fill(x.begin(), x.end(), ZeroOp()());
-      for (size_t r = 0; r < m; ++r) {
-        x(r, r) = OneOp()();
-      }
-      return x;
-    }
-
-    static StaticMatrix one(void const* ptr, size_t n = 0) {
-      (void) ptr;
-      LIBSEMIGROUPS_ASSERT(ptr == nullptr);
-      LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
-      return one(n);
-    }
+    static StaticMatrix one(size_t n);
+    static StaticMatrix one(void const* ptr, size_t n = 0);
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     ////////////////////////////////////////////////////////////////////////
@@ -1241,6 +1200,8 @@ namespace libsemigroups {
     //! Default move assignment operator.
     DynamicMatrix& operator=(DynamicMatrix&&) = default;
 
+    ~DynamicMatrix() = default;
+
     //! \brief Construct a matrix with given dimensions.
     //!
     //! This function constructs a matrix with the given dimensions.
@@ -1371,8 +1332,6 @@ namespace libsemigroups {
       return one(n);
     }
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-
-    ~DynamicMatrix() = default;
 
     //! \brief Construct the \f$n \times n\f$ identity matrix.
     //!
@@ -1718,13 +1677,9 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is
     //! \ref number_of_cols.
-    explicit DynamicMatrix(
+    DynamicMatrix(
         Semiring const*                                                  sr,
-        std::initializer_list<std::initializer_list<scalar_type>> const& rws)
-        : MatrixDynamicDim(rws.size(),
-                           std::empty(rws) ? 0 : rws.begin()->size()),
-          MatrixCommon(rws),
-          _semiring(sr) {}
+        std::initializer_list<std::initializer_list<scalar_type>> const& rws);
 
     //! \brief Construct a matrix over a given semiring (std::vector
     //! of std::vector).
@@ -1795,14 +1750,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n ^ 2)\f$.
     // No static DynamicMatrix::one(size_t n) because we need a semiring!
-    static DynamicMatrix one(Semiring const* semiring, size_t n) {
-      DynamicMatrix x(semiring, n, n);
-      std::fill(x.begin(), x.end(), x.scalar_zero());
-      for (size_t r = 0; r < n; ++r) {
-        x(r, r) = x.scalar_one();
-      }
-      return x;
-    }
+    static DynamicMatrix one(Semiring const* semiring, size_t n);
 
     ~DynamicMatrix() = default;
 
@@ -1978,12 +1926,7 @@ namespace libsemigroups {
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     //! \copydoc StaticMatrix::swap
-    void swap(DynamicMatrix& that) noexcept {
-      static_cast<MatrixDynamicDim&>(*this).swap(
-          static_cast<MatrixDynamicDim&>(that));
-      static_cast<MatrixCommon&>(*this).swap(static_cast<MatrixCommon&>(that));
-      std::swap(_semiring, that._semiring);
-    }
+    void swap(DynamicMatrix& that) noexcept;
 
    private:
     using MatrixCommon::resize;
@@ -2034,79 +1977,6 @@ namespace libsemigroups {
     struct IsMatWithSemiringHelper<DynamicMatrix<Semiring, Scalar>>
         : std::true_type {};
   }  // namespace detail
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Namespace for helper functions for matrices.
-  //!
-  //! This namespace contains various helper functions for the various matrix
-  //! classes in `libsemigroups`. These functions could have been member
-  //! functions of the matrix classes but they only use public member
-  //! functions, and so they are declared as free functions instead.
-  namespace matrix {
-
-    //! \brief Returns the threshold of a matrix.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! The threshold of a matrix that does not have entries in a truncated
-    //! semiring is \ref UNDEFINED, and this function returns this value.
-    //!
-    //! \tparam Mat the type of the matrix.
-    //!
-    //! \returns The value \ref UNDEFINED.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Mat>
-    constexpr auto threshold(Mat const&) noexcept
-        -> std::enable_if_t<!detail::IsTruncMat<Mat>,
-                            typename Mat::scalar_type> {
-      return UNDEFINED;
-    }
-
-    //! \brief Returns the threshold of a matrix over a truncated semiring.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function returns the threshold of a matrix over a truncated
-    //! semiring.
-    //!
-    //! \tparam Mat the type of the matrix.
-    //!
-    //! \returns The threshold of any matrix of type \p Mat.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Mat>
-    constexpr auto threshold(Mat const&) noexcept
-        -> std::enable_if_t<detail::IsTruncMat<Mat> && !IsMatWithSemiring<Mat>,
-                            typename Mat::scalar_type> {
-      return detail::IsTruncMatHelper<Mat>::threshold;
-    }
-
-    //! \brief Returns the threshold of a matrix over a truncated semiring.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function returns the threshold of a matrix over a truncated
-    //! semiring.
-    //!
-    //! \tparam Mat the type of the matrix.
-    //!
-    //! \param x the matrix.
-    //!
-    //! \returns The threshold of \p x.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Mat>
-    auto threshold(Mat const& x) noexcept
-        -> std::enable_if_t<detail::IsTruncMat<Mat> && IsMatWithSemiring<Mat>,
-                            typename Mat::scalar_type> {
-      return x.semiring()->threshold();
-    }
-  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Boolean matrices - compile time semiring arithmetic
@@ -4214,77 +4084,6 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  namespace matrix {
-    //! \brief Returns the period of a static ntp matrix.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function returns the template parameter \p P of a static ntp
-    //! matrix.
-    //!
-    //! \tparam T  the threshold.
-    //!
-    //! \tparam P  the period.
-    //!
-    //! \tparam R  the number of rows.
-    //!
-    //! \tparam C  the number of columns.
-    //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \returns The template parameter \p P.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <size_t T, size_t P, size_t R, size_t C, typename Scalar>
-    constexpr Scalar period(StaticNTPMat<T, P, R, C, Scalar> const&) noexcept {
-      return P;
-    }
-
-    //! \brief Returns the period of a dynamic ntp matrix.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function returns the template parameter \p P of a dynamic ntp
-    //! matrix.
-    //!
-    //! \tparam T  the threshold.
-    //!
-    //! \tparam P  the period.
-    //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \returns The template parameter \p P.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <size_t T, size_t P, typename Scalar>
-    constexpr Scalar
-    period(DynamicNTPMatWithoutSemiring<T, P, Scalar> const&) noexcept {
-      return P;
-    }
-
-    //! \brief Returns the period of a dynamic ntp matrix.
-    //!
-    //! Defined in `matrix.hpp`.
-    //!
-    //! This function returns the period of the dynamic ntp
-    //! matrix \p x using its underlying semiring.
-    //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \param x the dynamic ntp matrix.
-    //!
-    //! \returns The period of the matrix \p x.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Scalar>
-    Scalar period(DynamicNTPMatWithSemiring<Scalar> const& x) noexcept {
-      return x.semiring()->period();
-    }
-  }  // namespace matrix
-
   ////////////////////////////////////////////////////////////////////////
   // Projective max-plus matrices
   ////////////////////////////////////////////////////////////////////////
@@ -4808,4 +4607,5 @@ namespace std {
   }
 }  // namespace std
 
+#include "matrix-class.tpp"
 #endif  // LIBSEMIGROUPS_MATRIX_CLASS_HPP_

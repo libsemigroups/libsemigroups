@@ -28,10 +28,10 @@
 #include <string>       // for basic_string
 #include <type_traits>  // for enable_if_t
 
-#include "constants.hpp"  // for POSITIVE_INFINITY
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "is-matrix.hpp"  // for IsMatrix
-#include "matrix.hpp"     // for threshold, period
+#include "constants.hpp"       // for POSITIVE_INFINITY
+#include "exception.hpp"       // for LIBSEMIGROUPS_EXCEPTION
+#include "is-matrix.hpp"       // for IsMatrix
+#include "matrix-helpers.hpp"  // for threshold, period
 
 #include "detail/matrix-common.hpp"      // for entry_repr
 #include "detail/matrix-exceptions.hpp"  // for throw_if_semiring_nullptr
