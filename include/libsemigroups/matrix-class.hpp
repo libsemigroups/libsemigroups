@@ -2466,14 +2466,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar operator()(Scalar x, Scalar y) const noexcept {
-      if (x == NEGATIVE_INFINITY) {
-        return y;
-      } else if (y == NEGATIVE_INFINITY) {
-        return x;
-      }
-      return std::max(x, y);
-    }
+    Scalar operator()(Scalar x, Scalar y) const noexcept;
   };
 
   //! \ingroup maxplusmat_group
@@ -2513,12 +2506,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar operator()(Scalar x, Scalar y) const noexcept {
-      if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
-        return NEGATIVE_INFINITY;
-      }
-      return x + y;
-    }
+    Scalar operator()(Scalar x, Scalar y) const noexcept;
   };
 
   //! \ingroup maxplusmat_group
@@ -2674,7 +2662,6 @@ namespace libsemigroups {
   //! \tparam Scalar the type of the values in the semiring (must be signed
   //! integer type).
   //!
-  // Static arithmetic
   template <typename Scalar>
   struct MinPlusPlus {
     static_assert(std::is_signed<Scalar>::value,
@@ -2691,14 +2678,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar operator()(Scalar x, Scalar y) const noexcept {
-      if (x == POSITIVE_INFINITY) {
-        return y;
-      } else if (y == POSITIVE_INFINITY) {
-        return x;
-      }
-      return std::min(x, y);
-    }
+    Scalar operator()(Scalar x, Scalar y) const noexcept;
   };
 
   //! \ingroup minplusmat_group
@@ -2738,12 +2718,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar operator()(Scalar x, Scalar y) const noexcept {
-      if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
-        return POSITIVE_INFINITY;
-      }
-      return x + y;
-    }
+    Scalar operator()(Scalar x, Scalar y) const noexcept;
   };
 
   //! \ingroup minplusmat_group
@@ -2935,16 +2910,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar operator()(Scalar x, Scalar y) const noexcept {
-      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
-                           || x == NEGATIVE_INFINITY);
-      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= static_cast<Scalar>(T))
-                           || y == NEGATIVE_INFINITY);
-      if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
-        return NEGATIVE_INFINITY;
-      }
-      return std::min(x + y, static_cast<Scalar>(T));
-    }
+    Scalar operator()(Scalar x, Scalar y) const noexcept;
   };
 
   //! \ingroup maxplustruncmat_group

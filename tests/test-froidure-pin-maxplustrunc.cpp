@@ -26,7 +26,6 @@
 
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/matrix-make.hpp"   // for make
 #include "libsemigroups/matrix.hpp"        // for Matrix
 
 namespace libsemigroups {

@@ -23,6 +23,7 @@
 #include "matrix-class.hpp"
 #include "matrix-fmt.hpp"
 #include "matrix-helpers.hpp"
+#include "matrix-make.hpp"
 #include "matrix-view.hpp"
 
 // TODO more

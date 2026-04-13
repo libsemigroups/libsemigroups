@@ -34,7 +34,6 @@
 #include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_A...
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/exception.hpp"      // for LibsemigroupsEx...
-#include "libsemigroups/matrix-make.hpp"    // for make
 #include "libsemigroups/matrix.hpp"         // for BMat, NTPMat
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1

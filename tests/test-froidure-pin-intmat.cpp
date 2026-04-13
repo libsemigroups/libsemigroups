@@ -24,7 +24,6 @@
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/matrix-make.hpp"   // for make
 #include "libsemigroups/matrix.hpp"        // for IntMat
 #include "libsemigroups/word-range.hpp"    // for namespace literals
 

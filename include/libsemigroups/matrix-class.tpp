@@ -135,6 +135,67 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // MaxPlus
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Scalar>
+  Scalar MaxPlusPlus<Scalar>::operator()(Scalar x, Scalar y) const noexcept {
+    if (x == NEGATIVE_INFINITY) {
+      return y;
+    } else if (y == NEGATIVE_INFINITY) {
+      return x;
+    }
+    return std::max(x, y);
+  }
+
+  template <typename Scalar>
+  Scalar MaxPlusProd<Scalar>::operator()(Scalar x, Scalar y) const noexcept {
+    if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
+      return NEGATIVE_INFINITY;
+    }
+    return x + y;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // MinPlus
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Scalar>
+  Scalar MinPlusPlus<Scalar>::operator()(Scalar x, Scalar y) const noexcept {
+    if (x == POSITIVE_INFINITY) {
+      return y;
+    } else if (y == POSITIVE_INFINITY) {
+      return x;
+    }
+    return std::min(x, y);
+  }
+
+  template <typename Scalar>
+  Scalar MinPlusProd<Scalar>::operator()(Scalar x, Scalar y) const noexcept {
+    if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
+      return POSITIVE_INFINITY;
+    }
+    return x + y;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // MaxPlusTruncProd
+  ////////////////////////////////////////////////////////////////////////
+
+  template <size_t T, typename Scalar>
+  Scalar MaxPlusTruncProd<T, Scalar>::operator()(Scalar x,
+                                                 Scalar y) const noexcept {
+    LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
+                         || x == NEGATIVE_INFINITY);
+    LIBSEMIGROUPS_ASSERT((y >= 0 && y <= static_cast<Scalar>(T))
+                         || y == NEGATIVE_INFINITY);
+    if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
+      return NEGATIVE_INFINITY;
+    }
+    return std::min(x + y, static_cast<Scalar>(T));
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // MaxPlusTruncSemiring
   ////////////////////////////////////////////////////////////////////////
 

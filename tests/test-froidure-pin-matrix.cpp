@@ -21,7 +21,6 @@
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/matrix-make.hpp"   // for make
 #include "libsemigroups/matrix.hpp"        // for NTPSemiring, MaxPlusTruncS...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

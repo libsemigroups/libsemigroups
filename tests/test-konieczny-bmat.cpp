@@ -23,7 +23,6 @@
 
 #include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
 #include "libsemigroups/konieczny.hpp"      // for Konieczny
-#include "libsemigroups/matrix-make.hpp"    // for make
 #include "libsemigroups/matrix.hpp"         // for BMat
 
 namespace libsemigroups {
