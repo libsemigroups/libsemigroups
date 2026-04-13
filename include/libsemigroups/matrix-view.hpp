@@ -19,7 +19,7 @@
 #ifndef LIBSEMIGROUPS_MATRIX_VIEW_HPP_
 #define LIBSEMIGROUPS_MATRIX_VIEW_HPP_
 
-#include <cstddef>
+#include <cstddef>  // for size_t
 
 #include "detail/matrix-common.hpp"  // for RowViewCommon
 
