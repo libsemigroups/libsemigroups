@@ -22,6 +22,17 @@
 #ifndef LIBSEMIGROUPS_DETAIL_MATRIX_EXCEPTIONS_HPP_
 #define LIBSEMIGROUPS_DETAIL_MATRIX_EXCEPTIONS_HPP_
 
+#include <algorithm>         // for find_if_not
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for distance, empty
+#include <stddef.h>          // for size_t
+#include <stdint.h>          // for uint64_t
+#include <string_view>       // for basic_string_view, string_view
+#include <type_traits>       // for enable_if_t
+
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/is-matrix.hpp"  // for IsStaticMatrix, IsDynamicMatrix
+
 namespace libsemigroups {
   namespace matrix {
 
