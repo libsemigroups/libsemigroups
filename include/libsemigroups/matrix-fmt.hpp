@@ -19,10 +19,28 @@
 #ifndef LIBSEMIGROUPS_MATRIX_FMT_HPP_
 #define LIBSEMIGROUPS_MATRIX_FMT_HPP_
 
-#include "matrix-class.hpp"
-#include "matrix-helpers.hpp"
+#include <algorithm>    // for max_element
+#include <cstddef>      // for size_t
+#include <ostream>      // for operator<<, basic_...
+#include <sstream>      // for basic_ostringstream
+#include <string>       // for basic_string, string
+#include <type_traits>  // for enable_if_t
+#include <vector>       // for vector
+
+#include "exception.hpp"       // for LIBSEMIGROUPS_EXCE...
+#include "is-matrix.hpp"       // for IsMatrix
+#include "matrix-helpers.hpp"  // for rows
+
+#include "detail/fmt.hpp"            // for format
+#include "detail/matrix-common.hpp"  // for entry_repr
+#include "detail/string.hpp"         // for unicode_string_length
 
 namespace libsemigroups {
+  namespace detail {
+    // Forward decl.
+    template <typename Mat, typename Subclass>
+    class RowViewCommon;
+  }  // namespace detail
 
   //! \ingroup matrix_group
   //!
@@ -36,19 +54,9 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  template <typename S, typename T>
-  std::ostringstream& operator<<(std::ostringstream&                os,
-                                 detail::RowViewCommon<S, T> const& x) {
-    os << "{";
-    for (auto it = x.cbegin(); it != x.cend(); ++it) {
-      os << *it;
-      if (it != x.cend() - 1) {
-        os << ", ";
-      }
-    }
-    os << "}";
-    return os;
-  }
+  template <typename Mat, typename Subclass>
+  std::ostringstream& operator<<(std::ostringstream&                         os,
+                                 detail::RowViewCommon<Mat, Subclass> const& x);
 
   //! \ingroup matrix_group
   //!
@@ -68,23 +76,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   template <typename Mat>
   auto operator<<(std::ostringstream& os, Mat const& x)
-      -> std::enable_if_t<IsMatrix<Mat>, std::ostringstream&> {
-    size_t n = 0;
-    if (x.number_of_rows() != 1) {
-      os << "{";
-    }
-    for (auto&& r : matrix::rows(x)) {
-      os << r;
-      if (n != x.number_of_rows() - 1) {
-        os << ", ";
-      }
-      n++;
-    }
-    if (x.number_of_rows() != 1) {
-      os << "}";
-    }
-    return os;
-  }
+      -> std::enable_if_t<IsMatrix<Mat>, std::ostringstream&>;
 
   //! \ingroup matrix_group
   //!
@@ -103,71 +95,13 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if \p braces does not have size \c 2.
   template <typename Mat>
-  auto to_human_readable_repr(Mat const&         x,
-                              std::string const& prefix,
-                              std::string const& short_name = "",
-                              std::string const& braces     = "{}",
-                              size_t             max_width  = 72)
-      -> std::enable_if_t<IsMatrix<Mat>, std::string> {
-    if (braces.size() != 2) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 4th argument (braces) must have size 2, found {}",
-          braces.size());
-    }
-
-    size_t const R = x.number_of_rows();
-    size_t const C = x.number_of_cols();
-
-    std::vector<size_t> max_col_widths(C, 0);
-    std::vector<size_t> row_widths(C, prefix.size() + 1);
-    for (size_t r = 0; r < R; ++r) {
-      for (size_t c = 0; c < C; ++c) {
-        size_t width
-            = detail::unicode_string_length(detail::entry_repr(x(r, c)));
-        row_widths[r] += width;
-        if (width > max_col_widths[c]) {
-          max_col_widths[c] = width;
-        }
-      }
-    }
-    auto col_width
-        = *std::max_element(max_col_widths.begin(), max_col_widths.end());
-    // The total width if we pad the entries according to the widest column.
-    auto const total_width = col_width * C + prefix.size() + 1;
-    if (total_width > max_width) {
-      // Padding according to the widest column is too wide!
-      if (*std::max_element(row_widths.begin(), row_widths.end()) > max_width) {
-        // If the widest row is too wide, then use the short name
-        return fmt::format(
-            "<{}x{} {}>", x.number_of_rows(), x.number_of_cols(), short_name);
-      }
-      // If the widest row is not too wide, then just don't pad the entries
-      col_width = 0;
-    }
-
-    std::string result = fmt::format("{}", prefix);
-    std::string rindent;
-    auto const  lbrace = braces[0], rbrace = braces[1];
-    if (R != 0 && C != 0) {
-      result += lbrace;
-      for (size_t r = 0; r < R; ++r) {
-        result += fmt::format("{}{}", rindent, lbrace);
-        rindent          = std::string(prefix.size() + 1, ' ');
-        std::string csep = "";
-        for (size_t c = 0; c < C; ++c) {
-          result += fmt::format(
-              "{}{:>{}}", csep, detail::entry_repr(x(r, c)), col_width);
-          csep = ", ";
-        }
-        result += fmt::format("{}", rbrace);
-        if (r != R - 1) {
-          result += ",\n";
-        }
-      }
-      result += rbrace;
-    }
-    result += ")";
-    return result;
-  }
+  [[nodiscard]] auto to_human_readable_repr(Mat const&         x,
+                                            std::string const& prefix,
+                                            std::string const& short_name = "",
+                                            std::string const& braces    = "{}",
+                                            size_t             max_width = 72)
+      -> std::enable_if_t<IsMatrix<Mat>, std::string>;
 }  // namespace libsemigroups
+
+#include "matrix-fmt.tpp"
 #endif  // LIBSEMIGROUPS_MATRIX_FMT_HPP_
