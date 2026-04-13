@@ -68,7 +68,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    constexpr size_t operator()(Mat const& x) const noexcept {
+    [[nodiscard]] constexpr size_t operator()(Mat const& x) const noexcept {
       return x.number_of_rows() * x.number_of_rows() * x.number_of_rows();
     }
   };
@@ -97,7 +97,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    constexpr size_t operator()(Mat const& x) const noexcept {
+    [[nodiscard]] constexpr size_t operator()(Mat const& x) const noexcept {
       return x.number_of_rows();
     }
   };
@@ -126,7 +126,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    constexpr size_t operator()(Mat const& x) const {
+    [[nodiscard]] constexpr size_t operator()(Mat const& x) const {
       return x.hash_value();
     }
   };
@@ -185,7 +185,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(m ^ 2)\f$ where \f$m\f$ is the number of rows of the
     //! matrix \p x.
-    inline Mat operator()(Mat const& x) const {
+    [[nodiscard]] inline Mat operator()(Mat const& x) const {
       return x.one();
     }
   };
