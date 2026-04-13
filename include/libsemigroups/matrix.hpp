@@ -21,5 +21,8 @@
 
 #include "matrix-adapters.hpp"
 #include "matrix-class.hpp"
+#include "matrix-fmt.hpp"
+#include "matrix-helpers.hpp"
+
 // TODO more
-#endif // LIBSEMIGROUPS_MATRIX_HPP_
+#endif  // LIBSEMIGROUPS_MATRIX_HPP_
