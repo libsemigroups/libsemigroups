@@ -234,6 +234,7 @@ namespace libsemigroups {
     //! \endcode
     // TODO(1) pow_no_checks
     // TODO(2) version that changes x in-place
+    // TODO out of line
     template <typename Mat>
     Mat pow(Mat const& x, typename Mat::scalar_type e) {
       using scalar_type = typename Mat::scalar_type;
@@ -370,6 +371,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in `views` and
     //! and \f$n\f$ is the number of columns in any vector in `views`.
+    // TODO out-of-line
     template <typename Mat, size_t R, size_t C, typename Container>
     void bitset_rows(Container&&                          views,
                      detail::StaticVector1<BitSet<C>, R>& result) {
