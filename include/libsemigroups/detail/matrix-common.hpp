@@ -21,7 +21,6 @@
 
 #include <algorithm>         // for copy, equal, fill
 #include <cstddef>           // for size_t
-#include <cstdint>           // for uint64_t
 #include <initializer_list>  // for initializer_list
 #include <iosfwd>            // for ostream
 #include <iterator>          // for distance
