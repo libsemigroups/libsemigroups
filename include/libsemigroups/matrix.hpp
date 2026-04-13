@@ -23,6 +23,7 @@
 #include "matrix-class.hpp"
 #include "matrix-fmt.hpp"
 #include "matrix-helpers.hpp"
+#include "matrix-view.hpp"
 
 // TODO more
 #endif  // LIBSEMIGROUPS_MATRIX_HPP_
