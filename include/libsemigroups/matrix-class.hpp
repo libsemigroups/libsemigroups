@@ -3005,12 +3005,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    explicit MaxPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
-      if (threshold < 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
-                                threshold);
-      }
-    }
+    explicit MaxPlusTruncSemiring(Scalar threshold);
 
     //! \brief Get the multiplicative identity.
     //!
@@ -3064,16 +3059,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar product_no_checks(Scalar x, Scalar y) const noexcept {
-      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
-                           || x == NEGATIVE_INFINITY);
-      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
-                           || y == NEGATIVE_INFINITY);
-      if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
-        return NEGATIVE_INFINITY;
-      }
-      return std::min(x + y, _threshold);
-    }
+    Scalar product_no_checks(Scalar x, Scalar y) const noexcept;
 
     //! \brief Addition in a truncated max-plus semiring.
     //!
@@ -3099,18 +3085,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept {
-      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
-                           || x == NEGATIVE_INFINITY);
-      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
-                           || y == NEGATIVE_INFINITY);
-      if (x == NEGATIVE_INFINITY) {
-        return y;
-      } else if (y == NEGATIVE_INFINITY) {
-        return x;
-      }
-      return std::max(x, y);
-    }
+    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept;
 
     //! \brief Get the threshold.
     //!
@@ -3313,17 +3288,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar operator()(Scalar x, Scalar y) const noexcept {
-      LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
-                           || x == POSITIVE_INFINITY);
-      LIBSEMIGROUPS_ASSERT((y >= 0 && y <= static_cast<Scalar>(T))
-                           || y == POSITIVE_INFINITY);
-      if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
-        return POSITIVE_INFINITY;
-      }
-      return std::min(x + y, static_cast<Scalar>(T));
-    }
-  };
+    Scalar operator()(Scalar x, Scalar y) const noexcept;
+  };  // MinPlusTruncProd
 
   //! \ingroup minplustruncmat_group
   //!
