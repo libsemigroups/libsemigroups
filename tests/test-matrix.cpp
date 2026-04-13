@@ -1191,7 +1191,7 @@ namespace libsemigroups {
                           "throw invalid row size",
                           "[quick]") {
     REQUIRE_EXCEPTION_MSG(
-        make<BMat<3>::Row>({0, 1}),
+        std::ignore = make<BMat<3>::Row>({0, 1}),
         "invalid argument, cannot initialize a row of a matrix with compile "
         "time number of columns 3 with a container of size 2");
 

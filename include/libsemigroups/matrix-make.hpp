@@ -1,4 +1,3 @@
-
 //
 // libsemigroups - C++ library for semigroups and monoids
 // Copyright (C) 2026 James D. Mitchell
@@ -20,7 +19,16 @@
 #ifndef LIBSEMIGROUPS_MATRIX_MAKE_HPP_
 #define LIBSEMIGROUPS_MATRIX_MAKE_HPP_
 
-#include "matrix-exceptions.hpp"
+#include <cstddef>           // for size_t
+#include <initializer_list>  // for initializer_list
+#include <type_traits>       // for enable_if_t
+#include <vector>            // for vector
+
+#include "is-matrix.hpp"          // for IsMatrix, IsMa...
+#include "matrix-class.hpp"       // for ProjMaxPlusMat
+#include "matrix-exceptions.hpp"  // for throw_if_bad_e...
+
+#include "libsemigroups/detail/matrix-exceptions.hpp"  // for throw_if_any_r
 
 namespace libsemigroups {
   //! \defgroup make_matrix_group make<Matrix>
@@ -62,13 +70,8 @@ namespace libsemigroups {
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat make(std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
-    detail::throw_if_any_row_wrong_size(rows);
-    detail::throw_if_bad_dim<Mat>(rows);
-    Mat m(rows);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
+  [[nodiscard]] Mat
+  make(std::vector<std::vector<typename Mat::scalar_type>> const& rows);
 
   //! \ingroup make_matrix_group
   //!
@@ -98,8 +101,9 @@ namespace libsemigroups {
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat make(std::initializer_list<std::vector<typename Mat::scalar_type>> const&
-               rows) {
+  [[nodiscard]] Mat
+  make(std::initializer_list<std::vector<typename Mat::scalar_type>> const&
+           rows) {
     return make<Mat>(std::vector<std::vector<typename Mat::scalar_type>>(rows));
   }
 
@@ -132,13 +136,9 @@ namespace libsemigroups {
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat make(std::initializer_list<typename Mat::scalar_type> const& row) {
-    detail::throw_if_bad_row_dim<Mat>(row);
-    Mat m(row);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
-  // TODO(1) vector version of above
+  // TODO(1) vector version
+  [[nodiscard]] Mat
+  make(std::initializer_list<typename Mat::scalar_type> const& row);
 
   //! \ingroup make_matrix_group
   //!
@@ -176,15 +176,10 @@ namespace libsemigroups {
             typename = std::enable_if_t<IsMatrix<Mat>>>
   // TODO(1) pass Semiring by reference, this is hard mostly due to the way
   // the tests are written, which is not optimal.
-  Mat make(Semiring const* semiring,
-           std::initializer_list<
-               std::initializer_list<typename Mat::scalar_type>> const& rows) {
-    detail::throw_if_any_row_wrong_size(rows);
-    detail::throw_if_bad_dim<Mat>(rows);
-    Mat m(semiring, rows);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
+  [[nodiscard]] Mat
+  make(Semiring const* semiring,
+       std::initializer_list<
+           std::initializer_list<typename Mat::scalar_type>> const& rows);
 
   //! \ingroup make_matrix_group
   //!
@@ -220,14 +215,9 @@ namespace libsemigroups {
   template <typename Mat,
             typename Semiring,
             typename = std::enable_if_t<IsMatrix<Mat>>>
-  Mat make(Semiring const*                                            semiring,
-           std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
-    detail::throw_if_any_row_wrong_size(rows);
-    detail::throw_if_bad_dim<Mat>(rows);
-    Mat m(semiring, rows);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
+  [[nodiscard]] Mat
+  make(Semiring const*                                            semiring,
+       std::vector<std::vector<typename Mat::scalar_type>> const& rows);
 
   //! \ingroup make_matrix_group
   //!
@@ -254,13 +244,9 @@ namespace libsemigroups {
   template <typename Mat,
             typename Semiring,
             typename = std::enable_if_t<IsMatrix<Mat>>>
-  Mat make(Semiring const*                                         semiring,
-           std::initializer_list<typename Mat::scalar_type> const& row) {
-    detail::throw_if_bad_row_dim<Mat>(row);
-    Mat m(semiring, row);
-    matrix::throw_if_bad_entry(m);
-    return m;
-  }
+  [[nodiscard]] Mat
+  make(Semiring const*                                         semiring,
+       std::initializer_list<typename Mat::scalar_type> const& row);
 
   //! \ingroup make_matrix_group
   //!
@@ -290,10 +276,12 @@ namespace libsemigroups {
   //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and \f$n\f$ is the
   //! number of columns of the matrix.
   template <size_t R, size_t C, typename Scalar>
-  ProjMaxPlusMat<R, C, Scalar>
+  [[nodiscard]] ProjMaxPlusMat<R, C, Scalar>
   make(std::initializer_list<std::initializer_list<Scalar>> const& rows) {
     return ProjMaxPlusMat<R, C, Scalar>(
         make<ProjMaxPlusMat<R, C, Scalar>::underlying_matrix_type>(rows));
   }
 }  // namespace libsemigroups
+
+#include "matrix-make.tpp"
 #endif  // LIBSEMIGROUPS_MATRIX_MAKE_HPP_
