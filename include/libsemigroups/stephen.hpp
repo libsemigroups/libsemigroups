@@ -70,7 +70,7 @@ namespace libsemigroups {
   //! \brief For constructing the word graph of left factors of a word in an
   //! f.p. semigroup.
   //!
-  //! Defined in `sims.hpp`.
+  //! Defined in `stephen.hpp`.
   //!
   //! This class implements Stephen's procedure for constructing
   //! the WordGraph corresponding to the left factors of a word in a finitely

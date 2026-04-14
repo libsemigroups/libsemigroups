@@ -1364,7 +1364,7 @@ namespace libsemigroups {
   // RegularDClass
   /////////////////////////////////////////////////////////////////////////////
 
-  // Defined in `konieczny.hpp`.
+  // Defined in `konieczny.tpp`.
   //
   // The nested class Konieczny::RegularDClass inherits from DClass and
   // represents a regular \f$\mathscr{D}\f$-class via a frame as
@@ -1988,7 +1988,7 @@ namespace libsemigroups {
   // NonRegularDClass
   /////////////////////////////////////////////////////////////////////////////
 
-  // Defined in `konieczny.hpp`.
+  // Defined in `konieczny.tpp`.
   //
   // The nested class Konieczny::NonRegularDClass inherits from DClass
   // and represents a regular \f$\mathscr{D}\f$-class via a frame as

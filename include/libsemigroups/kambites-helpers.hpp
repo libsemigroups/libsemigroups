@@ -42,7 +42,7 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing normal forms.
     //!
-    //! Defined in \c kambites.hpp.
+    //! Defined in \c kambites-helpers.hpp.
     //!
     //! This function returns a range object containing short-lex normal forms
     //! of the classes of the congruence represented by a \ref_kambites
@@ -70,7 +70,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper functions for the \ref_kambites class template.
   //!
-  //! Defined in \c kambites.hpp.
+  //! Defined in \c kambites-helpers.hpp.
   //!
   //! This page would contain documentation for helper functions for the
   //! \ref_kambites class template. However, at present, there are no helper
