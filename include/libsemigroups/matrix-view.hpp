@@ -44,7 +44,7 @@ namespace libsemigroups {
 
   //! \brief Class for views into a row of a matrix over a semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-view.hpp`.
   //!
   //! This is a class for views into a row of a matrix over a semiring. An
   //! instance of this class provides access to the elements in a row of a
@@ -523,7 +523,7 @@ namespace libsemigroups {
   //! \brief Row view class for \ref DynamicMatrixStaticArith
   //! "DynamicMatrix (compile-time arithmetic)".
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-view.hpp`.
   //!
   //! This class is the type of row views into a \ref DynamicMatrixStaticArith
   //! "DynamicMatrix (with compile-time arithmetic)" with the same template
@@ -707,7 +707,7 @@ namespace libsemigroups {
   //! \brief Row view class for \ref DynamicMatrixDynamicArith
   //! "DynamicMatrix (run-time arithmetic)".
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-view.hpp`.
   //!
   //! This class is the type of row views into a
   //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)".

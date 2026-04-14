@@ -37,7 +37,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an integer matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function throws an exception if the entries of an integer matrix
   //! are not valid, which is if and only if any of the entries equal
@@ -54,7 +54,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in an integer matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function throws an exception if the entry \p val of an integer
   //! matrix are not valid, which is if and only if the entry \p val equals
@@ -78,7 +78,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check the entries in a boolean matrix are valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -97,7 +97,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check an entry in a boolean matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -122,7 +122,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that a max-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -140,7 +140,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in a max-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that an entry in a matrix
   //! belongs to the underlying semiring.
@@ -163,7 +163,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that a min-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -181,7 +181,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in a min-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that an entry in a matrix
   //! belongs to the underlying semiring.
@@ -204,7 +204,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that a truncated max-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -226,7 +226,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in a truncated max-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -253,7 +253,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that a truncated min-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -275,7 +275,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in a truncated min-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -302,7 +302,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that the entries in an ntp matrix are valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -325,7 +325,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in an ntp matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that a matrix contains values in
   //! the underlying semiring.
@@ -352,7 +352,7 @@ namespace libsemigroups::matrix {
   //! \brief Check that the entries in a projective max-plus matrix are
   //! valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that the matrix \p x contains
   //! values in the underlying semiring, by checking the underlying matrix.
@@ -374,7 +374,7 @@ namespace libsemigroups::matrix {
   //!
   //! \brief Check that an entry in a projective max-plus matrix is valid.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-exceptions.hpp`.
   //!
   //! This function can be used to check that the matrix \p x contains
   //! values in the underlying semiring, using the underlying matrix.

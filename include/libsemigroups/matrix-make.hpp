@@ -46,7 +46,7 @@ namespace libsemigroups {
   //!
   //! \brief Checks the arguments, constructs a matrix, and checks it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! Checks the arguments, constructs a matrix, and checks it.
   //!
@@ -77,7 +77,7 @@ namespace libsemigroups {
   //!
   //! \brief Checks the arguments, constructs a matrix, and checks it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! Checks the arguments, constructs a matrix, and checks it.
   //!
@@ -111,7 +111,7 @@ namespace libsemigroups {
   //!
   //! \brief Constructs a row and checks it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! This function constructs a row from a std::initializer_list and then
   //! calls \ref matrix::throw_if_bad_entry.
@@ -145,7 +145,7 @@ namespace libsemigroups {
   //! \brief Constructs a matrix (from std::initializer_list) and checks
   //! it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! Checks the arguments, constructs a matrix and checks it.
   //!
@@ -186,7 +186,7 @@ namespace libsemigroups {
   //! \brief Constructs a matrix (from std::vector of std::vector) and
   //! checks it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! Checks the arguments, constructs a matrix, and checks it.
   //!
@@ -223,7 +223,7 @@ namespace libsemigroups {
   //!
   //! \brief Constructs a row and checks it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! This function constructs a row and checks it.
   //!
@@ -253,7 +253,7 @@ namespace libsemigroups {
   //! \brief Constructs a projective max-plus matrix (from
   //! std::initializer_list) and checks it.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-make.hpp`.
   //!
   //! Checks the arguments, constructs a matrix, and checks it.
   //!

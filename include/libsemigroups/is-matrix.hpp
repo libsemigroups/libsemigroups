@@ -73,7 +73,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! derived from any of \ref DynamicMatrixStaticArith
@@ -90,7 +90,7 @@ namespace libsemigroups {
   //!
   //! \ingroup matrix_group
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! StaticMatrix; and \c false otherwise.
@@ -103,7 +103,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! DynamicMatrix; and \c false otherwise.
@@ -116,7 +116,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \p T is
   //! DynamicMatrix<Semiring, Scalar>; and \c false otherwise.
@@ -130,7 +130,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! \ref IntMat; and \c false otherwise.
@@ -143,7 +143,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref BMat.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as `BMat<R, C>` for some values of \c R and \c C.
@@ -156,7 +156,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! \ref MaxPlusMat; and \c false otherwise.
@@ -169,7 +169,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! \ref MinPlusMat; and \c false otherwise.
@@ -182,7 +182,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref MaxPlusTruncMat.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as \ref MaxPlusTruncMat for some template parameters; and \c false
@@ -197,7 +197,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref MinPlusTruncMat.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as \ref MinPlusTruncMat for some template parameters; and \c false
@@ -212,7 +212,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref NTPMat.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c U is the
   //! same as \ref NTPMat<T, P, R, C, Scalar> for some values of \c T, \c P,
@@ -226,7 +226,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref ProjMaxPlusMat.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `is-matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as \ref ProjMaxPlusMat<R, C, Scalar> for some values of \c R, \c C,

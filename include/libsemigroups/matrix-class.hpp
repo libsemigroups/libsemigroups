@@ -128,7 +128,7 @@ namespace libsemigroups {
 
   //! \brief Static matrix class.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a class for matrices where both the arithmetic operations in
   //! the underlying semiring, and the dimensions of the matrices are known
@@ -1083,7 +1083,7 @@ namespace libsemigroups {
   //! \brief Class for matrices with compile time arithmetic and run-time
   //! dimensions.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a class for matrices where the arithmetic operations in the
   //! underlying semiring are known at compile time, and the dimensions of the
@@ -1550,7 +1550,7 @@ namespace libsemigroups {
   //!
   //! \brief Class for matrices with run-time arithmetic and dimensions.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a class for matrices where both the arithmetic operations in
   //! the underlying semiring and the dimensions of the matrix can be set at
@@ -2014,7 +2014,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the boolean semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()(bool x, bool y) const noexcept` which returns `x || y`;
@@ -2041,7 +2041,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the boolean semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()(bool x, bool y) const noexcept` which returns `x && y`;
@@ -2068,7 +2068,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the multiplicative identity.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()() const noexcept` which returns \c true; representing
@@ -2093,7 +2093,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the additive identity.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()() const noexcept` which returns \c false;
@@ -2118,7 +2118,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic boolean matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic boolean matrices where the dimensions of
   //! the matrices can be defined at run time.
@@ -2132,7 +2132,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static boolean matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of static boolean matrices where the dimensions of
   //! the matrices are defined at compile time.
@@ -2152,7 +2152,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for boolean matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for boolean matrices.
   //!
@@ -2180,7 +2180,7 @@ namespace libsemigroups {
 
   //! \defgroup intmat_group Integer matrices
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$m \times n\f$  matrices of
   //! integers for arbitrary dimensions \f$m\f$ and \f$n\f$. There are two
@@ -2210,7 +2210,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the ring of integers.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -2241,7 +2241,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the ring of integers.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -2272,7 +2272,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the additive identity.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \c 0; representing
@@ -2297,7 +2297,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the multiplicative identity.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \c 1; representing
@@ -2322,7 +2322,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic integer matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic integer matrices where the dimensions of
   //! the matrices can be defined at run time.
@@ -2339,7 +2339,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static integer matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of static integer matrices where the dimensions of
   //! the matrices can be defined at compile time.
@@ -2364,7 +2364,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for integer matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for integer matrices.
   //!
@@ -2393,7 +2393,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   //! \defgroup maxplusmat_group Max-plus matrices
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the max-plus semiring for arbitrary dimension \f$n\f$. There are
@@ -2424,7 +2424,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the max-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! \tparam Scalar the type of the values in the semiring (must be signed
   //! integer type).
@@ -2467,7 +2467,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the max-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //!  This is a stateless struct with a single call operator of signature:
   //!  `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -2508,7 +2508,7 @@ namespace libsemigroups {
   //! \brief Function object for returning the additive identity of the
   //! max-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \f$-\infty\f$;
@@ -2538,7 +2538,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic max-plus matrices where the dimensions of
   //! the matrices can be defined at run time.
@@ -2555,7 +2555,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for static max-plus matrices whose arithmetic and dimensions are
   //! defined at compile-time.
@@ -2576,7 +2576,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for max-plus matrices.
   //!
@@ -2607,7 +2607,7 @@ namespace libsemigroups {
 
   //! \defgroup minplusmat_group Min-plus matrices
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the min-plus semiring for arbitrary dimension \f$n\f$. There are
@@ -2638,7 +2638,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the min-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept` that returns \f$x
@@ -2679,7 +2679,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the min-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -2720,7 +2720,7 @@ namespace libsemigroups {
   //! \brief Function object for returning the additive identity of the
   //! min-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \f$\infty\f$;
@@ -2750,7 +2750,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic min-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic min-plus matrices where the dimensions of
   //! the matrices can be defined at run time.
@@ -2767,7 +2767,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static min-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for static min-plus matrices whose arithmetic and dimensions are
   //! defined at compile-time.
@@ -2788,7 +2788,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for min-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for min-plus matrices.
   //!
@@ -2819,7 +2819,7 @@ namespace libsemigroups {
 
   //! \defgroup maxplustruncmat_group Truncated max-plus matrices
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the finite quotient of the max-plus semiring by the congruence
@@ -2868,7 +2868,7 @@ namespace libsemigroups {
   //! \brief Function object for multiplication in truncated max-plus
   //! semirings.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -2911,7 +2911,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing a truncated max-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This class represents the **truncated max-plus semiring** consists of
   //! the integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
@@ -3071,7 +3071,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic truncated max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic truncated max-plus matrices where the
   //! dimension is defined at run time, but the threshold is defined at
@@ -3090,7 +3090,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static truncated max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for static truncated max-plus matrices where the threshold and
   //! dimensions are defined at compile-time.
@@ -3111,7 +3111,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for truncated max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for truncated max-plus matrices.
   //!
@@ -3166,7 +3166,7 @@ namespace libsemigroups {
 
   //! \defgroup minplustruncmat_group Truncated min-plus matrices
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the finite quotient of the min-plus semiring by the congruence
@@ -3215,7 +3215,7 @@ namespace libsemigroups {
   //! \brief Function object for multiplication in min-plus truncated
   //! semirings.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept` that returns \f$x
@@ -3255,7 +3255,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing a truncated min-plus semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This class represents the **min-plus truncated semiring** consists of
   //! the integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
@@ -3413,7 +3413,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic truncated min-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic truncated min-plus matrices where the
   //! dimension is defined at run time, but the threshold is defined at
@@ -3432,7 +3432,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static truncated min-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for static truncated min-plus matrices where the threshold and
   //! dimensions are defined at compile-time.
@@ -3454,7 +3454,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for truncated min-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for truncated min-plus matrices.
   //!
@@ -3509,7 +3509,7 @@ namespace libsemigroups {
 
   //! \defgroup ntpmat_group Matrices over the natural numbers mod (t = t + p)
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$ matrices over
   //! the finite quotient of the usual semiring of natural number by the
@@ -3574,7 +3574,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in ntp semirings.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -3615,7 +3615,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in an ntp semirings.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -3638,7 +3638,7 @@ namespace libsemigroups {
   struct NTPProd {
     //! \brief Call operator for multiplication.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-class.hpp`.
     //!
     //! This function returns the product of its arguments in an ntp semiring.
     //!
@@ -3658,7 +3658,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing an ntp semiring.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This class represents the **ntp semiring** consists of the integers
   //! \f$\{0, 1, ..., t, t +  1, ..., t + p - 1\}\f$ for some  \f$t\f$ and
@@ -3855,7 +3855,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for ntp matrices with dynamic threshold and period.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for ntp matrices with dimensions, threshold, and period defined
   //! at runtime.
@@ -3868,7 +3868,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for ntp matrices with static threshold and period.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic ntp matrices where the dimension
   //! is defined at run time, but the threshold and period are defined at
@@ -3889,7 +3889,7 @@ namespace libsemigroups {
   //! \brief Alias for ntp matrices with static threshold and period, and
   //! dimensions.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for static ntp matrices where the threshold, period, and
   //! dimensions are defined at compile-time.
@@ -3916,7 +3916,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for ntp matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for ntp matrices.
   //!
@@ -4316,7 +4316,7 @@ namespace libsemigroups {
 
   //! \defgroup projmaxplus_group Projective max-plus matrices
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$ projective
   //! matrices over the max-plus semiring. Projective max-plus matrices belong
@@ -4364,7 +4364,7 @@ namespace libsemigroups {
   //! \brief Alias for static projective max-plus matrices with compile-time
   //! arithmetic and dimensions.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for static projective max-plus matrices whose arithmetic and
   //! dimensions are defined at compile-time.
@@ -4381,7 +4381,7 @@ namespace libsemigroups {
   //! \brief Alias for dynamic projective max-plus matrices with run-time
   //! dimensions.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias for the type of dynamic projective max-plus matrices where the
   //! dimensions of the matrices can be defined at run time.
@@ -4394,7 +4394,7 @@ namespace libsemigroups {
   //! \ingroup projmaxplus_group
   //! \brief Alias template for projective max-plus matrices.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-class.hpp`.
   //!
   //! Alias template for projective max-plus matrices.
   //!

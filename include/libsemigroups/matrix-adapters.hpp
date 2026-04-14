@@ -33,7 +33,7 @@ namespace libsemigroups {
   //! \brief Documentation for specialization of adapters for matrices
   //! satisfying \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! This page contains the documentation of the functionality in
   //! `libsemigroups` that adapts  objects satisfying \ref IsMatrix for
@@ -47,7 +47,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref Complexity for \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! Specialization of the adapter \ref Complexity for types \p Mat
   //! satisfying \ref IsMatrix<Mat>.
@@ -77,7 +77,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref Degree for \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! Specialization of the adapter \ref Degree for types \p Mat satisfying
   //! \ref IsMatrix<Mat>.
@@ -106,7 +106,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref Hash for \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! Specialization of the adapter \ref Hash for types \p Mat satisfying
   //! \ref IsMatrix<Mat>.
@@ -135,7 +135,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref IncreaseDegree for \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! Specialization of the adapter \ref IncreaseDegree for types \p Mat
   //! satisfying \ref IsMatrix<Mat>.
@@ -161,7 +161,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref One for \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! Specialization of the adapter \ref One for types \p Mat satisfying
   //! \ref IsMatrix.
@@ -194,7 +194,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref Product for \ref IsMatrix.
   //!
-  //! Defined in `matrix.hpp`.
+  //! Defined in `matrix-adapters.hpp`.
   //!
   //! Specialization of the adapter \ref Product for types \p Mat satisfying
   //! \ref IsMatrix<Mat>.

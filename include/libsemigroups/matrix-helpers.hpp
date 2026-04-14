@@ -74,7 +74,7 @@ namespace libsemigroups {
 
     //! \brief Returns the threshold of a matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! The threshold of a matrix that does not have entries in a truncated
     //! semiring is \ref UNDEFINED, and this function returns this value.
@@ -94,7 +94,7 @@ namespace libsemigroups {
 
     //! \brief Returns the threshold of a matrix over a truncated semiring.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the threshold of a matrix over a truncated
     //! semiring.
@@ -114,7 +114,7 @@ namespace libsemigroups {
 
     //! \brief Returns the threshold of a matrix over a truncated semiring.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the threshold of a matrix over a truncated
     //! semiring.
@@ -136,7 +136,7 @@ namespace libsemigroups {
 
     //! \brief Returns the period of a static ntp matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the template parameter \p P of a static ntp
     //! matrix.
@@ -163,7 +163,7 @@ namespace libsemigroups {
 
     //! \brief Returns the period of a dynamic ntp matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the template parameter \p P of a dynamic ntp
     //! matrix.
@@ -186,7 +186,7 @@ namespace libsemigroups {
 
     //! \brief Returns the period of a dynamic ntp matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the period of the dynamic ntp
     //! matrix \p x using its underlying semiring.
@@ -211,7 +211,7 @@ namespace libsemigroups {
 
     //! \brief Returns a power of a matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the matrix \p x to the power \p e.
     //! If \p e is \c 0, then the identity matrix is returned; if
@@ -255,7 +255,7 @@ namespace libsemigroups {
     //! \brief Returns a std::vector of row views into the rows of a dynamic
     //! matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! Returns a std::vector of row views into the rows of the dynamic
     //! matrix \p x.
@@ -281,7 +281,7 @@ namespace libsemigroups {
     //! \brief Returns a static vector of row views into the rows of a static
     //! matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! Returns a static vector of row views into the rows of the static
     //! matrix \p x.
@@ -313,7 +313,7 @@ namespace libsemigroups {
     //! \brief Converts a container of row views of a boolean matrix to bit
     //! sets, and append them to another container.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function converts the row views (of a boolean matrix) in a
     //! container to bit sets and appends them to \p result.
@@ -348,7 +348,7 @@ namespace libsemigroups {
     //! \brief Converts a container of row views of a boolean matrix to bit
     //! sets, and return them.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function converts the container of row views \p views of a
     //! boolean matrix to bit sets, and return them.
@@ -383,7 +383,7 @@ namespace libsemigroups {
     //! \brief Computes the rows of a boolean matrix as bit sets and appends
     //! them to a container.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! Computes the rows of the matrix \p x as bit sets and
     //! appends them to \p result.
@@ -413,7 +413,7 @@ namespace libsemigroups {
 
     //! \brief Computes the rows of a boolean matrix as bit sets.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This functions returns the rows of a boolean matrix as bit sets.
     //!
@@ -439,7 +439,7 @@ namespace libsemigroups {
     //! \brief Appends a basis for the space spanned by some bitsets to a
     //! container.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! Appends a basis for the space spanned by the bitsets in \p rows to
     //! the container \p result.
@@ -465,7 +465,7 @@ namespace libsemigroups {
 
     //! \brief Returns a basis for the space spanned by some bit sets.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! Returns a basis for the space spanned by the bit sets in \p rows.
     //!
@@ -492,7 +492,7 @@ namespace libsemigroups {
     //! \brief Returns a basis for the space spanned by the rows of the
     //! boolean matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns a basis for the space spanned by the rows of the
     //! boolean matrix \p x.
@@ -523,7 +523,7 @@ namespace libsemigroups {
     //! \brief Appends a basis for the rowspace of a boolean matrix to a
     //! container.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function appends a basis for the rowspace of the boolean matrix
     //! \p x to the container \p result.
@@ -553,7 +553,7 @@ namespace libsemigroups {
     //! \brief Appends a basis for a space spanned by row views or bit sets to
     //! a container.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function appends a basis for the space spanned by the row
     //! views or bit sets in \p views to the container \p result.
@@ -596,7 +596,7 @@ namespace libsemigroups {
     //! \brief Appends a row space basis (consisting of row views) for the row
     //! space spanned by some rows.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function appends a basis (consisting of row views) for the row
     //! space spanned by the rows in \p views to the container \p result.
@@ -622,7 +622,7 @@ namespace libsemigroups {
     //! \brief Appends a basis (consisting of row views) for the row space of
     //! a matrix to a container.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function appends a basis (consisting of row views) for the row
     //! space of the matrix \p x to the container \p result.
@@ -651,7 +651,7 @@ namespace libsemigroups {
     //! \brief Returns a row space basis of a dynamic matrix as a std::vector
     //! of row views.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns a row space basis of the dynamic matrix \p x as
     //! a std::vector of row views.
@@ -678,7 +678,7 @@ namespace libsemigroups {
     //! \brief Returns a row space basis of a static matrix as a static vector
     //! of row views.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns a row space basis of the static matrix \p x as a
     //! static vector of row views.
@@ -705,7 +705,7 @@ namespace libsemigroups {
     //! \brief Returns a row basis for the space spanned by a container of
     //! row views.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns a row space basis for the space spanned by the
     //! container \p rows of row views.
@@ -771,7 +771,7 @@ namespace libsemigroups {
 
     //! \brief Returns the size of the row space of a boolean matrix.
     //!
-    //! Defined in `matrix.hpp`.
+    //! Defined in `matrix-helpers.hpp`.
     //!
     //! This function returns the size of the row space of the boolean matrix
     //! \p x. This is currently only implemented for types of matrix `Mat`
