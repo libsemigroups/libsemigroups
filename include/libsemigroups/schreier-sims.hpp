@@ -145,7 +145,7 @@ namespace libsemigroups {
   //! \brief A deterministic version of the Schreier-Sims algorithm acting on a
   //! small number of points.
   //!
-  //! Defined in \c schreier-sims.hpp.
+  //! Defined in `schreier-sims.hpp`.
   //!
   //! This class implements a deterministic version of the Schreier-Sims
   //! algorithm acting on a relatively small number of points (\f$< 1000\f$).

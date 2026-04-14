@@ -53,7 +53,7 @@ namespace libsemigroups {
   //! \brief Class template containing an implementation of the Knuth-Bendix
   //! Algorithm.
   //!
-  //! Defined in \c knuth-bendix-class.hpp.
+  //! Defined in `knuth-bendix-class.hpp`.
   //!
   //! On this page we describe the functionality relating to the Knuth-Bendix
   //! algorithm for semigroups and monoids in \c libsemigroups. This page

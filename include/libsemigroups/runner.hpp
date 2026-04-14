@@ -72,7 +72,7 @@ namespace libsemigroups {
   //! \brief Value indicating forever (system dependent but possibly approx.
   //! 292 years).
   //!
-  //! Defined in \c runner.hpp
+  //! Defined in `runner.hpp`.
   //!
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
@@ -380,7 +380,7 @@ namespace libsemigroups {
   //!
   //! \brief Abstract class for derived classes that run an algorithm.
   //!
-  //! Defined in \c runner.hpp
+  //! Defined in `runner.hpp`.
   //!
   //! Many of the classes in `libsemigroups` implementing the algorithms
   //! that are the reason for the existence of this library, are derived from

@@ -70,7 +70,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper functions for the \ref_congruence class template.
   //!
-  //! Defined in \c cong-helpers.hpp.
+  //! Defined in `cong-helpers.hpp`.
   //!
   //! This page would contain documentation for helper functions for the
   //! \ref_congruence class template. However, at present, there are no helper

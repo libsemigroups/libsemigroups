@@ -652,7 +652,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `presentation.hpp`
+  //! Defined in `presentation.hpp`.
   //!
   //! Deduction guide to construct a `Presentation<Word>` from a
   //! `Presentation<Word> const&`.
@@ -663,7 +663,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `presentation.hpp`
+  //! Defined in `presentation.hpp`.
   //!
   //! Deduction guide to construct a `Presentation<Word>` from a
   //! `Presentation<Word>&&`.

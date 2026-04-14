@@ -54,7 +54,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref FroidurePin object to a \ref_todd_coxeter object.
   //!
-  //! Defined in \c to-todd-coxeter.hpp
+  //! Defined in `to-todd-coxeter.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -104,7 +104,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref_knuth_bendix object to a \ref_todd_coxeter object.
   //!
-  //! Defined in \c to-todd-coxeter.hpp
+  //! Defined in `to-todd-coxeter.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
