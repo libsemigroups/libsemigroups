@@ -59,7 +59,7 @@ namespace libsemigroups {
 
   //! \defgroup kambites_group Kambites
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! On this page there are links to the documentation for the algorithms in
   //! `libsemigroups` for small overlap monoids by Mark %Kambites and the
@@ -131,7 +131,7 @@ namespace libsemigroups {
   //!
   //! \hideinheritancegraph
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! This page describes the class template \ref_kambites for determining the
   //! small overlap class of a presentation, and, for small overlap monoids
@@ -1079,7 +1079,7 @@ namespace libsemigroups {
   //
   //! \brief Deduction guide.
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! Deduction guide to construct a `Kambites<Word>` from a
   //! `Presentation<Word>` const reference.
@@ -1090,7 +1090,7 @@ namespace libsemigroups {
   //
   //! \brief Deduction guide.
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! Deduction guide to construct a `Kambites<Word>` from a
   //! `Presentation<Word>` rvalue reference.
@@ -1101,7 +1101,7 @@ namespace libsemigroups {
   //
   //! \brief Deduction guide.
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! Deduction guide to construct a `Kambites<Word>` from a
   //! `Kambites<Word>` const reference.
@@ -1112,7 +1112,7 @@ namespace libsemigroups {
   //
   //! \brief Deduction guide.
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! Deduction guide to construct a `Kambites<Word>` from a
   //! `Kambites<Word>` rvalue reference.
@@ -1123,7 +1123,7 @@ namespace libsemigroups {
   //!
   //! \brief Return a human readable representation of a \ref_kambites object.
   //!
-  //! Defined in `kambites.hpp`.
+  //! Defined in `kambites-class.hpp`.
   //!
   //! This function returns a human readable representation of a
   //! \ref_kambites object.
