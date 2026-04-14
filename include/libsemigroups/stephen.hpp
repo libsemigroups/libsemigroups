@@ -464,7 +464,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `Presentation<word_type> const&`.
@@ -474,7 +474,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `Presentation<word_type>&`.
@@ -484,7 +484,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `Presentation<word_type>&&`.
@@ -494,7 +494,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `std::shared_ptr<Presentation<word_type>>&&`.
@@ -505,7 +505,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from an `InversePresentation<word_type> const&`.
@@ -516,7 +516,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from an `InversePresentation<word_type>&`.
@@ -527,7 +527,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from an `InversePresentation<word_type>&&`.
@@ -538,7 +538,7 @@ namespace libsemigroups {
   //!
   //! \brief Deduction guide.
   //!
-  //! Defined in `stephen.hpp`
+  //! Defined in `stephen.hpp`.
   //!
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from a `std::shared_ptr<InversePresentation<word_type>>&&`.
@@ -553,7 +553,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper functions for the \ref Stephen class.
   //!
-  //! Defined in \c stephen.hpp.
+  //! Defined in `stephen.hpp`.
   //!
   //! This page contains documentation for some helper functions for the
   //! \ref Stephen class. The helpers documented on this page all belong to the

@@ -64,7 +64,7 @@ namespace libsemigroups {
     //!
     //! \brief Helper functions for the \ref_todd_coxeter class.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This page contains documentation for many helper functions for the
     //! \ref_todd_coxeter class. In particular, these functions include versions
@@ -88,7 +88,7 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -111,7 +111,7 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -134,7 +134,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -157,7 +157,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -179,7 +179,7 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -204,7 +204,7 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -229,7 +229,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -254,7 +254,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -278,7 +278,7 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -300,7 +300,7 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -322,7 +322,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -344,7 +344,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function just calls
     //! \code_no_test
@@ -370,7 +370,7 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! See ToddCoxeter::word_of_no_checks for details.
     //!
@@ -387,7 +387,7 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! See ToddCoxeter::word_of for details.
     //!
@@ -403,7 +403,7 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! See ToddCoxeter::word_of_no_checks for details.
     //!
@@ -419,7 +419,7 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! See ToddCoxeter::word_of for details.
     //!
@@ -440,7 +440,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class with given index.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the class with index \p n in the congruence represented by the
@@ -482,7 +482,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class with given index.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the class with index \p n in the congruence represented by the
@@ -527,7 +527,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a word given by iterators.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the same class as the word (contained in the range from \p first to
@@ -558,7 +558,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a word given by iterators.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the same class as the word (contained in the range from \p first to
@@ -589,7 +589,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -617,7 +617,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -646,7 +646,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -676,7 +676,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -706,7 +706,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -734,7 +734,7 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -773,7 +773,7 @@ namespace libsemigroups {
 
     //! \brief Check if the congruence has more than one class.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! Returns tril::TRUE if it is possible to show that the congruence is
     //! non-trivial; tril::FALSE if the congruence is already known to be
@@ -810,7 +810,7 @@ namespace libsemigroups {
 
     //! \brief Perform a lookbehind.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function performs a "lookbehind" on the argument \p tc which is
     //! defined as follows. For every node \c n in the so-far computed
@@ -878,7 +878,7 @@ namespace libsemigroups {
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Todd-Coxeter algorithm on the rules of the
@@ -925,7 +925,7 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing the normal forms.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns a range object containing normal forms of the
     //! classes of the congruence represented by an instance of
@@ -954,7 +954,7 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns the partition of the words in the range \p r
     //! induced by the \ref_todd_coxeter instance \p tc. This function triggers
@@ -988,7 +988,7 @@ namespace libsemigroups {
     //! \brief Find the non-trivial classes in the partition of the normal
     //! forms of one \ref_todd_coxeter instance in another.
     //!
-    //! Defined in \c todd-coxeter-helpers.hpp.
+    //! Defined in `todd-coxeter-helpers.hpp`.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
     //! partition of the normal forms of \p tc2 according to the

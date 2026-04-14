@@ -216,7 +216,7 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a \ref_kambites
   //!
-  //! Defined in `to-presentation.hpp`
+  //! Defined in `to-presentation.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -280,7 +280,7 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a \ref_todd_coxeter object.
   //!
-  //! Defined in `to-presentation.hpp`
+  //! Defined in `to-presentation.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -344,7 +344,7 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a \ref_congruence
   //!
-  //! Defined in `to-presentation.hpp`
+  //! Defined in `to-presentation.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -408,7 +408,7 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a Stephen object.
   //!
-  //! Defined in `to-presentation.hpp`
+  //! Defined in `to-presentation.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!

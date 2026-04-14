@@ -935,7 +935,7 @@ namespace libsemigroups {
   //!
   //! \brief Insert into std::ostream.
   //!
-  //! Defined in \c knuth-bendix-impl.hpp.
+  //! Defined in `knuth-bendix-impl.hpp`.
   //!
   //! This function allows a \ref_knuth_bendix object to be left shifted into a
   //! std::ostream, such as std::cout. The currently active rules of the
@@ -961,7 +961,7 @@ namespace libsemigroups {
   //!
   //! \brief Return a string representation of a \ref_knuth_bendix instance.
   //!
-  //! Defined in \c knuth-bendix-impl.hpp.
+  //! Defined in `knuth-bendix-impl.hpp`.
   //!
   //! This function returns a string representation of a \ref_knuth_bendix
   //! instance, specifying the size of the underlying alphabet and the number

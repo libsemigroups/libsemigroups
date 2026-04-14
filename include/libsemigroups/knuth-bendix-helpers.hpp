@@ -55,7 +55,7 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing the normal forms.
     //!
-    //! Defined in \c knuth-bendix-helpers.hpp.
+    //! Defined in `knuth-bendix-helpers.hpp`.
     //!
     //! This function returns a range object containing normal forms of the
     //! classes of the congruence represented by an instance of
@@ -90,7 +90,7 @@ namespace libsemigroups {
     //! \brief Find the non-trivial classes of the quotient of one
     //! \ref_knuth_bendix instance in another.
     //!
-    //! Defined in \c knuth-bendix-helpers.hpp.
+    //! Defined in `knuth-bendix-helpers.hpp`.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
     //! normal forms of \p kb2 in \p kb1 (the greater congruence, with fewer
@@ -139,7 +139,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper functions for the \ref_knuth_bendix class.
   //!
-  //! Defined in \c knuth-bendix-helpers.hpp.
+  //! Defined in `knuth-bendix-helpers.hpp`.
   //!
   //! This page contains documentation for some helper functions for the
   //! \ref_knuth_bendix class. In particular, these functions include versions
@@ -164,7 +164,7 @@ namespace libsemigroups {
     //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of
     //! a given length.
     //!
-    //! Defined in \c knuth-bendix-helpers.hpp.
+    //! Defined in `knuth-bendix-helpers.hpp`.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a \ref_knuth_bendix instance by considering all
@@ -194,7 +194,7 @@ namespace libsemigroups {
     //!
     //! \brief Check if the all rules are reduced with respect to each other.
     //!
-    //! Defined in \c knuth-bendix-helpers.hpp.
+    //! Defined in `knuth-bendix-helpers.hpp`.
     //!
     //! \tparam Word the type of the words in the
     //! \ref KnuthBendix::presentation.
@@ -269,7 +269,7 @@ namespace libsemigroups {
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! Defined in \c knuth-bendix-helpers.hpp.
+    //! Defined in `knuth-bendix-helpers.hpp`.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Knuth-Bendix algorithm on the rules of the

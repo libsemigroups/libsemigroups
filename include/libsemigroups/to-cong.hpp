@@ -44,7 +44,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref FroidurePin object to a \ref_congruence.
   //!
-  //! Defined in \c to-cong.hpp
+  //! Defined in `to-cong.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -81,7 +81,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref WordGraph object to a \ref_congruence.
   //!
-  //! Defined in \c to-cong.hpp
+  //! Defined in `to-cong.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!

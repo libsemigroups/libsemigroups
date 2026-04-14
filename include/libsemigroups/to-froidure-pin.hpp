@@ -84,7 +84,7 @@ namespace libsemigroups {
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a Congruence object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -116,7 +116,7 @@ namespace libsemigroups {
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a Kambites object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -154,7 +154,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref_knuth_bendix object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -188,7 +188,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref Konieczny object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -221,7 +221,7 @@ namespace libsemigroups {
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a \ref_todd_coxeter object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -259,7 +259,7 @@ namespace libsemigroups {
   //! \anchor to_froidure_pin
   //! \brief Convert a WordGraph object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! This function converts a WordGraph object to a FroidurePin object.
   //! Unlike the other functions on this page, this function should be invoked
@@ -321,7 +321,7 @@ namespace libsemigroups {
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a WordGraph object to a FroidurePin object.
   //!
-  //! Defined in \c to-froidure-pin.hpp
+  //! Defined in `to-froidure-pin.hpp`.
   //!
   //! Calls `to<FroidurePin>(wg, 0, wg.number_of_nodes())`.
   //!

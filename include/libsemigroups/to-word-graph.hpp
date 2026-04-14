@@ -50,7 +50,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a Forest to a WordGraph.
   //!
-  //! Defined in \c to-word-graph.hpp
+  //! Defined in `to-word-graph.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -74,7 +74,7 @@ namespace libsemigroups {
   //!
   //! \brief Convert a WordGraphView to a WordGraph.
   //!
-  //! Defined in \c to-word-graph.hpp
+  //! Defined in `to-word-graph.hpp`.
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
