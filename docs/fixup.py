@@ -267,6 +267,8 @@ def fix_menu_4(data: str) -> tuple[str, bool]:
     -----
     Does some rather esoteric modifications on `navtree.js`.
     Should work for 1.7.2 <= Doxygen <= 1.10.0
+
+    A commented-out css-only approach is shown in custom.css if this fix ever stops working.
     """
 
     regex = re.compile(
