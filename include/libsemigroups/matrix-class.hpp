@@ -223,7 +223,10 @@ namespace libsemigroups {
     //! \brief Alias for const iterators pointing at entries of a matrix.
     using const_iterator = typename MatrixCommon::const_iterator;
 
+    //! \brief The number of rows of the matrix.
     static constexpr size_t nr_rows = R;
+
+    //! \brief The number of columns of the matrix.
     static constexpr size_t nr_cols = C;
 
     ////////////////////////////////////////////////////////////////////////
