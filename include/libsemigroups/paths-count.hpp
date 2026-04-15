@@ -40,14 +40,14 @@
 #include "word-graph.hpp"          // for WordGraph
 #include "word-range.hpp"          // for number_of_words
 
+// TODO(v4) Remove the below line so this appears in the documentation
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 namespace libsemigroups::v4 {
-  // TODO(v4) Turn this into a doxygen comment once it is moved out of the v4
-  // namespace.
-  // \ingroup word_graph_group
-  //
-  // \brief Namespace containing helper functions for the Paths class.
-  //
-  // This namespace contains helper functions for the Paths class.
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Namespace containing helper functions for the Paths class.
+  //!
+  //! This namespace contains helper functions for the Paths class.
   namespace paths {
     //! An enum for specifying the algorithm to the functions
     //! count().
@@ -279,6 +279,7 @@ namespace libsemigroups::v4 {
                                  algorithm lgrthm = algorithm::automatic);
   }  // namespace paths
 }  // namespace libsemigroups::v4
+#endif
 
 #include "paths-count.tpp"
 
