@@ -107,10 +107,9 @@ namespace libsemigroups {
   //! A row view is a lightweight representation of a row of a matrix. The
   //! following row view classes are provided:
   //!
-  //! * \ref DynamicRowViewStaticArith
-  //! "DynamicRowView (compile-time arithmetic)
-  //! * \ref DynamicRowViewDynamicArith
-  //! "DynamicRowView (run-time arithmetic)
+  //! * \ref DynamicRowViewStaticArith "DynamicRowView (compile-time
+  //! arithmetic)"
+  //! * \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
   //! * \ref StaticRowView
   //!
   //! ## Adapters
@@ -2618,7 +2617,7 @@ namespace libsemigroups {
   //! dimension. The default value of \c N is \c 0.
   //!
   //! The alias \ref MinPlusMatAlias "MinPlusMat" is either \ref StaticMatrix,
-  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic),
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)",
   //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)"
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static and
