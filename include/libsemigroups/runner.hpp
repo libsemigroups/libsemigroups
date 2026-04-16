@@ -578,7 +578,11 @@ namespace libsemigroups {
     // not noexcept because it calls timed_out which is not noexcept
     void report_why_we_stopped() const;
 
-    // TODO(doc)
+    //!\brief Return a string explaining why \ref run stopped.
+    //!
+    //! Returns whether run() was stopped because it is finished(),
+    //! timed_out(), or dead().
+    // not noexcept because it calls timed_out which is not noexcept
     std::string string_why_we_stopped() const;
 
     //! \brief Check if \ref run has been run to completion or not.
