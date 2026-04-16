@@ -578,7 +578,7 @@ namespace libsemigroups {
     // not noexcept because it calls timed_out which is not noexcept
     void report_why_we_stopped() const;
 
-    //!\brief Return a string explaining why \ref run stopped.
+    //! \brief Return a string explaining why \ref run stopped.
     //!
     //! Returns whether run() was stopped because it is finished(),
     //! timed_out(), or dead().
