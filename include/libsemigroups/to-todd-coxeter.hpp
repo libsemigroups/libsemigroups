@@ -59,46 +59,34 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code_no_test
-//! to<ToddCoxeter<Word>>(knd, fpb, wg);
-//! \end_code_no_test
-//!
-//! This function converts the \ref FroidurePin object \p fpb into a
-//! \ref_todd_coxeter object using the WordGraph \p wg (which should be either
-//! the \ref FroidurePinBase::left_cayley_graph or the
-//! \ref FroidurePinBase::right_cayley_graph of \p fpb).
-//!
-//! \tparam Result used for SFINAE, the return type of this function, must be
-//! \c ToddCoxeter<Word> for some type \c Word.
-//! \tparam Node the type of the nodes in the WordGraph \p wg.
-//!
-//! \param knd the kind of the congruence being constructed.
-//! \param fpb the FroidurePin instance to be converted.
-//! \param wg the left or right Cayley graph of \p fpb.
-//!
-//! \returns A \ref_todd_coxeter object representing the trivial congruence
-//! over the semigroup defined by \p fpb.
-//!
-//! \throws LibsemigroupsException if \p wg is not the
-//! \ref FroidurePinBase::left_cayley_graph or the
-//! \ref FroidurePinBase::right_cayley_graph of \p fpb.
-#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  // FIXME(1) doxygen conflates this version of "to" with the one of the same
-  // signature in "to-cong.hpp" and so we misspell one of the types of the
-  // parameters to avoid this
-  template <typename Result, typename Node>
-  auto to(congruence_knd knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
-      -> std::enable_if_t<
-          std::is_same_v<ToddCoxeter<typename Result::native_word_type>,
-                         Result>,
-          Result>;
-#else
+  //! to<ToddCoxeter<Word>>(knd, fpb, wg);
+  //! \end_code_no_test
+  //!
+  //! This function converts the \ref FroidurePin object \p fpb into a
+  //! \ref_todd_coxeter object using the WordGraph \p wg (which should be either
+  //! the \ref FroidurePinBase::left_cayley_graph or the
+  //! \ref FroidurePinBase::right_cayley_graph of \p fpb).
+  //!
+  //! \tparam Result used for SFINAE, the return type of this function, must be
+  //! \c ToddCoxeter<Word> for some type \c Word.
+  //! \tparam Node the type of the nodes in the WordGraph \p wg.
+  //!
+  //! \param knd the kind of the congruence being constructed.
+  //! \param fpb the FroidurePin instance to be converted.
+  //! \param wg the left or right Cayley graph of \p fpb.
+  //!
+  //! \returns A \ref_todd_coxeter object representing the trivial congruence
+  //! over the semigroup defined by \p fpb.
+  //!
+  //! \throws LibsemigroupsException if \p wg is not the
+  //! \ref FroidurePinBase::left_cayley_graph or the
+  //! \ref FroidurePinBase::right_cayley_graph of \p fpb.
   template <typename Result, typename Node>
   auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
       -> std::enable_if_t<
           std::is_same_v<ToddCoxeter<typename Result::native_word_type>,
                          Result>,
           Result>;
-#endif
 
   //! \ingroup to_todd_coxeter_group
   //!
