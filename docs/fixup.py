@@ -268,7 +268,8 @@ def fix_menu_4(data: str) -> tuple[str, bool]:
     Does some rather esoteric modifications on `navtree.js`.
     Should work for 1.7.2 <= Doxygen <= 1.10.0
 
-    A commented-out css-only approach is shown in custom.css if this fix ever stops working.
+    This function is no longer called, and the problem is instead fixed using
+    in custom.css.
     """
 
     regex = re.compile(
@@ -383,7 +384,6 @@ if __name__ == "__main__":
     modify_in_place("./html/navtreedata.js", fix_menu_3_part_1)
     modify_in_place("./html/navtreeindex0.js", fix_menu_3_part_2)
     modify_in_place("./html/navtree.js", fix_menu_3_part_3)
-    modify_in_place("./html/navtree.js", fix_menu_4)
     modify_in_place_all_files("./html/*.html", fix_pages_1)
     modify_in_place(
         "./html/group__todd__coxeter__class__settings__group.html",

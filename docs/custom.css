@@ -13,21 +13,13 @@
   height: 72px;
 }
 
-#nav-tree .label[role="heading"] {
-  text-transform: uppercase;
-  color: var(--primary-dark-color);
-  font-weight: 600;
-}
-
-/*
-If we want to reduce the dependence on fixup.py for adding nav-bar headers,
-we can replace fix_menu_4 in fixup.py and the above block with the block below.
-*/
-/* #nav-tree ._HEADING_ {
+/* Add headings to the navbar*/
+#nav-tree [href="_HEADING_"],
+#main-nav [href="_HEADING_"] {
   text-transform: uppercase;
   color: var(--primary-dark-color);
   font-weight: 600;
   pointer-events: none;
   cursor: default;
   text-decoration: none;
-} */
+}
