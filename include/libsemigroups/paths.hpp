@@ -53,13 +53,14 @@
 #include "detail/path-iterators.hpp"  // for default_postfix_increment
 
 namespace libsemigroups {
+  // TODO(1): Remove this from the documentation?
   //! \ingroup word_graph_group
   //!
   //! \brief Namespace containing helper functions for the Paths class.
   //!
   //! This namespace contains helper functions for the Paths class.
   namespace paths {
-    //! \copydoc v4::paths::algorithm
+    //! An enum for specifying the algorithm to the functions count().
     using algorithm [[deprecated]] = v4::paths::algorithm;
   }  // namespace paths
 
