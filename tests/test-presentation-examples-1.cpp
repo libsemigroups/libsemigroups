@@ -63,6 +63,7 @@ namespace libsemigroups {
     REQUIRE(catalan_monoid_Sol96(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid_Fer22_a(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid_Fer22_b(5).contains_empty_word());
+    REQUIRE(double_catalan_monoid_MS12(5).contains_empty_word());
     REQUIRE(dual_symmetric_inverse_monoid_EEF07(5).contains_empty_word());
     REQUIRE(!fibonacci_semigroup_CRRT94(5, 2).contains_empty_word());
     REQUIRE(full_transformation_monoid_Aiz58(5).contains_empty_word());
@@ -1226,6 +1227,71 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(catalan_monoid(0), LibsemigroupsException);
     REQUIRE_NOTHROW(catalan_monoid(1));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "104",
+                          "double_catalan_monoid degree except",
+                          "[pres-examples][quick]") {
+    auto rg = ReportGuard(false);
+    REQUIRE_THROWS_AS(double_catalan_monoid(0), LibsemigroupsException);
+    REQUIRE_NOTHROW(double_catalan_monoid(1));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "105",
+                          "double_catalan_monoid(n), 1 <= n <= 5",
+                          "[pres-examples][quick]") {
+    auto rg = ReportGuard(false);
+
+    auto p = double_catalan_monoid(1);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.alphabet().empty());
+    REQUIRE(p.rules.empty());
+
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 1);
+
+    p = double_catalan_monoid(2);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.alphabet().size() == 1);
+    REQUIRE(p.rules.size() == 2);
+
+    tc.init(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 2);
+
+    p = double_catalan_monoid(3);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.alphabet().size() == 2);
+    REQUIRE(p.rules.size() == 6);
+
+    tc.init(congruence_kind::twosided, p);
+    REQUIRE(tc.number_of_classes() == 6);
+
+    p = double_catalan_monoid(4);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.alphabet().size() == 3);
+    REQUIRE(p.rules.size() == 14);
+    tc.init(congruence_kind::twosided, p);
+
+    REQUIRE(tc.number_of_classes() == 23);
+
+    p = double_catalan_monoid(5);
+    p.throw_if_bad_alphabet_or_rules();
+    REQUIRE(p.alphabet().size() == 4);
+    REQUIRE(p.rules.size() / 2 == 3 * 5 - 6 + 3);
+    tc.init(congruence_kind::twosided, p);
+
+    REQUIRE(tc.number_of_classes() == 103);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "100",
+                          "double_catalan_monoid(8)",
+                          "[pres-examples][quick]") {
+    auto        rg = ReportGuard(false);
+    ToddCoxeter tc(congruence_kind::twosided, double_catalan_monoid(8));
+    REQUIRE(tc.number_of_classes() == 15'767);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Example",

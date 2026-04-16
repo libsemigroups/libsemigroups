@@ -444,6 +444,29 @@ namespace libsemigroups {
       return p;
     }
 
+    Presentation<word_type> double_catalan_monoid_MS12(size_t n) {
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 1, found {}", n);
+      }
+
+      Presentation<word_type> p;
+      if (n == 1) {
+        p.contains_empty_word(true);
+        return p;
+      }
+
+      p.alphabet(n - 1).contains_empty_word(true);
+      presentation::add_idempotent_rules_no_checks(p, range(0, n - 1));
+      add_coxeter_common(p, n);
+
+      for (letter_type i = 0; i + 3 < n; ++i) {
+        presentation::add_rule_no_checks(
+            p, {i, i + 1, i + 2, i + 1, i}, {i, i + 1, i + 2, i, i + 1, i});
+      }
+      return p;
+    }
+
     Presentation<word_type> stylic_monoid_AR22(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(

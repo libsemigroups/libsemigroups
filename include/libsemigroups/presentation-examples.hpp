@@ -51,6 +51,7 @@ namespace libsemigroups {
     Presentation<word_type> catalan_monoid(size_t n);
     Presentation<word_type> chinese_monoid(size_t n);
     Presentation<word_type> cyclic_inverse_monoid(size_t n);
+    Presentation<word_type> double_catalan_monoid(size_t n);
     Presentation<word_type> dual_symmetric_inverse_monoid(size_t n);
     Presentation<word_type> fibonacci_semigroup(size_t r, size_t n);
     Presentation<word_type> full_transformation_monoid(size_t n);
@@ -225,6 +226,22 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
     cyclic_inverse_monoid_Fer22_b(size_t n);
+
+    //! \brief A presentation for the double Catalan monoid.
+    //!
+    //! This function returns a monoid presentation defining the double
+    //! Catalan monoid of degree \p n, as in Theorem 14 of
+    //! \cite Mazorchuk2012aa.
+    //!
+    //! This presentation has \f$n - 1\f$ generators and
+    //! \f$3n - 6 + \frac{1}{2}(n - 2)(n - 3)\f$ relations when \f$n \geq 4\f$.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type> double_catalan_monoid_MS12(size_t n);
 
     //! \brief A presentation for the dual symmetric inverse monoid.
     //!
@@ -893,6 +910,21 @@ namespace libsemigroups {
     [[nodiscard]] inline Presentation<word_type>
     cyclic_inverse_monoid(size_t n) {
       return cyclic_inverse_monoid_Fer22_b(n);
+    }
+
+    //! \copydoc double_catalan_monoid_MS12
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `double_catalan_monoid_MS12`, and exists as a convenience function for
+    //! when a presentation for the double Catalan monoid is required, but the
+    //! relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `double_catalan_monoid_MS12`.
+    [[nodiscard]] inline Presentation<word_type>
+    double_catalan_monoid(size_t n) {
+      return double_catalan_monoid_MS12(n);
     }
 
     //! \copydoc dual_symmetric_inverse_monoid_EEF07
