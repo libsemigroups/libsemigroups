@@ -63,7 +63,7 @@ namespace libsemigroups {
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! \ref_knuth_bendix object using the presentation obtained using
-  //! \ref to<Presentation<Word>>(FroidurePinBase&).
+  //! `to<Presentation<Word>>(FroidurePinBase&)`.
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
   //! `KnuthBendix<Word, Rewriter>` for some type \c Word and \c Rewriter.
@@ -73,6 +73,8 @@ namespace libsemigroups {
   //!
   //! \returns A \ref_knuth_bendix object representing the trivial congruence
   //! over the semigroup defined by \p fpb.
+  //!
+  //! \sa \ref to_presentation_group
   template <typename Result>
   auto to(congruence_kind knd, FroidurePinBase& fpb) -> std::enable_if_t<
       std::is_same_v<KnuthBendix<typename Result::native_word_type,
