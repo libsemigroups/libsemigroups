@@ -172,6 +172,7 @@ namespace libsemigroups {
   struct LambdaValue<Mat>
 #endif
   {
+    //! The maximum width of BitSet on the system.
     static constexpr size_t N = BitSet<1>::max_size();
 
     //! \brief The type of Lambda Values.

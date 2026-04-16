@@ -43,6 +43,7 @@ namespace libsemigroups {
   struct ImageRightAction<Mat,
                           typename LambdaValue<Mat>::type,
                           std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+    //! The type of the result.
     using result_type = typename LambdaValue<Mat>::type;
     //! Stores the image of \p pt under the right action of \p p in \p res.
     void operator()(result_type&       res,
@@ -58,6 +59,7 @@ namespace libsemigroups {
   struct ImageLeftAction<Mat,
                          typename RhoValue<Mat>::type,
                          std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+    //! The type of the result.
     using result_type = typename RhoValue<Mat>::type;
     // not noexcept because the constructor of std::vector isn't
     //! Stores the image of \p pt under the left action of \p p in \p res.
@@ -105,6 +107,7 @@ namespace libsemigroups {
   struct Lambda<Mat,
                 typename LambdaValue<Mat>::type,
                 std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+    //! The type of the result.
     using result_type = typename LambdaValue<Mat>::type;
     //! Modifies \p res to contain the row space basis of \p x.
     void operator()(result_type& res, Mat const& x) const {
