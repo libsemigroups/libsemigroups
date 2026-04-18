@@ -1,0 +1,193 @@
+name: Update libsemigroups_pybind11
+
+on:
+  release:
+    types: [published]
+
+  # Allow manual trigger for testing or re-running after a failure
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to use (e.g. v3.5.5)"
+        required: true
+        type: string
+
+concurrency:
+  group: pybind11-update
+  cancel-in-progress: false
+
+jobs:
+  update-pybind11:
+    runs-on: ubuntu-latest
+
+    # Skip pre-releases and drafts (only applies to release trigger)
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.release.prerelease == false &&
+       github.event.release.draft == false)
+
+    env:
+      PYBIND11_REPO: "libsemigroups/libsemigroups_pybind11"
+      UPSTREAM_REPO: "libsemigroups/libsemigroups"
+      VERSION_FILE: "build_tools/__init__.py"
+
+    steps:
+      - name: Resolve tag and version
+        id: meta
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${{ github.event.release.tag_name }}"
+          fi
+
+          VERSION="${TAG#v}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version '${VERSION}' (from tag '${TAG}') is not a valid X.Y.Z semver string"
+            exit 1
+          fi
+
+          echo "tag=$TAG"         >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "branch=update-libsemigroups-v${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing PR
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.LIBSEMIGROUPS_BOT_PAT }}
+        run: |
+          set -euo pipefail
+
+          BRANCH="${{ steps.meta.outputs.branch }}"
+
+          COUNT=$(gh api \
+            "repos/${PYBIND11_REPO}/pulls?state=open&head=libsemigroups-bot:${BRANCH}" \
+            --jq 'length' 2>/dev/null || echo "0")
+
+          if [[ "$COUNT" != "0" ]]; then
+            echo "::warning::An open PR already exists for branch ${BRANCH} — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fork and checkout libsemigroups_pybind11
+        if: steps.check.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.LIBSEMIGROUPS_BOT_PAT }}
+        run: |
+          set -euo pipefail
+
+          # Ensure the bot has a fork (idempotent)
+          gh repo fork "$PYBIND11_REPO" --clone=false 2>/dev/null || true
+
+          # Clone the bot's fork
+          git clone --depth=1 "https://x-access-token:${GH_TOKEN}@github.com/libsemigroups-bot/libsemigroups_pybind11.git" pybind11
+          cd pybind11
+
+          # Sync fork with upstream
+          git remote add upstream "https://github.com/${PYBIND11_REPO}.git"
+          git fetch upstream main --depth=1
+          git reset --hard upstream/main
+          git push origin main --force
+
+      - name: Verify version file
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f "pybind11/${VERSION_FILE}" ]]; then
+            echo "::error::Version file not found at ${VERSION_FILE}"
+            exit 1
+          fi
+
+          if ! grep -qP 'return\s+"[0-9]+\.[0-9]+\.[0-9]+"' "pybind11/${VERSION_FILE}"; then
+            echo "::error::Cannot find version string in ${VERSION_FILE}"
+            exit 1
+          fi
+
+      - name: Patch version
+        if: steps.check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          FILE="pybind11/${VERSION_FILE}"
+          cp "$FILE" "$FILE.orig"
+
+          # Update: return "X.Y.Z"
+          sed -i -E "s|(return\s+\")[0-9]+\.[0-9]+\.[0-9]+(\".*$)|\1${NEW_VERSION}\2|" "$FILE"
+
+          # Validate
+          echo "──── diff ────"
+          diff "$FILE.orig" "$FILE" || true
+          echo "───────────────"
+
+          # Verify the substitution landed
+          grep -q "\"${NEW_VERSION}\"" "$FILE" \
+            || { echo "::error::Version not updated"; exit 1; }
+
+          rm "$FILE.orig"
+          echo "Version patched to ${NEW_VERSION}"
+
+      - name: Commit and push
+        if: steps.check.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.LIBSEMIGROUPS_BOT_PAT }}
+        run: |
+          set -euo pipefail
+
+          cd pybind11
+          BRANCH="${{ steps.meta.outputs.branch }}"
+
+          # Clean up stale remote branch from a prior failed run
+          git push origin --delete "$BRANCH" 2>/dev/null || true
+
+          git checkout -b "$BRANCH"
+          git config user.name  "libsemigroups-bot"
+          git config user.email "libsemigroups-bot@users.noreply.github.com"
+          git add "$VERSION_FILE"
+
+          if git diff --cached --quiet; then
+            echo "::error::No changes staged — ${VERSION_FILE} may already be at v${{ steps.meta.outputs.version }}"
+            exit 1
+          fi
+
+          git commit -m "Bump libsemigroups -> v${{ steps.meta.outputs.version }}"
+          git push origin "$BRANCH"
+
+      - name: Open pull request
+        if: steps.check.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.LIBSEMIGROUPS_BOT_PAT }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${{ steps.meta.outputs.version }}"
+          BRANCH="${{ steps.meta.outputs.branch }}"
+
+          RELEASE_URL="https://github.com/${UPSTREAM_REPO}/releases/tag/${{ steps.meta.outputs.tag }}"
+
+          PR_BODY="Updates the minimum required version of \`libsemigroups\` to [v${VERSION}](${RELEASE_URL}).
+
+          **Changes to \`${VERSION_FILE}\`:**
+          - \`minimum_libsemigroups_version()\`: \`${VERSION}\`
+
+          ---
+          _This PR was opened automatically by the [libsemigroups release workflow](https://github.com/${UPSTREAM_REPO}/actions/workflows/update-pybind11.yml)._
+
+          _Note that this account is not managed, please direct any queries towards @james-d-mitchell or @jswent._"
+
+          PR_URL=$(gh pr create \
+            --repo "$PYBIND11_REPO" \
+            --head "libsemigroups-bot:${BRANCH}" \
+            --base main \
+            --title "Bump libsemigroups -> v${VERSION}" \
+            --body "$PR_BODY")
+
+          echo "PR created: $PR_URL"
+          echo "::notice::libsemigroups_pybind11 PR opened at ${PR_URL}"
