@@ -17,18 +17,19 @@
 //
 
 // 1) doc TODO(1)
-// 2) tpp file TODO(1)
 
 #ifndef LIBSEMIGROUPS_BITSET_HPP_
 #define LIBSEMIGROUPS_BITSET_HPP_
 
-#include <array>        // for array
 #include <bitset>       // for bitset
 #include <climits>      // for CHAR_BIT
 #include <cstddef>      // for size_t
-#include <iosfwd>       // for operator<<, ostringstream
-#include <type_traits>  // for false_type
-#include <utility>      // for hash
+#include <cstdint>      // for uint64_t, uint_fast16_t, uint_fast32_t
+#include <functional>   // for hash
+#include <iosfwd>       // for ostringstream, ostream
+#include <iterator>     // for distance
+#include <memory>       // for hash
+#include <type_traits>  // for conditional, conditional_t, false_type
 
 #include "config.hpp"     // for LIBSEMIGROUPS_SIZEOF_VOID_P
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
@@ -128,20 +129,7 @@ namespace libsemigroups {
     BitSet& operator=(BitSet&&) noexcept      = default;
 
     template <typename T>
-    BitSet(T first, T last) : BitSet() {
-      LIBSEMIGROUPS_ASSERT(first <= last);
-      size_t const K = std::distance(first, last);
-      if (K > size()) {
-        LIBSEMIGROUPS_EXCEPTION("the size of the container is {}, trying to "
-                                "initialize with {} items",
-                                size(),
-                                K)
-      }
-      auto it = first;
-      for (size_t i = 0; i < K; ++i, ++it) {
-        set(i, *it);
-      }
-    }
+    BitSet(T first, T last);
 
     ~BitSet() = default;
 
@@ -200,31 +188,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    BitSet& set(size_t pos, bool value = true) noexcept {
-      LIBSEMIGROUPS_ASSERT(pos < N);
-      if (value) {
-        _block |= mask(pos);
-      } else {
-        _block &= ~mask(pos);
-      }
-      return *this;
-    }
+    BitSet& set(size_t pos, bool value = true) noexcept;
 
-    BitSet& set(size_t first, size_t last, bool value) noexcept {
-      LIBSEMIGROUPS_ASSERT(first < N);
-      LIBSEMIGROUPS_ASSERT(last <= N);
-      LIBSEMIGROUPS_ASSERT(first < last);
-      block_type m = ~0;
-      m            = (m >> first);
-      m            = (m << (first + (block_count() - last)));
-      m            = (m >> (block_count() - last));
-      if (value) {
-        _block |= m;
-      } else {
-        _block &= ~m;
-      }
-      return *this;
-    }
+    BitSet& set(size_t first, size_t last, bool value) noexcept;
 
     BitSet& reset() noexcept {
       _block = 0;
@@ -237,12 +203,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    BitSet& reset(size_t first, size_t last) {
-      LIBSEMIGROUPS_ASSERT(first < N);
-      LIBSEMIGROUPS_ASSERT(last <= N);
-      LIBSEMIGROUPS_ASSERT(first < last);
-      return set(first, last, false);
-    }
+    BitSet& reset(size_t first, size_t last);
 
     size_t count() const noexcept {
       clear_hi_bits();
@@ -250,43 +211,11 @@ namespace libsemigroups {
     }
 
     template <typename S>
-    void apply(S&& func) const {
-#if LIBSEMIGROUPS_USE_CLZLL && defined(LIBSEMIGROUPS_HAVE___BUILTIN_CLZLL)
-      block_type block = _block;
-      while (block != 0) {
-        block_type t = block & -block;
-        size_t     i = static_cast<size_t>(__builtin_ctzll(block));
-        if (i >= size()) {
-          break;
-        }
-        func(i);
-        block ^= t;
-      }
-#else
-      for (size_t i = 0; i < size(); ++i) {
-        if (test(i)) {
-          func(i);
-        }
-      }
-#endif
-    }
+    void apply(S&& func) const;
 
     block_type to_int() const noexcept {
       clear_hi_bits();
       return _block;
-    }
-
-    friend std::ostringstream& operator<<(std::ostringstream& os,
-                                          BitSet<N> const&    bs) {
-      for (size_t i = 0; i < N; ++i) {
-        os << bs.test(i);
-      }
-      return os;
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, BitSet<N> const& bs) {
-      os << detail::to_string(bs);
-      return os;
     }
 
    private:
@@ -386,6 +315,15 @@ namespace libsemigroups {
   template <typename T>
   static constexpr bool IsBitSet = detail::IsBitSetHelper<T>::value;
 
+  template <size_t N>
+  std::ostringstream& operator<<(std::ostringstream& os, BitSet<N> const& bs);
+
+  template <size_t N>
+  std::ostream& operator<<(std::ostream& os, BitSet<N> const& bs) {
+    os << detail::to_string(bs);
+    return os;
+  }
+
   namespace detail {
     struct LessBitSet {
       // not noexcept because std::bitset<N>::to_ullong throws
@@ -414,4 +352,7 @@ namespace std {
     }
   };
 }  // namespace std
+
+#include "bitset.tpp"
+
 #endif  // LIBSEMIGROUPS_BITSET_HPP_
