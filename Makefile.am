@@ -52,6 +52,7 @@ pkginclude_HEADERS += include/libsemigroups/aho-corasick.hpp
 pkginclude_HEADERS += include/libsemigroups/aho-corasick.tpp
 pkginclude_HEADERS += include/libsemigroups/bipart.hpp
 pkginclude_HEADERS += include/libsemigroups/bitset.hpp
+pkginclude_HEADERS += include/libsemigroups/bitset.tpp
 pkginclude_HEADERS += include/libsemigroups/bmat-adapters.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat-fastest.hpp
 pkginclude_HEADERS += include/libsemigroups/bmat8.hpp
