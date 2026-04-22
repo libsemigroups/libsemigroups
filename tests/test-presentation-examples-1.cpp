@@ -98,6 +98,7 @@ namespace libsemigroups {
     REQUIRE(renner_type_B_monoid_Gay18(5, 1).contains_empty_word());
     REQUIRE(renner_type_D_monoid_Gay18(5, 0).contains_empty_word());
     REQUIRE(renner_type_D_monoid_Gay18(5, 1).contains_empty_word());
+    REQUIRE(shifted_plactic_monoid_Ser09(5).contains_empty_word());
     REQUIRE(singular_brauer_monoid_MM07(5).contains_empty_word());
     REQUIRE(special_linear_group_2_CR80(5).contains_empty_word());
     REQUIRE(stellar_monoid_GH19(5).contains_empty_word());
