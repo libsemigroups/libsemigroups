@@ -326,4 +326,14 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(braid_group(1), LibsemigroupsException);
     REQUIRE_THROWS_AS(braid_group(2), LibsemigroupsException);
   }
+  LIBSEMIGROUPS_TEST_CASE("Example",
+                          "107",
+                          "shifted_plactic_monoid_Ser09(3) KnuthBendix",
+                          "[Example][quick]") {
+    auto        rg = ReportGuard(false);
+    KnuthBendix kb(congruence_kind::twosided, shifted_plactic_monoid_Ser09(3));
+    REQUIRE(is_obviously_infinite(kb));
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+  }
+
 }  // namespace libsemigroups

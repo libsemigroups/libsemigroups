@@ -478,6 +478,90 @@ namespace libsemigroups {
       return p;
     }
 
+    // Theorem 1.4 of https://doi.org/10.1007/s00209-011-0874-9 (Serrano)
+    Presentation<word_type> shifted_plactic_monoid_Ser09(size_t n) {
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 1, found {}", n);
+      }
+      Presentation<word_type> p;
+      p.alphabet(n);
+
+      // (1.3): abdc = adbc for a <= b <= c < d
+      for (size_t d = 1; d < n; ++d) {
+        for (size_t c = 0; c < d; ++c) {
+          for (size_t b = 0; b <= c; ++b) {
+            for (size_t a = 0; a <= b; ++a) {
+              presentation::add_rule_no_checks(p, {a, b, d, c}, {a, d, b, c});
+            }
+          }
+        }
+      }
+      // (1.4): acdb = acbd and (1.10): cadb = cdab for a <= b < c <= d
+      for (size_t d = 0; d < n; ++d) {
+        for (size_t c = 0; c <= d; ++c) {
+          for (size_t b = 0; b < c; ++b) {
+            for (size_t a = 0; a <= b; ++a) {
+              presentation::add_rule_no_checks(p, {a, c, d, b}, {a, c, b, d});
+              presentation::add_rule_no_checks(p, {c, a, d, b}, {c, d, a, b});
+            }
+          }
+        }
+      }
+
+      // (1.5): dacb = adcb for a <= b < c < d
+      for (size_t d = 1; d < n; ++d) {
+        for (size_t c = 0; c < d; ++c) {
+          for (size_t b = 0; b < c; ++b) {
+            for (size_t a = 0; a <= b; ++a) {
+              presentation::add_rule_no_checks(p, {d, a, c, b}, {a, d, c, b});
+            }
+          }
+        }
+      }
+
+      // (1.6): badc = bdac and (1.8): dbca = bdca for a < b <= c < d
+      for (size_t d = 1; d < n; ++d) {
+        for (size_t c = 0; c < d; ++c) {
+          for (size_t b = 0; b <= c; ++b) {
+            for (size_t a = 0; a < b; ++a) {
+              presentation::add_rule_no_checks(p, {b, a, d, c}, {b, d, a, c});
+              presentation::add_rule_no_checks(p, {d, b, c, a}, {b, d, c, a});
+            }
+          }
+        }
+      }
+
+      // (1.7): cbda = cdba for a < b < c <= d
+      for (size_t d = 0; d < n; ++d) {
+        for (size_t c = 0; c <= d; ++c) {
+          for (size_t b = 0; b < c; ++b) {
+            for (size_t a = 0; a < b; ++a) {
+              presentation::add_rule_no_checks(p, {c, b, d, a}, {c, d, b, a});
+            }
+          }
+        }
+      }
+
+      // (1.8): see 1.6
+
+      // (1.9): bcda = bcad for a < b <= c <= d
+      for (size_t d = 0; d < n; ++d) {
+        for (size_t c = 0; c <= d; ++c) {
+          for (size_t b = 0; b <= c; ++b) {
+            for (size_t a = 0; a < b; ++a) {
+              presentation::add_rule_no_checks(p, {b, c, d, a}, {b, c, a, d});
+            }
+          }
+        }
+      }
+
+      // (1.10): see 1.4
+
+      p.contains_empty_word(true);
+      return p;
+    }
+
     // This presentation is due to Burnside [p. 464] and Miller [p. 366] in 1911
     // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
     // approach' J. Amer. Math. Soc. 21 (2008), 711-774
