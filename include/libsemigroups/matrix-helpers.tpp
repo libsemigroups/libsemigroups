@@ -112,7 +112,7 @@ namespace libsemigroups {
                     "C must be at most BitSet<1>::max_size()!");
       LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= C);
       LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= R);
-      bitset_rows<Mat>(std::move(rows(x)), result);
+      bitset_rows<Mat>(rows(x), result);
     }
 
     template <typename Mat>
@@ -121,7 +121,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= BitSet<1>::max_size());
       LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= BitSet<1>::max_size());
       size_t const M = detail::BitSetCapacity<Mat>::value;
-      return bitset_rows<Mat, M, M>(std::move(rows(x)));
+      return bitset_rows<Mat, M, M>(rows(x));
     }
 
     template <typename Mat, typename Container>
@@ -151,7 +151,7 @@ namespace libsemigroups {
           }
         }
         if (cup != rows[i]) {
-          result.push_back(std::move(rows[i]));
+          result.push_back(rows[i]);
         }
       }
     }
@@ -176,7 +176,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= BitSet<1>::max_size());
       LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= BitSet<1>::max_size());
       detail::StaticVector1<BitSet<M>, M> result;
-      bitset_row_basis<Mat>(std::move(bitset_rows(x)), result);
+      bitset_row_basis<Mat>(bitset_rows(x), result);
       return result;
     }
 
@@ -188,7 +188,7 @@ namespace libsemigroups {
                     "Container::value_type must be BitSet or std::bitset");
       LIBSEMIGROUPS_ASSERT(x.number_of_rows() <= BitSet<1>::max_size());
       LIBSEMIGROUPS_ASSERT(x.number_of_cols() <= BitSet<1>::max_size());
-      bitset_row_basis<Mat>(std::move(bitset_rows(x)), result);
+      bitset_row_basis<Mat>(bitset_rows(x), result);
     }
 
     template <typename Mat, typename Container>
@@ -255,8 +255,10 @@ namespace libsemigroups {
       }
 
       // Convert RowViews to BitSets
-      size_t const M  = detail::BitSetCapacity<Mat>::value;
-      auto         br = bitset_rows<Mat, M, M>(std::forward<Container>(views));
+      size_t const M = detail::BitSetCapacity<Mat>::value;
+      // if views is an rvalue reference and we forward it here, then we cannot
+      // use it later in this function!
+      auto br           = bitset_rows<Mat, M, M>(views);
       using bitset_type = typename decltype(br)::value_type;
 
       // Map for converting bitsets back to row views
@@ -328,9 +330,9 @@ namespace libsemigroups {
 
     template <typename Mat, typename>
     size_t row_space_size(Mat const& x) {
-      size_t const M                 = detail::BitSetCapacity<Mat>::value;
-      auto         bitset_row_basis_ = bitset_row_basis<Mat>(
-          std::move(bitset_rows<Mat, M, M>(std::move(rows(x)))));
+      size_t const M = detail::BitSetCapacity<Mat>::value;
+      auto         bitset_row_basis_
+          = bitset_row_basis<Mat>(bitset_rows<Mat, M, M>(rows(x)));
 
       std::unordered_set<BitSet<M>> st;
       st.insert(bitset_row_basis_.cbegin(), bitset_row_basis_.cend());
@@ -343,6 +345,7 @@ namespace libsemigroups {
             cup.set(j, cup[j] || row[j]);
           }
           if (st.insert(cup).second) {
+            // cup is a copy of orb[i] so ok to move
             orb.push_back(std::move(cup));
           }
         }

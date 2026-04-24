@@ -645,7 +645,7 @@ namespace libsemigroups {
               typename Container,
               typename = std::enable_if_t<IsMatrix<Mat>>>
     void row_basis(Mat const& x, Container& result) {
-      row_basis<Mat>(std::move(rows(x)), result);
+      row_basis<Mat>(rows(x), result);
     }
 
     //! \brief Returns a row space basis of a dynamic matrix as a std::vector
