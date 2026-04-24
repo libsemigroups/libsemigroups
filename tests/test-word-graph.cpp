@@ -1000,18 +1000,17 @@ namespace libsemigroups {
     auto wg = v4::make<WordGraph<size_t>>(
         7, {{1, 3, 5}, {2, 4}, {}, {6}, {}, {4}, {}});
 
-    auto const [expected, expected_words]
-        = canonical_wreath_standardization(wg);
+    auto const expected = canonical_wreath_standardization(wg);
 
     REQUIRE(!v4::word_graph::is_standardized(wg, Order::wreath));
 
     Forest f;
     REQUIRE(v4::word_graph::standardize(wg, f, Order::wreath));
-    REQUIRE(wg == expected);
+    REQUIRE(wg == expected.first);
     REQUIRE(v4::word_graph::is_standardized(wg, Order::wreath));
-    REQUIRE(words_from_forest(f) == expected_words);
+    REQUIRE(words_from_forest(f) == expected.second);
     REQUIRE(
-        expected_words
+        expected.second
         == std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 1}, {2}}));
   }
 }  // namespace libsemigroups
