@@ -143,10 +143,12 @@ namespace libsemigroups {
       std::vector<Node> p(wg.number_of_nodes());
       std::iota(p.begin(), p.end(), static_cast<Node>(0));
       std::sort(p.begin(), p.end(), [&minimal_words, &wg](Node lhs, Node rhs) {
-        if (wreath_less(minimal_words[lhs], minimal_words[rhs], wg.out_degree())) {
+        if (wreath_less(
+                minimal_words[lhs], minimal_words[rhs], wg.out_degree())) {
           return true;
         }
-        if (wreath_less(minimal_words[rhs], minimal_words[lhs], wg.out_degree())) {
+        if (wreath_less(
+                minimal_words[rhs], minimal_words[lhs], wg.out_degree())) {
           return false;
         }
         return lhs < rhs;
@@ -172,7 +174,8 @@ namespace libsemigroups {
       std::vector<word_type> result(f.number_of_nodes());
       for (Forest::node_type node = 1; node < f.number_of_nodes(); ++node) {
         auto current = node;
-        while (current != UNDEFINED && f.parent_no_checks(current) != UNDEFINED) {
+        while (current != UNDEFINED
+               && f.parent_no_checks(current) != UNDEFINED) {
           result[node].push_back(f.label_no_checks(current));
           current = f.parent_no_checks(current);
         }
@@ -989,14 +992,16 @@ namespace libsemigroups {
     REQUIRE(words_from_forest(f) == minimal_wreath_words(canonical));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "048",
-                          "wreath standardization | recursive three-letter case",
-                          "[quick][word-graph]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "WordGraph",
+      "048",
+      "wreath standardization | recursive three-letter case",
+      "[quick][word-graph]") {
     auto wg = v4::make<WordGraph<size_t>>(
         7, {{1, 3, 5}, {2, 4}, {}, {6}, {}, {4}, {}});
 
-    auto const [expected, expected_words] = canonical_wreath_standardization(wg);
+    auto const [expected, expected_words]
+        = canonical_wreath_standardization(wg);
 
     REQUIRE(!v4::word_graph::is_standardized(wg, Order::wreath));
 
@@ -1005,7 +1010,8 @@ namespace libsemigroups {
     REQUIRE(wg == expected);
     REQUIRE(v4::word_graph::is_standardized(wg, Order::wreath));
     REQUIRE(words_from_forest(f) == expected_words);
-    REQUIRE(expected_words == std::vector<word_type>(
-                                  {{}, {0}, {0, 0}, {1}, {1, 0}, {0, 1}, {2}}));
+    REQUIRE(
+        expected_words
+        == std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 1}, {2}}));
   }
 }  // namespace libsemigroups
