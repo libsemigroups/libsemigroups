@@ -157,8 +157,10 @@ jobs:
       - name: Test in FreeBSD
         uses: vmactions/freebsd-vm@v1
         with:
+          release: "14.3"
           usesh: true
           prepare: |
+            pkg update -f
             pkg install -y autoconf automake libtool
           run: |
             ./autogen.sh
