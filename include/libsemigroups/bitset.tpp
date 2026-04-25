@@ -22,7 +22,7 @@
 namespace libsemigroups {
   template <size_t N>
   template <typename T>
-  BitSet<N>::BitSet(T first, T last) {
+  BitSet<N>::BitSet(T first, T last) : BitSet() {
     LIBSEMIGROUPS_ASSERT(first <= last);
     size_t const K = std::distance(first, last);
     if (K > size()) {

@@ -44,6 +44,23 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("BitSet",
+                                   "018",
+                                   "range constructor",
+                                   "[bitset][quick]",
+                                   BITSET_TYPES) {
+    bool     values[] = {true, false, true, false, false, true};
+    TestType bs(values, values + 6);
+
+    REQUIRE(bs.count() == 3);
+    REQUIRE(bs[0]);
+    REQUIRE(!bs[1]);
+    REQUIRE(bs[2]);
+    REQUIRE(!bs[3]);
+    REQUIRE(!bs[4]);
+    REQUIRE(bs[5]);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("BitSet",
                                    "001",
                                    "operator<",
                                    "[bitset][quick]",
