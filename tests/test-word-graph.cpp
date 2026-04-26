@@ -16,7 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>        // for size_t
+#include <algorithm>      // for min_element, reverse, sort
+#include <cstddef>        // for ptrdiff_t, size_t
+#include <numeric>        // for iota
 #include <stdexcept>      // for runtime_error
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
@@ -38,6 +40,150 @@ namespace libsemigroups {
   using namespace literals;
 
   struct LibsemigroupsException;  // forward decl
+
+  namespace {
+    std::vector<word_type> wreath_blocks(word_type const& word,
+                                         letter_type      largest_letter) {
+      std::vector<word_type> result(1);
+      for (auto letter : word) {
+        if (letter == largest_letter) {
+          result.emplace_back();
+        } else {
+          result.back().push_back(letter);
+        }
+      }
+      return result;
+    }
+
+    bool wreath_less(word_type const& lhs,
+                     word_type const& rhs,
+                     size_t           alphabet_size) {
+      if (alphabet_size <= 1) {
+        return lhs.size() < rhs.size();
+      }
+
+      auto const largest_letter = static_cast<letter_type>(alphabet_size - 1);
+      auto const lhs_blocks     = wreath_blocks(lhs, largest_letter);
+      auto const rhs_blocks     = wreath_blocks(rhs, largest_letter);
+
+      if (lhs_blocks.size() != rhs_blocks.size()) {
+        return lhs_blocks.size() < rhs_blocks.size();
+      }
+
+      for (size_t i = 0; i < lhs_blocks.size(); ++i) {
+        if (wreath_less(lhs_blocks[i], rhs_blocks[i], alphabet_size - 1)) {
+          return true;
+        }
+        if (wreath_less(rhs_blocks[i], lhs_blocks[i], alphabet_size - 1)) {
+          return false;
+        }
+      }
+      return false;
+    }
+
+    template <typename Node>
+    std::vector<word_type> minimal_wreath_words(WordGraph<Node> const& wg) {
+      struct Candidate {
+        word_type word;
+        Node      node;
+      };
+
+      // This best-first search computes the true minimal word of each
+      // reachable state directly from the wreath order, independently of the
+      // standardization routine under test.
+      auto const nr_reachable
+          = v4::word_graph::number_of_nodes_reachable_from(wg, 0);
+      std::vector<bool>      seen(wg.number_of_nodes(), false);
+      std::vector<word_type> result(wg.number_of_nodes());
+      std::vector<Candidate> frontier = {{{}, 0}};
+      size_t                 done     = 0;
+
+      while (done < nr_reachable) {
+        auto const it = std::min_element(
+            frontier.cbegin(),
+            frontier.cend(),
+            [&wg](Candidate const& lhs, Candidate const& rhs) {
+              if (wreath_less(lhs.word, rhs.word, wg.out_degree())) {
+                return true;
+              }
+              if (wreath_less(rhs.word, lhs.word, wg.out_degree())) {
+                return false;
+              }
+              return lhs.node < rhs.node;
+            });
+        REQUIRE(it != frontier.cend());
+
+        auto current = *it;
+        frontier.erase(frontier.begin()
+                       + static_cast<std::ptrdiff_t>(it - frontier.cbegin()));
+        if (seen[current.node]) {
+          continue;
+        }
+        seen[current.node]   = true;
+        result[current.node] = current.word;
+        ++done;
+
+        for (letter_type x = 0; x < wg.out_degree(); ++x) {
+          auto const next = wg.target_no_checks(current.node, x);
+          if (next != UNDEFINED && !seen[next]) {
+            auto word = current.word;
+            word.push_back(x);
+            frontier.push_back({std::move(word), next});
+          }
+        }
+      }
+      return result;
+    }
+
+    template <typename Node>
+    std::pair<WordGraph<Node>, std::vector<word_type>>
+    canonical_wreath_standardization(WordGraph<Node> const& wg) {
+      auto const minimal_words = minimal_wreath_words(wg);
+
+      std::vector<Node> p(wg.number_of_nodes());
+      std::iota(p.begin(), p.end(), static_cast<Node>(0));
+      std::sort(p.begin(), p.end(), [&minimal_words, &wg](Node lhs, Node rhs) {
+        if (wreath_less(
+                minimal_words[lhs], minimal_words[rhs], wg.out_degree())) {
+          return true;
+        }
+        if (wreath_less(
+                minimal_words[rhs], minimal_words[lhs], wg.out_degree())) {
+          return false;
+        }
+        return lhs < rhs;
+      });
+
+      std::vector<Node> q(wg.number_of_nodes());
+      for (Node i = 0; i < wg.number_of_nodes(); ++i) {
+        q[p[i]] = i;
+      }
+
+      WordGraph<Node> result = wg;
+      result.standardize(p, q);
+
+      std::vector<word_type> ordered_words;
+      ordered_words.reserve(p.size());
+      for (auto node : p) {
+        ordered_words.push_back(minimal_words[node]);
+      }
+      return {std::move(result), std::move(ordered_words)};
+    }
+
+    std::vector<word_type> words_from_forest(Forest const& f) {
+      std::vector<word_type> result(f.number_of_nodes());
+      for (Forest::node_type node = 1; node < f.number_of_nodes(); ++node) {
+        auto current = node;
+        while (current != UNDEFINED
+               && f.parent_no_checks(current) != UNDEFINED) {
+          result[node].push_back(f.label_no_checks(current));
+          current = f.parent_no_checks(current);
+        }
+        std::reverse(result[node].begin(), result[node].end());
+      }
+      return result;
+    }
+  }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "000",
@@ -802,5 +948,69 @@ namespace libsemigroups {
                           "[quick]") {
     WordGraph<uint32_t> wg(0, 1);
     REQUIRE_THROWS_AS(wg.disjoint_union_inplace(wg), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "046",
+                          "wreath standardization | textbook example",
+                          "[quick][word-graph]") {
+    auto wg = v4::make<WordGraph<size_t>>(
+        6, {{1, 3}, {2}, {0, 5}, {4}, {UNDEFINED, 2}, {0}});
+
+    auto const expected_words
+        = std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 0, 1}});
+    REQUIRE(minimal_wreath_words(wg) == expected_words);
+    REQUIRE(v4::word_graph::is_standardized(wg, Order::wreath));
+
+    Forest f;
+    REQUIRE(!v4::word_graph::standardize(wg, f, Order::wreath));
+    REQUIRE(v4::word_graph::is_standardized(wg, Order::wreath));
+    REQUIRE(words_from_forest(f) == expected_words);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "047",
+                          "wreath standardization | permuted textbook example",
+                          "[quick][word-graph]") {
+    auto canonical = v4::make<WordGraph<size_t>>(
+        6, {{1, 3}, {2}, {0, 5}, {4}, {UNDEFINED, 2}, {0}});
+    auto permuted = canonical;
+
+    std::vector<size_t> p({0, 3, 5, 1, 4, 2});
+    std::vector<size_t> q(p.size(), 0);
+    for (size_t i = 0; i < p.size(); ++i) {
+      q[p[i]] = i;
+    }
+    permuted.standardize(p, q);
+
+    REQUIRE(!v4::word_graph::is_standardized(permuted, Order::wreath));
+
+    Forest f;
+    REQUIRE(v4::word_graph::standardize(permuted, f, Order::wreath));
+    REQUIRE(permuted == canonical);
+    REQUIRE(v4::word_graph::is_standardized(permuted, Order::wreath));
+    REQUIRE(words_from_forest(f) == minimal_wreath_words(canonical));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "WordGraph",
+      "048",
+      "wreath standardization | recursive three-letter case",
+      "[quick][word-graph]") {
+    auto wg = v4::make<WordGraph<size_t>>(
+        7, {{1, 3, 5}, {2, 4}, {}, {6}, {}, {4}, {}});
+
+    auto const expected = canonical_wreath_standardization(wg);
+
+    REQUIRE(!v4::word_graph::is_standardized(wg, Order::wreath));
+
+    Forest f;
+    REQUIRE(v4::word_graph::standardize(wg, f, Order::wreath));
+    REQUIRE(wg == expected.first);
+    REQUIRE(v4::word_graph::is_standardized(wg, Order::wreath));
+    REQUIRE(words_from_forest(f) == expected.second);
+    REQUIRE(
+        expected.second
+        == std::vector<word_type>({{}, {0}, {0, 0}, {1}, {1, 0}, {0, 1}, {2}}));
   }
 }  // namespace libsemigroups
