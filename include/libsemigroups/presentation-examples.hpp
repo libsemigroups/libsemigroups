@@ -73,6 +73,7 @@ namespace libsemigroups {
     Presentation<word_type> rectangular_band(size_t m, size_t n);
     Presentation<word_type> renner_type_B_monoid(size_t l, int q);
     Presentation<word_type> renner_type_D_monoid(size_t l, int q);
+    Presentation<word_type> shifted_plactic_monoid(size_t n);
     Presentation<word_type>
     sigma_plactic_monoid(std::vector<size_t> const& sigma);
     Presentation<word_type> singular_brauer_monoid(size_t n);
@@ -619,6 +620,20 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `q != 0` or `q != 1`.
     [[nodiscard]] Presentation<word_type> renner_type_D_monoid_Gay18(size_t l,
                                                                      int    q);
+
+    //! \brief A presentation for the shifted plactic monoid.
+    //!
+    //! This function returns a monoid presentation for the shifted plactic
+    //! monoid with \p n generators, as defined in Theorem 1.4 of
+    //! \cite Serrano2009aa.
+    //!
+    //! \param n the number of generators.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type>
+    shifted_plactic_monoid_Ser09(size_t n);
 
     //! \brief A presentation for the \f$\sigma\f$-plactic monoid.
     //!
@@ -1290,6 +1305,21 @@ namespace libsemigroups {
     [[nodiscard]] inline Presentation<word_type> renner_type_D_monoid(size_t l,
                                                                       int q) {
       return renner_type_D_monoid_Gay18(l, q);
+    }
+
+    //! \copydoc shifted_plactic_monoid_Ser09
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `shifted_plactic_monoid_Ser09`, and exists as a convenience function for
+    //! when a presentation for the shifted plactic monoid is required, but the
+    //! particular relations in the presentation are not important.
+    //!
+    //! \sa
+    //! `shifted_plactic_monoid_Ser09`
+    [[nodiscard]] inline Presentation<word_type>
+    shifted_plactic_monoid(size_t n) {
+      return shifted_plactic_monoid_Ser09(n);
     }
 
     //! \copydoc sigma_plactic_monoid_AHMNT24
