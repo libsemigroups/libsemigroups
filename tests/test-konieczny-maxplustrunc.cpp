@@ -654,8 +654,8 @@ namespace libsemigroups {
                 {NEGATIVE_INFINITY,
                  NEGATIVE_INFINITY,
                  NEGATIVE_INFINITY,
-                 0,
-                 NEGATIVE_INFINITY},
+                 NEGATIVE_INFINITY,
+                 0},
                 {NEGATIVE_INFINITY,
                  NEGATIVE_INFINITY,
                  NEGATIVE_INFINITY,
@@ -687,5 +687,30 @@ namespace libsemigroups {
     S.run();
 
     REQUIRE(S.size() == 114'557'165);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "037",
+                          "dynamic tropical max-plus mats (dim 2, threshold 9)",
+                          "[quick][konieczny][tropmaxplus]") {
+    using Mat             = MaxPlusTruncMat<9>;
+    std::vector<Mat> gens = {Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})};
+    Konieczny        S    = make<Konieczny>(gens);
+    REQUIRE(S.size() == 20);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "038",
+                          "dynamic tropical max-plus mats (dim 2, threshold 5)",
+                          "[quick][konieczny][tropmaxplus]") {
+    using Mat             = MaxPlusTruncMat<5>;
+    std::vector<Mat> gens = {
+        Mat({{1, 3}, {2, 1}}),
+        Mat({{2, 1}, {4, 0}}),
+        Mat({{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, 0}}),
+        Mat({{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
+        Mat({{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})};
+    Konieczny S = make<Konieczny>(gens);
+    REQUIRE(S.size() == 173);
   }
 }  // namespace libsemigroups

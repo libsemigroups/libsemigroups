@@ -30,7 +30,7 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "040",
+                          "042",
                           "partial transformations",
                           "[quick][ptransf]") {
     auto      rg = ReportGuard(false);
@@ -56,7 +56,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "041",
+                          "043",
                           "partial transformations - JDM favourite example",
                           "[quick][no-valgrind][ptransf]") {
     auto      rg = ReportGuard(false);
@@ -82,7 +82,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "042",
+                          "044",
                           "partial transformations - large example",
                           "[quick][no-valgrind][ptransf]") {
     auto              rg = ReportGuard(false);
@@ -113,7 +113,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "043",
+                          "045",
                           "partial transformations: contains",
                           "[quick][ptransf]") {
     auto      rg = ReportGuard(false);
@@ -157,7 +157,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "044",
+                          "046",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
     auto rg = ReportGuard(false);

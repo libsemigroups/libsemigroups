@@ -326,6 +326,30 @@ namespace libsemigroups {
       return result;
     }
 
+    // TODO: merge this with the above function
+    template <typename Mat, typename Container, typename>
+    std::vector<typename Mat::Row> row_basis_rows(Container&& rows) {
+      using value_type = typename std::decay_t<Container>::value_type;
+      static_assert(IsMatrix<Mat>, "IsMatrix<Mat> must be true!");
+      static_assert(std::is_same_v<value_type, typename Mat::Row>,
+                    "Container::value_type must be Mat::Row");
+
+      std::vector<typename Mat::RowView>                     rvs;
+      std::unordered_map<typename Mat::scalar_type*, size_t> lookup;
+
+      for (size_t i = 0; i < rows.size(); ++i) {
+        auto rv = typename Mat::RowView(rows[i]);
+        rvs.push_back(rv);
+        lookup.insert({&(*rv.begin()), i});
+      }
+      std::decay_t<Container> result;
+      for (auto rv : row_basis<Mat>(rvs)) {
+        auto&& row = rows[lookup.at(&(*rv.begin()))];
+        result.push_back(std::forward<decltype(row)>(row));
+      }
+      return result;
+    }
+
     template <typename Mat, typename>
     size_t row_space_size(Mat const& x) {
       size_t const M                 = detail::BitSetCapacity<Mat>::value;

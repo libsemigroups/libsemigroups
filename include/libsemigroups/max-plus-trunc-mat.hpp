@@ -36,7 +36,7 @@ namespace libsemigroups {
   // ////////////////////////////////////////////////////////////////////////
 
   //! Specialization of the adapter ImageRightAction for
-  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N>
+  //! LambdaValue<Mat>::type and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageLeftAction.
   template <typename Mat>
@@ -51,7 +51,7 @@ namespace libsemigroups {
   };
 
   //! Specialization of the adapter ImageLeftAction for
-  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N>
+  //! LambdaValue<Mat>::type and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageRightAction.
   template <typename Mat>
@@ -79,9 +79,18 @@ namespace libsemigroups {
   //!
   //! \sa RhoValue, Lambda.
   template <typename Mat>
-  struct LambdaValue<Mat, std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+  struct LambdaValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsStaticMatrix<Mat>>> {
     using type =
         typename detail::StaticVector1<typename Mat::Row, Mat::nr_rows>;
+  };
+
+  template <typename Mat>
+  struct LambdaValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsDynamicMatrix<Mat>>> {
+    using type = typename std::vector<typename Mat::Row>;
   };
 
   //! Specialization of the adapter RhoValue for instances of MaxPlusTruncMat<T,
@@ -89,7 +98,9 @@ namespace libsemigroups {
   //!
   //! \sa LambdaValue, Rho.
   template <typename Mat>
-  struct RhoValue<Mat, std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+  struct RhoValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsStaticMatrix<Mat>>> {
     //! For MaxPlusTruncMat<T, N>, \c type is StaticVector1<MaxPlusTruncMat<T,
     //! N>::Row, N>.
     //! This represents the column space basis of the BMats.
@@ -97,8 +108,18 @@ namespace libsemigroups {
         typename detail::StaticVector1<typename Mat::Row, Mat::nr_rows>;
   };
 
+  template <typename Mat>
+  struct RhoValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsDynamicMatrix<Mat>>> {
+    //! For MaxPlusTruncMat<T, N>, \c type is StaticVector1<MaxPlusTruncMat<T,
+    //! N>::Row, N>.
+    //! This represents the column space basis of the BMats.
+    using type = typename std::vector<typename Mat::Row>;
+  };
+
   //! Specialization of the adapter Lambda for instances of MaxPlusTruncMat<T,
-  //! N> and StaticVector1<MaxPlusTruncMat<T, N>, N>.
+  //! N> and LambdaValue<Mat>::type.
   //!
   //! \sa LambdaValue, Rho.
   template <typename Mat>
@@ -114,7 +135,7 @@ namespace libsemigroups {
   };
 
   //! Specialization of the adapter Rho for instances of MaxPlusTruncMat<T, N>
-  //! and StaticVector1<MaxPlusTruncMat<T, N>, N>.
+  //! and RhoValue<Mat>::type.
   //!
   //! \sa Lambda, RhoValue.
   template <typename Mat>
