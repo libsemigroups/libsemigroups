@@ -765,6 +765,12 @@ namespace libsemigroups {
     [[nodiscard]] detail::StaticVector1<typename Mat::Row, Mat::nr_rows>
     row_basis_rows(Container&& rows);
 
+    template <typename Mat,
+              typename Container,
+              typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
+    [[nodiscard]] std::vector<typename Mat::Row>
+    row_basis_rows(Container&& rows);
+
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - row_space_size
     ////////////////////////////////////////////////////////////////////////
