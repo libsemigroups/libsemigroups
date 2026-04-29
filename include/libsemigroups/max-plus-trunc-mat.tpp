@@ -21,7 +21,7 @@ namespace libsemigroups {
   void ImageRightAction<Mat,
                         typename LambdaValue<Mat>::type,
                         std::enable_if_t<IsMaxPlusTruncMat<Mat>>>::
-       operator()(result_type& res, result_type const& pt, Mat const& x) const {
+  operator()(result_type& res, result_type const& pt, Mat const& x) const {
     using scalar_type = typename Mat::scalar_type;
     res.clear();
     // TODO this is bad but I don't see any good ways around it
@@ -30,8 +30,10 @@ namespace libsemigroups {
     result_type prod_rows;
 
     for (size_t r = 0; r < pt.size(); ++r) {
-      typename Mat::Row row;
-      for (size_t c = 0; c < Mat::nr_cols; ++c) {
+      // create an arbitrary row of the correct size
+      typename Mat::Row row(*rows.cbegin());
+      // set the values correctly
+      for (size_t c = 0; c < x.number_of_cols(); ++c) {
         row(0, c) = std::inner_product(
             pt[r].cbegin(),
             pt[r].cend(),
@@ -43,21 +45,26 @@ namespace libsemigroups {
       }
       prod_rows.emplace_back(std::move(row));
     }
+
     const_cast<Mat*>(&x)->transpose();
     res = std::move(matrix::row_basis_rows<Mat>(prod_rows));
   }
 
   template <typename Mat>
   size_t Rank<Mat, RankState<Mat>, std::enable_if_t<IsMaxPlusTruncMat<Mat>>>::
-         operator()(Mat const& x) const {
+  operator()(Mat const& x) const {
     using row_type = typename Mat::Row;
     auto row_views = matrix::rows(x);
     RightAction<row_type, row_type, matrix::RowSum<row_type>> orb;
-    row_type                                                  seed;
+
+    // create an arbitrary row of the correct size
+    row_type seed(*row_views.cbegin());
+    // zero it out
     for (auto it = seed.begin(); it != seed.end(); ++it) {
       *it = MaxPlusZero<typename Mat::scalar_type>()();
     }
     orb.add_seed(seed);
+
     std::unordered_set<row_type, Hash<row_type>> gens;
     for (auto const& row : row_views) {
       for (typename Mat::scalar_type i = 0;
