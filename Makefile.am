@@ -219,6 +219,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/
 catch2include_HEADERS = third_party/Catch2-3.14.0/catch_amalgamated.hpp
 
+if USE_BUNDLED_MAGIC_ENUM
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
 magicenuminclude_HEADERS = third_party/magic_enum-0.9.7/include/magic_enum/magic_enum.hpp
 magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_all.hpp
@@ -229,6 +230,7 @@ magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magi
 magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_iostream.hpp
 magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_switch.hpp
 magicenuminclude_HEADERS += third_party/magic_enum-0.9.7/include/magic_enum/magic_enum_utility.hpp
+endif
 
 rxrangesincludedir = $(includedir)/libsemigroups/rx
 rxrangesinclude_HEADERS = third_party/rx-ranges/include/rx/ranges.hpp
