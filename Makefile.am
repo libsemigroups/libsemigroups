@@ -8,11 +8,13 @@ AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.14.0
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
 AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
+if USE_BUNDLED_MAGIC_ENUM
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
+endif
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
 AM_CXXFLAGS += $(HPCOMBI_CXXFLAGS)
 endif
