@@ -2162,6 +2162,34 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
+    // TODO(0): To hpp
+    // TODO(0): Doc
+    // TODO(0): Checks
+    // TODO(0): InversePresentation specific implementation
+    template <typename Word>
+    void add_commutator_rule(Presentation<Word>&                      p,
+                             Word const&                              word1,
+                             Word const&                              word2,
+                             Word const&                              inverses,
+                             typename Presentation<Word>::letter_type id
+                             = UNDEFINED) {
+      Word lhs = words::commutator(word1, word2, p.alphabet(), inverses);
+      Word rhs = (id == UNDEFINED ? Word({}) : Word({id}));
+      add_rule_no_checks(p, lhs, rhs);
+    }
+
+    inline void add_commutator_rule(
+        Presentation<std::string>&                      p,
+        std::string_view                                word1,
+        std::string_view                                word2,
+        std::string_view                                inverses,
+        typename Presentation<std::string>::letter_type id = UNDEFINED) {
+      // TODO(0): Use the no_checks version?
+      std::string lhs = words::commutator(word1, word2, p.alphabet(), inverses);
+      std::string rhs = (id == UNDEFINED ? std::string({}) : std::string({id}));
+      add_rule_no_checks(p, lhs, rhs);
+    }
+
     //! \brief Try to detect group inverses.
     //!
     //! This function tries to deduce group theoretic inverses defined by the

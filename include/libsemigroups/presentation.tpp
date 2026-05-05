@@ -316,42 +316,8 @@ namespace libsemigroups {
     template <typename Word1, typename Word2>
     void throw_if_bad_inverses(Presentation<Word1> const& p,
                                Word2 const&               vals) {
-      if (vals.size() != p.alphabet().size()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "invalid number of inverses, expected {} but found {}",
-            p.alphabet().size(),
-            vals.size());
-      }
-      // throw_if_bad_alphabet_or_rules word after checking the size so that we
-      // get a more meaningful exception message
       p.throw_if_letter_not_in_alphabet(vals.begin(), vals.end());
-
-      Word1 cpy(vals);
-      std::sort(cpy.begin(), cpy.end());
-      for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
-        if (*it == *(it + 1)) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "invalid inverses, the letter {} is duplicated!",
-              detail::to_printable(*it));
-        }
-      }
-
-      // Check that (x ^ - 1) ^ -1 = x
-      for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        for (size_t j = 0; j < p.alphabet().size(); ++j) {
-          if (p.letter_no_checks(j) == vals[i]) {
-            if (vals[j] != p.letter_no_checks(i)) {
-              LIBSEMIGROUPS_EXCEPTION(
-                  "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
-                  detail::to_printable(p.letter_no_checks(i)),
-                  detail::to_printable(vals[i]),
-                  detail::to_printable(vals[i]),
-                  detail::to_printable(vals[j]));
-            }
-            break;
-          }
-        }
-      }
+      words::throw_if_bad_inverses(p.alphabet(), vals);
     }
 
     template <typename Word1, typename Word2>

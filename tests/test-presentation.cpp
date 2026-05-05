@@ -3420,7 +3420,7 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bb"s),
                           "invalid inverses, the letter 'b' is duplicated!");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bac"s),
-                          "invalid number of inverses, expected 2 but found 3");
+                          "invalid letter 'c', valid letters are \"ab\"");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "abc"s, "ba"s),
                           "invalid number of inverses, expected 3 but found 2");
   }
@@ -3497,6 +3497,24 @@ namespace libsemigroups {
     REQUIRE(presentation::index_rule(p, 000_w, ""_w) == 0);
     REQUIRE(presentation::index_rule(p, ""_w, 10_w) == UNDEFINED);
     REQUIRE(presentation::index_rule(p, {}, {1, 0}) == UNDEFINED);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "093",
+                                   "helpers add_commutator_rules",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type) {
+    using W            = TestType;
+    auto            rg = ReportGuard(false);
+    Presentation<W> p;
+    p.alphabet({0, 1, 2, 3});
+    p.contains_empty_word(true);
+    presentation::add_commutator_rules(p, {0}, {1}, {2, 3, 0, 1});
+    presentation::add_commutator_rules(p, {2, 0}, {1}, {2, 3, 0, 1});
+
+    REQUIRE(p.rules
+            == std::vector<W>({{2, 3, 0, 1}, {}, {2, 0, 3, 2, 0, 1}, {}}));
   }
 
 }  // namespace libsemigroups
