@@ -4,7 +4,6 @@
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp
-AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.14.0
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
@@ -13,14 +12,17 @@ AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
 AM_CXXFLAGS += $(MAGICENUM_CFLAGS)
+AM_CXXFLAGS += $(CATCH2_CFLAGS) $(CATCH2MAIN_CFLAGS)
 if USE_BUNDLED_MAGIC_ENUM
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
+endif
+if USE_BUNDLED_CATCH
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/Catch2-3.14.0
+CATCH2_SOURCES = third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
 endif
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
 AM_CXXFLAGS += $(HPCOMBI_CXXFLAGS)
 endif
-
-CATCH2_SOURCES = third_party/Catch2-3.14.0/catch_amalgamated_patch.cpp
 
 AM_LDFLAGS  =  -no-undefined -lpthread $(FMT_LIBS)
 
@@ -219,8 +221,10 @@ detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 
+if USE_BUNDLED_CATCH
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.14.0/
 catch2include_HEADERS = third_party/Catch2-3.14.0/catch_amalgamated.hpp
+endif
 
 if USE_BUNDLED_MAGIC_ENUM
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
