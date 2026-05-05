@@ -15,10 +15,17 @@ AC_DEFUN([AX_CHECK_MAGIC_ENUM], [
     # The version constraint is to ensure that the headers relative to
     # $includedir are magic_enum/foo.hpp. In 0.9.6, the magic_enum/
     # prefix was not used.
-    PKG_CHECK_MODULES(MAGICENUM, [magic_enum >= 0.9.7], [
-      AC_MSG_NOTICE([external magic_enum will be used])
+    m4_ifdef([PKG_CHECK_MODULES], [
+      PKG_CHECK_MODULES(MAGICENUM, [magic_enum >= 0.9.7], [
+        AC_MSG_NOTICE([external magic_enum will be used])
+      ], [
+        AC_MSG_ERROR([external magic_enum not found])
+      ])
     ], [
-      AC_MSG_ERROR([external magic_enum not found])
+      AC_MSG_ERROR(m4_normalize([
+        cannot use flag --with-external-magic-enum, the libsemigroups configure file
+        was created on a system without m4 macros for pkg-config available...
+      ]))
     ])
   ])
   AM_CONDITIONAL([USE_BUNDLED_MAGIC_ENUM], [test "x$with_external_magic_enum" != xyes])
