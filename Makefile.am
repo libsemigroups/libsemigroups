@@ -12,6 +12,7 @@ AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
+AM_CXXFLAGS += $(MAGICENUM_CFLAGS)
 if USE_BUNDLED_MAGIC_ENUM
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/magic_enum-0.9.7/include
 endif
