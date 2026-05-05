@@ -51,7 +51,7 @@ jobs:
 
   external-deps:
     timeout-minutes: 45
-    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }} ${{ matrix.external-magic-enum }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -65,14 +65,18 @@ jobs:
         external-eigen:
           - --with-external-eigen
           - ""
+        external-magic-enum:
+          - --with-external-magic-enum
+          - ""
         exclude:
           - external-backward: ""
             external-fmt: ""
             external-eigen: ""
+            external-magic-enum: ""
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
-      CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
+      CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }} ${{ matrix.external-magic-enum }}
       PKG_CONFIG_PATH: /home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/
       LD_LIBRARY_PATH: /home/runner/micromamba/envs/libsemigroups/lib
       BACKWARD_CPPFLAGS: -I/home/runner/micromamba/envs/libsemigroups/include
