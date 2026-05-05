@@ -1,10 +1,5 @@
 # handle magic_enum checks
 #
-# magic_enum ships a pkg-config file, but the $includedir doesn't
-# contain the leading "magic_enum", so unless you are doing something
-# really weird, it's easier to just try magic_enum/magic_enum.hpp
-# since that's what you'll be including anyway.
-#
 AC_DEFUN([AX_CHECK_MAGIC_ENUM], [
   AC_ARG_WITH(
     [external-magic-enum],
@@ -17,7 +12,10 @@ AC_DEFUN([AX_CHECK_MAGIC_ENUM], [
 
   AS_IF([test "x$with_external_magic_enum" = xyes], [
     # Check if we can use magic_enum from the system. If not, error.
-    AC_CHECK_HEADER([magic_enum/magic_enum.hpp], [
+    # The version constraint is to ensure that the headers relative to
+    # $includedir are magic_enum/foo.hpp. In 0.9.6, the magic_enum/
+    # prefix was not used.
+    PKG_CHECK_MODULES(MAGICENUM, [magic_enum >= 0.9.7], [
       AC_MSG_NOTICE([external magic_enum will be used])
     ], [
       AC_MSG_ERROR([external magic_enum not found])
