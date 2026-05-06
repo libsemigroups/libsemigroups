@@ -18,11 +18,12 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
-
-#include "libsemigroups/froidure-pin.hpp"        // for FroidurePin
-#include "libsemigroups/konieczny.hpp"           // for Konieczny
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_CATCH_ALL_HEADER
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/konieczny.hpp"     // for Konieczny
 #include "libsemigroups/max-plus-trunc-mat.hpp"  // for Lambda, Rho, etc.
+
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, BENCHMARK, REQUIRE
 
 namespace libsemigroups {
 

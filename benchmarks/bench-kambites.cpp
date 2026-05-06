@@ -23,12 +23,13 @@
 #include <iostream>  // for to_string
 #include <string>    // for to_string
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
-
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/ranges.hpp"        // for operator|, to_vector
 #include "libsemigroups/word-range.hpp"    // for StringRange
+
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, BENCHMARK, REQUIRE
 
 namespace libsemigroups {
   using detail::MultiView;

@@ -18,15 +18,16 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-
 #include "libsemigroups/action.hpp"         // for LeftAction
 #include "libsemigroups/bitset.hpp"         // for BitSet
 #include "libsemigroups/bmat-adapters.hpp"  // for Lambda
 #include "libsemigroups/bmat8.hpp"          // for BMat8
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/matrix.hpp"         // for BMat<>
 #include "libsemigroups/transf.hpp"         // for Transf, PPerm
+
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #define FOR_SET_BITS(__bit_int, __nr_bits, __variable) \
   uint_fast32_t block = __bit_int;                     \

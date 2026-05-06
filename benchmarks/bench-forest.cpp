@@ -19,11 +19,12 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include "libsemigroups/forest.hpp"        // for Forest
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 #include "libsemigroups/word-range.hpp"    // for operator""_p
+
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
 
