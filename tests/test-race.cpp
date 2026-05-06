@@ -20,8 +20,7 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException (ptr o...
 #include "libsemigroups/runner.hpp"     // for Runner

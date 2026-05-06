@@ -34,10 +34,7 @@
 #include <utility>           // for move, make_pair, swap
 #include <vector>            // for vector, operator==, swap
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
-
-#include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=

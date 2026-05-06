@@ -21,8 +21,7 @@
 
 #include <cstddef>  // for size_t
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                        // FOR LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/konieczny.hpp"  // for Konieczny
 #include "libsemigroups/transf.hpp"     // for Transf<>
