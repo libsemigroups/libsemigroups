@@ -29,8 +29,6 @@
 #include <string_view>       // for basic_string_view, string_...
 #include <vector>            // for vector
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
-
 #include "libsemigroups/paths.hpp"   // for paths::algorithm
 #include "libsemigroups/runner.hpp"  // for Runner
 #include "libsemigroups/types.hpp"   // for tril

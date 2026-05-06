@@ -19,6 +19,9 @@
 #include <string_view>  // for string_view
 #include <type_traits>  // for is_reference
 
+#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, etc.
+
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
