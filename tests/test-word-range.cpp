@@ -22,10 +22,9 @@
 #include <utility>    // for swap
 #include <vector>     // for vector
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE etc
-#include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/exception.hpp"
 #include "libsemigroups/order.hpp"       // for number_of_words
 #include "libsemigroups/ranges.hpp"      // for equals
 #include "libsemigroups/types.hpp"       // for word_type

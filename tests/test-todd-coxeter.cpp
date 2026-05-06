@@ -23,8 +23,6 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE
-
 #include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin

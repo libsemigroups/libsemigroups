@@ -31,9 +31,8 @@
 #include <utility>        // for swap
 #include <vector>         // for vector, operator==
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
-#include "word-graph-test-common.hpp"           // for binary_tree
+#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"  // for binary_tree
 
 #include "libsemigroups/bipart.hpp"
 #include "libsemigroups/config.hpp"             // for LIBSEMIGROUPS_EIGEN_E...

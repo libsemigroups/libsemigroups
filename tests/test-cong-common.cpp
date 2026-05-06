@@ -28,8 +28,7 @@
 #include <utility>        // for move
 #include <vector>         // for vector, operator==
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong-common-helpers.hpp"   // for currently_contains
 #include "libsemigroups/cong-helpers.hpp"          // for add_generating_pair
