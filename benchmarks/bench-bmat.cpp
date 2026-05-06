@@ -21,11 +21,12 @@
 
 #include <cstddef>  // for size_T
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include "libsemigroups/matrix.hpp"  // for BMat
 
 #include "../tests/bmat-data.hpp"
+
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
   namespace {
