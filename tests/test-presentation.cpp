@@ -1060,7 +1060,7 @@ namespace libsemigroups {
     p.rules = {"", "aa", "ba", "", "ab", ""};
     REQUIRE_EXCEPTION_MSG(
         presentation::balance(p),
-        "the rules \"ab\" = \"\" (rule 2) and \"aa\" = \"\" (rule 0) yield the "
+        "the rules \"ab\" = \"\" (rule 2) and \"\" = \"aa\" (rule 0) yield the "
         "conflicting values 'b' != 'a' for the inverse of 'a', please use the "
         "2- or 3-argument version of this function to explicitly specify the "
         "inverses");

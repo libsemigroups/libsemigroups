@@ -1114,9 +1114,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void try_detect_inverses(Presentation<Word>& p,
-                             Word&               letters,
-                             Word&               inverses) {
+    void try_detect_inverses(Presentation<Word> const& p,
+                             Word&                     letters,
+                             Word&                     inverses) {
       p.throw_if_bad_alphabet_or_rules();
       using value_type = typename Word::value_type;
       // values in this map are pairs <p> such that <p.first> is a found
@@ -1125,12 +1125,13 @@ namespace libsemigroups {
       std::unordered_map<value_type, std::pair<value_type, size_t>> map;
 
       for (size_t pos = 0; pos != p.rules.size(); pos += 2) {
-        auto &lhs = p.rules[pos], &rhs = p.rules[pos + 1];
-        if (lhs.empty() && rhs.size() == 2) {
+        Word const* lhs = &p.rules[pos];
+        Word const* rhs = &p.rules[pos + 1];
+        if (lhs->empty() && rhs->size() == 2) {
           std::swap(lhs, rhs);
         }
-        if (lhs.size() == 2 && rhs.empty()) {
-          auto letter = lhs[0], inverse = lhs[1];
+        if (lhs->size() == 2 && rhs->empty()) {
+          auto letter = (*lhs)[0], inverse = (*lhs)[1];
           auto [it, inserted] = map.emplace(letter, std::pair{inverse, pos});
 
           if (!inserted && it->second.first != inverse) {
@@ -1141,8 +1142,8 @@ namespace libsemigroups {
                 "the conflicting values {} != {} for the inverse of {}, "
                 "please use the 2- or 3-argument version of this function "
                 "to explicitly specify the inverses",
-                detail::to_printable(lhs),
-                detail::to_printable(rhs),
+                detail::to_printable(*lhs),
+                detail::to_printable(*rhs),
                 pos / 2,
                 detail::to_printable(p.rules[alt_pos]),
                 detail::to_printable(p.rules[alt_pos + 1]),
@@ -1162,7 +1163,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    std::pair<Word, Word> try_detect_inverses(Presentation<Word>& p) {
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word> const& p) {
       Word letters;
       Word inverses;
       try_detect_inverses(p, letters, inverses);
