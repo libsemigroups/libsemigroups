@@ -2103,7 +2103,7 @@ namespace libsemigroups {
     //!
     //! This function constructs two \c Word objects to store the letters and
     //! inverses, performs
-    //! \ref try_detect_inverses(Presentation<Word>&, Word&, Word&)
+    //! \ref try_detect_inverses(Presentation<Word>const&, Word&, Word&)
     //! and then returns the result \c pair as a std::pair where:
     //!
     //! * `pair.first` is the list of letters such that an inverse was
@@ -2235,12 +2235,53 @@ namespace libsemigroups {
     // commutator - Word
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Return the commutator of two words without checks.
+    //!
+    //! Returns the word \f$x^{-1}y^{-1}xy\f$. The letter `a` with index `i`
+    //! in \p inverses is the inverse of the letter in \p alphabet with index
+    //! `i`.
+    //!
+    //! \tparam Word the type of the words.
+    //!
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param alphabet the alphabet, which should be a superset of the letters
+    //! in \p x and \p y.
+    //! \param inverses the inverses of the letters in \p alphabet.
+    //!
+    //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks are performed on the arguments.
     template <typename Word>
     Word commutator_no_checks(Word const& x,
                               Word const& y,
                               Word const& alphabet,
                               Word const& inverses);
 
+    //! \brief Return the commutator of two words without checks.
+    //!
+    //! Returns the word \f$x^{-1}y^{-1}xy\f$. The letter `a` with index `i`
+    //! in \p inverses is the inverse of the letter in `p.alphabet()` with
+    //! index `i`.
+    //!
+    //! \tparam Word the type of the words.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param inverses the inverses of the letters in `p.alphabet()`.
+    //!
+    //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks are performed on the arguments.
     template <typename Word>
     Word commutator_no_checks(Presentation<Word> const& p,
                               Word const&               x,
@@ -2249,6 +2290,23 @@ namespace libsemigroups {
       return commutator_no_checks(x, y, p.alphabet(), inverses);
     }
 
+    //! \brief Return the commutator of two words without checks.
+    //!
+    //! Returns the word \f$x^{-1}y^{-1}xy\f$, after attempting to detect
+    //! inverses from the rules in \p p, using \ref try_detect_inverses.
+    //!
+    //! \tparam Word the type of the words.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //!
+    //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
+    //!
+    //! \throws LibsemigroupsException if \ref try_detect_inverses throws.
+    //!
+    //! \warning
+    //! No checks are performed on \p x or \p y.
     template <typename Word>
     Word commutator_no_checks(Presentation<Word> const& p,
                               Word const&               x,
@@ -2257,18 +2315,82 @@ namespace libsemigroups {
       return commutator_no_checks(x, y, alphabet, inverses);
     }
 
+    //! \brief Return the commutator of two words.
+    //!
+    //! Returns the word \f$x^{-1}y^{-1}xy\f$. The letter `a` with index `i`
+    //! in `inverses` is the inverse of the letter in `alphabet` with index `i`.
+    //!
+    //! \tparam Word the type of the words.
+    //!
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param alphabet the alphabet, which should be a superset of the letters
+    //! in \p x and \p y.
+    //! \param inverses the inverses of the letters in \p alphabet.
+    //!
+    //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet contains duplicates, if
+    //! \p inverses are not valid inverses for \p alphabet, or if \p x or \p y
+    //! contains a letter not belonging to \p alphabet.
+    //!
+    //! \sa
+    //! \ref throw_if_contains_duplicates, \ref throw_if_bad_inverses and
+    //! \ref throw_if_word_not_over_alphabet.
     template <typename Word>
     Word commutator(Word const& x,
                     Word const& y,
                     Word const& alphabet,
                     Word const& inverses);
 
+    //! \brief Return the commutator of two words.
+    //!
+    //! Returns the word \f$x^{-1}y^{-1}xy\f$. The letter `a` with index `i`
+    //! in \p inverses is the inverse of the letter in `p.alphabet()` with
+    //! index `i`.
+    //!
+    //! \tparam Word the type of the words.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param inverses the inverses of the letters in `p.alphabet()`.
+    //!
+    //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
+    //!
+    //! \throws LibsemigroupsException if \p inverses are not valid inverses
+    //! for `p.alphabet()`, or if \p x or \p y contains a letter not belonging
+    //! to `p.alphabet()`.
+    //!
+    //! \sa
+    //! \ref throw_if_bad_inverses and
+    //! \ref Presentation::throw_if_letter_not_in_alphabet.
     template <typename Word>
     Word commutator(Presentation<Word> const& p,
                     Word const&               x,
                     Word const&               y,
                     Word const&               inverses);
 
+    //! \brief Return the commutator of two words.
+    //!
+    //! Returns the word \f$x^{-1}y^{-1}xy\f$, after attempting to detect
+    //! inverses from the rules in \p p, using \ref try_detect_inverses.
+    //!
+    //! \tparam Word the type of the words.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //!
+    //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
+    //!
+    //! \throws LibsemigroupsException if \p x or \p y contains a letter not
+    //! belonging to `p.alphabet()`, if \ref try_detect_inverses throws, or if
+    //! \p x or \p y contains a letter for which no inverse was detected.
+    //!
+    //! \sa
+    //! \ref try_detect_inverses and
+    //! \ref Presentation::throw_if_letter_not_in_alphabet.
     template <typename Word>
     Word commutator(Presentation<Word> const& p, Word const& x, Word const& y);
 
@@ -2276,8 +2398,28 @@ namespace libsemigroups {
     // add_commutator_rules - Word
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0): Doc
-    // TODO(0): Checks
+    //! \brief Add a commutator rule without checks.
+    //!
+    //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p. The letter `a` with
+    //! index `i` in `inverses` is the inverse of the letter in `alphabet` with
+    //! index `i`. If \p id is \ref UNDEFINED, then the right-hand side is the
+    //! empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param alphabet the alphabet, which should be a superset of the letters
+    //! in \p x and \p y.
+    //! \param inverses the inverses of the letters in \p alphabet.
+    //! \param id the identity letter, or \ref UNDEFINED for the empty word.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks are performed on the arguments.
     // TODO(1): InversePresentation specific implementation
     template <typename Word>
     void add_commutator_rule_no_checks(
@@ -2292,6 +2434,26 @@ namespace libsemigroups {
       add_rule_no_checks(p, lhs, rhs);
     }
 
+    //! \brief Add a commutator rule without checks.
+    //!
+    //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p. The letter `a` with
+    //! index `i` in \p inverses is the inverse of the letter in `p.alphabet()`
+    //! with index `i`. If \p id is \ref UNDEFINED, then the right-hand side is
+    //! the empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param inverses the inverses of the letters in `p.alphabet()`.
+    //! \param id the identity letter, or \ref UNDEFINED for the empty word.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks are performed on the arguments.
     template <typename Word>
     void add_commutator_rule_no_checks(
         Presentation<Word>&                      p,
@@ -2302,6 +2464,23 @@ namespace libsemigroups {
       add_commutator_rule_no_checks(p, x, y, p.alphabet(), inverses, id);
     }
 
+    //! \brief Add a commutator rule without checks.
+    //!
+    //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p, after attempting to
+    //! detect inverses from the rules in \p p, using \ref try_detect_inverses.
+    //! If \p id is \ref UNDEFINED, then the right-hand side is the empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param id the identity letter, or \ref UNDEFINED for the empty word.
+    //!
+    //! \throws LibsemigroupsException if \ref try_detect_inverses throws.
+    //!
+    //! \warning
+    //! No checks are performed on \p x, \p y, or \p id.
     template <typename Word>
     void add_commutator_rule_no_checks(
         Presentation<Word>&                      p,
@@ -2312,6 +2491,33 @@ namespace libsemigroups {
       add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
     }
 
+    //! \brief Add a commutator rule.
+    //!
+    //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p. The letter `a` with
+    //! index `i` in `inverses` is the inverse of the letter in `alphabet` with
+    //! index `i`. If \p id is \ref UNDEFINED, then the right-hand side is the
+    //! empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param alphabet the alphabet, which should be a superset of the letters
+    //! in \p x and \p y.
+    //! \param inverses the inverses of the letters in \p alphabet.
+    //! \param id the identity letter, or \ref UNDEFINED for the empty word.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet, \p inverses, \p x, \p y,
+    //! or \p id contains a letter not belonging to `p.alphabet()`; if
+    //! \p alphabet contains duplicates; if \p inverses are not valid inverses
+    //! for \p alphabet; or if \p x or \p y contains a letter not belonging to
+    //! \p alphabet.
+    //!
+    //! \sa
+    //! \ref throw_if_contains_duplicates, \ref throw_if_bad_inverses
+    //! \ref throw_if_word_not_over_alphabet and
+    //! \ref Presentation::throw_if_letter_not_in_alphabet.
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
                              Word const&                              x,
@@ -2321,6 +2527,28 @@ namespace libsemigroups {
                              typename Presentation<Word>::letter_type id
                              = UNDEFINED);
 
+    //! \brief Add a commutator rule.
+    //!
+    //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p. The letter `a` with
+    //! index `i` in \p inverses is the inverse of the letter in `p.alphabet()`
+    //! with index `i`. If \p id is \ref UNDEFINED, then the right-hand side is
+    //! the empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param inverses the inverses of the letters in `p.alphabet()`.
+    //! \param id the identity letter, or \ref UNDEFINED for the empty word.
+    //!
+    //! \throws LibsemigroupsException if \p inverses, \p x, \p y, or \p id
+    //! contains a letter not belonging to `p.alphabet()`, or if \p inverses
+    //! are not valid inverses for `p.alphabet()`.
+    //!
+    //! \sa
+    //! \ref throw_if_bad_inverses and
+    //! \ref Presentation::throw_if_letter_not_in_alphabet.
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
                              Word const&                              x,
@@ -2329,6 +2557,27 @@ namespace libsemigroups {
                              typename Presentation<Word>::letter_type id
                              = UNDEFINED);
 
+    //! \brief Add a commutator rule.
+    //!
+    //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p, after attempting to
+    //! detect inverses from the rules in \p p, using \ref try_detect_inverses.
+    //! If \p id is \ref UNDEFINED, then the right-hand side is the empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
+    //! \param x the first word in the commutator.
+    //! \param y the second word in the commutator.
+    //! \param id the identity letter, or \ref UNDEFINED for the empty word.
+    //!
+    //! \throws LibsemigroupsException if \p x, \p y, or \p id contains a
+    //! letter not belonging to `p.alphabet()`, if \ref try_detect_inverses
+    //! throws, or if \p x or \p y contains a letter for which no inverse was
+    //! detected.
+    //!
+    //! \sa
+    //! \ref Presentation::throw_if_letter_not_in_alphabet,
+    //! \ref try_detect_inverses and \ref throw_if_word_not_over_alphabet.
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
                              Word const&                              x,
