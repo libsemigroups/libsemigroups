@@ -2188,9 +2188,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if conflicting inverses for any letter
     //! are detected.
     template <typename Word>
-    void try_detect_inverses(Presentation<Word>& p,
-                             Word&               letters,
-                             Word&               inverses);
+    void try_detect_inverses(Presentation<Word> const& p,
+                             Word&                     letters,
+                             Word&                     inverses);
 
     //! \brief Try to detect group inverses.
     //!
@@ -2213,7 +2213,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if conflicting inverses for any letter
     //! are detected.
     template <typename Word>
-    std::pair<Word, Word> try_detect_inverses(Presentation<Word>& p);
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word> const& p);
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
