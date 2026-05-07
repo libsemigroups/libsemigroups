@@ -785,6 +785,73 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Word>
+    void throw_if_contains_duplicates(Word const&      word,
+                                      std::string_view where) {
+      std::unordered_set<typename Word::value_type> letter_set;
+      for (auto const& letter : word) {
+        if (!letter_set.insert(letter).second) {
+          LIBSEMIGROUPS_EXCEPTION("invalid {}, the letter {} is duplicated!",
+                                  where,
+                                  detail::to_printable(letter));
+        }
+      }
+    }
+
+    // TODO(1): This is very similar to the checks done in
+    // throw_if_letter_not_in_alphabet, except there is no alphabet_map here. It
+    // would be good if there was not duplication
+    template <typename Word>
+    void throw_if_word_not_over_alphabet(Word const& alphabet,
+                                         Word const& word) {
+      for (auto const& letter : word) {
+        if (auto it
+            = std::find(std::cbegin(alphabet), std::end(alphabet), letter);
+            it == std::cend(alphabet)) {
+          auto msg = fmt::format("invalid letter {}, valid letters are {}",
+                                 detail::to_printable(letter),
+                                 detail::to_printable(alphabet));
+          if constexpr (std::is_same_v<typename Word::value_type, char>) {
+            if (!std::isprint(letter) && detail::isprint(alphabet)) {
+              msg += fmt::format(
+                  " == {}",
+                  std::vector<int>(std::cbegin(alphabet), std::cend(alphabet)));
+            }
+          }
+          LIBSEMIGROUPS_EXCEPTION(msg);
+        }
+      }
+    }
+
+    template <typename Word>
+    void throw_if_bad_inverses(Word const& alphabet, Word const& inverses) {
+      if (alphabet.size() != inverses.size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid number of inverses, expected {} but found {}",
+            alphabet.size(),
+            inverses.size());
+      }
+
+      throw_if_contains_duplicates(inverses, "inverses");
+
+      // Check that (x ^ - 1) ^ -1 = x
+      for (size_t i = 0; i < alphabet.size(); ++i) {
+        for (size_t j = 0; j < alphabet.size(); ++j) {
+          if (alphabet[j] == inverses[i]) {
+            if (inverses[j] != alphabet[i]) {
+              LIBSEMIGROUPS_EXCEPTION(
+                  "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
+                  detail::to_printable(alphabet[i]),
+                  detail::to_printable(inverses[i]),
+                  detail::to_printable(alphabet[j]),
+                  detail::to_printable(inverses[j]));
+            }
+            break;
+          }
+        }
+      }
+    }
+
     //! \brief Throws an exception if \p vals do not define valid inverses.
     //!
     //! This function checks if the values in \p inverses are valid semigroup
@@ -809,7 +876,10 @@ namespace libsemigroups {
     //! do not hold.
     template <typename Word1, typename Word2>
     void throw_if_bad_inverses(Presentation<Word1> const& p,
-                               Word2 const&               inverses);
+                               Word2 const&               inverses) {
+      p.throw_if_letter_not_in_alphabet(inverses.begin(), inverses.end());
+      throw_if_bad_inverses(p.alphabet(), inverses);
+    }
 
     //! \brief Throws an exception if the argument \p inverses does not define
     //! valid inverses for \p letters.
@@ -2053,6 +2123,59 @@ namespace libsemigroups {
     template <typename Word>
     bool reduce_to_2_generators(Presentation<Word>& p, size_t index = 0);
 
+    //! \brief Try to detect group inverses.
+    //!
+    //! This function tries to deduce group theoretic inverses defined by the
+    //! rules of the presentation \p p as following: the rules of the
+    //! presentation where one side has length 2 and the other has length 0 are
+    //! detected. For any such rule we remember that the first letter is a
+    //! possible inverse of the second. If rules of the form `ab=1` and `ba=1`
+    //! are detected, then \c a has inverse \c b and vice versa. If there are
+    //! multiple different such rules and we deduce conflicting values for the
+    //! inverse of a letter, then an exception is thrown.
+    //!
+    //! Those letters where an inverse is detected are pushed into the back of
+    //! the parameter \p letters, and the detected inverse is pushed into
+    //! \p inverses. The parameters \p letters and \p inverses are modified
+    //! in-place, and are not cleared before adding letters or their inverses.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param letters the word to contain the letters with inverses.
+    //! \param inverses the word to contain the inverses found.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    template <typename Word>
+    void try_detect_inverses(Presentation<Word> const& p,
+                             Word&                     letters,
+                             Word&                     inverses);
+
+    //! \brief Try to detect group inverses.
+    //!
+    //! This function constructs two \c Word objects to store the letters and
+    //! inverses, performs
+    //! \ref try_detect_inverses(Presentation<Word>&, Word&, Word&)
+    //! and then returns the result \c pair as a std::pair where:
+    //!
+    //! * `pair.first` is the list of letters such that an inverse was
+    //! detected;
+    //! * `pair.second` is the list of inverses of the letters in `pair.first`
+    //! (where the letter in position \c i is the inverse of `pair.first[i]`,
+    //! and vice versa).
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    template <typename Word>
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word> const& p);
+
     //! \brief Add rules that define each letter as an idempotent.
     //!
     //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
@@ -2162,10 +2285,167 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
+    ////////////////////////////////////////////////////////////////////////
+    // commutator - Word
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word>
+    Word commutator_no_checks(Word const& x,
+                              Word const& y,
+                              Word const& alphabet,
+                              Word const& inverses) {
+      Word commutator;
+      for (Word const& word : {x, y}) {
+        for (auto letter_it = std::crbegin(word); letter_it != std::crend(word);
+             ++letter_it) {
+          // Get position of letter in <alphabet>, and push the corresponding
+          // inverse
+          auto it = std::find(
+              std::cbegin(alphabet), std::cend(alphabet), *letter_it);
+          LIBSEMIGROUPS_ASSERT(it != std::cend(alphabet));
+          commutator.push_back(inverses[std::distance(alphabet.cbegin(), it)]);
+        }
+      }
+      commutator.insert(std::cend(commutator), std::cbegin(x), std::cend(x));
+      commutator.insert(std::cend(commutator), std::cbegin(y), std::cend(y));
+      return commutator;
+    }
+
+    template <typename Word>
+    Word commutator_no_checks(Presentation<Word> const& p,
+                              Word const&               x,
+                              Word const&               y,
+                              Word const&               inverses) {
+      return commutator_no_checks(x, y, p.alphabet(), inverses);
+    }
+
+    template <typename Word>
+    Word commutator_no_checks(Presentation<Word> const& p,
+                              Word const&               x,
+                              Word const&               y) {
+      auto [alphabet, inverses] = try_detect_inverses(p);
+      return commutator_no_checks(x, y, alphabet, inverses);
+    }
+
+    template <typename Word>
+    Word commutator(Word const& x,
+                    Word const& y,
+                    Word const& alphabet,
+                    Word const& inverses) {
+      throw_if_contains_duplicates(alphabet, "alphabet");
+      throw_if_bad_inverses(alphabet, inverses);
+      throw_if_word_not_over_alphabet(alphabet, x);
+      throw_if_word_not_over_alphabet(alphabet, y);
+
+      return commutator_no_checks(x, y, alphabet, inverses);
+    }
+
+    template <typename Word>
+    Word commutator(Presentation<Word> const& p,
+                    Word const&               x,
+                    Word const&               y,
+                    Word const&               inverses) {
+      throw_if_bad_inverses(p, inverses);
+      p.throw_if_letter_not_in_alphabet(std::cbegin(x), std::cend(x));
+      p.throw_if_letter_not_in_alphabet(std::cbegin(y), std::cend(y));
+
+      return commutator_no_checks(p, x, y, inverses);
+    }
+
+    template <typename Word>
+    Word commutator(Presentation<Word> const& p, Word const& x, Word const& y) {
+      p.throw_if_letter_not_in_alphabet(std::cbegin(x), std::cend(x));
+      p.throw_if_letter_not_in_alphabet(std::cbegin(y), std::cend(y));
+
+      auto [alphabet, inverses] = try_detect_inverses(p);
+      throw_if_word_not_over_alphabet(alphabet, x);
+      throw_if_word_not_over_alphabet(alphabet, y);
+      return commutator_no_checks(x, y, alphabet, inverses);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // commutator - std::string_view
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0): doc
+    [[nodiscard]] std::string commutator_no_checks(std::string_view x,
+                                                   std::string_view y,
+                                                   std::string_view alphabet,
+                                                   std::string_view inverses);
+
+    // TODO(0): doc
+    [[nodiscard]] std::string commutator(std::string_view x,
+                                         std::string_view y,
+                                         std::string_view alphabet,
+                                         std::string_view inverses);
+
+    ////////////////////////////////////////////////////////////////////////
+    // add_commutator_rules - Word
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0): To hpp
     // TODO(0): Doc
     // TODO(0): Checks
     // TODO(0): InversePresentation specific implementation
+    // TODO(0): Consistent variable names with commutator
+    template <typename Word>
+    void add_commutator_rule_no_checks(
+        Presentation<Word>&                      p,
+        Word const&                              word1,
+        Word const&                              word2,
+        Word const&                              alphabet,
+        Word const&                              inverses,
+        typename Presentation<Word>::letter_type id = UNDEFINED) {
+      Word lhs = commutator_no_checks(word1, word2, alphabet, inverses);
+      Word rhs = (id == UNDEFINED ? Word({}) : Word({id}));
+      add_rule_no_checks(p, lhs, rhs);
+    }
+
+    template <typename Word>
+    void add_commutator_rule_no_checks(
+        Presentation<Word>&                      p,
+        Word const&                              word1,
+        Word const&                              word2,
+        Word const&                              inverses,
+        typename Presentation<Word>::letter_type id = UNDEFINED) {
+      add_commutator_rule_no_checks(
+          p, word1, word2, p.alphabet(), inverses, id);
+    }
+
+    template <typename Word>
+    void add_commutator_rule_no_checks(
+        Presentation<Word>&                      p,
+        Word const&                              word1,
+        Word const&                              word2,
+        typename Presentation<Word>::letter_type id = UNDEFINED) {
+      // Get the words that have inverses
+      auto [alphabet, inverses] = try_detect_inverses(p);
+      add_commutator_rule_no_checks(p, word1, word2, alphabet, inverses, id);
+    }
+
+    template <typename Word>
+    void add_commutator_rule(Presentation<Word>&                      p,
+                             Word const&                              word1,
+                             Word const&                              word2,
+                             Word const&                              alphabet,
+                             Word const&                              inverses,
+                             typename Presentation<Word>::letter_type id
+                             = UNDEFINED) {
+      p.throw_if_letter_not_in_alphabet(std::begin(alphabet),
+                                        std::end(alphabet));
+      p.throw_if_letter_not_in_alphabet(std::begin(inverses),
+                                        std::end(inverses));
+      throw_if_contains_duplicates(alphabet, "alphabet");
+      throw_if_bad_inverses(alphabet, inverses);
+      throw_if_word_not_over_alphabet(alphabet, word1);
+      throw_if_word_not_over_alphabet(alphabet, word2);
+      if (id != UNDEFINED) {
+        p.throw_if_letter_not_in_alphabet(id);
+      }
+
+      add_commutator_rule_no_checks(p, word1, word2, alphabet, inverses, id);
+    }
+
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
                              Word const&                              word1,
@@ -2173,75 +2453,52 @@ namespace libsemigroups {
                              Word const&                              inverses,
                              typename Presentation<Word>::letter_type id
                              = UNDEFINED) {
-      Word lhs = words::commutator(word1, word2, p.alphabet(), inverses);
-      Word rhs = (id == UNDEFINED ? Word({}) : Word({id}));
-      add_rule_no_checks(p, lhs, rhs);
+      p.throw_if_letter_not_in_alphabet(std::begin(inverses),
+                                        std::end(inverses));
+      throw_if_bad_inverses(p, inverses);
+      p.throw_if_letter_not_in_alphabet(std::begin(word1), std::end(word1));
+      p.throw_if_letter_not_in_alphabet(std::begin(word2), std::end(word2));
+      if (id != UNDEFINED) {
+        p.throw_if_letter_not_in_alphabet(id);
+      }
+
+      add_commutator_rule_no_checks(p, word1, word2, inverses, id);
     }
 
-    inline void add_commutator_rule(
-        Presentation<std::string>&                      p,
-        std::string_view                                word1,
-        std::string_view                                word2,
-        std::string_view                                inverses,
-        typename Presentation<std::string>::letter_type id = UNDEFINED) {
-      // TODO(0): Use the no_checks version?
-      std::string lhs = words::commutator(word1, word2, p.alphabet(), inverses);
-      std::string rhs = (id == UNDEFINED ? std::string({}) : std::string({id}));
-      add_rule_no_checks(p, lhs, rhs);
+    template <typename Word>
+    void add_commutator_rule(Presentation<Word>&                      p,
+                             Word const&                              word1,
+                             Word const&                              word2,
+                             typename Presentation<Word>::letter_type id
+                             = UNDEFINED) {
+      p.throw_if_letter_not_in_alphabet(std::begin(word1), std::end(word1));
+      p.throw_if_letter_not_in_alphabet(std::begin(word2), std::end(word2));
+      if (id != UNDEFINED) {
+        p.throw_if_letter_not_in_alphabet(id);
+      }
+
+      auto [alphabet, inverses] = try_detect_inverses(p);
+      throw_if_word_not_over_alphabet(alphabet, word1);
+      throw_if_word_not_over_alphabet(alphabet, word2);
+
+      add_commutator_rule_no_checks(p, word1, word2, alphabet, inverses, id);
     }
 
-    //! \brief Try to detect group inverses.
-    //!
-    //! This function tries to deduce group theoretic inverses defined by the
-    //! rules of the presentation \p p as following: the rules of the
-    //! presentation where one side has length 2 and the other has length 0 are
-    //! detected. For any such rule we remember that the first letter is a
-    //! possible inverse of the second. If rules of the form `ab=1` and `ba=1`
-    //! are detected, then \c a has inverse \c b and vice versa. If there are
-    //! multiple different such rules and we deduce conflicting values for the
-    //! inverse of a letter, then an exception is thrown.
-    //!
-    //! Those letters where an inverse is detected are pushed into the back of
-    //! the parameter \p letters, and the detected inverse is pushed into
-    //! \p inverses. The parameters \p letters and \p inverses are modified
-    //! in-place, and are not cleared before adding letters or their inverses.
-    //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //! \param letters the word to contain the letters with inverses.
-    //! \param inverses the word to contain the inverses found.
-    //!
-    //! \throws LibsemigroupsException if
-    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
-    //! \throws LibsemigroupsException if conflicting inverses for any letter
-    //! are detected.
-    template <typename Word>
-    void try_detect_inverses(Presentation<Word> const& p,
-                             Word&                     letters,
-                             Word&                     inverses);
+    ////////////////////////////////////////////////////////////////////////
+    // add_commutator_rules - std::string_view
+    ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Try to detect group inverses.
-    //!
-    //! This function constructs two \c Word objects to store the letters and
-    //! inverses, performs
-    //! \ref try_detect_inverses(Presentation<Word>&, Word&, Word&)
-    //! and then returns the result \c pair as a std::pair where:
-    //!
-    //! * `pair.first` is the list of letters such that an inverse was
-    //! detected;
-    //! * `pair.second` is the list of inverses of the letters in `pair.first`
-    //! (where the letter in position \c i is the inverse of `pair.first[i]`,
-    //! and vice versa).
-    //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //!
-    //! \throws LibsemigroupsException if
-    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
-    //! \throws LibsemigroupsException if conflicting inverses for any letter
-    //! are detected.
-    template <typename Word>
-    std::pair<Word, Word> try_detect_inverses(Presentation<Word> const& p);
+    // inline void add_commutator_rule(
+    //     Presentation<std::string>&                      p,
+    //     std::string_view                                word1,
+    //     std::string_view                                word2,
+    //     std::string_view                                inverses,
+    //     typename Presentation<std::string>::letter_type id = UNDEFINED) {
+    //   // TODO(0): Use the no_checks version?
+    //   std::string lhs = commutator(word1, word2, p.alphabet(), inverses);
+    //   std::string rhs = (id == UNDEFINED ? std::string({}) :
+    //   std::string({id})); add_rule_no_checks(p, lhs, rhs);
+    // }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!

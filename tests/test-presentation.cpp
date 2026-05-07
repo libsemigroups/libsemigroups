@@ -3501,7 +3501,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
                                    "093",
-                                   "helpers add_commutator_rules",
+                                   "add_commutator_rules",
                                    "[quick][presentation]",
                                    std::string,
                                    word_type) {
@@ -3510,11 +3510,29 @@ namespace libsemigroups {
     Presentation<W> p;
     p.alphabet({0, 1, 2, 3});
     p.contains_empty_word(true);
-    presentation::add_commutator_rules(p, {0}, {1}, {2, 3, 0, 1});
-    presentation::add_commutator_rules(p, {2, 0}, {1}, {2, 3, 0, 1});
+    SECTION("alphabet + inverses provided") {
+      presentation::add_commutator_rule(p, {0}, {1}, {0, 1}, {2, 3});
+      presentation::add_commutator_rule(p, {2, 0}, {1}, {2, 1, 0}, {0, 3, 2});
 
-    REQUIRE(p.rules
-            == std::vector<W>({{2, 3, 0, 1}, {}, {2, 0, 3, 2, 0, 1}, {}}));
+      REQUIRE(p.rules
+              == std::vector<W>({{2, 3, 0, 1}, {}, {2, 0, 3, 2, 0, 1}, {}}));
+    }
+    SECTION("alphabet inferred + inverses provided") {
+      presentation::add_commutator_rule(p, {0}, {1}, {2, 3, 0, 1});
+      presentation::add_commutator_rule(p, {2, 0}, {1}, {2, 3, 0, 1});
+
+      REQUIRE(p.rules
+              == std::vector<W>({{2, 3, 0, 1}, {}, {2, 0, 3, 2, 0, 1}, {}}));
+    }
+    SECTION("alphabet + inverses inferred") {
+      presentation::add_rule(p, {0, 2}, {});
+      presentation::add_rule(p, {2, 0}, {});
+      presentation::add_commutator_rule(p, {2, 0}, {0});
+      REQUIRE_THROWS(presentation::add_commutator_rule(p, {3}, {0}));
+      REQUIRE(
+          p.rules
+          == std::vector<W>({{0, 2}, {}, {2, 0}, {}, {2, 0, 2, 2, 0, 0}, {}}));
+    }
   }
 
 }  // namespace libsemigroups
