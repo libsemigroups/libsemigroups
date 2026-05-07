@@ -1125,6 +1125,7 @@ namespace libsemigroups {
       std::unordered_map<value_type, std::pair<value_type, size_t>> map;
 
       for (size_t pos = 0; pos != p.rules.size(); pos += 2) {
+        // We use pointers here so that they can be swapped without changing <p>
         Word const* lhs = &p.rules[pos];
         Word const* rhs = &p.rules[pos + 1];
         if (lhs->empty() && rhs->size() == 2) {
