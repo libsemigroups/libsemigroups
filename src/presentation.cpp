@@ -165,33 +165,6 @@ namespace libsemigroups {
       add_inverse_rules(p, std::string(vals), e);
     }
 
-    std::string commutator_no_checks(std::string_view x,
-                                     std::string_view y,
-                                     std::string_view alphabet,
-                                     std::string_view inverses) {
-      std::string commutator;
-      for (auto word : {x, y}) {
-        for (auto letter_it = word.crbegin(); letter_it != word.crend();
-             ++letter_it) {
-          commutator.push_back(inverses[alphabet.find(*letter_it)]);
-        }
-      }
-      commutator += x;
-      commutator += y;
-      return commutator;
-    }
-
-    std::string commutator(std::string_view x,
-                           std::string_view y,
-                           std::string_view alphabet,
-                           std::string_view inverses) {
-      throw_if_bad_inverses(alphabet, inverses);
-      for (auto const& word : {x, y}) {
-        throw_if_word_not_over_alphabet(alphabet, word);
-      }
-      return commutator_no_checks(x, y, alphabet, inverses);
-    }
-
     typename Presentation<std::string>::letter_type
     replace_word_with_new_generator(Presentation<std::string>& p,
                                     char const*                w) {

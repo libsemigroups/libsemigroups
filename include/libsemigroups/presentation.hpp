@@ -2273,30 +2273,12 @@ namespace libsemigroups {
     Word commutator(Presentation<Word> const& p, Word const& x, Word const& y);
 
     ////////////////////////////////////////////////////////////////////////
-    // commutator - std::string_view
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0): doc
-    [[nodiscard]] std::string commutator_no_checks(std::string_view x,
-                                                   std::string_view y,
-                                                   std::string_view alphabet,
-                                                   std::string_view inverses);
-
-    // TODO(0): doc
-    [[nodiscard]] std::string commutator(std::string_view x,
-                                         std::string_view y,
-                                         std::string_view alphabet,
-                                         std::string_view inverses);
-
-    ////////////////////////////////////////////////////////////////////////
     // add_commutator_rules - Word
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0): To hpp
     // TODO(0): Doc
     // TODO(0): Checks
-    // TODO(0): InversePresentation specific implementation
-    // TODO(0): Consistent variable names with commutator
+    // TODO(1): InversePresentation specific implementation
     template <typename Word>
     void add_commutator_rule_no_checks(
         Presentation<Word>&                      p,
@@ -2353,22 +2335,6 @@ namespace libsemigroups {
                              Word const&                              y,
                              typename Presentation<Word>::letter_type id
                              = UNDEFINED);
-
-    ////////////////////////////////////////////////////////////////////////
-    // add_commutator_rules - std::string_view
-    ////////////////////////////////////////////////////////////////////////
-
-    // inline void add_commutator_rule(
-    //     Presentation<std::string>&                      p,
-    //     std::string_view                                x,
-    //     std::string_view                                y,
-    //     std::string_view                                inverses,
-    //     typename Presentation<std::string>::letter_type id = UNDEFINED) {
-    //   // TODO(0): Use the no_checks version?
-    //   std::string lhs = commutator(x, y, p.alphabet(), inverses);
-    //   std::string rhs = (id == UNDEFINED ? std::string({}) :
-    //   std::string({id})); add_rule_no_checks(p, lhs, rhs);
-    // }
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
