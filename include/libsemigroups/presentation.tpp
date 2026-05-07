@@ -1138,8 +1138,8 @@ namespace libsemigroups {
 
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              word1,
-                             Word const&                              word2,
+                             Word const&                              x,
+                             Word const&                              y,
                              Word const&                              alphabet,
                              Word const&                              inverses,
                              typename Presentation<Word>::letter_type id) {
@@ -1149,49 +1149,49 @@ namespace libsemigroups {
                                         std::end(inverses));
       throw_if_contains_duplicates(alphabet, "alphabet");
       throw_if_bad_inverses(alphabet, inverses);
-      throw_if_word_not_over_alphabet(alphabet, word1);
-      throw_if_word_not_over_alphabet(alphabet, word2);
+      throw_if_word_not_over_alphabet(alphabet, x);
+      throw_if_word_not_over_alphabet(alphabet, y);
       if (id != UNDEFINED) {
         p.throw_if_letter_not_in_alphabet(id);
       }
 
-      add_commutator_rule_no_checks(p, word1, word2, alphabet, inverses, id);
+      add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
     }
 
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              word1,
-                             Word const&                              word2,
+                             Word const&                              x,
+                             Word const&                              y,
                              Word const&                              inverses,
                              typename Presentation<Word>::letter_type id) {
       p.throw_if_letter_not_in_alphabet(std::begin(inverses),
                                         std::end(inverses));
       throw_if_bad_inverses(p, inverses);
-      p.throw_if_letter_not_in_alphabet(std::begin(word1), std::end(word1));
-      p.throw_if_letter_not_in_alphabet(std::begin(word2), std::end(word2));
+      p.throw_if_letter_not_in_alphabet(std::begin(x), std::end(x));
+      p.throw_if_letter_not_in_alphabet(std::begin(y), std::end(y));
       if (id != UNDEFINED) {
         p.throw_if_letter_not_in_alphabet(id);
       }
 
-      add_commutator_rule_no_checks(p, word1, word2, inverses, id);
+      add_commutator_rule_no_checks(p, x, y, inverses, id);
     }
 
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              word1,
-                             Word const&                              word2,
+                             Word const&                              x,
+                             Word const&                              y,
                              typename Presentation<Word>::letter_type id) {
-      p.throw_if_letter_not_in_alphabet(std::begin(word1), std::end(word1));
-      p.throw_if_letter_not_in_alphabet(std::begin(word2), std::end(word2));
+      p.throw_if_letter_not_in_alphabet(std::begin(x), std::end(x));
+      p.throw_if_letter_not_in_alphabet(std::begin(y), std::end(y));
       if (id != UNDEFINED) {
         p.throw_if_letter_not_in_alphabet(id);
       }
 
       auto [alphabet, inverses] = try_detect_inverses(p);
-      throw_if_word_not_over_alphabet(alphabet, word1);
-      throw_if_word_not_over_alphabet(alphabet, word2);
+      throw_if_word_not_over_alphabet(alphabet, x);
+      throw_if_word_not_over_alphabet(alphabet, y);
 
-      add_commutator_rule_no_checks(p, word1, word2, alphabet, inverses, id);
+      add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
     }
 
     template <typename Word1, typename Word2>

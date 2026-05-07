@@ -2300,12 +2300,12 @@ namespace libsemigroups {
     template <typename Word>
     void add_commutator_rule_no_checks(
         Presentation<Word>&                      p,
-        Word const&                              word1,
-        Word const&                              word2,
+        Word const&                              x,
+        Word const&                              y,
         Word const&                              alphabet,
         Word const&                              inverses,
         typename Presentation<Word>::letter_type id = UNDEFINED) {
-      Word lhs = commutator_no_checks(word1, word2, alphabet, inverses);
+      Word lhs = commutator_no_checks(x, y, alphabet, inverses);
       Word rhs = (id == UNDEFINED ? Word({}) : Word({id}));
       add_rule_no_checks(p, lhs, rhs);
     }
@@ -2313,28 +2313,27 @@ namespace libsemigroups {
     template <typename Word>
     void add_commutator_rule_no_checks(
         Presentation<Word>&                      p,
-        Word const&                              word1,
-        Word const&                              word2,
+        Word const&                              x,
+        Word const&                              y,
         Word const&                              inverses,
         typename Presentation<Word>::letter_type id = UNDEFINED) {
-      add_commutator_rule_no_checks(
-          p, word1, word2, p.alphabet(), inverses, id);
+      add_commutator_rule_no_checks(p, x, y, p.alphabet(), inverses, id);
     }
 
     template <typename Word>
     void add_commutator_rule_no_checks(
         Presentation<Word>&                      p,
-        Word const&                              word1,
-        Word const&                              word2,
+        Word const&                              x,
+        Word const&                              y,
         typename Presentation<Word>::letter_type id = UNDEFINED) {
       auto [alphabet, inverses] = try_detect_inverses(p);
-      add_commutator_rule_no_checks(p, word1, word2, alphabet, inverses, id);
+      add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
     }
 
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              word1,
-                             Word const&                              word2,
+                             Word const&                              x,
+                             Word const&                              y,
                              Word const&                              alphabet,
                              Word const&                              inverses,
                              typename Presentation<Word>::letter_type id
@@ -2342,16 +2341,16 @@ namespace libsemigroups {
 
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              word1,
-                             Word const&                              word2,
+                             Word const&                              x,
+                             Word const&                              y,
                              Word const&                              inverses,
                              typename Presentation<Word>::letter_type id
                              = UNDEFINED);
 
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              word1,
-                             Word const&                              word2,
+                             Word const&                              x,
+                             Word const&                              y,
                              typename Presentation<Word>::letter_type id
                              = UNDEFINED);
 
@@ -2361,12 +2360,12 @@ namespace libsemigroups {
 
     // inline void add_commutator_rule(
     //     Presentation<std::string>&                      p,
-    //     std::string_view                                word1,
-    //     std::string_view                                word2,
+    //     std::string_view                                x,
+    //     std::string_view                                y,
     //     std::string_view                                inverses,
     //     typename Presentation<std::string>::letter_type id = UNDEFINED) {
     //   // TODO(0): Use the no_checks version?
-    //   std::string lhs = commutator(word1, word2, p.alphabet(), inverses);
+    //   std::string lhs = commutator(x, y, p.alphabet(), inverses);
     //   std::string rhs = (id == UNDEFINED ? std::string({}) :
     //   std::string({id})); add_rule_no_checks(p, lhs, rhs);
     // }
