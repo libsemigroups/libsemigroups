@@ -1095,8 +1095,8 @@ namespace libsemigroups {
           commutator.push_back(inverses[std::distance(alphabet.cbegin(), it)]);
         }
       }
-      commutator.insert(std::cend(commutator), std::cbegin(x), std::cend(x));
-      commutator.insert(std::cend(commutator), std::cbegin(y), std::cend(y));
+      commutator.insert(std::end(commutator), std::cbegin(x), std::cend(x));
+      commutator.insert(std::end(commutator), std::cbegin(y), std::cend(y));
       return commutator;
     }
 
