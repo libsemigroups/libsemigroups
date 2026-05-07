@@ -785,9 +785,38 @@ namespace libsemigroups {
       }
     }
 
+    //! \brief Throws an exception if a word contains duplicate letters.
+    //!
+    //! Checks whether any value occurs more than once in \p word.
+    //!
+    //! \tparam Word the type of \p word.
+    //!
+    //! \param word the word to check.
+    //! \param where a description of where \p word came from, used in the
+    //! exception message.
+    //!
+    //! \throws LibsemigroupsException if \p word contains a duplicate letter.
+    //!
+    //! \complexity
+    //! Linear in the length of \p word.
     template <typename Word>
     void throw_if_contains_duplicates(Word const& word, std::string_view where);
 
+    //! \brief Throws an exception if a word is not over an alphabet.
+    //!
+    //! Checks whether every letter in \p word belongs to \p alphabet.
+    //!
+    //! \tparam Word the type of \p alphabet and \p word.
+    //!
+    //! \param alphabet the valid letters.
+    //! \param word the word to check.
+    //!
+    //! \throws LibsemigroupsException if \p word contains a letter not in
+    //! \p alphabet.
+    //!
+    //! \complexity
+    //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of \p word and
+    //! \f$n\f$ is the length of \p alphabet.
     // TODO(1): This is very similar to the checks done in
     // throw_if_letter_not_in_alphabet, except there is no alphabet_map here. It
     // would be good if there was not duplication
@@ -795,6 +824,24 @@ namespace libsemigroups {
     void throw_if_word_not_over_alphabet(Word const& alphabet,
                                          Word const& word);
 
+    //! \brief Throws an exception if the argument \p inverses does not define
+    //! valid inverses for \p alphabet.
+    //!
+    //! Checks that \p alphabet and \p inverses have the same length, that
+    //! \p inverses contains no duplicate letters, and that the inverse map is
+    //! an involution; that is \f$(x^{-1})^{-1} = x\f$.
+    //!
+    //! \tparam Word the type of \p alphabet and \p inverses.
+    //!
+    //! \param alphabet the alphabet.
+    //! \param inverses the proposed inverses for \p alphabet.
+    //!
+    //! \throws LibsemigroupsException if \p alphabet and \p inverses have
+    //! different lengths, if \p inverses contains a duplicate letter, or if
+    //! the inverse map is not an involution.
+    //!
+    //! \complexity
+    //! Worst case \f$O(n^2)\f$ where \f$n\f$ is the length of \p alphabet.
     template <typename Word>
     void throw_if_bad_inverses(Word const& alphabet, Word const& inverses);
 
