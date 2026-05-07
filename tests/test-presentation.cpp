@@ -3808,7 +3808,6 @@ namespace libsemigroups {
           "[0, ..., 2]");
     }
     SECTION("alphabet inferred, inverses inferred") {
-      Presentation<W> p;
       p.contains_empty_word(true);
       REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(p, W{0}, W{}),
                             "no alphabet has been defined");
