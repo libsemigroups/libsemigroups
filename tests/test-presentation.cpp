@@ -3647,7 +3647,7 @@ namespace libsemigroups {
       // inverses"
       //
       // TODO(1): Better exception message here; the "2- or 3- argument
-      // version of this function" refers to <try_detect_inverses>.
+      // version of this function" refers to <try_detect_group_inverses>.
       REQUIRE_THROWS_AS(presentation::commutator(p, W{}, W{}),
                         LibsemigroupsException);
       p.init();
@@ -3838,7 +3838,7 @@ namespace libsemigroups {
       // inverses"
       //
       // TODO(1): Better exception message here; the "2- or 3- argument
-      // version of this function" refers to <try_detect_inverses>.
+      // version of this function" refers to <try_detect_group_inverses>.
       REQUIRE_THROWS_AS(presentation::add_commutator_rule(p, W{}, W{}),
                         LibsemigroupsException);
       p.init();

@@ -1130,7 +1130,7 @@ namespace libsemigroups {
       p.throw_if_letter_not_in_alphabet(std::cbegin(x), std::cend(x));
       p.throw_if_letter_not_in_alphabet(std::cbegin(y), std::cend(y));
 
-      auto [alphabet, inverses] = try_detect_inverses(p);
+      auto [alphabet, inverses] = try_detect_group_inverses(p);
       throw_if_word_not_over_alphabet(alphabet, x);
       throw_if_word_not_over_alphabet(alphabet, y);
       return commutator_no_checks(x, y, alphabet, inverses);
@@ -1187,7 +1187,7 @@ namespace libsemigroups {
         p.throw_if_letter_not_in_alphabet(id);
       }
 
-      auto [alphabet, inverses] = try_detect_inverses(p);
+      auto [alphabet, inverses] = try_detect_group_inverses(p);
       throw_if_word_not_over_alphabet(alphabet, x);
       throw_if_word_not_over_alphabet(alphabet, y);
 
@@ -1248,14 +1248,14 @@ namespace libsemigroups {
       if (!p.contains_empty_word()) {
         return;
       }
-      auto [letters, inverses] = try_detect_inverses(p);
+      auto [letters, inverses] = try_detect_group_inverses(p);
       balance_no_checks(p, letters, inverses);
     }
 
     template <typename Word>
-    void try_detect_inverses(Presentation<Word> const& p,
-                             Word&                     letters,
-                             Word&                     inverses) {
+    void try_detect_group_inverses(Presentation<Word> const& p,
+                                   Word&                     letters,
+                                   Word&                     inverses) {
       p.throw_if_bad_alphabet_or_rules();
       using value_type = typename Word::value_type;
       // values in this map are pairs <p> such that <p.first> is a found
@@ -1303,10 +1303,11 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    std::pair<Word, Word> try_detect_inverses(Presentation<Word> const& p) {
+    std::pair<Word, Word>
+    try_detect_group_inverses(Presentation<Word> const& p) {
       Word letters;
       Word inverses;
-      try_detect_inverses(p, letters, inverses);
+      try_detect_group_inverses(p, letters, inverses);
       return {letters, inverses};
     }
 

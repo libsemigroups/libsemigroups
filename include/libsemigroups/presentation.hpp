@@ -2142,15 +2142,51 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if conflicting inverses for any letter
     //! are detected.
     template <typename Word>
-    void try_detect_inverses(Presentation<Word> const& p,
-                             Word&                     letters,
-                             Word&                     inverses);
+    void try_detect_group_inverses(Presentation<Word> const& p,
+                                   Word&                     letters,
+                                   Word&                     inverses);
+
+    //! \brief Try to detect group inverses.
+    //!
+    //! This function tries to deduce group theoretic inverses defined by the
+    //! rules of the presentation \p p as following: the rules of the
+    //! presentation where one side has length 2 and the other has length 0 are
+    //! detected. For any such rule we remember that the first letter is a
+    //! possible inverse of the second. If rules of the form `ab=1` and `ba=1`
+    //! are detected, then \c a has inverse \c b and vice versa. If there are
+    //! multiple different such rules and we deduce conflicting values for the
+    //! inverse of a letter, then an exception is thrown.
+    //!
+    //! Those letters where an inverse is detected are pushed into the back of
+    //! the parameter \p letters, and the detected inverse is pushed into
+    //! \p inverses. The parameters \p letters and \p inverses are modified
+    //! in-place, and are not cleared before adding letters or their inverses.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param letters the word to contain the letters with inverses.
+    //! \param inverses the word to contain the inverses found.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref try_detect_group_inverses(Presentation<Word> const&, Word&, Word&)}
+    //! instead.
+    template <typename Word>
+    [[deprecated]] void try_detect_inverses(Presentation<Word> const& p,
+                                            Word&                     letters,
+                                            Word& inverses) {
+      try_detect_group_inverses(p, letters, inverses);
+    }
 
     //! \brief Try to detect group inverses.
     //!
     //! This function constructs two \c Word objects to store the letters and
     //! inverses, performs
-    //! \ref try_detect_inverses(Presentation<Word>const&, Word&, Word&)
+    //! \ref try_detect_group_inverses(Presentation<Word>const&, Word&, Word&)
     //! and then returns the result \c pair as a std::pair where:
     //!
     //! * `pair.first` is the list of letters such that an inverse was
@@ -2167,7 +2203,37 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if conflicting inverses for any letter
     //! are detected.
     template <typename Word>
-    std::pair<Word, Word> try_detect_inverses(Presentation<Word> const& p);
+    std::pair<Word, Word>
+    try_detect_group_inverses(Presentation<Word> const& p);
+
+    //! \brief Try to detect group inverses.
+    //!
+    //! This function constructs two \c Word objects to store the letters and
+    //! inverses, performs
+    //! \ref try_detect_group_inverses(Presentation<Word>const&, Word&, Word&)
+    //! and then returns the result \c pair as a std::pair where:
+    //!
+    //! * `pair.first` is the list of letters such that an inverse was
+    //! detected;
+    //! * `pair.second` is the list of inverses of the letters in `pair.first`
+    //! (where the letter in position \c i is the inverse of `pair.first[i]`,
+    //! and vice versa).
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
+    //! \throws LibsemigroupsException if conflicting inverses for any letter
+    //! are detected.
+    //!
+    //! \deprecated_warning{function} Use
+    //! \ref try_detect_group_inverses(Presentation<Word> const&)} instead.
+    template <typename Word>
+    [[deprecated]] std::pair<Word, Word>
+    try_detect_inverses(Presentation<Word> const& p) {
+      return try_detect_group_inverses(p);
+    }
 
     //! \brief Add rules that define each letter as an idempotent.
     //!
@@ -2340,7 +2406,7 @@ namespace libsemigroups {
     //! \brief Return the commutator of two words without checks.
     //!
     //! Returns the word \f$x^{-1}y^{-1}xy\f$, after attempting to detect
-    //! inverses from the rules in \p p, using \ref try_detect_inverses.
+    //! inverses from the rules in \p p, using \ref try_detect_group_inverses.
     //!
     //! \tparam Word the type of the words.
     //!
@@ -2350,7 +2416,7 @@ namespace libsemigroups {
     //!
     //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
     //!
-    //! \throws LibsemigroupsException if \ref try_detect_inverses throws.
+    //! \throws LibsemigroupsException if \ref try_detect_group_inverses throws.
     //!
     //! \warning
     //! No checks are performed on \p x or \p y.
@@ -2358,7 +2424,7 @@ namespace libsemigroups {
     Word commutator_no_checks(Presentation<Word> const& p,
                               Word const&               x,
                               Word const&               y) {
-      auto [alphabet, inverses] = try_detect_inverses(p);
+      auto [alphabet, inverses] = try_detect_group_inverses(p);
       return commutator_no_checks(x, y, alphabet, inverses);
     }
 
@@ -2421,7 +2487,7 @@ namespace libsemigroups {
     //! \brief Return the commutator of two words.
     //!
     //! Returns the word \f$x^{-1}y^{-1}xy\f$, after attempting to detect
-    //! inverses from the rules in \p p, using \ref try_detect_inverses.
+    //! inverses from the rules in \p p, using \ref try_detect_group_inverses.
     //!
     //! \tparam Word the type of the words.
     //!
@@ -2432,11 +2498,11 @@ namespace libsemigroups {
     //! \returns The commutator \f$x^{-1}y^{-1}xy\f$.
     //!
     //! \throws LibsemigroupsException if \p x or \p y contains a letter not
-    //! belonging to `p.alphabet()`, if \ref try_detect_inverses throws, or if
-    //! \p x or \p y contains a letter for which no inverse was detected.
+    //! belonging to `p.alphabet()`, if \ref try_detect_group_inverses throws,
+    //! or if \p x or \p y contains a letter for which no inverse was detected.
     //!
     //! \sa
-    //! \ref try_detect_inverses and
+    //! \ref try_detect_group_inverses and
     //! \ref Presentation::throw_if_letter_not_in_alphabet.
     template <typename Word>
     Word commutator(Presentation<Word> const& p, Word const& x, Word const& y);
@@ -2514,8 +2580,9 @@ namespace libsemigroups {
     //! \brief Add a commutator rule without checks.
     //!
     //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p, after attempting to
-    //! detect inverses from the rules in \p p, using \ref try_detect_inverses.
-    //! If \p id is \ref UNDEFINED, then the right-hand side is the empty word.
+    //! detect inverses from the rules in \p p, using \ref
+    //! try_detect_group_inverses. If \p id is \ref UNDEFINED, then the
+    //! right-hand side is the empty word.
     //!
     //! \tparam Word the type of the words in the presentation.
     //!
@@ -2524,7 +2591,7 @@ namespace libsemigroups {
     //! \param y the second word in the commutator.
     //! \param id the identity letter, or \ref UNDEFINED for the empty word.
     //!
-    //! \throws LibsemigroupsException if \ref try_detect_inverses throws.
+    //! \throws LibsemigroupsException if \ref try_detect_group_inverses throws.
     //!
     //! \warning
     //! No checks are performed on \p x, \p y, or \p id.
@@ -2534,7 +2601,7 @@ namespace libsemigroups {
         Word const&                              x,
         Word const&                              y,
         typename Presentation<Word>::letter_type id = UNDEFINED) {
-      auto [alphabet, inverses] = try_detect_inverses(p);
+      auto [alphabet, inverses] = try_detect_group_inverses(p);
       add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
     }
 
@@ -2607,8 +2674,9 @@ namespace libsemigroups {
     //! \brief Add a commutator rule.
     //!
     //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p, after attempting to
-    //! detect inverses from the rules in \p p, using \ref try_detect_inverses.
-    //! If \p id is \ref UNDEFINED, then the right-hand side is the empty word.
+    //! detect inverses from the rules in \p p, using \ref
+    //! try_detect_group_inverses. If \p id is \ref UNDEFINED, then the
+    //! right-hand side is the empty word.
     //!
     //! \tparam Word the type of the words in the presentation.
     //!
@@ -2618,13 +2686,13 @@ namespace libsemigroups {
     //! \param id the identity letter, or \ref UNDEFINED for the empty word.
     //!
     //! \throws LibsemigroupsException if \p x, \p y, or \p id contains a
-    //! letter not belonging to `p.alphabet()`, if \ref try_detect_inverses
-    //! throws, or if \p x or \p y contains a letter for which no inverse was
-    //! detected.
+    //! letter not belonging to `p.alphabet()`, if \ref
+    //! try_detect_group_inverses throws, or if \p x or \p y contains a letter
+    //! for which no inverse was detected.
     //!
     //! \sa
     //! \ref Presentation::throw_if_letter_not_in_alphabet,
-    //! \ref try_detect_inverses and \ref throw_if_word_not_over_alphabet.
+    //! \ref try_detect_group_inverses and \ref throw_if_word_not_over_alphabet.
     template <typename Word>
     void add_commutator_rule(Presentation<Word>&                      p,
                              Word const&                              x,
@@ -2815,7 +2883,7 @@ namespace libsemigroups {
     //! This function calls
     //! \ref balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
     //! where the 2nd and 3rd arguments are deduced from the rules in the
-    //! using \ref try_detect_inverses.
+    //! using \ref try_detect_group_inverses.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
