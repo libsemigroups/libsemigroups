@@ -3553,7 +3553,8 @@ namespace libsemigroups {
       presentation::add_rule(p, {2, 0}, {});
       REQUIRE(presentation::commutator(p, W{0, 0}, W{2})
               == W{2, 2, 0, 0, 0, 2});
-      REQUIRE_THROWS(presentation::commutator(p, W{0, 0}, W{1}));
+      REQUIRE_THROWS_AS(presentation::commutator(p, W{0, 0}, W{1}),
+                        LibsemigroupsException);
     }
   }
 
@@ -3647,7 +3648,8 @@ namespace libsemigroups {
       //
       // TODO(1): Better exception message here; the "2- or 3- argument
       // version of this function" refers to <try_detect_inverses>.
-      REQUIRE_THROWS(presentation::commutator(p, W{}, W{}));
+      REQUIRE_THROWS_AS(presentation::commutator(p, W{}, W{}),
+                        LibsemigroupsException);
       p.init();
       p.contains_empty_word(true);
       p.alphabet({0, 1, 2});
@@ -3690,7 +3692,8 @@ namespace libsemigroups {
       presentation::add_rule(p, {2, 0}, {});
       presentation::add_commutator_rule(p, {2, 0}, {0});
       presentation::add_commutator_rule(p, {2, 0}, {0}, {0});
-      REQUIRE_THROWS(presentation::add_commutator_rule(p, {3}, {0}));
+      REQUIRE_THROWS_AS(presentation::add_commutator_rule(p, {3}, {0}),
+                        LibsemigroupsException);
       REQUIRE(p.rules
               == std::vector<W>({{0, 2},
                                  {},
@@ -3710,7 +3713,9 @@ namespace libsemigroups {
     using W = std::string;
     Presentation<W> p;
     SECTION("alphabet specified, inverses specified ") {
-      REQUIRE_THROWS(presentation::add_commutator_rule(p, W{0}, W{}, W{}, W{}));
+      REQUIRE_THROWS_AS(
+          presentation::add_commutator_rule(p, W{0}, W{}, W{}, W{}),
+          LibsemigroupsException);
       p.contains_empty_word(true);
       p.alphabet({0});
       // The words are not over the provided alphabet
@@ -3834,7 +3839,8 @@ namespace libsemigroups {
       //
       // TODO(1): Better exception message here; the "2- or 3- argument
       // version of this function" refers to <try_detect_inverses>.
-      REQUIRE_THROWS(presentation::add_commutator_rule(p, W{}, W{}));
+      REQUIRE_THROWS_AS(presentation::add_commutator_rule(p, W{}, W{}),
+                        LibsemigroupsException);
       p.init();
       p.contains_empty_word(true);
       p.alphabet({0, 1, 2});
