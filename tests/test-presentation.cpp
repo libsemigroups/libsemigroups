@@ -3420,7 +3420,7 @@ namespace libsemigroups {
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bb"s),
                           "invalid inverses, the letter 'b' is duplicated!");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "ab"s, "bac"s),
-                          "invalid number of inverses, expected 2 but found 3");
+                          "invalid letter 'c', valid letters are \"ab\"");
     REQUIRE_EXCEPTION_MSG(presentation::throw_if_bad_inverses(p, "abc"s, "ba"s),
                           "invalid number of inverses, expected 3 but found 2");
   }
@@ -3497,6 +3497,369 @@ namespace libsemigroups {
     REQUIRE(presentation::index_rule(p, 000_w, ""_w) == 0);
     REQUIRE(presentation::index_rule(p, ""_w, 10_w) == UNDEFINED);
     REQUIRE(presentation::index_rule(p, {}, {1, 0}) == UNDEFINED);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "093",
+                                   "commutator",
+                                   "[quick]",
+                                   std::string,
+                                   word_type) {
+    using W = TestType;
+    Presentation<W> p;
+    p.contains_empty_word(true);
+    SECTION("alphabet specified, inverses specified") {
+      // All empty
+      REQUIRE(presentation::commutator(W{}, W{}, W{}, W{}) == W{});
+
+      // At least one empty word
+      REQUIRE(presentation::commutator(W{0}, W{}, W{0}, W{1}) == W{1, 0});
+      REQUIRE(presentation::commutator(W{}, W{0}, W{0}, W{1}) == W{1, 0});
+      REQUIRE(presentation::commutator(W{0, 1}, W{}, W{0, 1}, W{2, 3})
+              == W{3, 2, 0, 1});
+      REQUIRE(presentation::commutator(W{}, W{0, 1}, W{0, 1}, W{2, 3})
+              == W{3, 2, 0, 1});
+      REQUIRE(presentation::commutator(W{}, W{0, 1}, W{0, 1}, W{1, 0})
+              == W{0, 1, 0, 1});
+      REQUIRE(presentation::commutator(W{0, 1}, W{}, W{0, 1}, W{1, 0})
+              == W{0, 1, 0, 1});
+
+      // No empty words
+      REQUIRE(presentation::commutator(
+                  W{0, 1, 2}, W{1, 0, 1}, W{0, 1, 2}, W{3, 4, 5})
+              == W{5, 4, 3, 4, 3, 4, 0, 1, 2, 1, 0, 1});
+      REQUIRE(presentation::commutator(
+                  W{0, 1, 2}, W{1, 0, 1}, W{0, 1, 2}, W{2, 1, 0})
+              == W{0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1});
+    }
+
+    SECTION("alphabet inferred, inverses specified") {
+      REQUIRE(presentation::commutator(p, W{}, W{}, W{}) == W{});
+
+      p.alphabet({0, 1, 2});
+      REQUIRE(presentation::commutator(p, W{0, 1}, W{1}, W{1, 0, 2})
+              == W{0, 1, 0, 0, 1, 1});
+      REQUIRE(presentation::commutator(p, W{0, 1}, W{1}, W{0, 1, 2})
+              == W{1, 0, 1, 0, 1, 1});
+      REQUIRE(presentation::commutator(p, W{0, 1}, W{1}, W{0, 2, 1})
+              == W{2, 0, 2, 0, 1, 1});
+    }
+
+    SECTION("alphabet inferred, inverses inferred") {
+      REQUIRE(presentation::commutator(p, W{}, W{}) == W{});
+
+      p.alphabet({0, 1, 2});
+      presentation::add_rule(p, {0, 2}, {});
+      presentation::add_rule(p, {2, 0}, {});
+      REQUIRE(presentation::commutator(p, W{0, 0}, W{2})
+              == W{2, 2, 0, 0, 0, 2});
+      REQUIRE_THROWS_AS(presentation::commutator(p, W{0, 0}, W{1}),
+                        LibsemigroupsException);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "094",
+                          "commutator exceptions (string)",
+                          "[quick]") {
+    using W = std::string;
+    SECTION("alphabet specified, inverses specified ") {
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{0}, W{}, W{}, W{}),
+          "invalid letter (char with value) 0, valid letters are \"\" == []");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{}, W{0}, W{}, W{}),
+          "invalid letter (char with value) 0, valid letters are \"\" == []");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{}, W{}, W{0}, W{}),
+          "invalid number of inverses, expected 1 but found 0");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{}, W{}, W{}, W{0}),
+          "invalid number of inverses, expected 0 but found 1");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{}, W{}, W{0, 0}, W{0, 1}),
+          "invalid alphabet, the letter (char with value) 0 is duplicated!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{}, W{}, W{0, 1}, W{0, 0}),
+          "invalid inverses, the letter (char with value) 0 is duplicated!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(W{}, W{}, W{0, 1, 2}, W{1, 2, 0}),
+          "invalid inverses, (char with value) 0 ^ -1 = (char with value) 1 "
+          "but (char with value) 1 ^ -1 = (char with value) 2");
+    }
+    SECTION("alphabet inferred, inverses specified") {
+      Presentation<W> p;
+      p.contains_empty_word(true);
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0}, W{}, W{}),
+                            "no alphabet has been defined");
+
+      p.alphabet({0});
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{1}, W{}, W{0}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{}, W{1}, W{0}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(p, W{}, W{}, W{}),
+          "invalid number of inverses, expected 1 but found 0");
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{}, W{}, W{1}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+
+      p.alphabet({0, 1});
+      REQUIRE_EXCEPTION_MSG(
+          presentation::commutator(p, W{}, W{}, W{0, 0}),
+          "invalid inverses, the letter (char with value) 0 is duplicated!");
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{}, W{}, W{0, 2}),
+                            "invalid letter (char with value) 2, valid letters "
+                            "are (char values) [0, 1]");
+
+      p.alphabet({0, 1, 2});
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{}, W{}, W{1, 2, 0}),
+                            "invalid inverses, (char with value) 0 ^ -1 = "
+                            "(char with value) 1 but "
+                            "(char with value) 1 ^ -1 = (char with value) 2");
+    }
+    SECTION("alphabet inferred, inverses inferred") {
+      Presentation<W> p;
+      p.contains_empty_word(true);
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0}, W{}),
+                            "no alphabet has been defined");
+
+      p.alphabet({0});
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{1}, W{}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{}, W{1}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+
+      p.alphabet({0, 1});
+      presentation::add_rule(p, {0, 0}, {});
+      presentation::add_rule(p, {0, 1}, {});
+      // TODO(1): Replace the following with a REQUIRE_EXCEPTION_MESSAGE. For
+      // some reason, the string comparison fails. The output should be:
+      // "the rules (char values) [0, 1] = "" (rule 1) and (char values) [0, 0]
+      // = "" (rule 0) yield the conflicting values (char with value) 1 != (char
+      // with value) 0 for the inverse of (char with value) 0, please use the 2-
+      // or 3- argument version of this function to explicitly specify the
+      // inverses"
+      //
+      // TODO(1): Better exception message here; the "2- or 3- argument
+      // version of this function" refers to <try_detect_group_inverses>.
+      REQUIRE_THROWS_AS(presentation::commutator(p, W{}, W{}),
+                        LibsemigroupsException);
+      p.init();
+      p.contains_empty_word(true);
+      p.alphabet({0, 1, 2});
+      // 0 and 1 have inverses, but 2 does not
+      presentation::add_rule(p, {0, 1}, {});
+      presentation::add_rule(p, {1, 0}, {});
+      REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0, 1, 2}, W{1, 2}),
+                            "invalid letter (char with value) 2, valid letters "
+                            "are (char values) [1, 0]");
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "095",
+                                   "add_commutator_rules",
+                                   "[quick][presentation]",
+                                   std::string,
+                                   word_type) {
+    using W = TestType;
+    Presentation<W> p;
+    p.alphabet({0, 1, 2, 3});
+    p.contains_empty_word(true);
+    SECTION("alphabet + inverses provided") {
+      presentation::add_commutator_rule(p, {0}, {1}, {0, 1}, {2, 3});
+      presentation::add_commutator_rule(
+          p, {2, 0}, {1}, {2, 1, 0}, {0, 3, 2}, {0});
+
+      REQUIRE(p.rules
+              == std::vector<W>({{2, 3, 0, 1}, {}, {2, 0, 3, 2, 0, 1}, {0}}));
+    }
+    SECTION("alphabet inferred + inverses provided") {
+      presentation::add_commutator_rule(p, {0}, {1}, {2, 3, 0, 1});
+      presentation::add_commutator_rule(p, {2, 0}, {1}, {2, 3, 0, 1}, {0});
+
+      REQUIRE(p.rules
+              == std::vector<W>({{2, 3, 0, 1}, {}, {2, 0, 3, 2, 0, 1}, {0}}));
+    }
+    SECTION("alphabet + inverses inferred") {
+      presentation::add_rule(p, {0, 2}, {});
+      presentation::add_rule(p, {2, 0}, {});
+      presentation::add_commutator_rule(p, {2, 0}, {0});
+      presentation::add_commutator_rule(p, {2, 0}, {0}, {0});
+      REQUIRE_THROWS_AS(presentation::add_commutator_rule(p, {3}, {0}),
+                        LibsemigroupsException);
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 2},
+                                 {},
+                                 {2, 0},
+                                 {},
+                                 {2, 0, 2, 2, 0, 0},
+                                 {},
+                                 {2, 0, 2, 2, 0, 0},
+                                 {0}}));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "096",
+                          "add_commutator_rule exceptions (string)",
+                          "[quick]") {
+    using W = std::string;
+    Presentation<W> p;
+    SECTION("alphabet specified, inverses specified ") {
+      REQUIRE_THROWS_AS(
+          presentation::add_commutator_rule(p, W{0}, W{}, W{}, W{}),
+          LibsemigroupsException);
+      p.contains_empty_word(true);
+      p.alphabet({0});
+      // The words are not over the provided alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{0}, W{}, W{}, W{}),
+          "invalid letter (char with value) 0, valid letters are \"\" == []");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{0}, W{}, W{}),
+          "invalid letter (char with value) 0, valid letters are \"\" == []");
+
+      // The words are not over the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{1}, W{}, W{0}, W{0}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{1}, W{0}, W{0}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+
+      // The provided alphabet and inverses are not over the presentation's
+      // alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{1}, W{}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{}, W{1}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+
+      // Alphabet and inverses contain duplicates
+      p.alphabet({0, 1});
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{0, 0}, W{0, 1}),
+          "invalid alphabet, the letter (char with value) 0 is duplicated!");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{0, 1}, W{0, 0}),
+          "invalid inverses, the letter (char with value) 0 is duplicated!");
+
+      // The inverses are not valid
+      p.alphabet({0, 1, 2});
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(
+              p, W{}, W{}, W{0, 1, 2}, W{1, 2, 0}),
+          "invalid inverses, (char with value) 0 ^ -1 = (char with value) 1 "
+          "but (char with value) 1 ^ -1 = (char with value) 2");
+
+      // The id is not in the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(
+                                p, W{}, W{}, W{0, 1, 2}, W{2, 1, 0}, char{4}),
+                            "invalid letter (char with value) 4, valid letters "
+                            "are (char values) [0, ..., 2]");
+    }
+
+    SECTION("alphabet inferred, inverses specified") {
+      p.contains_empty_word(true);
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{0}, W{}, W{}),
+          "no alphabet has been defined");
+      p.alphabet({0});
+      // The words are not over the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{1}, W{}, W{0}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{1}, W{0}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+
+      // The provided inverses are not over the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{1}),
+          "invalid letter (char with value) 1, valid letters are (char values) "
+          "[0]");
+
+      // Inverses contain duplicates
+      p.alphabet({0, 1});
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{0, 0}),
+          "invalid inverses, the letter (char with value) 0 is duplicated!");
+
+      // The inverses are not valid
+      p.alphabet({0, 1, 2});
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{1, 2, 0}),
+          "invalid inverses, (char with value) 0 ^ -1 = (char with value) 1 "
+          "but (char with value) 1 ^ -1 = (char with value) 2");
+
+      // The id is not in the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, W{2, 1, 0}, char{4}),
+          "invalid letter (char with value) 4, valid letters are (char values) "
+          "[0, ..., 2]");
+    }
+    SECTION("alphabet inferred, inverses inferred") {
+      p.contains_empty_word(true);
+      REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(p, W{0}, W{}),
+                            "no alphabet has been defined");
+
+      p.alphabet({0});
+      // The words are not over the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(p, W{1}, W{}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+      REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(p, W{}, W{1}),
+                            "invalid letter (char with value) 1, valid letters "
+                            "are (char values) [0]");
+
+      p.alphabet({0, 1});
+      presentation::add_rule(p, {0, 0}, {});
+      presentation::add_rule(p, {0, 1}, {});
+      // TODO(1): Replace the following with a REQUIRE_EXCEPTION_MESSAGE. For
+      // some reason, the string comparison fails. The output should be:
+      // "the rules (char values) [0, 1] = "" (rule 1) and (char values) [0, 0]
+      // = "" (rule 0) yield the conflicting values (char with value) 1 != (char
+      // with value) 0 for the inverse of (char with value) 0, please use the 2-
+      // or 3- argument version of this function to explicitly specify the
+      // inverses"
+      //
+      // TODO(1): Better exception message here; the "2- or 3- argument
+      // version of this function" refers to <try_detect_group_inverses>.
+      REQUIRE_THROWS_AS(presentation::add_commutator_rule(p, W{}, W{}),
+                        LibsemigroupsException);
+      p.init();
+      p.contains_empty_word(true);
+      p.alphabet({0, 1, 2});
+      // 0 and 1 have inverses, but 2 does not
+      presentation::add_rule(p, {0, 1}, {});
+      presentation::add_rule(p, {1, 0}, {});
+      // The words are not over the subset of the presentation's alphabet that
+      // has inverses
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{0, 1, 2}, W{1, 2}),
+          "invalid letter (char with value) 2, valid letters "
+          "are (char values) [1, 0]");
+
+      // The id is not in the presentation's alphabet
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_commutator_rule(p, W{}, W{}, char{3}),
+          "invalid letter (char with value) 3, valid letters are (char values) "
+          "[0, ..., 2]");
+    }
   }
 
 }  // namespace libsemigroups
