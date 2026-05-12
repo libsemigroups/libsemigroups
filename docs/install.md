@@ -40,6 +40,12 @@ To build `libsemigroups` from a release archive:
     cd libsemigroups-3.5.5
     ./configure && make -j8 && sudo make install
 
+## From a package repository
+
+The `libsemigroups` library is available through several package repositories:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/libsemigroups.svg)](https://repology.org/project/libsemigroups/versions)
+
 ## Configuration options
 
 In addition to the usual `autoconf` configuration options, the following
