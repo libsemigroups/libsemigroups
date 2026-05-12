@@ -985,9 +985,10 @@ namespace libsemigroups {
     REQUIRE(""_p == "");
     REQUIRE("a"_p == "a");
 
-    // This one looks a bit weird, but we are treating the comma as the
+    // These look a bit weird, but we are treating the comma as the
     // commutator operator, so the brackets aren't strictly necessary
     REQUIRE("a,b"_p == "ABab");
+    REQUIRE("a^2,b^3"_p == "AABBBaabbb");
 
     REQUIRE_THROWS_AS("a*a*b*bc"_p, LibsemigroupsException);
     REQUIRE("           "_p == "");
