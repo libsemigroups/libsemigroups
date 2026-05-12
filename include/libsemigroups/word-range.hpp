@@ -2056,13 +2056,26 @@ namespace libsemigroups {
     //! This operator provides a convenient concise means of constructing a
     //! std::string from an algebraic expression.
     //! For example, \c "((ab)^3cc)^2"_p equals
-    //! \c "abababccabababcc" and \c "a^0"_p equals the empty string \c "".
+    //! \c "abababccabababcc", \c "(ab,ba)" equals \c "BAABabba" and \c "a^0"_p
+    //! equals the empty string \c "".
     //!
     //! This function has the following behaviour:
     //! * arbitrarily nested brackets;
     //! * spaces are ignored;
     //! * redundant matched brackets are ignored;
-    //! * only the characters in \c "()^ " and in \c a-zA-Z0-9 are allowed.
+    //! * \c ^ is treated as the power binary operator;
+    //! * \c , is treated as the commutator binary operator;
+    //! * only the characters in \c "()^, " and in \c a-zA-Z0-9 are allowed.
+    //!
+    //! When using \c , as the commutator operator, it is not possible to
+    //! specify what the inverse of each letter should be. Instead, it is
+    //! assumed that the inverse of a lowercase letter is the corresponding
+    //! uppercase letter, and the inverse of an uppercase letter is the
+    //! corresponding lowercase letter. If this is requirement is not applicable
+    //! for your use case, see \ref presentation::commutator instead.
+    //!
+    //! Additionally, it is not possible to specify commutators using square
+    //! brackets. Round brackets must be used instead.
     //!
     //! \param w the letters of the word.
     //! \param n the length of \p w (defaults to the length of \p w).
