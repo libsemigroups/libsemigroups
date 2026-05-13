@@ -818,9 +818,10 @@ namespace libsemigroups::detail {
                && strategy() != options::strategy::hlt
                && strategy() != options::strategy::lookahead
                && strategy() != options::strategy::lookbehind
-               && running_until()) {
-      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with run_until !",
-                              strategy());
+               && (running_until() || running_for())) {
+      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with {} !",
+                              strategy(),
+                              (running_until() ? "run_until" : "run_for"));
     } else if (internal_presentation().rules.empty()
                && !internal_presentation().alphabet().empty()
                && (internal_generating_pairs().empty()

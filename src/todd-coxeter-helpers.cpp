@@ -41,6 +41,8 @@ namespace libsemigroups {
       detail::ToddCoxeterImpl::Definitions>;
 
   namespace todd_coxeter {
+    // This function doesn't take a const reference for tc because
+    // tc.number_of_classes() is not const.
     [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
                                       size_t                    tries,
                                       std::chrono::milliseconds try_for,
@@ -57,6 +59,7 @@ namespace libsemigroups {
         report_default(
             "trying to show non-triviality: {} / {}\n", try_ + 1, tries);
         detail::ToddCoxeterImpl copy(tc);
+        copy.strategy(detail::ToddCoxeterImpl::options::strategy::hlt);
         copy.save(true);
         while (!copy.finished()) {
           copy.run_for(try_for);
