@@ -65,13 +65,17 @@ namespace libsemigroups {
       Constant& operator=(Constant&&)      = default;
       ~Constant()                          = default;
 
-      template <typename T, typename = std::enable_if_t<!std::is_enum_v<T>, T>>
+      // We use SFINAE here so that <Constant> is only implicitly converted to
+      // <T> when <T> satisfies a strict set of conditions. This is necessary as
+      // some incorrect implicit conversions were happening in the Python
+      // bindings.
+      template <typename T,
+                typename
+                = std::enable_if_t<!std::is_enum_v<T> && std::is_integral_v<T>
+                                       && (std::is_signed_v<T>
+                                           || std::is_same_v<TMaxOrMin, Max>),
+                                   T>>
       constexpr operator T() const noexcept {
-        static_assert(
-            std::is_integral_v<T>
-                && (std::is_signed_v<T> || std::is_same_v<TMaxOrMin, Max>),
-            "the template parameter T must be an integral type, and either "
-            "unsigned or the template parameter TMaxOrMin must be Max.");
         return TMaxOrMin().template operator()<T>() + TOffset;
       }
     };
