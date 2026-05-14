@@ -115,6 +115,17 @@ namespace libsemigroups {
   //! [Graphviz]: https://www.graphviz.org
   class Dot {
    public:
+    //! Enum to indicate the kind of attribute.
+    enum class Attr : uint8_t {
+      //! Value indicating that the value of an attribute should be enclosed in
+      //! double quotes.
+      string,
+
+      //! Value indicating that the value of an attribute should be enclosed in
+      //! double quotes.
+      html
+    };
+
     //! \brief This nested struct represents a node in the represented graph.
     //!
     //! Defined in `dot.hpp`.
@@ -172,6 +183,7 @@ namespace libsemigroups {
       //!
       //! \param key the name of the attribute.
       //! \param val the value of the attribute.
+      //! \param kind whether to enclose \p val in double quotes or not.
       //!
       //! \returns A reference to \c this.
       //!
@@ -182,10 +194,12 @@ namespace libsemigroups {
       //! [Graphviz documentation]: https://www.graphviz.org/docs/nodes/
       //! [DOT]: https://www.graphviz.org/doc/info/lang.html
       template <typename Thing1, typename Thing2>
-      Node& add_attr(Thing1&& key, Thing2&& val) {
+      Node& add_attr(Thing1&& key, Thing2&& val, Attr kind = Attr::string) {
         auto key_str = detail::dot_to_string(std::forward<Thing1>(key));
         auto val_str = detail::dot_to_string(std::forward<Thing2>(val));
-
+        if (kind == Attr::string) {
+          val_str = fmt::format("\"{}\"", val_str);
+        }
         add_or_replace_attr(attrs, key_str, val_str);
         return *this;
       }
@@ -228,6 +242,7 @@ namespace libsemigroups {
       //!
       //! \param key the name of the attribute.
       //! \param val the value of the attribute.
+      //! \param kind whether to enclose \p val in double quotes or not.
       //!
       //! \returns A reference to \c this.
       //!
@@ -238,9 +253,12 @@ namespace libsemigroups {
       //! [Graphviz documentation]: https://www.graphviz.org/docs/nodes/
       //! [DOT]: https://www.graphviz.org/doc/info/lang.html
       template <typename Thing1, typename Thing2>
-      Edge& add_attr(Thing1&& key, Thing2&& val) {
+      Edge& add_attr(Thing1&& key, Thing2&& val, Attr kind = Attr::string) {
         auto key_str = detail::dot_to_string(std::forward<Thing1>(key));
         auto val_str = detail::dot_to_string(std::forward<Thing2>(val));
+        if (kind == Attr::string) {
+          val_str = fmt::format("\"{}\"", val_str);
+        }
 
         add_or_replace_attr(attrs, key_str, val_str);
         return *this;
@@ -495,6 +513,7 @@ namespace libsemigroups {
     //!
     //! \param key the name of the attribute.
     //! \param val the value of the attribute.
+    //! \param kind whether to enclose \p val in double quotes or not.
     //!
     //! \returns A reference to \c this.
     //!
@@ -505,9 +524,12 @@ namespace libsemigroups {
     //! [Graphviz documentation]: https://www.graphviz.org/docs/nodes/
     //! [DOT]: https://www.graphviz.org/doc/info/lang.html
     template <typename Thing1, typename Thing2>
-    Dot& add_attr(Thing1&& key, Thing2&& val) {
+    Dot& add_attr(Thing1&& key, Thing2&& val, Attr kind = Attr::string) {
       auto key_str = detail::dot_to_string(std::forward<Thing1>(key));
       auto val_str = detail::dot_to_string(std::forward<Thing2>(val));
+      if (kind == Attr::string) {
+        val_str = fmt::format("\"{}\"", val_str);
+      }
 
       add_or_replace_attr(_attrs, key_str, val_str);
       return *this;
@@ -639,8 +661,9 @@ namespace libsemigroups {
     Edge& add_edge(Thing1&& head, Thing2&& tail) {
       auto head_str = detail::dot_to_string(std::forward<Thing1>(head));
       auto tail_str = detail::dot_to_string(std::forward<Thing2>(tail));
-      throw_if_not_node(head_str);
-      throw_if_not_node(tail_str);
+      // throw_if_not_node(head_str);
+      // TODO think about what to do
+      // throw_if_not_node(tail_str);
       _edges.emplace_back(head_str, tail_str);
       return _edges.back();
     }
@@ -738,6 +761,20 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Edge const& e);
+
+  //! \relates Dot
+  //!
+  //! \brief Return a human readable representation of a Dot::Attr object.
+  //!
+  //! Return a human readable representation of a Dot::Attr object.
+  //!
+  //! \param a the Dot::Attr object.
+  //! \param sep separator to use between "Dot" and "Attr" (defaults to "::").
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  std::string to_human_readable_repr(Dot::Attr const&   a,
+                                     std::string const& sep = "::");
 
   //! \relates Dot
   //!
