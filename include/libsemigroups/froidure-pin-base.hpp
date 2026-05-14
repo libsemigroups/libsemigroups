@@ -2418,6 +2418,196 @@ namespace libsemigroups {
     [[nodiscard]] rx::iterator_range<FroidurePinBase::const_rule_iterator>
     rules(FroidurePinBase& fpb);
 
+    //! \brief Returns a \ref Dot object representing the right Cayley graph.
+    //!
+    //! This function returns a \ref Dot object representing the current right
+    //! Cayley graph of the FroidurePinBase instance \p s. The generators are
+    //! labelled by the characters in \p gen_names, and the nodes are labelled
+    //! by the words in the generators that correspond to their positions in
+    //! \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //! \param gen_names the labels for the generators of \p s.
+    //!
+    //! \returns A \ref Dot object representing the current right Cayley graph
+    //! of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p gen_names has size different from
+    //! `s.number_of_generators()`.
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function may trigger an enumeration in order to compute the
+    //! node labels.
+    //!
+    //! \sa dot_cayley_graph.
+    [[nodiscard]] Dot
+    dot_current_right_cayley_graph(FroidurePinBase const& s,
+                                   std::string const&     gen_names);
+
+    //! \brief Returns a \ref Dot object representing the right Cayley graph.
+    //!
+    //! This function calls FroidurePinBase::run on the FroidurePinBase instance
+    //! \p s, and then returns a \ref Dot object representing the right Cayley
+    //! graph of \p s. The generators are labelled by the characters in \p
+    //! gen_names, and the nodes are labelled by the words in the generators
+    //! that correspond to their positions in \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //! \param gen_names the labels for the generators of \p s.
+    //!
+    //! \returns A \ref Dot object representing the right Cayley graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p gen_names has size different from
+    //! `s.number_of_generators()`.
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function triggers a full enumeration of \p s.
+    //!
+    //! \sa dot_current_right_cayley_graph.
+    [[nodiscard]] Dot dot_right_cayley_graph(FroidurePinBase&   s,
+                                             std::string const& gen_names);
+
+    //! \brief Returns a \ref Dot object representing the left Cayley graph.
+    //!
+    //! This function returns a \ref Dot object representing the current left
+    //! Cayley graph of the FroidurePinBase instance \p s. The generators are
+    //! labelled by the characters in \p gen_names, and the nodes are labelled
+    //! by the words in the generators that correspond to their positions in
+    //! \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //! \param gen_names the labels for the generators of \p s.
+    //!
+    //! \returns A \ref Dot object representing the current left Cayley graph
+    //! of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p gen_names has size different from
+    //! `s.number_of_generators()`.
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function may trigger an enumeration in order to compute the
+    //! node labels.
+    //!
+    //! \sa dot_cayley_graph.
+    [[nodiscard]] Dot
+    dot_current_left_cayley_graph(FroidurePinBase const& s,
+                                  std::string const&     gen_names);
+
+    //! \brief Returns a \ref Dot object representing the left Cayley graph.
+    //!
+    //! This function calls FroidurePinBase::run on the FroidurePinBase instance
+    //! \p s, and then returns a \ref Dot object representing the left Cayley
+    //! graph of \p s. The generators are labelled by the characters in \p
+    //! gen_names, and the nodes are labelled by the words in the generators
+    //! that correspond to their positions in \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //! \param gen_names the labels for the generators of \p s.
+    //!
+    //! \returns A \ref Dot object representing the left Cayley graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p gen_names has size different from
+    //! `s.number_of_generators()`.
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function triggers a full enumeration of \p s.
+    //!
+    //! \sa dot_current_left_cayley_graph.
+    [[nodiscard]] Dot dot_left_cayley_graph(FroidurePinBase&   s,
+                                            std::string const& gen_names);
+
+    //! \brief Returns a \ref Dot object representing the right Cayley graph.
+    //!
+    //! This function returns a \ref Dot object representing the current right
+    //! Cayley graph of the FroidurePinBase instance \p s. The generators are
+    //! labelled using the first `s.number_of_generators()` characters from
+    //! libsemigroups' default human readable alphabet, and the nodes are
+    //! labelled by the words in the generators that correspond to their
+    //! positions in \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //!
+    //! \returns A \ref Dot object representing the current right Cayley graph
+    //! of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function may trigger an enumeration in order to compute the
+    //! node labels.
+    //!
+    //! \sa dot_cayley_graph.
+    [[nodiscard]] Dot dot_current_right_cayley_graph(FroidurePinBase const& s);
+
+    //! \brief Returns a \ref Dot object representing the right Cayley graph.
+    //!
+    //! This function calls FroidurePinBase::run on the FroidurePinBase instance
+    //! \p s, and then returns a \ref Dot object representing the right Cayley
+    //! graph of \p s. The generators are labelled using the first
+    //! `s.number_of_generators()` characters from libsemigroups' default human
+    //! readable alphabet, and the nodes are labelled by the words in the
+    //! generators that correspond to their positions in \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //!
+    //! \returns A \ref Dot object representing the right Cayley graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function triggers a full enumeration of \p s.
+    //!
+    //! \sa dot_current_right_cayley_graph.
+    [[nodiscard]] Dot dot_right_cayley_graph(FroidurePinBase& s);
+
+    //! \brief Returns a \ref Dot object representing the left Cayley graph.
+    //!
+    //! This function returns a \ref Dot object representing the current left
+    //! Cayley graph of the FroidurePinBase instance \p s. The generators are
+    //! labelled using the first `s.number_of_generators()` characters from
+    //! libsemigroups' default human readable alphabet, and the nodes are
+    //! labelled by the words in the generators that correspond to their
+    //! positions in \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //!
+    //! \returns A \ref Dot object representing the current left Cayley graph
+    //! of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function may trigger an enumeration in order to compute the
+    //! node labels.
+    //!
+    //! \sa dot_cayley_graph.
+    [[nodiscard]] Dot dot_current_left_cayley_graph(FroidurePinBase const& s);
+
+    //! \brief Returns a \ref Dot object representing the left Cayley graph.
+    //!
+    //! This function calls FroidurePinBase::run on the FroidurePinBase instance
+    //! \p s, and then returns a \ref Dot object representing the left Cayley
+    //! graph of \p s. The generators are labelled using the first
+    //! `s.number_of_generators()` characters from libsemigroups' default human
+    //! readable alphabet, and the nodes are labelled by the words in the
+    //! generators that correspond to their positions in \p s.
+    //!
+    //! \param s the FroidurePinBase instance.
+    //!
+    //! \returns A \ref Dot object representing the left Cayley graph of \p s.
+    //!
+    //! \throws LibsemigroupsException if \p s has more generators than there
+    //! are colours in Dot::colors.
+    //!
+    //! \note This function triggers a full enumeration of \p s.
+    //!
+    //! \sa dot_current_left_cayley_graph.
+    [[nodiscard]] Dot dot_left_cayley_graph(FroidurePinBase& s);
+
   }  // namespace froidure_pin
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
