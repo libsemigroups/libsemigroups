@@ -1,21 +1,76 @@
 # Changelog - version 3
 
+## v3.6.0 (released 15/05/2026)
+
+This is a minor release with a number of improvements and new features:
+
+- Fix overlapping cache keys by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/901
+- Fix cong add gen pairs by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/918
+- Feature: Added operators `<=` and `>=` for constants by [\@jfjameslee] in
+  https://github.com/libsemigroups/libsemigroups/pull/909
+- row dimension checking for compile-time matrices by [\@jfjameslee] in
+  https://github.com/libsemigroups/libsemigroups/pull/930
+- ci: update yggdrasil build recipe on release by [\@jswent] in
+  https://github.com/libsemigroups/libsemigroups/pull/934
+- Add max-plus implementation for Konieczny by [\@flsmith] in
+  https://github.com/libsemigroups/libsemigroups/pull/857
+- Fix catch includes in main by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/952
+- Add Catalan monoid presentation example by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/946
+- matrix: impl `product_inplace` with checks by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/954
+- Split `matrix.hpp` into multiple files, out-of-line functions, and otherwise update by
+  [\@james-d-mitchell] in https://github.com/libsemigroups/libsemigroups/pull/955
+- Make the "Defined in \*.hpp" statements consistent by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/956
+- presentation-examples: add double Catalan monoid by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/957
+- Doc: Update configuration for doxygen 1.16 and add missing doc by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/958
+- ci: open pr to pybind11 with new version on release by [\@jswent] in
+  https://github.com/libsemigroups/libsemigroups/pull/959
+- Doc: add reference to Julia bindings by [\@jswent] in
+  https://github.com/libsemigroups/libsemigroups/pull/965
+- bitset: add tpp file by [\@james-d-mitchell] in
+  https://github.com/libsemigroups/libsemigroups/pull/962
+- Support an external copy of magic_enum by [\@orlitzky] in
+  https://github.com/libsemigroups/libsemigroups/pull/969
+- `try_detect_inverses` doesn't change presentation by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/972
+- Add functions for working with commutators by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/973
+- Fix weirdness in dark-mode by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/976
+- Support an external catch library by [\@orlitzky] in
+  https://github.com/libsemigroups/libsemigroups/pull/970
+- Fix typo in `strategy` doc by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/979
+- Add repology to install info by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/980
+- Add parsing for commutators in `operator""_p` by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/977
+- ToddCoxeter: throw if non-core strategy and run_for by [\@Joseph-Edwards] in
+  https://github.com/libsemigroups/libsemigroups/pull/978
+
 ## v3.5.5 (released 08/04/2026)
 
 In this release a number of issues were resolved, and a couple of the third
-party dependencies were updated to the latest versions. 
+party dependencies were updated to the latest versions.
 
-* etc: update default vers. number in version-number.sh by [\@james-d-mitchell] in
+- etc: update default vers. number in version-number.sh by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/940
-* Eigen v5.0.1 by [\@james-d-mitchell] in
+- Eigen v5.0.1 by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/939
-* cong: set the congruence report prefix in constructors by [\@james-d-mitchell] in 
+- cong: set the congruence report prefix in constructors by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/941
-* Remove redundant 'already finished' reporting by [\@james-d-mitchell] in
+- Remove redundant 'already finished' reporting by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/942
-* cong: resolve issue #943 by [\@james-d-mitchell] in
+- cong: resolve issue #943 by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/945
-* Bump Catch2 -> v3.14.0 by [\@james-d-mitchell] in
+- Bump Catch2 -> v3.14.0 by [\@james-d-mitchell] in
   https://github.com/libsemigroups/libsemigroups/pull/947
 
 ## v3.5.4 (released 26/03/2026)
