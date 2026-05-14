@@ -802,4 +802,74 @@ namespace libsemigroups {
     WordGraph<uint32_t> wg(0, 1);
     REQUIRE_THROWS_AS(wg.disjoint_union_inplace(wg), LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "046", "3-arg dot", "[quick]") {
+    auto rg = ReportGuard(false);
+    auto wg
+        = v4::make<WordGraph<uint32_t>>(4, {{0, 2}, {3, 1}, {3, 2}, {3, 3}});
+
+    std::vector<std::string> node_labels = {"a", "b", "ab", "ba"};
+    std::vector<std::string> edge_labels = {"a", "b"};
+    Dot dot = v4::word_graph::dot(wg, node_labels, edge_labels);
+    REQUIRE(dot.to_string()
+            == "digraph WordGraph {\n"
+               "\n"
+               "subgraph cluster_legend {\n"
+               "  label=\"legend\"node [shape=plaintext]\n"
+               "  \n"
+               "  cluster_legend_head  [label=<<table border=\"0\" "
+               "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+               "<tr><td align=\"right\" port=\"port0\">a&nbsp;</td></tr>\n"
+               "<tr><td align=\"right\" port=\"port1\">b&nbsp;</td></tr>\n"
+               "</table>>\n"
+               "]\n"
+               "  cluster_legend_tail  [label=<<table border=\"0\" "
+               "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+               "<tr><td align=\"right\" port=\"port0\">&nbsp;</td></tr>\n"
+               "<tr><td align=\"right\" port=\"port1\">&nbsp;</td></tr>\n"
+               "</table>>\n"
+               "]\n"
+               "  cluster_legend_head:port0:e -> "
+               "cluster_legend_tail:port0:w  [color=\"#00ff00\", "
+               "constraint=\"false\"]\n"
+               "  cluster_legend_head:port1:e -> "
+               "cluster_legend_tail:port1:w  [color=\"#ff00ff\", "
+               "constraint=\"false\"]\n"
+               "}\n"
+               "  0  [label=\"a\", shape=\"box\"]\n"
+               "  1  [label=\"b\", shape=\"box\"]\n"
+               "  2  [label=\"ab\", shape=\"box\"]\n"
+               "  3  [label=\"ba\", shape=\"box\"]\n"
+               "  0 -> 0  [color=\"#00ff00\"]\n"
+               "  0 -> 2  [color=\"#ff00ff\"]\n"
+               "  1 -> 3  [color=\"#00ff00\"]\n"
+               "  1 -> 1  [color=\"#ff00ff\"]\n"
+               "  2 -> 3  [color=\"#00ff00\"]\n"
+               "  2 -> 2  [color=\"#ff00ff\"]\n"
+               "  3 -> 3  [color=\"#00ff00\"]\n"
+               "  3 -> 3  [color=\"#ff00ff\"]\n"
+               "}");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "047",
+                          "exception: 3-arg dot",
+                          "[quick]") {
+    auto rg = ReportGuard(false);
+    auto wg
+        = v4::make<WordGraph<uint32_t>>(4, {{0, 1}, {1, 2}, {2, 3}, {3, 2}});
+
+    std::vector<std::string> node_labels = {"a", "b", "ab", "ba"};
+    std::vector<std::string> edge_labels = {"a", "b"};
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = v4::word_graph::dot(wg, {"a", "b", "ab"}, edge_labels),
+        "expected the 2nd argument (node labels) to have size 4, the number of "
+        "nodes of the 1st argument (word graph), but found 3");
+
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = v4::word_graph::dot(wg, node_labels, {"a"}),
+        "expected the 3rd argument (edge labels) to have size 2, the "
+        "out-degree of the 1st argument (word graph), but found 1");
+  }
 }  // namespace libsemigroups
