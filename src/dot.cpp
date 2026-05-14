@@ -152,6 +152,26 @@ namespace libsemigroups {
     }
   }
 
+  bool Dot::is_node(std::string const& name) const {
+    if (_nodes.count(name)) {
+      return true;
+    }
+    auto pos = name.find(":");
+    if (pos == std::string::npos) {
+      return false;
+    }
+    for (auto const& [key, val] : _nodes) {
+      if (key.size() >= pos
+          && std::equal(name.begin(),
+                        name.begin() + pos,
+                        key.begin(),
+                        key.begin() + pos)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Dot::Edge::~Edge() = default;
 
   Dot::Node::~Node() = default;

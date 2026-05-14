@@ -144,4 +144,11 @@ namespace libsemigroups {
     REQUIRE(to_human_readable_repr(Dot::Attr::string) == "<enum Dot::Attr>");
     REQUIRE(to_human_readable_repr(Dot::Attr::html, ".") == "<enum Dot.Attr>");
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Dot", "008", "is_node", "[dot][quick]") {
+    Dot d;
+    d.add_node("cat");
+    REQUIRE(d.is_node("cat:dog"));
+    REQUIRE(d.is_node("cat"));
+  }
 }  // namespace libsemigroups

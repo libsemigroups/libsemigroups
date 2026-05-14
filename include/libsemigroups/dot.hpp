@@ -568,9 +568,7 @@ namespace libsemigroups {
     //! \param name the name.
     //!
     //! \returns A \c bool.
-    [[nodiscard]] bool is_node(std::string const& name) const {
-      return _nodes.count(name);
-    }
+    [[nodiscard]] bool is_node(std::string const& name) const;
 
     //! \brief Check if there is a node with name obtained from an object.
     //!
@@ -661,9 +659,8 @@ namespace libsemigroups {
     Edge& add_edge(Thing1&& head, Thing2&& tail) {
       auto head_str = detail::dot_to_string(std::forward<Thing1>(head));
       auto tail_str = detail::dot_to_string(std::forward<Thing2>(tail));
-      // throw_if_not_node(head_str);
-      // TODO think about what to do
-      // throw_if_not_node(tail_str);
+      throw_if_not_node(head_str);
+      throw_if_not_node(tail_str);
       _edges.emplace_back(head_str, tail_str);
       return _edges.back();
     }
