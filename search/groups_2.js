@@ -6,7 +6,7 @@ var searchData=
   ['classes_3',['Core Classes',['../group__core__classes__group.html',1,'']]],
   ['common_20congruence_20helpers_4',['Common congruence helpers',['../group__cong__common__helpers__group.html',1,'']]],
   ['common_20member_20functions_5',['Common member functions',['../group__congruence__class__intf__group.html',1,'Common member functions'],['../group__knuth__bendix__class__intf__group.html',1,'Common member functions'],['../group__todd__coxeter__class__intf__group.html',1,'Common member functions'],['../group__kambites__class__intf__group.html',1,'Common member functions']]],
-  ['congruence_6',['Congruence',['../group__congruence__group.html',1,'Congruence'],['../group__to__cong__group.html',1,'to&lt;Congruence&gt;']]],
+  ['congruence_6',['Congruence',['../group__congruence__group.html',1,'']]],
   ['congruence_20class_7',['The Congruence class',['../group__congruence__class__group.html',1,'']]],
   ['congruence_20helper_20functions_8',['Congruence helper functions',['../group__congruence__helpers__group.html',1,'']]],
   ['congruence_20helpers_9',['Common congruence helpers',['../group__cong__common__helpers__group.html',1,'']]],

@@ -18,12 +18,12 @@ var searchData=
   ['wistream_15',['wistream',['http://en.cppreference.com/w/cpp/io/basic_istream.html',1,'std']]],
   ['wistringstream_16',['wistringstream',['http://en.cppreference.com/w/cpp/io/basic_istringstream.html',1,'std']]],
   ['wofstream_17',['wofstream',['http://en.cppreference.com/w/cpp/io/basic_ofstream.html',1,'std']]],
-  ['wordgraph_18',['WordGraph',['../classlibsemigroups_1_1_word_graph.html',1,'libsemigroups']]],
-  ['wordgraph_3c_20element_5findex_5ftype_20_3e_19',['WordGraph&lt; element_index_type &gt;',['../classlibsemigroups_1_1_word_graph.html',1,'libsemigroups']]],
-  ['wordgraph_3c_20node_5ftype_20_3e_20',['WordGraph&lt; node_type &gt;',['../classlibsemigroups_1_1_word_graph.html',1,'libsemigroups']]],
-  ['wordgraph_3c_20uint32_5ft_20_3e_21',['WordGraph&lt; uint32_t &gt;',['../classlibsemigroups_1_1_word_graph.html',1,'libsemigroups']]],
-  ['wordgraphview_22',['WordGraphView',['../classlibsemigroups_1_1_word_graph_view.html',1,'libsemigroups']]],
-  ['wordrange_23',['WordRange',['../classlibsemigroups_1_1_word_range.html',1,'libsemigroups']]],
+  ['wordgraph_18',['WordGraph',['../classlibsemigroups_1_1WordGraph.html',1,'libsemigroups']]],
+  ['wordgraph_3c_20element_5findex_5ftype_20_3e_19',['WordGraph&lt; element_index_type &gt;',['../classlibsemigroups_1_1WordGraph.html',1,'libsemigroups']]],
+  ['wordgraph_3c_20node_5ftype_20_3e_20',['WordGraph&lt; node_type &gt;',['../classlibsemigroups_1_1WordGraph.html',1,'libsemigroups']]],
+  ['wordgraph_3c_20uint32_5ft_20_3e_21',['WordGraph&lt; uint32_t &gt;',['../classlibsemigroups_1_1WordGraph.html',1,'libsemigroups']]],
+  ['wordgraphview_22',['WordGraphView',['../classlibsemigroups_1_1WordGraphView.html',1,'libsemigroups']]],
+  ['wordrange_23',['WordRange',['../classlibsemigroups_1_1WordRange.html',1,'libsemigroups']]],
   ['wostream_24',['wostream',['http://en.cppreference.com/w/cpp/io/basic_ostream.html',1,'std']]],
   ['wostringstream_25',['wostringstream',['http://en.cppreference.com/w/cpp/io/basic_ostringstream.html',1,'std']]],
   ['wregex_26',['wregex',['http://en.cppreference.com/w/cpp/regex/basic_regex.html',1,'std']]],
@@ -37,6 +37,6 @@ var searchData=
   ['wstring_5fconvert_34',['wstring_convert',['http://en.cppreference.com/w/cpp/locale/wstring_convert.html',1,'std']]],
   ['wstringbuf_35',['wstringbuf',['http://en.cppreference.com/w/cpp/io/basic_stringbuf.html',1,'std']]],
   ['wstringstream_36',['wstringstream',['http://en.cppreference.com/w/cpp/io/basic_stringstream.html',1,'std']]],
-  ['wtlexcompare_37',['WtLexCompare',['../structlibsemigroups_1_1_wt_lex_compare.html',1,'libsemigroups']]],
-  ['wtshortlexcompare_38',['WtShortLexCompare',['../structlibsemigroups_1_1_wt_short_lex_compare.html',1,'libsemigroups']]]
+  ['wtlexcompare_37',['WtLexCompare',['../structlibsemigroups_1_1WtLexCompare.html',1,'libsemigroups']]],
+  ['wtshortlexcompare_38',['WtShortLexCompare',['../structlibsemigroups_1_1WtShortLexCompare.html',1,'libsemigroups']]]
 ];

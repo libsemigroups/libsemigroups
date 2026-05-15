@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['edge_0',['Edge',['../structlibsemigroups_1_1_dot_1_1_edge.html',1,'libsemigroups::Dot']]],
+  ['edge_0',['Edge',['../structlibsemigroups_1_1Dot_1_1Edge.html',1,'libsemigroups::Dot']]],
   ['enable_5fif_1',['enable_if',['http://en.cppreference.com/w/cpp/types/enable_if.html',1,'std']]],
   ['enable_5fshared_5ffrom_5fthis_2',['enable_shared_from_this',['http://en.cppreference.com/w/cpp/memory/enable_shared_from_this.html',1,'std']]],
   ['equal_5fto_3',['equal_to',['http://en.cppreference.com/w/cpp/utility/functional/equal_to.html',1,'std']]],
-  ['equalto_4',['EqualTo',['../structlibsemigroups_1_1_equal_to.html',1,'libsemigroups']]],
-  ['equalto_3c_20element_5ftype_20_3e_5',['EqualTo&lt; element_type &gt;',['../structlibsemigroups_1_1_equal_to.html',1,'libsemigroups']]],
-  ['equalto_3c_20point_20_3e_6',['EqualTo&lt; Point &gt;',['../structlibsemigroups_1_1_equal_to.html',1,'libsemigroups']]],
+  ['equalto_4',['EqualTo',['../structlibsemigroups_1_1EqualTo.html',1,'libsemigroups']]],
+  ['equalto_3c_20element_5ftype_20_3e_5',['EqualTo&lt; element_type &gt;',['../structlibsemigroups_1_1EqualTo.html',1,'libsemigroups']]],
+  ['equalto_3c_20point_20_3e_6',['EqualTo&lt; Point &gt;',['../structlibsemigroups_1_1EqualTo.html',1,'libsemigroups']]],
   ['errc_7',['errc',['http://en.cppreference.com/w/cpp/error/errc.html',1,'std']]],
   ['error_5fcategory_8',['error_category',['http://en.cppreference.com/w/cpp/error/error_category.html',1,'std']]],
   ['error_5fcode_9',['error_code',['http://en.cppreference.com/w/cpp/error/error_code.html',1,'std']]],

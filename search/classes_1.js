@@ -30,15 +30,15 @@ var searchData=
   ['binary_5ffunction_27',['binary_function',['http://en.cppreference.com/w/cpp/utility/functional/binary_function.html',1,'std']]],
   ['binary_5fnegate_28',['binary_negate',['http://en.cppreference.com/w/cpp/utility/functional/binary_negate.html',1,'std']]],
   ['binomial_5fdistribution_29',['binomial_distribution',['http://en.cppreference.com/w/cpp/numeric/random/binomial_distribution.html',1,'std']]],
-  ['bipartition_30',['Bipartition',['../classlibsemigroups_1_1_bipartition.html',1,'libsemigroups']]],
+  ['bipartition_30',['Bipartition',['../classlibsemigroups_1_1Bipartition.html',1,'libsemigroups']]],
   ['bit_5fand_31',['bit_and',['http://en.cppreference.com/w/cpp/utility/functional/bit_and.html',1,'std']]],
   ['bit_5fnot_32',['bit_not',['http://en.cppreference.com/w/cpp/utility/functional/bit_not.html',1,'std']]],
   ['bit_5for_33',['bit_or',['http://en.cppreference.com/w/cpp/utility/functional/bit_or.html',1,'std']]],
   ['bitset_34',['bitset',['http://en.cppreference.com/w/cpp/utility/bitset.html',1,'std']]],
-  ['blocks_35',['Blocks',['../classlibsemigroups_1_1_blocks.html',1,'libsemigroups']]],
-  ['bmat8_36',['BMat8',['../classlibsemigroups_1_1_b_mat8.html',1,'libsemigroups']]],
-  ['booleanone_37',['BooleanOne',['../structlibsemigroups_1_1_boolean_one.html',1,'libsemigroups']]],
-  ['booleanplus_38',['BooleanPlus',['../structlibsemigroups_1_1_boolean_plus.html',1,'libsemigroups']]],
-  ['booleanprod_39',['BooleanProd',['../structlibsemigroups_1_1_boolean_prod.html',1,'libsemigroups']]],
-  ['booleanzero_40',['BooleanZero',['../structlibsemigroups_1_1_boolean_zero.html',1,'libsemigroups']]]
+  ['blocks_35',['Blocks',['../classlibsemigroups_1_1Blocks.html',1,'libsemigroups']]],
+  ['bmat8_36',['BMat8',['../classlibsemigroups_1_1BMat8.html',1,'libsemigroups']]],
+  ['booleanone_37',['BooleanOne',['../structlibsemigroups_1_1BooleanOne.html',1,'libsemigroups']]],
+  ['booleanplus_38',['BooleanPlus',['../structlibsemigroups_1_1BooleanPlus.html',1,'libsemigroups']]],
+  ['booleanprod_39',['BooleanProd',['../structlibsemigroups_1_1BooleanProd.html',1,'libsemigroups']]],
+  ['booleanzero_40',['BooleanZero',['../structlibsemigroups_1_1BooleanZero.html',1,'libsemigroups']]]
 ];

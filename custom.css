@@ -13,8 +13,13 @@
   height: 72px;
 }
 
-#nav-tree .label[role="heading"] {
+/* Add headings to the navbar*/
+#nav-tree [href="_HEADING_"],
+#main-nav [href="_HEADING_"] {
   text-transform: uppercase;
   color: var(--primary-dark-color);
   font-weight: 600;
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
 }

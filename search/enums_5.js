@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['order_0',['Order',['../group__types__group.html#gabdaf879e32abd3c9d7ae16e794b8f405',1,'libsemigroups']]],
-  ['overlap_1',['overlap',['../structlibsemigroups_1_1_knuth_bendix_1_1options.html#afa1f0d1d090a57621c44f56bf70e89e9',1,'libsemigroups::KnuthBendix::options']]]
+  ['side_0',['side',['../group__types__group.html#gafc015eff6557e84151d2e53b94375445',1,'libsemigroups']]],
+  ['state_1',['state',['../classlibsemigroups_1_1Runner.html#adc6e5733fc3c22f0a7b2914188c49c90',1,'libsemigroups::Runner']]],
+  ['strategy_2',['strategy',['../structlibsemigroups_1_1ToddCoxeter_1_1options.html#ab621d71bb2cf38b09419ef3a5047e30c',1,'libsemigroups::ToddCoxeter::options']]]
 ];

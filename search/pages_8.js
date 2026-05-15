@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['libsemigroups_0',['libsemigroups',['../index.html',1,'']]],
-  ['list_1',['Deprecated List',['../deprecated.html',1,'']]]
+  ['8_20released_2020_2004_202020_0',['v1.0.8 (released 20/04/2020)',['../md_changelog-v1.html#v108-released-20042020',1,'']]]
 ];

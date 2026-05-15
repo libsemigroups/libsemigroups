@@ -1,0 +1,11 @@
+<map id="PresentationBase" name="PresentationBase">
+<area shape="rect" id="Node000001" title="Empty base for presentation&#45;like classes." alt="" coords="5,77,131,102"/>
+<area shape="rect" id="Node000002" href="$classlibsemigroups_1_1Presentation.html" title=" " alt="" coords="185,5,327,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,70,196,43,197,48,120,75"/>
+<area shape="rect" id="Node000003" href="$classlibsemigroups_1_1Presentation.html" title=" " alt="" coords="179,69,333,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="144,87,178,87,178,92,144,92"/>
+<area shape="rect" id="Node000004" href="$classlibsemigroups_1_1Presentation.html" title="For an implementation of presentations for semigroups or monoids." alt="" coords="181,134,331,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="124,103,214,131,213,137,122,109"/>
+<area shape="rect" id="Node000005" href="$classlibsemigroups_1_1InversePresentation.html" title="For an implementation of inverse presentations for semigroups or monoids." alt="" coords="381,127,520,167"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="345,144,381,144,381,149,345,149"/>
+</map>
