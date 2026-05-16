@@ -66,9 +66,11 @@ namespace libsemigroups {
 
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
     //! (Definition 1.2.14, page 24).
-    recursive
+    recursive,
 
-    // wreath TODO(later)
+    //! The wreath ordering, as described in \cite Sims1994aa
+    //! (Section 3.8, page 138)
+    wreath
   };
 
   //! \defgroup orders_group Orders
