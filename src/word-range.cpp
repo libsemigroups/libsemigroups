@@ -670,7 +670,7 @@ namespace libsemigroups {
       }
 
       std::string get_unique_letters(std::string const& x) {
-        std::unordered_set seen(x.begin(), x.end());
+        std::unordered_set<char> seen(x.begin(), x.end());
         return std::string(seen.begin(), seen.end());
       }
 
