@@ -1,5 +1,13 @@
 # Changelog - version 3
 
+## v3.6.1 (released 17/05/2026)
+
+In this release we include one minor fix for older versions of libc++ that
+was introduced in v3.6.0:
+
+- words: fix CTAD for older libc++ by [\@jswent] in
+  https://github.com/libsemigroups/libsemigroups/pull/988
+
 ## v3.6.0 (released 15/05/2026)
 
 This is a minor release with a number of improvements and new features:
