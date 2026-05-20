@@ -121,8 +121,8 @@ namespace libsemigroups {
       //! double quotes.
       string,
 
-      //! Value indicating that the value of an attribute should be enclosed in
-      //! double quotes.
+      //! Value indicating that the value of an attribute should not be enclosed
+      //! in double quotes.
       html
     };
 
