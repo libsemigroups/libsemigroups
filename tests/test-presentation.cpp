@@ -2966,41 +2966,71 @@ namespace libsemigroups {
 
     p.alphabet(50);
     std::string var_name("my_var");
-    REQUIRE_EXCEPTION_MSG(presentation::to_gap_string(p, var_name),
-                          "expected at most 49 generators, found 50!");
+    REQUIRE_NOTHROW(presentation::to_gap_string(p, var_name));
 
     p.init();
-    p.alphabet("abc");
-    presentation::add_rule_no_checks(p, "abba", "bac");
-    presentation::add_rule_no_checks(p, "ba", "ab");
-    presentation::add_rule_no_checks(p, "cab", "ba");
+    p.alphabet("byr");
+    presentation::add_rule(p, "byyb", "ybr");
+    presentation::add_rule(p, "yb", "by");
+    presentation::add_rule(p, "rby", "yb");
 
     REQUIRE(presentation::to_gap_string(p, var_name)
-            == "F := FreeSemigroup(\"a\", \"b\", "
-               "\"c\");\n"
+            == "F := FreeSemigroup(\"b\", \"y\", \"r\");\n"
                "AssignGeneratorVariables(F);;\n"
                "R := [\n"
-               "          [a * b * b * a, b * a * "
-               "c], \n"
-               "          [b * a, a * b], \n"
-               "          [c * a * b, b * a]\n"
-               "         ];\n"
+               "       [b * y * y * b, y * b * r],\n"
+               "       [y * b, b * y],\n"
+               "       [r * b * y, y * b]\n"
+               "     ];\n"
                "my_var := F / R;\n");
 
     p.contains_empty_word(true);
-    presentation::add_rule_no_checks(p, "cba", "");
+    presentation::add_rule(p, "ryb", "");
     REQUIRE(presentation::to_gap_string(p, var_name)
-            == "F := FreeMonoid(\"a\", \"b\", "
-               "\"c\");\n"
+            == "F := FreeMonoid(\"b\", \"y\", \"r\");\n"
                "AssignGeneratorVariables(F);;\n"
                "R := [\n"
-               "          [a * b * b * a, b * a * "
-               "c], \n"
-               "          [b * a, a * b], \n"
-               "          [c * a * b, b * a], \n"
-               "          [c * b * a, One(F)]\n"
-               "         ];\n"
+               "       [b * y * y * b, y * b * r],\n"
+               "       [y * b, b * y],\n"
+               "       [r * b * y, y * b],\n"
+               "       [r * y * b, One(F)]\n"
+               "     ];\n"
                "my_var := F / R;\n");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "004",
+                          "to_gap_string",
+                          "[quick][presentation]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(3);
+    std::string var_name("my_var");
+
+    presentation::add_rule(p, 0101_w, 012_w);
+    presentation::add_rule(p, 012_w, 0_w);
+    presentation::add_rule(p, 120_w, 11_w);
+
+    REQUIRE(presentation::to_gap_string(p)
+            == "F := FreeSemigroup(\"s0\", \"s1\", \"s2\");\n"
+               "AssignGeneratorVariables(F);;\n"
+               "R := [\n"
+               "       [s0 * s1 * s0 * s1, s0 * s1 * s2],\n"
+               "       [s0 * s1 * s2, s0],\n"
+               "       [s1 * s2 * s0, s1 * s1]\n"
+               "     ];\n"
+               "S := F / R;\n");
+
+    p.contains_empty_word(true);
+    REQUIRE(presentation::to_gap_string(p)
+            == "F := FreeMonoid(\"m0\", \"m1\", \"m2\");\n"
+               "AssignGeneratorVariables(F);;\n"
+               "R := [\n"
+               "       [m0 * m1 * m0 * m1, m0 * m1 * m2],\n"
+               "       [m0 * m1 * m2, m0],\n"
+               "       [m1 * m2 * m0, m1 * m1]\n"
+               "     ];\n"
+               "S := F / R;\n");
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("InversePresentation",
