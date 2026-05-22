@@ -171,61 +171,75 @@ namespace libsemigroups {
       return replace_word_with_new_generator(p, w, w + std::strlen(w));
     }
 
+    namespace {
+      template <typename Func>
+      std::string to_gap_string(Presentation<word_type> const& p,
+                                std::string const&             var_name,
+                                Func&&                         func) {
+        p.throw_if_bad_alphabet_or_rules();
+
+        std::string result = "F := Free";
+        if (p.contains_empty_word()) {
+          result += "Monoid(";
+        } else {
+          result += "Semigroup(";
+        }
+
+        auto to_gap_word = [&func](word_type const& w) -> std::string {
+          if (w.empty()) {
+            return "One(F)";
+          }
+          std::string w_as_str;
+          std::string sep = "";
+          for (auto it = w.cbegin(); it < w.cend(); ++it) {
+            w_as_str += fmt::format("{}{}", sep, func(*it));
+            sep = " * ";
+          }
+          return w_as_str;
+        };
+
+        std::string sep = "";
+        for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
+          result += fmt::format("{}\"{}\"", sep, func(*it));
+          sep = ", ";
+        }
+        result += ");\n";
+
+        result += "AssignGeneratorVariables(F);;\n";
+
+        result += "R := [";
+        sep = "";
+        for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
+          result += fmt::format("{}\n       [{}, {}]",
+                                sep,
+                                to_gap_word(*it),
+                                to_gap_word(*(it + 1)));
+          sep = ",";
+        }
+        result += "\n     ];\n";
+        result += var_name + " := F / R;\n";
+        return result;
+      }
+
+    }  // namespace
+
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
-      p.throw_if_bad_alphabet_or_rules();
-      if (p.alphabet().size() > 49) {
-        LIBSEMIGROUPS_EXCEPTION("expected at most 49 generators, found {}!",
-                                p.alphabet().size());
-      }
+      std::string_view const prefix = p.contains_empty_word() ? "m" : "s";
 
-      auto to_gap_word = [](word_type const& w) -> std::string {
-        if (w.empty()) {
-          return "One(F)";
-        }
-        std::string out;
-        std::string sep = "";
-        for (auto it = w.cbegin(); it < w.cend(); ++it) {
-          out += sep + words::human_readable_letter<>(*it);
-          sep = " * ";
-        }
-        return out;
+      auto func = [&prefix](letter_type a) -> std::string {
+        return fmt::format("{}{}", prefix, a);
       };
 
-      std::string out = "F := Free";
-      if (p.contains_empty_word()) {
-        out += "Monoid(";
-      } else {
-        out += "Semigroup(";
-      }
-
-      std::string sep = "";
-      for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
-        out += fmt::format(
-            "{}\"{}\"", sep, words::human_readable_letter<>(*it));
-        sep = ", ";
-      }
-      out += ");\n";
-
-      out += "AssignGeneratorVariables(F);;\n";
-
-      out += "R := [";
-      sep = "";
-      for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
-        out += fmt::format("{}\n          [{}, {}]",
-                           sep,
-                           to_gap_word(*it),
-                           to_gap_word(*(it + 1)));
-        sep = ", ";
-      }
-      out += "\n         ];\n";
-      out += var_name + " := F / R;\n";
-      return out;
+      return to_gap_string(p, var_name, func);
     }
 
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name) {
-      return to_gap_string(v4::to<Presentation<word_type>>(p), var_name);
+      auto func = [&p](letter_type a) -> std::string {
+        return std::string(1, p.letter(a));
+      };
+      return to_gap_string(v4::to<Presentation<word_type>>(p), var_name, func);
     }
 
   }  // namespace presentation

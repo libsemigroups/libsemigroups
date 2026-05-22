@@ -3125,7 +3125,7 @@ namespace libsemigroups {
           p, std::string_view(relator));
     }
 
-    //! \brief Return the code that would create \p p in GAP.
+    //! \brief Return the code that would create a presentation in GAP.
     //!
     //! This function returns the string of GAP code that could be used to
     //! create an object with the same alphabet and rules as \p p in GAP.
@@ -3133,13 +3133,12 @@ namespace libsemigroups {
     //! or monoids.
     //!
     //! \param p the presentation.
-    //! \param var_name the name of the variable to be used in GAP.
-    //!
-    //! \throws LibsemigroupsException if \p has more than 49 generators.
+    //! \param var_name the name of the variable to be used in GAP (defaults to
+    //! ``\"S\"`).
     std::string to_gap_string(Presentation<word_type> const& p,
-                              std::string const&             var_name);
+                              std::string const&             var_name = "S");
 
-    //! \brief Return the code that would create \p p in GAP.
+    //! \brief Return the code that would create a presentation in GAP.
     //!
     //! This function returns the string of GAP code that could be used to
     //! create an object with the same alphabet and rules as \p p in GAP.
@@ -3147,11 +3146,10 @@ namespace libsemigroups {
     //! or monoids.
     //!
     //! \param p the presentation.
-    //! \param var_name the name of the variable to be used in GAP.
-    //!
-    //! \throws LibsemigroupsException if \p has more than 49 generators.
+    //! \param var_name the name of the variable to be used in GAP (defaults to
+    //! ``\"S\"`).
     std::string to_gap_string(Presentation<std::string> const& p,
-                              std::string const&               var_name);
+                              std::string const&               var_name = "S");
 
     //! \brief Find a rule.
     //!
