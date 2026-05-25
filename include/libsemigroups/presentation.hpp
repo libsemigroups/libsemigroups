@@ -2407,9 +2407,34 @@ namespace libsemigroups {
     //! No checks that the arguments describe words over the alphabet of \p p
     //! are performed.
     template <typename Word>
+    void add_commutes_rules_no_checks(Presentation<Word>&      p,
+                                      Word const&              letters,
+                                      std::vector<Word> const& words);
+
+    //! \brief Add rules so specific letters commute with specific words.
+    //!
+    //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
+    //! \p letters and word \f$v\f$ in \p words.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the collection of letters to add rules for.
+    //! \param words the collection of words to add rules for.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks that the arguments describe words over the alphabet of \p p
+    //! are performed.
+    // TODO (1): remove this in v4; this convenience function is only really
+    // useful in the tests
+    template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>&         p,
                                       Word const&                 letters,
-                                      std::initializer_list<Word> words);
+                                      std::initializer_list<Word> words) {
+      add_commutes_rules_no_checks(p, letters, std::vector(words));
+    }
 
     //! \brief Add rules so specific letters commute with specific words.
     //!
@@ -2424,9 +2449,30 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any letter in \p letters, or any
     //! letter in any word in \p words, is not in `p.alphabet()`.
     template <typename Word>
+    void add_commutes_rules(Presentation<Word>&      p,
+                            Word const&              letters,
+                            std::vector<Word> const& words);
+
+    //! \brief Add rules so specific letters commute with specific words.
+    //!
+    //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
+    //! \p letters and word \f$v\f$ in \p words.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the collection of letters to add rules for.
+    //! \param words the collection of words to add rules for.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p letters, or any
+    //! letter in any word in \p words, is not in `p.alphabet()`.
+    // TODO (1): remove this in v4; this convenience function is only really
+    // useful in the tests
+    template <typename Word>
     void add_commutes_rules(Presentation<Word>&         p,
                             Word const&                 letters,
-                            std::initializer_list<Word> words);
+                            std::initializer_list<Word> words) {
+      add_commutes_rules(p, letters, std::vector(words));
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // commutator - Word

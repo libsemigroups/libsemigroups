@@ -1072,9 +1072,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_commutes_rules_no_checks(Presentation<Word>&         p,
-                                      Word const&                 letters,
-                                      std::initializer_list<Word> words) {
+    void add_commutes_rules_no_checks(Presentation<Word>&      p,
+                                      Word const&              letters,
+                                      std::vector<Word> const& words) {
       using words::operator+;
 
       Presentation<Word> q;
@@ -1090,9 +1090,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_commutes_rules(Presentation<Word>&         p,
-                            Word const&                 letters,
-                            std::initializer_list<Word> words) {
+    void add_commutes_rules(Presentation<Word>&      p,
+                            Word const&              letters,
+                            std::vector<Word> const& words) {
       p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
                                         std::cend(letters));
       for (Word const& word : words) {
