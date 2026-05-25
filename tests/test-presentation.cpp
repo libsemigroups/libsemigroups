@@ -489,18 +489,18 @@ namespace libsemigroups {
     using W            = TestType;
     auto            rg = ReportGuard(false);
     Presentation<W> p;
-    REQUIRE_THROWS_AS(presentation::add_commutes_rules(p, {0}, {1}),
+    REQUIRE_THROWS_AS(presentation::add_commutes_rules(p, W{0}, W{1}),
                       LibsemigroupsException);
     p.alphabet({0});
-    REQUIRE_THROWS_AS(presentation::add_commutes_rules(p, {0}, {1}),
+    REQUIRE_THROWS_AS(presentation::add_commutes_rules(p, W{0}, W{1}),
                       LibsemigroupsException);
     p.alphabet({0, 1, 2});
     presentation::add_rule(p, {0, 1, 2, 1}, {0, 0});
-    REQUIRE_NOTHROW(presentation::add_commutes_rules(p, {0}, {1}));
+    REQUIRE_NOTHROW(presentation::add_commutes_rules(p, W{0}, W{1}));
 
     REQUIRE(p.rules == std::vector<W>({{0, 1, 2, 1}, {0, 0}, {0, 1}, {1, 0}}));
 
-    presentation::add_commutes_rules(p, {1, 1}, {2});
+    presentation::add_commutes_rules(p, W{1, 1}, W{2});
     REQUIRE(p.rules
             == std::vector<W>({{0, 1, 2, 1},
                                {0, 0},
