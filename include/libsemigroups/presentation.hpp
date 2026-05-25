@@ -2235,7 +2235,7 @@ namespace libsemigroups {
       return try_detect_group_inverses(p);
     }
 
-    //! \brief Add rules that define each letter as an idempotent.
+    //! \brief Add rules that define idempotents.
     //!
     //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
     //! \p letters.
@@ -2258,7 +2258,25 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add rules that define involution.
+    //! \brief Add rules that define idempotents.
+    //!
+    //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
+    //! \p letters.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the letters to make idempotent.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p letters is not in
+    //! `p.alphabet()`.
+    template <typename Word>
+    void add_idempotent_rules(Presentation<Word>& p, Word const& letters) {
+      p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
+                                        std::cend(letters));
+      add_idempotent_rules_no_checks(p, letters);
+    }
+
+    //! \brief Add rules that define involutions.
     //!
     //! Adds rules to \p p of the form \f$a^2 = \varepsilon\f$ for every letter
     //! \f$a\f$ in \p letters.
@@ -2275,11 +2293,25 @@ namespace libsemigroups {
     //! are performed.
     template <typename Word>
     void add_involution_rules_no_checks(Presentation<Word>& p,
-                                        word_type const&    letters) {
+                                        Word const&         letters) {
       for (auto x : letters) {
         add_rule_no_checks(p, {x, x}, {});
       }
     }
+
+    //! \brief Add rules that define involutions.
+    //!
+    //! Adds rules to \p p of the form \f$a^2 = \varepsilon\f$ for every letter
+    //! \f$a\f$ in \p letters.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the letters to add involution rules for.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p letters is not in
+    //! `p.alphabet()`, or if `p.contains_empty_word()` returns `false`.
+    template <typename Word>
+    void add_involution_rules(Presentation<Word>& p, Word const& letters);
 
     //! \brief Add rules so specific letters commute.
     //!
@@ -2304,6 +2336,23 @@ namespace libsemigroups {
 
     //! \brief Add rules so specific letters commute.
     //!
+    //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
+    //! \p letters1 and \f$v\f$ in \p letters2.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters1 the first collection of letters to add rules for.
+    //! \param letters2 the second collection of letters to add rules for.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p letters1 or
+    //! \p letters2 is not in `p.alphabet()`.
+    template <typename Word>
+    void add_commutes_rules(Presentation<Word>& p,
+                            Word const&         letters1,
+                            Word const&         letters2);
+
+    //! \brief Add rules so specific letters commute.
+    //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every pair of letters
     //! \f$u, v\f$ in \p letters.
     //!
@@ -2323,10 +2372,28 @@ namespace libsemigroups {
       add_commutes_rules_no_checks(p, letters, letters);
     }
 
+    //! \brief Add rules so specific letters commute.
+    //!
+    //! Adds rules to \p p of the form \f$uv = vu\f$ for every pair of letters
+    //! \f$u, v\f$ in \p letters.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the collection of letters to add rules for.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p letters is not in
+    //! `p.alphabet()`.
+    template <typename Word>
+    void add_commutes_rules(Presentation<Word>& p, Word const& letters) {
+      p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
+                                        std::cend(letters));
+      add_commutes_rules_no_checks(p, letters);
+    }
+
     //! \brief Add rules so specific letters commute with specific words.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
-    //! \p letters and \f$v\f$ in \p words.
+    //! \p letters and word \f$v\f$ in \p words.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation to add rules to.
@@ -2343,6 +2410,23 @@ namespace libsemigroups {
     void add_commutes_rules_no_checks(Presentation<Word>&         p,
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
+
+    //! \brief Add rules so specific letters commute with specific words.
+    //!
+    //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
+    //! \p letters and word \f$v\f$ in \p words.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the collection of letters to add rules for.
+    //! \param words the collection of words to add rules for.
+    //!
+    //! \throws LibsemigroupsException if any letter in \p letters, or any
+    //! letter in any word in \p words, is not in `p.alphabet()`.
+    template <typename Word>
+    void add_commutes_rules(Presentation<Word>&         p,
+                            Word const&                 letters,
+                            std::initializer_list<Word> words);
 
     ////////////////////////////////////////////////////////////////////////
     // commutator - Word
@@ -2580,8 +2664,8 @@ namespace libsemigroups {
     //! \brief Add a commutator rule without checks.
     //!
     //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p, after attempting to
-    //! detect inverses from the rules in \p p, using \ref
-    //! try_detect_group_inverses. If \p id is \ref UNDEFINED, then the
+    //! detect inverses from the rules in \p p, using
+    //! \ref try_detect_group_inverses. If \p id is \ref UNDEFINED, then the
     //! right-hand side is the empty word.
     //!
     //! \tparam Word the type of the words in the presentation.
@@ -2674,8 +2758,8 @@ namespace libsemigroups {
     //! \brief Add a commutator rule.
     //!
     //! Adds the rule \f$x^{-1}y^{-1}xy = id\f$ to \p p, after attempting to
-    //! detect inverses from the rules in \p p, using \ref
-    //! try_detect_group_inverses. If \p id is \ref UNDEFINED, then the
+    //! detect inverses from the rules in \p p, using
+    //! \ref try_detect_group_inverses. If \p id is \ref UNDEFINED, then the
     //! right-hand side is the empty word.
     //!
     //! \tparam Word the type of the words in the presentation.
@@ -2686,9 +2770,9 @@ namespace libsemigroups {
     //! \param id the identity letter, or \ref UNDEFINED for the empty word.
     //!
     //! \throws LibsemigroupsException if \p x, \p y, or \p id contains a
-    //! letter not belonging to `p.alphabet()`, if \ref
-    //! try_detect_group_inverses throws, or if \p x or \p y contains a letter
-    //! for which no inverse was detected.
+    //! letter not belonging to `p.alphabet()`, if
+    //! \ref try_detect_group_inverses throws, or if \p x or \p y contains a
+    //! letter for which no inverse was detected.
     //!
     //! \sa
     //! \ref Presentation::throw_if_letter_not_in_alphabet,
