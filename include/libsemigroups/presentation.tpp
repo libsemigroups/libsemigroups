@@ -1061,6 +1061,17 @@ namespace libsemigroups {
     }
 
     template <typename Word>
+    void add_commutes_rules(Presentation<Word>& p,
+                            Word const&         letters1,
+                            Word const&         letters2) {
+      p.throw_if_letter_not_in_alphabet(std::cbegin(letters1),
+                                        std::cend(letters1));
+      p.throw_if_letter_not_in_alphabet(std::cbegin(letters2),
+                                        std::cend(letters2));
+      add_commutes_rules_no_checks(p, letters1, letters2);
+    }
+
+    template <typename Word>
     void add_commutes_rules_no_checks(Presentation<Word>&         p,
                                       Word const&                 letters,
                                       std::initializer_list<Word> words) {
@@ -1076,6 +1087,18 @@ namespace libsemigroups {
         }
       }
       presentation::add_rules_no_checks(p, q);
+    }
+
+    template <typename Word>
+    void add_commutes_rules(Presentation<Word>&         p,
+                            Word const&                 letters,
+                            std::initializer_list<Word> words) {
+      p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
+                                        std::cend(letters));
+      for (Word const& word : words) {
+        p.throw_if_letter_not_in_alphabet(std::cbegin(word), std::cend(word));
+      }
+      add_commutes_rules_no_checks(p, letters, words);
     }
 
     template <typename Word>
@@ -1309,6 +1332,17 @@ namespace libsemigroups {
       Word inverses;
       try_detect_group_inverses(p, letters, inverses);
       return {letters, inverses};
+    }
+
+    template <typename Word>
+    void add_involution_rules(Presentation<Word>& p, word_type const& letters) {
+      p.throw_if_letter_not_in_alphabet(std::begin(letters), std::end(letters));
+      if (!p.contains_empty_word()) {
+        LIBSEMIGROUPS_EXCEPTION("this function requires the presentation to "
+                                "contain the empty word, did you mean to "
+                                "call contains_empty_word(true) first?");
+      }
+      add_involution_rules_no_checks(p, letters);
     }
 
     template <typename Word1, typename Word2>
