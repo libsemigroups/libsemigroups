@@ -77,6 +77,34 @@ jobs:
       - name: Build bench_all . . .
         run: |
           make bench_all -j4
+  c-bindings-compile:
+    name: C bindings compile
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    env:
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Configure . . .
+        run: |
+          mkdir -p m4
+          ./autogen.sh
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS"
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Compile c-bindings . . .
+        run: |
+          $CXX $CXXFLAGS -std=c++17 -Iinclude -Ic-bindings/include \
+            -c c-bindings/src/error_c.cpp -o error_c.o
+          $CXX $CXXFLAGS -std=c++17 -Iinclude -Ic-bindings/include \
+            -c c-bindings/src/froidure_pin_c.cpp -o froidure_pin_c.o
   distcheck:
     timeout-minutes: 15
     runs-on: ubuntu-latest
