@@ -2235,7 +2235,7 @@ namespace libsemigroups {
       return try_detect_group_inverses(p);
     }
 
-    //! \brief Add rules that define each letter as an idempotent.
+    //! \brief Add rules that define idempotents.
     //!
     //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
     //! \p letters.
@@ -2258,7 +2258,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add rules that define each letter as an idempotent.
+    //! \brief Add rules that define idempotents.
     //!
     //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
     //! \p letters.
@@ -2276,7 +2276,7 @@ namespace libsemigroups {
       add_idempotent_rules_no_checks(p, letters);
     }
 
-    //! \brief Add rules that define involution.
+    //! \brief Add rules that define involutions.
     //!
     //! Adds rules to \p p of the form \f$a^2 = \varepsilon\f$ for every letter
     //! \f$a\f$ in \p letters.
@@ -2299,7 +2299,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add rules that define involution.
+    //! \brief Add rules that define involutions.
     //!
     //! Adds rules to \p p of the form \f$a^2 = \varepsilon\f$ for every letter
     //! \f$a\f$ in \p letters.
@@ -2393,7 +2393,7 @@ namespace libsemigroups {
     //! \brief Add rules so specific letters commute with specific words.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
-    //! \p letters and \f$v\f$ in \p words.
+    //! \p letters and word \f$v\f$ in \p words.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation to add rules to.
@@ -2414,7 +2414,7 @@ namespace libsemigroups {
     //! \brief Add rules so specific letters commute with specific words.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
-    //! \p letters and \f$v\f$ in \p words.
+    //! \p letters and word \f$v\f$ in \p words.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation to add rules to.
