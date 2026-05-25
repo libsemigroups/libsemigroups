@@ -2293,7 +2293,7 @@ namespace libsemigroups {
     //! are performed.
     template <typename Word>
     void add_involution_rules_no_checks(Presentation<Word>& p,
-                                        word_type const&    letters) {
+                                        Word const&         letters) {
       for (auto x : letters) {
         add_rule_no_checks(p, {x, x}, {});
       }
@@ -2311,7 +2311,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any letter in \p letters is not in
     //! `p.alphabet()`, or if `p.contains_empty_word()` returns `false`.
     template <typename Word>
-    void add_involution_rules(Presentation<Word>& p, word_type const& letters);
+    void add_involution_rules(Presentation<Word>& p, Word const& letters);
 
     //! \brief Add rules so specific letters commute.
     //!

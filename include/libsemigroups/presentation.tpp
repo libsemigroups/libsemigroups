@@ -1335,7 +1335,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_involution_rules(Presentation<Word>& p, word_type const& letters) {
+    void add_involution_rules(Presentation<Word>& p, Word const& letters) {
       p.throw_if_letter_not_in_alphabet(std::begin(letters), std::end(letters));
       if (!p.contains_empty_word()) {
         LIBSEMIGROUPS_EXCEPTION("this function requires the presentation to "
