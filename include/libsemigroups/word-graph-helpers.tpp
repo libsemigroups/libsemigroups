@@ -28,7 +28,7 @@ namespace libsemigroups {
 
       template <typename Node>
       // TODO rename to _no_checks and add a checks version?
-      [[nodiscard]] bool is_strictly_cyclic(WordGraphView<Node> const& wg) {
+      bool is_strictly_cyclic(WordGraphView<Node> const& wg) {
         using node_type = typename WordGraphView<Node>::node_type;
         auto const N    = wg.number_of_nodes_no_checks();
 
