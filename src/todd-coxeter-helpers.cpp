@@ -43,10 +43,10 @@ namespace libsemigroups {
   namespace todd_coxeter {
     // This function doesn't take a const reference for tc because
     // tc.number_of_classes() is not const.
-    [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
-                                      size_t                    tries,
-                                      std::chrono::milliseconds try_for,
-                                      float                     threshold) {
+    tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
+                        size_t                    tries,
+                        std::chrono::milliseconds try_for,
+                        float                     threshold) {
       using detail::node_managed_graph::random_active_node;
 
       if (is_obviously_infinite(tc)) {

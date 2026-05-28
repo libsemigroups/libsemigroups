@@ -234,7 +234,7 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
-  [[nodiscard]] bool FroidurePinBase::contains_one() {
+  bool FroidurePinBase::contains_one() {
     if (_found_one) {
       return true;
     }
@@ -436,7 +436,7 @@ namespace libsemigroups {
     }
 
     namespace {
-      [[nodiscard]] Dot
+      Dot
       dot_cayley_graph(FroidurePinBase const&                             s,
                        typename FroidurePinBase::cayley_graph_type const& wg,
                        std::string const& gen_names) {
@@ -462,7 +462,7 @@ namespace libsemigroups {
         return v4::word_graph::dot(wg, node_labels, edge_labels);
       }
 
-      [[nodiscard]] Dot
+      Dot
       dot_cayley_graph(FroidurePinBase const&                             s,
                        typename FroidurePinBase::cayley_graph_type const& wg) {
         if (Dot::colors.size() < s.number_of_generators()) {

@@ -826,10 +826,9 @@ namespace libsemigroups {
       return true;
     }
 
-    [[nodiscard]] bool
-    RewriteTrie::descendants_confluent(Rule const* rule1,
-                                       index_type  current_node,
-                                       size_t      overlap_length) const {
+    bool RewriteTrie::descendants_confluent(Rule const* rule1,
+                                            index_type  current_node,
+                                            size_t      overlap_length) const {
       LIBSEMIGROUPS_ASSERT(rule1->active());
       if (_rule_trie.node_no_checks(current_node).terminal()) {
         Rule const* rule2 = _rule_map.find(current_node)->second;
