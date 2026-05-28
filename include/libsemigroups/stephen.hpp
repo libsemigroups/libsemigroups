@@ -79,14 +79,13 @@ namespace libsemigroups {
   //! algorithm  (as implemented in ToddCoxeter) and originates in
   //! \cite Stephen1987aa.
   //!
-  //! \tparam PresentationType a type derived from \ref PresentationBase. This
-  //! is the type of the underlying presentation used in the Stephen algorithm.
-  //! Common choices include \ref Presentation<word_type>,
-  //! \ref Presentation<std::string>, \ref InversePresentation<word_type> and
-  //! \ref InversePresentation<std::string>. If an \ref InversePresentation is
-  //! supplied, then the \ref Stephen class will use the Stephen procedure for
-  //! inverse semigroups when run. Otherwise the Stephen procedure for general
-  //! semigroups is used instead.
+  //! \tparam PresentationType must be `Presentation<word_type>` or
+  //! `InversePresentation<word_type>`. This is the type of the underlying
+  //! presentation used in Stephen's procedure. At present, only \ref
+  //! Presentation<word_type> and \ref InversePresentation<word_type> are
+  //! permitted. If an \ref InversePresentation is supplied, then the \ref
+  //! Stephen class will use Stephen's procedure for inverse semigroups when
+  //! run. Otherwise Stephen's procedure for general semigroups is used instead.
   template <typename PresentationType>
   class Stephen : public Runner {
     template <typename Q>
