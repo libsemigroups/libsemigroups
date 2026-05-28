@@ -74,8 +74,8 @@ namespace libsemigroups {
   //! `libsemigroups` objects, see the documentation for the `to<Presentation>`
   //! functions \ref to_presentation_group "here".
 
-  //! \brief Empty base for presentation-like classes.
-  struct PresentationBase {};
+  struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
+                      "instead")]] PresentationBase {};
 
   //! \ingroup presentations_group
   //!
@@ -99,8 +99,13 @@ namespace libsemigroups {
   //! namespace `libsemigroups::presentation`.
   //!
   //! \tparam Word the type of the underlying words.
+// TODO(v4) remove inheritance from PresentationBase
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   template <typename Word>
   class Presentation : public PresentationBase {
+#pragma GCC diagnostic pop
+
    public:
     //! \brief Type of the words in the rules of a Presentation object.
     using word_type = Word;
