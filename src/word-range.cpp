@@ -288,8 +288,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr,
-                                                   size_t           max_width) {
+  std::string to_human_readable_repr(WordRange const& wr, size_t max_width) {
     using detail::group_digits;
     word_type   first = wr.first();
     word_type   last  = wr.last();
@@ -359,7 +358,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string ToString::alphabet() const {
+  std::string ToString::alphabet() const {
     if (empty()) {
       return "";
     }
@@ -480,8 +479,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr,
-                                                   size_t max_width) {
+  std::string to_human_readable_repr(StringRange const& sr, size_t max_width) {
     using detail::group_digits;
 
     std::string first    = sr.first();

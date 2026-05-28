@@ -230,7 +230,7 @@ namespace libsemigroups {
     report_default("{}: {}\n", report_prefix(), string_why_we_stopped());
   }
 
-  [[nodiscard]] bool Runner::finished() const {
+  bool Runner::finished() const {
     if (started() && !dead() && finished_impl()) {
       _state = state::not_running;
       return true;
