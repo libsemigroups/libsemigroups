@@ -157,7 +157,8 @@ namespace libsemigroups {
     //! Construct an instance from the presentation \p p. This constructor
     //! copies \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase.
+    //! \tparam PresentationType must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param p the presentation.
     // Not noexcept because allocated memory
@@ -170,7 +171,8 @@ namespace libsemigroups {
     //! Construct an instance from the presentation \p p. This constructor
     //! moves \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase.
+    //! \tparam PresentationType must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param p the presentation.
     explicit Stephen(PresentationType&& p) : Stephen() {
@@ -182,7 +184,8 @@ namespace libsemigroups {
     //! Construct an instance from the shared pointer \p ptr to a shared
     //! presentation object. This constructor copies \p ptr.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase.
+    //! \tparam PresentationType must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param ptr a shared pointer to a presentation.
     explicit Stephen(std::shared_ptr<PresentationType> const& ptr) : Stephen() {
@@ -209,7 +212,8 @@ namespace libsemigroups {
     //! had been newly constructed from the presentation \p p. This initializer
     //! copies \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase.
+    //! \tparam PresentationType must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param p the presentation.
     //!
@@ -224,7 +228,8 @@ namespace libsemigroups {
     //! had been newly constructed from the presentation \p p. This initializer
     //! moves \p p.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase.
+    //! \tparam PresentationType must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param p the presentation.
     //!
@@ -239,7 +244,8 @@ namespace libsemigroups {
     //! had been newly constructed from the shared pointer to a presentation
     //! \p ptr. This initializer copies \p ptr.
     //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase.
+    //! \tparam PresentationType must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param ptr a shared pointer to a presentation.
     //!
@@ -468,7 +474,7 @@ namespace libsemigroups {
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `Presentation<word_type> const&`.
-  Stephen(Presentation<word_type> const&)->Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type> const&) -> Stephen<Presentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -478,7 +484,7 @@ namespace libsemigroups {
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `Presentation<word_type>&`.
-  Stephen(Presentation<word_type>&)->Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type>&) -> Stephen<Presentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -488,7 +494,7 @@ namespace libsemigroups {
   //!
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `Presentation<word_type>&&`.
-  Stephen(Presentation<word_type>&&)->Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type>&&) -> Stephen<Presentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -499,7 +505,7 @@ namespace libsemigroups {
   //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
   //! `std::shared_ptr<Presentation<word_type>>&&`.
   Stephen(std::shared_ptr<Presentation<word_type>>&&)
-      ->Stephen<Presentation<word_type>>;
+      -> Stephen<Presentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -510,7 +516,7 @@ namespace libsemigroups {
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from an `InversePresentation<word_type> const&`.
   Stephen(InversePresentation<word_type> const&)
-      ->Stephen<InversePresentation<word_type>>;
+      -> Stephen<InversePresentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -521,7 +527,7 @@ namespace libsemigroups {
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from an `InversePresentation<word_type>&`.
   Stephen(InversePresentation<word_type>&)
-      ->Stephen<InversePresentation<word_type>>;
+      -> Stephen<InversePresentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -532,7 +538,7 @@ namespace libsemigroups {
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from an `InversePresentation<word_type>&&`.
   Stephen(InversePresentation<word_type>&&)
-      ->Stephen<InversePresentation<word_type>>;
+      -> Stephen<InversePresentation<word_type>>;
 
   //! \ingroup stephen_group
   //!
@@ -543,7 +549,7 @@ namespace libsemigroups {
   //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
   //! from a `std::shared_ptr<InversePresentation<word_type>>&&`.
   Stephen(std::shared_ptr<InversePresentation<word_type>>&&)
-      ->Stephen<InversePresentation<word_type>>;
+      -> Stephen<InversePresentation<word_type>>;
   // TODO(2): other shared_ptr guides?
 
 }  // namespace libsemigroups
@@ -577,7 +583,8 @@ namespace libsemigroups {
     //! Stephen::word.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //! \param w a const reference to the input word.
@@ -608,7 +615,8 @@ namespace libsemigroups {
     //! \c Stephen<InversePresentation> instances.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //! \param w a const reference to the input word.
@@ -631,7 +639,8 @@ namespace libsemigroups {
     //! containing all words accepted by a Stephen instance in short-lex order.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //!
@@ -665,7 +674,8 @@ namespace libsemigroups {
     //! Stephen::word.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //!
@@ -704,7 +714,8 @@ namespace libsemigroups {
     //! Stephen::word.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //! \param min the minimum length of a word (default: 0).
@@ -745,7 +756,8 @@ namespace libsemigroups {
     //! \p max.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //! \param min the minimum length of a word (default: 0).
@@ -776,7 +788,8 @@ namespace libsemigroups {
     //! graph of the Stephen instance \p s.
     //!
     //! \tparam PresentationType the type of presentation defining the Stephen
-    //! instance, must be derived from \ref PresentationBase.
+    //! instance, must be `Presentation<word_type>` or
+    //! `InversePresentation<word_type>`.
     //!
     //! \param s the Stephen instance.
     //!
