@@ -2449,8 +2449,8 @@ namespace libsemigroups {
     //!
     //! This function calls FroidurePinBase::run on the FroidurePinBase instance
     //! \p s, and then returns a \ref Dot object representing the right Cayley
-    //! graph of \p s. The generators are labelled by the characters in \p
-    //! gen_names, and the nodes are labelled by the words in the generators
+    //! graph of \p s. The generators are labelled by the characters in
+    //! \p gen_names, and the nodes are labelled by the words in the generators
     //! that correspond to their positions in \p s.
     //!
     //! \param s the FroidurePinBase instance.
