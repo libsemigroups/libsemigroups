@@ -1367,7 +1367,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    [[nodiscard]] typename std::vector<Word>::iterator
+    typename std::vector<Word>::iterator
     find_rule_no_checks(Presentation<Word>& p,
                         Word const&         lhs,
                         Word const&         rhs) {
@@ -1380,9 +1380,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    [[nodiscard]] size_t index_rule_no_checks(Presentation<Word> const& p,
-                                              Word const&               lhs,
-                                              Word const&               rhs) {
+    size_t index_rule_no_checks(Presentation<Word> const& p,
+                                Word const&               lhs,
+                                Word const&               rhs) {
       auto it = find_rule_no_checks(p, lhs, rhs);
       if (it != p.rules.cend()) {
         return std::distance(p.rules.begin(), it);
