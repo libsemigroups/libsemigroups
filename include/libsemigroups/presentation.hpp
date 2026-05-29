@@ -75,7 +75,7 @@ namespace libsemigroups {
   //! functions \ref to_presentation_group "here".
 
   struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
-                      "instead")]] PresentationBase {};
+                      "instead")]] PresentationBase{};
 
   //! \ingroup presentations_group
   //!
