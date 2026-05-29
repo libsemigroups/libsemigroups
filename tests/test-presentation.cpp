@@ -3985,4 +3985,22 @@ End;)xxx");
                           "letters, found \"abAB\"!");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "101",
+                          "to_ace_string word_type",
+                          "[quick][presentation]") {
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+
+    presentation::add_rule(p, "00"_w, ""_w);
+    presentation::add_rule(p, "111"_w, ""_w);
+    presentation::add_rule(p, "0101"_w, ""_w);
+    REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
+wo: 4g; # workspace size, adjust as necessary
+Rel: aa, bbb, abab;
+Mess: 100000; # message frequency, adjust as necessary
+End;)xxx");
+  }
+
 }  // namespace libsemigroups

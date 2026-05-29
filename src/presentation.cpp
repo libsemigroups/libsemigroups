@@ -280,5 +280,9 @@ namespace libsemigroups {
       return result;
     }
 
+    std::string to_ace_string(Presentation<word_type> const& p) {
+      return to_ace_string(v4::to<Presentation<std::string>>(p));
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups
