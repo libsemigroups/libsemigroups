@@ -3954,7 +3954,7 @@ End;)xxx");
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "099",
-                          "Mathieu M11 ace_string",
+                          "Mathieu M11 to_ace_string",
                           "[quick][presentation]") {
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3972,6 +3972,17 @@ wo: 4g; # workspace size, adjust as necessary
 Rel: aa, bbbb, ababababababababababab, abbabbabbabbabbabb, ababaBababbaBabaBaB;
 Mess: 100000; # message frequency, adjust as necessary
 End;)xxx");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "100",
+                          "to_ace_string exceptions",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abAB");
+    REQUIRE_EXCEPTION_MSG(presentation::to_ace_string(p),
+                          "expected alphabet to consist only of lowercase "
+                          "letters, found \"abAB\"!");
   }
 
 }  // namespace libsemigroups
