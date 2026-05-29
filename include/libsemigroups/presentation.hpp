@@ -3173,6 +3173,29 @@ namespace libsemigroups {
     //! lowercase counterparts are listed as generators.
     std::string to_ace_string(Presentation<std::string> const& p);
 
+    //! \brief Return the code that would create a presentation to be used with
+    //! ACE.
+    //!
+    //! This function returns the string of ACE input that could be used to
+    //! create an object with the same alphabet and rules as \p p. The words in
+    //! the relations of \p are converted into strings using
+    //! \ref words::human_readable_letter.
+    //!
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `to_ace_string(to<Presentation<std::string>>(p))` would throw.
+    //!
+    //! \note ACE assumes that presentations are group presentations, where the
+    //! the alphabet consists of lowercase letters, and inverses correspond to
+    //! the equivalent uppercase letters. Therefore, a valid ACE presentation
+    //! may not be a valid libsemigroups presentation; for example, it is
+    //! possible for relations in an ACE presentation to contain uppercase
+    //! letters that are not explicitly named as generators, as long as their
+    //! lowercase counterparts are listed as generators.
+    //! words::human_readable_letter
+    std::string to_ace_string(Presentation<word_type> const& p);
+
     //! \brief Find a rule.
     //!
     //! This function returns an iterator `it` pointing at the first
