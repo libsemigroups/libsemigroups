@@ -3134,7 +3134,7 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //! \param var_name the name of the variable to be used in GAP (defaults to
-    //! ``\"S\"`).
+    //! `"S"`).
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name = "S");
 
@@ -3147,7 +3147,7 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //! \param var_name the name of the variable to be used in GAP (defaults to
-    //! ``\"S\"`).
+    //! `"S"`).
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name = "S");
 

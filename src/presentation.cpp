@@ -248,7 +248,7 @@ namespace libsemigroups {
               p.alphabet().cbegin(),
               p.alphabet().cend(),
               [](auto const& letter) { return !std::islower(letter); })) {
-        LIBSEMIGROUPS_EXCEPTION("expected at most alphabet to consist only of "
+        LIBSEMIGROUPS_EXCEPTION("expected alphabet to consist only of "
                                 "lowercase letters, found \"{}\"!",
                                 p.alphabet());
       }
