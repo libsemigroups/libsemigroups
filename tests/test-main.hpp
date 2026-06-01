@@ -25,6 +25,8 @@
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
+#include "libsemigroups/order.hpp"  // for shortlex_compare
+
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #define STR2(X) #X
