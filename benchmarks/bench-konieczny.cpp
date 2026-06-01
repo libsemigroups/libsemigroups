@@ -18,15 +18,14 @@
 
 #include <cstddef>  // for size_t
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
+
 #include "libsemigroups/bitset.hpp"         // for BitSet
 #include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
 #include "libsemigroups/matrix.hpp"         // for BMat
 #include "libsemigroups/transf.hpp"         // for Transformation
-
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, BENCHMARK, REQUIRE
 
 namespace libsemigroups {
 

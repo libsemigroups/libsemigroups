@@ -16,10 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include "libsemigroups/detail/multi-view.hpp"  // for MultiView
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "libsemigroups/detail/multi-view.hpp"  // for MultiView
 
 namespace libsemigroups {
 

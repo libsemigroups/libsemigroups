@@ -25,7 +25,8 @@
 #include <string>   // for operator+, basic_string
 #include <vector>   // for vector, operator==
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+
 #include "libsemigroups/presentation-examples.hpp"
 #include "libsemigroups/presentation.hpp"
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
@@ -33,9 +34,6 @@
 #include "libsemigroups/word-range.hpp"    // for operator""_p
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-
 //
 namespace libsemigroups {
   using literals::            operator""_p;

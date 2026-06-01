@@ -135,12 +135,6 @@ AX_CHECK_FMT()
 # disabled altogether
 AX_CHECK_EIGEN()
 
-# Check for an external magic_enum
-AX_CHECK_MAGIC_ENUM()
-
-# Check for external catch2
-AX_CHECK_CATCH()
-
 dnl Output configured files
 
 dnl compiler builtins

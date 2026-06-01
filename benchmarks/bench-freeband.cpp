@@ -22,11 +22,10 @@
 #include <string>
 #include <vector>
 
-#include "libsemigroups/config.hpp"    // for LIBSEMIGROUPS_CATCH_ALL_HEADER
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+
 #include "libsemigroups/freeband.hpp"  // for freeband_equal_to
 #include "libsemigroups/types.hpp"     // for word_type
-
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
 

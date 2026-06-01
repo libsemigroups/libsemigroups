@@ -23,6 +23,8 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE
+
 #include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
@@ -1394,13 +1396,13 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
     SECTION("not started. . .") {
-      REQUIRE(!kb.confluent());
+      REQUIRE(!kb.rewriting_system().confluent());
       REQUIRE(!kb.started());
     }
     SECTION("finished . . .") {
       kb.run();
-      REQUIRE(kb.confluent());
-      REQUIRE(kb.number_of_active_rules() == 6);
+      REQUIRE(kb.rewriting_system().confluent());
+      REQUIRE(kb.rewriting_system().number_of_rules() == 6);
       REQUIRE(kb.finished());
     }
 
@@ -1778,7 +1780,6 @@ namespace libsemigroups {
     auto   p = presentation::examples::symmetric_group_Moo97_a(n);
 
     ToddCoxeter tc(twosided, p);
-    tc.run_for(std::chrono::microseconds(1));
 
     section_hlt(tc);
     section_felsch(tc);
@@ -1787,6 +1788,7 @@ namespace libsemigroups {
     section_R_over_C_style(tc);
     section_Rc_style(tc);
 
+    tc.run_for(std::chrono::microseconds(1));
     REQUIRE(is_non_trivial(tc) == tril::TRUE);
     // REQUIRE(!tc.finished());
     tc.standardize(Order::shortlex);
@@ -2345,7 +2347,8 @@ namespace libsemigroups {
     REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(reduce(tc, "aaaaaaaaaaaaaaaaaaa") == "a");
     auto S = to<FroidurePin>(tc);
-    REQUIRE(to<KnuthBendix<word_type>>(twosided, S).confluent());
+    REQUIRE(
+        to<KnuthBendix<word_type>>(twosided, S).rewriting_system().confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations
@@ -5418,28 +5421,5 @@ namespace libsemigroups {
     auto const& f = tc.current_word_graph().current_spanning_tree();
     tc.init();
     REQUIRE(f.number_of_nodes() == 0);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "133",
-                          "non-core strategies run_for/run_until exceptions",
-                          "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-
-    Presentation<word_type> p;
-    p.alphabet(2);
-    presentation::add_rule(p, 000_w, 0_w);
-    presentation::add_rule(p, 0_w, 11_w);
-    ToddCoxeter tc(twosided, p);
-
-    section_Rc_style(tc);
-    section_R_over_C_style(tc);
-    section_CR_style(tc);
-    section_Cr_style(tc);
-
-    REQUIRE_THROWS_AS(tc.run_until([] { return false; }),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(tc.run_for(std::chrono::microseconds(1)),
-                      LibsemigroupsException);
   }
 }  // namespace libsemigroups

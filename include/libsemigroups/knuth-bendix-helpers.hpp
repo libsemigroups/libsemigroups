@@ -64,7 +64,8 @@ namespace libsemigroups {
     //! This function triggers a full enumeration of \p kb.
     //!
     //! \tparam Word the type of the words contained in the output range.
-    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
+    //! \tparam RewritingSystem the first template parameter for
+    //! \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.
     //!
@@ -76,11 +77,11 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
-    template <typename Word, typename Rewriter, typename ReductionOrder>
+    template <typename Word, typename RewritingSystem, typename ReductionOrder>
     [[nodiscard]] auto
-    normal_forms(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
-      return detail::KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>(
-          kb);
+    normal_forms(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {
+      return detail::
+          KnuthBendixNormalFormRange<Word, RewritingSystem, ReductionOrder>(kb);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -106,7 +107,8 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words contained in the output range
     //! (default: std::string).
-    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
+    //! \tparam RewritingSystem the first template parameter for
+    //! \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.
     //!
@@ -127,10 +129,10 @@ namespace libsemigroups {
     //! \p kb1 has fewer nodes than that of \p kb2.
     //!
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] std::vector<std::vector<Word>>
-    non_trivial_classes(KnuthBendix<Word, Rewriter, ReductionOrder>& kb1,
-                        KnuthBendix<Word, Rewriter, ReductionOrder>& kb2);
+    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    [[nodiscard]] std::vector<std::vector<Word>> non_trivial_classes(
+        KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb1,
+        KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb2);
 
   }  // namespace congruence_common
 
@@ -174,7 +176,8 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the
     //! \ref KnuthBendix::presentation.
-    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
+    //! \tparam RewritingSystem the first template parameter for
+    //! \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.
     //!
@@ -187,8 +190,9 @@ namespace libsemigroups {
     //! confluent, which might be never.
     //!
     //! \sa KnuthBendix::run.
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
+    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    void
+    by_overlap_length(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 
     //! \ingroup knuth_bendix_helpers_group
     //!
@@ -198,7 +202,8 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the
     //! \ref KnuthBendix::presentation.
-    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
+    //! \tparam RewritingSystem the first template parameter for
+    //! \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.
     //!
@@ -209,13 +214,13 @@ namespace libsemigroups {
     //! stored within the \ref_knuth_bendix instance, \f$C\f$ is neither a
     //! subword of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    template <typename Rewriter, typename ReductionOrder>
+    template <typename RewritingSystem, typename ReductionOrder>
     [[nodiscard]] bool
-    is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
+    is_reduced(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb);
 #else
-    template <typename Word, typename Rewriter, typename ReductionOrder>
+    template <typename Word, typename RewritingSystem, typename ReductionOrder>
     [[nodiscard]] bool
-    is_reduced(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
+    is_reduced(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 #endif
 
     ////////////////////////////////////////////////////////////////////////

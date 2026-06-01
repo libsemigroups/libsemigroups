@@ -1466,6 +1466,7 @@ namespace libsemigroups {
                   typename FroidurePin<Element, Traits>::const_reference x) {
       return minimal_factorisation(fp, w, x);
     }
+
   }  // namespace froidure_pin
 
 }  // namespace libsemigroups

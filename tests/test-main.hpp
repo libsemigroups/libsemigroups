@@ -16,14 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <string_view>  // for string_view
-#include <type_traits>  // for is_reference
-
-#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, etc.
-
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
+
+#include <string_view>  // for string_view
+#include <type_traits>  // for is_reference
+#include <utility>      // for std::pair
+
+#include "libsemigroups/order.hpp"  // for shortlex_compare
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
@@ -33,16 +33,16 @@
 #define LIBSEMIGROUPS_TEST_NUM "LIBSEMIGROUPS_TEST_NUM="
 #define LIBSEMIGROUPS_TEST_PREFIX "LIBSEMIGROUPS_TEST_PREFIX="
 
-// Note that TEST_NUM_ID and TEST_PREFIX_ID allow us to locate these
-// tags in the listener
+// Note that LIBSEMIGROUPS_TEST_NUM and LIBSEMIGROUPS_TEST_PREFIX allow us to
+// locate these tags in the listener
 #define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)                 \
-  TEST_CASE(classname ": " msg,                                           \
+  TEST_CASE("[" nr "]: " classname ": " msg,                              \
             "[" LIBSEMIGROUPS_TEST_PREFIX classname " " nr "][" classname \
             " " nr "][" classname "][" nr "][" LIBSEMIGROUPS_TEST_NUM nr  \
             "][" __FILE__ "][" STR(__LINE__) "]" tags)
 
 #define LIBSEMIGROUPS_TEMPLATE_TEST_CASE(classname, nr, msg, tags, ...) \
-  TEMPLATE_TEST_CASE(classname ": " msg,                                \
+  TEMPLATE_TEST_CASE("[" nr "]: " classname ": " msg,                   \
                      "[" LIBSEMIGROUPS_TEST_PREFIX classname " " nr     \
                      "][" classname " " nr "][" classname "][" nr       \
                      "][" LIBSEMIGROUPS_TEST_NUM nr "][" __FILE__       \
@@ -90,6 +90,15 @@ namespace libsemigroups {
     copy++;
     REQUIRE(*it == *copy);
   }
+
+  struct weird_cmp {
+    template <typename Word>
+    bool operator()(std::pair<Word, Word> const& x,
+                    std::pair<Word, Word> const& y) const noexcept {
+      return shortlex_compare(x.first, y.first)
+             || (x.first == y.first && shortlex_compare(x.second, y.second));
+    }
+  };
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_

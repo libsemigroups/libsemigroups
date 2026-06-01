@@ -199,68 +199,6 @@ namespace libsemigroups {
         return dot(WordGraphView<Node>(wg));
       }
 
-      //! \brief Returns a labelled \ref Dot object representing a word graph
-      //! view.
-      //!
-      //! This function returns a \ref Dot object representing the word graph
-      //! view \p wg. The nodes of the returned graph are labelled using
-      //! \p node_labels, and the colours used for edges are shown in a legend
-      //! labelled by \p edge_labels.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraphView.
-      //!
-      //! \param wg the word graph view.
-      //! \param node_labels the labels for the nodes of \p wg.
-      //! \param edge_labels the labels for the edge labels of \p wg.
-      //!
-      //! \returns A \ref Dot object representing \p wg.
-      //!
-      //! \throws LibsemigroupsException if \p node_labels has size different
-      //! from `wg.number_of_nodes()`.
-      //! \throws LibsemigroupsException if \p edge_labels has size different
-      //! from `wg.out_degree()`.
-      //! \throws LibsemigroupsException if the out-degree of \p wg is greater
-      //! than the number of colours in Dot::colors.
-      //!
-      //! \note This function does not trigger an enumeration.
-      template <typename Node>
-      [[nodiscard]] Dot dot(WordGraphView<Node> const&      wg,
-                            std::vector<std::string> const& node_labels,
-                            std::vector<std::string> const& edge_labels);
-
-      //! \brief Returns a labelled \ref Dot object representing a word graph.
-      //!
-      //! This function returns a \ref Dot object representing the word graph
-      //! \p wg. The nodes of the returned graph are labelled using
-      //! \p node_labels, and the colours used for edges are shown in a legend
-      //! labelled by \p edge_labels.
-      //!
-      //! \tparam Node the type of the nodes of the WordGraph.
-      //!
-      //! \param wg the word graph.
-      //! \param node_labels the labels for the nodes of \p wg.
-      //! \param edge_labels the labels for the edge labels of \p wg.
-      //!
-      //! \returns A \ref Dot object representing \p wg.
-      //!
-      //! \throws LibsemigroupsException if \p node_labels has size different
-      //! from `wg.number_of_nodes()`.
-      //! \throws LibsemigroupsException if \p edge_labels has size different
-      //! from `wg.out_degree()`.
-      //! \throws LibsemigroupsException if the out-degree of \p wg is greater
-      //! than the number of colours in Dot::colors.
-      //!
-      //! \note This function does not trigger an enumeration.
-      //!
-      //! \sa dot(WordGraphView<Node> const&,
-      //! std::vector<std::string> const&, std::vector<std::string> const&).
-      template <typename Node>
-      [[nodiscard]] Dot dot(WordGraph<Node> const&          wg,
-                            std::vector<std::string> const& node_labels,
-                            std::vector<std::string> const& edge_labels) {
-        return dot(WordGraphView<Node>(wg), node_labels, edge_labels);
-      }
-
       //! \brief Compares two word graphs on a range of nodes.
       //!
       //! This function returns \c true if the word graphs \p x and \p y are

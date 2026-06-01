@@ -18,8 +18,7 @@
 
 #include <random>  // for default_random_engine
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "uf-old.hpp"  // for UFOld
 

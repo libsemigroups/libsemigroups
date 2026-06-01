@@ -21,14 +21,13 @@
 #include <iostream>   // for std::cout
 #include <random>
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include "libsemigroups/paths.hpp"   // for Paths etc
-#include "libsemigroups/types.hpp"   // for word_type
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
+
+#include "libsemigroups/paths.hpp"               // for Paths etc
+#include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph-view.hpp"     // for WordGraphView
 #include "libsemigroups/word-graph.hpp"          // for WordGraph
-
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for BENCHMARK, REQUIRE, TEST_CASE
 
 namespace libsemigroups {
   // Old function for comparison with iterators

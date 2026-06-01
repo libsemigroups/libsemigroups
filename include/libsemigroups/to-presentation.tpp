@@ -55,9 +55,9 @@ namespace libsemigroups {
 
   template <typename Result,
             typename WordIn,
-            typename Rewriter,
+            typename RewritingSystem,
             typename ReductionOrder>
-  auto to(KnuthBendix<WordIn, Rewriter, ReductionOrder>& kb)
+  auto to(KnuthBendix<WordIn, RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<
           std::is_same_v<Presentation<typename Result::word_type>, Result>,
           Result> {

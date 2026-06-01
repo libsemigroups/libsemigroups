@@ -18,14 +18,13 @@
 
 #include <random>
 
-#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
 #include "libsemigroups/ranges.hpp"      // for rx::to_vector
 #include "libsemigroups/word-range.hpp"  // for literals
 
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
 #include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
 
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -290,7 +289,7 @@ namespace libsemigroups {
             fmt::format(
                 "RewriteTrie, {}-rules, rule length = [{}, {}], word length = "
                 "[{}, {}), for {} rewrites",
-                rt.number_of_active_rules(),
+                rt.active_rules().size(),
                 rule_min,
                 rule_max,
                 sample_min,
@@ -311,7 +310,7 @@ namespace libsemigroups {
         BENCHMARK(fmt::format("RewriteFromLeft, {}-rules, rule length = [{}, "
                               "{}], word length = "
                               "[{}, {}), for {} rewrites",
-                              rfl.number_of_active_rules(),
+                              rfl.active_rules().size(),
                               rule_min,
                               rule_max,
                               sample_min,

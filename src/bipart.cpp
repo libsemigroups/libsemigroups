@@ -176,9 +176,9 @@ namespace libsemigroups {
 
   }  // namespace blocks
 
-  std::string to_human_readable_repr(Blocks const&    x,
-                                     std::string_view braces,
-                                     size_t           max_width) {
+  [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
+                                                   std::string_view braces,
+                                                   size_t           max_width) {
     if (braces.size() != 2) {
       LIBSEMIGROUPS_EXCEPTION("the 2nd argument (braces) must have length 2, "
                               "but found {} of length {}",
@@ -464,9 +464,9 @@ namespace libsemigroups {
 
   }  // namespace bipartition
 
-  std::string to_human_readable_repr(Bipartition const& x,
-                                     std::string_view   braces,
-                                     size_t             max_width) {
+  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x,
+                                                   std::string_view   braces,
+                                                   size_t max_width) {
     if (braces.size() != 2) {
       LIBSEMIGROUPS_EXCEPTION("the 2nd argument (braces) must have length 2, "
                               "but found {} of length {}",

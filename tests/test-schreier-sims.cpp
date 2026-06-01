@@ -35,7 +35,8 @@
 #include <type_traits>       // for remove_reference_t
 #include <utility>
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE etc
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "libsemigroups/constants.hpp"  // for UNDEFINED

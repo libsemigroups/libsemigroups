@@ -24,10 +24,11 @@
 #include <thread>    // for thread
 #include <vector>    // for vector, operator==
 
-#include "libsemigroups/bipart.hpp"        // for Bipartition
-#include "libsemigroups/bmat-fastest.hpp"  // for BMatFastest
-#include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_CATCH_ALL_HEADER
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+
+#include "libsemigroups/bipart.hpp"                 // for Bipartition
+#include "libsemigroups/bmat-fastest.hpp"           // for BMatFastest
+#include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/detail/report.hpp"          // for ReportGuard
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
@@ -40,8 +41,6 @@
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/types.hpp"                  // for word_type etc
 #include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
-
-#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
   namespace {

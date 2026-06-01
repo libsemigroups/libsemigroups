@@ -33,13 +33,14 @@
 #include <memory>      // for unique_ptr, make_unique, swap
 #include <string>      // for basic_string, string, operator+
 #include <thread>      // for thread, yield
-#include <tuple>       // for _Swallow_assign, ignore
+#include <tuple>       // for ignore
 #include <utility>     // for move, swap, pair
 
 #include "libsemigroups/constants.hpp"             // for operator!=, ope...
 #include "libsemigroups/debug.hpp"                 // for LIBSEMIGROUPS_A...
 #include "libsemigroups/exception.hpp"             // for LIBSEMIGROUPS_E...
 #include "libsemigroups/froidure-pin.hpp"          // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"          // for KnuthBendix
 #include "libsemigroups/presentation.hpp"          // for Presentation
 #include "libsemigroups/to-froidure-pin.hpp"       // for to_word_graph
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for add_generating_pair
@@ -1623,14 +1624,14 @@ namespace libsemigroups {
     return true;
   }
 
-  std::string to_human_readable_repr(SimsStats const&) {
+  [[nodiscard]] std::string to_human_readable_repr(SimsStats const&) {
     return fmt::format("<SimsStats object>");
   }
 
   namespace detail {
 
     template <typename Subclass>
-    std::string
+    [[nodiscard]] std::string
     sims_to_human_readable_repr_helper(SimsSettings<Subclass> const& x,
                                        std::string extra_text) {
       using detail::group_digits;
@@ -1692,17 +1693,17 @@ namespace libsemigroups {
 
   }  // namespace detail
 
-  std::string to_human_readable_repr(Sims1 const& x) {
+  [[nodiscard]] std::string to_human_readable_repr(Sims1 const& x) {
     return fmt::format("<Sims1 {}>",
                        detail::sims_to_human_readable_repr_helper(x, ""));
   }
 
-  std::string to_human_readable_repr(Sims2 const& x) {
+  [[nodiscard]] std::string to_human_readable_repr(Sims2 const& x) {
     return fmt::format("<Sims2 {}>",
                        detail::sims_to_human_readable_repr_helper(x, ""));
   }
 
-  std::string to_human_readable_repr(RepOrc const& x) {
+  [[nodiscard]] std::string to_human_readable_repr(RepOrc const& x) {
     using detail::group_digits;
     return fmt::format(
         "<RepOrc {}>",
@@ -1719,7 +1720,7 @@ namespace libsemigroups {
                     : "")));
   }
 
-  std::string to_human_readable_repr(MinimalRepOrc const& x) {
+  [[nodiscard]] std::string to_human_readable_repr(MinimalRepOrc const& x) {
     using detail::group_digits;
     return fmt::format("<MinimalRepOrc {}>",
                        detail::sims_to_human_readable_repr_helper(
@@ -1733,12 +1734,13 @@ namespace libsemigroups {
                                            : "")));
   }
 
-  std::string to_human_readable_repr(SimsRefinerIdeals const& x) {
+  [[nodiscard]] std::string to_human_readable_repr(SimsRefinerIdeals const& x) {
     return fmt::format("<SimsRefinerIdeals object over presentation {}>",
                        to_human_readable_repr(x.presentation()));
   }
 
-  std::string to_human_readable_repr(SimsRefinerFaithful const& x) {
+  [[nodiscard]] std::string
+  to_human_readable_repr(SimsRefinerFaithful const& x) {
     using detail::group_digits;
     return fmt::format("<SimsRefinerFaithful object with {} forbidden pair{}>",
                        group_digits(x.forbid().size() / 2),

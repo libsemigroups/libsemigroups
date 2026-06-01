@@ -19,7 +19,8 @@
 #include "libsemigroups/todd-coxeter-helpers.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat-fastest.hpp"           // for BMatFastest
 #include "libsemigroups/bmat8.hpp"                  // for BMat8
@@ -606,7 +607,7 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.finished());
-    REQUIRE(kb.confluent());
+    REQUIRE(kb.rewriting_system().confluent());
 
     REQUIRE((kb.active_rules() | rx::to_vector())
             == std::vector<std::decay_t<decltype(kb)>::rule_type>(

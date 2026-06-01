@@ -18,7 +18,8 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector, vector<>::const_iterator, allocator
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/detail/iterator.hpp"  // for ConstIteratorStateless, ConstIteratorTraits
 

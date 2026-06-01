@@ -15,49 +15,69 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/adapters.hpp"      // for ReturnFalse
 #include "libsemigroups/aho-corasick.hpp"  // for dot
 #include "libsemigroups/word-range.hpp"    // for operator""_w
 
-#include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/rewriters.hpp"  // for RewritingSystemTrie<ShortLexCompare>
+
+namespace std {
+  std::ostream& operator<<(std::ostream& os, std::string const& value) {
+    for (auto c : value) {
+      if (c < 10) {
+        os << int(c);
+      } else {
+        os << c;
+      }
+    }
+    return os;
+  }
+}  // namespace std
 
 namespace libsemigroups {
   using literals::operator""_w;
 
   namespace detail {
-    using string_type = RewriteTrie::native_word_type;
+
+    using string_type = RewritingSystemTrie<ShortLexCompare>::native_word_type;
+
     using namespace std::literals;
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "000", "initial test", "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
-      REQUIRE(rt.number_of_active_rules() == 0);
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
+                            "000",
+                            "initial test",
+                            "[quick]") {
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
+      REQUIRE(rt.number_of_rules() == 0);
       rt.increase_alphabet_size_by(2);
-      rt.add_rule("ba"_w, "a"_w);  // TODO(1) should be a helper
-      REQUIRE(rt.number_of_pending_rules() == 1);
-      REQUIRE(rt.number_of_active_rules() == 0);
+      rewriting_system::add_rule(rt, "ba"_w, "a"_w);
+      REQUIRE(rt.number_of_rules() == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie", "001", "simple test", "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
+                            "001",
+                            "simple test",
+                            "[quick]") {
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
 
       rt.increase_alphabet_size_by(3);
-      rt.add_rule("ac"_w, "ca"_w);
-      rt.add_rule("aa"_w, "a"_w);
-      rt.add_rule("ac"_w, "a"_w);
-      rt.add_rule("ca"_w, "a"_w);
-      rt.add_rule("bb"_w, "bb"_w);
-      rt.add_rule("bc"_w, "cb"_w);
-      rt.add_rule("bbb"_w, "b"_w);
-      rt.add_rule("bc"_w, "b"_w);
-      rt.add_rule("cb"_w, "b"_w);
-      rt.add_rule("a"_w, "b"_w);
+      rewriting_system::add_rule(rt, "ac"_w, "ca"_w);
+      rewriting_system::add_rule(rt, "aa"_w, "a"_w);
+      rewriting_system::add_rule(rt, "ac"_w, "a"_w);
+      rewriting_system::add_rule(rt, "ca"_w, "a"_w);
+      rewriting_system::add_rule(rt, "bb"_w, "bb"_w);
+      rewriting_system::add_rule(rt, "bc"_w, "cb"_w);
+      rewriting_system::add_rule(rt, "bbb"_w, "b"_w);
+      rewriting_system::add_rule(rt, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rt, "cb"_w, "b"_w);
+      rewriting_system::add_rule(rt, "a"_w, "b"_w);
 
-      REQUIRE(!rt.confluent());
-      rt.process_pending_rules();
       REQUIRE(rt.confluent());
 
       string_type w1 = {0, 0};
@@ -83,221 +103,354 @@ namespace libsemigroups {
       REQUIRE(w5 == string_type({0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteFromLeft",
-                            "010",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemSet<ShortLexCompare>",
+                            "002",
                             "simple test",
                             "[quick]") {
-      auto            rg = ReportGuard(false);
-      RewriteFromLeft rfl;
+      using rule_type = std::pair<std::string, std::string>;
 
-      rfl.increase_alphabet_size_by(3);
-      rfl.add_rule("ac"_w, "ca"_w);
-      rfl.add_rule("aa"_w, "a"_w);
-      rfl.add_rule("ac"_w, "a"_w);
-      rfl.add_rule("ca"_w, "a"_w);
-      rfl.add_rule("bb"_w, "bb"_w);
-      rfl.add_rule("bc"_w, "cb"_w);
-      rfl.add_rule("bbb"_w, "b"_w);
-      rfl.add_rule("bc"_w, "b"_w);
-      rfl.add_rule("cb"_w, "b"_w);
-      rfl.add_rule("a"_w, "b"_w);
+      auto rg = ReportGuard(false);
 
-      REQUIRE(!rfl.confluent());
-      REQUIRE(rfl.process_pending_rules());
-      REQUIRE(rfl.confluent());
+      RewritingSystemSet<ShortLexCompare> rws;
+
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "ac"_w, "ca"_w);
+      rewriting_system::add_rule(rws, "aa"_w, "a"_w);
+      rewriting_system::add_rule(rws, "ac"_w, "a"_w);
+      rewriting_system::add_rule(rws, "ca"_w, "a"_w);
+      rewriting_system::add_rule(rws, "bb"_w, "bb"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "cb"_w);
+      rewriting_system::add_rule(rws, "bbb"_w, "b"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rws, "cb"_w, "b"_w);
+      rewriting_system::add_rule(rws, "a"_w, "b"_w);
+
+      REQUIRE(rws.confluent());
+      REQUIRE(rws.number_of_rules() == 4);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<std::pair<std::string, std::string>>(
+                  {{{0, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{2, 0}, {0}}}));
 
       string_type w1 = {0, 0};
-      rfl.rewrite(w1);
+      rws.rewrite(w1);
       REQUIRE(w1 == string_type({0}));
 
       string_type w2 = {0, 1};
-      rfl.rewrite(w2);
+      rws.rewrite(w2);
       REQUIRE(w2 == string_type({0}));
 
       string_type w3 = {0, 1, 2};
-      rfl.rewrite(w3);
+      rws.rewrite(w3);
       REQUIRE(w3 == string_type({0}));
 
       string_type w4 = {0, 1, 2, 0};
-      rfl.rewrite(w4);
+      rws.rewrite(w4);
       REQUIRE(w4 == string_type({0}));
 
       string_type w5 = {2, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0, 2, 1,
                         0, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 0, 1,
                         1, 0, 2, 2, 0, 1, 0, 2, 0, 1, 1, 0, 2, 0, 1, 1, 0};
-      rfl.rewrite(w5);
+      rws.rewrite(w5);
       REQUIRE(w5 == string_type({0}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
-                            "002",
-                            "confluent fp semigroup 3 (infinite)",
-                            "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
-      rt.increase_alphabet_size_by(3);
-
-      rt.add_rule("ab"_w, "ba"_w);
-      rt.add_rule("ac"_w, "ca"_w);
-      rt.add_rule("aa"_w, "a"_w);
-      rt.add_rule("ac"_w, "a"_w);
-      rt.add_rule("ca"_w, "a"_w);
-      rt.add_rule("bb"_w, "bb"_w);
-      rt.add_rule("bc"_w, "cb"_w);
-      rt.add_rule("bbb"_w, "b"_w);
-      rt.add_rule("bc"_w, "b"_w);
-      rt.add_rule("cb"_w, "b"_w);
-      rt.add_rule("a"_w, "b"_w);
-
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
-      REQUIRE(rt.confluent());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
                             "003",
-                            "non-confluent fp semigroup from "
-                            "wikipedia (infinite)",
+                            "confluent",
                             "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
-      rt.increase_alphabet_size_by(2);
-      rt.add_rule("aaa"_w, ""_w);
-      rt.add_rule("bbb"_w, ""_w);
-      rt.add_rule("ababab"_w, ""_w);
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
-      REQUIRE(!rt.confluent());
+      using rule_type = std::pair<std::string, std::string>;
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rws;
+      rws.increase_alphabet_size_by(3);
+
+      rewriting_system::add_rule(rws, "ab"_w, "ba"_w);
+      rewriting_system::add_rule(rws, "ac"_w, "ca"_w);
+      rewriting_system::add_rule(rws, "aa"_w, "a"_w);
+      rewriting_system::add_rule(rws, "ac"_w, "a"_w);
+      rewriting_system::add_rule(rws, "ca"_w, "a"_w);
+      rewriting_system::add_rule(rws, "bb"_w, "bb"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "cb"_w);
+      rewriting_system::add_rule(rws, "bbb"_w, "b"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rws, "cb"_w, "b"_w);
+      rewriting_system::add_rule(rws, "a"_w, "b"_w);
+
+      REQUIRE(rws.number_of_rules() == 10);
+      rewriting_system::add_rule(rws, "a"_w, "a"_w);
+      REQUIRE(rws.number_of_rules() == 10);
+
+      REQUIRE(rws.confluent());
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<std::pair<std::string, std::string>>(
+                  {{{0, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{2, 0}, {0}}}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
                             "004",
-                            "Example 5.1 in Sims (infinite)",
+                            "non-confluent",
                             "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
-      rt.increase_alphabet_size_by(4);
-      rt.add_rule("ab"_w, ""_w);
-      rt.add_rule("ba"_w, ""_w);
-      rt.add_rule("cd"_w, ""_w);
-      rt.add_rule("dc"_w, ""_w);
-      rt.add_rule("ca"_w, "ac"_w);
-
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
+      rt.increase_alphabet_size_by(2);
+      rewriting_system::add_rule(rt, "aaa"_w, ""_w);
+      rewriting_system::add_rule(rt, "bbb"_w, ""_w);
+      rewriting_system::add_rule(rt, "ababab"_w, ""_w);
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
                             "005",
                             "Example 5.1 in Sims (infinite)",
                             "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
+      rt.increase_alphabet_size_by(4);
+      rewriting_system::add_rule(rt, "ab"_w, ""_w);
+      rewriting_system::add_rule(rt, "ba"_w, ""_w);
+      rewriting_system::add_rule(rt, "cd"_w, ""_w);
+      rewriting_system::add_rule(rt, "dc"_w, ""_w);
+      rewriting_system::add_rule(rt, "ca"_w, "ac"_w);
+
+      REQUIRE(!rt.confluent());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
+                            "006",
+                            "non-confluent",
+                            "[quick]") {
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
 
       rt.increase_alphabet_size_by(4);
-      rt.add_rule("ca"_w, ""_w);
-      rt.add_rule("ac"_w, ""_w);
-      rt.add_rule("db"_w, ""_w);
-      rt.add_rule("bd"_w, ""_w);
-      rt.add_rule("ba"_w, "ab"_w);
+      rewriting_system::add_rule(rt, "ca"_w, ""_w);
+      rewriting_system::add_rule(rt, "ac"_w, ""_w);
+      rewriting_system::add_rule(rt, "db"_w, ""_w);
+      rewriting_system::add_rule(rt, "bd"_w, ""_w);
+      rewriting_system::add_rule(rt, "ba"_w, "ab"_w);
 
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
-                            "006",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
+                            "007",
                             "Example 5.3 in Sims",
                             "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
       rt.increase_alphabet_size_by(2);
-      rt.add_rule("aa"_w, ""_w);
-      rt.add_rule("bbb"_w, ""_w);
-      rt.add_rule("ababab"_w, ""_w);
+      rewriting_system::add_rule(rt, "aa"_w, ""_w);
+      rewriting_system::add_rule(rt, "bbb"_w, ""_w);
+      rewriting_system::add_rule(rt, "ababab"_w, ""_w);
 
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
-                            "007",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
+                            "008",
                             "Example 5.4 in Sims",
                             "[quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
       rt.increase_alphabet_size_by(3);
 
-      rt.add_rule("aa"_w, ""_w);
-      rt.add_rule("bc"_w, ""_w);
-      rt.add_rule("bbb"_w, ""_w);
-      rt.add_rule("ababab"_w, ""_w);
+      rewriting_system::add_rule(rt, "aa"_w, ""_w);
+      rewriting_system::add_rule(rt, "bc"_w, ""_w);
+      rewriting_system::add_rule(rt, "bbb"_w, ""_w);
+      rewriting_system::add_rule(rt, "ababab"_w, ""_w);
 
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
-                            "008",
-                            "Example 6.4 in Sims (size 168)",
-                            "[no-valgrind][quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
-      rt.increase_alphabet_size_by(3);
-
-      rt.add_rule("aa"_w, ""_w);
-      rt.add_rule("bc"_w, ""_w);
-      rt.add_rule("bbb"_w, ""_w);
-      rt.add_rule("ababababababab"_w, ""_w);
-      rt.add_rule("abacabacabacabac"_w, ""_w);
-
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
-      REQUIRE(!rt.confluent());
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
                             "009",
-                            "random example",
-                            "[no-valgrind][quick]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
-
+                            "Example 6.4 in Sims (size 168)",
+                            "[quick]") {
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
       rt.increase_alphabet_size_by(3);
-      rt.add_rule("aaa"_w, "c"_w);
-      rt.add_rule("bbb"_w, "c"_w);
-      rt.add_rule("ababab"_w, "c"_w);
-      rt.add_rule("ac"_w, "a"_w);
-      rt.add_rule("bc"_w, "b"_w);
-      rt.add_rule("bc"_w, "c"_w);
 
-      REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
+      rewriting_system::add_rule(rt, "aa"_w, ""_w);
+      rewriting_system::add_rule(rt, "bc"_w, ""_w);
+      rewriting_system::add_rule(rt, "bbb"_w, ""_w);
+      rewriting_system::add_rule(rt, "ababababababab"_w, ""_w);
+      rewriting_system::add_rule(rt, "abacabacabacabac"_w, ""_w);
+
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewriteTrie",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
                             "010",
-                            "large example",
-                            "[no-valgrind][extreme]") {
-      auto        rg = ReportGuard(false);
-      RewriteTrie rt = RewriteTrie();
+                            "random example",
+                            "[quick]") {
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rt;
 
       rt.increase_alphabet_size_by(3);
-      rt.add_rule("aaa"_w, "c"_w);
-      rt.add_rule("bbb"_w, "c"_w);
-      rt.add_rule("ababab"_w, "c"_w);
-      rt.add_rule("ac"_w, "a"_w);
-      rt.add_rule("bc"_w, "b"_w);
-      rt.add_rule("bc"_w, "c"_w);
+      rewriting_system::add_rule(rt, "aaa"_w, "c"_w);
+      rewriting_system::add_rule(rt, "bbb"_w, "c"_w);
+      rewriting_system::add_rule(rt, "ababab"_w, "c"_w);
+      rewriting_system::add_rule(rt, "ac"_w, "a"_w);
+      rewriting_system::add_rule(rt, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rt, "bc"_w, "c"_w);
+
+      REQUIRE(rt.number_of_rules() == 6);
 
       REQUIRE(!rt.confluent());
-      REQUIRE(rt.process_pending_rules());
-      REQUIRE(!rt.confluent());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ReturnFalse>",
+                            "011",
+                            "not obviously terminating example",
+                            "[quick]") {
+      using rule_type                     = std::pair<std::string, std::string>;
+      auto                             rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalse> rws;
+
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
+      rewriting_system::add_rule(rws, "c"_w, "bbb"_w);
+      rewriting_system::add_rule(rws, "ababab"_w, "c"_w);
+      rewriting_system::add_rule(rws, "a"_w, "ac"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "c"_w);
+
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{0, 0, 0}, {2}},
+                                         {{2}, {1, 1, 1}},
+                                         {{0, 1, 0, 1, 0, 1}, {2}},
+                                         {{0}, {0, 2}},
+                                         {{1, 2}, {1}},
+                                         {{1, 2}, {2}}}));
+      REQUIRE(rewriting_system::is_length_decreasing_no_reduce(rws)
+              == tril::unknown);
+      REQUIRE(rewriting_system::is_terminating_no_reduce(rws) == tril::unknown);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ReturnFalse>",
+                            "012",
+                            "not obviously terminating example",
+                            "[quick]") {
+      using rule_type                     = std::pair<std::string, std::string>;
+      auto                             rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalse> rws;
+
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aa"_w, "bbb"_w);
+      rewriting_system::add_rule(rws, "bbb"_w, "ccc"_w);
+
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::sort() | rx::to_vector())
+              == std::vector<rule_type>(
+                  {{{0, 0}, {1, 1, 1}}, {{1, 1, 1}, {2, 2, 2}}}));
+      rws.reduce();
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::sort() | rx::to_vector())
+              == std::vector<rule_type>(
+                  {{{0, 0}, {2, 2, 2}}, {{1, 1, 1}, {2, 2, 2}}}));
+      REQUIRE(!rws.confluent());
+
+      REQUIRE(!rewriting_system::is_length_decreasing(rws));
+      REQUIRE(rewriting_system::is_terminating(rws) == tril::unknown);
+
+      std::string w({0, 0});
+      rws.rewrite(w);
+      REQUIRE(w == std::string({2, 2, 2}));
+      REQUIRE(rewriting_system::is_terminating(rws) == tril::unknown);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Rules", "013", "constructors/init", "[quick]") {
+      Rules rules1;
+
+      Rules rules2(rules1);
+      Rules rules3(std::move(rules1));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
+                            "014",
+                            "constructors/init",
+                            "[quick]") {
+      auto                                 rg = ReportGuard(false);
+      RewritingSystemTrie<ShortLexCompare> rws;
+
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
+      rewriting_system::add_rule(rws, "c"_w, "bbb"_w);
+      rewriting_system::add_rule(rws, "ababab"_w, "c"_w);
+      rewriting_system::add_rule(rws, "a"_w, "ac"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "c"_w);
+      REQUIRE(rws.number_of_rules() == 6);
+
+      rws.init();
+      REQUIRE(rws.number_of_rules() == 0);
+      REQUIRE(rws.trie().number_of_nodes() == 1);
+      REQUIRE(rewriting_system::is_length_decreasing(rws));
+      REQUIRE(rewriting_system::is_terminating(rws) == tril::TRUE);
+
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aaa"_w, "c"_w);
+      rewriting_system::add_rule(rws, "bbb"_w, "c"_w);
+      rewriting_system::add_rule(rws, "ababab"_w, "c"_w);
+      rewriting_system::add_rule(rws, "ac"_w, "a"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "b"_w);
+      rewriting_system::add_rule(rws, "bc"_w, "c"_w);
+
+      auto copy = rws;
+      REQUIRE(rws.number_of_rules() == 6);
+      REQUIRE(!rws.confluent());
+      REQUIRE(copy.number_of_rules() == 6);
+      REQUIRE(!copy.confluent());
+
+      copy = rws;
+      REQUIRE(rws.number_of_rules() == 4);
+      REQUIRE(!rws.confluent());
+      REQUIRE(copy.number_of_rules() == 4);
+      REQUIRE(!copy.confluent());
+
+      rws.init();
+      copy = std::move(rws);
+      REQUIRE(copy.number_of_rules() == 0);
+      REQUIRE(copy.trie().number_of_nodes() == 1);
+
+      copy.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(copy, "aaa"_w, "c"_w);
+      rewriting_system::add_rule(copy, "bbb"_w, "c"_w);
+      rewriting_system::add_rule(copy, "ababab"_w, "c"_w);
+      rewriting_system::add_rule(copy, "ac"_w, "a"_w);
+      rewriting_system::add_rule(copy, "bc"_w, "b"_w);
+      rewriting_system::add_rule(copy, "bc"_w, "c"_w);
+
+      auto other_copy(copy);
+      REQUIRE(copy.number_of_rules() == 6);
+      REQUIRE(copy.trie().number_of_nodes() == 1);
+      REQUIRE(other_copy.number_of_rules() == 6);
+      REQUIRE(other_copy.trie().number_of_nodes() == 1);
+
+      auto other_other_copy(std::move(copy));
+      REQUIRE(other_other_copy.number_of_rules() == 6);
+      REQUIRE(other_other_copy.trie().number_of_nodes() == 1);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
+                            "015",
+                            "is_terminating",
+                            "[quick]") {
+      RewritingSystemTrie<ReturnFalse> rws;
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "bbb"_w, "aa"_w);
+      rewriting_system::add_rule(rws, "bbb"_w, "ccc"_w);
+      REQUIRE(rewriting_system::is_terminating_no_reduce(rws) == tril::unknown);
+      REQUIRE(rws.is_reduced() == tril::unknown);
+      REQUIRE(rewriting_system::is_terminating(rws) == tril::TRUE);
+      REQUIRE(rws.is_reduced() == tril::TRUE);
     }
   }  // namespace detail
 }  // namespace libsemigroups

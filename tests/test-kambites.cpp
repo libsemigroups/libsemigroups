@@ -21,6 +21,7 @@
 #include <string>     // for basic_string, operator==, operator!=, operator+
 #include <vector>     // for vector
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for UNDEFINED
@@ -133,7 +134,8 @@ namespace libsemigroups {
           if (k.small_overlap_class() >= 4) {
             total_c4++;
           }
-          if (kb1.confluent() || kb2.confluent()) {
+          if (kb1.rewriting_system().confluent()
+              || kb2.rewriting_system().confluent()) {
             total_confluent++;
           }
         }

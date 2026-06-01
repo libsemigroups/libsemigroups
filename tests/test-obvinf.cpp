@@ -18,6 +18,7 @@
 // TODO(later):
 // 1. add more tests
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"
 

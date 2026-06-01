@@ -30,7 +30,8 @@
 #include <utility>        // for pair
 #include <vector>         // for vector, operator==
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/config.hpp"  // LIBSEMIGROUPS_EIGEN_ENABLED
 
@@ -50,7 +51,7 @@
 #include "libsemigroups/detail/fmt.hpp"    // for format, print
 #include "libsemigroups/detail/iterator.hpp"   // for operator+
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
+#include "libsemigroups/detail/rewriters.hpp"  // for RewritingSystemTrie
 
 namespace libsemigroups {
 

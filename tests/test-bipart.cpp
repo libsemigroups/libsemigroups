@@ -29,7 +29,8 @@
 
 #include "libsemigroups/detail/fmt.hpp"  // for format
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for SourceLineInfo, operat...
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
 

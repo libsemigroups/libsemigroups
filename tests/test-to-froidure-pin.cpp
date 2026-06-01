@@ -21,7 +21,8 @@
 #include <cstdint>  // for uint8_t
 #include <vector>   // for vector
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong.hpp"                // for Congruence
 #include "libsemigroups/constants.hpp"           // for UNDEFINED
@@ -39,12 +40,12 @@
 
 namespace libsemigroups {
 
-  using RewriteTrie     = detail::RewriteTrie;
-  using RewriteFromLeft = detail::RewriteFromLeft;
+  using RewritingSystemTrie = detail::RewritingSystemTrie<ShortLexCompare>;
+  using RewritingSystemSet  = detail::RewritingSystemSet<ShortLexCompare>;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
-#define REWRITER_TYPES RewriteTrie, RewriteFromLeft
+#define REWRITER_TYPES RewritingSystemTrie, RewritingSystemSet
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "000",

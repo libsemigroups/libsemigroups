@@ -35,26 +35,28 @@ namespace libsemigroups {
     }
 
     bool lastmoved = false;
-    --last1;
-    --last2;
+    auto rfirst1   = std::make_reverse_iterator(last1);
+    auto rlast1    = std::make_reverse_iterator(first1);
+    auto rfirst2   = std::make_reverse_iterator(last2);
+    auto rlast2    = std::make_reverse_iterator(first2);
     while (true) {
-      if (last1 < first1) {
-        if (last2 < first2) {
+      if (rfirst1 == rlast1) {
+        if (rfirst2 == rlast2) {
           return lastmoved;
         }
         return true;
       }
-      if (last2 < first2) {
+      if (rfirst2 == rlast2) {
         return false;
       }
-      if (*last1 == *last2) {
-        last1--;
-        last2--;
-      } else if (*last1 < *last2) {
-        last1--;
+      if (*rfirst1 == *rfirst2) {
+        ++rfirst1;
+        ++rfirst2;
+      } else if (*rfirst1 < *rfirst2) {
+        ++rfirst1;
         lastmoved = false;
-      } else if (*last2 < *last1) {
-        last2--;
+      } else if (*rfirst2 < *rfirst1) {
+        ++rfirst2;
         lastmoved = true;
       }
     }

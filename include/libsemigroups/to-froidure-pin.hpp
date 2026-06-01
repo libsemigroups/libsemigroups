@@ -167,7 +167,8 @@ namespace libsemigroups {
   //! \p kb.
   //!
   //! \tparam Thing used for SFINAE should be FroidurePin.
-  //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
+  //! \tparam RewritingSystem the second template parameter for
+  //! \ref_knuth_bendix.
   //! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
   //!
   //! \param kb the \ref_knuth_bendix instance to convert.
@@ -178,11 +179,13 @@ namespace libsemigroups {
   //! \ref congruence_kind.twosided.
   template <template <typename...> typename Thing,
             typename Word,
-            typename Rewriter,
+            typename RewritingSystem,
             typename ReductionOrder>
-  auto to(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) -> std::enable_if_t<
-      std::is_same_v<Thing<int>, FroidurePin<int>>,
-      FroidurePin<detail::KBE<KnuthBendix<Word, Rewriter, ReductionOrder>>>>;
+  auto to(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb)
+      -> std::enable_if_t<
+          std::is_same_v<Thing<int>, FroidurePin<int>>,
+          FroidurePin<
+              detail::KBE<KnuthBendix<Word, RewritingSystem, ReductionOrder>>>>;
 
   //! \ingroup to_froidure_pin_group
   //!

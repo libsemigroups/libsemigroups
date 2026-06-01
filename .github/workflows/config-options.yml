@@ -51,7 +51,7 @@ jobs:
 
   external-deps:
     timeout-minutes: 45
-    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }} ${{ matrix.external-magic-enum }} ${{ matrix.external-catch }}
+    name: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -65,25 +65,16 @@ jobs:
         external-eigen:
           - --with-external-eigen
           - ""
-        external-magic-enum:
-          - --with-external-magic-enum
-          - ""
-        external-catch:
-          - --with-external-catch
-          - ""
         exclude:
           - external-backward: ""
             external-fmt: ""
             external-eigen: ""
-            external-magic-enum: ""
-            external-catch: ""
     env:
       CXX: ccache g++
       CXXFLAGS: -fdiagnostics-color
-      CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }} ${{ matrix.external-magic-enum }} ${{ matrix.external-catch }}
+      CONFIGFLAGS: ${{ matrix.external-backward }} ${{ matrix.external-fmt }} ${{ matrix.external-eigen }}
       PKG_CONFIG_PATH: /home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/
       LD_LIBRARY_PATH: /home/runner/micromamba/envs/libsemigroups/lib
-      # TODO is the next line really required?
       BACKWARD_CPPFLAGS: -I/home/runner/micromamba/envs/libsemigroups/include
     steps:
       - uses: actions/checkout@v6

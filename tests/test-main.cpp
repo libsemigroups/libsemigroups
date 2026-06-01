@@ -29,6 +29,8 @@
 #include <string_view>       // for basic_string_view, string_...
 #include <vector>            // for vector
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
+
 #include "libsemigroups/paths.hpp"   // for paths::algorithm
 #include "libsemigroups/runner.hpp"  // for Runner
 #include "libsemigroups/types.hpp"   // for tril
@@ -58,11 +60,8 @@ CATCH_REGISTER_ENUM(libsemigroups::Runner::state,
                     libsemigroups::Runner::state::not_running,
                     libsemigroups::Runner::state::dead);
 
-#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-#define CATCH_CONFIG_FAST_COMPILE
-#define CATCH_CONFIG_MAIN
-
 namespace {
+
   bool find_tag(Catch::TestCaseInfo const& testInfo, std::string tag) {
     std::transform(tag.begin(), tag.end(), tag.begin(), ::tolower);
 
@@ -95,6 +94,10 @@ namespace {
     s.erase(s.find_last_not_of(" \t\n\r\f\v") + 1);
     return s;
   }
+
+  void rtrim(std::string& s) {
+    s.erase(s.find_last_not_of(" \t\n\r\f\v") + 1);
+  }
 }  // namespace
 
 struct LibsemigroupsListener : Catch::EventListenerBase {
@@ -125,7 +128,10 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
       }
       check_category(testInfo);
       check_unique_number(testInfo);
-      check_title_length(testInfo);
+
+      if (category != "extreme" && category != "fail") {
+        check_title_length(testInfo);
+      }
       return *this;
     }
 
@@ -163,23 +169,21 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
     }
 
     void check_title_length(Catch::TestCaseInfo const& testInfo) const {
-      auto const   prefix = fmt::format("[{}]: ", number);
       size_t const N
           = ::libsemigroups::detail::unicode_string_length(testInfo.name);
-      if (prefix.size() + N + _time_cols > _line_cols) {
-        Catch::cerr() << fmt::format(
-            _warn_emph,
-            "WARNING - Test case name too long:\n"
-            "  {}:{}\n"
-            "  \"{}\"\n"
-            "  OMITTING {: <{}}{:^<{}}\n",
-            testInfo.lineInfo.file,
-            testInfo.lineInfo.line,
-            testInfo.name,
-            "",
-            _line_cols - prefix.size() - _time_cols - 9,
-            "",
-            N - _line_cols + prefix.size() + _time_cols + 1);
+      if (N + _time_cols > _line_cols) {
+        Catch::cerr() << fmt::format(_warn_emph,
+                                     "WARNING - Test case name too long:\n"
+                                     "  {}:{}\n"
+                                     "  \"{}\"\n"
+                                     "  OMITTING {: <{}}{:^<{}}\n",
+                                     testInfo.lineInfo.file,
+                                     testInfo.lineInfo.line,
+                                     testInfo.name,
+                                     "",
+                                     _line_cols - _time_cols - 9,
+                                     "",
+                                     N - _line_cols + _time_cols + 1);
       }
     }
   };
@@ -204,19 +208,73 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
 
     SectionStats(Catch::SectionStats const& ss, SectionInfo const& si)
         : duration(std::chrono::nanoseconds(
-            static_cast<uint64_t>(ss.durationInSeconds * std::pow(10, 9)))),
+              static_cast<uint64_t>(ss.durationInSeconds * std::pow(10, 9)))),
           name(si.name) {}
   };
 
-  void print_extreme_test_divider(std::string_view sv) const {
-    auto msg  = fmt::format(_extreme_emph,
-                           "[{}]: {} - {}\n",
-                           current_test_case_info().number,
-                           current_test_case_info().name,
-                           sv);
-    auto rule = fmt::format(
-        _extreme_emph, "{:=>{}}\n", "", std::max(_line_cols, msg.size() - 9));
-    fmt::print(rule + msg + rule);
+  void print_extreme_test_case_divider(std::string_view start_or_stop,
+                                       std::string_view test_case_name,
+                                       std::string_view suffix = "") const {
+    std::string  name(test_case_name);
+    size_t const pos            = name.rfind("-");
+    std::string  test_case_type = "TEST_CASE";
+    std::string  test_type;
+    if (pos != std::string::npos) {
+      test_case_type = "TEMPLATE_" + test_case_type;
+      test_type      = fmt::format(
+          ", TestType = {}",
+          std::string_view(name.c_str() + pos + 2, name.size() - pos - 1));
+      name.erase(name.begin() + pos, name.end());
+    }
+    rtrim(name);
+
+    std::string_view suffix_sep = suffix.empty() ? "" : " - ";
+
+    auto msg = fmt::format(_extreme_test_case,
+                           "{}(\"{}\"{}) - {}{}{}\n",
+                           test_case_type,
+                           name,
+                           test_type,
+                           start_or_stop,
+                           suffix_sep,
+                           suffix);
+    if (start_or_stop == "START") {
+      fmt::print(fmt::format(_extreme_test_case, fmt::format("{:><32}\n", ""))
+                 + msg);
+    } else {
+      fmt::print(
+          msg + fmt::format(_extreme_test_case, fmt::format("{:<<32}\n", "")));
+    }
+  }
+
+  void print_extreme_section_divider(std::string_view start_or_stop,
+                                     std::string_view section_name,
+                                     std::string_view suffix = "") const {
+    std::string const& name = current_test_case_info().name;
+    size_t const       pos  = name.rfind("-");
+    std::string        test_type;
+    if (pos != std::string::npos) {
+      test_type = fmt::format(
+          " (TestType = {})",
+          std::string_view(name.c_str() + pos + 2, name.size() - pos - 1));
+    }
+
+    std::string_view suffix_sep = suffix.empty() ? "" : " - ";
+
+    auto msg = fmt::format(_extreme_section,
+                           "SECTION(\"{}\"){} - {}{}{}\n",
+                           section_name,
+                           test_type,
+                           start_or_stop,
+                           suffix_sep,
+                           suffix);
+    if (start_or_stop == "START") {
+      fmt::print(fmt::format(_extreme_section, fmt::format("{:><24}\n", ""))
+                 + msg);
+    } else {
+      fmt::print(msg
+                 + fmt::format(_extreme_section, fmt::format("{:<<24}\n", "")));
+    }
   }
 
   void set_current_test_case_info(Catch::TestCaseInfo const& testInfo) {
@@ -237,45 +295,47 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
   }
 
   static std::string to_string(TestCaseInfo const& testCaseInfo) {
-    auto const prefix     = fmt::format("[{}]: ", testCaseInfo.number);
-    auto const prefix_pad = _prefix_cols - prefix.size() - 1;
-
-    std::string const trunc_name(
-        testCaseInfo.name.begin(),
-        testCaseInfo.name.begin()
-            + std::min(prefix_pad, testCaseInfo.name.size()));
-    // This is the prefix of length (_line_cols - _time_cols)
-    return fmt::format("{}{:<{}} ", prefix, trunc_name, prefix_pad);
+    auto const        pad = _prefix_cols - 1;
+    std::string const trunc_name(testCaseInfo.name.begin(),
+                                 testCaseInfo.name.begin()
+                                     + std::min(pad, testCaseInfo.name.size()));
+    auto              result = fmt::format("{:<{}} ", trunc_name, pad);
+    return result;
   }
 
   void testCaseStarting(Catch::TestCaseInfo const& testInfo) override {
     _current_section_name = testInfo.name;
     _test_case_time       = std::chrono::nanoseconds(0);
     set_current_test_case_info(testInfo);
+    auto summary = fmt::format("{}", to_string(current_test_case_info()));
     if (current_test_case_info().category != "extreme") {
-      fmt::print("{}", to_string(current_test_case_info()));
+      fmt::print(summary);
     } else {
-      print_extreme_test_divider("START");
+      _test_run_extreme_summary += fmt::format(_extreme_test_case, summary);
+      print_extreme_test_case_divider("START", testInfo.name);
     }
   }
 
   void sectionStarting(Catch::SectionInfo const& sectionInfo) override {
     // TODO(2) handle arbitrary depth subsections
     set_most_recent_section_info(sectionInfo);
+    std::string summary;
+    if (_section_depth == 1 && _current_section_name != sectionInfo.name) {
+      _current_section_name                 = sectionInfo.name;
+      constexpr std::string_view prefix     = "\n-- ";
+      auto const                 prefix_pad = _prefix_cols - prefix.size() + 1;
+      summary = fmt::format("{}{: <{}}", prefix, sectionInfo.name, prefix_pad);
+    } else if (_section_depth == 2) {
+      constexpr std::string_view prefix     = "\n---- ";
+      auto const                 prefix_pad = _prefix_cols - prefix.size() + 1;
+      summary = fmt::format("{}{: <{}}", prefix, sectionInfo.name, prefix_pad);
+    }
     if (current_test_case_info().category != "extreme") {
-      if (_section_depth == 1 && _current_section_name != sectionInfo.name) {
-        _current_section_name             = sectionInfo.name;
-        constexpr std::string_view prefix = "\n-- with ";
-        auto const prefix_pad             = _prefix_cols - prefix.size() + 1;
-        fmt::print("{}{: <{}}", prefix, sectionInfo.name, prefix_pad);
-      } else if (_section_depth == 2) {
-        constexpr std::string_view prefix = "\n---- ";
-        auto const prefix_pad             = _prefix_cols - prefix.size() + 1;
-        fmt::print("{}{: <{}}", prefix, sectionInfo.name, prefix_pad);
-      }
+      fmt::print(summary);
     } else {
+      _test_run_extreme_summary += fmt::format(_extreme_section, summary);
       if (_section_depth > 0) {
-        print_extreme_test_divider(sectionInfo.name + " - START");
+        print_extreme_section_divider("START", sectionInfo.name);
       }
     }
     _section_depth++;
@@ -291,16 +351,20 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
       _test_run_time += _section_stats.back().duration;
       _test_case_time += _section_stats.back().duration;
       std::string section_duration
-          = string_time(_section_stats.back().duration);
+          = _section_stats.back().duration == std::chrono::nanoseconds(0)
+                ? "FAILED"
+                : string_time(_section_stats.back().duration);
+      auto summary = fmt::format("{:.>{}}", section_duration, _time_cols);
       if (current_test_case_info().category != "extreme") {
-        fmt::print("{:.>{}}", section_duration, _time_cols);
+        fmt::print(summary);
       } else {
+        _test_run_extreme_summary += fmt::format(_extreme_section, summary);
         if (most_recent_section_info().name != current_test_case_info().name) {
           // In this case the leaf section that was run was a proper
           // subsection, and not just the entire test case, so we print the
           // end of that proper subsection.
-          print_extreme_test_divider(most_recent_section_info().name + " - "
-                                     + section_duration + " - STOP");
+          print_extreme_section_divider(
+              "STOP", most_recent_section_info().name, section_duration);
         }
       }
     }
@@ -308,42 +372,45 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
 
   void testCaseEnded(Catch::TestCaseStats const&) override {
     using libsemigroups::detail::string_time;
-
+    auto summary = "\n";
     if (current_test_case_info().category == "extreme") {
-      print_extreme_test_divider(string_time(_test_case_time) + " - STOP");
-      if (_section_stats.size() > 1) {
-        fmt::print(_extreme_emph, "{:=>{}}\n", "", _line_cols);
-        fmt::print(_extreme_emph,
-                   "Summary for {}",
-                   to_string(current_test_case_info()));
-        constexpr std::string_view prefix = "\n-- with ";
-        for (SectionStats const& ss : _section_stats) {
-          auto const prefix_pad = _prefix_cols - prefix.size() + 1;
-          fmt::print(_extreme_emph, "{}{: <{}}", prefix, ss.name, prefix_pad);
-          fmt::print(
-              _extreme_emph, "{:.>{}}", string_time(ss.duration), _time_cols);
-        }
-        fmt::print(_extreme_emph, "\n{:=>{}}", "", _line_cols);
-        fmt::print("\n");
-      }
+      std::chrono::nanoseconds duration = _test_case_time;
+      std::string duration_string = duration == std::chrono::nanoseconds(0)
+                                        ? "FAILED"
+                                        : string_time(duration);
+
+      print_extreme_test_case_divider(
+          "STOP", _current_test_case_info.name, duration_string);
+      _test_run_extreme_summary += fmt::format(_extreme_test_case, summary);
     } else {
-      fmt::print("\n");
+      fmt::print(summary);
     }
     _section_stats.clear();
   }
 
-  void testRunEnded(Catch::TestRunStats const&) override {
+  void testRunEnded(Catch::TestRunStats const& stats) override {
     using libsemigroups::detail::string_time;
+
+    if (!_test_run_extreme_summary.empty()) {
+      fmt::print("{:*<32}\n", "");
+      fmt::print("*  Extreme test cases summary  *\n");
+      fmt::print("{:*<32}\n", "");
+      fmt::print(_test_run_extreme_summary);
+    }
 
     constexpr std::string_view prefix     = "Total time ";
     auto const                 t          = string_time(_test_run_time);
     auto const                 prefix_pad = _line_cols - prefix.size();
 
-    fmt::print(_run_end_emph, "{:=>{}}\n", "", _line_cols);
-    fmt::print(_run_end_emph, "{}{:.>{}}\n", prefix, t, prefix_pad);
+    auto color = stats.totals.assertions.passed == 0 ? _run_end_emph_failed
+                                                     : _run_end_emph_passed;
+
+    // TODO
+    fmt::print(color, "{:=>{}}\n", "", _line_cols);
+    fmt::print(color, "{}{:.>{}}\n", prefix, t, prefix_pad);
     // The following =s fill in the line printed by catch to make it the same
     // width as _line_cols
-    fmt::print(_run_end_emph, "{:=>{}}", "", _line_cols - 79);
+    fmt::print(color, "{:=>{}}", "", _line_cols - 79);
   }
 
   std::chrono::nanoseconds _test_run_time = std::chrono::nanoseconds(0);
@@ -355,14 +422,19 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
   TestCaseInfo              _current_test_case_info;
   SectionInfo               _most_recent_section_info;
   std::vector<SectionStats> _section_stats;
+  std::string               _test_run_extreme_summary;
 
   static constexpr size_t _line_cols   = 90;
   static constexpr size_t _time_cols   = 12;
   static constexpr size_t _prefix_cols = _line_cols - _time_cols;
 
-  static constexpr auto _extreme_emph = fmt::emphasis::bold;
-  static constexpr auto _run_end_emph
+  static constexpr auto _extreme_emph      = fmt::emphasis::bold;
+  static constexpr auto _extreme_test_case = fg(fmt::terminal_color::magenta);
+  static constexpr auto _extreme_section   = fg(fmt::terminal_color::blue);
+  static constexpr auto _run_end_emph_passed
       = fmt::emphasis::bold | fg(fmt::terminal_color::bright_green);
+  static constexpr auto _run_end_emph_failed
+      = fmt::emphasis::bold | fg(fmt::terminal_color::red);
   static constexpr auto _warn_emph
       = fmt::emphasis::bold | fg(fmt::terminal_color::red);
 };

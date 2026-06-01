@@ -241,13 +241,14 @@ namespace libsemigroups {
       f.path_from_root(std::back_inserter(w), i);
     }
 
-    word_type path_to_root(Forest const& f, Forest::node_type i) {
+    [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i) {
       word_type w;
       path_to_root(f, w, i);
       return w;
     }
 
-    word_type path_from_root(Forest const& f, Forest::node_type i) {
+    [[nodiscard]] word_type path_from_root(Forest const&     f,
+                                           Forest::node_type i) {
       word_type w;
       path_from_root(f, w, i);
       return w;
@@ -266,7 +267,7 @@ namespace libsemigroups {
       return length;
     }
 
-    Forest::label_type max_label(Forest const& f) {
+    [[nodiscard]] Forest::label_type max_label(Forest const& f) {
       if (!f.empty()) {
         Forest::label_type max               = 0;
         bool               any_label_defined = false;

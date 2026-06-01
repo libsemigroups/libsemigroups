@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/to-todd-coxeter.hpp"  // for to<ToddCoxeter>
 #include "libsemigroups/transf.hpp"
@@ -206,10 +207,10 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
 
-    REQUIRE(kb.confluent());
+    REQUIRE(kb.rewriting_system().confluent());
     kb.run();
-    REQUIRE(kb.confluent());
-    REQUIRE(kb.number_of_active_rules() == 3);
+    REQUIRE(kb.rewriting_system().confluent());
+    REQUIRE(kb.rewriting_system().number_of_rules() == 3);
     REQUIRE(kb.number_of_classes() == 1);
     // REQUIRE(kb.is_obviously_finite());
     REQUIRE(kb.finished());

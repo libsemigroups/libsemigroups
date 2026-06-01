@@ -81,7 +81,7 @@
 #include "detail/iterator.hpp"        // for detail/default_postfix_increment
 #include "detail/path-iterators.hpp"  // for const_pstilo_iterator
 #include "detail/report.hpp"          // for ReportCell
-#include "detail/rewriters.hpp"       // for RewriteTrie
+#include "detail/rewriters.hpp"       // for RewritingSystemTrie
 #include "detail/word-graph-with-sources.hpp"  // for WordGraphWithSources
 
 //! \defgroup sims_group Low-index congruences

@@ -18,9 +18,12 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
+
+#include "libsemigroups/ranges.hpp"  // for chain, shortlex_compare
 
 namespace libsemigroups {
   namespace {

@@ -107,7 +107,7 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Node>
-  typename WordGraphView<Node>::size_type
+  [[nodiscard]] typename WordGraphView<Node>::size_type
   WordGraphView<Node>::number_of_edges_no_checks() const noexcept {
     size_t count = 0;
     for (auto s : nodes_no_checks()) {

@@ -20,6 +20,7 @@
 #include <string>   // for operator==
 #include <thread>   // for sleep_for
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
 
 #include "libsemigroups/detail/timer.hpp"  // for Timer, operator<<

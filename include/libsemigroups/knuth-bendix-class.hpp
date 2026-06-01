@@ -32,7 +32,7 @@
 #include "detail/citow.hpp"              // for citow
 #include "detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
-#include "detail/rewriters.hpp"          // for RewriteTrie
+#include "detail/rewriters.hpp"          // for RewritingSystemTrie
 
 namespace libsemigroups {
   enum class congruence_kind;
@@ -64,7 +64,7 @@ namespace libsemigroups {
   //! finitely presented monoid or semigroup.
   //!
   //! \tparam Word the type of the words in rules in the presentation.
-  //! \tparam Rewriter the type of the rewriter.
+  //! \tparam RewritingSystem the type of the rewriter.
   //! \tparam ReductionOrder the reduction ordering.
   //!
   //! \par Example
@@ -79,11 +79,9 @@ namespace libsemigroups {
   //!
   //! KnuthBendix kb(congruence_kind::twosided, p);
   //!
-  //! kb.number_of_active_rules();  //-> 0
-  //! kb.number_of_pending_rules(); //-> 4
+  //! kb.rewriter().number_of_rules(); //-> 4
   //! kb.run();
-  //! kb.number_of_active_rules();  //-> 4
-  //! kb.number_of_pending_rules(); //-> 0
+  //! kb.rewriter().number_of_rules();  //-> 4
   //! kb.confluent();               //-> true
   //! kb.number_of_classes();       //-> POSITIVE_INFINITY
   //! \endcode
@@ -92,12 +90,16 @@ namespace libsemigroups {
   //! presentations with alphabets containing at most:
   //! * 128 letters if `char` a signed integer;
   //! * 256 letters if `char` is an unsigned integer.
+  // TODO(v4) remove the final template parameter, which isn't required any more
   template <typename Word,
-            typename Rewriter       = detail::RewriteTrie,
-            typename ReductionOrder = ShortLexCompare>
-  class KnuthBendix : public detail::KnuthBendixImpl<Rewriter, ReductionOrder> {
+            typename RewritingSystem
+            = detail::RewritingSystemTrie<ShortLexCompare>,
+            typename ReductionOrder = typename RewritingSystem::reduction_order>
+  class KnuthBendix
+      : public detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> {
    private:
-    using KnuthBendixImpl_ = detail::KnuthBendixImpl<Rewriter, ReductionOrder>;
+    using KnuthBendixImpl_
+        = detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>;
 
     bool               _extra_letter_added;
     std::vector<Word>  _generating_pairs;

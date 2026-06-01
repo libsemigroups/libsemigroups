@@ -313,63 +313,40 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Word>
-    void throw_if_contains_duplicates(Word const&      word,
-                                      std::string_view where) {
-      std::unordered_set<typename Word::value_type> letter_set;
-      for (auto const& letter : word) {
-        if (!letter_set.insert(letter).second) {
-          LIBSEMIGROUPS_EXCEPTION("invalid {}, the letter {} is duplicated!",
-                                  where,
-                                  detail::to_printable(letter));
-        }
-      }
-    }
-
-    template <typename Word>
-    void throw_if_word_not_over_alphabet(Word const& alphabet,
-                                         Word const& word) {
-      for (auto const& letter : word) {
-        if (auto it
-            = std::find(std::cbegin(alphabet), std::end(alphabet), letter);
-            it == std::cend(alphabet)) {
-          auto msg = fmt::format("invalid letter {}, valid letters are {}",
-                                 detail::to_printable(letter),
-                                 detail::to_printable(alphabet));
-          if constexpr (std::is_same_v<typename Word::value_type, char>) {
-            if (!std::isprint(letter) && detail::isprint(alphabet)) {
-              msg += fmt::format(
-                  " == {}",
-                  std::vector<int>(std::cbegin(alphabet), std::cend(alphabet)));
-            }
-          }
-          LIBSEMIGROUPS_EXCEPTION(msg);
-        }
-      }
-    }
-
-    template <typename Word>
-    void throw_if_bad_inverses(Word const& alphabet, Word const& inverses) {
-      if (alphabet.size() != inverses.size()) {
+    template <typename Word1, typename Word2>
+    void throw_if_bad_inverses(Presentation<Word1> const& p,
+                               Word2 const&               vals) {
+      if (vals.size() != p.alphabet().size()) {
         LIBSEMIGROUPS_EXCEPTION(
             "invalid number of inverses, expected {} but found {}",
-            alphabet.size(),
-            inverses.size());
+            p.alphabet().size(),
+            vals.size());
+      }
+      // throw_if_bad_alphabet_or_rules word after checking the size so that we
+      // get a more meaningful exception message
+      p.throw_if_letter_not_in_alphabet(vals.begin(), vals.end());
+
+      Word1 cpy(vals);
+      std::sort(cpy.begin(), cpy.end());
+      for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
+        if (*it == *(it + 1)) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid inverses, the letter {} is duplicated!",
+              detail::to_printable(*it));
+        }
       }
 
-      throw_if_contains_duplicates(inverses, "inverses");
-
       // Check that (x ^ - 1) ^ -1 = x
-      for (size_t i = 0; i < alphabet.size(); ++i) {
-        for (size_t j = 0; j < alphabet.size(); ++j) {
-          if (alphabet[j] == inverses[i]) {
-            if (inverses[j] != alphabet[i]) {
+      for (size_t i = 0; i < p.alphabet().size(); ++i) {
+        for (size_t j = 0; j < p.alphabet().size(); ++j) {
+          if (p.letter_no_checks(j) == vals[i]) {
+            if (vals[j] != p.letter_no_checks(i)) {
               LIBSEMIGROUPS_EXCEPTION(
                   "invalid inverses, {} ^ -1 = {} but {} ^ -1 = {}",
-                  detail::to_printable(alphabet[i]),
-                  detail::to_printable(inverses[i]),
-                  detail::to_printable(alphabet[j]),
-                  detail::to_printable(inverses[j]));
+                  detail::to_printable(p.letter_no_checks(i)),
+                  detail::to_printable(vals[i]),
+                  detail::to_printable(vals[i]),
+                  detail::to_printable(vals[j]));
             }
             break;
           }
@@ -1061,20 +1038,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    void add_commutes_rules(Presentation<Word>& p,
-                            Word const&         letters1,
-                            Word const&         letters2) {
-      p.throw_if_letter_not_in_alphabet(std::cbegin(letters1),
-                                        std::cend(letters1));
-      p.throw_if_letter_not_in_alphabet(std::cbegin(letters2),
-                                        std::cend(letters2));
-      add_commutes_rules_no_checks(p, letters1, letters2);
-    }
-
-    template <typename Word>
-    void add_commutes_rules_no_checks(Presentation<Word>&      p,
-                                      Word const&              letters,
-                                      std::vector<Word> const& words) {
+    void add_commutes_rules_no_checks(Presentation<Word>&         p,
+                                      Word const&                 letters,
+                                      std::initializer_list<Word> words) {
       using words::operator+;
 
       Presentation<Word> q;
@@ -1087,134 +1053,6 @@ namespace libsemigroups {
         }
       }
       presentation::add_rules_no_checks(p, q);
-    }
-
-    template <typename Word>
-    void add_commutes_rules(Presentation<Word>&      p,
-                            Word const&              letters,
-                            std::vector<Word> const& words) {
-      p.throw_if_letter_not_in_alphabet(std::cbegin(letters),
-                                        std::cend(letters));
-      for (Word const& word : words) {
-        p.throw_if_letter_not_in_alphabet(std::cbegin(word), std::cend(word));
-      }
-      add_commutes_rules_no_checks(p, letters, words);
-    }
-
-    template <typename Word>
-    Word commutator_no_checks(Word const& x,
-                              Word const& y,
-                              Word const& alphabet,
-                              Word const& inverses) {
-      Word commutator;
-      for (Word const& word : {x, y}) {
-        for (auto letter_it = std::crbegin(word); letter_it != std::crend(word);
-             ++letter_it) {
-          // Get position of letter in <alphabet>, and push the corresponding
-          // inverse
-          auto it = std::find(
-              std::cbegin(alphabet), std::cend(alphabet), *letter_it);
-          LIBSEMIGROUPS_ASSERT(it != std::cend(alphabet));
-          commutator.push_back(inverses[std::distance(alphabet.cbegin(), it)]);
-        }
-      }
-      commutator.insert(std::end(commutator), std::cbegin(x), std::cend(x));
-      commutator.insert(std::end(commutator), std::cbegin(y), std::cend(y));
-      return commutator;
-    }
-
-    template <typename Word>
-    Word commutator(Word const& x,
-                    Word const& y,
-                    Word const& alphabet,
-                    Word const& inverses) {
-      throw_if_contains_duplicates(alphabet, "alphabet");
-      throw_if_bad_inverses(alphabet, inverses);
-      throw_if_word_not_over_alphabet(alphabet, x);
-      throw_if_word_not_over_alphabet(alphabet, y);
-
-      return commutator_no_checks(x, y, alphabet, inverses);
-    }
-
-    template <typename Word>
-    Word commutator(Presentation<Word> const& p,
-                    Word const&               x,
-                    Word const&               y,
-                    Word const&               inverses) {
-      throw_if_bad_inverses(p, inverses);
-      p.throw_if_letter_not_in_alphabet(std::cbegin(x), std::cend(x));
-      p.throw_if_letter_not_in_alphabet(std::cbegin(y), std::cend(y));
-
-      return commutator_no_checks(p, x, y, inverses);
-    }
-
-    template <typename Word>
-    Word commutator(Presentation<Word> const& p, Word const& x, Word const& y) {
-      p.throw_if_letter_not_in_alphabet(std::cbegin(x), std::cend(x));
-      p.throw_if_letter_not_in_alphabet(std::cbegin(y), std::cend(y));
-
-      auto [alphabet, inverses] = try_detect_group_inverses(p);
-      throw_if_word_not_over_alphabet(alphabet, x);
-      throw_if_word_not_over_alphabet(alphabet, y);
-      return commutator_no_checks(x, y, alphabet, inverses);
-    }
-
-    template <typename Word>
-    void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              x,
-                             Word const&                              y,
-                             Word const&                              alphabet,
-                             Word const&                              inverses,
-                             typename Presentation<Word>::letter_type id) {
-      p.throw_if_letter_not_in_alphabet(std::begin(alphabet),
-                                        std::end(alphabet));
-      p.throw_if_letter_not_in_alphabet(std::begin(inverses),
-                                        std::end(inverses));
-      throw_if_contains_duplicates(alphabet, "alphabet");
-      throw_if_bad_inverses(alphabet, inverses);
-      throw_if_word_not_over_alphabet(alphabet, x);
-      throw_if_word_not_over_alphabet(alphabet, y);
-      if (id != UNDEFINED) {
-        p.throw_if_letter_not_in_alphabet(id);
-      }
-
-      add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
-    }
-
-    template <typename Word>
-    void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              x,
-                             Word const&                              y,
-                             Word const&                              inverses,
-                             typename Presentation<Word>::letter_type id) {
-      p.throw_if_letter_not_in_alphabet(std::begin(inverses),
-                                        std::end(inverses));
-      throw_if_bad_inverses(p, inverses);
-      p.throw_if_letter_not_in_alphabet(std::begin(x), std::end(x));
-      p.throw_if_letter_not_in_alphabet(std::begin(y), std::end(y));
-      if (id != UNDEFINED) {
-        p.throw_if_letter_not_in_alphabet(id);
-      }
-
-      add_commutator_rule_no_checks(p, x, y, inverses, id);
-    }
-
-    template <typename Word>
-    void add_commutator_rule(Presentation<Word>&                      p,
-                             Word const&                              x,
-                             Word const&                              y,
-                             typename Presentation<Word>::letter_type id) {
-      p.throw_if_letter_not_in_alphabet(std::begin(x), std::end(x));
-      p.throw_if_letter_not_in_alphabet(std::begin(y), std::end(y));
-      if (id != UNDEFINED) {
-        p.throw_if_letter_not_in_alphabet(id);
-      }
-
-      auto [alphabet, inverses] = try_detect_group_inverses(p);
-      throw_if_word_not_over_alphabet(alphabet, x);
-      throw_if_word_not_over_alphabet(alphabet, y);
-
-      add_commutator_rule_no_checks(p, x, y, alphabet, inverses, id);
     }
 
     template <typename Word1, typename Word2>
@@ -1271,14 +1109,14 @@ namespace libsemigroups {
       if (!p.contains_empty_word()) {
         return;
       }
-      auto [letters, inverses] = try_detect_group_inverses(p);
+      auto [letters, inverses] = try_detect_inverses(p);
       balance_no_checks(p, letters, inverses);
     }
 
     template <typename Word>
-    void try_detect_group_inverses(Presentation<Word> const& p,
-                                   Word&                     letters,
-                                   Word&                     inverses) {
+    void try_detect_inverses(Presentation<Word>& p,
+                             Word&               letters,
+                             Word&               inverses) {
       p.throw_if_bad_alphabet_or_rules();
       using value_type = typename Word::value_type;
       // values in this map are pairs <p> such that <p.first> is a found
@@ -1287,14 +1125,12 @@ namespace libsemigroups {
       std::unordered_map<value_type, std::pair<value_type, size_t>> map;
 
       for (size_t pos = 0; pos != p.rules.size(); pos += 2) {
-        // We use pointers here so that they can be swapped without changing <p>
-        Word const* lhs = &p.rules[pos];
-        Word const* rhs = &p.rules[pos + 1];
-        if (lhs->empty() && rhs->size() == 2) {
+        auto &lhs = p.rules[pos], &rhs = p.rules[pos + 1];
+        if (lhs.empty() && rhs.size() == 2) {
           std::swap(lhs, rhs);
         }
-        if (lhs->size() == 2 && rhs->empty()) {
-          auto letter = (*lhs)[0], inverse = (*lhs)[1];
+        if (lhs.size() == 2 && rhs.empty()) {
+          auto letter = lhs[0], inverse = lhs[1];
           auto [it, inserted] = map.emplace(letter, std::pair{inverse, pos});
 
           if (!inserted && it->second.first != inverse) {
@@ -1305,8 +1141,8 @@ namespace libsemigroups {
                 "the conflicting values {} != {} for the inverse of {}, "
                 "please use the 2- or 3-argument version of this function "
                 "to explicitly specify the inverses",
-                detail::to_printable(*lhs),
-                detail::to_printable(*rhs),
+                detail::to_printable(lhs),
+                detail::to_printable(rhs),
                 pos / 2,
                 detail::to_printable(p.rules[alt_pos]),
                 detail::to_printable(p.rules[alt_pos + 1]),
@@ -1326,23 +1162,11 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    std::pair<Word, Word>
-    try_detect_group_inverses(Presentation<Word> const& p) {
+    std::pair<Word, Word> try_detect_inverses(Presentation<Word>& p) {
       Word letters;
       Word inverses;
-      try_detect_group_inverses(p, letters, inverses);
+      try_detect_inverses(p, letters, inverses);
       return {letters, inverses};
-    }
-
-    template <typename Word>
-    void add_involution_rules(Presentation<Word>& p, Word const& letters) {
-      p.throw_if_letter_not_in_alphabet(std::begin(letters), std::end(letters));
-      if (!p.contains_empty_word()) {
-        LIBSEMIGROUPS_EXCEPTION("this function requires the presentation to "
-                                "contain the empty word, did you mean to "
-                                "call contains_empty_word(true) first?");
-      }
-      add_involution_rules_no_checks(p, letters);
     }
 
     template <typename Word1, typename Word2>
@@ -1367,7 +1191,7 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    typename std::vector<Word>::iterator
+    [[nodiscard]] typename std::vector<Word>::iterator
     find_rule_no_checks(Presentation<Word>& p,
                         Word const&         lhs,
                         Word const&         rhs) {
@@ -1380,9 +1204,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    size_t index_rule_no_checks(Presentation<Word> const& p,
-                                Word const&               lhs,
-                                Word const&               rhs) {
+    [[nodiscard]] size_t index_rule_no_checks(Presentation<Word> const& p,
+                                              Word const&               lhs,
+                                              Word const&               rhs) {
       auto it = find_rule_no_checks(p, lhs, rhs);
       if (it != p.rules.cend()) {
         return std::distance(p.rules.begin(), it);

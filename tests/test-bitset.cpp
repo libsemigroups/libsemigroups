@@ -16,8 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/bitset.hpp"  // for BitSet
-#include "test-main.hpp"             // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
+#include "libsemigroups/bitset.hpp"             // for BitSet
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 namespace libsemigroups {
 
@@ -40,23 +41,6 @@ namespace libsemigroups {
     TestType bs;
     REQUIRE(bs.size() >= 7);
     REQUIRE(bs.size() <= 64);
-  }
-
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("BitSet",
-                                   "018",
-                                   "range constructor",
-                                   "[bitset][quick]",
-                                   BITSET_TYPES) {
-    bool     values[] = {true, false, true, false, false, true};
-    TestType bs(values, values + 6);
-
-    REQUIRE(bs.count() == 3);
-    REQUIRE(bs[0]);
-    REQUIRE(!bs[1]);
-    REQUIRE(bs[2]);
-    REQUIRE(!bs[3]);
-    REQUIRE(!bs[4]);
-    REQUIRE(bs[5]);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("BitSet",
