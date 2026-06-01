@@ -19,8 +19,7 @@
 #include <map>      // for map
 #include <string>   // for string
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/dot.hpp"                 // for Dot
 #include "libsemigroups/exception.hpp"           // for LibsemigroupsException
@@ -42,15 +41,16 @@ namespace libsemigroups {
     REQUIRE(edges[0].head == "0");
     REQUIRE(edges[0].tail == "0");
     REQUIRE(edges[0].attrs
-            == std::map<std::string, std::string>{{"color", "#00ff00"}});
+            == std::map<std::string, std::string>{{"color", "\"#00ff00\""}});
     edges[0].add_attr("style", "dashed");
     REQUIRE(edges[0].attrs
-            == std::map<std::string, std::string>{{"color", "#00ff00"},
-                                                  {"style", "dashed"}});
+            == std::map<std::string, std::string>{{"color", "\"#00ff00\""},
+                                                  {"style", "\"dashed\""}});
+    // setting attributes in this way is "as is"
     edges[0].attrs["color"] = "blue";
     REQUIRE(edges[0].attrs
             == std::map<std::string, std::string>{{"color", "blue"},
-                                                  {"style", "dashed"}});
+                                                  {"style", "\"dashed\""}});
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot::Node",
@@ -62,14 +62,15 @@ namespace libsemigroups {
     auto      nodes = d.nodes() | to_vector();
     REQUIRE((nodes.size()) == 3);
     REQUIRE(nodes[0].attrs
-            == std::map<std::string, std::string>{{"shape", "box"}});
+            == std::map<std::string, std::string>{{"shape", "\"box\""}});
     nodes[0].add_attr("shape", "circle");
     REQUIRE(nodes[0].attrs
-            == std::map<std::string, std::string>{{"shape", "circle"}});
+            == std::map<std::string, std::string>{{"shape", "\"circle\""}});
+    // setting attributes in this way is "as is"
     nodes[0].attrs["color"] = "blue";
     REQUIRE(nodes[0].attrs
             == std::map<std::string, std::string>{{"color", "blue"},
-                                                  {"shape", "circle"}});
+                                                  {"shape", "\"circle\""}});
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "002", "dot attributes", "[dot][quick]") {
@@ -81,7 +82,7 @@ namespace libsemigroups {
     d.add_attr("splines", "line");
     REQUIRE(d.attrs()
             == std::map<std::string, std::string>{{"node [shape=circle]", ""},
-                                                  {"splines", "line"}});
+                                                  {"splines", "\"line\""}});
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "003", "add_node", "[dot][quick]") {
@@ -105,7 +106,7 @@ namespace libsemigroups {
     REQUIRE(e.attrs == std::map<std::string, std::string>{});
     e.add_attr("color", "#00FF00");
     REQUIRE(e.attrs
-            == std::map<std::string, std::string>{{"color", "#00FF00"}});
+            == std::map<std::string, std::string>{{"color", "\"#00FF00\""}});
   }
 
   LIBSEMIGROUPS_TEST_CASE("Dot", "005", "add_subgraph", "[dot][quick]") {
@@ -134,5 +135,20 @@ namespace libsemigroups {
     REQUIRE(d.kind() == Dot::Kind::graph);
     d.kind(Dot::Kind::subgraph);
     REQUIRE(d.kind() == Dot::Kind::subgraph);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Dot::Attr",
+                          "007",
+                          "to_human_readable_repr",
+                          "[dot][quick]") {
+    REQUIRE(to_human_readable_repr(Dot::Attr::string) == "<enum Dot::Attr>");
+    REQUIRE(to_human_readable_repr(Dot::Attr::html, ".") == "<enum Dot.Attr>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Dot", "008", "is_node", "[dot][quick]") {
+    Dot d;
+    d.add_node("cat");
+    REQUIRE(d.is_node("cat:dog"));
+    REQUIRE(d.is_node("cat"));
   }
 }  // namespace libsemigroups

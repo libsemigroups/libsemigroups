@@ -33,8 +33,7 @@
 #include <utility>        // for forward
 #include <vector>         // for vector
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
 #include "libsemigroups/exception.hpp"              // for Libsemig...

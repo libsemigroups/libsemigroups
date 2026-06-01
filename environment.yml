@@ -1,9 +1,11 @@
 name: libsemigroups
 
 channels:
-- conda-forge
+  - conda-forge
 
 dependencies:
+  - catch2
   - eigen
   - fmt
   - backward-cpp
+  - magic_enum

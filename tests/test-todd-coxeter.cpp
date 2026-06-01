@@ -23,8 +23,6 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for TEST_CASE
-
 #include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
@@ -5421,5 +5419,28 @@ namespace libsemigroups {
     auto const& f = tc.current_word_graph().current_spanning_tree();
     tc.init();
     REQUIRE(f.number_of_nodes() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "133",
+                          "non-core strategies run_for/run_until exceptions",
+                          "[todd-coxeter][quick]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 0_w, 11_w);
+    ToddCoxeter tc(twosided, p);
+
+    section_Rc_style(tc);
+    section_R_over_C_style(tc);
+    section_CR_style(tc);
+    section_Cr_style(tc);
+
+    REQUIRE_THROWS_AS(tc.run_until([] { return false; }),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(tc.run_for(std::chrono::microseconds(1)),
+                      LibsemigroupsException);
   }
 }  // namespace libsemigroups

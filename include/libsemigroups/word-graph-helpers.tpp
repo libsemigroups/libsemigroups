@@ -28,7 +28,7 @@ namespace libsemigroups {
 
       template <typename Node>
       // TODO rename to _no_checks and add a checks version?
-      [[nodiscard]] bool is_strictly_cyclic(WordGraphView<Node> const& wg) {
+      bool is_strictly_cyclic(WordGraphView<Node> const& wg) {
         using node_type = typename WordGraphView<Node>::node_type;
         auto const N    = wg.number_of_nodes_no_checks();
 
@@ -1019,6 +1019,76 @@ namespace libsemigroups {
             }
           }
         }
+        return result;
+      }
+
+      template <typename Node>
+      Dot dot(WordGraphView<Node> const&      wg,
+              std::vector<std::string> const& node_labels,
+              std::vector<std::string> const& edge_labels) {
+        if (node_labels.size() != wg.number_of_nodes()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected the 2nd argument (node labels) to have size {}, the "
+              "number of nodes of the 1st argument (word graph), but found {}",
+              wg.number_of_nodes(),
+              node_labels.size());
+        } else if (edge_labels.size() != wg.out_degree()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected the 3rd argument (edge labels) to have size {}, the "
+              "out-degree of the 1st argument (word graph), but found {}",
+              wg.out_degree(),
+              edge_labels.size());
+        } else if (Dot::colors.size() < wg.out_degree()) {
+          LIBSEMIGROUPS_EXCEPTION("the 1st argument (word graph) must have out "
+                                  "degree at most {}, found {}",
+                                  Dot::colors.size(),
+                                  wg.out_degree());
+        }
+
+        Dot result = dot(wg);
+
+        auto const out_degree = wg.out_degree();
+        size_t     i          = 0;
+        for (auto& node : result.nodes()) {
+          node.add_attr("label", node_labels[i++]);
+        }
+
+        auto start_table = "<<table border=\"0\" cellpadding=\"2\" "
+                           "cellspacing=\"0\" cellborder=\"0\">\n";
+        auto end_table   = "</table>>\n";
+
+        std::string label = start_table;
+        for (size_t index = 0; index < out_degree; ++index) {
+          label += fmt::format(
+              "<tr><td align=\"right\" port=\"port{}\">{}&nbsp;</td></tr>\n",
+              index,
+              edge_labels[index]);
+        }
+        label += end_table;
+
+        Dot legend;
+        legend.name("legend").add_attr("node [shape=plaintext]");
+
+        // HTML table for the head of the arrows in the legend
+        legend.add_node("head").add_attr("label", label, Dot::Attr::html);
+
+        label = start_table;
+        for (size_t index = 0; index < out_degree; ++index) {
+          label += fmt::format(
+              "<tr><td align=\"right\" port=\"port{}\">&nbsp;</td></tr>\n",
+              index);
+        }
+        label += end_table;
+
+        // HTML table for the tail of the arrows in the legend
+        legend.add_node("tail").add_attr("label", label, Dot::Attr::html);
+        for (size_t index = 0; index < out_degree; ++index) {
+          legend
+              .add_edge(fmt::format("head:port{}:e", index),
+                        fmt::format("tail:port{}:w", index))
+              .add_attr("color", result.colors[index]);
+        }
+        result.add_subgraph(legend);
         return result;
       }
 

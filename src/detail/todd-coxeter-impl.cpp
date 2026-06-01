@@ -573,7 +573,7 @@ namespace libsemigroups::detail {
   // ToddCoxeterImpl - Interface requirements
   ////////////////////////////////////////////////////////////////////////
 
-  [[nodiscard]] uint64_t ToddCoxeterImpl::number_of_classes() {
+  uint64_t ToddCoxeterImpl::number_of_classes() {
     if (is_obviously_infinite(*this)) {
       return POSITIVE_INFINITY;
     }
@@ -818,9 +818,10 @@ namespace libsemigroups::detail {
                && strategy() != options::strategy::hlt
                && strategy() != options::strategy::lookahead
                && strategy() != options::strategy::lookbehind
-               && running_until()) {
-      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with run_until !",
-                              strategy());
+               && (running_until() || running_for())) {
+      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with {} !",
+                              strategy(),
+                              (running_until() ? "run_until" : "run_for"));
     } else if (internal_presentation().rules.empty()
                && !internal_presentation().alphabet().empty()
                && (internal_generating_pairs().empty()
@@ -881,7 +882,7 @@ namespace libsemigroups::detail {
     _word_graph.report_prefix("ToddCoxeter");
   }
 
-  [[nodiscard]] bool ToddCoxeterImpl::any_change_last_run() const {
+  bool ToddCoxeterImpl::any_change_last_run() const {
     return _stats.run_nodes_active_at_start
            != current_word_graph().number_of_nodes_active();
   }

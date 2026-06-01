@@ -16,14 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
-#define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
-
 #include <string_view>  // for string_view
 #include <type_traits>  // for is_reference
-#include <utility>      // for std::pair
 
-#include "libsemigroups/order.hpp"  // for shortlex_compare
+#include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
+#include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for TEST_CASE, etc.
+
+#ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
+#define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 

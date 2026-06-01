@@ -39,7 +39,7 @@ namespace libsemigroups {
       for (auto const& attr : map) {
         if (!attr.second.empty()) {
           s += fmt::format(
-              "{}{}=\"{}\"",
+              "{}{}={}",
               sep,
               attr.first,
               attr.second == "__NONE__" ? "" : attr.second);  // TODO(2) fixme
@@ -76,7 +76,9 @@ namespace libsemigroups {
       auto old_name = node.name;
       node.name     = subgraph.name() + "_" + node.name;
       add_node(node.name);
-      node.add_attr("label", old_name);
+      if (!node.attrs.count("label")) {
+        node.add_attr("label", old_name);
+      }
     }
 
     for (auto& edge : subgraph.edges()) {
@@ -150,6 +152,26 @@ namespace libsemigroups {
     }
   }
 
+  bool Dot::is_node(std::string const& name) const {
+    if (_nodes.count(name)) {
+      return true;
+    }
+    auto pos = name.find(":");
+    if (pos == std::string::npos) {
+      return false;
+    }
+    for (auto const& [key, val] : _nodes) {
+      if (key.size() >= pos
+          && std::equal(name.begin(),
+                        name.begin() + pos,
+                        key.begin(),
+                        key.begin() + pos)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Dot::Edge::~Edge() = default;
 
   Dot::Node::~Node() = default;
@@ -170,6 +192,10 @@ namespace libsemigroups {
 
   std::string to_human_readable_repr(Dot::Edge const& e) {
     return fmt::format("<dot edge \"{}\" -> \"{}\">", e.head, e.tail);
+  }
+
+  std::string to_human_readable_repr(Dot::Attr const&, std::string const& sep) {
+    return fmt::format("<enum Dot{}Attr>", sep);
   }
 
   std::string to_human_readable_repr(Dot::Kind const&, std::string const& sep) {

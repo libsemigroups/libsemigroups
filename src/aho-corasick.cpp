@@ -47,8 +47,7 @@ namespace libsemigroups {
   }
 
   // Not noexcept because std::unordered_map::count isn't
-  [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::Node::child(letter_type a) const {
+  AhoCorasick::index_type AhoCorasick::Node::child(letter_type a) const {
     if (_children.count(a) == 0) {
       return UNDEFINED;
     }
@@ -80,8 +79,8 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::traverse_no_checks(index_type current, letter_type a) const {
+  AhoCorasick::index_type AhoCorasick::traverse_no_checks(index_type  current,
+                                                          letter_type a) const {
     LIBSEMIGROUPS_ASSERT(current < _all_nodes.size());
     LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(current) == 1);
     index_type next = _all_nodes[current].child(a);
@@ -104,7 +103,7 @@ namespace libsemigroups {
     std::reverse(w.begin(), w.end());
   }
 
-  [[nodiscard]] size_t AhoCorasick::height_no_checks(index_type i) const {
+  size_t AhoCorasick::height_no_checks(index_type i) const {
     LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
     LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
     size_t cached_height = _all_nodes[i].height();
@@ -122,7 +121,7 @@ namespace libsemigroups {
     return cached_height;
   }
 
-  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::index_type
   AhoCorasick::suffix_link_no_checks(index_type current) const {
     LIBSEMIGROUPS_ASSERT(current < _all_nodes.size());
     LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(current) == 1);
@@ -138,7 +137,7 @@ namespace libsemigroups {
     return n.suffix_link();
   }
 
-  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::index_type
   AhoCorasick::new_active_node_no_checks(index_type parent, letter_type a) {
     LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
     LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent) == 1);
@@ -201,7 +200,7 @@ namespace libsemigroups {
                        n_nodes == 1 ? "" : "s");
   }
 
-  [[nodiscard]] Dot aho_corasick::dot(AhoCorasick& ac) {
+  Dot aho_corasick::dot(AhoCorasick& ac) {
     auto to_word = [](word_type const& w) {
       if (w.empty()) {
         return std::string("&#949;");

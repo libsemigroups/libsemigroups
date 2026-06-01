@@ -28,7 +28,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    bool isprint(std::string const& alphabet) {
+    bool isprint(std::string_view alphabet) {
       return std::all_of(alphabet.cbegin(), alphabet.cend(), [](auto c) {
         return std::isprint(c);
       });

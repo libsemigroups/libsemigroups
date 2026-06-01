@@ -34,30 +34,38 @@ To build `libsemigroups` from the GitHub repository:
 
 To build `libsemigroups` from a release archive:
 
-    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.5.5.tar.gz
-    tar -xf libsemigroups-3.5.5.tar.gz
-    rm -f libsemigroups-3.5.5.tar.gz
-    cd libsemigroups-3.5.5
+    curl -L -O https://github.com/libsemigroups/libsemigroups/releases/latest/download/libsemigroups-3.6.1.tar.gz
+    tar -xf libsemigroups-3.6.1.tar.gz
+    rm -f libsemigroups-3.6.1.tar.gz
+    cd libsemigroups-3.6.1
     ./configure && make -j8 && sudo make install
+
+## From a package repository
+
+The `libsemigroups` library is available through several package repositories:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/libsemigroups.svg)](https://repology.org/project/libsemigroups/versions)
 
 ## Configuration options
 
 In addition to the usual `autoconf` configuration options, the following
 configuration options are available for `libsemigroups`:
 
-| Option                     | Description                                             |
-| -------------------------- | ------------------------------------------------------- |
-| \--enable-backward         | enable `backward` for better stack traces (default=yes) |
-| \--enable-code-coverage    | enable code coverage support (default=no)               |
-| \--enable-compile-warnings | enable compiler warnings (default=no)                   |
-| \--enable-debug            | enable debug mode (default=no)                          |
-| \--enable-eigen            | enable `eigen` (default=yes)                            |
-| \--enable-hpcombi          | enable `HPCombi` (default=yes)                          |
-| \--with-external-backward  | do not use the included copy of backward (default=no)   |
-| \--with-external-fmt       | do not use the included copy of fmt (default=no)        |
-| \--with-external-eigen     | do not use the included copy of eigen (default=no)      |
-| \--disable-popcnt          | do not use \_\_builtin_popcountl (default=yes)          |
-| \--disable-clzll           | do not use \_\_builtin_clzll (default=yes)              |
+| Option                      | Description                                             |
+| --------------------------- | ------------------------------------------------------- |
+| \--enable-backward          | enable `backward` for better stack traces (default=yes) |
+| \--enable-code-coverage     | enable code coverage support (default=no)               |
+| \--enable-compile-warnings  | enable compiler warnings (default=no)                   |
+| \--enable-debug             | enable debug mode (default=no)                          |
+| \--enable-eigen             | enable `eigen` (default=yes)                            |
+| \--enable-hpcombi           | enable `HPCombi` (default=yes)                          |
+| \--with-external-backward   | do not use the included copy of backward (default=no)   |
+| \--with-external-fmt        | do not use the included copy of fmt (default=no)        |
+| \--with-external-eigen      | do not use the included copy of eigen (default=no)      |
+| \--with-external-magic-enum | do not use the included copy of magic_enum (default=no) |
+| \--with-external-catch      | do not use the included copy of Catch2 (default=no)     |
+| \--disable-popcnt           | do not use \_\_builtin_popcountl (default=yes)          |
+| \--disable-clzll            | do not use \_\_builtin_clzll (default=yes)              |
 
 Debug mode significantly degrades the performance of `libsemigroups`. Note that
 the flags `--enable-eigen` and `--with-external-eigen` are independent of each

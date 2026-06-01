@@ -18,14 +18,15 @@
 #ifndef LIBSEMIGROUPS_DETAIL_PRINT_HPP_
 #define LIBSEMIGROUPS_DETAIL_PRINT_HPP_
 
-#include <string>  // for basic_string
-#include <vector>  // for vector
+#include <string>       // for basic_string
+#include <string_view>  // for std::string_view
+#include <vector>       // for vector
 
 #include "fmt.hpp"
 
 namespace libsemigroups {
   namespace detail {
-    [[nodiscard]] bool isprint(std::string const& alphabet);
+    [[nodiscard]] bool isprint(std::string_view alphabet);
 
     [[nodiscard]] std::string to_printable(char c);
 

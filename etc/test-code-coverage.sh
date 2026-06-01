@@ -121,17 +121,5 @@ fi;
 if [[ -f $tpp ]]; then
   echo "See: $tpp"
 fi;
-hpp=coverage${dir}/include/libsemigroups/detail/${fnam}.hpp.gcov.html
-tpp=coverage${dir}/include/libsemigroups/detail/${fnam}.tpp.gcov.html
-cpp=coverage${dir}/src/detail/${fnam}.cpp.gcov.html
-if [[ -f $hpp ]]; then
-  echo "See: $hpp"
-fi;
-if [[ -f $cpp ]]; then
-  echo "See: $cpp"
-fi;
-if [[ -f $tpp ]]; then
-  echo "See: $tpp"
-fi;
 
 exit 0

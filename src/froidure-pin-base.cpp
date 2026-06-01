@@ -22,16 +22,17 @@
 #include <cstdint>    // for uint64_t
 #include <vector>     // for vector
 
-#include "libsemigroups/constants.hpp"  // for Undefined, Max, UNDEF...
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/runner.hpp"     // for Runner
-#include "libsemigroups/types.hpp"      // for letter_type, word_type
+#include "libsemigroups/constants.hpp"   // for Undefined, Max, UNDEF...
+#include "libsemigroups/debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/runner.hpp"      // for Runner
+#include "libsemigroups/types.hpp"       // for letter_type, word_type
+#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/word-range.hpp"  // for chars_in_human_readable_order
 
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
 #include "libsemigroups/detail/report.hpp"      // for REPORT_DEFAULT, Reporter
 #include "libsemigroups/detail/string.hpp"      // for group_digits
-#include "libsemigroups/word-graph.hpp"
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;
@@ -233,7 +234,7 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
-  [[nodiscard]] bool FroidurePinBase::contains_one() {
+  bool FroidurePinBase::contains_one() {
     if (_found_one) {
       return true;
     }
@@ -432,6 +433,90 @@ namespace libsemigroups {
     rx::iterator_range<FroidurePinBase::const_rule_iterator>
     rules(FroidurePinBase& fpb) {
       return rx::iterator_range(fpb.cbegin_rules(), fpb.cend_rules());
+    }
+
+    namespace {
+      Dot
+      dot_cayley_graph(FroidurePinBase const&                             s,
+                       typename FroidurePinBase::cayley_graph_type const& wg,
+                       std::string const& gen_names) {
+        LIBSEMIGROUPS_ASSERT(&wg == &s.current_right_cayley_graph()
+                             || &wg == &s.current_left_cayley_graph());
+        if (gen_names.size() != s.number_of_generators()) {
+          LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument (generator names) "
+                                  "to have size {}, but found {}",
+                                  s.number_of_generators(),
+                                  gen_names.size());
+        }
+        ToString to_string(gen_names);
+
+        std::vector<std::string> node_labels;
+        for (size_t i = 0; i < s.current_size(); ++i) {
+          node_labels.push_back(to_string(
+              froidure_pin::current_minimal_factorisation_no_checks(s, i)));
+        }
+        std::vector<std::string> edge_labels;
+        for (size_t i = 0; i < s.number_of_generators(); ++i) {
+          edge_labels.push_back(to_string(word_type({i})));
+        }
+        return v4::word_graph::dot(wg, node_labels, edge_labels);
+      }
+
+      Dot
+      dot_cayley_graph(FroidurePinBase const&                             s,
+                       typename FroidurePinBase::cayley_graph_type const& wg) {
+        if (Dot::colors.size() < s.number_of_generators()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument (FroidurePinBase) must have at "
+              "most {} generators, found {}",
+              Dot::colors.size(),
+              s.number_of_generators());
+        }
+        std::string gen_names(detail::chars_in_human_readable_order().begin(),
+                              detail::chars_in_human_readable_order().begin()
+                                  + s.number_of_generators());
+        return dot_cayley_graph(s, wg, gen_names);
+      }
+    }  // namespace
+
+    Dot dot_current_right_cayley_graph(FroidurePinBase const& s,
+                                       std::string const&     gen_names) {
+      return dot_cayley_graph(s, s.current_right_cayley_graph(), gen_names);
+    }
+
+    Dot dot_right_cayley_graph(FroidurePinBase&   s,
+                               std::string const& gen_names) {
+      s.run();
+      return dot_current_right_cayley_graph(s, gen_names);
+    }
+
+    Dot dot_current_left_cayley_graph(FroidurePinBase const& s,
+                                      std::string const&     gen_names) {
+      return dot_cayley_graph(s, s.current_left_cayley_graph(), gen_names);
+    }
+
+    Dot dot_left_cayley_graph(FroidurePinBase&   s,
+                              std::string const& gen_names) {
+      s.run();
+      return dot_current_left_cayley_graph(s, gen_names);
+    }
+
+    Dot dot_current_right_cayley_graph(FroidurePinBase const& s) {
+      return dot_cayley_graph(s, s.current_right_cayley_graph());
+    }
+
+    Dot dot_right_cayley_graph(FroidurePinBase& s) {
+      s.run();
+      return dot_current_right_cayley_graph(s);
+    }
+
+    Dot dot_current_left_cayley_graph(FroidurePinBase const& s) {
+      return dot_cayley_graph(s, s.current_left_cayley_graph());
+    }
+
+    Dot dot_left_cayley_graph(FroidurePinBase& s) {
+      s.run();
+      return dot_current_left_cayley_graph(s);
     }
 
   }  // namespace froidure_pin

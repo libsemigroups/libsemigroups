@@ -18,8 +18,6 @@
 
 #include <type_traits>
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "libsemigroups/word-range.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"           // for LibsemigroupsException
@@ -30,6 +28,7 @@
 #include "libsemigroups/todd-coxeter-class.hpp"  // for ToddCoxeter
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for word_type
+#include "libsemigroups/word-range.hpp"
 
 #include "libsemigroups/detail/report.hpp"     // for ReportGuard
 #include "libsemigroups/detail/rewriters.hpp"  // for RewritingSystemSet, Rewri...

@@ -444,7 +444,7 @@ namespace libsemigroups {
       }
     }  // namespace
 
-    [[nodiscard]] Dot dot(Ukkonen const& u) {
+    Dot dot(Ukkonen const& u) {
       if (u.number_of_distinct_words() == 0) {
         LIBSEMIGROUPS_EXCEPTION("expected at least 1 word, found 0");
       }

@@ -27,8 +27,7 @@
 #include <unordered_map>  // for operator!=
 #include <vector>         // for vector, allocator, oper...
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for operator!=
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException

@@ -19,8 +19,7 @@
 #include <cstddef>  // for size_t
 #include <utility>  // for std::move, std::ignore
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/to-word-graph.hpp"
 #include "libsemigroups/word-graph-helpers.hpp"
@@ -452,6 +451,14 @@ namespace libsemigroups {
         v.throw_if_any_target_out_of_bounds(),
         "target out of bounds, the edge with source 1 and label 0 has target "
         "2, but expected value in the range [0, 2)");
+
+    WordGraph<size_t> graph(1, Dot::colors.size() + 1);
+    v.init(graph);
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = v4::word_graph::dot(
+            v, {"a"}, std::vector<std::string>(v.out_degree(), "a")),
+        "the 1st argument (word graph) must have out degree at most 24, "
+        "found 25");
   }
 
 }  // namespace libsemigroups

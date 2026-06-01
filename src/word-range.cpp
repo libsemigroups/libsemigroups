@@ -288,8 +288,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr,
-                                                   size_t           max_width) {
+  std::string to_human_readable_repr(WordRange const& wr, size_t max_width) {
     using detail::group_digits;
     word_type   first = wr.first();
     word_type   last  = wr.last();
@@ -359,7 +358,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string ToString::alphabet() const {
+  std::string ToString::alphabet() const {
     if (empty()) {
       return "";
     }
@@ -480,8 +479,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr,
-                                                   size_t max_width) {
+  std::string to_human_readable_repr(StringRange const& sr, size_t max_width) {
     using detail::group_digits;
 
     std::string first    = sr.first();
@@ -567,6 +565,18 @@ namespace libsemigroups {
     }
 
     namespace {
+      bool is_op(const char val) {
+        return std::string_view{",*^"}.find(val) != std::string_view::npos;
+      }
+
+      // Check op1 < op2 with respect to the order , < * < ^
+      bool compare_ops(const char op1, const char op2) {
+        LIBSEMIGROUPS_ASSERT(is_op(op1));
+        LIBSEMIGROUPS_ASSERT(is_op(op2));
+        std::string_view ops{",*^"};
+        return ops.find(op1) < ops.find(op2);
+      }
+
       // The next function implements the Shunting Yard Algorithm to convert
       // the expression in input to reverse Polish notation, as described
       // here: https://en.wikipedia.org/wiki/Shunting_yard_algorithm
@@ -582,10 +592,12 @@ namespace libsemigroups {
                 "Illegal character \'*\' in position {} of \"{}\"", i, input);
           }
           input_copy += input[i];
-          if ((std::isalpha(input[i])
+          // Add a <*> after input[i] if input[i] is:
+          //  - a digit or letter followed by a letter or an open bracket; or
+          //  - a close bracket followed by a letter
+          if (((std::isdigit(input[i]) || std::isalpha(input[i]))
                && (std::isalpha(input[i + 1]) || input[i + 1] == '('))
-              || (std::isdigit(input[i]) && !std::isdigit(input[i + 1])
-                  && input[i + 1] != ')')
+
               || (input[i] == ')' && std::isalpha(input[i + 1]))) {
             input_copy += "*";
           }
@@ -596,14 +608,13 @@ namespace libsemigroups {
         std::stack<char> ops;
 
         for (size_t i = 0; i < input_copy.size(); ++i) {
-          if (std::isalpha(input_copy[i])) {
+          if (std::isalpha(input_copy[i]) || (std::isdigit(input_copy[i]))) {
             output += input_copy[i];
-          } else if (std::isdigit(input_copy[i])) {
-            output += input_copy[i];
-          } else if (input_copy[i] == '(' || input_copy[i] == '^') {
+          } else if (input_copy[i] == '(') {
             ops.push(input_copy[i]);
-          } else if (input_copy[i] == '*') {
-            while (!ops.empty() && ops.top() != '(') {
+          } else if (is_op(input_copy[i])) {
+            while (!ops.empty() && ops.top() != '('
+                   && compare_ops(input_copy[i], ops.top())) {
               output += ops.top();
               ops.pop();
             }
@@ -656,6 +667,21 @@ namespace libsemigroups {
         return true;
       }
 
+      std::string get_unique_letters(std::string const& x) {
+        std::unordered_set<char> seen(x.begin(), x.end());
+        return std::string(seen.begin(), seen.end());
+      }
+
+      std::string swap_case(std::string s) {
+        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) {
+          if (std::isupper(c)) {
+            return std::tolower(c);
+          }
+          return std::toupper(c);
+        });
+        return s;
+      }
+
       std::string evaluate_rpn(std::string const& rpn,
                                std::string const& orig) {
         using namespace words;  // NOLINT(build/namespaces)
@@ -693,6 +719,32 @@ namespace libsemigroups {
             } else {
               LIBSEMIGROUPS_EXCEPTION(
                   "Missing argument(s) for operator \'*\', "
+                  "expected 2 arguments found {} in \"{}\"",
+                  stck.empty() ? "0" : fmt::format("\"{}\"", stck.top()),
+                  orig);
+            }
+          } else if (term == ',') {
+            in_digits = false;
+            if (try_pop_two(stck, pr)) {
+              for (std::string word : {pr.first, pr.second}) {
+                auto it = std::find_if_not(
+                    word.begin(), word.end(), [](auto const& c) {
+                      return std::isalpha(c);
+                    });
+                if (it != word.end()) {
+                  LIBSEMIGROUPS_EXCEPTION(
+                      "Incorrect arguments for operator \',\', expected only "
+                      "letters, found \"^{}\"  in \"{}\"",
+                      *it,
+                      orig);
+                }
+              }
+              std::string alphabet = get_unique_letters(pr.second + pr.first);
+              stck.push(presentation::commutator_no_checks(
+                  pr.second, pr.first, alphabet, swap_case(alphabet)));
+            } else {
+              LIBSEMIGROUPS_EXCEPTION(
+                  "Missing argument(s) for operator \',\', "
                   "expected 2 arguments found {} in \"{}\"",
                   stck.empty() ? "0" : fmt::format("\"{}\"", stck.top()),
                   orig);

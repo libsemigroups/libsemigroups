@@ -21,7 +21,6 @@
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
 
 #include "libsemigroups/bmat8.hpp"         // for BMat8

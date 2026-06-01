@@ -30,8 +30,7 @@
 #include <utility>        // for pair
 #include <vector>         // for vector, operator==
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
-#include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/config.hpp"  // LIBSEMIGROUPS_EIGEN_ENABLED
 

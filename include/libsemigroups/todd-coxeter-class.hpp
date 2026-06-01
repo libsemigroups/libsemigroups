@@ -164,7 +164,7 @@ namespace libsemigroups {
       //! Several of the strategies mimic
       //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies of the same
       //! name. The [ACE](https://staff.itee.uq.edu.au/havas/) strategy \"R*\"
-      //! is equivalent to \c strategy(options::strategy::hlt).save(true).
+      //! is equivalent to `strategy(options::strategy::hlt).save(true)`.
       enum class strategy {
         //! This value indicates that the HLT (Hazelgrove-Leech-Trotter)
         //! strategy should be used. This is analogous to

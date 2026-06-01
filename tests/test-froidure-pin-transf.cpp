@@ -20,9 +20,9 @@
 #include <cstddef>    // for size_t
 #include <cstdint>    // for uint_fast8_t, uint16_t
 #include <iterator>   // for make_reverse_iterator
+#include <tuple>      // for ignore
 #include <vector>     // for vector
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
 
 #include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -2513,6 +2513,279 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(S.add_generator(make<Transf<>>({0, 1, 2, 3, 3, 3})));
     REQUIRE_THROWS_AS(S.add_generator(make<Transf<>>({0, 1, 2, 3, 3, 3, 3})),
                       LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
+                          "120",
+                          "dot_cayley_graph",
+                          "[quick][froidure-pin][transf]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(make<Transf<>>({0, 0, 2}));
+    S.add_generator(make<Transf<>>({0, 1, 1}));
+
+    Dot dot = froidure_pin::dot_right_cayley_graph(S, "ab");
+    REQUIRE(dot.to_string()
+            == "digraph WordGraph {\n"
+               "\n"
+               "subgraph cluster_legend {\n"
+               "  label=\"legend\"node [shape=plaintext]\n"
+               "  \n"
+               "  cluster_legend_head  [label=<<table border=\"0\" "
+               "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+               "<tr><td align=\"right\" port=\"port0\">a&nbsp;</td></tr>\n"
+               "<tr><td align=\"right\" port=\"port1\">b&nbsp;</td></tr>\n"
+               "</table>>\n"
+               "]\n"
+               "  cluster_legend_tail  [label=<<table border=\"0\" "
+               "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+               "<tr><td align=\"right\" port=\"port0\">&nbsp;</td></tr>\n"
+               "<tr><td align=\"right\" port=\"port1\">&nbsp;</td></tr>\n"
+               "</table>>\n"
+               "]\n"
+               "  cluster_legend_head:port0:e -> "
+               "cluster_legend_tail:port0:w  [color=\"#00ff00\", "
+               "constraint=\"false\"]\n"
+               "  cluster_legend_head:port1:e -> "
+               "cluster_legend_tail:port1:w  [color=\"#ff00ff\", "
+               "constraint=\"false\"]\n"
+               "}\n"
+               "  0  [label=\"a\", shape=\"box\"]\n"
+               "  1  [label=\"b\", shape=\"box\"]\n"
+               "  2  [label=\"ab\", shape=\"box\"]\n"
+               "  3  [label=\"ba\", shape=\"box\"]\n"
+               "  0 -> 0  [color=\"#00ff00\"]\n"
+               "  0 -> 2  [color=\"#ff00ff\"]\n"
+               "  1 -> 3  [color=\"#00ff00\"]\n"
+               "  1 -> 1  [color=\"#ff00ff\"]\n"
+               "  2 -> 3  [color=\"#00ff00\"]\n"
+               "  2 -> 2  [color=\"#ff00ff\"]\n"
+               "  3 -> 3  [color=\"#00ff00\"]\n"
+               "  3 -> 3  [color=\"#ff00ff\"]\n"
+               "}");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
+                          "121",
+                          "exception: dot_cayley_graph",
+                          "[quick][froidure-pin][transf]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(make<Transf<>>({0, 0, 2}));
+    S.add_generator(make<Transf<>>({0, 1, 1}));
+    S.run();
+
+    FroidurePin<Transf<>> T;
+    T.add_generator(make<Transf<>>({0, 0, 1}));
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = froidure_pin::dot_current_right_cayley_graph(S, "abc"),
+        "expected the 2nd argument (generator names) to have "
+        "size 2, but found 3");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
+                          "122",
+                          "dot_cayley_graph [default labels]",
+                          "[quick][froidure-pin][transf]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(make<Transf<>>({0, 0, 2}));
+    S.add_generator(make<Transf<>>({0, 1, 1}));
+
+    REQUIRE(
+        froidure_pin::dot_current_right_cayley_graph(S).to_string()
+        == froidure_pin::dot_current_right_cayley_graph(S, "ab").to_string());
+    REQUIRE(
+        froidure_pin::dot_current_left_cayley_graph(S).to_string()
+        == froidure_pin::dot_current_left_cayley_graph(S, "ab").to_string());
+
+    FroidurePin<Transf<>> U;
+    for (size_t i = 0; i < Dot::colors.size() + 1; ++i) {
+      U.add_generator(make<Transf<>>({0, 1}));
+    }
+    U.run();
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = froidure_pin::dot_current_right_cayley_graph(U),
+        "the 1st argument (FroidurePinBase) must have at most 24 generators, "
+        "found 25");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = froidure_pin::dot_current_left_cayley_graph(U),
+        "the 1st argument (FroidurePinBase) must have at most 24 generators, "
+        "found 25");
+
+    FroidurePin<Transf<>> V;
+    for (size_t i = 0; i < 257; ++i) {
+      V.add_generator(make<Transf<>>({0, 1}));
+    }
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = froidure_pin::dot_current_right_cayley_graph(V),
+        "the 1st argument (FroidurePinBase) must have at most 24 generators, "
+        "found 257");
+    REQUIRE_EXCEPTION_MSG(
+        std::ignore = froidure_pin::dot_current_left_cayley_graph(V),
+        "the 1st argument (FroidurePinBase) must have at most 24 generators, "
+        "found 257");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
+                          "123",
+                          "dot_cayley_graph",
+                          "[quick][froidure-pin][transf]") {
+    auto rg = ReportGuard(false);
+
+    auto make_example = []() {
+      FroidurePin<Transf<>> S;
+      S.add_generator(make<Transf<>>({0, 0, 2}));
+      S.add_generator(make<Transf<>>({0, 1, 1}));
+      return S;
+    };
+
+    std::string current_right_cayley_graph
+        = "digraph WordGraph {\n"
+          "\n"
+          "subgraph cluster_legend {\n"
+          "  label=\"legend\"node [shape=plaintext]\n"
+          "  \n"
+          "  cluster_legend_head  [label=<<table border=\"0\" "
+          "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+          "<tr><td align=\"right\" port=\"port0\">a&nbsp;</td></tr>\n"
+          "<tr><td align=\"right\" port=\"port1\">b&nbsp;</td></tr>\n"
+          "</table>>\n"
+          "]\n"
+          "  cluster_legend_tail  [label=<<table border=\"0\" "
+          "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+          "<tr><td align=\"right\" port=\"port0\">&nbsp;</td></tr>\n"
+          "<tr><td align=\"right\" port=\"port1\">&nbsp;</td></tr>\n"
+          "</table>>\n"
+          "]\n"
+          "  cluster_legend_head:port0:e -> "
+          "cluster_legend_tail:port0:w  [color=\"#00ff00\", "
+          "constraint=\"false\"]\n"
+          "  cluster_legend_head:port1:e -> "
+          "cluster_legend_tail:port1:w  [color=\"#ff00ff\", "
+          "constraint=\"false\"]\n"
+          "}\n"
+          "  0  [label=\"a\", shape=\"box\"]\n"
+          "  1  [label=\"b\", shape=\"box\"]\n"
+          "}";
+
+    std::string right_cayley_graph
+        = "digraph WordGraph {\n"
+          "\n"
+          "subgraph cluster_legend {\n"
+          "  label=\"legend\"node [shape=plaintext]\n"
+          "  \n"
+          "  cluster_legend_head  [label=<<table border=\"0\" "
+          "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+          "<tr><td align=\"right\" port=\"port0\">a&nbsp;</td></tr>\n"
+          "<tr><td align=\"right\" port=\"port1\">b&nbsp;</td></tr>\n"
+          "</table>>\n"
+          "]\n"
+          "  cluster_legend_tail  [label=<<table border=\"0\" "
+          "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+          "<tr><td align=\"right\" port=\"port0\">&nbsp;</td></tr>\n"
+          "<tr><td align=\"right\" port=\"port1\">&nbsp;</td></tr>\n"
+          "</table>>\n"
+          "]\n"
+          "  cluster_legend_head:port0:e -> "
+          "cluster_legend_tail:port0:w  [color=\"#00ff00\", "
+          "constraint=\"false\"]\n"
+          "  cluster_legend_head:port1:e -> "
+          "cluster_legend_tail:port1:w  [color=\"#ff00ff\", "
+          "constraint=\"false\"]\n"
+          "}\n"
+          "  0  [label=\"a\", shape=\"box\"]\n"
+          "  1  [label=\"b\", shape=\"box\"]\n"
+          "  2  [label=\"ab\", shape=\"box\"]\n"
+          "  3  [label=\"ba\", shape=\"box\"]\n"
+          "  0 -> 0  [color=\"#00ff00\"]\n"
+          "  0 -> 2  [color=\"#ff00ff\"]\n"
+          "  1 -> 3  [color=\"#00ff00\"]\n"
+          "  1 -> 1  [color=\"#ff00ff\"]\n"
+          "  2 -> 3  [color=\"#00ff00\"]\n"
+          "  2 -> 2  [color=\"#ff00ff\"]\n"
+          "  3 -> 3  [color=\"#00ff00\"]\n"
+          "  3 -> 3  [color=\"#ff00ff\"]\n"
+          "}";
+
+    std::string current_left_cayley_graph = current_right_cayley_graph;
+
+    std::string left_cayley_graph
+        = "digraph WordGraph {\n"
+          "\n"
+          "subgraph cluster_legend {\n"
+          "  label=\"legend\"node [shape=plaintext]\n"
+          "  \n"
+          "  cluster_legend_head  [label=<<table border=\"0\" "
+          "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+          "<tr><td align=\"right\" port=\"port0\">a&nbsp;</td></tr>\n"
+          "<tr><td align=\"right\" port=\"port1\">b&nbsp;</td></tr>\n"
+          "</table>>\n"
+          "]\n"
+          "  cluster_legend_tail  [label=<<table border=\"0\" "
+          "cellpadding=\"2\" cellspacing=\"0\" cellborder=\"0\">\n"
+          "<tr><td align=\"right\" port=\"port0\">&nbsp;</td></tr>\n"
+          "<tr><td align=\"right\" port=\"port1\">&nbsp;</td></tr>\n"
+          "</table>>\n"
+          "]\n"
+          "  cluster_legend_head:port0:e -> "
+          "cluster_legend_tail:port0:w  [color=\"#00ff00\", "
+          "constraint=\"false\"]\n"
+          "  cluster_legend_head:port1:e -> "
+          "cluster_legend_tail:port1:w  [color=\"#ff00ff\", "
+          "constraint=\"false\"]\n"
+          "}\n"
+          "  0  [label=\"a\", shape=\"box\"]\n"
+          "  1  [label=\"b\", shape=\"box\"]\n"
+          "  2  [label=\"ab\", shape=\"box\"]\n"
+          "  3  [label=\"ba\", shape=\"box\"]\n"
+          "  0 -> 0  [color=\"#00ff00\"]\n"
+          "  0 -> 3  [color=\"#ff00ff\"]\n"
+          "  1 -> 2  [color=\"#00ff00\"]\n"
+          "  1 -> 1  [color=\"#ff00ff\"]\n"
+          "  2 -> 2  [color=\"#00ff00\"]\n"
+          "  2 -> 3  [color=\"#ff00ff\"]\n"
+          "  3 -> 3  [color=\"#00ff00\"]\n"
+          "  3 -> 3  [color=\"#ff00ff\"]\n"
+          "}";
+
+    auto S = make_example();
+    REQUIRE(froidure_pin::dot_current_right_cayley_graph(S, "ab").to_string()
+            == current_right_cayley_graph);
+    REQUIRE(froidure_pin::dot_right_cayley_graph(S, "ab").to_string()
+            == right_cayley_graph);
+    REQUIRE(
+        froidure_pin::dot_right_cayley_graph(S, "ab").to_string()
+        == froidure_pin::dot_current_right_cayley_graph(S, "ab").to_string());
+    REQUIRE(S.finished());
+
+    auto T = make_example();
+    REQUIRE(froidure_pin::dot_current_right_cayley_graph(T).to_string()
+            == current_right_cayley_graph);
+    REQUIRE(froidure_pin::dot_right_cayley_graph(T).to_string()
+            == right_cayley_graph);
+    REQUIRE(froidure_pin::dot_right_cayley_graph(T).to_string()
+            == froidure_pin::dot_current_right_cayley_graph(T).to_string());
+    REQUIRE(T.finished());
+
+    auto U = make_example();
+    REQUIRE(froidure_pin::dot_current_left_cayley_graph(U, "ab").to_string()
+            == current_left_cayley_graph);
+    REQUIRE(froidure_pin::dot_left_cayley_graph(U, "ab").to_string()
+            == left_cayley_graph);
+    REQUIRE(
+        froidure_pin::dot_left_cayley_graph(U, "ab").to_string()
+        == froidure_pin::dot_current_left_cayley_graph(U, "ab").to_string());
+    REQUIRE(U.finished());
+
+    auto V = make_example();
+    REQUIRE(froidure_pin::dot_current_left_cayley_graph(V).to_string()
+            == current_left_cayley_graph);
+    REQUIRE(froidure_pin::dot_left_cayley_graph(V).to_string()
+            == left_cayley_graph);
+    REQUIRE(froidure_pin::dot_left_cayley_graph(V).to_string()
+            == froidure_pin::dot_current_left_cayley_graph(V).to_string());
+    REQUIRE(V.finished());
   }
 
 }  // namespace libsemigroups

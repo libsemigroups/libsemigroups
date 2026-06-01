@@ -22,10 +22,9 @@
 #include <utility>    // for swap
 #include <vector>     // for vector
 
-#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for REQUIRE etc
-#include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/exception.hpp"
 #include "libsemigroups/order.hpp"       // for number_of_words
 #include "libsemigroups/ranges.hpp"      // for equals
 #include "libsemigroups/types.hpp"       // for word_type
@@ -973,11 +972,23 @@ namespace libsemigroups {
     REQUIRE("X^3(yx^2)"_p == "XXXyxx");
     REQUIRE("b(aX)^3x"_p == "baXaXaXx");
     REQUIRE("((a)b^2y)^10"_p == "abbyabbyabbyabbyabbyabbyabbyabbyabbyabby");
+    REQUIRE("(a,b)"_p == "ABab");
+    REQUIRE("(aB,bA)"_p == "bAaBaBbA");
+    REQUIRE("(abbab,babaa)"_p == "BABBAAABABabbabbabaa");
+    REQUIRE("(a^2,b^3)^2"_p == "AABBBaabbbAABBBaabbb");
+    REQUIRE("((a^2,(ab)^2),b^3)"_p == "((aa,abab),bbb)"_p);
+    REQUIRE("((a^2,(ab)^2),b^3)"_p == "(AABABAaaabab,bbb)"_p);
+    REQUIRE("((a^2,(ab)^2),b^3)"_p == "BABAAAababaaBBBAABABAaaababbbb");
 
     REQUIRE("()"_p == "");
     REQUIRE("y^0"_p == "");
     REQUIRE(""_p == "");
     REQUIRE("a"_p == "a");
+
+    // These look a bit weird, but we are treating the comma as the
+    // commutator operator, so the brackets aren't strictly necessary
+    REQUIRE("a,b"_p == "ABab");
+    REQUIRE("a^2,b^3"_p == "AABBBaabbb");
 
     REQUIRE_THROWS_AS("a*a*b*bc"_p, LibsemigroupsException);
     REQUIRE("           "_p == "");
@@ -987,6 +998,15 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("(a*b)^3*bc"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(2^2)"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("2*2"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a,,a)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a,)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a,^)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a,2)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(a,,)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(,a)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(^,a)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(2,a)"_p, LibsemigroupsException);
+    REQUIRE_THROWS_AS("(,,a)"_p, LibsemigroupsException);
 
     REQUIRE_THROWS_AS("(()()()((((())()())"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("("_p, LibsemigroupsException);
