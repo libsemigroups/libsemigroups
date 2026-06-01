@@ -1322,6 +1322,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 16'796);
   }
+
   LIBSEMIGROUPS_TEST_CASE("Example",
                           "106",
                           "shifted_plactic_monoid_Ser09 degree except and n=1",
