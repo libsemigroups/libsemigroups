@@ -151,12 +151,8 @@ namespace libsemigroups {
       throw_if_presentation_empty(*ptr);
       ptr->throw_if_bad_alphabet_or_rules();
       presentation::throw_if_not_normalized(*ptr);
+      init();
       _internal_presentation = ptr;
-      _accept_state          = UNDEFINED;
-      _finished              = false;
-      _is_word_set           = false;
-      _ticker_running        = false;
-      _internal_word.clear();
       return *this;
     }
 
