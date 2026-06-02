@@ -752,7 +752,7 @@ namespace libsemigroups {
     //!
     //! An instance of this class is used to convert from std::string to
     //! \ref word_type. The characters in the string are converted to integers
-    //! according to their position in alphabet used to construct a ToWord
+    //! according to their position in the alphabet used to construct a ToWord
     //! instance if one is provided, or using \ref words::human_readable_index
     //! otherwise.
     //!
@@ -1108,6 +1108,10 @@ namespace libsemigroups {
       [[nodiscard]] constexpr size_t size_hint() const noexcept {
         return _input.size_hint();
       }
+
+      [[nodiscard]] constexpr size_t count() const noexcept {
+        return _input.count();
+      }
     };
 
     //! \ingroup words_group
@@ -1142,7 +1146,7 @@ namespace libsemigroups {
   //!
   //! An instance of this class is used to convert from \ref word_type to
   //! std::string. The letters in the word are converted to characters
-  //! according to their position in alphabet used to construct a ToString
+  //! according to their position in the alphabet used to construct a ToString
   //! instance if one is provided, or using \ref words::human_readable_letter
   //! otherwise.
   //!

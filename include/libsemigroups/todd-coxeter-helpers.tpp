@@ -128,6 +128,8 @@ namespace libsemigroups {
         tc.standardize(Order::shortlex);
       }
       if constexpr (std::is_same_v<Word, word_type>) {
+        // TODO is this correct if the presentation().alphabet() !=
+        // internal_presentation().alphabet()?
         auto result = forest::PathsFromRoots(
             tc.current_word_graph().current_spanning_tree());
         if (!tc.presentation().contains_empty_word()) {

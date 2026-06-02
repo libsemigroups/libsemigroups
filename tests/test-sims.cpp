@@ -38,33 +38,40 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"        // for make<Bipartition>
-#include "libsemigroups/constants.hpp"     // for UNDEFINED
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/gabow.hpp"         // for Gabow
-#include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
-#include "libsemigroups/matrix.hpp"        // for DynamicMatrix, BMat
-#include "libsemigroups/order.hpp"         // for shortlex_compare, Order
-#include "libsemigroups/presentation-examples.hpp"  // for fpsemigroup etc
-#include "libsemigroups/presentation.hpp"           // for Presentation
-#include "libsemigroups/ranges.hpp"                 // for shortlex_compare
-#include "libsemigroups/sims.hpp"                   // for Sims1
-#include "libsemigroups/to-froidure-pin.hpp"        // for make
+#include "libsemigroups/constants.hpp"              // for UNDEFINED
+#include "libsemigroups/exception.hpp"              // for Libsemig...
+#include "libsemigroups/order.hpp"                  // for Lexicogr...
+#include "libsemigroups/paths-count.hpp"            // for count
+#include "libsemigroups/paths.hpp"                  // for Paths::P...
+#include "libsemigroups/presentation-examples.hpp"  // for symmetric...
+#include "libsemigroups/presentation.hpp"           // for to_repor...
+#include "libsemigroups/runner.hpp"                 // for delta
+#include "libsemigroups/sims.hpp"                   // for Sims1 etc
+#include "libsemigroups/stephen.hpp"                // for accepts
 #include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
-#include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
+#include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxe...
+#include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/types.hpp"                  // for word_type
-#include "libsemigroups/word-graph-helpers.hpp"     // for word_graph
-#include "libsemigroups/word-graph.hpp"             // for WordGraph
+#include "libsemigroups/word-graph-helpers.hpp"     // for standardize
+#include "libsemigroups/word-graph-view.hpp"        // for WordGrap...
+#include "libsemigroups/word-graph.hpp"             // for WordGrap...
+#include "libsemigroups/word-range.hpp"             // for ToWord
 
-#include "libsemigroups/detail/eigen.hpp"           // for DenseBase::row
-#include "libsemigroups/detail/felsch-graph.hpp"    // for FelschGraph
-#include "libsemigroups/detail/fmt.hpp"             // for format, print
-#include "libsemigroups/detail/iterator.hpp"        // for operator+
-#include "libsemigroups/detail/path-iterators.hpp"  // for const_pstilo_iterator
-#include "libsemigroups/detail/report.hpp"          // for ReportGuard
-#include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGra...
+#include "libsemigroups/detail/containers.hpp"          // for apply_ro...
+#include "libsemigroups/detail/eigen.hpp"               // for DenseBase::row
+#include "libsemigroups/detail/fmt.hpp"                 // for format
+#include "libsemigroups/detail/iterator.hpp"            // for operator+
+#include "libsemigroups/detail/node-managed-graph.hpp"  // for NodeMana...
+#include "libsemigroups/detail/node-manager.hpp"        // for NodeMana...
+#include "libsemigroups/detail/path-iterators.hpp"      // for const_pi...
+#include "libsemigroups/detail/print.hpp"               // for to_print...
+#include "libsemigroups/detail/report.hpp"              // for ReportCe...
+#include "libsemigroups/detail/stephen-impl.hpp"        // for accepts
+#include "libsemigroups/detail/string.hpp"              // for group_di...
+#include "libsemigroups/detail/timer.hpp"               // for string_time
+#include "libsemigroups/detail/todd-coxeter-impl.hpp"   // for ToddCoxe...
+#include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGrap...
 
 namespace libsemigroups {
 

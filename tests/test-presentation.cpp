@@ -3899,6 +3899,16 @@ namespace libsemigroups {
           "[0, ..., 2]");
     }
   }
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "063",
+                          "constructed from Presentation",
+                          "[quick]") {
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+
+    InversePresentation<word_type> ip(p);
+    REQUIRE(ip.contains_empty_word());
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "097",
