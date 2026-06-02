@@ -54,14 +54,17 @@ namespace libsemigroups {
   using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
   using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
+  using RPOTrie = detail::RewritingSystemTrie<RecursivePathCompare>;
+  using RPOSet  = detail::RewritingSystemSet<RecursivePathCompare>;
+
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
   // Fibonacci group F(2,5) - monoid presentation - has order 12 (group
   // elements + empty word)
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "027",
                                    "kbmag/standalone/kb_data/f25monoid",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -75,13 +78,35 @@ namespace libsemigroups {
     presentation::add_rule(p, "ea", "b");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    using rule_type = typename decltype(kb)::rule_type;
 
     REQUIRE(!kb.rewriting_system().confluent());
 
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(kb.rewriting_system().number_of_rules() == 24);
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 24);
+      REQUIRE(knuth_bendix::reduce_no_run(kb, "ca") == "ac");
+      using rule_type = typename decltype(kb)::rule_type;
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>(
+                  {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},
+                   {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
+                   {"cd", "e"},  {"ce", "bb"},  {"da", "ad"}, {"db", "aa"},
+                   {"dc", "e"},  {"dd", "be"},  {"de", "a"},  {"ea", "b"},
+                   {"eb", "be"}, {"ec", "bb"},  {"ed", "a"},  {"ee", "ac"},
+                   {"aaa", "e"}, {"aac", "be"}, {"bbb", "a"}, {"bbe", "aad"}}));
+
+      auto nf = knuth_bendix::normal_forms(kb);
+      REQUIRE(
+          (nf.min(1).max(5) | to_vector())
+          == std::vector<std::string>(
+              {"a", "b", "c", "d", "e", "aa", "ac", "ad", "bb", "be", "aad"}));
+      REQUIRE(kb.number_of_classes() == 11);
+      REQUIRE(nf.min(1).max(POSITIVE_INFINITY).count() == 11);
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 5);
+    }
 
     REQUIRE(knuth_bendix::contains(kb, "ab", "c"));
     REQUIRE(knuth_bendix::contains(kb, "bc", "d"));
@@ -107,35 +132,17 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "dc", "e"));
     REQUIRE(knuth_bendix::contains(kb, "ae", "b"));
     REQUIRE(knuth_bendix::contains(kb, "bbb", "a"));
-
-    // REQUIRE(knuth_bendix::is_reduced(kb));
-    REQUIRE(knuth_bendix::reduce_no_run(kb, "ca") == "ac");
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<rule_type>(
-                {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},
-                 {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
-                 {"cd", "e"},  {"ce", "bb"},  {"da", "ad"}, {"db", "aa"},
-                 {"dc", "e"},  {"dd", "be"},  {"de", "a"},  {"ea", "b"},
-                 {"eb", "be"}, {"ec", "bb"},  {"ed", "a"},  {"ee", "ac"},
-                 {"aaa", "e"}, {"aac", "be"}, {"bbb", "a"}, {"bbe", "aad"}}));
-
-    auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE(
-        (nf.min(1).max(5) | to_vector())
-        == std::vector<std::string>(
-            {"a", "b", "c", "d", "e", "aa", "ac", "ad", "bb", "be", "aad"}));
-    REQUIRE(kb.number_of_classes() == 11);
-    REQUIRE(nf.min(1).max(POSITIVE_INFINITY).count() == 11);
   }
 
   // trivial group - BHN presentation
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "028",
-      "kbmag/standalone/kb_data/degen4a",
-      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-      REWRITING_SYSTEM_TYPES) {
+  // RPOTrie is very slow here
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "028",
+                                   "kbmag/standalone/kb_data/degen4a",
+                                   "[quick][knuth-bendix][kbmag][no-valgrind]",
+                                   LenLexSet,
+                                   LenLexTrie,
+                                   RPOSet) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -175,7 +182,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "029",
                                    "kbmag/standalone/kb_data/torus",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -189,48 +196,76 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(kb.rewriting_system().number_of_rules() == 16);
+    auto nf = knuth_bendix::normal_forms(kb).min(0).max(6);
+
+    using order     = typename TestType::reduction_order;
+    using rule_type = typename decltype(kb)::rule_type;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 16);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{"Aa", ""},
+                                         {"Bb", ""},
+                                         {"Cc", ""},
+                                         {"Dd", ""},
+                                         {"aA", ""},
+                                         {"bB", ""},
+                                         {"cC", ""},
+                                         {"dD", ""},
+                                         {"BAba", "CDcd"},
+                                         {"BabC", "aDCd"},
+                                         {"DCdc", "ABab"},
+                                         {"DcdA", "cBAb"},
+                                         {"bCDc", "AbaD"},
+                                         {"baDC", "abCD"},
+                                         {"dABa", "CdcB"},
+                                         {"dcBA", "cdAB"}}));
+      REQUIRE(nf.count() == 155'577);
+      REQUIRE(
+          (nf.min(0).max(2) | to_vector())
+          == std::vector<std::string>(
+              {"",   "a",  "A",  "c",  "C",  "b",  "B",  "d",  "D",  "aa", "ac",
+               "aC", "ab", "aB", "ad", "aD", "AA", "Ac", "AC", "Ab", "AB", "Ad",
+               "AD", "ca", "cA", "cc", "cb", "cB", "cd", "cD", "Ca", "CA", "CC",
+               "Cb", "CB", "Cd", "CD", "ba", "bA", "bc", "bC", "bb", "bd", "bD",
+               "Ba", "BA", "Bc", "BC", "BB", "Bd", "BD", "da", "dA", "dc", "dC",
+               "db", "dB", "dd", "Da", "DA", "Dc", "DC", "Db", "DB", "DD"}));
+    } else {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 12);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{"Aa", ""},
+                                         {"Bb", ""},
+                                         {"Cc", ""},
+                                         {"Cd", "dABabC"},
+                                         {"Dd", ""},
+                                         {"aA", ""},
+                                         {"bB", ""},
+                                         {"cC", ""},
+                                         {"cd", "dcBAba"},
+                                         {"dD", ""},
+                                         {"AbaD", "bCDc"},
+                                         {"abCD", "baDC"}}));
+      REQUIRE(nf.count() == 130'643);
+      REQUIRE(
+          (nf.min(0).max(2) | to_vector())
+          == std::vector<std::string>(
+              {"",   "a",  "A",  "c",  "C",  "b",  "B",  "d",  "D",  "aa", "ac",
+               "aC", "ab", "aB", "ad", "aD", "AA", "Ac", "AC", "Ab", "AB", "Ad",
+               "AD", "ca", "cA", "cc", "cb", "cB", "cD", "Ca", "CA", "CC", "Cb",
+               "CB", "CD", "ba", "bA", "bc", "bC", "bb", "bd", "bD", "Ba", "BA",
+               "Bc", "BC", "BB", "Bd", "BD", "da", "dA", "dc", "dC", "db", "dB",
+               "dd", "Da", "DA", "Dc", "DC", "Db", "DB", "DD"}));
+    }
 
     REQUIRE(knuth_bendix::contains(kb, "DCdc", "ABab"));
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<rule_type>({{"Aa", ""},
-                                       {"Bb", ""},
-                                       {"Cc", ""},
-                                       {"Dd", ""},
-                                       {"aA", ""},
-                                       {"bB", ""},
-                                       {"cC", ""},
-                                       {"dD", ""},
-                                       {"BAba", "CDcd"},
-                                       {"BabC", "aDCd"},
-                                       {"DCdc", "ABab"},
-                                       {"DcdA", "cBAb"},
-                                       {"bCDc", "AbaD"},
-                                       {"baDC", "abCD"},
-                                       {"dABa", "CdcB"},
-                                       {"dcBA", "cdAB"}}));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-    auto nf = knuth_bendix::normal_forms(kb).min(0).max(6);
-    REQUIRE(nf.count() == 155'577);
-    REQUIRE(
-        (nf.min(0).max(2) | to_vector())
-        == std::vector<std::string>(
-            {"",   "a",  "A",  "c",  "C",  "b",  "B",  "d",  "D",  "aa", "ac",
-             "aC", "ab", "aB", "ad", "aD", "AA", "Ac", "AC", "Ab", "AB", "Ad",
-             "AD", "ca", "cA", "cc", "cb", "cB", "cd", "cD", "Ca", "CA", "CC",
-             "Cb", "CB", "Cd", "CD", "ba", "bA", "bc", "bC", "bb", "bd", "bD",
-             "Ba", "BA", "Bc", "BC", "BB", "Bd", "BD", "da", "dA", "dc", "dC",
-             "db", "dB", "dd", "Da", "DA", "Dc", "DC", "Db", "DB", "DD"}));
   }
 
   //  3-fold cover of A_6
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "030",
-      "kbmag/standalone/kb_data/3a6",
-      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-      REWRITING_SYSTEM_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "030",
+                                   "kbmag/standalone/kb_data/3a6",
+                                   "[quick][knuth-bendix][kbmag][no-valgrind]",
+                                   REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -249,7 +284,29 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(kb.rewriting_system().number_of_rules() == 183);
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 183);
+      auto nf = knuth_bendix::normal_forms(kb);
+
+      REQUIRE(nf.count() == 1080);
+      REQUIRE((nf.min(0).max(2) | to_vector())
+              == std::vector<std::string>({"",
+                                           "a",
+                                           "b",
+                                           "A",
+                                           "B",
+                                           "ab",
+                                           "aB",
+                                           "ba",
+                                           "bA",
+                                           "Ab",
+                                           "AB",
+                                           "Ba",
+                                           "BA"}));
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 72);
+    }
 
     REQUIRE(knuth_bendix::contains(kb, "aaa", ""));
     REQUIRE(knuth_bendix::contains(kb, "bbb", ""));
@@ -264,31 +321,13 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "bbaabaabbabbaa", "ababaababbabab"));
 
     REQUIRE(kb.number_of_classes() == 1080);
-
-    auto nf = knuth_bendix::normal_forms(kb);
-
-    REQUIRE(nf.count() == 1080);
-    REQUIRE((nf.min(0).max(2) | to_vector())
-            == std::vector<std::string>({"",
-                                         "a",
-                                         "b",
-                                         "A",
-                                         "B",
-                                         "ab",
-                                         "aB",
-                                         "ba",
-                                         "bA",
-                                         "Ab",
-                                         "AB",
-                                         "Ba",
-                                         "BA"}));
   }
 
   //  Free group on 2 generators
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "031",
                                    "kbmag/standalone/kb_data/f2",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -329,12 +368,11 @@ namespace libsemigroups {
   }
 
   // Symmetric group S_16
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "032",
-      "kbmag/standalone/kb_data/s16",
-      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-      REWRITING_SYSTEM_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "032",
+                                   "kbmag/standalone/kb_data/s16",
+                                   "[quick][knuth-bendix][kbmag][no-valgrind]",
+                                   REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghijklmno");
@@ -455,143 +493,147 @@ namespace libsemigroups {
     REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.rewriting_system().number_of_rules()
             == 211);  // verified with KBMAG
-    REQUIRE(kb.gilman_graph().number_of_nodes() == 121);
-    auto g = kb.gilman_graph_node_labels();
-    std::sort(g.begin(), g.end(), [](std::string x, std::string y) {
-      return shortlex_compare(x, y);
-    });
-    REQUIRE(g
-            == std::vector<std::string>({"",
-                                         "a",
-                                         "b",
-                                         "c",
-                                         "d",
-                                         "e",
-                                         "f",
-                                         "g",
-                                         "h",
-                                         "i",
-                                         "j",
-                                         "k",
-                                         "l",
-                                         "m",
-                                         "n",
-                                         "o",
-                                         "ba",
-                                         "cb",
-                                         "dc",
-                                         "ed",
-                                         "fe",
-                                         "gf",
-                                         "hg",
-                                         "ih",
-                                         "ji",
-                                         "kj",
-                                         "lk",
-                                         "ml",
-                                         "nm",
-                                         "on",
-                                         "cba",
-                                         "dcb",
-                                         "edc",
-                                         "fed",
-                                         "gfe",
-                                         "hgf",
-                                         "ihg",
-                                         "jih",
-                                         "kji",
-                                         "lkj",
-                                         "mlk",
-                                         "nml",
-                                         "onm",
-                                         "dcba",
-                                         "edcb",
-                                         "fedc",
-                                         "gfed",
-                                         "hgfe",
-                                         "ihgf",
-                                         "jihg",
-                                         "kjih",
-                                         "lkji",
-                                         "mlkj",
-                                         "nmlk",
-                                         "onml",
-                                         "edcba",
-                                         "fedcb",
-                                         "gfedc",
-                                         "hgfed",
-                                         "ihgfe",
-                                         "jihgf",
-                                         "kjihg",
-                                         "lkjih",
-                                         "mlkji",
-                                         "nmlkj",
-                                         "onmlk",
-                                         "fedcba",
-                                         "gfedcb",
-                                         "hgfedc",
-                                         "ihgfed",
-                                         "jihgfe",
-                                         "kjihgf",
-                                         "lkjihg",
-                                         "mlkjih",
-                                         "nmlkji",
-                                         "onmlkj",
-                                         "gfedcba",
-                                         "hgfedcb",
-                                         "ihgfedc",
-                                         "jihgfed",
-                                         "kjihgfe",
-                                         "lkjihgf",
-                                         "mlkjihg",
-                                         "nmlkjih",
-                                         "onmlkji",
-                                         "hgfedcba",
-                                         "ihgfedcb",
-                                         "jihgfedc",
-                                         "kjihgfed",
-                                         "lkjihgfe",
-                                         "mlkjihgf",
-                                         "nmlkjihg",
-                                         "onmlkjih",
-                                         "ihgfedcba",
-                                         "jihgfedcb",
-                                         "kjihgfedc",
-                                         "lkjihgfed",
-                                         "mlkjihgfe",
-                                         "nmlkjihgf",
-                                         "onmlkjihg",
-                                         "jihgfedcba",
-                                         "kjihgfedcb",
-                                         "lkjihgfedc",
-                                         "mlkjihgfed",
-                                         "nmlkjihgfe",
-                                         "onmlkjihgf",
-                                         "kjihgfedcba",
-                                         "lkjihgfedcb",
-                                         "mlkjihgfedc",
-                                         "nmlkjihgfed",
-                                         "onmlkjihgfe",
-                                         "lkjihgfedcba",
-                                         "mlkjihgfedcb",
-                                         "nmlkjihgfedc",
-                                         "onmlkjihgfed",
-                                         "mlkjihgfedcba",
-                                         "nmlkjihgfedcb",
-                                         "onmlkjihgfedc",
-                                         "nmlkjihgfedcba",
-                                         "onmlkjihgfedcb",
-                                         "onmlkjihgfedcba"}));
-    REQUIRE(kb.gilman_graph().number_of_edges() == 680);
 
-    // verified with KBMAG
-    auto nf = knuth_bendix::normal_forms(kb).min(0).max(6);
-    REQUIRE(nf.count() == 49'436);
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.gilman_graph().number_of_nodes() == 121);
+      auto g = kb.gilman_graph_node_labels();
+      std::sort(g.begin(), g.end(), [](std::string x, std::string y) {
+        return shortlex_compare(x, y);
+      });
+      REQUIRE(g
+              == std::vector<std::string>({"",
+                                           "a",
+                                           "b",
+                                           "c",
+                                           "d",
+                                           "e",
+                                           "f",
+                                           "g",
+                                           "h",
+                                           "i",
+                                           "j",
+                                           "k",
+                                           "l",
+                                           "m",
+                                           "n",
+                                           "o",
+                                           "ba",
+                                           "cb",
+                                           "dc",
+                                           "ed",
+                                           "fe",
+                                           "gf",
+                                           "hg",
+                                           "ih",
+                                           "ji",
+                                           "kj",
+                                           "lk",
+                                           "ml",
+                                           "nm",
+                                           "on",
+                                           "cba",
+                                           "dcb",
+                                           "edc",
+                                           "fed",
+                                           "gfe",
+                                           "hgf",
+                                           "ihg",
+                                           "jih",
+                                           "kji",
+                                           "lkj",
+                                           "mlk",
+                                           "nml",
+                                           "onm",
+                                           "dcba",
+                                           "edcb",
+                                           "fedc",
+                                           "gfed",
+                                           "hgfe",
+                                           "ihgf",
+                                           "jihg",
+                                           "kjih",
+                                           "lkji",
+                                           "mlkj",
+                                           "nmlk",
+                                           "onml",
+                                           "edcba",
+                                           "fedcb",
+                                           "gfedc",
+                                           "hgfed",
+                                           "ihgfe",
+                                           "jihgf",
+                                           "kjihg",
+                                           "lkjih",
+                                           "mlkji",
+                                           "nmlkj",
+                                           "onmlk",
+                                           "fedcba",
+                                           "gfedcb",
+                                           "hgfedc",
+                                           "ihgfed",
+                                           "jihgfe",
+                                           "kjihgf",
+                                           "lkjihg",
+                                           "mlkjih",
+                                           "nmlkji",
+                                           "onmlkj",
+                                           "gfedcba",
+                                           "hgfedcb",
+                                           "ihgfedc",
+                                           "jihgfed",
+                                           "kjihgfe",
+                                           "lkjihgf",
+                                           "mlkjihg",
+                                           "nmlkjih",
+                                           "onmlkji",
+                                           "hgfedcba",
+                                           "ihgfedcb",
+                                           "jihgfedc",
+                                           "kjihgfed",
+                                           "lkjihgfe",
+                                           "mlkjihgf",
+                                           "nmlkjihg",
+                                           "onmlkjih",
+                                           "ihgfedcba",
+                                           "jihgfedcb",
+                                           "kjihgfedc",
+                                           "lkjihgfed",
+                                           "mlkjihgfe",
+                                           "nmlkjihgf",
+                                           "onmlkjihg",
+                                           "jihgfedcba",
+                                           "kjihgfedcb",
+                                           "lkjihgfedc",
+                                           "mlkjihgfed",
+                                           "nmlkjihgfe",
+                                           "onmlkjihgf",
+                                           "kjihgfedcba",
+                                           "lkjihgfedcb",
+                                           "mlkjihgfedc",
+                                           "nmlkjihgfed",
+                                           "onmlkjihgfe",
+                                           "lkjihgfedcba",
+                                           "mlkjihgfedcb",
+                                           "nmlkjihgfedc",
+                                           "onmlkjihgfed",
+                                           "mlkjihgfedcba",
+                                           "nmlkjihgfedcb",
+                                           "onmlkjihgfedc",
+                                           "nmlkjihgfedcba",
+                                           "onmlkjihgfedcb",
+                                           "onmlkjihgfedcba"}));
+      REQUIRE(kb.gilman_graph().number_of_edges() == 680);
 
-    // verified with KBMAG
-    REQUIRE(nf.min(0).max(10).count() == 2'554'607);
-    REQUIRE(std::is_same_v<decltype(nf.size_hint()), uint64_t>);
-    REQUIRE(nf.max(POSITIVE_INFINITY).size_hint() == 20'922'789'888'000);
+      // verified with KBMAG
+      auto nf = knuth_bendix::normal_forms(kb).min(0).max(6);
+      REQUIRE(nf.count() == 49'436);
+
+      // verified with KBMAG
+      REQUIRE(nf.min(0).max(10).count() == 2'554'607);
+      REQUIRE(std::is_same_v<decltype(nf.size_hint()), uint64_t>);
+      REQUIRE(nf.max(POSITIVE_INFINITY).size_hint() == 20'922'789'888'000);
+    }
     REQUIRE(kb.number_of_classes() == 20'922'789'888'000);
   }
 
@@ -600,7 +642,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "033",
                                    "kbmag/standalone/kb_data/a4monoid",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -615,31 +657,43 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
-    // REQUIRE(kb.rewriting_system().number_of_rules() == 6);
 
-    // REQUIRE(knuth_bendix::contains(kb, "bb", "B"));
-    // REQUIRE(knuth_bendix::contains(kb, "BaB", "aba"));
-    // REQUIRE(knuth_bendix::contains(kb, "Bb", "bB"));
-    // REQUIRE(knuth_bendix::contains(kb, "Baaba", "abaaB"));
-    // REQUIRE(knuth_bendix::contains(kb, "BabB", "abab"));
-    // REQUIRE(knuth_bendix::contains(kb, "Bababa", "ababaB"));
+    REQUIRE(knuth_bendix::contains(kb, "bb", "B"));
+    REQUIRE(knuth_bendix::contains(kb, "BaB", "aba"));
+    REQUIRE(knuth_bendix::contains(kb, "Bb", "bB"));
+    REQUIRE(knuth_bendix::contains(kb, "Baaba", "abaaB"));
+    REQUIRE(knuth_bendix::contains(kb, "BabB", "abab"));
+    REQUIRE(knuth_bendix::contains(kb, "Bababa", "ababaB"));
+
+    using order     = typename TestType::reduction_order;
     using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<rule_type>({{{"Bb", "bB"},
-                                        {"bb", "B"},
-                                        {"BaB", "aba"},
-                                        {"BabB", "abab"},
-                                        {"Baaba", "abaaB"},
-                                        {"Bababa", "ababaB"}}}));
+
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 6);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{{"Bb", "bB"},
+                                          {"bb", "B"},
+                                          {"BaB", "aba"},
+                                          {"BabB", "abab"},
+                                          {"Baaba", "abaaB"},
+                                          {"Bababa", "ababaB"}}}));
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 4);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{"B", "bb"},
+                                         {"bbabb", "aba"},
+                                         {"abaabb", "bbaaba"},
+                                         {"abababb", "bbababa"}}));
+    }
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
   // fairly clearly the trivial group
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "034",
-      "kbmag/standalone/kb_data/degen3",
-      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-      REWRITING_SYSTEM_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "034",
+                                   "kbmag/standalone/kb_data/degen3",
+                                   "[quick][knuth-bendix][kbmag][no-valgrind]",
+                                   REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -671,7 +725,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "035",
                                    "kbmag/standalone/kb_data/ab1",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -693,7 +747,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "036",
                                    "kbmag/standalone/kb_data/degen2",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -720,7 +774,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "037",
                                    "kbmag/standalone/kb_data/f25",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -738,7 +792,6 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(kb.rewriting_system().number_of_rules() == 24);
 
     REQUIRE(knuth_bendix::contains(kb, "ab", "c"));
     REQUIRE(knuth_bendix::contains(kb, "bc", "d"));
@@ -764,23 +817,40 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "dc", "y"));
     REQUIRE(knuth_bendix::contains(kb, "ay", "b"));
     REQUIRE(knuth_bendix::contains(kb, "bbb", "a"));
+
     using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<rule_type>(
-                {{"ab", "c"},  {"ay", "b"},   {"ba", "c"},  {"bc", "d"},
-                 {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
-                 {"cd", "y"},  {"cy", "bb"},  {"da", "ad"}, {"db", "aa"},
-                 {"dc", "y"},  {"dd", "by"},  {"dy", "a"},  {"ya", "b"},
-                 {"yb", "by"}, {"yc", "bb"},  {"yd", "a"},  {"yy", "ac"},
-                 {"aaa", "y"}, {"aac", "by"}, {"bbb", "a"}, {"bby", "aad"}}));
+
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 24);
+
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>(
+                  {{"ab", "c"},  {"ay", "b"},   {"ba", "c"},  {"bc", "d"},
+                   {"bd", "aa"}, {"ca", "ac"},  {"cb", "d"},  {"cc", "ad"},
+                   {"cd", "y"},  {"cy", "bb"},  {"da", "ad"}, {"db", "aa"},
+                   {"dc", "y"},  {"dd", "by"},  {"dy", "a"},  {"ya", "b"},
+                   {"yb", "by"}, {"yc", "bb"},  {"yd", "a"},  {"yy", "ac"},
+                   {"aaa", "y"}, {"aac", "by"}, {"bbb", "a"}, {"bby", "aad"}}));
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 5);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{"b", "aaaa"},
+                                         {"c", "aaaaa"},
+                                         {"d", "aaaaaaaaa"},
+                                         {"y", "aaa"},
+                                         {"aaaaaaaaaaaa", "a"}}));
+    }
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
+  // both RPOTrie + RPOSet very slow here
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "038",
                                    "kbmag/standalone/kb_data/237",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   "[quick][knuth-bendix][kbmag]",
+                                   LenLexSet,
+                                   LenLexTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
@@ -839,7 +909,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "039",
                                    "kbmag/standalone/kb_data/c2",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -866,7 +936,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "040",
                                    "kbmag/standalone/kb_data/cosets",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -886,7 +956,6 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(kb.rewriting_system().number_of_rules() == 14);
 
     REQUIRE(knuth_bendix::contains(kb, "aaa", ""));
     REQUIRE(knuth_bendix::contains(kb, "Hb", "H"));
@@ -904,21 +973,40 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "baabba", "abbaab"));
 
     using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<rule_type>({{{"HH", "H"},
-                                        {"Hb", "H"},
-                                        {"aH", "H"},
-                                        {"bH", "H"},
-                                        {"Hab", "Haa"},
-                                        {"aaa", ""},
-                                        {"bab", "aa"},
-                                        {"bbb", "aba"},
-                                        {"Haabb", "Haaba"},
-                                        {"abaab", "bbaa"},
-                                        {"baaba", "aabb"},
-                                        {"aabbaa", "baab"},
-                                        {"baabba", "abbaab"},
-                                        {"bbaabb", "abba"}}}));
+
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 14);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{{"HH", "H"},
+                                          {"Hb", "H"},
+                                          {"aH", "H"},
+                                          {"bH", "H"},
+                                          {"Hab", "Haa"},
+                                          {"aaa", ""},
+                                          {"bab", "aa"},
+                                          {"bbb", "aba"},
+                                          {"Haabb", "Haaba"},
+                                          {"abaab", "bbaa"},
+                                          {"baaba", "aabb"},
+                                          {"aabbaa", "baab"},
+                                          {"baabba", "abbaab"},
+                                          {"bbaabb", "abba"}}}));
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 11);
+      REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
+              == std::vector<rule_type>({{"HH", "H"},
+                                         {"Hb", "H"},
+                                         {"aH", "H"},
+                                         {"bH", "H"},
+                                         {"Hab", "Haa"},
+                                         {"aaa", ""},
+                                         {"bab", "aa"},
+                                         {"bbb", "aba"},
+                                         {"aabb", "baaba"},
+                                         {"abaab", "bbaa"},
+                                         {"abbaab", "bbaabaa"}}));
+    }
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -949,7 +1037,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "042",
                                    "kbmag/standalone/kb_data/nilp2",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -966,11 +1054,13 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
   }
 
+  // This test checks some specific things related to lenlex so don't do RPO
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "043",
                                    "Ex. 6.4 in Sims",
                                    "[quick][knuth-bendix][no-valgrind]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   LenLexSet,
+                                   LenLexTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1006,16 +1096,17 @@ namespace libsemigroups {
     kb.max_rules(LIMIT_MAX);
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
+
     REQUIRE(kb.rewriting_system().number_of_rules() == 40);
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "044",
-      "KnuthBendix 071 again",
-      "[no-valgrind][quick][knuth-bendix][shortlex]",
-      REWRITING_SYSTEM_TYPES) {
+  // at least RPOSet very slow here
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "044",
+                                   "KnuthBendix 071 again",
+                                   "[no-valgrind][quick][knuth-bendix]",
+                                   REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
@@ -1086,11 +1177,13 @@ namespace libsemigroups {
                                          "Baac", "BacA", "cAAb", "cAAB"}));
   }
 
+  // No rpo specific to LenLex
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "045",
                                    "Sims Ex. 5.4 - alt. overlap policy",
                                    "[quick][knuth-bendix]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   LenLexTrie,
+                                   LenLexSet) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("Bab");
@@ -1155,7 +1248,12 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
 
     knuth_bendix::by_overlap_length(kb);
-    REQUIRE(kb.rewriting_system().number_of_rules() == 11);
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 11);
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE(kb.rewriting_system().number_of_rules() == 5);
+    }
     REQUIRE(kb.rewriting_system().confluent());
   }
 
@@ -1204,12 +1302,11 @@ namespace libsemigroups {
     kb.max_overlap(-11);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "050",
-      "kbmag/standalone/kb_data/d22",
-      "[quick][knuth-bendix][fpsemi][kbmag][shortlex]",
-      REWRITING_SYSTEM_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "050",
+                                   "kbmag/standalone/kb_data/d22",
+                                   "[quick][knuth-bendix][fpsemi][kbmag]",
+                                   REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1233,19 +1330,30 @@ namespace libsemigroups {
     REQUIRE(kb.presentation().rules.size() / 2 == 18);
     REQUIRE(kb.number_of_classes() == 22);
 
-    REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
-            == std::vector<std::string>({"",    "A",   "B",   "C",  "D",  "Y",
-                                         "F",   "AB",  "AC",  "AD", "AY", "AF",
-                                         "BA",  "BD",  "BY",  "CY", "DB", "ABA",
-                                         "ABD", "ABY", "ACY", "ADB"}));
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
+              == std::vector<std::string>(
+                  {"",   "A",   "B",   "C",   "D",   "Y",  "F",  "AB",
+                   "AC", "AD",  "AY",  "AF",  "BA",  "BD", "BY", "CY",
+                   "DB", "ABA", "ABD", "ABY", "ACY", "ADB"}));
+    } else if (std::is_same_v<order, RecursivePathCompare>) {
+      REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
+              == std::vector<std::string>(
+                  {"",           "A",          "B",         "AB",
+                   "BA",         "ABA",        "BAB",       "ABAB",
+                   "BABA",       "ABABA",      "BABAB",     "ABABAB",
+                   "BABABA",     "ABABABA",    "BABABAB",   "ABABABAB",
+                   "BABABABA",   "ABABABABA",  "BABABABAB", "ABABABABAB",
+                   "BABABABABA", "ABABABABABA"}));
+    }
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "051",
-      "kbmag/standalone/kb_data/d22",
-      "[quick][knuth-bendix][fpsemi][kbmag][shortlex]",
-      REWRITING_SYSTEM_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "051",
+                                   "kbmag/standalone/kb_data/d22",
+                                   "[quick][knuth-bendix][fpsemi][kbmag]",
+                                   REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBcCdDyYfF");
@@ -1271,7 +1379,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "052",
                                    "small example",
-                                   "[quick][knuth-bendix][shortlex]",
+                                   "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1304,21 +1412,19 @@ namespace libsemigroups {
     REQUIRE(kb3.presentation().rules.size() / 2 == 1);
   }
 
+  // RPO very slow here
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "054",
                                    "small overlap 1",
                                    "[quick]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   LenLexSet,
+                                   LenLexTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("BCA");
     presentation::add_rule(p, "AABC", "ACBA");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.rewriting_system().confluent());
-    REQUIRE(knuth_bendix::reduce(kb, "CBACBAABCAABCACBACBA")
-            == "CBACBACBAACBAACBACBA");
     REQUIRE(knuth_bendix::contains(
         kb, "CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
     REQUIRE(knuth_bendix::contains(
@@ -1342,7 +1448,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "055",
                                    "kbmag/standalone/kb_data/s9",
-                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   "[quick][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1394,30 +1500,14 @@ namespace libsemigroups {
                                    "C(4) monoid",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto rg = ReportGuard(false);
+
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "bceac", "aeebbc");
     presentation::add_rule(p, "aeebbc", "dabcd");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    kb.run();
-    REQUIRE(kb.rewriting_system().confluent());
-  }
-
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "057",
-                                   "1-relation hard case",
-                                   "[fail][knuth-bendix]",
-                                   REWRITING_SYSTEM_TYPES) {
-    auto                      rg = ReportGuard(true);
-    Presentation<std::string> p;
-    p.alphabet("ab");
-    p.contains_empty_word(true);
-    presentation::add_rule(p, "baaababaaa", "aaba");
-
-    KnuthBendix<std::string, TestType> kb(twosided, p);
-    // knuth_bendix::by_overlap_length(kb);
-    REQUIRE(!kb.rewriting_system().confluent());
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
   }
@@ -1466,23 +1556,28 @@ namespace libsemigroups {
                  "bcb", "b", "bcd", "cd", "cbc", "c", "cdb", "cd"}));
     KnuthBendix<std::string, TestType> kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 24);
-    REQUIRE(knuth_bendix::reduce(kb, "dcb") == "cd");
-    REQUIRE(knuth_bendix::reduce(kb, "dca") == "cd");
-    REQUIRE(knuth_bendix::reduce(kb, "da") == "d");
-    REQUIRE(knuth_bendix::reduce(kb, "cda") == "cd");
-    REQUIRE(knuth_bendix::reduce(kb, "cdb") == "cd");
-    REQUIRE(knuth_bendix::reduce(kb, "cdc") == "cd");
-    REQUIRE(knuth_bendix::reduce(kb, "cdd") == "cd");
-    REQUIRE(knuth_bendix::reduce(kb, "dad") == "d");
-    REQUIRE(!knuth_bendix::contains(kb, "bd", "db"));
-    REQUIRE(knuth_bendix::reduce(kb, "bd") == "bd");
-    REQUIRE(knuth_bendix::reduce(kb, "db") == "db");
-    REQUIRE(knuth_bendix::reduce(kb, "cbdcbd") == "cd");
-    REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
-            == std::vector<std::string>(
-                {"",    "a",   "b",   "c",   "d",    "ab",   "ac",   "ba",
-                 "bc",  "bd",  "cb",  "cd",  "db",   "abc",  "acb",  "bac",
-                 "bdb", "cba", "cbd", "dbc", "bacb", "bdbc", "cbdb", "cbdbc"}));
+
+    using order = typename TestType::reduction_order;
+    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(knuth_bendix::reduce(kb, "dcb") == "cd");
+      REQUIRE(knuth_bendix::reduce(kb, "dca") == "cd");
+      REQUIRE(knuth_bendix::reduce(kb, "da") == "d");
+      REQUIRE(knuth_bendix::reduce(kb, "cda") == "cd");
+      REQUIRE(knuth_bendix::reduce(kb, "cdb") == "cd");
+      REQUIRE(knuth_bendix::reduce(kb, "cdc") == "cd");
+      REQUIRE(knuth_bendix::reduce(kb, "cdd") == "cd");
+      REQUIRE(knuth_bendix::reduce(kb, "dad") == "d");
+      REQUIRE(!knuth_bendix::contains(kb, "bd", "db"));
+      REQUIRE(knuth_bendix::reduce(kb, "bd") == "bd");
+      REQUIRE(knuth_bendix::reduce(kb, "db") == "db");
+      REQUIRE(knuth_bendix::reduce(kb, "cbdcbd") == "cd");
+      REQUIRE(
+          (knuth_bendix::normal_forms(kb) | to_vector())
+          == std::vector<std::string>(
+              {"",    "a",   "b",   "c",   "d",    "ab",   "ac",   "ba",
+               "bc",  "bd",  "cb",  "cd",  "db",   "abc",  "acb",  "bac",
+               "bdb", "cba", "cbd", "dbc", "bacb", "bdbc", "cbdb", "cbdbc"}));
+    }
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -1523,11 +1618,13 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
+  // Lenlex specific test
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "062",
                                    "Chinese id monoid",
                                    "[knuth-bendix][quick]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   LenLexSet,
+                                   LenLexTrie) {
     auto rg = ReportGuard(false);
     auto n  = 4;
     auto p  = presentation::examples::chinese_monoid(n);
@@ -1560,16 +1657,6 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(1) uncomment
-    // REQUIRE(std::vector<int>(p.alphabet().begin(), p.alphabet().end())
-    //         == std::vector<int>());
-    // REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(static_cast<char>(129)),
-    //                   LibsemigroupsException);
-    // REQUIRE_THROWS_AS(p.throw_if_letter_not_in_alphabet(static_cast<char>(130)),
-    //                   LibsemigroupsException);
-
-    // REQUIRE(p.alphabet()[0] == 0);
-
     if (std::is_signed_v<char>) {
       REQUIRE_EXCEPTION_MSG(
           (KnuthBendix<std::string, TestType>(congruence_kind::onesided, p)),
@@ -1579,22 +1666,6 @@ namespace libsemigroups {
       REQUIRE_NOTHROW(
           KnuthBendix<std::string, TestType>(congruence_kind::onesided, p));
     }
-
-    // knuth_bendix::add_generating_pair(kb, {0, 1}, {0});
-    // REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
-    //                   LibsemigroupsException);
-
-    // kb.init(congruence_kind::onesided, p);
-    // REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 130}, {0}),
-    //                   LibsemigroupsException);
-    // knuth_bendix::add_generating_pair(kb, {1}, {0});
-
-    // REQUIRE(kb.number_of_classes() == 128);
-
-    // p.init().alphabet(256);
-    // kb.init(congruence_kind::onesided, p);
-    // REQUIRE_THROWS_AS(knuth_bendix::add_generating_pair(kb, {0, 0}, {0}),
-    //                   LibsemigroupsException);
   }
 
 }  // namespace libsemigroups

@@ -66,6 +66,7 @@ namespace libsemigroups {
   using RPOTrie    = detail::RewritingSystemTrie<RecursivePathCompare>;
   using RPOSet     = detail::RewritingSystemSet<RecursivePathCompare>;
 
+// TODO update to use RPO also
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",

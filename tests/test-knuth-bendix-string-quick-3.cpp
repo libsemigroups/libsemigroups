@@ -47,6 +47,8 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
+  // TODO update these tests to use RPO as well
+
   using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
   using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
 

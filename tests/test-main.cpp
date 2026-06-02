@@ -400,7 +400,7 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
     auto const                 t          = string_time(_test_run_time);
     auto const                 prefix_pad = _line_cols - prefix.size();
 
-    auto color = stats.totals.assertions.passed == 0 ? _run_end_emph_failed
+    auto color = stats.totals.assertions.failed != 0 ? _run_end_emph_failed
                                                      : _run_end_emph_passed;
 
     // TODO

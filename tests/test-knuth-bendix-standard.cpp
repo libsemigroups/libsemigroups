@@ -113,8 +113,7 @@ namespace libsemigroups {
                                    "[standard][knuth-bendix]",
                                    RPOTrie,
                                    LenLexTrie) {
-    using order = typename TestType::reduction_order;
-    auto rg     = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -131,6 +130,7 @@ namespace libsemigroups {
 
     REQUIRE(!kb.rewriting_system().confluent());
 
+    using order = typename TestType::reduction_order;
     if constexpr (std::is_same_v<order, ShortLexCompare>) {
       // In Sims it says to use 44 here, but that doesn't seem to work.
       kb.max_overlap(45);
@@ -147,7 +147,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "101",
                                    "kbmag/standalone/kb_data/funny3",
-                                   "[standard][knuth-bendix][kbmag][shortlex]",
+                                   "[standard][knuth-bendix][kbmag]",
                                    LenLexSet,
                                    LenLexTrie) {
     auto                      rg = ReportGuard(false);
