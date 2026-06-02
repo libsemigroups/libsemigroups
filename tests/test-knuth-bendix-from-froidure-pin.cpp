@@ -64,7 +64,7 @@ namespace libsemigroups {
   using RPOTrie = detail::RewritingSystemTrie<RecursivePathCompare>;
   using RPOSet  = detail::RewritingSystemSet<RecursivePathCompare>;
 
-#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "119",
@@ -80,7 +80,7 @@ namespace libsemigroups {
     auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
+    kb.rewriting_system().reduce();
     REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.presentation().rules.size() / 2 == 4);
     REQUIRE(kb.rewriting_system().number_of_rules() == 4);
@@ -103,7 +103,7 @@ namespace libsemigroups {
 
     auto                             p = to<Presentation<word_type>>(S);
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
+    kb.rewriting_system().reduce();
     REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.rewriting_system().number_of_rules() == 3);
     REQUIRE(kb.number_of_classes() == 9);
