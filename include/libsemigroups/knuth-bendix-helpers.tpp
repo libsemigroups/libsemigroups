@@ -98,7 +98,8 @@ namespace libsemigroups {
       // We do a depth first search simultaneously for cycles, and edges E in
       // g1 not in g2. Pre order for cycle detection, post order for "can we
       // reach a node incident to an edge in E" and "number of paths through a
-      // node is infinite"
+      // node is infinite". Crucially here a node is incident to an edge if it
+      // is the source or the target of an edge.
       size_t const N = g1.number_of_nodes();
       // can_reach[v] == true if there is a path from v to a node incident to
       // an edge in g1 that's not in g2.
@@ -116,11 +117,11 @@ namespace libsemigroups {
           // post order
           v -= N;
           for (auto e : g1.labels()) {
-            auto ve = g1.target_no_checks(v, e);
-            if (ve != UNDEFINED) {
-              can_reach[v] = (can_reach[v] || can_reach[ve]);
-              if (can_reach[ve]) {
-                inf_paths[v] = inf_paths[ve];
+            auto ve1 = g1.target_no_checks(v, e);
+            if (ve1 != UNDEFINED) {
+              can_reach[v] = (can_reach[v] || can_reach[ve1]);
+              if (can_reach[ve1]) {
+                inf_paths[v] = inf_paths[ve1];
               }
               if (can_reach[v] && inf_paths[v]) {
                 LIBSEMIGROUPS_EXCEPTION(
@@ -128,7 +129,7 @@ namespace libsemigroups {
               }
             }
           }
-        } else {
+        } else if (!seen[v]) {
           seen[v] = true;
           // so we can tell when all of the descendants of v have been
           // processed out of the stack
@@ -140,19 +141,23 @@ namespace libsemigroups {
             auto ve1 = g1.target_no_checks(v, e);
             if (ve1 != UNDEFINED) {
               // Check if (v, e, ve1) corresponds to an edge in g2
-              if (!can_reach[v]) {
+              if (to_g2[v] != UNDEFINED) {
                 auto ve2 = g2.target_no_checks(to_g2[v], e);
                 if (ve2 != UNDEFINED) {
                   // edges (v, e, ve1) and (to_g2[v], e, ve2) exist, so
-                  // there's an edge in g1 not in g2 if the targets of these
-                  // edges do not correspond to each other.
-                  can_reach[v] = (ve1 != to_g1[ve2]);
-                } else {
-                  // There's no edge labelled by e incident to the node
-                  // corresponding to v in g2, but there is such an edge in g1
-                  // and so (v, e, ve1) is in g1 but not g2.
-                  can_reach[v] = true;
+                  // there's an edge in g1 not in g2 if the targets ve1 and ve2
+                  // of these edges do not correspond to each other.
+                  if (ve1 != to_g1[ve2]) {
+                    can_reach[v]   = true;
+                    can_reach[ve1] = true;
+                  }
                 }
+              } else {
+                // There's no edge labelled by e incident to the node
+                // corresponding to v in g2, but there is such an edge in g1
+                // and so (v, e, ve1) is in g1 but not g2.
+                can_reach[v]   = true;
+                can_reach[ve1] = true;
               }
               if (seen[ve1]) {
                 // cycle detected

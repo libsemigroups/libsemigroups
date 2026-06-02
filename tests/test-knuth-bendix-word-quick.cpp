@@ -97,7 +97,8 @@ namespace libsemigroups {
                                    "020",
                                    "non-trivial classes x 4",
                                    "[quick][knuth-bendix]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   REWRITING_SYSTEM_TYPES,
+                                   RPOTrie) {
     using order = typename TestType::reduction_order;
 
     auto                    rg = ReportGuard(false);

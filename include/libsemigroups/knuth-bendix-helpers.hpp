@@ -94,16 +94,16 @@ namespace libsemigroups {
     //! Defined in `knuth-bendix-helpers.hpp`.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
-    //! normal forms of \p kb2 in \p kb1 (the greater congruence, with fewer
-    //! classes). This function triggers a full enumeration of both \p kb2 and
-    //! \p kb1.
+    //! normal forms of \p kb1 in \p kb2 (the greater congruence, with fewer
+    //! classes). This function triggers a full enumeration of both \p kb1 and
+    //! \p kb2.
     //!
-    //! Note that this function does **not** compute the normal forms of \p kb2
-    //! and try to compute the partition of these induced by \p kb1, before
+    //! Note that this function does **not** compute the normal forms of \p kb1
+    //! and try to compute the partition of these induced by \p kb2, before
     //! filtering out the classes of size \f$1\f$. In particular, it is possible
-    //! to compute the non-trivial classes of \p kb1 in \p kb2 if there are only
-    //! finitely many finite such classes, regardless of whether or not \p kb2
-    //! or \p kb1 has infinitely many classes.
+    //! to compute the non-trivial classes of the normal forms of \p kb1 in
+    //! \p kb2 if there are only finitely many finite such classes, regardless
+    //! of whether or not \p kb1 or \p kb2 has infinitely many classes.
     //!
     //! \tparam Word the type of the words contained in the output range
     //! (default: std::string).
@@ -112,10 +112,13 @@ namespace libsemigroups {
     //! \tparam ReductionOrder the second template parameter for
     //! \ref_knuth_bendix.
     //!
-    //! \param kb1 the first \ref_knuth_bendix instance.
-    //! \param kb2 the second \ref_knuth_bendix instance.
+    //! \param kb1 the \ref_knuth_bendix instance whose normal forms are being
+    //! partitioned.
+    //! \param kb2 the \ref_knuth_bendix instance being used to compute the
+    //! partition.
     //!
-    //! \returns The non-trivial classes of \p kb1 in \p kb2.
+    //! \returns The non-trivial classes of the normal forms of \p kb1 in \p
+    //! kb2.
     //!
     //! \throws LibsemigroupsException if \p kb1 has infinitely many classes
     //! and \p kb2 has finitely many classes (so that there is at least one
@@ -125,8 +128,7 @@ namespace libsemigroups {
     //! presentations of \p kb1 and \p kb2 are not equal.
     //!
     //! \throws LibsemigroupsException if the \ref_knuth_bendix::gilman_graph
-    //! of
-    //! \p kb1 has fewer nodes than that of \p kb2.
+    //! of \p kb1 has fewer nodes than that of \p kb2.
     //!
     //! \cong_common_warn_undecidable{Knuth-Bendix}.
     template <typename Word, typename RewritingSystem, typename ReductionOrder>

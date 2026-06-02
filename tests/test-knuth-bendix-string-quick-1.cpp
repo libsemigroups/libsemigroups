@@ -812,7 +812,7 @@ namespace libsemigroups {
                                    "017",
                                    "non-trivial classes",
                                    "[quick][knuth-bendix]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   RPOTrie) {
     using order = typename TestType::reduction_order;
 
     auto                      rg = ReportGuard(false);
@@ -839,14 +839,88 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb2, "a", "bb"));
     REQUIRE(knuth_bendix::contains(kb2, "a", "bab"));
 
+    REQUIRE(knuth_bendix::contains(kb2, "a", "b"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "ab"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "bb"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "abb"));
+
     if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      REQUIRE(knuth_bendix::reduce(kb2, "b") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "ab") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "bb") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "abb") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "a") == "a");
+
+      auto nf = knuth_bendix::normal_forms(kb1).min(0).max(8);
+      REQUIRE(nf.count() == 14);
+      REQUIRE((nf | rx::to_vector())
+              == std::vector<std::string>({"",
+                                           "a",
+                                           "b",
+                                           "c",
+                                           "ab",
+                                           "bb",
+                                           "cc",
+                                           "abb",
+                                           "ccc",
+                                           "cccc",
+                                           "ccccc",
+                                           "cccccc",
+                                           "ccccccc",
+                                           "cccccccc"}));
+      REQUIRE(knuth_bendix::partition(kb2, nf)
+              == std::vector<std::vector<std::string>>(
+                  {{"a", "b", "ab", "bb", "abb"},
+                   {"c"},
+                   {"cc"},
+                   {"ccc"},
+                   {"cccc"},
+                   {"ccccc"},
+                   {"cccccc"},
+                   {"ccccccc"},
+                   {"cccccccc"}}));
+
       REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
               == std::vector<std::vector<std::string>>(
                   {{"b", "ab", "bb", "abb", "a"}}));
     } else {
-      // FIXME this isn't correct
+      REQUIRE(knuth_bendix::reduce(kb2, "b") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "ba") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "bb") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "bba") == "a");
+      REQUIRE(knuth_bendix::reduce(kb2, "a") == "a");
+
+      auto nf = knuth_bendix::normal_forms(kb1).min(0).max(8);
+      REQUIRE(nf.count() == 14);
+      REQUIRE((nf | rx::to_vector())
+              == std::vector<std::string>({"",
+                                           "a",
+                                           "b",
+                                           "c",
+                                           "ba",
+                                           "bb",
+                                           "cc",
+                                           "bba",
+                                           "ccc",
+                                           "cccc",
+                                           "ccccc",
+                                           "cccccc",
+                                           "ccccccc",
+                                           "cccccccc"}));
+      REQUIRE(knuth_bendix::partition(kb2, nf)
+              == std::vector<std::vector<std::string>>(
+                  {{"a", "b", "ba", "bb", "bba"},
+                   {"c"},
+                   {"cc"},
+                   {"ccc"},
+                   {"cccc"},
+                   {"ccccc"},
+                   {"cccccc"},
+                   {"ccccccc"},
+                   {"cccccccc"}}));
       REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
-              == std::vector<std::vector<std::string>>({{"b", "bb", "a"}}));
+              == std::vector<std::vector<std::string>>(
+                  {{"b", "ba", "bb", "bba", "a"}}));
     }
   }
 
@@ -884,7 +958,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "019",
                                    "non-trivial classes x 3",
-
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
     using order = typename TestType::reduction_order;
@@ -909,11 +982,12 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb2(twosided, p);
 
     if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      // TODO update this test as above
       REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
               == std::vector<std::vector<std::string>>(
                   {{"ab", "b"}, {"bb", "abb", "a"}}));
     } else {
-      // FIXME this isn't correct
+      // TODO update this test as above
       REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
               == std::vector<std::vector<std::string>>({{"bb", "a"}}));
     }
