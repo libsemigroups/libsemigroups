@@ -3899,6 +3899,7 @@ namespace libsemigroups {
           "[0, ..., 2]");
     }
   }
+
   LIBSEMIGROUPS_TEST_CASE("InversePresentation",
                           "063",
                           "constructed from Presentation",
@@ -3908,6 +3909,19 @@ namespace libsemigroups {
 
     InversePresentation<word_type> ip(p);
     REQUIRE(ip.contains_empty_word());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "064",
+                          "check inverses copied",
+                          "[quick]") {
+    InversePresentation<std::string> p;
+    p.alphabet("abcABC");
+    p.inverses("ABCabc");
+    REQUIRE(p.inverses() == "ABCabc");
+
+    InversePresentation copy(p);
+    REQUIRE(copy.inverses() == "ABCabc");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
