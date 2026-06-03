@@ -137,7 +137,7 @@ def main():
         y=0, xmin=0, xmax=0, label="0", linestyle="--", color="darkorange"
     )
     ax2.set(ylabel="Edge completion (%)", xlabel="Time (s)")
-    ax2.set_ylim(0, 100)
+    ax2.set_ylim(-5, 105)
     ax2.legend()
 
     if title_ready.wait(timeout=1):
@@ -179,7 +179,7 @@ def main():
         ax2.autoscale_view()
         return (node_plot, edge_plot, current_edge_line, current_edge_line)
 
-    ani = animation.FuncAnimation(fig=fig, func=update, interval=500, save_count=60)
+    ani = animation.FuncAnimation(fig=fig, func=update, interval=100, save_count=60)
     plt.show()
     return ani
 
