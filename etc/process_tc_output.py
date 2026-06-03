@@ -10,10 +10,20 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-MICROSECONDS_PATTERN = re.compile(r"(\d+(?:\.\d+)?)µs")
-MILLISECONDS_PATTERN = re.compile(r"(\d+(?:\.\d+)?)ms")
-MIN_SECONDS_PATTERN = re.compile(r"(?:(\d+)min)?(\d+(?:\.\d+)?)s")
-TIME_PATTERN = re.compile(r"\|\s+all runs = (.*?)\s+\|")
+TIME_PATTERN = re.compile(
+    r"""(?:(\d+)y)?
+        (?:(\d+)mon)?
+        (?:(\d+)w)?
+        (?:(\d+)d)?
+        (?:(\d+)h)?
+        (?:(\d+)min)?
+        (?:(\d+(?:\.\d+)?)s)? # seconds is the only one that can be a decimal
+        (?:(\d+)ms)?
+        (?:(\d+)µs)?
+        (?:(\d+)ns)?""",
+    re.VERBOSE,
+)
+RUNTIME_PATTERN = re.compile(r"\|\s+all runs = (.*?)\s+\|")
 NODE_PATTERN = re.compile(r"nodes\s+\|\s+(\d+(,\d\d\d)*)\s+\|")
 EDGE_PATTERN = re.compile(r"edges.*\|\s+(\d+(?:\.\d+)?)%")
 TITLE_PATTERN = re.compile(r"(\[\d\d\d\]:.*?) - START")
@@ -27,20 +37,34 @@ title_ready = threading.Event()
 
 def parse_time(time_string: str) -> float:
     """Convert a string representing a time to a float"""
-    m = re.fullmatch(MICROSECONDS_PATTERN, time_string)
-    if m:
-        return float(m.group(1)) / 1e6
-
-    m = re.fullmatch(MILLISECONDS_PATTERN, time_string)
-    if m:
-        return float(m.group(1)) / 1e3
-
-    m = re.fullmatch(MIN_SECONDS_PATTERN, time_string)
+    m = re.fullmatch(TIME_PATTERN, time_string)
     if not m:
         raise ValueError(f"Invalid time string: {time_string!r}")
 
-    minutes, seconds = m.groups()
-    return 60 * int(minutes or 0) + float(seconds)
+    (
+        years,
+        months,
+        weeks,
+        days,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+        microseconds,
+        nanoseconds,
+    ) = map(lambda x: float(x) if x is not None else 0, m.groups())
+    return (
+        31556952 * years
+        + 2629746 * months
+        + 604800 * weeks
+        + 86400 * days
+        + 3600 * hours
+        + 60 * minutes
+        + seconds
+        + 10**-3 * milliseconds
+        + 10**-6 * microseconds
+        + 10**-9 * nanoseconds
+    )
 
 
 def parse_nodes(node_string: str) -> int:
@@ -65,7 +89,7 @@ def extract_line_info(line: str) -> None:
             title_ready.set()
             return
 
-    m = re.search(TIME_PATTERN, line)
+    m = re.search(RUNTIME_PATTERN, line)
     if m:
         time = parse_time(m.group(1))
         if latest_nodes is not None and latest_edge_percentage is not None:
