@@ -660,7 +660,7 @@ namespace libsemigroups {
   //! to `presentation.hpp` in v4 of libsemigroups.
   template <typename Result, typename Word>
   [[deprecated]] auto
-  to(InversePresentation<Word> const& ip) noexcept -> std::enable_if_t<
+  to(InversePresentation<Word> const& ip) -> std::enable_if_t<
       std::is_same_v<InversePresentation<typename Result::word_type>, Result>
           && !std::is_same_v<Word, typename Result::word_type>,
       Result> {
