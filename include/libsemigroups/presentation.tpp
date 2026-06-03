@@ -1484,8 +1484,16 @@ namespace libsemigroups {
                               typename Presentation<Word>::letter_type>);
       using WordOutput = typename Result::word_type;
 
-      ip.throw_if_letter_not_in_alphabet(ip.inverses().begin(),
-                                         ip.inverses().end());
+      if (!ip.inverses().empty()) {
+        // If ip.contains_empty_word() is false, and the inverses are not set
+        // (i.e. empty), then the next line throws, and the message is hard to
+        // understand (as it is completely out of context).
+        //
+        // We could "throw_if_bad_inverses" here instead, but there's no need
+        // because nothing actually goes wrong below if there are no inverses.
+        ip.throw_if_letter_not_in_alphabet(ip.inverses().begin(),
+                                           ip.inverses().end());
+      }
       InversePresentation<WordOutput> result(
           std::move(v4::to<Presentation<WordOutput>>(ip, f)));
 
