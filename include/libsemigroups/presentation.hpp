@@ -3420,6 +3420,14 @@ namespace libsemigroups {
    public:
     using Presentation<Word>::Presentation;
 
+    InversePresentation()                                      = default;
+    InversePresentation(InversePresentation const&)            = default;
+    InversePresentation(InversePresentation&&)                 = default;
+    InversePresentation& operator=(InversePresentation const&) = default;
+    InversePresentation& operator=(InversePresentation&&)      = default;
+
+    ~InversePresentation() = default;
+
     // TODO(later) init functions
 
     //! \brief Construct an InversePresentation from a Presentation reference.
