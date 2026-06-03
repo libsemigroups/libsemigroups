@@ -108,10 +108,14 @@ namespace libsemigroups {
 
    public:
     //! \brief Type of the words in the rules of a Presentation object.
+    // TODO(v4) rename "native_word_type" for consistency and to disambiguate
+    // from libsemigroups::word_type
     using word_type = Word;
 
     //! \brief Type of the letters in the words that constitute the rules of
     //! a Presentation object.
+    // TODO(v4) rename "native_letter_type" for consistency and to disambiguate
+    // from libsemigroups::letter_type
     using letter_type = typename word_type::value_type;
 
     //! \brief Type of a const iterator to either side of a rule.
