@@ -3711,7 +3711,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename Result, typename Word>
-    auto to(InversePresentation<Word> const& ip) noexcept -> std::enable_if_t<
+    auto to(InversePresentation<Word> const& ip) -> std::enable_if_t<
         std::is_same_v<InversePresentation<typename Result::word_type>, Result>
             && !std::is_same_v<Word, typename Result::word_type>,
         Result> {
