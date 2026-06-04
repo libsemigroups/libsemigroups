@@ -520,16 +520,117 @@ namespace libsemigroups {
       auto& first  = _rewriting_system.cursor(0);
       auto& second = _rewriting_system.cursor(1);
       first        = _rewriting_system.active_rules().begin();
+      // TODO try sorting active_rules?
 
-      // TODO write comment about what is going on here
+      // All rules in _rewriting_system are in 1 of 3 states:
+      //
+      // 1. active (current part of the system)
+      // 2. pending (maybe part of the system in the future)
+      // 3. inactive (currently unused)
+      //
+      // When an overlap is detected (by calls to "overlap" below), sometimes a
+      // rule will be sent from the active list to the pending list. Its fate is
+      // determined at a later point (in "reduce"), and it will either be
+      // re-added to the active list (at the end of
+      // _rewriting_system.active_rules()), or to the inactive list (position
+      // unimportant).
+      //
+      // The aim of the loops below is to consider all overlaps between active
+      // rules **while those active rules are changing**. The cursors "first"
+      // and "second" always point at a valid active rule, and have the
+      // following behaviour with respect to removal of active rules (those
+      // sent from the active to the pending list).
+      //
+      // Let "it" be an iterator pointing at the rule "r_i" being sent from
+      // the active to the pending list and let "r_{i-1}" and "r_{i+1}" be
+      // the active rules before and immediate after "rule1" in the active rule
+      // list (if any):
+      //
+      //    ... -- [ r_{i - 1} ] -- [ r_{i} ] -- [ r_{i + 1} ] -- ...
+      //                                 ^
+      //                                 |
+      //                                 it
+      //
+      // Then after the "r_{i}" is sent from the active to the pending list:
+      //
+      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
+      //                              ^
+      //                              |
+      //                              new_it
+      //
+      // where "new_it = _active_rules.erase(it)" (this is std::list::erase
+      // which returns an iterator pointing one beyond the erased iterator)
+      //
+      // The cursors "first" and "last" are updated as follows:
+      //
+      // A if neither cursor coincides with "it", then the cursors are left
+      //   unaltered.
+      //
+      // B if "second" and "it" coincide, then "second" is set to "new_it"
+      //
+      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
+      //                              ^
+      //                              |
+      //                              second
+      //
+      // C if "first" and "it" coincide and "new_it" is _active_rules.begin(),
+      //   then "first" is set to "new_it" == _active_rules.begin().
+      //
+      //   [ r_{i + 1} ] -- ...
+      //     ^
+      //     |
+      //     first
+      //
+      //    NOTE this happens if r_{i} (the rule being sent from active to
+      //    pending) is the first rule in _active_rules.
+      //
+      // D if "first" and "it" coincide and "new_it" is not
+      //   _active_rules.begin(), then "first" is set to "--new_it". This is
+      //   the same as the rule before "it" (and "first") before "it" was
+      //   erased.
+      //
+      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
+      //             ^
+      //             |
+      //             first
+      //
+      // If C or D applies, then incrementing "first" leads to the next active
+      // rule.
       do {
-        // TODO try sorting active_rules?
+        // Within this loop, active rules may become pending, but pending rules
+        // can only become active/inactive at the call to
+        // _rewriting_system.reduce() in the condition evaluated at the end of
+        // the outer while-loop. In other words, the active rules list may
+        // shrink only when inside this loop.
         for (;
              first != _rewriting_system.active_rules().end() && !stop_running();
              ++first) {
+          // We here assume that we have overlapped between previous rules
+          // pointed at by "first" and all preceding active rules.
           auto first_orig = first;
           overlap(*first, *first);
           if (first_orig != first) {
+            // In this case, either C or D above applies.
+            //
+            // If C applies, then after the "continue" below:
+            //
+            //   [ r_{i + 1} ] -- [ r_{i + 2} ]
+            //     ^                ^
+            //     |                |
+            //     second           first
+            //
+            // and we appear to have missed the overlap of "r_{i + 1}" with
+            // itself.
+            //
+            // If D applies, then after the "continue" below:
+            //
+            //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
+            //             ^                ^
+            //             |                |
+            //             second           first
+            //
+            // We have already overlapped r_{i - 1} and all previous rules in
+            // the list, so no overlaps can be missed.
             continue;
           }
 
@@ -539,12 +640,30 @@ namespace libsemigroups {
             auto second_orig = second;
             overlap(*first, *second);
             if (first_orig != first) {
+              // In this case, either C or D above applies. This being the
+              // case, means that we end up in the same exact situation as
+              // above, because we break out below we don't need to consider
+              // what happens to "second"
               break;
             } else if (second_orig != second) {
+              // In this case B, applies and so after the "continue" below:
+              //
+              //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ... -- [ r_{j} ]
+              //             ^                                        ^
+              //             |                                        |
+              //             second                                   first
+              //
+              // Note that in this case r_{j} is not being erased, and so
+              // "first" is not modified, and "second" assumes the next value it
+              // would have at the end of the loop. No overlaps are missed.
               continue;
             }
             overlap(*second, *first);
             if (first_orig != first) {
+              // In this case, either C or D above applies. This being the
+              // case, means that we end up in the same exact situation as
+              // above, because we break out below we don't need to consider
+              // what happens to "second".
               break;
             }
           }
