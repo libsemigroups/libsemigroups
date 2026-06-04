@@ -579,7 +579,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "995",  // TODO renumber tests
+                                   "995",
                                    "finite semigroup congruence",
                                    "[quick][congruence][knuth-bendix]",
                                    RPOTrie,
