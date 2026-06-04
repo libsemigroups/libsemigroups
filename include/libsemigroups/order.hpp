@@ -1606,7 +1606,12 @@ namespace libsemigroups {
   //! This namespace contains a number of helpers for reduction orders.
   namespace order {
     //! \brief Helper used to indicate whether or not an order is length
-    //! decreasing.
+    //! non-increasing.
+    //!
+    //! This helper has a single member \c value which is \c true if Thing
+    //! represents a length non-increasing reduction ordering.
+    //!
+    //! \tparam Thing the reduction order type.
     template <typename Thing>
     struct is_length_non_increasing : std::false_type {};
 
