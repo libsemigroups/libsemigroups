@@ -155,13 +155,7 @@ namespace libsemigroups {
       }
 
      protected:
-      // TODO to cpp
-      void sort_pending_rules() {
-        if (_pending_rules_comparator == nullptr) {
-          return;
-        }
-        Rules::sort_pending_rules(_pending_rules_comparator);
-      }
+      void sort_pending_rules();
 
       template <typename RewritingSystem, typename ReductionOrder>
       friend class KnuthBendixImpl;

@@ -96,6 +96,13 @@ namespace libsemigroups {
     // RewritingSystemBase - public mem fns
     ////////////////////////////////////////////////////////////////////////
 
+    void RewritingSystemBase::sort_pending_rules() {
+      if (_pending_rules_comparator == nullptr) {
+        return;
+      }
+      Rules::sort_pending_rules(_pending_rules_comparator);
+    }
+
     void RewritingSystemBase::set_cached_confluent(tril val) const {
       if (val == tril::TRUE) {
         _confluence_known = true;
