@@ -1603,50 +1603,78 @@ namespace libsemigroups {
   //!
   //! Defined in ``order.hpp``.
   //!
-  //! This namespace contains a number of helpers for reduction orders.
+  //! This namespace contains compile-time helpers for detecting properties of
+  //! reduction order comparison types.
   namespace order {
     //! \brief Helper used to indicate whether or not an order is length
     //! non-increasing.
     //!
-    //! This helper has a single member \c value which is \c true if Thing
-    //! represents a length non-increasing reduction ordering.
+    //! This helper has a single static data member \c value which is \c true
+    //! if \p Thing represents a length non-increasing reduction ordering, and
+    //! \c false otherwise.
     //!
     //! \tparam Thing the reduction order type.
     template <typename Thing>
     struct is_length_non_increasing : std::false_type {};
 
-    // TODO doc
+    //! \brief Short-lex order is length non-increasing.
+    //!
+    //! Specialization of \ref is_length_non_increasing for
+    //! \ref ShortLexCompare.
     template <>
     struct is_length_non_increasing<ShortLexCompare> : std::true_type {};
 
-    // TODO doc
+    //! \brief Helper variable template for \ref is_length_non_increasing.
+    //!
+    //! This helper is \c true if \p Thing represents a length non-increasing
+    //! reduction ordering, and \c false otherwise.
+    //!
+    //! \tparam Thing the reduction order type.
     template <typename Thing>
     static constexpr bool is_length_non_increasing_v
         = is_length_non_increasing<Thing>::value;
 
-    // TODO doc
-    // An ordering is *well-founded* if it contains no infinite descending
-    // chains.
+    //! \brief Helper used to indicate whether or not an order is well-founded.
+    //!
+    //! This helper has a single static data member \c value which is \c true
+    //! if \p Thing represents a well-founded reduction ordering, and \c false
+    //! otherwise. An ordering is well-founded if it contains no infinite
+    //! descending chains.
+    //!
+    //! \tparam Thing the reduction order type.
     template <typename Thing>
     struct is_well_founded : std::false_type {};
 
-    // TODO doc
+    //! \brief Short-lex order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref ShortLexCompare.
     template <>
     struct is_well_founded<ShortLexCompare> : std::true_type {};
 
-    // TODO doc
+    //! \brief Recursive path order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref RecursivePathCompare.
     template <>
     struct is_well_founded<RecursivePathCompare> : std::true_type {};
 
-    // TODO doc
+    //! \brief Weighted short-lex order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref WtShortLexCompare.
     template <>
     struct is_well_founded<WtShortLexCompare> : std::true_type {};
 
-    // TODO doc
+    //! \brief Weighted lex order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref WtLexCompare.
     template <>
     struct is_well_founded<WtLexCompare> : std::true_type {};
 
-    // TODO doc
+    //! \brief Helper variable template for \ref is_well_founded.
+    //!
+    //! This helper is \c true if \p Thing represents a well-founded reduction
+    //! ordering, and \c false otherwise.
+    //!
+    //! \tparam Thing the reduction order type.
     template <typename Thing>
     static constexpr bool is_well_founded_v = is_well_founded<Thing>::value;
 
