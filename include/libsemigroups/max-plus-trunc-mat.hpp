@@ -35,15 +35,33 @@ namespace libsemigroups {
   // // ImageRight/LeftAction - MaxPlusTruncMat
   // ////////////////////////////////////////////////////////////////////////
 
+  // TODO: avoid this duplication, I just don't see how. Different
+  // specialisations seem to be needed only for the truncation threshold
+  // used in the inner product. Perhaps simplest to implement a
+  // row * matrix operation in the matric class?
+
   //! Specialization of the adapter ImageRightAction for
   //! LambdaValue<Mat>::type and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageLeftAction.
   template <typename Mat>
-  struct ImageRightAction<Mat,
-                          typename LambdaValue<Mat>::type,
-                          std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
-    //! The type of the result.
+  struct ImageRightAction<
+      Mat,
+      typename LambdaValue<Mat>::type,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsMatWithSemiring<Mat>>> {
+    //! Stores the image of \p pt under the right action of \p p in \p res.
+    using result_type = typename LambdaValue<Mat>::type;
+    void operator()(result_type&       res,
+                    result_type const& pt,
+                    Mat const&         x) const;
+  };
+
+  template <typename Mat>
+  struct ImageRightAction<
+      Mat,
+      typename LambdaValue<Mat>::type,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && !IsMatWithSemiring<Mat>>> {
+    //! Stores the image of \p pt under the right action of \p p in \p res.
     using result_type = typename LambdaValue<Mat>::type;
     //! Stores the image of \p pt under the right action of \p p in \p res.
     void operator()(result_type&       res,
@@ -91,7 +109,8 @@ namespace libsemigroups {
   template <typename Mat>
   struct LambdaValue<
       Mat,
-      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsDynamicMatrix<Mat>>> {
+      std::enable_if_t<IsMaxPlusTruncMat<Mat>
+                       && (IsDynamicMatrix<Mat> || IsMatWithSemiring<Mat>)>> {
     using type = typename std::vector<typename Mat::Row>;
   };
 
@@ -113,7 +132,8 @@ namespace libsemigroups {
   template <typename Mat>
   struct RhoValue<
       Mat,
-      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsDynamicMatrix<Mat>>> {
+      std::enable_if_t<IsMaxPlusTruncMat<Mat>
+                       && (IsDynamicMatrix<Mat> || IsMatWithSemiring<Mat>)>> {
     //! For MaxPlusTruncMat<T, N>, \c type is StaticVector1<MaxPlusTruncMat<T,
     //! N>::Row, N>.
     //! This represents the column space basis of the BMats.

@@ -559,9 +559,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "Konieczny",
       "036",
-      "regular-generated bmat gens - tropical max-plus (dim 5, t 3)",
+      "regular-generated bmat gens - tropical max-plus (dim 5, t 2)",
       "[extreme][konieczny][tropmaxplus]") {
-    using Mat = MaxPlusTruncMat<3, 5>;
+    using Mat = MaxPlusTruncMat<2, 5>;
 
     std::vector<Mat> gens
         = {Mat({{NEGATIVE_INFINITY,
@@ -685,7 +685,7 @@ namespace libsemigroups {
     Konieczny S = make<Konieczny>(gens);
     S.run();
 
-    REQUIRE(S.size() == 114'557'165);
+    REQUIRE(S.size() == 43'059'454);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
@@ -711,5 +711,26 @@ namespace libsemigroups {
         Mat({{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})};
     Konieczny S = make<Konieczny>(gens);
     REQUIRE(S.size() == 173);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "Konieczny",
+      "039",
+      "dynamic sr tropical max-plus mats (dim 2, threshold 5)",
+      "[quick][konieczny][tropmaxplus]") {
+    MaxPlusTruncSemiring<> const* sr = new MaxPlusTruncSemiring<>(5);
+    using Mat                        = MaxPlusTruncMat<>;
+
+    std::vector<Mat> gens
+        = {make<Mat>(sr, {{1, 3}, {2, 1}}),
+           make<Mat>(sr, {{2, 1}, {4, 0}}),
+           make<Mat>(sr, {{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, 0}}),
+           make<Mat>(sr,
+                     {{0, NEGATIVE_INFINITY},
+                      {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
+           make<Mat>(sr, {{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})};
+    Konieczny S = make<Konieczny>(gens);
+    REQUIRE(S.size() == 173);
+    delete sr;
   }
 }  // namespace libsemigroups
