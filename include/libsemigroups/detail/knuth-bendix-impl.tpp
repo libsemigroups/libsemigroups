@@ -600,10 +600,13 @@ namespace libsemigroups {
         // the outer while-loop. In other words, the active rules list may
         // shrink but not grow when inside this do-loop.
         //
-        // TODO explain why first isn't re-initialised here
-        for (;
-             first != _rewriting_system.active_rules().end() && !stop_running();
-             ++first) {
+        // The cursor "first" never needs to be re-initialised, because
+        // although active_rules() can grow and shrink. If it grows, then the
+        // new rules are added at the end, and so "first" will equal any
+        // surviving new rule eventually. If it shrinks, then we no longer care
+        // about comparing the removed rules to anything.
+        while (first != _rewriting_system.active_rules().end()
+               && !stop_running()) {
           auto first_orig = first;
           // We assume that we have overlapped between all rules strictly
           // preceding "first" in the active rules list. This is true at the
@@ -613,15 +616,23 @@ namespace libsemigroups {
             // In this case, either C or D above applies.
             //
             // If C applies, then after the "continue" below and the for-loop
-            // where "second" is defined is entered:
+            // where "second" is defined would be:
             //
             //   [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
             //     ^                ^
             //     |                |
             //     second           first
             //
-            // and we appear to have missed the overlap of "r_{i + 1}" with
-            // itself.
+            // if we incremented "first". In this case we would have missed
+            // the possible overlap of r_{i + 1} with itself. This is the
+            // reason we do not increment "first" if C applies.
+
+            if (first != _rewriting_system.active_rules().begin()) {
+              // In all of the KnuthBendix test cases this line is always
+              // executed, i.e. the rule r_{i} being sent from active to
+              // pending is never the first rule in these tests.
+              ++first;
+            }
 
             // If D applies, then after the "continue" below and the for-loop
             // where "second" is defined is entered:
@@ -633,6 +644,7 @@ namespace libsemigroups {
             //
             // We have already overlapped r_{i - 1} and all previous rules in
             // the list, so no overlaps can be missed.
+
             continue;
           }
 
@@ -672,9 +684,11 @@ namespace libsemigroups {
               // pointing at the beginning of _active_rules.
               break;
             }
-            // TODO say what happens if "second != second_orig", then we
-            // continue, which we do whether or not second == second_orig
+            // Note that if second != second_orig here, then we'd want to
+            // continue, but because we are now at the end of this for-loop,
+            // this is the same as doing nothing.
           }
+          ++first;
         }
       } while (!stop_running() && _rewriting_system.reduce());
 
