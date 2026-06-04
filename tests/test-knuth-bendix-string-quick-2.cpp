@@ -1106,7 +1106,8 @@ namespace libsemigroups {
                                    "044",
                                    "KnuthBendix 071 again",
                                    "[no-valgrind][quick][knuth-bendix]",
-                                   REWRITING_SYSTEM_TYPES) {
+                                   LenLexSet,
+                                   LenLexTrie) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");

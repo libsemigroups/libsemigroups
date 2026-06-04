@@ -130,9 +130,9 @@ namespace libsemigroups {
               == std::vector<std::vector<word_type>>(
                   {{1_w, 01_w, 11_w, 011_w, 0_w}}));
     } else {
-      // FIXME this isn't correct
       REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
-              == std::vector<std::vector<word_type>>({{1_w, 11_w, 0_w}}));
+              == std::vector<std::vector<word_type>>(
+                  {{1_w, 10_w, 11_w, 110_w, 0_w}}));
     }
   }
 
