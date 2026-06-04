@@ -763,8 +763,9 @@ namespace libsemigroups::detail {
   namespace rewriting_system {
 
     template <typename RewritingSystem>
-    tril is_length_decreasing_no_reduce(RewritingSystem const& rws) noexcept {
-      if constexpr (order::is_length_decreasing_v<
+    tril
+    is_length_non_increasing_no_reduce(RewritingSystem const& rws) noexcept {
+      if constexpr (order::is_length_non_increasing_v<
                         typename RewritingSystem::reduction_order>) {
         return tril::TRUE;
       }
@@ -783,14 +784,14 @@ namespace libsemigroups::detail {
     }
 
     template <typename RewritingSystem>
-    bool is_length_decreasing(RewritingSystem& rws) noexcept {
-      if constexpr (order::is_length_decreasing_v<
+    bool is_length_non_increasing(RewritingSystem& rws) noexcept {
+      if constexpr (order::is_length_non_increasing_v<
                         typename RewritingSystem::reduction_order>) {
         return true;
       }
 
       rws.reduce();
-      return is_length_decreasing_no_reduce(rws) == tril::TRUE;
+      return is_length_non_increasing_no_reduce(rws) == tril::TRUE;
     }
 
     template <typename RewritingSystem>
@@ -799,7 +800,7 @@ namespace libsemigroups::detail {
                         typename RewritingSystem::reduction_order>) {
         return tril::TRUE;
       }
-      if (is_length_decreasing_no_reduce(rws) == tril::TRUE) {
+      if (is_length_non_increasing_no_reduce(rws) == tril::TRUE) {
         return tril::TRUE;
       }
       return tril::unknown;
@@ -811,7 +812,7 @@ namespace libsemigroups::detail {
                         typename RewritingSystem::reduction_order>) {
         return tril::TRUE;
       }
-      if (is_length_decreasing(rws)) {
+      if (is_length_non_increasing(rws)) {
         return tril::TRUE;
       }
       return tril::unknown;

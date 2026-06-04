@@ -454,11 +454,12 @@ namespace libsemigroups {
 
       // Might never terminate if rws.reduce() doesn't terminate
       template <typename RewritingSystem>
-      [[nodiscard]] bool is_length_decreasing(RewritingSystem& rws) noexcept;
+      [[nodiscard]] bool
+      is_length_non_increasing(RewritingSystem& rws) noexcept;
 
       template <typename RewritingSystem>
       [[nodiscard]] tril
-      is_length_decreasing_no_reduce(RewritingSystem const& rws) noexcept;
+      is_length_non_increasing_no_reduce(RewritingSystem const& rws) noexcept;
 
       template <typename RewritingSystem>
       [[nodiscard]] tril is_terminating(RewritingSystem& rws) noexcept;

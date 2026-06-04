@@ -1599,19 +1599,25 @@ namespace libsemigroups {
   // end orders_group
   //! @}
 
+  //! \ingroup orders_group
+  //!
+  //! Defined in ``order.hpp``.
+  //!
+  //! This namespace contains a number of helpers for reduction orders.
   namespace order {
-    // TODO doc
+    //! \brief Helper used to indicate whether or not an order is length
+    //! decreasing.
     template <typename Thing>
-    struct is_length_decreasing : std::false_type {};
+    struct is_length_non_increasing : std::false_type {};
 
     // TODO doc
     template <>
-    struct is_length_decreasing<ShortLexCompare> : std::true_type {};
+    struct is_length_non_increasing<ShortLexCompare> : std::true_type {};
 
     // TODO doc
     template <typename Thing>
-    static constexpr bool is_length_decreasing_v
-        = is_length_decreasing<Thing>::value;
+    static constexpr bool is_length_non_increasing_v
+        = is_length_non_increasing<Thing>::value;
 
     // TODO doc
     // An ordering is *well-founded* if it contains no infinite descending
