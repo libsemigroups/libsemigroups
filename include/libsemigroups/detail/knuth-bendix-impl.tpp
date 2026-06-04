@@ -537,19 +537,19 @@ namespace libsemigroups {
       //
       // The aim of the loops below is to consider all overlaps between active
       // rules **while those active rules are changing**. The cursors "first"
-      // and "second" always point at a valid active rule, and have the
+      // and "second" always point at valid active rules, and have the
       // following behaviour with respect to removal of active rules (those
       // sent from the active to the pending list).
       //
-      // Let "it" be an iterator pointing at the rule "r_i" being sent from
+      // Let "it" be an iterator pointing at the rule "r_{i}" being sent from
       // the active to the pending list and let "r_{i-1}" and "r_{i+1}" be
-      // the active rules before and immediate after "rule1" in the active rule
+      // the active rules before and immediate after "r_{i}" in the active rule
       // list (if any):
       //
       //    ... -- [ r_{i - 1} ] -- [ r_{i} ] -- [ r_{i + 1} ] -- ...
-      //                                 ^
-      //                                 |
-      //                                 it
+      //                              ^
+      //                              |
+      //                              it
       //
       // Then after the "r_{i}" is sent from the active to the pending list:
       //
@@ -568,7 +568,7 @@ namespace libsemigroups {
       //
       // B if "second" and "it" coincide, then "second" is set to "new_it"
       //
-      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
+      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
       //                              ^
       //                              |
       //                              second
@@ -576,7 +576,7 @@ namespace libsemigroups {
       // C if "first" and "it" coincide and "new_it" is _active_rules.begin(),
       //   then "first" is set to "new_it" == _active_rules.begin().
       //
-      //   [ r_{i + 1} ] -- ...
+      //   [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
       //     ^
       //     |
       //     first
@@ -589,40 +589,42 @@ namespace libsemigroups {
       //   the same as the rule before "it" (and "first") before "it" was
       //   erased.
       //
-      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
+      //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
       //             ^
       //             |
       //             first
-      //
-      // If C or D applies, then incrementing "first" leads to the next active
-      // rule.
       do {
-        // Within this loop, active rules may become pending, but pending rules
-        // can only become active/inactive at the call to
+        // Within this do-loop, active rules may become pending, but pending
+        // rules can only become active/inactive at the call to
         // _rewriting_system.reduce() in the condition evaluated at the end of
         // the outer while-loop. In other words, the active rules list may
-        // shrink only when inside this loop.
+        // shrink but not grow when inside this do-loop.
+        //
+        // TODO explain why first isn't re-initialised here
         for (;
              first != _rewriting_system.active_rules().end() && !stop_running();
              ++first) {
-          // We here assume that we have overlapped between previous rules
-          // pointed at by "first" and all preceding active rules.
           auto first_orig = first;
+          // We assume that we have overlapped between all rules strictly
+          // preceding "first" in the active rules list. This is true at the
+          // start because there are no such rules.
           overlap(*first, *first);
           if (first_orig != first) {
             // In this case, either C or D above applies.
             //
-            // If C applies, then after the "continue" below:
+            // If C applies, then after the "continue" below and the for-loop
+            // where "second" is defined is entered:
             //
-            //   [ r_{i + 1} ] -- [ r_{i + 2} ]
+            //   [ r_{i + 1} ] -- [ r_{i + 2} ] -- ...
             //     ^                ^
             //     |                |
             //     second           first
             //
             // and we appear to have missed the overlap of "r_{i + 1}" with
             // itself.
-            //
-            // If D applies, then after the "continue" below:
+
+            // If D applies, then after the "continue" below and the for-loop
+            // where "second" is defined is entered:
             //
             //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ...
             //             ^                ^
@@ -643,7 +645,9 @@ namespace libsemigroups {
               // In this case, either C or D above applies. This being the
               // case, means that we end up in the same exact situation as
               // above, because we break out below we don't need to consider
-              // what happens to "second"
+              // what happens to "second". Note that C cannot apply because
+              // "second" is strictly before "first" so "first" cannot be
+              // pointing at the beginning of _active_rules.
               break;
             } else if (second_orig != second) {
               // In this case B, applies and so after the "continue" below:
@@ -663,9 +667,13 @@ namespace libsemigroups {
               // In this case, either C or D above applies. This being the
               // case, means that we end up in the same exact situation as
               // above, because we break out below we don't need to consider
-              // what happens to "second".
+              // what happens to "second". Note that C cannot apply because
+              // "second" is strictly before "first" so "first" cannot be
+              // pointing at the beginning of _active_rules.
               break;
             }
+            // TODO say what happens if "second != second_orig", then we
+            // continue, which we do whether or not second == second_orig
           }
         }
       } while (!stop_running() && _rewriting_system.reduce());
