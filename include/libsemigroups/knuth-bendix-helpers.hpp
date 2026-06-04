@@ -117,8 +117,8 @@ namespace libsemigroups {
     //! \param kb2 the \ref_knuth_bendix instance being used to compute the
     //! partition.
     //!
-    //! \returns The non-trivial classes of the normal forms of \p kb1 in \p
-    //! kb2.
+    //! \returns The non-trivial classes of the normal forms of \p kb1 in
+    //! \p kb2.
     //!
     //! \throws LibsemigroupsException if \p kb1 has infinitely many classes
     //! and \p kb2 has finitely many classes (so that there is at least one

@@ -66,8 +66,8 @@ namespace libsemigroups {
   //! `to<Presentation<Word>>(FroidurePinBase&)`.
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
-  //! `KnuthBendix<Word, RewritingSystem>` for some type \c Word and \c
-  //! RewritingSystem.
+  //! `KnuthBendix<Word, RewritingSystem>` for some type \c Word and
+  //! \c RewritingSystem.
   //!
   //! \param knd the kind of the congruence being constructed.
   //! \param fpb the FroidurePin instance to be converted.
@@ -138,8 +138,8 @@ namespace libsemigroups {
   //! \ref_knuth_bendix object using ToddCoxeter::presentation.
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
-  //! `KnuthBendix<Word, RewritingSystem>` for some type \c Word and \c
-  //! RewritingSystem.
+  //! `KnuthBendix<Word, RewritingSystem>` for some type \c Word and
+  //! \c RewritingSystem.
   //!
   //! \param knd the kind of the congruence being constructed.
   //! \param tc the \ref_todd_coxeter object being converted.
