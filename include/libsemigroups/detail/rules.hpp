@@ -247,7 +247,6 @@ namespace libsemigroups {
         _inactive_rules.push_back(rule);
       }
 
-      // TODO to tpp
       template <typename Compare>
       void sort_pending_rules(Compare&& cmp) {
         std::sort(_pending_rules.begin(), _pending_rules.end(), cmp);
