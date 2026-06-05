@@ -352,15 +352,15 @@ namespace libsemigroups {
 
       ReportCell<4> rc;
       rc.min_width(12);
-      rc("KnuthBendix: rules {} (active) | X (inactive) | {} (defined)\n",
+      rc("KnuthBendix: rules {} (active) | {} (defined)\n",
          group_digits(active),
          group_digits(defined));
 
-      rc("KnuthBendix: diff  {} (active) | X (inactive) | {} (defined)\n",
+      rc("KnuthBendix: diff  {} (active) | {} (defined)\n",
          signed_group_digits(active_diff),
          signed_group_digits(defined_diff));
 
-      rc("KnuthBendix: time  {} (total)  | X (killed)   | {} (defined)\n",
+      rc("KnuthBendix: time  {} (total)  | {} (defined)\n",
          string_time(run_time),
          mean_defined);
 
