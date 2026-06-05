@@ -1753,6 +1753,13 @@ namespace libsemigroups {
       }
     }
 
+    // TODO combine with throw_if_bad_degree
+    template <typename Iterator>
+    void throw_if_bad_element(Iterator, Iterator) const {}
+
+    // TODO combine with throw_if_bad_degree
+    void throw_if_bad_element(const_reference) const {}
+
     template <typename Iterator>
     void throw_if_bad_degree(Iterator first, Iterator last) const;
 

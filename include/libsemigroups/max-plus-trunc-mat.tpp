@@ -113,4 +113,26 @@ namespace libsemigroups {
     orb.run();
     return orb.size();
   }
+
+  template <>
+  template <typename Iterator>
+  void Konieczny<MaxPlusTruncMat<>>::throw_if_bad_element(Iterator first,
+                                                          Iterator last) const {
+    if (number_of_generators() == 0 && first != last) {
+      auto const t = matrix::threshold(*first);
+      for (auto it = first + 1; it < last; ++it) {
+        if (matrix::threshold(*it) != t) {
+          LIBSEMIGROUPS_EXCEPTION("the matrix in position {} has threshold {} "
+                                  "but should have threshold {}",
+                                  std::distance(first, it),
+                                  t,
+                                  matrix::threshold(*it));
+        }
+      }
+    } else {
+      for (auto it = first; it < last; ++it) {
+        throw_if_bad_element(*it);
+      }
+    }
+  }
 }  // namespace libsemigroups

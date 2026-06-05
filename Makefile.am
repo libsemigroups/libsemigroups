@@ -1082,6 +1082,7 @@ if LIBSEMIGROUPS_HPCOMBI_ENABLED
 ## about there being no symbols.
 libsemigroups_la_SOURCES += src/hpcombi.cpp
 endif
+libsemigroups_la_SOURCES += src/max-plus-trunc-mat.cpp
 libsemigroups_la_SOURCES += src/obvinf.cpp
 libsemigroups_la_SOURCES += src/pbr.cpp
 libsemigroups_la_SOURCES += src/presentation-examples.cpp

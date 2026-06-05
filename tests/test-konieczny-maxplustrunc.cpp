@@ -731,6 +731,11 @@ namespace libsemigroups {
          make<Mat>(sr.get(),
                    {{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})});
 
+    auto bad = std::make_unique<MaxPlusTruncSemiring<>>(13);
+    REQUIRE_EXCEPTION_MSG(
+        S.add_generator(make<Mat>(bad.get(), {{1, 3}, {2, 1}})),
+        "the matrix has threshold 13 but should have threshold 5");
+
     REQUIRE(S.size() == 173);
   }
 }  // namespace libsemigroups

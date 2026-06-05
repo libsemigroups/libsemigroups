@@ -24,9 +24,10 @@
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for move
 
-#include "action.hpp"    // for RightAction
-#include "adapters.hpp"  // for ImageRightAction
-#include "matrix.hpp"    // for MaxPlusTruncMat
+#include "action.hpp"     // for RightAction
+#include "adapters.hpp"   // for ImageRightAction
+#include "konieczny.hpp"  // for Konieczny
+#include "matrix.hpp"     // for MaxPlusTruncMat
 
 #include "detail/containers.hpp"  // for StaticVector1
 
@@ -187,6 +188,17 @@ namespace libsemigroups {
     //! Returns the size of the row space of x.
     size_t operator()(Mat const& x) const;
   };
+
+  // No doc required for these because the mem fn is private.
+  template <>
+  void Konieczny<MaxPlusTruncMat<>>::throw_if_bad_element(
+      typename Konieczny<MaxPlusTruncMat<>>::const_reference x) const;
+
+  // No doc required for these because the mem fn is private.
+  template <>
+  template <typename Iterator>
+  void Konieczny<MaxPlusTruncMat<>>::throw_if_bad_element(Iterator first,
+                                                          Iterator last) const;
 }  // namespace libsemigroups
 
 #include "max-plus-trunc-mat.tpp"
