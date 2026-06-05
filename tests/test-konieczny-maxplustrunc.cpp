@@ -443,6 +443,7 @@ namespace libsemigroups {
                   NEGATIVE_INFINITY,
                   NEGATIVE_INFINITY,
                   NEGATIVE_INFINITY}}),
+            // NOLINTNEXTLINE(whitespace/line_length)
             Mat({{4, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 4, NEGATIVE_INFINITY},
                  {1, 0, 1, 2, 2},
                  {1, 4, 1, 2, NEGATIVE_INFINITY},
@@ -451,6 +452,7 @@ namespace libsemigroups {
             Mat({{2, 1, 0, NEGATIVE_INFINITY, 1},
                  {3, 4, 0, NEGATIVE_INFINITY, 2},
                  {1, 2, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+                 // NOLINTNEXTLINE(whitespace/line_length)
                  {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 2, 2, NEGATIVE_INFINITY},
                  {3, 1, 4, 1, 0}})});
 
