@@ -49,14 +49,14 @@ namespace libsemigroups {
       "026",
       "Rank of small tropical max-plus mats (dim 2, threshold 9)",
       "[quick][konieczny][tropmaxplus]") {
-    using Mat             = MaxPlusTruncMat<9, 2>;
-    using Rank            = Rank<Mat>;
-    std::vector<Mat> gens = {Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})};
+    using Mat  = MaxPlusTruncMat<9, 2>;
+    using Rank = Rank<Mat>;
 
-    REQUIRE(Rank()(gens[0]) == 30);
-    REQUIRE(Rank()(gens[1]) == 28);
+    REQUIRE(Rank()(Mat({{1, 3}, {2, 1}})) == 30);
+    REQUIRE(Rank()(Mat({{2, 1}, {4, 0}})) == 28);
 
-    FroidurePin S = make<FroidurePin>(gens);
+    FroidurePin S
+        = make<FroidurePin>({Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})});
     S.run();
     for (auto it = S.cbegin(); it < S.cend(); ++it) {
       size_t rnk = Rank()(*it);
@@ -357,9 +357,9 @@ namespace libsemigroups {
                           "031",
                           "small tropical max-plus (dim 3, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
-    using Mat             = MaxPlusTruncMat<9, 2>;
-    std::vector<Mat> gens = {Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})};
-    Konieczny        S    = make<Konieczny>(gens);
+    using Mat = MaxPlusTruncMat<9, 2>;
+    Konieczny S
+        = make<Konieczny>({Mat({{1, 3}, {2, 1}}), Mat({{2, 1}, {4, 0}})});
 
     S.run();
     auto it = S.cbegin_D_classes();
@@ -370,12 +370,11 @@ namespace libsemigroups {
                           "032",
                           "small tropical max-plus (dim 3, threshold 9)",
                           "[quick][konieczny][tropmaxplus]") {
-    using Mat = MaxPlusTruncMat<9, 3>;
-    std::vector<Mat> gens
-        = {Mat({{2, 2, 0}, {1, 0, 0}, {1, 3, 1}}),
-           Mat({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, 1, 0}}),
-           Mat({{1, NEGATIVE_INFINITY, 0}, {2, 1, 0}, {2, 2, 0}})};
-    Konieczny S = make<Konieczny>(gens);
+    using Mat   = MaxPlusTruncMat<9, 3>;
+    Konieczny S = make<Konieczny>(
+        {Mat({{2, 2, 0}, {1, 0, 0}, {1, 3, 1}}),
+         Mat({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, 1, 0}}),
+         Mat({{1, NEGATIVE_INFINITY, 0}, {2, 1, 0}, {2, 2, 0}})});
 
     S.run();
     REQUIRE(S.size() == 423);
@@ -388,69 +387,67 @@ namespace libsemigroups {
       "[extreme][konieczny][tropmaxplus]") {
     auto rg   = ReportGuard(true);
     using Mat = MaxPlusTruncMat<6, 5>;
-    std::vector<Mat> gens
-        = {Mat({{NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 0,
-                 NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 0},
-                {0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY,
-                 0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY},
-                {0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY}}),
-           Mat({{NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 0},
-                {NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY},
-                {0,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY}}),
-           Mat({{4, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 4, NEGATIVE_INFINITY},
-                {1, 0, 1, 2, 2},
-                {1, 4, 1, 2, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, 1, 1, NEGATIVE_INFINITY, 0},
-                {NEGATIVE_INFINITY, 0, 1, 0, NEGATIVE_INFINITY}}),
-           Mat({{2, 1, 0, NEGATIVE_INFINITY, 1},
-                {3, 4, 0, NEGATIVE_INFINITY, 2},
-                {1, 2, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 2, 2, NEGATIVE_INFINITY},
-                {3, 1, 4, 1, 0}})};
-
-    auto S = make<Konieczny>(gens);
+    auto S    = make<Konieczny>(
+        {Mat({{NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  0,
+                  NEGATIVE_INFINITY},
+                 {NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  0},
+                 {0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY},
+                 {NEGATIVE_INFINITY,
+                  0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY},
+                 {0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY}}),
+            Mat({{NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  0},
+                 {NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY},
+                 {NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY},
+                 {NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY},
+                 {0,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY,
+                  NEGATIVE_INFINITY}}),
+            Mat({{4, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 4, NEGATIVE_INFINITY},
+                 {1, 0, 1, 2, 2},
+                 {1, 4, 1, 2, NEGATIVE_INFINITY},
+                 {NEGATIVE_INFINITY, 1, 1, NEGATIVE_INFINITY, 0},
+                 {NEGATIVE_INFINITY, 0, 1, 0, NEGATIVE_INFINITY}}),
+            Mat({{2, 1, 0, NEGATIVE_INFINITY, 1},
+                 {3, 4, 0, NEGATIVE_INFINITY, 2},
+                 {1, 2, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+                 {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 2, 2, NEGATIVE_INFINITY},
+                 {3, 1, 4, 1, 0}})});
 
     S.run();
     REQUIRE(S.size() == 743'448);
@@ -460,58 +457,57 @@ namespace libsemigroups {
                           "034",
                           "full tropical max-plus monoid (dim 2, threshold 8)",
                           "[standard][konieczny][tropmaxplus]") {
-    using Mat             = MaxPlusTruncMat<8, 2>;
-    std::vector<Mat> gens = {
-        Mat({{NEGATIVE_INFINITY, 0}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, NEGATIVE_INFINITY}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 0}}),
-        Mat({{NEGATIVE_INFINITY, 1}, {0, NEGATIVE_INFINITY}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 1}}),
-        Mat({{0, 1}, {1, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 2}}),
-        Mat({{0, 1}, {2, 0}}),
-        Mat({{0, 2}, {2, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 3}}),
-        Mat({{0, 1}, {3, 0}}),
-        Mat({{0, 2}, {3, 0}}),
-        Mat({{0, 3}, {3, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 4}}),
-        Mat({{0, 1}, {4, 0}}),
-        Mat({{0, 2}, {4, 0}}),
-        Mat({{0, 3}, {4, 0}}),
-        Mat({{0, 4}, {4, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 5}}),
-        Mat({{0, 1}, {5, 0}}),
-        Mat({{0, 2}, {5, 0}}),
-        Mat({{0, 3}, {5, 0}}),
-        Mat({{0, 4}, {5, 0}}),
-        Mat({{0, 5}, {5, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 6}}),
-        Mat({{0, 1}, {6, 0}}),
-        Mat({{0, 2}, {6, 0}}),
-        Mat({{0, 3}, {6, 0}}),
-        Mat({{0, 4}, {6, 0}}),
-        Mat({{0, 5}, {6, 0}}),
-        Mat({{0, 6}, {6, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 7}}),
-        Mat({{0, 1}, {7, 0}}),
-        Mat({{0, 2}, {7, 0}}),
-        Mat({{0, 3}, {7, 0}}),
-        Mat({{0, 4}, {7, 0}}),
-        Mat({{0, 5}, {7, 0}}),
-        Mat({{0, 6}, {7, 0}}),
-        Mat({{0, 7}, {7, 0}}),
-        Mat({{NEGATIVE_INFINITY, 0}, {0, 8}}),
-        Mat({{0, 1}, {8, 0}}),
-        Mat({{0, 2}, {8, 0}}),
-        Mat({{0, 3}, {8, 0}}),
-        Mat({{0, 4}, {8, 0}}),
-        Mat({{0, 5}, {8, 0}}),
-        Mat({{0, 6}, {8, 0}}),
-        Mat({{0, 7}, {8, 0}}),
-        Mat({{0, 8}, {8, 0}})};
+    using Mat   = MaxPlusTruncMat<8, 2>;
+    Konieczny S = make<Konieczny>(
+        {Mat({{NEGATIVE_INFINITY, 0}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, NEGATIVE_INFINITY}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 0}}),
+         Mat({{NEGATIVE_INFINITY, 1}, {0, NEGATIVE_INFINITY}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 1}}),
+         Mat({{0, 1}, {1, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 2}}),
+         Mat({{0, 1}, {2, 0}}),
+         Mat({{0, 2}, {2, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 3}}),
+         Mat({{0, 1}, {3, 0}}),
+         Mat({{0, 2}, {3, 0}}),
+         Mat({{0, 3}, {3, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 4}}),
+         Mat({{0, 1}, {4, 0}}),
+         Mat({{0, 2}, {4, 0}}),
+         Mat({{0, 3}, {4, 0}}),
+         Mat({{0, 4}, {4, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 5}}),
+         Mat({{0, 1}, {5, 0}}),
+         Mat({{0, 2}, {5, 0}}),
+         Mat({{0, 3}, {5, 0}}),
+         Mat({{0, 4}, {5, 0}}),
+         Mat({{0, 5}, {5, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 6}}),
+         Mat({{0, 1}, {6, 0}}),
+         Mat({{0, 2}, {6, 0}}),
+         Mat({{0, 3}, {6, 0}}),
+         Mat({{0, 4}, {6, 0}}),
+         Mat({{0, 5}, {6, 0}}),
+         Mat({{0, 6}, {6, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 7}}),
+         Mat({{0, 1}, {7, 0}}),
+         Mat({{0, 2}, {7, 0}}),
+         Mat({{0, 3}, {7, 0}}),
+         Mat({{0, 4}, {7, 0}}),
+         Mat({{0, 5}, {7, 0}}),
+         Mat({{0, 6}, {7, 0}}),
+         Mat({{0, 7}, {7, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0}, {0, 8}}),
+         Mat({{0, 1}, {8, 0}}),
+         Mat({{0, 2}, {8, 0}}),
+         Mat({{0, 3}, {8, 0}}),
+         Mat({{0, 4}, {8, 0}}),
+         Mat({{0, 5}, {8, 0}}),
+         Mat({{0, 6}, {8, 0}}),
+         Mat({{0, 7}, {8, 0}}),
+         Mat({{0, 8}, {8, 0}})});
 
-    Konieczny S = make<Konieczny>(gens);
     S.run();
 
     REQUIRE(S.number_of_D_classes() == 2'200);
@@ -525,32 +521,30 @@ namespace libsemigroups {
       "[extreme][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<10, 4>;
 
-    std::vector<Mat> gens
-        = {Mat({{NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {0, NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}),
-           Mat({{NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0},
-                {0, NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
-           Mat({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {0, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}),
-           Mat({{NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY,
-                 NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}),
-           Mat({{1, 1, 1, 1},
-                {NEGATIVE_INFINITY, 1, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 1, NEGATIVE_INFINITY},
-                {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 1}})};
-
-    Konieczny S = make<Konieczny>(gens);
+    Konieczny S = make<Konieczny>(
+        {Mat({{NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {0, NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}),
+         Mat({{NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0},
+              {0, NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
+         Mat({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {0, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}),
+         Mat({{NEGATIVE_INFINITY,
+               NEGATIVE_INFINITY,
+               NEGATIVE_INFINITY,
+               NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}),
+         Mat({{1, 1, 1, 1},
+              {NEGATIVE_INFINITY, 1, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 1, NEGATIVE_INFINITY},
+              {NEGATIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY, 1}})});
     S.run();
 
     REQUIRE(S.size() == 582'214);
