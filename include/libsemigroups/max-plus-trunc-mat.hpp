@@ -38,7 +38,7 @@ namespace libsemigroups {
   // TODO: avoid this duplication, I just don't see how. Different
   // specialisations seem to be needed only for the truncation threshold
   // used in the inner product. Perhaps simplest to implement a
-  // row * matrix operation in the matric class?
+  // row * matrix operation in the matrix class?
 
   //! Specialization of the adapter ImageRightAction for
   //! LambdaValue<Mat>::type and MaxPlusTruncMat<T, N>
