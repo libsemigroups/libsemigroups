@@ -88,7 +88,7 @@ namespace libsemigroups {
 
   template <typename Mat>
   size_t Rank<Mat, RankState<Mat>, std::enable_if_t<IsMaxPlusTruncMat<Mat>>>::
-  operator()(Mat const& x) const {
+         operator()(Mat const& x) const {
     using row_type = typename Mat::Row;
     auto row_views = matrix::rows(x);
     RightAction<row_type, row_type, matrix::RowSum<row_type>> orb;
