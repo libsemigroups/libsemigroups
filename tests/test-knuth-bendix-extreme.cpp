@@ -491,7 +491,9 @@ namespace libsemigroups {
   // presentation here was derived by first applying the NQA to find the
   // maximal nilpotent quotient, and then introducing new generators for
   // the PCP generators.
-  // [932]: KnuthBendix: kbmag/heinnilp - RPOTrie .....15.031s
+  // [932]: KnuthBendix: kbmag/heinnilp - RPOTrie
+  // -- using a separate trie for new rules .....15.710s
+  // -- NOT using a separate trie for new rules ......9.897s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "932",
                                    "kbmag/heinnilp",
@@ -516,8 +518,14 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
     kb.rewriting_system().settings().reduction_threshold = 1024;
     kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
-    kb.rewriting_system().use_new_rule_trie([](auto const&) { return false; });
-    // TODO set kb so that it does not use a separate trie for adding new rules
+    SECTION("using a separate trie for new rules") {
+      kb.rewriting_system().use_new_rule_trie([](auto const&) { return true; });
+    }
+    SECTION("NOT using a separate trie for new rules") {
+      kb.rewriting_system().use_new_rule_trie(
+          [](auto const&) { return false; });
+    }
+
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.rewriting_system().number_of_rules() == 72);
