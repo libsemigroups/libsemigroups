@@ -135,8 +135,8 @@ namespace libsemigroups {
       Mat,
       std::enable_if_t<IsMaxPlusTruncMat<Mat>
                        && (IsDynamicMatrix<Mat> || IsMatWithSemiring<Mat>)>> {
-    //! For MaxPlusTruncMat<T, N>, \c type is StaticVector1<MaxPlusTruncMat<T,
-    //! N>::Row, N>.
+    //! For MaxPlusTruncMat<T, N>, \c type is
+    //! std::vector<MaxPlusTruncMat<T, N>::Row>.
     //! This represents the column space basis of the BMats.
     using type = typename std::vector<typename Mat::Row>;
   };
