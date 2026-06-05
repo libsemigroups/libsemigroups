@@ -516,6 +516,7 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
     kb.rewriting_system().settings().reduction_threshold = 1024;
     kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    kb.rewriting_system().use_new_rule_trie([](auto const&) { return false; });
     // TODO set kb so that it does not use a separate trie for adding new rules
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());

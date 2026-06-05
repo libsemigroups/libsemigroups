@@ -385,11 +385,12 @@ namespace libsemigroups::detail {
 
     RewritingSystemBase::sort_pending_rules();
 
-    bool rules_added = false;
-    // TODO(1) could make this a setting, or use a different condition (such
-    // as Rules::active_rules().size() / 2 or something)
-    bool use_separate_trie
-        = Rules::pending_rules().size() < Rules::active_rules().size();
+    bool rules_added       = false;
+    bool use_separate_trie = false;
+
+    if (_use_new_rule_trie != nullptr) {
+      use_separate_trie = _use_new_rule_trie(*this);
+    }
 
     while (!Rules::pending_rules().empty()) {
       if (use_separate_trie) {
@@ -542,10 +543,11 @@ namespace libsemigroups::detail {
     //       } else {
     //         // Find rule that corresponds to terminal node
     //         Rule const* rule     =
-    //         _rule_trie.node_no_checks(current).value(); auto        lhs_size
-    //         = rule->lhs().size(); LIBSEMIGROUPS_ASSERT(lhs_size != 0);
+    //         _rule_trie.node_no_checks(current).value(); auto lhs_size =
+    //         rule->lhs().size(); LIBSEMIGROUPS_ASSERT(lhs_size != 0);
     //
-    //         // Check the lhs is smaller than the portion of the word that has
+    //         // Check the lhs is smaller than the portion of the word that
+    //         has
     //         // been read
     //         LIBSEMIGROUPS_ASSERT(lhs_size
     //                              <= static_cast<size_t>(v_end - v_begin) +

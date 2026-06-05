@@ -341,9 +341,10 @@ namespace libsemigroups {
       // Private data
       ////////////////////////////////////////////////////////////////////////
 
-      Trie                            _new_rule_trie;
-      Trie                            _rule_trie;
-      bool                            _ticker_running;
+      Trie                                            _new_rule_trie;
+      std::function<bool(RewritingSystemTrie const&)> _use_new_rule_trie;
+      Trie                                            _rule_trie;
+      bool                                            _ticker_running;
       mutable std::vector<index_type> _trie_nodes_visited_indices;
 
      public:
@@ -406,6 +407,16 @@ namespace libsemigroups {
 
       [[nodiscard]] Trie& trie() noexcept {
         return _rule_trie;
+      }
+
+      auto use_new_rule_trie() const noexcept {
+        return _use_new_rule_trie;
+      }
+
+      RewritingSystemTrie& use_new_rule_trie(
+          std::function<bool(RewritingSystemTrie const&)> const& func) {
+        _use_new_rule_trie = func;
+        return *this;
       }
 
      private:
