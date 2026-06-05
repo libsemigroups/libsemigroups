@@ -722,6 +722,34 @@ namespace libsemigroups {
         return _rewriting_system;
       }
 
+      // TODO deprecate
+      // TODO nodiscard
+      size_t number_of_active_rules() noexcept {
+        return rewriting_system().active_rules().size();
+      }
+
+      // TODO deprecate
+      // TODO nodiscard
+      size_t number_of_pending_rules() noexcept {
+        return rewriting_system().pending_rules().size();
+      }
+
+      // TODO deprecate
+      // TODO nodiscard
+      bool number_of_inactive_rules() noexcept {
+        return rewriting_system().inactive_rules().size();
+      }
+
+      // TODO deprecate
+      [[nodiscard]] bool confluent() noexcept {
+        return rewriting_system().confluent();
+      }
+
+      // TODO deprecate
+      [[nodiscard]] bool confluent_known() noexcept {
+        return rewriting_system().confluent_known();
+      }
+
      private:
       // TODO(1) expose in public interface
       void rewrite_inplace(native_word_type& w);

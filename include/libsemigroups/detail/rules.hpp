@@ -270,6 +270,12 @@ namespace libsemigroups {
         return _pending_rules;
       }
 
+      // The next fn only exists for backward compat, and should be removed.
+      [[deprecated]] [[nodiscard]] std::vector<Rule*> const&
+      inactive_rules() const noexcept {
+        return _inactive_rules;
+      }
+
       [[nodiscard]] std::vector<Rule*>& pending_rules() noexcept {
         return _pending_rules;
       }

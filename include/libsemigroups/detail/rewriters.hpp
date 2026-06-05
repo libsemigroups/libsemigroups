@@ -481,6 +481,9 @@ namespace libsemigroups {
 
     }  // namespace rewriting_system
 
+    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<ShortLexCompare>;
+    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<ShortLexCompare>;
+
   }  // namespace detail
 }  // namespace libsemigroups
 
