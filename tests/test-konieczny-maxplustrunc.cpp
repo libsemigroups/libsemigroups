@@ -718,18 +718,19 @@ namespace libsemigroups {
       "[quick][konieczny][tropmaxplus]") {
     using Mat = MaxPlusTruncMat<>;
 
-    auto                          rg = ReportGuard(false);
-    MaxPlusTruncSemiring<> const* sr = new MaxPlusTruncSemiring<>(5);
+    auto rg = ReportGuard(false);
+    auto sr = std::make_unique<MaxPlusTruncSemiring<>>(5);
 
     Konieczny S = make<Konieczny>(
-        {make<Mat>(sr, {{1, 3}, {2, 1}}),
-         make<Mat>(sr, {{2, 1}, {4, 0}}),
-         make<Mat>(sr, {{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, 0}}),
+        {make<Mat>(sr.get(), {{1, 3}, {2, 1}}),
+         make<Mat>(sr.get(), {{2, 1}, {4, 0}}),
+         make<Mat>(sr.get(), {{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, 0}}),
          make<Mat>(
-             sr,
+             sr.get(),
              {{0, NEGATIVE_INFINITY}, {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}),
-         make<Mat>(sr, {{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})});
+         make<Mat>(sr.get(),
+                   {{NEGATIVE_INFINITY, 0}, {1, NEGATIVE_INFINITY}})});
+
     REQUIRE(S.size() == 173);
-    delete sr;
   }
 }  // namespace libsemigroups
