@@ -207,6 +207,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/print.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/race.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/report.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/report.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/rewriters.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/rewriting-system.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/rewriting-system.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/rules.hpp
