@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/knuth-bendix-helpers.hpp"
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include <algorithm>      // for next_permutation
@@ -34,7 +33,8 @@
 
 #include "libsemigroups/constants.hpp"  // for operator==, operat...
 #include "libsemigroups/detail/rules.hpp"
-#include "libsemigroups/exception.hpp"              // for LibsemigroupsExcep...
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsExcep...
+#include "libsemigroups/knuth-bendix-helpers.hpp"
 #include "libsemigroups/knuth-bendix.hpp"           // for KnuthBendix, norma...
 #include "libsemigroups/order.hpp"                  // for shortlex_compare
 #include "libsemigroups/paths.hpp"                  // for Paths
@@ -73,7 +73,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(2).min(0).max(6);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {

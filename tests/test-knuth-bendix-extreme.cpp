@@ -128,6 +128,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "ga", "b");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
+    kb.rewriting_system().use_new_rule_trie([](auto const& rws) {
+      return rws.pending_rules().size() < rws.active_rules().size();
+    });
     REQUIRE(!kb.rewriting_system().confluent());
     SECTION("plain Knuth-Bendix") {
       kb.run();
@@ -250,6 +253,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "abbabbababbaba", "b");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
+
+    kb.rewriting_system().use_new_rule_trie([](auto const& rws) {
+      return rws.pending_rules().size() < rws.active_rules().size();
+    });
     REQUIRE(!kb.rewriting_system().confluent());
 
     knuth_bendix::by_overlap_length(kb);
@@ -306,9 +313,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "108",
                                    "kbmag/standalone/kb_data/f27monoid",
-                                   "[fail][knuth-bendix][kbmag]",
+                                   "[extreme][knuth-bendix][kbmag]",
                                    REWRITING_SYSTEM_TYPES) {
-    // TODO figure out why this is now failing
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("abcdyfg");
@@ -324,6 +330,9 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
     REQUIRE(!kb.rewriting_system().confluent());
+    kb.rewriting_system().use_new_rule_trie([](auto const& rws) {
+      return rws.pending_rules().size() < rws.active_rules().size();
+    });
 
     knuth_bendix::by_overlap_length(kb);
     // Fails to terminate, or is very slow, with knuth_bendix
@@ -360,6 +369,9 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, "ga", "b");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
+    kb.rewriting_system().use_new_rule_trie([](auto const& rws) {
+      return rws.pending_rules().size() < rws.active_rules().size();
+    });
     REQUIRE(!kb.rewriting_system().confluent());
 
     kb.run();

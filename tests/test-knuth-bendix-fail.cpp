@@ -15,7 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains tests that we couldn't get to complete
+// This file contains tests that we couldn't get to complete, or that take too
+// long to run under any testing regime.
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
