@@ -1212,7 +1212,7 @@ EXTRA_PROGRAMS += test_presentation
 EXTRA_PROGRAMS += test_presentation_examples
 EXTRA_PROGRAMS += test_race
 EXTRA_PROGRAMS += test_ranges
-EXTRA_PROGRAMS += bench_rewriting_system
+EXTRA_PROGRAMS += test_rewriting_system
 EXTRA_PROGRAMS += test_runner
 EXTRA_PROGRAMS += test_schreier_sims
 EXTRA_PROGRAMS += test_sims
@@ -1622,10 +1622,10 @@ test_ranges_SOURCES += tests/test-main.cpp
 test_ranges_SOURCES += $(CATCH2_SOURCES)
 test_ranges_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
-bench_rewriting_system_SOURCES = tests/test-rewriting-system.cpp
-bench_rewriting_system_SOURCES += tests/test-main.cpp
-bench_rewriting_system_SOURCES += $(CATCH2_SOURCES)
-bench_rewriting_system_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+test_rewriting_system_SOURCES = tests/test-rewriting-system.cpp
+test_rewriting_system_SOURCES += tests/test-main.cpp
+test_rewriting_system_SOURCES += $(CATCH2_SOURCES)
+test_rewriting_system_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp

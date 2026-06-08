@@ -777,7 +777,7 @@ namespace libsemigroups::detail {
       }
 
       for (auto const& rule : rws.rules()) {
-        if (rule.first.size() <= rule.second.size()) {
+        if (rule.first.size() < rule.second.size()) {
           return tril::FALSE;
         }
       }

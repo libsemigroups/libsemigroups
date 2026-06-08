@@ -15,6 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
@@ -131,7 +133,7 @@ namespace libsemigroups {
                | rx::transform([](auto const& pair) { return rule_type(pair); })
                | rx::to_vector())
               == std::vector<std::pair<std::string, std::string>>(
-                  {{{0, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{2, 0}, {0}}}));
+                  {{{2, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{0, 0}, {0}}}));
 
       string_type w1 = {0, 0};
       rws.rewrite(w1);
@@ -160,7 +162,6 @@ namespace libsemigroups {
                             "003",
                             "confluent",
                             "[quick]") {
-      using rule_type = std::pair<std::string, std::string>;
       auto                                 rg = ReportGuard(false);
       RewritingSystemTrie<ShortLexCompare> rws;
       rws.increase_alphabet_size_by(3);
@@ -182,11 +183,13 @@ namespace libsemigroups {
       REQUIRE(rws.number_of_rules() == 10);
 
       REQUIRE(rws.confluent());
-      REQUIRE((rws.rules()
-               | rx::transform([](auto const& pair) { return rule_type(pair); })
+      v4::ToWord to_word({0, 1, 2});
+      REQUIRE((rws.rules() | rx::transform([&to_word](auto const& pair) {
+                 return std::pair(to_word(pair.first), to_word(pair.second));
+               })
                | rx::to_vector())
-              == std::vector<std::pair<std::string, std::string>>(
-                  {{{0, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{2, 0}, {0}}}));
+              == std::vector<std::pair<word_type, word_type>>(
+                  {{{2, 0}, {0}}, {{0, 2}, {0}}, {{1}, {0}}, {{0, 0}, {0}}}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ShortLexCompare>",
