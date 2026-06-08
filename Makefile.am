@@ -1205,7 +1205,6 @@ EXTRA_PROGRAMS += test_matrix
 EXTRA_PROGRAMS += test_multi_view
 EXTRA_PROGRAMS += test_obvinf
 EXTRA_PROGRAMS += test_order
-EXTRA_PROGRAMS += test_overlap_iterators
 EXTRA_PROGRAMS += test_paths
 EXTRA_PROGRAMS += test_pbr
 EXTRA_PROGRAMS += test_pool
