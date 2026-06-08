@@ -79,9 +79,9 @@ namespace libsemigroups {
   //!
   //! KnuthBendix kb(congruence_kind::twosided, p);
   //!
-  //! kb.rewriter().number_of_rules(); //-> 4
+  //! kb.rewriting_system().number_of_rules(); //-> 4
   //! kb.run();
-  //! kb.rewriter().number_of_rules();  //-> 4
+  //! kb.rewriting_system().number_of_rules();  //-> 4
   //! kb.confluent();               //-> true
   //! kb.number_of_classes();       //-> POSITIVE_INFINITY
   //! \endcode

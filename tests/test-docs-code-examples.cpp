@@ -221,9 +221,9 @@ LIBSEMIGROUPS_TEST_CASE("docs", "008", "./include/libsemigroups/knuth-bendix-cla
 
  KnuthBendix kb(congruence_kind::twosided, p);
 
-  REQUIRE(kb.rewriter().number_of_rules() == 4);
+  REQUIRE(kb.rewriting_system().number_of_rules() == 4);
  kb.run();
-  REQUIRE(kb.rewriter().number_of_rules() == 4);
+  REQUIRE(kb.rewriting_system().number_of_rules() == 4);
   REQUIRE(kb.confluent() == true);
   REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 }
@@ -358,8 +358,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "023", "./include/libsemigroups/matrix-helpers.h
  matrix::row_space_size(x); // returns 7
 }
 
-// presentation.hpp: Line 926
-LIBSEMIGROUPS_TEST_CASE("docs", "024", "./include/libsemigroups/presentation.hpp:926", "[docs][quick]") {
+// presentation.hpp: Line 935
+LIBSEMIGROUPS_TEST_CASE("docs", "024", "./include/libsemigroups/presentation.hpp:935", "[docs][quick]") {
      Presentation<std::string> p;
  presentation::to_report_string(p);
  // "|A| = 0, |R| = 0, |u| + |v| ∈ [0, 0], ∑(|u| + |v|) = 0"
@@ -549,8 +549,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "038", "./include/libsemigroups/word-range.hpp:1
   //  0001_w}));
 }
 
-// word-range.hpp: Line 1151
-LIBSEMIGROUPS_TEST_CASE("docs", "039", "./include/libsemigroups/word-range.hpp:1151", "[docs][quick]") {
+// word-range.hpp: Line 1155
+LIBSEMIGROUPS_TEST_CASE("docs", "039", "./include/libsemigroups/word-range.hpp:1155", "[docs][quick]") {
      ToString tostring("bac");
   REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
   REQUIRE(tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2})) == "baabaabc");
@@ -559,8 +559,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "039", "./include/libsemigroups/word-range.hpp:1
   REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
 }
 
-// word-range.hpp: Line 1402
-LIBSEMIGROUPS_TEST_CASE("docs", "040", "./include/libsemigroups/word-range.hpp:1402", "[docs][quick]") {
+// word-range.hpp: Line 1406
+LIBSEMIGROUPS_TEST_CASE("docs", "040", "./include/libsemigroups/word-range.hpp:1406", "[docs][quick]") {
      using rx::operator|;
  WordRange words;
  words.alphabet_size(1).min(0).max(10);
@@ -571,8 +571,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "040", "./include/libsemigroups/word-range.hpp:1
  // "aaaaaaaa", "aaaaaaaaa"};
 }
 
-// word-range.hpp: Line 1600
-LIBSEMIGROUPS_TEST_CASE("docs", "041", "./include/libsemigroups/word-range.hpp:1600", "[docs][quick]") {
+// word-range.hpp: Line 1604
+LIBSEMIGROUPS_TEST_CASE("docs", "041", "./include/libsemigroups/word-range.hpp:1604", "[docs][quick]") {
      StringRange strings;
  strings.order(Order::shortlex) // strings in shortlex order
         .alphabet("ab")         // on 2 letters
@@ -580,8 +580,8 @@ LIBSEMIGROUPS_TEST_CASE("docs", "041", "./include/libsemigroups/word-range.hpp:1
         .max(5);                // to 5
 }
 
-// word-range.hpp: Line 2322
-LIBSEMIGROUPS_TEST_CASE("docs", "042", "./include/libsemigroups/word-range.hpp:2322", "[docs][quick]") {
+// word-range.hpp: Line 2326
+LIBSEMIGROUPS_TEST_CASE("docs", "042", "./include/libsemigroups/word-range.hpp:2326", "[docs][quick]") {
      using namespace words;
  word_type w = 012345_w;
  prod(w, 0, 5, 2);              // {0, 2, 4}
