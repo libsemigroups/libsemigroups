@@ -170,6 +170,29 @@ namespace libsemigroups {
       using const_iterator         = std::list<Rule*>::const_iterator;
       using const_reverse_iterator = std::list<Rule*>::const_reverse_iterator;
 
+      class Cursor {
+        iterator _it;
+        uint64_t _version;
+
+       public:
+        Cursor()                         = default;
+        Cursor(Cursor const&)            = default;
+        Cursor(Cursor&&)                 = default;
+        Cursor& operator=(Cursor const&) = default;
+        Cursor& operator=(Cursor&&)      = default;
+        ~Cursor()                        = default;
+
+        Cursor(iterator& it) : _it(it), _version(0) {}
+
+        [[nodiscard]] iterator& iterator() noexcept {
+          return _it;
+        }
+
+        [[nodiscard]] uint64_t& version() noexcept {
+          return _version;
+        }
+      };
+
      private:
       struct Stats {
         Stats() noexcept;
@@ -189,11 +212,11 @@ namespace libsemigroups {
         void update_after_active_rule_added(Rules const&);
       };
 
-      std::list<Rule*>        _active_rules;
-      std::array<iterator, 2> _cursors;
-      std::vector<Rule*>      _inactive_rules;
-      std::vector<Rule*>      _pending_rules;
-      mutable Stats           _stats;
+      std::list<Rule*>      _active_rules;
+      std::array<Cursor, 2> _cursors;
+      std::vector<Rule*>    _inactive_rules;
+      std::vector<Rule*>    _pending_rules;
+      mutable Stats         _stats;
 
       // TODO(1) try maintaining pending_rules as a heap?
 
@@ -282,8 +305,9 @@ namespace libsemigroups {
 
       [[nodiscard]] Rule* pop_pending_rule();
 
-      [[nodiscard]] iterator& cursor(size_t index) {
+      [[nodiscard]] Cursor& cursor(size_t index) {
         LIBSEMIGROUPS_ASSERT(index < _cursors.size());
+        _cursors[index].version() = 0;
         return _cursors[index];
       }
 
@@ -291,6 +315,7 @@ namespace libsemigroups {
       // Numbers of rules
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO rm
       [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
         return _inactive_rules.size();
       }
