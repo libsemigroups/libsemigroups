@@ -1778,6 +1778,7 @@ namespace libsemigroups {
     auto   p = presentation::examples::symmetric_group_Moo97_a(n);
 
     ToddCoxeter tc(twosided, p);
+    tc.run_for(std::chrono::microseconds(1));
 
     section_hlt(tc);
     section_felsch(tc);
@@ -1786,7 +1787,6 @@ namespace libsemigroups {
     section_R_over_C_style(tc);
     section_Rc_style(tc);
 
-    tc.run_for(std::chrono::microseconds(1));
     REQUIRE(is_non_trivial(tc) == tril::TRUE);
     // REQUIRE(!tc.finished());
     tc.standardize(Order::shortlex);
