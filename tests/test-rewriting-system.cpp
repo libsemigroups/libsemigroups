@@ -43,19 +43,24 @@
 #include "libsemigroups/detail/rules.hpp"             // for reorder, Rules
 #include "libsemigroups/detail/value-guard.hpp"       // for ValueGuard
 
-namespace std {
+// The following might sometimes be useful for debugging, but generates compile
+// warnings (we are not allowed to put overloads in namespace std except with
+// user-defined types).
 
-  std::ostream& operator<<(std::ostream& os, std::string const& value) {
-    for (auto c : value) {
-      if (c < 10) {
-        os << int(c);
-      } else {
-        os << c;
-      }
-    }
-    return os;
-  }
-}  // namespace std
+// namespace std {
+//   std::ostream& operator<<(std::ostream& os, std::string const& value);
+//
+//   std::ostream& operator<<(std::ostream& os, std::string const& value) {
+//     for (auto c : value) {
+//       if (c < 10) {
+//         os << int(c);
+//       } else {
+//         os << c;
+//       }
+//     }
+//     return os;
+//   }
+// }  // namespace std
 
 namespace libsemigroups {
   using literals::operator""_w;
