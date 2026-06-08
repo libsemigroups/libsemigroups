@@ -17,17 +17,34 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
+#include <algorithm>    // for any_of
+#include <functional>   // for operator!=
+#include <list>         // for operator!=
+#include <ostream>      // for basic_ostream
+#include <string>       // for basic_string
+#include <string_view>  // for literals
+#include <utility>      // for pair, forward
+#include <vector>       // for vector, operat...
+
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"                        // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/adapters.hpp"      // for ReturnFalse
 #include "libsemigroups/aho-corasick.hpp"  // for dot
+#include "libsemigroups/order.hpp"         // for ShortLexCompare
+#include "libsemigroups/ranges.hpp"        // for rx::
+#include "libsemigroups/types.hpp"         // for tril, word_type
 #include "libsemigroups/word-range.hpp"    // for operator""_w
 
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie<ShortLexCompare>
+#include "libsemigroups/detail/aho-corasick-impl.hpp"  // for AhoCorasickImpl
+#include "libsemigroups/detail/fmt.hpp"                // for fmt
+#include "libsemigroups/detail/report.hpp"             // for ReportGuard
+#include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
+#include "libsemigroups/detail/rules.hpp"             // for reorder, Rules
+#include "libsemigroups/detail/value-guard.hpp"       // for ValueGuard
 
 namespace std {
+
   std::ostream& operator<<(std::ostream& os, std::string const& value) {
     for (auto c : value) {
       if (c < 10) {
