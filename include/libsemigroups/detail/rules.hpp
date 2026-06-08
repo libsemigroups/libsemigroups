@@ -171,7 +171,7 @@ namespace libsemigroups {
       using const_reverse_iterator = std::list<Rule*>::const_reverse_iterator;
 
       struct Cursor {
-        iterator iterator;
+        iterator it;
         uint64_t version;
       };
 
