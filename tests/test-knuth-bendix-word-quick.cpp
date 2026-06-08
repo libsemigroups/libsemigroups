@@ -327,7 +327,7 @@ namespace libsemigroups {
              011_w,   1_w,      10_w,     100_w,     1000_w,  101_w,  1010_w,
              10100_w, 101000_w, 1011_w,   11_w,      110_w,   1100_w, 11000_w,
              1101_w,  11010_w,  110100_w, 1101000_w, 11011_w, 111_w};
-    };
+    }
 
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());

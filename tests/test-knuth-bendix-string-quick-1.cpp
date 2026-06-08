@@ -196,7 +196,7 @@ namespace libsemigroups {
     auto found = (kb.active_rules() | rx::sort() | rx::to_vector());
 
     REQUIRE(std::all_of(found.begin(), found.end(), [](auto const& rule) {
-      return order{}(rule.second, rule.first);
+      return order()(rule.second, rule.first);
     }));
     REQUIRE(is_sorted(nf.min(0).max(4), ShortLexCompare{}));
 

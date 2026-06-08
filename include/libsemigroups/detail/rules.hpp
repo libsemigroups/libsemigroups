@@ -310,7 +310,6 @@ namespace libsemigroups {
                                    Iterator last1,
                                    Iterator first2,
                                    Iterator last2);
-
     };  // class Rules
 
     template <typename Iterator>
