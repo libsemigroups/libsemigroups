@@ -501,11 +501,12 @@ namespace libsemigroups {
       REQUIRE(aho_corasick_impl::traverse_trie(ac, 0111_w)
               == aho_corasick_impl::traverse_trie(ac, 111_w));
     }
+
     LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl",
                             "017",
                             "terminal_nodes",
                             "[quick]") {
-      using rx::      operator|;
+      using rx::operator|;
       AhoCorasickImpl ac(2);
       REQUIRE((ac.terminal_nodes() | rx::count()) == 0);
 
@@ -530,5 +531,15 @@ namespace libsemigroups {
       REQUIRE((ac.terminal_nodes() | rx::count()) == 1);
     }
 
+    LIBSEMIGROUPS_TEST_CASE("AhoCorasickImpl", "012", "erase bug", "[quick]") {
+      AhoCorasickImpl ac(2);
+
+      ac.insert(01_w, &dummy_rule);
+
+      // This word was never inserted.
+      REQUIRE_EXCEPTION_MSG(ac.erase(101_w),
+                            "cannot remove the word [1, 0, 1] (the argument) "
+                            "it does not correspond to a node in the trie");
+    }
   }  // namespace detail
 }  // namespace libsemigroups

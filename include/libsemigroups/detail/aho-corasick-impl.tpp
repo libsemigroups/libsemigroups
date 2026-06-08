@@ -72,7 +72,8 @@ namespace libsemigroups {
     template <typename Word>
     typename AhoCorasickImpl::index_type
     AhoCorasickImpl::erase_no_checks(Word const& key) {
-      auto last_index  = aho_corasick_impl::traverse_trie_no_checks(*this, key);
+      auto last_index
+          = traverse_trie_no_suffix_links_no_checks(key.begin(), key.end());
       auto value_index = last_index;
       if (number_of_children_no_checks(last_index) != 0) {
         LIBSEMIGROUPS_ASSERT(_all_nodes[last_index].terminal());
@@ -101,7 +102,7 @@ namespace libsemigroups {
     template <typename Word>
     typename AhoCorasickImpl::index_type
     AhoCorasickImpl::erase(Word const& key) {
-      auto last_index = aho_corasick_impl::traverse_trie(*this, key);
+      auto last_index = traverse_trie_no_suffix_links(key.begin(), key.end());
       if (last_index == UNDEFINED) {
         LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} (the argument) it "
                                 "does not correspond to a node in the trie",
@@ -310,5 +311,5 @@ namespace libsemigroups {
       }
 
     }  // namespace aho_corasick_impl
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
