@@ -714,52 +714,63 @@ namespace libsemigroups {
       //!
       //! \brief Return the rewriting system.
       //!
-      //! This function returns a const reference to the rewriting system that
+      //! This function returns a reference to the rewriting system that
       //! a KnuthBendix instance is operating on.
       //!
-      //! \returns A const reference to a \ref RewritingSystem.
+      //! \returns A reference to a \ref RewritingSystem.
       RewritingSystem& rewriting_system() noexcept {
         return _rewriting_system;
       }
 
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Return the rewriting system.
+      //!
+      //! This function returns a const reference to the rewriting system that
+      //! a KnuthBendix instance is operating on.
+      //!
+      //! \returns A const reference to a \ref RewritingSystem.
       RewritingSystem const& rewriting_system() const noexcept {
         return _rewriting_system;
       }
 
-      // TODO deprecate
-      // TODO nodiscard
-      size_t number_of_active_rules() const noexcept {
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().active_rules().size() instead!")]] size_t
+      number_of_active_rules() const noexcept {
         return rewriting_system().active_rules().size();
       }
 
-      // TODO deprecate
-      // TODO nodiscard
-      size_t number_of_pending_rules() const noexcept {
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().pending_rules().size() instead!")]] size_t
+      number_of_pending_rules() const noexcept {
         return rewriting_system().pending_rules().size();
       }
 
-      // TODO deprecate
-      // TODO nodiscard
-      bool number_of_inactive_rules() const noexcept {
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().inactive_rules().size() instead!")]] size_t
+      number_of_inactive_rules() const noexcept {
         return rewriting_system().inactive_rules().size();
       }
 
-      // TODO deprecate
-      [[nodiscard]] bool confluent() noexcept {
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().confluent() instead!")]] bool
+      confluent() noexcept {
         return rewriting_system().confluent();
       }
 
-      // TODO deprecate
-      [[nodiscard]] bool confluent_known() const noexcept {
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().confluent_known() instead!")]] bool
+      confluent_known() const noexcept {
         return rewriting_system().confluent_known();
       }
 
-      // TODO deprecate
-      [[nodiscard]] size_t total_rules() const noexcept {
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().stats().total_rules instead!")]] size_t
+      total_rules() const noexcept {
         return rewriting_system().stats().total_rules;
       }
 
-      // TODO deprecate
+      [[deprecated("Use rewriting_system()/reduce() instead!")]]
       KnuthBendixImpl& process_pending_rules() {
         rewriting_system().reduce();
         return *this;
