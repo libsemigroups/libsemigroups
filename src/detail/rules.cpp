@@ -95,8 +95,8 @@ namespace libsemigroups {
 
     void Rules::init_cursors() {
       for (auto& cursor : _cursors) {
-        cursor.iterator() = _active_rules.end();
-        cursor.version()  = 0;
+        cursor.iterator = _active_rules.end();
+        cursor.version  = 0;
       }
     }
 
@@ -194,8 +194,8 @@ namespace libsemigroups {
       // now we have just added a new element at the end of _active_rules, and
       // so we should have our cursor point at that new element instead.
       for (auto& cursor : _cursors) {
-        if (cursor.iterator() == _active_rules.end()) {
-          --cursor.iterator();
+        if (cursor.iterator == _active_rules.end()) {
+          --cursor.iterator;
         }
       }
     }
@@ -205,21 +205,21 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT((*it)->state() == Rule::State::active);
       LIBSEMIGROUPS_ASSERT(it != _active_rules.end());
       add_pending_rule(*it);
-      bool const cursor0_was_it = (_cursors[0].iterator() == it);
-      bool const cursor1_was_it = (_cursors[1].iterator() == it);
+      bool const cursor0_was_it = (_cursors[0].iterator == it);
+      bool const cursor1_was_it = (_cursors[1].iterator == it);
 
       auto next = _active_rules.erase(it);
 
       if (cursor1_was_it) {
-        ++_cursors[1].version();
-        _cursors[1].iterator() = next;
+        ++_cursors[1].version;
+        _cursors[1].iterator = next;
       }
 
       if (cursor0_was_it) {
-        ++_cursors[0].version();
-        _cursors[0].iterator() = next;
+        ++_cursors[0].version;
+        _cursors[0].iterator = next;
         if (next != _active_rules.begin()) {
-          --_cursors[0].iterator();
+          --_cursors[0].iterator;
         }
       }
 

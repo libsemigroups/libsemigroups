@@ -517,9 +517,9 @@ namespace libsemigroups {
 
       // TODO(1) re-add overlap iterator stuff
       _rewriting_system.reduce();
-      auto& first      = _rewriting_system.cursor(0);
-      auto& second     = _rewriting_system.cursor(1);
-      first.iterator() = _rewriting_system.active_rules().begin();
+      auto& first    = _rewriting_system.cursor(0);
+      auto& second   = _rewriting_system.cursor(1);
+      first.iterator = _rewriting_system.active_rules().begin();
       // TODO try sorting active_rules?
 
       // All rules in _rewriting_system are in 1 of 3 states:
@@ -605,14 +605,14 @@ namespace libsemigroups {
         // new rules are added at the end, and so "first" will equal any
         // surviving new rule eventually. If it shrinks, then we no longer care
         // about comparing the removed rules to anything.
-        while (first.iterator() != _rewriting_system.active_rules().end()
+        while (first.iterator != _rewriting_system.active_rules().end()
                && !stop_running()) {
-          auto first_version = first.version();
+          auto first_version = first.version;
           // We assume that we have overlapped between all rules strictly
           // preceding "first" in the active rules list. This is true at the
           // start because there are no such rules.
-          overlap(*first.iterator(), *first.iterator());
-          if (first.version() != first_version) {
+          overlap(*first.iterator, *first.iterator);
+          if (first.version != first_version) {
             // In this case, either C or D above applies.
             //
             // If C applies, then after the "continue" below and the for-loop
@@ -627,11 +627,11 @@ namespace libsemigroups {
             // the possible overlap of r_{i + 1} with itself. This is the
             // reason we do not increment "first" if C applies.
 
-            if (first.iterator() != _rewriting_system.active_rules().begin()) {
+            if (first.iterator != _rewriting_system.active_rules().begin()) {
               // In all of the KnuthBendix test cases this line is always
               // executed, i.e. the rule r_{i} being sent from active to
               // pending is never the first rule in these tests.
-              ++first.iterator();
+              ++first.iterator;
             }
 
             // If D applies, then after the "continue" below and the for-loop
@@ -649,11 +649,11 @@ namespace libsemigroups {
           }
 
           for (second = first;
-               second.iterator() != _rewriting_system.active_rules().begin();) {
-            --second.iterator();
-            auto second_version = second.version();
-            overlap(*first.iterator(), *second.iterator());
-            if (first.version() != first_version) {
+               second.iterator != _rewriting_system.active_rules().begin();) {
+            --second.iterator;
+            auto second_version = second.version;
+            overlap(*first.iterator, *second.iterator);
+            if (first.version != first_version) {
               // In this case, either C or D above applies. This being the
               // case, means that we end up in the same exact situation as
               // above, because we break out below we don't need to consider
@@ -661,7 +661,7 @@ namespace libsemigroups {
               // "second" is strictly before "first" so "first" cannot be
               // pointing at the beginning of _active_rules.
               break;
-            } else if (second.version() != second_version) {
+            } else if (second.version != second_version) {
               // In this case B, applies and so after the "continue" below:
               //
               //    ... -- [ r_{i - 1} ] -- [ r_{i + 1} ] -- ... -- [ r_{j} ]
@@ -674,8 +674,8 @@ namespace libsemigroups {
               // would have at the end of the loop. No overlaps are missed.
               continue;
             }
-            overlap(*second.iterator(), *first.iterator());
-            if (first.version() != first_version) {
+            overlap(*second.iterator, *first.iterator);
+            if (first.version != first_version) {
               // In this case, either C or D above applies. This being the
               // case, means that we end up in the same exact situation as
               // above, because we break out below we don't need to consider
@@ -688,7 +688,7 @@ namespace libsemigroups {
             // continue, but because we are now at the end of this for-loop,
             // this is the same as doing nothing.
           }
-          ++first.iterator();
+          ++first.iterator;
         }
       } while (!stop_running() && _rewriting_system.reduce());
 

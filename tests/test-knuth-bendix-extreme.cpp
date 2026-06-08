@@ -15,22 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file is the fourth of six that contains tests for the KnuthBendix
-// classes. In a mostly vain attempt to speed up compilation the tests are
-// split across 6 files as follows:
-//
-// 1: contains quick tests for KnuthBendix created from rules and all commented
-//    out tests.
-//
-// 2: contains more quick tests for KnuthBendix created from rules
-//
-// 3: contains yet more quick tests for KnuthBendix created from rules
-//
-// 4: contains standard and extreme test for KnuthBendix created from rules
-//
-// 5: contains tests for KnuthBendix created from FroidurePin instances
-//
-// 6: contains tests for KnuthBendix.
+// This file contains all of the Knuth-Bendix tests tagged "extreme".
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 

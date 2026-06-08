@@ -170,27 +170,9 @@ namespace libsemigroups {
       using const_iterator         = std::list<Rule*>::const_iterator;
       using const_reverse_iterator = std::list<Rule*>::const_reverse_iterator;
 
-      class Cursor {
-        iterator _it;
-        uint64_t _version;
-
-       public:
-        Cursor()                         = default;
-        Cursor(Cursor const&)            = default;
-        Cursor(Cursor&&)                 = default;
-        Cursor& operator=(Cursor const&) = default;
-        Cursor& operator=(Cursor&&)      = default;
-        ~Cursor()                        = default;
-
-        Cursor(iterator& it) : _it(it), _version(0) {}
-
-        [[nodiscard]] iterator& iterator() noexcept {
-          return _it;
-        }
-
-        [[nodiscard]] uint64_t& version() noexcept {
-          return _version;
-        }
+      struct Cursor {
+        iterator iterator;
+        uint64_t version;
       };
 
      private:
@@ -307,7 +289,7 @@ namespace libsemigroups {
 
       [[nodiscard]] Cursor& cursor(size_t index) {
         LIBSEMIGROUPS_ASSERT(index < _cursors.size());
-        _cursors[index].version() = 0;
+        _cursors[index].version = 0;
         return _cursors[index];
       }
 
