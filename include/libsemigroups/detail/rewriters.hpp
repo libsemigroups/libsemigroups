@@ -16,17 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // This file only exists for backwards compatibility.
+
 // TODO(v4) delete this file.
 
 #ifndef LIBSEMIGROUPS_DETAIL_REWRITERS_HPP_
 #define LIBSEMIGROUPS_DETAIL_REWRITERS_HPP_
 
 #if defined(_MSC_VER)
-#pragma message( \
-    "Warning: Including old_header.hpp is deprecated; use new_header.hpp instead")
+#pragma message("Including libsemigroups/detail/rewriters.hpp is " \
+                "deprecated; use libsemigroups/detail/rewriting-system.hpp " \
+                "instead")
 #else
-#warning \
-    "Including libsemigroups/detail/rewriters.hpp is deprecated; use libsemigroups/detail/rewriting-system.hpp instead"
+#warning "Including libsemigroups/detail/rewriters.hpp is deprecated; use " \
+    "libsemigroups/detail/rewriting-system.hpp instead"
 #endif
 
 #include "rewriting-system.hpp"
