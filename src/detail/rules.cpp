@@ -204,21 +204,23 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT((*it)->state() == Rule::State::active);
       LIBSEMIGROUPS_ASSERT(it != _active_rules.end());
       add_pending_rule(*it);
+      bool const cursor0_was_it = (_cursors[0] == it);
+      bool const cursor1_was_it = (_cursors[1] == it);
 
-      auto const old_it = it;
-      // std::list::erase returns an iterator point one beyond the erased
-      // element
-      it = _active_rules.erase(it);
-      if (_cursors[1] == old_it) {
-        _cursors[1] = it;
+      auto next = _active_rules.erase(it);
+
+      if (cursor1_was_it) {
+        _cursors[1] = next;
       }
-      if (_cursors[0] == old_it) {
-        _cursors[0] = it;
-        if (it != _active_rules.begin()) {
+
+      if (cursor0_was_it) {
+        _cursors[0] = next;
+        if (next != _active_rules.begin()) {
           --_cursors[0];
         }
       }
-      return it;
+
+      return next;
     }
 
     ////////////////////////////////////////////////////////////////////////
