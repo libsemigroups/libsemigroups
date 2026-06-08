@@ -23,7 +23,7 @@
 #define LIBSEMIGROUPS_DETAIL_REWRITERS_HPP_
 
 #if defined(_MSC_VER)
-#pragma message("Including libsemigroups/detail/rewriters.hpp is " \
+#pragma message("Including libsemigroups/detail/rewriters.hpp is "           \
                 "deprecated; use libsemigroups/detail/rewriting-system.hpp " \
                 "instead")
 #else
