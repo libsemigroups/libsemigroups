@@ -16,9 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO rename this file
-
-#include "libsemigroups/detail/rewriters.hpp"
+#include "libsemigroups/detail/rewriting-system.hpp"
 
 #include <algorithm>
 #include <atomic>

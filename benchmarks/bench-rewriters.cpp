@@ -22,8 +22,8 @@
 #include "libsemigroups/ranges.hpp"      // for rx::to_vector
 #include "libsemigroups/word-range.hpp"  // for literals
 
-#include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
+#include "libsemigroups/detail/report.hpp"            // for ReportGuard
+#include "libsemigroups/detail/rewriting-system.hpp"  // for RewriteTrie
 
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 

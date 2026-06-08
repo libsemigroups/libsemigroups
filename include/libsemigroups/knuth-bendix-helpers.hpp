@@ -42,9 +42,9 @@
 #include "word-graph.hpp"           // for WordGraph
 #include "word-range.hpp"           // for ToString
 
-#include "detail/fmt.hpp"              // for format
-#include "detail/knuth-bendix-nf.hpp"  // for KnuthBendix, KnuthBe...
-#include "detail/rewriters.hpp"        // for internal_string_type
+#include "detail/fmt.hpp"               // for format
+#include "detail/knuth-bendix-nf.hpp"   // for KnuthBendix, KnuthBe...
+#include "detail/rewriting-system.hpp"  // for internal_string_type
 
 namespace libsemigroups {
 

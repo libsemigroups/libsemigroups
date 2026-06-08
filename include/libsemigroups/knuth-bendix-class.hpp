@@ -32,7 +32,7 @@
 #include "detail/citow.hpp"              // for citow
 #include "detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
-#include "detail/rewriters.hpp"          // for RewritingSystemTrie
+#include "detail/rewriting-system.hpp"   // for RewritingSystemTrie
 
 namespace libsemigroups {
   enum class congruence_kind;

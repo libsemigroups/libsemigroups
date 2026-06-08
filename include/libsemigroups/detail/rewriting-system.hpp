@@ -19,8 +19,8 @@
 // objects. It also includes rewriter classes that can be used to rewrite
 // strings relative to a collection of rules.
 
-#ifndef LIBSEMIGROUPS_DETAIL_REWRITERS_HPP_
-#define LIBSEMIGROUPS_DETAIL_REWRITERS_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_REWRITING_SYSTEM_HPP_
+#define LIBSEMIGROUPS_DETAIL_REWRITING_SYSTEM_HPP_
 
 #include <atomic>         // for atomic
 #include <chrono>         // for time_point
@@ -487,5 +487,5 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
-#include "rewriters.tpp"
-#endif  // LIBSEMIGROUPS_DETAIL_REWRITERS_HPP_
+#include "rewriting-system.tpp"
+#endif  // LIBSEMIGROUPS_DETAIL_REWRITING_SYSTEM_HPP_

@@ -30,8 +30,8 @@
 #include "libsemigroups/types.hpp"               // for word_type
 #include "libsemigroups/word-range.hpp"
 
-#include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewritingSystemSet, Rewri...
+#include "libsemigroups/detail/report.hpp"            // for ReportGuard
+#include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemSet, Rewri...
 
 namespace libsemigroups {
 

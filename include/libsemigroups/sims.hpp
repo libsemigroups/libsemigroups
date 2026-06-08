@@ -76,12 +76,12 @@
 #include "types.hpp"         // for word_type, relation_type, congruence_kind
 #include "word-graph.hpp"    // for WordGraph
 
-#include "detail/felsch-graph.hpp"    // for FelschGraph
-#include "detail/fmt.hpp"             // for format, print
-#include "detail/iterator.hpp"        // for detail/default_postfix_increment
-#include "detail/path-iterators.hpp"  // for const_pstilo_iterator
-#include "detail/report.hpp"          // for ReportCell
-#include "detail/rewriters.hpp"       // for RewritingSystemTrie
+#include "detail/felsch-graph.hpp"      // for FelschGraph
+#include "detail/fmt.hpp"               // for format, print
+#include "detail/iterator.hpp"          // for detail/default_postfix_increment
+#include "detail/path-iterators.hpp"    // for const_pstilo_iterator
+#include "detail/report.hpp"            // for ReportCell
+#include "detail/rewriting-system.hpp"  // for RewritingSystemTrie
 #include "detail/word-graph-with-sources.hpp"  // for WordGraphWithSources
 
 //! \defgroup sims_group Low-index congruences
@@ -1485,7 +1485,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1967,7 +1967,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // class Sims2
+  };  // class Sims2
 
   //! \ingroup sims_group
   //!

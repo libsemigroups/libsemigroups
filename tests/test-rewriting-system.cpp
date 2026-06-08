@@ -23,7 +23,7 @@
 #include "libsemigroups/word-range.hpp"    // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewritingSystemTrie<ShortLexCompare>
+#include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie<ShortLexCompare>
 
 namespace std {
   std::ostream& operator<<(std::ostream& os, std::string const& value) {
