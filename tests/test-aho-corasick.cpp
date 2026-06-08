@@ -505,7 +505,7 @@ namespace libsemigroups {
                             "017",
                             "terminal_nodes",
                             "[quick]") {
-      using rx::operator|;
+      using rx::      operator|;
       AhoCorasickImpl ac(2);
       REQUIRE((ac.terminal_nodes() | rx::count()) == 0);
 

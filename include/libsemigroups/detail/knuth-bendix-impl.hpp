@@ -770,8 +770,9 @@ namespace libsemigroups {
         return rewriting_system().stats().total_rules;
       }
 
-      [[deprecated("Use rewriting_system()/reduce() instead!")]]
-      KnuthBendixImpl& process_pending_rules() {
+      [[deprecated(
+          "Use rewriting_system()/reduce() instead!")]] KnuthBendixImpl&
+      process_pending_rules() {
         rewriting_system().reduce();
         return *this;
       }
@@ -852,7 +853,7 @@ namespace libsemigroups {
 
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }  // namespace detail
+  }     // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
