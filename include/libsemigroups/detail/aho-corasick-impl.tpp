@@ -118,6 +118,20 @@ namespace libsemigroups {
       return current;
     }
 
+    template <typename OutputIterator>
+    OutputIterator AhoCorasickImpl::signature_no_checks(OutputIterator d_first,
+                                                        index_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
+      auto const j = _all_nodes[i].parent();
+      if (j != UNDEFINED) {
+        d_first  = signature_no_checks(d_first, j);
+        *d_first = _all_nodes[i].parent_letter();
+        ++d_first;
+      }
+      return d_first;
+    }
+
     namespace aho_corasick_impl {
 
       template <typename Iterator>
