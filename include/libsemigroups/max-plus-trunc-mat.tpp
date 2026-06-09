@@ -18,10 +18,11 @@
 
 namespace libsemigroups {
   template <typename Mat>
-  void ImageRightAction<Mat,
-                        typename LambdaValue<Mat>::type,
-                        std::enable_if_t<IsMaxPlusTruncMat<Mat>>>::
-       operator()(result_type& res, result_type const& pt, Mat const& x) const {
+  void ImageRightAction<
+      Mat,
+      typename LambdaValue<Mat>::type,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsMatWithSemiring<Mat>>>::
+  operator()(result_type& res, result_type const& pt, Mat const& x) const {
     using scalar_type = typename Mat::scalar_type;
     res.clear();
     // TODO this is bad but I don't see any good ways around it
@@ -30,8 +31,45 @@ namespace libsemigroups {
     result_type prod_rows;
 
     for (size_t r = 0; r < pt.size(); ++r) {
-      typename Mat::Row row;
-      for (size_t c = 0; c < Mat::nr_cols; ++c) {
+      // create an arbitrary row of the correct size
+      typename Mat::Row row(*rows.cbegin());
+      // set the values correctly
+      for (size_t c = 0; c < x.number_of_cols(); ++c) {
+        row(0, c)
+            = std::inner_product(pt[r].cbegin(),
+                                 pt[r].cend(),
+                                 rows[c].cbegin(),
+                                 MaxPlusZero<scalar_type>()(),
+                                 MaxPlusPlus<scalar_type>(),
+                                 [x](scalar_type a, scalar_type b) {
+                                   return x.semiring()->product_no_checks(a, b);
+                                 });
+      }
+      prod_rows.emplace_back(std::move(row));
+    }
+
+    const_cast<Mat*>(&x)->transpose();
+    res = std::move(matrix::row_basis_rows<Mat>(prod_rows));
+  }
+
+  template <typename Mat>
+  void ImageRightAction<
+      Mat,
+      typename LambdaValue<Mat>::type,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && !IsMatWithSemiring<Mat>>>::
+  operator()(result_type& res, result_type const& pt, Mat const& x) const {
+    using scalar_type = typename Mat::scalar_type;
+    res.clear();
+    // TODO this is bad but I don't see any good ways around it
+    const_cast<Mat*>(&x)->transpose();
+    auto        rows = matrix::rows(x);
+    result_type prod_rows;
+
+    for (size_t r = 0; r < pt.size(); ++r) {
+      // create an arbitrary row of the correct size
+      typename Mat::Row row(*rows.cbegin());
+      // set the values correctly
+      for (size_t c = 0; c < x.number_of_cols(); ++c) {
         row(0, c) = std::inner_product(
             pt[r].cbegin(),
             pt[r].cend(),
@@ -43,6 +81,7 @@ namespace libsemigroups {
       }
       prod_rows.emplace_back(std::move(row));
     }
+
     const_cast<Mat*>(&x)->transpose();
     res = std::move(matrix::row_basis_rows<Mat>(prod_rows));
   }
@@ -53,16 +92,18 @@ namespace libsemigroups {
     using row_type = typename Mat::Row;
     auto row_views = matrix::rows(x);
     RightAction<row_type, row_type, matrix::RowSum<row_type>> orb;
-    row_type                                                  seed;
+
+    // create an arbitrary row of the correct size
+    row_type seed(*row_views.cbegin());
+    // zero it out
     for (auto it = seed.begin(); it != seed.end(); ++it) {
       *it = MaxPlusZero<typename Mat::scalar_type>()();
     }
     orb.add_seed(seed);
+
     std::unordered_set<row_type, Hash<row_type>> gens;
     for (auto const& row : row_views) {
-      for (typename Mat::scalar_type i = 0;
-           i <= detail::IsTruncMatHelper<Mat>::threshold;
-           ++i) {
+      for (typename Mat::scalar_type i = 0; i <= matrix::threshold(x); ++i) {
         gens.insert(row_type(row * i));
       }
     }
@@ -71,5 +112,27 @@ namespace libsemigroups {
     }
     orb.run();
     return orb.size();
+  }
+
+  template <>
+  template <typename Iterator>
+  void Konieczny<MaxPlusTruncMat<>>::throw_if_bad_element(Iterator first,
+                                                          Iterator last) const {
+    if (number_of_generators() == 0 && first != last) {
+      auto const t = matrix::threshold(*first);
+      for (auto it = first + 1; it < last; ++it) {
+        if (matrix::threshold(*it) != t) {
+          LIBSEMIGROUPS_EXCEPTION("the matrix in position {} has threshold {} "
+                                  "but should have threshold {}",
+                                  std::distance(first, it),
+                                  t,
+                                  matrix::threshold(*it));
+        }
+      }
+    } else {
+      for (auto it = first; it < last; ++it) {
+        throw_if_bad_element(*it);
+      }
+    }
   }
 }  // namespace libsemigroups

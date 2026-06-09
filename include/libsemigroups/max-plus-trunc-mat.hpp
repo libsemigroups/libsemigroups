@@ -24,9 +24,10 @@
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for move
 
-#include "action.hpp"    // for RightAction
-#include "adapters.hpp"  // for ImageRightAction
-#include "matrix.hpp"    // for MaxPlusTruncMat
+#include "action.hpp"     // for RightAction
+#include "adapters.hpp"   // for ImageRightAction
+#include "konieczny.hpp"  // for Konieczny
+#include "matrix.hpp"     // for MaxPlusTruncMat
 
 #include "detail/containers.hpp"  // for StaticVector1
 
@@ -35,15 +36,33 @@ namespace libsemigroups {
   // // ImageRight/LeftAction - MaxPlusTruncMat
   // ////////////////////////////////////////////////////////////////////////
 
+  // TODO: avoid this duplication, I just don't see how. Different
+  // specialisations seem to be needed only for the truncation threshold
+  // used in the inner product. Perhaps simplest to implement a
+  // row * matrix operation in the matrix class?
+
   //! Specialization of the adapter ImageRightAction for
-  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N>
+  //! LambdaValue<Mat>::type and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageLeftAction.
   template <typename Mat>
-  struct ImageRightAction<Mat,
-                          typename LambdaValue<Mat>::type,
-                          std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
-    //! The type of the result.
+  struct ImageRightAction<
+      Mat,
+      typename LambdaValue<Mat>::type,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsMatWithSemiring<Mat>>> {
+    //! Stores the image of \p pt under the right action of \p p in \p res.
+    using result_type = typename LambdaValue<Mat>::type;
+    void operator()(result_type&       res,
+                    result_type const& pt,
+                    Mat const&         x) const;
+  };
+
+  template <typename Mat>
+  struct ImageRightAction<
+      Mat,
+      typename LambdaValue<Mat>::type,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && !IsMatWithSemiring<Mat>>> {
+    //! Stores the image of \p pt under the right action of \p p in \p res.
     using result_type = typename LambdaValue<Mat>::type;
     //! Stores the image of \p pt under the right action of \p p in \p res.
     void operator()(result_type&       res,
@@ -52,7 +71,7 @@ namespace libsemigroups {
   };
 
   //! Specialization of the adapter ImageLeftAction for
-  //! StaticVector1<MaxPlusTruncMat<T, N>::Row, N> and MaxPlusTruncMat<T, N>
+  //! LambdaValue<Mat>::type and MaxPlusTruncMat<T, N>
   //!
   //! \sa ImageRightAction.
   template <typename Mat>
@@ -81,9 +100,19 @@ namespace libsemigroups {
   //!
   //! \sa RhoValue, Lambda.
   template <typename Mat>
-  struct LambdaValue<Mat, std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+  struct LambdaValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsStaticMatrix<Mat>>> {
     using type =
         typename detail::StaticVector1<typename Mat::Row, Mat::nr_rows>;
+  };
+
+  template <typename Mat>
+  struct LambdaValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat>
+                       && (IsDynamicMatrix<Mat> || IsMatWithSemiring<Mat>)>> {
+    using type = typename std::vector<typename Mat::Row>;
   };
 
   //! Specialization of the adapter RhoValue for instances of MaxPlusTruncMat<T,
@@ -91,7 +120,9 @@ namespace libsemigroups {
   //!
   //! \sa LambdaValue, Rho.
   template <typename Mat>
-  struct RhoValue<Mat, std::enable_if_t<IsMaxPlusTruncMat<Mat>>> {
+  struct RhoValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat> && IsStaticMatrix<Mat>>> {
     //! For MaxPlusTruncMat<T, N>, \c type is StaticVector1<MaxPlusTruncMat<T,
     //! N>::Row, N>.
     //! This represents the column space basis of the BMats.
@@ -99,8 +130,19 @@ namespace libsemigroups {
         typename detail::StaticVector1<typename Mat::Row, Mat::nr_rows>;
   };
 
+  template <typename Mat>
+  struct RhoValue<
+      Mat,
+      std::enable_if_t<IsMaxPlusTruncMat<Mat>
+                       && (IsDynamicMatrix<Mat> || IsMatWithSemiring<Mat>)>> {
+    //! For MaxPlusTruncMat<T, N>, \c type is
+    //! std::vector<MaxPlusTruncMat<T, N>::Row>.
+    //! This represents the column space basis of the BMats.
+    using type = typename std::vector<typename Mat::Row>;
+  };
+
   //! Specialization of the adapter Lambda for instances of MaxPlusTruncMat<T,
-  //! N> and StaticVector1<MaxPlusTruncMat<T, N>, N>.
+  //! N> and LambdaValue<Mat>::type.
   //!
   //! \sa LambdaValue, Rho.
   template <typename Mat>
@@ -117,7 +159,7 @@ namespace libsemigroups {
   };
 
   //! Specialization of the adapter Rho for instances of MaxPlusTruncMat<T, N>
-  //! and StaticVector1<MaxPlusTruncMat<T, N>, N>.
+  //! and RhoValue<Mat>::type.
   //!
   //! \sa Lambda, RhoValue.
   template <typename Mat>
@@ -146,6 +188,17 @@ namespace libsemigroups {
     //! Returns the size of the row space of x.
     size_t operator()(Mat const& x) const;
   };
+
+  // No doc required for these because the mem fn is private.
+  template <>
+  void Konieczny<MaxPlusTruncMat<>>::throw_if_bad_element(
+      typename Konieczny<MaxPlusTruncMat<>>::const_reference x) const;
+
+  // No doc required for these because the mem fn is private.
+  template <>
+  template <typename Iterator>
+  void Konieczny<MaxPlusTruncMat<>>::throw_if_bad_element(Iterator first,
+                                                          Iterator last) const;
 }  // namespace libsemigroups
 
 #include "max-plus-trunc-mat.tpp"

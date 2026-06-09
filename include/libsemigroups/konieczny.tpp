@@ -251,6 +251,8 @@ namespace libsemigroups {
           "cannot add generators after the algorithm has begun!");
     }
     throw_if_bad_degree(first, last);
+    throw_if_bad_element(first, last);
+
     // If the _one has already been pushed back into _gens
     // (i.e. if data has been initialised), then we should shuffle it to
     // the back of the new generators.
