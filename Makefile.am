@@ -1179,6 +1179,7 @@ EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
 EXTRA_PROGRAMS += test_docs_code_examples
 EXTRA_PROGRAMS += test_dot
+EXTRA_PROGRAMS += test_du_narendran_rusinowitch
 EXTRA_PROGRAMS += test_felsch_tree
 EXTRA_PROGRAMS += test_forest
 EXTRA_PROGRAMS += test_freeband
@@ -1273,6 +1274,7 @@ test_all_SOURCES += tests/test-cong.cpp
 test_all_SOURCES += tests/test-constants.cpp
 test_all_SOURCES += tests/test-containers.cpp
 test_all_SOURCES += tests/test-docs-code-examples.cpp
+test_all_SOURCES += tests/test-du-narendran-rusinowitch.cpp
 test_all_SOURCES += tests/test-dot.cpp
 test_all_SOURCES += tests/test-felsch-tree.cpp
 test_all_SOURCES += tests/test-forest.cpp
@@ -1419,6 +1421,11 @@ test_dot_SOURCES =  tests/test-dot.cpp
 test_dot_SOURCES += tests/test-main.cpp
 test_dot_SOURCES += $(CATCH2_SOURCES)
 test_dot_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+test_du_narendran_rusinowitch_SOURCES =  tests/test-du-narendran-rusinowitch.cpp
+test_du_narendran_rusinowitch_SOURCES += tests/test-main.cpp
+test_du_narendran_rusinowitch_SOURCES += $(CATCH2_SOURCES)
+test_du_narendran_rusinowitch_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
