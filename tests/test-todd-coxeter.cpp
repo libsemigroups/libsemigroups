@@ -1394,13 +1394,13 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
     SECTION("not started. . .") {
-      REQUIRE(!kb.confluent());
+      REQUIRE(!kb.rewriting_system().confluent());
       REQUIRE(!kb.started());
     }
     SECTION("finished . . .") {
       kb.run();
-      REQUIRE(kb.confluent());
-      REQUIRE(kb.number_of_active_rules() == 6);
+      REQUIRE(kb.rewriting_system().confluent());
+      REQUIRE(kb.rewriting_system().number_of_rules() == 6);
       REQUIRE(kb.finished());
     }
 
@@ -2345,7 +2345,8 @@ namespace libsemigroups {
     REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(reduce(tc, "aaaaaaaaaaaaaaaaaaa") == "a");
     auto S = to<FroidurePin>(tc);
-    REQUIRE(to<KnuthBendix<word_type>>(twosided, S).confluent());
+    REQUIRE(
+        to<KnuthBendix<word_type>>(twosided, S).rewriting_system().confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations

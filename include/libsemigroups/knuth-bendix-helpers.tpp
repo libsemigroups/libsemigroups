@@ -25,10 +25,10 @@ namespace libsemigroups {
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    std::vector<std::vector<Word>>
-    non_trivial_classes(KnuthBendix<Word, Rewriter, ReductionOrder>& kb1,
-                        KnuthBendix<Word, Rewriter, ReductionOrder>& kb2) {
+    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    std::vector<std::vector<Word>> non_trivial_classes(
+        KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb1,
+        KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb2) {
       using rx::operator|;
 
       // It is intended that kb2 is defined using the same presentation as kb1
@@ -98,7 +98,8 @@ namespace libsemigroups {
       // We do a depth first search simultaneously for cycles, and edges E in
       // g1 not in g2. Pre order for cycle detection, post order for "can we
       // reach a node incident to an edge in E" and "number of paths through a
-      // node is infinite"
+      // node is infinite". Crucially here a node is incident to an edge if it
+      // is the source or the target of an edge.
       size_t const N = g1.number_of_nodes();
       // can_reach[v] == true if there is a path from v to a node incident to
       // an edge in g1 that's not in g2.
@@ -116,11 +117,11 @@ namespace libsemigroups {
           // post order
           v -= N;
           for (auto e : g1.labels()) {
-            auto ve = g1.target_no_checks(v, e);
-            if (ve != UNDEFINED) {
-              can_reach[v] = (can_reach[v] || can_reach[ve]);
-              if (can_reach[ve]) {
-                inf_paths[v] = inf_paths[ve];
+            auto ve1 = g1.target_no_checks(v, e);
+            if (ve1 != UNDEFINED) {
+              can_reach[v] = (can_reach[v] || can_reach[ve1]);
+              if (can_reach[ve1]) {
+                inf_paths[v] = inf_paths[ve1];
               }
               if (can_reach[v] && inf_paths[v]) {
                 LIBSEMIGROUPS_EXCEPTION(
@@ -128,7 +129,7 @@ namespace libsemigroups {
               }
             }
           }
-        } else {
+        } else if (!seen[v]) {
           seen[v] = true;
           // so we can tell when all of the descendants of v have been
           // processed out of the stack
@@ -140,19 +141,23 @@ namespace libsemigroups {
             auto ve1 = g1.target_no_checks(v, e);
             if (ve1 != UNDEFINED) {
               // Check if (v, e, ve1) corresponds to an edge in g2
-              if (!can_reach[v]) {
+              if (to_g2[v] != UNDEFINED) {
                 auto ve2 = g2.target_no_checks(to_g2[v], e);
                 if (ve2 != UNDEFINED) {
                   // edges (v, e, ve1) and (to_g2[v], e, ve2) exist, so
-                  // there's an edge in g1 not in g2 if the targets of these
-                  // edges do not correspond to each other.
-                  can_reach[v] = (ve1 != to_g1[ve2]);
-                } else {
-                  // There's no edge labelled by e incident to the node
-                  // corresponding to v in g2, but there is such an edge in g1
-                  // and so (v, e, ve1) is in g1 but not g2.
-                  can_reach[v] = true;
+                  // there's an edge in g1 not in g2 if the targets ve1 and ve2
+                  // of these edges do not correspond to each other.
+                  if (ve1 != to_g1[ve2]) {
+                    can_reach[v]   = true;
+                    can_reach[ve1] = true;
+                  }
                 }
+              } else {
+                // There's no edge labelled by e incident to the node
+                // corresponding to v in g2, but there is such an edge in g1
+                // and so (v, e, ve1) is in g1 but not g2.
+                can_reach[v]   = true;
+                can_reach[ve1] = true;
               }
               if (seen[ve1]) {
                 // cycle detected
@@ -261,33 +266,32 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
-      size_t prev_max_overlap               = kb.max_overlap();
-      size_t prev_check_confluence_interval = kb.check_confluence_interval();
+    template <typename Word, typename RewritingSystem, typename ReductionOrder>
+    void
+    by_overlap_length(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb) {
+      size_t prev_max_overlap = kb.max_overlap();
       kb.max_overlap(1);
-      kb.check_confluence_interval(POSITIVE_INFINITY);
 
-      while (!kb.confluent()) {
+      while (!kb.rewriting_system().confluent()) {
         kb.run();
         kb.max_overlap(kb.max_overlap() + 1);
       }
       kb.max_overlap(prev_max_overlap);
-      kb.check_confluence_interval(prev_check_confluence_interval);
     }
 
-    // TODO(1) deprecate and make this Rewriter mem fn
-    template <typename Rewriter, typename ReductionOrder>
-    bool is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
-      for (auto const& test_rule : kb.active_rules()) {
-        auto const lhs = test_rule->lhs();
-        for (auto const& rule : kb.active_rules()) {
+    // TODO(1) deprecate and make this RewritingSystem mem fn
+    template <typename RewritingSystem, typename ReductionOrder>
+    bool
+    is_reduced(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb) {
+      for (auto const& test_rule : kb.rewriting_system().rules()) {
+        auto const lhs = test_rule.first;
+        for (auto const& rule : kb.rewriting_system().rules()) {
           if (test_rule == rule) {
             continue;
           }
 
-          if (rule->lhs().find(lhs) != std::string::npos
-              || rule->rhs().find(lhs) != std::string::npos) {
+          if (rule.first.find(lhs) != std::string::npos
+              || rule.second.find(lhs) != std::string::npos) {
             return false;
           }
         }

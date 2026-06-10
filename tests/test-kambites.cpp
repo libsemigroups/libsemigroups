@@ -133,7 +133,8 @@ namespace libsemigroups {
           if (k.small_overlap_class() >= 4) {
             total_c4++;
           }
-          if (kb1.confluent() || kb2.confluent()) {
+          if (kb1.rewriting_system().confluent()
+              || kb2.rewriting_system().confluent()) {
             total_confluent++;
           }
         }

@@ -606,11 +606,11 @@ namespace libsemigroups {
 
     kb.run();
     REQUIRE(kb.finished());
-    REQUIRE(kb.confluent());
+    REQUIRE(kb.rewriting_system().confluent());
 
     REQUIRE((kb.active_rules() | rx::to_vector())
             == std::vector<std::decay_t<decltype(kb)>::rule_type>(
-                {{"aa", "a"}, {"ab", "a"}, {"ba", "a"}}));
+                {{"ba", "a"}, {"ab", "a"}, {"aa", "a"}}));
 
     cong.run();
 

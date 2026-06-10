@@ -232,11 +232,9 @@ namespace libsemigroups {
 
     KnuthBendix kb(congruence_kind::twosided, p);
 
-    REQUIRE(kb.number_of_active_rules() == 0);
-    REQUIRE(kb.number_of_pending_rules() == 4);
+    REQUIRE(kb.rewriting_system().number_of_rules() == 4);
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 4);
-    REQUIRE(kb.number_of_pending_rules() == 0);
+    REQUIRE(kb.rewriting_system().number_of_rules() == 4);
     REQUIRE(kb.confluent() == true);
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
@@ -415,10 +413,10 @@ namespace libsemigroups {
     matrix::row_space_size(x);  // returns 7
   }
 
-  // presentation.hpp: Line 926
+  // presentation.hpp: Line 935
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "024",
-                          "./include/libsemigroups/presentation.hpp:926",
+                          "./include/libsemigroups/presentation.hpp:935",
                           "[docs][quick]") {
     Presentation<std::string> p;
     presentation::to_report_string(p);
@@ -651,10 +649,10 @@ namespace libsemigroups {
     //  0001_w}));
   }
 
-  // word-range.hpp: Line 1151
+  // word-range.hpp: Line 1155
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "039",
-                          "./include/libsemigroups/word-range.hpp:1151",
+                          "./include/libsemigroups/word-range.hpp:1155",
                           "[docs][quick]") {
     ToString tostring("bac");
     REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
@@ -664,10 +662,10 @@ namespace libsemigroups {
     REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
   }
 
-  // word-range.hpp: Line 1402
+  // word-range.hpp: Line 1406
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "040",
-                          "./include/libsemigroups/word-range.hpp:1402",
+                          "./include/libsemigroups/word-range.hpp:1406",
                           "[docs][quick]") {
     using rx::operator|;
     WordRange words;
@@ -679,10 +677,10 @@ namespace libsemigroups {
     // "aaaaaaaa", "aaaaaaaaa"};
   }
 
-  // word-range.hpp: Line 1600
+  // word-range.hpp: Line 1604
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "041",
-                          "./include/libsemigroups/word-range.hpp:1600",
+                          "./include/libsemigroups/word-range.hpp:1604",
                           "[docs][quick]") {
     StringRange strings;
     strings
@@ -692,10 +690,10 @@ namespace libsemigroups {
         .max(5);                 // to 5
   }
 
-  // word-range.hpp: Line 2322
+  // word-range.hpp: Line 2326
   LIBSEMIGROUPS_TEST_CASE("docs",
                           "042",
-                          "./include/libsemigroups/word-range.hpp:2322",
+                          "./include/libsemigroups/word-range.hpp:2326",
                           "[docs][quick]") {
     using namespace words;
     word_type w = 012345_w;

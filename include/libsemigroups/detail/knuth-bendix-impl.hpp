@@ -21,7 +21,6 @@
 
 // TODO(1)
 // * noexcept
-// * separate rule container from Rules
 // * nodiscard
 
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_IMPL_HPP_
@@ -44,23 +43,24 @@
 #include <utility>        // for move, make_pair
 #include <vector>         // for vector
 
-#include "libsemigroups/adapters.hpp"            // for Hash
-#include "libsemigroups/constants.hpp"           // for POSITIVE_INFINITY
-#include "libsemigroups/debug.hpp"               // for LIBSEMIGROUPS_...
-#include "libsemigroups/obvinf.hpp"              // for is_obviously_infinite
-#include "libsemigroups/order.hpp"               // for ShortLexCompare
-#include "libsemigroups/paths-count.hpp"         // for paths::count
-#include "libsemigroups/presentation.hpp"        // for operator!=
-#include "libsemigroups/ranges.hpp"              // for count, iterato...
-#include "libsemigroups/types.hpp"               // for congruence_kind
-#include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
-#include "libsemigroups/word-graph.hpp"          // for WordGraph, to_...
-#include "libsemigroups/word-range.hpp"          // for to_human_reada...
+#include "libsemigroups/adapters.hpp"              // for Hash
+#include "libsemigroups/constants.hpp"             // for POSITIVE_INFINITY
+#include "libsemigroups/debug.hpp"                 // for LIBSEMIGROUPS_...
+#include "libsemigroups/is_specialization_of.hpp"  // for is_specialization_of_v
+#include "libsemigroups/obvinf.hpp"                // for is_obviously_infinite
+#include "libsemigroups/order.hpp"                 // for ShortLexCompare
+#include "libsemigroups/paths-count.hpp"           // for paths::count
+#include "libsemigroups/presentation.hpp"          // for operator!=
+#include "libsemigroups/ranges.hpp"                // for count, iterato...
+#include "libsemigroups/types.hpp"                 // for congruence_kind
+#include "libsemigroups/word-graph-helpers.hpp"    // for word_graph
+#include "libsemigroups/word-graph.hpp"            // for WordGraph, to_...
+#include "libsemigroups/word-range.hpp"            // for to_human_reada...
 
 #include "cong-common-class.hpp"  // for CongruenceInte...
 #include "fmt.hpp"                // for format, print
 #include "report.hpp"             // for report_no_prefix
-#include "rewriters.hpp"          // for Rule, internal...
+#include "rewriting-system.hpp"   // for Rule, internal...
 #include "string.hpp"             // for group_digits
 #include "timer.hpp"              // for string_time
 
@@ -133,23 +133,35 @@ namespace libsemigroups {
     //! Those functions with the prefix `current_` do not perform any
     //! further enumeration.
 
-    template <typename Rewriter       = detail::RewriteTrie,
-              typename ReductionOrder = ShortLexCompare>
+    // TODO(1) Make overlap measure a template param?
+    // TODO(v4) 2nd template parameter no longer used, remove
+    template <
+        typename RewritingSystem = detail::RewritingSystemTrie<ShortLexCompare>,
+        typename ReductionOrder  = typename RewritingSystem::reduction_order>
     class KnuthBendixImpl : public CongruenceCommon {
+      // Since the 2nd template parameter is now unnecessary, but not removed
+      // for backwards compatibility, we assert that it is the order of the
+      // rewriting system.
+      static_assert(std::is_same_v<ReductionOrder,
+                                   typename RewritingSystem::reduction_order>);
+
      public:
       ////////////////////////////////////////////////////////////////////////
       // Aliases
       ////////////////////////////////////////////////////////////////////////
 
-      using native_word_type = typename Rewriter::native_word_type;
+      using native_word_type = typename RewritingSystem::native_word_type;
       using rule_type        = std::pair<native_word_type, native_word_type>;
-      using rewriter_type    = Rewriter;
+      using rule_const_reference =
+          typename RewritingSystem::rule_const_reference;
+      using rewriting_system_type = RewritingSystem;
 
       //////////////////////////////////////////////////////////////////////////
       // Nested classes - public
       //////////////////////////////////////////////////////////////////////////
 
       struct options {
+        // TODO(v4) -> overlap_policy
         enum class overlap { ABC = 0, AB_BC = 1, MAX_AB_BC = 2 };
       };
 
@@ -157,20 +169,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // Nested classes - private
       ////////////////////////////////////////////////////////////////////////
-
-      // Overlap measures
-      struct OverlapMeasure {
-        virtual size_t
-        operator()(detail::Rule const*,
-                   detail::Rule const* examples,
-                   typename native_word_type::const_iterator const&)
-            = 0;
-        virtual ~OverlapMeasure() {}
-      };
-
-      struct ABC;
-      struct AB_BC;
-      struct MAX_AB_BC;
 
       struct Settings {
         Settings() noexcept;
@@ -181,8 +179,6 @@ namespace libsemigroups {
         Settings& operator=(Settings const&) noexcept = default;
         Settings& operator=(Settings&&) noexcept      = default;
 
-        size_t                    max_pending_rules;
-        size_t                    check_confluence_interval;
         size_t                    max_overlap;
         size_t                    max_rules;
         typename options::overlap overlap_policy;
@@ -211,9 +207,10 @@ namespace libsemigroups {
       std::vector<native_word_type>   _gilman_graph_node_labels;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
       Presentation<native_word_type>  _presentation;
-      mutable Rewriter                _rewriter;
+      mutable RewritingSystem         _rewriting_system;
       Settings                        _settings;
       mutable Stats                   _stats;
+      bool                            _ticker_running;
       mutable native_word_type        _tmp_element1;
 
      public:
@@ -223,12 +220,11 @@ namespace libsemigroups {
 
       KnuthBendixImpl();
       KnuthBendixImpl& init();
-      KnuthBendixImpl(KnuthBendixImpl const& that);
 
+      KnuthBendixImpl(KnuthBendixImpl const& that);
       KnuthBendixImpl(KnuthBendixImpl&&);
 
       KnuthBendixImpl& operator=(KnuthBendixImpl const&);
-
       KnuthBendixImpl& operator=(KnuthBendixImpl&&);
 
       ~KnuthBendixImpl();
@@ -471,8 +467,11 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      KnuthBendixImpl& max_pending_rules(size_t val) {
-        _settings.max_pending_rules = val;
+      //!
+      //! \deprecated_warning{function} Use
+      //! `rewriting_system().settings().reduction_threshold = val` instead.
+      [[deprecated]] KnuthBendixImpl& max_pending_rules(size_t val) {
+        rewriting_system().settings().reduction_threshold = val;
         return *this;
       }
 
@@ -495,8 +494,11 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      [[nodiscard]] size_t max_pending_rules() const noexcept {
-        return _settings.max_pending_rules;
+      //!
+      //! \deprecated_warning{function} Use
+      //! `rewriting_system().settings().reduction_threshold` instead.
+      [[deprecated]] [[nodiscard]] size_t max_pending_rules() const noexcept {
+        return rewriting_system().settings().reduction_threshold;
       }
 
       //! \ingroup knuth_bendix_class_settings_group
@@ -521,8 +523,11 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa \ref run.
-      KnuthBendixImpl& check_confluence_interval(size_t val) {
-        _settings.check_confluence_interval = val;
+      //!
+      //! \deprecated_warning{function}. This has been removed and has no
+      //! effect.
+      [[deprecated]] KnuthBendixImpl& check_confluence_interval(size_t val) {
+        (void) val;
         return *this;
       }
 
@@ -545,8 +550,12 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa \ref run.
-      [[nodiscard]] size_t check_confluence_interval() const noexcept {
-        return _settings.check_confluence_interval;
+      //!
+      //! \deprecated_warning{function}. This has been removed and always
+      //! returns \c 0.
+      [[deprecated]] [[nodiscard]] size_t
+      check_confluence_interval() const noexcept {
+        return 0;
       }
 
       //! \ingroup knuth_bendix_class_settings_group
@@ -702,127 +711,77 @@ namespace libsemigroups {
       }
 
       //! \ingroup knuth_bendix_class_accessors_group
-      //! \brief Return the current number of active rules in the
-      //! \ref_knuth_bendix instance.
       //!
-      //! This function returns the current number of active rules in the
-      //! \ref_knuth_bendix instance.
+      //! \brief Return the rewriting system.
       //!
-      //! \returns
-      //! The current number of active rules, a value of type \c size_t.
+      //! This function returns a reference to the rewriting system that
+      //! a KnuthBendix instance is operating on.
       //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      [[nodiscard]] size_t number_of_active_rules() const noexcept;
-
-      //! \ingroup knuth_bendix_class_accessors_group
-      //!
-      //! \brief Return the current number of inactive rules in the
-      //! \ref_knuth_bendix instance.
-      //!
-      //! This function returns the current number of inactive rules in the
-      //! \ref_knuth_bendix instance.
-      //!
-      //! \returns
-      //! The current number of inactive rules, a value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
-        return _rewriter.number_of_inactive_rules();
+      //! \returns A reference to the underlying rewriting system.
+      RewritingSystem& rewriting_system() noexcept {
+        return _rewriting_system;
       }
 
       //! \ingroup knuth_bendix_class_accessors_group
       //!
-      //! \brief Return the number of pending rules.
+      //! \brief Return the rewriting system.
       //!
-      //! This function returns the number of pending rules in the system. All
-      //! rules in the system are either active or pending. Active rules are
-      //! used to perform rewriting, but pending rules are not, until they have
-      //! been processed and become active rules. For example, when a
-      //! \ref_knuth_bendix object is constructed from a presentation, the rules
-      //! in the presentation are initially pending. This is to avoid incurring
-      //! the cost of processing the pending rules before absolutely necessary.
+      //! This function returns a const reference to the rewriting system that
+      //! a KnuthBendix instance is operating on.
       //!
-      //! \returns
-      //! The number of pending rules.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      [[nodiscard]] size_t number_of_pending_rules() const noexcept {
-        return _rewriter.number_of_pending_rules();
+      //! \returns A const reference to the underlying rewriting system.
+      RewritingSystem const& rewriting_system() const noexcept {
+        return _rewriting_system;
       }
 
-      //! \ingroup knuth_bendix_class_accessors_group
-      //!
-      //! \brief Return the number of rules that \ref_knuth_bendix has created.
-      //!
-      //! This function returns the total number of Rule instances that have
-      //! been created whilst whilst the Knuth-Bendix algorithm has been
-      //! running. Note that this is not the sum of \ref number_of_active_rules
-      //! and \ref number_of_inactive_rules, due to the re-initialisation of
-      //! rules where possible.
-      //!
-      //! \returns
-      //! The total number of rules, a value of type \c size_t.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      [[nodiscard]] size_t total_rules() const noexcept {
-        return _rewriter.stats().total_rules;
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().active_rules().size() instead!")]] size_t
+      number_of_active_rules() const noexcept {
+        return rewriting_system().active_rules().size();
       }
 
-      Rewriter& rewriter() noexcept {
-        return _rewriter;
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().pending_rules().size() instead!")]] size_t
+      number_of_pending_rules() const noexcept {
+        return rewriting_system().pending_rules().size();
       }
 
-      // Documented in KnuthBendix
-      // TODO(1) should be const
-      // TODO(1) add note about empty active rules after, or better discuss that
-      // there are three kinds of rules in the system: active, inactive, and
-      // pending.
-      [[nodiscard]] auto active_rules();
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().inactive_rules().size() instead!")]] size_t
+      number_of_inactive_rules() const noexcept {
+        return rewriting_system().inactive_rules().size();
+      }
 
-      //! \ingroup knuth_bendix_class_accessors_group
-      //!
-      //! \brief Process any pending rules.
-      //!
-      //! This function processes any pending rules in the system.
-      //! All rules in
-      //! the system are either active or pending. Active rules are used to
-      //! perform rewriting, but pending rules are not, until they have been
-      //! processed and become active rules. For example, when a
-      //! \ref_knuth_bendix object is constructed from a presentation, the rules
-      //! in the presentation are initially pending. This is to avoid incurring
-      //! the cost of processing the pending rules before absolutely necessary.
-      //!
-      //! \return
-      //! A reference to `*this`.
-      //!
-      //! \exceptions
-      //! \no_libsemigroups_except
-      KnuthBendixImpl& process_pending_rules() {
-        _rewriter.process_pending_rules();
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().confluent() instead!")]] bool
+      confluent() noexcept {
+        return rewriting_system().confluent();
+      }
+
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().confluent_known() instead!")]] bool
+      confluent_known() const noexcept {
+        return rewriting_system().confluent_known();
+      }
+
+      [[nodiscard]] [[deprecated(
+          "Use rewriting_system().stats().total_rules instead!")]] size_t
+      total_rules() const noexcept {
+        return rewriting_system().stats().total_rules;
+      }
+
+      [[deprecated(
+          "Use rewriting_system()/reduce() instead!")]] KnuthBendixImpl&
+      process_pending_rules() {
+        rewriting_system().reduce();
         return *this;
       }
 
      private:
-      // TODO(1) remove this ...
+      // TODO(1) expose in public interface
       void rewrite_inplace(native_word_type& w);
 
-      // TODO(1) remove this ...
+      // TODO(1) expose in public interface
       [[nodiscard]] native_word_type rewrite(native_word_type w) {
         rewrite_inplace(w);
         return w;
@@ -835,28 +794,6 @@ namespace libsemigroups {
 
       //! \ingroup knuth_bendix_class_accessors_group
       //!
-      //! \brief Check confluence of the current rules.
-      //!
-      //! Check confluence of the current rules.
-      //!
-      //! \returns \c true if the \ref_knuth_bendix instance is
-      //! [confluent](https://w.wiki/9DA) and \c false if it is not.
-      [[nodiscard]] bool confluent() const;
-
-      //! \ingroup knuth_bendix_class_accessors_group
-      //!
-      //! \brief Check if the current system knows the state of confluence of
-      //! the current rules.
-      //!
-      //! Check if the current system knows the state of confluence of the
-      //! current rules.
-      //!
-      //! \returns \c true if the confluence of the rules in the
-      //! \ref_knuth_bendix instance is known, and \c false if it is not.
-      [[nodiscard]] bool confluent_known() const noexcept;
-
-      //! \ingroup knuth_bendix_class_accessors_group
-      //!
       //! \brief Return the Gilman \ref WordGraph.
       //!
       //! This function returns the Gilman WordGraph of the system.
@@ -865,7 +802,7 @@ namespace libsemigroups {
       //! the initial node (corresponding to the empty word) correspond to the
       //! shortlex normal forms of the semigroup elements.
       //!
-      //! The semigroup is finite if the graph is cyclic, and infinite
+      //! The semigroup is finite if the graph is acyclic, and infinite
       //! otherwise.
       //!
       //! \returns A const reference to a \ref WordGraph.
@@ -897,7 +834,7 @@ namespace libsemigroups {
 
       void report_presentation() const;
       void report_before_run();
-      void report_progress_from_thread(std::atomic_bool const&);
+      void report_progress_from_thread();
       void report_after_run();
 
       void stats_check_point();
@@ -905,15 +842,9 @@ namespace libsemigroups {
       void add_octo(native_word_type& w) const;
       void rm_octo(native_word_type& w) const;
 
-      void add_rule_impl(native_word_type const& p, native_word_type const& q);
+      // TODO(1) move to elsewhere, probably RulesWithOverlaps or something
+      void overlap(Rule const* u, Rule const* v);
 
-      void overlap(detail::Rule const* u, detail::Rule const* v);
-
-      [[nodiscard]] size_t max_active_word_length() const {
-        return _rewriter.max_active_word_length();
-      }
-
-      void               run_real(std::atomic_bool&);
       [[nodiscard]] bool stop_running() const;
 
       //////////////////////////////////////////////////////////////////////////
@@ -946,15 +877,15 @@ namespace libsemigroups {
   //!
   //! \returns A reference to the first argument.
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  template <typename Word, typename Rewriter, typename ReductionOrder>
+  template <typename Word, typename RewritingSystem, typename ReductionOrder>
   std::ostream&
-  operator<<(std::ostream&                                      os,
-             KnuthBendix<Word, Rewriter, ReductionOrder> const& kb);
+  operator<<(std::ostream&                                             os,
+             KnuthBendix<Word, RewritingSystem, ReductionOrder> const& kb);
 #else
-  template <typename Rewriter, typename ReductionOrder>
-  std::ostream&
-  operator<<(std::ostream&                                            os,
-             detail::KnuthBendixImpl<Rewriter, ReductionOrder> const& kb);
+  template <typename RewritingSystem, typename ReductionOrder>
+  std::ostream& operator<<(
+      std::ostream&                                                   os,
+      detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> const& kb);
 #endif
 
   //! \ingroup knuth_bendix_group
@@ -976,19 +907,19 @@ namespace libsemigroups {
   //! \returns The representation, a value of type \c std::string.
   // TODO(1) preferably kb would be a const&
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  template <typename Word, typename Rewriter, typename ReductionOrder>
-  std::string
-  to_human_readable_repr(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
+  template <typename Word, typename RewritingSystem, typename ReductionOrder>
+  std::string to_human_readable_repr(
+      KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 #else
-  template <typename Rewriter, typename ReductionOrder>
-  std::string
-  to_human_readable_repr(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
+  template <typename RewritingSystem, typename ReductionOrder>
+  std::string to_human_readable_repr(
+      detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb);
 #endif
 
   //! No doc
   // TODO(1) kb should be const
-  template <typename Result, typename Rewriter, typename ReductionOrder>
-  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
+  template <typename Result, typename RewritingSystem, typename ReductionOrder>
+  auto to(detail::KnuthBendixImpl<RewritingSystem, ReductionOrder>& kb)
       -> std::enable_if_t<
           std::is_same_v<Presentation<typename Result::word_type>, Result>,
           Result>;

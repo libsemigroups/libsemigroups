@@ -48,9 +48,9 @@
 
 #include "libsemigroups/detail/eigen.hpp"  // // for DenseBase::row, DenseBa...
 #include "libsemigroups/detail/fmt.hpp"    // for format, print
-#include "libsemigroups/detail/iterator.hpp"   // for operator+
-#include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
+#include "libsemigroups/detail/iterator.hpp"          // for operator+
+#include "libsemigroups/detail/report.hpp"            // for ReportGuard
+#include "libsemigroups/detail/rewriting-system.hpp"  // for RewritingSystemTrie
 
 namespace libsemigroups {
 

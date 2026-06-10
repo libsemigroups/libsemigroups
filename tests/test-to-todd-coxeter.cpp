@@ -206,10 +206,10 @@ namespace libsemigroups {
 
     KnuthBendix kb(twosided, p);
 
-    REQUIRE(kb.confluent());
+    REQUIRE(kb.rewriting_system().confluent());
     kb.run();
-    REQUIRE(kb.confluent());
-    REQUIRE(kb.number_of_active_rules() == 3);
+    REQUIRE(kb.rewriting_system().confluent());
+    REQUIRE(kb.rewriting_system().number_of_rules() == 3);
     REQUIRE(kb.number_of_classes() == 1);
     // REQUIRE(kb.is_obviously_finite());
     REQUIRE(kb.finished());

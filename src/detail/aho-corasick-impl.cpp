@@ -19,17 +19,17 @@
 // This file contains the implementation of the AhoCorasickImpl class.
 #include "libsemigroups/detail/aho-corasick-impl.hpp"
 
-#include <algorithm>    // for max, copy, reverse
-#include <array>        // for array
-#include <string>       // for basic_string, string, to_string
-#include <string_view>  // for basic_string_view, string_view
+#include <algorithm>   // for fill, sort, copy_if
+#include <functional>  // for greater
+#include <numeric>     // for iota
+#include <string>      // for basic_string
 
-#include "libsemigroups/constants.hpp"   // for Undefined, UNDEFINED, operator==
-#include "libsemigroups/debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/detail/fmt.hpp"  // for format
-#include "libsemigroups/dot.hpp"         // for Dot, Dot::Edge, Dot::Node
-#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"       // for word_type, letter_type
+#include "libsemigroups/constants.hpp"  // for Undefined, UNDEFINED, operator==
+#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/types.hpp"      // for word_type, letter_type
+
+#include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
 
 namespace libsemigroups {
   namespace detail {
@@ -39,22 +39,30 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     AhoCorasickImpl::Node::Node(index_type parent, letter_type a)
-        : _height(), _link(), _parent(), _parent_letter(), _terminal() {
+        : _generation(0),
+          _height(),
+          _link(),
+          _parent(),
+          _parent_letter(),
+          _suffix_link_sources(),
+          _value(nullptr) {
       init(parent, a);
     }
 
-    AhoCorasickImpl::Node& AhoCorasickImpl::Node::init(index_type  i,
-                                                       letter_type a) noexcept {
-      _height = i == UNDEFINED ? 0 : UNDEFINED;
+    typename AhoCorasickImpl::Node&
+    AhoCorasickImpl::Node::init(index_type parent, letter_type a) noexcept {
+      _height     = parent == UNDEFINED ? 0 : UNDEFINED;
+      _generation = 0;
       if (_parent == root || _parent == UNDEFINED) {
         _link = root;
       } else {
         _link = UNDEFINED;
       }
-      _parent        = i;
+      _parent        = parent;
       _parent_letter = a;
-      _terminal      = false;
       _suffix_link_sources.clear();
+
+      _value = nullptr;
 
       // Cannot set _link or _height here because we don't have access to the
       // relevant info here.
@@ -62,7 +70,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // AhoCorasickImpl class
+    // AhoCorasickImpl  class
     ////////////////////////////////////////////////////////////////////////
 
     AhoCorasickImpl::AhoCorasickImpl()
@@ -70,7 +78,9 @@ namespace libsemigroups {
           _children(0, 1, UNDEFINED),
           _active_nodes_index({root}),
           _inactive_nodes_index(),
-          _node_indices_to_update() {}
+          _node_indices_to_update(),
+          _terminal_nodes_index(),
+          _generation(0) {}
 
     AhoCorasickImpl& AhoCorasickImpl::init() {
       init(0);
@@ -78,10 +88,12 @@ namespace libsemigroups {
     }
 
     AhoCorasickImpl::AhoCorasickImpl(AhoCorasickImpl const&) = default;
-    AhoCorasickImpl::AhoCorasickImpl(AhoCorasickImpl&&)      = default;
+
+    AhoCorasickImpl::AhoCorasickImpl(AhoCorasickImpl&&) = default;
 
     AhoCorasickImpl& AhoCorasickImpl::operator=(AhoCorasickImpl const&)
         = default;
+
     AhoCorasickImpl& AhoCorasickImpl::operator=(AhoCorasickImpl&&) = default;
 
     AhoCorasickImpl::AhoCorasickImpl(size_t num_letters)
@@ -89,7 +101,9 @@ namespace libsemigroups {
           _children(num_letters, 1, UNDEFINED),
           _active_nodes_index({root}),
           _inactive_nodes_index(),
-          _node_indices_to_update() {}
+          _node_indices_to_update(),
+          _terminal_nodes_index(),
+          _generation(0) {}
 
     AhoCorasickImpl& AhoCorasickImpl::init(size_t num_letters) {
       LIBSEMIGROUPS_ASSERT(!_all_nodes.empty());
@@ -109,10 +123,12 @@ namespace libsemigroups {
       _active_nodes_index.clear();
       _active_nodes_index.insert(root);
       _all_nodes[0].init();
+      _terminal_nodes_index.clear();
       LIBSEMIGROUPS_ASSERT(_active_nodes_index.size()
                                + _inactive_nodes_index.size()
                            == _all_nodes.size());
       LIBSEMIGROUPS_ASSERT(_children.number_of_rows() == _all_nodes.size());
+      _generation = 0;
 
       return *this;
     }
@@ -129,19 +145,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    size_t AhoCorasickImpl::height_no_checks(index_type i) const {
-      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
-      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
-      return _all_nodes[i].height();
-    }
-
-    bool AhoCorasickImpl::terminal_no_checks(index_type i) const {
-      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
-      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(i) == 1);
-      return _all_nodes[i].terminal();
-    }
-
-    AhoCorasickImpl::index_type
+    typename AhoCorasickImpl::index_type
     AhoCorasickImpl::new_active_node_no_checks(index_type  parent_index,
                                                letter_type a) {
       LIBSEMIGROUPS_ASSERT(parent_index < _all_nodes.size());
@@ -172,9 +176,10 @@ namespace libsemigroups {
                 UNDEFINED);
 
       // Set the suffix link and height of new node
-      auto&      new_node   = _all_nodes[new_node_index];
-      index_type link_index = traverse_no_checks(
-          suffix_link_no_checks(new_node.parent()), new_node.parent_letter());
+      auto&      new_node = _all_nodes[new_node_index];
+      index_type link_index
+          = traverse_no_checks(node_no_checks(new_node.parent()).suffix_link(),
+                               new_node.parent_letter());
       LIBSEMIGROUPS_ASSERT(link_index != UNDEFINED);
       new_node.suffix_link(link_index);
       new_node.height(_all_nodes[new_node.parent()].height() + 1);
@@ -231,6 +236,7 @@ namespace libsemigroups {
 #endif
           _active_nodes_index.erase(node_index);
       LIBSEMIGROUPS_ASSERT(num_removed == 1);
+      _terminal_nodes_index.erase(node_index);
       _inactive_nodes_index.push_back(node_index);
     }
 
@@ -251,15 +257,9 @@ namespace libsemigroups {
       }
     }
 
-    void AhoCorasickImpl::throw_if_letter_out_of_range(index_type i) const {
-      if (i >= alphabet_size()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a value [0, {}), found {}", alphabet_size(), i);
-      }
-    }
-
     // Add <source_index> as a suffix link source of <target_index>, i.e.
     // _all_nodes[source_index].suffix_link() == target_index
+
     void AhoCorasickImpl::add_suffix_link_source(index_type source_index,
                                                  index_type target_index) {
       LIBSEMIGROUPS_ASSERT(source_index != target_index);
@@ -300,5 +300,6 @@ namespace libsemigroups {
         }
       }
     }
+
   }  // namespace detail
 }  // namespace libsemigroups

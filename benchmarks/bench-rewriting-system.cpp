@@ -22,12 +22,19 @@
 #include "libsemigroups/ranges.hpp"      // for rx::to_vector
 #include "libsemigroups/word-range.hpp"  // for literals
 
-#include "libsemigroups/detail/report.hpp"     // for ReportGuard
-#include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
+#include "libsemigroups/detail/report.hpp"            // for ReportGuard
+#include "libsemigroups/detail/rewriting-system.hpp"  // for LenLexTrie
 
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 namespace libsemigroups {
+
+  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
+  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
+
+  using RPOTrie = detail::RewritingSystemTrie<RecursivePathCompare>;
+  using RPOSet  = detail::RewritingSystemSet<RecursivePathCompare>;
+
   using literals::operator""_w;
 
   namespace detail {
@@ -84,7 +91,7 @@ namespace libsemigroups {
             rhs = std::string(word.begin() + start_index,
                               word.begin() + start_index + rule_length);
           }
-          rt.add_rule(lhs, rhs);
+          rewriting_system::add_rule(rt, lhs, rhs);
         }
         return rt;
       }
@@ -99,7 +106,7 @@ namespace libsemigroups {
         rt.increase_alphabet_size_by(num_letters);
         std::string empty = "";
         for (auto const& word : words) {
-          rt.add_rule(word, empty);
+          rewriting_system::add_rule(rt, word, empty);
         }
         return rt;
       }
@@ -107,18 +114,18 @@ namespace libsemigroups {
     }  // namespace
 
     TEMPLATE_TEST_CASE("Length of words rewritten",
-                       "[RewriteTrie][000]",
-                       RewriteTrie,
-                       RewriteFromLeft) {
+                       "[LenLexTrie][000]",
+                       LenLexTrie,
+                       LenLexSet) {
       auto     rg = ReportGuard(false);
       TestType rt;
       rt.increase_alphabet_size_by(3);
-      rt.add_rule("aa"_w, "a"_w);
-      rt.add_rule("bc"_w, "c"_w);
-      rt.add_rule("bbb"_w, "b"_w);
-      rt.add_rule("ababab"_w, "b"_w);
+      rewriting_system::add_rule(rt, "aa"_w, "a"_w);
+      rewriting_system::add_rule(rt, "bc"_w, "c"_w);
+      rewriting_system::add_rule(rt, "bbb"_w, "b"_w);
+      rewriting_system::add_rule(rt, "ababab"_w, "b"_w);
 
-      REQUIRE(rt.process_pending_rules());
+      REQUIRE(rt.reduce());
 
       for (size_t m = 500; m < 10'000; m += 500) {
         std::vector<std::string> sample
@@ -140,9 +147,9 @@ namespace libsemigroups {
     }
 
     TEMPLATE_TEST_CASE("Number of rules (no rewriting)",
-                       "[RewriteTrie][number_of_rules][001]",
-                       RewriteTrie,
-                       RewriteFromLeft) {
+                       "[LenLexTrie][number_of_rules][001]",
+                       LenLexTrie,
+                       LenLexSet) {
       auto rg = ReportGuard(false);
 
       size_t                   sample_size = 100;
@@ -163,9 +170,9 @@ namespace libsemigroups {
           auto lhs = words.get();
           words.next();
           auto rhs = words.get();
-          rt.add_rule(lhs, rhs);
+          rewriting_system::add_rule(rt, lhs, rhs);
         }
-        rt.process_pending_rules();
+        rt.reduce();
 
         BENCHMARK(fmt::format("{}-rules, rule length = [{}, {}], word length = "
                               "[{}, {}), for {} rewrites",
@@ -187,9 +194,9 @@ namespace libsemigroups {
 
     TEMPLATE_TEST_CASE(
         "Number of rules (approx. no rewriting, but accessing trie)",
-        "[RewriteTrie][number_of_rules][002]",
-        RewriteTrie,
-        RewriteFromLeft) {
+        "[LenLexTrie][number_of_rules][002]",
+        LenLexTrie,
+        LenLexSet) {
       auto rg = ReportGuard(false);
 
       size_t                   sample_size = 100;
@@ -210,9 +217,9 @@ namespace libsemigroups {
           auto lhs = words.get();
           words.next();
           auto rhs = words.get();
-          rt.add_rule(lhs, rhs);
+          rewriting_system::add_rule(rt, lhs, rhs);
         }
-        rt.process_pending_rules();
+        rt.reduce();
 
         BENCHMARK(fmt::format("{}-rules, rule length = [{}, {}], word length = "
                               "[{}, {}), for {} rewrites",
@@ -234,8 +241,8 @@ namespace libsemigroups {
 
     TEMPLATE_TEST_CASE("Number of rules (more rewriting)",
                        "[number_of_rules][003]",
-                       RewriteTrie,
-                       RewriteFromLeft) {
+                       LenLexTrie,
+                       LenLexSet) {
       auto rg = ReportGuard(false);
 
       size_t                   sample_size = 1000;
@@ -251,7 +258,7 @@ namespace libsemigroups {
         size_t rule_max = 32;
         auto   rt       = generate_rewriter_random_subwords<TestType>(
             sample, m, rule_min, rule_max);
-        rt.process_pending_rules();
+        rt.reduce();
 
         BENCHMARK(fmt::format("{}-rules, rule length = [{}, {}], word length = "
                               "[{}, {}), for {} rewrites",
@@ -283,20 +290,19 @@ namespace libsemigroups {
 
       for (size_t rule_min = 1; rule_min < 11; ++rule_min) {
         size_t rule_max = rule_min + 1;
-        auto rt = generate_rewriter_all_words<RewriteTrie>(rule_min, rule_max);
-        rt.process_pending_rules();
+        auto   rt = generate_rewriter_all_words<LenLexTrie>(rule_min, rule_max);
+        rt.reduce();
 
-        BENCHMARK(
-            fmt::format(
-                "RewriteTrie, {}-rules, rule length = [{}, {}], word length = "
-                "[{}, {}), for {} rewrites",
-                rt.number_of_active_rules(),
-                rule_min,
-                rule_max,
-                sample_min,
-                sample_max,
-                sample_size)
-                .c_str()) {
+        BENCHMARK(fmt::format("LenLexTrie, {}-rules, rule length = "
+                              "[{}, {}], word length = "
+                              "[{}, {}), for {} rewrites",
+                              rt.active_rules().size(),
+                              rule_min,
+                              rule_max,
+                              sample_min,
+                              sample_max,
+                              sample_size)
+                      .c_str()) {
           for (auto& word : sample) {
             auto copy(word);
             rt.rewrite(copy);
@@ -304,14 +310,13 @@ namespace libsemigroups {
           }
         };
 
-        auto rfl
-            = generate_rewriter_all_words<RewriteFromLeft>(rule_min, rule_max);
-        rfl.process_pending_rules();
+        auto rfl = generate_rewriter_all_words<LenLexSet>(rule_min, rule_max);
+        rfl.reduce();
 
-        BENCHMARK(fmt::format("RewriteFromLeft, {}-rules, rule length = [{}, "
+        BENCHMARK(fmt::format("LenLexSet, {}-rules, rule length = [{}, "
                               "{}], word length = "
                               "[{}, {}), for {} rewrites",
-                              rfl.number_of_active_rules(),
+                              rfl.active_rules().size(),
                               rule_min,
                               rule_max,
                               sample_min,

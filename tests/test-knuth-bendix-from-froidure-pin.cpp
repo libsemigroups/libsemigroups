@@ -15,32 +15,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file is the fifth of six that contains tests for the KnuthBendix
-// classes. In a mostly vain attempt to speed up compilation the tests are
-// split across 6 files as follows:
-//
-// 1: contains quick tests for KnuthBendix created from rules and all commented
-//    out tests.
-//
-// 2: contains more quick tests for KnuthBendix created from rules
-//
-// 3: contains yet more quick tests for KnuthBendix created from rules
-//
-// 4: contains standard and extreme test for KnuthBendix created from rules
-//
-// 5: contains tests for KnuthBendix created from FroidurePin instances
-//
-// 6: contains tests for KnuthBendix.
+// This file includes all Knuth-Bendix tests that are generated from a
+// Froidure-Pin object.
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-
-#include <iostream>
 
 #include <algorithm>      // for copy, fill
 #include <string>         // for basic_string
 #include <unordered_map>  // for operator!=, operator==
 #include <vector>         // for vector, operator==
 
+#include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"           // for operator!=, operator==
@@ -49,6 +34,7 @@
 #include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix
 #include "libsemigroups/presentation.hpp"        // for Presentation
 #include "libsemigroups/to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "libsemigroups/to-knuth-bendix.hpp"     // for to<KnuthBendix>
 #include "libsemigroups/to-presentation.hpp"     // for to<Presentation>
 #include "libsemigroups/transf.hpp"              // for Transf
 #include "libsemigroups/types.hpp"               // for word_type, letter_type
@@ -73,27 +59,19 @@ namespace libsemigroups {
   using knuth_bendix::reduce;
   using knuth_bendix::reduce_no_run;
 
-  using RewriteTrie     = detail::RewriteTrie;
-  using RewriteFromLeft = detail::RewriteFromLeft;
+  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
+  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
 
-#define KNUTH_BENDIX_TYPES RewriteTrie, RewriteFromLeft
+  using RPOTrie = detail::RewritingSystemTrie<RecursivePathCompare>;
+  using RPOSet  = detail::RewritingSystemSet<RecursivePathCompare>;
 
-  namespace {
-    using rule_type = std::pair<std::string, std::string>;
-
-    struct weird_cmp {
-      bool operator()(rule_type const& x, rule_type const& y) const noexcept {
-        return shortlex_compare(x.first, y.first)
-               || (x.first == y.first && shortlex_compare(x.second, y.second));
-      }
-    };
-  }  // namespace
+#define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "119",
                                    "transformation semigroup (size 4)",
                                    "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
     auto S
         = make<FroidurePin>({make<Transf<>>({1, 0}), make<Transf<>>({0, 0})});
@@ -103,10 +81,10 @@ namespace libsemigroups {
     auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.confluent());
+    kb.rewriting_system().reduce();
+    REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.presentation().rules.size() / 2 == 4);
-    REQUIRE(kb.number_of_active_rules() == 4);
+    REQUIRE(kb.rewriting_system().number_of_rules() == 4);
     REQUIRE(kb.number_of_classes() == 4);
   }
 
@@ -114,7 +92,7 @@ namespace libsemigroups {
                                    "120",
                                    "transformation semigroup (size 9)",
                                    "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
@@ -126,9 +104,9 @@ namespace libsemigroups {
 
     auto                             p = to<Presentation<word_type>>(S);
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.confluent());
-    REQUIRE(kb.number_of_active_rules() == 3);
+    kb.rewriting_system().reduce();
+    REQUIRE(kb.rewriting_system().confluent());
+    REQUIRE(kb.rewriting_system().number_of_rules() == 3);
     REQUIRE(kb.number_of_classes() == 9);
   }
 
@@ -136,7 +114,7 @@ namespace libsemigroups {
                                    "121",
                                    "transformation semigroup (size 88)",
                                    "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 3, 4, 2, 3}));
@@ -148,9 +126,9 @@ namespace libsemigroups {
 
     auto                             p = to<Presentation<word_type>>(S);
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    // kb.process_pending_rules();
-    REQUIRE(kb.confluent());
-    REQUIRE(kb.number_of_active_rules() == 18);
+    kb.rewriting_system().reduce();
+    REQUIRE(kb.rewriting_system().confluent());
+    REQUIRE(kb.rewriting_system().number_of_rules() == 18);
     REQUIRE(kb.number_of_classes() == 88);
   }
 
@@ -158,7 +136,7 @@ namespace libsemigroups {
                                    "122",
                                    "to_froidure_pin x 1",
                                    "[quick]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({1, 0}));
@@ -167,7 +145,7 @@ namespace libsemigroups {
     auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    REQUIRE(kb.confluent());
+    REQUIRE(kb.rewriting_system().confluent());
     auto t = to<FroidurePin>(kb);
     REQUIRE(t.generator(0).word() == 0_w);
   }
@@ -176,7 +154,7 @@ namespace libsemigroups {
                                    "123",
                                    "to_froidure_pin x 2",
                                    "[quick]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
         {make<Transf<>>({1, 3, 4, 2, 3}), make<Transf<>>({3, 2, 1, 3, 3})});
@@ -187,7 +165,7 @@ namespace libsemigroups {
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
     kb.run();
-    REQUIRE(kb.confluent());
+    REQUIRE(kb.rewriting_system().confluent());
     REQUIRE(kb.number_of_classes() == 88);
   }
 
@@ -195,7 +173,7 @@ namespace libsemigroups {
                                    "124",
                                    "manual onesided congruence",
                                    "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -293,7 +271,7 @@ namespace libsemigroups {
                                    "125",
                                    "onesided congruence!!!",
                                    "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -388,7 +366,7 @@ namespace libsemigroups {
                                    "126",
                                    "manual left congruence!!!",
                                    "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -420,7 +398,7 @@ namespace libsemigroups {
 
     REQUIRE(kb.number_of_generating_pairs() == 1);
     kb.run();
-    REQUIRE(kb.number_of_active_rules() == 23);
+    REQUIRE(kb.rewriting_system().number_of_rules() == 23);
 
     auto copy   = kb.gilman_graph();
     auto source = copy.target(0, 2);
@@ -454,7 +432,7 @@ namespace libsemigroups {
                                    "127",
                                    "automatic left congruence!!!",
                                    "[quick][knuth-bendix][no-valgrind]",
-                                   KNUTH_BENDIX_TYPES) {
+                                   REWRITING_SYSTEM_TYPES) {
     using words::operator+;
 
     auto rg = ReportGuard(false);
@@ -600,5 +578,45 @@ namespace libsemigroups {
     REQUIRE(reduce_no_run(kb, 101001_w) == 100_w);
     REQUIRE(reduce_no_run(kb, 1000100_w) == 100_w);
     REQUIRE(contains(kb, 101001_w, 1000100_w));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "995",
+                                   "finite semigroup congruence",
+                                   "[quick][congruence][knuth-bendix]",
+                                   RPOTrie,
+                                   RPOSet) {
+    auto rg      = ReportGuard(false);
+    using Transf = LeastTransf<5>;
+    FroidurePin<Transf> S;
+    S.add_generator(make<Transf>({1, 3, 4, 2, 3}));
+    S.add_generator(make<Transf>({3, 2, 1, 3, 3}));
+
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
+
+    auto kb1
+        = to<KnuthBendix<word_type, TestType>>(congruence_kind::twosided, S);
+    auto kb2 = kb1;
+    knuth_bendix::add_generating_pair(
+        kb1,
+        froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
+
+    REQUIRE(kb1.number_of_classes() == 21);
+
+    auto P = to<FroidurePin>(kb1);
+    REQUIRE(P.size() == 21);
+    REQUIRE(P.number_of_idempotents() == 3);
+
+    REQUIRE((knuth_bendix::normal_forms(kb1) | rx::to_vector())
+            == std::vector<word_type>(
+                {0_w,    1_w,    00_w,   01_w,    10_w,    11_w,    000_w,
+                 001_w,  010_w,  011_w,  100_w,   110_w,   0000_w,  0100_w,
+                 0110_w, 1000_w, 1100_w, 01000_w, 01100_w, 11000_w, 011000_w}));
+
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    REQUIRE(ntc.size() == 1);
+    REQUIRE(ntc[0].size() == 68);
   }
 }  // namespace libsemigroups
