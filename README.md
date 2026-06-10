@@ -77,7 +77,8 @@ monoids. The main algorithms implemented in `libsemigroups` are:
 `libsemigroups` is used in the [Semigroups package for
 GAP](https://semigroups.github.io/Semigroups), and it
 is possible to use `libsemigroups` directly in Python 3 via the package
-[libsemigroups_pybind11](https://libsemigroups.github.io/libsemigroups_pybind11/).
+[libsemigroups_pybind11](https://libsemigroups.github.io/libsemigroups_pybind11/)
+and in Julia via the package [Semigroups.jl](https://libsemigroups.github.io/Semigroups.jl/).
 The development version of `libsemigroups` is available on
 [github](https://github.com/libsemigroups/libsemigroups), and some
 related projects are [here](https://github.com/libsemigroups).

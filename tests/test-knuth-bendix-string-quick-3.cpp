@@ -51,6 +51,7 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
   using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
+  using RPOTrie    = detail::RewritingSystemTrie<RecursivePathCompare>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
 
@@ -1231,7 +1232,7 @@ namespace libsemigroups {
       "Giles Gardam in \"A counterexample to the unit conjecture for group "
       "rings\" (https://arxiv.org/abs/2102.11818)",
       "[fail]",
-      REWRITING_SYSTEM_TYPES) {
+      RPOTrie) {
     Presentation<std::string> p;
     p.alphabet("bABa");
     p.contains_empty_word(true);

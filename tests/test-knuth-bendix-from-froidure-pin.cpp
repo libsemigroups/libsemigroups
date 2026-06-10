@@ -20,8 +20,6 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include <iostream>  // for what?? TODO
-
 #include <algorithm>      // for copy, fill
 #include <string>         // for basic_string
 #include <unordered_map>  // for operator!=, operator==
@@ -245,11 +243,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 

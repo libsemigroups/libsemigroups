@@ -717,7 +717,7 @@ namespace libsemigroups {
       //! This function returns a reference to the rewriting system that
       //! a KnuthBendix instance is operating on.
       //!
-      //! \returns A reference to a \ref RewritingSystem.
+      //! \returns A reference to the underlying rewriting system.
       RewritingSystem& rewriting_system() noexcept {
         return _rewriting_system;
       }
@@ -729,7 +729,7 @@ namespace libsemigroups {
       //! This function returns a const reference to the rewriting system that
       //! a KnuthBendix instance is operating on.
       //!
-      //! \returns A const reference to a \ref RewritingSystem.
+      //! \returns A const reference to the underlying rewriting system.
       RewritingSystem const& rewriting_system() const noexcept {
         return _rewriting_system;
       }
@@ -853,7 +853,7 @@ namespace libsemigroups {
 
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
