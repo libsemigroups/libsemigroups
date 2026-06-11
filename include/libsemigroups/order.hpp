@@ -80,6 +80,10 @@ namespace libsemigroups {
   //!
   //! @{
 
+  //////////////////////////////////////////////////////////////////////
+  // Lex
+  //////////////////////////////////////////////////////////////////////
+
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
   //!
@@ -243,6 +247,10 @@ namespace libsemigroups {
       return std::lexicographical_compare(first1, last1, first2, last2);
     }
   };
+
+  //////////////////////////////////////////////////////////////////////
+  // Lexicographical - deprecated
+  //////////////////////////////////////////////////////////////////////
 
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
@@ -416,6 +424,10 @@ namespace libsemigroups {
     }
   };
 
+  //////////////////////////////////////////////////////////////////////
+  // Len-lex
+  //////////////////////////////////////////////////////////////////////
+
   //! \brief Compare two objects of the same type using the len-lex reduction
   //! ordering.
   //!
@@ -569,6 +581,10 @@ namespace libsemigroups {
       return lenlex_cmp(x, y);
     }
   };
+
+  //////////////////////////////////////////////////////////////////////
+  // Short-lex - deprecated
+  //////////////////////////////////////////////////////////////////////
 
   //! \brief Compare two objects of the same type using the short-lex reduction
   //! ordering.
@@ -737,6 +753,10 @@ namespace libsemigroups {
     }
   };
 
+  //////////////////////////////////////////////////////////////////////
+  // Recursive path order (RPO)
+  //////////////////////////////////////////////////////////////////////
+
   //! \brief Compare two objects of the same type using the recursive path
   //! comparison.
   //!
@@ -879,6 +899,10 @@ namespace libsemigroups {
       return rpo_cmp(x, y);
     }  // namespace libsemigroups
   };
+
+  //////////////////////////////////////////////////////////////////////
+  // Reversed recursive path order (RPO)
+  //////////////////////////////////////////////////////////////////////
 
   //! \brief Compare two objects of the same type using the reversed recursive
   //! path comparison.
@@ -1026,6 +1050,10 @@ namespace libsemigroups {
       return rev_rpo_cmp(x, y);
     }  // namespace libsemigroups
   };
+
+  //////////////////////////////////////////////////////////////////////
+  // Recursive path order (RPO) - deprecated
+  //////////////////////////////////////////////////////////////////////
 
   //! \brief Compare two objects of the same type using the reversed recursive
   //! path comparison.
@@ -1190,6 +1218,13 @@ namespace libsemigroups {
       return recursive_path_compare(x, y);
     }  // namespace libsemigroups
   };
+
+  //////////////////////////////////////////////////////////////////////
+  // Weighted short-lex
+  //////////////////////////////////////////////////////////////////////
+
+  // TODO (v4): rename all of the following to be some derivative of
+  // wt_lenlex_cmp.
 
   //! \brief Compare two objects of the same type using the weighted short-lex
   //! ordering without checks.
