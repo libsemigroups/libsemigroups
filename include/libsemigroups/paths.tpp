@@ -55,7 +55,7 @@ namespace libsemigroups {
     if (!_current_valid && N != 0) {
       _current_valid = true;
       _position      = 0;
-      if (_order == Order::shortlex && _source != UNDEFINED) {
+      if (_order == Order::lenlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
           _current = cbegin_pstislo(*_word_graph, _source, _target, _min, _max);
           _end     = cend_pstislo(*_word_graph);
@@ -99,7 +99,7 @@ namespace libsemigroups {
   Paths<Node>& Paths<Node>::init() {
     _current_valid = false;
     _word_graph    = nullptr;
-    _order         = Order::shortlex;
+    _order         = Order::lenlex;
     _max           = static_cast<size_type>(POSITIVE_INFINITY);
     _min           = 0;
     _position      = 0;
@@ -124,9 +124,9 @@ namespace libsemigroups {
   template <typename Node>
   template <typename Subclass>
   Subclass& Paths<Node>::order(Subclass* obj, Order val) {
-    if (val != Order::shortlex && val != Order::lex) {
+    if (val != Order::lenlex && val != Order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be Order::shortlex or Order::lex, found {}", val);
+          "the argument must be Order::lenlex or Order::lex, found {}", val);
     }
     _current_valid &= (val == _order);
     _order = val;

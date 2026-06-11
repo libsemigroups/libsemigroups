@@ -45,7 +45,7 @@
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "is_specialization_of.hpp"  // for is_specialization_of
-#include "order.hpp"                 // for ShortLexCompare
+#include "order.hpp"                 // for LenLexCmp
 #include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
 #include "types.hpp"       // for word_type
 #include "ukkonen.hpp"     // for GreedyReduceHelper, Ukkonen
@@ -1453,7 +1453,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename Word>
     void sort_rules(Presentation<Word>& p) {
-      sort_rules(p, ShortLexCompare());
+      sort_rules(p, LenLexCmp());
     }
 
     //! \brief Check the rules are sorted relative to \p cmp .
@@ -1492,7 +1492,7 @@ namespace libsemigroups {
     //! * \ref sort_rules(Presentation<Word>& p)
     template <typename Word>
     bool are_rules_sorted(Presentation<Word> const& p) {
-      return are_rules_sorted(p, ShortLexCompare());
+      return are_rules_sorted(p, LenLexCmp());
     }
 
     //! \brief Return the longest common subword of the rules.

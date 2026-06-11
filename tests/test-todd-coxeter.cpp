@@ -186,14 +186,14 @@ namespace libsemigroups {
       Order old_val   = tc.current_word_graph().standardization_order();
 
       tc.run();
-      for (auto val : {Order::shortlex, Order::lex, Order::recursive}) {
+      for (auto val : {Order::lenlex, Order::lex, Order::rpo}) {
         tc.standardize(val);
         REQUIRE(tc.current_word_graph().is_standardized(val));
         REQUIRE(tc.current_word_graph().is_standardized());
         REQUIRE(tc.current_word_graph().standardization_order() == val);
       }
       {
-        tc.standardize(Order::shortlex);
+        tc.standardize(Order::lenlex);
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
@@ -272,7 +272,7 @@ namespace libsemigroups {
 
     template <typename Word>
     void check_normal_forms(ToddCoxeter<Word>& tc, size_t i) {
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       REQUIRE((normal_forms(tc) | take(i) | all_of([&tc](Word const& w) {
                  return w == class_of(tc, w).get();
                })));
@@ -280,11 +280,11 @@ namespace libsemigroups {
       // the following fails if the alphabet isn't sorted
       if (std::is_sorted(tc.presentation().alphabet().begin(),
                          tc.presentation().alphabet().end())) {
-        // TODO(1) allow specifying the alphabet order to ShortLexCompare
+        // TODO(1) allow specifying the alphabet order to LenLexCmp
         // and the other orders
-        REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare{}));
+        REQUIRE(is_sorted(normal_forms(tc), LenLexCmp{}));
         tc.standardize(Order::lex);
-        REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare{}));
+        REQUIRE(is_sorted(normal_forms(tc), LexCmp{}));
       }
     }
   }  // namespace
@@ -315,7 +315,7 @@ namespace libsemigroups {
     check_complete_compatible(tc);
     check_standardize(tc);
 
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
 
     auto c = class_by_index(tc, 1);
     // TODO(1) this no longer works
@@ -366,14 +366,14 @@ namespace libsemigroups {
 
     REQUIRE(index_of(tc, 000_w) != index_of(tc, 1_w));
 
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     REQUIRE(word_of(tc, 0) == 0_w);
     REQUIRE(word_of(tc, 1) == 1_w);
     REQUIRE(word_of(tc, 2) == 00_w);
     tc.standardize(Order::lex);
     REQUIRE(tc.current_word_graph().is_standardized(Order::lex));
     REQUIRE(tc.current_word_graph().is_standardized());
-    REQUIRE(!tc.current_word_graph().is_standardized(Order::shortlex));
+    REQUIRE(!tc.current_word_graph().is_standardized(Order::lenlex));
 
     REQUIRE(word_of(tc, 0) == 0_w);
     REQUIRE(word_of(tc, 1) == 00_w);
@@ -387,15 +387,15 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, word_of(tc, 3)) == 3);
     REQUIRE(index_of(tc, word_of(tc, 4)) == 4);
     REQUIRE(index_of(tc, 01_w) == 3);
-    REQUIRE(LexicographicalCompare()(001_w, 01_w));
+    REQUIRE(LexCmp()(001_w, 01_w));
 
     // REQUIRE((normal_forms(tc) | rx::to_vector()) ==
     // std::vector<word_type>());
 
-    REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare{}));
+    REQUIRE(is_sorted(normal_forms(tc), LexCmp{}));
 
-    tc.standardize(Order::shortlex);
-    REQUIRE(tc.current_word_graph().is_standardized(Order::shortlex));
+    tc.standardize(Order::lenlex);
+    REQUIRE(tc.current_word_graph().is_standardized(Order::lenlex));
     REQUIRE((normal_forms(tc) | to_vector())
             == std::vector({0_w, 1_w, 00_w, 01_w, 001_w}));
     REQUIRE(index_of(tc, word_of(tc, 0)) == 0);
@@ -403,7 +403,7 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, word_of(tc, 2)) == 2);
     REQUIRE(index_of(tc, word_of(tc, 3)) == 3);
     REQUIRE(index_of(tc, word_of(tc, 4)) == 4);
-    REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare()));
+    REQUIRE(is_sorted(normal_forms(tc), LenLexCmp()));
 
     auto nf = normal_forms(tc) | to_vector();
 
@@ -425,7 +425,7 @@ namespace libsemigroups {
     //   }
     // }
 
-    tc.standardize(Order::recursive);
+    tc.standardize(Order::rpo);
     REQUIRE(tc.current_word_graph().is_standardized());
 
     REQUIRE(word_of(tc, 0) == 0_w);
@@ -474,7 +474,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.finished());
 
-    tc.standardize(Order::recursive);
+    tc.standardize(Order::rpo);
     REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
     REQUIRE(
         (normal_forms(tc) | take(10) | to_vector())
@@ -488,7 +488,7 @@ namespace libsemigroups {
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(index_of(tc, word_of(tc, c)) == c);
     }
-    REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare{}));
+    REQUIRE(is_sorted(normal_forms(tc), LexCmp{}));
     REQUIRE((normal_forms(tc) | take(10) | to_vector())
             == std::vector({0_w,
                             01_w,
@@ -500,11 +500,11 @@ namespace libsemigroups {
                             01212121_w,
                             012121212_w,
                             0121212121_w}));
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
       REQUIRE(index_of(tc, word_of(tc, c)) == c);
     }
-    REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare{}));
+    REQUIRE(is_sorted(normal_forms(tc), LenLexCmp{}));
     REQUIRE((normal_forms(tc) | take(10) | to_vector())
             == std::vector(
                 {0_w, 1_w, 2_w, 3_w, 12_w, 13_w, 21_w, 31_w, 121_w, 131_w}));
@@ -565,7 +565,7 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, word_of(tc, 1)) == 1);
     REQUIRE(index_of(tc, word_of(tc, 2)) == 2);
 
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     REQUIRE(word_of(tc, 0) == 0_w);
     REQUIRE(word_of(tc, 1) == 2_w);
     REQUIRE(word_of(tc, 2) == 00_w);
@@ -661,7 +661,7 @@ namespace libsemigroups {
       REQUIRE(index_of(tc, 100110_w) == index_of(tc, 10000_w));
       REQUIRE(index_of(tc, 1_w) != index_of(tc, 0000_w));
       REQUIRE(index_of(tc, 000_w) != index_of(tc, 0000_w));
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       REQUIRE(tc.current_word_graph().is_standardized());
       check_standardize(tc);
       check_complete_compatible(tc);
@@ -694,7 +694,7 @@ namespace libsemigroups {
     REQUIRE(index_of(tc, 011001_w) == index_of(tc, 00001_w));
     REQUIRE(index_of(tc, 000_w) != index_of(tc, 1_w));
     REQUIRE(index_of(tc, 0000_w) < tc.number_of_classes());
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     check_standardize(tc);
     check_complete_compatible(tc);
   }
@@ -1097,7 +1097,7 @@ namespace libsemigroups {
       tc.lookahead_next(10);
       section_hlt(tc);
       REQUIRE(tc.number_of_classes() == 78);
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       REQUIRE(tc.word_graph().current_spanning_tree().number_of_nodes() == 79);
       check_standardize(tc);
     }
@@ -1698,7 +1698,7 @@ namespace libsemigroups {
     REQUIRE(!c.at_end());
     REQUIRE(Paths(tc.current_word_graph()).source(0).target(1).count() == 1);
     auto pp = Paths(tc.current_word_graph()).source(0).target(1);
-    REQUIRE(pp.order() == Order::shortlex);
+    REQUIRE(pp.order() == Order::lenlex);
     REQUIRE(pp.get() == 0_w);
     REQUIRE(!pp.at_end());
     pp.next();
@@ -1789,7 +1789,7 @@ namespace libsemigroups {
 
     REQUIRE(is_non_trivial(tc) == tril::TRUE);
     // REQUIRE(!tc.finished());
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     REQUIRE_EXCEPTION_MSG(tc.standardize(Order::none),
                           "the argument (Order) must not be Order::none");
 
@@ -2597,11 +2597,11 @@ namespace libsemigroups {
     // tc.lookahead_next(100'000);
     REQUIRE(!tc.finished());
     REQUIRE(!is_obviously_infinite(tc));
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     REQUIRE(!tc.finished());
     tc.standardize(Order::lex);
     REQUIRE(!tc.finished());
-    tc.standardize(Order::recursive);
+    tc.standardize(Order::rpo);
     REQUIRE(!tc.finished());
 
     section_hlt(tc);
@@ -2612,11 +2612,11 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 1);
-    tc.standardize(Order::shortlex);
-    REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare{}));
+    tc.standardize(Order::lenlex);
+    REQUIRE(is_sorted(normal_forms(tc), LenLexCmp{}));
     tc.standardize(Order::lex);
-    REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare()));
-    tc.standardize(Order::recursive);
+    REQUIRE(is_sorted(normal_forms(tc), LexCmp()));
+    tc.standardize(Order::rpo);
     REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp()));
   }
 
@@ -3147,7 +3147,7 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 14);
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     REQUIRE((normal_forms(tc) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
@@ -3194,13 +3194,13 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 10'625);
 
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     REQUIRE((normal_forms(tc) | skip_n(10) | take(10) | to_vector())
             == std::vector(
                 {9_w, 01_w, 02_w, 03_w, 04_w, 05_w, 06_w, 12_w, 13_w, 14_w}));
-    REQUIRE(is_sorted(normal_forms(tc), ShortLexCompare()));
+    REQUIRE(is_sorted(normal_forms(tc), LenLexCmp()));
     tc.standardize(Order::lex);
-    REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare()));
+    REQUIRE(is_sorted(normal_forms(tc), LexCmp()));
   }
 
   // Felsch very slow here
@@ -4783,7 +4783,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     tc.lower_bound(17'971'200).strategy(options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 17'971'200);
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -4965,7 +4965,7 @@ namespace libsemigroups {
     tc.run_for(std::chrono::milliseconds(1));
     REQUIRE(!tc.finished());
     auto const& wg = tc.current_word_graph();
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
     tc.shrink_to_fit();
     // Have to standardize or otherwise what we are about to do below
     // makes no sense
@@ -5083,7 +5083,7 @@ namespace libsemigroups {
     });
 
     REQUIRE(tc.current_word_graph().number_of_nodes_active() > 256'000'000);
-    REQUIRE(!tc.standardize(Order::shortlex));
+    REQUIRE(!tc.standardize(Order::lenlex));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

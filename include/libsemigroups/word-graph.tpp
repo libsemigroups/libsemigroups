@@ -487,11 +487,11 @@ namespace libsemigroups {
       switch (val) {
         case Order::none:
           return false;
-        case Order::shortlex:
+        case Order::lenlex:
           return detail::shortlex_standardize(wg, f);
         case Order::lex:
           return detail::lex_standardize(wg, f);
-        case Order::recursive:
+        case Order::rpo:
           return detail::recursive_standardize(wg, f);
         default:
           return false;
@@ -503,10 +503,10 @@ namespace libsemigroups {
       switch (val) {
         case Order::none:
           return true;
-        case Order::shortlex:
+        case Order::lenlex:
           return detail::is_shortlex_standardized(wg);
         case Order::lex:
-        case Order::recursive:
+        case Order::rpo:
         default:
           LIBSEMIGROUPS_EXCEPTION("not yet implemented")
       }

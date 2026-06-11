@@ -59,8 +59,8 @@ namespace libsemigroups {
   using knuth_bendix::reduce;
   using knuth_bendix::reduce_no_run;
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
   using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
   using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;

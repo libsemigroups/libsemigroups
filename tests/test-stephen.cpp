@@ -67,10 +67,9 @@ namespace libsemigroups {
       Stephen S(p);
       stephen::set_word(S, word).run();
 
-      REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
-               | rx::take(1))
-                  .get()
-              == nf);
+      REQUIRE(
+          (stephen::words_accepted(S) | rx::sort(LexCmp()) | rx::take(1)).get()
+          == nf);
 
       REQUIRE((stephen::words_accepted(S) | rx::all_of([&S](auto const& w) {
                  return stephen::accepts(S, w);
@@ -676,10 +675,9 @@ namespace libsemigroups {
                             to_word("dgabcdf"),
                             to_word("dgabcdg")}));
 
-    REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
-             | rx::take(1))
-                .get()
-            == to_word("dfabcdf"));
+    REQUIRE(
+        (stephen::words_accepted(S) | rx::sort(LexCmp()) | rx::take(1)).get()
+        == to_word("dfabcdf"));
 
     REQUIRE((stephen::words_accepted(S) | rx::all_of([&S](auto const& w) {
                return stephen::accepts(S, w);
@@ -690,8 +688,7 @@ namespace libsemigroups {
     stephen::set_word(S, to_word("abcdfceg")).run();
     REQUIRE(stephen::number_of_words_accepted(S) == 16);
 
-    REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
-             | rx::to_vector())
+    REQUIRE((stephen::words_accepted(S) | rx::sort(LexCmp()) | rx::to_vector())
             == std::vector({to_word("abcdfabcdf"),
                             to_word("abcdfabcdg"),
                             to_word("abcdfcef"),
@@ -709,10 +706,9 @@ namespace libsemigroups {
                             to_word("cegcef"),
                             to_word("cegceg")}));
 
-    REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
-             | rx::take(1))
-                .get()
-            == to_word("abcdfabcdf"));
+    REQUIRE(
+        (stephen::words_accepted(S) | rx::sort(LexCmp()) | rx::take(1)).get()
+        == to_word("abcdfabcdf"));
     REQUIRE(stephen::accepts(S, to_word("abcdfabcdf")));
   }
 

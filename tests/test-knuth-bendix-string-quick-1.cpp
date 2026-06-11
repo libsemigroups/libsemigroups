@@ -52,8 +52,8 @@ namespace libsemigroups {
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
 
   using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
   using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
@@ -198,9 +198,9 @@ namespace libsemigroups {
     REQUIRE(std::all_of(found.begin(), found.end(), [](auto const& rule) {
       return order()(rule.second, rule.first);
     }));
-    REQUIRE(is_sorted(nf.min(0).max(4), ShortLexCompare{}));
+    REQUIRE(is_sorted(nf.min(0).max(4), LenLexCmp{}));
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(
           found
           == std::vector<std::pair<std::string, std::string>>(
@@ -253,7 +253,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE((nf.min(0).max(4) | to_vector())
               == std::vector<std::string>(  // codespell:end-ignore
                   {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
@@ -293,7 +293,7 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE((nf.min(0).max(4) | to_vector())
               == std::vector<std::string>(
                   {"",     "a",    "A",    "b",    "B",    "aa",   "ab",
@@ -329,7 +329,7 @@ namespace libsemigroups {
     kb.run();
     auto nf = knuth_bendix::normal_forms(kb);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 6);
       REQUIRE((nf | to_vector())
               == std::vector<std::string>({"",
@@ -383,7 +383,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
     REQUIRE(nf.size_hint() == 11);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 11);
       REQUIRE((nf | to_vector())
               == std::vector<std::string>({"B",
@@ -434,7 +434,7 @@ namespace libsemigroups {
     auto S = to<FroidurePin>(kb);
     REQUIRE(S.size() == 168);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(S.generator(2).word() == "c");
       REQUIRE(kb.rewriting_system().number_of_rules() == 40);
       auto nf = knuth_bendix::normal_forms(kb).min(1).max(4);
@@ -471,7 +471,7 @@ namespace libsemigroups {
     kb.run();
     auto& wg = kb.gilman_graph();
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 9);
       REQUIRE(wg.number_of_nodes() == 9);
       REQUIRE(wg.number_of_edges() == 13);
@@ -531,7 +531,7 @@ namespace libsemigroups {
     Paths paths(wg);
     paths.source(0).min(0).max(13);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(paths.count() == 336);
       REQUIRE(kb.rewriting_system().number_of_rules() == 152);
       REQUIRE(wg.number_of_nodes() == 232);
@@ -577,7 +577,7 @@ namespace libsemigroups {
     auto& wg = kb.gilman_graph();
     auto  nf = knuth_bendix::normal_forms(kb).min(0).max(4);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 24);
       REQUIRE(nf.count() == 12);
       REQUIRE(wg.number_of_nodes() == 8);
@@ -672,7 +672,7 @@ namespace libsemigroups {
     kb1.run();
     REQUIRE(kb1.rewriting_system().confluent());
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
     } else {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "dddbbbbbb");
@@ -695,7 +695,7 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.rewriting_system().confluent());
     REQUIRE(kb1.rewriting_system().confluent_known());
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
     } else {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "dddbbbbbb");
@@ -705,7 +705,7 @@ namespace libsemigroups {
     REQUIRE(kb2.rewriting_system().confluent());
     REQUIRE(kb2.rewriting_system().confluent_known());
     REQUIRE(kb2.finished());
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(knuth_bendix::reduce(kb2, "abababbdbcbdbabdbdb") == "bbbbbbddd");
     } else {
       REQUIRE(knuth_bendix::reduce(kb2, "abababbdbcbdbabdbdb") == "dddbbbbbb");
@@ -715,7 +715,7 @@ namespace libsemigroups {
     REQUIRE(kb1.rewriting_system().confluent());
     REQUIRE(kb1.rewriting_system().confluent_known());
     REQUIRE(kb1.finished());
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
     } else {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "dddbbbbbb");
@@ -728,7 +728,7 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.rewriting_system().confluent());
     REQUIRE(kb1.rewriting_system().confluent_known());
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
     } else {
       REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "dddbbbbbb");
@@ -844,7 +844,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb2, "a", "bb"));
     REQUIRE(knuth_bendix::contains(kb2, "a", "abb"));
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(knuth_bendix::reduce(kb2, "b") == "a");
       REQUIRE(knuth_bendix::reduce(kb2, "ab") == "a");
       REQUIRE(knuth_bendix::reduce(kb2, "bb") == "a");
@@ -981,7 +981,7 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb2(twosided, p);
 
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       auto nf = knuth_bendix::normal_forms(kb1).min(0).max(8);
       REQUIRE(nf.count() == 14);
       REQUIRE((nf | rx::to_vector())
@@ -1276,7 +1276,7 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
 
     kb.run();
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 7);
     } else {
       REQUIRE(kb.rewriting_system().number_of_rules() == 4);

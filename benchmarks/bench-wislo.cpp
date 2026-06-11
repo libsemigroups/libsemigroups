@@ -17,7 +17,7 @@
 //
 
 #include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include "libsemigroups/order.hpp"       // for shortlex_compare
+#include "libsemigroups/order.hpp"       // for lenlex_cmp
 #include "libsemigroups/word-range.hpp"  // for number_of_words
 
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
@@ -32,7 +32,7 @@ namespace libsemigroups {
       out.reserve(number_of_words(n, first.size(), last.size()));
       word_type current = first;
 
-      while (shortlex_compare(current, last)) {
+      while (lenlex_cmp(current, last)) {
         out.push_back(current);
         size_t m = current.size();
         while (!current.empty() && ++current.back() == n) {
@@ -51,7 +51,7 @@ namespace libsemigroups {
       auto      w = words_in_shortlex_order(3, first, last);
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
     };
 
     BENCHMARK("vector of all words length 0 to 13 using iterators") {
@@ -63,7 +63,7 @@ namespace libsemigroups {
       w.assign(cbegin_wislo(3, first, last), cend_wislo(3, first, last));
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
     };
   }
 }  // namespace libsemigroups

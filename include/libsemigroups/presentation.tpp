@@ -480,7 +480,7 @@ namespace libsemigroups {
           relations_set;
 
       for (auto it = p.rules.begin(); it != p.rules.end(); it += 2) {
-        if (shortlex_compare(*it, *(it + 1))) {
+        if (lenlex_cmp(*it, *(it + 1))) {
           relations_set.emplace(*it, *(it + 1));
         } else {
           relations_set.emplace(*(it + 1), *it);
@@ -541,7 +541,7 @@ namespace libsemigroups {
         bool                              inserted;
         std::tie(it, inserted) = mins.emplace(j, word);
         auto const& min_word   = it->second;
-        if (!inserted && shortlex_compare(word, min_word)) {
+        if (!inserted && lenlex_cmp(word, min_word)) {
           it->second = word;
         }
       }
@@ -577,7 +577,7 @@ namespace libsemigroups {
 
     template <typename Word>
     bool sort_each_rule(Presentation<Word>& p) {
-      return sort_each_rule(p, ShortLexCompare());
+      return sort_each_rule(p, LenLexCmp());
     }
 
     template <typename Word, typename Compare>

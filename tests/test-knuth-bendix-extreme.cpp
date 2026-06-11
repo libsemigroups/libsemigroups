@@ -40,7 +40,7 @@
 #include "libsemigroups/knuth-bendix-class.hpp"     // for KnuthBendix
 #include "libsemigroups/knuth-bendix-helpers.hpp"   // for normal_forms
 #include "libsemigroups/obvinf.hpp"                 // for is_obviously_i...
-#include "libsemigroups/order.hpp"                  // for ShortLexCompare
+#include "libsemigroups/order.hpp"                  // for LenLexCmp
 #include "libsemigroups/paths-count.hpp"            // for count
 #include "libsemigroups/paths.hpp"                  // for cbegin_pilo
 #include "libsemigroups/presentation-examples.hpp"  // for full_transform...
@@ -74,8 +74,8 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
   using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
   using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
@@ -179,10 +179,10 @@ namespace libsemigroups {
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 7'920);
     REQUIRE(std::find(ntc[0].cbegin(), ntc[0].cend(), "") != ntc[0].cend());
-    std::sort(ntc[0].begin(), ntc[0].end(), ShortLexCompare());
+    std::sort(ntc[0].begin(), ntc[0].end(), LenLexCmp());
 
     REQUIRE(ntc[0]
-            == (knuth_bendix::normal_forms(kb) | rx::sort(ShortLexCompare())
+            == (knuth_bendix::normal_forms(kb) | rx::sort(LenLexCmp())
                 | rx::to_vector()));
   }
 

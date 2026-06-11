@@ -83,7 +83,7 @@ namespace libsemigroups {
       return weight1 < weight2;
     }
 
-    return shortlex_compare(first1, last1, first2, last2);
+    return lenlex_cmp(first1, last1, first2, last2);
   }
   template <typename Iterator, typename>
   bool wt_shortlex_compare(Iterator                   first1,

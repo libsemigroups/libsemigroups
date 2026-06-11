@@ -739,7 +739,7 @@ namespace libsemigroups {
       }
       for (auto& v : _complements) {
         std::sort(v.begin(), v.end(), [&relation_words](size_t i, size_t j) {
-          return lexicographical_compare(relation_words[i], relation_words[j]);
+          return lex_cmp(relation_words[i], relation_words[j]);
         });
       }
     }

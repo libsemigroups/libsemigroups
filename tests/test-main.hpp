@@ -25,7 +25,7 @@
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
-#include "libsemigroups/order.hpp"  // for shortlex_compare
+#include "libsemigroups/order.hpp"  // for lenlex_cmp
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
@@ -97,8 +97,8 @@ namespace libsemigroups {
     template <typename Word>
     bool operator()(std::pair<Word, Word> const& x,
                     std::pair<Word, Word> const& y) const noexcept {
-      return shortlex_compare(x.first, y.first)
-             || (x.first == y.first && shortlex_compare(x.second, y.second));
+      return lenlex_cmp(x.first, y.first)
+             || (x.first == y.first && lenlex_cmp(x.second, y.second));
     }
   };
 }  // namespace libsemigroups

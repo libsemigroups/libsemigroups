@@ -32,7 +32,7 @@
 #include "libsemigroups/constants.hpp"       // for Max, LimitMax, LIMIT_MAX
 #include "libsemigroups/froidure-pin.hpp"    // for FroidurePin, FroidurePi...
 #include "libsemigroups/kambites-class.hpp"  // for Kambites
-#include "libsemigroups/order.hpp"           // for shortlex_compare
+#include "libsemigroups/order.hpp"           // for lenlex_cmp
 #include "libsemigroups/presentation.hpp"    // for to_word
 #include "libsemigroups/types.hpp"           // for word_type, tril
 #include "libsemigroups/word-range.hpp"      // for ToWord, ToString
@@ -73,7 +73,7 @@ namespace libsemigroups {
       }
 
       bool operator<(KE const& that) const {
-        return shortlex_compare(_value, that._value);
+        return lenlex_cmp(_value, that._value);
       }
 
       void swap(KE& x) {

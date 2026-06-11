@@ -1636,7 +1636,7 @@ namespace libsemigroups {
       //!   essentially arbitrary;
       //!   - the classes of the congruence will be indexed in an arbitrary
       //!   order;
-      //! * Order::shortlex implies that:
+      //! * Order::lenlex implies that:
       //!   - the return value of \ref ToddCoxeter::reduce will be the
       //!   short-lex least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
@@ -1649,7 +1649,7 @@ namespace libsemigroups {
       //!   - the return values of \ref ToddCoxeter::reduce and the indexes of
       //!   class are essentially arbitrary because there is not necessarily a
       //!   lexicographically least word in every class;
-      //! * Order::recursive implies that:
+      //! * Order::rpo implies that:
       //!   - the return value of \ref ToddCoxeter::reduce will be the
       //!   recursive path least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
@@ -2187,7 +2187,7 @@ namespace libsemigroups {
       //! described by the iterators \p first and \p last. A full
       //! enumeration is triggered by calls to this function. If the
       //! \ref current_word_graph has not already been standardized, then this
-      //! function first standardizes it with respect to Order::shortlex;
+      //! function first standardizes it with respect to Order::lenlex;
       //! otherwise the existing standardization order is used.
       //!
       //! The returned index is obtained by following the path in
@@ -2215,7 +2215,7 @@ namespace libsemigroups {
       //! described by the iterators \p first and \p last. A full
       //! enumeration is triggered by calls to this function. If the
       //! \ref current_word_graph has not already been standardized, then this
-      //! function first standardizes it with respect to Order::shortlex;
+      //! function first standardizes it with respect to Order::lenlex;
       //! otherwise the existing standardization order is used.
       //!
       //! The returned index is obtained by following the path in
@@ -2270,7 +2270,7 @@ namespace libsemigroups {
       //! index
       //! \p i to the output iterator \p d_first. No enumeration is
       //! triggered by calls to this function, but \ref current_word_graph
-      //! is standardized (using Order::shortlex) if it is not already
+      //! is standardized (using Order::lenlex) if it is not already
       //! standardized.
       //!
       //! The word appended to \p d_first is obtained by following a path in
@@ -2303,7 +2303,7 @@ namespace libsemigroups {
       //! index
       //! \p i to the output iterator \p d_first. No enumeration is
       //! triggered by calls to this function, but \ref current_word_graph
-      //! is standardized (using Order::shortlex) if it is not already
+      //! is standardized (using Order::lenlex) if it is not already
       //! standardized.
       //!
       //! The word appended to \p d_first is obtained by following a path in
