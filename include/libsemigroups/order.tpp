@@ -26,23 +26,16 @@ namespace libsemigroups {
                               Iterator last1,
                               Iterator first2,
                               Iterator last2) noexcept {
-    if (first2 == last2) {
-      // Empty word is not bigger than every word
-      return false;
-    } else if (first1 == last1) {
-      // Empty word is smaller than ever word other than the empty word
-      return true;
-    }
+    int lastmoved = 0;
 
-    bool lastmoved = false;
-    auto rfirst1   = std::make_reverse_iterator(last1);
-    auto rlast1    = std::make_reverse_iterator(first1);
-    auto rfirst2   = std::make_reverse_iterator(last2);
-    auto rlast2    = std::make_reverse_iterator(first2);
+    auto       rfirst1 = std::make_reverse_iterator(last1);
+    auto const rlast1  = std::make_reverse_iterator(first1);
+    auto       rfirst2 = std::make_reverse_iterator(last2);
+    auto const rlast2  = std::make_reverse_iterator(first2);
     while (true) {
       if (rfirst1 == rlast1) {
         if (rfirst2 == rlast2) {
-          return lastmoved;
+          return lastmoved == 2;
         }
         return true;
       }
@@ -54,10 +47,11 @@ namespace libsemigroups {
         ++rfirst2;
       } else if (*rfirst1 < *rfirst2) {
         ++rfirst1;
-        lastmoved = false;
-      } else if (*rfirst2 < *rfirst1) {
+        lastmoved = 1;
+      } else {
+        // in this case *rfirst1 > *rfirst2
         ++rfirst2;
-        lastmoved = true;
+        lastmoved = 2;
       }
     }
   }
