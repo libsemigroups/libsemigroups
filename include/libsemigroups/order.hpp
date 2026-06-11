@@ -2304,6 +2304,8 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_length_non_increasing : std::false_type {};
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // TODO(v4): remove
     //! \brief Short-lex order is length non-increasing.
     //!
@@ -2311,6 +2313,7 @@ namespace libsemigroups {
     //! \ref ShortLexCompare.
     template <>
     struct is_length_non_increasing<ShortLexCompare> : std::true_type {};
+#pragma GCC diagnostic pop
 
     //! \brief len-lex order is length non-increasing.
     //!
@@ -2340,12 +2343,15 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_well_founded : std::false_type {};
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // TODO(v4): remove
     //! \brief Short-lex order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref ShortLexCompare.
     template <>
     struct is_well_founded<ShortLexCompare> : std::true_type {};
+#pragma GCC diagnostic pop
 
     //! \brief len-lex order is well-founded.
     //!
@@ -2353,12 +2359,15 @@ namespace libsemigroups {
     template <>
     struct is_well_founded<LenLexCmp> : std::true_type {};
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // TODO(v4): remove
     //! \brief Recursive path order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref RecursivePathCompare.
     template <>
     struct is_well_founded<RecursivePathCompare> : std::true_type {};
+#pragma GCC diagnostic pop
 
     //! \brief Recursive path order is well-founded.
     //!
