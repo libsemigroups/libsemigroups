@@ -57,7 +57,13 @@ namespace libsemigroups {
 
     //! The short-lex ordering. Words are first ordered by length, and then
     //! lexicographically.
-    shortlex,
+    //!
+    //! \deprecated_warning{value} Use \ref lenlex instead.
+    shortlex [[deprecated("Use lenlex instead!")]],
+
+    //! The len-lex ordering. Words are first ordered by length, and then
+    //! lexicographically.
+    lenlex,
 
     //! The lexicographic ordering. Note that this is not a well-order, so there
     //! may not be a lexicographically least word in a given congruence class of
@@ -66,7 +72,13 @@ namespace libsemigroups {
 
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
     //! (Definition 1.2.14, page 24).
-    recursive
+    //!
+    //! \deprecated_warning{function} Use \ref rpo instead.
+    recursive [[deprecated("Use rpo instead")]],
+
+    //! The recursive-path ordering, as described in \cite Jantzen2012aa
+    //! (Definition 1.2.14, page 24).
+    rpo
 
     // wreath TODO(later)
   };
