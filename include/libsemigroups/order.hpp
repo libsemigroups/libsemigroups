@@ -521,7 +521,7 @@ namespace libsemigroups {
   //!
   //! \sa
   //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
-  struct RevRPOCmp {
+  struct RPOCmp {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref rpo_cmp.
     //!
@@ -776,7 +776,7 @@ namespace libsemigroups {
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
   [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
-  recursive_path_compare(Iterator const& x, Iterator const& y) noexcept {
+  recursive_path_compare(Thing const& x, Thing const& y) noexcept {
     return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 

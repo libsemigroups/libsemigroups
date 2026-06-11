@@ -605,28 +605,25 @@ namespace libsemigroups {
   // Recursive Path Compare
   // =========================================================================
 
-  LIBSEMIGROUPS_TEST_CASE("recursive_path_compare",
+  LIBSEMIGROUPS_TEST_CASE("rev_rpo_cmp",
                           "034",
                           "empty word",
                           "[quick][order]") {
     word_type w1(12_w);
     word_type w2{};
 
-    REQUIRE(!recursive_path_compare(w1, w1));
-    REQUIRE(recursive_path_compare(w2, w1));
-    REQUIRE(!recursive_path_compare(w1, w2));
+    REQUIRE(!rev_rpo_cmp(w1, w1));
+    REQUIRE(rev_rpo_cmp(w2, w1));
+    REQUIRE(!rev_rpo_cmp(w1, w2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("RecursivePathCompare",
-                          "035",
-                          "empty word",
-                          "[quick][order]") {
+  LIBSEMIGROUPS_TEST_CASE("RevRPOCmp", "035", "empty word", "[quick][order]") {
     word_type w1(12_w);
     word_type w2{};
 
-    REQUIRE(!RecursivePathCompare()(w1, w1));
-    REQUIRE(RecursivePathCompare()(w2, w1));
-    REQUIRE(!RecursivePathCompare()(w1, w2));
+    REQUIRE(!RevRPOCmp()(w1, w1));
+    REQUIRE(RevRPOCmp()(w2, w1));
+    REQUIRE(!RevRPOCmp()(w1, w2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("recursive_path_compare",

@@ -420,7 +420,7 @@ namespace libsemigroups {
     //         0)),
     //                                  cend_wislo(i, {0}, word_type(j + 1,
     //                                  0)));
-    //     std::sort(v.begin(), v.end(), RecursivePathCompare<word_type>{});
+    //     std::sort(v.begin(), v.end(), RevRPOCmp<word_type>{});
     //     REQUIRE(v == recursive_path_words(i, j));
     //   }
     // }
@@ -433,7 +433,7 @@ namespace libsemigroups {
     REQUIRE(word_of(tc, 2) == 1_w);
     REQUIRE(word_of(tc, 3) == 10_w);
     REQUIRE(word_of(tc, 4) == 100_w);
-    REQUIRE(is_sorted(normal_forms(tc), RecursivePathCompare{}));
+    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
 
     check_normal_forms(tc, tc.number_of_classes());
   }
@@ -475,7 +475,7 @@ namespace libsemigroups {
     REQUIRE(tc.finished());
 
     tc.standardize(Order::recursive);
-    REQUIRE(is_sorted(normal_forms(tc), RecursivePathCompare{}));
+    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp{}));
     REQUIRE(
         (normal_forms(tc) | take(10) | to_vector())
         == std::vector(
@@ -2617,7 +2617,7 @@ namespace libsemigroups {
     tc.standardize(Order::lex);
     REQUIRE(is_sorted(normal_forms(tc), LexicographicalCompare()));
     tc.standardize(Order::recursive);
-    REQUIRE(is_sorted(normal_forms(tc), RecursivePathCompare()));
+    REQUIRE(is_sorted(normal_forms(tc), RevRPOCmp()));
   }
 
   // The following example is a good one for using the lookahead.
