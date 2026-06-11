@@ -55,8 +55,8 @@ namespace libsemigroups {
   using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
   using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
 
-  using RPOTrie = detail::RewritingSystemTrie<RecursivePathCompare>;
-  using RPOSet  = detail::RewritingSystemSet<RecursivePathCompare>;
+  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet  = detail::RewritingSystemSet<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 

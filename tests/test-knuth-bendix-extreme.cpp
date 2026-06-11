@@ -64,10 +64,10 @@
 #include "libsemigroups/detail/print.hpp"              // for to_printable
 #include "libsemigroups/detail/report.hpp"             // for report_default
 #include "libsemigroups/detail/rewriting-system.hpp"   // for RewritingSyste...
-#include "libsemigroups/detail/rules.hpp"              // for reorder, rpo_cmp
-#include "libsemigroups/detail/string.hpp"             // for group_digits
-#include "libsemigroups/detail/timer.hpp"              // for string_time
-#include "libsemigroups/detail/value-guard.hpp"        // for ValueGuard::Va...
+#include "libsemigroups/detail/rules.hpp"        // for reorder, rev_rpo_cmp
+#include "libsemigroups/detail/string.hpp"       // for group_digits
+#include "libsemigroups/detail/timer.hpp"        // for string_time
+#include "libsemigroups/detail/value-guard.hpp"  // for ValueGuard::Va...
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -78,8 +78,8 @@ namespace libsemigroups {
 
   using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
   using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
-  using RPOTrie    = detail::RewritingSystemTrie<RecursivePathCompare>;
-  using RPOSet     = detail::RewritingSystemSet<RecursivePathCompare>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, RPOTrie
 
@@ -438,11 +438,11 @@ namespace libsemigroups {
   // [146]: KnuthBendix: process millions of pending rules - LenLexTrie
   // -- sorted by lhs_rev_lex_cmp ......5.979s
   // -- sorted by lhs_lex_cmp ......6.223s
-  // -- sorted by rpo_cmp ......6.279s
+  // -- sorted by rev_rpo_cmp ......6.279s
   // [146]: KnuthBendix: process millions of pending rules - RPOTrie
   // -- sorted by lhs_rev_lex_cmp ......5.810s
   // -- sorted by lhs_lex_cmp ......6.241s
-  // -- sorted by rpo_cmp ......6.300s
+  // -- sorted by rev_rpo_cmp ......6.300s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "146",
                                    "process millions of pending rules",
@@ -469,8 +469,8 @@ namespace libsemigroups {
       k.rewriting_system().reduce();
       REQUIRE(k.rewriting_system().number_of_rules() == 2'045'649);
     }
-    SECTION("sorted by rpo_cmp") {
-      k.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    SECTION("sorted by rev_rpo_cmp") {
+      k.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
       k.rewriting_system().reduce();
       REQUIRE(k.rewriting_system().number_of_rules() == 2'041'466);
     }
@@ -517,7 +517,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
     kb.rewriting_system().settings().reduction_threshold = 1024;
-    kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    kb.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
     SECTION("using a separate trie for new rules") {
       kb.rewriting_system().use_new_rule_trie([](auto const&) { return true; });
     }
@@ -554,7 +554,7 @@ namespace libsemigroups {
              {"yB", "By"},    {"yC", "Cy"},     {"yD", "Dy"},   {"yY", ""},
              {"ya", "ayf"},   {"yb", "by"},     {"yc", "cy"},   {"yd", "dy"}}));
 
-    // NOTE: recursive_path_compare (and all the other orders) use the numerical
+    // NOTE: rev_rpo_cmp (and all the other orders) use the numerical
     // value of the letters in the alphabet as the order on the alphabet, in
     // this example, the order on the alphabet is "fFyYdDcCbBaA" which is
     // not numerical order, hence the contorsions below.
@@ -569,7 +569,7 @@ namespace libsemigroups {
              })
            | rx::to_vector());
     REQUIRE(std::all_of(rules2.begin(), rules2.end(), [](auto const& rule) {
-      return recursive_path_compare(rule.second, rule.first);
+      return rev_rpo_cmp(rule.second, rule.first);
     }));
   }
 
