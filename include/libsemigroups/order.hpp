@@ -416,6 +416,160 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Compare two objects of the same type using the len-lex reduction
+  //! ordering.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using the len-lex
+  //! reduction ordering.
+  //!
+  //! \tparam Iterator the type of iterators that are the parameters.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is
+  //! len-lex less than the range `[first2, last2)`, and \c false
+  //! otherwise.
+  //!
+  //! \exceptions
+  //! Throws if std::lexicographical_compare does.
+  //!
+  //! \complexity
+  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the distance between
+  //! \p last1 and \p first1, and the distance between \p last2 and \p first2.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! template <typename Iterator>
+  //! bool lenlex_cmp(Iterator first1,
+  //!                       Iterator last1,
+  //!                       Iterator first2,
+  //!                       Iterator last2) {
+  //!   return (last1 - first1) < (last2 - first2)
+  //!          || ((last1 - first1) == (last2 - first2)
+  //!              && std::lexicographical_compare
+  //!                   (first1, last1, first2, last2));
+  //! }
+  //! \end_code_no_test
+  template <typename Iterator,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  [[nodiscard]] bool
+  lenlex_cmp(Iterator first1, Iterator last1, Iterator first2, Iterator last2) {
+    return (last1 - first1) < (last2 - first2)
+           || ((last1 - first1) == (last2 - first2)
+               && std::lexicographical_compare(first1, last1, first2, last2));
+  }
+
+  //! \brief Compare two objects of the same type using \ref lenlex_compare.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using
+  //! \ref lenlex_cmp.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+  //! and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \complexity
+  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of \p x and
+  //! the length of \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  template <typename Thing,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  [[nodiscard]] bool lenlex_cmp(Thing const& x, Thing const& y) {
+    return lenlex_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects via their pointers using \ref lenlex_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects via their pointers using
+  //! \ref lenlex_cmp.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x points to a word len-lex less
+  //! than the word pointed to by \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \complexity
+  //! At most \f$O(n)\f$ where \f$n\f$ is the minimum of the length of the word
+  //! pointed to by \p x and the length of word pointed to by \p y.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+  template <typename Thing>
+  [[nodiscard]] bool lenlex_cmp(Thing* const x, Thing* const y) {
+    return lenlex_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  }
+
+  //! \brief A stateless struct with binary call operator using
+  //! \ref lenlex_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateless struct with binary call operator using \ref lenlex_cmp.
+  //!
+  //! This only exists to be used as a template parameter, and has no
+  //! advantages over using \ref lenlex_cmp otherwise.
+  //!
+  //! \sa
+  //! lenlex_cmp(Iterator, Iterator, Iterator, Iterator)
+  struct LenLexCmp {
+    //! \brief Call operator that compares \p x and \p y using
+    //! \ref lenlex_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using \ref lenlex_cmp.
+    //!
+    //! \tparam Thing the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is len-lex less than \p y,
+    //! and \c false otherwise.
+    //!
+    //! \exceptions
+    //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+    //!
+    //! \complexity
+    //! See \ref lenlex_cmp(Iterator, Iterator, Iterator, Iterator).
+    template <typename Thing>
+    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+      return lenlex_cmp(x, y);
+    }
+  };
+
   //! \brief Compare two objects of the same type using the short-lex reduction
   //! ordering.
   //!
@@ -455,15 +609,16 @@ namespace libsemigroups {
   //!                   (first1, last1, first2, last2));
   //! }
   //! \end_code_no_test
+  //!
+  //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
-  [[nodiscard]] bool shortlex_compare(Iterator first1,
-                                      Iterator last1,
-                                      Iterator first2,
-                                      Iterator last2) {
-    return (last1 - first1) < (last2 - first2)
-           || ((last1 - first1) == (last2 - first2)
-               && std::lexicographical_compare(first1, last1, first2, last2));
+  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
+  shortlex_compare(Iterator first1,
+                   Iterator last1,
+                   Iterator first2,
+                   Iterator last2) {
+    return lenlex_cmp(first1, last1, first2, last2);
   }
 
   //! \brief Compare two objects of the same type using \ref shortlex_compare.
@@ -496,9 +651,12 @@ namespace libsemigroups {
   //!
   //! \sa
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool shortlex_compare(Thing const& x, Thing const& y) {
+  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
+  shortlex_compare(Thing const& x, Thing const& y) {
     return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
 
@@ -532,8 +690,11 @@ namespace libsemigroups {
   //!
   //! \sa
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator).
+  //!
+  //! \deprecated_warning{function} Use \ref lenlex_cmp instead.
   template <typename Thing>
-  [[nodiscard]] bool shortlex_compare(Thing* const x, Thing* const y) {
+  [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
+  shortlex_compare(Thing* const x, Thing* const y) {
     return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
@@ -549,7 +710,9 @@ namespace libsemigroups {
   //!
   //! \sa
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator)
-  struct ShortLexCompare {
+  //!
+  //! \deprecated_warning{struct} Use \ref LenLexCmp instead.
+  struct [[deprecated]] ShortLexCompare {
     //! \brief Call operator that compares \p x and \p y using
     //! \ref shortlex_compare.
     //!
