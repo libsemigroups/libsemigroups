@@ -34,6 +34,32 @@
 
 namespace libsemigroups {
 
+  int rec_compare(char const* w1, char const* w2) {
+    int         lastmoved = 0;
+    char const *p1, *p2;
+    p1 = w1 + std::strlen(w1) - 1;
+    p2 = w2 + std::strlen(w2) - 1;
+    while (1) {
+      if (p1 < w1) {
+        if (p2 < w2)
+          return lastmoved;
+        return 2;
+      }
+      if (p2 < w2)
+        return 1;
+      if (*p1 == *p2) {
+        p1--;
+        p2--;
+      } else if (*p1 < *p2) {
+        p1--;
+        lastmoved = 1;
+      } else if (*p2 < *p1) {
+        p2--;
+        lastmoved = 2;
+      }
+    }
+  }
+
   using namespace literals;
 
   // =========================================================================
@@ -604,4 +630,14 @@ namespace libsemigroups {
     REQUIRE(RecursivePathCompare()(w2, w1));
     REQUIRE(!RecursivePathCompare()(w1, w2));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("recursive_path_compare",
+                          "036",
+                          "failing example",
+                          "[quick][order]") {
+    using std::literals::string_literals::operator""s;
+    REQUIRE(!recursive_path_compare("002"s, "211"s));
+    REQUIRE(rec_compare("002", "211") == 2);
+  }
+
 }  // namespace libsemigroups
