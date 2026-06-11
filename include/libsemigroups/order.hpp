@@ -2304,12 +2304,20 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_length_non_increasing : std::false_type {};
 
+    // TODO(v4): remove
     //! \brief Short-lex order is length non-increasing.
     //!
     //! Specialization of \ref is_length_non_increasing for
     //! \ref ShortLexCompare.
     template <>
     struct is_length_non_increasing<ShortLexCompare> : std::true_type {};
+
+    //! \brief len-lex order is length non-increasing.
+    //!
+    //! Specialization of \ref is_length_non_increasing for
+    //! \ref LenLexCmp.
+    template <>
+    struct is_length_non_increasing<LenLexCmp> : std::true_type {};
 
     //! \brief Helper variable template for \ref is_length_non_increasing.
     //!
@@ -2332,17 +2340,31 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_well_founded : std::false_type {};
 
+    // TODO(v4): remove
     //! \brief Short-lex order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref ShortLexCompare.
     template <>
     struct is_well_founded<ShortLexCompare> : std::true_type {};
 
+    //! \brief len-lex order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref LenLexCmp.
+    template <>
+    struct is_well_founded<LenLexCmp> : std::true_type {};
+
+    // TODO(v4): remove
     //! \brief Recursive path order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref RecursivePathCompare.
     template <>
     struct is_well_founded<RecursivePathCompare> : std::true_type {};
+
+    //! \brief Recursive path order is well-founded.
+    //!
+    //! Specialization of \ref is_well_founded for \ref RPOCmp.
+    template <>
+    struct is_well_founded<RPOCmp> : std::true_type {};
 
     //! \brief Weighted short-lex order is well-founded.
     //!
