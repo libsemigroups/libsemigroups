@@ -407,6 +407,149 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
+  //! This function compares two objects of the same type using the recursive
+  //! path comparison described in \cite Jantzen2012aa (Definition 1.2.14, page
+  //! 24).
+  //!
+  //! If \f$u, v\in X ^ {*}\f$, then
+  //! \f$u < v\f$ if and only if one of the following conditions holds:
+  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
+  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //!    X ^ {*}\f$ and:
+  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
+  //!   2. \f$a < b\f$ and \f$u  < v'\f$; or
+  //!   3. \f$a > b\f$ and \f$u' < v\f$.
+  //!
+  //! This documentation and the implementation of \ref recursive_path_compare
+  //! is based on the source code of \cite Holt2018aa, specifically the function
+  //! `rec_compare`.
+  //!
+  //! \tparam Iterator the type of iterators that are the arguments.
+  //!
+  //! \param first1 beginning iterator of first object for comparison.
+  //! \param last1 ending iterator of first object for comparison.
+  //! \param first2 beginning iterator of second object for comparison.
+  //! \param last2 ending iterator of second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the range `[first1, last1)` is less
+  //! than the range `[first2, last2)` with respect to the recursive path
+  //! ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \warning
+  //! This function has significantly worse performance than all
+  //! the variants of \ref shortlex_compare and std::lexicographical_compare.
+  template <typename Iterator,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  [[nodiscard]] bool rpo_cmp(Iterator first1,
+                             Iterator last1,
+                             Iterator first2,
+                             Iterator last2) noexcept;
+
+  //! \brief Compare two objects of the same type using //! \ref rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using \ref rpo_cmp.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with respect
+  //! to the recursive path ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  template <typename Thing,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  [[nodiscard]] bool rpo_cmp(Thing const& x, Thing const& y) noexcept {
+    return rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects via their pointers using \ref rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects via their pointers using \ref rpo_cmp.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the value pointed to by \p x is less
+  //! than the value pointed to by \p y with r to the recursive path
+  //! ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  template <typename Thing>
+  [[nodiscard]] bool rpo_cmp(Thing* const x, Thing* const y) noexcept {
+    return rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  }
+
+  //! \brief A stateless struct with binary call operator using
+  //! \ref rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateless struct with binary call operator using
+  //! \ref rpo_cmp.
+  //!
+  //! This only exists to be used as a template parameter, and has no
+  //! advantages over using \ref rpo_cmp otherwise.
+  //!
+  //! \sa
+  //! rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  struct RevRPOCmp {
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rpo_cmp.
+    //!
+    //! \tparam Thing the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the recursive path ordering, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Thing>
+    [[nodiscard]] bool operator()(Thing const& x,
+                                  Thing const& y) const noexcept {
+      return rpo_cmp(x, y);
+    }  // namespace libsemigroups
+  };
+
+  //! \brief Compare two objects of the same type using the reversed recursive
+  //! path comparison.
+  //!
+  //! Defined in `order.hpp`.
+  //!
   //! This function compares two objects of the same type using the reversed
   //! recursive path comparison. This is the same as applying the recursive path
   //! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24)
@@ -433,12 +576,121 @@ namespace libsemigroups {
   //! \param last2 ending iterator of second object for comparison.
   //!
   //! \returns The boolean value \c true if the range `[first1, last1)` is less
-  //! than the range `[first2, last2)` with respect to the recursive path
+  //! than the range `[first2, last2)` with respect to the reversed recursive
+  //! path ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \warning
+  //! This function has significantly worse performance than all
+  //! the variants of \ref shortlex_compare and std::lexicographical_compare.
+  template <typename Iterator,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
+                                 Iterator last1,
+                                 Iterator first2,
+                                 Iterator last2) noexcept;
+
+  //! \brief Compare two objects of the same type using \ref rev_rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is less than \p y with respect
+  //! to the reversed recursive path ordering, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \noexcept
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  template <typename Iterator,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
+  [[nodiscard]] bool rev_rpo_cmp(Iterator const& x,
+                                 Iterator const& y) noexcept {
+    return rev_rpo_cmp(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects via their pointers using \ref rev_rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects via their pointers using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if the value pointed to by \p x is less
+  //! than the value pointed to by \p y with r to the reversed recursive path
   //! ordering, and \c false otherwise.
   //!
   //! \exceptions
   //! \noexcept
   //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  //! \end_code_no_test
+  //!
+  //! \sa
+  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  template <typename Thing>
+  [[nodiscard]] bool rev_rpo_cmp(Thing* const x, Thing* const y) noexcept {
+    return rev_rpo_cmp(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  }
+
+  //! \brief A stateless struct with binary call operator using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateless struct with binary call operator using
+  //! \ref rev_rpo_cmp.
+  //!
+  //! This only exists to be used as a template parameter, and has no
+  //! advantages over using \ref rev_rpo_cmp otherwise.
+  //!
+  //! \sa
+  //! rev_rpo_cmp(Iterator, Iterator, Iterator, Iterator)
+  struct RevRPOCmp {
+    //! \brief  Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! \ref rev_rpo_cmp.
+    //!
+    //! \tparam Thing the type of the objects to be compared.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is less than \p y with
+    //! respect to the reversed recursive path ordering, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Thing>
+    [[nodiscard]] bool operator()(Thing const& x,
+                                  Thing const& y) const noexcept {
+      return rev_rpo_cmp(x, y);
+    }  // namespace libsemigroups
+  };
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref shortlex_compare and std::lexicographical_compare.
