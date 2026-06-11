@@ -40,7 +40,7 @@ namespace libsemigroups {
 
     template <typename KnuthBendix_>
     bool KBE<KnuthBendix_>::operator<(KBE const& that) const {
-      return shortlex_compare(_kb_word, that._kb_word);
+      return lenlex_cmp(_kb_word, that._kb_word);
     }
 
     template <typename KnuthBendix_>

@@ -125,7 +125,7 @@ namespace libsemigroups {
 
       tc.run();
       if (!tc.current_word_graph().is_standardized()) {
-        tc.standardize(Order::shortlex);
+        tc.standardize(Order::lenlex);
       }
       if constexpr (std::is_same_v<Word, word_type>) {
         // TODO is this correct if the presentation().alphabet() !=

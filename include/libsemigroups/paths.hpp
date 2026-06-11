@@ -1060,13 +1060,13 @@ namespace libsemigroups {
     //! \brief Set the order of the paths in the range.
     //!
     //! This function can be used to set the order of the paths in the range
-    //! defined by a Paths object. The initial value is Order::shortlex.
+    //! defined by a Paths object. The initial value is Order::lenlex.
     //!
     //! \param val the order of the paths in the range.
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \throws LibsemigroupsException if \p val is not Order::shortlex or
+    //! \throws LibsemigroupsException if \p val is not Order::lenlex or
     //! Order::lex.
     Paths& order(Order val) {
       return order(this, val);
@@ -1075,7 +1075,7 @@ namespace libsemigroups {
     //! \brief Get the order of the paths in the range.
     //!
     //! This function returns the current order of the paths in the range
-    //! defined by a Paths object. The initial value is Order::shortlex.
+    //! defined by a Paths object. The initial value is Order::lenlex.
     //!
     //! \returns The order of the paths in the range.
     //!

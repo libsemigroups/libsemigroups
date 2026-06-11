@@ -118,7 +118,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     tc.run();
 
-    for (auto order : {Order::shortlex, Order::recursive, Order::lex}) {
+    for (auto order : {Order::lenlex, Order::rpo, Order::lex}) {
       tc.standardize(order);
       forest::PathsFromRoots paths(tc.current_spanning_tree());
       REQUIRE(paths.count() == 443'520);
@@ -183,7 +183,7 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, p);
     tc.run();
 
-    for (auto order : {Order::shortlex, Order::recursive, Order::lex}) {
+    for (auto order : {Order::lenlex, Order::rpo, Order::lex}) {
       tc.standardize(order);
       forest::PathsToRoots paths(tc.current_spanning_tree());
       REQUIRE(paths.count() == 443'520);

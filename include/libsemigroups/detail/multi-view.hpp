@@ -23,7 +23,7 @@
 #ifndef LIBSEMIGROUPS_DETAIL_MULTI_VIEW_HPP_
 #define LIBSEMIGROUPS_DETAIL_MULTI_VIEW_HPP_
 
-#include <algorithm>  // for equal, lexicographical_compare
+#include <algorithm>  // for equal, lex_cmp
 #include <cstddef>    // for size_t, etc
 #include <cstdint>    // for uint32_t, etc
 #include <iterator>   // for reverse_iterator

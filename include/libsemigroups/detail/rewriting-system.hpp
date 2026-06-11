@@ -32,7 +32,7 @@
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/debug.hpp"   // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/order.hpp"   // for shortlex_compare
+#include "libsemigroups/order.hpp"   // for lenlex_cmp
 #include "libsemigroups/runner.hpp"  // for delta
 #include "libsemigroups/types.hpp"   // for u8string
 
@@ -481,8 +481,8 @@ namespace libsemigroups {
 
     }  // namespace rewriting_system
 
-    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<ShortLexCompare>;
-    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<ShortLexCompare>;
+    using RewriteTrie [[deprecated]]     = RewritingSystemTrie<LenLexCmp>;
+    using RewriteFromLeft [[deprecated]] = RewritingSystemSet<LenLexCmp>;
 
   }  // namespace detail
 }  // namespace libsemigroups

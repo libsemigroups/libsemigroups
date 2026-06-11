@@ -36,7 +36,7 @@
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsExcep...
 #include "libsemigroups/knuth-bendix-helpers.hpp"
 #include "libsemigroups/knuth-bendix.hpp"           // for KnuthBendix, norma...
-#include "libsemigroups/order.hpp"                  // for shortlex_compare
+#include "libsemigroups/order.hpp"                  // for lenlex_cmp
 #include "libsemigroups/paths.hpp"                  // for Paths
 #include "libsemigroups/presentation-examples.hpp"  // for partition_mo
 #include "libsemigroups/presentation.hpp"           // for add_rule, Presenta...
@@ -55,10 +55,10 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
-  using RPOTrie    = detail::RewritingSystemTrie<RecursivePathCompare>;
-  using RPOSet     = detail::RewritingSystemSet<RecursivePathCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet, RPOTrie, RPOSet
 
@@ -131,12 +131,12 @@ namespace libsemigroups {
     REQUIRE(!kb.rewriting_system().confluent());
 
     using order = typename TestType::reduction_order;
-    if constexpr (std::is_same_v<order, ShortLexCompare>) {
+    if constexpr (std::is_same_v<order, LenLexCmp>) {
       // In Sims it says to use 44 here, but that doesn't seem to work.
       kb.max_overlap(45);
       kb.run();
       REQUIRE(kb.rewriting_system().number_of_rules() == 1'026);
-    } else if (std::is_same_v<order, RecursivePathCompare>) {
+    } else if (std::is_same_v<order, RevRPOCmp>) {
       kb.max_overlap(56);
       kb.run();
       REQUIRE(kb.rewriting_system().number_of_rules() == 407);

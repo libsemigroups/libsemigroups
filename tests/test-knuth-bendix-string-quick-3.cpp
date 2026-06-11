@@ -28,7 +28,7 @@
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
-#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/order.hpp"         // for lenlex_cmp
 #include "libsemigroups/paths.hpp"         // for Paths
 #include "libsemigroups/presentation-examples.hpp"  // for Inner, ToString, Str...
 #include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
@@ -49,9 +49,9 @@ namespace libsemigroups {
 
   // TODO update these tests to use RPO as well
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
-  using RPOTrie    = detail::RewritingSystemTrie<RecursivePathCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, LenLexSet
 

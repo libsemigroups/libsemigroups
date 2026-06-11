@@ -253,7 +253,7 @@ namespace libsemigroups {
   //! \returns \c true if the range \p r1 is lexicographically less than the
   //! range \p r2, and \c false it not.
   template <typename Range1, typename Range2>
-  bool lexicographical_compare(Range1 r1, Range2 r2);
+  bool lex_cmp(Range1 r1, Range2 r2);
 
   //! \ingroup ranges_group
   //!
@@ -263,7 +263,7 @@ namespace libsemigroups {
   //!
   //! This function checks if the range \p r1 is shortlex less than
   //! the range \p r2, using `operator<` on the items in the ranges.
-  //! This is analogous to \ref shortlex_compare.
+  //! This is analogous to \ref lenlex_cmp.
   //!
   //! \tparam Range1 the type of the first range.
   //! \tparam Range2 the type of the second range.
@@ -274,7 +274,7 @@ namespace libsemigroups {
   //! \returns \c true if the range \p r1 is shortlex less than the
   //! range \p r2, and \c false it not.
   template <typename Range1, typename Range2>
-  bool shortlex_compare(Range1 r1, Range2 r2);
+  bool lenlex_cmp(Range1 r1, Range2 r2);
 
   // TODO(1) recursive_path_compare?
 

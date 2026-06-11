@@ -178,7 +178,7 @@ namespace libsemigroups {
                                           word_type&& first,
                                           word_type&& last) {
     if (!word_in_language(n, first)
-        || !lexicographical_compare(
+        || !std::lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wilo(n, upper_bound, std::move(first), std::move(last));
     }
@@ -214,7 +214,7 @@ namespace libsemigroups {
                                             word_type&& first,
                                             word_type&& last) {
     if (!word_in_language(n, first)
-        || !shortlex_compare(
+        || !lenlex_cmp(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wislo(n, std::move(first), std::move(last));
     }
@@ -243,7 +243,7 @@ namespace libsemigroups {
     if (!_current_valid) {
       _current_valid = true;
       _visited       = 0;
-      if (_order == Order::shortlex) {
+      if (_order == Order::lenlex) {
         _current = cbegin_wislo(_alphabet_size, _first, _last);
         _end     = cend_wislo(_alphabet_size, _first, _last);
       } else if (_order == Order::lex) {
@@ -254,7 +254,7 @@ namespace libsemigroups {
   }
 
   size_t WordRange::count() const noexcept {
-    if (_order == Order::shortlex) {
+    if (_order == Order::lenlex) {
       return size_hint();
     } else {
       return (*this | rx::count());
@@ -266,7 +266,7 @@ namespace libsemigroups {
     _current_valid = false;
     _first         = {};
     _last          = {};
-    _order         = Order::shortlex;
+    _order         = Order::lenlex;
     _upper_bound   = 0;  // does nothing if _order is shortlex
     _visited       = 0;
     return *this;
@@ -279,9 +279,9 @@ namespace libsemigroups {
   WordRange::~WordRange()                           = default;
 
   WordRange& WordRange::order(Order val) {
-    if (val != Order::shortlex && val != Order::lex) {
+    if (val != Order::lenlex && val != Order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be Order::shortlex or Order::lex, found {}", val);
+          "the argument must be Order::lenlex or Order::lex, found {}", val);
     }
     _current_valid &= (val == _order);
     _order = val;

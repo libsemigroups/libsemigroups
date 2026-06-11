@@ -458,12 +458,19 @@ namespace libsemigroups {
         switch (val) {
           case Order::none:
             return false;
-          case Order::shortlex:
+          case Order::lenlex:
             return detail::shortlex_standardize(wg, f);
           case Order::lex:
             return detail::lex_standardize(wg, f);
+          case Order::rpo:
+            return detail::recursive_standardize(wg, f);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+          case Order::shortlex:
+            return detail::shortlex_standardize(wg, f);
           case Order::recursive:
             return detail::recursive_standardize(wg, f);
+#pragma GCC diagnostic pop
           default:
             return false;
         }
@@ -474,10 +481,17 @@ namespace libsemigroups {
         switch (val) {
           case Order::none:
             return true;
+          case Order::lenlex:
+            return detail::is_shortlex_standardized(wg);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
           case Order::shortlex:
             return detail::is_shortlex_standardized(wg);
-          case Order::lex:
           case Order::recursive:
+            LIBSEMIGROUPS_EXCEPTION("not yet implemented")
+#pragma GCC diagnostic pop
+          case Order::lex:
+          case Order::rpo:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
         }

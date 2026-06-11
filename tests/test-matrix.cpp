@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <algorithm>    // for lexicographical_compare
+#include <algorithm>    // for lex_cmp
 #include <array>        // for array
 #include <cstddef>      // for size_t
 #include <numeric>      // for accumulate

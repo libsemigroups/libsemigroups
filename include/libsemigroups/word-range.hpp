@@ -311,7 +311,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! WordRange words;
-  //! words.order(Order::shortlex)  // words in shortlex order
+  //! words.order(Order::lenlex)  // words in shortlex order
   //!      .alphabet_size(2)        // on 2 letters
   //!      .min(1)                  // of length in the range from 1
   //!      .max(5);                 // to 5
@@ -389,7 +389,7 @@ namespace libsemigroups {
     //! \brief The possible size of the range.
     //!
     //! Returns the number of words in a WordRange object if order() is
-    //! Order::shortlex. If order() is not Order::shortlex, then the return
+    //! Order::lenlex. If order() is not Order::lenlex, then the return
     //! value of this function is meaningless.
     //!
     //! \returns A value of type \c size_t.
@@ -405,8 +405,8 @@ namespace libsemigroups {
     //! \brief The actual size of the range.
     //!
     //! Returns the number of words in a WordRange object. If order() is
-    //! Order::shortlex, then size_hint() is used. If order() is not
-    //! Order::shortlex, then a copy of the range may have to be looped over in
+    //! Order::lenlex, then size_hint() is used. If order() is not
+    //! Order::lenlex, then a copy of the range may have to be looped over in
     //! order to find the return value of this function.
     //!
     //! \returns A value of type \c size_t.
@@ -430,7 +430,7 @@ namespace libsemigroups {
     //! Constructs an empty range with:
     //! * min() equal to \c 0;
     //! * max() equal to \c 0;
-    //! * order() equal to Order::shortlex;
+    //! * order() equal to Order::lenlex;
     //! * first() equal to the empty word;
     //! * last() equal to the empty word;
     //! * upper_bound() equal to \c 0;
@@ -576,7 +576,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if val is not Order::shortlex or
+    //! \throws LibsemigroupsException if val is not Order::lenlex or
     //! Order::lex.
     WordRange& order(Order val);
 
@@ -1602,7 +1602,7 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! StringRange strings;
-  //! strings.order(Order::shortlex) // strings in shortlex order
+  //! strings.order(Order::lenlex) // strings in shortlex order
   //!        .alphabet("ab")         // on 2 letters
   //!        .min(1)                 // of length in the range from 1
   //!        .max(5);                // to 5
@@ -1681,7 +1681,7 @@ namespace libsemigroups {
     //! \brief The possible size of the range.
     //!
     //! Returns the number of words in a StringRange object if order() is
-    //! Order::shortlex. If order() is not Order::shortlex, then the return
+    //! Order::lenlex. If order() is not Order::lenlex, then the return
     //! value of this function is meaningless.
     //!
     //! \returns A value of type \c size_t.
@@ -1695,8 +1695,8 @@ namespace libsemigroups {
     //! \brief The actual size of the range.
     //!
     //! Returns the number of words in the range object.
-    //! If order() is Order::shortlex, then size_hint() is used. If order() is
-    //! not Order::shortlex, then a copy of the range may have to be looped over
+    //! If order() is Order::lenlex, then size_hint() is used. If order() is
+    //! not Order::lenlex, then a copy of the range may have to be looped over
     //! in order to find the return value of this function.
     //!
     //! \returns A value of type \c size_t.
@@ -1720,7 +1720,7 @@ namespace libsemigroups {
     //! Constructs an empty range with:
     //! * min() equal to \c 0;
     //! * max() equal to \c 0;
-    //! * order() equal to Order::shortlex;
+    //! * order() equal to Order::lenlex;
     //! * first() equal to the empty string;
     //! * last() equal to the empty string;
     //! * upper_bound() equal to \c 0;
@@ -1854,7 +1854,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if val is not Order::shortlex or
+    //! \throws LibsemigroupsException if val is not Order::lenlex or
     //! Order::lex.
     StringRange& order(Order val) {
       _word_range.order(val);
