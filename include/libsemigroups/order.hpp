@@ -411,12 +411,14 @@ namespace libsemigroups {
   //! path comparison described in \cite Jantzen2012aa (Definition 1.2.14, page
   //! 24).
   //!
-  //! If \f$u, v\in X ^ {*}\f$, \f$u \neq v\f$, and \f$u = a'u\f$,
-  //! \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in X ^ {*}\f$, then
+  //! If \f$u, v\in X ^ {*}\f$, then
   //! \f$u > v\f$ if one of the following conditions holds:
-  //! 1. \f$a = b\f$ and \f$u' \geq v'\f$;
-  //! 2. \f$a > b\f$ and \f$u  > v'\f$;
-  //! 3. \f$b > a\f$ and \f$u' > v\f$.
+  //! 1. \f$u\f$ not empty and \f$v\f$ is empty; or
+  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //!    X ^ {*}\f$ and:
+  //!   1. \f$a = b\f$ and \f$u' > v'\f$; or
+  //!   2. \f$a > b\f$ and \f$u  > v'\f$; or
+  //!   3. \f$u' > v\f$.
   //!
   //! This documentation and the implementation of \ref recursive_path_compare
   //! is based on the source code of \cite Holt2018aa.
