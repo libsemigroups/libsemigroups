@@ -43,7 +43,7 @@
 #include "constants.hpp"     // for UNDEFINED, operator==
 #include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "order.hpp"         // for lexicographical_compare
+#include "order.hpp"         // for lex_cmp
 #include "presentation.hpp"  // for operator!=, Presentation
 #include "types.hpp"         // for tril, congruence_kind
 #include "ukkonen.hpp"       // for maximal_piece_prefix_no...

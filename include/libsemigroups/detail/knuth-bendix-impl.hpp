@@ -48,7 +48,7 @@
 #include "libsemigroups/debug.hpp"                 // for LIBSEMIGROUPS_...
 #include "libsemigroups/is_specialization_of.hpp"  // for is_specialization_of_v
 #include "libsemigroups/obvinf.hpp"                // for is_obviously_infinite
-#include "libsemigroups/order.hpp"                 // for ShortLexCompare
+#include "libsemigroups/order.hpp"                 // for LenLexCmp
 #include "libsemigroups/paths-count.hpp"           // for paths::count
 #include "libsemigroups/presentation.hpp"          // for operator!=
 #include "libsemigroups/ranges.hpp"                // for count, iterato...
@@ -135,9 +135,9 @@ namespace libsemigroups {
 
     // TODO(1) Make overlap measure a template param?
     // TODO(v4) 2nd template parameter no longer used, remove
-    template <
-        typename RewritingSystem = detail::RewritingSystemTrie<ShortLexCompare>,
-        typename ReductionOrder  = typename RewritingSystem::reduction_order>
+    template <typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
+              typename ReductionOrder =
+                  typename RewritingSystem::reduction_order>
     class KnuthBendixImpl : public CongruenceCommon {
       // Since the 2nd template parameter is now unnecessary, but not removed
       // for backwards compatibility, we assert that it is the order of the

@@ -58,7 +58,7 @@ namespace libsemigroups {
     //! The short-lex ordering. Words are first ordered by length, and then
     //! lexicographically.
     //!
-    //! \deprecated_warning{value} Use \ref lenlex instead.
+    //! \deprecated_warning{value} Use \ref Order::lenlex instead.
     shortlex [[deprecated("Use lenlex instead!")]],
 
     //! The len-lex ordering. Words are first ordered by length, and then
@@ -73,7 +73,7 @@ namespace libsemigroups {
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
     //! (Definition 1.2.14, page 24).
     //!
-    //! \deprecated_warning{function} Use \ref rpo instead.
+    //! \deprecated_warning{function} Use \ref Order::rpo instead.
     recursive [[deprecated("Use rpo instead")]],
 
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
@@ -488,7 +488,7 @@ namespace libsemigroups {
                && std::lexicographical_compare(first1, last1, first2, last2));
   }
 
-  //! \brief Compare two objects of the same type using \ref lenlex_compare.
+  //! \brief Compare two objects of the same type using \ref lenlex_cmp.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -807,7 +807,7 @@ namespace libsemigroups {
   //!
   //! \warning
   //! This function has significantly worse performance than all
-  //! the variants of \ref shortlex_compare and std::lexicographical_compare.
+  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
   [[nodiscard]] bool rpo_cmp(Iterator first1,
@@ -955,7 +955,7 @@ namespace libsemigroups {
   //!
   //! \warning
   //! This function has significantly worse performance than all
-  //! the variants of \ref shortlex_compare and std::lexicographical_compare.
+  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   template <typename Iterator,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Iterator>>>
   [[nodiscard]] bool rev_rpo_cmp(Iterator first1,
@@ -1106,7 +1106,7 @@ namespace libsemigroups {
   //!
   //! \warning
   //! This function has significantly worse performance than all
-  //! the variants of \ref shortlex_compare and std::lexicographical_compare.
+  //! the variants of \ref lenlex_cmp and std::lexicographical_compare.
   //!
   //! \deprecated_warning{function} Use \ref rev_rpo_cmp instead.
   template <typename Iterator,

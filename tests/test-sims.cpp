@@ -131,7 +131,7 @@ namespace libsemigroups {
       }
       tc.run();
 
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       auto expected = tc.word_graph();
       auto result   = wg;
 
@@ -146,7 +146,7 @@ namespace libsemigroups {
         todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
       tc.run();
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       expected = tc.word_graph();
       REQUIRE(expected.number_of_nodes() >= result.number_of_active_nodes());
 
@@ -163,7 +163,7 @@ namespace libsemigroups {
       }
       tc.run();
 
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       auto expected = tc.word_graph();
       auto result   = wg;
 
@@ -178,7 +178,7 @@ namespace libsemigroups {
         todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
       tc.run();
-      tc.standardize(Order::shortlex);
+      tc.standardize(Order::lenlex);
       expected = tc.word_graph();
       REQUIRE(expected.number_of_nodes() >= result.number_of_active_nodes());
 

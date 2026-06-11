@@ -17,7 +17,7 @@
 //
 
 #include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include "libsemigroups/order.hpp"       // for lexicographical_compare
+#include "libsemigroups/order.hpp"       // for lex_cmp
 #include "libsemigroups/word-range.hpp"  // for number_of_words
 
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
@@ -61,7 +61,7 @@ namespace libsemigroups {
                                                word_type const& last) {
       std::vector<word_type> out;
       out.reserve(number_of_words(n, first.size(), last.size()));
-      if (!lexicographical_compare(first, last)) {
+      if (!lex_cmp(first, last)) {
         return out;
       } else if (first.empty()) {
         out.push_back({});
@@ -73,7 +73,7 @@ namespace libsemigroups {
       if (current.size() < upper_bound - 1 && letter != n) {
         current.push_back(letter);
         letter = 0;
-        if (lexicographical_compare(current, last)) {
+        if (lex_cmp(current, last)) {
           out.push_back(current);
         }
         goto begin;
@@ -91,7 +91,7 @@ namespace libsemigroups {
       auto w = words_in_lex_order(3, 0, 13);
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
     };
 
     BENCHMARK("vector of all words length 0 to 13 using for loop 2") {
@@ -100,7 +100,7 @@ namespace libsemigroups {
       auto      w = words_in_lex_order2(3, 13, first, last);
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
     };
 
     BENCHMARK("vector of all words length 0 to 13 using iterators") {
@@ -112,7 +112,7 @@ namespace libsemigroups {
       w.assign(cbegin_wilo(3, 13, first, last), cend_wilo(3, 13, first, last));
       REQUIRE(w.size() == number_of_words(3, 0, 13));
       REQUIRE(w.size() == 797161);
-      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+      REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
     };
   }
 }  // namespace libsemigroups

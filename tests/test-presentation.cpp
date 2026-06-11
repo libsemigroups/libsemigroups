@@ -42,9 +42,9 @@
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/order.hpp"            // for ShortLexCompare, shor...
+#include "libsemigroups/order.hpp"            // for LenLexCmp, shor...
 #include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
-#include "libsemigroups/ranges.hpp"           // for chain, shortlex_compare
+#include "libsemigroups/ranges.hpp"           // for chain, lenlex_cmp
 #include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 #include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
@@ -681,10 +681,10 @@ namespace libsemigroups {
              "e",  "Aa", "e",     "bB", "e",       "Bb", "e",       "cC", "e",
              "Cc", "e",  "aaCac", "e",  "acbbACb", "e",  "ABabccc", "e"}));
     REQUIRE(!presentation::are_rules_sorted(p));
-    REQUIRE(!presentation::are_rules_sorted(p, LexicographicalCompare()));
-    presentation::sort_each_rule(p, LexicographicalCompare());
-    presentation::sort_rules(p, LexicographicalCompare());
-    REQUIRE(presentation::are_rules_sorted(p, LexicographicalCompare()));
+    REQUIRE(!presentation::are_rules_sorted(p, LexCmp()));
+    presentation::sort_each_rule(p, LexCmp());
+    presentation::sort_rules(p, LexCmp());
+    REQUIRE(presentation::are_rules_sorted(p, LexCmp()));
     REQUIRE(p.rules
             == std::vector<std::string>(
                 {"Ae", "A",  "Be", "B",  "Ce",    "C", "ae",      "a",  "be",
@@ -2075,8 +2075,7 @@ namespace libsemigroups {
     std::string prefix1 = "dabd", suffix1 = "cbb", prefix2 = "abbaba",
                 suffix2 = "c";
 
-    REQUIRE(
-        !shortlex_compare(chain(prefix1, suffix1), chain(prefix2, suffix2)));
+    REQUIRE(!lenlex_cmp(chain(prefix1, suffix1), chain(prefix2, suffix2)));
 
     Presentation<std::string> p;
     p.alphabet("bacd");
@@ -2609,7 +2608,7 @@ namespace libsemigroups {
       expected.push_back(*it + *(it + 1));
     }
     std::vector<std::string> found = expected;
-    std::sort(found.begin(), found.end(), ShortLexCompare());
+    std::sort(found.begin(), found.end(), LenLexCmp());
     REQUIRE(found == expected);
     for (size_t i = 0; i != found.size(); ++i) {
       REQUIRE(std::make_pair(found[i], i) == std::make_pair(expected[i], i));

@@ -135,7 +135,7 @@ namespace libsemigroups {
                             110_w,
                             111_w}));
     REQUIRE(w.size() == 14);
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
 
     WordRange words;
     words.first(first).last(last);
@@ -169,8 +169,8 @@ namespace libsemigroups {
                            10010_w, 10011_w, 10100_w, 10101_w, 10110_w, 10111_w,
                            11000_w, 11001_w, 11010_w, 11011_w, 11100_w, 11101_w,
                            11110_w, 11111_w}));
-    REQUIRE(std::is_sorted(w3.cbegin(), w3.cend(), ShortLexCompare()));
-    REQUIRE(std::is_sorted(w3.cbegin(), w3.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(w3.cbegin(), w3.cend(), LenLexCmp()));
+    REQUIRE(std::is_sorted(w3.cbegin(), w3.cend(), LexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -184,7 +184,7 @@ namespace libsemigroups {
         = std::vector(cbegin_wislo(3, first, last), cend_wislo(3, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -199,7 +199,7 @@ namespace libsemigroups {
     w.insert(w.end(), cbegin_wislo(3, first, last), cend_wislo(3, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -210,10 +210,10 @@ namespace libsemigroups {
     word_type last(13, 2);
     auto      w = std::vector(cbegin_wilo(3, 13, first, last),
                          cend_wilo(3, 13, first, last));
-    std::sort(w.begin(), w.end(), ShortLexCompare());
+    std::sort(w.begin(), w.end(), LenLexCmp());
     REQUIRE(w.size() == number_of_words(3, 0, 13));
     REQUIRE(w.size() == 797161);
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LenLexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -303,10 +303,10 @@ namespace libsemigroups {
                             110_w,
                             111_w}));
     REQUIRE(w.size() == 14);
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
     REQUIRE(std::is_sorted(cbegin_wilo(2, 4, 0_w, 1111_w),
                            cend_wilo(2, 4, 0_w, 1111_w),
-                           LexicographicalCompare()));
+                           LexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -326,10 +326,10 @@ namespace libsemigroups {
                               112_w, 12_w,  120_w, 121_w, 122_w, 2_w,   20_w,
                               200_w, 201_w, 202_w, 21_w,  210_w, 211_w, 212_w,
                               22_w,  220_w, 221_w, 222_w}));
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
     REQUIRE(std::is_sorted(cbegin_wilo(3, 4, first, last),
                            cend_wilo(3, 4, first, last),
-                           LexicographicalCompare()));
+                           LexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -343,10 +343,10 @@ namespace libsemigroups {
                          cend_wilo(3, 10, first, last));
     REQUIRE(w.size() == number_of_words(3, 0, 10));
     REQUIRE(w.size() == 29524);
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
     REQUIRE(std::is_sorted(cbegin_wilo(3, 10, first, last),
                            cend_wilo(3, 10, first, last),
-                           LexicographicalCompare()));
+                           LexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -361,7 +361,7 @@ namespace libsemigroups {
                   cend_wilo(3, 13, first, last));
     REQUIRE(w.size() == 797161);
     REQUIRE(w.size() == number_of_words(3, 0, 13));
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -384,7 +384,7 @@ namespace libsemigroups {
              cbegin_wilo(3, 13, first, last),
              cend_wilo(3, 13, first, last));
     REQUIRE(w.size() == number_of_words(3, 1, 13));
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), LexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
@@ -523,7 +523,7 @@ namespace libsemigroups {
     REQUIRE(words.count() == 26);
 
     REQUIRE_THROWS_AS(words.order(Order::none), LibsemigroupsException);
-    REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
+    REQUIRE_THROWS_AS(words.order(Order::rpo), LibsemigroupsException);
 
     WordRange copy;
     copy.     operator=(words);
@@ -555,7 +555,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == ""_w);
     REQUIRE(more.alphabet_size() == 0);
-    REQUIRE(more.order() == Order::shortlex);
+    REQUIRE(more.order() == Order::lenlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
     REQUIRE(more.size_hint() == 0);
@@ -672,7 +672,7 @@ namespace libsemigroups {
                             11_w,
                             110_w,
                             111_w}));
-    REQUIRE(is_sorted(strings, LexicographicalCompare()));
+    REQUIRE(is_sorted(strings, LexCmp()));
 
     strings.alphabet("ba").first("b").last("aaaaa");
     REQUIRE((strings | count()) == 14);
@@ -706,7 +706,7 @@ namespace libsemigroups {
         .last(std::string(13, 'c'));
     REQUIRE(number_of_words(3, 0, 13) == 797'161);
     REQUIRE(strings.count() == number_of_words(3, 0, 13));
-    REQUIRE(is_sorted(strings, LexicographicalCompare()));
+    REQUIRE(is_sorted(strings, LexCmp()));
     REQUIRE((strings | count()) == 797'161);
   }
 
@@ -841,10 +841,10 @@ namespace libsemigroups {
                                          "bbb"}));
 
     REQUIRE((strings | count()) == 14);
-    REQUIRE(is_sorted(strings, ShortLexCompare()));
+    REQUIRE(is_sorted(strings, LenLexCmp()));
 
     strings.alphabet("ab").first("a").last("bbbbb");
-    REQUIRE(is_sorted(strings, ShortLexCompare()));
+    REQUIRE(is_sorted(strings, LenLexCmp()));
 
     strings.alphabet("ba").first("b").last("bbbb");
     REQUIRE((strings | to_vector())
@@ -873,7 +873,7 @@ namespace libsemigroups {
     strings.alphabet("abc").max(13);
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
     REQUIRE(strings.count() == 797'161);
-    REQUIRE(is_sorted(strings, ShortLexCompare()));
+    REQUIRE(is_sorted(strings, LenLexCmp()));
   }
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
@@ -886,7 +886,7 @@ namespace libsemigroups {
     StringRange strings;
 
     strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
-        Order::shortlex);
+        Order::lenlex);
     auto it = begin(strings);
     REQUIRE(*it == "aaa");
     REQUIRE(it->size() == 3);
@@ -933,7 +933,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.alphabet("aba"), LibsemigroupsException);
 
     REQUIRE_THROWS_AS(strings.order(Order::none), LibsemigroupsException);
-    REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
+    REQUIRE_THROWS_AS(strings.order(Order::rpo), LibsemigroupsException);
 
     StringRange copy;
     copy.       operator=(strings);
@@ -962,7 +962,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == "");
     REQUIRE(more.alphabet() == "");
-    REQUIRE(more.order() == Order::shortlex);
+    REQUIRE(more.order() == Order::lenlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
     REQUIRE(more.size_hint() == 0);

@@ -60,7 +60,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::recursive);
+    tc.standardize(Order::rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -108,7 +108,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     tc.shrink_to_fit();
     REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::recursive);
+    tc.standardize(Order::rpo);
     auto w = (todd_coxeter::normal_forms(tc) | rx::to_vector());
     REQUIRE(w.size() == 21);
     REQUIRE(w
@@ -164,7 +164,7 @@ namespace libsemigroups {
             tc,
             froidure_pin::factorisation(S, make<Transf<>>({4, 2, 4, 4, 2}))));
 
-    tc.standardize(Order::shortlex);
+    tc.standardize(Order::lenlex);
 
     auto ntc = todd_coxeter::non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());

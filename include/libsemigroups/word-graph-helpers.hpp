@@ -2674,8 +2674,7 @@ namespace libsemigroups {
       //! bounds, then this is ignored by this function.
       // Not nodiscard because sometimes we just don't want the output
       template <typename Graph>
-      std::pair<bool, Forest> standardize(Graph& wg,
-                                          Order  val = Order::shortlex);
+      std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::lenlex);
 
       //! \brief Check if a word graph is standardized.
       //!
@@ -2686,16 +2685,16 @@ namespace libsemigroups {
       //!
       //! \param wg the word graph to check.
       //! \param val the order to use for standardization check (defaults to
-      //! Order::shortlex).
+      //! Order::lenlex).
       //!
       //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-      //! Order::shortlex, Order::lex or Order::recursive.
+      //! Order::lenlex, Order::lex or Order::rpo.
       //!
       //! \sa
       //! standardize.
       template <typename Node>
       bool is_standardized(WordGraphView<Node> const& wg,
-                           Order                      val = Order::shortlex);
+                           Order                      val = Order::lenlex);
 
       //! \brief Check if a word graph is standardized.
       //!
@@ -2706,16 +2705,16 @@ namespace libsemigroups {
       //!
       //! \param wg the word graph to check.
       //! \param val the order to use for standardization check (defaults to
-      //! Order::shortlex).
+      //! Order::lenlex).
       //!
       //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-      //! Order::shortlex, Order::lex or Order::recursive.
+      //! Order::lenlex, Order::lex or Order::rpo.
       //!
       //! \sa
       //! standardize.
       template <typename Node>
       bool is_standardized(WordGraph<Node> const& wg,
-                           Order                  val = Order::shortlex) {
+                           Order                  val = Order::lenlex) {
         return is_standardized(WordGraphView<Node>(wg), val);
       }
 

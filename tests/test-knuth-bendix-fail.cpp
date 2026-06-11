@@ -38,7 +38,7 @@
 #include "libsemigroups/detail/rules.hpp"
 #include "libsemigroups/exception.hpp"              // for LibsemigroupsExcep...
 #include "libsemigroups/knuth-bendix.hpp"           // for KnuthBendix, norma...
-#include "libsemigroups/order.hpp"                  // for shortlex_compare
+#include "libsemigroups/order.hpp"                  // for lenlex_cmp
 #include "libsemigroups/paths.hpp"                  // for Paths
 #include "libsemigroups/presentation-examples.hpp"  // for partition_mo
 #include "libsemigroups/presentation.hpp"           // for add_rule, Presenta...
@@ -57,8 +57,8 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
   using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
   using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
@@ -144,7 +144,7 @@ namespace libsemigroups {
       auto tmp = it1 + "#" + it2;
       auto u   = swap_a_and_b(it1);
       auto v   = swap_a_and_b(it2);
-      if (shortlex_compare(u, v)) {
+      if (lenlex_cmp(u, v)) {
         get_set().insert(u + "#" + v);
       } else {
         get_set().insert(v + "#" + u);

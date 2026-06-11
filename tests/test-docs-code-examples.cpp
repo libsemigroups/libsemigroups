@@ -522,7 +522,7 @@ namespace libsemigroups {
         .lookahead_extent(options::lookahead_extent::partial)
         .save(false);
     REQUIRE(tc.number_of_classes() == 10752);
-    tc.standardize(Order::recursive);
+    tc.standardize(Order::rpo);
     todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
     // {0_w,
     //  1_w,
@@ -650,10 +650,10 @@ namespace libsemigroups {
     auto      rg = ReportGuard(false);
     WordRange words;
     words
-        .order(Order::shortlex)  // words in shortlex order
-        .alphabet_size(2)        // on 2 letters
-        .min(1)                  // of length in the range from 1
-        .max(5);                 // to 5
+        .order(Order::lenlex)  // words in shortlex order
+        .alphabet_size(2)      // on 2 letters
+        .min(1)                // of length in the range from 1
+        .max(5);               // to 5
   }
 
   // word-range.hpp: Line 761
@@ -726,10 +726,10 @@ namespace libsemigroups {
     auto        rg = ReportGuard(false);
     StringRange strings;
     strings
-        .order(Order::shortlex)  // strings in shortlex order
-        .alphabet("ab")          // on 2 letters
-        .min(1)                  // of length in the range from 1
-        .max(5);                 // to 5
+        .order(Order::lenlex)  // strings in shortlex order
+        .alphabet("ab")        // on 2 letters
+        .min(1)                // of length in the range from 1
+        .max(5);               // to 5
   }
 
   // word-range.hpp: Line 2326

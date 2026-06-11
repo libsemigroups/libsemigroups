@@ -75,7 +75,7 @@ namespace libsemigroups {
   }
 
   template <typename Range1, typename Range2>
-  bool lexicographical_compare(Range1 r1, Range2 r2) {
+  bool lex_cmp(Range1 r1, Range2 r2) {
     while (!r1.at_end() && !r2.at_end()) {
       auto next1 = r1.get();
       auto next2 = r2.get();
@@ -92,13 +92,13 @@ namespace libsemigroups {
   }
 
   template <typename Range1, typename Range2>
-  bool shortlex_compare(Range1 r1, Range2 r2) {
+  bool lenlex_cmp(Range1 r1, Range2 r2) {
     size_t n1 = rx::count()(r1);
     size_t n2 = rx::count()(r2);
     if (n1 != n2) {
       return n1 < n2;
     }
-    return lexicographical_compare(r1, r2);
+    return lex_cmp(r1, r2);
   }
 
   ////////////////////////////////////////////////////////////////////////
