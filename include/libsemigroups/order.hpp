@@ -109,7 +109,7 @@ namespace libsemigroups {
   //! \end_code_no_test
   template <typename Thing,
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
-  [[nodiscard]] bool lexicographical_compare(Thing const& x, Thing const& y) {
+  [[nodiscard]] bool lex_cmp(Thing const& x, Thing const& y) {
     return std::lexicographical_compare(
         x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
@@ -142,7 +142,7 @@ namespace libsemigroups {
   //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
   //! \end_code_no_test
   template <typename Thing>
-  [[nodiscard]] bool lexicographical_compare(Thing* const x, Thing* const y) {
+  [[nodiscard]] bool lex_cmp(Thing* const x, Thing* const y) {
     return std::lexicographical_compare(
         x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
@@ -160,7 +160,179 @@ namespace libsemigroups {
   //!
   //! \sa
   //! std::lexicographical_compare.
-  struct LexicographicalCompare {
+  struct LexCmp {
+    //! \brief Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares \p x and \p y using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Thing the type of the parameters.
+    //!
+    //! \param x const reference to the first object for comparison.
+    //! \param y const reference to the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is lexicographically less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! See std::lexicographical_compare.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    template <typename Thing>
+    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
+      return lex_cmp(x, y);
+    }
+
+    //! \brief Call operator that compares \p x and \p y given initializer lists
+    //! using std::lexicographical_compare.
+    //!
+    //! Call operator that compares \p x and
+    //! \p y given initializer lists using std::lexicographical_compare.
+    //!
+    //! \tparam T the items in the arguments.
+    //!
+    //! \param x initializer list for the first object for comparison.
+    //! \param y initializer list for the second object for comparison.
+    //!
+    //! \returns The boolean value \c true if \p x is lexicographically less
+    //! than \p y, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! See std::lexicographical_compare.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    // TODO(v4) is this really necessary?
+    template <typename T>
+    [[nodiscard]] bool operator()(std::initializer_list<T> x,
+                                  std::initializer_list<T> y) const {
+      return std::lexicographical_compare(
+          x.begin(), x.end(), y.begin(), y.end());
+    }
+
+    //! \brief Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! Call operator that compares iterators using
+    //! std::lexicographical_compare.
+    //!
+    //! \tparam Iterator the type of the parameters.
+    //!
+    //! \param first1 the start of the first object to compare.
+    //! \param last1 one beyond the end of the first object to compare.
+    //! \param first2 the start of the second object to compare.
+    //! \param last2 one beyond the end of the second object to compare.
+    //!
+    //! \returns The boolean value \c true if the range `[first1, last1)` is
+    //! lexicographically less than the range `[first2, last2)`, and \c false
+    //! otherwise.
+    //!
+    //! \exceptions
+    //! See std::lexicographical_compare.
+    //!
+    //! \complexity
+    //! See std::lexicographical_compare.
+    // TODO(v4) remove this?
+    template <typename Iterator>
+    [[nodiscard]] bool operator()(Iterator first1,
+                                  Iterator last1,
+                                  Iterator first2,
+                                  Iterator last2) const {
+      return std::lexicographical_compare(first1, last1, first2, last2);
+    }
+  };
+
+  //! \brief Compare two objects of the same type using
+  //! std::lexicographical_compare.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects of the same type using
+  //! std::lexicographical_compare.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x const reference to the first object for comparison.
+  //! \param y const reference to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is lexicographically less than
+  //! \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //! See std::lexicographical_compare.
+  //!
+  //! \complexity
+  //! See std::lexicographical_compare.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
+  //! \end_code_no_test
+  //!
+  //! \deprecated_warning{function} Use \ref lex_cmp instead.
+  template <typename Thing,
+            typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
+  [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
+  lexicographical_compare(Thing const& x, Thing const& y) {
+    return std::lexicographical_compare(
+        x.cbegin(), x.cend(), y.cbegin(), y.cend());
+  }
+
+  //! \brief Compare two objects via their pointers using
+  //! std::lexicographical_compare.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! This function compares two objects via their pointers using
+  //! std::lexicographical_compare.
+  //!
+  //! \tparam Thing the type of the objects to be compared.
+  //!
+  //! \param x pointer to the first object for comparison.
+  //! \param y pointer to the second object for comparison.
+  //!
+  //! \returns The boolean value \c true if \p x is lexicographically less than
+  //! \p y, and \c false otherwise.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //! See std::lexicographical_compare.
+  //!
+  //! \complexity
+  //! See std::lexicographical_compare.
+  //!
+  //! \par Possible Implementation
+  //! \code_no_test
+  //! lexicographical_compare(x.cbegin(),x.cend(),y.cbegin(),y.cend());
+  //! \end_code_no_test
+  //!
+  //! \deprecated_warning{function} Use \ref lex_cmp instead.
+  template <typename Thing>
+  [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
+  lexicographical_compare(Thing* const x, Thing* const y) {
+    return std::lexicographical_compare(
+        x->cbegin(), x->cend(), y->cbegin(), y->cend());
+  }
+
+  //! \brief A stateless struct with binary call operator using
+  //! std::lexicographical_compare.
+  //!
+  //! Defined in `order.hpp`.
+  //!
+  //! A stateless struct with binary call operator using
+  //! std::lexicographical_compare.
+  //!
+  //! This only exists to be used as a template parameter, and has no
+  //! advantages over using std::lexicographical_compare otherwise.
+  //!
+  //! \sa
+  //! std::lexicographical_compare.
+  //!
+  //! \deprecated_warning{struct} Use \ref lex_cmp instead.
+  struct [[deprecated]] LexicographicalCompare {
     //! \brief Call operator that compares \p x and \p y using
     //! std::lexicographical_compare.
     //!
