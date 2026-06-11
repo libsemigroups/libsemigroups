@@ -407,21 +407,23 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! This function compares two objects of the same type using the recursive
-  //! path comparison described in \cite Jantzen2012aa (Definition 1.2.14, page
-  //! 24).
+  //! This function compares two objects of the same type using the reversed
+  //! recursive path comparison. This is the same as applying the recursive path
+  //! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24)
+  //! to the reversed words in `[first1, last1)`, `[first2, last2)`.
   //!
   //! If \f$u, v\in X ^ {*}\f$, then
-  //! \f$u > v\f$ if one of the following conditions holds:
-  //! 1. \f$u\f$ not empty and \f$v\f$ is empty; or
-  //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
+  //! \f$u < v\f$ if and only if one of the following conditions holds:
+  //! 1. \f$u\f$ is empty and \f$v\f$ is not empty; or
+  //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
   //!    X ^ {*}\f$ and:
-  //!   1. \f$a = b\f$ and \f$u' > v'\f$; or
-  //!   2. \f$a > b\f$ and \f$u  > v'\f$; or
-  //!   3. \f$u' > v\f$.
+  //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
+  //!   2. \f$a < b\f$ and \f$u  < v'\f$; or
+  //!   3. \f$a > b\f$ and \f$u' < v\f$.
   //!
   //! This documentation and the implementation of \ref recursive_path_compare
-  //! is based on the source code of \cite Holt2018aa.
+  //! is based on the source code of \cite Holt2018aa, specifically the function
+  //! `rt_rec_compare`.
   //!
   //! \tparam Iterator the type of iterators that are the arguments.
   //!
