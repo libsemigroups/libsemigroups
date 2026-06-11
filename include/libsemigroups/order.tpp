@@ -22,38 +22,45 @@
 namespace libsemigroups {
 
   template <typename Iterator, typename>
-  bool recursive_path_compare(Iterator first1,
-                              Iterator last1,
-                              Iterator first2,
-                              Iterator last2) noexcept {
+  bool rpo_cmp(Iterator first1,
+               Iterator last1,
+               Iterator first2,
+               Iterator last2) noexcept {
     int lastmoved = 0;
 
-    auto       rfirst1 = std::make_reverse_iterator(last1);
-    auto const rlast1  = std::make_reverse_iterator(first1);
-    auto       rfirst2 = std::make_reverse_iterator(last2);
-    auto const rlast2  = std::make_reverse_iterator(first2);
     while (true) {
-      if (rfirst1 == rlast1) {
-        if (rfirst2 == rlast2) {
+      if (first1 == last1) {
+        if (first2 == last2) {
           return lastmoved == 2;
         }
         return true;
       }
-      if (rfirst2 == rlast2) {
+      if (first2 == last2) {
         return false;
       }
-      if (*rfirst1 == *rfirst2) {
-        ++rfirst1;
-        ++rfirst2;
-      } else if (*rfirst1 < *rfirst2) {
-        ++rfirst1;
+      if (*first1 == *first2) {
+        ++first1;
+        ++first2;
+      } else if (*first1 < *first2) {
+        ++first1;
         lastmoved = 1;
       } else {
-        // in this case *rfirst1 > *rfirst2
-        ++rfirst2;
+        // in this case *first1 > *first2
+        ++first2;
         lastmoved = 2;
       }
     }
+  }
+
+  template <typename Iterator, typename>
+  bool rev_rpo_cmp(Iterator first1,
+                   Iterator last1,
+                   Iterator first2,
+                   Iterator last2) noexcept {
+    return rpo_cmp(std::make_reverse_iterator(last1),
+                   std::make_reverse_iterator(first1),
+                   std::make_reverse_iterator(last2),
+                   std::make_reverse_iterator(first2));
   }
 
   template <typename Iterator, typename>
