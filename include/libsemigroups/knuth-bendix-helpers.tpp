@@ -335,5 +335,353 @@ namespace libsemigroups {
     //   return tril::unknown;
     // }
 
+    namespace detail {
+      template <typename Iterator>
+      auto subwords(Iterator first, Iterator last) {
+        using Word = std::conditional_t<
+            std::is_same_v<std::remove_const_t<typename Iterator::value_type>,
+                           word_type>,
+            word_type,
+            std::string>;
+
+        std::unordered_set<Word> mp;
+
+        for (auto it = first; it < last; ++it) {
+          auto const& w = *it;
+          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
+            for (auto prefix = suffix + 2; prefix < w.cend(); ++prefix) {
+              mp.emplace(suffix, prefix);
+            }
+          }
+        }
+        std::vector<Word> words(mp.cbegin(), mp.cend());
+        std::sort(words.begin(), words.end(), [](auto const& u, auto const& v) {
+          return shortlex_compare(v, u);
+        });
+        return words;
+      }
+
+      static inline uint64_t factorial(uint16_t n) {
+        LIBSEMIGROUPS_ASSERT(n <= 20);
+        uint64_t result = 1;
+
+        for (uint16_t i = 2; i <= n; ++i) {
+          result *= i;
+        }
+
+        return result;
+      }
+    }  // namespace detail
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeExplorer::TietzeRunner
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::TietzeRunner::run_impl() {
+      std::vector<Word> subwords;
+      auto              copy = _enclosing->_presentation;
+      // Do try_pop_todo 2nd so that we don't pop and then stop
+      while (!stopped() && _enclosing->try_pop_todo(subwords)) {
+        if (run_one(copy, subwords)) {
+          return;
+        }
+      }
+    }
+
+    template <typename Word, typename RewritingSystem>
+    bool TietzeExplorer<Word, RewritingSystem>::TietzeRunner::run_one(
+        Presentation<Word>       p,
+        std::vector<Word> const& subwords) {
+      using ::libsemigroups::detail::apply_permutation;
+
+      for (auto const& word : subwords) {
+        presentation::replace_word_with_new_generator(
+            p, word.cbegin(), word.cend());
+      }
+
+      auto                lphbt      = p.alphabet();
+      auto const          lphbt_orig = p.alphabet();
+      std::vector<size_t> perm(lphbt.size(), 0);
+      std::iota(perm.begin(), perm.end(), 0);
+
+      do {
+        ReportGuard rg(false);
+        lphbt = lphbt_orig;
+        apply_permutation(lphbt, perm);
+        p.alphabet(lphbt);
+        _kb.init(_kb.kind(), p);
+        _kb.run_for(_enclosing->_run_each_for);
+        if (_kb.rewriting_system().confluent()) {
+          return true;
+        }
+        _enclosing->_counter++;
+      } while (std::next_permutation(perm.begin(), perm.end()));
+      return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeExplorer - constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>::TietzeExplorer(
+        KnuthBendix<Word, RewritingSystem>& kb)
+        : Runner(),
+          // Mutable
+          _counter(),
+          _current_subwords_replaced_with_new_generators(),
+          _kb(),
+          _mtx(),
+          _number_of_runs(),
+          _presentation(),
+          _todo(),
+          _todo_populated(),
+
+          // Non-mutable
+          _depth_max(),
+          _depth_min(),
+          _finished(),
+          _number_of_threads(),
+          _race(),
+          _run_each_for() {
+      init(kb);
+    }
+
+    template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>&
+    TietzeExplorer<Word, RewritingSystem>::init(
+        KnuthBendix<Word, RewritingSystem>& kb) {
+      Runner::init();
+      // Mutable
+      _counter = 0;
+      // Do nothing to _current_subwords_replaced_with_new_generators, _mtx
+      _kb             = kb;
+      _presentation   = _kb.presentation();
+      _number_of_runs = UNDEFINED;
+      while (!_todo.empty()) {
+        _todo.pop();
+      }
+      _todo_populated = false;
+
+      // Non-mutable
+      _depth_max         = 3;
+      _depth_min         = 0;
+      _finished          = false;
+      _number_of_threads = 1;
+      _race.init();
+      _run_each_for = std::chrono::milliseconds(5);
+      Runner::report_prefix("TietzeExplorer");
+      _race.report_prefix("TietzeExplorer");
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeExplorer - settings
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>&
+    TietzeExplorer<Word, RewritingSystem>::number_of_threads(size_t val) {
+      if (val == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (number of threads) must be at least 1, found {}",
+            val);
+      }
+      _number_of_threads = val;
+      return *this;
+    }
+
+    template <typename Word, typename RewritingSystem>
+    size_t TietzeExplorer<Word, RewritingSystem>::number_of_runs() const {
+      if (!_todo_populated) {
+        LIBSEMIGROUPS_ASSERT(_number_of_runs == UNDEFINED);
+        _number_of_runs = 0;
+        populate_todo();
+        LIBSEMIGROUPS_ASSERT(_number_of_runs != UNDEFINED);
+      }
+      return _number_of_runs;
+    }
+
+    template <typename Word, typename RewritingSystem>
+    std::chrono::nanoseconds
+    TietzeExplorer<Word, RewritingSystem>::estimated_run_time() const {
+      return static_cast<std::chrono::nanoseconds::rep>(number_of_runs())
+             * run_each_for() / number_of_threads();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeExplorer - the main event
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::dfs(Presentation<Word>& p,
+                                                    size_t depth) const {
+      if (depth >= _depth_min) {
+        _number_of_runs += detail::factorial(p.alphabet().size());
+      }
+
+      if (depth != _depth_max) {
+        auto sbwrds = detail::subwords(p.rules.cbegin(), p.rules.cend());
+
+        Presentation<Word> copy;
+        for (auto const& w : sbwrds) {
+          if (w.size() > 1) {
+            copy = p;
+            presentation::replace_word_with_new_generator(
+                copy, w.cbegin(), w.cend());
+            _current_subwords_replaced_with_new_generators.push_back(w);
+            _todo.push(_current_subwords_replaced_with_new_generators);
+            dfs(copy, depth + 1);
+            _current_subwords_replaced_with_new_generators.pop_back();
+          }
+        }
+      }
+    }
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::run_impl() {
+      using std::chrono::duration_cast;
+      using std::chrono::seconds;
+
+      // Note that if finished() is true, then this function is never called by
+      // Runner::run.
+      if (_presentation.alphabet().size() + depth_max() > 20) {
+        LIBSEMIGROUPS_EXCEPTION("expected alphabet size + depth_max() to "
+                                "be at most 20, found {}",
+                                _kb.presentation().alphabet().size()
+                                    + depth_max());
+      }
+
+      report_before_run();
+
+      _counter = 0;
+      populate_todo();
+
+      while (_race.number_of_runners() < number_of_threads()) {
+        _race.add_runner(std::make_shared<TietzeRunner>(this));
+      }
+
+      ::libsemigroups::detail::Ticker ticker;
+      if ((!running_for()
+           || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
+        ticker([this]() { report_progress_from_thread(); });
+      }
+      _race.run_until([this]() { return this->stopped(); });
+
+      report_after_run();
+      if (_race.finished() || !stopped()) {
+        _finished = true;
+      }
+    }
+
+    template <typename Word, typename RewritingSystem>
+    std::optional<KnuthBendix<Word, RewritingSystem>>
+    TietzeExplorer<Word, RewritingSystem>::result() {
+      Runner::run();
+      if (_race.winner() == nullptr) {
+        return std::nullopt;
+      }
+      return std::make_optional(
+          std::static_pointer_cast<TietzeRunner>(_race.winner())
+              ->knuth_bendix());
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // TietzeExplorer - private
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::populate_todo() const {
+      if (!_todo_populated) {
+        LIBSEMIGROUPS_ASSERT(_todo.empty());
+        _todo_populated = true;
+        if (depth_min() == 0) {
+          _todo.emplace();  // no new generators
+        }
+        auto copy = _kb.presentation();
+        dfs(copy);
+      }
+    }
+
+    template <typename Word, typename RewritingSystem>
+    bool TietzeExplorer<Word, RewritingSystem>::try_pop_todo(
+        std::vector<Word>& result) {
+      LIBSEMIGROUPS_ASSERT(_todo_populated);
+      std::lock_guard<std::mutex> lg(_mtx);
+      if (!_todo.empty()) {
+        result = std::move(_todo.front());
+        _todo.pop();
+        return true;
+      }
+      return false;
+    }
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::report_before_run() const {
+      using ::libsemigroups::detail::group_digits;
+      using ::libsemigroups::detail::string_time;
+      reset_start_time();
+
+      fmt::print("{:=<32}\n", "");
+      fmt::print("#0: TietzeExplorer: DOING ≤ {} runs @ {} each / "
+                 "{} thread(s) | ≤ ~{} (est. time)\n",
+                 group_digits(number_of_runs()),
+                 string_time(_run_each_for),
+                 number_of_threads(),
+                 string_time(estimated_run_time()));
+      fmt::print("#0: TietzeExplorer: depth min = {}, max = {}\n",
+                 _depth_min,
+                 _depth_max);
+    }
+
+    template <typename Word, typename RewritingSystem>
+    void
+    TietzeExplorer<Word, RewritingSystem>::report_progress_from_thread() const {
+      using ::libsemigroups::detail::group_digits;
+      using ::libsemigroups::detail::string_time;
+      if (delta(start_time()) >= std::chrono::milliseconds(500)) {
+        size_t count         = _counter.load();
+        auto   num_runs      = group_digits(number_of_runs());
+        auto   elapsed       = delta(start_time());
+        auto   mean_run_time = elapsed / count;
+        auto   estimate      = number_of_runs() * mean_run_time;
+        fmt::print("#0: TietzeExplorer: {:>{}} / {} ({:>4.1f}%) @ ~{} "
+                   "per run | {:>7} / {:>7}\n",
+                   group_digits(count),
+                   num_runs.size(),
+                   num_runs,
+                   static_cast<float>(100 * count) / number_of_runs(),
+                   string_time(mean_run_time),
+                   string_time(elapsed),
+                   fmt::format("~{}", string_time(estimate)));
+      }
+    }
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::report_after_run() const {
+      using ::libsemigroups::detail::group_digits;
+      using ::libsemigroups::detail::string_time;
+      std::string_view const success_or_fail
+          = (_race.winner_index() != UNDEFINED) ? "SUCCESS" : "FAILED";
+      auto count = _counter.load();
+      fmt::print("#0: TietzeExplorer: {} @ run {} of {} | "
+                 "elapsed {}\n",
+                 success_or_fail,
+                 group_digits(count),
+                 group_digits(number_of_runs()),
+                 string_time(delta(start_time())));
+    }
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::throw_if_todo_populated(
+        std::string_view msg) const {
+      if (_todo_populated) {
+        LIBSEMIGROUPS_EXCEPTION("it is not possible to set `{}` at this point, "
+                                "please use `init`, and try again",
+                                msg);
+      }
+    }
+
   }  // namespace knuth_bendix
 }  // namespace libsemigroups

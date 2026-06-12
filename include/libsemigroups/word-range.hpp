@@ -100,7 +100,7 @@ namespace libsemigroups {
   //!
   //! * parsing algebraic expressions in a string:
   //!
-  //!   - \ref literal_operator_p
+  //!   - \ref literal_operator_p "operator\"\"_p"
 
   //! \ingroup words_group
   //! \brief Returns the number of words over an alphabet with a given number of
@@ -2069,7 +2069,7 @@ namespace libsemigroups {
     //! * redundant matched brackets are ignored;
     //! * `^` is treated as the power binary operator;
     //! * `,` is treated as the commutator binary operator;
-    //! * only the characters in `"()^, ` and in \c a-zA-Z0-9 are allowed.
+    //! * only the characters in `()^, ` and in \c a-zA-Z0-9 are allowed.
     //!
     //! When using `,` as the commutator operator, it is not possible to
     //! specify what the inverse of each letter should be. Instead, it is
@@ -2087,6 +2087,8 @@ namespace libsemigroups {
     //! \returns A value of type \ref std::string.
     //!
     //! \throws LibsemigroupsException if the string cannot be parsed.
+    //!
+    //! \sa words::parse
     std::string operator""_p(const char* w, size_t n);
 
     //! \brief Literal for defining \ref word_type by parsing an algebraic
@@ -2094,6 +2096,7 @@ namespace libsemigroups {
     //!
     //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator""_p(const char* w);
+
   }  // namespace literals
 
   ////////////////////////////////////////////////////////////////////////
@@ -2115,6 +2118,21 @@ namespace libsemigroups {
   //! prod(0123_w, 0, 16, 3) //-> 032103_w
   //! \end_code_no_test
   namespace words {
+
+    //! \brief Non-literal version of \ref literal_operator_p "operator\"\"_p"
+    //!
+    //! This function returns the same value as
+    //! \ref literal_operator_p "operator\"\"_p" and is included to allow things
+    //! like:
+    //!
+    //! \code_no_test
+    //! parse(fmt::format("baa(ba)^{}", N);
+    //! \end_code_no_test
+    //! for variable values of \c N.
+    //!
+    //! \param w the string to parse.
+    //! \returns the parsed string.
+    std::string parse(std::string const& w);
 
     //! \brief Returns the index of a character in human readable order.
     //!

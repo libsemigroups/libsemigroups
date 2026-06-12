@@ -53,6 +53,8 @@
 #include "libsemigroups/word-graph.hpp"             // for WordGraph::target
 #include "libsemigroups/word-range.hpp"             // for StringRange
 
+#include "libsemigroups/to-presentation.hpp"
+
 #include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceComm...
 #include "libsemigroups/detail/eigen.hpp"              // for eigen
 #include "libsemigroups/detail/fmt.hpp"                // for fmt
@@ -638,4 +640,201 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 7'776);
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "116",
+      "https://math.stackexchange.com/questions/2649807",
+      "[knuth-bendix][extreme][tietze-explorer]",
+      LenLexTrie) {
+    auto        rg    = ReportGuard(false);
+    std::string lphbt = "abcB";
+    std::string invrs = "aBcb";
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet(lphbt);
+
+    presentation::add_inverse_rules(p, invrs);
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bbbbbbbbbbb", "");
+    presentation::add_rule(p, "cc", "");
+    presentation::add_rule(p, "abababab", "");
+    presentation::add_rule(p, "abbabbabbabbabbabb", "");
+    presentation::add_rule(p, "abbabaBabaBBabbaB", "");
+    presentation::add_rule(p, "acacac", "");
+    presentation::add_rule(p, "bcbc", "");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+    dora.depth_max(1).number_of_threads(8).run();
+
+    REQUIRE(!dora.result().has_value());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "057",
+                                   "1-relation hard case",
+                                   "[extreme][knuth-bendix][tietze-explorer]",
+                                   RPOTrie) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ba");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaababaaa", "aaba");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+    dora.depth_max(2).number_of_threads(4).run_each_for(
+        std::chrono::milliseconds(1));
+
+    REQUIRE(!dora.result().has_value());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "147",
+                                   "aaa=a, abba=bb",
+                                   "[extreme][tietze-explorer]",
+                                   LenLexTrie) {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "aaa", "a");
+    presentation::add_rule(p, "abba", "bb");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+
+    REQUIRE(!dora.number_of_threads(4).result().has_value());
+  }
+
+  // Fails with depth_max(3) + RPOTrie too in ~10 minutes
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "151",
+                                   "baaabaaa = aba",
+                                   "[extreme][tietze-explorer]",
+                                   RPOTrie) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa", "aba");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+
+    // std::vector<std::vector<std::string>> copy;
+    // auto                                  todo = dora.todo();
+    // while (!todo.empty()) {
+    //   copy.push_back(todo.front());
+    //   todo.pop();
+    // }
+    // REQUIRE(copy == std::vector<std::vector<std::string>>());
+
+    auto result = dora.depth_max(2).number_of_threads(8).result();
+    REQUIRE(!result.has_value());
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "152",
+                                   "baa(ba)^N=a",
+                                   "[extreme][tietze-explorer]",
+                                   RPOTrie) {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+
+    KnuthBendix<std::string, TestType> kb;
+
+    using rule_type = typename decltype(kb)::rule_type;
+    // codespell:begin-ignore
+    std::vector<std::vector<rule_type>> expected
+        = {{{"ba", "d"},
+            {"c", "dadb"},
+            {"daa", "aadddd"},
+            {"dada", "aadd"},
+            {"dadd", "a"}},
+           {{"baaa", "aabadddd"},
+            {"baaba", "dadd"},
+            {"baada", "aabad"},
+            {"baadd", "aba"},
+            {"baba", "d"},
+            {"c", "baadb"},
+            {"daa", "aaddddddddd"},
+            {"daba", "badadd"},
+            {"dada", "aadddddd"},
+            {"dadda", "aaddd"},
+            {"daddd", "a"},
+            {"dba", "bad"}},
+           {{"c", "dadddb"},
+            {"ba", "d"},
+            {"dadddd", "a"},
+            {"daddda", "aadddd"},
+            {"dadda", "aadddddddd"},
+            {"dada", "aadddddddddddd"},
+            {"daa", "aadddddddddddddddd"}},
+           {{"aba", "baadd"},
+            {"dba", "bad"},
+            {"bbbaaddadddd", "d"},
+            {"c", "bbaaddadddb"},
+            {"daddddd", "a"},
+            {"abbaadd", "bbaaddadddd"},
+            {"dbbaadd", "bbaaddd"},
+            {"bbbaada", "dd"},
+            {"dbbaada", "bbaadda"},
+            {"dadddda", "aaddddd"},
+            {"bbbaaa", "ddddddd"},
+            {"dbbaaa", "bbaada"},
+            {"daddda", "aadddddddddd"},
+            {"dadda", "aaddddddddddddddd"},
+            {"dada", "aadddddddddddddddddddd"},
+            {"daa", "aaddddddddddddddddddddddddd"},
+            {"abbaaa", "bbaaaadddddddddddddddddddddddddddddddddddddddd"},
+            {"abbaada", "bbaaaaddddddddddddddddddddddddddddddddddd"}},
+           {{"c", "dadddddb"},
+            {"ba", "d"},
+            {"dadddddd", "a"},
+            {"daddddda", "aadddddd"},
+            {"dadddda", "aadddddddddddd"},
+            {"daddda", "aadddddddddddddddddd"},
+            {"dadda", "aadddddddddddddddddddddddd"},
+            {"dada", "aadddddddddddddddddddddddddddddd"},
+            {"daa", "aadddddddddddddddddddddddddddddddddddd"}}};
+    // codespell:end-ignore
+
+    for (auto N = 2; N < 4; ++N) {
+      p.rules = {words::parse(fmt::format("baa(ba)^{}", N)), "a"};
+      kb.init(twosided, p);
+      knuth_bendix::TietzeExplorer dora(kb);
+      auto result = dora.depth_max(2).number_of_threads(8).result();
+      REQUIRE(result.has_value());
+      REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
+              == expected[N - 2]);
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "153",
+                                   "aaa=1, aBBBABAb=1",
+                                   "[extreme][tietze-explorer]",
+                                   LenLexTrie) {
+    auto                        rg = ReportGuard(false);
+    using std::string_literals::operator""s;
+    Presentation<std::string>   p;
+    p.alphabet("abB");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "aBb");
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "ba", "ababbb");
+    REQUIRE(presentation::index_rule(p, "aa"s, ""s) == 0);
+    p.rules.erase(p.rules.begin(), p.rules.begin() + 2);
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+    auto result = dora.depth_max(2).number_of_threads(10).result();
+    REQUIRE(!result.has_value());
+  }
 }  // namespace libsemigroups

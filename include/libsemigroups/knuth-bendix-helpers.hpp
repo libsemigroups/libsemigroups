@@ -21,13 +21,23 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HELPERS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HELPERS_HPP_
 
-#include <cstddef>      // for size_t
-#include <iterator>     // for distance
-#include <stack>        // for stack
-#include <string>       // for basic_string, string
-#include <type_traits>  // for is_same_v
-#include <utility>      // for move
-#include <vector>       // for vector
+#include <algorithm>      // for next_permutation
+#include <atomic>         // for atomic_size_t
+#include <chrono>         // for nanoseconds
+#include <cstddef>        // for size_t
+#include <memory>         // for make_shared
+#include <mutex>          // for mutex, lock_guard
+#include <numeric>        // for iota
+#include <optional>       // for optional, make...
+#include <queue>          // for queue
+#include <stack>          // for stack
+#include <stdint.h>       // for uint16_t, uint...
+#include <string>         // for basic_string
+#include <string_view>    // for basic_string_view
+#include <type_traits>    // for is_same_v, con...
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for move
+#include <vector>         // for vector
 
 #include "cong-common-helpers.hpp"  // for partition, add_gener...
 #include "constants.hpp"            // for UNDEFINED, POSITIVE_...
@@ -37,14 +47,19 @@
 #include "paths.hpp"                // for Paths
 #include "presentation.hpp"         // for Presentation
 #include "ranges.hpp"               // for seq, input_range_ite...
+#include "runner.hpp"               // for Runner, delta
 #include "types.hpp"                // for congruence_kind, wor...
 #include "word-graph-helpers.hpp"   // for word_graph
 #include "word-graph.hpp"           // for WordGraph
-#include "word-range.hpp"           // for ToString
 
 #include "detail/fmt.hpp"               // for format
 #include "detail/knuth-bendix-nf.hpp"   // for KnuthBendix, KnuthBe...
+#include "detail/race.hpp"              // for Race
+#include "detail/report.hpp"            // for ReportGuard
 #include "detail/rewriting-system.hpp"  // for internal_string_type
+#include "detail/stl.hpp"               // for apply_permutation
+#include "detail/string.hpp"            // for group_digits
+#include "detail/timer.hpp"             // for string_time
 
 namespace libsemigroups {
 
@@ -307,8 +322,376 @@ namespace libsemigroups {
     [[nodiscard]] typename std::vector<Word>::const_iterator
     redundant_rule(Presentation<Word> const& p, Time t);
 
-  }  // namespace knuth_bendix
+    //! \ingroup knuth_bendix_helpers_group
+    //!
+    //! \brief Search for a finite complete rewriting system using Tietze
+    //! transformations.
+    //!
+    //! Defined in `knuth-bendix-helpers.hpp`.
+    //!
+    //! This class searches for a presentation for which the Knuth-Bendix
+    //! algorithm terminates, by introducing new generators for subwords of the
+    //! rules and trying all different orders on the resulting alphabet.
+    //!
+    //! More precisely, an instance of this class starts with the presentation
+    //! of the \ref_knuth_bendix instance used to construct it. It then forms
+    //! presentations obtained by repeatedly replacing a non-empty subword of
+    //! length at least 2 by a new generator. The number of such replacements is
+    //! controlled by \ref depth_min and \ref depth_max. For every presentation
+    //! in this search, the alphabet is permuted in every possible way, and the
+    //! Knuth-Bendix algorithm is run for \ref run_each_for. The search
+    //! succeeds if one of these runs produces a confluent rewriting system.
+    //!
+    //! Since this class derives from \ref Runner, the search can be run to
+    //! completion using \ref Runner::run, for a bounded amount of time using
+    //! \ref Runner::run_for, or until a predicate holds using
+    //! \ref Runner::run_until. The member function \ref result is the usual
+    //! way to run the search and obtain the successful \ref_knuth_bendix
+    //! instance, if one was found.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam RewritingSystem the type of the rewriting system used by the
+    //! underlying \ref_knuth_bendix objects.
+    //!
+    //! \warning This class can try a very large number of presentations. If
+    //! the initial alphabet has size \f$n\f$, then introducing \f$d\f$ new
+    //! generators requires trying permutations of an alphabet with \f$n + d\f$
+    //! letters. In particular, \ref Runner::run throws if the initial alphabet
+    //! size plus \ref depth_max is greater than `20`. It's highly unlikely to
+    //! complete on alphabets of size greater than `3` or `4`.
+    //!
+    //! \warning The result may depend on the amount of time allowed for each
+    //! Knuth-Bendix run, the number of threads, and the order in which the
+    //! search is explored.
+    template <typename Word, typename RewritingSystem>
+    class TietzeExplorer : public Runner {
+     private:
+      class TietzeRunner : public Runner {
+        KnuthBendix<Word, RewritingSystem> _kb;
+        TietzeExplorer*                    _enclosing;
+
+       public:
+        explicit TietzeRunner(TietzeExplorer* enclosing)
+            : Runner(), _kb(enclosing->knuth_bendix()), _enclosing(enclosing) {
+          Runner::report_prefix("TietzeExplorer");
+        }
+
+        KnuthBendix<Word, RewritingSystem> const&
+        knuth_bendix() const noexcept {
+          return _kb;
+        }
+
+       private:
+        [[nodiscard]] bool run_one(Presentation<Word>       p,
+                                   std::vector<Word> const& subwords);
+
+        void run_impl() override;
+
+        [[nodiscard]] bool finished_impl() const override {
+          return _kb.finished();
+        }
+      };  // class TietzeRunner
+
+      ////////////////////////////////////////////////////////////////////////
+      // Private data
+      ////////////////////////////////////////////////////////////////////////
+      mutable std::atomic_size_t _counter;
+      mutable std::vector<Word>  _current_subwords_replaced_with_new_generators;
+      mutable KnuthBendix<Word, RewritingSystem> _kb;
+      mutable std::mutex                         _mtx;
+      mutable size_t                             _number_of_runs;
+      mutable Presentation<Word>                 _presentation;
+      mutable std::queue<std::vector<Word>>      _todo;
+      mutable bool                               _todo_populated;
+
+      size_t                   _depth_max;
+      size_t                   _depth_min;
+      bool                     _finished;
+      size_t                   _number_of_threads;
+      detail::Race             _race;
+      std::chrono::nanoseconds _run_each_for;
+
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + Initializers
+      ////////////////////////////////////////////////////////////////////////
+
+      //! \brief Construct from a \ref_knuth_bendix instance.
+      //!
+      //! Constructs a TietzeExplorer using the kind and presentation of
+      //! \p kb.
+      //!
+      //! The default settings are:
+      //! * \ref depth_min is `0`;
+      //! * \ref depth_max is `3`;
+      //! * \ref run_each_for is `std::chrono::milliseconds(5)`;
+      //! * \ref number_of_threads is `1`.
+      //!
+      //! \param kb the \ref_knuth_bendix instance whose presentation is to be
+      //! explored.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      explicit TietzeExplorer(KnuthBendix<Word, RewritingSystem>& kb);
+
+      //! \brief Reinitialize an existing TietzeExplorer.
+      //!
+      //! This function puts a TietzeExplorer object back into the same state as
+      //! if it had been newly constructed from \p kb.
+      //!
+      //! \param kb the \ref_knuth_bendix instance whose presentation is to be
+      //! explored.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      TietzeExplorer& init(KnuthBendix<Word, RewritingSystem>& kb);
+
+      //! \brief Copy constructor.
+      TietzeExplorer(TietzeExplorer const&) = default;
+
+      //! \brief Move constructor.
+      TietzeExplorer(TietzeExplorer&&) = default;
+
+      //! \brief Copy assignment operator.
+      TietzeExplorer& operator=(TietzeExplorer const&) = default;
+
+      //! \brief Move assignment operator.
+      TietzeExplorer& operator=(TietzeExplorer&&) = default;
+
+      ~TietzeExplorer() = default;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Settings
+      ////////////////////////////////////////////////////////////////////////
+
+      //! \brief Return the initial \ref_knuth_bendix instance.
+      //!
+      //! Returns a const reference to the \ref_knuth_bendix instance supplied
+      //! at construction or most recent initialization.
+      //!
+      //! \returns A const reference to a \ref_knuth_bendix instance.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] KnuthBendix<Word, RewritingSystem> const&
+      knuth_bendix() const noexcept {
+        return _kb;
+      }
+
+      //! \brief Get the maximum search depth.
+      //!
+      //! Returns the maximum number of subword replacements by new generators
+      //! to perform when constructing presentations for the search.
+      //!
+      //! The default value is `3`.
+      //!
+      //! \returns A maximum number of new generators introduced.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_t depth_max() const noexcept {
+        return _depth_max;
+      }
+
+      //! \brief Set the maximum search depth.
+      //!
+      //! This function sets the maximum number of subword replacements by new
+      //! generators to perform when constructing presentations for the search.
+      //!
+      //! The default value is `3`.
+      //!
+      //! \param val the maximum search depth.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \throws LibsemigroupsException if the internal search queue has
+      //! already been populated.
+      TietzeExplorer& depth_max(size_t val) {
+        throw_if_todo_populated("depth_max");
+        _depth_max = val;
+        return *this;
+      }
+
+      //! \brief Get the minimum search depth.
+      //!
+      //! Returns the minimum number of subword replacements by new generators
+      //! required for a presentation to be tried.
+      //!
+      //! The default value is `0`.
+      //!
+      //! \returns The minimum number of new generators to introduce.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_t depth_min() const noexcept {
+        return _depth_min;
+      }
+
+      //! \brief Set the minimum search depth.
+      //!
+      //! This function sets the minimum number of subword replacements by new
+      //! generators required for a presentation to be tried.
+      //!
+      //! The default value is `0`.
+      //!
+      //! \param val the minimum search depth.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \throws LibsemigroupsException if the internal search queue has
+      //! already been populated.
+      TietzeExplorer& depth_min(size_t val) {
+        throw_if_todo_populated("depth_min");
+        _depth_min = val;
+        return *this;
+      }
+
+      //! \brief Get the time allowed for each Knuth-Bendix run.
+      //!
+      //! Returns the amount of time for which Knuth-Bendix is run for each
+      //! presentation and alphabet order tried by the search.
+      //!
+      //! The default value is `std::chrono::milliseconds(5)`.
+      //!
+      //! \returns A value of type `std::chrono::nanoseconds`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] std::chrono::nanoseconds run_each_for() const noexcept {
+        return _run_each_for;
+      }
+
+      //! \brief Set the time allowed for each Knuth-Bendix run.
+      //!
+      //! This function sets the amount of time for which Knuth-Bendix is run
+      //! for each presentation and alphabet order tried by the search.
+      //!
+      //! The default value is `std::chrono::milliseconds(5)`.
+      //!
+      //! \param val the amount of time to run each Knuth-Bendix instance for.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \exceptions
+      //! \noexcept
+      TietzeExplorer& run_each_for(std::chrono::nanoseconds val) noexcept {
+        _run_each_for = val;
+        return *this;
+      }
+
+      //! \brief Get the number of threads.
+      //!
+      //! Returns the number of threads used to run the search.
+      //!
+      //! The default value is `1`.
+      //!
+      //! \returns A `size_t`.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_t number_of_threads() const noexcept {
+        return _number_of_threads;
+      }
+
+      //! \brief Set the number of threads.
+      //!
+      //! This function sets the number of threads used to run the search.
+      //!
+      //! The default value is `1`.
+      //!
+      //! \param val the number of threads to use.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \throws LibsemigroupsException if \p val is 0.
+      TietzeExplorer& number_of_threads(size_t val);
+
+      ////////////////////////////////////////////////////////////////////////
+      // The main event
+      ////////////////////////////////////////////////////////////////////////
+
+      //! \brief Estimate the running time of the search.
+      //!
+      //! Returns \ref number_of_runs multiplied by \ref run_each_for and
+      //! divided by \ref number_of_threads.
+      //!
+      //! \returns A value of type `std::chrono::nanoseconds`.
+      //!
+      //! \warning This is only a crude upper bound based on the number of
+      //! presentations and alphabet orders to be tried. It does not account for
+      //! early successful termination, or the overhead from generating the
+      //! search.
+      [[nodiscard]] std::chrono::nanoseconds estimated_run_time() const;
+
+      //! \brief Return the number of Knuth-Bendix runs to try.
+      //!
+      //! Returns the number of presentations and alphabet orders that will be
+      //! tried by the search, subject to the current values of \ref depth_min
+      //! and \ref depth_max.
+      //!
+      //! \returns A `size_t`.
+      //!
+      //! \warning This function populates the internal search queue. Changing
+      //! \ref depth_min or \ref depth_max after calling this function are not
+      //! allowed and will throw an exception.
+      [[nodiscard]] size_t number_of_runs() const;
+
+      //! \brief Run the search and return a successful Knuth-Bendix instance.
+      //!
+      //! This function runs the search, if it has not already finished, and
+      //! returns the first \ref_knuth_bendix instance found whose rewriting
+      //! system is confluent.
+      //!
+      //! \returns A \c std::optional containing a \ref_knuth_bendix instance if
+      //! the search succeeds, and \c std::nullopt otherwise.
+      //!
+      //! \throws LibsemigroupsException if the initial alphabet size plus
+      //! \ref depth_max is greater than 20.
+      //!
+      //! \sa Runner::run
+      [[nodiscard]] std::optional<KnuthBendix<Word, RewritingSystem>> result();
+
+      //! \brief Check whether the search finished successfully.
+      //!
+      //! Returns \c true if the search has finished and found a successful
+      //! \ref_knuth_bendix instance, and \c false otherwise.
+      //!
+      //! \returns A \c bool.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] bool success() const noexcept override {
+        // TODO separate _race->finished() and success() and just return
+        // _race.success() here
+        return _finished && _race.finished();
+      }
+
+     private:
+      void run_impl() override;
+
+      [[nodiscard]] bool finished_impl() const override {
+        // Can't use _race.finished() because it only returns true if there's a
+        // winner. See comment above
+        return _finished;
+      }
+
+      void dfs(Presentation<Word>& p, size_t depth = 0) const;
+
+      void populate_todo() const;
+
+      [[nodiscard]] bool try_pop_todo(std::vector<Word>& result);
+
+      void report_before_run() const;
+      void report_progress_from_thread() const;
+      void report_after_run() const;
+
+      void throw_if_todo_populated(std::string_view msg) const;
+    };  // class TietzeExplorer
+  }     // namespace knuth_bendix
 }  // namespace libsemigroups
 
 #include "knuth-bendix-helpers.tpp"
+
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_HELPERS_HPP_

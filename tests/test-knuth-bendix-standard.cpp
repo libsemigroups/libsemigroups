@@ -254,4 +254,121 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 3'125);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("TietzeExplorer",
+                          "148",
+                          "bababbbabba=a",
+                          "[knuth-bendix][standard][tietze-explorer]") {
+    using namespace knuth_bendix;
+    fmt::print("\n");
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("ab");
+    p.rules = {"bababbbabba", "a"};
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    TietzeExplorer dora(kb);
+
+    dora.depth_max(1).depth_min(1).run_each_for(std::chrono::milliseconds(10));
+
+    auto result = dora.result();
+
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().presentation().alphabet() == "abc");
+    REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
+            == std::vector<std::pair<std::string, std::string>>(
+                {{"ababaa", "bccca"},
+                 {"abababa", "cca"},
+                 {"abababba", "bcca"},
+                 {"abababbc", "bccc"},
+                 {"abababc", "ccc"},
+                 {"ababac", "bcccc"},
+                 {"ababbba", "bcc"},
+                 {"bbaa", "abba"},
+                 {"bbabaa", "ababba"},
+                 {"bbababa", "abbbaba"},
+                 {"bbababba", "abbbabba"},
+                 {"bbababbc", "abbba"},
+                 {"bbababc", "abbbabc"},
+                 {"bbabac", "ababbc"},
+                 {"bbabca", "aba"},
+                 {"bbabcc", "abc"},
+                 {"bbac", "abbc"},
+                 {"bbca", "a"},
+                 {"bbcc", "c"},
+                 {"caa", "aca"},
+                 {"caba", "abca"},
+                 {"cabba", "aa"},
+                 {"cabbba", "ababbc"},
+                 {"cabbc", "ac"},
+                 {"cabc", "abcc"},
+                 {"cac", "acc"},
+                 {"cba", "bca"},
+                 {"cbba", "a"},
+                 {"cbc", "bcc"}}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "150",
+                                   "baabbbaba=a",
+                                   "[standard][tietze-explorer]",
+                                   RPOTrie) {
+    auto rg = ReportGuard(false);
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baabbbaba", "a");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+    auto result = dora.number_of_threads(5).depth_max(2).result();
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().rewriting_system().confluent());
+    REQUIRE(result.value().presentation().alphabet() == "dabc");
+    REQUIRE(
+        result.value().presentation().rules
+        == std::vector<std::string>({"ca", "a", "c", "baadb", "d", "bbba"}));
+
+    REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "dada"},
+                                       {"bdaa", "daddaa"},
+                                       {"bdada", "daddada"},
+                                       {"bdaddaa", "ddaaddada"},
+                                       {"bdaddada", "d"},
+                                       {"c", "dadaadb"},
+                                       {"dadaaa", "aaddaa"},
+                                       {"dadaada", "aaddada"},
+                                       {"dadaaddaa", "adaaddada"},
+                                       {"dadaaddada", "a"}}));
+
+    REQUIRE(dora.finished());
+    dora.run();  // for code coverage
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "154",
+                          "TietzeExplorer::run_for",
+                          "[standard][tietze-explorer]") {
+    using literals::operator""_w;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa"_w, "aba"_w);
+
+    KnuthBendix kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+
+    dora.run_for(std::chrono::milliseconds(10));
+    dora.run_for(std::chrono::milliseconds(10));
+    dora.run_for(std::chrono::milliseconds(10));
+  }
+
 }  // namespace libsemigroups

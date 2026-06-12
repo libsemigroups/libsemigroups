@@ -82,6 +82,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
 
+    std::string parse(std::string const& w) {
+      return literals::operator""_p(w.c_str(), w.size());
+    }
+
     word_type operator+(word_type const& u, word_type const& w) {
       word_type result(u);
       result.insert(result.end(), w.cbegin(), w.cend());
@@ -779,4 +783,5 @@ namespace libsemigroups {
       return operator""_p(w, std::strlen(w));
     }
   }  // namespace literals
+
 }  // namespace libsemigroups
