@@ -184,6 +184,9 @@ source files. To check the whole repository manually, run:
 
   pre-commit run --all-files
 
+If you want to commit something without running the pre-commit hooks, use the
+`--no-verify` flag with `git commit`.
+
 In some cases, it may be desirable to disable automatic formatting; for example,
 if you want to use two lines to construct a vector that represents a 2x2 matrix,
 even though it would fit on one line. Automatic formatting can be disabled using
