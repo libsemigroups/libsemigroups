@@ -336,7 +336,7 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       solver(kb);
-    auto                               result = solver.depth_max(2).run();
+    auto result = solver.number_of_threads(2).depth_max(2).run();
 
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((result.active_rules() | rx::to_vector())

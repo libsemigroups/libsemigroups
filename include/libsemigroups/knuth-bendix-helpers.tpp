@@ -371,8 +371,8 @@ namespace libsemigroups {
     size_t TietzeExplorer<Word, RewritingSystem>::number_of_runs() const {
       if (_number_of_runs == UNDEFINED) {
         _number_of_runs = 0;
-        auto copy       = _kb.presentation();
-        _kb.init(congruence_kind::twosided, copy);
+        auto copy       = _kb[0].presentation();
+        _kb[0].init(congruence_kind::twosided, copy);
         _mode = Mode::count;
         dfs(copy);
       }
@@ -440,21 +440,37 @@ namespace libsemigroups {
 
       auto thread_func = [this](size_t tid) {
         std::vector<Word> subwords;
-        auto              copy = _kb.presentation();
+        auto              copy = _kb[tid].presentation();
 
         while (try_pop_one(subwords) && !_finished) {
-          if (run_one(_kb, copy, subwords)) {
+          if (run_one(_kb[tid], copy, subwords)) {
             _finished = true;
+            set_winner(tid);
             return true;
           }
         }
         return false;
       };
 
-      if (!thread_func(0)) {
-        _kb.init();
+      while (_kb.size() < number_of_threads()) {
+        _kb.emplace_back(_kb[0]);
       }
-      return _kb;
+
+      std::vector<std::thread> t;
+
+      {
+        JoinThreads jt(t);
+
+        for (size_t i = 0; i < number_of_threads(); ++i) {
+          t.push_back(std::thread(thread_func, i));
+        }
+      }
+
+      if (_winner == UNDEFINED) {
+        _kb[0].init();
+        return _kb[0];
+      }
+      return _kb[_winner];
     }
 
     // TODO check that we aren't copying things too much, namely the 2nd arg
@@ -472,6 +488,7 @@ namespace libsemigroups {
       }
 
       auto lphbt = p.alphabet();
+      // TODO can't use _perm here not thread-safe!!!
       _perm.resize(lphbt.size());
       std::iota(_perm.begin(), _perm.end(), 0);
 
@@ -479,7 +496,7 @@ namespace libsemigroups {
         ReportGuard rg(false);
         apply_permutation(lphbt, _perm);
         p.alphabet(lphbt);
-        kb.init(_kb.kind(), p);
+        kb.init(kb.kind(), p);
         kb.run_for(_run_each_for);
         if (kb.rewriting_system().confluent()) {
           // TODO print success and total elapsed time

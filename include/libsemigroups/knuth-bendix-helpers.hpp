@@ -321,14 +321,15 @@ namespace libsemigroups {
       size_t                    _depth_max;
       size_t                    _depth_min;
       std::atomic_bool          _finished;
-      mutable KnuthBendix<Word, RewritingSystem> _kb;
-      mutable Mode                               _mode;
-      mutable std::mutex                         _mtx;
-      size_t                                     _number_of_threads;
-      mutable size_t                             _number_of_runs;
-      mutable std::vector<size_t>                _perm;
-      std::chrono::nanoseconds                   _run_each_for;
-      mutable std::queue<std::vector<Word>>      _todo;
+      mutable std::vector<KnuthBendix<Word, RewritingSystem>> _kb;
+      mutable Mode                                            _mode;
+      mutable std::mutex                                      _mtx;
+      size_t                                _number_of_threads;
+      mutable size_t                        _number_of_runs;
+      mutable std::vector<size_t>           _perm;
+      std::chrono::nanoseconds              _run_each_for;
+      mutable std::queue<std::vector<Word>> _todo;
+      size_t                                _winner;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -340,14 +341,15 @@ namespace libsemigroups {
             _current_subwords_replaced_with_new_generators(),
             _depth_max(3),
             _depth_min(0),
-            _kb(kb),
+            _kb({kb}),
             _mode(),
             _mtx(),
             _number_of_threads(1),
             _number_of_runs(UNDEFINED),
             _perm(),
             _run_each_for(std::chrono::milliseconds(5)),
-            _todo() {}
+            _todo(),
+            _winner(UNDEFINED) {}
 
       TietzeExplorer(TietzeExplorer const&) = default;
       TietzeExplorer(TietzeExplorer&&)      = default;
@@ -420,7 +422,7 @@ namespace libsemigroups {
             _todo.emplace();  // no new generators
           }
           _mode     = Mode::add_todos;
-          auto copy = _kb.presentation();
+          auto copy = _kb[0].presentation();
           dfs(copy);
         }
         return _todo;
@@ -442,6 +444,13 @@ namespace libsemigroups {
           return true;
         }
         return false;
+      }
+
+      void set_winner(size_t index) {
+        std::lock_guard<std::mutex> lg(_mtx);
+        if (_winner == UNDEFINED) {
+          _winner = index;
+        }
       }
 
     };  // TietzeExplorer
