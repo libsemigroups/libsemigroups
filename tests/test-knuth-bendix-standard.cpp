@@ -257,8 +257,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("TietzeExplorer",
                           "148",
                           "bababbbabba=a",
-                          "[knuth-bendix][standard]") {
+                          "[knuth-bendix][standard][tietze-explorer]") {
     using namespace knuth_bendix;
+    fmt::print("\n");
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -272,10 +273,10 @@ namespace libsemigroups {
     search.depth_max(1).depth_min(1).run_each_for(
         std::chrono::milliseconds(10));
 
-    search.run();
+    auto result = search.run();
 
-    REQUIRE(kb.presentation().alphabet() == "abc");
-    REQUIRE((kb.active_rules() | rx::to_vector())
+    REQUIRE(result.presentation().alphabet() == "abc");
+    REQUIRE((result.active_rules() | rx::to_vector())
             == std::vector<std::pair<std::string, std::string>>(
                 {{"cbba", "a"},
                  {"cbc", "bcc"},

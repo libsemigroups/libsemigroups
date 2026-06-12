@@ -422,7 +422,7 @@ namespace libsemigroups {
     }
 
     template <typename Word, typename RewritingSystem>
-    KnuthBendix<Word, RewritingSystem>
+    KnuthBendix<Word, RewritingSystem> const&
     TietzeExplorer<Word, RewritingSystem>::run() {
       using namespace ::libsemigroups::detail;
       Reporter::reset_start_time();
@@ -466,10 +466,12 @@ namespace libsemigroups {
         _kb.init(_kb.kind(), p);
         _kb.run_for(_run_each_for);
         if (_kb.rewriting_system().confluent()) {
+          // TODO print success and total elapsed time
           return true;
         }
         if (report()) {
           // TODO add some padding and the % complete
+          // TODO Recompute estimated time using the current elapsed time
           fmt::print("TietzeExplorer: {} / {} | elapsed {} | est. time {}\n",
                      group_digits(_counter),
                      group_digits(number_of_runs()),
@@ -478,6 +480,7 @@ namespace libsemigroups {
         }
         _counter++;
       } while (std::next_permutation(_perm.begin(), _perm.end()));
+      // TODO print failed and total elapsed time
       return false;
     }
   }  // namespace knuth_bendix

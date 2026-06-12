@@ -126,8 +126,9 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "114",
                                    "hard 2-generated 1-relation monoid",
-                                   "[fail][knuth-bendix][xxx2]",
+                                   "[quick][knuth-bendix][tietze-explorer]",
                                    RPOTrie) {
+    fmt::print("\n");
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abc");
@@ -154,7 +155,7 @@ namespace libsemigroups {
       "KnuthBendix",
       "116",
       "https://math.stackexchange.com/questions/2649807",
-      "[knuth-bendix][fail]",
+      "[knuth-bendix][extreme][tietze-explorer]",
       LenLexTrie) {
     std::string lphbt = "abcB";
     std::string invrs = "aBcb";
@@ -177,16 +178,16 @@ namespace libsemigroups {
     knuth_bendix::TietzeExplorer       solver(kb);
     solver.depth_max(1);
 
-    solver.run();
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | rx::to_vector())
+    auto result     = solver.run();
+    using rule_type = typename decltype(result)::rule_type;
+    REQUIRE((result.active_rules() | rx::to_vector())
             == std::vector<rule_type>({}));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "057",
                                    "1-relation hard case",
-                                   "[fail][knuth-bendix]",
+                                   "[extreme][knuth-bendix][tietze-explorer]",
                                    RPOTrie) {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
@@ -198,18 +199,18 @@ namespace libsemigroups {
     knuth_bendix::TietzeExplorer       solver(kb);
     solver.depth_max(2).run_each_for(std::chrono::milliseconds(1));
 
-    solver.run();
-    REQUIRE(kb.rewriting_system().active_rules().size() == 0);
+    auto result = solver.run();
+    REQUIRE(result.rewriting_system().active_rules().size() == 0);
   }
 
   // TODO move to quick
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
       "099",
-      "Giles Gardam in \"A counterexample to the unit conjecture for group "
-      "rings\" (https://arxiv.org/abs/2102.11818)",
-      "[fail]",
+      "Giles Gardam (https://arxiv.org/abs/2102.11818)",
+      "[quick][tietze-explorer]",
       RPOTrie) {
+    fmt::print("\n");
     Presentation<std::string> p;
     p.alphabet("bABa");
     p.contains_empty_word(true);
@@ -221,6 +222,7 @@ namespace libsemigroups {
     knuth_bendix::TietzeExplorer       solver(kb);
     auto                               result = solver.depth_max(2).run();
 
+    using rule_type = typename decltype(kb)::rule_type;
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE(result.finished());
     REQUIRE(result.presentation().alphabet() == "bBcAa");
@@ -266,7 +268,294 @@ namespace libsemigroups {
     //                                    {"BBc", "cBB"},
     //                                    {"ca", "BaBcbb"},
     //                                    {"aa", "Bcbb"}}));
-    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    REQUIRE(result.number_of_classes() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "147",
+                                   "aaa=a, abba=bb",
+                                   "[extreme][tietze-explorer]",
+                                   LenLexTrie) {
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "aaa", "a");
+    presentation::add_rule(p, "abba", "bb");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       solver(kb);
+    auto                               result = solver.run();
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((result.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "149",
+                                   "abaab=aabba",
+                                   "[quick][tietze-explorer]",
+                                   LenLexTrie) {
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "abbab", "baabb");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       solver(kb);
+    auto                               result = solver.run();
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((result.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"baab", "c"},
+                                       {"abba", "d"},
+                                       {"db", "cb"},
+                                       {"baac", "caab"},
+                                       {"bad", "cba"},
+                                       {"abbd", "cbba"},
+                                       {"abc", "dab"},
+                                       {"dc", "cc"},
+                                       {"bacb", "cbab"},
+                                       {"bacc", "cbac"},
+                                       {"abbcb", "cbbab"},
+                                       {"abbcc", "cbbac"}}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "150",
+                                   "baabbbaba=a",
+                                   "[standard][tietze-explorer]",
+                                   RPOTrie) {
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baabbbaba", "a");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       solver(kb);
+    auto                               result = solver.depth_max(2).run();
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((result.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"ba", "dada"},
+                                       {"bdada", "daddada"},
+                                       {"bdaddada", "d"},
+                                       {"dadaada", "aaddada"},
+                                       {"c", "dadaadb"},
+                                       {"dadaaddada", "a"},
+                                       {"bdaa", "daddaa"},
+                                       {"bdaddaa", "ddaaddada"},
+                                       {"dadaaa", "aaddaa"},
+                                       {"dadaaddaa", "adaaddada"}}));
+  }
+
+  // Fails with depth_max(3) + RPOTrie too in ~10 minutes
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "151",
+                                   "baaabaaa = aba",
+                                   "[fail][tietze-explorer]",
+                                   RPOTrie,
+                                   LenLexTrie) {
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa", "aba");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       solver(kb);
+    auto                               result = solver.depth_max(2).run();
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((result.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({}));
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "152",
+                                   "baa(ba)^N=a",
+                                   "[extreme][tietze-explorer]",
+                                   RPOTrie) {
+    fmt::print("\n");
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+
+    KnuthBendix<std::string, TestType> kb;
+
+    using rule_type = typename decltype(kb)::rule_type;
+
+    std::vector<std::vector<rule_type>> expected
+        = {{{"c", "dadb"},
+            {"ba", "d"},
+            {"dadd", "a"},
+            {"dada", "aadd"},
+            {"daa", "aadddd"}},
+           {{"c", "baadb"},
+            {"aba", "baadd"},
+            {"dba", "bad"},
+            {"bbaada", "a"},
+            {"bbaadd", "d"},
+            {"daddd", "a"},
+            {"bbaaa", "addd"},
+            {"dadda", "aaddd"},
+            {"dada", "aadddddd"},
+            {"daa", "aaddddddddd"}},
+           {{"ca", "a"},
+            {"cd", "d"},
+            {"dab", "abd"},
+            {"abab", "badd"},
+            {"dbadac", "baddac"},
+            {"bbadad", "d"},
+            {"bbadac", "c"},
+            {"bbadaa", "a"},
+            {"abbadd", "d"},
+            {"cbadd", "badd"},
+            {"dbadd", "baddd"},
+            {"cbadac", "badac"},
+            {"dbadaa", "baddaa"},
+            {"dbadad", "baddad"},
+            {"babaddd", "ab"},
+            {"babaddac", "abadddd"},
+            {"dadddd", "ac"},
+            {"cbadaa", "badaa"},
+            {"cbadad", "badad"},
+            {"bbaac", "dddd"},
+            {"babaddaa", "abadddda"},
+            {"babaddad", "abaddddd"},
+            {"aab", "baddaddd"},
+            {"dbaac", "badac"},
+            {"dadddac", "aadddd"},
+            {"bbaaa", "dddda"},
+            {"bbaad", "ddddd"},
+            {"babadac", "abadddddddd"},
+            {"dbaaa", "badaa"},
+            {"dbaad", "badad"},
+            {"dadddaa", "aadddda"},
+            {"dadddad", "aaddddd"},
+            {"cbaac", "baac"},
+            {"babadaa", "abadddddddda"},
+            {"babadad", "abaddddddddd"},
+            {"dadac", "aadddddddddddd"},
+            {"babaac", "abadddddddddddd"},
+            {"dadaa", "aadddddddddddda"},
+            {"daddac", "aadddddddd"},
+            {"cbaaa", "baaa"},
+            {"cbaad", "baad"},
+            {"dadad", "aaddddddddddddd"},
+            {"babaaa", "abadddddddddddda"},
+            {"babaad", "abaddddddddddddd"},
+            {"daac", "aadddddddddddddddd"},
+            {"daddaa", "aadddddddda"},
+            {"daddad", "aaddddddddd"},
+            {"daaa", "aadddddddddddddddda"},
+            {"daad", "aaddddddddddddddddd"}},
+           {{"dbadd", "baddd"},
+            {"dab", "abd"},
+            {"dbadaa", "baddaa"},
+            {"bbadaa", "a"},
+            {"bbabaddaa", "abda"},
+            {"abbadd", "d"},
+            {"dbabaddaa", "babadddaa"},
+            {"dbabaddad", "babadddad"},
+            {"dbadad", "baddad"},
+            {"bbadad", "d"},
+            {"bbabaddad", "abdd"},
+            {"bbabadddadddd", "ab"},
+            {"daddddda", "aa"},
+            {"dadddddd", "ad"},
+            {"bbaaa", "ddddda"},
+            {"bbaad", "dddddd"},
+            {"abab", "babaddd"},
+            {"aab", "baddadddd"},
+            {"c", "bbaddaddddd"},
+            {"bbabaaa", "abddddddddddda"},
+            {"bbabaad", "abdddddddddddd"},
+            {"bbabadaa", "abdddddda"},
+            {"dbabadaa", "babaddaa"},
+            {"dbaaa", "badaa"},
+            {"daddddaa", "aaddddda"},
+            {"bbabadad", "abddddddd"},
+            {"dbabaaa", "babadaa"},
+            {"dbabaad", "babadad"},
+            {"dbabadad", "babaddad"},
+            {"dbaad", "badad"},
+            {"daddddad", "aadddddd"},
+            {"abbabaddd", "badd"},
+            {"dbabaddd", "babadddd"},
+            {"dadddaa", "aadddddddddda"},
+            {"dadddad", "aaddddddddddd"},
+            {"daddaa", "aaddddddddddddddda"},
+            {"daddad", "aadddddddddddddddd"},
+            {"dadad", "aaddddddddddddddddddddd"},
+            {"dadaa", "aadddddddddddddddddddda"},
+            {"daaa", "aaddddddddddddddddddddddddda"},
+            {"daad", "aadddddddddddddddddddddddddd"}},
+           {{"dbadd", "baddd"},
+            {"dab", "abd"},
+            {"dbadaa", "baddaa"},
+            {"bbadaa", "a"},
+            {"bbabaddaa", "abda"},
+            {"abbadd", "d"},
+            {"dbabaddaa", "babadddaa"},
+            {"dbabaddad", "babadddad"},
+            {"dbadad", "baddad"},
+            {"bbadad", "d"},
+            {"bbabaddad", "abdd"},
+            {"bababadddd", "abab"},
+            {"dadddddda", "aa"},
+            {"daddddddd", "ad"},
+            {"ababab", "babaddd"},
+            {"bababadddaa", "ababadddddda"},
+            {"bababadddad", "ababaddddddd"},
+            {"bbaaa", "dddddda"},
+            {"bbaad", "ddddddd"},
+            {"bbabadaa", "abddddddda"},
+            {"bbabadad", "abdddddddd"},
+            {"dbabadaa", "babaddaa"},
+            {"dbaaa", "badaa"},
+            {"dbaad", "badad"},
+            {"aab", "baddaddddd"},
+            {"dadddddaa", "aadddddda"},
+            {"dadddddad", "aaddddddd"},
+            {"c", "bbaddadddddd"},
+            {"bababaddaa", "ababadddddddddddda"},
+            {"bababaddad", "ababaddddddddddddd"},
+            {"abbabaddd", "badd"},
+            {"dbabaddd", "babadddd"},
+            {"dbabadad", "babaddad"},
+            {"bbabaaa", "abddddddddddddda"},
+            {"bbabaad", "abdddddddddddddd"},
+            {"bbabadddaddddd", "ab"},
+            {"daddddaa", "aadddddddddddda"},
+            {"daddddad", "aaddddddddddddd"},
+            {"bababadaa", "ababadddddddddddddddddda"},
+            {"bababadad", "ababaddddddddddddddddddd"},
+            {"daddaa", "aadddddddddddddddddddddddda"},
+            {"daddad", "aaddddddddddddddddddddddddd"},
+            {"dbabaaa", "babadaa"},
+            {"dbabaad", "babadad"},
+            {"dadaa", "aadddddddddddddddddddddddddddddda"},
+            {"dadddaa", "aadddddddddddddddddda"},
+            {"dadddad", "aaddddddddddddddddddd"},
+            {"bababaaa", "ababadddddddddddddddddddddddda"},
+            {"bababaad", "ababaddddddddddddddddddddddddd"},
+            {"dadad", "aaddddddddddddddddddddddddddddddd"},
+            {"daaa", "aadddddddddddddddddddddddddddddddddddda"},
+            {"daad", "aaddddddddddddddddddddddddddddddddddddd"}}};
+
+    for (auto N = 2; N < 7; ++N) {
+      p.rules = {parse(fmt::format("baa(ba)^{}", N)), "a"};
+      kb.init(twosided, p);
+      knuth_bendix::TietzeExplorer solver(kb);
+      auto                         result = solver.depth_max(2).run();
+
+      REQUIRE((result.active_rules() | rx::to_vector()) == expected[N - 2]);
+    }
   }
 
   namespace {

@@ -779,4 +779,8 @@ namespace libsemigroups {
       return operator""_p(w, std::strlen(w));
     }
   }  // namespace literals
+
+  std::string parse(std::string const& w) {
+    return literals::operator""_p(w.c_str(), w.size());
+  }
 }  // namespace libsemigroups

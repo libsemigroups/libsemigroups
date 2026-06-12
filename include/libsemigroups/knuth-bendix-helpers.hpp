@@ -320,12 +320,12 @@ namespace libsemigroups {
       mutable std::vector<Word> _current_subwords_replaced_with_new_generators;
       size_t                    _depth_max;
       size_t                    _depth_min;
-      KnuthBendix<Word, RewritingSystem>&    _kb;
-      mutable Mode                           _mode;
-      size_t                                 _number_of_threads;
-      mutable size_t                         _number_of_runs;
-      mutable std::vector<size_t>            _perm;
-      std::chrono::nanoseconds               _run_each_for;
+      mutable KnuthBendix<Word, RewritingSystem> _kb;
+      mutable Mode                               _mode;
+      size_t                                     _number_of_threads;
+      mutable size_t                             _number_of_runs;
+      mutable std::vector<size_t>                _perm;
+      std::chrono::nanoseconds                   _run_each_for;
       mutable std::vector<std::vector<Word>> _todo;  // TODO implement or remove
 
      public:
@@ -408,7 +408,7 @@ namespace libsemigroups {
 
       [[nodiscard]] size_t number_of_runs() const;
 
-      KnuthBendix<Word, RewritingSystem> run();
+      [[nodiscard]] KnuthBendix<Word, RewritingSystem> const& run();
 
       // TODO to tpp
       [[nodiscard]] std::vector<std::vector<Word>> const&
