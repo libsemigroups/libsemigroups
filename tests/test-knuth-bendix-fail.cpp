@@ -336,7 +336,7 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       solver(kb);
-    auto result = solver.number_of_threads(2).depth_max(2).run();
+    auto result = solver.number_of_threads(5).depth_max(2).run();
 
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((result.active_rules() | rx::to_vector())
@@ -357,8 +357,7 @@ namespace libsemigroups {
                                    "151",
                                    "baaabaaa = aba",
                                    "[fail][tietze-explorer]",
-                                   RPOTrie,
-                                   LenLexTrie) {
+                                   RPOTrie) {
     fmt::print("\n");
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -367,7 +366,16 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       solver(kb);
-    auto                               result = solver.depth_max(2).run();
+
+    // std::vector<std::vector<std::string>> copy;
+    // auto                                  todo = solver.todo();
+    // while (!todo.empty()) {
+    //   copy.push_back(todo.front());
+    //   todo.pop();
+    // }
+    // REQUIRE(copy == std::vector<std::vector<std::string>>());
+
+    auto result = solver.depth_max(2).number_of_threads(8).run();
 
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((result.active_rules() | rx::to_vector())

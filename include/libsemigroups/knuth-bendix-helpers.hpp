@@ -316,19 +316,18 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // Private data
       ////////////////////////////////////////////////////////////////////////
-      mutable size_t            _counter;
-      mutable std::vector<Word> _current_subwords_replaced_with_new_generators;
-      size_t                    _depth_max;
-      size_t                    _depth_min;
-      std::atomic_bool          _finished;
+      mutable std::atomic_size_t _counter;
+      mutable std::vector<Word>  _current_subwords_replaced_with_new_generators;
+      size_t                     _depth_max;
+      size_t                     _depth_min;
       mutable std::vector<KnuthBendix<Word, RewritingSystem>> _kb;
       mutable Mode                                            _mode;
       mutable std::mutex                                      _mtx;
       size_t                                _number_of_threads;
       mutable size_t                        _number_of_runs;
-      mutable std::vector<size_t>           _perm;
       std::chrono::nanoseconds              _run_each_for;
       mutable std::queue<std::vector<Word>> _todo;
+      bool                                  _todo_populated;
       size_t                                _winner;
 
      public:
@@ -346,9 +345,9 @@ namespace libsemigroups {
             _mtx(),
             _number_of_threads(1),
             _number_of_runs(UNDEFINED),
-            _perm(),
             _run_each_for(std::chrono::milliseconds(5)),
             _todo(),
+            _todo_populated(false),
             _winner(UNDEFINED) {}
 
       TietzeExplorer(TietzeExplorer const&) = default;
@@ -417,7 +416,10 @@ namespace libsemigroups {
 
       // TODO to tpp + private
       [[nodiscard]] auto& todo() noexcept {
-        if (_todo.empty()) {
+        if (!_todo_populated) {
+          LIBSEMIGROUPS_ASSERT(_kb.size() > 0);
+          LIBSEMIGROUPS_ASSERT(_todo.empty());
+          _todo_populated = true;
           if (_depth_min == 0) {
             _todo.emplace();  // no new generators
           }
@@ -432,9 +434,9 @@ namespace libsemigroups {
       // TODO report_progress_from_thread
       void dfs(Presentation<Word>& p, size_t depth = 0) const;
 
-      [[nodiscard]] bool run_one(KnuthBendix<Word, RewritingSystem>& kb,
-                                 Presentation<Word>                  p,
-                                 std::vector<Word> const&            subwords);
+      [[nodiscard]] bool run_one(size_t                   tid,
+                                 Presentation<Word>       p,
+                                 std::vector<Word> const& subwords);
 
       [[nodiscard]] bool try_pop_one(std::vector<Word>& result) {
         std::lock_guard<std::mutex> lg(_mtx);

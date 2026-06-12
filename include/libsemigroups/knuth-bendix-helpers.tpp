@@ -438,25 +438,29 @@ namespace libsemigroups {
           string_time(_run_each_for));
       _counter = 0;
 
+      while (_kb.size() < number_of_threads()) {
+        _kb.emplace_back(_kb[0]);
+      }
+
+      std::ignore = todo();
+      // ensure that _todo is populated before we start threading
+
+      std::vector<std::thread> t;
+
       auto thread_func = [this](size_t tid) {
         std::vector<Word> subwords;
         auto              copy = _kb[tid].presentation();
 
-        while (try_pop_one(subwords) && !_finished) {
-          if (run_one(_kb[tid], copy, subwords)) {
-            _finished = true;
+        // TODO _winner -> atomic so that we can set it in set_winner and
+        // compare to UNDEFINED in the next line safely
+        while (try_pop_one(subwords) && _winner == UNDEFINED) {
+          if (run_one(tid, copy, subwords)) {
             set_winner(tid);
             return true;
           }
         }
         return false;
       };
-
-      while (_kb.size() < number_of_threads()) {
-        _kb.emplace_back(_kb[0]);
-      }
-
-      std::vector<std::thread> t;
 
       {
         JoinThreads jt(t);
@@ -465,6 +469,7 @@ namespace libsemigroups {
           t.push_back(std::thread(thread_func, i));
         }
       }
+      LIBSEMIGROUPS_ASSERT(_winner != UNDEFINED || _todo.empty());
 
       if (_winner == UNDEFINED) {
         _kb[0].init();
@@ -477,9 +482,9 @@ namespace libsemigroups {
     // here.
     template <typename Word, typename RewritingSystem>
     bool TietzeExplorer<Word, RewritingSystem>::run_one(
-        KnuthBendix<Word, RewritingSystem>& kb,
-        Presentation<Word>                  p,
-        std::vector<Word> const&            subwords) {
+        size_t                   tid,
+        Presentation<Word>       p,
+        std::vector<Word> const& subwords) {
       using namespace ::libsemigroups::detail;
 
       for (auto const& word : subwords) {
@@ -487,14 +492,15 @@ namespace libsemigroups {
             p, word.cbegin(), word.cend());
       }
 
-      auto lphbt = p.alphabet();
-      // TODO can't use _perm here not thread-safe!!!
-      _perm.resize(lphbt.size());
-      std::iota(_perm.begin(), _perm.end(), 0);
+      auto                lphbt = p.alphabet();
+      std::vector<size_t> perm(lphbt.size(), 0);
+      std::iota(perm.begin(), perm.end(), 0);
+
+      auto& kb = _kb[tid];
 
       do {
         ReportGuard rg(false);
-        apply_permutation(lphbt, _perm);
+        apply_permutation(lphbt, perm);
         p.alphabet(lphbt);
         kb.init(kb.kind(), p);
         kb.run_for(_run_each_for);
@@ -512,7 +518,7 @@ namespace libsemigroups {
                      string_time(estimated_run_time()));
         }
         _counter++;
-      } while (std::next_permutation(_perm.begin(), _perm.end()));
+      } while (std::next_permutation(perm.begin(), perm.end()));
       // TODO print failed and total elapsed time
       return false;
     }
