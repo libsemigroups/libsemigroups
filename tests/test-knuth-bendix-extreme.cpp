@@ -19,6 +19,8 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
+#include <iostream>  // TODO rm
+
 #include <algorithm>    // for find, all_of
 #include <chrono>       // for seconds
 #include <complex>      // for operator*, ope...
@@ -52,6 +54,8 @@
 #include "libsemigroups/word-graph-view.hpp"        // for WordGraphView:...
 #include "libsemigroups/word-graph.hpp"             // for WordGraph::target
 #include "libsemigroups/word-range.hpp"             // for StringRange
+
+#include "libsemigroups/to-presentation.hpp"
 
 #include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceComm...
 #include "libsemigroups/detail/eigen.hpp"              // for eigen
@@ -637,5 +641,4 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 7'776);
   }
-
 }  // namespace libsemigroups

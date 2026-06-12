@@ -2094,8 +2094,11 @@ namespace libsemigroups {
     //!
     //! See \ref literal_operator_p "operator\"\"_p" for details.
     std::string operator""_p(const char* w);
+
   }  // namespace literals
 
+  // TODO doc
+  std::string parse(std::string const& w);
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup words_group

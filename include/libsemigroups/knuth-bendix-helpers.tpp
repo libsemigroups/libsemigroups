@@ -19,6 +19,7 @@
 // This file contains the implementations of helper function templates for the
 // KnuthBendixImpl class template.
 
+#include <chrono>
 namespace libsemigroups {
   namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////
@@ -335,5 +336,191 @@ namespace libsemigroups {
     //   return tril::unknown;
     // }
 
+    namespace detail {
+      template <typename T>
+      auto subwords(T first, T last) {
+        std::unordered_set<std::string> mp;
+
+        for (auto it = first; it < last; ++it) {
+          auto const& w = *it;
+          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
+            for (auto prefix = suffix + 2; prefix < w.cend(); ++prefix) {
+              mp.emplace(suffix, prefix);
+            }
+          }
+        }
+        std::vector<std::string> words(mp.cbegin(), mp.cend());
+        std::sort(words.begin(), words.end(), [](auto const& u, auto const& v) {
+          return shortlex_compare(v, u);
+        });
+        return words;
+      }
+
+      static inline uint64_t factorial(uint16_t n) {
+        uint64_t result = 1;
+
+        for (uint16_t i = 2; i <= n; ++i) {
+          result *= i;
+        }
+
+        return result;
+      }
+    }  // namespace detail
+
+    template <typename Word, typename RewritingSystem>
+    size_t TietzeExplorer<Word, RewritingSystem>::number_of_runs() const {
+      if (_number_of_runs == UNDEFINED) {
+        _number_of_runs = 0;
+        auto copy       = _kb[0].presentation();
+        _kb[0].init(congruence_kind::twosided, copy);
+        _mode = Mode::count;
+        dfs(copy);
+      }
+      return _number_of_runs;
+    }
+
+    template <typename Word, typename RewritingSystem>
+    std::chrono::nanoseconds
+    TietzeExplorer<Word, RewritingSystem>::estimated_run_time() const {
+      return static_cast<std::chrono::nanoseconds::rep>(number_of_runs())
+             * run_each_for();
+    }
+
+    template <typename Word, typename RewritingSystem>
+    void TietzeExplorer<Word, RewritingSystem>::dfs(Presentation<Word>& p,
+                                                    size_t depth) const {
+      using namespace ::libsemigroups::detail;
+
+      if (depth >= _depth_min) {
+        if (_mode == Mode::count) {
+          auto const n = static_cast<std::chrono::nanoseconds::rep>(
+              detail::factorial(p.alphabet().size()));
+          _number_of_runs += n;
+        }
+      }
+
+      if (depth != _depth_max) {
+        auto sbwrds = detail::subwords(p.rules.cbegin(), p.rules.cend());
+
+        Presentation<Word> copy;
+        for (auto const& w : sbwrds) {
+          if (w.size() > 1) {
+            copy = p;
+            presentation::replace_word_with_new_generator(
+                copy, w.cbegin(), w.cend());
+            if (_mode == Mode::add_todos) {
+              _current_subwords_replaced_with_new_generators.push_back(w);
+              _todo.push(_current_subwords_replaced_with_new_generators);
+            }
+            dfs(copy, depth + 1);
+            if (_mode == Mode::add_todos) {
+              _current_subwords_replaced_with_new_generators.pop_back();
+            }
+          }
+        }
+      }
+    }
+
+    template <typename Word, typename RewritingSystem>
+    KnuthBendix<Word, RewritingSystem> const&
+    TietzeExplorer<Word, RewritingSystem>::run() {
+      using namespace ::libsemigroups::detail;
+
+      // TODO to separate function
+      Reporter::reset_start_time();
+      fmt::print("TietzeExplorer: performing {} runs | est. time {}\n",
+                 group_digits(number_of_runs()),
+                 string_time(estimated_run_time()));
+      fmt::print(
+          "TietzeExplorer: min. depth {} | max. depth {} | each run {}\n",
+          _depth_min,
+          _depth_max,
+          string_time(_run_each_for));
+      _counter = 0;
+
+      while (_kb.size() < number_of_threads()) {
+        _kb.emplace_back(_kb[0]);
+      }
+
+      std::ignore = todo();
+      // ensure that _todo is populated before we start threading
+
+      std::vector<std::thread> t;
+
+      auto thread_func = [this](size_t tid) {
+        std::vector<Word> subwords;
+        auto              copy = _kb[tid].presentation();
+
+        // TODO _winner -> atomic so that we can set it in set_winner and
+        // compare to UNDEFINED in the next line safely
+        while (try_pop_one(subwords) && _winner == UNDEFINED) {
+          if (run_one(tid, copy, subwords)) {
+            set_winner(tid);
+            return true;
+          }
+        }
+        return false;
+      };
+
+      {
+        JoinThreads jt(t);
+
+        for (size_t i = 0; i < number_of_threads(); ++i) {
+          t.push_back(std::thread(thread_func, i));
+        }
+      }
+      LIBSEMIGROUPS_ASSERT(_winner != UNDEFINED || _todo.empty());
+
+      if (_winner == UNDEFINED) {
+        _kb[0].init();
+        return _kb[0];
+      }
+      return _kb[_winner];
+    }
+
+    // TODO check that we aren't copying things too much, namely the 2nd arg
+    // here.
+    template <typename Word, typename RewritingSystem>
+    bool TietzeExplorer<Word, RewritingSystem>::run_one(
+        size_t                   tid,
+        Presentation<Word>       p,
+        std::vector<Word> const& subwords) {
+      using namespace ::libsemigroups::detail;
+
+      for (auto const& word : subwords) {
+        presentation::replace_word_with_new_generator(
+            p, word.cbegin(), word.cend());
+      }
+
+      auto                lphbt = p.alphabet();
+      std::vector<size_t> perm(lphbt.size(), 0);
+      std::iota(perm.begin(), perm.end(), 0);
+
+      auto& kb = _kb[tid];
+
+      do {
+        ReportGuard rg(false);
+        apply_permutation(lphbt, perm);
+        p.alphabet(lphbt);
+        kb.init(kb.kind(), p);
+        kb.run_for(_run_each_for);
+        if (kb.rewriting_system().confluent()) {
+          // TODO print success and total elapsed time
+          return true;
+        }
+        if (report()) {
+          // TODO add some padding and the % complete
+          // TODO Recompute estimated time using the current elapsed time
+          fmt::print("TietzeExplorer: {} / {} | elapsed {} | est. time {}\n",
+                     group_digits(_counter),
+                     group_digits(number_of_runs()),
+                     string_time(delta(start_time())),
+                     string_time(estimated_run_time()));
+        }
+        _counter++;
+      } while (std::next_permutation(perm.begin(), perm.end()));
+      // TODO print failed and total elapsed time
+      return false;
+    }
   }  // namespace knuth_bendix
 }  // namespace libsemigroups
