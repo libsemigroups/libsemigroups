@@ -410,7 +410,7 @@ namespace libsemigroups {
                 copy, w.cbegin(), w.cend());
             if (_mode == Mode::add_todos) {
               _current_subwords_replaced_with_new_generators.push_back(w);
-              _todo.push_back(_current_subwords_replaced_with_new_generators);
+              _todo.push(_current_subwords_replaced_with_new_generators);
             }
             dfs(copy, depth + 1);
             if (_mode == Mode::add_todos) {
@@ -434,14 +434,24 @@ namespace libsemigroups {
           _depth_min,
           _depth_max,
           string_time(_run_each_for));
-      _counter  = 0;
-      auto copy = _kb.presentation();
-      for (auto const& subwords : todo()) {
-        if (run_one(copy, subwords)) {
-          return _kb;
+      _counter = 0;
+
+      auto thread_func = [this](size_t tid) {
+        auto              copy = _kb.presentation();
+        std::vector<Word> subwords;
+
+        while (try_pop_one(subwords) && !_finished) {
+          if (run_one(copy, subwords)) {
+            _finished = true;
+            return true;
+          }
         }
+        return false;
+      };
+
+      if (!thread_func(0)) {
+        _kb.init();
       }
-      _kb.init();
       return _kb;
     }
 

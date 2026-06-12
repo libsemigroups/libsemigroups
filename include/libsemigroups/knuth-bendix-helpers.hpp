@@ -320,13 +320,15 @@ namespace libsemigroups {
       mutable std::vector<Word> _current_subwords_replaced_with_new_generators;
       size_t                    _depth_max;
       size_t                    _depth_min;
+      std::atomic_bool          _finished;
       mutable KnuthBendix<Word, RewritingSystem> _kb;
       mutable Mode                               _mode;
+      mutable std::mutex                         _mtx;
       size_t                                     _number_of_threads;
       mutable size_t                             _number_of_runs;
       mutable std::vector<size_t>                _perm;
       std::chrono::nanoseconds                   _run_each_for;
-      mutable std::vector<std::vector<Word>> _todo;  // TODO implement or remove
+      mutable std::queue<std::vector<Word>>      _todo;
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -340,6 +342,7 @@ namespace libsemigroups {
             _depth_min(0),
             _kb(kb),
             _mode(),
+            _mtx(),
             _number_of_threads(1),
             _number_of_runs(UNDEFINED),
             _perm(),
@@ -410,12 +413,11 @@ namespace libsemigroups {
 
       [[nodiscard]] KnuthBendix<Word, RewritingSystem> const& run();
 
-      // TODO to tpp
-      [[nodiscard]] std::vector<std::vector<Word>> const&
-      todo() const noexcept {
+      // TODO to tpp + private
+      [[nodiscard]] auto& todo() noexcept {
         if (_todo.empty()) {
           if (_depth_min == 0) {
-            _todo.emplace_back();  // no new generators
+            _todo.emplace();  // no new generators
           }
           _mode     = Mode::add_todos;
           auto copy = _kb.presentation();
@@ -425,11 +427,21 @@ namespace libsemigroups {
       }
 
      private:
+      // TODO report_progress_from_thread
       void dfs(Presentation<Word>& p, size_t depth = 0) const;
 
       [[nodiscard]] bool run_one(Presentation<Word>       p,
                                  std::vector<Word> const& subwords);
-      // TODO report progress from thread
+
+      [[nodiscard]] bool try_pop_one(std::vector<Word>& result) {
+        std::lock_guard<std::mutex> lg(_mtx);
+        if (!todo().empty()) {
+          result = std::move(todo().front());
+          todo().pop();
+          return true;
+        }
+        return false;
+      }
 
     };  // TietzeExplorer
 
