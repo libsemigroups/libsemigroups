@@ -1128,6 +1128,7 @@ libsemigroups_la_LDFLAGS = -version-info 3:0:0
 ## is required to regenerate these.
 
 EXTRA_DIST =  .clang-format
+EXTRA_DIST += .pre-commit-config.yaml
 EXTRA_DIST += .VERSION
 EXTRA_DIST += CPPLINT.cfg
 EXTRA_DIST += LICENSE
