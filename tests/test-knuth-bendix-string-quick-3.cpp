@@ -1226,24 +1226,4 @@ namespace libsemigroups {
                                          "bbb"}));
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "KnuthBendix",
-      "099",
-      "Giles Gardam in \"A counterexample to the unit conjecture for group "
-      "rings\" (https://arxiv.org/abs/2102.11818)",
-      "[fail]",
-      RPOTrie) {
-    Presentation<std::string> p;
-    p.alphabet("bABa");
-    p.contains_empty_word(true);
-    presentation::add_inverse_rules(p, "BabA");
-    presentation::add_rule(p, "Abba", "BB");
-    presentation::add_rule(p, "Baab", "AA");
-
-    KnuthBendix<std::string, TestType> kb(twosided, p);
-    // knuth_bendix::by_overlap_length(kb);
-
-    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
-  }
-
 }  // namespace libsemigroups

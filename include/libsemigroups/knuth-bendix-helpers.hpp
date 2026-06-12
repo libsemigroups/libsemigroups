@@ -42,8 +42,9 @@
 #include "word-graph.hpp"           // for WordGraph
 #include "word-range.hpp"           // for ToString
 
-#include "detail/fmt.hpp"               // for format
-#include "detail/knuth-bendix-nf.hpp"   // for KnuthBendix, KnuthBe...
+#include "detail/fmt.hpp"              // for format
+#include "detail/knuth-bendix-nf.hpp"  // for KnuthBendix, KnuthBe...
+#include "detail/report.hpp"
 #include "detail/rewriting-system.hpp"  // for internal_string_type
 
 namespace libsemigroups {
@@ -307,7 +308,133 @@ namespace libsemigroups {
     [[nodiscard]] typename std::vector<Word>::const_iterator
     redundant_rule(Presentation<Word> const& p, Time t);
 
+    template <typename Word, typename RewritingSystem>
+    class TietzeExplorer : private Reporter {
+     private:
+      enum class Mode { count, add_todos };
+
+      ////////////////////////////////////////////////////////////////////////
+      // Private data
+      ////////////////////////////////////////////////////////////////////////
+      mutable size_t            _counter;
+      mutable std::vector<Word> _current_subwords_replaced_with_new_generators;
+      size_t                    _depth_max;
+      size_t                    _depth_min;
+      KnuthBendix<Word, RewritingSystem>&    _kb;
+      mutable Mode                           _mode;
+      size_t                                 _number_of_threads;
+      mutable size_t                         _number_of_runs;
+      mutable std::vector<size_t>            _perm;
+      std::chrono::nanoseconds               _run_each_for;
+      mutable std::vector<std::vector<Word>> _todo;  // TODO implement or remove
+
+     public:
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + Initializers
+      ////////////////////////////////////////////////////////////////////////
+      // TODO to tpp
+      explicit TietzeExplorer(KnuthBendix<Word, RewritingSystem>& kb)
+          : _counter(0),
+            _current_subwords_replaced_with_new_generators(),
+            _depth_max(3),
+            _depth_min(0),
+            _kb(kb),
+            _mode(),
+            _number_of_threads(1),
+            _number_of_runs(UNDEFINED),
+            _perm(),
+            _run_each_for(std::chrono::milliseconds(5)),
+            _todo() {}
+
+      TietzeExplorer(TietzeExplorer const&) = default;
+      TietzeExplorer(TietzeExplorer&&)      = default;
+
+      TietzeExplorer& operator=(TietzeExplorer const&) = default;
+      TietzeExplorer& operator=(TietzeExplorer&&)      = default;
+
+      ~TietzeExplorer() = default;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Settings
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] size_t depth_max() const noexcept {
+        return _depth_max;
+      }
+
+      TietzeExplorer& depth_max(size_t val) noexcept {
+        _depth_max = val;
+        return *this;
+      }
+
+      [[nodiscard]] size_t depth_min() const noexcept {
+        return _depth_min;
+      }
+
+      TietzeExplorer& depth_min(size_t val) noexcept {
+        _depth_min = val;
+        return *this;
+      }
+
+      [[nodiscard]] std::chrono::nanoseconds run_each_for() const noexcept {
+        return _run_each_for;
+      }
+
+      TietzeExplorer& run_each_for(std::chrono::nanoseconds val) noexcept {
+        _run_each_for = val;
+        return *this;
+      }
+
+      [[nodiscard]] size_t number_of_threads() const noexcept {
+        return _number_of_threads;
+      }
+
+      // TODO to tpp
+      TietzeExplorer& number_of_threads(size_t val) {
+        if (val == 0) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the argument (number of threads) must be at least 1, found {}",
+              val);
+        }
+        _number_of_threads = val;
+        return *this;
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // The main event
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] std::chrono::nanoseconds estimated_run_time() const;
+
+      [[nodiscard]] size_t number_of_runs() const;
+
+      KnuthBendix<Word, RewritingSystem> run();
+
+      // TODO to tpp
+      [[nodiscard]] std::vector<std::vector<Word>> const&
+      todo() const noexcept {
+        if (_todo.empty()) {
+          if (_depth_min == 0) {
+            _todo.emplace_back();  // no new generators
+          }
+          _mode     = Mode::add_todos;
+          auto copy = _kb.presentation();
+          dfs(copy);
+        }
+        return _todo;
+      }
+
+     private:
+      void dfs(Presentation<Word>& p, size_t depth = 0) const;
+
+      [[nodiscard]] bool run_one(Presentation<Word>       p,
+                                 std::vector<Word> const& subwords);
+      // TODO report progress from thread
+
+    };  // TietzeExplorer
+
   }  // namespace knuth_bendix
+
 }  // namespace libsemigroups
 
 #include "knuth-bendix-helpers.tpp"

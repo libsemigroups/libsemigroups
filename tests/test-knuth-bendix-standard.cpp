@@ -254,4 +254,58 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 3'125);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("TietzeExplorer",
+                          "148",
+                          "bababbbabba=a",
+                          "[knuth-bendix][standard]") {
+    using namespace knuth_bendix;
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("ab");
+    p.rules = {"bababbbabba", "a"};
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    TietzeExplorer search(kb);
+
+    search.depth_max(1).depth_min(1).run_each_for(
+        std::chrono::milliseconds(10));
+
+    search.run();
+
+    REQUIRE(kb.presentation().alphabet() == "abc");
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<std::pair<std::string, std::string>>(
+                {{"cbba", "a"},
+                 {"cbc", "bcc"},
+                 {"bbcc", "c"},
+                 {"ababbba", "bcc"},
+                 {"bbca", "a"},
+                 {"cba", "bca"},
+                 {"cabbc", "ac"},
+                 {"cabbba", "ababbc"},
+                 {"bbac", "abbc"},
+                 {"bbababbc", "abbba"},
+                 {"cac", "acc"},
+                 {"cabc", "abcc"},
+                 {"caba", "abca"},
+                 {"cabba", "aa"},
+                 {"caa", "aca"},
+                 {"bbabcc", "abc"},
+                 {"bbabca", "aba"},
+                 {"bbabac", "ababbc"},
+                 {"bbababc", "abbbabc"},
+                 {"bbababa", "abbbaba"},
+                 {"bbababba", "abbbabba"},
+                 {"bbaa", "abba"},
+                 {"abababbc", "bccc"},
+                 {"bbabaa", "ababba"},
+                 {"abababc", "ccc"},
+                 {"abababa", "cca"},
+                 {"ababac", "bcccc"},
+                 {"ababaa", "bccca"},
+                 {"abababba", "bcca"}}));
+  }
+
 }  // namespace libsemigroups

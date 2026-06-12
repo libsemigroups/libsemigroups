@@ -5311,4 +5311,48 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(203) == 5'767);  // checked in GAP
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "137",
+                          "aaaa=1, ababb=ba",
+                          "[extreme][low-index]") {
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("ab");
+    p.rules = {"aaaa", "", "ababb", "ba"};
+
+    Sims1 s(to<Presentation<word_type>>(p));
+    s.number_of_threads(10);
+    REQUIRE(
+        s.find_if(
+             2, [](auto const& wg) { return wg.number_of_active_nodes() == 2; })
+            .number_of_active_nodes()
+        == 2);
+    REQUIRE(
+        s.find_if(
+             3, [](auto const& wg) { return wg.number_of_active_nodes() == 3; })
+            .number_of_active_nodes()
+        == 3);
+    REQUIRE(s.number_of_congruences(4) == 7);
+    REQUIRE(s.number_of_congruences(8) == 23);
+    // REQUIRE(s.number_of_congruences(16) == 13);
+    // REQUIRE(s.number_of_congruences(32) == 16);
+    REQUIRE(s.find_if(64,
+                      [](auto const& wg) {
+                        return wg.number_of_active_nodes() > 32;
+                      })
+                .number_of_active_nodes()
+            > 32);
+    REQUIRE(s.find_if(128,
+                      [](auto const& wg) {
+                        return wg.number_of_active_nodes() > 64;
+                      })
+                .number_of_active_nodes()
+            > 64);
+    REQUIRE(s.find_if(1024,
+                      [](auto const& wg) {
+                        return wg.number_of_active_nodes() > 128;
+                      })
+                .number_of_active_nodes()
+            > 128);
+  }
 }  // namespace libsemigroups

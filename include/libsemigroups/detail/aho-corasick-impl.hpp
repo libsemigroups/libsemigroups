@@ -71,7 +71,11 @@ namespace libsemigroups {
         index_type                     _parent;
         letter_type                    _parent_letter;
         std::unordered_set<index_type> _suffix_link_sources;
-        Rule const*                    _value;
+        // FIXME copying an AhoCorasickImpl will copy the _value verbatim,
+        // meaning that if an AhoCorasickImpl is
+        // contains in a KnuthBendixImpl, then the Nodes in the AhoCorasickImpl
+        // copy will point at the Rule in the original AhoCorasickImpl, and boom
+        Rule const* _value;
 
         Node& init() noexcept {
           return init(UNDEFINED, UNDEFINED);
