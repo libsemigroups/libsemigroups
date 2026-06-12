@@ -658,6 +658,7 @@ namespace libsemigroups {
     if (p.alphabet().empty()) {
       return false;
     }
+    // TODO I think the following may only be valid if kb is two-sided
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     ioi.add_rules_no_checks(p.alphabet(),

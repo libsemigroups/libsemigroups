@@ -72,6 +72,7 @@ namespace libsemigroups {
                "bb", "bc", "cb", "bbb", "b",  "bc", "b",  "cb", "b",  "a", "b"};
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
+    REQUIRE(!knuth_bendix::is_reduced(kb));
 
     REQUIRE(kb.rewriting_system().number_of_rules() == 10);
     REQUIRE(kb.rewriting_system().confluent());
@@ -86,7 +87,6 @@ namespace libsemigroups {
 
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
-    // REQUIRE(knuth_bendix::is_reduced(kb));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <chrono>
 #include <cstddef>  // for size_t
 #include <iosfwd>   // for string
 #include <string>   // for allocator, basic_string
@@ -1228,13 +1229,44 @@ namespace libsemigroups {
                                          "bbb"}));
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "114",
+                                   "hard 2-generated 1-relation monoid",
+                                   "[quick][knuth-bendix][tietze-explorer]",
+                                   RPOTrie) {
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("abc");
+    presentation::add_rule(p, "a", "cc");
+    presentation::add_rule(p, "c", "bab");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+    auto                         result = dora.result();
+
+    REQUIRE(result.has_value());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE(result.value().presentation().alphabet() == "bca");
+    REQUIRE(result.value().presentation().rules
+            == std::vector<std::string>({"a", "cc", "c", "bab"}));
+
+    REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"a", "cc"}, {"bccb", "c"}, {"bccc", "cccb"}}));
+
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+  }
+
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
       "099",
-      "Giles Gardam in \"A counterexample to the unit conjecture for group "
-      "rings\" (https://arxiv.org/abs/2102.11818)",
-      "[fail]",
+      "Giles Gardam (https://arxiv.org/abs/2102.11818)",
+      "[quick][tietze-explorer]",
       RPOTrie) {
+    fmt::print("\n");
     Presentation<std::string> p;
     p.alphabet("bABa");
     p.contains_empty_word(true);
@@ -1243,9 +1275,143 @@ namespace libsemigroups {
     presentation::add_rule(p, "Baab", "AA");
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
-    // knuth_bendix::by_overlap_length(kb);
+    knuth_bendix::TietzeExplorer       dora(kb);
+    auto                               result = dora.depth_max(2).result();
 
-    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+    using rule_type = typename decltype(kb)::rule_type;
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE(result.value().finished());
+    REQUIRE(result.value().presentation().alphabet() == "bBcAa");
+    REQUIRE(result.value().presentation().rules
+            == std::vector<std::string>({"bB",
+                                         "",
+                                         "Aa",
+                                         "",
+                                         "Bb",
+                                         "",
+                                         "aA",
+                                         "",
+                                         "Abba",
+                                         "BB",
+                                         "cb",
+                                         "AA",
+                                         "c",
+                                         "Baa"}));
+
+    REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
+            == std::vector<rule_type>({{"AA", "cb"},
+                                       {"BA", "bAbb"},
+                                       {"Bb", ""},
+                                       {"Bc", "bcBB"},
+                                       {"a", "Abc"},
+                                       {"bB", ""},
+                                       {"bbA", "ABB"},
+                                       {"bbc", "cbb"},
+                                       {"cA", "bAbcbb"},
+                                       {"cbA", "Acb"},
+                                       {"cc", "BB"}}));
+    REQUIRE(result.value().rewriting_system().confluent());
+    // REQUIRE(kb.presentation().alphabet() == "BbcaA");
+    // REQUIRE((kb.active_rules() | rx::to_vector())
+    //         == std::vector<rule_type>({{"bB", ""},
+    //                                    {"Bb", ""},
+    //                                    {"A", "acb"},
+    //                                    {"ba", "BaBB"},
+    //                                    {"cc", "BB"},
+    //                                    {"BBa", "abb"},
+    //                                    {"cBa", "acbbb"},
+    //                                    {"bc", "Bcbb"},
+    //                                    {"BBc", "cBB"},
+    //                                    {"ca", "BaBcbb"},
+    //                                    {"aa", "Bcbb"}}));
+    REQUIRE(result.value().number_of_classes() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "149",
+                                   "abaab=aabba",
+                                   "[quick][tietze-explorer]",
+                                   LenLexTrie) {
+    fmt::print("\n");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "abbab", "baabb");
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+
+    dora.depth_max(0);
+
+    auto result = dora.result();
+
+    REQUIRE(!result.has_value());  // for code coverage
+
+    result = dora.init(kb)
+                 .depth_max(2)
+                 .run_each_for(std::chrono::milliseconds(5))
+                 .depth_min(2)
+                 .result();
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE(result.has_value());
+    REQUIRE(dora.success());
+    REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
+            == std::vector<rule_type>({{"abba", "d"},
+                                       {"abbcb", "cbbab"},
+                                       {"abbcc", "cbbac"},
+                                       {"abbd", "cbba"},
+                                       {"abc", "dab"},
+                                       {"baab", "c"},
+                                       {"baac", "caab"},
+                                       {"bacb", "cbab"},
+                                       {"bacc", "cbac"},
+                                       {"bad", "cba"},
+                                       {"db", "cb"},
+                                       {"dc", "cc"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "155",
+                          "exceptions",
+                          "[quick][tietze-explorer]") {
+    using literals::operator""_w;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<word_type> p;
+    p.alphabet(18);
+
+    KnuthBendix kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+
+    REQUIRE_EXCEPTION_MSG(
+        dora.run(),
+        "expected alphabet size + depth_max() to be at most 20, found 21");
+
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa"_w, "aba"_w);
+    kb.init(twosided, p);
+
+    dora.init(kb).number_of_threads(1);
+
+    REQUIRE_EXCEPTION_MSG(
+        dora.number_of_threads(0),
+        "the argument (number of threads) must be at least 1, found 0");
+
+    REQUIRE(dora.number_of_runs() == 103'904);
+
+    REQUIRE_EXCEPTION_MSG(dora.depth_max(10),
+                          "it is not possible to set `depth_max` at this "
+                          "point, please use `init`, and try again");
+    REQUIRE_EXCEPTION_MSG(dora.depth_min(10),
+                          "it is not possible to set `depth_min` at this "
+                          "point, please use `init`, and try again");
+
+    dora.init(kb);  // Test that _todo is cleared
+    REQUIRE(dora.number_of_runs() == 103'904);
   }
 
 }  // namespace libsemigroups

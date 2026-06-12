@@ -338,7 +338,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "025",
                                    "finite fp semigroup, size 16",
-
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
     auto rg = ReportGuard(false);
@@ -475,6 +474,7 @@ namespace libsemigroups {
                                    "non_trivial_classes exceptions",
                                    "[quick][kbp]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(1);
     KnuthBendix<word_type, TestType> kbp(twosided, p);
