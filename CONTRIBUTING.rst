@@ -170,6 +170,20 @@ able to run:
 
   apt install clang-format-15
 
+You can also check formatting before every commit by installing
+`pre-commit <https://pre-commit.com/>`_ and running:
+
+.. code-block:: console
+
+  pre-commit install
+
+The pre-commit hook uses ``clang-format-15 --dry-run --Werror`` on staged C++
+source files. To check the whole repository manually, run:
+
+.. code-block:: console
+
+  pre-commit run --all-files
+
 In some cases, it may be desirable to disable automatic formatting; for example,
 if you want to use two lines to construct a vector that represents a 2x2 matrix,
 even though it would fit on one line. Automatic formatting can be disabled using
