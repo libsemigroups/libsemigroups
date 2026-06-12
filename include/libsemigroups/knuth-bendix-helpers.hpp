@@ -430,8 +430,9 @@ namespace libsemigroups {
       // TODO report_progress_from_thread
       void dfs(Presentation<Word>& p, size_t depth = 0) const;
 
-      [[nodiscard]] bool run_one(Presentation<Word>       p,
-                                 std::vector<Word> const& subwords);
+      [[nodiscard]] bool run_one(KnuthBendix<Word, RewritingSystem>& kb,
+                                 Presentation<Word>                  p,
+                                 std::vector<Word> const&            subwords);
 
       [[nodiscard]] bool try_pop_one(std::vector<Word>& result) {
         std::lock_guard<std::mutex> lg(_mtx);

@@ -425,6 +425,8 @@ namespace libsemigroups {
     KnuthBendix<Word, RewritingSystem> const&
     TietzeExplorer<Word, RewritingSystem>::run() {
       using namespace ::libsemigroups::detail;
+
+      // TODO to separate function
       Reporter::reset_start_time();
       fmt::print("TietzeExplorer: performing {} runs | est. time {}\n",
                  group_digits(number_of_runs()),
@@ -437,11 +439,11 @@ namespace libsemigroups {
       _counter = 0;
 
       auto thread_func = [this](size_t tid) {
-        auto              copy = _kb.presentation();
         std::vector<Word> subwords;
+        auto              copy = _kb.presentation();
 
         while (try_pop_one(subwords) && !_finished) {
-          if (run_one(copy, subwords)) {
+          if (run_one(_kb, copy, subwords)) {
             _finished = true;
             return true;
           }
@@ -455,11 +457,15 @@ namespace libsemigroups {
       return _kb;
     }
 
+    // TODO check that we aren't copying things too much, namely the 2nd arg
+    // here.
     template <typename Word, typename RewritingSystem>
     bool TietzeExplorer<Word, RewritingSystem>::run_one(
-        Presentation<Word>       p,
-        std::vector<Word> const& subwords) {
+        KnuthBendix<Word, RewritingSystem>& kb,
+        Presentation<Word>                  p,
+        std::vector<Word> const&            subwords) {
       using namespace ::libsemigroups::detail;
+
       for (auto const& word : subwords) {
         presentation::replace_word_with_new_generator(
             p, word.cbegin(), word.cend());
@@ -473,9 +479,9 @@ namespace libsemigroups {
         ReportGuard rg(false);
         apply_permutation(lphbt, _perm);
         p.alphabet(lphbt);
-        _kb.init(_kb.kind(), p);
-        _kb.run_for(_run_each_for);
-        if (_kb.rewriting_system().confluent()) {
+        kb.init(_kb.kind(), p);
+        kb.run_for(_run_each_for);
+        if (kb.rewriting_system().confluent()) {
           // TODO print success and total elapsed time
           return true;
         }
