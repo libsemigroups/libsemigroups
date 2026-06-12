@@ -1,9 +1,17 @@
 repos:
   - repo: local
     hooks:
-      - id: clang-format
-        name: clang-format
+      - id: clang-format-local
+        name: clang-format-local
         entry: clang-format-15 --dry-run --Werror
         language: system
         files: ^(include/libsemigroups|src|tests|benchmarks)/.*\.(c|h|t)pp$
         exclude: ^(tests|benchmarks)/catch_.*\.(c|h|t)pp$
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: "v15.0.7"
+    hooks:
+      - id: clang-format
+        name: clang-format-online
+        files: ^(include/libsemigroups|src|tests|benchmarks)/.*\.(c|h|t)pp$
+        exclude: ^(tests|benchmarks)/catch_.*\.(c|h|t)pp$
+        args: ["--dry-run", "--Werror"]
