@@ -255,7 +255,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb);
     if constexpr (std::is_same_v<order, ShortLexCompare>) {
       REQUIRE((nf.min(0).max(4) | to_vector())
-              == std::vector<std::string>(  // codespell:end-ignore
+              == std::vector<std::string>(  // codespell:begin-ignore
                   {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
                    "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
                    "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",

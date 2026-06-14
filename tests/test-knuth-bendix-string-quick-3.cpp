@@ -667,11 +667,13 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == 22);
     auto nf = knuth_bendix::normal_forms(kb);
+    // codespell:begin-ignore
     REQUIRE((nf.min(0).max(3) | to_vector())
             == std::vector<std::string>({"",    "A",   "B",   "C",  "D",  "Y",
                                          "F",   "AB",  "AC",  "AD", "AY", "AF",
                                          "BA",  "BD",  "BY",  "CY", "DB", "ABA",
                                          "ABD", "ABY", "ACY", "ADB"}));
+    // codespell:end-ignore
   }
 
   // No generators - no anything!

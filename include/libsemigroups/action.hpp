@@ -251,6 +251,7 @@ namespace libsemigroups {
     //!
     //! This member function allows Action objects to be inserted into an
     //! std::ostringstream.
+    // codespell:begin-ignore
     template <typename Elment,
               typename Pint,
               typename Fnc,
@@ -260,6 +261,7 @@ namespace libsemigroups {
     friend std::ostringstream&
     operator<<(std::ostringstream&                                 os,
                Action<Elment, Pint, Fnc, Trits, LftOrRight> const& action);
+    // codespell:end-ignore
 
     //! \brief Insertion operator.
     //!
