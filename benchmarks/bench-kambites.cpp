@@ -544,9 +544,9 @@ namespace libsemigroups {
 
             meter.measure([&]() {
               bool result = true;
-              for (auto wit = words.cbegin(); wit < words.cend() - 1;
-                   wit += 2) {
-                result &= kambites::contains_no_checks(k, *wit, *(wit + 1));
+              for (auto w_it = words.cbegin(); w_it < words.cend() - 1;
+                   w_it += 2) {
+                result &= kambites::contains_no_checks(k, *w_it, *(w_it + 1));
               }
               return result;
             });
@@ -713,9 +713,9 @@ namespace libsemigroups {
 
             bool result = true;
             meter.measure([&]() {
-              for (auto wit = words.cbegin(); wit < words.cend(); ++wit) {
+              for (auto w_it = words.cbegin(); w_it < words.cend(); ++w_it) {
                 result &= kambites::contains_no_checks(
-                    k, kambites::reduce_no_checks(k, *wit), *wit);
+                    k, kambites::reduce_no_checks(k, *w_it), *w_it);
               }
             });
             if (!result) {

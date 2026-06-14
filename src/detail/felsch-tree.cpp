@@ -52,12 +52,12 @@ namespace libsemigroups {
     void FelschTree::add_relations(word_iterator first, word_iterator last) {
       size_t number_of_words = 0;
       LIBSEMIGROUPS_ASSERT(std::distance(first, last) % 2 == 0);
-      for (auto wit = first; wit != last; ++wit) {
-        // For every prefix [wit->cbegin(), last)
-        for (auto suffix = wit->cend(); suffix > wit->cbegin(); --suffix) {
-          // For every suffix [prefix, suffix) of the prefix [wit->cbegin(),
+      for (auto w_it = first; w_it != last; ++w_it) {
+        // For every prefix [w_it->cbegin(), last)
+        for (auto suffix = w_it->cend(); suffix > w_it->cbegin(); --suffix) {
+          // For every suffix [prefix, suffix) of the prefix [w_it->cbegin(),
           // suffix)
-          for (auto prefix = wit->cbegin(); prefix < suffix; ++prefix) {
+          for (auto prefix = w_it->cbegin(); prefix < suffix; ++prefix) {
             // Find the maximal suffix of [prefix, suffix) that corresponds to
             // an existing state . . .
             auto       it = suffix - 1;
@@ -83,10 +83,10 @@ namespace libsemigroups {
               }
             }
           }
-          // Find the state corresponding to the prefix [wit->cbegin(), suffix)
+          // Find the state corresponding to the prefix [w_it->cbegin(), suffix)
           auto       it = suffix - 1;
           state_type s  = initial_state;
-          while (it >= wit->cbegin()) {
+          while (it >= w_it->cbegin()) {
             s = _automata.get(s, *it);
             LIBSEMIGROUPS_ASSERT(s != initial_state);
             --it;
