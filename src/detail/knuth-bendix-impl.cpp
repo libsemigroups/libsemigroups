@@ -25,9 +25,9 @@ namespace libsemigroups {
                          Rule::native_word_type const&                       x,
                          size_t& n) {
       for (auto it = x.cbegin() + 1; it < x.cend(); ++it) {
-        auto w   = Rule::native_word_type(x.cbegin(), it);
-        auto wit = st.find(w);
-        if (wit == st.end()) {
+        auto w    = Rule::native_word_type(x.cbegin(), it);
+        auto w_it = st.find(w);
+        if (w_it == st.end()) {
           st.emplace(w, n);
           n++;
         }
