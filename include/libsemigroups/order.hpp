@@ -55,15 +55,15 @@ namespace libsemigroups {
     //! No ordering.
     none = 0,
 
+    //! The len-lex ordering. Words are first ordered by length, and then
+    //! lexicographically.
+    lenlex,
+
     //! The short-lex ordering. Words are first ordered by length, and then
     //! lexicographically.
     //!
     //! \deprecated_warning{value} Use \ref Order::lenlex instead.
-    shortlex [[deprecated("Use lenlex instead!")]],
-
-    //! The len-lex ordering. Words are first ordered by length, and then
-    //! lexicographically.
-    lenlex,
+    shortlex [[deprecated("Use lenlex instead!")]] = lenlex,
 
     //! The lexicographic ordering. Note that this is not a well-order, so there
     //! may not be a lexicographically least word in a given congruence class of
@@ -72,13 +72,13 @@ namespace libsemigroups {
 
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
     //! (Definition 1.2.14, page 24).
-    //!
-    //! \deprecated_warning{function} Use \ref Order::rpo instead.
-    recursive [[deprecated("Use rpo instead")]],
+    rpo,
 
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
     //! (Definition 1.2.14, page 24).
-    rpo
+    //!
+    //! \deprecated_warning{function} Use \ref Order::rpo instead.
+    recursive [[deprecated("Use rpo instead")]]
 
     // wreath TODO(later)
   };
@@ -352,89 +352,7 @@ namespace libsemigroups {
   //! std::lexicographical_compare.
   //!
   //! \deprecated_warning{struct} Use \ref lex_cmp instead.
-  struct [[deprecated]] LexicographicalCompare {
-    //! \brief Call operator that compares \p x and \p y using
-    //! std::lexicographical_compare.
-    //!
-    //! Call operator that compares \p x and \p y using
-    //! std::lexicographical_compare.
-    //!
-    //! \tparam Thing the type of the parameters.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is lexicographically less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
-    //!
-    //! \complexity
-    //! See std::lexicographical_compare.
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
-      return lexicographical_compare(x, y);
-    }
-
-    //! \brief Call operator that compares \p x and \p y given initializer lists
-    //! using std::lexicographical_compare.
-    //!
-    //! Call operator that compares \p x and
-    //! \p y given initializer lists using std::lexicographical_compare.
-    //!
-    //! \tparam T the items in the arguments.
-    //!
-    //! \param x initializer list for the first object for comparison.
-    //! \param y initializer list for the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is lexicographically less
-    //! than \p y, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
-    //!
-    //! \complexity
-    //! See std::lexicographical_compare.
-    // TODO(v4) is this really necessary?
-    template <typename T>
-    [[nodiscard]] bool operator()(std::initializer_list<T> x,
-                                  std::initializer_list<T> y) const {
-      return std::lexicographical_compare(
-          x.begin(), x.end(), y.begin(), y.end());
-    }
-
-    //! \brief Call operator that compares iterators using
-    //! std::lexicographical_compare.
-    //!
-    //! Call operator that compares iterators using
-    //! std::lexicographical_compare.
-    //!
-    //! \tparam Iterator the type of the parameters.
-    //!
-    //! \param first1 the start of the first object to compare.
-    //! \param last1 one beyond the end of the first object to compare.
-    //! \param first2 the start of the second object to compare.
-    //! \param last2 one beyond the end of the second object to compare.
-    //!
-    //! \returns The boolean value \c true if the range `[first1, last1)` is
-    //! lexicographically less than the range `[first2, last2)`, and \c false
-    //! otherwise.
-    //!
-    //! \exceptions
-    //! See std::lexicographical_compare.
-    //!
-    //! \complexity
-    //! See std::lexicographical_compare.
-    // TODO(v4) remove this?
-    template <typename Iterator>
-    [[nodiscard]] bool operator()(Iterator first1,
-                                  Iterator last1,
-                                  Iterator first2,
-                                  Iterator last2) const {
-      return std::lexicographical_compare(first1, last1, first2, last2);
-    }
-  };
+  using LexicographicalCompare [[deprecated("Use LexCmp instead")]] = LexCmp;
 
   //////////////////////////////////////////////////////////////////////
   // Len-lex
@@ -740,30 +658,7 @@ namespace libsemigroups {
   //! shortlex_compare(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{struct} Use \ref LenLexCmp instead.
-  struct [[deprecated]] ShortLexCompare {
-    //! \brief Call operator that compares \p x and \p y using
-    //! \ref shortlex_compare.
-    //!
-    //! Call operator that compares \p x and \p y using \ref shortlex_compare.
-    //!
-    //! \tparam Thing the type of the objects to be compared.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is short-lex less than \p y,
-    //! and \c false otherwise.
-    //!
-    //! \exceptions
-    //! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
-    //!
-    //! \complexity
-    //! See \ref shortlex_compare(Iterator, Iterator, Iterator, Iterator).
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x, Thing const& y) const {
-      return shortlex_compare(x, y);
-    }
-  };
+  using ShortLexCompare [[deprecated("Use LenLexCmp instead!")]] = LenLexCmp;
 
   //////////////////////////////////////////////////////////////////////
   // Recursive path order (RPO)
@@ -1207,29 +1102,8 @@ namespace libsemigroups {
   //! recursive_path_compare(Iterator, Iterator, Iterator, Iterator)
   //!
   //! \deprecated_warning{struct} Use \ref RevRPOCmp instead.
-  struct [[deprecated]] RecursivePathCompare {
-    //! \brief  Call operator that compares \p x and \p y using
-    //! \ref recursive_path_compare.
-    //!
-    //! Call operator that compares \p x and \p y using
-    //! \ref recursive_path_compare.
-    //!
-    //! \tparam Thing the type of the objects to be compared.
-    //!
-    //! \param x const reference to the first object for comparison.
-    //! \param y const reference to the second object for comparison.
-    //!
-    //! \returns The boolean value \c true if \p x is less than \p y with
-    //! respect to the recursive path ordering, and \c false otherwise.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Thing>
-    [[nodiscard]] bool operator()(Thing const& x,
-                                  Thing const& y) const noexcept {
-      return recursive_path_compare(x, y);
-    }  // namespace libsemigroups
-  };
+  using RecursivePathCompare [[deprecated("Use RevRPOCmp instead!")]]
+  = RevRPOCmp;
 
   //////////////////////////////////////////////////////////////////////
   // Weighted short-lex
@@ -2304,17 +2178,6 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_length_non_increasing : std::false_type {};
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    // TODO(v4): remove
-    //! \brief Short-lex order is length non-increasing.
-    //!
-    //! Specialization of \ref is_length_non_increasing for
-    //! \ref ShortLexCompare.
-    template <>
-    struct is_length_non_increasing<ShortLexCompare> : std::true_type {};
-#pragma GCC diagnostic pop
-
     //! \brief len-lex order is length non-increasing.
     //!
     //! Specialization of \ref is_length_non_increasing for
@@ -2343,31 +2206,11 @@ namespace libsemigroups {
     template <typename Thing>
     struct is_well_founded : std::false_type {};
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    // TODO(v4): remove
-    //! \brief Short-lex order is well-founded.
-    //!
-    //! Specialization of \ref is_well_founded for \ref ShortLexCompare.
-    template <>
-    struct is_well_founded<ShortLexCompare> : std::true_type {};
-#pragma GCC diagnostic pop
-
     //! \brief len-lex order is well-founded.
     //!
     //! Specialization of \ref is_well_founded for \ref LenLexCmp.
     template <>
     struct is_well_founded<LenLexCmp> : std::true_type {};
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    // TODO(v4): remove
-    //! \brief Recursive path order is well-founded.
-    //!
-    //! Specialization of \ref is_well_founded for \ref RecursivePathCompare.
-    template <>
-    struct is_well_founded<RecursivePathCompare> : std::true_type {};
-#pragma GCC diagnostic pop
 
     //! \brief Recursive path order is well-founded.
     //!
