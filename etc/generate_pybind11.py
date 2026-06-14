@@ -689,18 +689,18 @@ def pybind11_doc(thing, fn, params_t):
     for x in params:
         paramitem = x.find_all("parameteritem")
         for y in paramitem:
-            nam = y.find("parametername").text
-            des = y.find("parameterdescription").find("para")
-            if des is not None:
-                des = des.text
+            param_name = y.find("parametername").text
+            param_des = y.find("parameterdescription").find("para")
+            if param_des is not None:
+                param_des = param_des.text
             else:
-                des = ""
-            doc += f"\n:param {nam}: {des}"
+                param_des = ""
+            doc += f"\n:param {param_name}: {param_des}"
             try:
-                doc += f"\n:type {nam}: {translate_cpp_to_py(params_d[nam])}\n"
+                doc += f"\n:type {param_name}: {translate_cpp_to_py(params_d[param_name])}\n"
             except KeyError:
                 __error(
-                    f'Can\'t find the parameter "{nam}" for "{thing}::{fn}({params_t})" IGNORING!!!'
+                    f'Can\'t find the parameter "{param_name}" for "{thing}::{fn}({params_t})" IGNORING!!!'
                 )
 
     return_ = [
