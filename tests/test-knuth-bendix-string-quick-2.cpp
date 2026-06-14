@@ -380,6 +380,7 @@ namespace libsemigroups {
 
     presentation::add_inverse_rules(p, "abcdefghijklmno");
 
+    // codespell:begin-ignore
     presentation::add_rule(p, "bab", "aba");
     presentation::add_rule(p, "ca", "ac");
     presentation::add_rule(p, "da", "ad");
@@ -485,6 +486,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "nmn", "mnm");
     presentation::add_rule(p, "om", "mo");
     presentation::add_rule(p, "ono", "non");
+    // codespell:end-ignore
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
     REQUIRE(!kb.rewriting_system().confluent());
@@ -957,6 +959,7 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.rewriting_system().confluent());
 
+    // codespell:begin-ignore
     REQUIRE(knuth_bendix::contains(kb, "aaa", ""));
     REQUIRE(knuth_bendix::contains(kb, "Hb", "H"));
     REQUIRE(knuth_bendix::contains(kb, "HH", "H"));
@@ -971,12 +974,14 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "bbaabb", "abba"));
     REQUIRE(knuth_bendix::contains(kb, "aabbaa", "baab"));
     REQUIRE(knuth_bendix::contains(kb, "baabba", "abbaab"));
+    // codespell:end-ignore
 
     using rule_type = typename decltype(kb)::rule_type;
 
     using order = typename TestType::reduction_order;
     if constexpr (std::is_same_v<order, ShortLexCompare>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 14);
+      // codespell:begin-ignore
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{{"HH", "H"},
                                           {"Hb", "H"},
@@ -992,8 +997,10 @@ namespace libsemigroups {
                                           {"aabbaa", "baab"},
                                           {"baabba", "abbaab"},
                                           {"bbaabb", "abba"}}}));
+      // codespell:end-ignore
     } else if (std::is_same_v<order, RecursivePathCompare>) {
       REQUIRE(kb.rewriting_system().number_of_rules() == 11);
+      // codespell:begin-ignore
       REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
               == std::vector<rule_type>({{"HH", "H"},
                                          {"Hb", "H"},
@@ -1007,6 +1014,7 @@ namespace libsemigroups {
                                          {"abaab", "bbaa"},
                                          {"abbaab", "bbaabaa"}}));
     }
+    // codespell:end-ignore
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -1333,11 +1341,13 @@ namespace libsemigroups {
 
     using order = typename TestType::reduction_order;
     if constexpr (std::is_same_v<order, ShortLexCompare>) {
+      // codespell:begin-ignore
       REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
               == std::vector<std::string>(
                   {"",   "A",   "B",   "C",   "D",   "Y",  "F",  "AB",
                    "AC", "AD",  "AY",  "AF",  "BA",  "BD", "BY", "CY",
                    "DB", "ABA", "ABD", "ABY", "ACY", "ADB"}));
+      // codespell:end-ignore
     } else if (std::is_same_v<order, RecursivePathCompare>) {
       REQUIRE((knuth_bendix::normal_forms(kb) | to_vector())
               == std::vector<std::string>(
@@ -1459,6 +1469,7 @@ namespace libsemigroups {
 
     presentation::add_inverse_rules(p, "abcdefgh");
 
+    // codespell:begin-ignore
     presentation::add_rule(p, "bab", "aba");
     presentation::add_rule(p, "ca", "ac");
     presentation::add_rule(p, "da", "ad");
@@ -1487,6 +1498,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "gfg", "fgf");
     presentation::add_rule(p, "hf", "fh");
     presentation::add_rule(p, "hgh", "ghg");
+    // codespell:end-ignore
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     REQUIRE(!kb.rewriting_system().confluent());
@@ -1522,6 +1534,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("abcd");
+    // codespell:begin-ignore
     presentation::add_rule(p, "aa", "a");
     presentation::add_rule(p, "ad", "d");
     presentation::add_rule(p, "bb", "b");
@@ -1543,6 +1556,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "acba", "ac");
     presentation::add_rule(p, "acbd", "cd");
     presentation::add_rule(p, "cbac", "ac");
+    // codespell:end-ignore
     auto it = knuth_bendix::redundant_rule(p, std::chrono::milliseconds(100));
     while (it != p.rules.end()) {
       // std::cout << std::endl

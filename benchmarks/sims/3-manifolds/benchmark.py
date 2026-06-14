@@ -227,6 +227,7 @@ def translate_to_gap(ex, output):
     for relator in gap_relators:
         output.write('%s,\n'%relator)
     output.write('];\n')
+# codespell:begin-ignore
     output.write("""
 PrintFormatted("{}\\n", info);
 start := NanosecondsSinceEpoch();
@@ -235,6 +236,7 @@ elapsed := Round(Float(NanosecondsSinceEpoch() - start) / 10000000.0)/100;
 PrintFormatted("{} subgroups\\n", ans);
 PrintFormatted("{} secs\\n", ViewString(elapsed));
 """%ex['index'])
+# codespell:end-ignore
 
 def translate_to_magma(ex, output):
     output.write('"%s; index = %d";\n'%(ex['group'], ex['index']))
