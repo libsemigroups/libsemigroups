@@ -5,6 +5,7 @@ exclude: |
     m4/.*|
     docs/doxygen-awesome-css/.*
   )$
+default_install_hook_types: [pre-commit, pre-push]
 repos:
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v15.0.7
