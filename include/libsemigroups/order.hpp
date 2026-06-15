@@ -77,8 +77,8 @@ namespace libsemigroups {
     //! The recursive-path ordering, as described in \cite Jantzen2012aa
     //! (Definition 1.2.14, page 24).
     //!
-    //! \deprecated_warning{function} Use \ref Order::rpo instead.
-    recursive [[deprecated("Use rpo instead")]]
+    //! \deprecated_warning{value} Use \ref Order::rpo instead.
+    recursive [[deprecated("Use rpo instead!")]] = rpo
 
     // wreath TODO(later)
   };
