@@ -2359,7 +2359,7 @@ namespace libsemigroups {
                       Iterator                   first2,
                       Iterator                   last2,
                       std::vector<size_t> const& weights) {
-    return wt_lenlex_cmp(first1, last1, first2, last2);
+    return wt_lenlex_cmp(first1, last1, first2, last2, weights);
   }
 
   //! \brief Compare two objects of the same type using \ref wt_shortlex_compare
@@ -2889,13 +2889,13 @@ namespace libsemigroups {
 
     //! \brief Weighted short-lex order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref WtShortLexCompare.
+    //! Specialization of \ref is_well_founded for \ref WtLexCmp.
     template <>
     struct is_well_founded<WtLenLexCmp> : std::true_type {};
 
     //! \brief Weighted lex order is well-founded.
     //!
-    //! Specialization of \ref is_well_founded for \ref WtLexCompare.
+    //! Specialization of \ref is_well_founded for \ref WtLexCmp.
     template <>
     struct is_well_founded<WtLexCmp> : std::true_type {};
 

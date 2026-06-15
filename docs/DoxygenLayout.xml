@@ -322,16 +322,18 @@
       <tab type="user" visible="yes" url="@ref make_hpcombi_group" title="The `make` function" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref orders_group" title="Orders">
-      <tab type="user" visible="yes" url="@ref libsemigroups::LexicographicalCompare"
-        title="LexicographicalCompare" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::RecursivePathCompare"
-        title="RecursivePathCompare" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::ShortLexCompare"
-        title="ShortLexCompare" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::WtLexCompare"
-        title="WtLexCompare" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::WtShortLexCompare"
-        title="WtShortLexCompare" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::LexCmp"
+        title="LexCmp" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::RPOCmp"
+        title="RPOCmp" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::RevRPOCmp"
+        title="RevRPOCmp" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::LenLexCmp"
+        title="LenLexCmp" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WtLexCmp"
+        title="WtLexCmp" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WtLenLexCmp"
+        title="WtLenLexCmp" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
