@@ -20,8 +20,9 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
-#include "libsemigroups/is-transf.hpp"  // for is_transf etc
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/exception.hpp"      // for LibsemigroupsException
+#include "libsemigroups/is-transf.hpp"      // for is_transf etc
 
 namespace libsemigroups {
 
@@ -33,6 +34,7 @@ namespace libsemigroups {
                                    std::string,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     auto [it1, pos1] = detail::find_duplicates(vec.begin(), vec.end());
@@ -53,6 +55,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     REQUIRE_EXCEPTION_MSG(
@@ -67,6 +70,7 @@ namespace libsemigroups {
                           "002",
                           "exceptions - std::string",
                           "[quick]") {
+    auto        rg  = ReportGuard(false);
     std::string vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
 
     REQUIRE_EXCEPTION_MSG(
@@ -84,6 +88,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto rg = ReportGuard(false);
     // No std::string here because we static_assert that the integer values in
     // the container are unsigned.
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
@@ -101,6 +106,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg = ReportGuard(false);
     TestType vec
         = {0, 1, 12, 1, 13, 1, 3, 3, UNDEFINED, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE_NOTHROW(detail::throw_if_not_ptransf(
@@ -137,6 +143,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
     REQUIRE_NOTHROW(detail::throw_if_not_transf(vec.begin(), vec.end(), 42));
@@ -152,6 +159,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
     REQUIRE_NOTHROW(detail::throw_if_not_perm(vec.begin(), vec.begin() + 2, 2));
@@ -171,6 +179,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
     REQUIRE_EXCEPTION_MSG(
@@ -189,6 +198,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg = ReportGuard(false);
     TestType vec
         = {0, 1, 12, 1, 13, 1, 3, 3, UNDEFINED, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE_EXCEPTION_MSG(
@@ -228,6 +238,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto rg = ReportGuard(false);
     // No std::string here because we static_assert that the integer values in
     // the container are unsigned.
     TestType vec
@@ -244,6 +255,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto rg = ReportGuard(false);
     // No std::string here because we static_assert that the integer values in
     // the container are unsigned.
     TestType vec
@@ -262,6 +274,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg = ReportGuard(false);
     TestType vec
         = {0, UNDEFINED, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
@@ -278,6 +291,7 @@ namespace libsemigroups {
                                    std::vector<uint32_t>,
                                    (std::array<uint8_t, 16>),
                                    std::initializer_list<size_t>) {
+    auto     rg  = ReportGuard(false);
     TestType vec = {0, 1, 12, 1, 13, 1, 3, 3, 13, 13, 1, 41, 4, 41, 14, 4};
     REQUIRE(vec.size() == 16);
     REQUIRE(is_perm(vec.begin(), vec.begin() + 2, 2));

@@ -778,6 +778,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8", "017", "one x 2", "[quick]") {
+    auto  rg = ReportGuard(false);
     BMat8 bm5({{1, 0, 0, 0, 0, 0, 0, 0},
                {0, 1, 0, 0, 0, 0, 0, 0},
                {0, 0, 1, 0, 0, 0, 0, 0},
@@ -793,6 +794,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8", "018", "is_regular_element", "[quick]") {
+    auto rg = ReportGuard(false);
     REQUIRE((rx::seq<uint64_t>() | rx::take(100'000) | rx::filter([](auto val) {
                return bmat8::is_regular_element(BMat8(val));
              })
@@ -801,11 +803,13 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8", "019", "at", "[quick]") {
-    auto x = bmat8::random();
+    auto rg = ReportGuard(false);
+    auto x  = bmat8::random();
     REQUIRE_THROWS_AS(x.at(0, 8), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMat8", "020", "to_human_readable_repr", "[quick]") {
+    auto rg = ReportGuard(false);
     REQUIRE(to_human_readable_repr(bmat8::one(5))
             == R"V0G0N(BMat8({{1, 0, 0, 0, 0},
        {0, 1, 0, 0, 0},

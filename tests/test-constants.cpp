@@ -19,11 +19,13 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED, POSITIVE_INFINITY, ...
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
   // struct ForTesting {};
 
   LIBSEMIGROUPS_TEST_CASE("Constants", "000", "Undefined", "[quick]") {
+    auto rg = ReportGuard(false);
     // operator==
     REQUIRE(UNDEFINED == UNDEFINED);
     REQUIRE(!(UNDEFINED == POSITIVE_INFINITY));
@@ -82,6 +84,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Constants", "001", "PositiveInfinity", "[quick]") {
+    auto rg = ReportGuard(false);
     // operator==
     REQUIRE(POSITIVE_INFINITY == POSITIVE_INFINITY);
     REQUIRE(!(POSITIVE_INFINITY == UNDEFINED));
@@ -147,6 +150,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Constants", "002", "NegativeInfinity", "[quick]") {
+    auto rg = ReportGuard(false);
     // operator==
     REQUIRE(NEGATIVE_INFINITY == NEGATIVE_INFINITY);
     REQUIRE(!(NEGATIVE_INFINITY == UNDEFINED));
@@ -210,6 +214,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Constants", "003", "LimitMax", "[quick]") {
+    auto rg = ReportGuard(false);
     // operator==
     REQUIRE(LIMIT_MAX == LIMIT_MAX);
     REQUIRE(!(LIMIT_MAX == UNDEFINED));

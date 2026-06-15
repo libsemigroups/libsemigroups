@@ -21,6 +21,7 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/string.hpp"  // for is_prefix, is_suffix, maximum_common_suffix
 
 namespace libsemigroups {
@@ -28,6 +29,7 @@ namespace libsemigroups {
                           "000",
                           "detail::is_suffix",
                           "[quick][string]") {
+    auto rg = ReportGuard(false);
     REQUIRE(detail::is_suffix("ababaaa", ""));
     REQUIRE(detail::is_suffix("ababaaa", "a"));
     REQUIRE(detail::is_suffix("ababaaa", "aa"));
@@ -45,6 +47,7 @@ namespace libsemigroups {
                           "001",
                           "detail::is_prefix",
                           "[quick][string]") {
+    auto rg = ReportGuard(false);
     REQUIRE(detail::is_prefix("ababaaa", ""));
     REQUIRE(detail::is_prefix("ababaaa", "a"));
     REQUIRE(detail::is_prefix("ababaaa", "ab"));
@@ -62,6 +65,7 @@ namespace libsemigroups {
                           "002",
                           "detail::maximum_common_suffix",
                           "[quick][string]") {
+    auto rg = ReportGuard(false);
     REQUIRE(detail::maximum_common_suffix("ababaaa", "asdadskjaldkjaa")
             == "aa");
     REQUIRE(detail::maximum_common_suffix("baaa", "baaa") == "baaa");
@@ -78,6 +82,7 @@ namespace libsemigroups {
                           "003",
                           "detail::group_digits",
                           "[quick][string]") {
+    auto rg = ReportGuard(false);
     REQUIRE(detail::group_digits(0) == "0");
     REQUIRE(detail::group_digits(1) == "1");
     REQUIRE(detail::group_digits(10) == "10");
@@ -103,6 +108,7 @@ namespace libsemigroups {
                           "004",
                           "detail::visible_length",
                           "[quick][string]") {
+    auto rg = ReportGuard(false);
     REQUIRE(detail::visible_length(
                 "\U0000001b[1m\U0000001b[30m\U0000001b[47mRUN X.Y\U0000001b[0m")
             == 7);

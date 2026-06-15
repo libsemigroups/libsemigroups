@@ -84,6 +84,7 @@ namespace libsemigroups {
     };
 
     LIBSEMIGROUPS_TEST_CASE("Reporter", "000", "Code coverage", "[quick]") {
+      auto     rg = ReportGuard(false);
       Reporter r;
       REQUIRE(!r.report());
       REQUIRE_NOTHROW(r.last_report());
@@ -299,6 +300,7 @@ namespace libsemigroups {
                             "012",
                             "run throws an exception",
                             "[quick][no-valgrind]") {
+      auto        rg = ReportGuard(false);
       TestRunner3 tr;
       REQUIRE(!tr.started());
       tr.run();

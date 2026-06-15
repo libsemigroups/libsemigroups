@@ -22,8 +22,9 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/transf.hpp"        // for PPerm
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
+#include "libsemigroups/transf.hpp"         // for PPerm
 
 namespace libsemigroups {
   // Forward declaration
@@ -123,6 +124,7 @@ namespace libsemigroups {
                           "039",
                           "exceptions: add_generator(s)",
                           "[quick][froidure-pin][pperm]") {
+    auto                 rg = ReportGuard(false);
     FroidurePin<PPerm<>> S;
     S.add_generator(
         make<PPerm<>>({0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10));

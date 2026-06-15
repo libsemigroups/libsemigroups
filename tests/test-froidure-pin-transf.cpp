@@ -25,7 +25,8 @@
 
 #include "test-main.hpp"
 
-#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "libsemigroups/config.hpp"         // for LIBSEMIGROUPS_HPCOMBI_ENABLED
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "libsemigroups/hpcombi.hpp"       // for Transf16
 #include "libsemigroups/transf.hpp"        // for Transf
@@ -2435,6 +2436,7 @@ namespace libsemigroups {
                           "115",
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][transf]") {
+    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
         make<FroidurePin>({make<Transf<>>({0, 1, 2, 3, 4, 5}),
                            make<Transf<>>({0, 1, 2, 3, 4, 5, 5})}),
@@ -2445,6 +2447,7 @@ namespace libsemigroups {
                           "116",
                           "exception: current_position",
                           "[quick][froidure-pin][transf]") {
+    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> U;
     U.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     U.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2462,6 +2465,7 @@ namespace libsemigroups {
                           "117",
                           "exception: to_element",
                           "[quick][froidure-pin][transf]") {
+    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> U;
     U.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     U.add_generator(make<Transf<>>({1, 0, 2, 3, 4, 5}));
@@ -2481,6 +2485,7 @@ namespace libsemigroups {
                           "118",
                           "exception: gens, current_position",
                           "[quick][froidure-pin][transf]") {
+    auto rg          = ReportGuard(false);
     using point_type = typename Transf<>::point_type;
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
@@ -2506,6 +2511,7 @@ namespace libsemigroups {
                           "119",
                           "exception: add_generators",
                           "[quick][froidure-pin][transf]") {
+    auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(make<Transf<>>({0, 1, 2, 3, 4, 5}));
     S.add_generator(make<Transf<>>({1, 2, 3, 2, 2, 3}));

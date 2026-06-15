@@ -1226,7 +1226,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix][kbmag]",
                                    LenLexSet,
                                    LenLexTrie) {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc").contains_empty_word(true);
 

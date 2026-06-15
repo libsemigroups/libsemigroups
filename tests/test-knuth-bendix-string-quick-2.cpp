@@ -1271,6 +1271,7 @@ namespace libsemigroups {
                                    "operator<<",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto               rg = ReportGuard(false);
     std::ostringstream os;
 
     Presentation<std::string> p;
@@ -1297,6 +1298,7 @@ namespace libsemigroups {
                                    "max_overlap",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab");
@@ -1412,6 +1414,7 @@ namespace libsemigroups {
                                    "code coverage",
                                    "[quick]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto                               rg = ReportGuard(false);
     KnuthBendix<std::string, TestType> kb1;
     KnuthBendix<std::string, TestType> kb2(kb1);
     REQUIRE(kb1.number_of_classes() == 0);

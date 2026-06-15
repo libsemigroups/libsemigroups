@@ -781,6 +781,7 @@ namespace libsemigroups {
                           "021",
                           "constructors",
                           "[quick][no-valgrind]") {
+    auto         rg = ReportGuard(false);
     row_orb_type o;
     o.add_seed(bmat8::row_space_basis(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
@@ -866,6 +867,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action", "023", "exception", "[quick]") {
+    auto                          rg = ReportGuard(false);
     RightAction<PPerm<>, PPerm<>> o;
     o.add_seed(PPerm<>::one(8));
     o.add_generator(
@@ -880,6 +882,7 @@ namespace libsemigroups {
                           "024",
                           "to_human_readable_repr",
                           "[quick]") {
+    auto                          rg = ReportGuard(false);
     RightAction<PPerm<>, PPerm<>> o;
     o.add_seed(PPerm<>::one(8));
     o.add_generator(

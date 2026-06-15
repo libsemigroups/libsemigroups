@@ -3262,6 +3262,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "085", "JonesMonoid(4)", "[quick][sims1]") {
+    auto rg = ReportGuard(false);
     using words::pow;
     Presentation<std::string> p = v4::to<Presentation<std::string>>(
         presentation::examples::temperley_lieb_monoid(4));

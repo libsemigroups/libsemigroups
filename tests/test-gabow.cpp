@@ -32,13 +32,15 @@
 #include "libsemigroups/word-graph-helpers.hpp"  // for word_graph
 #include "libsemigroups/word-graph.hpp"          // for WordGraph, to_action...
 
-#include "libsemigroups/ranges.hpp"  // for Inner, operator|, remove...
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/ranges.hpp"         // for Inner, operator|, remove...
 
 namespace libsemigroups {
 
   using namespace rx;
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "000", "for a cycle", "[quick][gabow]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     v4::word_graph::add_cycle(wg, 33);
@@ -57,6 +59,7 @@ namespace libsemigroups {
                           "001",
                           "no edges",
                           "[quick][gabow][no-valgrind]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg = WordGraph<size_t>(0);
     Gabow             scc(wg);
     for (size_t j = 1; j < 100; ++j) {
@@ -70,6 +73,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "002", "disjoint cycles", "[quick][gabow]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     Gabow scc(wg);
@@ -88,6 +92,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "003", "complete graphs", "[quick][gabow]") {
+    auto rg = ReportGuard(false);
     for (size_t k = 2; k < 50; ++k) {
       auto  wg = clique(k);
       Gabow scc(wg);
@@ -98,6 +103,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "004", "exceptions", "[quick][gabow]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg(10, 5);
     Gabow             scc(wg);
     REQUIRE_THROWS_AS(scc.id(10), LibsemigroupsException);
@@ -107,6 +113,7 @@ namespace libsemigroups {
                           "005",
                           "spanning forest - complete graphs",
                           "[quick][gabow]") {
+    auto rg = ReportGuard(false);
     for (size_t k = 2; k < 50; ++k) {
       auto  wg = clique(k);
       Gabow scc(wg);
@@ -133,7 +140,8 @@ namespace libsemigroups {
                           "006",
                           "spanning forest - disjoint cycles",
                           "[quick][gabow]") {
-    size_t            j = 33;
+    auto              rg = ReportGuard(false);
+    size_t            j  = 33;
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
 
@@ -241,6 +249,7 @@ namespace libsemigroups {
                           "007",
                           "large cycle",
                           "[quick][gabow][no-valgrind]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     v4::word_graph::add_cycle(wg, 100000);
@@ -258,6 +267,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "008", "component", "[quick][gabow]") {
+    auto rg         = ReportGuard(false);
     using node_type = decltype(clique(1))::node_type;
 
     for (size_t n = 10; n < 512; n *= 4) {
@@ -311,6 +321,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow", "009", "root of scc", "[quick][gabow]") {
+    auto rg = ReportGuard(false);
     auto wg = clique(10);
     for (size_t n = 0; n < 99; ++n) {
       add_clique(wg, 10);
@@ -336,6 +347,7 @@ namespace libsemigroups {
                           "010",
                           "reverse_spanning_forest",
                           "[quick][gabow]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(
         5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
     Gabow scc(wg);
@@ -348,6 +360,7 @@ namespace libsemigroups {
                           "011",
                           "to_human_readable_repr",
                           "[quick][gabow]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(
         5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
     Gabow scc(wg);

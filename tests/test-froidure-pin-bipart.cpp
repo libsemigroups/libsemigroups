@@ -21,9 +21,10 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"        // for Bipartition
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/word-range.hpp"    // for namespace literals
+#include "libsemigroups/bipart.hpp"         // for Bipartition
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
+#include "libsemigroups/word-range.hpp"     // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;  // for operator""_w
@@ -216,6 +217,7 @@ namespace libsemigroups {
                           "004",
                           "exception: is_idempotent",
                           "[quick][froidure-pin][element]") {
+    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));

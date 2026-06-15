@@ -2116,6 +2116,7 @@ namespace libsemigroups {
                           "062",
                           "exceptions x2",
                           "[stephen][quick]") {
+    auto                           rg = ReportGuard(false);
     InversePresentation<word_type> p;
     REQUIRE_EXCEPTION_MSG(detail::StephenImpl{p},
                           "the presentation must not have 0 generators");

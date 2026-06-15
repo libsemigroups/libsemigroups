@@ -392,6 +392,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Rules", "013", "constructors/init", "[quick]") {
+      auto  rg = ReportGuard(false);
       Rules rules1;
 
       Rules rules2(rules1);
@@ -468,6 +469,7 @@ namespace libsemigroups {
                             "015",
                             "is_terminating",
                             "[quick]") {
+      auto                             rg = ReportGuard(false);
       RewritingSystemTrie<ReturnFalse> rws;
       rws.increase_alphabet_size_by(3);
       rewriting_system::add_rule(rws, "bbb"_w, "aa"_w);

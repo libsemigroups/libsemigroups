@@ -303,6 +303,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    BMat<2>,
                                    BMat<>) {
+    auto     rg = ReportGuard(false);
     TestType AB(2, 2), A(2, 2), B(2, 2);
     std::fill(A.begin(), A.end(), false);
     std::fill(B.begin(), B.end(), false);
@@ -320,9 +321,10 @@ namespace libsemigroups {
                                    "[quick]",
                                    BMat<3>,
                                    BMat<>) {
-    auto x = make<TestType>({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
-    auto y = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-    auto z = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    auto rg = ReportGuard(false);
+    auto x  = make<TestType>({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
+    auto y  = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    auto z  = make<TestType>({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
     REQUIRE(y == z);
     z.product_inplace(x, y);
     REQUIRE(y == z);
@@ -343,6 +345,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    BMat<3>,
                                    BMat<>) {
+    auto rg       = ReportGuard(false);
     using RowView = typename TestType::RowView;
     auto x        = make<TestType>({{1, 0, 0}, {1, 0, 0}, {1, 0, 0}});
     REQUIRE(matrix::row_basis(x).size() == 1);
@@ -373,6 +376,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    IntMat<3>,
                                    IntMat<>) {
+    auto rg = ReportGuard(false);
     {
       auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
       auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
@@ -423,7 +427,8 @@ namespace libsemigroups {
                           "006",
                           "integer matrix - code cov",
                           "[quick]") {
-    IntMat<>* A = new IntMat<>();
+    auto      rg = ReportGuard(false);
+    IntMat<>* A  = new IntMat<>();
     delete A;
     IntMat<3>* B = new IntMat<3>();
     delete B;
@@ -452,6 +457,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    MaxPlusMat<>,
                                    MaxPlusMat<3>) {
+    auto rg       = ReportGuard(false);
     auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     REQUIRE(x == expected);
@@ -478,7 +484,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "008", "MaxPlusMat code cov", "[quick]") {
-    MaxPlusMat<3>* B = new MaxPlusMat<3>();
+    auto           rg = ReportGuard(false);
+    MaxPlusMat<3>* B  = new MaxPlusMat<3>();
     delete B;
     MaxPlusMat<3>::Row* C = new MaxPlusMat<3>::Row();
     delete C;
@@ -494,6 +501,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    MinPlusMat<3>,
                                    MinPlusMat<>) {
+    auto rg = ReportGuard(false);
     {
       auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
       auto expected = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
@@ -545,7 +553,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "010", "MinPlusMat code cov", "[quick]") {
-    MinPlusMat<3>* B = new MinPlusMat<3>();
+    auto           rg = ReportGuard(false);
+    MinPlusMat<3>* B  = new MinPlusMat<3>();
     delete B;
     MinPlusMat<3>::Row* C = new MinPlusMat<3>::Row();
     delete C;
@@ -675,6 +684,7 @@ namespace libsemigroups {
                                    (MaxPlusTruncMat<33, 3>),
                                    MaxPlusTruncMat<33>,
                                    MaxPlusTruncMat<>) {
+    auto rg = ReportGuard(false);
     // Threshold 33, 3 x 3
     MaxPlusTruncSemiring<>* sr = nullptr;
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
@@ -706,7 +716,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "014", "MaxPlusMat code cov", "[quick]") {
-    MaxPlusTruncMat<33, 3>* B = new MaxPlusTruncMat<33, 3>();
+    auto                    rg = ReportGuard(false);
+    MaxPlusTruncMat<33, 3>* B  = new MaxPlusTruncMat<33, 3>();
     delete B;
     MaxPlusTruncMat<5, 2>::Row* C = new MaxPlusTruncMat<5, 2>::Row();
     delete C;
@@ -731,6 +742,7 @@ namespace libsemigroups {
                                    (MinPlusTruncMat<33, 3>),
                                    MinPlusTruncMat<33>,
                                    MinPlusTruncMat<>) {
+    auto rg = ReportGuard(false);
     // Threshold 33, 3 x 3
     MinPlusTruncSemiring<>* sr = nullptr;
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
@@ -922,6 +934,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    (NTPMat<33, 2>),
                                    NTPMat<>) {
+    auto           rg = ReportGuard(false);
     NTPSemiring<>* sr = nullptr;
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
       sr = new NTPSemiring<>(33, 2);
@@ -960,6 +973,7 @@ namespace libsemigroups {
                                    (ProjMaxPlusMat<3, 3>),
                                    ProjMaxPlusMat<3>,
                                    ProjMaxPlusMat<>) {
+    auto rg       = ReportGuard(false);
     using Row     = typename TestType::Row;
     auto x        = make<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
     auto expected = make<TestType>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}});
@@ -1041,6 +1055,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "021", "exceptions", "[quick][element]") {
+    auto rg                 = ReportGuard(false);
     using Mat               = NTPMat<>;
     using scalar_type       = typename Mat::scalar_type;
     NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
@@ -1056,6 +1071,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "022", "code coverage", "[quick]") {
+    auto rg = ReportGuard(false);
     {
       BMat<> x(0, 0);
       x.transpose();
@@ -1116,6 +1132,7 @@ namespace libsemigroups {
                           "023",
                           "check no throw",
                           "[quick][matrix]") {
+    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(BMatFastest<3>({{0, 1}, {0, 1}}));
   }
 
@@ -1123,6 +1140,7 @@ namespace libsemigroups {
                           "024",
                           "to_human_readable_repr",
                           "[quick][matrix]") {
+    auto    rg = ReportGuard(false);
     BMat<3> x({{0, 1, 0}, {0, 1, 0}, {0, 0, 0}});
     REQUIRE(to_human_readable_repr(x, "BMat<3>(")
             == "BMat<3>({{0, 1, 0},\n"
@@ -1168,7 +1186,8 @@ namespace libsemigroups {
                                    IntMat<>,
                                    MaxPlusMat<>,
                                    MinPlusMat<>) {
-    TestType m = make<TestType>(
+    auto     rg = ReportGuard(false);
+    TestType m  = make<TestType>(
         std::vector<std::vector<typename TestType::scalar_type>>());
     REQUIRE(m.number_of_rows() == 0);
     REQUIRE(m.number_of_cols() == 0);
@@ -1178,6 +1197,7 @@ namespace libsemigroups {
                           "026",
                           "empty matrix with Semiring",
                           "[quick]") {
+    auto                 rg = ReportGuard(false);
     NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
     auto                 x
         = NTPMat<>(sr, std::initializer_list<std::initializer_list<size_t>>());
@@ -1190,6 +1210,7 @@ namespace libsemigroups {
                           "027",
                           "throw invalid row size",
                           "[quick]") {
+    auto rg = ReportGuard(false);
     REQUIRE_EXCEPTION_MSG(
         std::ignore = make<BMat<3>::Row>({0, 1}),
         "invalid argument, cannot initialize a row of a matrix with compile "
@@ -1215,7 +1236,8 @@ namespace libsemigroups {
                                    MinPlusMat<>,
                                    (ProjMaxPlusMat<2, 3>),
                                    ProjMaxPlusMat<>) {
-    auto m = make<TestType>({{1, 1, 1}, {1, 1, 1}});
+    auto rg = ReportGuard(false);
+    auto m  = make<TestType>({{1, 1, 1}, {1, 1, 1}});
     REQUIRE_EXCEPTION_MSG(m.product_inplace(m, m),
                           "expected \"*this\" to be a square matrix, but "
                           "found a 2x3 matrix");
@@ -1230,6 +1252,7 @@ namespace libsemigroups {
                                    MaxPlusMat<>,
                                    MinPlusMat<>,
                                    ProjMaxPlusMat<>) {
+    auto rg = ReportGuard(false);
     // NOTE: this_.produce_inplace(A, B) doesn't compile when using static
     // matrices, so no need to check those here.
     auto     A = make<TestType>({{1, 1}, {1, 1}});
@@ -1260,6 +1283,7 @@ namespace libsemigroups {
                                    MaxPlusMat<>,
                                    MinPlusMat<>,
                                    ProjMaxPlusMat<>) {
+    auto rg = ReportGuard(false);
     // NOTE: A += B doesn't compile when using static matrices, so no need to
     // check those here.
     auto A = make<TestType>({{1, 1}, {1, 1}});
@@ -1283,8 +1307,9 @@ namespace libsemigroups {
                                    MaxPlusMat<>,
                                    MinPlusMat<>,
                                    ProjMaxPlusMat<>) {
-    auto A = make<TestType>({{1, 1}});
-    auto B = make<TestType>({{1, 1, 1}});
+    auto rg = ReportGuard(false);
+    auto A  = make<TestType>({{1, 1}});
+    auto B  = make<TestType>({{1, 1, 1}});
     REQUIRE_EXCEPTION_MSG(
         A += B.row(0),
         "expected matrices with the same dimensions, the 1st summand is a 1x2 "
@@ -1306,6 +1331,7 @@ namespace libsemigroups {
                                    MaxPlusMat<>,
                                    MinPlusMat<>,
                                    ProjMaxPlusMat<>) {
+    auto rg = ReportGuard(false);
     // NOTE: A + B doesn't compile when using static matrices, so no need to
     // check those here.
     auto A = make<TestType>({{1, 1}, {1, 1}});
@@ -1325,6 +1351,7 @@ namespace libsemigroups {
                                    MaxPlusMat<>,
                                    MinPlusMat<>,
                                    ProjMaxPlusMat<>) {
+    auto rg = ReportGuard(false);
     // NOTE: A * B doesn't compile when using static matrices, so no need to
     // check those here.
     auto A = make<TestType>({{1, 1}, {1, 1}});
@@ -1341,7 +1368,8 @@ namespace libsemigroups {
                                    "[quick]",
                                    IntMat<>,
                                    (IntMat<2, 3>) ) {
-    auto m = make<TestType>({{1, 2, 3}, {4, 5, 6}});
+    auto rg = ReportGuard(false);
+    auto m  = make<TestType>({{1, 2, 3}, {4, 5, 6}});
     REQUIRE_EXCEPTION_MSG(std::ignore = m * m,
                           "expected the 1st factor to be a square matrix, but "
                           "found a 2x3 matrix");

@@ -155,16 +155,17 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<4>,
                                    BMat<>) {
-    auto S = make<FroidurePin>(
+    auto rg = ReportGuard(false);
+    auto S  = make<FroidurePin>(
         {make<TestType>(
              {{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-         make<TestType>(
+          make<TestType>(
              {{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
-         make<TestType>(
+          make<TestType>(
              {{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
-         make<TestType>(
+          make<TestType>(
              {{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
-         make<TestType>(
+          make<TestType>(
              {{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})});
     REQUIRE(S.size() == 415);
   }
