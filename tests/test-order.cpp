@@ -34,32 +34,6 @@
 
 namespace libsemigroups {
 
-  int rec_compare(char const* w1, char const* w2) {
-    int         lastmoved = 0;
-    char const *p1, *p2;
-    p1 = w1 + std::strlen(w1) - 1;
-    p2 = w2 + std::strlen(w2) - 1;
-    while (1) {
-      if (p1 < w1) {
-        if (p2 < w2)
-          return lastmoved;
-        return 2;
-      }
-      if (p2 < w2)
-        return 1;
-      if (*p1 == *p2) {
-        p1--;
-        p2--;
-      } else if (*p1 < *p2) {
-        p1--;
-        lastmoved = 1;
-      } else if (*p2 < *p1) {
-        p2--;
-        lastmoved = 2;
-      }
-    }
-  }
-
   using namespace literals;
 
   // =========================================================================
