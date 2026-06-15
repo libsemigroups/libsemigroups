@@ -449,6 +449,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::ReportGuard" title="ReportGuard" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
     </tab>
+    <tab type="user" visible="yes" url="@ref du_narendran_rusinowitch_group" title="Du-Narendran-Rusinowitch" />
     <tab type="usergroup" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin">
       <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePin"
         title="The FroidurePin class" />

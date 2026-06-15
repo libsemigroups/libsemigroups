@@ -55,9 +55,32 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
-  // This function returns the alphabet of p ordered so that the rules of p
-  // satisfy x_i -> y_i and x_i >_rpo y_i with respect to the returned
-  // alphabet order. The returned alphabet is empty if this fails.
+  //! \defgroup du_narendran_rusinowitch_group Du-Narendran-Rusinowitch
+  //!
+  //! This file contains documentation for a function that finds on ordering on
+  //! a presentation's alphabet such that the rules are oriented with respect to
+  //! the recursive path ordering. The implementation is based on the algorithm
+  //! provided in Section 4 of \cite Du2026aa.
+
+  //! \ingroup du_narendran_rusinowitch_group
+  //!
+  //! \brief Return an an ordered alphabet such that the rules are oriented with
+  //! respect to RPO.
+  //!
+  //! This function returns the alphabet of \p p ordered so that the rules of
+  //! \p p satisfy \f$x_i \to y_i \f$ and \f$x_i > y_i\f$ with respect to
+  //! recursive path order and the returned alphabet order. The returned
+  //! alphabet is empty if this fails.
+  //!
+  //! \tparam Word the type of the words in the presentation.
+  //!
+  //! \param p the presentation.
+  //!
+  //! \returns The ordered alphabet, if such an alphabet exists. Otherwise, the
+  //! empty word.
+  //!
+  //! \sa
+  //! \ref rpo_cmp
   template <typename Word>
   Word du_narendran_rusinowitch(Presentation<Word> const& p);
 
