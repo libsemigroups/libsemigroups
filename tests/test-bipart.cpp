@@ -27,7 +27,8 @@
 #include "libsemigroups/bipart.hpp"     // for Bipartition, Blocks, make
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
 
-#include "libsemigroups/detail/fmt.hpp"  // for format
+#include "libsemigroups/detail/fmt.hpp"     // for format
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -99,6 +100,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "000", "empty blocks", "[quick]") {
+    auto   rg = ReportGuard(false);
     Blocks b1 = make<Blocks>({});
     Blocks b2 = make<Blocks>({{4, 2}, {-1, -5}, {-3, -6}});
     REQUIRE(b2.lookup() == std::vector({true, false, true}));
@@ -116,7 +118,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "001", "non-empty blocks", "[quick]") {
-    Blocks b = construct_blocks({0, 1, 2, 1, 0, 2}, {true, false, true});
+    auto   rg = ReportGuard(false);
+    Blocks b  = construct_blocks({0, 1, 2, 1, 0, 2}, {true, false, true});
     REQUIRE(b == b);
     REQUIRE_NOTHROW(b.block_no_checks(0, 0));
     REQUIRE_NOTHROW(b.block(0, 0));
@@ -145,7 +148,8 @@ namespace libsemigroups {
                           "002",
                           "left blocks of bipartition",
                           "[quick]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     Blocks* b = x.left_blocks();
     REQUIRE(b == b);
@@ -167,7 +171,8 @@ namespace libsemigroups {
                           "003",
                           "right blocks of bipartition",
                           "[quick]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 4, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
     Blocks* b = x.right_blocks();
     REQUIRE(b == b);
@@ -188,7 +193,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "004", "copy [empty blocks]", "[quick]") {
-    Blocks b = construct_blocks({}, {});
+    auto   rg = ReportGuard(false);
+    Blocks b  = construct_blocks({}, {});
     Blocks c(b);
     REQUIRE(b.degree() == 0);
     REQUIRE(b.number_of_blocks() == 0);
@@ -203,8 +209,9 @@ namespace libsemigroups {
                           "005",
                           "copy [non-empty blocks]",
                           "[quick]") {
-    Blocks b = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
-                                {false, true, false});
+    auto   rg = ReportGuard(false);
+    Blocks b  = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
+                                 {false, true, false});
     Blocks c(b);
 
     REQUIRE(b.degree() == 11);
@@ -223,10 +230,11 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "006", "hash value", "[quick]") {
-    Blocks b = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
-                                {false, true, false});
-    Blocks c = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
-                                {false, true, true});
+    auto   rg = ReportGuard(false);
+    Blocks b  = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
+                                 {false, true, false});
+    Blocks c  = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
+                                 {false, true, true});
     REQUIRE(std::vector(b.cbegin_lookup(), b.cend_lookup())
             == std::vector({false, true, false}));
     REQUIRE(std::vector(c.cbegin_lookup(), c.cend_lookup())
@@ -238,10 +246,11 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Blocks", "007", "operator<", "[quick]") {
-    Blocks b = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
-                                {false, true, false});
-    Blocks c = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
-                                {false, true, true});
+    auto   rg = ReportGuard(false);
+    Blocks b  = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
+                                 {false, true, false});
+    Blocks c  = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
+                                 {false, true, true});
     REQUIRE(c < b);
     REQUIRE(!(b < c));
 
@@ -258,7 +267,8 @@ namespace libsemigroups {
                           "008",
                           "mem fns 1",
                           "[quick][bipartition]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto y = make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
@@ -318,7 +328,8 @@ namespace libsemigroups {
                           "009",
                           "hash",
                           "[quick][bipartition][no-valgrind]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto expected = x.hash_value();
     for (size_t i = 0; i < 1'000'000; i++) {
@@ -330,7 +341,8 @@ namespace libsemigroups {
                           "010",
                           "mem fns 2",
                           "[quick][bipartition]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
     REQUIRE(x.rank() == 3);
@@ -385,7 +397,8 @@ namespace libsemigroups {
                           "011",
                           "delete/copy",
                           "[quick][bipartition]") {
-    auto x = make<Bipartition>({0, 0, 0, 0});
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>({0, 0, 0, 0});
     auto y(x);
 
     auto expected = make<Bipartition>({0, 0, 0, 0});
@@ -396,7 +409,8 @@ namespace libsemigroups {
                           "012",
                           "degree 0",
                           "[quick][bipartition]") {
-    auto x = make<Bipartition>(std::vector<uint32_t>({}));
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(std::vector<uint32_t>({}));
     REQUIRE(x.number_of_blocks() == 0);
     REQUIRE(x.number_of_left_blocks() == 0);
 
@@ -415,6 +429,7 @@ namespace libsemigroups {
                           "013",
                           "exceptions",
                           "[quick][bipartition]") {
+    auto rg = ReportGuard(false);
     REQUIRE_NOTHROW(Bipartition(std::vector<uint32_t>()));
     REQUIRE_THROWS_AS(make<Bipartition>({0}), LibsemigroupsException);
     REQUIRE_THROWS_AS(make<Bipartition>({1, 0}), LibsemigroupsException);
@@ -424,6 +439,7 @@ namespace libsemigroups {
                           "014",
                           "convenience constructor",
                           "[quick][bipartition]") {
+    auto rg = ReportGuard(false);
     auto xx = make<Bipartition>(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
@@ -583,7 +599,8 @@ namespace libsemigroups {
                           "015",
                           "force copy constructor over move constructor",
                           "[quick][bipartition]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto y = make<Bipartition>(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
@@ -626,13 +643,15 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition", "016", "adapters", "[quick][bipart]") {
-    auto x = make<Bipartition>(
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>(
         {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
     REQUIRE_NOTHROW(IncreaseDegree<Bipartition>()(x, 0));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Bipartition", "017", "bug", "[quick][bipart]") {
-    auto x = make<Bipartition>({{1, -2, -3}, {-1}, {2, 3}});
+    auto rg = ReportGuard(false);
+    auto x  = make<Bipartition>({{1, -2, -3}, {-1}, {2, 3}});
     REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
   }
 
@@ -640,7 +659,8 @@ namespace libsemigroups {
                           "018",
                           "random x 1",
                           "[quick][bipart]") {
-    auto x = bipartition::random(10);
+    auto rg = ReportGuard(false);
+    auto x  = bipartition::random(10);
     REQUIRE(x.degree() == 10);
     REQUIRE_NOTHROW(bipartition::throw_if_invalid(x));
 
@@ -668,6 +688,7 @@ namespace libsemigroups {
                           "019",
                           "random x 2",
                           "[quick][bipart][no-valgrind]") {
+    auto                                               rg = ReportGuard(false);
     std::unordered_set<Bipartition, Hash<Bipartition>> map;
     for (size_t i = 0; i < 1000; ++i) {
       map.emplace(bipartition::random(100));
@@ -680,6 +701,7 @@ namespace libsemigroups {
                           "020",
                           "random x 3",
                           "[quick][bipart][no-valgrind]") {
+    auto                                               rg = ReportGuard(false);
     std::unordered_set<Bipartition, Hash<Bipartition>> map;
 
     for (size_t i = 0; i < 82'138; ++i) {
@@ -692,6 +714,7 @@ namespace libsemigroups {
                           "021",
                           "uniform_random",
                           "[quick][bipart]") {
+    auto rg = ReportGuard(false);
     REQUIRE_EXCEPTION_MSG(
         bipartition::uniform_random(1000),
         "the degree (1000) of the argument <x> (a bipartition) is too large, "

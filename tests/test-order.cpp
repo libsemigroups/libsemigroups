@@ -583,6 +583,7 @@ namespace libsemigroups {
                           "034",
                           "empty word",
                           "[quick][order]") {
+    auto      rg = ReportGuard(false);
     word_type w1(12_w);
     word_type w2{};
 
@@ -595,6 +596,7 @@ namespace libsemigroups {
                           "035",
                           "empty word",
                           "[quick][order]") {
+    auto      rg = ReportGuard(false);
     word_type w1(12_w);
     word_type w2{};
 

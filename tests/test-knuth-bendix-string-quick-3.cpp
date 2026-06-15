@@ -1234,6 +1234,7 @@ namespace libsemigroups {
                                    "hard 2-generated 1-relation monoid",
                                    "[quick][knuth-bendix][tietze-explorer]",
                                    RPOTrie) {
+    auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1266,6 +1267,7 @@ namespace libsemigroups {
       "Giles Gardam (https://arxiv.org/abs/2102.11818)",
       "[quick][tietze-explorer]",
       RPOTrie) {
+    auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
     p.alphabet("bABa");
@@ -1332,6 +1334,7 @@ namespace libsemigroups {
                                    "abaab=aabba",
                                    "[quick][tietze-explorer]",
                                    LenLexTrie) {
+    auto rg = ReportGuard(false);
     fmt::print("\n");
     Presentation<std::string> p;
     p.alphabet("ab");

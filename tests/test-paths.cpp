@@ -61,6 +61,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "000", "100 node path", "[quick]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     size_t const      n = 100;
     wg.add_nodes(n);
@@ -105,6 +106,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "001", "#1", "[quick]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
 
     auto wg = v4::make<WordGraph<size_t>>(9,
@@ -183,6 +185,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "002", "100 node cycle", "[quick]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     v4::word_graph::add_cycle(wg, 100);
@@ -198,6 +201,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "003", "#2", "[quick]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
 
     WordGraph<size_t> wg = v4::make<WordGraph<size_t>>(
@@ -312,6 +316,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "004", "#3", "[quick][no-valgrind]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
     auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
@@ -479,6 +484,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "006", "#5", "[quick][no-valgrind]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
     auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
@@ -519,6 +525,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "007", "#6", "[quick]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
     auto wg = v4::make<WordGraph<size_t>>(6,
                                           {{1, 2, UNDEFINED},
@@ -566,6 +573,7 @@ namespace libsemigroups {
                           "008",
                           "path iterators corner cases",
                           "[quick]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(6,
                                           {{1, 2, UNDEFINED},
                                            {2, 0, 3},
@@ -606,6 +614,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "009", "pstilo corner case", "[quick]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
     auto wg = v4::make<WordGraph<size_t>>(5, {{2, 1}, {}, {3}, {4}, {2}});
 
@@ -652,6 +661,7 @@ namespace libsemigroups {
                           "010",
                           "v4::paths::count corner cases",
                           "[quick]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     REQUIRE_THROWS_AS(v4::paths::count(wg, 0, 0, POSITIVE_INFINITY),
                       LibsemigroupsException);
@@ -672,6 +682,7 @@ namespace libsemigroups {
                           "011",
                           "v4::paths::count acyclic word graph",
                           "[quick][no-valgrind]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
 
@@ -791,6 +802,7 @@ namespace libsemigroups {
                           "012",
                           "v4::paths::count binary tree",
                           "[quick][no-valgrind]") {
+    auto rg         = ReportGuard(false);
     using node_type = WordGraph<size_t>::node_type;
     size_t const n  = 6;
     WordGraph    wg = binary_tree(n);
@@ -833,6 +845,7 @@ namespace libsemigroups {
                           "013",
                           "v4::paths::count large binary tree",
                           "[quick][no-valgrind]") {
+    auto         rg = ReportGuard(false);
     size_t const n  = 20;
     WordGraph    wg = binary_tree(n);
     REQUIRE(wg.number_of_nodes() == std::pow(2, n) - 1);
@@ -856,7 +869,8 @@ namespace libsemigroups {
                           "014",
                           "v4::paths::count 400 node cycle word graph",
                           "[quick]") {
-    size_t const      n = 400;
+    auto              rg = ReportGuard(false);
+    size_t const      n  = 400;
     WordGraph<size_t> wg(n, 1);
     v4::word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
     REQUIRE(!v4::word_graph::is_acyclic(wg));
@@ -870,6 +884,7 @@ namespace libsemigroups {
                           "015",
                           "v4::paths::count 10 node acyclic word graph",
                           "[quick]") {
+    auto rg = ReportGuard(false);
     // size_t const n  = 10;
     // auto wg = WordGraph<size_t>::random_acyclic(n, 20, n,
     // std::mt19937()); std::cout <<
@@ -905,7 +920,8 @@ namespace libsemigroups {
                           "016",
                           "v4::paths::count node word graph",
                           "[quick][no-valgrind]") {
-    size_t const n = 10;
+    auto         rg = ReportGuard(false);
+    size_t const n  = 10;
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
     // std::cout << v4::word_graph::detail::to_string(wg);
@@ -955,6 +971,7 @@ namespace libsemigroups {
                           "017",
                           "v4::paths::count (matrix)",
                           "[quick][no-valgrind]") {
+    auto rg = ReportGuard(false);
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto wg = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << v4::word_graph::detail::to_string(wg);
@@ -1022,6 +1039,7 @@ namespace libsemigroups {
                           "018",
                           "v4::paths::count (matrix)",
                           "[quick]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
@@ -1039,6 +1057,7 @@ namespace libsemigroups {
                           "019",
                           "uninitialized (no source)",
                           "[quick]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
@@ -1050,6 +1069,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "020", "to_human_readable_repr", "[quick]") {
+    auto              rg = ReportGuard(false);
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
@@ -1082,6 +1102,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "021", "operator | Random()", "[quick]") {
+    auto  rg = ReportGuard(false);
     auto  wg = v4::make<WordGraph<uint8_t>>(4, {{0, 1}, {1, 0}, {2, 2}});
     Paths p(wg);
     p.source(0).max(9);
@@ -1090,6 +1111,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "022", "pislo", "[quick]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(6,
                                           {{1, 2, UNDEFINED},
                                            {2, 0, 3},
@@ -1142,6 +1164,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "023", "pislo", "[quick]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(6,
                                           {{1, 2, UNDEFINED},
                                            {2, 0, 3},
@@ -1156,6 +1179,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "024", "v4::paths::count", "[quick]") {
+    auto rg = ReportGuard(false);
     using namespace rx;
     auto wg = v4::make<WordGraph<size_t>>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
@@ -1189,6 +1213,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "025", "issue #842 --- bad max", "[quick]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
     REQUIRE((Paths(wg).source(0).target(0).max(4) | rx::to_vector())
             == std::vector({""_w,
@@ -1209,11 +1234,13 @@ namespace libsemigroups {
                           "026",
                           "issue #841 --- missing path",
                           "[quick]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<size_t>>(2, {{0, 1}, {0, UNDEFINED}});
     REQUIRE(Paths(wg).source(0).target(0).max(4).get() == ""_w);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "027", "pislo + pstislo", "[quick]") {
+    auto rg = ReportGuard(false);
     auto wg = v4::make<WordGraph<uint32_t>>(
         11,
         {{1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},

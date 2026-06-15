@@ -330,7 +330,7 @@ namespace libsemigroups {
                           "107",
                           "shifted_plactic_monoid_Ser09(3) KnuthBendix",
                           "[Example][quick]") {
-    auto        rg = ReportGuard(true);
+    auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, shifted_plactic_monoid_Ser09(3));
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);

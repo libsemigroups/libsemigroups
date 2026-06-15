@@ -508,6 +508,7 @@ namespace libsemigroups {
                           "006",
                           "free semigroup",
                           "[quick][kambites]") {
+    auto rg = ReportGuard(false);
     {
       Presentation<std::string> p;
       p.alphabet("cab");
@@ -1165,6 +1166,7 @@ namespace libsemigroups {
                                    "weak C(4) not strong x 5",
                                    "[quick][kambites]",
                                    STRING_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "abcd", "aaeaaa");
@@ -1178,6 +1180,7 @@ namespace libsemigroups {
                                    "weak C(4) not strong x 6",
                                    "[quick][kambites]",
                                    STRING_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "acba", "aabc");
@@ -1192,6 +1195,7 @@ namespace libsemigroups {
                                    "Konovalov example",
                                    "[quick][kambites]",
                                    STRING_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abAB");
     presentation::add_rule(p, "Abba", "BB");
@@ -1206,6 +1210,7 @@ namespace libsemigroups {
                                    "long words",
                                    "[quick][kambites][no-valgrind]",
                                    STRING_TYPES) {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "bceac", "aeebbc");
@@ -1261,7 +1266,8 @@ namespace libsemigroups {
                           "035",
                           "almost all 2-generated 1-relation monoids are C(4)",
                           "[quick][kambites][no-valgrind]") {
-    auto x = count_2_gen_1_rel<std::string>(1, 7);
+    auto rg = ReportGuard(false);
+    auto x  = count_2_gen_1_rel<std::string>(1, 7);
     REQUIRE(x.first == 1);
     REQUIRE(x.second == 7'875);
   }
@@ -1330,6 +1336,7 @@ namespace libsemigroups {
                           "040",
                           "normal form possible bug",
                           "[quick][kambites][no-valgrind]") {
+    auto rg = ReportGuard(false);
     // There was a bug in MultiView::append, that caused this
     // test to fail, so we keep this test to check that the bug in
     // MultiView::append is resolved.
@@ -2144,6 +2151,7 @@ namespace libsemigroups {
                           "043",
                           "code coverage",
                           "[quick][kambites][no-valgrind]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(
@@ -2171,9 +2179,10 @@ namespace libsemigroups {
                           "044",
                           "large number of rules",
                           "[quick][kambites][no-valgrind]") {
-    auto S = make<FroidurePin>({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-                                LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-                                LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+    auto rg = ReportGuard(false);
+    auto S  = make<FroidurePin>({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+                                 LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                                 LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);
     REQUIRE(S.number_of_rules() == 7'939);
     auto     p = to<Presentation<word_type>>(S);
@@ -2187,6 +2196,7 @@ namespace libsemigroups {
                           "045",
                           "code coverage for constructors/init",
                           "[quick][kambites]") {
+    auto     rg = ReportGuard(false);
     Kambites k;
 
     REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
@@ -2255,6 +2265,7 @@ namespace libsemigroups {
                           "046",
                           "to_human_readable_repr",
                           "[quick][kambites]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
     presentation::add_rule(p, "abcd", "ce");
@@ -2307,6 +2318,7 @@ namespace libsemigroups {
                           "048",
                           "report_prefix",
                           "[quick][kambites]") {
+    auto     rg = ReportGuard(false);
     Kambites k;
     REQUIRE(k.report_prefix() == "Kambites");
     k.init();

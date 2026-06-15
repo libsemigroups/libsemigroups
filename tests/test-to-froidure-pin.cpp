@@ -338,6 +338,7 @@ namespace libsemigroups {
                           "011",
                           "from ToddCoxeter",
                           "[quick]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);

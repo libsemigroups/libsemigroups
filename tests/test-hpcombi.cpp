@@ -87,6 +87,7 @@ namespace libsemigroups {
                           "001",
                           "One specialisation",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     auto id = One<HPCombi::Transf16>()(10);
     auto x  = make<HPCombi::Transf16>({3, 2, 3, 4, 5, 3, 0, 1});
     REQUIRE(x * id == x);
@@ -99,6 +100,7 @@ namespace libsemigroups {
                           "002",
                           "One specialisation",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     auto id = One<Renner0Element>()(10);
     auto x  = Renner0Element(
         {0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 12, 11, 13, 14, 15});
@@ -117,8 +119,9 @@ namespace libsemigroups {
                           "003",
                           "Swap specialisation",
                           "[quick][hpcombi]") {
-    auto x = make<HPCombi::Transf16>({0, 0, 0, 0, 0, 0, 0, 0});
-    auto y = make<HPCombi::Transf16>({1, 1, 1, 1, 1, 1, 1, 1});
+    auto rg = ReportGuard(false);
+    auto x  = make<HPCombi::Transf16>({0, 0, 0, 0, 0, 0, 0, 0});
+    auto y  = make<HPCombi::Transf16>({1, 1, 1, 1, 1, 1, 1, 1});
     Swap<HPCombi::Transf16>()(x, y);
     REQUIRE(x == make<HPCombi::Transf16>({1, 1, 1, 1, 1, 1, 1, 1}));
     REQUIRE(y == make<HPCombi::Transf16>({0, 0, 0, 0, 0, 0, 0, 0}));
@@ -128,23 +131,24 @@ namespace libsemigroups {
                           "004",
                           "Swap specialisation",
                           "[quick][hpcombi]") {
-    auto x = Renner0Element({0xFF,
-                             0xFF,
-                             0xFF,
-                             0xFF,
-                             0xFF,
-                             0xFF,
-                             0xFF,
-                             0xFF,
-                             8,
-                             9,
-                             10,
-                             11,
-                             12,
-                             13,
-                             14,
-                             15});
-    auto y = Renner0Element(
+    auto rg = ReportGuard(false);
+    auto x  = Renner0Element({0xFF,
+                              0xFF,
+                              0xFF,
+                              0xFF,
+                              0xFF,
+                              0xFF,
+                              0xFF,
+                              0xFF,
+                              8,
+                              9,
+                              10,
+                              11,
+                              12,
+                              13,
+                              14,
+                              15});
+    auto y  = Renner0Element(
         {0, 1, 2, 4, 3, 5, 6, 7, 8, 9, 10, 12, 11, 13, 14, 15});
     Swap<Renner0Element>()(x, y);
     REQUIRE(x
@@ -177,7 +181,8 @@ namespace libsemigroups {
                                    HPCombi::PPerm16,
                                    HPCombi::Transf16,
                                    HPCombi::PTransf16) {
-    auto x = TestType({0, 2, 1, 4, 5, 3});
+    auto rg = ReportGuard(false);
+    auto x  = TestType({0, 2, 1, 4, 5, 3});
     REQUIRE(x.size() == 16);
     IncreaseDegree<TestType>{}(x, 11'212);
     REQUIRE(x.size() == 16);
@@ -187,6 +192,7 @@ namespace libsemigroups {
                           "005",
                           "Inverse specialisation",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     auto id = One<HPCombi::Perm16>()(10);
     auto x  = HPCombi::Perm16({0, 2, 1, 4, 5, 3});
     auto y  = Inverse<HPCombi::Perm16>()(x);
@@ -198,7 +204,8 @@ namespace libsemigroups {
                           "006",
                           "ImageRightAction<HPCombi::Perm16, int>",
                           "[quick][hpcombi]") {
-    auto x = HPCombi::Perm16({0, 2, 1, 4, 5, 3});
+    auto rg = ReportGuard(false);
+    auto x  = HPCombi::Perm16({0, 2, 1, 4, 5, 3});
     REQUIRE(ImageRightAction<HPCombi::Perm16, int>()(0, x) == 0);
     REQUIRE(ImageRightAction<HPCombi::Perm16, int>()(1, x) == 2);
     REQUIRE(ImageRightAction<HPCombi::Perm16, int>()(2, x) == 1);
@@ -237,6 +244,7 @@ namespace libsemigroups {
       "007",
       "ImageLeft/RightAction<HPCombi::PPerm16, HPCombi::PPerm16>",
       "[quick][hpcombi]") {
+    auto             rg = ReportGuard(false);
     auto             id = One<HPCombi::PPerm16>()(5);
     auto             x  = HPCombi::PPerm16({10}, {0});
     auto             y  = HPCombi::PPerm16({1}, {2});
@@ -272,6 +280,7 @@ namespace libsemigroups {
                           "008",
                           "Product<Renner0Element>",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     auto id = One<Renner0Element>()(5);
     auto x  = Renner0Element(
         {0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15});
@@ -311,6 +320,7 @@ namespace libsemigroups {
                           "009",
                           "Degree/Complexity<Renner0Element>",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     auto id = One<Renner0Element>()(5);
     REQUIRE(Degree<Renner0Element>()(id) == 16);
     REQUIRE(Complexity<Renner0Element>()(id) == 0);
@@ -417,6 +427,7 @@ namespace libsemigroups {
                           "014",
                           "HPCombi::Transf16 exceptions",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(make<HPCombi::Transf16>(
                           {1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}),
                       LibsemigroupsException);
@@ -432,6 +443,7 @@ namespace libsemigroups {
                           "016",
                           "Complexity<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     REQUIRE(Complexity<HPCombi::BMat8>{}(HPCombi::BMat8()) == 0);
   }
 
@@ -439,6 +451,7 @@ namespace libsemigroups {
                           "018",
                           "Degree<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto rg = ReportGuard(false);
     REQUIRE(Degree<HPCombi::BMat8>{}(HPCombi::BMat8()) == 8);
   }
 
@@ -446,6 +459,7 @@ namespace libsemigroups {
                           "019",
                           "IncreaseDegree<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto           rg = ReportGuard(false);
     HPCombi::BMat8 x;
     REQUIRE(Degree<HPCombi::BMat8>{}(x) == 8);
     IncreaseDegree<HPCombi::BMat8>{}(x, 11'212);
@@ -456,6 +470,7 @@ namespace libsemigroups {
                           "020",
                           "One<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto           rg = ReportGuard(false);
     HPCombi::BMat8 x;
     HPCombi::BMat8 id({{1, 0, 0, 0, 0, 0, 0, 0},
                        {0, 1, 0, 0, 0, 0, 0, 0},
@@ -476,6 +491,7 @@ namespace libsemigroups {
                           "021",
                           "Product<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto           rg = ReportGuard(false);
     HPCombi::BMat8 x(3230294132);
     HPCombi::BMat8 y(2195952830);
     HPCombi::BMat8 xy;
@@ -487,6 +503,7 @@ namespace libsemigroups {
                           "022",
                           "ImageRightAction<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto           rg = ReportGuard(false);
     HPCombi::BMat8 pt(3230294132);
     HPCombi::BMat8 x(2195952830);
     HPCombi::BMat8 res;
@@ -498,6 +515,7 @@ namespace libsemigroups {
                           "023",
                           "ImageLeftAction<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto           rg = ReportGuard(false);
     HPCombi::BMat8 pt(3230294132);
     HPCombi::BMat8 x(2195952830);
     HPCombi::BMat8 res;
@@ -509,6 +527,7 @@ namespace libsemigroups {
                           "024",
                           "Inverse<HPCombi::BMat8>",
                           "[quick][hpcombi]") {
+    auto           rg = ReportGuard(false);
     HPCombi::BMat8 x({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}});
     REQUIRE(Inverse<HPCombi::BMat8>{}(x) == x.transpose());
     REQUIRE(x * Inverse<HPCombi::BMat8>{}(x)

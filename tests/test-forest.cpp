@@ -23,6 +23,7 @@
 #include "word-graph-test-common.hpp"
 
 #include "libsemigroups/constants.hpp"           // for UNDEFINED, operator==
+#include "libsemigroups/detail/report.hpp"       // for ReportGuard
 #include "libsemigroups/exception.hpp"           // for LibsemigroupsException
 #include "libsemigroups/forest.hpp"              // for Forest, to_human_re...
 #include "libsemigroups/ranges.hpp"              // for zip
@@ -48,7 +49,8 @@ namespace libsemigroups {
   };  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "000", "test forest", "[quick]") {
-    Forest f = test_forest1();
+    auto   rg = ReportGuard(false);
+    Forest f  = test_forest1();
     REQUIRE_THROWS_AS(f.set_parent_and_label(0, -1, 0), LibsemigroupsException);
 
     REQUIRE(
@@ -78,6 +80,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "001", "path_to_root", "[quick]") {
+    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     Forest f = test_forest1();
@@ -90,6 +93,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "002", "path_from_root", "[quick]") {
+    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     Forest f = test_forest1();
@@ -107,7 +111,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "003", "depth", "[quick]") {
-    Forest f = test_forest1();
+    auto   rg = ReportGuard(false);
+    Forest f  = test_forest1();
 
     REQUIRE(forest::depth_no_checks(f, 50) == 50);
     REQUIRE_THROWS_AS(forest::depth(f, f.number_of_nodes()),
@@ -115,6 +120,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "004", "cbegin_path_to_root", "[quick]") {
+    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     Forest f = test_forest1();
@@ -142,7 +148,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "005", "constructors", "[quick]") {
-    Forest f = test_forest1();
+    auto   rg = ReportGuard(false);
+    Forest f  = test_forest1();
     REQUIRE(!f.empty());
 
     Forest copy(f);
@@ -175,6 +182,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "006", "is_root", "[quick]") {
+    auto   rg    = ReportGuard(false);
     Forest f     = test_forest1();
     size_t count = 0;
     for (size_t n = 0; n < f.number_of_nodes(); ++n) {
@@ -186,7 +194,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "007", "fmt", "[quick]") {
-    Forest f = test_forest1();
+    auto   rg = ReportGuard(false);
+    Forest f  = test_forest1();
     REQUIRE(
         fmt::format("{}", f)
         == "{[4294967295, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "
@@ -204,6 +213,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "008", "make", "[quick]") {
+    auto   rg = ReportGuard(false);
     Forest f  = test_forest1();
     auto   ff = make<Forest>(
         {UNDEFINED, 0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
@@ -229,7 +239,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "009", "max_label helper", "[quick]") {
-    Forest f = test_forest1();
+    auto   rg = ReportGuard(false);
+    Forest f  = test_forest1();
     REQUIRE(forest::max_label(f) == 4);
 
     f.set_parent_and_label(10, 9, 666);
@@ -257,7 +268,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "010", "is_forest", "[quick]") {
-    Forest f = make<Forest>(
+    auto   rg = ReportGuard(false);
+    Forest f  = make<Forest>(
         {UNDEFINED, 4, 0, 0, UNDEFINED, 3, 8, 1, 1, 12, 12, 8, 3},
         {UNDEFINED, 0, 0, 1, UNDEFINED, 0, 1, 1, 0, 0, 1, 0, 1});
 
@@ -297,7 +309,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "011", "dot", "[quick]") {
-    Forest f = make<Forest>(
+    auto   rg = ReportGuard(false);
+    Forest f  = make<Forest>(
         {UNDEFINED, 4, 0, 0, UNDEFINED, 3, 8, 1, 1, 12, 12, 8, 3},
         {UNDEFINED, 0, 0, 1, UNDEFINED, 0, 1, 1, 0, 0, 1, 0, 1});
 
@@ -389,7 +402,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "012", "PathsFromRoots x 1", "[quick]") {
-    Forest f = make<Forest>({UNDEFINED, 0, 1, 1, 0, 4, 4, 6},
+    auto   rg = ReportGuard(false);
+    Forest f  = make<Forest>({UNDEFINED, 0, 1, 1, 0, 4, 4, 6},
                             {UNDEFINED, 0, 0, 1, 1, 1, 0, 0});
 
     REQUIRE(f.number_of_nodes() == 8);
@@ -441,6 +455,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "013", "PathsFromRoots x 2", "[quick]") {
+    auto   rg    = ReportGuard(false);
     Forest f     = test_forest1();
     auto   paths = forest::PathsFromRoots(f);
     REQUIRE(paths.size_hint() == 100);
@@ -463,6 +478,7 @@ namespace libsemigroups {
                           "014",
                           "PathsFromRoots -- corner cases",
                           "[quick]") {
+    auto   rg = ReportGuard(false);
     Forest f;
     auto   paths = forest::PathsFromRoots(f);
     REQUIRE(paths.size_hint() == 0);
@@ -472,7 +488,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "015", "PathsToRoots x 1", "[quick]") {
-    Forest f = make<Forest>({UNDEFINED, 0, 1, 1, 0, 4, 4, 6},
+    auto   rg = ReportGuard(false);
+    Forest f  = make<Forest>({UNDEFINED, 0, 1, 1, 0, 4, 4, 6},
                             {UNDEFINED, 0, 0, 1, 1, 1, 0, 0});
 
     REQUIRE(f.number_of_nodes() == 8);
@@ -527,6 +544,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Forest", "016", "PathsToRoots x 2", "[quick]") {
+    auto   rg    = ReportGuard(false);
     Forest f     = test_forest1();
     auto   paths = forest::PathsToRoots(f);
     REQUIRE(paths.size_hint() == 100);
@@ -554,6 +572,7 @@ namespace libsemigroups {
                           "017",
                           "PathsToRoots -- corner cases",
                           "[quick]") {
+    auto   rg = ReportGuard(false);
     Forest f;
     auto   paths = forest::PathsToRoots(f);
     REQUIRE(paths.size_hint() == 0);

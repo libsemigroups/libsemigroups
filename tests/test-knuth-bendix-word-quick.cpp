@@ -667,6 +667,7 @@ namespace libsemigroups {
                                    "Reinis MFE",
                                    "[knuth-bendix][quick]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     Presentation<word_type> p;
@@ -1061,6 +1062,7 @@ namespace libsemigroups {
                                    "close to or greater than 255 letters",
                                    "[quick][knuth-bendix]",
                                    REWRITING_SYSTEM_TYPES) {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(257);
 
@@ -1072,7 +1074,7 @@ namespace libsemigroups {
                                    "process pending rules x2",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITING_SYSTEM_TYPES) {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);

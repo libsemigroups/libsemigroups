@@ -18,11 +18,13 @@
 
 #include "test-main.hpp"  // LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
-#include "libsemigroups/types.hpp"   // for SmallestInteger, Smalle...
+#include "libsemigroups/config.hpp"         // for LIBSEMIGROUPS_SIZEOF_VO...
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/types.hpp"          // for SmallestInteger, Smalle...
 
 namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "000", "", "[quick]") {
+    auto rg = ReportGuard(false);
     REQUIRE(sizeof(SmallestInteger<0>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<255>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<256>::type) == 2);

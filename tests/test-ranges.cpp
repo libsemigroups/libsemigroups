@@ -20,7 +20,8 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/ranges.hpp"         // for ChainRange, get_range...
 
 namespace libsemigroups {
   namespace {
@@ -38,6 +39,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
                                   //
   LIBSEMIGROUPS_TEST_CASE("Ranges", "000", "chain", "[quick][presentation]") {
+    auto        rg      = ReportGuard(false);
     std::string prefix1 = "dabd", suffix1 = "cbb", prefix2 = "abbaba",
                 suffix2 = "c";
 
@@ -46,6 +48,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ranges", "001", "skip_n", "[quick]") {
+    auto   rg            = ReportGuard(false);
     auto   sequence      = (rx::seq() | rx::take(100));
     size_t no_skip_count = (sequence | rx::count());
     size_t skip_count    = (sequence | rx::skip_n(10) | rx::count());
@@ -53,6 +56,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ranges", "002", "next", "[quick]") {
+    auto rg       = ReportGuard(false);
     auto sequence = (rx::seq() | rx::take(100));
 
     size_t no_next_count = (sequence | rx::count());
@@ -65,6 +69,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ranges", "003", "Random", "[quick]") {
+    auto rg    = ReportGuard(false);
     auto range = (rx::seq() | rx::take(100) | Random());
     REQUIRE((range | rx::count()) == 1);
     auto val = range.get();

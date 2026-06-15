@@ -1135,6 +1135,7 @@ namespace libsemigroups {
                           "016",
                           "calling run when obviously infinite",
                           "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(5);
     ToddCoxeter tc(twosided, p);
@@ -3605,6 +3606,7 @@ namespace libsemigroups {
                           "091",
                           "relation ordering x 2",
                           "[todd-coxeter][quick]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(10);
     presentation::add_rule(p, 01_w, 0_w);
@@ -4315,6 +4317,7 @@ namespace libsemigroups {
                           "108",
                           "plactic (n, 1)-id monoid",
                           "[todd-coxeter][quick][no-valgrind]") {
+    auto rg = ReportGuard(false);
     // auto                          r = 3, s = 2;
     // std::array<uint64_t, 7> const size = {1, 3, 14, 95, 885, 10'858,
     // 170'209};
@@ -4517,7 +4520,8 @@ namespace libsemigroups {
                           "110",
                           "sigma-plactic monoid",
                           "[todd-coxeter][quick]") {
-    auto p = presentation::examples::sigma_plactic_monoid({2, 2, 2});
+    auto rg = ReportGuard(false);
+    auto p  = presentation::examples::sigma_plactic_monoid({2, 2, 2});
     p.contains_empty_word(true);
     ToddCoxeter tc(twosided, p);
 
@@ -4790,6 +4794,7 @@ namespace libsemigroups {
                           "116",
                           "cyclic groups",
                           "[todd-coxeter][quick]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true).alphabet("xyz");
 
@@ -5090,7 +5095,7 @@ namespace libsemigroups {
                           "122",
                           "initialisation from ToddCoxeter",
                           "[todd-coxeter][quick]") {
-    ReportGuard               rg(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -5129,7 +5134,7 @@ namespace libsemigroups {
                           "123",
                           "initialisation from ToddCoxeter",
                           "[todd-coxeter][quick]") {
-    ReportGuard             rg(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     p.contains_empty_word(true);

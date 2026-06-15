@@ -448,6 +448,7 @@ namespace libsemigroups {
                           "010",
                           "for a WordGraph",
                           "[quick][cong]") {
+    auto rg = ReportGuard(false);
     // WARNING: the word graph must have a "root" node from which every other
     // node is reachable.
 

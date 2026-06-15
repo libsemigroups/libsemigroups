@@ -21,10 +21,11 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"     // for UNDEFINED
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/matrix.hpp"        // for IntMat
-#include "libsemigroups/word-range.hpp"    // for namespace literals
+#include "libsemigroups/constants.hpp"      // for UNDEFINED
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
+#include "libsemigroups/matrix.hpp"         // for IntMat
+#include "libsemigroups/word-range.hpp"     // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;  // for operator""_w
@@ -128,6 +129,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][element]",
                                    IntMat<2>,
                                    IntMat<>) {
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> T;
     T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
@@ -151,6 +153,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][element]",
                                    IntMat<2>,
                                    IntMat<>) {
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> T;
     T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
@@ -171,6 +174,7 @@ namespace libsemigroups {
       "[quick][froidure-pin][element][no-valgrind]",
       IntMat<2>,
       IntMat<>) {
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> T;
     T.add_generator(make<TestType>({{0, 0}, {0, 1}}));
     T.add_generator(make<TestType>({{0, 1}, {-1, 0}}));
