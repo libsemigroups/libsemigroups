@@ -210,7 +210,10 @@ namespace libsemigroups {
   //! various of the computation in `libsemigroups`. Reporting is enabled (or
   //! not) at construction time, and disabled when the ReportGuard goes out of
   //! scope.
-  struct ReportGuard {
+  class ReportGuard {
+    bool _prev_val;
+
+   public:
     //! \brief Constructs a ReportGuard with reporting enabled by default.
     //!
     //! Constructs a ReportGuard with reporting enabled by default.
