@@ -169,12 +169,12 @@ namespace libsemigroups {
   // ReportGuard
   ////////////////////////////////////////////////////////////////////////
 
-  ReportGuard::ReportGuard(bool val) {
+  ReportGuard::ReportGuard(bool val) : _prev_val(report_data.report()) {
     report_data.report(val);
   }
 
   ReportGuard::~ReportGuard() {
-    report_data.report(false);
+    report_data.report(_prev_val);
   }
 
   ////////////////////////////////////////////////////////////////////////
