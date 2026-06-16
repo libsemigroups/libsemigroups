@@ -27,6 +27,7 @@ namespace libsemigroups {
 
   template <typename Word>
   Presentation<Word>& Presentation<Word>::init() {
+    // TODO replace next 2 lines with _alphabet.init()
     _alphabet.clear();
     _alphabet_map.clear();
     _contains_empty_word = false;
@@ -41,16 +42,16 @@ namespace libsemigroups {
   Presentation<Word>::Presentation(Presentation&&) = default;
 
   template <typename Word>
-  Presentation<Word>& Presentation<Word>::operator=(Presentation<Word> const&)
+  Presentation<Word>& Presentation<Word>::operator=(Presentation const&)
       = default;
 
   template <typename Word>
-  Presentation<Word>& Presentation<Word>::operator=(Presentation<Word>&&)
-      = default;
+  Presentation<Word>& Presentation<Word>::operator=(Presentation&&) = default;
 
   template <typename Word>
   Presentation<Word>::~Presentation() = default;
 
+  // TODO replace with _alphabet.size(n);
   template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(size_type n) {
     // This checks that there are enough distinct Word::value_types to construct
@@ -1452,7 +1453,7 @@ namespace libsemigroups {
       // Must call p.throw_if_bad_alphabet_or_rules otherwise f(val) may
       // segfault if val is not in the alphabet
       p.throw_if_bad_alphabet_or_rules();
-
+      // TODO use Alphabet object
       Result result;
       result.contains_empty_word(p.contains_empty_word());
       WordOutput new_alphabet;

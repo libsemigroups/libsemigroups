@@ -336,13 +336,17 @@
         title="WtLenLexCmp" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
+      <tab type="user" visible="yes" url="@ref libsemigroups::Alphabet"
+        title="The Alphabet class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
         title="The Presentation class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation"
         title="The InversePresentation class" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::presentation" title="Helper functions" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::presentation" title="Presentation helpers" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::alphabet" title="Alphabet helpers" />
       <tab type="user" visible="yes" url="@ref libsemigroups::presentation::examples"
         title="Examples" />
+      <tab type="user" visible="yes" url="@ref to_alphabet_group" title="to<Alphabet>" />
       <tab type="user" visible="yes" url="@ref to_presentation_group" title="to<Presentation>" />
       <tab type="user" visible="yes" url="@ref to_inverse_presentation_group"
         title="to<InversePresentation>" />
