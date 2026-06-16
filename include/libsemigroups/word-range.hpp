@@ -2067,11 +2067,11 @@ namespace libsemigroups {
     //! * arbitrarily nested brackets;
     //! * spaces are ignored;
     //! * redundant matched brackets are ignored;
-    //! * \c ^ is treated as the power binary operator;
-    //! * \c , is treated as the commutator binary operator;
-    //! * only the characters in \c "()^, " and in \c a-zA-Z0-9 are allowed.
+    //! * `^` is treated as the power binary operator;
+    //! * `,` is treated as the commutator binary operator;
+    //! * only the characters in `"()^, ` and in \c a-zA-Z0-9 are allowed.
     //!
-    //! When using \c , as the commutator operator, it is not possible to
+    //! When using `,` as the commutator operator, it is not possible to
     //! specify what the inverse of each letter should be. Instead, it is
     //! assumed that the inverse of a lowercase letter is the corresponding
     //! uppercase letter, and the inverse of an uppercase letter is the
