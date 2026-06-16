@@ -3666,7 +3666,7 @@ namespace libsemigroups {
       Presentation<W> p;
       p.contains_empty_word(true);
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0}, W{}, W{}),
-                            "no alphabet has been defined");
+                            "there are no letters in the alphabet");
 
       p.alphabet({0});
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{1}, W{}, W{0}),
@@ -3700,7 +3700,7 @@ namespace libsemigroups {
       Presentation<W> p;
       p.contains_empty_word(true);
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{0}, W{}),
-                            "no alphabet has been defined");
+                            "there are no letters in the alphabet");
 
       p.alphabet({0});
       REQUIRE_EXCEPTION_MSG(presentation::commutator(p, W{1}, W{}),
@@ -3852,7 +3852,7 @@ namespace libsemigroups {
       p.contains_empty_word(true);
       REQUIRE_EXCEPTION_MSG(
           presentation::add_commutator_rule(p, W{0}, W{}, W{}),
-          "no alphabet has been defined");
+          "there are no letters in the alphabet");
       p.alphabet({0});
       // The words are not over the presentation's alphabet
       REQUIRE_EXCEPTION_MSG(
@@ -3892,7 +3892,7 @@ namespace libsemigroups {
     SECTION("alphabet inferred, inverses inferred") {
       p.contains_empty_word(true);
       REQUIRE_EXCEPTION_MSG(presentation::add_commutator_rule(p, W{0}, W{}),
-                            "no alphabet has been defined");
+                            "there are no letters in the alphabet");
 
       p.alphabet({0});
       // The words are not over the presentation's alphabet

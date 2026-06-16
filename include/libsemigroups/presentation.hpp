@@ -41,7 +41,8 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"              // for Hash, EqualTo
+#include "adapters.hpp"  // for Hash, EqualTo
+#include "alphabet-helpers.hpp"
 #include "alphabet.hpp"              // for Alphabet
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
@@ -133,10 +134,8 @@ namespace libsemigroups {
     using size_type = typename std::vector<word_type>::size_type;
 
    private:
-    // TODO replace with Alphabet object
-    word_type                                  _alphabet;
-    std::unordered_map<letter_type, size_type> _alphabet_map;
-    bool                                       _contains_empty_word;
+    Alphabet<Word> _alphabet;
+    bool           _contains_empty_word;
 
    public:
     //! \brief Data member holding the rules of the presentation.
@@ -196,11 +195,16 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO(v4) replace with the function below
     [[nodiscard]] word_type const& alphabet() const noexcept {
-      return _alphabet;
+      return _alphabet.letters();
     }
 
-    // TODO(later) alphabet_no_checks
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+    [[nodiscard]] Alphabet<word_type> const& alphabet_v4() const noexcept {
+      return _alphabet;
+    }
+#endif
 
     //! \brief Set the alphabet by size.
     //!
@@ -222,7 +226,7 @@ namespace libsemigroups {
     //! * \ref throw_if_alphabet_has_duplicates
     //! * \ref throw_if_bad_rules
     //! * \ref throw_if_bad_alphabet_or_rules
-    // TODO(1) Rename alphabet_size
+    // TODO(v4) remove in favour of direct call to equivalent Alphabet mem fn
     Presentation& alphabet(size_type n);
 
     //! \brief Set the alphabet by const reference.
@@ -331,9 +335,10 @@ namespace libsemigroups {
     //!
     //! \warning
     //! This function performs no bound checks on the argument \p i.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn of the same name
     [[nodiscard]] letter_type letter_no_checks(size_type i) const {
-      LIBSEMIGROUPS_ASSERT(i < _alphabet.size());
-      return _alphabet[i];
+      return _alphabet.letter_no_checks(i);
     }
 
     //! \brief Return a letter in the alphabet by index.
@@ -346,7 +351,11 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref letter_no_checks
-    [[nodiscard]] letter_type letter(size_type i) const;
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn of the same name
+    [[nodiscard]] letter_type letter(size_type i) const {
+      return _alphabet.letter(i);
+    }
 
     //! \brief Return the index of a letter in the alphabet.
     //!
@@ -364,8 +373,10 @@ namespace libsemigroups {
     //!
     //! \warning This function does not verify that its argument belongs to the
     //! alphabet.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn of the same name
     [[nodiscard]] size_type index_no_checks(letter_type val) const {
-      return _alphabet_map.find(val)->second;
+      return _alphabet.index_no_checks(val);
     }
 
     //! \brief Return the index of a letter in the alphabet.
@@ -378,7 +389,11 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref index_no_checks
-    [[nodiscard]] size_type index(letter_type val) const;
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn of the same name
+    [[nodiscard]] size_type index(letter_type val) const {
+      return _alphabet.index(val);
+    }
 
     //! \brief Check if a letter belongs to the alphabet or not.
     //!
@@ -393,9 +408,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant on average, worst case linear in the size of the alphabet.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn "contains"
     [[nodiscard]] bool in_alphabet(letter_type val) const {
-      // TODO replace with Alphabet::contains
-      return _alphabet_map.find(val) != _alphabet_map.cend();
+      return _alphabet.contains(val);
     }
 
     //! \brief Add a rule to the presentation.
@@ -467,17 +483,6 @@ namespace libsemigroups {
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
     }
 
-    //! \brief Add a generator.
-    //!
-    //! Add the first letter not in the alphabet as a generator and return this
-    //! letter.
-    //!
-    //! \returns A value of type \ref letter_type.
-    //!
-    //! \throws LibsemigroupsException if the alphabet is of the maximum
-    //! possible size supported by `letter_type`.
-    letter_type add_generator();
-
     //! \brief Add \p x as a generator.
     //!
     //! Add the letter \p x as a generator.
@@ -488,7 +493,12 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    Presentation& add_generator_no_checks(letter_type x);
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn "add_letter_no_checks"
+    Presentation& add_generator_no_checks(letter_type x) {
+      _alphabet.add_letter_no_checks(x);
+      return *this;
+    }
 
     //! \brief Add \p x as a generator.
     //!
@@ -499,7 +509,25 @@ namespace libsemigroups {
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
-    Presentation& add_generator(letter_type x);
+    Presentation& add_generator(letter_type x) {
+      _alphabet.add_letter(x);
+      return *this;
+    }
+
+    //! \brief Add a generator.
+    //!
+    //! Add the first letter not in the alphabet as a generator and return this
+    //! letter.
+    //!
+    //! \returns A value of type \ref letter_type.
+    //!
+    //! \throws LibsemigroupsException if the alphabet is of the maximum
+    //! possible size supported by `letter_type`.
+    // TODO(v4) remove in favour of direct call to Presentation::alphabet()
+    // mem fn "alphabet::add_letter"
+    letter_type add_generator() {
+      return alphabet::add_letter(_alphabet);
+    }
 
     //! \brief Remove \p x as a generator.
     //!
@@ -519,7 +547,10 @@ namespace libsemigroups {
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the letter \p x is not a generator, then bad things will
     //! happen.
-    Presentation& remove_generator_no_checks(letter_type x);
+    Presentation& remove_generator_no_checks(letter_type x) {
+      _alphabet.remove_letter_no_checks(x);
+      return *this;
+    }
 
     //! \brief Remove \p x as a generator.
     //!
@@ -534,7 +565,10 @@ namespace libsemigroups {
     //! \complexity
     //! Average case: linear in the length of the alphabet, worst case:
     //! quadratic in the length of the alphabet.
-    Presentation& remove_generator(letter_type x);
+    Presentation& remove_generator(letter_type x) {
+      _alphabet.remove_letter(x);
+      return *this;
+    }
 
     //! \brief Return whether the empty word is a valid relation word.
     //!
@@ -589,9 +623,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the length of the alphabet.
+    // TODO(v4) remove in favour of a direct call to Alphabet mem fn given
+    // below
     void throw_if_alphabet_has_duplicates() const {
-      decltype(_alphabet_map) alphabet_map;
-      throw_if_alphabet_has_duplicates(alphabet_map);
+      _alphabet.throw_if_duplicate_letters();
     }
 
     //! \brief Check if a letter belongs to the alphabet or not.
@@ -604,7 +639,12 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant on average, worst case linear in the size of the alphabet.
-    void throw_if_letter_not_in_alphabet(letter_type c) const;
+    //!
+    // TODO(v4) remove in favour of direct call to Alphabet mem fn of the same
+    // name
+    void throw_if_letter_not_in_alphabet(letter_type c) const {
+      _alphabet.throw_if_letter_not_in_alphabet(c);
+    }
 
     //! \brief Check if every letter in a range belongs to the alphabet.
     //!
@@ -620,6 +660,8 @@ namespace libsemigroups {
     //! \complexity
     //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of the longest
     //! word, and \f$n\f$ is the size of the alphabet.
+    // TODO(v4) remove in favour of direct call to Alphabet mem fn of the same
+    // name
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_not_in_alphabet(Iterator1 first, Iterator2 last) const;
 
@@ -656,12 +698,6 @@ namespace libsemigroups {
       throw_if_alphabet_has_duplicates();
       throw_if_bad_rules();
     }
-
-   private:
-    void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
-                          word_type&               old_alphabet);
-    void throw_if_alphabet_has_duplicates(
-        decltype(_alphabet_map)& alphabet_map) const;
   };  // class Presentation
 
   //! \ingroup presentations_group
@@ -1984,10 +2020,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p p already has an alphabet of
     //! the maximum possible size supported by `letter_type`.
+    // TODO(v4) remove in favour of direct call to alphabet helper of the same
+    // name, can't currently do this because we don't expose the Alphabet in
+    // Presentation.
     template <typename Word>
     typename Presentation<Word>::letter_type
     first_unused_letter(Presentation<Word> const& p);
-    // TODO deprecate the previous
 
     //! \brief Convert a monoid presentation to a semigroup presentation.
     //!
