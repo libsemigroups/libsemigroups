@@ -297,8 +297,7 @@ namespace libsemigroups {
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
   [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
   lexicographical_compare(Thing const& x, Thing const& y) {
-    return std::lexicographical_compare(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return lex_cmp(x, y);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -333,8 +332,7 @@ namespace libsemigroups {
   template <typename Thing>
   [[nodiscard]] [[deprecated("Use lex_cmp instead!")]] bool
   lexicographical_compare(Thing* const x, Thing* const y) {
-    return std::lexicographical_compare(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend());
+    return lex_cmp(x, y);
   }
 
   //! \brief A stateless struct with binary call operator using
@@ -388,13 +386,13 @@ namespace libsemigroups {
   //! \code_no_test
   //! template <typename Iterator>
   //! bool lenlex_cmp(Iterator first1,
-  //!                       Iterator last1,
-  //!                       Iterator first2,
-  //!                       Iterator last2) {
+  //!                 Iterator last1,
+  //!                 Iterator first2,
+  //!                 Iterator last2) {
   //!   return (last1 - first1) < (last2 - first2)
   //!          || ((last1 - first1) == (last2 - first2)
-  //!              && std::lexicographical_compare
-  //!                   (first1, last1, first2, last2));
+  //!              && std::lexicographical_compare(
+  //!                  first1, last1, first2, last2));
   //! }
   //! \end_code_no_test
   template <typename Iterator,
@@ -603,7 +601,7 @@ namespace libsemigroups {
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
   [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
   shortlex_compare(Thing const& x, Thing const& y) {
-    return shortlex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return lenlex_cmp(x, y);
   }
 
   //! \brief Compare two objects via their pointers using \ref shortlex_compare.
@@ -641,7 +639,7 @@ namespace libsemigroups {
   template <typename Thing>
   [[nodiscard]] [[deprecated("Use lenlex_cmp instead!")]] bool
   shortlex_compare(Thing* const x, Thing* const y) {
-    return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
+    return lenlex_cmp(x, y);
   }
 
   //! \brief A stateless struct with binary call operator using
@@ -1047,7 +1045,7 @@ namespace libsemigroups {
             typename = std::enable_if_t<!rx::is_input_or_sink_v<Thing>>>
   [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
   recursive_path_compare(Thing const& x, Thing const& y) noexcept {
-    return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    return rev_rpo_cmp(x, y);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -1083,8 +1081,7 @@ namespace libsemigroups {
   template <typename Thing>
   [[nodiscard]] [[deprecated("Use rev_rpo_cmp instead!")]] bool
   recursive_path_compare(Thing* const x, Thing* const y) noexcept {
-    return recursive_path_compare(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend());
+    return rev_rpo_cmp(x, y);
   }
 
   //! \brief A stateless struct with binary call operator using
@@ -2255,8 +2252,7 @@ namespace libsemigroups {
   wt_shortlex_compare_no_checks(Thing const&               x,
                                 Thing const&               y,
                                 std::vector<size_t> const& weights) {
-    return wt_shortlex_compare_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+    return wt_lenlex_cmp_no_checks(x, y, weights);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2305,8 +2301,7 @@ namespace libsemigroups {
   wt_shortlex_compare_no_checks(Thing* const               x,
                                 Thing* const               y,
                                 std::vector<size_t> const& weights) {
-    return wt_shortlex_compare_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+    return wt_lenlex_cmp(x, y, weights);
   }
 
   //! \brief Compare two objects of the same type using the weighted short-lex
@@ -2408,8 +2403,7 @@ namespace libsemigroups {
   wt_shortlex_compare(Thing const&               x,
                       Thing const&               y,
                       std::vector<size_t> const& weights) {
-    return wt_shortlex_compare(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+    return wt_lenlex_cmp(x, y, weights);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2457,8 +2451,7 @@ namespace libsemigroups {
   wt_shortlex_compare(Thing* const               x,
                       Thing* const               y,
                       std::vector<size_t> const& weights) {
-    return wt_shortlex_compare(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+    return wt_lenlex_cmp(x, y, weights);
   }
 
   //! \brief A stateful struct with binary call operator using
@@ -2592,8 +2585,7 @@ namespace libsemigroups {
   wt_lex_compare_no_checks(Thing const&               x,
                            Thing const&               y,
                            std::vector<size_t> const& weights) {
-    return wt_lex_compare_no_checks(
-        x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+    return wt_lex_cmp_no_checks(x, y, weights);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2642,8 +2634,7 @@ namespace libsemigroups {
   wt_lex_compare_no_checks(Thing* const               x,
                            Thing* const               y,
                            std::vector<size_t> const& weights) {
-    return wt_lex_compare_no_checks(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+    return wt_lex_cmp_no_checks(x, y, weights);
   }
 
   //! \brief Compare two objects of the same type using the weighted lex
@@ -2745,7 +2736,7 @@ namespace libsemigroups {
   wt_lex_compare(Thing const&               x,
                  Thing const&               y,
                  std::vector<size_t> const& weights) {
-    return wt_lex_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend(), weights);
+    return wt_lex_cmp(x, y, weights);
   }
 
   //! \brief Compare two objects via their pointers using
@@ -2793,8 +2784,7 @@ namespace libsemigroups {
   wt_lex_compare(Thing* const               x,
                  Thing* const               y,
                  std::vector<size_t> const& weights) {
-    return wt_lex_compare(
-        x->cbegin(), x->cend(), y->cbegin(), y->cend(), weights);
+    return wt_lex_cmp(x, y, weights);
   }
 
   //! \brief A stateful struct with binary call operator using
