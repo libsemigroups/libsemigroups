@@ -463,6 +463,8 @@ namespace libsemigroups {
           case Order::lex:
             return detail::lex_standardize(wg, f);
           case Order::rpo:
+          case Order::rev_rpo:
+            // TODO(1): Should there be a reverse_recursive_standardize?
             return detail::recursive_standardize(wg, f);
           default:
             return false;
@@ -478,6 +480,7 @@ namespace libsemigroups {
             return detail::is_shortlex_standardized(wg);
           case Order::lex:
           case Order::rpo:
+          case Order::rev_rpo:
           default:
             LIBSEMIGROUPS_EXCEPTION("not yet implemented")
         }
