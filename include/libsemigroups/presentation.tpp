@@ -23,13 +23,11 @@ namespace libsemigroups {
 
   template <typename Word>
   Presentation<Word>::Presentation()
-      : _alphabet(), _alphabet_map(), _contains_empty_word(false), rules() {}
+      : _alphabet(), _contains_empty_word(false), rules() {}
 
   template <typename Word>
   Presentation<Word>& Presentation<Word>::init() {
-    // TODO replace next 2 lines with _alphabet.init()
-    _alphabet.clear();
-    _alphabet_map.clear();
+    _alphabet.init();
     _contains_empty_word = false;
     rules.clear();
     return *this;
@@ -51,178 +49,39 @@ namespace libsemigroups {
   template <typename Word>
   Presentation<Word>::~Presentation() = default;
 
-  // TODO replace with _alphabet.size(n);
   template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(size_type n) {
-    // This checks that there are enough distinct Word::value_types to construct
-    // an alphabet of size n. If the size of Word::value_type is the same as the
-    // size of size_t, then one cannot specify the size of an alphabet large
-    // enough for which there are not enough distinct letters to be contained
-    // within it.
-    if constexpr (sizeof(typename Word::value_type) < sizeof(size_t)) {
-      if (n > 1 + std::numeric_limits<letter_type>::max()
-                  - std::numeric_limits<letter_type>::min()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a value in the range [0, {}), found {}",
-            std::numeric_limits<letter_type>::max()
-                - std::numeric_limits<letter_type>::min() + 2,
-            n);
-      }
-    }
-    word_type lphbt(n, 0);
-
-    // The below assertions exist to insure that we are not badly assigning
-    // values. The subsequent pragmas exist to suppress the false-positive
-    // warnings produced by g++ 13.2.0
-    static_assert(
-        std::is_same_v<std::decay_t<decltype(*lphbt.begin())>,
-                       decltype(words::human_readable_letter<Word>(0))>);
-#pragma GCC diagnostic push
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
-    std::iota(
-        lphbt.begin(), lphbt.end(), words::human_readable_letter<Word>(0));
-#pragma GCC diagnostic pop
-    return alphabet(lphbt);
+    _alphabet.init(n);
+    return *this;
   }
 
   template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(word_type const& lphbt) {
-    // We copy the _alphabet_map for exception safety
-    decltype(_alphabet_map) alphabet_map;
-    auto                    old_alphabet = std::move(_alphabet);
-    _alphabet                            = lphbt;
-    try_set_alphabet(alphabet_map, old_alphabet);
+    _alphabet.init(lphbt);
     return *this;
   }
 
   template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(word_type&& lphbt) {
-    // We copy the _alphabet_map for exception safety
-    decltype(_alphabet_map) alphabet_map;
-    auto                    old_alphabet = std::move(_alphabet);
-    _alphabet                            = std::move(lphbt);
-    try_set_alphabet(alphabet_map, old_alphabet);
+    _alphabet.init(std::move(lphbt));
     return *this;
   }
 
   template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet_from_rules() {
-    _alphabet_map.clear();
-    _alphabet.clear();
-    size_type index = 0;
+    _alphabet.init();
     for (auto const& rel : rules) {
       if (rel.empty()) {
         contains_empty_word(true);
-      }
-      for (auto const& letter : rel) {
-        if (_alphabet_map.emplace(letter, index).second) {
-          _alphabet.push_back(letter);
-          ++index;
+      } else {
+        for (auto letter : rel) {
+          if (!_alphabet.contains(letter)) {
+            _alphabet.add_letter_no_checks(letter);
+          }
         }
       }
     }
     return *this;
-  }
-
-  template <typename Word>
-  typename Presentation<Word>::letter_type
-  Presentation<Word>::letter(size_type i) const {
-    if (i >= _alphabet.size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected a value in [0, {}), found {}", _alphabet.size(), i);
-    }
-    return letter_no_checks(i);
-  }
-
-  template <typename Word>
-  typename Presentation<Word>::size_type
-  Presentation<Word>::index(letter_type val) const {
-    throw_if_letter_not_in_alphabet(val);
-    return _alphabet_map.find(val)->second;
-  }
-
-  template <typename Word>
-  Presentation<Word>& Presentation<Word>::add_generator_no_checks(
-      typename Presentation<Word>::letter_type x) {
-    size_t index = _alphabet_map.size();
-#ifdef LIBSEMIGROUPS_DEBUG
-    auto inserted = _alphabet_map.emplace(x, index);
-    LIBSEMIGROUPS_ASSERT(inserted.second);
-#else
-    _alphabet_map.emplace(x, index);
-#endif
-    _alphabet.push_back(x);
-    return *this;
-  }
-
-  template <typename Word>
-  Presentation<Word>& Presentation<Word>::add_generator(
-      typename Presentation<Word>::letter_type x) {
-    if (in_alphabet(x)) {
-      LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
-                              "{}, expected an unused letter",
-                              detail::to_printable(x),
-                              detail::to_printable(alphabet()));
-    }
-    return add_generator_no_checks(x);
-  }
-
-  // TODO(now) should this be a helper function?
-  template <typename Word>
-  typename Presentation<Word>::letter_type Presentation<Word>::add_generator() {
-    auto result = presentation::first_unused_letter(*this);
-    add_generator_no_checks(result);
-    return result;
-  }
-
-  template <typename Word>
-  Presentation<Word>& Presentation<Word>::remove_generator_no_checks(
-      typename Presentation<Word>::letter_type x) {
-    size_t index = _alphabet_map[x];
-    _alphabet_map.erase(x);
-    typename Word::iterator start = _alphabet.begin() + index;
-    for (auto it = start + 1; it != _alphabet.end(); ++it) {
-      --_alphabet_map[*it];
-    }
-    _alphabet.erase(start, start + 1);
-    return *this;
-  }
-
-  template <typename Word>
-  Presentation<Word>& Presentation<Word>::remove_generator(
-      typename Presentation<Word>::letter_type x) {
-    throw_if_alphabet_has_duplicates();
-    if (in_alphabet(x)) {
-      remove_generator_no_checks(x);
-    } else {
-      LIBSEMIGROUPS_EXCEPTION("the argument {} does not belong to the alphabet "
-                              "{}, expected an existing letter",
-                              detail::to_printable(x),
-                              detail::to_printable(alphabet()));
-    }
-    return *this;
-  }
-
-  template <typename Word>
-  void Presentation<Word>::throw_if_letter_not_in_alphabet(
-      typename Presentation<Word>::letter_type c) const {
-    if (_alphabet.empty()) {
-      LIBSEMIGROUPS_EXCEPTION("no alphabet has been defined");
-    } else if (_alphabet_map.find(c) == _alphabet_map.cend()) {
-      auto msg = fmt::format("invalid letter {}, valid letters are {}",
-                             detail::to_printable(c),
-                             detail::to_printable(_alphabet));
-      if constexpr (std::is_same_v<typename Presentation<Word>::letter_type,
-                                   char>) {
-        if (!std::isprint(c) && detail::isprint(_alphabet)) {
-          msg += fmt::format(
-              " == {}", std::vector<int>(_alphabet.begin(), _alphabet.end()));
-        }
-      }
-      LIBSEMIGROUPS_EXCEPTION(msg);
-    }
   }
 
   template <typename Word>
@@ -230,16 +89,12 @@ namespace libsemigroups {
   void
   Presentation<Word>::throw_if_letter_not_in_alphabet(Iterator1 first,
                                                       Iterator2 last) const {
-    if (!_contains_empty_word && first == last) {
-      // TODO(later) this exception message is misleading,
-      // should be something like "the arguments (iterators) define the empty
-      // word, expected a non-empty word"
-      LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty, did you mean to "
-                              "call contains_empty_word(true) first?");
+    if (first == last && !contains_empty_word()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the presentation does not contain the empty word, did you mean to "
+          "call contains_empty_word(true) first?");
     }
-    for (auto it = first; it != last; ++it) {
-      throw_if_letter_not_in_alphabet(*it);
-    }
+    _alphabet.throw_if_letter_not_in_alphabet(first, last);
   }
 
   template <typename Word>
@@ -248,33 +103,9 @@ namespace libsemigroups {
     presentation::throw_if_bad_rules(*this, rules.cbegin(), rules.cend());
   }
 
-  template <typename Word>
-  void Presentation<Word>::throw_if_alphabet_has_duplicates(
-      decltype(_alphabet_map)& alphabet_map) const {
-    LIBSEMIGROUPS_ASSERT(alphabet_map.empty());
-    size_type index = 0;
-    for (auto const& letter : _alphabet) {
-      auto it = alphabet_map.emplace(letter, index++);
-      if (!it.second) {
-        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
-                                detail::to_printable(_alphabet),
-                                detail::to_printable(letter));
-      }
-    }
-  }
-
-  template <typename Word>
-  void
-  Presentation<Word>::try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
-                                       word_type&               old_alphabet) {
-    try {
-      throw_if_alphabet_has_duplicates(alphabet_map);
-      _alphabet_map = std::move(alphabet_map);
-    } catch (LibsemigroupsException& e) {
-      _alphabet = std::move(old_alphabet);
-      throw;
-    }
-  }
+  ////////////////////////////////////////////////////////////////////////
+  // Helpers
+  ////////////////////////////////////////////////////////////////////////
 
   namespace presentation {
 
@@ -731,6 +562,8 @@ namespace libsemigroups {
           x = words::human_readable_letter<Word>(p.index(x));
         });
       }
+
+      // TODO(v4) replace from here ...
       Word A(p.alphabet().size(), 0);
 
       // The below assertion exists to insure that we are not badly assigning
@@ -749,6 +582,9 @@ namespace libsemigroups {
       }
 #pragma GCC diagnostic pop
       p.alphabet(std::move(A));
+      // TODO(v4) ... to here by something equivalent to
+      // "p._alphabet.init(p.alphabet().size())"
+      // which does the same thing
 #ifdef LIBSEMIGROUPS_DEBUG
       p.throw_if_bad_alphabet_or_rules();
 #endif
@@ -869,44 +705,11 @@ namespace libsemigroups {
       remove_trivial_rules(p);
     }
 
+    // TODO(v4) rm
     template <typename Word>
     typename Presentation<Word>::letter_type
     first_unused_letter(Presentation<Word> const& p) {
-      using letter_type = typename Presentation<Word>::letter_type;
-      using size_type   = typename Word::size_type;
-
-      auto const max_letter
-          = static_cast<size_type>(std::numeric_limits<letter_type>::max()
-                                   - std::numeric_limits<letter_type>::min());
-
-      // If the size of letter_type is the same as the size of size_t, then the
-      // largest possible alphabet [0, max] has size one larger than max. To
-      // prevent alphabet.size() overflowing, we don't allow this.
-      if constexpr (sizeof(letter_type) >= sizeof(size_type)) {
-        if (p.alphabet().size() == max_letter) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the alphabet of the 1st argument already has the maximum size "
-              "of {}, there are no unused generators",
-              max_letter);
-        }
-      } else {
-        if (p.alphabet().size() == max_letter + 1) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the alphabet of the 1st argument already has the maximum size "
-              "of {}, there are no unused generators",
-              std::numeric_limits<letter_type>::max()
-                  - std::numeric_limits<letter_type>::min());
-        }
-      }
-
-      letter_type x;
-      for (size_type i = 0; i < max_letter; ++i) {
-        x = words::human_readable_letter<Word>(i);
-        if (!p.in_alphabet(x)) {
-          break;
-        }
-      }
-      return x;
+      return alphabet::first_unused_letter(p.alphabet_v4());
     }
 
     template <typename Word>
@@ -1288,7 +1091,8 @@ namespace libsemigroups {
       std::unordered_map<value_type, std::pair<value_type, size_t>> map;
 
       for (size_t pos = 0; pos != p.rules.size(); pos += 2) {
-        // We use pointers here so that they can be swapped without changing <p>
+        // We use pointers here so that they can be swapped without changing
+        // <p>
         Word const* lhs = &p.rules[pos];
         Word const* rhs = &p.rules[pos + 1];
         if (lhs->empty() && rhs->size() == 2) {
@@ -1453,7 +1257,8 @@ namespace libsemigroups {
       // Must call p.throw_if_bad_alphabet_or_rules otherwise f(val) may
       // segfault if val is not in the alphabet
       p.throw_if_bad_alphabet_or_rules();
-      // TODO use Alphabet object
+      // TODO(v4) use Alphabet object here instead of duplicating the code from
+      // ...
       Result result;
       result.contains_empty_word(p.contains_empty_word());
       WordOutput new_alphabet;
@@ -1462,6 +1267,8 @@ namespace libsemigroups {
           p.alphabet().cbegin(), p.alphabet().cend(), new_alphabet.begin(), f);
       // TODO(1) use alphabet_no_checks when it is implemented
       result.alphabet(new_alphabet);
+      // TODO(v4) ... to here, can't do it now without constructors/init for
+      // Presentations from Alphabet objects
       WordOutput rel;
       for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
         rel.resize(it->size());
