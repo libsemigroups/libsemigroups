@@ -76,8 +76,7 @@ namespace libsemigroups {
 
     //! The reversed recursive-path ordering, based on the description in
     //! \cite Jantzen2012aa (Definition 1.2.14, page 24), where words are read
-    //! right-to-left before
-    //! ordering.
+    //! right-to-left before ordering.
     rev_rpo,
 
     //! The recursive-path ordering, as described in \cite Jantzen2012aa

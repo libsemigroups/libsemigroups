@@ -463,9 +463,9 @@ namespace libsemigroups {
           case Order::lex:
             return detail::lex_standardize(wg, f);
           case Order::rpo:
-          case Order::rev_rpo:
-            // TODO(1): Should there be a reverse_recursive_standardize?
             return detail::recursive_standardize(wg, f);
+          case Order::rev_rpo:
+            // Intentional fall-through
           default:
             return false;
         }

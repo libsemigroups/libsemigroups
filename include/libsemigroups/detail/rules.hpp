@@ -121,16 +121,16 @@ namespace libsemigroups {
 
     [[nodiscard]] static inline bool rpo_cmp(Rule const* rule1,
                                              Rule const* rule2) {
-      return libsemigroups::rpo_cmp(rule1->lhs(), rule2->lhs())
+      return ::libsemigroups::rpo_cmp(rule1->lhs(), rule2->lhs())
              || (rule1->lhs() == rule2->lhs()
-                 && libsemigroups::rpo_cmp(rule1->rhs(), rule2->rhs()));
+                 && ::libsemigroups::rpo_cmp(rule1->rhs(), rule2->rhs()));
     }
 
     [[nodiscard]] static inline bool rev_rpo_cmp(Rule const* rule1,
                                                  Rule const* rule2) {
-      return libsemigroups::rev_rpo_cmp(rule1->lhs(), rule2->lhs())
+      return ::libsemigroups::rev_rpo_cmp(rule1->lhs(), rule2->lhs())
              || (rule1->lhs() == rule2->lhs()
-                 && libsemigroups::rev_rpo_cmp(rule1->rhs(), rule2->rhs()));
+                 && ::libsemigroups::rev_rpo_cmp(rule1->rhs(), rule2->rhs()));
     }
 
     ////////////////////////////////////////////////////////////////////////
