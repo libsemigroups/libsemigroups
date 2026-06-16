@@ -1265,7 +1265,7 @@ namespace libsemigroups {
       "KnuthBendix",
       "099",
       "Giles Gardam (https://arxiv.org/abs/2102.11818)",
-      "[quick][tietze-explorer]",
+      "[quick][tietze-explorer][no-valgrind]",
       RPOTrie) {
     auto rg = ReportGuard(false);
     fmt::print("\n");
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "149",
                                    "abaab=aabba",
-                                   "[quick][tietze-explorer]",
+                                   "[quick][tietze-explorer][no-valgrind]",
                                    LenLexTrie) {
     auto rg = ReportGuard(false);
     fmt::print("\n");
