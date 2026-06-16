@@ -42,6 +42,7 @@
 #include <vector>            // for vector, operator!=
 
 #include "adapters.hpp"              // for Hash, EqualTo
+#include "alphabet.hpp"              // for Alphabet
 #include "constants.hpp"             // for Max, UNDEFINED, operator==
 #include "debug.hpp"                 // for LIBSEMIGROUPS_ASSERT
 #include "is_specialization_of.hpp"  // for is_specialization_of
@@ -63,16 +64,20 @@ namespace libsemigroups {
   //! This file contains documentation related to semigroup and monoid
   //! presentations in `libsemigroups`.
   //!
-  //! There are two classes and two namespaces with functionality related to
+  //! There are three classes and three namespaces with functionality related to
   //! presentations:
+  //! * \ref Alphabet "the Alphabet class"
   //! * \ref Presentation "the Presentation class"
   //! * \ref InversePresentation "the InversePresentation class"
+  //! * \ref alphabet "Helper functions for alphabets"
   //! * \ref presentation "Helper functions for presentations"
-  //! * \ref presentation::examples "Presentations for standard examples"
+  //! * \ref presentation::examples "Presentations for standard examples".
   //!
-  //! For documentation on how to create presentations from other
-  //! `libsemigroups` objects, see the documentation for the `to<Presentation>`
-  //! functions \ref to_presentation_group "here".
+  //! For documentation on how to create presentations and/or alphabets from
+  //! other `libsemigroups` objects, see the documentation for:
+  //!
+  //! * `to<Alphabet>` functions \ref to_alphabet_group "here"
+  //! * `to<Presentation>` functions \ref to_presentation_group "here".
 
   struct [[deprecated("Use is_specialization_of_v<Thing, Presentation> "
                       "instead")]] PresentationBase{};
@@ -128,6 +133,7 @@ namespace libsemigroups {
     using size_type = typename std::vector<word_type>::size_type;
 
    private:
+    // TODO replace with Alphabet object
     word_type                                  _alphabet;
     std::unordered_map<letter_type, size_type> _alphabet_map;
     bool                                       _contains_empty_word;
@@ -219,7 +225,7 @@ namespace libsemigroups {
     // TODO(1) Rename alphabet_size
     Presentation& alphabet(size_type n);
 
-    //! \brief Set the alphabet const reference.
+    //! \brief Set the alphabet by const reference.
     //!
     //! Sets the alphabet to be the letters in \p lphbt.
     //!
@@ -388,6 +394,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant on average, worst case linear in the size of the alphabet.
     [[nodiscard]] bool in_alphabet(letter_type val) const {
+      // TODO replace with Alphabet::contains
       return _alphabet_map.find(val) != _alphabet_map.cend();
     }
 
@@ -1980,6 +1987,7 @@ namespace libsemigroups {
     template <typename Word>
     typename Presentation<Word>::letter_type
     first_unused_letter(Presentation<Word> const& p);
+    // TODO deprecate the previous
 
     //! \brief Convert a monoid presentation to a semigroup presentation.
     //!

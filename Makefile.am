@@ -55,6 +55,11 @@ pkgdata_DATA = hpcombi.mk
 pkginclude_HEADERS =  include/libsemigroups/action.hpp
 pkginclude_HEADERS += include/libsemigroups/action.tpp
 pkginclude_HEADERS += include/libsemigroups/adapters.hpp
+pkginclude_HEADERS += include/libsemigroups/alphabet-class.hpp
+pkginclude_HEADERS += include/libsemigroups/alphabet-class.tpp
+pkginclude_HEADERS += include/libsemigroups/alphabet-helpers.hpp
+pkginclude_HEADERS += include/libsemigroups/alphabet-helpers.tpp
+pkginclude_HEADERS += include/libsemigroups/alphabet.hpp
 pkginclude_HEADERS += include/libsemigroups/aho-corasick.hpp
 pkginclude_HEADERS += include/libsemigroups/aho-corasick.tpp
 pkginclude_HEADERS += include/libsemigroups/bipart.hpp
@@ -1072,6 +1077,7 @@ lib_LTLIBRARIES = libsemigroups.la
 
 ## libsemigroups sources
 libsemigroups_la_SOURCES  = src/aho-corasick.cpp
+libsemigroups_la_SOURCES += src/alphabet-class.cpp
 libsemigroups_la_SOURCES += src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
@@ -1169,6 +1175,7 @@ check_PROGRAMS =  test_all
 
 EXTRA_PROGRAMS =  test_action
 EXTRA_PROGRAMS += test_aho_corasick
+EXTRA_PROGRAMS += test_alphabet
 EXTRA_PROGRAMS += test_bipart
 EXTRA_PROGRAMS += test_bitset
 EXTRA_PROGRAMS += test_bmat8
@@ -1265,6 +1272,7 @@ test_all_SOURCES =  tests/bmat-data.cpp
 test_all_SOURCES += $(CATCH2_SOURCES)
 test_all_SOURCES += tests/test-action.cpp
 test_all_SOURCES += tests/test-aho-corasick.cpp
+test_all_SOURCES += tests/test-alphabet.cpp
 test_all_SOURCES += tests/test-bipart.cpp
 test_all_SOURCES += tests/test-bitset.cpp
 test_all_SOURCES += tests/test-bmat8.cpp
@@ -1357,6 +1365,11 @@ test_aho_corasick_SOURCES =  tests/test-aho-corasick.cpp
 test_aho_corasick_SOURCES += tests/test-main.cpp
 test_aho_corasick_SOURCES += $(CATCH2_SOURCES)
 test_aho_corasick_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+test_alphabet_SOURCES =  tests/test-alphabet.cpp
+test_alphabet_SOURCES += tests/test-main.cpp
+test_alphabet_SOURCES += $(CATCH2_SOURCES)
+test_alphabet_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_bipart_SOURCES =  tests/test-bipart.cpp
 test_bipart_SOURCES += tests/test-main.cpp
