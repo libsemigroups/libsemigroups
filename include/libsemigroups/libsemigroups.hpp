@@ -131,7 +131,6 @@
 #include "detail/print.hpp"
 #include "detail/race.hpp"
 #include "detail/report.hpp"
-#include "detail/rewriters.hpp"
 #include "detail/rewriting-system.hpp"
 #include "detail/rules.hpp"
 #include "detail/stephen-impl.hpp"
