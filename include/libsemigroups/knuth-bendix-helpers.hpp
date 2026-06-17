@@ -39,6 +39,8 @@
 #include <utility>        // for move
 #include <vector>         // for vector
 
+#include <iostream>
+
 #include "adapters.hpp"                  // ReturnFalse
 #include "cong-common-helpers.hpp"       // for partition, add_gener...
 #include "constants.hpp"                 // for UNDEFINED, POSITIVE_...
@@ -265,9 +267,9 @@ namespace libsemigroups {
         rewriting_system::add_rule(rewriting_system, lhs, rhs);
       }
 
-      if (rewriting_system.confluent()) {
-        word_type oriented_alphabet = du_narendran_rusinowitch(p);
-        if (!oriented_alphabet.empty()) {
+      word_type oriented_alphabet = du_narendran_rusinowitch(p);
+      if (!oriented_alphabet.empty()) {
+        if (rewriting_system.confluent()) {
           p.alphabet(oriented_alphabet);
           return true;
         }
@@ -299,8 +301,12 @@ namespace libsemigroups {
            orientation_index < num_rule_orientations;
            ++orientation_index) {
         oriented_presentation = p;
-        if (
-
+        if (std::cout << "Checking " << orientation_index + 1 << "/"
+                      << num_rule_orientations << "("
+                      << 100
+                             * (float(orientation_index + 1)
+                                / float(num_rule_orientations))
+                      << "%)" << std::endl;
             detail::orient_and_check(
                 oriented_presentation, rewriting_system, orientation_index)) {
           p = oriented_presentation;
