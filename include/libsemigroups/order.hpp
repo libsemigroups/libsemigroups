@@ -682,8 +682,8 @@ namespace libsemigroups {
   //! 2. \f$u = au'\f$ and \f$v = bv'\f$ for some \f$a,b \in X\f$, \f$u',v'\in
   //!    X ^ {*}\f$ and:
   //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u  < v'\f$; or
-  //!   3. \f$a > b\f$ and \f$u' < v\f$.
+  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
+  //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
   //! This documentation and the implementation of \ref recursive_path_compare
   //! is based on the source code of \cite Holt2018aa, specifically the function
@@ -830,8 +830,8 @@ namespace libsemigroups {
   //! 2. \f$u = u'a\f$ and \f$v = v'b\f$ for some \f$a,b \in X\f$, \f$u',v'\in
   //!    X ^ {*}\f$ and:
   //!   1. \f$a = b\f$ and \f$u' < v'\f$; or
-  //!   2. \f$a < b\f$ and \f$u  < v'\f$; or
-  //!   3. \f$a > b\f$ and \f$u' < v\f$.
+  //!   2. \f$a < b\f$ and \f$u'  < v\f$; or
+  //!   3. \f$a > b\f$ and \f$u < v'\f$.
   //!
   //! This documentation and the implementation of \ref recursive_path_compare
   //! is based on the source code of \cite Holt2018aa, specifically the function
