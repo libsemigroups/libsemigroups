@@ -304,8 +304,8 @@ namespace libsemigroups {
         if (std::cout << "Checking " << orientation_index + 1 << "/"
                       << num_rule_orientations << "("
                       << 100
-                             * (float(orientation_index + 1)
-                                / float(num_rule_orientations))
+                             * (static_cast<float>(orientation_index + 1)
+                                / static_cast<float>(num_rule_orientations))
                       << "%)" << std::endl;
             detail::orient_and_check(
                 oriented_presentation, rewriting_system, orientation_index)) {
