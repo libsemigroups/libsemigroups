@@ -64,20 +64,24 @@ namespace libsemigroups {
 
   //! \ingroup du_narendran_rusinowitch_group
   //!
-  //! \brief Return an an ordered alphabet such that the rules are oriented with
+  //! \brief Return an ordered alphabet such that the rules are oriented with
   //! respect to RPO.
   //!
   //! This function returns the alphabet of \p p ordered so that the rules of
   //! \p p satisfy \f$x_i \to y_i \f$ and \f$x_i > y_i\f$ with respect to
   //! recursive path order and the returned alphabet order. The returned
-  //! alphabet is empty if this fails.
+  //! alphabet is empty if this fails, or if the alphabet was empty to begin
+  //! with.
   //!
   //! \tparam Word the type of the words in the presentation.
   //!
   //! \param p the presentation.
   //!
   //! \returns The ordered alphabet, if such an alphabet exists. Otherwise, the
-  //! empty word.
+  //! empty alphabet.
+  //!
+  //! \throws LibsemigroupsException if
+  //! \ref Presentation::throw_if_bad_alphabet_or_rules throws.
   //!
   //! \sa
   //! \ref rpo_cmp
@@ -88,6 +92,9 @@ namespace libsemigroups {
   Word du_narendran_rusinowitch(Presentation<Word> const& p) {
     using native_letter_type = typename Word::value_type;
     p.throw_if_bad_alphabet_or_rules();
+
+    // Stores the partial-alphabet for which the rules are compatible from
+    // biggest to smallest.
     Word result;
 
     if (p.alphabet().size() == 0) {
@@ -100,13 +107,15 @@ namespace libsemigroups {
       return p.alphabet();
     }
 
-    // At depth <r> of the backtrack algorithm, the the subword of rule <c> that
+    // At depth <r> of the backtrack algorithm, the subword of rule <c> that
     // needs to be explored is the word contained in the range
     // [subword_start_indices[r, c], subword_end_indices[c])
     detail::DynamicArray2<size_t> subword_start_indices(C, R);
     std::vector<size_t>           subword_end_indices(C, 0);
 
-    // Don't consider common prefixes and suffixes
+    // Populate subword_start_indices and subword_end_indices so we don't
+    // consider common prefixes and suffixes. After it is set here,
+    // subword_end_indices doesn't change.
     for (size_t c = 0; c < C; c += 2) {
       auto const   lhs = p.rules[c], rhs = p.rules[c + 1];
       size_t const prefix_index = std::distance(
@@ -202,18 +211,17 @@ namespace libsemigroups {
         size_t const rhs_count = std::count(
             rhs.begin() + rhs_start, rhs.begin() + rhs_end, letter);
 
-        if (lhs_count > rhs_count) {
-          // Indicate success
-          subword_start_indices.set(r + 1, c, UNDEFINED);
-          subword_start_indices.set(r + 1, c + 1, UNDEFINED);
-        } else if (lhs_count < rhs_count) {
+        // Initially assume that the word is correctly oriented
+        size_t new_lhs_start = UNDEFINED;
+        size_t new_rhs_start = UNDEFINED;
+        if (lhs_count < rhs_count) {
           // Indicate failure
           contains_incompatible_rules = true;
           break;
-        } else {
-          // Update the subword index to contain the longest suffix of <lhs> and
-          // <rhs> that does not contain <letter>
-          size_t const new_lhs_start
+        } else if (lhs_count == rhs_count) {
+          // Update the start index so that the subwords are the longest suffix
+          // of <lhs> and <rhs> that do not contain <letter>
+          new_lhs_start
               = lhs.size()
                 - std::distance(
                     lhs.rbegin(),
@@ -221,7 +229,7 @@ namespace libsemigroups {
                         std::make_reverse_iterator(lhs.begin() + lhs_end),
                         std::make_reverse_iterator(lhs.begin() + lhs_start),
                         letter));
-          size_t const new_rhs_start
+          new_rhs_start
               = rhs.size()
                 - std::distance(
                     rhs.rbegin(),
@@ -231,22 +239,22 @@ namespace libsemigroups {
                         letter));
 
           if (new_rhs_start == rhs_end) {
-            subword_start_indices.set(r + 1, c, UNDEFINED);
-            subword_start_indices.set(r + 1, c + 1, UNDEFINED);
+            new_lhs_start = UNDEFINED;
+            new_rhs_start = UNDEFINED;
           } else if (new_lhs_start == lhs_end) {
             contains_incompatible_rules = true;
             break;
-          } else {
-            subword_start_indices.set(r + 1, c, new_lhs_start);
-            subword_start_indices.set(r + 1, c + 1, new_rhs_start);
           }
         }
+        subword_start_indices.set(r + 1, c, new_lhs_start);
+        subword_start_indices.set(r + 1, c + 1, new_rhs_start);
       }
 
-      // If all of the rules are correctly oriented with respect to the current
-      // partial-alphabet, fill the remaining spots of the alphabet arbitrarily.
+      // If all of the rules are correctly oriented with respect to the
+      // current partial-alphabet, fill the remaining spots of the alphabet
+      // arbitrarily.
       if (all_rules_oriented) {
-        for (letter_type const l : p.alphabet()) {
+        for (native_letter_type const l : p.alphabet()) {
           if (std::find(result.begin(), result.end(), l) == result.end()) {
             result.push_back(l);
           }
