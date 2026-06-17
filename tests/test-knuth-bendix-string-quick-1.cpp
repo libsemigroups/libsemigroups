@@ -33,6 +33,7 @@
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, ope...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
+#include "libsemigroups/adapters.hpp"            // for ReturnFalse
 #include "libsemigroups/constants.hpp"           // for operator==, operator!=
 #include "libsemigroups/exception.hpp"           // for LibsemigroupsException
 #include "libsemigroups/knuth-bendix.hpp"        // for KnuthBendix, normal_f...
@@ -1371,6 +1372,27 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> k(twosided, p);
     k.run();
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "147",
+                          "order search",
+                          "[quick][knuth-bendix][order-explorer]") {
+    auto            rg = ReportGuard(false);
+    using literals::operator""_w;
+
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+    p.alphabet(2);
+    presentation::add_rule(p, "11"_w, "01"_w);
+    KnuthBendix<word_type, detail::RewritingSystemTrie<ReturnFalse>> kb(
+        twosided, p);
+    REQUIRE(!kb.rewriting_system().confluent());
+    REQUIRE(knuth_bendix::order_search(p));
+    REQUIRE(p.rules == std::vector<word_type>{"01"_w, "11"_w});
+    REQUIRE(p.alphabet() == "10"_w);
+    kb.init(twosided, p);
+    REQUIRE(kb.rewriting_system().confluent());
   }
 
 }  // namespace libsemigroups
