@@ -206,7 +206,7 @@ namespace libsemigroups {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       if (!current_word_graph().is_standardized()) {
-        _word_graph.standardize(Order::shortlex);
+        _word_graph.standardize(Order::lenlex);
       }
       return current_index_of_no_checks(first, last);
     }
@@ -221,7 +221,7 @@ namespace libsemigroups {
         // 0, ..., n - 1 on to the nodes of the word graph.
         // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
-        const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
+        const_cast<Graph&>(_word_graph).standardize(Order::lenlex);
       }
 
       size_t const offset
@@ -253,7 +253,7 @@ namespace libsemigroups {
         // Or worse, there's no guarantee that _tree is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
-        const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
+        const_cast<Graph&>(_word_graph).standardize(Order::lenlex);
       }
       return current_word_of_no_checks(d_first, i);
     }
@@ -336,7 +336,7 @@ namespace libsemigroups {
               && !internal_generating_pairs().empty())) {
         if (!current_word_graph().is_standardized()) {
           // TODO(1) this is a bit fishy
-          const_cast<Graph&>(_word_graph).standardize(Order::shortlex);
+          const_cast<Graph&>(_word_graph).standardize(Order::lenlex);
         }
         index_type pos = current_index_of_no_checks(first, last);
         if (pos == UNDEFINED) {

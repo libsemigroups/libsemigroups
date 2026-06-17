@@ -356,7 +356,7 @@ namespace libsemigroups {
         }
         std::vector<Word> words(mp.cbegin(), mp.cend());
         std::sort(words.begin(), words.end(), [](auto const& u, auto const& v) {
-          return shortlex_compare(v, u);
+          return lenlex_cmp(v, u);
         });
         return words;
       }

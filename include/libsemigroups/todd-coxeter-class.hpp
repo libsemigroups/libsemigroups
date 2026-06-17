@@ -114,7 +114,7 @@ namespace libsemigroups {
   //!    .lookahead_extent(options::lookahead_extent::partial)
   //!    .save(false);
   //! tc.number_of_classes();  //-> 10752
-  //! tc.standardize(Order::recursive);
+  //! tc.standardize(Order::rpo);
   //! todd_coxeter::normal_forms(tc) | rx::take(10) | rx::to_vector();
   //! // {0_w,
   //! //  1_w,
@@ -1067,7 +1067,7 @@ namespace libsemigroups {
     //! described by the iterators \p first and \p last. A full enumeration is
     //! triggered by calls to this function. If the \ref current_word_graph
     //! has not already been standardized, then this function first
-    //! standardizes it with respect to Order::shortlex; otherwise the
+    //! standardizes it with respect to Order::lenlex; otherwise the
     //! existing standardization order is used.
     //!
     //! The returned index is obtained by following the path in
@@ -1097,7 +1097,7 @@ namespace libsemigroups {
     //! described by the iterators \p first and \p last. A full enumeration is
     //! triggered by calls to this function. If the \ref current_word_graph
     //! has not already been standardized, then this function first
-    //! standardizes it with respect to Order::shortlex; otherwise the
+    //! standardizes it with respect to Order::lenlex; otherwise the
     //! existing standardization order is used.
     //!
     //! The returned index is obtained by following the path in
@@ -1150,7 +1150,7 @@ namespace libsemigroups {
     //! This function appends a current word representing the class with index
     //! \p i to the output iterator \p d_first. No enumeration is triggered by
     //! calls to this function, but \ref current_word_graph is standardized
-    //! (using Order::shortlex) if it is not already standardized.
+    //! (using Order::lenlex) if it is not already standardized.
     //!
     //! The word appended to \p d_first is obtained by following a path in
     //! \ref current_spanning_tree from the node corresponding to index \c i
@@ -1184,7 +1184,7 @@ namespace libsemigroups {
     //! This function appends a current word representing the class with index
     //! \p i to the output iterator \p d_first. No enumeration is triggered by
     //! calls to this function, but \ref current_word_graph is standardized
-    //! (using Order::shortlex) if it is not already standardized.
+    //! (using Order::lenlex) if it is not already standardized.
     //!
     //! The word appended to \p d_first is obtained by following a path in
     //! \ref current_spanning_tree from the node corresponding to index \c i

@@ -26,7 +26,7 @@
 #include <utility>    // for move
 #include <vector>     // for vector
 
-#include "order.hpp"         // for ShortLexCompare
+#include "order.hpp"         // for LenLexCmp
 #include "presentation.hpp"  // for Presentation
 
 #include "detail/citow.hpp"              // for citow
@@ -92,8 +92,7 @@ namespace libsemigroups {
   //! * 256 letters if `char` is an unsigned integer.
   // TODO(v4) remove the final template parameter, which isn't required any more
   template <typename Word,
-            typename RewritingSystem
-            = detail::RewritingSystemTrie<ShortLexCompare>,
+            typename RewritingSystem = detail::RewritingSystemTrie<LenLexCmp>,
             typename ReductionOrder = typename RewritingSystem::reduction_order>
   class KnuthBendix
       : public detail::KnuthBendixImpl<RewritingSystem, ReductionOrder> {

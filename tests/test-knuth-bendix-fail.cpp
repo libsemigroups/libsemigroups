@@ -38,7 +38,7 @@
 #include "libsemigroups/detail/rules.hpp"
 #include "libsemigroups/exception.hpp"              // for LibsemigroupsExcep...
 #include "libsemigroups/knuth-bendix.hpp"           // for KnuthBendix, norma...
-#include "libsemigroups/order.hpp"                  // for shortlex_compare
+#include "libsemigroups/order.hpp"                  // for lenlex_cmp
 #include "libsemigroups/paths.hpp"                  // for Paths
 #include "libsemigroups/presentation-examples.hpp"  // for partition_mo
 #include "libsemigroups/presentation.hpp"           // for add_rule, Presenta...
@@ -57,10 +57,10 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using LenLexTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using LenLexSet  = detail::RewritingSystemSet<ShortLexCompare>;
-  using RPOTrie    = detail::RewritingSystemTrie<RecursivePathCompare>;
-  using RPOSet     = detail::RewritingSystemSet<RecursivePathCompare>;
+  using LenLexTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using LenLexSet  = detail::RewritingSystemSet<LenLexCmp>;
+  using RPOTrie    = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOSet     = detail::RewritingSystemSet<RevRPOCmp>;
 
 #define REWRITING_SYSTEM_TYPES LenLexTrie, RPOTrie
 
@@ -114,7 +114,7 @@ namespace libsemigroups {
     KnuthBendix<std::string, TestType> kb(twosided, p);
 
     REQUIRE(!kb.rewriting_system().confluent());
-    kb.rewriting_system().sort_pending_rules_by(detail::rpo_cmp);
+    kb.rewriting_system().sort_pending_rules_by(detail::rev_rpo_cmp);
 
     knuth_bendix::by_overlap_length(kb);
     REQUIRE(kb.rewriting_system().number_of_rules() == 0);
@@ -144,7 +144,7 @@ namespace libsemigroups {
       auto tmp = it1 + "#" + it2;
       auto u   = swap_a_and_b(it1);
       auto v   = swap_a_and_b(it2);
-      if (shortlex_compare(u, v)) {
+      if (lenlex_cmp(u, v)) {
         get_set().insert(u + "#" + v);
       } else {
         get_set().insert(v + "#" + u);

@@ -17,8 +17,8 @@
 //
 
 #include "libsemigroups/config.hpp"      // for LIBSEMIGROUPS_CATCH_ALL_HEADER
-#include "libsemigroups/order.hpp"       // for LexicographicalCompare
-#include "libsemigroups/ranges.hpp"      // for LexicographicalCompare
+#include "libsemigroups/order.hpp"       // for LexCmp
+#include "libsemigroups/ranges.hpp"      // for LexCmp
 #include "libsemigroups/word-range.hpp"  // for number_of_words
 
 #include LIBSEMIGROUPS_CATCH_ALL_HEADER  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
@@ -37,16 +37,16 @@ namespace libsemigroups {
 
       REQUIRE(strings.count() == number_of_words(3, 0, 13));
       REQUIRE(strings.count() == 797'161);
-      REQUIRE(is_sorted(strings, LexicographicalCompare()));
+      REQUIRE(is_sorted(strings, LexCmp()));
     };
 
     BENCHMARK("3-letter alphabet + length 0 to 13 + shortlex") {
       StringRange strings;
       std::string last(13, 'c');
-      strings.alphabet("abc").first("").last(last).order(Order::shortlex);
+      strings.alphabet("abc").first("").last(last).order(Order::lenlex);
       REQUIRE(strings.count() == number_of_words(3, 0, 13));
       REQUIRE(strings.count() == 797'161);
-      REQUIRE(is_sorted(strings, ShortLexCompare()));
+      REQUIRE(is_sorted(strings, LenLexCmp()));
     };
   }
 }  // namespace libsemigroups

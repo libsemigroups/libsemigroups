@@ -2661,7 +2661,7 @@ namespace libsemigroups {
     template <typename Graph>
     [[deprecated]] std::pair<bool, Forest> standardize(Graph& wg,
                                                        Order  val
-                                                       = Order::shortlex);
+                                                       = Order::lenlex);
 
     //! \brief Check if a word graph is standardized.
     //!
@@ -2672,10 +2672,10 @@ namespace libsemigroups {
     //!
     //! \param wg the word graph to check.
     //! \param val the order to use for standardization check (defaults to
-    //! Order::shortlex).
+    //! Order::lenlex).
     //!
     //! \throws LibsemigroupsException if \p val is not one of: Order::none,
-    //! Order::shortlex, Order::lex or Order::recursive.
+    //! Order::lenlex, Order::lex or Order::rpo.
     //!
     //! \note This function will be moved from the header `word-graph.hpp`
     //! to `word-graph-helpers.hpp` in v4 of libsemigroups.
@@ -2684,7 +2684,7 @@ namespace libsemigroups {
     //! \ref standardize.
     template <typename Node>
     [[deprecated]] bool is_standardized(WordGraph<Node> const& wg,
-                                        Order val = Order::shortlex);
+                                        Order val = Order::lenlex);
 
     //! \brief Throws if the target of any edge is out of bounds.
     //!

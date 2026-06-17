@@ -40,7 +40,7 @@
 #include "libsemigroups/exception.hpp"          // for LibsemigroupsException
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix
-#include "libsemigroups/order.hpp"              // for LexicographicalCompare
+#include "libsemigroups/order.hpp"              // for LexCmp
 #include "libsemigroups/paths.hpp"              // for Paths, const_pstilo_i...
 #include "libsemigroups/ranges.hpp"             // for equal, is_sorted
 #include "libsemigroups/to-froidure-pin.hpp"
@@ -81,7 +81,7 @@ namespace libsemigroups {
     p.source(0);
     REQUIRE(begin(p) != end(p));
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
 
     REQUIRE(p.size_hint() == 100);
     REQUIRE((p | count()) == 100);
@@ -141,40 +141,35 @@ namespace libsemigroups {
     REQUIRE(p.size_hint() == 1);
     REQUIRE((p | count()) == 1);
     REQUIRE((p | to_vector()) == expected);
-    REQUIRE(std::is_sorted(
-        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(expected.cbegin(), expected.cend(), LexCmp()));
 
     p.min(0).max(1);
     expected = {""_w, 0_w, 1_w};
     REQUIRE(p.size_hint() == 3);
     REQUIRE((p | count()) == 3);
     REQUIRE((p | to_vector()) == expected);
-    REQUIRE(std::is_sorted(
-        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(expected.cbegin(), expected.cend(), LexCmp()));
 
     p.min(0).max(2);
     expected = {""_w, 0_w, 1_w, 10_w, 11_w, 12_w};
     REQUIRE(p.size_hint() == 6);
     REQUIRE((p | count()) == 6);
     REQUIRE((p | to_vector()) == expected);
-    REQUIRE(std::is_sorted(
-        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(expected.cbegin(), expected.cend(), LexCmp()));
 
     p.min(0).max(3);
     expected = {""_w, 0_w, 1_w, 10_w, 11_w, 111_w, 12_w, 121_w};
     REQUIRE(p.size_hint() == 8);
     REQUIRE((p | count()) == 8);
     REQUIRE((p | to_vector()) == expected);
-    REQUIRE(std::is_sorted(
-        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(expected.cbegin(), expected.cend(), LexCmp()));
 
     p.min(0).max(4);
     expected = {""_w, 0_w, 1_w, 10_w, 11_w, 111_w, 12_w, 121_w, 1210_w};
     REQUIRE(p.size_hint() == 9);
     REQUIRE((p | count()) == 9);
     REQUIRE((p | to_vector()) == expected);
-    REQUIRE(std::is_sorted(
-        expected.cbegin(), expected.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(expected.cbegin(), expected.cend(), LexCmp()));
 
     p.min(0).max(10);
     REQUIRE((p | to_vector()) == expected);
@@ -196,7 +191,7 @@ namespace libsemigroups {
     REQUIRE(p.get() == ""_w);
     REQUIRE((p | count()) == 201);
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
     REQUIRE((p | count()) == 201);
   }
 
@@ -217,13 +212,13 @@ namespace libsemigroups {
     REQUIRE((p | to_vector())
             == std::vector({{}, 0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
-    p.order(Order::shortlex).source(0).min(0).max(2);
+    p.order(Order::lenlex).source(0).min(0).max(2);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
     REQUIRE((p | count()) == 7);
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
     REQUIRE((p | count()) == 7);
     REQUIRE((p | to_vector())
             == std::vector({{}, 0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
@@ -249,7 +244,7 @@ namespace libsemigroups {
                             110_w,
                             111_w}));
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
     REQUIRE((p | to_vector())
             == std::vector({{},
                             0_w,
@@ -284,7 +279,7 @@ namespace libsemigroups {
                             110_w,
                             111_w}));
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
     REQUIRE((p | to_vector())
             == std::vector({0_w,
                             1_w,
@@ -304,14 +299,14 @@ namespace libsemigroups {
     REQUIRE((p | to_vector())
             == std::vector({0_w, 00_w, 01_w, 1_w, 10_w, 11_w}));
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
     REQUIRE((p | to_vector())
             == std::vector({0_w, 1_w, 00_w, 01_w, 10_w, 11_w}));
 
     p.order(Order::lex).source(2).min(2).max(3);
     REQUIRE((p | to_vector()) == std::vector({00_w, 01_w, 10_w, 11_w}));
 
-    p.order(Order::shortlex);
+    p.order(Order::lenlex);
     REQUIRE((p | to_vector()) == std::vector({00_w, 01_w, 10_w, 11_w}));
   }
 
@@ -335,17 +330,17 @@ namespace libsemigroups {
                             0010_w,
                             0100_w};
 
-    std::sort(expected.begin(), expected.end(), ShortLexCompare());
+    std::sort(expected.begin(), expected.end(), LenLexCmp());
 
     Paths p(wg);
-    p.order(Order::shortlex).source(0).target(4).min(0).max(4);
+    p.order(Order::lenlex).source(0).target(4).min(0).max(4);
 
     REQUIRE((p | count()) == 13);
     REQUIRE((p | count()) == 13);
     REQUIRE((p | to_vector()) == expected);
     REQUIRE((p | take(1)).get() == 01_w);
 
-    std::sort(expected.begin(), expected.end(), LexicographicalCompare());
+    std::sort(expected.begin(), expected.end(), LexCmp());
     p.order(Order::lex).source(0).target(4).min(0).max(4);
 
     REQUIRE((p | to_vector()) == expected);
@@ -362,7 +357,7 @@ namespace libsemigroups {
     REQUIRE((expected2 | count()) == 131'062);
     REQUIRE((w | skip_n(w.size_hint() - 1)).get().size() == 17);
 
-    p.order(Order::shortlex).max(N - 1);
+    p.order(Order::lenlex).max(N - 1);
     REQUIRE((p | count()) == 131'062);
     REQUIRE(equal(p, expected2));
     p.target(UNDEFINED);
@@ -438,8 +433,7 @@ namespace libsemigroups {
                           01_w};
 
     REQUIRE(lprime.size() == 15);
-    REQUIRE(std::is_sorted(
-        lprime.cbegin(), lprime.cend(), LexicographicalCompare()));
+    REQUIRE(std::is_sorted(lprime.cbegin(), lprime.cend(), LexCmp()));
 
     auto rhs = (seq() | first_n(lprime.size()) | transform([&](auto i) {
                   return tprime[follow_path(wg, S.size(), lprime[i])];
@@ -503,10 +497,10 @@ namespace libsemigroups {
                             0010_w,
                             0100_w};
 
-    std::sort(expected.begin(), expected.end(), ShortLexCompare());
+    std::sort(expected.begin(), expected.end(), LenLexCmp());
 
     Paths p(wg);
-    p.order(Order::shortlex).source(0).target(4).min(0).max(4);
+    p.order(Order::lenlex).source(0).target(4).min(0).max(4);
     REQUIRE((p | to_vector()) == expected);
 
     size_t const N = 18;
@@ -519,7 +513,7 @@ namespace libsemigroups {
            | to_vector());
     REQUIRE(expected.size() == 131'062);
 
-    p.order(Order::shortlex).source(0).target(4).min(0).max(N - 1);
+    p.order(Order::lenlex).source(0).target(4).min(0).max(N - 1);
     REQUIRE((p | count()) == 131'062);
     REQUIRE((p | to_vector()) == expected);
   }
@@ -536,9 +530,9 @@ namespace libsemigroups {
                                            {3}});
 
     Paths p(wg);
-    p.order(Order::shortlex).source(0).min(0).max(9);
+    p.order(Order::lenlex).source(0).min(0).max(9);
 
-    REQUIRE(is_sorted(p, ShortLexCompare()));
+    REQUIRE(is_sorted(p, LenLexCmp()));
     REQUIRE((p | count()) == 75);
     REQUIRE(p.count() == 75);
     p.max(POSITIVE_INFINITY);
@@ -565,7 +559,7 @@ namespace libsemigroups {
              010112010_w, 010201001_w, 011201001_w, 020100100_w, 120100100_w}));
 
     auto expected = p | to_vector();
-    std::sort(expected.begin(), expected.end(), LexicographicalCompare());
+    std::sort(expected.begin(), expected.end(), LexCmp());
     REQUIRE(expected == (p.order(Order::lex) | to_vector()));
   }
 

@@ -23,7 +23,7 @@
 // #include <algorithm>  // for lexicographical_...
 
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
-#include "libsemigroups/order.hpp"      // for lexicographical_compare
+#include "libsemigroups/order.hpp"      // for lex_cmp
 #include "libsemigroups/types.hpp"      // for word_type
 
 namespace libsemigroups {
@@ -61,7 +61,7 @@ namespace libsemigroups {
         if (_current.size() < _upper_bound && _letter != _number_letters) {
           _current.push_back(_letter);
           _letter = 0;
-          if (lexicographical_compare(_current, _last)) {
+          if (lex_cmp(_current, _last)) {
             return *this;
           }
         } else if (!_current.empty()) {
@@ -125,7 +125,7 @@ namespace libsemigroups {
           _current.pop_back();
         }
         _current.resize((_current.empty() ? n + 1 : n), 0);
-        if (!shortlex_compare(_current, _last)) {
+        if (!lenlex_cmp(_current, _last)) {
           _index = UNDEFINED;
         }
       }

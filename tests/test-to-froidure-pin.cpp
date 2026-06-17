@@ -39,8 +39,8 @@
 
 namespace libsemigroups {
 
-  using RewritingSystemTrie = detail::RewritingSystemTrie<ShortLexCompare>;
-  using RewritingSystemSet  = detail::RewritingSystemSet<ShortLexCompare>;
+  using RewritingSystemTrie = detail::RewritingSystemTrie<LenLexCmp>;
+  using RewritingSystemSet  = detail::RewritingSystemSet<LenLexCmp>;
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
