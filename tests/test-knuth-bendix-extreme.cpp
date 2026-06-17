@@ -837,4 +837,66 @@ namespace libsemigroups {
     auto result = dora.depth_max(2).number_of_threads(10).result();
     REQUIRE(!result.has_value());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "156",
+                          "https://math.stackexchange.com/questions/2649807",
+                          "[knuth-bendix][extreme][order-explorer]") {
+    auto        rg    = ReportGuard(true);
+    std::string lphbt = "abcB";
+    std::string invrs = "aBcb";
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet(lphbt);
+
+    presentation::add_inverse_rules(p, invrs);
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bbbbbbbbbbb", "");
+    presentation::add_rule(p, "cc", "");
+    presentation::add_rule(p, "abababab", "");
+    presentation::add_rule(p, "abbabbabbabbabbabb", "");
+    presentation::add_rule(p, "abbabaBabaBBabbaB", "");
+    presentation::add_rule(p, "acacac", "");
+    presentation::add_rule(p, "bcbc", "");
+
+    auto new_p = v4::to<Presentation<word_type>>(p);
+    REQUIRE(!knuth_bendix::order_search(new_p));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "157",
+                          "baa(ba)^N=a",
+                          "[extreme][order-explorer]") {
+    auto rg = ReportGuard(true);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+
+    for (auto N = 2; N < 4; ++N) {
+      p.rules    = {words::parse(fmt::format("baa(ba)^{}", N)), "a"};
+      auto new_p = v4::to<Presentation<word_type>>(p);
+      REQUIRE(!knuth_bendix::order_search(new_p));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "158",
+                          "aaa=1, aBBBABAb=1",
+                          "[extreme][order-explorer]") {
+    auto                        rg = ReportGuard(true);
+    using std::string_literals::operator""s;
+    Presentation<std::string>   p;
+    p.alphabet("abB");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "aBb");
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "ba", "ababbb");
+    REQUIRE(presentation::index_rule(p, "aa"s, ""s) == 0);
+    p.rules.erase(p.rules.begin(), p.rules.begin() + 2);
+
+    auto new_p = v4::to<Presentation<word_type>>(p);
+    REQUIRE(!knuth_bendix::order_search(new_p));
+  }
 }  // namespace libsemigroups
