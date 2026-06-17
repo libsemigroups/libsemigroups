@@ -58,6 +58,7 @@ namespace libsemigroups {
   //! conversion could be implemented.
   //!
   //! See the following for more details:
+  //! * \ref to_alphabet_group
   //! * \ref to_cong_group
   //! * \ref to_froidure_pin_group
   //! * \ref to_inverse_presentation_group
