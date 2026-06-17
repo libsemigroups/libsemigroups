@@ -106,6 +106,9 @@ namespace libsemigroups {
   template <typename Word>
   Word du_narendran_rusinowitch(Presentation<Word> const& p);
 
+  // TODO(2): Refactor this to remove code duplication. In particular, there are
+  // several cases where we do something to a lhs, and then do exactly the same
+  // thing to the rhs; it would be good to get rid of this.
   template <typename Word>
   Word du_narendran_rusinowitch(Presentation<Word> const& p) {
     using native_letter_type = typename Word::value_type;
