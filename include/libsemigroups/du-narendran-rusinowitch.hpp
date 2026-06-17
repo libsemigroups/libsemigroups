@@ -53,6 +53,24 @@ namespace libsemigroups {
                                    == result.end();
                           });
     }
+
+    template <typename Word>
+    size_t start_of_longest_suffix_without_letter(
+        Word const&                      word,
+        size_t                           start,
+        size_t                           end,
+        typename Word::value_type const& letter) {
+      size_t new_start = end;
+      for (auto it = std::make_reverse_iterator(word.begin() + end);
+           it != std::make_reverse_iterator(word.begin() + start);
+           ++it) {
+        if (*it == letter) {
+          break;
+        }
+        --new_start;
+      }
+      return new_start;
+    }
   }  // namespace detail
 
   //! \defgroup du_narendran_rusinowitch_group Du-Narendran-Rusinowitch
@@ -221,22 +239,10 @@ namespace libsemigroups {
         } else if (lhs_count == rhs_count) {
           // Update the start index so that the subwords are the longest suffix
           // of <lhs> and <rhs> that do not contain <letter>
-          new_lhs_start
-              = lhs.size()
-                - std::distance(
-                    lhs.rbegin(),
-                    std::find(
-                        std::make_reverse_iterator(lhs.begin() + lhs_end),
-                        std::make_reverse_iterator(lhs.begin() + lhs_start),
-                        letter));
-          new_rhs_start
-              = rhs.size()
-                - std::distance(
-                    rhs.rbegin(),
-                    std::find(
-                        std::make_reverse_iterator(rhs.begin() + rhs_end),
-                        std::make_reverse_iterator(rhs.begin() + rhs_start),
-                        letter));
+          new_lhs_start = detail::start_of_longest_suffix_without_letter(
+              lhs, lhs_start, lhs_end, letter);
+          new_rhs_start = detail::start_of_longest_suffix_without_letter(
+              rhs, rhs_start, rhs_end, letter);
 
           if (new_rhs_start == rhs_end) {
             new_lhs_start = UNDEFINED;
