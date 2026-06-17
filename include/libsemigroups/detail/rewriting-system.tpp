@@ -63,6 +63,9 @@ namespace libsemigroups::detail {
       set_cached_confluent(tril::unknown);
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
       reorder<ReductionOrder>(rule);
+      // The left-hand-side of a rule must not be empty; otherwise, bad things
+      // happen.
+      LIBSEMIGROUPS_ASSERT(!rule->lhs().empty());
       if (!active_rules().empty()
           && pending_rules().size() > settings().reduction_threshold) {
         reduce();
