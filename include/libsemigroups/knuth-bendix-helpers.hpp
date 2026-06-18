@@ -449,16 +449,16 @@ namespace libsemigroups {
       TietzeExplorer& init(KnuthBendix<Word, RewritingSystem>& kb);
 
       //! \brief Copy constructor.
-      TietzeExplorer(TietzeExplorer const&) = default;
+      TietzeExplorer(TietzeExplorer const&);
 
       //! \brief Move constructor.
-      TietzeExplorer(TietzeExplorer&&) = default;
+      TietzeExplorer(TietzeExplorer&&);
 
       //! \brief Copy assignment operator.
-      TietzeExplorer& operator=(TietzeExplorer const&) = default;
+      TietzeExplorer& operator=(TietzeExplorer const&);
 
       //! \brief Move assignment operator.
-      TietzeExplorer& operator=(TietzeExplorer&&) = default;
+      TietzeExplorer& operator=(TietzeExplorer&&);
 
       ~TietzeExplorer() = default;
 
