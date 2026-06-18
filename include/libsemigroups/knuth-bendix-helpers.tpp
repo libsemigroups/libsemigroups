@@ -449,6 +449,100 @@ namespace libsemigroups {
     }
 
     template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>::TietzeExplorer(
+        TietzeExplorer const& that)
+        : Runner(that),
+          // Mutable
+          _counter(that._counter.load()),
+          _current_subwords_replaced_with_new_generators(
+              that._current_subwords_replaced_with_new_generators),
+          _kb(that._kb),
+          _mtx(),
+          _number_of_runs(that._number_of_runs),
+          _presentation(that._presentation),
+          _todo(that._todo),
+          _todo_populated(that._todo_populated),
+
+          // Non-mutable
+          _depth_max(that._depth_max),
+          _depth_min(that._depth_min),
+          _finished(that._finished),
+          _number_of_threads(that._number_of_threads),
+          _race(that._race),
+          _run_each_for(that._run_each_for) {}
+
+    template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>::TietzeExplorer(TietzeExplorer&& that)
+        : Runner(std::move(that)),
+          // Mutable
+          _counter(that._counter.load()),
+          _current_subwords_replaced_with_new_generators(
+              std::move(that._current_subwords_replaced_with_new_generators)),
+          _kb(std::move(that._kb)),
+          _mtx(),
+          _number_of_runs(std::move(that._number_of_runs)),
+          _presentation(std::move(that._presentation)),
+          _todo(std::move(that._todo)),
+          _todo_populated(std::move(that._todo_populated)),
+
+          // Non-mutable
+          _depth_max(std::move(that._depth_max)),
+          _depth_min(std::move(that._depth_min)),
+          _finished(std::move(that._finished)),
+          _number_of_threads(std::move(that._number_of_threads)),
+          _race(std::move(that._race)),
+          _run_each_for(std::move(that._run_each_for)) {}
+
+    template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>&
+    TietzeExplorer<Word, RewritingSystem>::operator=(
+        TietzeExplorer const& that) {
+      Runner::operator=(that);
+      // Mutable
+      _counter = that._counter.load();
+      _current_subwords_replaced_with_new_generators
+          = that._current_subwords_replaced_with_new_generators;
+      _kb             = that._kb;
+      _number_of_runs = that._number_of_runs;
+      _presentation   = that._presentation;
+      _todo           = that._todo;
+      _todo_populated = that._todo_populated;
+
+      // Non-mutable
+      _depth_max         = that._depth_max;
+      _depth_min         = that._depth_min;
+      _finished          = that._finished;
+      _number_of_threads = that._number_of_threads;
+      _race              = that._race;
+      _run_each_for      = that._run_each_for;
+      return *this;
+    }
+
+    template <typename Word, typename RewritingSystem>
+    TietzeExplorer<Word, RewritingSystem>&
+    TietzeExplorer<Word, RewritingSystem>::operator=(TietzeExplorer&& that) {
+      Runner::operator=(std::move(that));
+      // Mutable
+      _counter = that._counter.load();
+      _current_subwords_replaced_with_new_generators
+          = std::move(that._current_subwords_replaced_with_new_generators);
+      _kb             = std::move(that._kb);
+      _number_of_runs = std::move(that._number_of_runs);
+      _presentation   = std::move(that._presentation);
+      _todo           = std::move(that._todo);
+      _todo_populated = std::move(that._todo_populated);
+
+      // Non-mutable
+      _depth_max         = std::move(that._depth_max);
+      _depth_min         = std::move(that._depth_min);
+      _finished          = std::move(that._finished);
+      _number_of_threads = std::move(that._number_of_threads);
+      _race              = std::move(that._race);
+      _run_each_for      = std::move(that._run_each_for);
+      return *this;
+    }
+
+    template <typename Word, typename RewritingSystem>
     TietzeExplorer<Word, RewritingSystem>&
     TietzeExplorer<Word, RewritingSystem>::init(
         KnuthBendix<Word, RewritingSystem>& kb) {

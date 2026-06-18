@@ -1437,4 +1437,48 @@ namespace libsemigroups {
                "threads, [0, 3] depths>");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "157",
+                          "constructors",
+                          "[quick][tietze-explorer]") {
+    using literals::operator""_w;
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa"_w, "aba"_w);
+
+    KnuthBendix kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+    REQUIRE(dora.number_of_runs() == 103'904);
+
+    SECTION("copy constructor") {
+      auto boots(dora);
+      REQUIRE(boots.number_of_runs() == dora.number_of_runs());
+      REQUIRE(boots.started() == dora.started());
+      REQUIRE(boots.finished() == dora.finished());
+    }
+    SECTION("move constructor") {
+      auto map(std::move(dora));
+      REQUIRE(map.number_of_runs() == 103'904);
+      REQUIRE(!map.started());
+      REQUIRE(!map.finished());
+    }
+    SECTION("copy assignment operator") {
+      knuth_bendix::TietzeExplorer backpack(kb);
+      backpack = dora;
+      REQUIRE(backpack.number_of_runs() == 103'904);
+      REQUIRE(!backpack.started());
+      REQUIRE(!backpack.finished());
+    }
+    SECTION("move assignment operator") {
+      knuth_bendix::TietzeExplorer swiper(kb);
+      swiper = std::move(dora);
+      REQUIRE(swiper.number_of_runs() == 103'904);
+      REQUIRE(!swiper.started());
+      REQUIRE(!swiper.finished());
+    }
+  }
+
 }  // namespace libsemigroups
