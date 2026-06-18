@@ -247,12 +247,9 @@ namespace libsemigroups {
 
   namespace detail {
     inline bool
-    orient_and_check(Presentation<word_type>&          p,
-                     RewritingSystemTrie<ReturnFalse>& rewriting_system,
-                     uint32_t                          orientation_index) {
-      rewriting_system.init();
-      rewriting_system.increase_alphabet_size_by(p.alphabet().size());
-
+    orient_and_check(Presentation<word_type>&                             p,
+                     KnuthBendix<word_type, RewritingSystemTrie<RPOCmp>>& kb,
+                     uint32_t orientation_index) {
       for (size_t i = 0; i < p.rules.size() / 2; ++i) {
         // Swap the ith lhs and rhs if the ith bit of rule_orientation_index
         // is a 1.
@@ -262,18 +259,24 @@ namespace libsemigroups {
           std::swap(lhs, rhs);
         }
         if (lhs.size() == 0) {
+          std::cout << "skipping (empty left-hand-side)" << std::endl;
           return false;
         }
-        rewriting_system::add_rule(rewriting_system, lhs, rhs);
       }
 
+      std::cout << "checking alphabet order ... ";
       word_type oriented_alphabet = du_narendran_rusinowitch(p);
       if (!oriented_alphabet.empty()) {
-        if (rewriting_system.confluent()) {
+        std::cout << "success! Checking confluence ... ";
+        p.alphabet(oriented_alphabet);
+        kb.init(congruence_kind::twosided, p);
+        if (kb.rewriting_system().confluent()) {
+          std::cout << "success!" << std::endl;
           p.alphabet(oriented_alphabet);
           return true;
         }
       }
+      std::cout << "failure" << std::endl;
       return false;
     }
   }  // namespace detail
@@ -291,8 +294,8 @@ namespace libsemigroups {
             num_rules);
       }
 
-      Presentation<word_type>                  oriented_presentation;
-      detail::RewritingSystemTrie<ReturnFalse> rewriting_system;
+      Presentation<word_type> oriented_presentation;
+      KnuthBendix<word_type, detail::RewritingSystemTrie<RPOCmp>> kb;
       uint32_t const num_rule_orientations = uint32_t{1} << num_rules;
 
       // The binary representation of each number in [0, num_rule_orientations)
@@ -301,14 +304,14 @@ namespace libsemigroups {
            orientation_index < num_rule_orientations;
            ++orientation_index) {
         oriented_presentation = p;
-        if (std::cout << "Checking " << orientation_index + 1 << "/"
-                      << num_rule_orientations << "("
-                      << 100
-                             * (static_cast<float>(orientation_index + 1)
-                                / static_cast<float>(num_rule_orientations))
-                      << "%)" << std::endl;
-            detail::orient_and_check(
-                oriented_presentation, rewriting_system, orientation_index)) {
+        std::cout << "Checking " << orientation_index + 1 << "/"
+                  << num_rule_orientations << " ("
+                  << 100
+                         * (static_cast<float>(orientation_index + 1)
+                            / static_cast<float>(num_rule_orientations))
+                  << "%): ";
+        if (detail::orient_and_check(
+                oriented_presentation, kb, orientation_index)) {
           p = oriented_presentation;
           return true;
         }
