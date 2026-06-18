@@ -525,6 +525,16 @@ namespace libsemigroups::detail {
     if (is_length_non_increasing_no_reduce() == tril::TRUE) {
       return tril::TRUE;
     }
+    for (auto const& rule : rules()) {
+      if (std::search(rule.second.begin(),
+                      rule.second.end(),
+                      rule.first.begin(),
+                      rule.first.end())
+          != rule.second.end()) {
+        return tril::FALSE;
+      }
+    }
+
     return tril::unknown;
   }
 
@@ -533,10 +543,8 @@ namespace libsemigroups::detail {
     if constexpr (order::is_well_founded_v<ReductionOrder>) {
       return tril::TRUE;
     }
-    if (is_length_non_increasing()) {
-      return tril::TRUE;
-    }
-    return tril::unknown;
+    reduce();
+    return is_terminating_no_reduce();
   }
 
   ////////////////////////////////////////////////////////////////////////
