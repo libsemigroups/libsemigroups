@@ -287,17 +287,40 @@ namespace libsemigroups {
     // Try all rule orientations, check for confluence, then check to see if
     // there is an alphabet order for which lhs >_rpo rhs for all of the rules
     inline bool order_search(Presentation<word_type>& p) {
-      size_t num_rules = p.rules.size() / 2;
-      if (num_rules > 31) {
+      if (p.rules.empty()) {
+        return true;
+      }
+
+      size_t const num_rules = p.rules.size() / 2;
+      size_t       last      = num_rules;
+
+      for (size_t i = 0; i < last;) {
+        if (p.rules[2 * i + 1].empty()) {
+          --last;
+          std::swap(p.rules[2 * i], p.rules[2 * last]);
+          std::swap(p.rules[2 * i + 1], p.rules[2 * last + 1]);
+        } else {
+          ++i;
+        }
+      }
+
+      if (last == 0) {
+        return false;
+      }
+
+      size_t const num_non_empty_rhs_rules = last;
+
+      if (num_non_empty_rhs_rules > 31) {
         LIBSEMIGROUPS_EXCEPTION(
             "order_search can only be called with presentations that have at "
-            "most 31 rules, found {}",
-            num_rules);
+            "most 31 rules with non-empty right-hand-side, found {}",
+            num_non_empty_rhs_rules);
       }
 
       Presentation<word_type> oriented_presentation;
       KnuthBendix<word_type, detail::RewritingSystemTrie<RPOCmp>> kb;
-      uint32_t const num_rule_orientations = uint32_t{1} << num_rules;
+      uint32_t const num_rule_orientations = uint32_t{1}
+                                             << num_non_empty_rhs_rules;
 
       // The binary representation of each number in [0, num_rule_orientations)
       // specifies which left-hand-sides and right-hand-sides to swap.
