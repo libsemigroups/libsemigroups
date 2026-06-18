@@ -951,15 +951,9 @@ namespace libsemigroups {
       size_t pos = rule.find("#");
       p.add_rule_no_checks(
           rule.begin(), rule.begin() + pos, rule.begin() + pos + 1, rule.end());
-      auto copy = to<Presentation<word_type>>(p);
+      auto copy = v4::to<Presentation<word_type>>(p);
       REQUIRE(!knuth_bendix::order_search(copy));
       p.rules.erase(p.rules.end() - 2, p.rules.end());
     }
-
-    //   REQUIRE(presentation::index_rule(p, "aa"s, ""s) == 0);
-    //   p.rules.erase(p.rules.begin(), p.rules.begin() + 2);
-
-    //   auto new_p = v4::to<Presentation<word_type>>(p);
-    //   REQUIRE(!knuth_bendix::order_search(new_p));
   }
 }  // namespace libsemigroups
