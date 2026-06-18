@@ -39,18 +39,22 @@
 #include <utility>        // for move
 #include <vector>         // for vector
 
-#include "cong-common-helpers.hpp"  // for partition, add_gener...
-#include "constants.hpp"            // for UNDEFINED, POSITIVE_...
-#include "debug.hpp"                // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION
-#include "knuth-bendix-class.hpp"   // for KnuthBendix
-#include "paths.hpp"                // for Paths
-#include "presentation.hpp"         // for Presentation
-#include "ranges.hpp"               // for seq, input_range_ite...
-#include "runner.hpp"               // for Runner, delta
-#include "types.hpp"                // for congruence_kind, wor...
-#include "word-graph-helpers.hpp"   // for word_graph
-#include "word-graph.hpp"           // for WordGraph
+#include <iostream>
+
+#include "adapters.hpp"                  // ReturnFalse
+#include "cong-common-helpers.hpp"       // for partition, add_gener...
+#include "constants.hpp"                 // for UNDEFINED, POSITIVE_...
+#include "debug.hpp"                     // for LIBSEMIGROUPS_ASSERT
+#include "du-narendran-rusinowitch.hpp"  // for du_narendran_narendran
+#include "exception.hpp"                 // for LIBSEMIGROUPS_EXCEPTION
+#include "knuth-bendix-class.hpp"        // for KnuthBendix
+#include "paths.hpp"                     // for Paths
+#include "presentation.hpp"              // for Presentation
+#include "ranges.hpp"                    // for seq, input_range_ite...
+#include "types.hpp"                     // for congruence_kind, wor...
+#include "word-graph-helpers.hpp"        // for word_graph
+#include "word-graph.hpp"                // for WordGraph
+#include "word-range.hpp"                // for ToString
 
 #include "detail/fmt.hpp"               // for format
 #include "detail/knuth-bendix-nf.hpp"   // for KnuthBendix, KnuthBe...
@@ -239,6 +243,81 @@ namespace libsemigroups {
     [[nodiscard]] bool
     is_reduced(KnuthBendix<Word, RewritingSystem, ReductionOrder>& kb);
 #endif
+  }  // namespace knuth_bendix
+
+  namespace detail {
+    inline bool
+    orient_and_check(Presentation<word_type>&                             p,
+                     KnuthBendix<word_type, RewritingSystemTrie<RPOCmp>>& kb,
+                     uint32_t orientation_index) {
+      for (size_t i = 0; i < p.rules.size() / 2; ++i) {
+        // Swap the ith lhs and rhs if the ith bit of rule_orientation_index
+        // is a 1.
+        word_type& lhs = p.rules[2 * i];
+        word_type& rhs = p.rules[(2 * i) + 1];
+        if (orientation_index & (1 << i)) {
+          std::swap(lhs, rhs);
+        }
+        if (lhs.size() == 0) {
+          std::cout << "skipping (empty left-hand-side)" << std::endl;
+          return false;
+        }
+      }
+
+      std::cout << "checking alphabet order ... ";
+      word_type oriented_alphabet = du_narendran_rusinowitch(p);
+      if (!oriented_alphabet.empty()) {
+        std::cout << "success! Checking confluence ... ";
+        p.alphabet(oriented_alphabet);
+        kb.init(congruence_kind::twosided, p);
+        if (kb.rewriting_system().confluent()) {
+          std::cout << "success!" << std::endl;
+          p.alphabet(oriented_alphabet);
+          return true;
+        }
+      }
+      std::cout << "failure" << std::endl;
+      return false;
+    }
+  }  // namespace detail
+
+  namespace knuth_bendix {
+
+    // Try all rule orientations, check for confluence, then check to see if
+    // there is an alphabet order for which lhs >_rpo rhs for all of the rules
+    inline bool order_search(Presentation<word_type>& p) {
+      size_t num_rules = p.rules.size() / 2;
+      if (num_rules > 31) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "order_search can only be called with presentations that have at "
+            "most 31 rules, found {}",
+            num_rules);
+      }
+
+      Presentation<word_type> oriented_presentation;
+      KnuthBendix<word_type, detail::RewritingSystemTrie<RPOCmp>> kb;
+      uint32_t const num_rule_orientations = uint32_t{1} << num_rules;
+
+      // The binary representation of each number in [0, num_rule_orientations)
+      // specifies which left-hand-sides and right-hand-sides to swap.
+      for (uint32_t orientation_index = 0;
+           orientation_index < num_rule_orientations;
+           ++orientation_index) {
+        oriented_presentation = p;
+        std::cout << "Checking " << orientation_index + 1 << "/"
+                  << num_rule_orientations << " ("
+                  << 100
+                         * (static_cast<float>(orientation_index + 1)
+                            / static_cast<float>(num_rule_orientations))
+                  << "%): ";
+        if (detail::orient_and_check(
+                oriented_presentation, kb, orientation_index)) {
+          p = oriented_presentation;
+          return true;
+        }
+      }
+      return false;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair

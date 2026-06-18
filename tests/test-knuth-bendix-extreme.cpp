@@ -837,4 +837,123 @@ namespace libsemigroups {
     auto result = dora.depth_max(2).number_of_threads(10).result();
     REQUIRE(!result.has_value());
   }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "156",
+                          "https://math.stackexchange.com/questions/2649807",
+                          "[knuth-bendix][extreme][order-explorer]") {
+    auto        rg    = ReportGuard(true);
+    std::string lphbt = "abcB";
+    std::string invrs = "aBcb";
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet(lphbt);
+
+    presentation::add_inverse_rules(p, invrs);
+    presentation::add_rule(p, "aa", "");
+    presentation::add_rule(p, "bbbbbbbbbbb", "");
+    presentation::add_rule(p, "cc", "");
+    presentation::add_rule(p, "abababab", "");
+    presentation::add_rule(p, "abbabbabbabbabbabb", "");
+    presentation::add_rule(p, "abbabaBabaBBabbaB", "");
+    presentation::add_rule(p, "acacac", "");
+    presentation::add_rule(p, "bcbc", "");
+
+    auto new_p = v4::to<Presentation<word_type>>(p);
+    REQUIRE(!knuth_bendix::order_search(new_p));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "157",
+                          "baa(ba)^N=a",
+                          "[extreme][order-explorer]") {
+    auto rg = ReportGuard(true);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+
+    for (auto N = 2; N < 4; ++N) {
+      p.rules    = {words::parse(fmt::format("baa(ba)^{}", N)), "a"};
+      auto new_p = v4::to<Presentation<word_type>>(p);
+      REQUIRE(!knuth_bendix::order_search(new_p));
+    }
+  }
+
+  auto all_relations(std::string const& lhs, std::string const& rhs) {
+    std::unordered_set<std::string> set;
+
+    auto copy_lhs(lhs);
+
+    auto invert = [](auto& letter) {
+      if (std::isupper(letter)) {
+        letter = std::tolower(letter);
+      } else {
+        letter = std::toupper(letter);
+      }
+    };
+    copy_lhs.insert(copy_lhs.end(), rhs.rbegin(), rhs.rend());
+    std::for_each(copy_lhs.begin() + copy_lhs.size() - rhs.size(),
+                  copy_lhs.end(),
+                  invert);
+
+    for (size_t count = 0; count < copy_lhs.size(); ++count) {
+      set.emplace(fmt::format("{}#", copy_lhs));
+      for (size_t prefix_end = 0; prefix_end < copy_lhs.size(); ++prefix_end) {
+        for (size_t suffix_begin = prefix_end; suffix_begin < copy_lhs.size();
+             ++suffix_begin) {
+          std::string next_lhs(copy_lhs.begin() + prefix_end,
+                               copy_lhs.begin() + suffix_begin);
+          std::string next_rhs(copy_lhs.begin(), copy_lhs.begin() + prefix_end);
+          next_rhs.insert(
+              next_rhs.end(), copy_lhs.begin() + suffix_begin, copy_lhs.end());
+
+          std::reverse(next_rhs.begin(), next_rhs.begin() + prefix_end);
+          std::reverse(next_rhs.begin() + prefix_end, next_rhs.end());
+
+          std::for_each(next_rhs.begin(), next_rhs.end(), invert);
+
+          if (lenlex_cmp(next_lhs, next_rhs)) {
+            std::swap(next_lhs, next_rhs);
+          }
+
+          set.emplace(fmt::format("{}#{}", next_lhs, next_rhs));
+        }
+      }
+      auto letter = copy_lhs.front();
+      invert(letter);
+      copy_lhs.erase(0, 1);
+      copy_lhs.push_back(letter);
+    }
+    return set;
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "158",
+                          "aaa=1, aBBBABAb=1",
+                          "[extreme][order-explorer]") {
+    auto                        rg = ReportGuard(true);
+    using std::string_literals::operator""s;
+    Presentation<std::string>   p;
+    p.alphabet("aAbB");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "A", "aa");
+
+    auto all = all_relations("ba"s, "ababbb"s);
+
+    REQUIRE(all.size() == 296);
+
+    for (auto const& rule : all) {
+      size_t pos = rule.find("#");
+      p.add_rule_no_checks(
+          rule.begin(), rule.begin() + pos, rule.begin() + pos + 1, rule.end());
+      auto copy = v4::to<Presentation<word_type>>(p);
+      REQUIRE(!knuth_bendix::order_search(copy));
+      p.rules.erase(p.rules.end() - 2, p.rules.end());
+    }
+  }
 }  // namespace libsemigroups
