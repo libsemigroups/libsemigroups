@@ -399,6 +399,15 @@ namespace libsemigroups {
 
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
+      // Might never terminate if rws.reduce() doesn't terminate
+      [[nodiscard]] bool is_length_non_increasing() noexcept;
+
+      [[nodiscard]] tril is_length_non_increasing_no_reduce() noexcept;
+
+      [[nodiscard]] tril is_terminating() noexcept;
+
+      [[nodiscard]] tril is_terminating_no_reduce() noexcept;
+
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
       bool reduce();
@@ -422,15 +431,6 @@ namespace libsemigroups {
         _use_new_rule_trie = func;
         return *this;
       }
-
-      // Might never terminate if rws.reduce() doesn't terminate
-      [[nodiscard]] bool is_length_non_increasing() noexcept;
-
-      [[nodiscard]] tril is_length_non_increasing_no_reduce() noexcept;
-
-      [[nodiscard]] tril is_terminating() noexcept;
-
-      [[nodiscard]] tril is_terminating_no_reduce() noexcept;
 
      private:
       ////////////////////////////////////////////////////////////////////////
