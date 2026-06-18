@@ -374,6 +374,74 @@ namespace libsemigroups::detail {
   }
 
   template <typename ReductionOrder>
+  void RewritingSystemTrie<ReductionOrder>::rewrite(native_word_type& v) {
+    reduce();
+    rewrite_no_reduce(v);
+  }
+
+  template <typename ReductionOrder>
+  tril RewritingSystemTrie<
+      ReductionOrder>::is_length_non_increasing_no_reduce() noexcept {
+    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
+      return tril::TRUE;
+    }
+
+    if (is_reduced() != tril::TRUE) {
+      return tril::unknown;
+    }
+
+    for (auto const& rule : rules()) {
+      if (rule.first.size() < rule.second.size()) {
+        return tril::FALSE;
+      }
+    }
+
+    return tril::TRUE;
+  }
+
+  template <typename ReductionOrder>
+  bool
+  RewritingSystemTrie<ReductionOrder>::is_length_non_increasing() noexcept {
+    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
+      return true;
+    }
+
+    reduce();
+    return is_length_non_increasing_no_reduce() == tril::TRUE;
+  }
+
+  template <typename ReductionOrder>
+  tril
+  RewritingSystemTrie<ReductionOrder>::is_terminating_no_reduce() noexcept {
+    if constexpr (order::is_well_founded_v<ReductionOrder>) {
+      return tril::TRUE;
+    }
+    if (is_length_non_increasing_no_reduce() == tril::TRUE) {
+      return tril::TRUE;
+    }
+    for (auto const& rule : rules()) {
+      if (std::search(rule.second.begin(),
+                      rule.second.end(),
+                      rule.first.begin(),
+                      rule.first.end())
+          != rule.second.end()) {
+        return tril::FALSE;
+      }
+    }
+
+    return tril::unknown;
+  }
+
+  template <typename ReductionOrder>
+  tril RewritingSystemTrie<ReductionOrder>::is_terminating() noexcept {
+    if constexpr (order::is_well_founded_v<ReductionOrder>) {
+      return tril::TRUE;
+    }
+    reduce();
+    return is_terminating_no_reduce();
+  }
+
+  template <typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::reduce() {
     using aho_corasick_impl::begin_search_no_checks;
     using aho_corasick_impl::end_search_no_checks;
@@ -477,74 +545,6 @@ namespace libsemigroups::detail {
     }
 
     return rules_added;
-  }
-
-  template <typename ReductionOrder>
-  void RewritingSystemTrie<ReductionOrder>::rewrite(native_word_type& v) {
-    reduce();
-    rewrite_no_reduce(v);
-  }
-
-  template <typename ReductionOrder>
-  tril RewritingSystemTrie<
-      ReductionOrder>::is_length_non_increasing_no_reduce() noexcept {
-    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
-      return tril::TRUE;
-    }
-
-    if (is_reduced() != tril::TRUE) {
-      return tril::unknown;
-    }
-
-    for (auto const& rule : rules()) {
-      if (rule.first.size() < rule.second.size()) {
-        return tril::FALSE;
-      }
-    }
-
-    return tril::TRUE;
-  }
-
-  template <typename ReductionOrder>
-  bool
-  RewritingSystemTrie<ReductionOrder>::is_length_non_increasing() noexcept {
-    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
-      return true;
-    }
-
-    reduce();
-    return is_length_non_increasing_no_reduce() == tril::TRUE;
-  }
-
-  template <typename ReductionOrder>
-  tril
-  RewritingSystemTrie<ReductionOrder>::is_terminating_no_reduce() noexcept {
-    if constexpr (order::is_well_founded_v<ReductionOrder>) {
-      return tril::TRUE;
-    }
-    if (is_length_non_increasing_no_reduce() == tril::TRUE) {
-      return tril::TRUE;
-    }
-    for (auto const& rule : rules()) {
-      if (std::search(rule.second.begin(),
-                      rule.second.end(),
-                      rule.first.begin(),
-                      rule.first.end())
-          != rule.second.end()) {
-        return tril::FALSE;
-      }
-    }
-
-    return tril::unknown;
-  }
-
-  template <typename ReductionOrder>
-  tril RewritingSystemTrie<ReductionOrder>::is_terminating() noexcept {
-    if constexpr (order::is_well_founded_v<ReductionOrder>) {
-      return tril::TRUE;
-    }
-    reduce();
-    return is_terminating_no_reduce();
   }
 
   ////////////////////////////////////////////////////////////////////////
