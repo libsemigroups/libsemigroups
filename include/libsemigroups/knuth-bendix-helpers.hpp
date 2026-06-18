@@ -270,7 +270,8 @@ namespace libsemigroups {
         std::cout << "success! Checking confluence ... ";
         p.alphabet(oriented_alphabet);
         kb.init(congruence_kind::twosided, p);
-        if (kb.rewriting_system().confluent()) {
+        kb.run_for(std::chrono::milliseconds(10));
+        if (kb.finished()) {
           std::cout << "success!" << std::endl;
           p.alphabet(oriented_alphabet);
           return true;
