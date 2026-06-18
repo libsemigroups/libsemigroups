@@ -419,6 +419,15 @@ namespace libsemigroups {
         return *this;
       }
 
+      // Might never terminate if rws.reduce() doesn't terminate
+      [[nodiscard]] bool is_length_non_increasing() noexcept;
+
+      [[nodiscard]] tril is_length_non_increasing_no_reduce() noexcept;
+
+      [[nodiscard]] tril is_terminating() noexcept;
+
+      [[nodiscard]] tril is_terminating_no_reduce() noexcept;
+
      private:
       ////////////////////////////////////////////////////////////////////////
       // Private member functions
@@ -462,22 +471,6 @@ namespace libsemigroups {
       void add_rule(RewritingSystem& rs, Word const& lhs, Word const& rhs) {
         rs.add_rule(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
       }
-
-      // Might never terminate if rws.reduce() doesn't terminate
-      template <typename RewritingSystem>
-      [[nodiscard]] bool
-      is_length_non_increasing(RewritingSystem& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril
-      is_length_non_increasing_no_reduce(RewritingSystem const& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril is_terminating(RewritingSystem& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril
-      is_terminating_no_reduce(RewritingSystem const& rws) noexcept;
 
     }  // namespace rewriting_system
 
