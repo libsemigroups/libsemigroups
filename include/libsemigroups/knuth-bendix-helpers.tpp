@@ -684,4 +684,19 @@ namespace libsemigroups {
     }
 
   }  // namespace knuth_bendix
+
+  template <typename Word, typename RewritingSystem>
+  std::string to_human_readable_repr(
+      knuth_bendix::TietzeExplorer<Word, RewritingSystem> const& dora) {
+    return fmt::format(
+        "<knuth_bendix.TietzeExplorer for {}, {} run(s) @ {} each, {} threads, "
+        "[{}, {}] depths>",
+        to_human_readable_repr(dora.knuth_bendix().presentation()),
+        detail::group_digits(dora.number_of_runs()),
+        detail::string_time(dora.run_each_for()),
+        dora.number_of_threads(),
+        dora.depth_min(),
+        dora.depth_max());
+  }
+
 }  // namespace libsemigroups

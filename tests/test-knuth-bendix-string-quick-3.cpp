@@ -1417,4 +1417,24 @@ namespace libsemigroups {
     REQUIRE(dora.number_of_runs() == 103'904);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "156",
+                          "to_human_readable_repr",
+                          "[quick][tietze-explorer]") {
+    using literals::operator""_w;
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa"_w, "aba"_w);
+
+    KnuthBendix kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+    REQUIRE(to_human_readable_repr(dora)
+            == "<knuth_bendix.TietzeExplorer for <monoid presentation with 2 "
+               "letters, 1 rule, and length 11>, 103,904 run(s) @ 5ms each, 1 "
+               "threads, [0, 3] depths>");
+  }
+
 }  // namespace libsemigroups
