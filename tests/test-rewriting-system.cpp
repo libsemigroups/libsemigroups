@@ -353,7 +353,7 @@ namespace libsemigroups {
                                          {{1, 2}, {1}},
                                          {{1, 2}, {2}}}));
       REQUIRE(rws.is_length_non_increasing_no_reduce() == tril::unknown);
-      REQUIRE(rws.is_terminating_no_reduce() == tril::unknown);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::FALSE);
     }
 
     LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ReturnFalse>",
@@ -481,6 +481,21 @@ namespace libsemigroups {
       rewriting_system::add_rule(rws, "a"_w, "aa"_w);
       REQUIRE(rws.is_terminating_no_reduce() == tril::FALSE);
       REQUIRE(rws.is_reduced() == tril::unknown);
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
+                            "016",
+                            "is_terminating x2",
+                            "[quick]") {
+      auto                             rg = ReportGuard(false);
+      RewritingSystemTrie<ReturnFalse> rws;
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aa"_w, "bab"_w);
+      rewriting_system::add_rule(rws, "ab"_w, "aa"_w);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::unknown);
+      // Reduce runs forever, unless running in debug mode, in which case an
+      // assertion is raised.
+      // rws.reduce();
     }
 
   }  // namespace detail
