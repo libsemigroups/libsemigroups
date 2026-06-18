@@ -19,18 +19,23 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include <algorithm>    // for find, all_of
-#include <chrono>       // for seconds
-#include <complex>      // for operator*, ope...
-#include <cstddef>      // for size_t
-#include <iterator>     // for back_inserter
-#include <list>         // for operator!=
-#include <numeric>      // for accumulate, iota
-#include <string>       // for basic_string
-#include <tuple>        // for get
-#include <type_traits>  // for is_same_v
-#include <utility>      // for pair, forward
-#include <vector>       // for vector, operat...
+#include <algorithm>      // for find, all_of
+#include <chrono>         // for seconds
+#include <complex>        // for operator*, ope...
+#include <cstddef>        // for size_t
+#include <iterator>       // for back_inserter
+#include <iterator>       // for advance
+#include <list>           // for operator!=
+#include <numeric>        // for accumulate, iota
+#include <string>         // for basic_string
+#include <tuple>          // for get
+#include <type_traits>    // for is_same_v
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for pair, forward
+#include <vector>         // for vector, operat...
+
+#include <iostream>
+#include <random>
 
 #include "Catch2-3.14.0/catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
@@ -868,7 +873,7 @@ namespace libsemigroups {
                           "157",
                           "baa(ba)^N=a",
                           "[extreme][order-explorer]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -922,7 +927,6 @@ namespace libsemigroups {
         }
       }
       auto letter = copy_lhs.front();
-      invert(letter);
       copy_lhs.erase(0, 1);
       copy_lhs.push_back(letter);
     }
@@ -933,7 +937,7 @@ namespace libsemigroups {
                           "158",
                           "aaa=1, aBBBABAb=1",
                           "[extreme][order-explorer]") {
-    auto                        rg = ReportGuard(true);
+    auto                        rg = ReportGuard(false);
     using std::string_literals::operator""s;
     Presentation<std::string>   p;
     p.alphabet("aAbB");
@@ -942,18 +946,82 @@ namespace libsemigroups {
     presentation::add_rule(p, "bB", "");
     presentation::add_rule(p, "aaa", "");
     presentation::add_rule(p, "A", "aa");
+    Presentation<word_type> copy;
 
     auto all = all_relations("ba"s, "ababbb"s);
 
-    REQUIRE(all.size() == 296);
+    REQUIRE(all.size() == 72);
 
     for (auto const& rule : all) {
       size_t pos = rule.find("#");
       p.add_rule_no_checks(
           rule.begin(), rule.begin() + pos, rule.begin() + pos + 1, rule.end());
-      auto copy = v4::to<Presentation<word_type>>(p);
+      copy = v4::to<Presentation<word_type>>(p);
       REQUIRE(!knuth_bendix::order_search(copy));
       p.rules.erase(p.rules.end() - 2, p.rules.end());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "159",
+                          "McLaughlin Group",
+                          "[extreme][order-explorer]") {
+    auto                        rg = ReportGuard(false);
+    using literals::            operator""_p;
+    using std::string_literals::operator""s;
+
+    Presentation<std::string> p;
+    p.alphabet("aAbB");
+    p.contains_empty_word(true);
+    std::vector<std::string> const identity_words{
+        "a^2"_p,
+        "b^5"_p,
+        "(ab)^11"_p,
+        "(a,b)^5"_p,
+        "(ab^2)^12"_p,
+        "(a,b^2)^6"_p,
+        "(abaB^2)^7"_p,
+        "(a,B^2ab^2aBab(ab^2)^2abaB)"_p,
+        "(a,b^2ab(ab^2)^2)^2"_p,
+        "abab^2aB^2abaBab^2(aB^2ab)^2(ab^2aB^2ab^2)^2"_p,
+        "(a,b^2ab^2aBab^2)^2"_p,
+        "(a,b^2ab)^4"_p};
+
+    std::vector<std::unordered_set<std::string>> all_rules_all_relations;
+    for (std::string word : identity_words) {
+      all_rules_all_relations.push_back(all_relations(word, ""s));
+    }
+
+    size_t                  N = 100;
+    Presentation<word_type> copy;
+
+    std::random_device rd;
+    std::mt19937       rng(rd());
+
+    for (size_t i = 0; i < N; ++i) {
+      p.init();
+      p.alphabet("aAbB");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "AaBb");
+      for (auto const& relation_set : all_rules_all_relations) {
+        std::uniform_int_distribution<size_t> uni(0, relation_set.size() - 1);
+
+        size_t r       = uni(rng);
+        auto   rule_it = relation_set.begin();
+        std::advance(rule_it, r);
+        auto   rule = *rule_it;
+        size_t pos  = rule.find("#");
+        p.add_rule_no_checks(rule.begin(),
+                             rule.begin() + pos,
+                             rule.begin() + pos + 1,
+                             rule.end());
+      }
+      copy = v4::to<Presentation<word_type>>(p);
+      if (knuth_bendix::order_search(copy)) {
+        std::cout << p.alphabet() << std::endl;
+        std::cout << p.rules << std::endl;
+        REQUIRE(false);
+      }
     }
   }
 }  // namespace libsemigroups
