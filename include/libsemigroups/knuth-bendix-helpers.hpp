@@ -690,6 +690,23 @@ namespace libsemigroups {
       void throw_if_todo_populated(std::string_view msg) const;
     };  // class TietzeExplorer
   }     // namespace knuth_bendix
+
+  //! \relates knuth_bendix::TietzeExplorer
+  //!
+  //! \brief Return a human readable representation of an alphabet.
+  //!
+  //! This function returns a human readable representation of an alphabet.
+  //!
+  //! \tparam Word the type of the words in the alphabet.
+  //! \param alphabet the alphabet.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, typename RewritingSystem>
+  [[nodiscard]] std::string to_human_readable_repr(
+      knuth_bendix::TietzeExplorer<Word, RewritingSystem> const&);
 }  // namespace libsemigroups
 
 #include "knuth-bendix-helpers.tpp"
