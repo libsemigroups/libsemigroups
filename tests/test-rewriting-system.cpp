@@ -331,7 +331,7 @@ namespace libsemigroups {
       REQUIRE(!rt.confluent());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ReturnFalse>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<NoOrder>",
                             "011",
                             "not obviously terminating example",
                             "[quick]") {
@@ -357,10 +357,10 @@ namespace libsemigroups {
                                          {{1, 2}, {1}},
                                          {{1, 2}, {2}}}));
       REQUIRE(rws.is_length_non_increasing_no_reduce() == tril::unknown);
-      REQUIRE(rws.is_terminating_no_reduce() == tril::unknown);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::FALSE);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<ReturnFalse>",
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystemTrie<NoOrder>",
                             "012",
                             "not obviously terminating example",
                             "[quick]") {
@@ -563,5 +563,20 @@ namespace libsemigroups {
                | rx::to_vector())
               == std::vector<rule_type>({{{1, 2}, {0, 2}}}));
     }
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
+                            "019",
+                            "is_terminating x2",
+                            "[quick]") {
+      auto                         rg = ReportGuard(false);
+      RewritingSystemTrie<NoOrder> rws;
+      rws.increase_alphabet_size_by(3);
+      rewriting_system::add_rule(rws, "aa"_w, "bab"_w);
+      rewriting_system::add_rule(rws, "ab"_w, "aa"_w);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::unknown);
+      // Reduce runs forever, unless running in debug mode, in which case an
+      // assertion is raised.
+      // rws.reduce();
+    }
+
   }  // namespace detail
 }  // namespace libsemigroups
