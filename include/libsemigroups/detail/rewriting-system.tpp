@@ -555,6 +555,60 @@ namespace libsemigroups::detail {
     rewrite_no_reduce(v);
   }
 
+  template <typename ReductionOrder>
+  tril RewritingSystemTrie<
+      ReductionOrder>::is_length_non_increasing_no_reduce() noexcept {
+    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
+      return tril::TRUE;
+    }
+
+    if (is_reduced() != tril::TRUE) {
+      return tril::unknown;
+    }
+
+    for (auto const& rule : rules()) {
+      if (rule.first.size() < rule.second.size()) {
+        return tril::FALSE;
+      }
+    }
+
+    return tril::TRUE;
+  }
+
+  template <typename ReductionOrder>
+  bool
+  RewritingSystemTrie<ReductionOrder>::is_length_non_increasing() noexcept {
+    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
+      return true;
+    }
+
+    reduce();
+    return is_length_non_increasing_no_reduce() == tril::TRUE;
+  }
+
+  template <typename ReductionOrder>
+  tril
+  RewritingSystemTrie<ReductionOrder>::is_terminating_no_reduce() noexcept {
+    if constexpr (order::is_well_founded_v<ReductionOrder>) {
+      return tril::TRUE;
+    }
+    if (is_length_non_increasing_no_reduce() == tril::TRUE) {
+      return tril::TRUE;
+    }
+    return tril::unknown;
+  }
+
+  template <typename ReductionOrder>
+  tril RewritingSystemTrie<ReductionOrder>::is_terminating() noexcept {
+    if constexpr (order::is_well_founded_v<ReductionOrder>) {
+      return tril::TRUE;
+    }
+    if (is_length_non_increasing()) {
+      return tril::TRUE;
+    }
+    return tril::unknown;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // RewritingSystemTrie --- Private member functions
   ////////////////////////////////////////////////////////////////////////
@@ -910,66 +964,4 @@ namespace libsemigroups::detail {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  // Helpers
-  ////////////////////////////////////////////////////////////////////////
-
-  namespace rewriting_system {
-
-    template <typename RewritingSystem>
-    tril
-    is_length_non_increasing_no_reduce(RewritingSystem const& rws) noexcept {
-      if constexpr (order::is_length_non_increasing_v<
-                        typename RewritingSystem::reduction_order>) {
-        return tril::TRUE;
-      }
-
-      if (rws.is_reduced() != tril::TRUE) {
-        return tril::unknown;
-      }
-
-      for (auto const& rule : rws.rules()) {
-        if (rule.first.size() < rule.second.size()) {
-          return tril::FALSE;
-        }
-      }
-
-      return tril::TRUE;
-    }
-
-    template <typename RewritingSystem>
-    bool is_length_non_increasing(RewritingSystem& rws) noexcept {
-      if constexpr (order::is_length_non_increasing_v<
-                        typename RewritingSystem::reduction_order>) {
-        return true;
-      }
-
-      rws.reduce();
-      return is_length_non_increasing_no_reduce(rws) == tril::TRUE;
-    }
-
-    template <typename RewritingSystem>
-    tril is_terminating_no_reduce(RewritingSystem const& rws) noexcept {
-      if constexpr (order::is_well_founded_v<
-                        typename RewritingSystem::reduction_order>) {
-        return tril::TRUE;
-      }
-      if (is_length_non_increasing_no_reduce(rws) == tril::TRUE) {
-        return tril::TRUE;
-      }
-      return tril::unknown;
-    }
-
-    template <typename RewritingSystem>
-    tril is_terminating(RewritingSystem& rws) noexcept {
-      if constexpr (order::is_well_founded_v<
-                        typename RewritingSystem::reduction_order>) {
-        return tril::TRUE;
-      }
-      if (is_length_non_increasing(rws)) {
-        return tril::TRUE;
-      }
-      return tril::unknown;
-    }
-  }  // namespace rewriting_system
 }  // namespace libsemigroups::detail
