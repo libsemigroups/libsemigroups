@@ -477,6 +477,10 @@ namespace libsemigroups {
       REQUIRE(rws.is_reduced() == tril::unknown);
       REQUIRE(rws.is_terminating() == tril::TRUE);
       REQUIRE(rws.is_reduced() == tril::TRUE);
+
+      rewriting_system::add_rule(rws, "a"_w, "aa"_w);
+      REQUIRE(rws.is_terminating_no_reduce() == tril::FALSE);
+      REQUIRE(rws.is_reduced() == tril::unknown);
     }
 
     LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
