@@ -397,8 +397,10 @@ namespace libsemigroups::detail {
   template <template <typename, bool> typename ReductionOrder>
   RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie()
       : RewritingSystemBaseWithOrder_(),
+        _cached_terminating(false),
         _new_rule_trie(),
         _rule_trie(0),
+        _terminating_known(false),
         _ticker_running(false),
         _trie_nodes_visited_indices() {}
 
@@ -407,8 +409,10 @@ namespace libsemigroups::detail {
   RewritingSystemTrie<ReductionOrder>::init() {
     // Do nothing to _trie_nodes_visited_indices, or _new_rule_trie
     RewritingSystemBaseWithOrder_::init();
+    _cached_terminating = false;
     _rule_trie.init();
-    _ticker_running = false;
+    _terminating_known = false;
+    _ticker_running    = false;
     return *this;
   }
 
@@ -425,6 +429,8 @@ namespace libsemigroups::detail {
     for (Rule* rule : Rules::active_rules()) {
       _rule_trie.insert_no_checks(rule->lhs(), rule);
     }
+    _cached_terminating = that._cached_terminating;
+    _terminating_known  = that._terminating_known;
     return *this;
   }
 
@@ -448,6 +454,7 @@ namespace libsemigroups::detail {
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
       RewritingSystemBaseWithOrder_::reorder(rule);
       RewritingSystemBase::set_cached_confluent(tril::unknown);
+      set_cached_terminating(tril::unknown);
       if (!RewritingSystemBase::active_rules().empty()
           && RewritingSystemBase::pending_rules().size()
                  > RewritingSystemBase::settings().reduction_threshold) {
@@ -460,17 +467,19 @@ namespace libsemigroups::detail {
   }
 
   template <template <typename, bool> typename ReductionOrder>
-  tril RewritingSystemTrie<
-      ReductionOrder>::is_length_non_increasing_no_reduce() noexcept {
-    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
+  tril RewritingSystemTrie<ReductionOrder>::is_length_non_increasing_no_reduce()
+      const noexcept {
+    if constexpr (order::is_length_non_increasing_v<
+                      ReductionOrder<Default, true>>) {
+      set_cached_terminating(tril::TRUE);
       return tril::TRUE;
     }
 
-    if (is_reduced() != tril::TRUE) {
+    if (RewritingSystemBase::is_reduced() != tril::TRUE) {
       return tril::unknown;
     }
 
-    for (auto const& rule : rules()) {
+    for (auto const& rule : RewritingSystemBase::rules()) {
       if (rule.first.size() < rule.second.size()) {
         return tril::FALSE;
       }
@@ -482,7 +491,9 @@ namespace libsemigroups::detail {
   template <template <typename, bool> typename ReductionOrder>
   bool
   RewritingSystemTrie<ReductionOrder>::is_length_non_increasing() noexcept {
-    if constexpr (order::is_length_non_increasing_v<ReductionOrder>) {
+    if constexpr (order::is_length_non_increasing_v<
+                      ReductionOrder<Default, true>>) {
+      set_cached_terminating(tril::TRUE);
       return true;
     }
 
@@ -491,30 +502,42 @@ namespace libsemigroups::detail {
   }
 
   template <template <typename, bool> typename ReductionOrder>
-  tril
-  RewritingSystemTrie<ReductionOrder>::is_terminating_no_reduce() noexcept {
-    if constexpr (order::is_well_founded_v<ReductionOrder>) {
-      return tril::TRUE;
+  tril RewritingSystemTrie<ReductionOrder>::is_terminating_no_reduce()
+      const noexcept {
+    if (_terminating_known) {
+      if (_cached_terminating == true) {
+        return tril::TRUE;
+      }
+      return tril::FALSE;
     }
-    if (is_length_non_increasing_no_reduce() == tril::TRUE) {
-      return tril::TRUE;
-    }
-    for (auto const& rule : rules()) {
-      if (std::search(rule.second.begin(),
-                      rule.second.end(),
-                      rule.first.begin(),
-                      rule.first.end())
-          != rule.second.end()) {
-        return tril::FALSE;
+
+    tril result = tril::unknown;
+
+    if constexpr (order::is_well_founded_v<ReductionOrder<Default, true>>) {
+      result = tril::TRUE;
+    } else if (is_length_non_increasing_no_reduce() == tril::TRUE) {
+      result = tril::TRUE;
+    } else {
+      for (auto const& rule : RewritingSystemBase::rules()) {
+        if (std::search(rule.second.begin(),
+                        rule.second.end(),
+                        rule.first.begin(),
+                        rule.first.end())
+            != rule.second.end()) {
+          result = tril::FALSE;
+          break;
+        }
       }
     }
 
-    return tril::unknown;
+    set_cached_terminating(result);
+    return result;
   }
 
   template <template <typename, bool> typename ReductionOrder>
   tril RewritingSystemTrie<ReductionOrder>::is_terminating() noexcept {
-    if constexpr (order::is_well_founded_v<ReductionOrder>) {
+    if constexpr (order::is_well_founded_v<ReductionOrder<Default, true>>) {
+      set_cached_terminating(tril::TRUE);
       return tril::TRUE;
     }
     reduce();
@@ -525,6 +548,12 @@ namespace libsemigroups::detail {
   bool RewritingSystemTrie<ReductionOrder>::reduce() {
     using aho_corasick_impl::begin_search_no_checks;
     using aho_corasick_impl::end_search_no_checks;
+
+    // If a system is not terminating, then reduction might make it terminating,
+    // provided it can actually finish!
+    if (_terminating_known && !_cached_terminating) {
+      set_cached_terminating(tril::unknown);
+    }
 
     auto                 start_time = std::chrono::high_resolution_clock::now();
     Ticker               ticker;
@@ -648,6 +677,7 @@ namespace libsemigroups::detail {
     _rule_trie.emplace_no_checks(
         new_rule->lhs().cbegin(), new_rule->lhs().cend(), new_rule);
     RewritingSystemBase::set_cached_confluent(tril::unknown);
+    set_cached_terminating(tril::unknown);
   }
 
   template <template <typename, bool> typename ReductionOrder>
@@ -655,6 +685,9 @@ namespace libsemigroups::detail {
   RewritingSystemTrie<ReductionOrder>::make_active_rule_pending(iterator it) {
     _rule_trie.erase_no_checks((*it)->lhs());
     return Rules::make_active_rule_pending(it);
+    if (_terminating_known && !_cached_terminating) {
+      set_cached_terminating(tril::unknown);
+    }
   }
 
   template <template <typename, bool> typename ReductionOrder>
@@ -767,6 +800,20 @@ namespace libsemigroups::detail {
       }
     }
     // fmt::print("{}\n", to_printable(v));
+  }
+
+  template <template <typename, bool> typename ReductionOrder>
+  void
+  RewritingSystemTrie<ReductionOrder>::set_cached_terminating(tril val) const {
+    if (val == tril::TRUE) {
+      _terminating_known  = true;
+      _cached_terminating = true;
+    } else if (val == tril::FALSE) {
+      _terminating_known  = true;
+      _cached_terminating = false;
+    } else {
+      _terminating_known = false;
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////
