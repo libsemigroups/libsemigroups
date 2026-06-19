@@ -1431,6 +1431,7 @@ namespace libsemigroups {
     KnuthBendix kb(twosided, p);
 
     knuth_bendix::TietzeExplorer dora(kb);
+    REQUIRE(dora.number_of_runs() == 103'904);
     REQUIRE(to_human_readable_repr(dora)
             == "<knuth_bendix.TietzeExplorer for <monoid presentation with 2 "
                "letters, 1 rule, and length 11>, 103,904 run(s) @ 5ms each, 1 "

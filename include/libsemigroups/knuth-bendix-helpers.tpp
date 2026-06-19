@@ -767,6 +767,7 @@ namespace libsemigroups {
                  string_time(delta(start_time())));
     }
 
+    // TODO rm
     template <typename Word, typename RewritingSystem>
     void TietzeExplorer<Word, RewritingSystem>::throw_if_todo_populated(
         std::string_view msg) const {
@@ -782,11 +783,19 @@ namespace libsemigroups {
   template <typename Word, typename RewritingSystem>
   std::string to_human_readable_repr(
       knuth_bendix::TietzeExplorer<Word, RewritingSystem> const& dora) {
+    std::string runs_info = "";
+    if (dora.is_todo_populated()) {
+      runs_info
+          = fmt::format("{} ", detail::group_digits(dora.number_of_runs()));
+    }
+    // We could just always compute the number of runs here, but then the
+    // object isn't modifiable anymore, which seems a bit much just for viewing
+    // the object.
     return fmt::format(
-        "<knuth_bendix.TietzeExplorer for {}, {} run(s) @ {} each, {} threads, "
+        "<knuth_bendix.TietzeExplorer for {}, {}run(s) @ {} each, {} threads, "
         "[{}, {}] depths>",
         to_human_readable_repr(dora.knuth_bendix().presentation()),
-        detail::group_digits(dora.number_of_runs()),
+        runs_info,
         detail::string_time(dora.run_each_for()),
         dora.number_of_threads(),
         dora.depth_min(),
