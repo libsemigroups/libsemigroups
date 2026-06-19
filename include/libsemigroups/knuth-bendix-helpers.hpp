@@ -509,6 +509,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if the internal search queue has
       //! already been populated.
       TietzeExplorer& depth_max(size_t val) {
+        // TODO don't do this, just throw away _todo and recompute it
         throw_if_todo_populated("depth_max");
         _depth_max = val;
         return *this;
@@ -543,6 +544,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if the internal search queue has
       //! already been populated.
       TietzeExplorer& depth_min(size_t val) {
+        // TODO don't do this, just throw away _todo and recompute it
         throw_if_todo_populated("depth_min");
         _depth_min = val;
         return *this;
@@ -668,6 +670,11 @@ namespace libsemigroups {
         return _finished && _race.finished();
       }
 
+      // TODO doc
+      [[nodiscard]] bool is_todo_populated() const noexcept {
+        return _todo_populated;
+      }
+
      private:
       void run_impl() override;
 
@@ -686,7 +693,7 @@ namespace libsemigroups {
       void report_before_run() const;
       void report_progress_from_thread() const;
       void report_after_run() const;
-
+      // TODO rm
       void throw_if_todo_populated(std::string_view msg) const;
     };  // class TietzeExplorer
   }     // namespace knuth_bendix
