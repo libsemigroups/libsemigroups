@@ -837,4 +837,26 @@ namespace libsemigroups {
     auto result = dora.depth_max(2).number_of_threads(10).result();
     REQUIRE(!result.has_value());
   }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "158",
+                                   "aaa=1, abAbbbaB=1",
+                                   "[extreme][tietze-explorer]",
+                                   RPOTrie) {
+    auto                        rg = ReportGuard(false);
+    using std::string_literals::operator""s;
+    Presentation<std::string>   p;
+    p.alphabet("aAbB");
+    p.contains_empty_word(true);
+    presentation::add_inverse_rules(p, "AaBb");
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "abAbbbaB", "");
+    presentation::add_rule(p, "bbbbbbbbb", "");
+    presentation::balance(p, "AaBb"s);
+
+    KnuthBendix<std::string, TestType> kb(twosided, p);
+    knuth_bendix::TietzeExplorer       dora(kb);
+    auto result = dora.depth_max(2).number_of_threads(10).result();
+    REQUIRE(!result.has_value());
+  }
 }  // namespace libsemigroups
