@@ -842,7 +842,7 @@ namespace libsemigroups {
                                    "158",
                                    "aaa=1, abAbbbaB=1",
                                    "[extreme][tietze-explorer]",
-                                   RPOTrie) {
+                                   LenLexTrie) {
     auto                        rg = ReportGuard(false);
     using std::string_literals::operator""s;
     Presentation<std::string>   p;
@@ -853,10 +853,15 @@ namespace libsemigroups {
     presentation::add_rule(p, "abAbbbaB", "");
     presentation::add_rule(p, "bbbbbbbbb", "");
     presentation::balance(p, "AaBb"s);
+    REQUIRE(!is_obviously_infinite(p));
 
     KnuthBendix<std::string, TestType> kb(twosided, p);
     knuth_bendix::TietzeExplorer       dora(kb);
-    auto result = dora.depth_max(2).number_of_threads(10).result();
+    auto                               result = dora.depth_max(2)
+                      .depth_min(2)
+                      .number_of_threads(10)
+                      .run_each_for(std::chrono::milliseconds(50))
+                      .result();
     REQUIRE(!result.has_value());
   }
 }  // namespace libsemigroups
