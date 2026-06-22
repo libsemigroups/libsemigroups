@@ -4355,4 +4355,93 @@ End;)xxx");
     REQUIRE(std::all_of(
         rule.begin(), rule.end(), [](auto letter) { return letter == 'b'; }));
   }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "110",
+                                   "find_weights simple",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {2}, {1});
+    presentation::add_rule(p, {1}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{1, 1, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(result.value(), p.rules[i + 1], p.rules[i]));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "111",
+                                   "find_weights simple x2",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, {1}, {2});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{7, 2, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(result.value(), p.rules[i + 1], p.rules[i]));
+    }
+  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "112",
+                                   "find_weights simple x3",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0, 1}, {1});
+    presentation::add_rule(p, {1, 2}, {2});
+    presentation::add_rule(p, {2, 0}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{1, 1, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(result.value(), p.rules[i + 1], p.rules[i]));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "113",
+                                   "find_weights no solution",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, {1}, {2});
+    presentation::add_rule(p, {2}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(!result.has_value());
+  }
 }  // namespace libsemigroups
