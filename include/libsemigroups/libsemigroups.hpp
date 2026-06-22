@@ -47,6 +47,7 @@
 #include "debug.hpp"
 #include "deprecated.hpp"
 #include "dot.hpp"
+#include "du-narendran-rusinowitch.hpp"
 #include "exception.hpp"
 #include "forest.hpp"
 #include "freeband.hpp"

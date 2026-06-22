@@ -44,13 +44,14 @@ head = f"""//
 foot = "#endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_\n"
 
 include_dirs = ["include/libsemigroups", "include/libsemigroups/detail"]
+exclude_files = {"libsemigroups.hpp", "rewriters.hpp"}
 
 output = head
 for dir in include_dirs:
     files = [file for file in os.listdir(dir) if file.endswith(".hpp")]
     files.sort()
     for file in files:
-        if file != "libsemigroups.hpp":
+        if file not in exclude_files:
             if dir.endswith("detail"):
                 output += f'#include "detail/{file}"\n'
             else:
