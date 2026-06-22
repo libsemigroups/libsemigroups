@@ -18,7 +18,7 @@ jobs:
       matrix:
         compiler: [clang++, g++]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
