@@ -26,12 +26,12 @@ namespace libsemigroups {
   template <typename Word>
   class Subwords {
    private:
-    Word                                       _current;
-    typename std::vector<Word>::const_iterator _current_rule;
-    typename Word::const_iterator              _prefix;
-    Presentation<Word>                         _presentation;
-    std::unordered_set<Word, Hash<Word>>       _seen;
-    typename Word::const_iterator              _suffix;
+    Word                                 _current;
+    size_t                               _current_rule;
+    size_t                               _prefix;
+    Presentation<Word>                   _presentation;
+    std::unordered_set<Word, Hash<Word>> _seen;
+    size_t                               _suffix;
 
     // TODO mutable std::mutex                         _mtx;
     // TODO settings like min. length + max. length
@@ -66,10 +66,10 @@ namespace libsemigroups {
 
     explicit Subwords(Presentation<Word> const& p) : Subwords() {
       _presentation = p;
-      _current_rule = _presentation.rules.cbegin();
-      _suffix       = _current_rule->cbegin();
-      _prefix       = _current_rule->cbegin();
-      if (!_current_rule->empty()) {
+      _current_rule = 0;
+      _suffix       = 0;
+      _prefix       = 0;
+      if (!_presentation.rules[_current_rule].empty()) {
         ++_prefix;
       }
       next();
@@ -77,10 +77,10 @@ namespace libsemigroups {
 
     explicit Subwords(Presentation<Word>&& p) : Subwords() {
       _presentation = std::move(p);
-      _current_rule = _presentation.rules.cbegin();
-      _suffix       = _current_rule->cbegin();
-      _prefix       = _current_rule->cbegin();
-      if (!_current_rule->empty()) {
+      _current_rule = 0;
+      _suffix       = 0;
+      _prefix       = 0;
+      if (!_presentation.rules[_current_rule].empty()) {
         ++_prefix;
       }
       next();
@@ -108,36 +108,46 @@ namespace libsemigroups {
     }
 
     void next() {
-      while (_current_rule != _presentation.rules.cend()) {
-        for (; _suffix < _current_rule->cend();) {
-          for (; _prefix <= _current_rule->cend(); ++_prefix) {
-            if (_seen.emplace(_suffix, _prefix).second) {
-              _current.assign(_suffix, _prefix);
-              ++_prefix;
+      while (_current_rule != _presentation.rules.size()) {
+        auto const& rule = _presentation.rules[_current_rule];
+        for (; _suffix < rule.size();) {
+          for (; _prefix <= rule.size(); ++_prefix) {
+            if (_seen.emplace(rule.begin() + _suffix, rule.begin() + _prefix)
+                    .second) {
+              _current.assign(rule.begin() + _suffix, rule.begin() + _prefix);
+              if (_prefix == rule.size()) {
+                ++_suffix;
+                _prefix = _suffix;
+                if (_prefix != rule.size()) {
+                  ++_prefix;
+                }
+              } else {
+                ++_prefix;
+              }
               return;
             }
           }
           ++_suffix;
           _prefix = _suffix;
-          if (_prefix != _current_rule->cend()) {
+          if (_prefix != rule.size()) {
             ++_prefix;
           }
         }
 
         ++_current_rule;
-        if (_current_rule == _presentation.rules.cend()) {
+        if (_current_rule == _presentation.rules.size()) {
           break;
         }
-        _suffix = _current_rule->cbegin();
-        _prefix = _current_rule->cbegin();
-        if (!_current_rule->empty()) {
+        _suffix = 0;
+        _prefix = 0;
+        if (!_presentation.rules[_current_rule].empty()) {
           ++_prefix;
         }
       }
     }
 
     [[nodiscard]] bool at_end() const noexcept {
-      return _current_rule == _presentation.rules.cend();
+      return _current_rule == _presentation.rules.size();
     }
 
     [[nodiscard]] size_t size_hint() const {
