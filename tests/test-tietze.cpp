@@ -62,7 +62,38 @@ namespace libsemigroups {
 
     Subwords subwords(p);
 
-    REQUIRE((subwords | rx::to_vector()) == std::vector<word_type>({}));
+    REQUIRE((subwords | rx::count()) == 29);
+    REQUIRE(subwords.size_hint() == 45);
+    REQUIRE((subwords | rx::to_vector())
+            == std::vector<word_type>({{0},
+                                       {0, 1},
+                                       {0, 1, 0},
+                                       {0, 1, 0, 1},
+                                       {0, 1, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 0, 1},
+                                       {0, 1, 0, 1, 0, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 0, 1, 0, 1},
+                                       {1},
+                                       {1, 0},
+                                       {1, 0, 1},
+                                       {1, 0, 1, 0},
+                                       {1, 0, 1, 0, 0},
+                                       {1, 0, 1, 0, 0, 1},
+                                       {1, 0, 1, 0, 0, 1, 0},
+                                       {1, 0, 1, 0, 0, 1, 0, 1},
+                                       {0, 1, 0, 0},
+                                       {0, 1, 0, 0, 1},
+                                       {0, 1, 0, 0, 1, 0},
+                                       {0, 1, 0, 0, 1, 0, 1},
+                                       {1, 0, 0},
+                                       {1, 0, 0, 1},
+                                       {1, 0, 0, 1, 0},
+                                       {1, 0, 0, 1, 0, 1},
+                                       {0, 0},
+                                       {0, 0, 1},
+                                       {0, 0, 1, 0},
+                                       {0, 0, 1, 0, 1}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
