@@ -30,10 +30,7 @@
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
-                          "000",
-                          "strings",
-                          "[quick][presentation][tietze]") {
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "000", "strings", "[quick]") {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -62,10 +59,7 @@ namespace libsemigroups {
     REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
-                          "001",
-                          "word_type",
-                          "[quick][presentation][tietze]") {
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "001", "word_type", "[quick]") {
     using literals::        operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -135,10 +129,41 @@ namespace libsemigroups {
                                        {0, 0, 1, 0, 1}}));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "operator|", "[quick]") {
+    auto rg = ReportGuard(false);
+
+    std::vector<Presentation<std::string>> presents;
+    Presentation<std::string>              p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+    presents.push_back(p);
+    p.alphabet("xy");
+    p.rules = {"xyxyxyxyxyxy", ""};
+    presents.push_back(p);
+
+    auto present_range = rx::iterator_range(presents.begin(), presents.end());
+
+    // TODO remove <std::string>
+    auto range = present_range | Subwords<std::string>();
+    REQUIRE((range | rx::to_vector())
+            == std::vector<std::string>(
+                {"",           "a",           "ab",
+                 "aba",        "abab",        "b",
+                 "ba",         "bab",         "",
+                 "x",          "xy",          "xyx",
+                 "xyxy",       "xyxyx",       "xyxyxy",
+                 "xyxyxyx",    "xyxyxyxy",    "xyxyxyxyx",
+                 "xyxyxyxyxy", "xyxyxyxyxyx", "xyxyxyxyxyxy",
+                 "y",          "yx",          "yxy",
+                 "yxyx",       "yxyxy",       "yxyxyx",
+                 "yxyxyxy",    "yxyxyxyx",    "yxyxyxyxy",
+                 "yxyxyxyxyx", "yxyxyxyxyxy"}));
+  }
+
   // LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
   //                         "002",
   //                         "strings",
-  //                         "[quick][presentation][tietze]") {
+  //                         "[quick]") {
   //   auto                      rg = ReportGuard(false);
   //   Presentation<std::string> p;
   //   p.alphabet("ab");
