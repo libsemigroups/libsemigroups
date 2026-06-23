@@ -19,8 +19,22 @@
 #ifndef LIBSEMIGROUPS_TIETZE_HPP_
 #define LIBSEMIGROUPS_TIETZE_HPP_
 
-#include "debug.hpp"
-#include "presentation.hpp"
+#include <algorithm>      // for sort
+#include <cstddef>        // for size_t
+#include <numeric>        // for accumulate
+#include <queue>          // for queue
+#include <string_view>    // for basic_string_view, string_view
+#include <unordered_set>  // for unordered_set
+#include <utility>        // for move
+#include <vector>         // for vector
+
+#include "adapters.hpp"      // for Hash
+#include "constants.hpp"     // for POSITIVE_INFINITY
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "presentation.hpp"  // for Presentation, operator!=, rep...
+
+#include "detail/fmt.hpp"  // for print
 
 namespace libsemigroups {
 
@@ -37,7 +51,6 @@ namespace libsemigroups {
     size_t                               _suffix_begin;
 
     // TODO mutable std::mutex                         _mtx;
-    // TODO settings like min. length + max. length
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -182,7 +195,9 @@ namespace libsemigroups {
       if (!at_end()) {
         result = get();
         next();
+        return true;
       }
+      return false;
     }
 
    private:
