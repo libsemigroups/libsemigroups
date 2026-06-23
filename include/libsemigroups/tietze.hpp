@@ -16,14 +16,137 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_STEPHEN_HPP_
-#define LIBSEMIGROUPS_STEPHEN_HPP_
+#ifndef LIBSEMIGROUPS_TIETZE_HPP_
+#define LIBSEMIGROUPS_TIETZE_HPP_
+
+#include "presentation.hpp"
 
 namespace libsemigroups {
 
-  // TODO move to tietze.hpp/tpp
+  template <typename Word>
+  class Subwords {
+   private:
+    Word                                       _current;
+    typename std::vector<Word>::const_iterator _current_rule;
+    typename Word::const_iterator              _prefix;
+    Presentation<Word>                         _presentation;
+    std::unordered_set<Word, Hash<Word>>       _seen;
+    typename Word::const_iterator              _suffix;
+
+    // TODO mutable std::mutex                         _mtx;
+    // TODO settings like min. length + max. length
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Aliases
+    ////////////////////////////////////////////////////////////////////////
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+
+    using output_type = Word const&;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
+    // TODO? init functions?
+    Subwords()
+        : _current(),
+          _current_rule(),
+          _prefix(),
+          _presentation(),
+          _seen(),
+          _suffix() {}
+
+    Subwords(Subwords const&)            = default;
+    Subwords(Subwords&&)                 = default;
+    Subwords& operator=(Subwords const&) = default;
+    Subwords& operator=(Subwords&&)      = default;
+
+    ~Subwords() = default;
+
+    explicit Subwords(Presentation<Word> const& p) : Subwords() {
+      _presentation = p;
+      _current_rule = _presentation.rules.cbegin();
+      _suffix       = _current_rule->cbegin();
+      _prefix       = _current_rule->cbegin();
+      if (!_current_rule->empty()) {
+        ++_prefix;
+      }
+      next();
+    }
+
+    explicit Subwords(Presentation<Word>&& p) : Subwords() {
+      _presentation = std::move(p);
+      _current_rule = _presentation.rules.cbegin();
+      _suffix       = _current_rule->cbegin();
+      _prefix       = _current_rule->cbegin();
+      if (!_current_rule->empty()) {
+        ++_prefix;
+      }
+      next();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // rx::ranges stuff
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO
+    // template <typename InputRange>
+    // struct Range;
+
+    // TODO
+    // template <typename InputRange,
+    //           typename =
+    //           std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    // [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+    //   using Inner = rx::get_range_type_t<InputRange>;
+    //   return Range<Inner>(std::forward<InputRange>(input), *this);
+    // }
+
+    [[nodiscard]] output_type get() const {
+      return _current;
+    }
+
+    void next() {
+      while (_current_rule != _presentation.rules.cend()) {
+        for (; _suffix < _current_rule->cend(); ++_suffix) {
+          for (; _prefix <= _current_rule->cend(); ++_prefix) {
+            if (_seen.emplace(_suffix, _prefix).second) {
+              _current.assign(_suffix, _prefix);
+              return;
+            }
+          }
+        }
+        ++_current_rule;
+        if (_current_rule == _presentation.rules.cend()) {
+          break;
+        }
+        _suffix = _current_rule->cbegin();
+        _prefix = _current_rule->cbegin();
+        if (!_current_rule->empty()) {
+          ++_prefix;
+        }
+      }
+    }
+
+    [[nodiscard]] bool at_end() const noexcept {
+      return _current_rule == _presentation.rules.cend();
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      size_t const n = std::accumulate(
+          _presentation.rules.begin(),
+          _presentation.rules.end(),
+          size_t(0),
+          [](auto& acc, auto& rule) { return acc + rule.size(); });
+      return n * (n + 1) / 2;
+    }
+    // TODO try_get_and_advance
+  };  // class RulesSubwords
+
   template <typename Word>
   class TietzeAddGeneratorsRange {
+    size_t             _count;
     Presentation<Word> _current;
     std::vector<Word>  _current_subwords_replaced_with_new_generators;
     size_t             _depth_max;
@@ -47,7 +170,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // TODO? init functions?
     TietzeAddGeneratorsRange()
-        : _current(),
+        : _count(0),
+          _current(),
           _current_subwords_replaced_with_new_generators(),
           _depth_max(0),
           _depth_min(0),
@@ -171,21 +295,31 @@ namespace libsemigroups {
     }
 
     void next() {
+      populate_todo();
       LIBSEMIGROUPS_ASSERT(!_todo.empty());
       // Put the presentation back into its original form
       _current      = _presentation;
       auto new_gens = std::move(_todo.front());
       _todo.pop();
       for (auto const& new_gen : new_gens) {
-        replace_word_with_new_generator(_current, new_gen);
+        presentation::replace_word_with_new_generator(_current, new_gen);
       }
     }
 
-    // TODO next
-    // TODO at_end
-    // TODO count
-    // TODO size_hint
-    //
+    [[nodiscard]] bool at_end() const {
+      return _todo_populated && _todo.empty();
+    }
+
+    [[nodiscard]] size_t count() {
+      populate_todo();
+      return _count;
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      // TODO improve
+      return _count;
+    }
+
     // TODO try_get_and_advance
    private:
     template <typename Iterator>
@@ -205,10 +339,14 @@ namespace libsemigroups {
       std::sort(words.begin(), words.end(), [](auto const& u, auto const& v) {
         return lenlex_cmp(v, u);
       });
+      fmt::print("{}", words);
       return words;
     }
 
     void dfs(Presentation<Word>& p, size_t depth = 0) {
+      if (depth >= _depth_min) {
+        _count += 1;
+      }
       if (depth != _depth_max) {
         auto sbwrds = subwords(p.rules.cbegin(), p.rules.cend());
 
@@ -231,8 +369,8 @@ namespace libsemigroups {
       if (!_todo_populated) {
         LIBSEMIGROUPS_ASSERT(_todo.empty());
         _todo_populated = true;
-        if (depth_min() == 0) {
-          _todo.emplace();  // no new generators
+        if (_depth_min == 0) {
+          _count++;
         }
         auto copy = _presentation;
         dfs(copy);
@@ -305,3 +443,4 @@ namespace libsemigroups {
   //  }
   //};
 }  // namespace libsemigroups
+#endif  // LIBSEMIGROUPS_TIETZE_HPP_

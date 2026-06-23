@@ -21,14 +21,51 @@
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/ranges.hpp"        // for iterator_range, to_vector
+#include "libsemigroups/tietze.hpp"        // for TietzeAddGeneratorsRange
+#include "libsemigroups/word-range.hpp"    // for operator""_w
+
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/presentation.hpp"   // for Presentation
-#include "libsemigroups/ranges.hpp"         // for iterator_range, to_vector
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
+  LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
                           "000",
+                          "strings",
+                          "[quick][presentation][tietze]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+
+    Subwords subwords(p);
+
+    REQUIRE(subwords.size_hint() == 21);
+    REQUIRE((subwords | rx::count()) == 6);
+
+    REQUIRE((subwords | rx::to_vector())
+            == std::vector<std::string>({"a", "ab", "aba", "abab", "b", "ba"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
+                          "001",
+                          "strings",
+                          "[quick][presentation][tietze]") {
+    using literals::        operator""_w;
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2).contains_empty_word(true);
+    presentation::add_rule(p, 010100101_w, ""_w);
+
+    Subwords subwords(p);
+
+    REQUIRE((subwords | rx::to_vector()) == std::vector<word_type>({}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
+                          "002",
                           "strings",
                           "[quick][presentation][tietze]") {
     auto                      rg = ReportGuard(false);
@@ -36,25 +73,16 @@ namespace libsemigroups {
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
 
-    // std::vector<std::string> candidates = {"ab", "ba"};
-    // auto range = rx::iterator_range(candidates)
-    //              | presentation::TietzeAddGeneratorsRange(p);
+    TietzeAddGeneratorsRange tagr(p);
 
-    // REQUIRE(range.size_hint() == 2);
-    // REQUIRE((range | rx::count()) == 2);
+    tagr.depth_min(1).depth_max(1);
 
-    // auto const presentations = range | rx::to_vector();
-    // REQUIRE(p.alphabet() == "ab");
-    // REQUIRE(p.rules == std::vector<std::string>({"abab", "ba"}));
-
-    // REQUIRE(presentations.size() == 2);
-    // REQUIRE(presentations[0].alphabet() == "abc");
-    // REQUIRE(presentations[0].rules
-    //         == std::vector<std::string>({"cc", "ba", "c", "ab"}));
-
-    // REQUIRE(presentations[1].alphabet() == "abc");
-    // REQUIRE(presentations[1].rules
-    //         == std::vector<std::string>({"acb", "c", "c", "ba"}));
+    REQUIRE((tagr | rx::transform([](auto& p) { return p.rules; })
+             | rx::to_vector())
+            == std::vector<std::vector<std::string>>());
+    REQUIRE((tagr | rx::count()) == 5);
+    REQUIRE(tagr.size_hint() == 0);
+    REQUIRE(tagr.count() == 6);
   }
 
 }  // namespace libsemigroups
