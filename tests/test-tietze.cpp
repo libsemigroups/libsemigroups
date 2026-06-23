@@ -46,14 +46,19 @@ namespace libsemigroups {
 
     REQUIRE((subwords | rx::to_vector())
             == std::vector<std::string>(
-                {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
-    REQUIRE((subwords | rx::count()) == 7);
+                {"", "a", "ab", "aba", "abab", "b", "ba", "bab"}));
+    REQUIRE((subwords | rx::count()) == 8);
     subwords.min_length(3);
     REQUIRE((subwords | rx::to_vector())
             == std::vector<std::string>({"aba", "abab", "bab"}));
     subwords.min_length(4);
     REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({"abab"}));
     subwords.min_length(5);
+    REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({}));
+    subwords.min_length(2).max_length(3);
+    REQUIRE((subwords | rx::to_vector())
+            == std::vector<std::string>({"ab", "aba", "ba", "bab"}));
+    subwords.min_length(2).max_length(1);
     REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({}));
   }
 
@@ -70,6 +75,9 @@ namespace libsemigroups {
     Subwords subwords(p);
     subwords.min_length(3);
 
+    REQUIRE((subwords | rx::count()) == 24);
+    REQUIRE(subwords.size_hint() == 45);
+    subwords.min_length(1);
     REQUIRE((subwords | rx::to_vector())
             == std::vector<word_type>({{0},
                                        {0, 1},
@@ -100,8 +108,31 @@ namespace libsemigroups {
                                        {0, 0, 1},
                                        {0, 0, 1, 0},
                                        {0, 0, 1, 0, 1}}));
-    REQUIRE((subwords | rx::count()) == 29);
-    REQUIRE(subwords.size_hint() == 45);
+    REQUIRE(!subwords.at_end());
+    subwords.min_length(5);
+    REQUIRE((subwords | rx::to_vector())
+            == std::vector<word_type>({{0, 1, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 0, 1},
+                                       {0, 1, 0, 1, 0, 0, 1, 0},
+                                       {0, 1, 0, 1, 0, 0, 1, 0, 1},
+                                       {1, 0, 1, 0, 0},
+                                       {1, 0, 1, 0, 0, 1},
+                                       {1, 0, 1, 0, 0, 1, 0},
+                                       {1, 0, 1, 0, 0, 1, 0, 1},
+                                       {0, 1, 0, 0, 1},
+                                       {0, 1, 0, 0, 1, 0},
+                                       {0, 1, 0, 0, 1, 0, 1},
+                                       {1, 0, 0, 1, 0},
+                                       {1, 0, 0, 1, 0, 1},
+                                       {0, 0, 1, 0, 1}}));
+    subwords.min_length(5).max_length(5);
+    REQUIRE((subwords | rx::to_vector())
+            == std::vector<word_type>({{0, 1, 0, 1, 0},
+                                       {1, 0, 1, 0, 0},
+                                       {0, 1, 0, 0, 1},
+                                       {1, 0, 0, 1, 0},
+                                       {0, 0, 1, 0, 1}}));
   }
 
   // LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
