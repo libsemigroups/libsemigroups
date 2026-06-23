@@ -3429,18 +3429,39 @@ namespace libsemigroups {
       return find_rule(p, lhs, rhs) != p.rules.end();
     }
 
+    // TODO move to tietze.hpp/tpp
     template <typename Word>
     class TietzeAddGeneratorsRange {
+      Presentation<Word> _current;
+      std::vector<Word>  _current_subwords_replaced_with_new_generators;
+      size_t             _depth_max;
+      size_t             _depth_min;
+      // TODO mutable std::mutex                         _mtx;
+      Presentation<Word>            _presentation;
+      std::queue<std::vector<Word>> _todo;
+      bool                          _todo_populated;
+
      public:
-      using output_type = Presentation<Word>;
+      ////////////////////////////////////////////////////////////////////////
+      // Aliases
+      ////////////////////////////////////////////////////////////////////////
+      static constexpr bool is_finite     = true;
+      static constexpr bool is_idempotent = true;
 
-      TietzeAddGeneratorsRange() = default;
+      using output_type = Presentation<Word> const&;
 
-      explicit TietzeAddGeneratorsRange(Presentation<Word> const& p)
-          : _presentation(p) {}
-
-      explicit TietzeAddGeneratorsRange(Presentation<Word>&& p)
-          : _presentation(std::move(p)) {}
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + initializers
+      ////////////////////////////////////////////////////////////////////////
+      // TODO? init functions?
+      TietzeAddGeneratorsRange()
+          : _current(),
+            _current_subwords_replaced_with_new_generators(),
+            _depth_max(0),
+            _depth_min(0),
+            _presentation(),
+            _todo(),
+            _todo_populated(false) {}
 
       TietzeAddGeneratorsRange(TietzeAddGeneratorsRange const&) = default;
       TietzeAddGeneratorsRange(TietzeAddGeneratorsRange&&)      = default;
@@ -3450,18 +3471,191 @@ namespace libsemigroups {
 
       ~TietzeAddGeneratorsRange() = default;
 
-      template <typename InputRange>
-      struct Range;
-
-      template <typename InputRange,
-                typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
-      [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
-        using Inner = rx::get_range_type_t<InputRange>;
-        return Range<Inner>(std::forward<InputRange>(input), *this);
+      explicit TietzeAddGeneratorsRange(Presentation<Word> const& p)
+          : TietzeAddGeneratorsRange() {
+        _current      = p;
+        _presentation = p;
       }
 
+      explicit TietzeAddGeneratorsRange(Presentation<Word>&& p)
+          : TietzeAddGeneratorsRange() {
+        _current      = std::move(p);
+        _presentation = _current;
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // Settings
+      ////////////////////////////////////////////////////////////////////////
+
+      //! \brief Get the maximum search depth.
+      //!
+      //! Returns the maximum number of subword replacements by new generators
+      //! to perform when constructing presentations for the search.
+      //!
+      //! The default value is `3`.
+      //!
+      //! \returns A maximum number of new generators introduced.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_t depth_max() const noexcept {
+        return _depth_max;
+      }
+
+      //! \brief Set the maximum search depth.
+      //!
+      //! This function sets the maximum number of subword replacements by new
+      //! generators to perform when constructing presentations for the search.
+      //!
+      //! The default value is `3`.
+      //!
+      //! \param val the maximum search depth.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \throws LibsemigroupsException if the internal search queue has
+      //! already been populated.
+      TietzeAddGeneratorsRange& depth_max(size_t val) {
+        // TODO don't do this, just throw away _todo and recompute it
+        throw_if_todo_populated("depth_max");
+        _depth_max = val;
+        return *this;
+      }
+
+      //! \brief Get the minimum search depth.
+      //!
+      //! Returns the minimum number of subword replacements by new generators
+      //! required for a presentation to be tried.
+      //!
+      //! The default value is `0`.
+      //!
+      //! \returns The minimum number of new generators to introduce.
+      //!
+      //! \exceptions
+      //! \noexcept
+      [[nodiscard]] size_t depth_min() const noexcept {
+        return _depth_min;
+      }
+
+      //! \brief Set the minimum search depth.
+      //!
+      //! This function sets the minimum number of subword replacements by new
+      //! generators required for a presentation to be tried.
+      //!
+      //! The default value is `0`.
+      //!
+      //! \param val the minimum search depth.
+      //!
+      //! \returns A reference to \c this.
+      //!
+      //! \throws LibsemigroupsException if the internal search queue has
+      //! already been populated.
+      TietzeAddGeneratorsRange& depth_min(size_t val) {
+        // TODO don't do this, just throw away _todo and recompute it
+        throw_if_todo_populated("depth_min");
+        _depth_min = val;
+        return *this;
+      }
+
+      ////////////////////////////////////////////////////////////////////////
+      // rx::ranges stuff
+      ////////////////////////////////////////////////////////////////////////
+
+      // TODO
+      // template <typename InputRange>
+      // struct Range;
+
+      // TODO
+      // template <typename InputRange,
+      //           typename =
+      //           std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+      // [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      //   using Inner = rx::get_range_type_t<InputRange>;
+      //   return Range<Inner>(std::forward<InputRange>(input), *this);
+      // }
+
+      [[nodiscard]] output_type get() const {
+        return _current;
+      }
+
+      void next() {
+        LIBSEMIGROUPS_ASSERT(!_todo.empty());
+        // Put the presentation back into its original form
+        _current      = _presentation;
+        auto new_gens = std::move(_todo.front());
+        _todo.pop();
+        for (auto const& new_gen : new_gens) {
+          replace_word_with_new_generator(_current, new_gen);
+        }
+      }
+
+      // TODO next
+      // TODO at_end
+      // TODO count
+      // TODO size_hint
+      //
+      // TODO try_get_and_advance
      private:
-      Presentation<Word> _presentation;
+      template <typename Iterator>
+      auto subwords(Iterator first, Iterator last) {
+        // TODO static_assert that Iterator::value_type is Word
+        std::unordered_set<Word> mp;
+
+        for (auto it = first; it < last; ++it) {
+          auto const& w = *it;
+          for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
+            for (auto prefix = suffix + 2; prefix < w.cend(); ++prefix) {
+              mp.emplace(suffix, prefix);
+            }
+          }
+        }
+        std::vector<Word> words(mp.cbegin(), mp.cend());
+        std::sort(words.begin(), words.end(), [](auto const& u, auto const& v) {
+          return lenlex_cmp(v, u);
+        });
+        return words;
+      }
+
+      void dfs(Presentation<Word>& p, size_t depth = 0) {
+        if (depth != _depth_max) {
+          auto sbwrds = subwords(p.rules.cbegin(), p.rules.cend());
+
+          Presentation<Word> copy;
+          for (auto const& w : sbwrds) {
+            if (w.size() > 1) {
+              copy = p;
+              presentation::replace_word_with_new_generator(
+                  copy, w.cbegin(), w.cend());
+              _current_subwords_replaced_with_new_generators.push_back(w);
+              _todo.push(_current_subwords_replaced_with_new_generators);
+              dfs(copy, depth + 1);
+              _current_subwords_replaced_with_new_generators.pop_back();
+            }
+          }
+        }
+      }
+
+      void populate_todo() {
+        if (!_todo_populated) {
+          LIBSEMIGROUPS_ASSERT(_todo.empty());
+          _todo_populated = true;
+          if (depth_min() == 0) {
+            _todo.emplace();  // no new generators
+          }
+          auto copy = _presentation;
+          dfs(copy);
+        }
+      }
+
+      // TODO rm
+      void throw_if_todo_populated(std::string_view msg) const {
+        if (_todo_populated) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "it is not possible to set `{}` at this point, "
+              "please use `init`, and try again",
+              msg);
+        }
+      }
     };
 
     template <typename Word>
@@ -3472,52 +3666,53 @@ namespace libsemigroups {
     TietzeAddGeneratorsRange(Presentation<Word>&&)
         -> TietzeAddGeneratorsRange<Word>;
 
-    template <typename Word>
-    template <typename InputRange>
-    struct TietzeAddGeneratorsRange<Word>::Range {
-      using output_type = Presentation<Word>;
+    // template <typename Word>
+    // template <typename InputRange>
+    // struct TietzeAddGeneratorsRange<Word>::Range {
+    //   using output_type = Presentation<Word>;
 
-      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+    //  static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    //  static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-      InputRange                     _input;
-      TietzeAddGeneratorsRange<Word> _tietze_add_generators;
+    //  InputRange                     _input;
+    //  TietzeAddGeneratorsRange<Word> _tietze_add_generators;
 
-      explicit Range(InputRange const&               input,
-                     TietzeAddGeneratorsRange const& tagr)
-          : _input(input), _tietze_add_generators(tagr) {}
+    //  explicit Range(InputRange const&               input,
+    //                 TietzeAddGeneratorsRange const& tagr)
+    //      : _input(input), _tietze_add_generators(tagr) {}
 
-      explicit Range(InputRange&& input, TietzeAddGeneratorsRange const& tagr)
-          : _input(std::move(input)), _tietze_add_generators(tagr) {}
+    //  explicit Range(InputRange&& input, TietzeAddGeneratorsRange const& tagr)
+    //      : _input(std::move(input)), _tietze_add_generators(tagr) {}
 
-      explicit Range(InputRange const& input, TietzeAddGeneratorsRange&& tagr)
-          : _input(input), _tietze_add_generators(std::move(tagr)) {}
+    //  explicit Range(InputRange const& input, TietzeAddGeneratorsRange&& tagr)
+    //      : _input(input), _tietze_add_generators(std::move(tagr)) {}
 
-      explicit Range(InputRange&& input, TietzeAddGeneratorsRange&& tagr)
-          : _input(std::move(input)), _tietze_add_generators(std::move(tagr)) {}
+    //  explicit Range(InputRange&& input, TietzeAddGeneratorsRange&& tagr)
+    //      : _input(std::move(input)), _tietze_add_generators(std::move(tagr))
+    //      {}
 
-      [[nodiscard]] output_type get() const {
-        auto copy = _tietze_add_generators._presentation;
-        replace_word_with_new_generator(copy, _input.get());
-        return copy;
-      }
+    //  [[nodiscard]] output_type get() const {
+    //    auto copy = _tietze_add_generators._presentation;
+    //    replace_word_with_new_generator(copy, _input.get());
+    //    return copy;
+    //  }
 
-      constexpr void next() noexcept {
-        _input.next();
-      }
+    //  constexpr void next() noexcept {
+    //    _input.next();
+    //  }
 
-      [[nodiscard]] constexpr bool at_end() const noexcept {
-        return _input.at_end();
-      }
+    //  [[nodiscard]] constexpr bool at_end() const noexcept {
+    //    return _input.at_end();
+    //  }
 
-      [[nodiscard]] constexpr size_t size_hint() const noexcept {
-        return _input.size_hint();
-      }
+    //  [[nodiscard]] constexpr size_t size_hint() const noexcept {
+    //    return _input.size_hint();
+    //  }
 
-      [[nodiscard]] constexpr size_t count() const noexcept {
-        return _input.count();
-      }
-    };
+    //  [[nodiscard]] constexpr size_t count() const noexcept {
+    //    return _input.count();
+    //  }
+    //};
 
   }  // namespace presentation
 
