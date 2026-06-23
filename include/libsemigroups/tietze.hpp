@@ -28,6 +28,8 @@ namespace libsemigroups {
    private:
     Word                                 _current;
     size_t                               _current_rule;
+    size_t                               _max_length;
+    size_t                               _min_length;
     size_t                               _prefix_end;
     Presentation<Word>                   _presentation;
     std::unordered_set<Word, Hash<Word>> _seen;
@@ -52,6 +54,8 @@ namespace libsemigroups {
     Subwords()
         : _current(),
           _current_rule(),
+          _max_length(POSITIVE_INFINITY),
+          _min_length(0),
           _prefix_end(),
           _presentation(),
           _seen(),
@@ -79,8 +83,26 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // rx::ranges stuff
+    // Settings
     ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] size_t max_length() const noexcept {
+      return _max_length;
+    }
+
+    Subwords& max_length(size_t val) {
+      _max_length = val;
+      return *this;
+    }
+
+    [[nodiscard]] size_t min_length() const noexcept {
+      return _min_length;
+    }
+
+    Subwords& min_length(size_t val) {
+      _min_length = val;
+      return *this;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // rx::ranges stuff
