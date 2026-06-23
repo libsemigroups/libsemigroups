@@ -64,7 +64,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    // TODO? init functions?
     Subwords()
         : _current(),
           _current_rule(),
@@ -74,6 +73,15 @@ namespace libsemigroups {
           _presentation(),
           _seen(),
           _suffix_begin() {}
+
+    Subwords& init() {
+      _current.clear();
+      _max_length = POSITIVE_INFINITY;
+      _min_length = 0;
+      _presentation.init();
+      _seen.clear();
+      return *this;
+    }
 
     Subwords(Subwords const&)            = default;
     Subwords(Subwords&&)                 = default;
@@ -90,6 +98,20 @@ namespace libsemigroups {
     explicit Subwords(Presentation<Word>&& p) : Subwords() {
       _presentation = std::move(p);
       reset();
+    }
+
+    Subwords& init(Presentation<Word> const& p) {
+      init();
+      _presentation = p;
+      reset();
+      return *this;
+    }
+
+    Subwords& init(Presentation<Word>&& p) {
+      init();
+      _presentation = std::move(p);
+      reset();
+      return *this;
     }
 
     Subwords& reset() {
@@ -184,7 +206,7 @@ namespace libsemigroups {
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
-      return Range<Inner>(std::forward<InputRange>(input), *this);
+      return Range<Inner>(std::forward<InputRange>(input));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -230,6 +252,55 @@ namespace libsemigroups {
       advance_prefix();
     }
   };  // class Subwords
+
+  template <typename Word>
+  template <typename InputRange>
+  // TODO struct -> class
+  struct Subwords<Word>::Range {
+    using output_type = Word const&;
+
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+    InputRange     _input;
+    Subwords<Word> _subwords;
+
+    Range(InputRange const& input) : _input(input), _subwords() {
+      if (!_input.at_end()) {
+        _subwords.init(_input.get());
+      }
+    }
+
+    Range(InputRange&& input) : _input(std::move(input)), _subwords() {
+      if (!_input.at_end()) {
+        _subwords.init(_input.get());
+      }
+    }
+
+    [[nodiscard]] output_type get() const {
+      return _subwords.get();
+    }
+
+    void next() noexcept {
+      if (!at_end()) {
+        _subwords.next();
+        if (_subwords.at_end()) {
+          _input.next();
+          if (!_input.at_end()) {
+            _subwords.init(_input.get());
+          }
+        }
+      }
+    }
+
+    [[nodiscard]] constexpr bool at_end() const noexcept {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return _input.size_hint() * _subwords.size_hint();
+    }
+  };  // struct Subwords::Range
 
   template <typename Word>
   class TietzeAddGeneratorsRange {
