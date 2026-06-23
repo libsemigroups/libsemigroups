@@ -109,14 +109,21 @@ namespace libsemigroups {
 
     void next() {
       while (_current_rule != _presentation.rules.cend()) {
-        for (; _suffix < _current_rule->cend(); ++_suffix) {
+        for (; _suffix < _current_rule->cend();) {
           for (; _prefix <= _current_rule->cend(); ++_prefix) {
             if (_seen.emplace(_suffix, _prefix).second) {
               _current.assign(_suffix, _prefix);
+              ++_prefix;
               return;
             }
           }
+          ++_suffix;
+          _prefix = _suffix;
+          if (_prefix != _current_rule->cend()) {
+            ++_prefix;
+          }
         }
+
         ++_current_rule;
         if (_current_rule == _presentation.rules.cend()) {
           break;

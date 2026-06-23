@@ -43,10 +43,11 @@ namespace libsemigroups {
     Subwords subwords(p);
 
     REQUIRE(subwords.size_hint() == 21);
-    REQUIRE((subwords | rx::count()) == 6);
 
     REQUIRE((subwords | rx::to_vector())
-            == std::vector<std::string>({"a", "ab", "aba", "abab", "b", "ba"}));
+            == std::vector<std::string>(
+                {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
+    REQUIRE((subwords | rx::count()) == 7);
   }
 
   LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
