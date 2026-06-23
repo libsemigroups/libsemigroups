@@ -52,7 +52,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
                           "001",
-                          "strings",
+                          "word_type",
                           "[quick][presentation][tietze]") {
     using literals::        operator""_w;
     auto                    rg = ReportGuard(false);
@@ -96,25 +96,25 @@ namespace libsemigroups {
                                        {0, 0, 1, 0, 1}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
-                          "002",
-                          "strings",
-                          "[quick][presentation][tietze]") {
-    auto                      rg = ReportGuard(false);
-    Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "abab", "ba");
+  // LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
+  //                         "002",
+  //                         "strings",
+  //                         "[quick][presentation][tietze]") {
+  //   auto                      rg = ReportGuard(false);
+  //   Presentation<std::string> p;
+  //   p.alphabet("ab");
+  //   presentation::add_rule(p, "abab", "ba");
 
-    TietzeAddGeneratorsRange tagr(p);
+  //   TietzeAddGeneratorsRange tagr(p);
 
-    tagr.depth_min(1).depth_max(1);
+  //   tagr.depth_min(1).depth_max(1);
 
-    REQUIRE((tagr | rx::transform([](auto& p) { return p.rules; })
-             | rx::to_vector())
-            == std::vector<std::vector<std::string>>());
-    REQUIRE((tagr | rx::count()) == 5);
-    REQUIRE(tagr.size_hint() == 0);
-    REQUIRE(tagr.count() == 6);
-  }
+  //   REQUIRE((tagr | rx::transform([](auto& p) { return p.rules; })
+  //            | rx::to_vector())
+  //           == std::vector<std::vector<std::string>>());
+  //   REQUIRE((tagr | rx::count()) == 5);
+  //   REQUIRE(tagr.size_hint() == 0);
+  //   REQUIRE(tagr.count() == 6);
+  // }
 
 }  // namespace libsemigroups

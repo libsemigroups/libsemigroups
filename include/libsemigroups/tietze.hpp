@@ -28,10 +28,10 @@ namespace libsemigroups {
    private:
     Word                                 _current;
     size_t                               _current_rule;
-    size_t                               _prefix;
+    size_t                               _prefix_end;
     Presentation<Word>                   _presentation;
     std::unordered_set<Word, Hash<Word>> _seen;
-    size_t                               _suffix;
+    size_t                               _suffix_begin;
 
     // TODO mutable std::mutex                         _mtx;
     // TODO settings like min. length + max. length
@@ -52,10 +52,10 @@ namespace libsemigroups {
     Subwords()
         : _current(),
           _current_rule(),
-          _prefix(),
+          _prefix_end(),
           _presentation(),
           _seen(),
-          _suffix() {}
+          _suffix_begin() {}
 
     Subwords(Subwords const&)            = default;
     Subwords(Subwords&&)                 = default;
@@ -66,26 +66,21 @@ namespace libsemigroups {
 
     explicit Subwords(Presentation<Word> const& p) : Subwords() {
       _presentation = p;
+      _current_rule = 0;
       init_prefix_suffix();
       next();
     }
 
     explicit Subwords(Presentation<Word>&& p) : Subwords() {
       _presentation = std::move(p);
+      _current_rule = 0;
       init_prefix_suffix();
       next();
     }
 
-    // TODO private + tpp
-    void init_prefix_suffix() {
-      _current_rule = 0;
-      _suffix       = 0;
-      _prefix       = 0;
-      if (!_presentation.rules.empty()
-          && !_presentation.rules[_current_rule].empty()) {
-        ++_prefix;
-      }
-    }
+    ////////////////////////////////////////////////////////////////////////
+    // rx::ranges stuff
+    ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////
     // rx::ranges stuff
@@ -111,40 +106,26 @@ namespace libsemigroups {
     void next() {
       while (_current_rule != _presentation.rules.size()) {
         auto const& rule = _presentation.rules[_current_rule];
-        for (; _suffix < rule.size();) {
-          for (; _prefix <= rule.size();) {
-            if (_seen.emplace(rule.begin() + _suffix, rule.begin() + _prefix)
-                    .second) {
-              _current.assign(rule.begin() + _suffix, rule.begin() + _prefix);
-              if (_prefix == rule.size()) {
-                ++_suffix;
-                _prefix = _suffix;
-                if (_prefix != rule.size()) {
-                  ++_prefix;
-                }
+        while (_suffix_begin < rule.size()) {
+          while (_prefix_end <= rule.size()) {
+            auto first = rule.begin() + _suffix_begin;
+            auto last  = rule.begin() + _prefix_end;
+            if (_seen.emplace(first, last).second) {
+              _current.assign(first, last);
+              if (_prefix_end != rule.size()) {
+                ++_prefix_end;
               } else {
-                ++_prefix;
+                advance_prefix_suffix();
               }
               return;
             }
-            ++_prefix;
+            ++_prefix_end;
           }
-          ++_suffix;
-          _prefix = _suffix;
-          if (_prefix != rule.size()) {
-            ++_prefix;
-          }
+          advance_prefix_suffix();
         }
 
         ++_current_rule;
-        if (_current_rule == _presentation.rules.size()) {
-          break;
-        }
-        _suffix = 0;
-        _prefix = 0;
-        if (!_presentation.rules[_current_rule].empty()) {
-          ++_prefix;
-        }
+        init_prefix_suffix();
       }
     }
 
@@ -160,8 +141,40 @@ namespace libsemigroups {
           [](auto& acc, auto& rule) { return acc + rule.size(); });
       return n * (n + 1) / 2;
     }
-    // TODO try_get_and_advance
-  };  // class RulesSubwords
+
+    ////////////////////////////////////////////////////////////////////////
+    // Multi-threading range
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] bool try_get_and_advance(Word& result) {
+      // TODO  std::lock_guard lg(_mtx);
+      if (!at_end()) {
+        result = get();
+        next();
+      }
+    }
+
+   private:
+    ////////////////////////////////////////////////////////////////////////
+    // Private
+    ////////////////////////////////////////////////////////////////////////
+    void init_prefix_suffix() {
+      _suffix_begin = 0;
+      _prefix_end   = 0;
+      if (_current_rule < _presentation.rules.size()
+          && !_presentation.rules[_current_rule].empty()) {
+        ++_prefix_end;
+      }
+    }
+
+    void advance_prefix_suffix() {
+      ++_suffix_begin;
+      _prefix_end = _suffix_begin;
+      if (_prefix_end != _presentation.rules[_current_rule].size()) {
+        ++_prefix_end;
+      }
+    }
+  };  // class Subwords
 
   template <typename Word>
   class TietzeAddGeneratorsRange {
