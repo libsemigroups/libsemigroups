@@ -48,6 +48,13 @@ namespace libsemigroups {
             == std::vector<std::string>(
                 {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
     REQUIRE((subwords | rx::count()) == 7);
+    subwords.min_length(3);
+    REQUIRE((subwords | rx::to_vector())
+            == std::vector<std::string>({"aba", "abab", "bab"}));
+    subwords.min_length(4);
+    REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({"abab"}));
+    subwords.min_length(5);
+    REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("RulesSubwords",
@@ -61,9 +68,8 @@ namespace libsemigroups {
     presentation::add_rule(p, 010100101_w, ""_w);
 
     Subwords subwords(p);
+    subwords.min_length(3);
 
-    REQUIRE((subwords | rx::count()) == 29);
-    REQUIRE(subwords.size_hint() == 45);
     REQUIRE((subwords | rx::to_vector())
             == std::vector<word_type>({{0},
                                        {0, 1},
@@ -94,6 +100,8 @@ namespace libsemigroups {
                                        {0, 0, 1},
                                        {0, 0, 1, 0},
                                        {0, 0, 1, 0, 1}}));
+    REQUIRE((subwords | rx::count()) == 29);
+    REQUIRE(subwords.size_hint() == 45);
   }
 
   // LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",

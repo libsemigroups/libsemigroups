@@ -19,6 +19,7 @@
 #ifndef LIBSEMIGROUPS_TIETZE_HPP_
 #define LIBSEMIGROUPS_TIETZE_HPP_
 
+#include "debug.hpp"
 #include "presentation.hpp"
 
 namespace libsemigroups {
@@ -55,7 +56,7 @@ namespace libsemigroups {
         : _current(),
           _current_rule(),
           _max_length(POSITIVE_INFINITY),
-          _min_length(0),
+          _min_length(1),  // TODO change to 0
           _prefix_end(),
           _presentation(),
           _seen(),
@@ -101,6 +102,8 @@ namespace libsemigroups {
 
     Subwords& min_length(size_t val) {
       _min_length = val;
+      init_prefix_suffix();
+      next();
       return *this;
     }
 
@@ -180,21 +183,29 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Private
     ////////////////////////////////////////////////////////////////////////
+    void advance_prefix() {
+      LIBSEMIGROUPS_ASSERT(_current_rule < _presentation.rules.size());
+      size_t const n = _presentation.rules[_current_rule].size();
+      if (_prefix_end + _min_length <= n) {
+        _prefix_end += _min_length;
+      } else {
+        _prefix_end = n + 1;
+      }
+    }
+
     void init_prefix_suffix() {
       _suffix_begin = 0;
       _prefix_end   = 0;
-      if (_current_rule < _presentation.rules.size()
-          && !_presentation.rules[_current_rule].empty()) {
-        ++_prefix_end;
+      if (_current_rule < _presentation.rules.size()) {
+        advance_prefix();
       }
     }
 
     void advance_prefix_suffix() {
+      LIBSEMIGROUPS_ASSERT(_current_rule < _presentation.rules.size());
       ++_suffix_begin;
       _prefix_end = _suffix_begin;
-      if (_prefix_end != _presentation.rules[_current_rule].size()) {
-        ++_prefix_end;
-      }
+      advance_prefix();
     }
   };  // class Subwords
 
