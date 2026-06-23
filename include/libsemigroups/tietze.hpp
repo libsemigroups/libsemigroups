@@ -128,19 +128,6 @@ namespace libsemigroups {
     // rx::ranges stuff
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO
-    // template <typename InputRange>
-    // struct Range;
-
-    // TODO
-    // template <typename InputRange,
-    //           typename =
-    //           std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
-    // [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
-    //   using Inner = rx::get_range_type_t<InputRange>;
-    //   return Range<Inner>(std::forward<InputRange>(input), *this);
-    // }
-
     [[nodiscard]] output_type get() const {
       return _current;
     }
@@ -184,6 +171,20 @@ namespace libsemigroups {
           size_t(0),
           [](auto& acc, auto& rule) { return acc + rule.size(); });
       return n * (n + 1) / 2;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Piping
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename InputRange>
+    struct Range;
+
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      using Inner = rx::get_range_type_t<InputRange>;
+      return Range<Inner>(std::forward<InputRange>(input), *this);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -481,52 +482,5 @@ namespace libsemigroups {
   TietzeAddGeneratorsRange(Presentation<Word>&&)
       -> TietzeAddGeneratorsRange<Word>;
 
-  // template <typename Word>
-  // template <typename InputRange>
-  // struct TietzeAddGeneratorsRange<Word>::Range {
-  //   using output_type = Presentation<Word>;
-
-  //  static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-  //  static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-
-  //  InputRange                     _input;
-  //  TietzeAddGeneratorsRange<Word> _tietze_add_generators;
-
-  //  explicit Range(InputRange const&               input,
-  //                 TietzeAddGeneratorsRange const& tagr)
-  //      : _input(input), _tietze_add_generators(tagr) {}
-
-  //  explicit Range(InputRange&& input, TietzeAddGeneratorsRange const& tagr)
-  //      : _input(std::move(input)), _tietze_add_generators(tagr) {}
-
-  //  explicit Range(InputRange const& input, TietzeAddGeneratorsRange&& tagr)
-  //      : _input(input), _tietze_add_generators(std::move(tagr)) {}
-
-  //  explicit Range(InputRange&& input, TietzeAddGeneratorsRange&& tagr)
-  //      : _input(std::move(input)), _tietze_add_generators(std::move(tagr))
-  //      {}
-
-  //  [[nodiscard]] output_type get() const {
-  //    auto copy = _tietze_add_generators._presentation;
-  //    replace_word_with_new_generator(copy, _input.get());
-  //    return copy;
-  //  }
-
-  //  constexpr void next() noexcept {
-  //    _input.next();
-  //  }
-
-  //  [[nodiscard]] constexpr bool at_end() const noexcept {
-  //    return _input.at_end();
-  //  }
-
-  //  [[nodiscard]] constexpr size_t size_hint() const noexcept {
-  //    return _input.size_hint();
-  //  }
-
-  //  [[nodiscard]] constexpr size_t count() const noexcept {
-  //    return _input.count();
-  //  }
-  //};
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TIETZE_HPP_
