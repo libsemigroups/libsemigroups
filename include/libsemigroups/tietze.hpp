@@ -56,7 +56,7 @@ namespace libsemigroups {
         : _current(),
           _current_rule(),
           _max_length(POSITIVE_INFINITY),
-          _min_length(1),  // TODO change to 0
+          _min_length(0),
           _prefix_end(),
           _presentation(),
           _seen(),
@@ -71,16 +71,20 @@ namespace libsemigroups {
 
     explicit Subwords(Presentation<Word> const& p) : Subwords() {
       _presentation = p;
-      _current_rule = 0;
-      init_prefix_suffix();
-      next();
+      reset();
     }
 
     explicit Subwords(Presentation<Word>&& p) : Subwords() {
       _presentation = std::move(p);
+      reset();
+    }
+
+    Subwords& reset() {
       _current_rule = 0;
+      _seen.clear();
       init_prefix_suffix();
       next();
+      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -93,6 +97,7 @@ namespace libsemigroups {
 
     Subwords& max_length(size_t val) {
       _max_length = val;
+      reset();
       return *this;
     }
 
@@ -102,8 +107,7 @@ namespace libsemigroups {
 
     Subwords& min_length(size_t val) {
       _min_length = val;
-      init_prefix_suffix();
-      next();
+      reset();
       return *this;
     }
 
@@ -132,7 +136,8 @@ namespace libsemigroups {
       while (_current_rule != _presentation.rules.size()) {
         auto const& rule = _presentation.rules[_current_rule];
         while (_suffix_begin < rule.size()) {
-          while (_prefix_end <= rule.size()) {
+          while (_prefix_end - _suffix_begin <= _max_length
+                 && _prefix_end <= rule.size()) {
             auto first = rule.begin() + _suffix_begin;
             auto last  = rule.begin() + _prefix_end;
             if (_seen.emplace(first, last).second) {
@@ -159,6 +164,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
+      // TODO could be more naunced
       size_t const n = std::accumulate(
           _presentation.rules.begin(),
           _presentation.rules.end(),
