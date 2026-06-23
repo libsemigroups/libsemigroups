@@ -66,24 +66,25 @@ namespace libsemigroups {
 
     explicit Subwords(Presentation<Word> const& p) : Subwords() {
       _presentation = p;
-      _current_rule = 0;
-      _suffix       = 0;
-      _prefix       = 0;
-      if (!_presentation.rules[_current_rule].empty()) {
-        ++_prefix;
-      }
+      init_prefix_suffix();
       next();
     }
 
     explicit Subwords(Presentation<Word>&& p) : Subwords() {
       _presentation = std::move(p);
+      init_prefix_suffix();
+      next();
+    }
+
+    // TODO private + tpp
+    void init_prefix_suffix() {
       _current_rule = 0;
       _suffix       = 0;
       _prefix       = 0;
-      if (!_presentation.rules[_current_rule].empty()) {
+      if (!_presentation.rules.empty()
+          && !_presentation.rules[_current_rule].empty()) {
         ++_prefix;
       }
-      next();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -111,7 +112,7 @@ namespace libsemigroups {
       while (_current_rule != _presentation.rules.size()) {
         auto const& rule = _presentation.rules[_current_rule];
         for (; _suffix < rule.size();) {
-          for (; _prefix <= rule.size(); ++_prefix) {
+          for (; _prefix <= rule.size();) {
             if (_seen.emplace(rule.begin() + _suffix, rule.begin() + _prefix)
                     .second) {
               _current.assign(rule.begin() + _suffix, rule.begin() + _prefix);
@@ -126,6 +127,7 @@ namespace libsemigroups {
               }
               return;
             }
+            ++_prefix;
           }
           ++_suffix;
           _prefix = _suffix;
