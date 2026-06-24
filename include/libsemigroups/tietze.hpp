@@ -41,7 +41,7 @@
 namespace libsemigroups {
 
   template <typename Word>
-  class Subwords {
+  class SubwordsRange {
    private:
     std::pair<Presentation<Word>, Word>  _current;
     size_t                               _current_rule;
@@ -67,7 +67,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    Subwords()
+    SubwordsRange()
         : _current(),
           _current_rule(),
           _max_length(POSITIVE_INFINITY),
@@ -76,7 +76,7 @@ namespace libsemigroups {
           _seen(),
           _suffix_begin() {}
 
-    Subwords& init() {
+    SubwordsRange& init() {
       _current.first.init();
       _current.second.clear();
       _max_length = POSITIVE_INFINITY;
@@ -85,41 +85,41 @@ namespace libsemigroups {
       return *this;
     }
 
-    Subwords(Subwords const&)            = default;
-    Subwords(Subwords&&)                 = default;
-    Subwords& operator=(Subwords const&) = default;
-    Subwords& operator=(Subwords&&)      = default;
+    SubwordsRange(SubwordsRange const&)            = default;
+    SubwordsRange(SubwordsRange&&)                 = default;
+    SubwordsRange& operator=(SubwordsRange const&) = default;
+    SubwordsRange& operator=(SubwordsRange&&)      = default;
 
-    ~Subwords() = default;
+    ~SubwordsRange() = default;
 
-    explicit Subwords(Presentation<Word> const& p) : Subwords() {
+    explicit SubwordsRange(Presentation<Word> const& p) : SubwordsRange() {
       _current.first = p;
       reset();
     }
 
-    explicit Subwords(Presentation<Word>&& p) : Subwords() {
+    explicit SubwordsRange(Presentation<Word>&& p) : SubwordsRange() {
       _current.first = std::move(p);
       reset();
     }
 
-    Subwords& init(Presentation<Word> const& p) {
+    SubwordsRange& init(Presentation<Word> const& p) {
       init();
       _current.first = p;
       return reset();
     }
 
-    Subwords& init(Presentation<Word>&& p) {
+    SubwordsRange& init(Presentation<Word>&& p) {
       init();
       _current.first = std::move(p);
       return reset();
     }
 
-    Subwords& presentation(Presentation<Word> const& p) {
+    SubwordsRange& presentation(Presentation<Word> const& p) {
       _current.first = p;
       return reset();
     }
 
-    Subwords& reset() {
+    SubwordsRange& reset() {
       _current_rule = 0;
       _seen.clear();
       init_prefix_suffix();
@@ -135,7 +135,7 @@ namespace libsemigroups {
       return _max_length;
     }
 
-    Subwords& max_length(size_t val) {
+    SubwordsRange& max_length(size_t val) {
       _max_length = val;
       reset();
       return *this;
@@ -145,13 +145,13 @@ namespace libsemigroups {
       return _min_length;
     }
 
-    Subwords& min_length(size_t val) {
+    SubwordsRange& min_length(size_t val) {
       _min_length = val;
       reset();
       return *this;
     }
 
-    // Subwords&& min_length(size_t val) && {
+    // SubwordsRange&& min_length(size_t val) && {
     //   _min_length = val;
     //   reset();
     //   return std::move(*this);
@@ -218,9 +218,12 @@ namespace libsemigroups {
     struct Range;
 
     template <typename InputRange,
+              typename Settings,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
-    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+    [[nodiscard]] constexpr auto operator()(InputRange&&    input,
+                                            Settings const& settings) {
       using Inner = rx::get_range_type_t<InputRange>;
+      _min_length = settings._min_length;
       return Range<Inner>(std::forward<InputRange>(input), *this);
     }
 
@@ -266,22 +269,22 @@ namespace libsemigroups {
       _prefix_end = _suffix_begin;
       advance_prefix();
     }
-  };  // class Subwords
+  };  // class SubwordsRange
 
   template <typename Word>
   template <typename InputRange>
   // TODO struct -> class
-  struct Subwords<Word>::Range {
+  struct SubwordsRange<Word>::Range {
     // TODO static_assert that InputRange::output_type is Presentation<Word>
-    using output_type = typename Subwords<Word>::output_type;
+    using output_type = typename SubwordsRange<Word>::output_type;
 
     static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
     static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-    InputRange     _input;
-    Subwords<Word> _subwords;
+    InputRange          _input;
+    SubwordsRange<Word> _subwords;
 
-    Range(InputRange const& input, Subwords const& subwords)
+    Range(InputRange const& input, SubwordsRange const& subwords)
         // Init _subwords with subwords to copy the settings
         : _input(input), _subwords(subwords) {
       if (!_input.at_end()) {
@@ -290,7 +293,7 @@ namespace libsemigroups {
       }
     }
 
-    Range(InputRange&& input, Subwords const& subwords)
+    Range(InputRange&& input, SubwordsRange const& subwords)
         : _input(std::move(input)), _subwords(subwords) {
       if (!_input.at_end()) {
         // Reset the presentation, not init, so that we retain the settings
@@ -322,7 +325,29 @@ namespace libsemigroups {
     [[nodiscard]] constexpr size_t size_hint() const noexcept {
       return _input.size_hint() * _subwords.size_hint();
     }
-  };  // struct Subwords::Range
+  };  // struct SubwordsRange::Range
+
+  // TODO class
+  struct Subwords {
+    size_t _min_length;
+
+    Subwords() = default;
+
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      // TODO static_assert that InputRange::output_type is a specialization of
+      // Presentation
+      using Word = typename std::decay_t<
+          typename std::decay_t<InputRange>::output_type>::word_type;
+
+      return SubwordsRange<Word>{}(std::forward<InputRange>(input), *this);
+    }
+
+    Subwords& min_length(size_t val) {
+      _min_length = val;
+      return *this;
+    }
+  };
 
   template <typename InputRange>
   class TietzeAddGeneratorsRange {
@@ -333,7 +358,7 @@ namespace libsemigroups {
 
    private:
     InputRange _input;
-    // TODO remove, just modify _orig_presentation, then unmodify it
+    // TODO remove, just modify the incoming presentation, then unmodify it
     Presentation<native_word_type> _get_presentation;
 
    public:
