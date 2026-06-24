@@ -433,8 +433,6 @@ namespace libsemigroups {
   };  // class TietzeAddGeneratorsRange
 
   struct TietzeAddGenerators {
-    TietzeAddGenerators() = default;
-
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
@@ -454,27 +452,36 @@ namespace libsemigroups {
     using invoke_result_type
         = std::invoke_result_t<Func, input_const_reference>;
 
+    static_assert(std::is_same_v<invoke_result_type, bool>);
+
    private:
-    struct FindIfRunner : public Runner {
-      FindIfRange*       _enclosing;
-      invocable_type     _func;
-      invoke_result_type _result;
-      bool               _finished;
+    class FindIfRunner : public Runner {
+      FindIfRange*              _enclosing;
+      bool                      _finished;
+      invocable_type            _func;
+      std::optional<input_type> _result;
 
      public:
       explicit FindIfRunner(FindIfRange* enclosing, Func const& func)
-          : Runner(), _enclosing(enclosing), _func(func) {
+          : Runner(),
+            _enclosing(enclosing),
+            _finished(false),
+            _func(func),
+            _result(std::nullopt) {
         Runner::report_prefix("FindIf");
       }
 
-      // TODO result
+      std::optional<input_type> const& result() const {
+        return _result;
+      }
 
-      //     private:
+     private:
       void run_impl() override {
         ReportGuard rg(false);
-        input_type  func_args;
-        while (!stopped() && _enclosing->try_get_and_advance(func_args)) {
-          if (_func(func_args)) {
+        input_type  input;
+        while (!stopped() && _enclosing->try_get_and_advance(input)) {
+          if (_func(input)) {
+            _result   = input;
             _finished = true;
             return;
           }
@@ -507,7 +514,7 @@ namespace libsemigroups {
           _func(std::move(func)),
           _input_range(input_range),
           _mtx(),
-          _number_of_threads(4),
+          _number_of_threads(1),
           _race() {
       Runner::report_prefix("FindIf");
       _race.report_prefix("FindIf");
@@ -518,7 +525,7 @@ namespace libsemigroups {
           _func(func),
           _input_range(input_range),
           _mtx(),
-          _number_of_threads(4),
+          _number_of_threads(1),
           _race() {
       Runner::report_prefix("FindIf");
       _race.report_prefix("FindIf");
@@ -534,13 +541,12 @@ namespace libsemigroups {
       return false;
     }
 
-    [[nodiscard]] std::optional<invoke_result_type> result() {
+    [[nodiscard]] std::optional<input_type> result() {
       Runner::run();
       if (_race.winner() == nullptr) {
         return std::nullopt;
       }
-      return std::make_optional(
-          std::static_pointer_cast<FindIfRunner>(_race.winner())->_result);
+      return std::static_pointer_cast<FindIfRunner>(_race.winner())->result();
     }
 
     [[nodiscard]] size_t number_of_threads() const noexcept {
@@ -566,7 +572,8 @@ namespace libsemigroups {
 
       // ::libsemigroups::detail::Ticker ticker;
       // if ((!running_for()
-      //      || duration_cast<seconds>(running_for_how_long()) >= seconds(1)))
+      //      || duration_cast<seconds>(running_for_how_long()) >=
+      //      seconds(1)))
       //      {
       //   ticker([this]() { report_progress_from_thread(); });
       // }
@@ -593,6 +600,82 @@ namespace libsemigroups {
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) {
       return FindIfRange(std::forward<InputRange>(input), _func);
+    }
+  };
+
+  template <typename InputRange>
+  class AllAlphabetOrdersRange {
+    using Word =
+        typename std::decay_t<typename InputRange::output_type>::word_type;
+
+    Word                _alphabet_orig;
+    InputRange          _input;
+    std::vector<size_t> _perm;
+    Presentation<Word>  _presentation;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Aliases
+    ////////////////////////////////////////////////////////////////////////
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+    using output_type                   = Presentation<Word> const&;
+
+    AllAlphabetOrdersRange(InputRange&& input)
+        : _alphabet_orig(), _input(std::move(input)), _perm(), _presentation() {
+      if (!_input.at_end()) {
+        _presentation  = _input.get();
+        _alphabet_orig = _presentation.alphabet();
+        _perm.resize(_alphabet_orig.size());
+        std::iota(_perm.begin(), _perm.end(), 0);
+      }
+    }
+
+    AllAlphabetOrdersRange(InputRange const& input)
+        : AllAlphabetOrdersRange(InputRange(input)) {}
+
+    [[nodiscard]] output_type get() const {
+      return _presentation;
+    }
+
+    void next() {
+      if (std::next_permutation(_perm.begin(), _perm.end())) {
+        std::string alphabet_next;
+        alphabet_next = _alphabet_orig;
+        detail::apply_permutation(alphabet_next, _perm);
+        _presentation.alphabet(alphabet_next);
+        return;
+      }
+      _input.next();
+      if (!_input.at_end()) {
+        _presentation  = _input.get();
+        _alphabet_orig = _presentation.alphabet();
+        _perm.resize(_alphabet_orig.size());
+        std::iota(_perm.begin(), _perm.end(), 0);
+      }
+    }
+
+    [[nodiscard]] bool at_end() const {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      size_t const n = _alphabet_orig.size();
+      LIBSEMIGROUPS_ASSERT(n <= 20);
+      uint64_t result = 1;
+
+      for (uint16_t i = 2; i <= n; ++i) {
+        result *= i;
+      }
+
+      return result * _input.size_hint();
+    }
+  };
+
+  struct AllAlphabetOrders {
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return AllAlphabetOrdersRange(std::forward<InputRange>(input));
     }
   };
 
