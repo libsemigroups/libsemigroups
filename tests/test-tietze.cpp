@@ -16,11 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <chrono>
 #include <string>  // for string
 #include <vector>  // for vector
 
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/presentation.hpp"  // for Presentation
 #include "libsemigroups/ranges.hpp"        // for iterator_range, to_vector
 #include "libsemigroups/tietze.hpp"        // for TietzeAddGeneratorsRange
@@ -169,7 +171,6 @@ namespace libsemigroups {
 
     auto present_range = rx::iterator_range(presents.begin(), presents.end());
 
-    // TODO remove <std::string>
     auto range = present_range | SubwordsOf();
     REQUIRE((range
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -282,4 +283,43 @@ namespace libsemigroups {
                                                   {"abab", "ba", "c", "bbb"}}));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "004", "first test", "[quick]") {
+    using rx::operator|;
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    REQUIRE(!(Subwords(p).min_length(1) | TietzeAddGenerators()
+              | FindIf([kb](auto const& p) mutable {
+                  kb.init(congruence_kind::twosided, p);
+                  kb.run_for(std::chrono::milliseconds(5));
+                  return kb.finished();
+                }))
+                 .result()
+                 .has_value());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "second test", "[quick]") {
+    using rx::operator|;
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "abbab", "baabb");
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    REQUIRE((Subwords(p).min_length(1) | TietzeAddGenerators()
+             | SubwordsOf().min_length(1) | TietzeAddGenerators()
+             | FindIf([kb](auto const& p) mutable {
+                 kb.init(congruence_kind::twosided, p);
+                 kb.run_for(std::chrono::milliseconds(5));
+                 return kb.finished();
+               }))
+                .result()
+                .has_value());
+  }
 }  // namespace libsemigroups
