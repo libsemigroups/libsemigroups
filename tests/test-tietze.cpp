@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include <chrono>
 #include <string>  // for string
 #include <vector>  // for vector
@@ -312,14 +314,56 @@ namespace libsemigroups {
 
     KnuthBendix kb(congruence_kind::twosided, p);
 
-    REQUIRE((Subwords(p).min_length(1) | TietzeAddGenerators()
-             | SubwordsOf().min_length(1) | TietzeAddGenerators()
-             | FindIf([kb](auto const& p) mutable {
-                 kb.init(congruence_kind::twosided, p);
-                 kb.run_for(std::chrono::milliseconds(5));
-                 return kb.finished();
-               }))
-                .result()
-                .has_value());
+    auto result = (Subwords(p).min_length(1) | TietzeAddGenerators()
+                   | SubwordsOf().min_length(1) | TietzeAddGenerators()
+                   | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
+                       kb.init(congruence_kind::twosided, p);
+                       kb.run_for(std::chrono::milliseconds(5));
+                       return kb.finished();
+                     }))
+                      .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dbca");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"cb", "db", "c", "abba", "d", "baab"}));
+
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"abba", "c"},
+                                       {"cb", "db"},
+                                       {"baab", "d"},
+                                       {"abbc", "dbba"},
+                                       {"abd", "cab"},
+                                       {"baad", "daab"},
+                                       {"bac", "dba"},
+                                       {"cd", "dd"},
+                                       {"abbdb", "dbbab"},
+                                       {"abbdd", "dbbad"},
+                                       {"badb", "dbab"},
+                                       {"badd", "dbad"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AllAlphabetOrders", "006", "strings", "[quick]") {
+    using rx::operator|;
+    auto      rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    std::vector ps = {p};
+    p.alphabet("xy");
+    ps.push_back(p);
+
+    auto range = rx::iterator_range(ps.begin(), ps.end());
+
+    REQUIRE((range | AllAlphabetOrders()
+             | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"abc", "acb", "bac", "bca", "cab", "cba", "xy", "yx"}));
   }
 }  // namespace libsemigroups
