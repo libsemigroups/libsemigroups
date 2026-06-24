@@ -317,8 +317,7 @@ namespace libsemigroups {
                                std::decay_t<typename InputRange::output_type>>;
 
    private:
-    InputRange                     _input;
-    Presentation<native_word_type> _orig_presentation;
+    InputRange _input;
     // TODO remove, just modify _orig_presentation, then unmodify it
     Presentation<native_word_type> _get_presentation;
 
@@ -335,9 +334,8 @@ namespace libsemigroups {
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
     // TODO? init functions?
-    TietzeAddGeneratorsRange(InputRange const&                     input,
-                             Presentation<native_word_type> const& p)
-        : _input(input), _orig_presentation(p), _get_presentation(p) {
+    TietzeAddGeneratorsRange(InputRange const& input)
+        : _input(input), _get_presentation() {
       if (!_input.at_end()) {
         auto const& value = _input.get();
         _get_presentation = value.first;
@@ -373,26 +371,16 @@ namespace libsemigroups {
     }
   };  // class TietzeAddGeneratorsRange
 
-  template <typename Word>
   struct TietzeAddGenerators {
-    Presentation<Word> _presentation;
-
-    TietzeAddGenerators(Presentation<Word> const& p) : _presentation(p) {}
+    TietzeAddGenerators() = default;
 
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
 
-      return TietzeAddGeneratorsRange<Inner>(std::forward<InputRange>(input),
-                                             _presentation);
+      return TietzeAddGeneratorsRange<Inner>(std::forward<InputRange>(input));
     }
   };
-
-  template <typename Word>
-  TietzeAddGenerators(Presentation<Word> const&) -> TietzeAddGenerators<Word>;
-
-  template <typename Word>
-  TietzeAddGenerators(Presentation<Word>&&) -> TietzeAddGenerators<Word>;
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TIETZE_HPP_
