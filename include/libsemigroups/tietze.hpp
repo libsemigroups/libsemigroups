@@ -328,23 +328,39 @@ namespace libsemigroups {
   };  // struct Subwords::Range
 
   // TODO class
-  struct SubwordsOf {
+  class SubwordsOf {
+   private:
     size_t _min_length;
+    size_t _max_length;
 
-    SubwordsOf() = default;
+   public:
+    SubwordsOf() : _min_length(0), _max_length(POSITIVE_INFINITY) {}
 
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       // TODO static_assert that InputRange::output_type is a specialization of
       // Presentation
-      using Word = typename std::decay_t<
+      using Word = typename std::decay_t<  // Yuck!
           typename std::decay_t<InputRange>::output_type>::word_type;
 
       return Subwords<Word>{}(std::forward<InputRange>(input), *this);
     }
 
+    size_t min_length(size_t val) const noexcept {
+      return _min_length;
+    }
+
     SubwordsOf& min_length(size_t val) {
       _min_length = val;
+      return *this;
+    }
+
+    size_t max_length(size_t val) const noexcept {
+      return _min_length;
+    }
+
+    SubwordsOf& max_length(size_t val) {
+      _max_length = val;
       return *this;
     }
   };
