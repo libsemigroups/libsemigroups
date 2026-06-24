@@ -41,22 +41,37 @@ namespace libsemigroups {
 
     REQUIRE(subwords.size_hint() == 21);
 
-    REQUIRE((subwords | rx::to_vector())
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<std::string>(
                 {"", "a", "ab", "aba", "abab", "b", "ba", "bab"}));
     REQUIRE((subwords | rx::count()) == 8);
     subwords.min_length(3);
-    REQUIRE((subwords | rx::to_vector())
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<std::string>({"aba", "abab", "bab"}));
     subwords.min_length(4);
-    REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({"abab"}));
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>({"abab"}));
     subwords.min_length(5);
-    REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({}));
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>({}));
     subwords.min_length(2).max_length(3);
-    REQUIRE((subwords | rx::to_vector())
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<std::string>({"ab", "aba", "ba", "bab"}));
     subwords.min_length(2).max_length(1);
-    REQUIRE((subwords | rx::to_vector()) == std::vector<std::string>({}));
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>({}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "001", "word_type", "[quick]") {
@@ -69,10 +84,17 @@ namespace libsemigroups {
     Subwords subwords(p);
     subwords.min_length(3);
 
-    REQUIRE((subwords | rx::count()) == 24);
+    REQUIRE((subwords
+
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::count())
+            == 24);
     REQUIRE(subwords.size_hint() == 45);
     subwords.min_length(1);
-    REQUIRE((subwords | rx::to_vector())
+    REQUIRE((subwords
+
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<word_type>({{0},
                                        {0, 1},
                                        {0, 1, 0},
@@ -104,7 +126,9 @@ namespace libsemigroups {
                                        {0, 0, 1, 0, 1}}));
     REQUIRE(!subwords.at_end());
     subwords.min_length(5);
-    REQUIRE((subwords | rx::to_vector())
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<word_type>({{0, 1, 0, 1, 0},
                                        {0, 1, 0, 1, 0, 0},
                                        {0, 1, 0, 1, 0, 0, 1},
@@ -121,7 +145,9 @@ namespace libsemigroups {
                                        {1, 0, 0, 1, 0, 1},
                                        {0, 0, 1, 0, 1}}));
     subwords.min_length(5).max_length(5);
-    REQUIRE((subwords | rx::to_vector())
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<word_type>({{0, 1, 0, 1, 0},
                                        {1, 0, 1, 0, 0},
                                        {0, 1, 0, 0, 1},
@@ -145,7 +171,9 @@ namespace libsemigroups {
 
     // TODO remove <std::string>
     auto range = present_range | Subwords<std::string>();
-    REQUIRE((range | rx::to_vector())
+    REQUIRE((range
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
             == std::vector<std::string>(
                 {"",           "a",           "ab",
                  "aba",        "abab",        "b",
@@ -160,25 +188,43 @@ namespace libsemigroups {
                  "yxyxyxyxyx", "yxyxyxyxyxy"}));
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("TietzeAddGeneratorsRange",
-  //                         "002",
-  //                         "strings",
-  //                         "[quick]") {
-  //   auto                      rg = ReportGuard(false);
-  //   Presentation<std::string> p;
-  //   p.alphabet("ab");
-  //   presentation::add_rule(p, "abab", "ba");
+  LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerators", "003", "strings", "[quick]") {
+    using rx::operator|;
 
-  //   TietzeAddGeneratorsRange tagr(p);
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+    Subwords subwords(p);
+    subwords.min_length(1);
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
 
-  //   tagr.depth_min(1).depth_max(1);
-
-  //   REQUIRE((tagr | rx::transform([](auto& p) { return p.rules; })
-  //            | rx::to_vector())
-  //           == std::vector<std::vector<std::string>>());
-  //   REQUIRE((tagr | rx::count()) == 5);
-  //   REQUIRE(tagr.size_hint() == 0);
-  //   REQUIRE(tagr.count() == 6);
-  // }
+    REQUIRE(
+        (subwords | TietzeAddGenerators(p)
+         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
+        == std::vector<std::vector<std::string>>({{"cbcb", "bc", "c", "a"},
+                                                  {"cc", "ba", "c", "ab"},
+                                                  {"cb", "ba", "c", "aba"},
+                                                  {"c", "ba", "c", "abab"},
+                                                  {"acac", "ca", "c", "b"},
+                                                  {"acb", "c", "c", "ba"},
+                                                  {"ac", "ba", "c", "bab"}}));
+    REQUIRE((subwords | TietzeAddGenerators(p)
+             | Subwords<std::string>().min_length(1)
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"",    "c",    "cb",  "cbc", "cbcb", "b",   "bc", "bcb", "a",
+                 "",    "c",    "cc",  "b",   "ba",   "a",   "ab", "",    "c",
+                 "cb",  "b",    "ba",  "a",   "ab",   "aba", "",   "c",   "b",
+                 "ba",  "a",    "ab",  "aba", "abab", "bab", "",   "a",   "ac",
+                 "aca", "acac", "c",   "ca",  "cac",  "b",   "",   "a",   "ac",
+                 "acb", "c",    "cb",  "b",   "ba",   "",    "a",  "ac",  "c",
+                 "b",   "ba",   "bab", "ab"}));
+  }
 
 }  // namespace libsemigroups
