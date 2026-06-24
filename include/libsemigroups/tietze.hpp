@@ -222,8 +222,11 @@ namespace libsemigroups {
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] constexpr auto operator()(InputRange&&    input,
                                             Settings const& settings) {
+      // TODO static_assert the output_type of InputRange is a specialization of
+      // Presentation
       using Inner = rx::get_range_type_t<InputRange>;
-      _min_length = settings._min_length;
+      _min_length = settings.min_length();
+      _max_length = settings.max_length();
       return Range<Inner>(std::forward<InputRange>(input), *this);
     }
 
@@ -275,7 +278,6 @@ namespace libsemigroups {
   template <typename InputRange>
   // TODO struct -> class
   struct Subwords<Word>::Range {
-    // TODO static_assert that InputRange::output_type is Presentation<Word>
     using output_type = typename Subwords<Word>::output_type;
 
     static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
@@ -284,6 +286,7 @@ namespace libsemigroups {
     InputRange     _input;
     Subwords<Word> _subwords;
 
+    // TODO static_assert that InputRange::output_type is Presentation<Word>
     Range(InputRange const& input, Subwords const& subwords)
         // Init _subwords with subwords to copy the settings
         : _input(input), _subwords(subwords) {
@@ -293,6 +296,7 @@ namespace libsemigroups {
       }
     }
 
+    // TODO static_assert that InputRange::output_type is Presentation<Word>
     Range(InputRange&& input, Subwords const& subwords)
         : _input(std::move(input)), _subwords(subwords) {
       if (!_input.at_end()) {
@@ -336,17 +340,24 @@ namespace libsemigroups {
    public:
     SubwordsOf() : _min_length(0), _max_length(POSITIVE_INFINITY) {}
 
+    SubwordsOf(SubwordsOf const&)            = default;
+    SubwordsOf(SubwordsOf&&)                 = default;
+    SubwordsOf& operator=(SubwordsOf const&) = default;
+    SubwordsOf& operator=(SubwordsOf&&)      = default;
+
+    ~SubwordsOf() = default;
+
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       // TODO static_assert that InputRange::output_type is a specialization of
       // Presentation
       using Word = typename std::decay_t<  // Yuck!
           typename std::decay_t<InputRange>::output_type>::word_type;
-
+      // We pass *this thru so that the settings are copied too
       return Subwords<Word>{}(std::forward<InputRange>(input), *this);
     }
 
-    size_t min_length(size_t val) const noexcept {
+    [[nodiscard]] size_t min_length() const noexcept {
       return _min_length;
     }
 
@@ -355,8 +366,8 @@ namespace libsemigroups {
       return *this;
     }
 
-    size_t max_length(size_t val) const noexcept {
-      return _min_length;
+    [[nodiscard]] size_t max_length() const noexcept {
+      return _max_length;
     }
 
     SubwordsOf& max_length(size_t val) {
