@@ -261,6 +261,26 @@ namespace libsemigroups {
                  {"ac", "d", "c", "db", "d", "ba"},
                  {"ac", "ba", "c", "d", "d", "bab"},
                  {"ac", "ba", "c", "bd", "d", "ab"}}));
+
+    StringRange strings;
+    strings.alphabet("ab").min(2).max(4);
+    REQUIRE(
+        (strings | rx::transform([&p](auto& w) { return std::pair(p, w); })
+         | TietzeAddGenerators()
+         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
+         | rx::to_vector())
+        == std::vector<std::vector<std::string>>({{"abab", "ba", "c", "aa"},
+                                                  {"cc", "ba", "c", "ab"},
+                                                  {"acb", "c", "c", "ba"},
+                                                  {"abab", "ba", "c", "bb"},
+                                                  {"abab", "ba", "c", "aaa"},
+                                                  {"abab", "ba", "c", "aab"},
+                                                  {"cb", "ba", "c", "aba"},
+                                                  {"abab", "ba", "c", "abb"},
+                                                  {"abab", "ba", "c", "baa"},
+                                                  {"ac", "ba", "c", "bab"},
+                                                  {"abab", "ba", "c", "bba"},
+                                                  {"abab", "ba", "c", "bbb"}}));
   }
 
 }  // namespace libsemigroups

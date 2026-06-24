@@ -369,8 +369,8 @@ namespace libsemigroups {
     }
 
     void next() {
+      _input.next();
       if (!_input.at_end()) {
-        _input.next();
         _get_presentation = _input.get().first;
         presentation::replace_word_with_new_generator(_get_presentation,
                                                       _input.get().second);
