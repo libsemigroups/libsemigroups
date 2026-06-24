@@ -37,7 +37,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
 
-    Subwords subwords(p);
+    SubwordsRange subwords(p);
 
     REQUIRE(subwords.size_hint() == 21);
 
@@ -81,7 +81,7 @@ namespace libsemigroups {
     p.alphabet(2).contains_empty_word(true);
     presentation::add_rule(p, 010100101_w, ""_w);
 
-    Subwords subwords(p);
+    SubwordsRange subwords(p);
     subwords.min_length(3);
 
     REQUIRE((subwords
@@ -170,7 +170,7 @@ namespace libsemigroups {
     auto present_range = rx::iterator_range(presents.begin(), presents.end());
 
     // TODO remove <std::string>
-    auto range = present_range | Subwords<std::string>();
+    auto range = present_range | Subwords();
     REQUIRE((range
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
              | rx::to_vector())
@@ -195,7 +195,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
-    Subwords subwords(p);
+    SubwordsRange subwords(p);
     subwords.min_length(1);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -214,8 +214,7 @@ namespace libsemigroups {
                                                   {"acb", "c", "c", "ba"},
                                                   {"ac", "ba", "c", "bab"}}));
 
-    auto tmp = (subwords | TietzeAddGenerators()
-                | Subwords<std::string>().min_length(2));
+    auto tmp = (subwords | TietzeAddGenerators() | Subwords().min_length(2));
 
     REQUIRE((tmp
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -226,8 +225,8 @@ namespace libsemigroups {
                  "bab", "ac",  "aca",  "acac", "ca",  "cac", "ac",  "acb",
                  "cb",  "ba",  "ac",   "ba",   "bab", "ab"}));
 
-    REQUIRE((subwords | TietzeAddGenerators()
-             | Subwords<std::string>().min_length(2) | TietzeAddGenerators()
+    REQUIRE((subwords | TietzeAddGenerators() | Subwords().min_length(2)
+             | TietzeAddGenerators()
              | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
              | rx::to_vector())
             == std::vector<std::vector<std::string>>(
