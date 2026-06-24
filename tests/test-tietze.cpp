@@ -30,14 +30,14 @@
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("Subwords", "000", "strings", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("SubwordsOf", "000", "strings", "[quick]") {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
 
-    SubwordsRange subwords(p);
+    Subwords subwords(p);
 
     REQUIRE(subwords.size_hint() == 21);
 
@@ -74,14 +74,14 @@ namespace libsemigroups {
             == std::vector<std::string>({}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Subwords", "001", "word_type", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("SubwordsOf", "001", "word_type", "[quick]") {
     using literals::        operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2).contains_empty_word(true);
     presentation::add_rule(p, 010100101_w, ""_w);
 
-    SubwordsRange subwords(p);
+    Subwords subwords(p);
     subwords.min_length(3);
 
     REQUIRE((subwords
@@ -155,7 +155,7 @@ namespace libsemigroups {
                                        {0, 0, 1, 0, 1}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "operator|", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("SubwordsOf", "002", "operator|", "[quick]") {
     auto rg = ReportGuard(false);
 
     std::vector<Presentation<std::string>> presents;
@@ -170,7 +170,7 @@ namespace libsemigroups {
     auto present_range = rx::iterator_range(presents.begin(), presents.end());
 
     // TODO remove <std::string>
-    auto range = present_range | Subwords();
+    auto range = present_range | SubwordsOf();
     REQUIRE((range
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
              | rx::to_vector())
@@ -195,7 +195,7 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
-    SubwordsRange subwords(p);
+    Subwords subwords(p);
     subwords.min_length(1);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -214,7 +214,7 @@ namespace libsemigroups {
                                                   {"acb", "c", "c", "ba"},
                                                   {"ac", "ba", "c", "bab"}}));
 
-    auto tmp = (subwords | TietzeAddGenerators() | Subwords().min_length(2));
+    auto tmp = (subwords | TietzeAddGenerators() | SubwordsOf().min_length(2));
 
     REQUIRE((tmp
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
@@ -225,7 +225,7 @@ namespace libsemigroups {
                  "bab", "ac",  "aca",  "acac", "ca",  "cac", "ac",  "acb",
                  "cb",  "ba",  "ac",   "ba",   "bab", "ab"}));
 
-    REQUIRE((subwords | TietzeAddGenerators() | Subwords().min_length(2)
+    REQUIRE((subwords | TietzeAddGenerators() | SubwordsOf().min_length(2)
              | TietzeAddGenerators()
              | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
              | rx::to_vector())
