@@ -213,18 +213,54 @@ namespace libsemigroups {
                                                   {"acac", "ca", "c", "b"},
                                                   {"acb", "c", "c", "ba"},
                                                   {"ac", "ba", "c", "bab"}}));
-    REQUIRE((subwords | TietzeAddGenerators()
-             | Subwords<std::string>().min_length(1)
+
+    auto tmp = (subwords | TietzeAddGenerators()
+                | Subwords<std::string>().min_length(2));
+
+    REQUIRE((tmp
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
              | rx::to_vector())
             == std::vector<std::string>(
-                {"",    "c",    "cb",  "cbc", "cbcb", "b",   "bc", "bcb", "a",
-                 "",    "c",    "cc",  "b",   "ba",   "a",   "ab", "",    "c",
-                 "cb",  "b",    "ba",  "a",   "ab",   "aba", "",   "c",   "b",
-                 "ba",  "a",    "ab",  "aba", "abab", "bab", "",   "a",   "ac",
-                 "aca", "acac", "c",   "ca",  "cac",  "b",   "",   "a",   "ac",
-                 "acb", "c",    "cb",  "b",   "ba",   "",    "a",  "ac",  "c",
-                 "b",   "ba",   "bab", "ab"}));
+                {"cb",  "cbc", "cbcb", "bc",   "bcb", "cc",  "ba",  "ab",
+                 "cb",  "ba",  "ab",   "aba",  "ba",  "ab",  "aba", "abab",
+                 "bab", "ac",  "aca",  "acac", "ca",  "cac", "ac",  "acb",
+                 "cb",  "ba",  "ac",   "ba",   "bab", "ab"}));
+
+    REQUIRE((subwords | TietzeAddGenerators()
+             | Subwords<std::string>().min_length(2) | TietzeAddGenerators()
+             | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
+             | rx::to_vector())
+            == std::vector<std::vector<std::string>>(
+                {{"dd", "bc", "c", "a", "d", "cb"},
+                 {"db", "bc", "c", "a", "d", "cbc"},
+                 {"d", "bc", "c", "a", "d", "cbcb"},
+                 {"cdb", "d", "c", "a", "d", "bc"},
+                 {"cd", "bc", "c", "a", "d", "bcb"},
+                 {"d", "ba", "c", "ab", "d", "cc"},
+                 {"cc", "d", "c", "ab", "d", "ba"},
+                 {"cc", "ba", "c", "d", "d", "ab"},
+                 {"d", "ba", "c", "aba", "d", "cb"},
+                 {"cb", "d", "c", "ad", "d", "ba"},
+                 {"cb", "ba", "c", "da", "d", "ab"},
+                 {"cb", "ba", "c", "d", "d", "aba"},
+                 {"c", "d", "c", "adb", "d", "ba"},
+                 {"c", "ba", "c", "dd", "d", "ab"},
+                 {"c", "ba", "c", "db", "d", "aba"},
+                 {"c", "ba", "c", "d", "d", "abab"},
+                 {"c", "ba", "c", "ad", "d", "bab"},
+                 {"dd", "ca", "c", "b", "d", "ac"},
+                 {"dc", "ca", "c", "b", "d", "aca"},
+                 {"d", "ca", "c", "b", "d", "acac"},
+                 {"adc", "d", "c", "b", "d", "ca"},
+                 {"ad", "ca", "c", "b", "d", "cac"},
+                 {"db", "c", "c", "ba", "d", "ac"},
+                 {"d", "c", "c", "ba", "d", "acb"},
+                 {"ad", "c", "c", "ba", "d", "cb"},
+                 {"acb", "c", "c", "d", "d", "ba"},
+                 {"d", "ba", "c", "bab", "d", "ac"},
+                 {"ac", "d", "c", "db", "d", "ba"},
+                 {"ac", "ba", "c", "d", "d", "bab"},
+                 {"ac", "ba", "c", "bd", "d", "ab"}}));
   }
 
 }  // namespace libsemigroups

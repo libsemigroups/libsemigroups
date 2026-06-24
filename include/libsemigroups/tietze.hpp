@@ -105,15 +105,18 @@ namespace libsemigroups {
     Subwords& init(Presentation<Word> const& p) {
       init();
       _current.first = p;
-      reset();
-      return *this;
+      return reset();
     }
 
     Subwords& init(Presentation<Word>&& p) {
       init();
       _current.first = std::move(p);
-      reset();
-      return *this;
+      return reset();
+    }
+
+    Subwords& presentation(Presentation<Word> const& p) {
+      _current.first = p;
+      return reset();
     }
 
     Subwords& reset() {
@@ -147,6 +150,12 @@ namespace libsemigroups {
       reset();
       return *this;
     }
+
+    // Subwords&& min_length(size_t val) && {
+    //   _min_length = val;
+    //   reset();
+    //   return std::move(*this);
+    // }
 
     ////////////////////////////////////////////////////////////////////////
     // rx::ranges stuff
@@ -212,7 +221,7 @@ namespace libsemigroups {
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
-      return Range<Inner>(std::forward<InputRange>(input));
+      return Range<Inner>(std::forward<InputRange>(input), *this);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -272,15 +281,20 @@ namespace libsemigroups {
     InputRange     _input;
     Subwords<Word> _subwords;
 
-    Range(InputRange const& input) : _input(input), _subwords() {
+    Range(InputRange const& input, Subwords const& subwords)
+        // Init _subwords with subwords to copy the settings
+        : _input(input), _subwords(subwords) {
       if (!_input.at_end()) {
-        _subwords.init(_input.get());
+        // Reset the presentation, not init, so that we retain the settings
+        _subwords.presentation(_input.get());
       }
     }
 
-    Range(InputRange&& input) : _input(std::move(input)), _subwords() {
+    Range(InputRange&& input, Subwords const& subwords)
+        : _input(std::move(input)), _subwords(subwords) {
       if (!_input.at_end()) {
-        _subwords.init(_input.get());
+        // Reset the presentation, not init, so that we retain the settings
+        _subwords.presentation(_input.get());
       }
     }
 
@@ -294,7 +308,8 @@ namespace libsemigroups {
         if (_subwords.at_end()) {
           _input.next();
           if (!_input.at_end()) {
-            _subwords.init(_input.get());
+            // Reset the presentation, not init, so that we retain the settings
+            _subwords.presentation(_input.get());
           }
         }
       }
