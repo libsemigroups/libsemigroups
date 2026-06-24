@@ -507,6 +507,7 @@ namespace libsemigroups {
                          Iterator2           first_replacement,
                          Iterator2           last_replacement) {
       if (first_existing == last_existing) {
+        // TODO this exception message isn't helpful
         LIBSEMIGROUPS_EXCEPTION("the 2nd and 3rd argument must not be equal");
       }
       auto rplc_sbwrd = [&first_existing,
