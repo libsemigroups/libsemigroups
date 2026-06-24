@@ -1359,6 +1359,7 @@ namespace libsemigroups {
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE(result.has_value());
     REQUIRE(dora.success());
+    REQUIRE(result.value().presentation().alphabet() == "cbda");
     REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
             == std::vector<rule_type>({{"abba", "d"},
                                        {"abbcb", "cbbab"},

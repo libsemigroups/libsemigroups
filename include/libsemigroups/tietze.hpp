@@ -35,8 +35,10 @@
 #include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "presentation.hpp"  // for Presentation, operator!=, rep...
+#include "runner.hpp"        // for Runner
 
-#include "detail/fmt.hpp"  // for print
+#include "detail/fmt.hpp"   // for print
+#include "detail/race.hpp"  // for Race
 
 namespace libsemigroups {
 
@@ -234,16 +236,6 @@ namespace libsemigroups {
     // Multi-threading range
     ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] bool try_get_and_advance(Word& result) {
-      // TODO  std::lock_guard lg(_mtx);
-      if (!at_end()) {
-        result = get();
-        next();
-        return true;
-      }
-      return false;
-    }
-
    private:
     ////////////////////////////////////////////////////////////////////////
     // Private
@@ -420,6 +412,8 @@ namespace libsemigroups {
       return _get_presentation;
     }
 
+    // TODO try_get_and_advance
+
     void next() {
       _input.next();
       if (!_input.at_end()) {
@@ -446,6 +440,159 @@ namespace libsemigroups {
       using Inner = rx::get_range_type_t<InputRange>;
 
       return TietzeAddGeneratorsRange<Inner>(std::forward<InputRange>(input));
+    }
+  };
+
+  template <typename InputRange, typename Func>
+  class FindIfRange : public Runner {
+    using input_type
+        = std::decay_t<typename std::decay_t<InputRange>::output_type>;
+    using input_const_reference = input_type const&;
+    using input_reference       = input_type&;
+
+    using invocable_type = Func;
+    using invoke_result_type
+        = std::invoke_result_t<Func, input_const_reference>;
+
+   private:
+    struct FindIfRunner : public Runner {
+      FindIfRange*       _enclosing;
+      invocable_type     _func;
+      invoke_result_type _result;
+      bool               _finished;
+
+     public:
+      explicit FindIfRunner(FindIfRange* enclosing, Func const& func)
+          : Runner(), _enclosing(enclosing), _func(func) {
+        Runner::report_prefix("FindIf");
+      }
+
+      // TODO result
+
+      //     private:
+      void run_impl() override {
+        ReportGuard rg(false);
+        input_type  func_args;
+        while (!stopped() && _enclosing->try_get_and_advance(func_args)) {
+          if (_func(func_args)) {
+            _finished = true;
+            return;
+          }
+        }
+      }
+
+      [[nodiscard]] bool finished_impl() const override {
+        return _finished;
+      }
+
+    };  // class FindIfRunner
+
+    ////////////////////////////////////////////////////////////////////////
+    // Private data
+    ////////////////////////////////////////////////////////////////////////
+    bool         _finished;
+    Func         _func;
+    InputRange   _input_range;
+    std::mutex   _mtx;
+    size_t       _number_of_threads;
+    detail::Race _race;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    //
+    ////////////////////////////////////////////////////////////////////////
+
+    FindIfRange(InputRange&& input_range, Func&& func)
+        : _finished(false),
+          _func(std::move(func)),
+          _input_range(input_range),
+          _mtx(),
+          _number_of_threads(4),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
+    FindIfRange(InputRange&& input_range, Func const& func)
+        : _finished(false),
+          _func(func),
+          _input_range(input_range),
+          _mtx(),
+          _number_of_threads(4),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
+    [[nodiscard]] bool try_get_and_advance(input_reference result) {
+      std::lock_guard lg(_mtx);
+      if (!_input_range.at_end()) {
+        result = _input_range.get();
+        _input_range.next();
+        return true;
+      }
+      return false;
+    }
+
+    [[nodiscard]] std::optional<invoke_result_type> result() {
+      Runner::run();
+      if (_race.winner() == nullptr) {
+        return std::nullopt;
+      }
+      return std::make_optional(
+          std::static_pointer_cast<FindIfRunner>(_race.winner())->_result);
+    }
+
+    [[nodiscard]] size_t number_of_threads() const noexcept {
+      return _number_of_threads;
+    }
+
+    FindIfRange& number_of_threads(size_t val) {
+      if (val == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (number of threads) must be at least 1, found {}",
+            val);
+      }
+      _number_of_threads = val;
+      return *this;
+    }
+
+   private:
+    void run_impl() override {
+      // TODO this is bad if there are already existing runners
+      while (_race.number_of_runners() < number_of_threads()) {
+        _race.add_runner(std::make_shared<FindIfRunner>(this, _func));
+      }
+
+      // ::libsemigroups::detail::Ticker ticker;
+      // if ((!running_for()
+      //      || duration_cast<seconds>(running_for_how_long()) >= seconds(1)))
+      //      {
+      //   ticker([this]() { report_progress_from_thread(); });
+      // }
+      _race.run_until([this]() { return this->stopped(); });
+
+      // report_after_run();
+      if (_race.finished() || !stopped()) {
+        _finished = true;
+      }
+    }
+
+    [[nodiscard]] bool finished_impl() const override {
+      return _finished;
+    }
+  };  // class FindIfRange
+
+  template <typename Func>
+  struct FindIf {
+    Func _func;
+
+    // TODO number of threads
+    FindIf(Func&& func) : _func(std::forward<Func>(func)) {}
+
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) {
+      return FindIfRange(std::forward<InputRange>(input), _func);
     }
   };
 
