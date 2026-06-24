@@ -204,7 +204,7 @@ namespace libsemigroups {
                 {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
 
     REQUIRE(
-        (subwords | TietzeAddGenerators(p)
+        (subwords | TietzeAddGenerators()
          | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
         == std::vector<std::vector<std::string>>({{"cbcb", "bc", "c", "a"},
                                                   {"cc", "ba", "c", "ab"},
@@ -213,7 +213,7 @@ namespace libsemigroups {
                                                   {"acac", "ca", "c", "b"},
                                                   {"acb", "c", "c", "ba"},
                                                   {"ac", "ba", "c", "bab"}}));
-    REQUIRE((subwords | TietzeAddGenerators(p)
+    REQUIRE((subwords | TietzeAddGenerators()
              | Subwords<std::string>().min_length(1)
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
              | rx::to_vector())
