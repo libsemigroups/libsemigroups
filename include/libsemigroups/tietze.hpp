@@ -19,7 +19,8 @@
 #ifndef LIBSEMIGROUPS_TIETZE_HPP_
 #define LIBSEMIGROUPS_TIETZE_HPP_
 
-#include <algorithm>    // for sort
+#include <algorithm>  // for sort
+#include <chrono>
 #include <cstddef>      // for size_t
 #include <numeric>      // for accumulate
 #include <queue>        // for queue
@@ -583,6 +584,7 @@ namespace libsemigroups {
         ReportGuard rg(false);
         input_type  input;
         while (!stopped() && _enclosing->try_get_and_advance(input)) {
+          ++_enclosing->_counter;
           if (_func(input)) {
             _result   = input;
             _finished = true;
@@ -600,12 +602,14 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Private data
     ////////////////////////////////////////////////////////////////////////
-    bool         _finished;
-    Func         _func;
-    InputRange   _input_range;
-    std::mutex   _mtx;
-    size_t       _number_of_threads;
-    detail::Race _race;
+    std::atomic_size_t _counter;
+    bool               _finished;
+    Func               _func;
+    InputRange         _input_range;
+    size_t             _input_range_count;
+    std::mutex         _mtx;
+    size_t             _number_of_threads;
+    detail::Race       _race;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -615,9 +619,11 @@ namespace libsemigroups {
     FindIfRange(InputRange&&        input_range,
                 Func&&              func,
                 FindIf<Func> const& other)
-        : _finished(false),
+        : _counter(0),
+          _finished(false),
           _func(std::move(func)),
           _input_range(input_range),
+          _input_range_count(_input_range.count()),
           _mtx(),
           _number_of_threads(other.number_of_threads()),
           _race() {
@@ -628,9 +634,12 @@ namespace libsemigroups {
     FindIfRange(InputRange&&        input_range,
                 Func const&         func,
                 FindIf<Func> const& other)
-        : _finished(false),
+        : _counter(0),
+          _finished(false),
           _func(func),
           _input_range(input_range),
+          // TODO this might be a terrible idea
+          _input_range_count(_input_range.count()),
           _mtx(),
           _number_of_threads(other.number_of_threads()),
           _race() {
@@ -671,22 +680,44 @@ namespace libsemigroups {
     }
 
    private:
+    void report_progress_from_thread() const {
+      using ::libsemigroups::detail::group_digits;
+      using ::libsemigroups::detail::string_time;
+      if (delta(start_time()) >= std::chrono::milliseconds(500)) {
+        size_t count         = _counter.load();
+        auto   num_runs      = group_digits(_input_range_count);
+        auto   elapsed       = delta(start_time());
+        auto   mean_run_time = elapsed / count;
+        auto   estimate      = _input_range_count * mean_run_time;
+        fmt::print("#0: FindIf: {:>{}} / {} ({:>4.1f}%) @ ~{} "
+                   "per run | {:>7} / {:>7}\n",
+                   group_digits(count),
+                   num_runs.size(),
+                   num_runs,
+                   static_cast<float>(100 * count) / _input_range_count,
+                   string_time(mean_run_time),
+                   string_time(elapsed),
+                   fmt::format("~{}", string_time(estimate)));
+      }
+    }
+
     void run_impl() override {
+      using std::chrono::duration_cast;
+      using std::chrono::seconds;
+
       // TODO this is bad if there are already existing runners
       while (_race.number_of_runners() < number_of_threads()) {
         _race.add_runner(std::make_shared<FindIfRunner>(this, _func));
       }
 
-      // ::libsemigroups::detail::Ticker ticker;
-      // if ((!running_for()
-      //      || duration_cast<seconds>(running_for_how_long()) >=
-      //      seconds(1)))
-      //      {
-      //   ticker([this]() { report_progress_from_thread(); });
-      // }
+      ::libsemigroups::detail::Ticker ticker;
+      if ((!running_for()
+           || duration_cast<seconds>(running_for_how_long()) >= seconds(1))) {
+        ticker([this]() { report_progress_from_thread(); });
+      }
       _race.run_until([this]() { return this->stopped(); });
 
-      // report_after_run();
+      // TODO report_after_run();
       if (_race.finished() || !stopped()) {
         _finished = true;
       }
