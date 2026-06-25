@@ -50,6 +50,7 @@ namespace libsemigroups {
     size_t                               _max_length;
     size_t                               _min_length;
     size_t                               _prefix_end;
+    bool                                 _proper;
     std::unordered_set<Word, Hash<Word>> _seen;
     size_t                               _suffix_begin;
 
@@ -75,6 +76,7 @@ namespace libsemigroups {
           _max_length(POSITIVE_INFINITY),
           _min_length(0),
           _prefix_end(),
+          _proper(false),
           _seen(),
           _suffix_begin() {}
 
@@ -83,6 +85,7 @@ namespace libsemigroups {
       _current.second.clear();
       _max_length = POSITIVE_INFINITY;
       _min_length = 0;
+      _proper     = false;
       _seen.clear();
       return *this;
     }
@@ -159,6 +162,16 @@ namespace libsemigroups {
     //   return std::move(*this);
     // }
 
+    [[nodiscard]] size_t proper() const noexcept {
+      return _proper;
+    }
+
+    Subwords& proper(bool val) {
+      _proper = val;
+      // TODO reset()?
+      return *this;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // rx::ranges stuff
     ////////////////////////////////////////////////////////////////////////
@@ -175,8 +188,12 @@ namespace libsemigroups {
       while (_current_rule != _current.first.rules.size()) {
         auto const& rule = _current.first.rules[_current_rule];
         while (_suffix_begin < rule.size()) {
+          size_t prefix_last = rule.size();
+          if (_suffix_begin == 0) {
+            prefix_last -= _proper;
+          }
           while (_prefix_end - _suffix_begin <= _max_length
-                 && _prefix_end <= rule.size()) {
+                 && _prefix_end <= prefix_last) {
             auto first = rule.begin() + _suffix_begin;
             auto last  = rule.begin() + _prefix_end;
             if (_seen.emplace(first, last).second) {
@@ -328,9 +345,11 @@ namespace libsemigroups {
    private:
     size_t _min_length;
     size_t _max_length;
+    bool   _proper;
 
    public:
-    SubwordsOf() : _min_length(0), _max_length(POSITIVE_INFINITY) {}
+    SubwordsOf()
+        : _min_length(0), _max_length(POSITIVE_INFINITY), _proper(false) {}
 
     SubwordsOf(SubwordsOf const&)            = default;
     SubwordsOf(SubwordsOf&&)                 = default;
@@ -364,6 +383,15 @@ namespace libsemigroups {
 
     SubwordsOf& max_length(size_t val) {
       _max_length = val;
+      return *this;
+    }
+
+    [[nodiscard]] size_t proper() const noexcept {
+      return _proper;
+    }
+
+    SubwordsOf& proper(bool val) {
+      _proper = val;
       return *this;
     }
   };
@@ -441,6 +469,9 @@ namespace libsemigroups {
     }
   };
 
+  template <typename Func>
+  struct FindIf;
+
   template <typename InputRange, typename Func>
   class FindIfRange : public Runner {
     using input_type
@@ -509,23 +540,27 @@ namespace libsemigroups {
     //
     ////////////////////////////////////////////////////////////////////////
 
-    FindIfRange(InputRange&& input_range, Func&& func)
+    FindIfRange(InputRange&&        input_range,
+                Func&&              func,
+                FindIf<Func> const& other)
         : _finished(false),
           _func(std::move(func)),
           _input_range(input_range),
           _mtx(),
-          _number_of_threads(1),
+          _number_of_threads(other.number_of_threads()),
           _race() {
       Runner::report_prefix("FindIf");
       _race.report_prefix("FindIf");
     }
 
-    FindIfRange(InputRange&& input_range, Func const& func)
+    FindIfRange(InputRange&&        input_range,
+                Func const&         func,
+                FindIf<Func> const& other)
         : _finished(false),
           _func(func),
           _input_range(input_range),
           _mtx(),
-          _number_of_threads(1),
+          _number_of_threads(other.number_of_threads()),
           _race() {
       Runner::report_prefix("FindIf");
       _race.report_prefix("FindIf");
@@ -590,16 +625,32 @@ namespace libsemigroups {
     }
   };  // class FindIfRange
 
+  // TODO struct -> class
   template <typename Func>
   struct FindIf {
-    Func _func;
+    Func   _func;
+    size_t _number_of_threads;
 
-    // TODO number of threads
-    FindIf(Func&& func) : _func(std::forward<Func>(func)) {}
+    FindIf(Func&& func)
+        : _func(std::forward<Func>(func)), _number_of_threads(1) {}
 
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) {
-      return FindIfRange(std::forward<InputRange>(input), _func);
+      return FindIfRange(std::forward<InputRange>(input), _func, *this);
+    }
+
+    [[nodiscard]] size_t number_of_threads() const noexcept {
+      return _number_of_threads;
+    }
+
+    FindIf& number_of_threads(size_t val) {
+      if (val == 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (number of threads) must be at least 1, found {}",
+            val);
+      }
+      _number_of_threads = val;
+      return *this;
     }
   };
 
@@ -673,9 +724,17 @@ namespace libsemigroups {
   };
 
   struct AllAlphabetOrders {
-    template <typename InputRange>
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       return AllAlphabetOrdersRange(std::forward<InputRange>(input));
+    }
+
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      // This is a bit of hack
+      std::vector<Presentation<Word>> dummy({input});
+      return operator()(rx::iterator_range(dummy.begin(), dummy.end()));
     }
   };
 

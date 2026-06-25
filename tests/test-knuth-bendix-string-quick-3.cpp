@@ -1331,7 +1331,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "149",
-                                   "abaab=aabba",
+                                   "abbab=baabb",
                                    "[quick][tietze-explorer][no-valgrind]",
                                    LenLexTrie) {
     auto rg = ReportGuard(false);
