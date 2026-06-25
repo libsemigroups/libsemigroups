@@ -1,267 +1,156 @@
-// HiGHS is designed to solve linear optimization problems of the form
 //
-// Min (1/2)x^TQx + c^Tx + d subject to L <= Ax <= U; l <= x <= u
+// libsemigroups - C++ library for semigroups and monoids
+// Copyright (C) 2026 Joseph Edwards
 //
-// where A is a matrix with m rows and n columns, and Q is either zero
-// or positive definite. If Q is zero, HiGHS can determine the optimal
-// integer-valued solution.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-// The scalar n is num_col_
-// The scalar m is num_row_
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 //
-// The vector c is col_cost_
-// The scalar d is offset_
-// The vector l is col_lower_
-// The vector u is col_upper_
-// The vector L is row_lower_
-// The vector U is row_upper_
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-// The matrix A is represented in packed vector form, either
-// row-wise or column-wise: only its nonzeros are stored
-//
-// * The number of nonzeros in A is num_nz
-//
-// * The indices of the nonnzeros in the vectors of A are stored in a_index
-//
-// * The values of the nonnzeros in the vectors of A are stored in a_value
-//
-// * The position in a_index/a_value of the index/value of the first
-// nonzero in each vector is stored in a_start
-//
-// Note that a_start[0] must be zero
-//
-// The matrix Q is represented in packed column form
-//
-// * The dimension of Q is dim_
-//
-// * The number of nonzeros in Q is hessian_num_nz
-//
-// * The indices of the nonnzeros in the vectors of A are stored in q_index
-//
-// * The values of the nonnzeros in the vectors of A are stored in q_value
-//
-// * The position in q_index/q_value of the index/value of the first
-// nonzero in each column is stored in q_start
-//
-// Note
-//
-// * By default, Q is zero. This is indicated by dim_ being initialised to zero.
-//
-// * q_start[0] must be zero
-//
-#include <cassert>
-#include <vector>
 
-#include "Highs.h"
+// This file contains the implementation of a function that takes in 2d array of
+// constraints and returns an integer solution, if such a solution exists
 
-using std::cout;
-using std::endl;
+#include "libsemigroups/detail/weight-finding.hpp"
 
-int main() {
-  // Objective function
-  std::vector<double> c{1, 1};
+#include "minlp.h"
 
-  size_t num_cols = 2;
-  size_t num_rows = 3;
+#include <iostream>
 
-  // res = {
-  //     "x": None,
-  //     "fun": None,
-  // }
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
 
-  // Fill up a HighsLp object
-  HighsModel model;
-  model.lp_.num_col_  = num_cols;
-  model.lp_.num_row_  = num_rows;
-  model.lp_.sense_    = ObjSense::kMinimize;
-  model.lp_.offset_   = 0;
-  model.lp_.col_cost_ = c;
+namespace libsemigroups::detail {
+  using namespace alglib;
 
-  // Populate the constraints and the integrality
-  // Ax > 0 implies Ax >= 1
-  model.lp_.col_lower_.resize(num_cols);
-  model.lp_.col_upper_.resize(num_cols);
-  model.lp_.integrality_.resize(num_cols);
-  for (int col = 0; col < model.lp_.num_col_; col++) {
-    model.lp_.col_lower_[col]   = 1;
-    model.lp_.col_upper_[col]   = kHighsInf;
-    model.lp_.integrality_[col] = HighsVarType::kInteger;
+  // Specify the objective function and its associated Jacobian. This is the
+  // function we are attempting to minimise, and arbitrarily define it to be
+  // the function with the constant value 1.
+  // TODO: experiment with different objectives
+  void objective(const real_1d_array& x,
+                 real_1d_array&       fi,
+                 real_2d_array&       jac,
+                 void*                ptr) {
+    // ptr is a necessary parameter as this function's API is prescribed by
+    // <minlpsolveroptimize>
+    (void) ptr;
+
+    size_t const n = x.length();
+    fi[0]          = 0;
+    for (size_t i = 0; i < n; ++i) {
+      // fi[0] += x[i];
+      // jac[0][i] = 1;
+      jac[0][i] = 0;
+    }
   }
 
-  model.lp_.row_lower_.resize(num_rows);
-  model.lp_.row_upper_.resize(num_rows);
-  for (int row = 0; row < model.lp_.num_row_; row++) {
-    model.lp_.row_lower_[row] = 1;
-    model.lp_.row_upper_[row] = kHighsInf;
+  std::optional<std::vector<int>>
+  get_weights(DynamicArray2<int> const& coefficients,
+              std::vector<bool> const&  is_strict) {
+    if (coefficients.number_of_rows() != is_strict.size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the number of rows of the first argument must be the same as the "
+          "size of the second argument, found {} and {} respectively",
+          coefficients.number_of_rows(),
+          is_strict.size());
+    }
+
+    // Create the solver and reporting object
+    minlpsolverstate  solver;
+    minlpsolverstate  solver2;
+    minlpsolverreport rep;
+    real_1d_array     result;
+
+    size_t const num_variables   = coefficients.number_of_cols();
+    size_t const num_constraints = coefficients.number_of_rows();
+
+    // Initial guess
+    real_1d_array x0;
+    x0.setlength(num_variables);
+    for (size_t i = 0; i < num_variables; ++i) {
+      x0[i] = 1;
+    }
+    minlpsolvercreate(num_variables, x0, solver);
+
+    x0.setlength(1);
+    for (size_t i = 0; i < 1; ++i) {
+      x0[i] = 1000;
+    }
+    minlpsolvercreate(1, x0, solver2);
+
+    // Bounds on the variables
+    real_1d_array variable_lower_bounds;
+    real_1d_array variable_upper_bounds;
+    variable_lower_bounds.setlength(num_variables);
+    variable_upper_bounds.setlength(num_variables);
+
+    // TODO(1): Experiment with different upper bounds
+    for (size_t i = 0; i < num_variables; ++i) {
+      variable_lower_bounds[i] = 1;
+      variable_upper_bounds[i] = fp_posinf;
+      minlpsolversetintkth(solver, i);
+      minlpsolvermarkaslinearvar(solver, i);
+    }
+    minlpsolversetbc(solver, variable_lower_bounds, variable_upper_bounds);
+
+    // TODO(1): This for loop is the only part that really depends on the
+    // parameters. Refactor the function to avoid this, and make the solver
+    // reusable with different constraints.
+    for (size_t i = 0; i < num_constraints; ++i) {
+      // Add constraints
+      real_1d_array row;
+      row.setlength(num_variables);
+      for (size_t j = 0; j < num_variables; ++j) {
+        row[j] = coefficients.get(i, j);
+      }
+      // The third argument below is the lower bound of the constraint. If
+      // a_1 * x_1 + ... a_n * x_n > 0,
+      // then we should add the constraint
+      // a_1 * x_1 + ... a_n * x_n >= 1.
+      minlpsolveraddlc2sparsefromdense(
+          solver, row, is_strict[i] ? 1 : 0, fp_posinf);
+    }
+
+    // Tell the solver to use BBSYNC (Branch & Bound with Synchronous
+    // processing) mixed-integer nonlinear programming algorithm. The second
+    // parameter being set to 1 indicates that the algorithm shouldn't try and
+    // parallelise computation. This is reccomended when the diminsion is
+    // small, and also when using the free version of the software, as we are.
+    minlpsolversetalgobbsync(solver, 1);
+
+    // Our problems our convex, so we don't need multiple starts.
+    minlpsolversetmultistarts(solver, 1);
+
+    // Tell the solver that we expect our problem to have a shallow B&B  tree
+    // with  the number of nodes comparable to the integer variables count, or
+    // below.
+    // TODO(2): Experiment with largetree
+    minlpsolversetbbsyncprofilesmalltree(solver);
+    // minlpsolversetbbsyncprofilelargetree(solver);
+
+    // Tell the solver what to try and minimize
+    minlpsolveroptimize(solver, objective);
+
+    // Run the solver
+    minlpsolverresults(solver, result, rep);
+    std::cout << "\nNumber of evaluations: " << rep.nfev << std::endl;
+
+    // The documentation says that a terminationtype of 2 corresponds to a
+    // solution being found, but the implementation doesn't agree with this.
+    // It may be the case that there is a value greater than 0 that represents
+    // failure, but this was the best JDE could do.
+    if (rep.terminationtype > 0) {
+      std::vector<int> weights;
+      weights.assign(result.getcontent(), result.getcontent() + num_variables);
+      return weights;
+    }
+    return {};
   }
-
-  model.lp_.a_matrix_.format_ = MatrixFormat::kColwise;
-  model.lp_.a_matrix_.start_  = {0, 3, 6};
-  model.lp_.a_matrix_.index_  = {0, 1, 2, 0, 1, 2};
-  model.lp_.a_matrix_.value_  = {1, -1, 1, -1, 200, -199};
-
-  // Create a Highs instance
-  Highs       highs;
-  HighsStatus return_status;
-
-  // Pass the model to HiGHS
-  return_status = highs.passModel(model);
-  assert(return_status == HighsStatus::kOk);
-
-  // Get a const reference to the LP data in HiGHS
-  const HighsLp& lp = highs.getLp();
-
-  // Solve the model
-  return_status = highs.run();
-  assert(return_status == HighsStatus::kOk);
-
-  // Get the solution information
-  const HighsInfo& info = highs.getInfo();
-
-  // Get the solution values and basis
-  const HighsSolution& solution = highs.getSolution();
-
-  // Report the primal solution values
-  for (int col = 0; col < lp.num_col_; col++) {
-    cout << "Column " << col;
-    if (info.primal_solution_status)
-      cout << "; value = " << solution.col_value[col];
-    cout << endl;
-  }
-  for (int row = 0; row < lp.num_row_; row++) {
-    cout << "Row    " << row;
-    if (info.primal_solution_status)
-      cout << "; value = " << solution.row_value[row];
-    cout << endl;
-  }
-
-  highs.resetGlobalScheduler(true);
-
-  return 0;
-
-  /*
-  // EXAMPLES START
-  // Create and populate a HighsModel instance for the LP
-  //
-  // Min    f  =  x_0 +  x_1 + 3
-  // s.t.                x_1 <= 7
-  //        5 <=  x_0 + 2x_1 <= 15
-  //        6 <= 3x_0 + 2x_1
-  // 0 <= x_0 <= 4; 1 <= x_1
-  //
-  // Although the first constraint could be expressed as an upper
-  // bound on x_1, it serves to illustrate a non-trivial packed
-  // column-wise matrix.
-  //
-  HighsModel model;
-  model.lp_.num_col_   = 2;
-  model.lp_.num_row_   = 3;
-  model.lp_.sense_     = ObjSense::kMinimize;
-  model.lp_.offset_    = 3;
-  model.lp_.col_cost_  = {1.0, 1.0};
-  model.lp_.col_lower_ = {0.0, 1.0};
-  model.lp_.col_upper_ = {4.0, 1.0e30};
-  model.lp_.row_lower_ = {-1.0e30, 5.0, 6.0};
-  model.lp_.row_upper_ = {7.0, 15.0, 1.0e30};
-  //
-  // Here the orientation of the matrix is column-wise
-  model.lp_.a_matrix_.format_ = MatrixFormat::kColwise;
-  // a_start_ has num_col_1 entries, and the last entry is the number
-  // of nonzeros in A, allowing the number of nonzeros in the last
-  // column to be defined
-  model.lp_.a_matrix_.start_ = {0, 2, 5};
-  model.lp_.a_matrix_.index_ = {1, 2, 0, 1, 2};
-  model.lp_.a_matrix_.value_ = {1.0, 3.0, 1.0, 2.0, 2.0};
-  //
-  // Create a Highs instance
-  Highs       highs;
-  HighsStatus return_status;
-  //
-  // Pass the model to HiGHS
-  return_status = highs.passModel(model);
-  assert(return_status == HighsStatus::kOk);
-  // If a user passes a model with entries in
-  // model.lp_.a_matrix_.value_ less than (the option)
-  // small_matrix_value in magnitude, they will be ignored. A logging
-  // message will indicate this, and passModel will return
-  // HighsStatus::kWarning
-  //
-  // Get a const reference to the LP data in HiGHS
-  const HighsLp& lp = highs.getLp();
-  //
-  // Solve the model
-  return_status = highs.run();
-  assert(return_status == HighsStatus::kOk);
-  //
-  // Get the model status
-  const HighsModelStatus& model_status = highs.getModelStatus();
-  assert(model_status == HighsModelStatus::kOptimal);
-  cout << "Model status: " << highs.modelStatusToString(model_status) << endl;
-  //
-  // Get the solution information
-  const HighsInfo& info = highs.getInfo();
-  cout << "Simplex iteration count: " << info.simplex_iteration_count << endl;
-  cout << "Objective function value: " << info.objective_function_value << endl;
-  cout << "Primal  solution status: "
-       << highs.solutionStatusToString(info.primal_solution_status) << endl;
-  cout << "Dual    solution status: "
-       << highs.solutionStatusToString(info.dual_solution_status) << endl;
-  cout << "Basis: " << highs.basisValidityToString(info.basis_validity) << endl;
-  const bool has_values = info.primal_solution_status;
-  const bool has_duals  = info.dual_solution_status;
-  const bool has_basis  = info.basis_validity;
-  //
-  // Get the solution values and basis
-  const HighsSolution& solution = highs.getSolution();
-  const HighsBasis&    basis    = highs.getBasis();
-  //
-  // Report the primal and solution values and basis
-  for (int col = 0; col < lp.num_col_; col++) {
-    cout << "Column " << col;
-    if (has_values)
-      cout << "; value = " << solution.col_value[col];
-    if (has_duals)
-      cout << "; dual = " << solution.col_dual[col];
-    if (has_basis)
-      cout << "; status: " << highs.basisStatusToString(basis.col_status[col]);
-    cout << endl;
-  }
-  for (int row = 0; row < lp.num_row_; row++) {
-    cout << "Row    " << row;
-    if (has_values)
-      cout << "; value = " << solution.row_value[row];
-    if (has_duals)
-      cout << "; dual = " << solution.row_dual[row];
-    if (has_basis)
-      cout << "; status: " << highs.basisStatusToString(basis.row_status[row]);
-    cout << endl;
-  }
-
-  // Now indicate that all the variables must take integer values
-  model.lp_.integrality_.resize(lp.num_col_);
-  for (int col = 0; col < lp.num_col_; col++)
-    model.lp_.integrality_[col] = HighsVarType::kInteger;
-
-  highs.passModel(model);
-  // Solve the model
-  return_status = highs.run();
-  assert(return_status == HighsStatus::kOk);
-  // Report the primal solution values
-  for (int col = 0; col < lp.num_col_; col++) {
-    cout << "Column " << col;
-    if (info.primal_solution_status)
-      cout << "; value = " << solution.col_value[col];
-    cout << endl;
-  }
-  for (int row = 0; row < lp.num_row_; row++) {
-    cout << "Row    " << row;
-    if (info.primal_solution_status)
-      cout << "; value = " << solution.row_value[row];
-    cout << endl;
-  }
-
-  highs.resetGlobalScheduler(true);
-
-  return 0;
-  */
-}
+}  // namespace libsemigroups::detail
