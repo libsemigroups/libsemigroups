@@ -154,4 +154,13 @@ namespace libsemigroups::detail {
     REQUIRE(res.has_value());
     REQUIRE(res.value() == std::vector<size_t>{1, 1});
   }
+
+  LIBSEMIGROUPS_TEST_CASE("get_weights", "008", "no constraints", "[quick]") {
+    DynamicArray2<int> coefs(2, 0);
+    std::vector<bool>  is_strict(0);
+
+    auto res = get_weights(coefs, is_strict);
+    REQUIRE(res.has_value());
+    REQUIRE(res.value() == std::vector<size_t>{1, 1});
+  }
 }  // namespace libsemigroups::detail
