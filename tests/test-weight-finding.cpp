@@ -40,7 +40,7 @@ namespace libsemigroups::detail {
 
     auto res = get_weights(coefs, is_strict);
     REQUIRE(res.has_value());
-    REQUIRE(res.value() == std::vector<int>{1, 1});
+    REQUIRE(res.value() == std::vector<size_t>{1, 1});
   }
 
   LIBSEMIGROUPS_TEST_CASE("get_weights",
@@ -67,7 +67,7 @@ namespace libsemigroups::detail {
 
     auto res = get_weights(coefs, is_strict);
     REQUIRE(res.has_value());
-    REQUIRE(res.value() == std::vector<int>{399, 2});
+    REQUIRE(res.value() == std::vector<size_t>{399, 2});
   }
 
   LIBSEMIGROUPS_TEST_CASE("get_weights", "002", "no solution", "[quick]") {
@@ -113,7 +113,7 @@ namespace libsemigroups::detail {
 
     auto res = get_weights(coefs, is_strict);
     REQUIRE(res.has_value());
-    REQUIRE(res.value() == std::vector<int>{1, 1});
+    REQUIRE(res.value() == std::vector<size_t>{1, 1});
   }
 
   LIBSEMIGROUPS_TEST_CASE("get_weights", "005", "exception", "[quick]") {
@@ -139,7 +139,7 @@ namespace libsemigroups::detail {
     // The 883 is here because this is apparently the first feasible solution
     // the solver finds; without specifying a function for the solver to
     // minimise, we get no say on which solution is found.
-    REQUIRE(res.value() == std::vector<int>{1, 1, 1, 1, 1, 1, 1, 1, 1, 883});
+    REQUIRE(res.value() == std::vector<size_t>{1, 1, 1, 1, 1, 1, 1, 1, 1, 883});
   }
 
   LIBSEMIGROUPS_TEST_CASE("get_weights",
@@ -152,6 +152,6 @@ namespace libsemigroups::detail {
 
     auto res = get_weights(coefs, is_strict);
     REQUIRE(res.has_value());
-    REQUIRE(res.value() == std::vector<int>{1, 1});
+    REQUIRE(res.value() == std::vector<size_t>{1, 1});
   }
 }  // namespace libsemigroups::detail

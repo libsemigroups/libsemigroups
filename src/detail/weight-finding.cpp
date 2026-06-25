@@ -49,7 +49,7 @@ namespace libsemigroups::detail {
     }
   }
 
-  std::optional<std::vector<int>>
+  std::optional<std::vector<size_t>>
   get_weights(DynamicArray2<int> const& coefficients,
               std::vector<bool> const&  is_strict) {
     if (coefficients.number_of_rows() != is_strict.size()) {
@@ -92,7 +92,7 @@ namespace libsemigroups::detail {
     // TODO(1): Experiment with different upper bounds
     for (size_t i = 0; i < num_variables; ++i) {
       variable_lower_bounds[i] = 1;
-      variable_upper_bounds[i] = alglib::fp_isinf;
+      variable_upper_bounds[i] = alglib::fp_posinf;
       alglib::minlpsolversetintkth(solver, i);
       alglib::minlpsolvermarkaslinearvar(solver, i);
     }
@@ -146,7 +146,7 @@ namespace libsemigroups::detail {
     // It may be the case that there is a value greater than 0 that represents
     // failure, but this was the best JDE could do.
     if (rep.terminationtype > 0) {
-      std::vector<int> weights;
+      std::vector<size_t> weights;
       weights.assign(result.getcontent(), result.getcontent() + num_variables);
       return weights;
     }

@@ -28,7 +28,7 @@
 #include "containers.hpp"  // for DynamicArray2
 
 namespace libsemigroups::detail {
-  std::optional<std::vector<int>>
+  std::optional<std::vector<size_t>>
   get_weights(DynamicArray2<int> const& coefficients,
               std::vector<bool> const&  is_strict);
 }
