@@ -128,7 +128,7 @@ namespace libsemigroups::detail {
     // Tell the solver to use BBSYNC (Branch & Bound with Synchronous
     // processing) mixed-integer nonlinear programming algorithm. The second
     // parameter being set to 1 indicates that the algorithm shouldn't try and
-    // parallelise computation. This is recommended when the diminsion is
+    // parallelise computation. This is recommended when the dimension is
     // small, and also when using the free version of the software, as we are.
     alglib::minlpsolversetalgobbsync(solver, 1);
 
