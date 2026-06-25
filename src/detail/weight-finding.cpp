@@ -27,6 +27,10 @@
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
 
+// TODO(2): Experiment with different solvers if alglib proves to be unsuitable.
+// Examples include SCIP, HiGHS and CBC. Could also implement out own simplex
+// algorithm which would probably be quite quick if our problems are small.
+
 namespace libsemigroups::detail {
   // Specify the objective function and its associated Jacobian. This is the
   // function we are attempting to minimise, and arbitrarily define it to be
@@ -60,14 +64,18 @@ namespace libsemigroups::detail {
           is_strict.size());
     }
 
+    size_t const num_variables   = coefficients.number_of_cols();
+    size_t const num_constraints = coefficients.number_of_rows();
+
+    if (num_constraints == 0) {
+      return std::vector<size_t>(num_variables, 1);
+    }
+
     // Create the solver and reporting object
     alglib::minlpsolverstate  solver;
     alglib::minlpsolverstate  solver2;
     alglib::minlpsolverreport rep;
     alglib::real_1d_array     result;
-
-    size_t const num_variables   = coefficients.number_of_cols();
-    size_t const num_constraints = coefficients.number_of_rows();
 
     // Initial guess
     alglib::real_1d_array x0;
@@ -139,6 +147,8 @@ namespace libsemigroups::detail {
 
     // Run the solver
     alglib::minlpsolverresults(solver, result, rep);
+
+    // TODO(1): Remove
     std::cout << "\nNumber of evaluations: " << rep.nfev << std::endl;
 
     // The documentation says that a terminationtype of 2 corresponds to a
