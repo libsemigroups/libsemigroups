@@ -469,6 +469,78 @@ namespace libsemigroups {
     }
   };
 
+  template <typename InputRange>
+  class TietzeAddRelationRange {
+   public:
+    using native_word_type
+        = std::tuple_element_t<1,
+                               std::decay_t<typename InputRange::output_type>>;
+
+   private:
+    InputRange _input;
+    // TODO?? remove, just modify the incoming presentation, then unmodify it
+    Presentation<native_word_type> _get_presentation;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Aliases
+    ////////////////////////////////////////////////////////////////////////
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+    using output_type = Presentation<native_word_type> const&;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initializers
+    ////////////////////////////////////////////////////////////////////////
+    // TODO? init functions?
+    TietzeAddRelationRange(InputRange const& input)
+        : _input(input), _get_presentation() {
+      if (!_input.at_end()) {
+        auto const& value = _input.get();
+        _get_presentation = std::get<0>(value);
+        presentation::add_rule(
+            _get_presentation, std::get<1>(value), std::get<2>(value));
+      }
+    }
+    // TODO rval ref constructor
+
+    ////////////////////////////////////////////////////////////////////////
+    // rx::ranges stuff
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] output_type get() const {
+      return _get_presentation;
+    }
+
+    // TODO try_get_and_advance
+
+    void next() {
+      _input.next();
+      if (!_input.at_end()) {
+        auto const& value = _input.get();
+        _get_presentation = std::get<0>(value);
+        presentation::add_rule(
+            _get_presentation, std::get<1>(value), std::get<2>(value));
+      }
+    }
+
+    [[nodiscard]] bool at_end() const {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      return _input.size_hint();
+    }
+  };  // class TietzeAddRelationRange
+
+  struct TietzeAddRelation {
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return TietzeAddRelationRange(std::forward<InputRange>(input));
+    }
+  };
+
   template <typename Func>
   struct FindIf;
 

@@ -843,6 +843,7 @@ namespace libsemigroups {
                                    "aaa=1, abAbbbaB=1",
                                    "[extreme][tietze-explorer]",
                                    LenLexTrie) {
+    // https://math.stackexchange.com/questions/4942596
     auto                        rg = ReportGuard(false);
     using std::string_literals::operator""s;
     Presentation<std::string>   p;
