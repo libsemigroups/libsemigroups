@@ -28,16 +28,14 @@
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGRUOPS_EXCEPTION
 
 namespace libsemigroups::detail {
-  using namespace alglib;
-
   // Specify the objective function and its associated Jacobian. This is the
   // function we are attempting to minimise, and arbitrarily define it to be
   // the function with the constant value 1.
   // TODO: experiment with different objectives
-  void objective(const real_1d_array& x,
-                 real_1d_array&       fi,
-                 real_2d_array&       jac,
-                 void*                ptr) {
+  void objective(const alglib::real_1d_array& x,
+                 alglib::real_1d_array&       fi,
+                 alglib::real_2d_array&       jac,
+                 void*                        ptr) {
     // ptr is a necessary parameter as this function's API is prescribed by
     // <minlpsolveroptimize>
     (void) ptr;
@@ -63,49 +61,50 @@ namespace libsemigroups::detail {
     }
 
     // Create the solver and reporting object
-    minlpsolverstate  solver;
-    minlpsolverstate  solver2;
-    minlpsolverreport rep;
-    real_1d_array     result;
+    alglib::minlpsolverstate  solver;
+    alglib::minlpsolverstate  solver2;
+    alglib::minlpsolverreport rep;
+    alglib::real_1d_array     result;
 
     size_t const num_variables   = coefficients.number_of_cols();
     size_t const num_constraints = coefficients.number_of_rows();
 
     // Initial guess
-    real_1d_array x0;
+    alglib::real_1d_array x0;
     x0.setlength(num_variables);
     for (size_t i = 0; i < num_variables; ++i) {
       x0[i] = 1;
     }
-    minlpsolvercreate(num_variables, x0, solver);
+    alglib::minlpsolvercreate(num_variables, x0, solver);
 
     x0.setlength(1);
     for (size_t i = 0; i < 1; ++i) {
       x0[i] = 1000;
     }
-    minlpsolvercreate(1, x0, solver2);
+    alglib::minlpsolvercreate(1, x0, solver2);
 
     // Bounds on the variables
-    real_1d_array variable_lower_bounds;
-    real_1d_array variable_upper_bounds;
+    alglib::real_1d_array variable_lower_bounds;
+    alglib::real_1d_array variable_upper_bounds;
     variable_lower_bounds.setlength(num_variables);
     variable_upper_bounds.setlength(num_variables);
 
     // TODO(1): Experiment with different upper bounds
     for (size_t i = 0; i < num_variables; ++i) {
       variable_lower_bounds[i] = 1;
-      variable_upper_bounds[i] = fp_posinf;
-      minlpsolversetintkth(solver, i);
-      minlpsolvermarkaslinearvar(solver, i);
+      variable_upper_bounds[i] = alglib::fp_isinf;
+      alglib::minlpsolversetintkth(solver, i);
+      alglib::minlpsolvermarkaslinearvar(solver, i);
     }
-    minlpsolversetbc(solver, variable_lower_bounds, variable_upper_bounds);
+    alglib::minlpsolversetbc(
+        solver, variable_lower_bounds, variable_upper_bounds);
 
     // TODO(1): This for loop is the only part that really depends on the
     // parameters. Refactor the function to avoid this, and make the solver
     // reusable with different constraints.
     for (size_t i = 0; i < num_constraints; ++i) {
       // Add constraints
-      real_1d_array row;
+      alglib::real_1d_array row;
       row.setlength(num_variables);
       for (size_t j = 0; j < num_variables; ++j) {
         row[j] = coefficients.get(i, j);
@@ -114,32 +113,32 @@ namespace libsemigroups::detail {
       // a_1 * x_1 + ... a_n * x_n > 0,
       // then we should add the constraint
       // a_1 * x_1 + ... a_n * x_n >= 1.
-      minlpsolveraddlc2sparsefromdense(
-          solver, row, is_strict[i] ? 1 : 0, fp_posinf);
+      alglib::minlpsolveraddlc2sparsefromdense(
+          solver, row, is_strict[i] ? 1 : 0, alglib::fp_posinf);
     }
 
     // Tell the solver to use BBSYNC (Branch & Bound with Synchronous
     // processing) mixed-integer nonlinear programming algorithm. The second
     // parameter being set to 1 indicates that the algorithm shouldn't try and
-    // parallelise computation. This is reccomended when the diminsion is
+    // parallelise computation. This is recommended when the diminsion is
     // small, and also when using the free version of the software, as we are.
-    minlpsolversetalgobbsync(solver, 1);
+    alglib::minlpsolversetalgobbsync(solver, 1);
 
     // Our problems our convex, so we don't need multiple starts.
-    minlpsolversetmultistarts(solver, 1);
+    alglib::minlpsolversetmultistarts(solver, 1);
 
     // Tell the solver that we expect our problem to have a shallow B&B  tree
     // with  the number of nodes comparable to the integer variables count, or
     // below.
     // TODO(2): Experiment with largetree
-    minlpsolversetbbsyncprofilesmalltree(solver);
-    // minlpsolversetbbsyncprofilelargetree(solver);
+    alglib::minlpsolversetbbsyncprofilesmalltree(solver);
+    // alglib::minlpsolversetbbsyncprofilelargetree(solver);
 
     // Tell the solver what to try and minimize
-    minlpsolveroptimize(solver, objective);
+    alglib::minlpsolveroptimize(solver, objective);
 
     // Run the solver
-    minlpsolverresults(solver, result, rep);
+    alglib::minlpsolverresults(solver, result, rep);
     std::cout << "\nNumber of evaluations: " << rep.nfev << std::endl;
 
     // The documentation says that a terminationtype of 2 corresponds to a
