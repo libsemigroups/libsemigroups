@@ -440,18 +440,21 @@ namespace libsemigroups {
     presentation::add_rule(p, "Bb", "");
     presentation::add_rule(p, "bB", "");
     presentation::add_rule(p, "b^9"_p, "");
-    presentation::add_rule(p, "abaabbbaB", "");
 
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    auto nf = knuth_bendix::normal_forms(kb);
+
+    presentation::add_rule(p, "abaabbbaB", "");
     ToddCoxeter tc(congruence_kind::twosided, p);
     todd_coxeter::add_generating_pair(tc, "(ab)^6"_p, "");
 
     REQUIRE(tc.number_of_classes() == 1512);
 
-    // TODO try RPO
-    KnuthBendix kb(congruence_kind::twosided, p);
+    REQUIRE(nf.min(14).max(22).count() == 0);
 
     auto result
-        = (StringRange().alphabet("ab").min(12).max(13)
+        = (nf.min(14).max(22)
            | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
            | TietzeAddRelation()
            // | SubwordsOf().min_length(1).proper(true)
@@ -460,7 +463,7 @@ namespace libsemigroups {
            | FindIf([tc](auto const& p) mutable {
                tc.init(congruence_kind::twosided, p);
                tc.run_for(std::chrono::milliseconds(20));
-               return tc.finished() && tc.number_of_classes() == 1512;
+               return tc.finished() && tc.number_of_classes() > 1512;
              }))
               .result();
     REQUIRE(result.has_value());
