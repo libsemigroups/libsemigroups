@@ -451,7 +451,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 1512);
 
-    REQUIRE(nf.min(14).max(22).count() == 0);
+    REQUIRE(nf.min(14).max(22).count() == 130'401'452);
 
     auto result
         = (nf.min(14).max(22)
@@ -462,9 +462,10 @@ namespace libsemigroups {
            //       | AllAlphabetOrders()
            | FindIf([tc](auto const& p) mutable {
                tc.init(congruence_kind::twosided, p);
-               tc.run_for(std::chrono::milliseconds(20));
-               return tc.finished() && tc.number_of_classes() > 1512;
+               tc.run_for(std::chrono::milliseconds(10));
+               return tc.finished() && tc.number_of_classes() > 1'512;
              }))
+              .number_of_threads(12)
               .result();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "abB");
@@ -479,9 +480,23 @@ namespace libsemigroups {
                                          "",
                                          "abaabbbaB",
                                          "",
-                                         "abababababab",
+                                         "aaBaaBabaBBababab",
                                          ""}));
-    // tc.init(congruence_kind::twosided, result.value());
-    // REQUIRE(tc.number_of_classes() == 0);
+    tc.init(congruence_kind::twosided, result.value());
+    REQUIRE(tc.number_of_classes() == 4'536);
+
+    result = (nf.min(14).max(22)
+              | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
+              | TietzeAddRelation()
+              // | SubwordsOf().min_length(1).proper(true)
+              //  | TietzeAddGenerators()
+              //       | AllAlphabetOrders()
+              | FindIf([tc](auto const& p) mutable {
+                  tc.init(congruence_kind::twosided, p);
+                  tc.run_for(std::chrono::milliseconds(10));
+                  return tc.finished() && tc.number_of_classes() > 4'536;
+                }))
+                 .number_of_threads(12)
+                 .result();
   }
 }  // namespace libsemigroups
