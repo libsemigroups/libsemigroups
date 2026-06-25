@@ -623,7 +623,7 @@ namespace libsemigroups {
           _finished(false),
           _func(std::move(func)),
           _input_range(input_range),
-          _input_range_count(_input_range.count()),
+          _input_range_count(_input_range.size_hint()),
           _mtx(),
           _number_of_threads(other.number_of_threads()),
           _race() {
@@ -638,8 +638,7 @@ namespace libsemigroups {
           _finished(false),
           _func(func),
           _input_range(input_range),
-          // TODO this might be a terrible idea
-          _input_range_count(_input_range.count()),
+          _input_range_count(_input_range.size_hint()),
           _mtx(),
           _number_of_threads(other.number_of_threads()),
           _race() {
@@ -690,7 +689,7 @@ namespace libsemigroups {
         auto   mean_run_time = elapsed / count;
         auto   estimate      = _input_range_count * mean_run_time;
         fmt::print("#0: FindIf: {:>{}} / {} ({:>4.1f}%) @ ~{} "
-                   "per run | {:>7} / {:>7}\n",
+                   "per run | {:>7} / {:<}\n",
                    group_digits(count),
                    num_runs.size(),
                    num_runs,

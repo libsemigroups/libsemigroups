@@ -26,6 +26,7 @@
 #include <memory>       // for unique_ptr
 #include <thread>       // for std::thread
 #include <type_traits>  // for enable_if, forward, hash, is_function, is_same
+#include <utility>      // for declval
 #include <vector>       // for vector
 
 namespace libsemigroups {
@@ -84,6 +85,13 @@ namespace libsemigroups {
               typename B,
               typename = decltype(std::declval<A>() <= std::declval<B>())>
     struct HasLessEqual : std::true_type {};
+
+    template <typename T, typename = void>
+    struct HasCount : std::false_type {};
+
+    template <typename T>
+    struct HasCount<T, decltype(std::declval<T>().count(), void())>
+        : std::true_type {};
 
     template <typename T, typename = void>
     struct IsIterator : std::false_type {};
