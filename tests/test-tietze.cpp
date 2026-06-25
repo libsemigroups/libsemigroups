@@ -33,6 +33,7 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
 
   LIBSEMIGROUPS_TEST_CASE("SubwordsOf", "000", "strings", "[quick]") {
     auto rg = ReportGuard(false);
@@ -294,6 +295,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FindIf", "004", "first test", "[quick]") {
     using rx::operator|;
 
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
@@ -302,8 +304,6 @@ namespace libsemigroups {
 
     REQUIRE(!(Subwords(p).min_length(1) | TietzeAddGenerators()
               | FindIf([kb](auto const& p) mutable {
-                  static size_t count = 0;
-                  fmt::print("{}\n", count++);
                   kb.init(congruence_kind::twosided, p);
                   kb.run_for(std::chrono::milliseconds(5));
                   return kb.finished();
@@ -312,7 +312,7 @@ namespace libsemigroups {
                  .has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "abbab=baabb", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "abbab=baabb", "[extreme]") {
     using rx::operator|;
 
     Presentation<std::string> p;
@@ -387,6 +387,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FindIf", "007", "a=cc, c=bab", "[quick]") {
     using rx::operator|;
 
+    auto rg = ReportGuard(false);
+
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("bca");
@@ -399,25 +401,18 @@ namespace libsemigroups {
     //         == std::vector<std::string>(
     //             {"abc", "acb", "bac", "bca", "cab", "cba"}));
 
-    // TODO use RPO!!
-    KnuthBendix kb(congruence_kind::twosided, p);
-    kb.run_for(std::chrono::milliseconds(5));
-    // REQUIRE(kb.finished());
-    REQUIRE(kb.rewriting_system().confluent());
+    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
     auto result
         = (p | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
              kb.init(congruence_kind::twosided, p);
-             fmt::print("{}\n", kb.presentation().alphabet());
              kb.run_for(std::chrono::milliseconds(5));
-             fmt::print("{}\n", kb.confluent());
              return kb.rewriting_system().confluent();
            })).result();
     REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "dbca");
-    REQUIRE(
-        result.value().rules
-        == std::vector<std::string>({"cb", "db", "c", "abba", "d", "baab"}));
+    REQUIRE(result.value().alphabet() == "bca");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"a", "cc", "c", "bab"}));
 
     kb.init(congruence_kind::twosided, result.value());
     kb.run();
@@ -425,17 +420,37 @@ namespace libsemigroups {
 
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | rx::to_vector())
-            == std::vector<rule_type>({{"abba", "c"},
-                                       {"cb", "db"},
-                                       {"baab", "d"},
-                                       {"abbc", "dbba"},
-                                       {"abd", "cab"},
-                                       {"baad", "daab"},
-                                       {"bac", "dba"},
-                                       {"cd", "dd"},
-                                       {"abbdb", "dbbab"},
-                                       {"abbdd", "dbbad"},
-                                       {"badb", "dbab"},
-                                       {"badd", "dbad"}}));
+            == std::vector<rule_type>(
+                {{"a", "cc"}, {"bccb", "c"}, {"bccc", "cccb"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "008", "aaa=1, aBBBABAb=1", "[quick]") {
+    using rx::                  operator|;
+    auto                        rg = ReportGuard(false);
+    using std::string_literals::operator""s;
+
+    Presentation<std::string> p;
+    p.alphabet("abB");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "ba", "ababbb");
+
+    // TODO try RPO
+    KnuthBendix kb(congruence_kind::twosided, p);
+    auto        result
+        = (StringRange().alphabet("ab").min(2).max(8)
+           | rx::transform([&p](auto& w) { return std::pair(p, w); })
+           | TietzeAddGenerators() | SubwordsOf().min_length(1).proper(true)
+           | TietzeAddGenerators()
+           //       | AllAlphabetOrders()
+           | FindIf([kb](auto const& p) mutable {
+               kb.init(congruence_kind::twosided, p);
+               kb.run_for(std::chrono::milliseconds(10));
+               return kb.rewriting_system().confluent();
+             }))
+              .result();
+    REQUIRE(!result.has_value());
   }
 }  // namespace libsemigroups
