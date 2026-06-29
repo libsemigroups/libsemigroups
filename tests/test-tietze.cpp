@@ -76,7 +76,8 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
+  using RPOTrie      = detail::RewritingSystemTrie<RevRPOCmp>;
+  using WtLenLexTrie = detail::RewritingSystemTrie<WtLenLexCmp>;
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "000", "strings", "[quick]") {
     using rx::operator|;
@@ -1017,4 +1018,43 @@ namespace libsemigroups {
     REQUIRE(result.has_value());
   }
 
+  LIBSEMIGROUPS_TEST_CASE("AllRuleOrders", "018", "strings", "[quick]") {
+    using rx::operator|;
+    auto      rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abcdef");
+    p.rules        = std::vector<std::string>{"a", "b", "c", "d", "e", "f"};
+    std::vector ps = {p};
+    p.alphabet("pqrs");
+    p.rules = std::vector<std::string>{"p", "q", "r", "s"};
+    ps.push_back(p);
+
+    auto range = rx::iterator_range(ps.begin(), ps.end());
+
+    REQUIRE((range | AllRuleOrders()
+             | rx::transform([](auto& p) -> auto& { return p.rules; })
+             | rx::to_vector())
+            == std::vector<std::vector<std::string>>(
+                {{"a", "b", "c", "d", "e", "f"},
+                 {"b", "a", "c", "d", "e", "f"},
+                 {"a", "b", "d", "c", "e", "f"},
+                 {"b", "a", "d", "c", "e", "f"},
+                 {"a", "b", "c", "d", "f", "e"},
+                 {"b", "a", "c", "d", "f", "e"},
+                 {"a", "b", "d", "c", "f", "e"},
+                 {"b", "a", "d", "c", "f", "e"},
+                 {"p", "q", "r", "s"},
+                 {"q", "p", "r", "s"},
+                 {"p", "q", "s", "r"},
+                 {"q", "p", "s", "r"}}));
+
+    REQUIRE((p | AllRuleOrders()
+             | rx::transform([](auto& p) -> auto& { return p.rules; })
+             | rx::to_vector())
+            == std::vector<std::vector<std::string>>({{"p", "q", "r", "s"},
+                                                      {"q", "p", "r", "s"},
+                                                      {"p", "q", "s", "r"},
+                                                      {"q", "p", "s", "r"}}));
+  }
 }  // namespace libsemigroups
