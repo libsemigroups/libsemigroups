@@ -484,7 +484,7 @@ namespace libsemigroups {
                                          ""}));
     tc.init(congruence_kind::twosided, result.value());
     REQUIRE(tc.number_of_classes() == 4'536);
-
+    // Takes about 10 hours
     result = (nf.min(14).max(22)
               | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
               | TietzeAddRelation()
@@ -498,5 +498,6 @@ namespace libsemigroups {
                 }))
                  .number_of_threads(12)
                  .result();
+    REQUIRE(!result.has_value());
   }
 }  // namespace libsemigroups
