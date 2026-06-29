@@ -1077,5 +1077,87 @@ namespace libsemigroups {
     }
   };
 
+  template <typename InputRange>
+  class AllRuleOrdersRange {
+    using Word =
+        typename std::decay_t<typename InputRange::output_type>::word_type;
+
+    InputRange         _input;
+    uint32_t           _max_perm;
+    uint32_t           _perm;
+    Presentation<Word> _presentation;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Aliases
+    ////////////////////////////////////////////////////////////////////////
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+    using output_type                   = Presentation<Word> const&;
+
+    AllRuleOrdersRange(InputRange&& input)
+        : _input(std::move(input)), _max_perm(), _perm(0), _presentation() {
+      if (!_input.at_end()) {
+        _presentation = _input.get();
+        LIBSEMIGROUPS_ASSERT(_presentation.rules.size() <= 62);
+        _max_perm = 1 << (_presentation.rules.size() / 2);
+      }
+    }
+
+    AllRuleOrdersRange(InputRange const& input)
+        : AllRuleOrdersRange(InputRange(input)) {}
+
+    [[nodiscard]] output_type get() const {
+      return _presentation;
+    }
+
+    void next() {
+      ++_perm;
+      if (_perm < _max_perm) {
+        // A permutation that undoes the previous permutation, and applies the
+        // current permutation
+        uint32_t incremental_perm = (_perm - 1) ^ _perm;
+
+        for (size_t i = 0; i < _presentation.rules.size() / 2; ++i) {
+          // Swap the ith lhs and rhs if the ith bit of the incremental
+          // permutation tells us to do so.
+          if (incremental_perm & (1 << i)) {
+            std::swap(_presentation.rules[2 * i],
+                      _presentation.rules[(2 * i) + 1]);
+          }
+        }
+        return;
+      }
+      _input.next();
+      if (!_input.at_end()) {
+        _presentation = _input.get();
+        LIBSEMIGROUPS_ASSERT(_presentation.rules.size() <= 62);
+        _max_perm = 1 << (_presentation.rules.size() / 2);
+        _perm     = 0;
+      }
+    }
+
+    [[nodiscard]] bool at_end() const {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      return 0;
+    }
+  };
+
+  struct AllRuleOrders {
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return AllRuleOrdersRange(std::forward<InputRange>(input));
+    }
+
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      return operator()(Singleton(input));
+    }
+  };
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TIETZE_HPP_
