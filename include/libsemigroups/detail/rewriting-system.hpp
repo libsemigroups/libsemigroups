@@ -395,6 +395,8 @@ namespace libsemigroups {
         return *this;
       }
 
+      [[nodiscard]] std::pair<size_t, size_t> confluence_percentage();
+
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
       bool reduce();
@@ -433,9 +435,18 @@ namespace libsemigroups {
       // Confluence
       ////////////////////////////////////////////////////////////////////////
 
+      [[nodiscard]] bool overlap_confluent(Rule const*  rule1,
+                                           Rule const*  rule2,
+                                           size_t const overlap_length) const;
+
       [[nodiscard]] bool descendants_confluent(Rule const* rule1,
                                                index_type  current_node,
                                                size_t backtrack_depth) const;
+
+      [[nodiscard]] std::pair<size_t, size_t>
+      number_descendants_confluent(Rule const* rule1,
+                                   index_type  current_node,
+                                   size_t      overlap_length) const;
 
       [[nodiscard]] bool confluent_impl(std::atomic_uint64_t&) override;
 
