@@ -626,6 +626,107 @@ namespace libsemigroups::detail {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename ReductionOrder>
+  bool RewritingSystemTrie<ReductionOrder>::overlap_confluent(
+      Rule const*  rule1,
+      Rule const*  rule2,
+      size_t const overlap_length) const {
+    // Word looks like ABC where the LHS of rule1 corresponds to AB, the LHS of
+    // rule2 corresponds to BC, and |C|= nodes.size() - 1.
+    // AB -> X,
+    // BC -> Y,
+    // ABC gets rewritten to XC and AY
+    // TODO(1) remove allocation, use a MultiView, and check equality,
+    // then copy inside the if-condition
+    native_word_type word1;
+    native_word_type word2;
+
+    word1.assign(rule1->rhs());  // X
+    word1.append(rule2->lhs().cbegin() + overlap_length,
+                 rule2->lhs().cend());  // C
+
+    word2.assign(rule1->lhs().cbegin(),
+                 rule1->lhs().cend() - overlap_length);  // A
+    word2.append(rule2->rhs());                          // Y
+
+    if (word1 == word2) {
+      return true;
+    }
+
+    rewrite_no_reduce(word1);
+    rewrite_no_reduce(word2);
+    if (word1 == word2) {
+      return true;
+    }
+
+    set_cached_confluent(tril::FALSE);
+    return false;
+  }
+
+  template <typename ReductionOrder>
+  bool RewritingSystemTrie<ReductionOrder>::descendants_confluent(
+      Rule const* rule1,
+      index_type  current_node,
+      size_t      overlap_length) const {
+    std::stack<index_type, std::vector<index_type>> stack;
+    stack.push(current_node);
+
+    while (!stack.empty()) {
+      current_node = stack.top();
+      stack.pop();
+      LIBSEMIGROUPS_ASSERT(rule1->state() == Rule::State::active);
+      if (_rule_trie.node_no_checks(current_node).terminal()) {
+        Rule const* rule2 = _rule_trie.node_no_checks(current_node).value();
+        if (!overlap_confluent(rule1, rule2, overlap_length)) {
+          return false;
+        }
+      }
+
+      // Read each possible letter and traverse down the trie
+      for (letter_type x = 0; x != _rule_trie.alphabet_size(); ++x) {
+        auto child = _rule_trie.child_no_checks(current_node, x);
+        if (child != UNDEFINED) {
+          stack.push(child);
+        }
+      }
+    }
+    return true;
+  }
+
+  // TODO(1): Remove duplication with descendants_confluent
+  template <typename ReductionOrder>
+  std::pair<size_t, size_t>
+  RewritingSystemTrie<ReductionOrder>::number_descendants_confluent(
+      Rule const* rule1,
+      index_type  current_node,
+      size_t      overlap_length) const {
+    std::pair<size_t, size_t>                       confluence_fraction;
+    std::stack<index_type, std::vector<index_type>> stack;
+    stack.push(current_node);
+
+    while (!stack.empty()) {
+      current_node = stack.top();
+      stack.pop();
+      LIBSEMIGROUPS_ASSERT(rule1->state() == Rule::State::active);
+      if (_rule_trie.node_no_checks(current_node).terminal()) {
+        Rule const* rule2 = _rule_trie.node_no_checks(current_node).value();
+        ++confluence_fraction.second;
+        if (overlap_confluent(rule1, rule2, overlap_length)) {
+          ++confluence_fraction.first;
+        }
+      }
+
+      // Read each possible letter and traverse down the trie
+      for (letter_type x = 0; x != _rule_trie.alphabet_size(); ++x) {
+        auto child = _rule_trie.child_no_checks(current_node, x);
+        if (child != UNDEFINED) {
+          stack.push(child);
+        }
+      }
+    }
+    return confluence_fraction;
+  }
+
+  template <typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::confluent_impl(
       std::atomic_uint64_t& seen) {
     using std::chrono::time_point;
@@ -661,56 +762,32 @@ namespace libsemigroups::detail {
   }
 
   template <typename ReductionOrder>
-  bool RewritingSystemTrie<ReductionOrder>::descendants_confluent(
-      Rule const* rule1,
-      index_type  current_node,
-      size_t      overlap_length) const {
-    std::stack<index_type, std::vector<index_type>> stack;
-    stack.push(current_node);
+  std::pair<size_t, size_t>
+  RewritingSystemTrie<ReductionOrder>::confluence_percentage() {
+    std::pair<size_t, size_t> confluence_fraction;
+    reduce();
+    index_type link;
 
-    while (!stack.empty()) {
-      current_node = stack.top();
-      stack.pop();
-      LIBSEMIGROUPS_ASSERT(rule1->state() == Rule::State::active);
-      if (_rule_trie.node_no_checks(current_node).terminal()) {
-        Rule const* rule2 = _rule_trie.node_no_checks(current_node).value();
-        // Process overlap
-        // Word looks like ABC where the LHS of rule1 corresponds to AB,
-        // the LHS of rule2 corresponds to BC, and |C|=nodes.size() - 1.
-        // AB -> X, BC -> Y
-        // ABC gets rewritten to XC and AY
-        // TODO(1) remove allocation, use a MultiView, and check equality,
-        // then copy inside the if-condition
-        native_word_type word1;
-        native_word_type word2;
+    // For each rule, count how many descendents of any suffix breaks confluence
+    for (auto node_it = _rule_trie.cbegin_terminal_nodes();
+         node_it != _rule_trie.cend_terminal_nodes();
+         ++node_it) {
+      link = _rule_trie.node_no_checks(*node_it).suffix_link();
+      LIBSEMIGROUPS_ASSERT(*node_it != _rule_trie.root);
+      while (link != _rule_trie.root) {
+        std::pair<size_t, size_t> const descendants_confluence_fraction
+            = number_descendants_confluent(
+                _rule_trie.node_no_checks(*node_it).value(),
+                link,
+                _rule_trie.node_no_checks(link).height());
+        confluence_fraction.first += descendants_confluence_fraction.first;
+        confluence_fraction.second += descendants_confluence_fraction.second;
 
-        word1.assign(rule1->rhs());  // X
-        word1.append(rule2->lhs().cbegin() + overlap_length,
-                     rule2->lhs().cend());  // C
-
-        word2.assign(rule1->lhs().cbegin(),
-                     rule1->lhs().cend() - overlap_length);  // A
-        word2.append(rule2->rhs());                          // Y
-
-        if (word1 != word2) {
-          rewrite_no_reduce(word1);
-          rewrite_no_reduce(word2);
-          if (word1 != word2) {
-            set_cached_confluent(tril::FALSE);
-            return false;
-          }
-        }
-      }
-
-      // Read each possible letter and traverse down the trie
-      for (letter_type x = 0; x != _rule_trie.alphabet_size(); ++x) {
-        auto child = _rule_trie.child_no_checks(current_node, x);
-        if (child != UNDEFINED) {
-          stack.push(child);
-        }
+        link = _rule_trie.node_no_checks(link).suffix_link();
       }
     }
-    return true;
+
+    return confluence_fraction;
   }
 
   ////////////////////////////////////////////////////////////////////////

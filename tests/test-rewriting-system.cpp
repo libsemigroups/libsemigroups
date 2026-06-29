@@ -479,5 +479,29 @@ namespace libsemigroups {
       REQUIRE(rewriting_system::is_terminating(rws) == tril::TRUE);
       REQUIRE(rws.is_reduced() == tril::TRUE);
     }
+
+    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
+                            "016",
+                            "confluence_percentage",
+                            "[quick]") {
+      auto                           rg = ReportGuard(false);
+      RewritingSystemTrie<LenLexCmp> rws;
+      REQUIRE(rws.confluence_percentage() == std::pair<size_t, size_t>{0, 0});
+
+      rws.increase_alphabet_size_by(2);
+      rewriting_system::add_rule(rws, "ab"_w, "b"_w);
+      REQUIRE(rws.confluence_percentage() == std::pair<size_t, size_t>{0, 0});
+
+      rws.increase_alphabet_size_by(1);
+      rewriting_system::add_rule(rws, "ca"_w, "c"_w);
+      REQUIRE(rws.confluence_percentage() == std::pair<size_t, size_t>{1, 1});
+      REQUIRE(rws.confluent());
+
+      rewriting_system::add_rule(rws, "ba"_w, "a"_w);
+      REQUIRE(!rws.confluent_known());
+      REQUIRE(rws.confluence_percentage() == std::pair<size_t, size_t>{1, 3});
+      REQUIRE(rws.confluent_known());
+      REQUIRE(!rws.confluent());
+    }
   }  // namespace detail
 }  // namespace libsemigroups
