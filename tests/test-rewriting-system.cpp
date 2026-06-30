@@ -480,12 +480,14 @@ namespace libsemigroups {
       REQUIRE(rws.is_reduced() == tril::TRUE);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("RewritingSystem",
-                            "016",
-                            "confluence_ratio",
-                            "[quick]") {
-      auto                           rg = ReportGuard(false);
-      RewritingSystemTrie<LenLexCmp> rws;
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "016",
+                                     "confluence_ratio",
+                                     "[quick]",
+                                     RewritingSystemSet<LenLexCmp>,
+                                     RewritingSystemTrie<LenLexCmp>) {
+      auto     rg = ReportGuard(false);
+      TestType rws;
       REQUIRE(rws.confluence_ratio() == std::pair<size_t, size_t>{0, 0});
 
       rws.increase_alphabet_size_by(2);

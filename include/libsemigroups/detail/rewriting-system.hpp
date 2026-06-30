@@ -292,9 +292,7 @@ namespace libsemigroups {
                                    Iterator first2,
                                    Iterator last2);
 
-      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio() override {
-        return {0, 0};
-      }
+      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio() override;
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
