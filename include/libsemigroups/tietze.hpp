@@ -229,13 +229,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
-      // TODO could be more naunced/better
-      size_t const n = std::accumulate(
-          _current.first.rules.begin(),
-          _current.first.rules.end(),
-          size_t(0),
-          [](auto& acc, auto& rule) { return acc + rule.size(); });
-      return _input.size_hint() * n * (n + 1) / 2;
+      return std::numeric_limits<size_t>::max();
     }
 
    private:
@@ -547,8 +541,38 @@ namespace libsemigroups {
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    //
+    // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
+
+    FindIfRange(InputRange const&   input_range,
+                Func&&              func,
+                FindIf<Func> const& other)
+        : _counter(0),
+          _finished(false),
+          _func(std::move(func)),
+          _input_range(input_range),
+          _input_range_count(other.total()),
+          _mtx(),
+          _number_of_threads(other.number_of_threads()),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
+
+    FindIfRange(InputRange const&   input_range,
+                Func const&         func,
+                FindIf<Func> const& other)
+        : _counter(0),
+          _finished(false),
+          _func(std::move(func)),
+          _input_range(input_range),
+          _input_range_count(other.total()),
+          _mtx(),
+          _number_of_threads(other.number_of_threads()),
+          _race() {
+      Runner::report_prefix("FindIf");
+      _race.report_prefix("FindIf");
+    }
 
     FindIfRange(InputRange&&        input_range,
                 Func&&              func,
@@ -556,8 +580,8 @@ namespace libsemigroups {
         : _counter(0),
           _finished(false),
           _func(std::move(func)),
-          _input_range(input_range),
-          _input_range_count(_input_range.size_hint()),
+          _input_range(std::move(input_range)),
+          _input_range_count(other.total()),
           _mtx(),
           _number_of_threads(other.number_of_threads()),
           _race() {
@@ -571,8 +595,8 @@ namespace libsemigroups {
         : _counter(0),
           _finished(false),
           _func(func),
-          _input_range(input_range),
-          _input_range_count(_input_range.size_hint()),
+          _input_range(std::move(input_range)),
+          _input_range_count(other.total()),
           _mtx(),
           _number_of_threads(other.number_of_threads()),
           _race() {
@@ -580,6 +604,7 @@ namespace libsemigroups {
       _race.report_prefix("FindIf");
     }
 
+    // TODO private
     [[nodiscard]] bool try_get_and_advance(input_reference result) {
       std::lock_guard lg(_mtx);
       if (!_input_range.at_end()) {
@@ -590,6 +615,7 @@ namespace libsemigroups {
       return false;
     }
 
+    // TODO rename get, implement next, at_end etc
     [[nodiscard]] std::optional<input_type> result() {
       Runner::run();
       if (_race.winner() == nullptr) {
@@ -612,25 +638,44 @@ namespace libsemigroups {
       return *this;
     }
 
+    [[nodiscard]] size_t total() const noexcept {
+      return _input_range_count;
+    }
+
+    FindIfRange& total(size_t val) {
+      _input_range_count = val;
+      return *this;
+    }
+
    private:
     void report_progress_from_thread() const {
       using ::libsemigroups::detail::group_digits;
       using ::libsemigroups::detail::string_time;
       if (delta(start_time()) >= std::chrono::milliseconds(500)) {
-        size_t count         = _counter.load();
-        auto   num_runs      = group_digits(_input_range_count);
-        auto   elapsed       = delta(start_time());
-        auto   mean_run_time = elapsed / count;
-        auto   estimate      = _input_range_count * mean_run_time;
-        fmt::print("#0: FindIf: {:>{}} / {} ({:>4.1f}%) @ ~{} "
-                   "per run | {:>7} / {:<}\n",
-                   group_digits(count),
-                   num_runs.size(),
-                   num_runs,
-                   static_cast<float>(100 * count) / _input_range_count,
-                   string_time(mean_run_time),
-                   string_time(elapsed),
-                   fmt::format("~{}", string_time(estimate)));
+        if (_input_range_count != std::numeric_limits<size_t>::max()) {
+          size_t count         = _counter.load();
+          auto   num_runs      = group_digits(_input_range_count);
+          auto   elapsed       = delta(start_time());
+          auto   mean_run_time = elapsed / count;
+          auto   estimate      = _input_range_count * mean_run_time;
+          fmt::print("#0: FindIf: {:>{}} / {} ({:>4.1f}%) @ ~{} "
+                     "per run | {:>7} / {:<}\n",
+                     group_digits(count),
+                     num_runs.size(),
+                     num_runs,
+                     static_cast<float>(100 * count) / _input_range_count,
+                     string_time(mean_run_time),
+                     string_time(elapsed),
+                     fmt::format("~{}", string_time(estimate)));
+        } else {
+          size_t count         = _counter.load();
+          auto   elapsed       = delta(start_time());
+          auto   mean_run_time = elapsed / count;
+          fmt::print("#0: FindIf: {} @ ~{} per run | {}\n",
+                     group_digits(count),
+                     string_time(mean_run_time),
+                     string_time(elapsed));
+        }
       }
     }
 
@@ -666,9 +711,12 @@ namespace libsemigroups {
   struct FindIf {
     Func   _func;
     size_t _number_of_threads;
+    size_t _input_range_count;
 
     FindIf(Func&& func)
-        : _func(std::forward<Func>(func)), _number_of_threads(1) {}
+        : _func(std::forward<Func>(func)),
+          _number_of_threads(1),
+          _input_range_count(std::numeric_limits<size_t>::max()) {}
 
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) {
@@ -686,6 +734,15 @@ namespace libsemigroups {
             val);
       }
       _number_of_threads = val;
+      return *this;
+    }
+
+    [[nodiscard]] size_t total() const noexcept {
+      return _input_range_count;
+    }
+
+    FindIf& total(size_t val) {
+      _input_range_count = val;
       return *this;
     }
   };
@@ -747,15 +804,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
-      size_t const n = _alphabet_orig.size();
-      LIBSEMIGROUPS_ASSERT(n <= 20);
-      uint64_t result = 1;
-
-      for (uint16_t i = 2; i <= n; ++i) {
-        result *= i;
-      }
-
-      return result * _input.size_hint();
+      return std::numeric_limits<size_t>::max();
     }
   };
 

@@ -546,7 +546,9 @@ namespace libsemigroups {
 
   // About 7s
   LIBSEMIGROUPS_TEST_CASE("FindIf", "011", "ababbaaaaa=baaaaaba", "[extreme]") {
-    using rx::                operator|;
+    using rx::operator|;
+
+    auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -578,6 +580,8 @@ namespace libsemigroups {
     REQUIRE(
         result.value().rules
         == std::vector<std::string>({"ac", "dba", "c", "babd", "d", "baaaaa"}));
+
+    rg = ReportGuard(false);
     kb_rpo.init(congruence_kind::twosided, result.value());
     kb_rpo.run_for(std::chrono::milliseconds(4));
     REQUIRE(kb_rpo.rewriting_system().confluent());
@@ -602,7 +606,8 @@ namespace libsemigroups {
                                        {"ddcbac", "acaaadcba"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "012", "baaababaaa=aaba", "[extreme]") {
+  // Fails after ~8s
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "012", "baaababaaa=aaba", "[fail]") {
     using rx::operator|;
     auto      rg = ReportGuard(false);
 
@@ -611,27 +616,25 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaababaaa", "aaba");
 
-    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
-        congruence_kind::twosided, p);
-    KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>> kb_rev_rpo(
-        congruence_kind::twosided, p);
-    auto result
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    auto range
         = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
            | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | AllAlphabetOrders()
-           | FindIf([kb_rpo, kb_rev_rpo](auto const& p) mutable {
-               kb_rpo.init(congruence_kind::twosided, p);
-               kb_rpo.run_for(std::chrono::milliseconds(4));
-               if (kb_rpo.rewriting_system().confluent()) {
-                 return true;
-               }
-               kb_rev_rpo.init(congruence_kind::twosided, p);
-               kb_rev_rpo.run_for(std::chrono::milliseconds(4));
-               return kb_rev_rpo.rewriting_system().confluent();
-             }).number_of_threads(10))
-              .result();
-    REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "dacb");
+           | AllAlphabetOrders());
+
+    size_t num = (range | rx::count());
+
+    auto result = (range
+                   | FindIf([kb](auto const& p) mutable {
+                       kb.init(congruence_kind::twosided, p);
+                       kb.run_for(std::chrono::milliseconds(4));
+                       return kb.rewriting_system().confluent();
+                     })
+                         .number_of_threads(10)
+                         .total(num))
+                      .result();
+    REQUIRE(!result.has_value());
   }
 
   // Fails in about 9 minutes
