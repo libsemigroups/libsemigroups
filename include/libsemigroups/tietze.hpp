@@ -41,13 +41,24 @@
 #include "detail/fmt.hpp"   // for print
 #include "detail/race.hpp"  // for Race
 
+// TODO:
+// * all calls to next, get must first check !at_end()
+// * add static_assertions
+
 namespace libsemigroups {
 
-  template <typename Word>
-  class Subwords {
+  class Subwords;  // forward decl
+
+  template <typename InputRange>
+  class SubwordsRange {
    private:
+    using Word =
+        typename std::decay_t<typename InputRange::output_type>::word_type;
+
     std::pair<Presentation<Word>, Word>  _current;
     size_t                               _current_rule;
+    InputRange                           _input;
+    InputRange                           _input_orig;  // TODO comment
     size_t                               _max_length;
     size_t                               _min_length;
     size_t                               _prefix_end;
@@ -57,75 +68,74 @@ namespace libsemigroups {
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // Aliases
+    // Aliases + static data
     ////////////////////////////////////////////////////////////////////////
-    static constexpr bool is_finite     = true;
-    static constexpr bool is_idempotent = true;
 
     using output_type = std::pair<Presentation<Word>, Word> const&;
+
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    Subwords()
+    template <typename Settings>  // TODO rm template param when out of lining
+    explicit SubwordsRange(InputRange&& input, Settings const& subwords)
         : _current(),
           _current_rule(),
-          _max_length(POSITIVE_INFINITY),
-          _min_length(0),
+          _input(std::move(input)),
+          _input_orig(_input),
+          _max_length(subwords.max_length()),
+          _min_length(subwords.min_length()),
           _prefix_end(),
-          _proper(false),
+          _proper(subwords.proper()),
           _seen(),
-          _suffix_begin() {}
-
-    Subwords& init() {
-      _current.first.init();
-      _current.second.clear();
-      _max_length = POSITIVE_INFINITY;
-      _min_length = 0;
-      _proper     = false;
-      _seen.clear();
-      return *this;
-    }
-
-    Subwords(Subwords const&)            = default;
-    Subwords(Subwords&&)                 = default;
-    Subwords& operator=(Subwords const&) = default;
-    Subwords& operator=(Subwords&&)      = default;
-
-    ~Subwords() = default;
-
-    explicit Subwords(Presentation<Word> const& p) : Subwords() {
-      _current.first = p;
+          _suffix_begin() {
       reset();
     }
 
-    explicit Subwords(Presentation<Word>&& p) : Subwords() {
-      _current.first = std::move(p);
+    template <typename Settings>  // TODO rm template param when out of lining
+    explicit SubwordsRange(InputRange const& input, Settings const& subwords)
+        : _current(),
+          _current_rule(),
+          _input(input),
+          _input_orig(_input),
+          _max_length(subwords.max_length()),
+          _min_length(subwords.min_length()),
+          _prefix_end(),
+          _proper(subwords.proper()),
+          _seen(),
+          _suffix_begin() {
       reset();
     }
 
-    Subwords& init(Presentation<Word> const& p) {
-      init();
-      _current.first = p;
-      return reset();
-    }
+    // TODO use or rm
+    // SubwordsRange& init() {
+    //   _current.first.init();
+    //   _current.second.clear();
+    //   _max_length = POSITIVE_INFINITY;
+    //   _min_length = 0;
+    //   _proper     = false;
+    //   _seen.clear();
+    //   return *this;
+    // }
 
-    Subwords& init(Presentation<Word>&& p) {
-      init();
-      _current.first = std::move(p);
-      return reset();
-    }
+    SubwordsRange(SubwordsRange const&)            = default;
+    SubwordsRange(SubwordsRange&&)                 = default;
+    SubwordsRange& operator=(SubwordsRange const&) = default;
+    SubwordsRange& operator=(SubwordsRange&&)      = default;
 
-    Subwords& presentation(Presentation<Word> const& p) {
-      _current.first = p;
-      return reset();
-    }
+    ~SubwordsRange() = default;
 
-    Subwords& reset() {
-      _current_rule = 0;
-      _seen.clear();
-      init_prefix_suffix();
-      next();
+    // TODO private
+    SubwordsRange& reset() {
+      if (!_input.at_end()) {
+        _current.first = _input.get();
+        _current_rule  = 0;
+        _seen.clear();
+        init_prefix_suffix();
+        next();
+      }
       return *this;
     }
 
@@ -137,8 +147,9 @@ namespace libsemigroups {
       return _max_length;
     }
 
-    Subwords& max_length(size_t val) {
+    SubwordsRange& max_length(size_t val) {
       _max_length = val;
+      _input      = _input_orig;
       reset();
       return *this;
     }
@@ -147,23 +158,18 @@ namespace libsemigroups {
       return _min_length;
     }
 
-    Subwords& min_length(size_t val) {
+    SubwordsRange& min_length(size_t val) {
       _min_length = val;
+      _input      = _input_orig;
       reset();
       return *this;
     }
-
-    // Subwords&& min_length(size_t val) && {
-    //   _min_length = val;
-    //   reset();
-    //   return std::move(*this);
-    // }
 
     [[nodiscard]] size_t proper() const noexcept {
       return _proper;
     }
 
-    Subwords& proper(bool val) {
+    SubwordsRange& proper(bool val) {
       _proper = val;
       // TODO reset()?
       return *this;
@@ -210,45 +216,25 @@ namespace libsemigroups {
         ++_current_rule;
         init_prefix_suffix();
       }
+      if (!_input.at_end()) {
+        _input.next();
+        reset();
+      }
     }
 
     [[nodiscard]] bool at_end() const noexcept {
-      return _current_rule == _current.first.rules.size();
+      return _input.at_end();
     }
 
     [[nodiscard]] size_t size_hint() const {
-      // TODO could be more naunced
+      // TODO could be more naunced/better
       size_t const n = std::accumulate(
           _current.first.rules.begin(),
           _current.first.rules.end(),
           size_t(0),
           [](auto& acc, auto& rule) { return acc + rule.size(); });
-      return n * (n + 1) / 2;
+      return _input.size_hint() * n * (n + 1) / 2;
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Piping
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename InputRange>
-    struct Range;
-
-    template <typename InputRange,
-              typename Settings,
-              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
-    [[nodiscard]] constexpr auto operator()(InputRange&&    input,
-                                            Settings const& settings) {
-      // TODO static_assert the output_type of InputRange is a specialization of
-      // Presentation
-      using Inner = rx::get_range_type_t<InputRange>;
-      _min_length = settings.min_length();
-      _max_length = settings.max_length();
-      return Range<Inner>(std::forward<InputRange>(input), *this);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Multi-threading range
-    ////////////////////////////////////////////////////////////////////////
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -278,98 +264,130 @@ namespace libsemigroups {
       _prefix_end = _suffix_begin;
       advance_prefix();
     }
-  };  // class Subwords
+  };  // class SubwordsRange
 
-  template <typename Word>
-  template <typename InputRange>
-  // TODO struct -> class
-  struct Subwords<Word>::Range {
-    using output_type = typename Subwords<Word>::output_type;
+  // TODO
+  // template <typename InputRange,
+  //           typename Settings,
+  //           typename =
+  //           std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+  // [[nodiscard]] constexpr auto operator()(InputRange&&    input,
+  //                                         Settings const& settings) {
+  //   // TODO static_assert the output_type of InputRange is a specialization
+  //   of
+  //   // Presentation
+  //   using Inner = rx::get_range_type_t<InputRange>;
+  //   _min_length = settings.min_length();
+  //   _max_length = settings.max_length();
+  //   return Range<Inner>(std::forward<InputRange>(input), *this);
+  // }
 
-    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+  // TODO move TODOs
+  // TODO rm
+  // template <typename Word>
+  // template <typename InputRange>
+  // // TODO struct -> class
+  // struct Subwords<Word>::Range {
+  //   using output_type = typename Subwords<Word>::output_type;
 
-    InputRange     _input;
-    Subwords<Word> _subwords;
+  //   static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+  //   static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
-    // TODO static_assert that InputRange::output_type is Presentation<Word>
-    Range(InputRange const& input, Subwords const& subwords)
-        // Init _subwords with subwords to copy the settings
-        : _input(input), _subwords(subwords) {
-      if (!_input.at_end()) {
-        // Reset the presentation, not init, so that we retain the settings
-        _subwords.presentation(_input.get());
-      }
-    }
+  //   InputRange     _input;
+  //   Subwords<Word> _subwords;
 
-    // TODO static_assert that InputRange::output_type is Presentation<Word>
-    Range(InputRange&& input, Subwords const& subwords)
-        : _input(std::move(input)), _subwords(subwords) {
-      if (!_input.at_end()) {
-        // Reset the presentation, not init, so that we retain the settings
-        _subwords.presentation(_input.get());
-      }
-    }
+  //   // TODO static_assert that InputRange::output_type is
+  //   Presentation<Word> Range(InputRange const& input, Subwords const&
+  //   subwords)
+  //       // Init _subwords with subwords to copy the settings
+  //       : _input(input), _subwords(subwords) {
+  //     if (!_input.at_end()) {
+  //       // Reset the presentation, not init, so that we retain the settings
+  //       _subwords.presentation(_input.get());
+  //     }
+  //   }
 
-    [[nodiscard]] output_type get() const {
-      return _subwords.get();
-    }
+  //   // TODO static_assert that InputRange::output_type is
+  //   Presentation<Word> Range(InputRange&& input, Subwords const& subwords)
+  //       : _input(std::move(input)), _subwords(subwords) {
+  //     if (!_input.at_end()) {
+  //       // Reset the presentation, not init, so that we retain the settings
+  //       _subwords.presentation(_input.get());
+  //     }
+  //   }
 
-    void next() noexcept {
-      if (!at_end()) {
-        _subwords.next();
-        if (_subwords.at_end()) {
-          _input.next();
-          if (!_input.at_end()) {
-            // Reset the presentation, not init, so that we retain the settings
-            _subwords.presentation(_input.get());
-          }
-        }
-      }
-    }
+  //   [[nodiscard]] output_type get() const {
+  //     return _subwords.get();
+  //   }
 
-    [[nodiscard]] constexpr bool at_end() const noexcept {
-      return _input.at_end();
-    }
+  //   void next() noexcept {
+  //     if (!at_end()) {
+  //       _subwords.next();
+  //       if (_subwords.at_end()) {
+  //         _input.next();
+  //         if (!_input.at_end()) {
+  //           // Reset the presentation, not init, so that we retain the
+  //           settings _subwords.presentation(_input.get());
+  //         }
+  //       }
+  //     }
+  //   }
 
-    [[nodiscard]] constexpr size_t size_hint() const noexcept {
-      return _input.size_hint() * _subwords.size_hint();
-    }
-  };  // struct Subwords::Range
+  //   [[nodiscard]] constexpr bool at_end() const noexcept {
+  //     return _input.at_end();
+  //   }
 
-  // TODO class
-  class SubwordsOf {
+  //   [[nodiscard]] constexpr size_t size_hint() const noexcept {
+  //     return _input.size_hint() * _subwords.size_hint();
+  //   }
+  // };  // struct Subwords::Range
+
+  class Subwords {
    private:
     size_t _min_length;
     size_t _max_length;
     bool   _proper;
 
    public:
-    SubwordsOf()
+    Subwords()
         : _min_length(0), _max_length(POSITIVE_INFINITY), _proper(false) {}
 
-    SubwordsOf(SubwordsOf const&)            = default;
-    SubwordsOf(SubwordsOf&&)                 = default;
-    SubwordsOf& operator=(SubwordsOf const&) = default;
-    SubwordsOf& operator=(SubwordsOf&&)      = default;
+    Subwords(Subwords const&)            = default;
+    Subwords(Subwords&&)                 = default;
+    Subwords& operator=(Subwords const&) = default;
+    Subwords& operator=(Subwords&&)      = default;
 
-    ~SubwordsOf() = default;
+    ~Subwords() = default;
 
-    template <typename InputRange>
+    // TODO Input const& version
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      // TODO static_assert that InputRange::output_type is a specialization of
-      // Presentation
-      using Word = typename std::decay_t<  // Yuck!
-          typename std::decay_t<InputRange>::output_type>::word_type;
-      // We pass *this thru so that the settings are copied too
-      return Subwords<Word>{}(std::forward<InputRange>(input), *this);
+      // TODO static_assert that InputRange::output_type is a specialization
+      // of Presentation We pass *this thru so that the settings are copied
+      // too
+      return SubwordsRange(std::forward<InputRange>(input), *this);
     }
+
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      // This is a bit of hack
+      // FIXME this doesn't actually work because "dummy" gets destructed before
+      // it can be used, and so the copy of "input" contained in "dummy" no
+      // longer exists
+      std::vector<Presentation<Word>> dummy({input});
+      return operator()(rx::iterator_range(dummy.begin(), dummy.end()));
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Settings
+    ////////////////////////////////////////////////////////////////////////
 
     [[nodiscard]] size_t min_length() const noexcept {
       return _min_length;
     }
 
-    SubwordsOf& min_length(size_t val) {
+    Subwords& min_length(size_t val) {
       _min_length = val;
       return *this;
     }
@@ -378,7 +396,7 @@ namespace libsemigroups {
       return _max_length;
     }
 
-    SubwordsOf& max_length(size_t val) {
+    Subwords& max_length(size_t val) {
       _max_length = val;
       return *this;
     }
@@ -387,7 +405,7 @@ namespace libsemigroups {
       return _proper;
     }
 
-    SubwordsOf& proper(bool val) {
+    Subwords& proper(bool val) {
       _proper = val;
       return *this;
     }
