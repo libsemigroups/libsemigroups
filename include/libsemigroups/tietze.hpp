@@ -268,81 +268,6 @@ namespace libsemigroups {
     }
   };  // class SubwordsRange
 
-  // TODO
-  // template <typename InputRange,
-  //           typename Settings,
-  //           typename =
-  //           std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
-  // [[nodiscard]] constexpr auto operator()(InputRange&&    input,
-  //                                         Settings const& settings) {
-  //   // TODO static_assert the output_type of InputRange is a specialization
-  //   of
-  //   // Presentation
-  //   using Inner = rx::get_range_type_t<InputRange>;
-  //   _min_length = settings.min_length();
-  //   _max_length = settings.max_length();
-  //   return Range<Inner>(std::forward<InputRange>(input), *this);
-  // }
-
-  // TODO move TODOs
-  // TODO rm
-  // template <typename Word>
-  // template <typename InputRange>
-  // struct Subwords<Word>::Range {
-  //   using output_type = typename Subwords<Word>::output_type;
-
-  //   static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-  //   static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-
-  //   InputRange     _input;
-  //   Subwords<Word> _subwords;
-
-  //   // TODO static_assert that InputRange::output_type is
-  //   Presentation<Word> Range(InputRange const& input, Subwords const&
-  //   subwords)
-  //       // Init _subwords with subwords to copy the settings
-  //       : _input(input), _subwords(subwords) {
-  //     if (!_input.at_end()) {
-  //       // Reset the presentation, not init, so that we retain the settings
-  //       _subwords.presentation(_input.get());
-  //     }
-  //   }
-
-  //   // TODO static_assert that InputRange::output_type is
-  //   Presentation<Word> Range(InputRange&& input, Subwords const& subwords)
-  //       : _input(std::move(input)), _subwords(subwords) {
-  //     if (!_input.at_end()) {
-  //       // Reset the presentation, not init, so that we retain the settings
-  //       _subwords.presentation(_input.get());
-  //     }
-  //   }
-
-  //   [[nodiscard]] output_type get() const {
-  //     return _subwords.get();
-  //   }
-
-  //   void next() noexcept {
-  //     if (!at_end()) {
-  //       _subwords.next();
-  //       if (_subwords.at_end()) {
-  //         _input.next();
-  //         if (!_input.at_end()) {
-  //           // Reset the presentation, not init, so that we retain the
-  //           settings _subwords.presentation(_input.get());
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   [[nodiscard]] constexpr bool at_end() const noexcept {
-  //     return _input.at_end();
-  //   }
-
-  //   [[nodiscard]] constexpr size_t size_hint() const noexcept {
-  //     return _input.size_hint() * _subwords.size_hint();
-  //   }
-  // };  // struct Subwords::Range
-
   class Subwords {
    private:
     size_t _min_length;
@@ -360,7 +285,6 @@ namespace libsemigroups {
 
     ~Subwords() = default;
 
-    // TODO Input const& version
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
