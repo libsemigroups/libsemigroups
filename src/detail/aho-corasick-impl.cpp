@@ -22,6 +22,7 @@
 #include <algorithm>   // for fill, sort, copy_if
 #include <functional>  // for greater
 #include <numeric>     // for iota
+#include <stack>       // for stack
 #include <string>      // for basic_string
 
 #include "libsemigroups/constants.hpp"  // for Undefined, UNDEFINED, operator==
@@ -188,7 +189,11 @@ namespace libsemigroups {
       // because we must traverse the suffix link sources here, and so we cannot
       // change them at the same time.
       _node_indices_to_update.clear();
+#ifdef LIBSEMIGROUPS_DEBUG
       populate_node_indices_to_update(parent_index, new_node_index, a);
+#else
+      populate_node_indices_to_update(parent_index, a);
+#endif
       for (index_type node_index : _node_indices_to_update) {
         auto& node = _all_nodes[node_index];
         LIBSEMIGROUPS_ASSERT(node_index != new_node_index);
@@ -283,20 +288,31 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(num_erased == 1);
     }
 
+#ifdef LIBSEMIGROUPS_DEBUG
     void
     AhoCorasickImpl::populate_node_indices_to_update(index_type  target_index,
                                                      index_type  new_node_index,
                                                      letter_type a) {
-      auto& target = _all_nodes[target_index];
+#else
+    void
+    AhoCorasickImpl::populate_node_indices_to_update(index_type target_index,
+                                                     letter_type a) {
+#endif
+      std::stack<index_type, std::vector<index_type>> stack;
+      stack.push(target_index);
 
-      for (auto current_source_index : target._suffix_link_sources) {
-        LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
-        index_type child_index = _children.get(current_source_index, a);
-        if (child_index == UNDEFINED) {
-          populate_node_indices_to_update(
-              current_source_index, new_node_index, a);
-        } else {
-          _node_indices_to_update.push_back(child_index);
+      while (!stack.empty()) {
+        target_index = stack.top();
+        stack.pop();
+        auto& target = _all_nodes[target_index];
+        for (auto current_source_index : target._suffix_link_sources) {
+          LIBSEMIGROUPS_ASSERT(current_source_index != new_node_index);
+          index_type child_index = _children.get(current_source_index, a);
+          if (child_index == UNDEFINED) {
+            stack.push(current_source_index);
+          } else {
+            _node_indices_to_update.push_back(child_index);
+          }
         }
       }
     }

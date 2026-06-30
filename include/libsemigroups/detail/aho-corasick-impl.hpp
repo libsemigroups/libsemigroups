@@ -382,9 +382,14 @@ namespace libsemigroups {
       void rm_suffix_link_source(index_type source_index,
                                  index_type target_index);
 
+#ifdef LIBSEMIGROUPS_DEBUG
       void populate_node_indices_to_update(index_type  target_index,
                                            index_type  new_node_index,
                                            letter_type a);
+#else
+      void populate_node_indices_to_update(index_type  target_index,
+                                           letter_type a);
+#endif
     };  // class AhoCorasickImpl
 
     namespace aho_corasick_impl {
