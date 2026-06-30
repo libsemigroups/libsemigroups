@@ -238,8 +238,13 @@ namespace libsemigroups::detail {
         Rule const* rule2 = *it2;
         for (auto it = rule1->lhs().cend() - 1; it >= rule1->lhs().cbegin();
              --it) {
-          // Find longest common prefix of suffix B of rule1.lhs() defined
-          // by it and R = rule2.lhs()
+          if (rule1 == rule2 && it == rule1->lhs().cbegin()) {
+            continue;
+          }
+          // TODO(1): Remove duplication between this and
+          // RewritingSystemTrie::overlap_confluent
+          // Find longest common prefix of suffix B of rule1.lhs() defined by it
+          // and R = rule2.lhs()
           auto prefix = maximum_common_prefix(it,
                                               rule1->lhs().cend(),
                                               rule2->lhs().cbegin(),
@@ -277,6 +282,68 @@ namespace libsemigroups::detail {
       report_checking_confluence(seen, start_time);
     }
     return cached_confluent();
+  }
+
+  // TODO(1): Remove duplication between this function and confluent_impl
+  template <typename ReductionOrder>
+  std::pair<size_t, size_t>
+  RewritingSystemSet<ReductionOrder>::confluence_ratio() {
+    reduce();
+    std::pair<size_t, size_t> confluence_ratio{0, 0};
+    native_word_type          word1;
+    native_word_type          word2;
+
+    for (auto it1 = Rules::active_rules().begin();
+         it1 != Rules::active_rules().end();
+         ++it1) {
+      Rule const* rule1 = *it1;
+      // Seems to be much faster to do this in reverse.
+      for (auto it2 = Rules::active_rules().rbegin();
+           it2 != Rules::active_rules().rend();
+           ++it2) {
+        Rule const* rule2 = *it2;
+        for (auto it = rule1->lhs().cend() - 1; it >= rule1->lhs().cbegin();
+             --it) {
+          if (rule1 == rule2 && it == rule1->lhs().cbegin()) {
+            continue;
+          }
+          // Find longest common prefix of a suffix of rule1->lhs() and
+          // rule2->rhs(). If this prefix is also a suffix of either
+          // rule1->lhs() or rule2->lhs(), then there is an overlap that needs
+          // to be checked.
+          auto prefix = maximum_common_prefix(it,
+                                              rule1->lhs().cend(),
+                                              rule2->lhs().cbegin(),
+                                              rule2->lhs().cend());
+          if (prefix.first == rule1->lhs().cend()
+              || prefix.second == rule2->lhs().cend()) {
+            confluence_ratio.first++;
+            confluence_ratio.second++;
+            // Seems that this function isn't called enough to merit using
+            // MSV's here.
+            word1.assign(rule1->lhs().cbegin(),
+                         it);            // A
+            word1.append(rule2->rhs());  // S
+            word1.append(prefix.first,
+                         rule1->lhs().cend());  // D
+
+            word2.assign(rule1->rhs());  // Q
+            word2.append(prefix.second,
+                         rule2->lhs().cend());  // E
+
+            if (word1 != word2) {
+              rewrite_no_reduce(word1);
+              rewrite_no_reduce(word2);
+              if (word1 != word2) {
+                set_cached_confluent(tril::FALSE);
+                confluence_ratio.first--;
+              }
+            }
+          }
+        }
+      }
+    }
+    return confluence_ratio;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -764,7 +831,7 @@ namespace libsemigroups::detail {
   template <typename ReductionOrder>
   std::pair<size_t, size_t>
   RewritingSystemTrie<ReductionOrder>::confluence_ratio() {
-    std::pair<size_t, size_t> confluence_fraction;
+    std::pair<size_t, size_t> confluence_fraction{0, 0};
     reduce();
     index_type link;
 
