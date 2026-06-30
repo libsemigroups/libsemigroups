@@ -341,9 +341,11 @@ namespace libsemigroups {
       // Private data
       ////////////////////////////////////////////////////////////////////////
 
+      mutable bool                                    _cached_terminating;
       Trie                                            _new_rule_trie;
       std::function<bool(RewritingSystemTrie const&)> _use_new_rule_trie;
       Trie                                            _rule_trie;
+      mutable bool                                    _terminating_known;
       bool                                            _ticker_running;
       mutable std::vector<index_type> _trie_nodes_visited_indices;
 
@@ -395,6 +397,15 @@ namespace libsemigroups {
         return *this;
       }
 
+      // Might never terminate if rws.reduce() doesn't terminate
+      [[nodiscard]] bool is_length_non_increasing() noexcept;
+
+      [[nodiscard]] tril is_length_non_increasing_no_reduce() const noexcept;
+
+      [[nodiscard]] tril is_terminating() noexcept;
+
+      [[nodiscard]] tril is_terminating_no_reduce() const noexcept;
+
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
       bool reduce();
@@ -424,10 +435,17 @@ namespace libsemigroups {
       // Private member functions
       ////////////////////////////////////////////////////////////////////////
 
-      void     add_active_rule(Rule* new_rule);
+      void add_active_rule(Rule* new_rule);
+
+      bool cached_terminating() const noexcept {
+        return _cached_terminating;
+      }
+
       iterator make_active_rule_pending(iterator it);
 
       void rewrite_no_reduce(native_word_type& u) const;
+
+      void set_cached_terminating(tril val) const;
 
       ////////////////////////////////////////////////////////////////////////
       // Confluence
@@ -462,22 +480,6 @@ namespace libsemigroups {
       void add_rule(RewritingSystem& rs, Word const& lhs, Word const& rhs) {
         rs.add_rule(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
       }
-
-      // Might never terminate if rws.reduce() doesn't terminate
-      template <typename RewritingSystem>
-      [[nodiscard]] bool
-      is_length_non_increasing(RewritingSystem& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril
-      is_length_non_increasing_no_reduce(RewritingSystem const& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril is_terminating(RewritingSystem& rws) noexcept;
-
-      template <typename RewritingSystem>
-      [[nodiscard]] tril
-      is_terminating_no_reduce(RewritingSystem const& rws) noexcept;
 
     }  // namespace rewriting_system
 
