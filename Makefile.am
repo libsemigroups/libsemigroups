@@ -4,6 +4,7 @@
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party # for backward-cpp
+AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/alglib-4.08.0/src
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/HPCombi-1.1.2/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/third_party/rx-ranges/include
@@ -1120,6 +1121,7 @@ libsemigroups_la_SOURCES += src/detail/timer.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-report.cpp
 libsemigroups_la_SOURCES += src/detail/todd-coxeter-impl-stats.cpp
+libsemigroups_la_SOURCES += src/detail/weight-finding.cpp
 libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -1127,6 +1129,26 @@ libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
 
 ## See https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
 libsemigroups_la_LDFLAGS = -version-info 3:0:0
+
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/alglibinternal.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/alglibmisc.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/ap.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/dataanalysis.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/diffequations.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/fasttransforms.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/integration.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/interpolation.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_avx2.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_fma.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_neon.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_rvv10.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/kernels_sse2.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/linalg.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/minlp.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/optimization.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/solvers.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/specialfunctions.cpp
+libsemigroups_la_SOURCES += third_party/alglib-4.08.0/src/statistics.cpp
 
 ## Extra files for the distribution
 
@@ -1241,6 +1263,7 @@ EXTRA_PROGRAMS += test_transf
 EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
+EXTRA_PROGRAMS += test_weight_finding
 EXTRA_PROGRAMS += test_word_graph
 EXTRA_PROGRAMS += test_word_graph_view
 EXTRA_PROGRAMS += test_word_range
@@ -1734,6 +1757,11 @@ test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
 test_ukkonen_SOURCES += $(CATCH2_SOURCES)
 test_ukkonen_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
+
+test_weight_finding_SOURCES =  tests/test-weight-finding.cpp
+test_weight_finding_SOURCES += tests/test-main.cpp
+test_weight_finding_SOURCES += $(CATCH2_SOURCES)
+test_weight_finding_LDADD = $(LDADD) $(CATCH2_LIBS) $(CATCH2MAIN_LIBS)
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp

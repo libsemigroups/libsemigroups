@@ -4054,22 +4054,92 @@ End;)xxx");
                           "letters, found \"abAB\"!");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "101",
-                          "to_ace_string word_type",
-                          "[quick][presentation]") {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.alphabet(2);
-    p.contains_empty_word(true);
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "102",
+                                   "find_weights simple",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
 
-    presentation::add_rule(p, "00"_w, ""_w);
-    presentation::add_rule(p, "111"_w, ""_w);
-    presentation::add_rule(p, "0101"_w, ""_w);
-    REQUIRE(presentation::to_ace_string(p) == R"xxx(Group: a, b;
-wo: 4g; # workspace size, adjust as necessary
-Rel: aa, bbb, abab;
-Mess: 100000; # message frequency, adjust as necessary
-End;)xxx");
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {2}, {1});
+    presentation::add_rule(p, {1}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{1, 1, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(p.rules[i + 1], p.rules[i], result.value()));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "103",
+                                   "find_weights simple x2",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, {1}, {2});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{7, 2, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(p.rules[i + 1], p.rules[i], result.value()));
+    }
+  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "104",
+                                   "find_weights simple x3",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0, 1}, {1});
+    presentation::add_rule(p, {1, 2}, {2});
+    presentation::add_rule(p, {2, 0}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == std::vector<size_t>{1, 1, 1});
+    for (size_t i = 0; i < p.rules.size(); i += 2) {
+      REQUIRE(wt_lenlex_cmp(p.rules[i + 1], p.rules[i], result.value()));
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Presentation",
+                                   "105",
+                                   "find_weights no solution",
+                                   "[quick][presentation]",
+                                   word_type,
+                                   std::string,
+                                   StaticVector) {
+    using W = TestType;
+    auto rg = ReportGuard(false);
+
+    Presentation<W> p;
+    p.alphabet({0, 1, 2});
+    presentation::add_rule(p, {0}, {1});
+    presentation::add_rule(p, {1}, {2});
+    presentation::add_rule(p, {2}, {0});
+
+    auto result = presentation::find_weights(p);
+    REQUIRE(!result.has_value());
   }
 }  // namespace libsemigroups
