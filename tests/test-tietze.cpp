@@ -48,10 +48,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     presentation::add_rule(p, "abab", "ba");
 
-    std::vector ps({p});
-
-    auto subwords = (rx::iterator_range(ps) | Subwords());
-    // auto subwords = (p | Subwords());
+    auto subwords = (p | Subwords());
 
     REQUIRE(subwords.size_hint() == 21);
 
@@ -95,603 +92,580 @@ namespace libsemigroups {
          | rx::to_vector())
         == std::vector<std::string>({"", "a", "ab", "aba", "b", "ba", "bab"}));
   }
-  /*
-    LIBSEMIGROUPS_TEST_CASE("SubwordsOf", "001", "word_type", "[quick]") {
-      using literals::operator""_w;
-      auto                    rg = ReportGuard(false);
-      Presentation<word_type> p;
-      p.alphabet(2).contains_empty_word(true);
-      presentation::add_rule(p, 010100101_w, ""_w);
 
-      Subwords subwords(p);
-      subwords.min_length(3);
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "001", "word_type", "[quick]") {
+    using literals::operator""_w;
+    using rx::      operator|;
 
-      REQUIRE((subwords
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::count())
-              == 24);
-      REQUIRE(subwords.size_hint() == 45);
-      subwords.min_length(1);
-      REQUIRE((subwords
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2).contains_empty_word(true);
+    presentation::add_rule(p, 010100101_w, ""_w);
 
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::to_vector())
-              == std::vector<word_type>({{0},
-                                         {0, 1},
-                                         {0, 1, 0},
-                                         {0, 1, 0, 1},
-                                         {0, 1, 0, 1, 0},
-                                         {0, 1, 0, 1, 0, 0},
-                                         {0, 1, 0, 1, 0, 0, 1},
-                                         {0, 1, 0, 1, 0, 0, 1, 0},
-                                         {0, 1, 0, 1, 0, 0, 1, 0, 1},
-                                         {1},
-                                         {1, 0},
-                                         {1, 0, 1},
-                                         {1, 0, 1, 0},
-                                         {1, 0, 1, 0, 0},
-                                         {1, 0, 1, 0, 0, 1},
-                                         {1, 0, 1, 0, 0, 1, 0},
-                                         {1, 0, 1, 0, 0, 1, 0, 1},
-                                         {0, 1, 0, 0},
-                                         {0, 1, 0, 0, 1},
-                                         {0, 1, 0, 0, 1, 0},
-                                         {0, 1, 0, 0, 1, 0, 1},
-                                         {1, 0, 0},
-                                         {1, 0, 0, 1},
-                                         {1, 0, 0, 1, 0},
-                                         {1, 0, 0, 1, 0, 1},
-                                         {0, 0},
-                                         {0, 0, 1},
-                                         {0, 0, 1, 0},
-                                         {0, 0, 1, 0, 1}}));
-      REQUIRE(!subwords.at_end());
-      subwords.min_length(5);
-      REQUIRE((subwords
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::to_vector())
-              == std::vector<word_type>({{0, 1, 0, 1, 0},
-                                         {0, 1, 0, 1, 0, 0},
-                                         {0, 1, 0, 1, 0, 0, 1},
-                                         {0, 1, 0, 1, 0, 0, 1, 0},
-                                         {0, 1, 0, 1, 0, 0, 1, 0, 1},
-                                         {1, 0, 1, 0, 0},
-                                         {1, 0, 1, 0, 0, 1},
-                                         {1, 0, 1, 0, 0, 1, 0},
-                                         {1, 0, 1, 0, 0, 1, 0, 1},
-                                         {0, 1, 0, 0, 1},
-                                         {0, 1, 0, 0, 1, 0},
-                                         {0, 1, 0, 0, 1, 0, 1},
-                                         {1, 0, 0, 1, 0},
-                                         {1, 0, 0, 1, 0, 1},
-                                         {0, 0, 1, 0, 1}}));
-      subwords.min_length(5).max_length(5);
-      REQUIRE((subwords
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::to_vector())
-              == std::vector<word_type>({{0, 1, 0, 1, 0},
-                                         {1, 0, 1, 0, 0},
-                                         {0, 1, 0, 0, 1},
-                                         {1, 0, 0, 1, 0},
-                                         {0, 0, 1, 0, 1}}));
-    }
+    auto subwords = (p | Subwords());
+    subwords.min_length(3);
 
-    LIBSEMIGROUPS_TEST_CASE("SubwordsOf", "002", "operator|", "[quick]") {
-      auto rg = ReportGuard(false);
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::count())
+            == 24);
+    REQUIRE(subwords.size_hint() == 45);
+    subwords.min_length(1);
+    REQUIRE((subwords
 
-      std::vector<Presentation<std::string>> presents;
-      Presentation<std::string>              p;
-      p.alphabet("ab");
-      presentation::add_rule(p, "abab", "ba");
-      presents.push_back(p);
-      p.alphabet("xy");
-      p.rules = {"xyxyxyxyxyxy", ""};
-      presents.push_back(p);
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector(
+                {0_w,       01_w,       010_w,      0101_w,      01010_w,
+                 010100_w,  0101001_w,  01010010_w, 010100101_w, 1_w,
+                 10_w,      101_w,      1010_w,     10100_w,     101001_w,
+                 1010010_w, 10100101_w, 0100_w,     01001_w,     010010_w,
+                 0100101_w, 100_w,      1001_w,     10010_w,     100101_w,
+                 00_w,      001_w,      0010_w,     00101_w}));
+    REQUIRE(!subwords.at_end());
+    subwords.min_length(5);
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector({01010_w,
+                            010100_w,
+                            0101001_w,
+                            01010010_w,
+                            010100101_w,
+                            10100_w,
+                            101001_w,
+                            1010010_w,
+                            10100101_w,
+                            01001_w,
+                            010010_w,
+                            0100101_w,
+                            10010_w,
+                            100101_w,
+                            00101_w}));
+    subwords.min_length(5).max_length(5);
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector({01010_w, 10100_w, 01001_w, 10010_w, 00101_w}));
+  }
 
-      auto present_range = rx::iterator_range(presents.begin(), presents.end());
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "operator|", "[quick]") {
+    auto rg = ReportGuard(false);
 
-      auto range = present_range | SubwordsOf();
-      REQUIRE((range
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::to_vector())
-              == std::vector<std::string>(
-                  {"",           "a",           "ab",
-                   "aba",        "abab",        "b",
-                   "ba",         "bab",         "",
-                   "x",          "xy",          "xyx",
-                   "xyxy",       "xyxyx",       "xyxyxy",
-                   "xyxyxyx",    "xyxyxyxy",    "xyxyxyxyx",
-                   "xyxyxyxyxy", "xyxyxyxyxyx", "xyxyxyxyxyxy",
-                   "y",          "yx",          "yxy",
-                   "yxyx",       "yxyxy",       "yxyxyx",
-                   "yxyxyxy",    "yxyxyxyx",    "yxyxyxyxy",
-                   "yxyxyxyxyx", "yxyxyxyxyxy"}));
-    }
+    std::vector<Presentation<std::string>> ps;
 
-    LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerators", "003", "strings", "[quick]")
-    { using rx::operator|;
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+    ps.push_back(p);
 
-      auto                      rg = ReportGuard(false);
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      presentation::add_rule(p, "abab", "ba");
-      Subwords subwords(p);
-      subwords.min_length(1);
-      REQUIRE((subwords
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::to_vector())
-              == std::vector<std::string>(
-                  {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
+    p.alphabet("xy");
+    p.rules = {"xyxyxyxyxyxy", ""};
+    ps.push_back(p);
 
-      REQUIRE(
-          (subwords | TietzeAddGenerators()
-           | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
-          == std::vector<std::vector<std::string>>({{"cbcb", "bc", "c", "a"},
-                                                    {"cc", "ba", "c", "ab"},
-                                                    {"cb", "ba", "c", "aba"},
-                                                    {"c", "ba", "c", "abab"},
-                                                    {"acac", "ca", "c", "b"},
-                                                    {"acb", "c", "c", "ba"},
-                                                    {"ac", "ba", "c", "bab"}}));
+    REQUIRE((rx::iterator_range(ps) | Subwords()
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"",           "a",           "ab",
+                 "aba",        "abab",        "b",
+                 "ba",         "bab",         "",
+                 "x",          "xy",          "xyx",
+                 "xyxy",       "xyxyx",       "xyxyxy",
+                 "xyxyxyx",    "xyxyxyxy",    "xyxyxyxyx",
+                 "xyxyxyxyxy", "xyxyxyxyxyx", "xyxyxyxyxyxy",
+                 "y",          "yx",          "yxy",
+                 "yxyx",       "yxyxy",       "yxyxyx",
+                 "yxyxyxy",    "yxyxyxyx",    "yxyxyxyxy",
+                 "yxyxyxyxyx", "yxyxyxyxyxy"}));
+  }
 
-      auto tmp = (subwords | TietzeAddGenerators() |
-    SubwordsOf().min_length(2));
+  LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerators", "003", "strings", "[quick]") {
+    using rx::operator|;
 
-      REQUIRE((tmp
-               | rx::transform([](auto& pair) -> auto& { return pair.second; })
-               | rx::to_vector())
-              == std::vector<std::string>(
-                  {"cb",  "cbc", "cbcb", "bc",   "bcb", "cc",  "ba",  "ab",
-                   "cb",  "ba",  "ab",   "aba",  "ba",  "ab",  "aba", "abab",
-                   "bab", "ac",  "aca",  "acac", "ca",  "cac", "ac",  "acb",
-                   "cb",  "ba",  "ac",   "ba",   "bab", "ab"}));
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+    auto subwords = (p | Subwords());
+    subwords.min_length(1);
+    REQUIRE((subwords
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
 
-      REQUIRE((subwords | TietzeAddGenerators() | SubwordsOf().min_length(2)
-               | TietzeAddGenerators()
-               | rx::transform([](auto& p) { return p.rules; }) |
-    rx::to_vector() | rx::to_vector())
-              == std::vector<std::vector<std::string>>(
-                  {{"dd", "bc", "c", "a", "d", "cb"},
-                   {"db", "bc", "c", "a", "d", "cbc"},
-                   {"d", "bc", "c", "a", "d", "cbcb"},
-                   {"cdb", "d", "c", "a", "d", "bc"},
-                   {"cd", "bc", "c", "a", "d", "bcb"},
-                   {"d", "ba", "c", "ab", "d", "cc"},
-                   {"cc", "d", "c", "ab", "d", "ba"},
-                   {"cc", "ba", "c", "d", "d", "ab"},
-                   {"d", "ba", "c", "aba", "d", "cb"},
-                   {"cb", "d", "c", "ad", "d", "ba"},
-                   {"cb", "ba", "c", "da", "d", "ab"},
-                   {"cb", "ba", "c", "d", "d", "aba"},
-                   {"c", "d", "c", "adb", "d", "ba"},
-                   {"c", "ba", "c", "dd", "d", "ab"},
-                   {"c", "ba", "c", "db", "d", "aba"},
-                   {"c", "ba", "c", "d", "d", "abab"},
-                   {"c", "ba", "c", "ad", "d", "bab"},
-                   {"dd", "ca", "c", "b", "d", "ac"},
-                   {"dc", "ca", "c", "b", "d", "aca"},
-                   {"d", "ca", "c", "b", "d", "acac"},
-                   {"adc", "d", "c", "b", "d", "ca"},
-                   {"ad", "ca", "c", "b", "d", "cac"},
-                   {"db", "c", "c", "ba", "d", "ac"},
-                   {"d", "c", "c", "ba", "d", "acb"},
-                   {"ad", "c", "c", "ba", "d", "cb"},
-                   {"acb", "c", "c", "d", "d", "ba"},
-                   {"d", "ba", "c", "bab", "d", "ac"},
-                   {"ac", "d", "c", "db", "d", "ba"},
-                   {"ac", "ba", "c", "d", "d", "bab"},
-                   {"ac", "ba", "c", "bd", "d", "ab"}}));
+    REQUIRE(
+        (subwords | TietzeAddGenerators()
+         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
+        == std::vector<std::vector<std::string>>({{"cbcb", "bc", "c", "a"},
+                                                  {"cc", "ba", "c", "ab"},
+                                                  {"cb", "ba", "c", "aba"},
+                                                  {"c", "ba", "c", "abab"},
+                                                  {"acac", "ca", "c", "b"},
+                                                  {"acb", "c", "c", "ba"},
+                                                  {"ac", "ba", "c", "bab"}}));
 
-      StringRange strings;
-      strings.alphabet("ab").min(2).max(4);
-      REQUIRE(
-          (strings | rx::transform([&p](auto& w) { return std::pair(p, w); })
-           | TietzeAddGenerators()
-           | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
-           | rx::to_vector())
-          == std::vector<std::vector<std::string>>({{"abab", "ba", "c", "aa"},
-                                                    {"cc", "ba", "c", "ab"},
-                                                    {"acb", "c", "c", "ba"},
-                                                    {"abab", "ba", "c", "bb"},
-                                                    {"abab", "ba", "c", "aaa"},
-                                                    {"abab", "ba", "c", "aab"},
-                                                    {"cb", "ba", "c", "aba"},
-                                                    {"abab", "ba", "c", "abb"},
-                                                    {"abab", "ba", "c", "baa"},
-                                                    {"ac", "ba", "c", "bab"},
-                                                    {"abab", "ba", "c", "bba"},
-                                                    {"abab", "ba", "c",
-    "bbb"}}));
-    }
+    auto tmp = (subwords | TietzeAddGenerators() | Subwords().min_length(2));
 
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "004", "first test", "[quick]") {
-      using rx::operator|;
+    REQUIRE((tmp
+             | rx::transform([](auto& pair) -> auto& { return pair.second; })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"cb",  "cbc", "cbcb", "bc",   "bcb", "cc",  "ba",  "ab",
+                 "cb",  "ba",  "ab",   "aba",  "ba",  "ab",  "aba", "abab",
+                 "bab", "ac",  "aca",  "acac", "ca",  "cac", "ac",  "acb",
+                 "cb",  "ba",  "ac",   "ba",   "bab", "ab"}));
 
-      auto                      rg = ReportGuard(false);
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      presentation::add_rule(p, "abab", "ba");
+    REQUIRE((subwords | TietzeAddGenerators() | Subwords().min_length(2)
+             | TietzeAddGenerators()
+             | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
+             | rx::to_vector())
+            == std::vector<std::vector<std::string>>(
+                {{"dd", "bc", "c", "a", "d", "cb"},
+                 {"db", "bc", "c", "a", "d", "cbc"},
+                 {"d", "bc", "c", "a", "d", "cbcb"},
+                 {"cdb", "d", "c", "a", "d", "bc"},
+                 {"cd", "bc", "c", "a", "d", "bcb"},
+                 {"d", "ba", "c", "ab", "d", "cc"},
+                 {"cc", "d", "c", "ab", "d", "ba"},
+                 {"cc", "ba", "c", "d", "d", "ab"},
+                 {"d", "ba", "c", "aba", "d", "cb"},
+                 {"cb", "d", "c", "ad", "d", "ba"},
+                 {"cb", "ba", "c", "da", "d", "ab"},
+                 {"cb", "ba", "c", "d", "d", "aba"},
+                 {"c", "d", "c", "adb", "d", "ba"},
+                 {"c", "ba", "c", "dd", "d", "ab"},
+                 {"c", "ba", "c", "db", "d", "aba"},
+                 {"c", "ba", "c", "d", "d", "abab"},
+                 {"c", "ba", "c", "ad", "d", "bab"},
+                 {"dd", "ca", "c", "b", "d", "ac"},
+                 {"dc", "ca", "c", "b", "d", "aca"},
+                 {"d", "ca", "c", "b", "d", "acac"},
+                 {"adc", "d", "c", "b", "d", "ca"},
+                 {"ad", "ca", "c", "b", "d", "cac"},
+                 {"db", "c", "c", "ba", "d", "ac"},
+                 {"d", "c", "c", "ba", "d", "acb"},
+                 {"ad", "c", "c", "ba", "d", "cb"},
+                 {"acb", "c", "c", "d", "d", "ba"},
+                 {"d", "ba", "c", "bab", "d", "ac"},
+                 {"ac", "d", "c", "db", "d", "ba"},
+                 {"ac", "ba", "c", "d", "d", "bab"},
+                 {"ac", "ba", "c", "bd", "d", "ab"}}));
 
-      KnuthBendix kb(congruence_kind::twosided, p);
+    StringRange strings;
+    strings.alphabet("ab").min(2).max(4);
+    REQUIRE(
+        (strings | rx::transform([&p](auto& w) { return std::pair(p, w); })
+         | TietzeAddGenerators()
+         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
+         | rx::to_vector())
+        == std::vector<std::vector<std::string>>({{"abab", "ba", "c", "aa"},
+                                                  {"cc", "ba", "c", "ab"},
+                                                  {"acb", "c", "c", "ba"},
+                                                  {"abab", "ba", "c", "bb"},
+                                                  {"abab", "ba", "c", "aaa"},
+                                                  {"abab", "ba", "c", "aab"},
+                                                  {"cb", "ba", "c", "aba"},
+                                                  {"abab", "ba", "c", "abb"},
+                                                  {"abab", "ba", "c", "baa"},
+                                                  {"ac", "ba", "c", "bab"},
+                                                  {"abab", "ba", "c", "bba"},
+                                                  {"abab", "ba", "c", "bbb"}}));
+  }
 
-      REQUIRE(!(Subwords(p).min_length(1) | TietzeAddGenerators()
-                | FindIf([kb](auto const& p) mutable {
-                    kb.init(congruence_kind::twosided, p);
-                    kb.run_for(std::chrono::milliseconds(5));
-                    return kb.finished();
-                  }))
-                   .result()
-                   .has_value());
-    }
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "004", "first test", "[quick]") {
+    using rx::operator|;
 
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "abbab=baabb", "[extreme]") {
-      using rx::operator|;
+    auto rg = ReportGuard(false);
 
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      p.contains_empty_word(true);
-      presentation::add_rule(p, "abbab", "baabb");
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
 
-      KnuthBendix kb(congruence_kind::twosided, p);
+    KnuthBendix kb(congruence_kind::twosided, p);
 
-      auto result
-          = (Subwords(p).min_length(1).proper(true) | TietzeAddGenerators()
-             | SubwordsOf().min_length(1).proper(true) | TietzeAddGenerators()
-             | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
-                                       static std::atomic_size_t count = 0;
-                                       ReportGuard               rg(true);
-                                       report_default("{}\n", count++);
-                                       kb.init(congruence_kind::twosided, p);
-                                       kb.run_for(std::chrono::milliseconds(5));
-                                       return kb.finished();
-                                     }).number_of_threads(1))
-                .result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "dbca");
-      REQUIRE(
-          result.value().rules
-          == std::vector<std::string>({"cb", "db", "c", "abba", "d", "baab"}));
+    REQUIRE(!(p | Subwords().min_length(1) | TietzeAddGenerators()
+              | FindIf([kb](auto const& p) mutable {
+                  kb.init(congruence_kind::twosided, p);
+                  kb.run_for(std::chrono::milliseconds(5));
+                  return kb.finished();
+                }))
+                 .result()
+                 .has_value());
+  }
 
-      kb.init(congruence_kind::twosided, result.value());
-      kb.run();
-      REQUIRE(kb.rewriting_system().confluent());
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "abbab=baabb", "[extreme]") {
+    using rx::operator|;
 
-      using rule_type = typename decltype(kb)::rule_type;
-      REQUIRE((kb.active_rules() | rx::to_vector())
-              == std::vector<rule_type>({{"abba", "c"},
-                                         {"cb", "db"},
-                                         {"baab", "d"},
-                                         {"abbc", "dbba"},
-                                         {"abd", "cab"},
-                                         {"baad", "daab"},
-                                         {"bac", "dba"},
-                                         {"cd", "dd"},
-                                         {"abbdb", "dbbab"},
-                                         {"abbdd", "dbbad"},
-                                         {"badb", "dbab"},
-                                         {"badd", "dbad"}}));
-    }
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "abbab", "baabb");
 
-    LIBSEMIGROUPS_TEST_CASE("AllAlphabetOrders", "006", "strings", "[quick]") {
-      using rx::operator|;
-      auto rg = ReportGuard(false);
+    KnuthBendix kb(congruence_kind::twosided, p);
 
-      Presentation<std::string> p;
-      p.alphabet("abc");
-      std::vector ps = {p};
-      p.alphabet("xy");
-      ps.push_back(p);
+    auto result
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
+                                     static std::atomic_size_t count = 0;
+                                     ReportGuard               rg(true);
+                                     report_default("{}\n", count++);
+                                     kb.init(congruence_kind::twosided, p);
+                                     kb.run_for(std::chrono::milliseconds(5));
+                                     return kb.finished();
+                                   }).number_of_threads(1))
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dbca");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"cb", "db", "c", "abba", "d", "baab"}));
 
-      auto range = rx::iterator_range(ps.begin(), ps.end());
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
 
-      REQUIRE((range | AllAlphabetOrders()
-               | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
-               | rx::to_vector())
-              == std::vector<std::string>(
-                  {"abc", "acb", "bac", "bca", "cab", "cba", "xy", "yx"}));
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"abba", "c"},
+                                       {"cb", "db"},
+                                       {"baab", "d"},
+                                       {"abbc", "dbba"},
+                                       {"abd", "cab"},
+                                       {"baad", "daab"},
+                                       {"bac", "dba"},
+                                       {"cd", "dd"},
+                                       {"abbdb", "dbbab"},
+                                       {"abbdd", "dbbad"},
+                                       {"badb", "dbab"},
+                                       {"badd", "dbad"}}));
+  }
 
-      REQUIRE((p | AllAlphabetOrders()
-               | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
-               | rx::to_vector())
-              == std::vector<std::string>({"xy", "yx"}));
-    }
+  LIBSEMIGROUPS_TEST_CASE("AllAlphabetOrders", "006", "strings", "[quick]") {
+    using rx::operator|;
+    auto      rg = ReportGuard(false);
 
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "007", "a=cc, c=bab", "[quick]") {
-      using rx::operator|;
+    Presentation<std::string> p;
+    p.alphabet("abc");
+    std::vector ps = {p};
+    p.alphabet("xy");
+    ps.push_back(p);
 
-      auto rg = ReportGuard(false);
+    REQUIRE((rx::iterator_range(ps) | AllAlphabetOrders()
+             | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
+             | rx::to_vector())
+            == std::vector<std::string>(
+                {"abc", "acb", "bac", "bca", "cab", "cba", "xy", "yx"}));
 
-      Presentation<std::string> p;
-      p.contains_empty_word(true);
-      p.alphabet("bca");
-      presentation::add_rule(p, "a", "cc");
-      presentation::add_rule(p, "c", "bab");
+    REQUIRE((p | AllAlphabetOrders()
+             | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
+             | rx::to_vector())
+            == std::vector<std::string>({"xy", "yx"}));
+  }
 
-      KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "007", "a=cc, c=bab", "[quick]") {
+    using rx::operator|;
 
-      auto result
-          = (p | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
-               kb.init(congruence_kind::twosided, p);
-               kb.run_for(std::chrono::milliseconds(5));
-               return kb.rewriting_system().confluent();
-             })).result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "bca");
-      REQUIRE(result.value().rules
-              == std::vector<std::string>({"a", "cc", "c", "bab"}));
+    auto rg = ReportGuard(false);
 
-      kb.init(congruence_kind::twosided, result.value());
-      kb.run();
-      REQUIRE(kb.rewriting_system().confluent());
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("bca");
+    presentation::add_rule(p, "a", "cc");
+    presentation::add_rule(p, "c", "bab");
 
-      using rule_type = typename decltype(kb)::rule_type;
-      REQUIRE((kb.active_rules() | rx::to_vector())
-              == std::vector<rule_type>(
-                  {{"a", "cc"}, {"bccb", "c"}, {"bccc", "cccb"}}));
-    }
+    KnuthBendix<std::string, RPOTrie> kb(congruence_kind::twosided, p);
 
+    auto result
+        = (p | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
+             kb.init(congruence_kind::twosided, p);
+             kb.run_for(std::chrono::milliseconds(5));
+             return kb.rewriting_system().confluent();
+           })).result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "bca");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"a", "cc", "c", "bab"}));
+
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
+
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"a", "cc"}, {"bccb", "c"}, {"bccc", "cccb"}}));
+  }
+
+  // Takes about 10 hours
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "008", "aaa=1, aBBBABAb=1", "[extreme]") {
+    // https://math.stackexchange.com/questions/4942596
+
+    using rx::                  operator|;
+    using literals::            operator""_p;
+    auto                        rg = ReportGuard(true);
+    using std::string_literals::operator""s;
+
+    Presentation<std::string> p;
+    p.alphabet("abB");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "bB", "");
+    presentation::add_rule(p, "b^9"_p, "");
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    auto nf = knuth_bendix::normal_forms(kb);
+
+    presentation::add_rule(p, "abaabbbaB", "");
+    ToddCoxeter tc(congruence_kind::twosided, p);
+    todd_coxeter::add_generating_pair(tc, "(ab)^6"_p, "");
+
+    REQUIRE(tc.number_of_classes() == 1512);
+
+    REQUIRE(nf.min(14).max(22).count() == 130'401'452);
+
+    auto result
+        = (nf.min(14).max(22)
+           | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
+           | TietzeAddRelation() | FindIf([tc](auto const& p) mutable {
+               tc.init(congruence_kind::twosided, p);
+               tc.run_for(std::chrono::milliseconds(10));
+               return tc.finished() && tc.number_of_classes() > 1'512;
+             }))
+              .number_of_threads(12)
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "abB");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"aaa",
+                                         "",
+                                         "Bb",
+                                         "",
+                                         "bB",
+                                         "",
+                                         "bbbbbbbbb",
+                                         "",
+                                         "abaabbbaB",
+                                         "",
+                                         "aaBaaBabaBBababab",
+                                         ""}));
+    tc.init(congruence_kind::twosided, result.value());
+    REQUIRE(tc.number_of_classes() == 4'536);
     // Takes about 10 hours
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "008", "aaa=1, aBBBABAb=1", "[extreme]") {
-      // https://math.stackexchange.com/questions/4942596
+    result = (nf.min(14).max(22)
+              | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
+              | TietzeAddRelation() | FindIf([tc](auto const& p) mutable {
+                  tc.init(congruence_kind::twosided, p);
+                  tc.run_for(std::chrono::milliseconds(10));
+                  return tc.finished() && tc.number_of_classes() > 4'536;
+                }))
+                 .number_of_threads(12)
+                 .result();
+    REQUIRE(!result.has_value());
+  }
 
-      using rx::operator|;
-      using literals::operator""_p;
-      auto rg = ReportGuard(true);
-      using std::string_literals::operator""s;
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "009", "baabaa=aba", "[quick]") {
+    using rx::                operator|;
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
 
-      Presentation<std::string> p;
-      p.alphabet("abB");
-      p.contains_empty_word(true);
-      presentation::add_rule(p, "aaa", "");
-      presentation::add_rule(p, "Bb", "");
-      presentation::add_rule(p, "bB", "");
-      presentation::add_rule(p, "b^9"_p, "");
+    presentation::add_rule(p, "baabaa", "aba");
 
-      KnuthBendix kb(congruence_kind::twosided, p);
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
+        congruence_kind::twosided, p);
+    auto result
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
+               kb.init(congruence_kind::twosided, p);
+               kb.run_for(std::chrono::milliseconds(4));
+               return kb.rewriting_system().confluent();
+             }))
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "bca");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"cc", "aba", "c", "baa"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
 
-      auto nf = knuth_bendix::normal_forms(kb);
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"aba", "cc"},
+                                       {"baa", "c"},
+                                       {"ac", "cca"},
+                                       {"abcc", "ccba"},
+                                       {"bcccca", "cba"},
+                                       {"bcccccc", "cbcc"}}));
+  }
 
-      presentation::add_rule(p, "abaabbbaB", "");
-      ToddCoxeter tc(congruence_kind::twosided, p);
-      todd_coxeter::add_generating_pair(tc, "(ab)^6"_p, "");
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "010", "baaabaaa=aba", "[fail]") {
+    using rx::                operator|;
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
 
-      REQUIRE(tc.number_of_classes() == 1512);
+    presentation::add_rule(p, "baaabaaa", "aba");
 
-      REQUIRE(nf.min(14).max(22).count() == 130'401'452);
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
+        congruence_kind::twosided, p);
+    auto result
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
+               kb.init(congruence_kind::twosided, p);
+               kb.run_for(std::chrono::milliseconds(4));
+               return kb.rewriting_system().confluent();
+             }))
+              .number_of_threads(10)
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "bca");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>({"cc", "aba", "c", "baa"}));
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    REQUIRE(kb.rewriting_system().confluent());
 
-      auto result
-          = (nf.min(14).max(22)
-             | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
-             | TietzeAddRelation() | FindIf([tc](auto const& p) mutable {
-                 tc.init(congruence_kind::twosided, p);
-                 tc.run_for(std::chrono::milliseconds(10));
-                 return tc.finished() && tc.number_of_classes() > 1'512;
-               }))
-                .number_of_threads(12)
-                .result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "abB");
-      REQUIRE(result.value().rules
-              == std::vector<std::string>({"aaa",
-                                           "",
-                                           "Bb",
-                                           "",
-                                           "bB",
-                                           "",
-                                           "bbbbbbbbb",
-                                           "",
-                                           "abaabbbaB",
-                                           "",
-                                           "aaBaaBabaBBababab",
-                                           ""}));
-      tc.init(congruence_kind::twosided, result.value());
-      REQUIRE(tc.number_of_classes() == 4'536);
-      // Takes about 10 hours
-      result = (nf.min(14).max(22)
-                | rx::transform([&p](auto& w) { return std::tuple(p, w, ""); })
-                | TietzeAddRelation() | FindIf([tc](auto const& p) mutable {
-                    tc.init(congruence_kind::twosided, p);
-                    tc.run_for(std::chrono::milliseconds(10));
-                    return tc.finished() && tc.number_of_classes() > 4'536;
-                  }))
-                   .number_of_threads(12)
-                   .result();
-      REQUIRE(!result.has_value());
-    }
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"aba", "cc"},
+                                       {"baa", "c"},
+                                       {"ac", "cca"},
+                                       {"abcc", "ccba"},
+                                       {"bcccca", "cba"},
+                                       {"bcccccc", "cbcc"}}));
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "009", "baabaa=aba", "[quick]") {
-      using rx::operator|;
-      auto                      rg = ReportGuard(false);
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      p.contains_empty_word(true);
+  // About 7s
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "011", "ababbaaaaa=baaaaaba", "[extreme]") {
+    using rx::                operator|;
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
 
-      presentation::add_rule(p, "baabaa", "aba");
+    presentation::add_rule(p, "ababbaaaaa", "baaaaaba");
 
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
-          congruence_kind::twosided, p);
-      auto result
-          = (Subwords(p).min_length(1).proper(true) | TietzeAddGenerators()
-             | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
-                 kb.init(congruence_kind::twosided, p);
-                 kb.run_for(std::chrono::milliseconds(4));
-                 return kb.rewriting_system().confluent();
-               }))
-                .result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "bca");
-      REQUIRE(result.value().rules
-              == std::vector<std::string>({"cc", "aba", "c", "baa"}));
-      kb.init(congruence_kind::twosided, result.value());
-      kb.run();
-      REQUIRE(kb.rewriting_system().confluent());
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
+        congruence_kind::twosided, p);
+    // KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>>
+    // kb_rev_rpo(
+    //     congruence_kind::twosided, p);
+    auto result
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | AllAlphabetOrders()
+           | FindIf([kb_rpo](auto const& p) mutable {
+               kb_rpo.init(congruence_kind::twosided, p);
+               kb_rpo.run_for(std::chrono::milliseconds(4));
+               // if (kb_rpo.rewriting_system().confluent()) {
+               //   return true;
+               // }
+               // kb_rev_rpo.init(congruence_kind::twosided, p);
+               // kb_rev_rpo.run_for(std::chrono::milliseconds(4));
+               return kb_rpo.rewriting_system().confluent();
+             }).number_of_threads(10))
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dacb");
+    REQUIRE(
+        result.value().rules
+        == std::vector<std::string>({"ac", "dba", "c", "babd", "d", "baaaaa"}));
+    kb_rpo.init(congruence_kind::twosided, result.value());
+    kb_rpo.run_for(std::chrono::milliseconds(4));
+    REQUIRE(kb_rpo.rewriting_system().confluent());
 
-      using rule_type = typename decltype(kb)::rule_type;
-      REQUIRE((kb.active_rules() | rx::to_vector())
-              == std::vector<rule_type>({{"aba", "cc"},
-                                         {"baa", "c"},
-                                         {"ac", "cca"},
-                                         {"abcc", "ccba"},
-                                         {"bcccca", "cba"},
-                                         {"bcccccc", "cbcc"}}));
-    }
+    using rule_type = typename decltype(kb_rpo)::rule_type;
+    REQUIRE((kb_rpo.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"babd", "c"},
+                                       {"baaaaa", "d"},
+                                       {"dba", "ac"},
+                                       {"babac", "cba"},
+                                       {"acbd", "dc"},
+                                       {"acaaaa", "dd"},
+                                       {"baaaadc", "dcbd"},
+                                       {"baaaadd", "dcaaaa"},
+                                       {"acbac", "dcba"},
+                                       {"dbdc", "accbd"},
+                                       {"dbdd", "accaaaa"},
+                                       {"ddcbd", "acaaadc"},
+                                       {"ddcaaaa", "acaaadd"},
+                                       {"baaaadac", "dcaaaaba"},
+                                       {"dbdac", "accaaaaba"},
+                                       {"ddcbac", "acaaadcba"}}));
+  }
 
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "010", "baaabaaa=aba", "[fail]") {
-      using rx::operator|;
-      Presentation<std::string> p;
-      p.alphabet("ab");
-      p.contains_empty_word(true);
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "012", "baaababaaa=aaba", "[extreme]") {
+    using rx::operator|;
+    auto      rg = ReportGuard(false);
 
-      presentation::add_rule(p, "baaabaaa", "aba");
+    Presentation<std::string> p;
+    p.alphabet("ba");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaababaaa", "aaba");
 
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
-          congruence_kind::twosided, p);
-      auto result
-          = (Subwords(p).min_length(1).proper(true) | TietzeAddGenerators()
-             | SubwordsOf().min_length(1).proper(true) | TietzeAddGenerators()
-             | SubwordsOf().min_length(1).proper(true) | TietzeAddGenerators()
-             | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
-                 kb.init(congruence_kind::twosided, p);
-                 kb.run_for(std::chrono::milliseconds(4));
-                 return kb.rewriting_system().confluent();
-               }))
-                .number_of_threads(10)
-                .result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "bca");
-      REQUIRE(result.value().rules
-              == std::vector<std::string>({"cc", "aba", "c", "baa"}));
-      kb.init(congruence_kind::twosided, result.value());
-      kb.run();
-      REQUIRE(kb.rewriting_system().confluent());
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
+        congruence_kind::twosided, p);
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>> kb_rev_rpo(
+        congruence_kind::twosided, p);
+    auto result
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | AllAlphabetOrders()
+           | FindIf([kb_rpo, kb_rev_rpo](auto const& p) mutable {
+               kb_rpo.init(congruence_kind::twosided, p);
+               kb_rpo.run_for(std::chrono::milliseconds(4));
+               if (kb_rpo.rewriting_system().confluent()) {
+                 return true;
+               }
+               kb_rev_rpo.init(congruence_kind::twosided, p);
+               kb_rev_rpo.run_for(std::chrono::milliseconds(4));
+               return kb_rev_rpo.rewriting_system().confluent();
+             }).number_of_threads(10))
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dacb");
+  }
 
-      using rule_type = typename decltype(kb)::rule_type;
-      REQUIRE((kb.active_rules() | rx::to_vector())
-              == std::vector<rule_type>({{"aba", "cc"},
-                                         {"baa", "c"},
-                                         {"ac", "cca"},
-                                         {"abcc", "ccba"},
-                                         {"bcccca", "cba"},
-                                         {"bcccccc", "cbcc"}}));
-    }
+  // Fails in about 9 minutes
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "013", "aabbaab=aba", "[fail]") {
+    using rx::operator|;
+    auto      rg = ReportGuard(false);
 
-    // About 7s
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "011", "ababbaaaaa=baaaaaba", "[extreme]")
-    { using rx::operator|; Presentation<std::string> p; p.alphabet("ab");
-      p.contains_empty_word(true);
+    Presentation<std::string> p;
+    p.alphabet("ba");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "aabbaab", "aba");
 
-      presentation::add_rule(p, "ababbaaaaa", "baaaaaba");
-
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
-          congruence_kind::twosided, p);
-      // KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>>
-      // kb_rev_rpo(
-      //     congruence_kind::twosided, p);
-      auto result
-          = (Subwords(p).min_length(1).proper(true) | TietzeAddGenerators()
-             | SubwordsOf().min_length(1).proper(true) | TietzeAddGenerators()
-             | AllAlphabetOrders()
-             | FindIf([kb_rpo](auto const& p) mutable {
-                 kb_rpo.init(congruence_kind::twosided, p);
-                 kb_rpo.run_for(std::chrono::milliseconds(4));
-                 // if (kb_rpo.rewriting_system().confluent()) {
-                 //   return true;
-                 // }
-                 // kb_rev_rpo.init(congruence_kind::twosided, p);
-                 // kb_rev_rpo.run_for(std::chrono::milliseconds(4));
-                 return kb_rpo.rewriting_system().confluent();
-               }).number_of_threads(10))
-                .result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "dacb");
-      REQUIRE(
-          result.value().rules
-          == std::vector<std::string>({"ac", "dba", "c", "babd", "d",
-    "baaaaa"})); kb_rpo.init(congruence_kind::twosided, result.value());
-      kb_rpo.run_for(std::chrono::milliseconds(4));
-      REQUIRE(kb_rpo.rewriting_system().confluent());
-
-      using rule_type = typename decltype(kb_rpo)::rule_type;
-      REQUIRE((kb_rpo.active_rules() | rx::to_vector())
-              == std::vector<rule_type>({{"babd", "c"},
-                                         {"baaaaa", "d"},
-                                         {"dba", "ac"},
-                                         {"babac", "cba"},
-                                         {"acbd", "dc"},
-                                         {"acaaaa", "dd"},
-                                         {"baaaadc", "dcbd"},
-                                         {"baaaadd", "dcaaaa"},
-                                         {"acbac", "dcba"},
-                                         {"dbdc", "accbd"},
-                                         {"dbdd", "accaaaa"},
-                                         {"ddcbd", "acaaadc"},
-                                         {"ddcaaaa", "acaaadd"},
-                                         {"baaaadac", "dcaaaaba"},
-                                         {"dbdac", "accaaaaba"},
-                                         {"ddcbac", "acaaadcba"}}));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "012", "baaababaaa=aaba", "[extreme]") {
-      using rx::operator|;
-      auto rg = ReportGuard(false);
-
-      Presentation<std::string> p;
-      p.alphabet("ba");
-      p.contains_empty_word(true);
-      presentation::add_rule(p, "baaababaaa", "aaba");
-
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
-          congruence_kind::twosided, p);
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>>
-    kb_rev_rpo( congruence_kind::twosided, p); auto result =
-    (Subwords(p).min_length(1).proper(true) | TietzeAddGenerators() |
-    SubwordsOf().min_length(1).proper(true) | TietzeAddGenerators() |
-    AllAlphabetOrders() | FindIf([kb_rpo, kb_rev_rpo](auto const& p) mutable {
-                 kb_rpo.init(congruence_kind::twosided, p);
-                 kb_rpo.run_for(std::chrono::milliseconds(4));
-                 if (kb_rpo.rewriting_system().confluent()) {
-                   return true;
-                 }
-                 kb_rev_rpo.init(congruence_kind::twosided, p);
-                 kb_rev_rpo.run_for(std::chrono::milliseconds(4));
-                 return kb_rev_rpo.rewriting_system().confluent();
-               }))
-                .result();
-      // .number_of_threads(10)) // TODO seg faults with > 1 thread
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "dacb");
-    }
-
-    // Fails in about 9 minutes
-    LIBSEMIGROUPS_TEST_CASE("FindIf", "013", "aabbaab=aba", "[fail]") {
-      using rx::operator|;
-      auto rg = ReportGuard(false);
-
-      Presentation<std::string> p;
-      p.alphabet("ba");
-      p.contains_empty_word(true);
-      presentation::add_rule(p, "aabbaab", "aba");
-
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
-          congruence_kind::twosided, p);
-      KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>>
-    kb_rev_rpo( congruence_kind::twosided, p); auto result =
-    (Subwords(p).min_length(1).proper(true) | TietzeAddGenerators() |
-    Subwords().min_length(1).proper(true) | TietzeAddGenerators() |
-    Subwords().min_length(1).proper(true) | TietzeAddGenerators() |
-    AllAlphabetOrders() | FindIf([kb_rpo, kb_rev_rpo](auto const& p) mutable {
-                 kb_rpo.init(congruence_kind::twosided, p);
-                 kb_rpo.run_for(std::chrono::milliseconds(4));
-                 if (kb_rpo.rewriting_system().confluent()) {
-                   return true;
-                 }
-                 kb_rev_rpo.init(congruence_kind::twosided, p);
-                 kb_rev_rpo.run_for(std::chrono::milliseconds(4));
-                 return kb_rev_rpo.rewriting_system().confluent();
-               }).number_of_threads(10))
-                .result();
-      REQUIRE(result.has_value());
-      REQUIRE(result.value().alphabet() == "dacb");
-    }*/
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb_rpo(
+        congruence_kind::twosided, p);
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>> kb_rev_rpo(
+        congruence_kind::twosided, p);
+    auto result
+        = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
+           | AllAlphabetOrders()
+           | FindIf([kb_rpo, kb_rev_rpo](auto const& p) mutable {
+               kb_rpo.init(congruence_kind::twosided, p);
+               kb_rpo.run_for(std::chrono::milliseconds(4));
+               if (kb_rpo.rewriting_system().confluent()) {
+                 return true;
+               }
+               kb_rev_rpo.init(congruence_kind::twosided, p);
+               kb_rev_rpo.run_for(std::chrono::milliseconds(4));
+               return kb_rev_rpo.rewriting_system().confluent();
+             }).number_of_threads(10))
+              .result();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "dacb");
+  }
 
 }  // namespace libsemigroups

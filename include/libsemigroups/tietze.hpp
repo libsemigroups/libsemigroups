@@ -47,22 +47,6 @@
 
 namespace libsemigroups {
 
-  template <typename Thing>
-  class SingletonRange {
-    Thing& _value;
-    bool   _at_end;
-
-    using output_type = Thing const&;
-
-    auto const& get() const {
-      return _value;
-    }
-
-    void next() {
-      _at_end = true;
-    }
-  };
-
   class Subwords;  // forward decl
 
   template <typename InputRange>
@@ -388,12 +372,7 @@ namespace libsemigroups {
 
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
-      // This is a bit of hack
-      // FIXME this doesn't actually work because "dummy" gets destructed before
-      // it can be used, and so the copy of "input" contained in "dummy" no
-      // longer exists
-      std::vector<Presentation<Word>> dummy({input});
-      return operator()(rx::iterator_range(dummy.begin(), dummy.end()));
+      return operator()(Singleton(input));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -865,9 +844,7 @@ namespace libsemigroups {
 
     template <typename Word>
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
-      // This is a bit of hack
-      std::vector<Presentation<Word>> dummy({input});
-      return operator()(rx::iterator_range(dummy.begin(), dummy.end()));
+      return operator()(Singleton(input));
     }
   };
 

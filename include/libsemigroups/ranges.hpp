@@ -22,6 +22,7 @@
 #ifndef LIBSEMIGROUPS_RANGES_HPP_
 #define LIBSEMIGROUPS_RANGES_HPP_
 
+#include "libsemigroups/debug.hpp"
 #include <algorithm>    // for is_sorted
 #include <cstddef>      // for size_t
 #include <functional>   // for less
@@ -163,6 +164,40 @@ namespace libsemigroups {
       return Range<Inner>(std::forward<InputRange>(input));
     }
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  };
+
+  // TODO doc
+  template <typename Thing>
+  class Singleton {
+    Thing const* _value;
+    bool         _at_end;
+
+   public:
+    using output_type = Thing const&;
+
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+
+    explicit Singleton(Thing const& thing) : _value(&thing), _at_end(false) {}
+
+    // TODO rule of 5
+
+    [[nodiscard]] output_type get() const noexcept {
+      LIBSEMIGROUPS_ASSERT(!at_end());
+      return *_value;
+    }
+
+    void next() {
+      _at_end = true;
+    }
+
+    [[nodiscard]] bool at_end() const noexcept {
+      return _at_end;
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return !at_end();
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////
