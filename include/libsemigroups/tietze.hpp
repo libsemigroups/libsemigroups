@@ -47,6 +47,22 @@
 
 namespace libsemigroups {
 
+  template <typename Thing>
+  class SingletonRange {
+    Thing& _value;
+    bool   _at_end;
+
+    using output_type = Thing const&;
+
+    auto const& get() const {
+      return _value;
+    }
+
+    void next() {
+      _at_end = true;
+    }
+  };
+
   class Subwords;  // forward decl
 
   template <typename InputRange>
@@ -171,7 +187,9 @@ namespace libsemigroups {
 
     SubwordsRange& proper(bool val) {
       _proper = val;
-      // TODO reset()?
+      // No reset, we just continue from the current value but only output
+      // proper subwords from here on out.
+      // WARN: this is not the same as min/max_length
       return *this;
     }
 
@@ -286,7 +304,6 @@ namespace libsemigroups {
   // TODO rm
   // template <typename Word>
   // template <typename InputRange>
-  // // TODO struct -> class
   // struct Subwords<Word>::Range {
   //   using output_type = typename Subwords<Word>::output_type;
 

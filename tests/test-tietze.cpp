@@ -50,7 +50,7 @@ namespace libsemigroups {
 
     std::vector ps({p});
 
-    auto subwords = (rx::iterator_range(ps.begin(), ps.end()) | Subwords());
+    auto subwords = (rx::iterator_range(ps) | Subwords());
     // auto subwords = (p | Subwords());
 
     REQUIRE(subwords.size_hint() == 21);
