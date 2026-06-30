@@ -55,10 +55,6 @@ namespace libsemigroups {
     std::unordered_set<Word, Hash<Word>> _seen;
     size_t                               _suffix_begin;
 
-    // TODO bool _proper_subwords;
-
-    // TODO mutable std::mutex                         _mtx;
-
    public:
     ////////////////////////////////////////////////////////////////////////
     // Aliases
