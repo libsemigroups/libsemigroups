@@ -763,7 +763,7 @@ namespace libsemigroups::detail {
 
   template <typename ReductionOrder>
   std::pair<size_t, size_t>
-  RewritingSystemTrie<ReductionOrder>::confluence_percentage() {
+  RewritingSystemTrie<ReductionOrder>::confluence_ratio() {
     std::pair<size_t, size_t> confluence_fraction;
     reduce();
     index_type link;
