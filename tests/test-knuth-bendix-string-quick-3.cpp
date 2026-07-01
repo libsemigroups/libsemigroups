@@ -1331,7 +1331,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "149",
-                                   "abaab=aabba",
+                                   "abbab=baabb",
                                    "[quick][tietze-explorer][no-valgrind]",
                                    LenLexTrie) {
     auto rg = ReportGuard(false);
@@ -1359,6 +1359,7 @@ namespace libsemigroups {
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE(result.has_value());
     REQUIRE(dora.success());
+    REQUIRE(result.value().presentation().alphabet() == "cbda");
     REQUIRE((result.value().active_rules() | rx::sort() | rx::to_vector())
             == std::vector<rule_type>({{"abba", "d"},
                                        {"abbcb", "cbbab"},
@@ -1415,6 +1416,71 @@ namespace libsemigroups {
 
     dora.init(kb);  // Test that _todo is cleared
     REQUIRE(dora.number_of_runs() == 103'904);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "156",
+                          "to_human_readable_repr",
+                          "[quick][tietze-explorer]") {
+    using literals::operator""_w;
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa"_w, "aba"_w);
+
+    KnuthBendix kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+    REQUIRE(dora.number_of_runs() == 103'904);
+    REQUIRE(to_human_readable_repr(dora)
+            == "<knuth_bendix.TietzeExplorer for <monoid presentation with 2 "
+               "letters, 1 rule, and length 11>, 103,904 run(s) @ 5ms each, 1 "
+               "threads, [0, 3] depths>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "157",
+                          "constructors",
+                          "[quick][tietze-explorer]") {
+    using literals::operator""_w;
+
+    Presentation<word_type> p;
+    p.alphabet(2);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa"_w, "aba"_w);
+
+    KnuthBendix kb(twosided, p);
+
+    knuth_bendix::TietzeExplorer dora(kb);
+    REQUIRE(dora.number_of_runs() == 103'904);
+
+    SECTION("copy constructor") {
+      auto boots(dora);
+      REQUIRE(boots.number_of_runs() == dora.number_of_runs());
+      REQUIRE(boots.started() == dora.started());
+      REQUIRE(boots.finished() == dora.finished());
+    }
+    SECTION("move constructor") {
+      auto map(std::move(dora));
+      REQUIRE(map.number_of_runs() == 103'904);
+      REQUIRE(!map.started());
+      REQUIRE(!map.finished());
+    }
+    SECTION("copy assignment operator") {
+      knuth_bendix::TietzeExplorer backpack(kb);
+      backpack = dora;
+      REQUIRE(backpack.number_of_runs() == 103'904);
+      REQUIRE(!backpack.started());
+      REQUIRE(!backpack.finished());
+    }
+    SECTION("move assignment operator") {
+      knuth_bendix::TietzeExplorer swiper(kb);
+      swiper = std::move(dora);
+      REQUIRE(swiper.number_of_runs() == 103'904);
+      REQUIRE(!swiper.started());
+      REQUIRE(!swiper.finished());
+    }
   }
 
 }  // namespace libsemigroups

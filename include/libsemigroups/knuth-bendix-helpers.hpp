@@ -449,16 +449,16 @@ namespace libsemigroups {
       TietzeExplorer& init(KnuthBendix<Word, RewritingSystem>& kb);
 
       //! \brief Copy constructor.
-      TietzeExplorer(TietzeExplorer const&) = default;
+      TietzeExplorer(TietzeExplorer const&);
 
       //! \brief Move constructor.
-      TietzeExplorer(TietzeExplorer&&) = default;
+      TietzeExplorer(TietzeExplorer&&);
 
       //! \brief Copy assignment operator.
-      TietzeExplorer& operator=(TietzeExplorer const&) = default;
+      TietzeExplorer& operator=(TietzeExplorer const&);
 
       //! \brief Move assignment operator.
-      TietzeExplorer& operator=(TietzeExplorer&&) = default;
+      TietzeExplorer& operator=(TietzeExplorer&&);
 
       ~TietzeExplorer() = default;
 
@@ -509,6 +509,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if the internal search queue has
       //! already been populated.
       TietzeExplorer& depth_max(size_t val) {
+        // TODO don't do this, just throw away _todo and recompute it
         throw_if_todo_populated("depth_max");
         _depth_max = val;
         return *this;
@@ -543,6 +544,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if the internal search queue has
       //! already been populated.
       TietzeExplorer& depth_min(size_t val) {
+        // TODO don't do this, just throw away _todo and recompute it
         throw_if_todo_populated("depth_min");
         _depth_min = val;
         return *this;
@@ -668,6 +670,11 @@ namespace libsemigroups {
         return _finished && _race.finished();
       }
 
+      // TODO doc
+      [[nodiscard]] bool is_todo_populated() const noexcept {
+        return _todo_populated;
+      }
+
      private:
       void run_impl() override;
 
@@ -686,10 +693,27 @@ namespace libsemigroups {
       void report_before_run() const;
       void report_progress_from_thread() const;
       void report_after_run() const;
-
+      // TODO rm
       void throw_if_todo_populated(std::string_view msg) const;
     };  // class TietzeExplorer
   }     // namespace knuth_bendix
+
+  //! \relates knuth_bendix::TietzeExplorer
+  //!
+  //! \brief Return a human readable representation of an alphabet.
+  //!
+  //! This function returns a human readable representation of an alphabet.
+  //!
+  //! \tparam Word the type of the words in the alphabet.
+  //! \param alphabet the alphabet.
+  //!
+  //! \returns A string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word, typename RewritingSystem>
+  [[nodiscard]] std::string to_human_readable_repr(
+      knuth_bendix::TietzeExplorer<Word, RewritingSystem> const&);
 }  // namespace libsemigroups
 
 #include "knuth-bendix-helpers.tpp"
