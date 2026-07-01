@@ -42,8 +42,10 @@
 #include "detail/race.hpp"  // for Race
 
 // TODO:
-// * all calls to next, get must first check !at_end()
+// * all calls to next + get must first check !at_end()
 // * add static_assertions
+// * iwyu
+// * out of line
 
 namespace libsemigroups {
 
@@ -174,6 +176,7 @@ namespace libsemigroups {
       // No reset, we just continue from the current value but only output
       // proper subwords from here on out.
       // WARN: this is not the same as min/max_length
+      // TODO make it the same
       return *this;
     }
 
@@ -509,9 +512,14 @@ namespace libsemigroups {
 
      private:
       void run_impl() override {
+        // static size_t count = 0;
         ReportGuard rg(false);
         input_type  input;
+
         while (!stopped() && _enclosing->try_get_and_advance(input)) {
+          // fmt::print("{}: {}\n", count, input.alphabet());
+          // fmt::print("{}: {}\n\n", count, input.rules);
+          // count++;
           ++_enclosing->_counter;
           if (_func(input)) {
             _result   = input;
@@ -761,7 +769,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Aliases
     ////////////////////////////////////////////////////////////////////////
-    static constexpr bool is_finite     = true;
+    static constexpr bool is_finite     = true;  // TODO depends on InputRange
     static constexpr bool is_idempotent = true;
     using output_type                   = Presentation<Word> const&;
 
@@ -813,6 +821,89 @@ namespace libsemigroups {
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
       return AllAlphabetOrdersRange(std::forward<InputRange>(input));
+    }
+
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      return operator()(Singleton(input));
+    }
+  };
+
+  template <typename InputRange>
+  class AllAlphabetOrderExtsRange {
+    // TODO static assert
+    using Word =
+        typename std::decay_t<typename InputRange::output_type>::word_type;
+
+    Presentation<Word> _get_presentation;
+    size_t             _index;
+    InputRange         _input;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Aliases
+    ////////////////////////////////////////////////////////////////////////
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+    using output_type                   = Presentation<Word> const&;
+
+    AllAlphabetOrderExtsRange(InputRange&& input)
+        : _get_presentation(), _index(), _input(std::move(input)) {
+      if (!_input.at_end()) {
+        _get_presentation = _input.get();
+        if (!_get_presentation.alphabet().empty()) {
+          _index = _get_presentation.alphabet().size() - 1;
+        } else {
+          _index = 0;
+        }
+      }
+    }
+
+    AllAlphabetOrderExtsRange(InputRange const& input)
+        : AllAlphabetOrderExtsRange(InputRange(input)) {}
+
+    [[nodiscard]] output_type get() const {
+      return _get_presentation;
+    }
+
+    void next() {
+      if (at_end()) {
+        return;
+      }
+      if (_index > 0) {
+        _index--;
+        auto new_alphabet = _get_presentation.alphabet();
+        std::swap(new_alphabet[_index], new_alphabet[_index + 1]);
+        _get_presentation.alphabet(new_alphabet);
+        return;
+      }
+      LIBSEMIGROUPS_ASSERT(!_input.at_end());
+      _input.next();
+      if (!_input.at_end()) {
+        _get_presentation = _input.get();
+        if (!_get_presentation.alphabet().empty()) {
+          _index = _get_presentation.alphabet().size() - 1;
+        } else {
+          _index = 0;
+        }
+      }
+    }
+
+    [[nodiscard]] bool at_end() const {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      // Can't guess this because we don't know what _input might contain
+      return std::numeric_limits<size_t>::max();
+    }
+  };
+
+  struct AllAlphabetOrderExts {
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return AllAlphabetOrderExtsRange(std::forward<InputRange>(input));
     }
 
     template <typename Word>

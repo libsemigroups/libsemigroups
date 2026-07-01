@@ -200,6 +200,60 @@ namespace libsemigroups {
     }
   };
 
+  template <typename InputRange>
+  class RefRange {
+   public:
+    using output_type = typename InputRange::output_type;
+
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+
+   private:
+    using value_type = std::decay_t<output_type>;
+
+    InputRange  _input;
+    value_type& _ref;
+
+   public:
+    explicit RefRange(InputRange&& input, value_type& thing)
+        : _input(std::move(input)), _ref(thing) {}
+
+    explicit RefRange(InputRange const& input, value_type& thing)
+        : _input(input), _ref(thing) {}
+
+    [[nodiscard]] output_type get() const noexcept {
+      LIBSEMIGROUPS_ASSERT(!at_end());
+      auto result = _input.get();
+      // TODO could be expensive if get is called multiple times
+      _ref = result;
+      return result;
+    }
+
+    void next() {
+      _input.next();
+    }
+
+    [[nodiscard]] bool at_end() const noexcept {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return _input.size_hint();
+    }
+  };
+
+  template <typename Thing>
+  struct Ref {
+    Thing& _thing;
+
+    explicit Ref(Thing& thing) : _thing(thing) {}
+
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return RefRange(std::forward<InputRange>(input), _thing);
+    }
+  };
+
   ////////////////////////////////////////////////////////////////////////
   // Comparison functions
   ////////////////////////////////////////////////////////////////////////

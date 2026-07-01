@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/constants.hpp"
 #include "libsemigroups/detail/rewriting-system.hpp"
 #include "libsemigroups/detail/rules.hpp"
 #include "libsemigroups/types.hpp"
@@ -31,13 +32,49 @@
 #include "libsemigroups/du-narendran-rusinowitch.hpp"  // for du_narendran_rusinowitch
 #include "libsemigroups/knuth-bendix.hpp"              // for KnuthBendix
 #include "libsemigroups/presentation.hpp"              // for Presentation
-#include "libsemigroups/ranges.hpp"      // for iterator_range, to_vector
-#include "libsemigroups/tietze.hpp"      // for TietzeAddGeneratorsRange
-#include "libsemigroups/word-range.hpp"  // for operator""_w
+#include "libsemigroups/ranges.hpp"           // for iterator_range, to_vector
+#include "libsemigroups/tietze.hpp"           // for TietzeAddGeneratorsRange
+#include "libsemigroups/to-presentation.hpp"  // for to
+#include "libsemigroups/word-range.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
+  namespace {
+
+    template <typename Iterator>
+    auto most_frequent_subword(Iterator first, Iterator last) {
+      using Word = std::conditional_t<
+          std::is_same_v<std::remove_const_t<typename Iterator::value_type>,
+                         word_type>,
+          word_type,
+          std::string>;
+
+      std::unordered_map<Word, size_t> mp;
+      Word                             tmp;
+
+      for (auto it = first; it < last; ++it) {
+        auto const& w = *it;
+        for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
+          for (auto prefix = suffix + 2; prefix < w.cend(); ++prefix) {
+            tmp.assign(suffix, prefix);
+            auto [it, inserted] = mp.emplace(tmp, 0);
+            if (!inserted) {
+              ++(*it).second;
+            }
+          }
+        }
+      }
+
+      return std::max_element(mp.begin(),
+                              mp.end(),
+                              [](auto const& x, auto const& y) {
+                                return x.second < y.second;
+                              })
+          ->first;
+    }
+  }  // namespace
+
   using RPOTrie = detail::RewritingSystemTrie<RevRPOCmp>;
 
   LIBSEMIGROUPS_TEST_CASE("Subwords", "000", "strings", "[quick]") {
@@ -515,33 +552,24 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
         congruence_kind::twosided, p);
-    auto result
+    auto input
         = (p | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
            | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
            | Subwords().min_length(1).proper(true) | TietzeAddGenerators()
-           | AllAlphabetOrders() | FindIf([kb](auto const& p) mutable {
-               kb.init(congruence_kind::twosided, p);
-               kb.run_for(std::chrono::milliseconds(4));
-               return kb.rewriting_system().confluent();
-             }))
-              .number_of_threads(10)
-              .result();
-    REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "bca");
-    REQUIRE(result.value().rules
-            == std::vector<std::string>({"cc", "aba", "c", "baa"}));
-    kb.init(congruence_kind::twosided, result.value());
-    kb.run();
-    REQUIRE(kb.rewriting_system().confluent());
+           | AllAlphabetOrders());
 
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | rx::to_vector())
-            == std::vector<rule_type>({{"aba", "cc"},
-                                       {"baa", "c"},
-                                       {"ac", "cca"},
-                                       {"abcc", "ccba"},
-                                       {"bcccca", "cba"},
-                                       {"bcccccc", "cbcc"}}));
+    size_t num = (input | rx::count());
+
+    auto result = (input
+                   | FindIf([kb](auto const& p) mutable {
+                       kb.init(congruence_kind::twosided, p);
+                       kb.run_for(std::chrono::milliseconds(4));
+                       return kb.rewriting_system().confluent();
+                     })
+                         .total(num)
+                         .number_of_threads(10))
+                      .result();
+    REQUIRE(!result.has_value());
   }
 
   // About 7s
@@ -667,8 +695,199 @@ namespace libsemigroups {
                return kb_rev_rpo.rewriting_system().confluent();
              }).number_of_threads(10))
               .result();
-    REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "dacb");
+    REQUIRE(!result.has_value());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "014",
+                          "morpho completion",
+                          "[quick]") {
+    using rx::operator|;
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "aabbaab", "aba");
+
+    REQUIRE(most_frequent_subword(p.rules.begin(), p.rules.end()) == "ab");
+
+    KnuthBendix kb(congruence_kind::twosided, p);
+
+    auto morpho_complete
+        = rx::transform([&kb](Presentation<std::string> const& p) {
+            kb.init(congruence_kind::twosided, p);
+            // kb.rewriting_system().sort_pending_rules_by(nullptr);
+            // kb.run_for(std::chrono::microseconds(10));
+            kb.max_rounds(2).run();
+            kb.max_pending_rules(POSITIVE_INFINITY);
+            kb.rewriting_system().reduce();
+            return to<Presentation>(kb);
+          });
+
+    // auto q = (Singleton(p) | morpho_complete).get();
+    // REQUIRE(q.rules
+    //         == std::vector<std::string>({"aabbaab",
+    //                                      "aba",
+    //                                      "ababaab",
+    //                                      "aabbaba",
+    //                                      "aabbaaabbaba",
+    //                                      "abaabaab",
+    //                                      "ababaaabbaba",
+    //                                      "aabbabaabaab",
+    //                                      "abaabaabbabaaabbaba",
+    //                                      "abaabaababbabaabaab",
+    //                                      "abaabaababbaab",
+    //                                      "abaabaabba",
+    //                                      "abaabaabbabaab",
+    //                                      "abaabaababbaba",
+    //                                      "abaabaababbaaabbaba",
+    //                                      "abaababaaab"}));
+
+    // REQUIRE(most_frequent_subword(q.rules.begin(), q.rules.end()) == "ab");
+
+    auto find_if = FindIf([kb](auto const& p) mutable {
+                     kb.init(congruence_kind::twosided, p);
+                     kb.run_for(std::chrono::milliseconds(2));
+                     return kb.rewriting_system().confluent();
+                   }).number_of_threads(12);
+    {
+      auto input = (p | AllAlphabetOrders() | morpho_complete
+                    | Subwords().min_length(2).proper(true)
+                    | rx::transform([&p](auto const& pair) {
+                        Presentation<std::string> result(p);
+                        result.alphabet(pair.first.alphabet());
+                        return std::pair(result, pair.second);
+                      })
+                    | TietzeAddGenerators() | AllAlphabetOrderExts());
+
+      auto num = (input | rx::count());
+      REQUIRE(num == 654);
+
+      auto result = (input | find_if.total(num)).result();
+      REQUIRE(!result.has_value());
+    }
+    {
+      auto input
+          = (p | AllAlphabetOrders() | morpho_complete
+             | Subwords().min_length(2).max_length(6)
+             | rx::transform([p](auto const& pair) {
+                 auto copy(p);
+                 presentation::replace_word_with_new_generator(copy,
+                                                               pair.second);
+                 return copy;
+               })
+             | morpho_complete | Subwords().min_length(2).max_length(6)
+             | rx::transform([p](auto const& pair) {
+                 auto copy(p);
+                 presentation::replace_word_with_new_generator(copy,
+                                                               pair.second);
+                 return copy;
+               })
+             | morpho_complete | Subwords().min_length(2).max_length(6)
+             | rx::transform([p](auto const& pair) {
+                 auto copy(p);
+                 presentation::replace_word_with_new_generator(copy,
+                                                               pair.second);
+                 return copy;
+               })
+             | AllAlphabetOrderExts());
+
+      auto num = (input | rx::count());
+      // REQUIRE(num == 970'983);
+
+      // size_t count = 0;
+      // while (!input.at_end()) {
+      //   input.next();
+      //   count++;
+      // }
+      // REQUIRE(count == 2'096);
+
+      auto result = (input | find_if.total(num)).result();
+      REQUIRE(!result.has_value());
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "015",
+                          "morpho completion",
+                          "[quick]") {
+    using rx::operator|;
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa", "aba");
+
+    auto q(p);
+    presentation::replace_word_with_new_generator(q, "aa");
+    presentation::replace_word_with_new_generator(q, "ab");
+    presentation::replace_word_with_new_generator(q, "dcc");
+    q.alphabet("decab");
+
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
+        congruence_kind::twosided, q);
+
+    // kb.run();
+
+    // auto nresult
+    //     = (q | AllAlphabetOrders() | FindIf([kb](auto const& q) mutable {
+    //          kb.init(congruence_kind::twosided, q);
+    //          kb.run_for(std::chrono::milliseconds(4));
+    //          return kb.rewriting_system().confluent();
+    //        })).result();
+
+    // REQUIRE(nresult.has_value());
+    // REQUIRE(nresult.value().alphabet() == "decab");
+
+    auto morpho_complete
+        = rx::transform([&kb](Presentation<std::string> const& p) {
+            kb.init(congruence_kind::twosided, p);
+            kb.rewriting_system().sort_pending_rules_by(nullptr);
+            // kb.run_for(std::chrono::microseconds(10));
+            kb.max_rounds(2).run();
+            kb.max_pending_rules(POSITIVE_INFINITY);
+            kb.rewriting_system().reduce();
+            return to<Presentation>(kb);
+          });
+
+    auto find_if = FindIf([kb](auto const& p) mutable {
+                     kb.init(congruence_kind::twosided, p);
+                     kb.run_for(std::chrono::milliseconds(4));
+                     return kb.rewriting_system().confluent();
+                   }).number_of_threads(12);
+
+    Presentation<std::string> p0 = p, p1, p2;
+
+    auto input
+        = (p0 | AllAlphabetOrders() | morpho_complete
+           | Subwords().min_length(2).max_length(3)
+           | rx::transform([&p0](auto const& pair) {
+               auto copy(p0);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | Ref(p1) | AllAlphabetOrderExts() | morpho_complete
+           | Subwords().min_length(2).max_length(3)
+           | rx::transform([&p1](auto const& pair) {
+               auto copy(p1);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | Ref(p2) | AllAlphabetOrderExts() | morpho_complete
+           | Subwords().min_length(2).max_length(3)
+           | rx::transform([&p2](auto const& pair) {
+               auto copy(p2);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts());
+
+    auto num = (input | rx::count());
+
+    REQUIRE(num == 267'305);
+
+    auto result = (input | find_if.total(num)).result();
+    REQUIRE(!result.has_value());
   }
 
 }  // namespace libsemigroups

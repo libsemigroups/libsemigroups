@@ -67,6 +67,7 @@
 namespace libsemigroups {
   // Forward declarations
   namespace detail {
+    // TODO why is this here?
     template <typename KnuthBendix_>
     class KBE;
     //! \defgroup knuth_bendix_class_mem_types_group Member types
@@ -180,6 +181,7 @@ namespace libsemigroups {
         Settings& operator=(Settings&&) noexcept      = default;
 
         size_t                    max_overlap;
+        size_t                    max_rounds;
         size_t                    max_rules;
         typename options::overlap overlap_policy;
       };
@@ -202,9 +204,10 @@ namespace libsemigroups {
       // KnuthBendixImpl - data - private
       ////////////////////////////////////////////////////////////////////////
 
-      bool                            _gen_pairs_initted;
-      WordGraph<uint32_t>             _gilman_graph;
-      std::vector<native_word_type>   _gilman_graph_node_labels;
+      bool                          _gen_pairs_initted;
+      WordGraph<uint32_t>           _gilman_graph;
+      std::vector<native_word_type> _gilman_graph_node_labels;
+      size_t _number_of_rounds;  // TODO set in constructors
       std::unique_ptr<OverlapMeasure> _overlap_measure;
       Presentation<native_word_type>  _presentation;
       mutable RewritingSystem         _rewriting_system;
@@ -470,7 +473,9 @@ namespace libsemigroups {
       //!
       //! \deprecated_warning{function} Use
       //! `rewriting_system().settings().reduction_threshold = val` instead.
-      [[deprecated]] KnuthBendixImpl& max_pending_rules(size_t val) {
+      [[deprecated("Use rewriting_system().settings().reduction_threshold = "
+                   "val instead")]] KnuthBendixImpl&
+      max_pending_rules(size_t val) {
         rewriting_system().settings().reduction_threshold = val;
         return *this;
       }
@@ -653,6 +658,15 @@ namespace libsemigroups {
       //! \sa \ref run.
       [[nodiscard]] size_t max_rules() const noexcept {
         return _settings.max_rules;
+      }
+
+      KnuthBendixImpl& max_rounds(size_t val) {
+        _settings.max_rounds = val;
+        return *this;
+      }
+
+      [[nodiscard]] size_t max_rounds() const noexcept {
+        return _settings.max_rounds;
       }
 
       //! \ingroup knuth_bendix_class_settings_group
