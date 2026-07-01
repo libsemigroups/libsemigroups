@@ -692,33 +692,34 @@ namespace libsemigroups::detail {
   // Confluence
   ////////////////////////////////////////////////////////////////////////
 
+  // TODO(1): Consider moving this into RewriterBase so that it can be used by
+  // RewritingSystemSet. This would require making <rewrite_no_reduce> a virtual
+  // function, so maybe we don't want to do this.
   template <typename ReductionOrder>
   bool RewritingSystemTrie<ReductionOrder>::overlap_confluent(
-      Rule const*  rule1,
-      Rule const*  rule2,
-      size_t const overlap_length) const {
-    // Word looks like ABC where the LHS of rule1 corresponds to AB, the LHS of
-    // rule2 corresponds to BC, and |C|= nodes.size() - 1.
-    // AB -> X,
-    // BC -> Y,
-    // ABC gets rewritten to XC and AY
-    // TODO(1) remove allocation, use a MultiView, and check equality,
-    // then copy inside the if-condition
-    native_word_type word1;
-    native_word_type word2;
+      Rule const*       rule1,
+      Rule const*       rule2,
+      size_t const      overlap_length,
+      native_word_type& word1,
+      native_word_type& word2) const {
+    // Overlapped word looks like ABC where the LHS of rule1 corresponds to
+    // AB, the LHS of rule2 corresponds to BC, and |B|= overlap_length.
+    // If AB -> X, BC -> Y, then ABC gets rewritten to XC and AY
+    MultiView<native_word_type> word1_view(rule1->rhs());  // X
+    word1_view.append(rule2->lhs().cbegin() + overlap_length,
+                      rule2->lhs().cend());  // C
 
-    word1.assign(rule1->rhs());  // X
-    word1.append(rule2->lhs().cbegin() + overlap_length,
-                 rule2->lhs().cend());  // C
+    MultiView<native_word_type> word2_view(rule1->lhs().cbegin(),
+                                           rule1->lhs().cend()
+                                               - overlap_length);   // A
+    word2_view.append(rule2->rhs().cbegin(), rule2->rhs().cend());  // Y
 
-    word2.assign(rule1->lhs().cbegin(),
-                 rule1->lhs().cend() - overlap_length);  // A
-    word2.append(rule2->rhs());                          // Y
-
-    if (word1 == word2) {
+    if (word1_view == word2_view) {
       return true;
     }
 
+    word1.assign(word1_view);
+    word2.assign(word2_view);
     rewrite_no_reduce(word1);
     rewrite_no_reduce(word2);
     if (word1 == word2) {
@@ -734,6 +735,8 @@ namespace libsemigroups::detail {
       Rule const* rule1,
       index_type  current_node,
       size_t      overlap_length) const {
+    native_word_type                                word_1;
+    native_word_type                                word_2;
     std::stack<index_type, std::vector<index_type>> stack;
     stack.push(current_node);
 
@@ -743,7 +746,7 @@ namespace libsemigroups::detail {
       LIBSEMIGROUPS_ASSERT(rule1->state() == Rule::State::active);
       if (_rule_trie.node_no_checks(current_node).terminal()) {
         Rule const* rule2 = _rule_trie.node_no_checks(current_node).value();
-        if (!overlap_confluent(rule1, rule2, overlap_length)) {
+        if (!overlap_confluent(rule1, rule2, overlap_length, word_1, word_2)) {
           return false;
         }
       }
@@ -766,6 +769,8 @@ namespace libsemigroups::detail {
       Rule const* rule1,
       index_type  current_node,
       size_t      overlap_length) const {
+    native_word_type                                word_1;
+    native_word_type                                word_2;
     std::pair<size_t, size_t>                       confluence_fraction;
     std::stack<index_type, std::vector<index_type>> stack;
     stack.push(current_node);
@@ -777,7 +782,7 @@ namespace libsemigroups::detail {
       if (_rule_trie.node_no_checks(current_node).terminal()) {
         Rule const* rule2 = _rule_trie.node_no_checks(current_node).value();
         ++confluence_fraction.second;
-        if (overlap_confluent(rule1, rule2, overlap_length)) {
+        if (overlap_confluent(rule1, rule2, overlap_length, word_1, word_2)) {
           ++confluence_fraction.first;
         }
       }
