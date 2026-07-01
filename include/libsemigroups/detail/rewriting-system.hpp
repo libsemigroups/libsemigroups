@@ -437,9 +437,11 @@ namespace libsemigroups {
       // Confluence
       ////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] bool overlap_confluent(Rule const*  rule1,
-                                           Rule const*  rule2,
-                                           size_t const overlap_length) const;
+      [[nodiscard]] bool overlap_confluent(Rule const*       rule1,
+                                           Rule const*       rule2,
+                                           size_t const      overlap_length,
+                                           native_word_type& word1,
+                                           native_word_type& word2) const;
 
       [[nodiscard]] bool descendants_confluent(Rule const* rule1,
                                                index_type  current_node,
