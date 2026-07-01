@@ -137,8 +137,6 @@ namespace libsemigroups {
         return _confluence_known;
       }
 
-      [[nodiscard]] virtual std::pair<size_t, size_t> confluence_ratio() = 0;
-
       // If there are no pending_rules, then the system is reduced. If there
       // are pending rules the system may be reduced or not depending on the
       // pending rules. There doesn't seem to be an easier way of checking if
@@ -292,7 +290,7 @@ namespace libsemigroups {
                                    Iterator first2,
                                    Iterator last2);
 
-      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio() override;
+      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
@@ -399,7 +397,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio() override;
+      [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
