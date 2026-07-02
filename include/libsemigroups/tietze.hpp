@@ -27,7 +27,7 @@
 #include <string_view>  // for basic_string_view, string_view
 #include <tuple>
 #include <type_traits>    // for remove_cvref_t
-#include <unordered_set>  // for unordered_set
+#include <unordered_map>  // for unordered_map
 #include <utility>        // for move
 #include <vector>         // for vector
 
@@ -57,16 +57,16 @@ namespace libsemigroups {
     using Word =
         typename std::decay_t<typename InputRange::output_type>::word_type;
 
-    std::pair<Presentation<Word>, Word>  _current;
-    size_t                               _current_rule;
-    InputRange                           _input;
-    InputRange                           _input_orig;  // TODO comment
-    size_t                               _max_length;
-    size_t                               _min_length;
-    size_t                               _prefix_end;
-    bool                                 _proper;
-    std::unordered_set<Word, Hash<Word>> _seen;
-    size_t                               _suffix_begin;
+    std::pair<Presentation<Word>, Word> _current;
+    size_t                              _current_rule;
+    InputRange                          _input;
+    InputRange                          _input_orig;  // TODO comment
+    size_t                              _max_length;
+    size_t                              _min_length;
+    size_t                              _prefix_end;
+    bool                                _proper;
+    std::unordered_map<Word, size_t>    _seen;
+    size_t                              _suffix_begin;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -110,17 +110,6 @@ namespace libsemigroups {
           _suffix_begin() {
       reset();
     }
-
-    // TODO use or rm
-    // SubwordsRange& init() {
-    //   _current.first.init();
-    //   _current.second.clear();
-    //   _max_length = POSITIVE_INFINITY;
-    //   _min_length = 0;
-    //   _proper     = false;
-    //   _seen.clear();
-    //   return *this;
-    // }
 
     SubwordsRange(SubwordsRange const&)            = default;
     SubwordsRange(SubwordsRange&&)                 = default;
@@ -204,14 +193,17 @@ namespace libsemigroups {
                  && _prefix_end <= prefix_last) {
             auto first = rule.begin() + _suffix_begin;
             auto last  = rule.begin() + _prefix_end;
-            if (_seen.emplace(first, last).second) {
-              _current.second.assign(first, last);
+            _current.second.assign(first, last);
+            auto [it, inserted] = _seen.emplace(_current.second, 1);
+            if (inserted) {
               if (_prefix_end != rule.size()) {
                 ++_prefix_end;
               } else {
                 advance_prefix_suffix();
               }
               return;
+            } else {
+              ++(*it).second;
             }
             ++_prefix_end;
           }
@@ -233,6 +225,22 @@ namespace libsemigroups {
 
     [[nodiscard]] size_t size_hint() const {
       return std::numeric_limits<size_t>::max();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Other
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] size_t frequency(Word const& w) const {
+      if (!at_end()) {
+        LIBSEMIGROUPS_EXCEPTION("TODO");
+      }
+      auto it = _seen.find(w);
+      if (it == _seen.end()) {
+        return 0;
+      } else {
+        return it->second;
+      }
     }
 
    private:
@@ -329,6 +337,72 @@ namespace libsemigroups {
   };
 
   template <typename InputRange>
+  class SubwordsAndFrequencyRange {
+   public:
+    using Word
+        = std::tuple_element_t<1,
+                               std::decay_t<typename InputRange::output_type>>;
+
+    using output_type = std::tuple<Presentation<Word>, Word, size_t> const&;
+    // TODO static assert that InputRange::output_type =
+    // std::pair(Presentation<Word>, Word)
+
+   private:
+    size_t                   _index;
+    InputRange               _input;
+    std::vector<output_type> _output_for_current_input;
+
+   public:
+    SubwordsAndFrequencyRange(InputRange const& input)
+        : _index(UNDEFINED), _input(input), _output_for_current_input() {
+      init_from_input();
+    }
+
+    [[nodiscard]] bool at_end() const noexcept {
+      // The second part of the expression below is in case !_input.at_end()
+      // but _input.get() is empty.
+      return _input.at_end() || _index >= _output_for_current_input.size();
+    }
+
+    [[nodiscard]] output_type get() const {
+      LIBSEMIGROUPS_ASSERT(!at_end());
+      return _output_for_current_input[_index];
+    }
+
+    void next() {
+      ++_index;
+      if (_index < _output_for_current_input.size()) {
+        return;
+      }
+      _input.next();
+      init_from_input();
+    }
+
+   private:
+    void init_from_input() {
+      if (!_input.at_end()) {
+        _index = 0;
+        // TODO pass options to Subwords below
+        auto subwords = (_input.get() | Subwords());
+        for (auto& [p, w] : subwords) {
+          _output_for_current_input.emplace_back(p, w, 0);
+        }
+        // Now subwords is at_end(), so we can call frequency
+        for (auto& [_, w, freq] : _output_for_current_input) {
+          freq = subwords.frequency(w);
+        }
+      }
+    }
+  };
+
+  class SubwordsAndFrequency {
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return SubwordsAndFrequencyRange(std::forward<InputRange>(input));
+    }
+  };
+
+  template <typename InputRange>
   class TietzeAddGeneratorsRange {
    public:
     using native_word_type
@@ -395,9 +469,7 @@ namespace libsemigroups {
   struct TietzeAddGenerators {
     template <typename InputRange>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      using Inner = rx::get_range_type_t<InputRange>;
-
-      return TietzeAddGeneratorsRange<Inner>(std::forward<InputRange>(input));
+      return TietzeAddGeneratorsRange(std::forward<InputRange>(input));
     }
   };
 

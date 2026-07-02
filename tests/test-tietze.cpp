@@ -59,7 +59,7 @@ namespace libsemigroups {
         for (auto suffix = w.cbegin(); suffix < w.cend(); ++suffix) {
           for (auto prefix = suffix + 2; prefix < w.cend(); ++prefix) {
             tmp.assign(suffix, prefix);
-            auto [it, inserted] = mp.emplace(tmp, 0);
+            auto [it, inserted] = mp.emplace(tmp, 1);
             if (!inserted) {
               ++(*it).second;
             }
@@ -806,11 +806,14 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+  // Takes approx. 4.3s
+  LIBSEMIGROUPS_TEST_CASE("Tietze",
                           "015",
-                          "morpho completion",
+                          "morpho completion baaabaaa=aba",
                           "[extreme]") {
     using rx::operator|;
+
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -838,6 +841,98 @@ namespace libsemigroups {
            | rx::transform([&p0](auto const& pair) {
                auto copy(p0);
 
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
+           | Subwords().min_length(2).max_length(3)
+           | rx::transform([&p1](auto const& pair) {
+               auto copy(p1);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
+           | Subwords().min_length(2).max_length(3)
+           | rx::transform([&p2](auto const& pair) {
+               auto copy(p2);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               // fmt::print("C: {}\n", copy.alphabet());
+               // fmt::print("C: {}\n\n", copy.rules);
+               return copy;
+             })
+           | AllAlphabetOrderExts());
+
+    auto num = (input | rx::count());
+
+    REQUIRE(num == 399'620);
+
+    auto find_if = FindIf([kb](auto const& p) mutable {
+                     kb.init(congruence_kind::twosided, p);
+                     kb.run_for(std::chrono::milliseconds(4));
+                     return kb.rewriting_system().confluent();
+                   }).number_of_threads(12);
+
+    auto result = (input | find_if.total(num)).get();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cedab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"cdcd", "ac", "c", "ba", "d", "aa", "e", "cdd"}));
+
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"ba", "c"},           {"aa", "d"},
+                 {"cdd", "e"},          {"bd", "ca"},
+                 {"ad", "da"},          {"ae", "cded"},
+                 {"cdecd", "dc"},       {"bec", "ccecd"},
+                 {"bcde", "ccd"},       {"cdeed", "de"},
+                 {"dcd", "cdee"},       {"cdedc", "dcecd"},
+                 {"bccdee", "cc"},      {"ac", "ccdee"},
+                 {"bede", "cceeeed"},   {"bedc", "cceeecd"},
+                 {"bee", "cceed"},      {"dccdee", "cdeecd"},
+                 {"dde", "cdeeeed"},    {"ddc", "cdeeecd"},
+                 {"cdede", "dceed"},    {"cdeecdee", "decd"},
+                 {"cdeccdee", "dccd"},  {"ccdeeee", "ecd"},
+                 {"ccdeeecd", "ec"},    {"ccdeeede", "eceed"},
+                 {"ccdeeedc", "ececd"}, {"ccdeeeccdee", "eccd"}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Tietze",
+                          "016",
+                          "morpho completion baaabaaa=aba x2",
+                          "[extreme]") {
+    using rx::operator|;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaabaaa", "aba");
+
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
+        congruence_kind::twosided, p);
+
+    auto morpho_complete
+        = rx::transform([&kb](Presentation<std::string> const& p) {
+            kb.init(congruence_kind::twosided, p);
+            kb.rewriting_system().sort_pending_rules_by(nullptr);
+            kb.max_rounds(2).run();
+            kb.rewriting_system().settings().reduction_threshold
+                = POSITIVE_INFINITY;
+            return to<Presentation>(kb);
+          });
+
+    Presentation<std::string> p0 = p, p1, p2;
+
+    auto input
+        = (p0 | AllAlphabetOrders() | morpho_complete
+           | Subwords().min_length(2).max_length(3)
+           | rx::transform([&p0](auto const& pair) {
+               auto copy(p0);
                presentation::replace_word_with_new_generator(copy, pair.second);
                return copy;
              })
