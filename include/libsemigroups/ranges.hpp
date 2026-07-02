@@ -223,7 +223,7 @@ namespace libsemigroups {
 
     [[nodiscard]] output_type get() const noexcept {
       LIBSEMIGROUPS_ASSERT(!at_end());
-      auto result = _input.get();
+      output_type result = _input.get();
       // TODO could be expensive if get is called multiple times
       _ref = result;
       return result;

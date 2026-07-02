@@ -818,43 +818,18 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, "baaabaaa", "aba");
 
-    auto q(p);
-    presentation::replace_word_with_new_generator(q, "aa");
-    presentation::replace_word_with_new_generator(q, "ab");
-    presentation::replace_word_with_new_generator(q, "dcc");
-    q.alphabet("decab");
-
     KnuthBendix<std::string, detail::RewritingSystemTrie<RPOCmp>> kb(
-        congruence_kind::twosided, q);
-
-    // kb.run();
-
-    // auto nresult
-    //     = (q | AllAlphabetOrders() | FindIf([kb](auto const& q) mutable {
-    //          kb.init(congruence_kind::twosided, q);
-    //          kb.run_for(std::chrono::milliseconds(4));
-    //          return kb.rewriting_system().confluent();
-    //        })).result();
-
-    // REQUIRE(nresult.has_value());
-    // REQUIRE(nresult.value().alphabet() == "decab");
+        congruence_kind::twosided, p);
 
     auto morpho_complete
         = rx::transform([&kb](Presentation<std::string> const& p) {
             kb.init(congruence_kind::twosided, p);
             kb.rewriting_system().sort_pending_rules_by(nullptr);
-            // kb.run_for(std::chrono::microseconds(10));
             kb.max_rounds(2).run();
-            kb.max_pending_rules(POSITIVE_INFINITY);
-            kb.rewriting_system().reduce();
+            kb.rewriting_system().settings().reduction_threshold
+                = POSITIVE_INFINITY;
             return to<Presentation>(kb);
           });
-
-    auto find_if = FindIf([kb](auto const& p) mutable {
-                     kb.init(congruence_kind::twosided, p);
-                     kb.run_for(std::chrono::milliseconds(4));
-                     return kb.rewriting_system().confluent();
-                   }).number_of_threads(12);
 
     Presentation<std::string> p0 = p, p1, p2;
 
@@ -863,31 +838,64 @@ namespace libsemigroups {
            | Subwords().min_length(2).max_length(3)
            | rx::transform([&p0](auto const& pair) {
                auto copy(p0);
+
                presentation::replace_word_with_new_generator(copy, pair.second);
                return copy;
              })
-           | Ref(p1) | AllAlphabetOrderExts() | morpho_complete
+           | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
            | Subwords().min_length(2).max_length(3)
            | rx::transform([&p1](auto const& pair) {
                auto copy(p1);
                presentation::replace_word_with_new_generator(copy, pair.second);
                return copy;
              })
-           | Ref(p2) | AllAlphabetOrderExts() | morpho_complete
+           | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
            | Subwords().min_length(2).max_length(3)
            | rx::transform([&p2](auto const& pair) {
                auto copy(p2);
                presentation::replace_word_with_new_generator(copy, pair.second);
+               // fmt::print("C: {}\n", copy.alphabet());
+               // fmt::print("C: {}\n\n", copy.rules);
                return copy;
              })
            | AllAlphabetOrderExts());
 
     auto num = (input | rx::count());
 
-    REQUIRE(num == 267'305);
+    REQUIRE(num == 399'620);
+
+    auto find_if = FindIf([kb](auto const& p) mutable {
+                     kb.init(congruence_kind::twosided, p);
+                     kb.run_for(std::chrono::milliseconds(4));
+                     return kb.rewriting_system().confluent();
+                   }).number_of_threads(12);
 
     auto result = (input | find_if.total(num)).result();
-    REQUIRE(!result.has_value());
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cedab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"cdcd", "ac", "c", "ba", "d", "aa", "e", "cdd"}));
+
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>(
+                {{"ba", "c"},           {"aa", "d"},
+                 {"cdd", "e"},          {"bd", "ca"},
+                 {"ad", "da"},          {"ae", "cded"},
+                 {"cdecd", "dc"},       {"bec", "ccecd"},
+                 {"bcde", "ccd"},       {"cdeed", "de"},
+                 {"dcd", "cdee"},       {"cdedc", "dcecd"},
+                 {"bccdee", "cc"},      {"ac", "ccdee"},
+                 {"bede", "cceeeed"},   {"bedc", "cceeecd"},
+                 {"bee", "cceed"},      {"dccdee", "cdeecd"},
+                 {"dde", "cdeeeed"},    {"ddc", "cdeeecd"},
+                 {"cdede", "dceed"},    {"cdeecdee", "decd"},
+                 {"cdeccdee", "dccd"},  {"ccdeeee", "ecd"},
+                 {"ccdeeecd", "ec"},    {"ccdeeede", "eceed"},
+                 {"ccdeeedc", "ececd"}, {"ccdeeeccdee", "eccd"}}));
   }
 
 }  // namespace libsemigroups
