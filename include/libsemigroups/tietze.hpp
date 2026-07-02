@@ -512,14 +512,10 @@ namespace libsemigroups {
 
      private:
       void run_impl() override {
-        // static size_t count = 0;
         ReportGuard rg(false);
         input_type  input;
 
         while (!stopped() && _enclosing->try_get_and_advance(input)) {
-          // fmt::print("{}: {}\n", count, input.alphabet());
-          // fmt::print("{}: {}\n\n", count, input.rules);
-          // count++;
           ++_enclosing->_counter;
           if (_func(input)) {
             _result   = input;
@@ -624,7 +620,7 @@ namespace libsemigroups {
     }
 
     // TODO rename get, implement next, at_end etc
-    [[nodiscard]] std::optional<input_type> result() {
+    [[nodiscard]] std::optional<input_type> get() {
       Runner::run();
       if (_race.winner() == nullptr) {
         return std::nullopt;

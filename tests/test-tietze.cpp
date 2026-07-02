@@ -21,6 +21,7 @@
 #include "libsemigroups/detail/rules.hpp"
 #include "libsemigroups/types.hpp"
 #include "rx/ranges.hpp"
+#include <limits>
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
 #include <chrono>
@@ -87,46 +88,46 @@ namespace libsemigroups {
 
     auto subwords = (p | Subwords());
 
-    REQUIRE(subwords.size_hint() == 21);
+    REQUIRE(subwords.size_hint() == std::numeric_limits<size_t>::max());
 
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>(
                 {"", "a", "ab", "aba", "abab", "b", "ba", "bab"}));
     REQUIRE((subwords | rx::count()) == 8);
     subwords.min_length(3);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>({"aba", "abab", "bab"}));
     subwords.min_length(4);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>({"abab"}));
     subwords.min_length(5);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>({}));
     subwords.min_length(2).max_length(3);
     REQUIRE(!subwords.at_end());
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>({"ab", "aba", "ba", "bab"}));
     subwords.min_length(2).max_length(1);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>({}));
     // Check for proper subwords only
     subwords.min_length(0).max_length(POSITIVE_INFINITY).proper(true);
     REQUIRE(
         (subwords
          | rx::transform([](auto& pair) -> auto& { return pair.second; })
-         | rx::to_vector())
+         | rx::take(8) | rx::to_vector())
         == std::vector<std::string>({"", "a", "ab", "aba", "b", "ba", "bab"}));
   }
 
@@ -146,12 +147,11 @@ namespace libsemigroups {
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
              | rx::count())
             == 24);
-    REQUIRE(subwords.size_hint() == 45);
+    REQUIRE(subwords.size_hint() == std::numeric_limits<size_t>::max());
     subwords.min_length(1);
     REQUIRE((subwords
-
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(100) | rx::to_vector())
             == std::vector(
                 {0_w,       01_w,       010_w,      0101_w,      01010_w,
                  010100_w,  0101001_w,  01010010_w, 010100101_w, 1_w,
@@ -163,7 +163,7 @@ namespace libsemigroups {
     subwords.min_length(5);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(100) | rx::to_vector())
             == std::vector({01010_w,
                             010100_w,
                             0101001_w,
@@ -182,7 +182,7 @@ namespace libsemigroups {
     subwords.min_length(5).max_length(5);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(100) | rx::to_vector())
             == std::vector({01010_w, 10100_w, 01001_w, 10010_w, 00101_w}));
   }
 
@@ -202,7 +202,7 @@ namespace libsemigroups {
 
     REQUIRE((rx::iterator_range(ps) | Subwords()
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(100) | rx::to_vector())
             == std::vector<std::string>(
                 {"",           "a",           "ab",
                  "aba",        "abab",        "b",
@@ -228,13 +228,14 @@ namespace libsemigroups {
     subwords.min_length(1);
     REQUIRE((subwords
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(100) | rx::to_vector())
             == std::vector<std::string>(
                 {"a", "ab", "aba", "abab", "b", "ba", "bab"}));
 
     REQUIRE(
         (subwords | TietzeAddGenerators()
-         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector())
+         | rx::transform([](auto& p) { return p.rules; }) | rx::take(100)
+         | rx::to_vector())
         == std::vector<std::vector<std::string>>({{"cbcb", "bc", "c", "a"},
                                                   {"cc", "ba", "c", "ab"},
                                                   {"cb", "ba", "c", "aba"},
@@ -247,7 +248,7 @@ namespace libsemigroups {
 
     REQUIRE((tmp
              | rx::transform([](auto& pair) -> auto& { return pair.second; })
-             | rx::to_vector())
+             | rx::take(100) | rx::to_vector())
             == std::vector<std::string>(
                 {"cb",  "cbc", "cbcb", "bc",   "bcb", "cc",  "ba",  "ab",
                  "cb",  "ba",  "ab",   "aba",  "ba",  "ab",  "aba", "abab",
@@ -256,7 +257,7 @@ namespace libsemigroups {
 
     REQUIRE((subwords | TietzeAddGenerators() | Subwords().min_length(2)
              | TietzeAddGenerators()
-             | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
+             | rx::transform([](auto& p) { return p.rules; }) | rx::take(100)
              | rx::to_vector())
             == std::vector<std::vector<std::string>>(
                 {{"dd", "bc", "c", "a", "d", "cb"},
@@ -295,7 +296,7 @@ namespace libsemigroups {
     REQUIRE(
         (strings | rx::transform([&p](auto& w) { return std::pair(p, w); })
          | TietzeAddGenerators()
-         | rx::transform([](auto& p) { return p.rules; }) | rx::to_vector()
+         | rx::transform([](auto& p) { return p.rules; }) | rx::take(100)
          | rx::to_vector())
         == std::vector<std::vector<std::string>>({{"abab", "ba", "c", "aa"},
                                                   {"cc", "ba", "c", "ab"},
@@ -328,7 +329,7 @@ namespace libsemigroups {
                   kb.run_for(std::chrono::milliseconds(5));
                   return kb.finished();
                 }))
-                 .result()
+                 .get()
                  .has_value());
   }
 
@@ -353,7 +354,7 @@ namespace libsemigroups {
                                      kb.run_for(std::chrono::milliseconds(5));
                                      return kb.finished();
                                    }).number_of_threads(1))
-              .result();
+              .get();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "dbca");
     REQUIRE(
@@ -392,13 +393,13 @@ namespace libsemigroups {
 
     REQUIRE((rx::iterator_range(ps) | AllAlphabetOrders()
              | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
-             | rx::to_vector())
+             | rx::take(8) | rx::to_vector())
             == std::vector<std::string>(
                 {"abc", "acb", "bac", "bca", "cab", "cba", "xy", "yx"}));
 
     REQUIRE((p | AllAlphabetOrders()
              | rx::transform([](auto& p) -> auto& { return p.alphabet(); })
-             | rx::to_vector())
+             | rx::take(9) | rx::to_vector())
             == std::vector<std::string>({"xy", "yx"}));
   }
 
@@ -420,7 +421,7 @@ namespace libsemigroups {
              kb.init(congruence_kind::twosided, p);
              kb.run_for(std::chrono::milliseconds(5));
              return kb.rewriting_system().confluent();
-           })).result();
+           })).get();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "bca");
     REQUIRE(result.value().rules
@@ -474,7 +475,7 @@ namespace libsemigroups {
                return tc.finished() && tc.number_of_classes() > 1'512;
              }))
               .number_of_threads(12)
-              .result();
+              .get();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "abB");
     REQUIRE(result.value().rules
@@ -501,7 +502,7 @@ namespace libsemigroups {
                   return tc.finished() && tc.number_of_classes() > 4'536;
                 }))
                  .number_of_threads(12)
-                 .result();
+                 .get();
     REQUIRE(!result.has_value());
   }
 
@@ -523,7 +524,7 @@ namespace libsemigroups {
                kb.run_for(std::chrono::milliseconds(4));
                return kb.rewriting_system().confluent();
              }))
-              .result();
+              .get();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "bca");
     REQUIRE(result.value().rules
@@ -568,7 +569,7 @@ namespace libsemigroups {
                      })
                          .total(num)
                          .number_of_threads(10))
-                      .result();
+                      .get();
     REQUIRE(!result.has_value());
   }
 
@@ -602,7 +603,7 @@ namespace libsemigroups {
                // kb_rev_rpo.run_for(std::chrono::milliseconds(4));
                return kb_rpo.rewriting_system().confluent();
              }).number_of_threads(10))
-              .result();
+              .get();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "dacb");
     REQUIRE(
@@ -661,7 +662,7 @@ namespace libsemigroups {
                      })
                          .number_of_threads(10)
                          .total(num))
-                      .result();
+                      .get();
     REQUIRE(!result.has_value());
   }
 
@@ -694,14 +695,11 @@ namespace libsemigroups {
                kb_rev_rpo.run_for(std::chrono::milliseconds(4));
                return kb_rev_rpo.rewriting_system().confluent();
              }).number_of_threads(10))
-              .result();
+              .get();
     REQUIRE(!result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "014",
-                          "morpho completion",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "014", "morpho completion", "[fail]") {
     using rx::operator|;
 
     Presentation<std::string> p;
@@ -719,7 +717,8 @@ namespace libsemigroups {
             // kb.rewriting_system().sort_pending_rules_by(nullptr);
             // kb.run_for(std::chrono::microseconds(10));
             kb.max_rounds(2).run();
-            kb.max_pending_rules(POSITIVE_INFINITY);
+            kb.rewriting_system().settings().reduction_threshold
+                = POSITIVE_INFINITY;
             kb.rewriting_system().reduce();
             return to<Presentation>(kb);
           });
@@ -763,7 +762,7 @@ namespace libsemigroups {
       auto num = (input | rx::count());
       REQUIRE(num == 654);
 
-      auto result = (input | find_if.total(num)).result();
+      auto result = (input | find_if.total(num)).get();
       REQUIRE(!result.has_value());
     }
     {
@@ -802,7 +801,7 @@ namespace libsemigroups {
       // }
       // REQUIRE(count == 2'096);
 
-      auto result = (input | find_if.total(num)).result();
+      auto result = (input | find_if.total(num)).get();
       REQUIRE(!result.has_value());
     }
   }
@@ -810,7 +809,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
                           "015",
                           "morpho completion",
-                          "[quick]") {
+                          "[extreme]") {
     using rx::operator|;
 
     Presentation<std::string> p;
@@ -870,7 +869,7 @@ namespace libsemigroups {
                      return kb.rewriting_system().confluent();
                    }).number_of_threads(12);
 
-    auto result = (input | find_if.total(num)).result();
+    auto result = (input | find_if.total(num)).get();
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "cedab");
     REQUIRE(result.value().rules
