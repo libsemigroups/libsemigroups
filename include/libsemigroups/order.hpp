@@ -3373,10 +3373,10 @@ namespace libsemigroups {
   };  // class WtLenLexCmp<Default>
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
-  WtLenLexCmp(std::vector<size_t> const&)->WtLenLexCmp<>;
+  WtLenLexCmp(std::vector<size_t> const&) -> WtLenLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from weights.
-  WtLenLexCmp(std::vector<size_t>&&)->WtLenLexCmp<>;
+  WtLenLexCmp(std::vector<size_t>&&) -> WtLenLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmp from an
   //! alphabet and weights.
@@ -3519,10 +3519,10 @@ namespace libsemigroups {
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! weights.
-  WtLenLexCmpNoChecks(std::vector<size_t> const&)->WtLenLexCmpNoChecks<>;
+  WtLenLexCmpNoChecks(std::vector<size_t> const&) -> WtLenLexCmpNoChecks<>;
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! weights.
-  WtLenLexCmpNoChecks(std::vector<size_t>&&)->WtLenLexCmpNoChecks<>;
+  WtLenLexCmpNoChecks(std::vector<size_t>&&) -> WtLenLexCmpNoChecks<>;
 
   //! \brief Deduction guide for constructing \ref WtLenLexCmpNoChecks from
   //! an alphabet and weights.
@@ -4263,10 +4263,10 @@ namespace libsemigroups {
   };  // class WtLexCmp<Default>
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
-  WtLexCmp(std::vector<size_t> const&)->WtLexCmp<>;
+  WtLexCmp(std::vector<size_t> const&) -> WtLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from weights.
-  WtLexCmp(std::vector<size_t>&&)->WtLexCmp<>;
+  WtLexCmp(std::vector<size_t>&&) -> WtLexCmp<>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmp from an alphabet
   //! and weights.
@@ -4393,10 +4393,10 @@ namespace libsemigroups {
 
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
   //! weights.
-  WtLexCmpNoChecks(std::vector<size_t> const&)->WtLexCmpNoChecks<>;
+  WtLexCmpNoChecks(std::vector<size_t> const&) -> WtLexCmpNoChecks<>;
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from
   //! weights.
-  WtLexCmpNoChecks(std::vector<size_t>&&)->WtLexCmpNoChecks<>;
+  WtLexCmpNoChecks(std::vector<size_t>&&) -> WtLexCmpNoChecks<>;
 
   //! \brief Deduction guide for constructing \ref WtLexCmpNoChecks from an
   //! alphabet and weights.
@@ -4509,6 +4509,35 @@ namespace libsemigroups {
     //! \tparam Thing the reduction order type.
     template <typename Thing>
     static constexpr bool is_well_founded_v = is_well_founded<Thing>::value;
+
+    //! \brief Helper used to indicate whether or not an order has a state.
+    //!
+    //! This helper has a single static data member \c value which is \c true
+    //! if \p Thing has a state, and \c false otherwise.
+    //!
+    //! \tparam Thing the reduction order type.
+    template <typename Thing>
+    struct is_stateful : std::false_type {};
+
+    //! \brief Weighted short-lex order is stateful.
+    //!
+    //! Specialization of \ref is_stateful for \ref WtLexCmp.
+    template <>
+    struct is_stateful<WtLenLexCmp> : std::true_type {};
+
+    //! \brief Weighted lex order is stateful.
+    //!
+    //! Specialization of \ref is_stateful for \ref WtLexCmp.
+    template <>
+    struct is_stateful<WtLexCmp> : std::true_type {};
+
+    //! \brief Helper variable template for \ref is_stateful.
+    //!
+    //! This helper is \c true if \p Thing has a state, and \c false otherwise.
+    //!
+    //! \tparam Thing the reduction order type.
+    template <typename Thing>
+    static constexpr bool is_stateful_v = is_stateful<Thing>::value;
 
   }  // namespace order
 
