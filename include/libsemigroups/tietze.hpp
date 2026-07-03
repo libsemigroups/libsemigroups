@@ -51,20 +51,64 @@ namespace libsemigroups {
 
   class Subwords;  // forward decl
 
+  namespace detail {
+
+    class SubwordsSettings {
+      size_t _max_length;
+      size_t _min_length;
+      bool   _proper;
+
+     public:
+      SubwordsSettings()
+          : _max_length(POSITIVE_INFINITY), _min_length(0), _proper(false) {}
+
+      SubwordsSettings(SubwordsSettings const&)            = default;
+      SubwordsSettings(SubwordsSettings&&)                 = default;
+      SubwordsSettings& operator=(SubwordsSettings const&) = default;
+      SubwordsSettings& operator=(SubwordsSettings&&)      = default;
+
+      ~SubwordsSettings() = default;
+
+      [[nodiscard]] size_t max_length() const noexcept {
+        return _max_length;
+      }
+
+      void max_length(size_t val) {
+        _max_length = val;
+      }
+
+      [[nodiscard]] size_t min_length() const noexcept {
+        return _min_length;
+      }
+
+      void min_length(size_t val) {
+        _min_length = val;
+      }
+
+      [[nodiscard]] size_t proper() const noexcept {
+        return _proper;
+      }
+
+      void proper(bool val) {
+        _proper = val;
+      }
+    };
+
+  }  // namespace detail
+
   template <typename InputRange>
-  class SubwordsRange {
+  class SubwordsRange : public detail::SubwordsSettings {
    private:
     using Word =
         typename std::decay_t<typename InputRange::output_type>::word_type;
+
+    using Settings = detail::SubwordsSettings;
 
     std::pair<Presentation<Word>, Word> _current;
     size_t                              _current_rule;
     InputRange                          _input;
     InputRange                          _input_orig;  // TODO comment
-    size_t                              _max_length;
-    size_t                              _min_length;
     size_t                              _prefix_end;
-    bool                                _proper;
     std::unordered_map<Word, size_t>    _seen;
     size_t                              _suffix_begin;
 
@@ -81,34 +125,30 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initializers
     ////////////////////////////////////////////////////////////////////////
-    template <typename Settings>  // TODO rm template param when out of lining
-    explicit SubwordsRange(InputRange&& input, Settings const& subwords)
-        : _current(),
+    template <typename Settings_>  // TODO rm template param when out of lining
+    explicit SubwordsRange(InputRange&& input, Settings_ const& subwords)
+        : Settings(subwords),
+          _current(),
           _current_rule(),
           _input(std::move(input)),
           _input_orig(_input),
-          _max_length(subwords.max_length()),
-          _min_length(subwords.min_length()),
           _prefix_end(),
-          _proper(subwords.proper()),
           _seen(),
           _suffix_begin() {
-      reset();
+      init_from_input();
     }
 
     template <typename Settings>  // TODO rm template param when out of lining
     explicit SubwordsRange(InputRange const& input, Settings const& subwords)
-        : _current(),
+        : Settings(subwords),
+          _current(),
           _current_rule(),
           _input(input),
           _input_orig(_input),
-          _max_length(subwords.max_length()),
-          _min_length(subwords.min_length()),
           _prefix_end(),
-          _proper(subwords.proper()),
           _seen(),
           _suffix_begin() {
-      reset();
+      init_from_input();
     }
 
     SubwordsRange(SubwordsRange const&)            = default;
@@ -119,7 +159,7 @@ namespace libsemigroups {
     ~SubwordsRange() = default;
 
     // TODO private
-    SubwordsRange& reset() {
+    SubwordsRange& init_from_input() {
       if (!_input.at_end()) {
         _current.first = _input.get();
         _current_rule  = 0;
@@ -134,38 +174,28 @@ namespace libsemigroups {
     // Settings
     ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] size_t max_length() const noexcept {
-      return _max_length;
-    }
+    using Settings::max_length;
+    using Settings::min_length;
+    using Settings::proper;
 
     SubwordsRange& max_length(size_t val) {
-      _max_length = val;
-      _input      = _input_orig;
-      reset();
+      Settings::max_length(val);
+      _input = _input_orig;
+      init_from_input();
       return *this;
-    }
-
-    [[nodiscard]] size_t min_length() const noexcept {
-      return _min_length;
     }
 
     SubwordsRange& min_length(size_t val) {
-      _min_length = val;
-      _input      = _input_orig;
-      reset();
+      Settings::min_length(val);
+      _input = _input_orig;
+      init_from_input();
       return *this;
     }
 
-    [[nodiscard]] size_t proper() const noexcept {
-      return _proper;
-    }
-
     SubwordsRange& proper(bool val) {
-      _proper = val;
-      // No reset, we just continue from the current value but only output
-      // proper subwords from here on out.
-      // WARN: this is not the same as min/max_length
-      // TODO make it the same
+      Settings::proper(val);
+      _input = _input_orig;
+      init_from_input();
       return *this;
     }
 
@@ -187,9 +217,9 @@ namespace libsemigroups {
         while (_suffix_begin < rule.size()) {
           size_t prefix_last = rule.size();
           if (_suffix_begin == 0) {
-            prefix_last -= _proper;
+            prefix_last -= proper();
           }
-          while (_prefix_end - _suffix_begin <= _max_length
+          while (_prefix_end - _suffix_begin <= max_length()
                  && _prefix_end <= prefix_last) {
             auto first = rule.begin() + _suffix_begin;
             auto last  = rule.begin() + _prefix_end;
@@ -215,7 +245,7 @@ namespace libsemigroups {
       }
       if (!_input.at_end()) {
         _input.next();
-        reset();
+        init_from_input();
       }
     }
 
@@ -225,6 +255,16 @@ namespace libsemigroups {
 
     [[nodiscard]] size_t size_hint() const {
       return std::numeric_limits<size_t>::max();
+    }
+
+    // TODO add these elsewhere in this file
+    [[nodiscard]] auto begin() const {
+      return rx::begin(*this);
+    }
+
+    // TODO add these elsewhere in this file
+    [[nodiscard]] auto end() const {
+      return rx::end(*this);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -250,8 +290,8 @@ namespace libsemigroups {
     void advance_prefix() {
       LIBSEMIGROUPS_ASSERT(_current_rule < _current.first.rules.size());
       size_t const n = _current.first.rules[_current_rule].size();
-      if (_prefix_end + _min_length <= n) {
-        _prefix_end += _min_length;
+      if (_prefix_end + min_length() <= n) {
+        _prefix_end += min_length();
       } else {
         _prefix_end = n + 1;
       }
@@ -273,22 +313,19 @@ namespace libsemigroups {
     }
   };  // class SubwordsRange
 
-  class Subwords {
-   private:
-    size_t _min_length;
-    size_t _max_length;
-    bool   _proper;
+  class Subwords : public detail::SubwordsSettings {
+    using Settings = detail::SubwordsSettings;
 
    public:
-    Subwords()
-        : _min_length(0), _max_length(POSITIVE_INFINITY), _proper(false) {}
-
+    Subwords()                           = default;
     Subwords(Subwords const&)            = default;
     Subwords(Subwords&&)                 = default;
     Subwords& operator=(Subwords const&) = default;
     Subwords& operator=(Subwords&&)      = default;
 
     ~Subwords() = default;
+
+    Subwords(Settings const& settings) : Settings(settings){};
 
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
@@ -308,54 +345,81 @@ namespace libsemigroups {
     // Settings
     ////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] size_t min_length() const noexcept {
-      return _min_length;
-    }
-
     Subwords& min_length(size_t val) {
-      _min_length = val;
+      Settings::min_length(val);
       return *this;
-    }
-
-    [[nodiscard]] size_t max_length() const noexcept {
-      return _max_length;
     }
 
     Subwords& max_length(size_t val) {
-      _max_length = val;
+      Settings::max_length(val);
       return *this;
     }
 
-    [[nodiscard]] size_t proper() const noexcept {
-      return _proper;
-    }
-
     Subwords& proper(bool val) {
-      _proper = val;
+      Settings::proper(val);
       return *this;
     }
   };
 
-  template <typename InputRange>
-  class SubwordsAndFrequencyRange {
-   public:
-    using Word
-        = std::tuple_element_t<1,
-                               std::decay_t<typename InputRange::output_type>>;
+  class SubwordsFreq;
 
-    using output_type = std::tuple<Presentation<Word>, Word, size_t> const&;
+  template <typename InputRange>
+  class SubwordsFreqRange : public detail::SubwordsSettings {
+    using Settings = detail::SubwordsSettings;
+    using Word =
+        typename std::decay_t<typename InputRange::output_type>::word_type;
+    using value_type = std::tuple<Presentation<Word>, Word, size_t>;
+
+   public:
+    using output_type = value_type const&;
     // TODO static assert that InputRange::output_type =
     // std::pair(Presentation<Word>, Word)
 
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
    private:
-    size_t                   _index;
-    InputRange               _input;
-    std::vector<output_type> _output_for_current_input;
+    size_t                  _index;
+    InputRange              _input;
+    InputRange              _input_orig;
+    std::vector<value_type> _output_for_current_input;
 
    public:
-    SubwordsAndFrequencyRange(InputRange const& input)
-        : _index(UNDEFINED), _input(input), _output_for_current_input() {
+    // TODO replace Settings_ -> SubwordsFreq when out of lining, and
+    // remove template
+    template <typename Settings_>
+    SubwordsFreqRange(InputRange const& input, Settings_ const& settings)
+        : Settings(settings),
+          _index(UNDEFINED),
+          _input(input),
+          _input_orig(_input),
+          _output_for_current_input() {
       init_from_input();
+    }
+
+    using Settings::max_length;
+    using Settings::min_length;
+    using Settings::proper;
+
+    SubwordsFreqRange& min_length(size_t val) {
+      Settings::min_length(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    SubwordsFreqRange& max_length(size_t val) {
+      Settings::max_length(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
+    }
+
+    SubwordsFreqRange& proper(bool val) {
+      Settings::proper(val);
+      _input = _input_orig;
+      init_from_input();
+      return *this;
     }
 
     [[nodiscard]] bool at_end() const noexcept {
@@ -378,14 +442,21 @@ namespace libsemigroups {
       init_from_input();
     }
 
+    [[nodiscard]] size_t size_hint() const {
+      return std::numeric_limits<size_t>::max();
+    }
+
    private:
     void init_from_input() {
       if (!_input.at_end()) {
         _index = 0;
-        // TODO pass options to Subwords below
-        auto subwords = (_input.get() | Subwords());
-        for (auto& [p, w] : subwords) {
+        _output_for_current_input.clear();
+        // NOTE we pass *this to Subwords so that the settings are copied
+        auto subwords = Subwords(*this)(_input.get());
+        while (!subwords.at_end()) {
+          auto& [p, w] = subwords.get();
           _output_for_current_input.emplace_back(p, w, 0);
+          subwords.next();
         }
         // Now subwords is at_end(), so we can call frequency
         for (auto& [_, w, freq] : _output_for_current_input) {
@@ -395,10 +466,36 @@ namespace libsemigroups {
     }
   };
 
-  class SubwordsAndFrequency {
-    template <typename InputRange>
+  class SubwordsFreq : public detail::SubwordsSettings {
+   private:
+    using Settings = detail::SubwordsSettings;
+
+   public:
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return SubwordsAndFrequencyRange(std::forward<InputRange>(input));
+      // Pass *this to pass thru the settings
+      return SubwordsFreqRange(std::forward<InputRange>(input), *this);
+    }
+
+    template <typename Word>
+    [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
+      return operator()(Singleton(input));
+    }
+
+    SubwordsFreq& min_length(size_t val) {
+      Settings::min_length(val);
+      return *this;
+    }
+
+    SubwordsFreq& max_length(size_t val) {
+      Settings::max_length(val);
+      return *this;
+    }
+
+    SubwordsFreq& proper(bool val) {
+      Settings::proper(val);
+      return *this;
     }
   };
 

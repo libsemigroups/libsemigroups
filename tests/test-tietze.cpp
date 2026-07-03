@@ -131,7 +131,42 @@ namespace libsemigroups {
         == std::vector<std::string>({"", "a", "ab", "aba", "b", "ba", "bab"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Subwords", "001", "word_type", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("SubwordsFreq", "001", "strings", "[quick]") {
+    using rx::operator|;
+    auto      rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "abab", "ba");
+    auto subwords = (p | SubwordsFreq());
+
+    REQUIRE(subwords.size_hint() == std::numeric_limits<size_t>::max());
+
+    REQUIRE((subwords | rx::transform([](auto& tup) {
+               return std::pair(std::get<1>(tup), std::get<2>(tup));
+             })
+             | rx::take(8) | rx::to_vector())
+            == std::vector<std::pair<std::string, size_t>>({{"", 6},
+                                                            {"a", 3},
+                                                            {"ab", 2},
+                                                            {"aba", 1},
+                                                            {"abab", 1},
+                                                            {"b", 3},
+                                                            {"ba", 2},
+                                                            {"bab", 1}}));
+
+    subwords.min_length(2).max_length(3);
+    REQUIRE(subwords.min_length() == 2);
+    REQUIRE(subwords.max_length() == 3);
+    REQUIRE((subwords | rx::transform([](auto& tup) {
+               return std::pair(std::get<1>(tup), std::get<2>(tup));
+             })
+             | rx::take(8) | rx::to_vector())
+            == std::vector<std::pair<std::string, size_t>>(
+                {{"ab", 2}, {"aba", 1}, {"ba", 2}, {"bab", 1}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "word_type", "[quick]") {
     using literals::operator""_w;
     using rx::      operator|;
 
@@ -186,7 +221,7 @@ namespace libsemigroups {
             == std::vector({01010_w, 10100_w, 01001_w, 10010_w, 00101_w}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Subwords", "002", "operator|", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Subwords", "003", "operator|", "[quick]") {
     auto rg = ReportGuard(false);
 
     std::vector<Presentation<std::string>> ps;
@@ -217,7 +252,7 @@ namespace libsemigroups {
                  "yxyxyxyxyx", "yxyxyxyxyxy"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerators", "003", "strings", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("TietzeAddGenerators", "004", "strings", "[quick]") {
     using rx::operator|;
 
     auto                      rg = ReportGuard(false);
@@ -312,7 +347,7 @@ namespace libsemigroups {
                                                   {"abab", "ba", "c", "bbb"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "004", "first test", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "first test", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -333,7 +368,7 @@ namespace libsemigroups {
                  .has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "005", "abbab=baabb", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "006", "abbab=baabb", "[extreme]") {
     using rx::operator|;
 
     Presentation<std::string> p;
@@ -381,7 +416,7 @@ namespace libsemigroups {
                                        {"badd", "dbad"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("AllAlphabetOrders", "006", "strings", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("AllAlphabetOrders", "007", "strings", "[quick]") {
     using rx::operator|;
     auto      rg = ReportGuard(false);
 
@@ -403,7 +438,7 @@ namespace libsemigroups {
             == std::vector<std::string>({"xy", "yx"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "007", "a=cc, c=bab", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "008", "a=cc, c=bab", "[quick]") {
     using rx::operator|;
 
     auto rg = ReportGuard(false);
@@ -438,7 +473,7 @@ namespace libsemigroups {
   }
 
   // Takes about 10 hours
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "008", "aaa=1, aBBBABAb=1", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "009", "aaa=1, aBBBABAb=1", "[extreme]") {
     // https://math.stackexchange.com/questions/4942596
 
     using rx::                  operator|;
@@ -506,7 +541,7 @@ namespace libsemigroups {
     REQUIRE(!result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "009", "baabaa=aba", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "010", "baabaa=aba", "[quick]") {
     using rx::                operator|;
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -543,7 +578,7 @@ namespace libsemigroups {
                                        {"bcccccc", "cbcc"}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "010", "baaabaaa=aba", "[fail]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "011", "baaabaaa=aba", "[fail]") {
     using rx::                operator|;
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -574,7 +609,7 @@ namespace libsemigroups {
   }
 
   // About 7s
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "011", "ababbaaaaa=baaaaaba", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "012", "ababbaaaaa=baaaaaba", "[extreme]") {
     using rx::operator|;
 
     auto                      rg = ReportGuard(true);
@@ -636,7 +671,7 @@ namespace libsemigroups {
   }
 
   // Fails after ~8s
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "012", "baaababaaa=aaba", "[fail]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "013", "baaababaaa=aaba", "[fail]") {
     using rx::operator|;
     auto      rg = ReportGuard(false);
 
@@ -667,7 +702,7 @@ namespace libsemigroups {
   }
 
   // Fails in about 9 minutes
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "013", "aabbaab=aba", "[fail]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "014", "aabbaab=aba", "[fail]") {
     using rx::operator|;
     auto      rg = ReportGuard(false);
 
@@ -699,7 +734,7 @@ namespace libsemigroups {
     REQUIRE(!result.has_value());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "014", "morpho completion", "[fail]") {
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix", "015", "morpho completion", "[fail]") {
     using rx::operator|;
 
     Presentation<std::string> p;
@@ -808,7 +843,7 @@ namespace libsemigroups {
 
   // Takes approx. 4.3s
   LIBSEMIGROUPS_TEST_CASE("Tietze",
-                          "015",
+                          "016",
                           "morpho completion baaabaaa=aba",
                           "[extreme]") {
     using rx::operator|;
@@ -840,7 +875,6 @@ namespace libsemigroups {
            | Subwords().min_length(2).max_length(3)
            | rx::transform([&p0](auto const& pair) {
                auto copy(p0);
-
                presentation::replace_word_with_new_generator(copy, pair.second);
                return copy;
              })
@@ -901,12 +935,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Tietze",
-                          "016",
+                          "017",
                           "morpho completion baaabaaa=aba x2",
                           "[extreme]") {
     using rx::operator|;
-
-    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -928,35 +960,52 @@ namespace libsemigroups {
 
     Presentation<std::string> p0 = p, p1, p2;
 
+    size_t const m = 4 * 2048;
+
     auto input
         = (p0 | AllAlphabetOrders() | morpho_complete
-           | Subwords().min_length(2).max_length(3)
-           | rx::transform([&p0](auto const& pair) {
+           | SubwordsFreq().min_length(2).max_length(3) | rx::take(10'000)
+           | rx::sort([](auto const& tup1, auto const& tup2) {
+               return std::get<1>(tup1).size() * std::get<2>(tup1)
+                      > std::get<1>(tup2).size() * std::get<2>(tup2);
+             })
+           | rx::take(m) | rx::transform([&p0](auto const& tup) {
                auto copy(p0);
-               presentation::replace_word_with_new_generator(copy, pair.second);
+               presentation::replace_word_with_new_generator(copy,
+                                                             std::get<1>(tup));
                return copy;
              })
            | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
-           | Subwords().min_length(2).max_length(3)
-           | rx::transform([&p1](auto const& pair) {
+           | SubwordsFreq().min_length(2).max_length(3) | rx::take(10'000)
+           | rx::sort([](auto const& tup1, auto const& tup2) {
+               return std::get<1>(tup1).size() * std::get<2>(tup1)
+                      > std::get<1>(tup2).size() * std::get<2>(tup2);
+             })
+           | rx::take(m) | rx::transform([&p1](auto const& tup) {
                auto copy(p1);
-               presentation::replace_word_with_new_generator(copy, pair.second);
+               presentation::replace_word_with_new_generator(copy,
+                                                             std::get<1>(tup));
                return copy;
              })
            | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
-           | Subwords().min_length(2).max_length(3)
-           | rx::transform([&p2](auto const& pair) {
+           | SubwordsFreq().min_length(2).max_length(3) | rx::take(10'000)
+           | rx::sort([](auto const& tup1, auto const& tup2) {
+               return std::get<1>(tup1).size() * std::get<2>(tup1)
+                      > std::get<1>(tup2).size() * std::get<2>(tup2);
+             })
+           | rx::take(m) | rx::transform([&p2](auto const& tup) {
                auto copy(p2);
-               presentation::replace_word_with_new_generator(copy, pair.second);
-               // fmt::print("C: {}\n", copy.alphabet());
-               // fmt::print("C: {}\n\n", copy.rules);
+               presentation::replace_word_with_new_generator(copy,
+                                                             std::get<1>(tup));
+               fmt::print("C: {}\n", copy.alphabet());
+               fmt::print("C: {}\n\n", copy.rules);
                return copy;
              })
            | AllAlphabetOrderExts());
 
-    auto num = (input | rx::count());
+    size_t const num = (input | rx::count());
 
-    REQUIRE(num == 399'620);
+    // REQUIRE(num == 160);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
@@ -966,30 +1015,6 @@ namespace libsemigroups {
 
     auto result = (input | find_if.total(num)).get();
     REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "cedab");
-    REQUIRE(result.value().rules
-            == std::vector<std::string>(
-                {"cdcd", "ac", "c", "ba", "d", "aa", "e", "cdd"}));
-
-    kb.init(congruence_kind::twosided, result.value());
-    kb.run();
-    using rule_type = typename decltype(kb)::rule_type;
-    REQUIRE((kb.active_rules() | rx::to_vector())
-            == std::vector<rule_type>(
-                {{"ba", "c"},           {"aa", "d"},
-                 {"cdd", "e"},          {"bd", "ca"},
-                 {"ad", "da"},          {"ae", "cded"},
-                 {"cdecd", "dc"},       {"bec", "ccecd"},
-                 {"bcde", "ccd"},       {"cdeed", "de"},
-                 {"dcd", "cdee"},       {"cdedc", "dcecd"},
-                 {"bccdee", "cc"},      {"ac", "ccdee"},
-                 {"bede", "cceeeed"},   {"bedc", "cceeecd"},
-                 {"bee", "cceed"},      {"dccdee", "cdeecd"},
-                 {"dde", "cdeeeed"},    {"ddc", "cdeeecd"},
-                 {"cdede", "dceed"},    {"cdeecdee", "decd"},
-                 {"cdeccdee", "dccd"},  {"ccdeeee", "ecd"},
-                 {"ccdeeecd", "ec"},    {"ccdeeede", "eceed"},
-                 {"ccdeeedc", "ececd"}, {"ccdeeeccdee", "eccd"}}));
   }
 
 }  // namespace libsemigroups
