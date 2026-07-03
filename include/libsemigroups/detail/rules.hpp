@@ -97,9 +97,7 @@ namespace libsemigroups {
 
     template <typename ReductionOrder>
     void reorder(Rule* rule) {
-      if (ReductionOrder{}(rule->lhs(), rule->rhs())) {
-        std::swap(rule->lhs(), rule->rhs());
-      }
+      reorder(rule, ReductionOrder{});
     }
 
     [[nodiscard]] static inline size_t length(Rule const* rule) {
