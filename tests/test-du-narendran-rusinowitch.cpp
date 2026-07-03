@@ -538,4 +538,47 @@ namespace libsemigroups {
     REQUIRE(du_narendran_rusinowitch(p) == "");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("du_narendran_rusinowitch",
+                          "016",
+                          "Knuth-Bendix backtrack",
+                          "[quick]") {
+    Presentation<std::string> p;
+    p.alphabet("abc");
+
+    presentation::add_rule(p, "baa", "c");
+    presentation::add_rule(p, "aba", "cc");
+    presentation::add_rule(p, "ac", "cca");
+    presentation::add_rule(p, "bcccca", "cba");
+    presentation::add_rule(p, "abcc", "ccba");
+    presentation::add_rule(p, "bcccccc", "cbcc");
+    //           [baa -> c, aba -> cc, ac -> cca, bcccca -> cba, abcc -> ccba,
+    //           bcccccc -> cbcc]]
+
+    REQUIRE(du_narendran_rusinowitch(p) == "cba");
+
+    //    [
+    //      baa->c,
+    //      aba->cc,
+    //      ac->cca,
+    //      cba->bcccca,
+    //      abcc->cbcccca,
+    //      bccccaa->cc,
+    //      bcccccc->cbcc,
+    //      abcbcccca->ccbcc,
+    //      cbcbcccca->bcccccbcccca,
+    //      abcbcccccbcccca->ccbccbcc,
+    //      cbcccccbcccccbcccca->ccbcbcccccbcccca,
+    //      bcccccbcccccbcccca->cbcbcccccbcccca
+    //    ]
+    //
+    //        [baa->c,
+    //         aba->cc,
+    //         ac->cca,
+    //         cba->bcccca,
+    //         abcc->cbcccca,
+    //         bccccaa->cc,
+    //         bcccccc->cbcc,
+    //         abcbcccca->ccbcc,
+    //         bcccccbcccca->cbcbcccca]
+  }
 }  // namespace libsemigroups

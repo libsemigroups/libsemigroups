@@ -38,6 +38,7 @@ namespace libsemigroups {
     KnuthBendixImpl<RewritingSystem,
                     ReductionOrder>::Settings::init() noexcept {
       max_overlap    = POSITIVE_INFINITY;
+      max_rounds     = POSITIVE_INFINITY;
       max_rules      = POSITIVE_INFINITY;
       overlap_policy = options::overlap::ABC;
       return *this;
@@ -95,6 +96,7 @@ namespace libsemigroups {
           _gen_pairs_initted(),
           _gilman_graph(),
           _gilman_graph_node_labels(),
+          _number_of_rounds(),
           _overlap_measure(nullptr),
           _presentation(),
           _rewriting_system(),
@@ -114,7 +116,8 @@ namespace libsemigroups {
       _gen_pairs_initted = false;
       _gilman_graph.init(0, 0);
       _gilman_graph_node_labels.clear();
-      _overlap_measure = nullptr;
+      _number_of_rounds = 0;
+      _overlap_measure  = nullptr;
       _presentation.init();
       _rewriting_system.init();
       _settings.init();
@@ -134,6 +137,7 @@ namespace libsemigroups {
       _gen_pairs_initted        = that._gen_pairs_initted;
       _gilman_graph             = that._gilman_graph;
       _gilman_graph_node_labels = that._gilman_graph_node_labels;
+      _number_of_rounds         = that._number_of_rounds;
       _overlap_measure          = nullptr;
       _presentation             = that._presentation;
       _rewriting_system         = that._rewriting_system;
@@ -155,6 +159,7 @@ namespace libsemigroups {
       _gen_pairs_initted        = std::move(that._gen_pairs_initted);
       _gilman_graph             = std::move(that._gilman_graph);
       _gilman_graph_node_labels = std::move(that._gilman_graph_node_labels);
+      _number_of_rounds         = std::move(that._number_of_rounds);
       _overlap_measure          = std::move(that._overlap_measure);
       _presentation             = std::move(that._presentation);
       _rewriting_system         = std::move(that._rewriting_system);
@@ -440,7 +445,8 @@ namespace libsemigroups {
     bool
     KnuthBendixImpl<RewritingSystem, ReductionOrder>::stop_running() const {
       return stopped()
-             || _rewriting_system.number_of_rules() > _settings.max_rules;
+             || _rewriting_system.number_of_rules() > _settings.max_rules
+             || _number_of_rounds >= _settings.max_rounds;
     }
 
     template <typename RewritingSystem, typename ReductionOrder>
@@ -690,6 +696,7 @@ namespace libsemigroups {
           }
           ++first.it;
         }
+        ++_number_of_rounds;
       } while (!stop_running() && _rewriting_system.reduce());
 
       if (_settings.max_overlap == POSITIVE_INFINITY

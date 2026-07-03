@@ -22,6 +22,7 @@
 #ifndef LIBSEMIGROUPS_RANGES_HPP_
 #define LIBSEMIGROUPS_RANGES_HPP_
 
+#include "libsemigroups/debug.hpp"
 #include <algorithm>    // for is_sorted
 #include <cstddef>      // for size_t
 #include <functional>   // for less
@@ -163,6 +164,94 @@ namespace libsemigroups {
       return Range<Inner>(std::forward<InputRange>(input));
     }
 #endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  };
+
+  // TODO doc
+  template <typename Thing>
+  class Singleton {
+    Thing const* _value;
+    bool         _at_end;
+
+   public:
+    using output_type = Thing const&;
+
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+
+    explicit Singleton(Thing const& thing) : _value(&thing), _at_end(false) {}
+
+    // TODO rule of 5
+
+    [[nodiscard]] output_type get() const noexcept {
+      LIBSEMIGROUPS_ASSERT(!at_end());
+      return *_value;
+    }
+
+    void next() {
+      _at_end = true;
+    }
+
+    [[nodiscard]] bool at_end() const noexcept {
+      return _at_end;
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return !at_end();
+    }
+  };
+
+  template <typename InputRange>
+  class RefRange {
+   public:
+    using output_type = typename InputRange::output_type;
+
+    static constexpr bool is_finite     = true;
+    static constexpr bool is_idempotent = true;
+
+   private:
+    using value_type = std::decay_t<output_type>;
+
+    InputRange  _input;
+    value_type& _ref;
+
+   public:
+    explicit RefRange(InputRange&& input, value_type& thing)
+        : _input(std::move(input)), _ref(thing) {}
+
+    explicit RefRange(InputRange const& input, value_type& thing)
+        : _input(input), _ref(thing) {}
+
+    [[nodiscard]] output_type get() const noexcept {
+      LIBSEMIGROUPS_ASSERT(!at_end());
+      output_type result = _input.get();
+      // TODO could be expensive if get is called multiple times
+      _ref = result;
+      return result;
+    }
+
+    void next() {
+      _input.next();
+    }
+
+    [[nodiscard]] bool at_end() const noexcept {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return _input.size_hint();
+    }
+  };
+
+  template <typename Thing>
+  struct Ref {
+    Thing& _thing;
+
+    explicit Ref(Thing& thing) : _thing(thing) {}
+
+    template <typename InputRange>
+    [[nodiscard]] auto operator()(InputRange&& input) const {
+      return RefRange(std::forward<InputRange>(input), _thing);
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////
