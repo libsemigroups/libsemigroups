@@ -28,6 +28,9 @@ namespace libsemigroups::detail {
   RewritingSystemSet<ReductionOrder>&
   RewritingSystemSet<ReductionOrder>::init() {
     RewritingSystemBase::init();
+    if constexpr (order::is_stateful_v<ReductionOrder>) {
+      _order.init();
+    }
     _set_rules.clear();
     return *this;
   }
@@ -62,7 +65,7 @@ namespace libsemigroups::detail {
     if (!std::equal(first1, last1, first2, last2)) {
       set_cached_confluent(tril::unknown);
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
-      reorder<ReductionOrder<Default>>(rule);
+      reorder(rule, _order);
       // The left-hand-side of a rule must not be empty; otherwise, bad things
       // happen.
       LIBSEMIGROUPS_ASSERT(!rule->lhs().empty());
@@ -94,7 +97,7 @@ namespace libsemigroups::detail {
 
       // Check rule is non-trivial
       if (rule1->lhs() != rule1->rhs()) {
-        reorder<ReductionOrder<Default>>(rule1);
+        reorder(rule1, _order);
 
         native_word_type& lhs = rule1->lhs();
 
@@ -384,6 +387,7 @@ namespace libsemigroups::detail {
   RewritingSystemTrie<ReductionOrder>::RewritingSystemTrie()
       : RewritingSystemBase(),
         _new_rule_trie(),
+        _order(),
         _rule_trie(0),
         _ticker_running(false),
         _trie_nodes_visited_indices() {}
@@ -394,6 +398,9 @@ namespace libsemigroups::detail {
     // Do nothing to _trie_nodes_visited_indices, or _new_rule_trie
     RewritingSystemBase::init();
     _rule_trie.init();
+    if constexpr (order::is_stateful_v<ReductionOrder>) {
+      _order.init();
+    }
     _ticker_running = false;
     return *this;
   }
@@ -432,7 +439,7 @@ namespace libsemigroups::detail {
                                                 Iterator last2) {
     if (!std::equal(first1, last1, first2, last2)) {
       Rule* rule = Rules::add_pending_rule(first1, last1, first2, last2);
-      reorder<ReductionOrder<Default>>(rule);
+      reorder(rule, _order);
       set_cached_confluent(tril::unknown);
       if (!active_rules().empty()
           && pending_rules().size() > settings().reduction_threshold) {
@@ -476,7 +483,7 @@ namespace libsemigroups::detail {
         rewrite_no_reduce(rule->rhs());
 
         if (rule->lhs() != rule->rhs()) {
-          reorder<ReductionOrder<Default>>(rule);
+          reorder(rule, _order);
           add_active_rule(rule);
           if (use_separate_trie) {
 #ifdef LIBSEMIGROUPS_DEBUG

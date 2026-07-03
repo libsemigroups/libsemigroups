@@ -508,5 +508,39 @@ namespace libsemigroups {
       REQUIRE(rws.confluent_known());
       REQUIRE(!rws.confluent());
     }
+    LIBSEMIGROUPS_TEMPLATE_TEST_CASE("RewritingSystem",
+                                     "017",
+                                     "WtLenLex",
+                                     "[quick]",
+                                     RewritingSystemSet<WtLenLexCmp>,
+                                     RewritingSystemTrie<WtLenLexCmp>) {
+      auto rg         = ReportGuard(false);
+      using rule_type = std::pair<std::string, std::string>;
+
+      TestType rws;
+      rws.increase_alphabet_size_by(2);
+      // TODO(1): Strong exception guarantee is violated here; the rule is added
+      // before there is an attempt to orient it. If reorder throws, the rule is
+      // still added.
+      REQUIRE_THROWS_AS(rewriting_system::add_rule(rws, "aab"_w, "bb"_w),
+                        LibsemigroupsException);
+      rws.init();
+
+      rws.order().weights({1, 1});
+      rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{0, 0, 1}, {1, 1}}}));
+
+      rws.init();
+      rws.order().weights({1, 3});
+      rws.increase_alphabet_size_by(2);
+      rewriting_system::add_rule(rws, "aab"_w, "bb"_w);
+      REQUIRE((rws.rules()
+               | rx::transform([](auto const& pair) { return rule_type(pair); })
+               | rx::to_vector())
+              == std::vector<rule_type>({{{1, 1}, {0, 0, 1}}}));
+    }
   }  // namespace detail
 }  // namespace libsemigroups

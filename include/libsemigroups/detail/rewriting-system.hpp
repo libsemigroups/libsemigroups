@@ -246,6 +246,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // Private data
       ////////////////////////////////////////////////////////////////////////
+      ReductionOrder       _order;
       std::set<RuleLookup> _set_rules;
 
      public:
@@ -295,6 +296,14 @@ namespace libsemigroups {
                                    Iterator last1,
                                    Iterator first2,
                                    Iterator last2);
+
+      [[nodiscard]] ReductionOrder const& order() const noexcept {
+        return _order;
+      }
+
+      [[nodiscard]] ReductionOrder& order() noexcept {
+        return _order;
+      }
 
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
@@ -351,6 +360,7 @@ namespace libsemigroups {
 
       Trie                                            _new_rule_trie;
       std::function<bool(RewritingSystemTrie const&)> _use_new_rule_trie;
+      ReductionOrder<Default>                         _order;
       Trie                                            _rule_trie;
       bool                                            _ticker_running;
       mutable std::vector<index_type> _trie_nodes_visited_indices;
@@ -409,6 +419,14 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
+
+      [[nodiscard]] ReductionOrder const& order() const noexcept {
+        return _order;
+      }
+
+      [[nodiscard]] ReductionOrder& order() noexcept {
+        return _order;
+      }
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
