@@ -528,8 +528,12 @@ namespace libsemigroups::detail {
       set_cached_terminating(tril::TRUE);
       return tril::TRUE;
     }
-    reduce();
-    return is_terminating_no_reduce();
+    tril result = is_terminating_no_reduce();
+    if (result == tril::unknown) {
+      reduce();
+      result = is_terminating_no_reduce();
+    }
+    return result;
   }
 
   template <typename ReductionOrder>
