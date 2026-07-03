@@ -683,10 +683,6 @@ namespace libsemigroups::detail {
       return;
     }
 
-    // If the rewriting system is not terminating, then rewriting may last
-    // forever.
-    LIBSEMIGROUPS_ASSERT(is_terminating_no_reduce() != tril::FALSE);
-
     // OLD VERSION; Assumes length reducing!!
 
     //     _trie_nodes_visited_indices.clear();
