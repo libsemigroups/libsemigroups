@@ -52,7 +52,7 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      citow(Thing const* tc, Iterator it) : _it(it), _ptr(tc) {}
+      citow(Thing const* thing, Iterator it) : _it(it), _ptr(thing) {}
 
       reference operator*() const {
         return _ptr->presentation().index_no_checks(*_it);
@@ -143,7 +143,7 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-      cifrw(Thing const* tc, Iterator it) : _it(it), _ptr(tc) {}
+      cifrw(Thing const* thing, Iterator it) : _it(it), _ptr(thing) {}
 
       reference operator*() const {
         return _ptr->presentation().letter_no_checks(*_it);
@@ -225,7 +225,8 @@ namespace libsemigroups {
 
        public:
         // Constructor from Thing and iterator
-        proxy_ref(Thing const* tc, Iterator it) noexcept : _it(it), _ptr(tc) {}
+        proxy_ref(Thing const* thing, Iterator it) noexcept
+            : _it(it), _ptr(thing) {}
 
         // Assignment operator to allow setting the value via the proxy
         Iterator operator=(letter_type i) noexcept {
@@ -277,7 +278,8 @@ namespace libsemigroups {
 
        public:
         // Constructor from Thing and iterator
-        proxy_ref(Thing const* tc, Iterator it) noexcept : _it(it), _ptr(tc) {}
+        proxy_ref(Thing const* thing, Iterator it) noexcept
+            : _it(it), _ptr(thing) {}
 
         // Assignment operator to allow setting the value via the proxy
         Iterator operator=(letter_type i) noexcept {
