@@ -614,8 +614,6 @@ namespace libsemigroups {
       return _get_presentation;
     }
 
-    // TODO try_get_and_advance
-
     void next() {
       _input.next();
       if (!_input.at_end()) {

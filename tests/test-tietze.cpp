@@ -473,7 +473,10 @@ namespace libsemigroups {
   }
 
   // Takes about 10 hours
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "009", "aaa=1, aBBBABAb=1", "[extreme]") {
+  LIBSEMIGROUPS_TEST_CASE("FindIf",
+                          "009",
+                          "aaa=1, aBBBABAb=1 (finite quotients)",
+                          "[fail]") {
     // https://math.stackexchange.com/questions/4942596
 
     using rx::                  operator|;
@@ -1015,6 +1018,76 @@ namespace libsemigroups {
 
     auto result = (input | find_if.total(num)).get();
     REQUIRE(result.has_value());
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("FindIf",
+                          "018",
+                          "aaa=1, aBBBABAb=1 (morpho)",
+                          "[fail]") {
+    // https://math.stackexchange.com/questions/4942596
+
+    using rx::                  operator|;
+    using literals::            operator""_p;
+    auto                        rg = ReportGuard(false);
+    using std::string_literals::operator""s;
+
+    Presentation<std::string> p;
+    p.alphabet("abB");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "aaa", "");
+    presentation::add_rule(p, "Bb", "");
+    presentation::add_rule(p, "bB", "");
+    // presentation::add_rule(p, "b^9"_p, "");
+    presentation::add_rule(p, "abaabbbaB", "");
+
+    KnuthBendix<std::string> kb(congruence_kind::twosided, p);
+
+    auto morpho_complete
+        = rx::transform([&kb](Presentation<std::string> const& p) {
+            kb.init(congruence_kind::twosided, p);
+            kb.rewriting_system().sort_pending_rules_by(nullptr);
+            kb.rewriting_system().settings().reduction_threshold
+                = POSITIVE_INFINITY;
+            kb.max_rounds(2).run();
+            return to<Presentation>(kb);
+          });
+
+    Presentation<std::string> p0 = p, p1, p2;
+
+    auto input
+        = (p0 | AllAlphabetOrders() | morpho_complete
+           | Subwords().min_length(2).max_length(6).proper(true)
+           | rx::transform([&p0](auto const& pair) {
+               auto copy(p0);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
+           | Subwords().min_length(2).max_length(6).proper(true)
+           | rx::transform([&p1](auto const& pair) {
+               auto copy(p1);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
+           | Subwords().min_length(2).max_length(6).proper(true)
+           | rx::transform([&p2](auto const& pair) {
+               auto copy(p2);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts());
+    auto num = (input | rx::count());
+
+    auto find_if = FindIf([kb](auto const& p) mutable {
+                     kb.init(congruence_kind::twosided, p);
+                     kb.run_for(std::chrono::milliseconds(4));
+                     return kb.rewriting_system().confluent();
+                   }).number_of_threads(12);
+
+    auto result = (input | find_if.total(num)).get();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cedab");
   }
 
 }  // namespace libsemigroups
