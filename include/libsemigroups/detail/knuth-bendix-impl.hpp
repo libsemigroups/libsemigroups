@@ -67,8 +67,6 @@
 namespace libsemigroups {
   // Forward declarations
   namespace detail {
-    template <typename KnuthBendix_>
-    class KBE;
     //! \defgroup knuth_bendix_class_mem_types_group Member types
     //! \ingroup knuth_bendix_class_group
     //!

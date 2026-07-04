@@ -38,6 +38,11 @@ namespace libsemigroups {
   enum class congruence_kind;
   enum class tril;
 
+  namespace detail {
+    template <typename KnuthBendix_>
+    class KBE;
+  }
+
   //! \defgroup knuth_bendix_group Knuth-Bendix
   //!
   //! This page contains links to the documentation related to the
