@@ -1117,7 +1117,8 @@ namespace libsemigroups {
     REQUIRE(result.value().alphabet() == "cedab");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FindIf", "019", "baaabaaba=a", "[standard]") {
+  // Takes about 2.4s
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "019", "baaabaaba=a", "[extreme]") {
     using rx::                  operator|;
     using literals::            operator""_p;
     using std::string_literals::operator""s;
@@ -1138,59 +1139,36 @@ namespace libsemigroups {
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
-                     kb.run_for(std::chrono::milliseconds(4));
+                     kb.run_for(std::chrono::milliseconds(1));
                      return kb.rewriting_system().confluent();
-                   }).number_of_threads(1);
+                   }).number_of_threads(12);
 
-    auto result = (input | find_if).get();
+    auto result = (input | find_if.total(num)).get();
 
     REQUIRE(result.has_value());
-    REQUIRE(result.value().alphabet() == "dcbea");
+    REQUIRE(result.value().alphabet() == "cdeab");
     REQUIRE(result.value().rules
             == std::vector<std::string>(
-                {"beacc", "a", "c", "aba", "d", "abc", "e", "aa"}));
+                {"edc", "a", "c", "ba", "d", "ca", "e", "daa"}));
 
     kb.init(congruence_kind::twosided, result.value());
     kb.run();
     using rule_type = typename decltype(kb)::rule_type;
     REQUIRE((kb.active_rules() | rx::to_vector())
-            == std::vector<rule_type>(
-                {{"cecc", "e"},           {"cbd", "dbc"},
-                 {"cbebc", "dd"},         {"cbcbc", "dbd"},
-                 {"cebc", "deccd"},       {"deccbc", "cd"},
-                 {"decd", "cc"},          {"cebd", "decccbc"},
-                 {"cbed", "debc"},        {"dbebc", "cbcd"},
-                 {"ebebd", "cecdcbc"},    {"ebebc", "cecdd"},
-                 {"cecdbe", "ebdecc"},    {"cecdbc", "ebd"},
-                 {"cecdbd", "ebcbc"},     {"cebe", "deccdecc"},
-                 {"cece", "eecc"},        {"cecdeccd", "eebc"},
-                 {"cbebe", "ddecc"},      {"cbebd", "dcbc"},
-                 {"cbcecd", "dc"},        {"cbcbe", "dbdecc"},
-                 {"dbeebc", "cbced"},     {"dbebd", "cbccbc"},
-                 {"ebeebc", "cecded"},    {"bececdd", "c"},
-                 {"beec", "ececdccd"},    {"ebebe", "cecddecc"},
-                 {"bececdcd", "ebc"},     {"cee", "eecccc"},
-                 {"cecdebc", "ebed"},     {"cedeccd", "eeccbc"},
-                 {"ccecd", "deccc"},      {"deccbe", "cdecc"},
-                 {"dbebe", "cbcdecc"},    {"dbcecd", "cbcc"},
-                 {"beee", "ececdccdecc"}, {"beebee", "ececddecc"},
-                 {"ebeebd", "cecdecbc"},  {"ebcecd", "cecdc"},
-                 {"cecdebd", "ebecbc"},   {"cbec", "dcecd"},
-                 {"a", "bececdc"},        {"ebbececdc", "cecd"},
-                 {"bececdce", "cecdecc"}, {"bececdcc", "cecd"},
-                 {"dbbececdc", "cbc"},    {"bececdcbe", "decc"},
-                 {"cbbececdc", "d"},      {"bececdcbc", "d"},
-                 {"beed", "ececdcccbc"},  {"ebeebe", "cecdedecc"},
-                 {"dbeebe", "cbcedecc"},  {"cecdebe", "ebedecc"},
-                 {"cecdcecd", "ebec"},    {"decced", "eeccccbc"},
-                 {"cecdeccc", "ececd"},   {"cedeccc", "eecd"},
-                 {"dee", "eecccdccc"},    {"dedecce", "eecccddecc"},
-                 {"cbee", "dcecdecc"},    {"cecdecce", "ececdecc"},
-                 {"bececde", "ececdc"},   {"ebececd", "cecdec"},
-                 {"dbececd", "cbcec"},    {"deccec", "eecccd"},
-                 {"cedecce", "eecdecc"},  {"dedeccd", "eecccdcbc"},
-                 {"dece", "eecccdc"},     {"dbeebd", "cbcecbc"},
-                 {"beebec", "ececdd"},    {"dedeccc", "eecccdd"},
-                 {"beebed", "ececdcbc"}}));
+            == std::vector<rule_type>({{"a", "edc"},
+                                       {"cedc", "d"},
+                                       {"dedd", "e"},
+                                       {"bedc", "c"},
+                                       {"bedd", "d"},
+                                       {"dede", "eedd"},
+                                       {"dedc", "cedd"},
+                                       {"bede", "e"},
+                                       {"dee", "eedddd"},
+                                       {"cede", "eedc"},
+                                       {"decedd", "eedddc"},
+                                       {"bee", "edd"},
+                                       {"becedd", "edc"},
+                                       {"cee", "eedcdd"},
+                                       {"cecedd", "eedcdc"}}));
   }
 }  // namespace libsemigroups

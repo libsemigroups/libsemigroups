@@ -24,6 +24,7 @@
 #include <cstddef>      // for size_t
 #include <memory>       // for make_shared, shared_ptr
 #include <numeric>      // for accumulate
+#include <optional>     // for optional
 #include <queue>        // for queue
 #include <string_view>  // for basic_string_view, string_view
 #include <tuple>
@@ -1111,11 +1112,12 @@ namespace libsemigroups {
   // PedersenPestov
   ////////////////////////////////////////////////////////////////////////
 
-  template <size_t Depth, typename Word, typename RewritingSystem>
-  class PedersenPestov : detail::SubwordsSettings {
+  template <size_t Depth,
+            typename InputRange,
+            typename Word,
+            typename RewritingSystem>
+  class PedersenPestovRange {
    private:
-    using Settings = detail::SubwordsSettings;
-
     struct State {
       KnuthBendix<Word, RewritingSystem> kb;
       std::vector<Presentation<Word>>    presentations;
@@ -1124,11 +1126,173 @@ namespace libsemigroups {
           : kb(kb), presentations(depth) {}
     };
 
-    std::shared_ptr<State> _state;
+    using StatePtr = std::shared_ptr<State>;
+
+    class Builder : public detail::SubwordsSettings {
+      using Settings = detail::SubwordsSettings;
+
+     public:
+      explicit Builder(Settings const& settings) : Settings(settings) {}
+
+      template <size_t N, typename Range>
+      auto add_steps(Range&& input, StatePtr state) const {
+        static_assert(N < Depth);
+
+        LIBSEMIGROUPS_ASSERT(N < state->presentations.size());
+
+        using rx::operator|;
+
+        auto run_knuth_bendix = [state](Presentation<Word> const& p) {
+          state->kb.init(congruence_kind::twosided, p);
+          state->kb.rewriting_system().sort_pending_rules_by(nullptr);
+          state->kb.rewriting_system().settings().reduction_threshold
+              = POSITIVE_INFINITY;
+          state->kb.max_rounds(2).run();
+          return to<Presentation>(state->kb);
+        };
+
+        if constexpr (N == 0) {
+          auto step = (std::forward<Range>(input) | AllAlphabetOrders()
+                       | Ref(state->presentations[N])
+                       | rx::transform(run_knuth_bendix) | Subwords(*this)
+                       | rx::transform([state](auto const& tup) {
+                           auto copy(state->presentations[N]);
+                           presentation::replace_word_with_new_generator(
+                               copy, std::get<1>(tup));
+                           return copy;
+                         }));
+
+          if constexpr (N + 1 == Depth) {
+            return (step | AllAlphabetOrderExts());
+          } else {
+            return add_steps<N + 1>(std::move(step), state);
+          }
+        } else {
+          auto step = (std::forward<Range>(input) | AllAlphabetOrderExts()
+                       | Ref(state->presentations[N])
+                       | rx::transform(run_knuth_bendix) | Subwords(*this)
+                       | rx::transform([state](auto const& tup) {
+                           auto copy(state->presentations[N]);
+                           presentation::replace_word_with_new_generator(
+                               copy, std::get<1>(tup));
+                           return copy;
+                         }));
+
+          if constexpr (N + 1 == Depth) {
+            return (step | AllAlphabetOrderExts());
+          } else {
+            return add_steps<N + 1>(std::move(step), state);
+          }
+        }
+      }
+    };
+
+    using InnerRange
+        = decltype(std::declval<Builder const&>().template add_steps<0>(
+            std::declval<InputRange>(),
+            std::declval<StatePtr>()));
+
+    InputRange                         _input_orig;
+    Builder                            _builder;
+    KnuthBendix<Word, RewritingSystem> _kb_orig;
+    StatePtr                           _state;
+    std::optional<InnerRange>          _inner;
+
+   public:
+    ////////////////////////////////////////////////////////////////////////
+    // Aliases
+    ////////////////////////////////////////////////////////////////////////
+
+    using output_type = typename InnerRange::output_type;
+
+    static constexpr bool is_finite     = rx::is_finite_v<InnerRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InnerRange>;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors
+    ////////////////////////////////////////////////////////////////////////
+
+    PedersenPestovRange(InputRange&&                              input,
+                        KnuthBendix<Word, RewritingSystem> const& kb,
+                        detail::SubwordsSettings const&           settings)
+        : _input_orig(std::move(input)),
+          _builder(settings),
+          _kb_orig(kb),
+          _state(),
+          _inner() {
+      init_inner();
+    }
+
+    PedersenPestovRange(InputRange const&                         input,
+                        KnuthBendix<Word, RewritingSystem> const& kb,
+                        detail::SubwordsSettings const&           settings)
+        : _input_orig(input),
+          _builder(settings),
+          _kb_orig(kb),
+          _state(),
+          _inner() {
+      init_inner();
+    }
+
+    PedersenPestovRange(PedersenPestovRange const& that)
+        : _input_orig(that._input_orig),
+          _builder(that._builder),
+          _kb_orig(that._kb_orig),
+          _state(),
+          _inner() {
+      init_inner();
+    }
+
+    PedersenPestovRange(PedersenPestovRange&&) = default;
+
+    PedersenPestovRange& operator=(PedersenPestovRange const& that) {
+      _input_orig = that._input_orig;
+      _builder    = that._builder;
+      _kb_orig    = that._kb_orig;
+      init_inner();
+      return *this;
+    }
+
+    PedersenPestovRange& operator=(PedersenPestovRange&&) = default;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Input range
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] output_type get() const {
+      return _inner->get();
+    }
+
+    void next() {
+      _inner->next();
+    }
+
+    [[nodiscard]] bool at_end() const {
+      return _inner->at_end();
+    }
+
+    [[nodiscard]] size_t size_hint() const {
+      return _inner->size_hint();
+    }
+
+   private:
+    void init_inner() {
+      _state = std::make_shared<State>(_kb_orig, Depth);
+      _inner.emplace(
+          _builder.template add_steps<0>(InputRange(_input_orig), _state));
+    }
+  };  // class PedersenPestovRange
+
+  template <size_t Depth, typename Word, typename RewritingSystem>
+  class PedersenPestov : public detail::SubwordsSettings {
+   private:
+    using Settings = detail::SubwordsSettings;
+
+    KnuthBendix<Word, RewritingSystem> _kb;
 
    public:
     PedersenPestov(KnuthBendix<Word, RewritingSystem> const& kb)
-        : Settings(), _state(std::make_shared<State>(kb, Depth)) {
+        : Settings(), _kb(kb) {
       min_length(2);
       max_length(6);
       proper(true);
@@ -1165,67 +1329,15 @@ namespace libsemigroups {
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return add_steps<0>(std::forward<InputRange>(input),
-                          std::make_shared<State>(_state->kb, Depth));
+      return PedersenPestovRange<Depth,
+                                 std::decay_t<InputRange>,
+                                 Word,
+                                 RewritingSystem>(
+          std::forward<InputRange>(input), _kb, *this);
     }
 
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
       return operator()(Singleton(input));
-    }
-
-   private:
-    template <size_t N, typename InputRange>
-    auto add_steps(InputRange&& input, std::shared_ptr<State> state) const {
-      static_assert(N < Depth);
-
-      LIBSEMIGROUPS_ASSERT(N < state->presentations.size());
-
-      using rx::operator|;
-
-      auto run_knuth_bendix = [state](Presentation<Word> const& p) {
-        state->kb.init(congruence_kind::twosided, p);
-        state->kb.rewriting_system().sort_pending_rules_by(nullptr);
-        state->kb.rewriting_system().settings().reduction_threshold
-            = POSITIVE_INFINITY;
-        state->kb.max_rounds(2).run();
-        return to<Presentation>(state->kb);
-      };
-
-      if constexpr (N == 0) {
-        // Call Subwords(*this) to pass thru the settings
-        auto step
-            = (std::forward<InputRange>(input) | AllAlphabetOrders()
-               | Ref(state->presentations[N]) | rx::transform(run_knuth_bendix)
-               | Subwords(*this) | rx::transform([state](auto const& tup) {
-                   auto copy(state->presentations[N]);
-                   presentation::replace_word_with_new_generator(
-                       copy, std::get<1>(tup));
-                   return copy;
-                 }));
-
-        if constexpr (N + 1 == Depth) {
-          return (step | AllAlphabetOrderExts());
-        } else {
-          return add_steps<N + 1>(std::move(step), state);
-        }
-      } else {
-        // Call Subwords(*this) to pass thru the settings
-        auto step
-            = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
-               | Ref(state->presentations[N]) | rx::transform(run_knuth_bendix)
-               | Subwords(*this) | rx::transform([state](auto const& tup) {
-                   auto copy(state->presentations[N]);
-                   presentation::replace_word_with_new_generator(
-                       copy, std::get<1>(tup));
-                   return copy;
-                 }));
-
-        if constexpr (N + 1 == Depth) {
-          return (step | AllAlphabetOrderExts());
-        } else {
-          return add_steps<N + 1>(std::move(step), state);
-        }
-      }
     }
   };  // class PedersenPestov
 
