@@ -151,8 +151,8 @@ namespace libsemigroups::detail {
     // require the rules in _set_rules to be reduced. If we add a new_rule
     // e.g. aba -> a and there is a currently active rule of the form abab ->
     // aba, then we must make abab -> aba pending before adding aba -> a.
-    LIBSEMIGROUPS_ASSERT(
-        !ReductionOrder<Default>{}(new_rule->lhs(), new_rule->rhs()));
+    LIBSEMIGROUPS_ASSERT(!RewritingSystemBaseWithOrder_::order()(
+        new_rule->lhs(), new_rule->rhs()));
 
     Rules::add_active_rule(new_rule);
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -568,8 +568,8 @@ namespace libsemigroups::detail {
   template <template <typename> typename ReductionOrder>
   void RewritingSystemTrie<ReductionOrder>::add_active_rule(Rule* new_rule) {
     // Must check negation here so we can use ReturnFalse to mean "no order"
-    LIBSEMIGROUPS_ASSERT(
-        !ReductionOrder<Default>{}(new_rule->lhs(), new_rule->rhs()));
+    LIBSEMIGROUPS_ASSERT(!RewritingSystemBaseWithOrder_::order()(
+        new_rule->lhs(), new_rule->rhs()));
     Rules::add_active_rule(new_rule);
     _rule_trie.emplace_no_checks(
         new_rule->lhs().cbegin(), new_rule->lhs().cend(), new_rule);
