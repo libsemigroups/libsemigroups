@@ -254,7 +254,10 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
-      return std::numeric_limits<size_t>::max();
+      // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
+      // seems that rx::ranges uses this to std::vector::reserve in some places,
+      // and using the max possible value leads to exceptions being thrown.
+      return 0;
     }
 
     // TODO add these elsewhere in this file
@@ -443,7 +446,10 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
-      return std::numeric_limits<size_t>::max();
+      // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
+      // seems that rx::ranges uses this to std::vector::reserve in some places,
+      // and using the max possible value leads to exceptions being thrown.
+      return 0;
     }
 
    private:
@@ -975,7 +981,10 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
-      return std::numeric_limits<size_t>::max();
+      // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
+      // seems that rx::ranges uses this to std::vector::reserve in some places,
+      // and using the max possible value leads to exceptions being thrown.
+      return 0;
     }
   };
 
@@ -1057,8 +1066,11 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] size_t size_hint() const {
-      // Can't guess this because we don't know what _input might contain
-      return std::numeric_limits<size_t>::max();
+      // Can't guess this because we don't know what _input might contain.
+      // We opt for 0 instead of std::numeric_limits<size_t>::max() because it
+      // seems that rx::ranges uses this to std::vector::reserve in some places,
+      // and using the max possible value leads to exceptions being thrown.
+      return 0;
     }
   };
 
