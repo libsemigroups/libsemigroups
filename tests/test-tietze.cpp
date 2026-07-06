@@ -1117,4 +1117,93 @@ namespace libsemigroups {
     REQUIRE(result.value().alphabet() == "cedab");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("FindIf", "019", "baaabaaba=a", "[standard]") {
+    using rx::                  operator|;
+    using literals::            operator""_p;
+    using std::string_literals::operator""s;
+
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    p.contains_empty_word(true);
+    presentation::add_rule(p, "baaaabaaba", "a");
+
+    PedersenPestov<RPOTrie> pp(p);
+
+    KnuthBendix<std::string, detail::RewritingSystemTrie<RevRPOCmp>> kb(
+        congruence_kind::twosided, p);
+
+    auto morpho_complete
+        = rx::transform([&kb](Presentation<std::string> const& p) {
+            kb.init(congruence_kind::twosided, p);
+            kb.rewriting_system().sort_pending_rules_by(nullptr);
+            kb.rewriting_system().settings().reduction_threshold
+                = POSITIVE_INFINITY;
+            kb.max_rounds(2).run();
+            return to<Presentation>(kb);
+          });
+
+    Presentation<std::string> p0 = p, p1, p2;
+
+    auto input
+        = (p0 | AllAlphabetOrders() | morpho_complete
+           | Subwords().min_length(2).max_length(3).proper(true)
+           | rx::transform([&p0](auto const& pair) {
+               auto copy(p0);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts() | Ref(p1) | morpho_complete
+           | Subwords().min_length(2).max_length(3).proper(true)
+           | rx::transform([&p1](auto const& pair) {
+               auto copy(p1);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               return copy;
+             })
+           | AllAlphabetOrderExts() | Ref(p2) | morpho_complete
+           | Subwords().min_length(2).max_length(3).proper(true)
+           | rx::transform([&p2](auto const& pair) {
+               auto copy(p2);
+               presentation::replace_word_with_new_generator(copy, pair.second);
+               // fmt::print("C: {}\n", copy.alphabet());
+               // fmt::print("C: {}\n\n", copy.rules);
+               return copy;
+             })
+           | AllAlphabetOrderExts());
+
+    auto num = (input | rx::count());
+
+    // REQUIRE(num == 399'620);
+
+    auto find_if = FindIf([kb](auto const& p) mutable {
+                     kb.init(congruence_kind::twosided, p);
+                     kb.run_for(std::chrono::milliseconds(4));
+                     return kb.rewriting_system().confluent();
+                   }).number_of_threads(12);
+
+    auto result = (input | find_if.total(num)).get();
+    REQUIRE(result.has_value());
+    REQUIRE(result.value().alphabet() == "cdeab");
+    REQUIRE(result.value().rules
+            == std::vector<std::string>(
+                {"beacc", "a", "c", "aba", "d", "bba", "e", "aa"}));
+
+    kb.init(congruence_kind::twosided, result.value());
+    kb.run();
+    using rule_type = typename decltype(kb)::rule_type;
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<rule_type>({{"cecc", "e"},
+                                       {"a", "dece"},
+                                       {"decec", "edecc"},
+                                       {"decedecc", "c"},
+                                       {"bdecc", "d"},
+                                       {"bdece", "decc"},
+                                       {"decedece", "e"},
+                                       {"be", "deccdece"},
+                                       {"bc", "deccdecc"},
+                                       {"dee", "edeccc"},
+                                       {"cece", "eecc"},
+                                       {"cee", "eecccc"}}));
+  }
 }  // namespace libsemigroups

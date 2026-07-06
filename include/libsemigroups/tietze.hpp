@@ -1104,5 +1104,74 @@ namespace libsemigroups {
     }
   };
 
+  template <typename RewritingSystem, typename Word>
+  class PedersenPestov {
+   private:
+    std::vector<Presentation<Word>> _presentations;
+
+   public:
+    PedersenPestov(Presentation<Word> const& p) : _presentations({p}){};
+  };
+
+  //  namespace {
+  //
+  //    template <size_t N,
+  //              size_t Depth,
+  //              typename InputRange,
+  //              typename MorphoComplete,
+  //              typename Score>
+  //    auto add_tietze_morpho_generator_steps(
+  //        InputRange&&                            input,
+  //        std::vector<Presentation<std::string>>& ps,
+  //        MorphoComplete const&                   morpho_complete,
+  //        Score const&                            score) {
+  //      static_assert(N < Depth);
+  //
+  //      size_t const M = 2'048;
+  //
+  //      using rx::operator|;
+  //
+  //      if constexpr (N == 0) {
+  //        auto step
+  //            = (std::forward<InputRange>(input) | Ref(ps[N]) |
+  //            morpho_complete
+  //               |
+  //               SubwordsFreq(score).min_length(2).max_length(6).proper(true)
+  //               | rx::take(M) | rx::transform([&ps](auto const& tup) {
+  //                   auto copy(ps[N]);
+  //                   presentation::replace_word_with_new_generator(
+  //                       copy, std::get<1>(tup));
+  //                   return copy;
+  //                 }));
+  //
+  //        if constexpr (N + 1 == Depth) {
+  //          return (step | AllAlphabetOrderExts());
+  //        } else {
+  //          return add_tietze_morpho_generator_steps<N + 1, Depth>(
+  //              std::move(step), ps, morpho_complete, score);
+  //        }
+  //      } else {
+  //        auto step
+  //            = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
+  //               | Ref(ps[N]) | morpho_complete
+  //               |
+  //               SubwordsFreq(score).min_length(2).max_length(6).proper(true)
+  //               | rx::take(M) | rx::transform([&ps](auto const& tup) {
+  //                   auto copy(ps[N]);
+  //                   presentation::replace_word_with_new_generator(
+  //                       copy, std::get<1>(tup));
+  //                   return copy;
+  //                 }));
+  //
+  //        if constexpr (N + 1 == Depth) {
+  //          return (step | AllAlphabetOrderExts());
+  //        } else {
+  //          return add_tietze_morpho_generator_steps<N + 1, Depth>(
+  //              std::move(step), ps, morpho_complete, score);
+  //        }
+  //      }
+  //    }
+  //  }  // namespace
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TIETZE_HPP_
