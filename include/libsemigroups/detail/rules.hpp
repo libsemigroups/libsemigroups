@@ -88,18 +88,6 @@ namespace libsemigroups {
       }
     };  // class Rule
 
-    template <typename ReductionOrder>
-    void reorder(Rule* rule, ReductionOrder const& order) {
-      if (order(rule->lhs(), rule->rhs())) {
-        std::swap(rule->lhs(), rule->rhs());
-      }
-    }
-
-    template <typename ReductionOrder>
-    void reorder(Rule* rule) {
-      reorder(rule, ReductionOrder{});
-    }
-
     [[nodiscard]] static inline size_t length(Rule const* rule) {
       return rule->lhs().size() + rule->rhs().size();
     }

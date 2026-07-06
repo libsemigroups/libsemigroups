@@ -195,6 +195,76 @@ namespace libsemigroups {
     };  // class RewritingSystemBase
 
     ////////////////////////////////////////////////////////////////////////
+    // RewritingSystemBaseWithOrder
+    ////////////////////////////////////////////////////////////////////////
+
+    template <template <typename> typename ReductionOrder>
+    class RewritingSystemBaseWithOrder : public RewritingSystemBase {
+      ReductionOrder<Default> _order;
+
+     public:
+      using reduction_order = ReductionOrder<Default>;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Constructors + inits
+      ////////////////////////////////////////////////////////////////////////
+
+      RewritingSystemBaseWithOrder() : _order() {}
+
+      RewritingSystemBaseWithOrder& init() {
+        RewritingSystemBase::init();
+        if constexpr (order::is_stateful_v<reduction_order>) {
+          _order.init();
+        }
+        return *this;
+      }
+
+      RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder const& that)
+          : RewritingSystemBaseWithOrder() {
+        *this = that;
+      }
+
+      RewritingSystemBaseWithOrder(RewritingSystemBaseWithOrder&& that)
+          : RewritingSystemBaseWithOrder() {
+        *this = std::move(that);
+      }
+
+      RewritingSystemBaseWithOrder&
+      operator=(RewritingSystemBaseWithOrder const& that) {
+        RewritingSystemBase::operator=(that);
+        _order = that._order;
+        return *this;
+      }
+
+      RewritingSystemBaseWithOrder&
+      operator=(RewritingSystemBaseWithOrder&& that) {
+        RewritingSystemBase::operator=(std::move(that));
+        _order = std::move(that._order);
+        return *this;
+      }
+
+      ~RewritingSystemBaseWithOrder() = default;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Public member functions
+      ////////////////////////////////////////////////////////////////////////
+
+      [[nodiscard]] ReductionOrder const& order() const noexcept {
+        return _order;
+      }
+
+      [[nodiscard]] ReductionOrder& order() noexcept {
+        return _order;
+      }
+
+      void reorder(Rule* rule) {
+        if (_order(rule->lhs(), rule->rhs())) {
+          std::swap(rule->lhs(), rule->rhs());
+        }
+      }
+    };  // class RewritingSystemBaseWithOrder
+
+    ////////////////////////////////////////////////////////////////////////
     // RuleLookup
     ////////////////////////////////////////////////////////////////////////
 
@@ -237,16 +307,19 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <template <typename> typename ReductionOrder>
-    class RewritingSystemSet : public RewritingSystemBase {
+    class RewritingSystemSet
+        : public RewritingSystemBaseWithOrder<ReductionOrder> {
       ////////////////////////////////////////////////////////////////////////
       // Private aliases
       ////////////////////////////////////////////////////////////////////////
+      using RewritingSystemBaseWithOrder_
+          = RewritingSystemBaseWithOrder<ReductionOrder>;
+
       using iterator = Rules::iterator;
 
       ////////////////////////////////////////////////////////////////////////
       // Private data
       ////////////////////////////////////////////////////////////////////////
-      ReductionOrder       _order;
       std::set<RuleLookup> _set_rules;
 
      public:
@@ -297,14 +370,6 @@ namespace libsemigroups {
                                    Iterator first2,
                                    Iterator last2);
 
-      [[nodiscard]] ReductionOrder const& order() const noexcept {
-        return _order;
-      }
-
-      [[nodiscard]] ReductionOrder& order() noexcept {
-        return _order;
-      }
-
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
 
       // Returns true if the system changes as a result of this call (i.e. it
@@ -344,12 +409,15 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <template <typename> typename ReductionOrder>
-    class RewritingSystemTrie : public RewritingSystemBase {
+    class RewritingSystemTrie
+        : public RewritingSystemBaseWithOrder<ReductionOrder> {
       ////////////////////////////////////////////////////////////////////////
       // Private aliases
       ////////////////////////////////////////////////////////////////////////
 
       using Trie = AhoCorasickImpl;
+      using RewritingSystemBaseWithOrder_
+          = RewritingSystemBaseWithOrder<ReductionOrder>;
 
       using iterator   = Rules::iterator;
       using index_type = Trie::index_type;
@@ -419,14 +487,6 @@ namespace libsemigroups {
       }
 
       [[nodiscard]] std::pair<size_t, size_t> confluence_ratio();
-
-      [[nodiscard]] ReductionOrder const& order() const noexcept {
-        return _order;
-      }
-
-      [[nodiscard]] ReductionOrder& order() noexcept {
-        return _order;
-      }
 
       // Returns true if the system changes as a result of this call (i.e. it
       // wasn't reduced before but now it is)
