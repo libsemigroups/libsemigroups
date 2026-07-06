@@ -985,8 +985,7 @@ namespace libsemigroups {
           });
 
     auto score = [](auto const& tup1, auto const& tup2) {
-      return std::get<1>(tup1).size() * std::get<2>(tup1)
-             > std::get<1>(tup2).size() * std::get<2>(tup2);
+      return std::get<2>(tup1) > std::get<2>(tup2);
     };
 
     Presentation<std::string> p0 = p, p1, p2;
@@ -1078,7 +1077,7 @@ namespace libsemigroups {
     // presentation::add_rule(p, "b^9"_p, "");
     presentation::add_rule(p, "abaabbbaB", "");
 
-    KnuthBendix<std::string> kb(congruence_kind::twosided, p);
+    KnuthBendix kb(congruence_kind::twosided, p);
 
     auto morpho_complete
         = rx::transform([&kb](Presentation<std::string> const& p) {
