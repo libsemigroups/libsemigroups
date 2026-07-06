@@ -22,6 +22,7 @@
 #include <algorithm>  // for sort
 #include <chrono>
 #include <cstddef>      // for size_t
+#include <memory>       // for make_shared, shared_ptr
 #include <numeric>      // for accumulate
 #include <queue>        // for queue
 #include <string_view>  // for basic_string_view, string_view
@@ -1115,12 +1116,19 @@ namespace libsemigroups {
    private:
     using Settings = detail::SubwordsSettings;
 
-    mutable KnuthBendix<Word, RewritingSystem> _kb;
-    mutable std::vector<Presentation<Word>>    _presentations;
+    struct State {
+      KnuthBendix<Word, RewritingSystem> kb;
+      std::vector<Presentation<Word>>    presentations;
+
+      State(KnuthBendix<Word, RewritingSystem> const& kb, size_t depth)
+          : kb(kb), presentations(depth) {}
+    };
+
+    std::shared_ptr<State> _state;
 
    public:
     PedersenPestov(KnuthBendix<Word, RewritingSystem> const& kb)
-        : Settings(), _kb(kb), _presentations(Depth) {
+        : Settings(), _state(std::make_shared<State>(kb, Depth)) {
       min_length(2);
       max_length(6);
       proper(true);
@@ -1157,7 +1165,8 @@ namespace libsemigroups {
     template <typename InputRange,
               typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
     [[nodiscard]] auto operator()(InputRange&& input) const {
-      return add_steps<0>(std::forward<InputRange>(input));
+      return add_steps<0>(std::forward<InputRange>(input),
+                          std::make_shared<State>(_state->kb, Depth));
     }
 
     [[nodiscard]] auto operator()(Presentation<Word> const& input) const {
@@ -1166,53 +1175,55 @@ namespace libsemigroups {
 
    private:
     template <size_t N, typename InputRange>
-    auto add_steps(InputRange&& input) const {
+    auto add_steps(InputRange&& input, std::shared_ptr<State> state) const {
       static_assert(N < Depth);
 
-      LIBSEMIGROUPS_ASSERT(N < _presentations.size());
+      LIBSEMIGROUPS_ASSERT(N < state->presentations.size());
 
       using rx::operator|;
 
-      auto run_knuth_bendix = [this](Presentation<Word> const& p) {
-        _kb.init(congruence_kind::twosided, p);
-        _kb.rewriting_system().sort_pending_rules_by(nullptr);
-        _kb.rewriting_system().settings().reduction_threshold
+      auto run_knuth_bendix = [state](Presentation<Word> const& p) {
+        state->kb.init(congruence_kind::twosided, p);
+        state->kb.rewriting_system().sort_pending_rules_by(nullptr);
+        state->kb.rewriting_system().settings().reduction_threshold
             = POSITIVE_INFINITY;
-        _kb.max_rounds(2).run();
-        return to<Presentation>(_kb);
+        state->kb.max_rounds(2).run();
+        return to<Presentation>(state->kb);
       };
 
       if constexpr (N == 0) {
         // Call Subwords(*this) to pass thru the settings
-        auto step = (std::forward<InputRange>(input) | AllAlphabetOrders()
-                     | Ref(_presentations[N]) | rx::transform(run_knuth_bendix)
-                     | Subwords(*this) | rx::transform([this](auto const& tup) {
-                         auto copy(_presentations[N]);
-                         presentation::replace_word_with_new_generator(
-                             copy, std::get<1>(tup));
-                         return copy;
-                       }));
+        auto step
+            = (std::forward<InputRange>(input) | AllAlphabetOrders()
+               | Ref(state->presentations[N]) | rx::transform(run_knuth_bendix)
+               | Subwords(*this) | rx::transform([state](auto const& tup) {
+                   auto copy(state->presentations[N]);
+                   presentation::replace_word_with_new_generator(
+                       copy, std::get<1>(tup));
+                   return copy;
+                 }));
 
         if constexpr (N + 1 == Depth) {
           return (step | AllAlphabetOrderExts());
         } else {
-          return add_steps<N + 1>(std::move(step));
+          return add_steps<N + 1>(std::move(step), state);
         }
       } else {
         // Call Subwords(*this) to pass thru the settings
-        auto step = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
-                     | Ref(_presentations[N]) | rx::transform(run_knuth_bendix)
-                     | Subwords(*this) | rx::transform([this](auto const& tup) {
-                         auto copy(_presentations[N]);
-                         presentation::replace_word_with_new_generator(
-                             copy, std::get<1>(tup));
-                         return copy;
-                       }));
+        auto step
+            = (std::forward<InputRange>(input) | AllAlphabetOrderExts()
+               | Ref(state->presentations[N]) | rx::transform(run_knuth_bendix)
+               | Subwords(*this) | rx::transform([state](auto const& tup) {
+                   auto copy(state->presentations[N]);
+                   presentation::replace_word_with_new_generator(
+                       copy, std::get<1>(tup));
+                   return copy;
+                 }));
 
         if constexpr (N + 1 == Depth) {
           return (step | AllAlphabetOrderExts());
         } else {
-          return add_steps<N + 1>(std::move(step));
+          return add_steps<N + 1>(std::move(step), state);
         }
       }
     }

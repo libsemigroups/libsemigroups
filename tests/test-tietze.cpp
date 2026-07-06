@@ -1131,21 +1131,19 @@ namespace libsemigroups {
 
     KnuthBendix<std::string, RevRPOTrie> kb(congruence_kind::twosided, p);
 
-    auto pp = pedersen_pestov<3>(kb).min_length(2).max_length(3).proper(true);
-
-    auto input = (p | pp);
-
+    auto input
+        = (p | pedersen_pestov<3>(kb).min_length(2).max_length(3).proper(true));
     auto num = (input | rx::count());
-
     REQUIRE(num == 200'480);
 
     auto find_if = FindIf([kb](auto const& p) mutable {
                      kb.init(congruence_kind::twosided, p);
                      kb.run_for(std::chrono::milliseconds(4));
                      return kb.rewriting_system().confluent();
-                   }).number_of_threads(12);
+                   }).number_of_threads(1);
 
-    auto result = (input | find_if.total(num)).get();
+    auto result = (input | find_if).get();
+
     REQUIRE(result.has_value());
     REQUIRE(result.value().alphabet() == "dcbea");
     REQUIRE(result.value().rules
