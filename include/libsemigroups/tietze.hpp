@@ -1184,9 +1184,9 @@ namespace libsemigroups {
 
       if constexpr (N == 0) {
         // Call Subwords(*this) to pass thru the settings
-        auto step = (std::forward<InputRange>(input) | Ref(_presentations[N])
-                     | rx::transform(run_knuth_bendix) | Subwords(*this)
-                     | rx::transform([this](auto const& tup) {
+        auto step = (std::forward<InputRange>(input) | AllAlphabetOrders()
+                     | Ref(_presentations[N]) | rx::transform(run_knuth_bendix)
+                     | Subwords(*this) | rx::transform([this](auto const& tup) {
                          auto copy(_presentations[N]);
                          presentation::replace_word_with_new_generator(
                              copy, std::get<1>(tup));
