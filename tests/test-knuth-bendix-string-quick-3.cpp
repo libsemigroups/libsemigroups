@@ -1417,4 +1417,31 @@ namespace libsemigroups {
     REQUIRE(dora.number_of_runs() == 103'904);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "156",
+                          "weighted len-lex",
+                          "[quick][knuth-bendix]") {
+    auto rg = ReportGuard(false);
+
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    p.contains_empty_word(true);
+
+    presentation::add_rule(p, "ab", "");
+    presentation::add_rule(p, "ba", "");
+    presentation::add_rule(p, "cd", "");
+    presentation::add_rule(p, "dc", "");
+    presentation::add_rule(p, "ca", "ac");
+
+    WtLenLexCmp ord({2, 2, 2, 2}, true);
+    KnuthBendix<std::string, detail::RewritingSystemTrie<WtLenLexCmp>> kb(
+        twosided, p, ord);
+
+    REQUIRE(!kb.rewriting_system().confluent());
+    kb.run();
+    REQUIRE(kb.rewriting_system().number_of_rules() == 8);
+    REQUIRE(kb.rewriting_system().confluent());
+    REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
+  }
+
 }  // namespace libsemigroups
